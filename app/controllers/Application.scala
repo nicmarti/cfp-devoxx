@@ -47,11 +47,12 @@ object Application extends Controller {
   val loginForm = Form(tuple("email" -> nonEmptyText, "password" -> nonEmptyText))
 
   def index = Action {
-    Ok(views.html.Application.index(loginForm))
+    implicit request =>
+      Ok(views.html.Application.index(loginForm))
   }
 
-  def prepareSignup=Action{
-    implicit request=>
+  def prepareSignup = Action {
+    implicit request =>
       Ok(views.html.Application.prepareSignup())
   }
 
@@ -63,14 +64,15 @@ object Application extends Controller {
     implicit request =>
       loginForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Application.index(invalidForm)),
-        validForm =>Async{
-            Webuser.checkPassword(validForm._1, validForm._2).map{validUser=>
-              if(validUser){
+        validForm => Async {
+          Webuser.checkPassword(validForm._1, validForm._2).map {
+            validUser =>
+              if (validUser) {
                 Ok("Super")
-              }else{
+              } else {
                 Unauthorized("User not found")
               }
-            }
+          }
         }
       )
   }

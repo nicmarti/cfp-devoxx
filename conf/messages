@@ -1,0 +1,9 @@
+menu.home=Home
+menu.register=Sign-in
+email=Email
+firstName=First name
+lastName=Last name
+password=Password
+CallForPaper=Call for papers
+index.welcome=Already registered as a speaker? Please use this form to sign-in :
+btn.login=Sign-in

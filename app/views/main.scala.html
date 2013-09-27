@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit lang: Lang)
 
 <!DOCTYPE html>
 <!--[if IE 7]>
@@ -57,17 +57,13 @@
         <div id="navbar" class="navbar">
             <nav id="site-navigation" class="navigation main-navigation" role="navigation">
                 <h3 class="menu-toggle">Menu</h3>
-                <a class="screen-reader-text skip-link" href="#content" title="Aller au contenu principal">Aller au
-                    contenu principal</a>
+                <a class="screen-reader-text skip-link" href="#content" title="Aller au contenu principal">Home</a>
 
                 <div class="menu-menu-1-container">
                     <ul id="menu-menu-1" class="nav-menu">
                         <li id="menu-item-64"
                             class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-5 current_page_item menu-item-64">
-                            <a href="/">Accueil</a></li>
-                        <li id="menu-item-100"
-                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-100"><a
-                                href="@routes.Application.prepareSignup">S'inscrire</a></li>
+                            <a href="/">@Messages("menu.home")</a></li>
                     </ul>
                 </div>
             </nav>
@@ -84,7 +80,7 @@
 
                <article id="post-5" class="post-5 page type-page status-publish hentry">
                    <header class="entry-header">
-                        <h1 class="entry-title">@title</h1>
+                        <h1 class="entry-title">@Messages(title)</h1>
                     </header>
                     <!-- .entry-header -->
 <div class="entry-content">
@@ -111,7 +107,7 @@
         <!-- #secondary -->
 
         <div class="site-info">
-            Un <a href="http://www.playframework.org" target="New" title="Voir le site de Play">site écrit avec Play Framework 2.1</a> en Scala, utilisant MongoDB, hébergé chez <a href="http://www.clever-cloud.com/fr/#from-devoxx-fr" target="new">Clever Cloud</a>.
+            <a href="http://www.playframework.org" target="New" title="Voir le site de Play">Created with Play Framework 2.1</a>, Scala, MongoDB, hosted on <a href="http://www.clever-cloud.com/fr/#from-devoxx-fr" target="new">Clever Cloud</a>.
         </div>
         <!-- .site-info -->
     </footer>

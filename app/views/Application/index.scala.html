@@ -1,16 +1,14 @@
-@(loginForm:Form[(String,String)])
+@(loginForm:Form[(String,String)])(implicit lang: Lang)
 
 @import helper.twitterBootstrap._
 
 @main("CallForPaper") {
     
-    <h3>Présentateurs</h3>
-
-    <p>Déjà inscrit, authentifiez-vous avec votre mot de passe, ou via l'un des fournisseurs ci-dessous :</p>
+    <p>@Html(Messages("index.welcome"))</p>
     @helper.form(action=routes.Application.login){
         @helper.inputText(loginForm("email"))
         @helper.inputPassword(loginForm("password"))
-        <button type="submit">S'authentifier</button>
+        <button type="submit">@Messages("btn.login")</button>
     }
 
 
