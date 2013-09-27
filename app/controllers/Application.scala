@@ -44,18 +44,35 @@ object Application extends Controller {
       "lastName" -> nonEmptyText
     )(Webuser.createSpeaker)(Webuser.unapplyForm))
 
-  val loginForm=Form(tuple("email"->nonEmptyText, "password"->nonEmptyText))
+  val loginForm = Form(tuple("email" -> nonEmptyText, "password" -> nonEmptyText))
 
   def index = Action {
     Ok(views.html.Application.index(loginForm))
   }
 
-  def signup=Action{
+  def prepareSignup=Action{
+    implicit request=>
+      Ok(views.html.Application.prepareSignup())
+  }
+
+  def signup = Action {
     Ok("signup")
   }
 
-  def login=Action{
-    Ok("login")
+  def login = Action {
+    implicit request =>
+      loginForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.Application.index(invalidForm)),
+        validForm =>Async{
+            Webuser.checkPassword(validForm._1, validForm._2).map{validUser=>
+              if(validUser){
+                Ok("Super")
+              }else{
+                Unauthorized("User not found")
+              }
+            }
+        }
+      )
   }
 
   def newSpeaker = Action {
@@ -71,11 +88,11 @@ object Application extends Controller {
             _ =>
               Created(views.html.Application.created(validForm.email))
           }.recover {
-            case LastError(ok , err , code , errMsg , originalDocument , updated , updatedExisting )=>
+            case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
               Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
               if (code.get == 11000) Conflict("Email already exists") else InternalServerError("Could not create speaker.")
-            case other=>{
-              Logger.error("Unknown Error "+other)
+            case other => {
+              Logger.error("Unknown Error " + other)
               InternalServerError("Unknown MongoDB Error")
             }
           }

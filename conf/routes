@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET    /signup                      controllers.Application.prepareSignup
 POST    /signup                     controllers.Application.signup
 POST    /login                      controllers.Application.login
 

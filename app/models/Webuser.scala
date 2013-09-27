@@ -41,5 +41,12 @@ object Webuser {
       cursor.toList
   }
 
+  def checkPassword(email:String, password:String):Future[Boolean]=MongoDB.withCollection("webuser"){
+    implicit collection=>
+      val cursor: Cursor[Webuser] = collection.find(Json.obj("email" -> email, "password"->password)).cursor[Webuser]
+      cursor.headOption().map(_.isDefined)
+
+  }
+
 }
 
