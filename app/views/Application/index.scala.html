@@ -4,10 +4,17 @@
 
 @main("CallForPaper") {
 
-<p>@Html(Messages("index.welcome"))</p>
+    <h3>@Html(Messages("index.method1"))</h3>
+    <p>@Html(Messages("index.welcome"))</p>
     @helper.form(action = routes.Application.login) {
         @helper.inputText(loginForm("email"))
         @helper.inputPassword(loginForm("password"))
         <button type="submit">@Messages("btn.login")</button>
     }
+
+    <h3>@Html(Messages("index.method2"))</h3>
+    <p>@Html(Messages("index.txt2"))</p>
+    <a href="@routes.Application.githubLogin" title="Sign-in with your Github profile to Devoxx FR">
+        <img src="/assets/images/github.png" alt="Github logo" title="Click here to authenticate with your github profile">
+    </a>
 }

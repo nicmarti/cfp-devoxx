@@ -29,7 +29,9 @@ import play.api.data._
 import play.api.data.Forms._
 import ExecutionContext.Implicits.global
 import reactivemongo.core.commands.LastError
-import play.api.Logger
+import play.api.{Play, Logger}
+import play.api.libs.Crypto
+import play.api.libs.ws.WS
 
 /**
  * Devoxx France Call For Paper main application.
@@ -111,5 +113,73 @@ object Application extends Controller {
             Ok(webuser.toString())
         }
       }
+  }
+
+  def githubLogin=Action{
+    implicit request=>
+      Play.current.configuration.getString("github.client_id").map{
+        clientId:String=>
+        val redirectUri = routes.Application.callbackGithub.absoluteURL()
+        val gitUrl="https://github.com/login/oauth/authorize?client_id="+clientId+"&scope=user&state="+Crypto.sign("ok")+"&redirect_uri="+redirectUri
+        Redirect(gitUrl)
+      }.getOrElse{
+        InternalServerError("github.client_id is not set in application.conf")
+      }
+  }
+
+  //POST https://github.com/login/oauth/access_token
+  val oauthForm=Form(tuple("code"->text, "state"->text))
+  val accessTokenForm=Form("access_token"->text)
+
+  def callbackGithub=Action{
+    implicit request=>
+      oauthForm.bindFromRequest.fold(invalidForm=>{
+        BadRequest(views.html.Application.index(loginForm)).flashing("error"->"Invalid form")
+      }, validForm=>{
+        validForm match {
+          case(code,state) if state==Crypto.sign("ok")=>{
+            val auth=for(clientId<-Play.current.configuration.getString("github.client_id");
+                clientSecret<-Play.current.configuration.getString("github.client_secret")) yield (clientId,clientSecret)
+              auth.map{
+                case(clientId, clientSecret)=>{
+                  val url="https://github.com/login/oauth/access_token"
+                   val wsCall=WS.url(url).post(Map( "client_id"->Seq(clientId), "client_secret"->Seq(clientSecret), "code"->Seq(code)))
+                  Async{
+                  wsCall.map{
+                    result=>
+                      result.status match {
+                        case 200=>{
+                          val b=result.body
+                          try{
+                          val accessToken = b.substring(b.indexOf("=")+1, b.indexOf("&"))
+
+                            Redirect(routes.Application.createFromGithub).withSession("access_token"->accessToken)
+                          }catch {
+                            case e:IndexOutOfBoundsException=>{
+                              play.Logger.error("Access token not found in query string")
+                              Redirect(routes.Application.index)
+                            }
+                          }
+                        }
+                        case _ =>{
+                          play.Logger.error("Could not complete Github OAuth")
+                          Redirect(routes.Application.index)
+                        }
+                      }
+                  }
+                  }
+                }
+              }.getOrElse{
+                InternalServerError("github.client_secret is not configured in application.conf")
+              }
+          }
+          case other=> BadRequest(views.html.Application.index(loginForm)).flashing("error"->"Invalid state code")
+        }
+      })
+  }
+
+  def createFromGithub=Action{
+    implicit request=>
+      Ok("create from github "+request.session.get("access_token"))
   }
 }
