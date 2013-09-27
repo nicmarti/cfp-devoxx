@@ -15,6 +15,7 @@ POST /github/callback               controllers.Application.callbackGithub
 GET  /github/callback               controllers.Application.callbackGithub
 GET /signup/github                  controllers.Application.createFromGithub
 
+GET /access_token                   controllers.Application.showAccessToken
 
 GET     /newspeaker                 controllers.Application.newSpeaker
 POST    /newspeaker                 controllers.Application.saveNewSpeaker
