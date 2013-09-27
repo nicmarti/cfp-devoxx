@@ -6,6 +6,10 @@ password=Mot de passe
 CallForPaper=Appel aux conférenciers
 # For single quote, you need to double escape
 # http://stackoverflow.com/questions/12070093/how-to-use-single-quotes-in-i18n-in-playframework2
-index.welcome=Déjà inscrit, authentifiez-vous avec votre mot de passe, ou via l''un des fournisseurs ci-dessous :
+index.welcome=Déjà inscrit ? Authentifiez-vous avec votre mot de passe, ou via l''un des fournisseurs ci-dessous :
 btn.login=Continuer
-menu.register=Inscription
+menu.register=S''inscrire
+menu.blog=Site DevoxxFR
+login=S''authentifier
+signup=S''inscrire
+signup.long=S''inscrire en tant que pr&eacute;sentateur pour Devoxx France

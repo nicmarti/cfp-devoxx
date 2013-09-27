@@ -64,6 +64,14 @@
                         <li id="menu-item-64"
                             class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-5 current_page_item menu-item-64">
                             <a href="/">@Messages("menu.home")</a></li>
+
+                    <li id="menu-item-65"
+                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-65">
+                        <a href="@routes.Application.prepareSignup()">@Messages("menu.register")</a>
+                    </li>
+                    <li id="menu-item-66" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-65">
+                          <a href="http://www.devoxx.fr/">@Messages("menu.blog")</a>
+                    </li>
                     </ul>
                 </div>
             </nav>
@@ -78,11 +86,11 @@
         <div id="primary" class="content-area">
             <div id="content" class="site-content" role="main">
 
-               <article id="post-5" class="post-5 page type-page status-publish hentry">
-                   <header class="entry-header">
-                        <h1 class="entry-title">@Messages(title)</h1>
-                    </header>
-                    <!-- .entry-header -->
+                <header class="archive-header">
+                	<h1 class="archive-title">@Messages(title)</h1>
+                </header>
+
+               <article class="page type-page status-publish hentry">
 <div class="entry-content">
 @content
 </div>

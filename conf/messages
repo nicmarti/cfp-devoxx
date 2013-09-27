@@ -7,3 +7,7 @@ password=Password
 CallForPaper=Call for papers
 index.welcome=Already registered as a speaker? Please use this form to sign-in :
 btn.login=Sign-in
+login=Sign-in
+signup=Sign-up
+signup.long=Register as a new Devoxx France speaker
+menu.blog=Website DevoxxFR
