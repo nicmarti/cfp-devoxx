@@ -23,49 +23,57 @@
 package controllers
 
 import models._
-import play.api._
 import play.api.mvc._
-import play.api.libs.json._
-import scala.concurrent.Future
-import reactivemongo.api._
-import play.modules.reactivemongo.MongoController
-import play.modules.reactivemongo.json.collection.JSONCollection
-import play.api.data.Form
-import models.JsonFormats._
+import scala.concurrent.{ExecutionContext, Future}
+import play.api.data._
+import play.api.data.Forms._
+import ExecutionContext.Implicits.global
 
 /**
  * Devoxx France Call For Paper main application.
  * @author Nicolas Martignole
  */
-object Application extends Controller with MongoController {
-  def collection: JSONCollection = db.collection[JSONCollection]("bp79k8t4i6p9g53s")
+object Application extends Controller {
+
+  val newWebuserForm: Form[Webuser] = Form(
+    mapping(
+      "email" -> nonEmptyText,
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText
+    )(Webuser.createSpeaker)(Webuser.unapplyForm))
 
   def index = Action {
     Ok("It works!")
   }
 
-  def create = Action {
-
-    val user = User(29, "John", "Smith", List(
-      Feed("Slashdot news", "http://slashdot.org/slashdot.rdf")))
-    val futureResult = collection.insert(user)
-    Async {
-      futureResult.map(_ => Ok)
-    }
+  def newSpeaker = Action {
+    Ok(views.html.Application.newUser(newWebuserForm))
   }
 
-  def findByName(lastName: String) = Action {
-    Async {
-      val cursor: Cursor[User] = collection.
-        find(Json.obj("lastName" -> lastName)).
-        sort(Json.obj("created" -> -1)).
-        cursor[User]
+  def saveNewSpeaker = Action {
+    implicit request =>
+      newWebuserForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.Application.newUser(invalidForm)),
+        validForm => Async {
+          Webuser.save(validForm).map {
+            result =>
+              result match {
+                case r if r.inError => InternalServerError("Could not create speaker. " + r.message)
+                case other => Created(views.html.Application.created())
+              }
+          }
+        }
+      )
+  }
 
-      val futureUsersList: Future[List[User]] = cursor.toList
-      futureUsersList.map {
-        persons =>
-          Ok(persons.toString())
+  def findByEmail(email: String) = Action {
+    implicit request =>
+      Async {
+        val futureUsersList: Future[List[Webuser]] = Webuser.findByEmail(email)
+        futureUsersList.map {
+          webuser =>
+            Ok(webuser.toString())
+        }
       }
-    }
   }
 }
