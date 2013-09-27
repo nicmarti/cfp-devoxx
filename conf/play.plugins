@@ -1,2 +1,5 @@
+<<<<<<< HEAD
 1500:com.typesafe.plugin.CommonsMailerPlugin
+=======
+>>>>>>> Devoxx France Call for paper, created by N.Martignole
 400:play.modules.reactivemongo.ReactiveMongoPlugin

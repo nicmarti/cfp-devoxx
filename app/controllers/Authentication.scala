@@ -22,6 +22,7 @@
  */
 package controllers
 
+<<<<<<< HEAD
 import models._
 import play.api.mvc._
 import scala.concurrent.ExecutionContext
@@ -42,6 +43,9 @@ import notifiers.Mails
 import org.apache.commons.codec.binary.Base64
 import java.security.SecureRandom
 import java.math.BigInteger
+=======
+import play.api.mvc.Controller
+>>>>>>> Devoxx France Call for paper, created by N.Martignole
 
 /**
  * Signup and Signin.
@@ -50,6 +54,7 @@ import java.math.BigInteger
  * Created: 27/09/2013 09:59
  */
 object Authentication extends Controller {
+<<<<<<< HEAD
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
   def login = Action {
@@ -423,3 +428,7 @@ object Authentication extends Controller {
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
 
+=======
+
+}
+>>>>>>> Devoxx France Call for paper, created by N.Martignole
