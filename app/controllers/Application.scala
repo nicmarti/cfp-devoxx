@@ -38,14 +38,13 @@ import models.JsonFormats._
  * @author Nicolas Martignole
  */
 object Application extends Controller with MongoController {
-  def collection: JSONCollection = db.collection[JSONCollection]("persons")
+  def collection: JSONCollection = db.collection[JSONCollection]("bp79k8t4i6p9g53s")
 
   def index = Action {
     Ok("It works!")
   }
 
   def create = Action {
-
 
     val user = User(29, "John", "Smith", List(
       Feed("Slashdot news", "http://slashdot.org/slashdot.rdf")))
@@ -55,10 +54,10 @@ object Application extends Controller with MongoController {
     }
   }
 
-  def findByName(name: String) = Action {
+  def findByName(lastName: String) = Action {
     Async {
       val cursor: Cursor[User] = collection.
-        find(Json.obj("name" -> name)).
+        find(Json.obj("lastName" -> lastName)).
         sort(Json.obj("created" -> -1)).
         cursor[User]
 
