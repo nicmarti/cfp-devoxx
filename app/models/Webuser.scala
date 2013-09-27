@@ -7,6 +7,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import library.MongoDB
 import reactivemongo.core.commands.LastError
 import ExecutionContext.Implicits.global
+import reactivemongo.api.indexes.{IndexType, Index}
+import play.api.Logger
 
 case class Webuser(email: String, firstName: String, lastName: String, password: String, profile: String)
 
@@ -25,17 +27,17 @@ object Webuser {
     Webuser(email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "admin")
   }
 
-  def save(webuser:Webuser):Future[LastError]=MongoDB.withCollection{
+  def save(webuser:Webuser):Future[LastError]=MongoDB.withCollection("webuser"){
     implicit collection=>
-      collection.insert(webuser)
+      // Check index
+      collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true))
+      val result = collection.insert(webuser)
+      result
   }
 
-  def findByEmail(email: String): Future[List[Webuser]] = MongoDB.withCollection {
+  def findByEmail(email: String): Future[List[Webuser]] = MongoDB.withCollection("webuser") {
     implicit collection =>
-      val cursor: Cursor[Webuser] = collection.
-        find(Json.obj("email" -> email)).
-        sort(Json.obj("lastName" -> -1)).
-        cursor[Webuser]
+      val cursor: Cursor[Webuser] = collection.find(Json.obj("email" -> email)).sort(Json.obj("lastName" -> -1)).cursor[Webuser]
       cursor.toList
   }
 

@@ -28,6 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.data._
 import play.api.data.Forms._
 import ExecutionContext.Implicits.global
+import reactivemongo.core.commands.LastError
+import play.api.Logger
 
 /**
  * Devoxx France Call For Paper main application.
@@ -42,8 +44,18 @@ object Application extends Controller {
       "lastName" -> nonEmptyText
     )(Webuser.createSpeaker)(Webuser.unapplyForm))
 
+  val loginForm=Form(tuple("email"->nonEmptyText, "password"->nonEmptyText))
+
   def index = Action {
-    Ok("It works!")
+    Ok(views.html.Application.index(loginForm))
+  }
+
+  def signup=Action{
+    Ok("signup")
+  }
+
+  def login=Action{
+    Ok("login")
   }
 
   def newSpeaker = Action {
@@ -56,11 +68,16 @@ object Application extends Controller {
         invalidForm => BadRequest(views.html.Application.newUser(invalidForm)),
         validForm => Async {
           Webuser.save(validForm).map {
-            result =>
-              result match {
-                case r if r.inError => InternalServerError("Could not create speaker. " + r.message)
-                case other => Created(views.html.Application.created())
-              }
+            _ =>
+              Created(views.html.Application.created(validForm.email))
+          }.recover {
+            case LastError(ok , err , code , errMsg , originalDocument , updated , updatedExisting )=>
+              Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
+              if (code.get == 11000) Conflict("Email already exists") else InternalServerError("Could not create speaker.")
+            case other=>{
+              Logger.error("Unknown Error "+other)
+              InternalServerError("Unknown MongoDB Error")
+            }
           }
         }
       )

@@ -1,0 +1,17 @@
+@(loginForm:Form[(String,String)])
+
+@main("Welcome to Devoxx France") {
+    
+    <h1>CFP Devoxx France</h1>
+
+    <h3>Présentateurs</h3>
+
+    <p>Déjà inscrit, authentifiez-vous avec votre mot de passe, ou via l'un des fournisseurs ci-dessous :</p>
+    @helper.form(action=routes.Application.login){
+        @helper.inputText(loginForm("email"))
+        @helper.inputPassword(loginForm("password"))
+        <button type="submit">S'authentifier</button>
+    }
+
+
+}

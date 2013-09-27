@@ -48,16 +48,12 @@ object MongoDB {
 
   implicit def ec: ExecutionContext = ExecutionContext.Implicits.global
 
-  def collection: JSONCollection = {
-    Play.current.configuration.getString("mongodb.database",None).map{
-      dbName:String=>db.collection[JSONCollection](dbName)
-    }.getOrElse{
-      db.collection[JSONCollection]("test")
-    }
+  def collection(name:String): JSONCollection = {
+    db.collection[JSONCollection](name)
   }
 
-  def withCollection[T](f: JSONCollection => T) = {
-    f(collection)
+  def withCollection[T](name:String)(f: JSONCollection => T) = {
+    f(collection(name))
   }
 
 }

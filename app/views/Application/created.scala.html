@@ -1,3 +1,6 @@
+@(email:String)
+
 @main("Speaker created"){
     <h1>Created</h1>
+    <a href="@routes.Application.findByEmail(email)">Load entry</a>
 }
