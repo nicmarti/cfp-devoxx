@@ -41,10 +41,19 @@ import play.modules.reactivemongo.json.BSONFormats._
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker( id: Option[BSONObjectID], email: String, lang: String, bio: String, twitter: Option[String], avatarUrl: Option[String], company: Option[String])
+case class Speaker( id: Option[BSONObjectID], email: String, bio: String, lang: Option[String], twitter: Option[String],
+                    avatarUrl: Option[String], company: Option[String], blog:Option[String])
 
 object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
+
+  def createSpeaker(email:String, bio:String,lang:Option[String], twitter:Option[String], company:Option[String], blog:Option[String]):Speaker={
+    Speaker(None,email,bio,lang,twitter,None,company,blog)
+  }
+
+  def unapplyForm(s:Speaker):Option[(String,String, Option[String],Option[String],Option[String],Option[String])]={
+    Some(s.email, s.bio, s.lang, s.twitter, s.company,s.blog)
+  }
 
   def save(speaker: Speaker): Future[LastError] = MongoDB.withCollection("speaker") {
     implicit collection =>

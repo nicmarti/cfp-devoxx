@@ -32,6 +32,8 @@ import play.api.libs.Crypto
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.ws.WS
+import play.api.libs.json.Json
+import org.apache.commons.lang3.RandomStringUtils
 
 /**
  * Signup and Signin.
@@ -58,94 +60,141 @@ object Authentication extends Controller {
         }
       )
   }
+
   def githubLogin = Action {
-     implicit request =>
-       Play.current.configuration.getString("github.client_id").map {
-         clientId: String =>
-           val redirectUri = routes.Authentication.callbackGithub.absoluteURL()
-           val gitUrl = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&scope=user&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
-           Redirect(gitUrl)
-       }.getOrElse {
-         InternalServerError("github.client_id is not set in application.conf")
-       }
-   }
+    implicit request =>
+      Play.current.configuration.getString("github.client_id").map {
+        clientId: String =>
+          val redirectUri = routes.Authentication.callbackGithub.absoluteURL()
+          val gitUrl = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&scope=user&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
+          Redirect(gitUrl)
+      }.getOrElse {
+        InternalServerError("github.client_id is not set in application.conf")
+      }
+  }
 
-   //POST https://github.com/login/oauth/access_token
-   val oauthForm = Form(tuple("code" -> text, "state" -> text))
-   val accessTokenForm = Form("access_token" -> text)
+  //POST https://github.com/login/oauth/access_token
+  val oauthForm = Form(tuple("code" -> text, "state" -> text))
+  val accessTokenForm = Form("access_token" -> text)
 
-   def callbackGithub = Action {
-     implicit request =>
-       oauthForm.bindFromRequest.fold(invalidForm => {
-         BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid form")
-       }, validForm => {
-         validForm match {
-           case (code, state) if state == Crypto.sign("ok") => {
-             val auth = for (clientId <- Play.current.configuration.getString("github.client_id");
-                             clientSecret <- Play.current.configuration.getString("github.client_secret")) yield (clientId, clientSecret)
-             auth.map {
-               case (clientId, clientSecret) => {
-                 val url = "https://github.com/login/oauth/access_token"
-                 val wsCall = WS.url(url).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code)))
-                 Async {
-                   wsCall.map {
-                     result =>
-                       result.status match {
-                         case 200 => {
-                           val b = result.body
-                           try {
-                             val accessToken = b.substring(b.indexOf("=") + 1, b.indexOf("&"))
+  def callbackGithub = Action {
+    implicit request =>
+      oauthForm.bindFromRequest.fold(invalidForm => {
+        BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid form")
+      }, validForm => {
+        validForm match {
+          case (code, state) if state == Crypto.sign("ok") => {
+            val auth = for (clientId <- Play.current.configuration.getString("github.client_id");
+                            clientSecret <- Play.current.configuration.getString("github.client_secret")) yield (clientId, clientSecret)
+            auth.map {
+              case (clientId, clientSecret) => {
+                val url = "https://github.com/login/oauth/access_token"
+                val wsCall = WS.url(url).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code)))
+                Async {
+                  wsCall.map {
+                    result =>
+                      result.status match {
+                        case 200 => {
+                          val b = result.body
+                          try {
+                            val accessToken = b.substring(b.indexOf("=") + 1, b.indexOf("&"))
 
-                             Redirect(routes.Authentication.createFromGithub).withSession("access_token" -> accessToken)
-                           } catch {
-                             case e: IndexOutOfBoundsException => {
-                               play.Logger.error("Access token not found in query string")
-                               Redirect(routes.Application.index)
-                             }
-                           }
-                         }
-                         case _ => {
-                           play.Logger.error("Could not complete Github OAuth")
-                           Redirect(routes.Application.index)
-                         }
-                       }
-                   }
-                 }
-               }
-             }.getOrElse {
-               InternalServerError("github.client_secret is not configured in application.conf")
-             }
-           }
-           case other => BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid state code")
-         }
-       })
-   }
+                            Redirect(routes.Authentication.createFromGithub).withSession("access_token" -> accessToken)
+                          } catch {
+                            case e: IndexOutOfBoundsException => {
+                              play.Logger.error("Access token not found in query string")
+                              Redirect(routes.Application.index)
+                            }
+                          }
+                        }
+                        case _ => {
+                          play.Logger.error("Could not complete Github OAuth")
+                          Redirect(routes.Application.index)
+                        }
+                      }
+                  }
+                }
+              }
+            }.getOrElse {
+              InternalServerError("github.client_secret is not configured in application.conf")
+            }
+          }
+          case other => BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid state code")
+        }
+      })
+  }
 
-   def showAccessToken=Action{
-     implicit request=>
-       Ok(request.session.get("access_token").getOrElse("No access token in your current session"))
-   }
+  def showAccessToken = Action {
+    implicit request =>
+      Ok(request.session.get("access_token").getOrElse("No access token in your current session"))
+  }
 
-   def createFromGithub = Action {
-     implicit request =>
-       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
-       val futureResult = WS.url(url).withHeaders("User-agent" -> "nicmarti devoxxfr", "Accept"->"application/json").get()
+  val newWebuserForm: Form[Webuser] = Form(
+    mapping(
+      "email" -> nonEmptyText,
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText
+    )(Webuser.createSpeaker)(Webuser.unapplyForm))
 
-       Async {
-         futureResult.map {
-           result =>
+  val speakerForm=Form(mapping(
+    "email"->nonEmptyText,
+    "bio"->nonEmptyText(maxLength = 500),
+    "lang"->optional(text),
+    "twitter"->optional(text),
+    "company"->optional(text),
+    "blog"->optional(text)
+  )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
-             result.status match {
-               case 200 => {
-                 Ok("Super " + result.body)
-               }
-               case other => {
-                 play.Logger.error("Unable to complete call " + result.status +" "+result.statusText+" "+result.body)
-                 BadRequest("Unable to complete the Github User API call")
-               }
-             }
-         }
-       }
+  def createFromGithub = Action {
+    implicit request =>
+      val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
+      val futureResult = WS.url(url).withHeaders("User-agent" -> "nicmarti devoxxfr", "Accept" -> "application/json").get()
+      val lang = request.headers.get("Accept-Language")
+      Async {
+        futureResult.map {
+          result =>
+            result.status match {
+              case 200 => {
+                //                Ok(result.body).as("application/json")
+                val json = Json.parse(result.body)
+                val resultParse = (for (email <- json.\("email").asOpt[String].toRight("email not found").right;
+                                        name <- json.\("name").asOpt[String].toRight("name not found").right;
+                                        bio <- json.\("bio").asOpt[String].toRight("bio not found").right) yield (email, name, bio))
 
-   }
+                resultParse.fold(missingField => BadRequest("Sorry, cannot import your github profile due to : [" + missingField + "]"),
+                  validFields => {
+                    validFields match {
+                      case (emailS, nameS, bioS) =>
+
+                        val avatarUrl = json.\("avatar_url").asOpt[String]
+                        val company = json.\("company").asOpt[String]
+                        val blog = json.\("blog").asOpt[String]
+
+                        // Try to lookup the speaker
+                        Async {
+                          Webuser.findByEmail(emailS).map {
+                            maybeWebuser =>
+                              maybeWebuser.map {
+                                w =>
+                                  Redirect(routes.CallForPaper.homeForSpeaker).withSession("webuser" -> w.id.get.stringify)
+                              }.getOrElse {
+                                // Create a new one but ask for confirmation
+                                val w = Webuser(None, emailS, nameS, nameS, RandomStringUtils.randomAlphanumeric(7), "speaker")
+                                val s = Speaker(None, emailS, bioS, lang, None, avatarUrl, company, blog)
+                                Ok(views.html.Authentication.confirmImport(w, s))
+                              }
+                          }
+                        }
+                    }
+                  })
+
+              }
+              case other => {
+                play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
+                BadRequest("Unable to complete the Github User API call")
+              }
+            }
+        }
+      }
+  }
 }

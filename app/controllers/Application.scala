@@ -25,8 +25,6 @@ package controllers
 import models._
 import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.data._
-import play.api.data.Forms._
 import ExecutionContext.Implicits.global
 import reactivemongo.core.commands.LastError
 import play.api.Logger
@@ -36,14 +34,6 @@ import play.api.Logger
  * @author Nicolas Martignole
  */
 object Application extends Controller {
-
-  val newWebuserForm: Form[Webuser] = Form(
-    mapping(
-      "email" -> nonEmptyText,
-      "firstName" -> nonEmptyText,
-      "lastName" -> nonEmptyText
-    )(Webuser.createSpeaker)(Webuser.unapplyForm))
-
 
   def index = Action {
     implicit request =>
@@ -60,12 +50,12 @@ object Application extends Controller {
   }
 
   def newSpeaker = Action {
-    Ok(views.html.Application.newUser(newWebuserForm))
+    Ok(views.html.Application.newUser(Authentication.newWebuserForm))
   }
 
   def saveNewSpeaker = Action {
     implicit request =>
-      newWebuserForm.bindFromRequest.fold(
+      Authentication.newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Application.newUser(invalidForm)),
         validForm => Async {
           Webuser.save(validForm).map {
@@ -89,11 +79,10 @@ object Application extends Controller {
       Async {
         val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
         futureResult.map {
-          maybeWebuser:Option[Webuser] =>
+          maybeWebuser: Option[Webuser] =>
             Ok(views.html.Application.showWebuser(maybeWebuser))
         }
       }
   }
-
 
 }
