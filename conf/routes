@@ -1,21 +1,16 @@
-# Routes
-# This file defines all application routes (Higher priority routes first)
-# ~~~~
-
 # Home page
 GET     /                           controllers.Application.index
-GET    /signup                      controllers.Application.prepareSignup
+
+GET     /signup                     controllers.Application.prepareSignup
 POST    /signup                     controllers.Application.signup
-POST    /login                      controllers.Application.login
 
+GET     /signup/github              controllers.Authentication.createFromGithub
+POST    /login                      controllers.Authentication.login
+GET     /login/github               controllers.Authentication.githubLogin
+POST    /github/callback            controllers.Authentication.callbackGithub
+GET     /github/callback            controllers.Authentication.callbackGithub
 
-
-GET  /login/github                  controllers.Application.githubLogin
-POST /github/callback               controllers.Application.callbackGithub
-GET  /github/callback               controllers.Application.callbackGithub
-GET /signup/github                  controllers.Application.createFromGithub
-
-GET /access_token                   controllers.Application.showAccessToken
+GET     /access_token               controllers.Authentication.showAccessToken
 
 GET     /newspeaker                 controllers.Application.newSpeaker
 POST    /newspeaker                 controllers.Application.saveNewSpeaker

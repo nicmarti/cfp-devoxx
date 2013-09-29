@@ -1,0 +1,12 @@
+@(maybeWebuser:Option[Webuser])
+
+@main("Webuser"){
+    @maybeWebuser.map{webuser=>
+      <h3>@webuser.firstName @webuser.lastName</h3>
+      @webuser.email<br>
+
+    }.getOrElse{
+        <h2>Not found</h2>
+        <p>No webuser for this email</p>
+    }
+}

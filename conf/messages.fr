@@ -17,4 +17,4 @@ index.method1=Authentification classique
 index.welcome=Déjà inscrit ? Authentifiez-vous avec votre mot de passe :
 
 index.method2=Authentifiez-vous avec OpenId
-index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser encore un mot de passe :
+index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser encore un mot de passe. Si votre profil n''existe pas, il sera automatiquement créé.
