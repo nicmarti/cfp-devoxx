@@ -53,27 +53,6 @@ object Application extends Controller {
     Ok(views.html.Application.newUser(Authentication.newWebuserForm))
   }
 
-  def saveNewSpeaker = Action {
-    implicit request =>
-      Authentication.newWebuserForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Application.newUser(invalidForm)),
-        validForm => Async {
-          Webuser.save(validForm).map {
-            _ =>
-              Created(views.html.Application.created(validForm.email))
-          }.recover {
-            case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
-              Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
-              if (code.get == 11000) Conflict("Email already exists") else InternalServerError("Could not create speaker.")
-            case other => {
-              Logger.error("Unknown Error " + other)
-              InternalServerError("Unknown MongoDB Error")
-            }
-          }
-        }
-      )
-  }
-
   def findByEmail(email: String) = Action {
     implicit request =>
       Async {

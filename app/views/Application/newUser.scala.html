@@ -4,7 +4,7 @@
 
 @main("Create a new Speaker"){
     <h1>Create new speaker</h1>
-    @helper.form(action=routes.Application.saveNewSpeaker){
+    @helper.form(action=routes.Authentication.saveNewSpeaker){
         @helper.inputText(newUserForm("email"))
         @helper.inputText(newUserForm("firstName"))
         @helper.inputText(newUserForm("lastName"))

@@ -34,6 +34,7 @@ import play.api.data.Forms._
 import play.api.libs.ws.WS
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
+import reactivemongo.core.commands.LastError
 
 /**
  * Signup and Signin.
@@ -136,13 +137,13 @@ object Authentication extends Controller {
       "lastName" -> nonEmptyText
     )(Webuser.createSpeaker)(Webuser.unapplyForm))
 
-  val speakerForm=Form(mapping(
-    "email"->nonEmptyText,
-    "bio"->nonEmptyText(maxLength = 500),
-    "lang"->optional(text),
-    "twitter"->optional(text),
-    "company"->optional(text),
-    "blog"->optional(text)
+  val speakerForm = Form(mapping(
+    "email" -> nonEmptyText,
+    "bio" -> nonEmptyText(maxLength = 500),
+    "lang" -> optional(text),
+    "twitter" -> optional(text),
+    "company" -> optional(text),
+    "blog" -> optional(text)
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def createFromGithub = Action {
@@ -179,9 +180,14 @@ object Authentication extends Controller {
                                   Redirect(routes.CallForPaper.homeForSpeaker).withSession("webuser" -> w.id.get.stringify)
                               }.getOrElse {
                                 // Create a new one but ask for confirmation
-                                val w = Webuser(None, emailS, nameS, nameS, RandomStringUtils.randomAlphanumeric(7), "speaker")
+                                val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
+                                  (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
+                                } else {
+                                  (nameS, nameS)
+                                }
+                                val w = Webuser(None, emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
                                 val s = Speaker(None, emailS, bioS, lang, None, avatarUrl, company, blog)
-                                Ok(views.html.Authentication.confirmImport(w, s))
+                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), s))
                               }
                           }
                         }
@@ -197,4 +203,27 @@ object Authentication extends Controller {
         }
       }
   }
+
+
+  def saveNewSpeaker = Action {
+    implicit request =>
+      newWebuserForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.Application.newUser(invalidForm)),
+        validForm => Async {
+          Webuser.save(validForm).map {
+            _ =>
+              Created(views.html.Application.created(validForm.email))
+          }.recover {
+            case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
+              Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
+              if (code.get == 11000) Conflict("Email already exists") else InternalServerError("Could not create speaker.")
+            case other => {
+              Logger.error("Unknown Error " + other)
+              InternalServerError("Unknown MongoDB Error")
+            }
+          }
+        }
+      )
+  }
+
 }

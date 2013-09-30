@@ -13,7 +13,7 @@ GET     /github/callback            controllers.Authentication.callbackGithub
 GET     /access_token               controllers.Authentication.showAccessToken
 
 GET     /newspeaker                 controllers.Application.newSpeaker
-POST    /newspeaker                 controllers.Application.saveNewSpeaker
+POST    /newspeaker                 controllers.Authentication.saveNewSpeaker
 GET     /find                       controllers.Application.findByEmail(email:String)
 
 GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker

@@ -1,10 +1,30 @@
-@(webuser:Webuser, speaker:Speaker)
+@(formWebuser:Form[Webuser], speaker:Speaker)
+
+@import helper.twitterBootstrap._
+@import org.apache.commons.codec.digest.DigestUtils
+
 @main("Nouveau profil"){
 
     <h3>Créer votre profil de présentateur Devoxx France</h3>
 
+    @helper.form(action = routes.Authentication.saveNewSpeaker){
+        <div class="clearfix  " id="email_field">
+            <label for="email">Adresse email</label>
+            <div class="input">
 
-    @webuser<br>
-    @speaker<br>
+            <input type="text" id="email" name="email" value="@formWebuser("email").value.getOrElse("")" readonly="true">
+                <span class="help-inline">(non modifiable)</span>
+            </div>
+        </div>
+
+        @helper.inputText(formWebuser("firstName"))
+        @helper.inputText(formWebuser("lastName"))
+        <button type="submit">Enregister et continuer</button>
+
+        <P>Nous utiliserons l'image Gravatar suivante :
+            <img src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))" alt="Gravatar" title="Update your profile on gravatar.com">
+        </P>
+
+    }
 
 }
