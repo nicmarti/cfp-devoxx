@@ -14,3 +14,7 @@ menu.blog=Website DevoxxFR
 index.method1=Sign-in
 index.method2=Authenticate with OpenID
 index.txt2=Use one of the following social service, this is simpler and you won't have to remember another password. If your profile does not yet exist, it will be created automatically.
+company=Your company
+bio=A short bio
+twitter=Your twitter handle
+blog=Your blog or your company''s website

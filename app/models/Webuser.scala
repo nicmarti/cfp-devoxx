@@ -8,19 +8,44 @@ import library.MongoDB
 import reactivemongo.core.commands.LastError
 import ExecutionContext.Implicits.global
 import reactivemongo.api.indexes.{IndexType, Index}
-import reactivemongo.bson.BSONObjectID
 import play.modules.reactivemongo.json.BSONFormats._
 import org.apache.commons.codec.digest.DigestUtils
+import reactivemongo.bson._
+import play.api.data.format.Formats._
 
-case class Webuser(id: Option[BSONObjectID], email: String, firstName: String, lastName: String, password: String, profile: String){
-  def gravatarHash:String={
-    val cleanEmail=email.trim().toLowerCase()
+case class Webuser(id: Option[BSONObjectID], email: String, firstName: String, lastName: String, password: String, profile: String) {
+  def gravatarHash: String = {
+    val cleanEmail = email.trim().toLowerCase()
     DigestUtils.md5Hex(cleanEmail)
   }
 }
 
 object Webuser {
   implicit val webuserFormat = Json.format[Webuser]
+
+  implicit object WebuserBSONReader extends BSONDocumentReader[Webuser] {
+    def read(doc: BSONDocument): Webuser =
+      Webuser(
+        doc.getAs[BSONObjectID]("_id"),
+        doc.getAs[String]("email").get,
+        doc.getAs[String]("firstName").get,
+        doc.getAs[String]("lastName").get,
+        doc.getAs[String]("password").get,
+        doc.getAs[String]("profile").get
+      )
+  }
+
+  implicit object WebuserBSONWriter extends BSONDocumentWriter[Webuser] {
+    def write(webuser: Webuser): BSONDocument =
+      BSONDocument(
+        "_id" -> webuser.id.getOrElse(BSONObjectID.generate),
+        "email" -> webuser.email,
+        "firstName" -> webuser.firstName,
+        "lastName" -> webuser.lastName,
+        "password" -> webuser.password,
+        "profile" -> webuser.profile
+      )
+  }
 
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
     Webuser(None, email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
@@ -36,10 +61,15 @@ object Webuser {
 
   def save(webuser: Webuser): Future[LastError] = MongoDB.withCollection("webuser") {
     implicit collection =>
-    // Check index
-      collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, dropDups = true))
-      collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending, "password" -> IndexType.Ascending), name = Some("idx_password")))
-      val result = collection.insert(webuser)
+      val result = if (webuser.id.isEmpty) {
+        // Check index
+        collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, dropDups = true))
+        collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending, "password" -> IndexType.Ascending), name = Some("idx_password")))
+        collection.insert(webuser.copy(id = Some(BSONObjectID.generate)))
+
+      } else {
+        collection.insert(webuser)
+      }
       result
   }
 

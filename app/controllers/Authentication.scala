@@ -35,7 +35,8 @@ import play.api.libs.ws.WS
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 import reactivemongo.core.commands.LastError
-
+import reactivemongo.bson.BSONObjectID
+import play.api.data.format.Formats._
 /**
  * Signup and Signin.
  *
@@ -137,6 +138,32 @@ object Authentication extends Controller {
       "lastName" -> nonEmptyText
     )(Webuser.createSpeaker)(Webuser.unapplyForm))
 
+  val webuserForm = Form(
+    mapping(
+      "id" -> optional(of[String]),
+      "email" -> nonEmptyText,
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "password" -> nonEmptyText,
+      "profile" -> nonEmptyText
+    ) { (id, email, firstName, lastName, password, profile) =>
+      Webuser(
+        id.map(new BSONObjectID(_)),
+        email,
+        firstName,
+        lastName,
+        password,
+        profile)
+    } { w =>
+      Some(
+        (w.id.map(_.stringify),
+        w.email,
+        w.firstName,
+        w.lastName,
+        w.password,
+        w.profile))
+    }
+  )
   val speakerForm = Form(mapping(
     "email" -> nonEmptyText,
     "bio" -> nonEmptyText(maxLength = 500),
@@ -177,7 +204,8 @@ object Authentication extends Controller {
                             maybeWebuser =>
                               maybeWebuser.map {
                                 w =>
-                                  Redirect(routes.CallForPaper.homeForSpeaker).withSession("webuser" -> w.id.get.stringify)
+                                  println("existing webuser "+w)
+                                  Redirect(routes.CallForPaper.homeForSpeaker).withSession("webuser" -> w.email)
                               }.getOrElse {
                                 // Create a new one but ask for confirmation
                                 val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
@@ -185,9 +213,9 @@ object Authentication extends Controller {
                                 } else {
                                   (nameS, nameS)
                                 }
-                                val w = Webuser(None, emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
-                                val s = Speaker(None, emailS, bioS, lang, None, avatarUrl, company, blog)
-                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), s))
+                                val w = Webuser(Option(BSONObjectID.generate), emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
+                                val s = Speaker(Option(BSONObjectID.generate), emailS, bioS, lang, None, avatarUrl, company, blog)
+                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), speakerForm.fill(s)))
                               }
                           }
                         }

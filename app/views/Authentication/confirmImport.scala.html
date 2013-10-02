@@ -1,4 +1,4 @@
-@(formWebuser:Form[Webuser], speaker:Speaker)
+@(formWebuser:Form[Webuser], speakerForm:Form[Speaker])
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.codec.digest.DigestUtils
@@ -12,16 +12,22 @@
             <label for="email">Adresse email</label>
             <div class="input">
 
-            <input type="text" id="email" name="email" value="@formWebuser("email").value.getOrElse("")" readonly="true">
+            <input type="text" id="email" name="email" value="@formWebuser("email").value.getOrElse("")" readonly="true" size=40>
                 <span class="help-inline">(non modifiable)</span>
             </div>
         </div>
 
         @helper.inputText(formWebuser("firstName"))
         @helper.inputText(formWebuser("lastName"))
+
+        @helper.inputText(speakerForm("company"))
+        @helper.textarea(speakerForm("bio"),'cols->80, 'rows->5)
+        @helper.inputText(speakerForm("twitter"), 'placeholder->"@nickname")
+        @helper.inputText(speakerForm("blog"), 'size->50, 'placeholder->"http://www.yourblog.com/")
+
         <button type="submit">Enregister et continuer</button>
 
-        <P>Nous utiliserons l'image Gravatar suivante :
+        <P>Nous utiliserons l'image <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">Gravatar</a>  suivante :
             <img src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))" alt="Gravatar" title="Update your profile on gravatar.com">
         </P>
 

@@ -9,7 +9,7 @@ menu.register=S''inscrire
 menu.blog=Site DevoxxFR
 login=S''authentifier
 signup=S''inscrire
-signup.long=S''inscrire en tant que pr&eacute;sentateur pour Devoxx France
+signup.long=S''inscrire en tant qu'orateur pour Devoxx France
 
 index.method1=Authentification classique
 # For single quote, you need to double escape
@@ -18,3 +18,7 @@ index.welcome=Déjà inscrit ? Authentifiez-vous avec votre mot de passe :
 
 index.method2=Authentifiez-vous avec OpenId
 index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser encore un mot de passe. Si votre profil n''existe pas, il sera automatiquement créé.
+company=Votre société
+bio=Présentez-vous en quelques lignes
+twitter=Votre pseudo Twitter
+blog=Votre blog ou votre site internet

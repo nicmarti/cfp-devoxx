@@ -573,7 +573,11 @@ textarea {
 
 input,
 textarea {
-	color: #141412;
+	color: #5b2206;
+}
+input[readonly]{
+    color:#898;
+    font-style: italic;
 }
 
 input:focus,
