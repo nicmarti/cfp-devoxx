@@ -23,7 +23,11 @@
 
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc._
+import models.Webuser
+import scala.concurrent.{ExecutionContext, Future}
+import ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Promise
 
 /**
  * TODO definition
@@ -31,9 +35,65 @@ import play.api.mvc.{Action, Controller}
  * Author: nicolas
  * Created: 29/09/2013 12:24
  */
-object CallForPaper extends Controller {
-  def homeForSpeaker = Action {
-    implicit request =>
-      Ok("Super")
+object CallForPaper extends Controller with Secured {
+  def homeForSpeaker = IsAuthenticated {
+    email => _ =>
+      Async {
+        Webuser.findByEmail(email).map {
+          webuser =>
+            Ok("Super " + webuser)
+        }
+      }
   }
+}
+
+/**
+ * Provide security features
+ */
+trait Secured {
+
+
+  /**
+   * Retrieve the connected user email.
+   */
+  private def username(request: RequestHeader) = request.session.get("email")
+
+  /**
+   * Redirect to login if the user in not authorized.
+   */
+  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.index)
+
+  // --
+
+  /**
+   * Action for authenticated users.
+   */
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) {
+    user =>
+      Action(request => f(user)(request))
+  }
+
+  /**
+   * Check if the connected user is a member of this security group.
+   */
+  def IsMemberOf(securityGroup: String)(f: => String => Request[AnyContent] => Result) = IsAuthenticated {
+    email => request =>
+      if (Webuser.isMember(securityGroup, email)) {
+        f(email)(request)
+      } else {
+        Results.Forbidden("Sorry, you cannot access this resource")
+      }
+  }
+
+  /**
+   * Check if the connected user is a owner of this talk.
+   */
+  //  def IsOwnerOf(task: Long)(f: => String => Request[AnyContent] => Result) = IsAuthenticated { user => request =>
+  //    if(Task.isOwner(task, user)) {
+  //      f(user)(request)
+  //    } else {
+  //      Results.Forbidden("Sorrt, you are not the owner of this resource")
+  //    }
+  //  }
+
 }

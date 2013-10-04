@@ -1,5 +1,6 @@
 # Home page
 GET     /                           controllers.Application.index
+GET     /logout                     controllers.Application.logout
 
 GET     /signup                     controllers.Application.prepareSignup
 POST    /signup                     controllers.Application.signup
@@ -17,6 +18,8 @@ POST    /newspeaker                 controllers.Authentication.saveNewSpeaker
 GET     /find                       controllers.Application.findByEmail(email:String)
 
 GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker
+
+GET     /resetEnvForDev             controllers.Application.resetEnvForDev()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

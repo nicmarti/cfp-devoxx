@@ -12,6 +12,8 @@ import play.modules.reactivemongo.json.BSONFormats._
 import org.apache.commons.codec.digest.DigestUtils
 import reactivemongo.bson._
 import play.api.data.format.Formats._
+import scala.util.{Success, Failure, Try}
+import play.api.libs.concurrent.Promise
 
 case class Webuser(id: Option[BSONObjectID], email: String, firstName: String, lastName: String, password: String, profile: String) {
   def gravatarHash: String = {
@@ -85,5 +87,22 @@ object Webuser {
       cursor.headOption().map(_.isDefined)
   }
 
+  def delete(webuser: Webuser) = MongoDB.withCollection("webuser") {
+    implicit collection =>
+      collection.remove[Webuser](webuser)
+  }
+
+  def isMember(email: String, securityGroup: String):Boolean = {
+    import scala.concurrent._
+    import scala.concurrent.duration._
+
+    val futureResult = findByEmail(email).map{
+      case None=>false
+      case Some(webuser)=>webuser.profile==securityGroup
+    }
+
+    Await.result[Boolean](futureResult, 10 seconds)
+
+  }
 }
 

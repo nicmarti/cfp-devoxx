@@ -41,6 +41,11 @@ object Application extends Controller {
       Ok(views.html.Application.index(Authentication.loginForm))
   }
 
+  def logout=Action{
+    implicit request=>
+      Redirect(routes.Application.index).withNewSession
+  }
+
   def prepareSignup = Action {
     implicit request =>
       Ok(views.html.Application.prepareSignup(Authentication.newWebuserForm, Authentication.speakerForm))
@@ -64,5 +69,21 @@ object Application extends Controller {
         }
       }
   }
+
+  def resetEnvForDev() = Action {
+    implicit request =>
+      Async {
+        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail("nicolas@martignole.net")
+        futureResult.map {
+          maybeWebuser =>
+            maybeWebuser.map {
+              webuser =>
+                val err = Webuser.delete(webuser)
+                Ok("Done " + err)
+            }.getOrElse(NotFound("User does not exist"))
+        }
+      }
+  }
+
 
 }

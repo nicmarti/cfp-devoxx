@@ -204,7 +204,6 @@ object Authentication extends Controller {
                             maybeWebuser =>
                               maybeWebuser.map {
                                 w =>
-                                  println("existing webuser "+w)
                                   Redirect(routes.CallForPaper.homeForSpeaker).withSession("webuser" -> w.email)
                               }.getOrElse {
                                 // Create a new one but ask for confirmation

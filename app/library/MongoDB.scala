@@ -44,7 +44,10 @@ object MongoDB {
   def connection = ReactiveMongoPlugin.connection
 
   /** Returns the default database (as specified in `application.conf`). */
-  def db = ReactiveMongoPlugin.db
+  def db = {
+
+    ReactiveMongoPlugin.db
+  }
 
   implicit def ec: ExecutionContext = ExecutionContext.Implicits.global
 
