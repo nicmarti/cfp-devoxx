@@ -1,0 +1,10 @@
+@(encryptedEmail:String)
+
+Welcome to Devoxx France!
+
+Thanks for joining Devoxx France. To connect to our web site, please copy the following link to your browser address bar:
+http://www.devoxx.fr/validateEmail/@encryptedEmail
+
+Have fun!
+
+The Devoxx France Team

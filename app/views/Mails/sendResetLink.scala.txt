@@ -1,0 +1,16 @@
+@(resetUrl:String)
+
+<h2>Did you forget your Devoxx France password?</h2>
+
+<p>Someone asked to reset your Devoxx France password. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done</p>
+
+<p><a href="@resetUrl" title="Reset my password">@resetUrl</a></p>
+
+<p>Please click on the link to reset your password.</p>
+<br/>
+<br/>
+<p>Have fun!</p>
+<br/>
+<p>Devoxx France</p>
+<br/>
+<hr>

@@ -1,8 +1,15 @@
-@(loginForm: Form[(String, String)])(implicit lang: Lang)
+@(loginForm: Form[(String, String)])(implicit lang: Lang, flash:Flash)
 
 @import helper.twitterBootstrap._
 
 @main("CallForPaper") {
+
+    @if(flash.get("error").isDefined){
+        <div class="messagePopup">
+            <p>@flash.get("error").get</p>
+        </div>
+    }
+
     <div class="grid-50 mobile-grid-50">
     <h3>@Html(Messages("index.method1"))</h3>
     <p>@Html(Messages("index.welcome"))</p>

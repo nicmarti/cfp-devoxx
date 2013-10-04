@@ -54,7 +54,7 @@ object Authentication extends Controller {
           Webuser.checkPassword(validForm._1, validForm._2).map {
             validUser =>
               if (validUser) {
-                Ok("Super")
+                Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> validForm._1)
               } else {
                 Unauthorized("User not found")
               }
@@ -204,7 +204,7 @@ object Authentication extends Controller {
                             maybeWebuser =>
                               maybeWebuser.map {
                                 w =>
-                                  Redirect(routes.CallForPaper.homeForSpeaker).withSession("webuser" -> w.email)
+                                  Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> w.email)
                               }.getOrElse {
                                 // Create a new one but ask for confirmation
                                 val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {

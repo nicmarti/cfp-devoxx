@@ -1,0 +1,17 @@
+@(firstName:String, email:String, tempPassword:String)
+
+Dear @firstName
+
+Welcome to Devoxx France CFP (Call For Paper)
+
+As a convenience to you, we have created an account for you on Devoxx France. This account will enable to you access your profile and your submissions.
+To access your devoxx france speaker dashboard, please click in the link below.
+
+http://www.devoxx.fr@routes.Application.index()
+
+- Your username is @email
+- Your password is @tempPassword
+
+Best regards
+
+The Devoxx France team

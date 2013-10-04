@@ -97,7 +97,10 @@ object Webuser {
     import scala.concurrent.duration._
 
     val futureResult = findByEmail(email).map{
-      case None=>false
+      case None=>{
+        println("user not found")
+        false
+      }
       case Some(webuser)=>webuser.profile==securityGroup
     }
 
