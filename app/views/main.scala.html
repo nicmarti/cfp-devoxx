@@ -1,130 +1,36 @@
 @(title: String)(content: Html)(implicit lang: Lang)
 
 <!DOCTYPE html>
-<!--[if IE 7]>
-<html class="ie ie7" lang="fr-FR">
-<![endif]-->
-<!--[if IE 8]>
-<html class="ie ie8" lang="fr-FR">
-<![endif]-->
-<!--[if !(IE 7) | !(IE 8)  ]><!-->
-<html lang="fr-FR">
-<!--<![endif]-->
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Devoxx France 2014 | La conférence des développeurs passionnés</title>
-    <!--[if lt IE 9]>
-    <script src="http://devoxxfr2014.cleverapps.io/wp-content/themes/twentythirteen/js/html5.js"></script>
-    <![endif]-->
-
-    <link rel='stylesheet' id='twentythirteen-fonts-css'
-          href='//fonts.googleapis.com/css?family=Source+Sans+Pro%3A300%2C400%2C700%2C300italic%2C400italic%2C700italic%7CBitter%3A400%2C700&#038;subset=latin%2Clatin-ext'
-          type='text/css' media='all'/>
-    <link rel='stylesheet' id='genericons-css'
-          href='http://devoxxfr2014.cleverapps.io/wp-content/themes/twentythirteen/fonts/genericons.css?ver=2.09'
-          type='text/css' media='all'/>
-    <link rel="stylesheet" id='twentythirteen-style-css' media="all" href="@routes.Assets.at("stylesheets/main.css")">
-    <!--[if lt IE 9]>
-    <link rel='stylesheet' id='twentythirteen-ie-css'
-          href='http://devoxxfr2014.cleverapps.io/wp-content/themes/twentythirteen/css/ie.css?ver=2013-07-18'
-          type='text/css' media='all'/>
-    <![endif]-->
-    <script type='text/javascript'
-            src='http://devoxxfr2014.cleverapps.io/wp-includes/js/jquery/jquery.js?ver=1.10.2'></script>
-    <script type='text/javascript'
-            src='http://devoxxfr2014.cleverapps.io/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
-
-    <meta name="generator" content="Play! 2.2 Scala"/>
-
-    <style type="text/css" id="twentythirteen-header-css">
-        .site-header {
-            background: url(http://devoxxfr2014.cleverapps.io/wp-content/themes/twentythirteen/images/headers/star.png) no-repeat scroll top;
-            background-size: 1600px auto;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+<title>@title</title>
+<!--[if lt IE 9]>
+  <script src='//assets/javascripts/html5.js'></script>
+<![endif]-->
+<link rel="stylesheet" href="/assets/stylesheets/main.css" />
+<link id="theme" rel="stylesheet" href="/assets/css/devoxx.css" />
+<!--[if (gt IE 8) | (IEMobile)]><!-->
+  <link rel="stylesheet" href="/assets/stylesheets/unsemantic-grid-responsive.css" />
+<!--<![endif]-->
+<!--[if (lt IE 9) & (!IEMobile)]>
+  <link rel="stylesheet" href="/assets/stylesheets/ie.css" />
+<![endif]-->
+<meta name="generator" content="Play! 2.2 Scala"/>
+<link href='http://fonts.googleapis.com/css?family=Lato:400,900,300italic' rel='stylesheet' type='text/css'>
 </head>
-
-<body class="home page page-id-5 page-template-default single-author">
-<div id="page" class="hfeed site">
-    <header id="masthead" class="site-header" role="banner">
-        <a class="home-link" href="http://devoxxfr2014.cleverapps.io/" title="Devoxx France 2014" rel="home">
-            <h1 class="site-title">Devoxx France 2014</h1>
-
-            <h2 class="site-description">La conférence des développeurs passionnés</h2>
-        </a>
-
-        <div id="navbar" class="navbar">
-            <nav id="site-navigation" class="navigation main-navigation" role="navigation">
-                <h3 class="menu-toggle">Menu</h3>
-                <a class="screen-reader-text skip-link" href="#content" title="Aller au contenu principal">Home</a>
-
-                <div class="menu-menu-1-container">
-                    <ul id="menu-menu-1" class="nav-menu">
-                        <li id="menu-item-64"
-                            class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-5 current_page_item menu-item-64">
-                            <a href="/">@Messages("menu.home")</a></li>
-
-                    <li id="menu-item-65"
-                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-65">
-                        <a href="@routes.Application.prepareSignup()">@Messages("menu.register")</a>
-                    </li>
-                    <li id="menu-item-66" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-65">
-                          <a href="http://www.devoxx.fr/">@Messages("menu.blog")</a>
-                    </li>
-                    </ul>
-                </div>
-            </nav>
-            <!-- #site-navigation -->
-        </div>
-        <!-- #navbar -->
-    </header>
-    <!-- #masthead -->
-
-    <div id="main" class="site-main">
-
-        <div id="primary" class="content-area">
-            <div id="content" class="site-content" role="main">
-
-                <header class="archive-header">
-                	<h1 class="archive-title">@Messages(title)</h1>
-                </header>
-
-               <article class="page type-page status-publish hentry">
-<div class="entry-content">
-@content
-</div>
-                    <footer class="entry-meta">
-                    </footer>
-                    <!-- .entry-meta -->
-                </article>
-                <!-- #post -->
-
-            </div>
-        </div>
-
+<body>
+<div class="grid-container">
+    <div class="grid-100 mobile-grid-100 bandeau">
+        <h1 class="site-title"><a href="/" title="Go to home page">Devoxx France 2014</a></h1>
+        <h2 class="site-description">La conférence des développeurs passionnés</h2>
     </div>
-    <!-- #main -->
-    <footer id="colophon" class="site-footer" role="contentinfo">
-        <div id="secondary" class="sidebar-container" role="complementary">
-            <div class="widget-area">
-
-            </div>
-            <!-- .widget-area -->
-        </div>
-        <!-- #secondary -->
-
-        <div class="site-info">
-            <a href="http://www.playframework.org" target="New" title="Voir le site de Play">Created with Play Framework 2.1</a>, Scala, MongoDB, hosted on <a href="http://www.clever-cloud.com/fr/#from-devoxx-fr" target="new">Clever Cloud</a>.
-        </div>
-        <!-- .site-info -->
-    </footer>
-    <!-- #colophon -->
+    @content
 </div>
-<!-- #page -->
 
-<script type='text/javascript' src='http://devoxxfr2014.cleverapps.io/wp-includes/js/jquery/jquery.masonry.min.js?ver=2.1.05'></script>
-<script type='text/javascript' src='http://devoxxfr2014.cleverapps.io/wp-content/themes/twentythirteen/js/functions.js?ver=2013-07-18'></script>
-<script type='text/javascript' src='http://devoxxfr2014.cleverapps.io/wp-content/plugins/logo-slider/jquery.cycle.all.min.js?ver=3.6.1'></script>
+<script src="/assets/javascripts/jquery-1.9.0.min.js"></script>
+<script src="/assets/javascripts/demo.js"></script>
 </body>
 </html>

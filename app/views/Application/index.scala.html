@@ -3,7 +3,7 @@
 @import helper.twitterBootstrap._
 
 @main("CallForPaper") {
-
+    <div class="grid-50 mobile-grid-50">
     <h3>@Html(Messages("index.method1"))</h3>
     <p>@Html(Messages("index.welcome"))</p>
     @helper.form(action = routes.Authentication.login) {
@@ -17,4 +17,11 @@
     <a href="@routes.Authentication.githubLogin" title="Sign-in with your Github profile to Devoxx FR">
         <img src="/assets/images/github.png" alt="Github logo" title="Click here to authenticate with your github profile">
     </a>
+    </div>
+
+    <div class="grid-50 mobile-grid-50">
+        <h3>@Html(Messages("index.signupTitle"))</h3>
+        <p>@Html(Messages("index.signup2"))</p>
+        <a href="@routes.Application.prepareSignup()">@Messages("index.signup.btn")</a>
+    </div>
 }

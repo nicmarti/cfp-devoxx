@@ -28,6 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
 import reactivemongo.core.commands.LastError
 import play.api.Logger
+import javax.annotation.Resource.AuthenticationType
 
 /**
  * Devoxx France Call For Paper main application.
@@ -42,7 +43,7 @@ object Application extends Controller {
 
   def prepareSignup = Action {
     implicit request =>
-      Ok(views.html.Application.prepareSignup())
+      Ok(views.html.Application.prepareSignup(Authentication.newWebuserForm, Authentication.speakerForm))
   }
 
   def signup = Action {

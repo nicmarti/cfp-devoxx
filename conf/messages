@@ -18,3 +18,6 @@ company=Your company
 bio=A short bio
 twitter=Your twitter handle
 blog=Your blog or your company''s website
+index.signupTitle=Sign-up as a speaker
+index.signup2=Sign-up as speaker for Devoxx France and propose one or more subjects.
+index.signup.btn=Sign-up

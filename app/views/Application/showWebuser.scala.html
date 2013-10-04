@@ -1,6 +1,7 @@
 @(maybeWebuser:Option[Webuser])
 
 @main("Webuser"){
+    <div class="grid-100 mobile-grid-100">
     @maybeWebuser.map{webuser=>
       <h3>@webuser.firstName @webuser.lastName</h3>
       @webuser.email<br>
@@ -9,4 +10,5 @@
         <h2>Not found</h2>
         <p>No webuser for this email</p>
     }
+    </div>
 }

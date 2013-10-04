@@ -1,6 +1,8 @@
 @(email:String)
 
 @main("Speaker created"){
+    <div class="grid-100 mobile-grid-100">
     <h1>Created</h1>
     <a href="@routes.Application.findByEmail(email)">Load entry</a>
+    </div>
 }
