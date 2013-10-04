@@ -1,1 +1,2 @@
+1500:com.typesafe.plugin.CommonsMailerPlugin
 400:play.modules.reactivemongo.ReactiveMongoPlugin
