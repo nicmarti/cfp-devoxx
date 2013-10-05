@@ -15,6 +15,7 @@ GET     /access_token               controllers.Authentication.showAccessToken
 
 POST    /newspeaker                 controllers.Authentication.saveNewSpeaker
 GET     /newspeaker/validateMail    controllers.Authentication.validateYourEmail(t:String,a:String)
+POST    /newspeaker/validImported   controllers.Authentication.validateImportedSpeaker
 GET     /find                       controllers.Application.findByEmail(email:String)
 
 # Speaker profile

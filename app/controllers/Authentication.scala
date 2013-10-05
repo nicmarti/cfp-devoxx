@@ -104,18 +104,15 @@ object Authentication extends Controller {
                           val b = result.body
                           try {
                             val accessToken = b.substring(b.indexOf("=") + 1, b.indexOf("&"))
-
-                            Redirect(routes.Authentication.createFromGithub).withSession("access_token" -> accessToken)
+                            Redirect(routes.Authentication.createFromGithub()).withSession("access_token" -> accessToken)
                           } catch {
                             case e: IndexOutOfBoundsException => {
-                              play.Logger.error("Access token not found in query string")
-                              Redirect(routes.Application.index)
+                              Redirect(routes.Application.index()).flashing("error" -> "access token not found in query string")
                             }
                           }
                         }
                         case _ => {
-                          play.Logger.error("Could not complete Github OAuth")
-                          Redirect(routes.Application.index)
+                          Redirect(routes.Application.index()).flashing("error" -> ("Could not complete Github OAuth, got HTTP response" + result.status + " " + result.body))
                         }
                       }
                   }
@@ -150,22 +147,24 @@ object Authentication extends Controller {
       "lastName" -> nonEmptyText,
       "password" -> nonEmptyText,
       "profile" -> nonEmptyText
-    ) { (id, email, firstName, lastName, password, profile) =>
-      Webuser(
-        id.map(new BSONObjectID(_)),
-        email,
-        firstName,
-        lastName,
-        password,
-        profile)
-    } { w =>
-      Some(
-        (w.id.map(_.stringify),
-        w.email,
-        w.firstName,
-        w.lastName,
-        w.password,
-        w.profile))
+    ) {
+      (id, email, firstName, lastName, password, profile) =>
+        Webuser(
+          id.map(new BSONObjectID(_)),
+          email,
+          firstName,
+          lastName,
+          password,
+          profile)
+    } {
+      w =>
+        Some(
+          (w.id.map(_.stringify),
+            w.email,
+            w.firstName,
+            w.lastName,
+            w.password,
+            w.profile))
     }
   )
 
@@ -201,7 +200,7 @@ object Authentication extends Controller {
                             maybeWebuser =>
                               maybeWebuser.map {
                                 w =>
-                                  Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> w.email)
+                                  Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
                               }.getOrElse {
                                 // Create a new one but ask for confirmation
                                 val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
@@ -252,25 +251,60 @@ object Authentication extends Controller {
       )
   }
 
-  def validateYourEmail(t:String, a:String)=Action{
-      implicit request=>
-        val email= new String(Base64.decodeBase64(a),"UTF-8")
-        if(Crypto.sign(email)==t){
-          val futureMaybeWebuser=Webuser.findByEmail(email)
-            Async{
-            futureMaybeWebuser.map{
-              case Some(w)=>{
-                Webuser.validateEmail(w) // it is generated
-                Redirect(routes.Application.index()).flashing("success"->("Yoru account has been validated. Your new password is "+w.password + " (case-sensitive)"))
-              }
-              case _=>Redirect(routes.Application.index()).flashing("error"->"Sorry, this email is not registered in your system.")
+  def validateYourEmail(t: String, a: String) = Action {
+    implicit request =>
+      val email = new String(Base64.decodeBase64(a), "UTF-8")
+      if (Crypto.sign(email) == t) {
+        val futureMaybeWebuser = Webuser.findByEmail(email)
+        Async {
+          futureMaybeWebuser.map {
+            case Some(w) => {
+              Webuser.validateEmail(w) // it is generated
+              Redirect(routes.Application.index()).flashing("success" -> ("Yoru account has been validated. Your new password is " + w.password + " (case-sensitive)"))
+            }
+            case _ => Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
+          }
+        }
+
+
+      } else {
+        Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
+      }
+  }
+
+  def validateImportedSpeaker = Action {
+    implicit request =>
+      newWebuserForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, Application.speakerForm.bindFromRequest)),
+        validForm => Async {
+          Webuser.saveAndValidate(validForm).map {
+            _ =>
+              Application.speakerForm.bindFromRequest.fold(
+                invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
+                validSpeakerForm => Async {
+                  Speaker.save(validSpeakerForm).map {
+                    _ => Ok("Created")
+                  }.recover {
+                    case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
+                      Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
+                      if (code.get == 11000) Redirect(routes.Application.index()).flashing("error"->"Profile already exists") else Redirect(routes.Application.index()).flashing("error"->("Cannot create profile. MongoDB error code "+code))
+                    case other => {
+                      Redirect(routes.Application.index()).flashing("error"->("Cannot create profile. Internal MongoDB error. Shit happens... "+other.getMessage))
+                    }
+                  }
+                }
+              )
+          }.recover {
+            case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
+              Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
+              if (code.get == 11000) Redirect(routes.Application.index()).flashing("error"->("This email is already registered")) else Redirect(routes.Application.index()).flashing("error"->("Cannot create webuser. MongoDB error code "+code))
+            case other => {
+              Redirect(routes.Application.index()).flashing("error"->("Cannot create webuser. Internal MongoDB error. Shit happens... "+other.getMessage))
             }
           }
-
-
-        }else{
-          Redirect(routes.Application.index()).flashing("error"->"Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
         }
-    }
+      )
 
+
+  }
 }

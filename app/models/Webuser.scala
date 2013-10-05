@@ -75,6 +75,20 @@ object Webuser {
       result
   }
 
+  def saveAndValidate(webuser: Webuser): Future[LastError] = MongoDB.withCollection("webuser") {
+    implicit collection =>
+      val result = if (webuser.id.isEmpty) {
+        // Check index
+        collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, dropDups = true))
+        collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending, "password" -> IndexType.Ascending), name = Some("idx_password")))
+        collection.insert(webuser.copy(id = Some(BSONObjectID.generate), profile = "speaker"))
+
+      } else {
+        collection.insert(webuser)
+      }
+      result
+  }
+
   def findByEmail(email: String): Future[Option[Webuser]] = MongoDB.withCollection("webuser") {
     implicit collection =>
       val cursor: Cursor[Webuser] = collection.find(Json.obj("email" -> email)).cursor[Webuser]
