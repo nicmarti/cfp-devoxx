@@ -9,6 +9,11 @@
             <p>@flash.get("error").get</p>
         </div>
     }
+    @if(flash.get("success").isDefined){
+        <div class="successPopup">
+            <p>@flash.get("success").get</p>
+        </div>
+    }
 
     <div class="grid-50 mobile-grid-50">
     <h3>@Html(Messages("index.method1"))</h3>
@@ -17,6 +22,7 @@
         @helper.inputText(loginForm("email"))
         @helper.inputPassword(loginForm("password"))
         <button type="submit">@Messages("btn.login")</button>
+        <a href="@routes.Application.forgetPassword()">@Messages("forget.password")</a>
     }
 
     <h3>@Html(Messages("index.method2"))</h3>

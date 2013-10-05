@@ -24,7 +24,7 @@ package controllers
 
 import models._
 import play.api.mvc._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import play.api.Logger
 import play.api.Play

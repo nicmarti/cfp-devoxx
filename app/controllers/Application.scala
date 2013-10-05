@@ -26,9 +26,12 @@ import models._
 import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
-import reactivemongo.core.commands.LastError
-import play.api.Logger
-import javax.annotation.Resource.AuthenticationType
+import play.api.data._
+import play.api.data.Forms._
+
+import notifiers.Mails
+import play.api.libs.Crypto
+import org.apache.commons.codec.binary.Base64
 
 /**
  * Devoxx France Call For Paper main application.
@@ -57,6 +60,45 @@ object Application extends Controller {
 
   def newSpeaker = Action {
     Ok(views.html.Application.newUser(Authentication.newWebuserForm))
+  }
+
+  def forgetPassword=Action{
+    Ok(views.html.Application.forgetPassword())
+  }
+
+  val emailForm=Form("email"->nonEmptyText)
+
+  def doForgetPassword()=Action{
+    implicit request=>
+    emailForm.bindFromRequest.fold(error=>Redirect(routes.Application.forgetPassword), validEmail=>{
+      Mails.sendResetPasswordLink(validEmail, routes.Application.resetPassword(Crypto.sign(validEmail.toLowerCase.trim),
+       new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
+      ).absoluteURL())
+    })
+    Redirect(routes.Application.index()).flashing("success"->"An email was sent to the provided email address. Please check your mailbox.")
+
+  }
+
+  def resetPassword(t:String, a:String)=Action{
+    implicit request=>
+      val email= new String(Base64.decodeBase64(a),"UTF-8")
+      if(Crypto.sign(email)==t){
+        val futureMaybeWebuser=Webuser.findByEmail(email)
+
+        Async{
+          futureMaybeWebuser.map{
+            case Some(w)=>{
+              val newPassword=Webuser.changePassword(w) // it is generated
+              Redirect(routes.Application.index()).flashing("success"->("Your new password is "+newPassword + " (case-sensitive)"))
+            }
+            case _=>Redirect(routes.Application.index()).flashing("error"->"Sorry, this email is not registered in your system.")
+          }
+        }
+
+
+      }else{
+        Redirect(routes.Application.index()).flashing("error"->"Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
+      }
   }
 
   def findByEmail(email: String) = Action {

@@ -25,3 +25,4 @@ company=Votre société
 bio=Présentez-vous en quelques lignes
 twitter=Votre pseudo Twitter
 blog=Votre blog ou votre site internet
+forget.password=Mot de passe oublié ?

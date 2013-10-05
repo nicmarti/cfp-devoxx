@@ -3,7 +3,7 @@ package models
 import org.apache.commons.lang3.RandomStringUtils
 import reactivemongo.api.Cursor
 import play.api.libs.json.Json
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import library.MongoDB
 import reactivemongo.core.commands.LastError
 import ExecutionContext.Implicits.global
@@ -12,8 +12,8 @@ import play.modules.reactivemongo.json.BSONFormats._
 import org.apache.commons.codec.digest.DigestUtils
 import reactivemongo.bson._
 import play.api.data.format.Formats._
-import scala.util.{Success, Failure, Try}
-import play.api.libs.concurrent.Promise
+import scala.concurrent._
+import scala.concurrent.duration._
 
 case class Webuser(id: Option[BSONObjectID], email: String, firstName: String, lastName: String, password: String, profile: String) {
   def gravatarHash: String = {
@@ -93,8 +93,6 @@ object Webuser {
   }
 
   def isMember(email: String, securityGroup: String):Boolean = {
-    import scala.concurrent._
-    import scala.concurrent.duration._
 
     val futureResult = findByEmail(email).map{
       case None=>{
@@ -106,6 +104,13 @@ object Webuser {
 
     Await.result[Boolean](futureResult, 10 seconds)
 
+  }
+
+  def changePassword(webuser:Webuser):String=MongoDB.withCollection("webuser"){
+    implicit collection=>
+      val newPassword=RandomStringUtils.randomAlphabetic(7)
+      collection.update(Json.obj("email" -> webuser.email), Json.obj("$set" -> Json.obj("password" -> newPassword)), upsert = false)
+      newPassword
   }
 }
 
