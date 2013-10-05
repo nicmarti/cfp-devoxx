@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
 <title>@title</title>
 <link rel="stylesheet" href="/assets/css/bootstrap.cosmo.min.css">
-<link rel="stylesheet" href="/assets/css/font-awesome/css/font-awesome.min.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/bootswatch.min.css">
 <link rel="stylesheet"  href="/assets/css/devoxx.css" id="theme"/>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -31,7 +31,7 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="http://www.devoxx.fr/" target="_blank">Devoxx France website</a></li>
+                <li><i class="icon-arrow-right"></i> <a href="http://www.devoxx.fr/" target="_blank">Devoxx France website</a></li>
             </ul>
         </div>
     </div>
@@ -41,6 +41,15 @@
 <div class="container">
 @content
 </div>
+<footer class="footer hidden-print">
+  <div class="container">
+    <div>
+      <hr>
+        <i class="icon-bullhorn"></i> Devoxx France Call for Paper - Created and maintained by <a href="http://twitter.com/nmartignole">Nicolas Martignole</a><br>
+        <i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">Clever-cloud</a>
+    </div>
+  </div>
+</footer>
 <!-- ****************************************************************************** //-->
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/bootstrap.min.js"></script>

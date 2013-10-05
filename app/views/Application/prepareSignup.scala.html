@@ -3,10 +3,14 @@
 @import helper.twitterBootstrap._
 
 @main("signup") {
+
 <div class="row">
-    <div class="col-lg-6">
-        <h3>S'inscrire en tant que présentateur</h3>
-        <p>Vous souhaitez présenter un ou plusieurs sujets à DevoxxFrance ? Inscrivez-vous en quelques minutes</p>
+    <div class="col-lg-12 page-header">
+        <h1>Inscription orateur</h1>
+    </div>
+    <div class="col-lg-8">
+        <h3><i class="icon-signin"></i> Inscription classique</h3>
+        <p>Inscrivez-vous afin de pouvoir ensuite proposer vos sujets de présentation pour la conférence Devoxx France 2014 :</p>
 
         @helper.form(action = routes.Authentication.saveNewSpeaker) {
             @helper.inputText(formWebuser("email"))
@@ -14,21 +18,21 @@
             @helper.inputText(formWebuser("lastName"))
 
             @helper.inputText(speakerForm("company"))
-            @helper.textarea(speakerForm("bio"), 'cols -> 80, 'rows -> 5)
+            @helper.textarea(speakerForm("bio"), 'cols -> 40, 'rows -> 5)
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
-            <button type="submit">Enregister et continuer</button>
+            <p>Un email de validation est envoyé à l'adresse indiquée. Votre profil ne sera actif qu'une fois que votre adresse de courrier électronique sera validée.</p>
+            <button class="btn btn-success" type="submit">Enregister</button>
         }
     </div>
 
-    <div class="col-lg-6">
-        <h3>Importer votre profil</h3>
-        <ul>
-            <li>Google</li>
-            <li>Github</li>
-            <li>Linkedin</li>
-        </ul>
+    <div class="col-lg-4">
+        <h3><i class="icon-external-link-sign"></i> Importer son profil</h3>
+        <p>Vous avez la possiblité d'utiliser l'un des services suivants afin de créer votre profil d'orateur :</p>
+        <p><i class="icon-github-sign"></i> <a href="@routes.Authentication.githubLogin" title="Sign-in with your Github profile to Devoxx FR">Github</a></p>
+        <p><i class="icon-google-plus-sign"></i> Google Plus </p>
+        <p><i class="icon-linkedin-sign"></i> LinkedIn </p>
     </div>
 </div>
 }
