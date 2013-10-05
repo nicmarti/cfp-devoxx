@@ -1,40 +1,92 @@
-@(loginForm: Form[(String, String)])(implicit lang: Lang, flash:Flash)
+@(loginForm: Form[(String, String)])(implicit lang: Lang, flash: Flash)
 
 @import helper.twitterBootstrap._
 
-@main("CallForPaper") {
-
-    @if(flash.get("error").isDefined){
-        <div class="messagePopup">
-            <p>@flash.get("error").get</p>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+        <title>Devoxx France CFP</title>
+        <link rel="stylesheet" href="/assets/css/bootstrap.cosmo.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/bootswatch.min.css">
+        <link rel="stylesheet" href="/assets/css/devoxx.css" id="theme"/>
+            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+            <!--[if lt IE 9]>
+<script src="/assets/js/html5shiv.js"></script>
+<script src="/assets/js/respond.min.js"></script>
+<![endif]-->
+        <meta name="generator" content="Play! 2.2 Scala"/>
+    </head>
+    <body>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="/" class="navbar-brand"><i class="icon-bullhorn"></i> Devox France CFP</a>
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse" id="navbar-main">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://www.devoxx.fr/" target="_blank">Devoxx France website</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    }
-    @if(flash.get("success").isDefined){
-        <div class="successPopup">
-            <p>@flash.get("success").get</p>
+
+        <div class="container">
+            <div class="bs-docs-section clearfix">
+                <div class="row">
+                    <div class="col-lg-6">
+                            <h2><i class="icon-comment-alt"></i> Appel aux conférenciers</h2>
+                            <em>Call for Paper for Devoxx France 2014</em>
+                    </div>
+                    <div class="col-lg-6">
+                        <h3><i class="icon-signin"></i> @Html(Messages("index.method1"))</h3>
+                        @helper.form(action = routes.Authentication.login) {
+                            @helper.inputText(loginForm("email"))
+                            @helper.inputPassword(loginForm("password"))
+                            <button type="submit">@Messages("btn.login")</button>
+                            <a href="@routes.Application.forgetPassword()">@Messages("forget.password")</a>
+                        }
+
+                        <h3><i class="icon-external-link-sign"></i> @Html(Messages("index.method2"))</h3>
+                        <p>@Html(Messages("index.txt2"))</p>
+                        <p><i class="icon-github-sign"></i> <a href="@routes.Authentication.githubLogin" title="Sign-in with your Github profile to Devoxx FR">
+                            <img src="/assets/images/github.png" alt="Github logo" title="Click here to authenticate with your github profile">
+                        </a></p>
+                        <p><i class="icon-google-plus-sign"></i> Google Plus </p>
+                        <p><i class="icon-linkedin-sign"></i> LinkedIn </p>
+                    </div>
+              </div>
+            </div>
+
+              <div class="row">
+                    <div class="col-lg-6 col-lg-offset-6">
+                        <hr>
+                        <h3><i class="icon-user"></i> @Html(Messages("index.signupTitle"))</h3>
+                        <p>@Html(Messages("index.signup2"))</p>
+                        <a href="@routes.Application.prepareSignup()">@Messages("index.signup.btn")</a>
+                    </div>
+                </div>
         </div>
-    }
 
-    <div class="grid-50 mobile-grid-50">
-    <h3>@Html(Messages("index.method1"))</h3>
-    <p>@Html(Messages("index.welcome"))</p>
-    @helper.form(action = routes.Authentication.login) {
-        @helper.inputText(loginForm("email"))
-        @helper.inputPassword(loginForm("password"))
-        <button type="submit">@Messages("btn.login")</button>
-        <a href="@routes.Application.forgetPassword()">@Messages("forget.password")</a>
-    }
-
-    <h3>@Html(Messages("index.method2"))</h3>
-    <p>@Html(Messages("index.txt2"))</p>
-    <a href="@routes.Authentication.githubLogin" title="Sign-in with your Github profile to Devoxx FR">
-        <img src="/assets/images/github.png" alt="Github logo" title="Click here to authenticate with your github profile">
-    </a>
-    </div>
-
-    <div class="grid-50 mobile-grid-50">
-        <h3>@Html(Messages("index.signupTitle"))</h3>
-        <p>@Html(Messages("index.signup2"))</p>
-        <a href="@routes.Application.prepareSignup()">@Messages("index.signup.btn")</a>
-    </div>
-}
+        <footer class="footer hidden-print">
+          <div class="container">
+            <div>
+              <hr>
+              <i class="icon-bullhorn"></i> Devoxx France Call for Paper - Created and maintained by <a href="http://twitter.com/nmartignole">Nicolas Martignole</a>
+            </div>
+          </div>
+        </footer>
+            <!-- ****************************************************************************** //-->
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/bootstrap.min.js"></script>
+        <script src="/assets/js/bootswatch.js"></script>
+    </body>
+</html>

@@ -7,30 +7,43 @@
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
 <title>@title</title>
+<link rel="stylesheet" href="/assets/css/bootstrap.cosmo.min.css">
+<link rel="stylesheet" href="/assets/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/assets/css/bootswatch.min.css">
+<link rel="stylesheet"  href="/assets/css/devoxx.css" id="theme"/>
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
-  <script src='//assets/javascripts/html5.js'></script>
-<![endif]-->
-<link rel="stylesheet" href="/assets/stylesheets/main.css" />
-<link id="theme" rel="stylesheet" href="/assets/css/devoxx.css" />
-<!--[if (gt IE 8) | (IEMobile)]><!-->
-  <link rel="stylesheet" href="/assets/stylesheets/unsemantic-grid-responsive.css" />
-<!--<![endif]-->
-<!--[if (lt IE 9) & (!IEMobile)]>
-  <link rel="stylesheet" href="/assets/stylesheets/ie.css" />
+<script src="/assets/js/html5shiv.js"></script>
+<script src="/assets/js/respond.min.js"></script>
 <![endif]-->
 <meta name="generator" content="Play! 2.2 Scala"/>
-<link href='http://fonts.googleapis.com/css?family=Lato:400,900,300italic' rel='stylesheet' type='text/css'>
 </head>
 <body>
-<div class="grid-container">
-    <div class="grid-100 mobile-grid-100 bandeau">
-        <h1 class="site-title"><a href="/" title="Go to home page">Devoxx France 2014</a></h1>
-        <h2 class="site-description">La conférence des développeurs passionnés</h2>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Devox France CFP</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://www.devoxx.fr/" target="_blank">Devoxx France website</a></li>
+            </ul>
+        </div>
     </div>
-    @content
 </div>
 
-<script src="/assets/javascripts/jquery-1.9.0.min.js"></script>
-<script src="/assets/javascripts/demo.js"></script>
+<!-- ****************************************************************************** //-->
+<div class="container">
+@content
+</div>
+<!-- ****************************************************************************** //-->
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/bootswatch.js"></script>
 </body>
 </html>

@@ -1,32 +1,34 @@
 @(formWebuser: Form[Webuser], speakerForm: Form[Speaker])
 
-    @import helper.twitterBootstrap._
+@import helper.twitterBootstrap._
 
-    @main("signup") {
-        <div class="grid-50 mobile-grid-50">
-            <h3>S'inscrire en tant que présentateur</h3>
-            <p>Vous souhaitez présenter un ou plusieurs sujets à DevoxxFrance ? Inscrivez-vous en quelques minutes</p>
+@main("signup") {
+<div class="row">
+    <div class="col-lg-6">
+        <h3>S'inscrire en tant que présentateur</h3>
+        <p>Vous souhaitez présenter un ou plusieurs sujets à DevoxxFrance ? Inscrivez-vous en quelques minutes</p>
 
-            @helper.form(action = routes.Authentication.saveNewSpeaker) {
-                @helper.inputText(formWebuser("email"))
-                @helper.inputText(formWebuser("firstName"))
-                @helper.inputText(formWebuser("lastName"))
+        @helper.form(action = routes.Authentication.saveNewSpeaker) {
+            @helper.inputText(formWebuser("email"))
+            @helper.inputText(formWebuser("firstName"))
+            @helper.inputText(formWebuser("lastName"))
 
-                @helper.inputText(speakerForm("company"))
-                @helper.textarea(speakerForm("bio"), 'cols -> 80, 'rows -> 5)
-                @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
-                @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
+            @helper.inputText(speakerForm("company"))
+            @helper.textarea(speakerForm("bio"), 'cols -> 80, 'rows -> 5)
+            @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
+            @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
-                <button type="submit">Enregister et continuer</button>
-            }
-        </div>
+            <button type="submit">Enregister et continuer</button>
+        }
+    </div>
 
-        <div class="grid-50 mobile-grid-50">
-            <h3>Importer votre profil</h3>
-            <ul>
-                <li>Google</li>
-                <li>Github</li>
-                <li>Linkedin</li>
-            </ul>
-        </div>
-    }
+    <div class="col-lg-6">
+        <h3>Importer votre profil</h3>
+        <ul>
+            <li>Google</li>
+            <li>Github</li>
+            <li>Linkedin</li>
+        </ul>
+    </div>
+</div>
+}

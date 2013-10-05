@@ -1,15 +1,18 @@
-@(newUserForm:Form[Webuser])
+@(newUserForm: Form[Webuser])
 
 @import helper.twitterBootstrap._
 
-@main("Create a new Speaker"){
-    <div class="grid-100 mobile-grid-100">
-    <h1>Create new speaker</h1>
-    @helper.form(action=routes.Authentication.saveNewSpeaker){
-        @helper.inputText(newUserForm("email"))
-        @helper.inputText(newUserForm("firstName"))
-        @helper.inputText(newUserForm("lastName"))
-        <button type="submit">Save</button>
-    }
+@main("Create a new Speaker") {
+    <div class="row">
+        <div class="col-lg-12">
+
+            <h1>Create new speaker</h1>
+            @helper.form(action = routes.Authentication.saveNewSpeaker) {
+                @helper.inputText(newUserForm("email"))
+                @helper.inputText(newUserForm("firstName"))
+                @helper.inputText(newUserForm("lastName"))
+                <button type="submit">Save</button>
+            }
+        </div>
     </div>
 }
