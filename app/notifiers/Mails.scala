@@ -39,7 +39,7 @@ object Mails {
   def sendResetPasswordLink(email: String, resetUrl: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Reset your Devoxx France password")
-    emailer.addFrom("no-reply@devoxx.fr")
+    emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
     emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
@@ -48,18 +48,21 @@ object Mails {
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Welcome to Devoxx France ! ")
-    emailer.addFrom("no-reply@devoxx.fr")
+    emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
     emailer.send(views.txt.Mails.sendWeCreatedAnAccountForYou(firstname, email, tempPassword).toString(), views.html.Mails.sendWeCreatedAnAccountForYou(firstname, email, tempPassword).toString)
   }
 
-  def sendValidateYourEmail(email:String, crypto:String)={
+  def sendValidateYourEmail(email:String, validationLink:String)={
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Devoxx France, please validate your email address now")
-    emailer.addFrom("no-reply@devoxx.fr")
+    emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
-    emailer.send(views.txt.Mails.sendValidateYourEmail(crypto).toString(), views.html.Mails.sendValidateYourEmail(crypto).toString)
+    emailer.send(
+      views.txt.Mails.sendValidateYourEmail(validationLink).toString(),
+      views.html.Mails.sendValidateYourEmail(validationLink).toString()
+    )
   }
 }

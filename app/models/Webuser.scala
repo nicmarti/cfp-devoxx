@@ -67,7 +67,7 @@ object Webuser {
         // Check index
         collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, dropDups = true))
         collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending, "password" -> IndexType.Ascending), name = Some("idx_password")))
-        collection.insert(webuser.copy(id = Some(BSONObjectID.generate)))
+        collection.insert(webuser.copy(id = Some(BSONObjectID.generate), profile = "notvalidated"))
 
       } else {
         collection.insert(webuser)
@@ -93,7 +93,6 @@ object Webuser {
   }
 
   def isMember(email: String, securityGroup: String):Boolean = {
-
     val futureResult = findByEmail(email).map{
       case None=>{
         println("user not found")
@@ -101,9 +100,7 @@ object Webuser {
       }
       case Some(webuser)=>webuser.profile==securityGroup
     }
-
     Await.result[Boolean](futureResult, 10 seconds)
-
   }
 
   def changePassword(webuser:Webuser):String=MongoDB.withCollection("webuser"){
@@ -112,5 +109,12 @@ object Webuser {
       collection.update(Json.obj("email" -> webuser.email), Json.obj("$set" -> Json.obj("password" -> newPassword)), upsert = false)
       newPassword
   }
+
+  def validateEmail(webuser:Webuser):String=MongoDB.withCollection("webuser"){
+      implicit collection=>
+        val newPassword=RandomStringUtils.randomAlphabetic(7)
+        collection.update(Json.obj("email" -> webuser.email), Json.obj("$set" -> Json.obj("profile" -> "speaker")), upsert = false)
+        newPassword
+    }
 }
 

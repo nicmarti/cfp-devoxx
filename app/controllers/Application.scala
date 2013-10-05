@@ -52,15 +52,11 @@ object Application extends Controller {
 
   def prepareSignup = Action {
     implicit request =>
-      Ok(views.html.Application.prepareSignup(Authentication.newWebuserForm, Authentication.speakerForm))
+      Ok(views.html.Application.prepareSignup(Authentication.newWebuserForm))
   }
 
   def signup = Action {
     Ok("signup")
-  }
-
-  def newSpeaker = Action {
-    Ok(views.html.Application.newUser(Authentication.newWebuserForm))
   }
 
   def forgetPassword=Action{
@@ -74,9 +70,7 @@ object Application extends Controller {
     emailForm.bindFromRequest.fold(
       errorForm=>BadRequest(views.html.Application.forgetPassword(errorForm)),
       validEmail=>{
-        println("Test email reset password "+validEmail)
-      Mails.sendResetPasswordLink(validEmail, routes.Application.resetPassword(Crypto.sign(validEmail.toLowerCase.trim),
-       new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
+      Mails.sendResetPasswordLink(validEmail, routes.Application.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
       ).absoluteURL())
       Redirect(routes.Application.index()).flashing("success"->"An email was sent to the provided email address. Please check your mailbox.")
     })
@@ -118,17 +112,35 @@ object Application extends Controller {
   def resetEnvForDev() = Action {
     implicit request =>
       Async {
-        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail("nicolas@martignole.net")
+        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail("nicolas@touilleur-express.fr")
         futureResult.map {
           maybeWebuser =>
             maybeWebuser.map {
               webuser =>
                 val err = Webuser.delete(webuser)
-                Ok("Done " + err)
+                Redirect(routes.Application.index()).flashing("success"->"User de test effacé")
             }.getOrElse(NotFound("User does not exist"))
         }
       }
   }
 
+  val speakerForm = Form(mapping(
+    "email" -> (email verifying nonEmpty),
+    "bio" -> nonEmptyText(maxLength = 500),
+    "lang" -> optional(text),
+    "twitter" -> optional(text),
+    "company" -> optional(text),
+    "blog" -> optional(text)
+  )(Speaker.createSpeaker)(Speaker.unapplyForm))
+
+  def editProfile=Action{
+    implicit request=>
+      Ok(views.html.Application.editProfile(speakerForm))
+  }
+
+  def saveProfile=Action{
+    implicit request=>
+      Ok("saved profile")
+  }
 
 }

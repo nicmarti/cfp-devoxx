@@ -1,10 +1,12 @@
 @(email:String)
 
-@main("Speaker created"){
+@main("Success"){
 <div class="row">
-    <div class="col-lg-6">
-        <h1>Created</h1>
-        <a href="@routes.Application.findByEmail(email)">Load entry</a>
+    <div class="col-lg-12">
+        <h1>Demande d'inscription enregistrée</h1>
+        <p>Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.</p>
+        <p>Validez votre adresse pour terminer votre enregistrement, votre mot de passe vous sera donné lorsque vous validerez votre email.</p>
+        <p>Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx France.</p>
     </div>
 </div>
 }

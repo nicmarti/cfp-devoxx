@@ -1,0 +1,26 @@
+@(speakerForm: Form[Speaker])
+
+@import helper.twitterBootstrap._
+
+@main("signup") {
+
+<div class="row">
+    <div class="col-lg-12 page-header">
+        <h1>Votre profil</h1>
+    </div>
+    <div class="col-lg-12">
+
+        <p>Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné comme orateur, ainsi que dans le programem de la conférence :</p>
+
+        @helper.form(action = routes.Application.saveProfile) {
+            @helper.inputText(speakerForm("company"))
+            @helper.textarea(speakerForm("bio"), 'cols -> 40, 'rows -> 5)
+            @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
+            @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
+
+            <button class="btn btn-success" type="submit">Enregister</button>
+        }
+    </div>
+
+</div>
+}

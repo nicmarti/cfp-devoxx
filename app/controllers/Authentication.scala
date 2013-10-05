@@ -38,6 +38,9 @@ import org.apache.commons.lang3.RandomStringUtils
 import reactivemongo.core.commands.LastError
 import reactivemongo.bson.BSONObjectID
 import play.api.data.format.Formats._
+import notifiers.Mails
+import org.apache.commons.codec.binary.Base64
+
 /**
  * Signup and Signin.
  *
@@ -165,14 +168,7 @@ object Authentication extends Controller {
         w.profile))
     }
   )
-  val speakerForm = Form(mapping(
-    "email" -> (email verifying nonEmpty),
-    "bio" -> nonEmptyText(maxLength = 500),
-    "lang" -> optional(text),
-    "twitter" -> optional(text),
-    "company" -> optional(text),
-    "blog" -> optional(text)
-  )(Speaker.createSpeaker)(Speaker.unapplyForm))
+
 
   def createFromGithub = Action {
     implicit request =>
@@ -215,7 +211,7 @@ object Authentication extends Controller {
                                 }
                                 val w = Webuser(Option(BSONObjectID.generate), emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
                                 val s = Speaker(Option(BSONObjectID.generate), emailS, bioS, lang, None, avatarUrl, company, blog)
-                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), speakerForm.fill(s)))
+                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), Application.speakerForm.fill(s)))
                               }
                           }
                         }
@@ -236,10 +232,12 @@ object Authentication extends Controller {
   def saveNewSpeaker = Action {
     implicit request =>
       newWebuserForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Application.newUser(invalidForm)),
+        invalidForm => BadRequest(views.html.Application.prepareSignup(invalidForm)),
         validForm => Async {
           Webuser.save(validForm).map {
             _ =>
+              Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmail(Crypto.sign(validForm.email.toLowerCase.trim),
+                new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
               Created(views.html.Application.created(validForm.email))
           }.recover {
             case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
@@ -253,5 +251,26 @@ object Authentication extends Controller {
         }
       )
   }
+
+  def validateYourEmail(t:String, a:String)=Action{
+      implicit request=>
+        val email= new String(Base64.decodeBase64(a),"UTF-8")
+        if(Crypto.sign(email)==t){
+          val futureMaybeWebuser=Webuser.findByEmail(email)
+            Async{
+            futureMaybeWebuser.map{
+              case Some(w)=>{
+                Webuser.validateEmail(w) // it is generated
+                Redirect(routes.Application.index()).flashing("success"->("Yoru account has been validated. Your new password is "+w.password + " (case-sensitive)"))
+              }
+              case _=>Redirect(routes.Application.index()).flashing("error"->"Sorry, this email is not registered in your system.")
+            }
+          }
+
+
+        }else{
+          Redirect(routes.Application.index()).flashing("error"->"Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
+        }
+    }
 
 }

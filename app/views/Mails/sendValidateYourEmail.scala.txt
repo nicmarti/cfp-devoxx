@@ -1,10 +1,20 @@
-@(encryptedEmail:String)
+@(validationLink:String)
 
 Welcome to Devoxx France!
 
-Thanks for joining Devoxx France. To connect to our web site, please copy the following link to your browser address bar:
-http://www.devoxx.fr/validateEmail/@encryptedEmail
+Thanks for joining Devoxx France CFP Web site. To validate your email address, please copy the following link to your browser address bar:
 
-Have fun!
+@validationLink
 
 The Devoxx France Team
+
+---------------------------------------------------------------------
+
+Bienvenue à Devoxx France!
+
+Merci de vous êtes inscrit sur le site du CFP de Devoxx France.
+Pour valider votre adresse de courrier électronique, merci d'ouvrir le lien suivant ou de le recopier dans la barre d'adresse de votre navigateur internet :
+
+@validationLink
+
+L'équipe Devoxx France

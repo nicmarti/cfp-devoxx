@@ -1,4 +1,4 @@
-@(formWebuser: Form[Webuser], speakerForm: Form[Speaker])
+@(formWebuser: Form[Webuser])
 
 @import helper.twitterBootstrap._
 
@@ -17,10 +17,6 @@
             @helper.inputText(formWebuser("firstName"))
             @helper.inputText(formWebuser("lastName"))
 
-            @helper.inputText(speakerForm("company"))
-            @helper.textarea(speakerForm("bio"), 'cols -> 40, 'rows -> 5)
-            @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
-            @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
             <p>Un email de validation est envoyé à l'adresse indiquée. Votre profil ne sera actif qu'une fois que votre adresse de courrier électronique sera validée.</p>
             <button class="btn btn-success" type="submit">Enregister</button>
