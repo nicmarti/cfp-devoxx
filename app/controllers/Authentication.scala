@@ -31,6 +31,7 @@ import play.api.Play
 import play.api.libs.Crypto
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import play.api.libs.ws.WS
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
@@ -44,7 +45,7 @@ import play.api.data.format.Formats._
  * Created: 27/09/2013 09:59
  */
 object Authentication extends Controller {
-  val loginForm = Form(tuple("email" -> nonEmptyText, "password" -> nonEmptyText))
+  val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
   def login = Action {
     implicit request =>
@@ -133,7 +134,7 @@ object Authentication extends Controller {
 
   val newWebuserForm: Form[Webuser] = Form(
     mapping(
-      "email" -> nonEmptyText,
+      "email" -> (email verifying nonEmpty),
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText
     )(Webuser.createSpeaker)(Webuser.unapplyForm))
@@ -141,7 +142,7 @@ object Authentication extends Controller {
   val webuserForm = Form(
     mapping(
       "id" -> optional(of[String]),
-      "email" -> nonEmptyText,
+      "email" -> (email verifying nonEmpty),
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
       "password" -> nonEmptyText,
@@ -165,7 +166,7 @@ object Authentication extends Controller {
     }
   )
   val speakerForm = Form(mapping(
-    "email" -> nonEmptyText,
+    "email" -> (email verifying nonEmpty),
     "bio" -> nonEmptyText(maxLength = 500),
     "lang" -> optional(text),
     "twitter" -> optional(text),

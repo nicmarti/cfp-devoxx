@@ -22,7 +22,7 @@ GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker
 GET     /resetEnvForDev             controllers.Application.resetEnvForDev()
 
 GET     /forget                     controllers.Application.forgetPassword
-GET     /forget/validate            controllers.Application.doForgetPassword()
+POST    /forget/validate            controllers.Application.doForgetPassword()
 GET     /resetpassword              controllers.Application.resetPassword(t:String, a:String)
 
 # Map static resources from the /public folder to the /assets URL path

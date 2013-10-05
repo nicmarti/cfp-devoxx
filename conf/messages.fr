@@ -26,3 +26,32 @@ bio=Présentez-vous en quelques lignes
 twitter=Votre pseudo Twitter
 blog=Votre blog ou votre site internet
 forget.password=Mot de passe oublié ?
+
+# Messages de play
+# --- Constraints
+constraint.required=Obligatoire
+constraint.min=Valeur minimum : {0}
+constraint.max=Valeur max. : {0}
+constraint.minLength=Longeur minimum : {0}
+constraint.maxLength=Longeur max: {0}
+constraint.email=Adresse email
+
+# --- Formats
+format.date=Date (''{0}'')
+format.numeric=Numérique
+format.real=Real
+
+# --- Errors
+error.invalid=Valeur invalide
+error.required=Champ obligatoire
+error.number=Valeur numérique attendue
+error.real=Real number value expected
+error.real.precision=Real number value with no more than {0} digit(s) including {1} decimal(s) expected
+error.min=Must be greater or equal to {0}
+error.min.strict=Must be strictly greater than {0}
+error.max=Must be less or equal to {0}
+error.max.strict=Doit être strictement inférieur à {0}
+error.minLength=Longeur minimum {0}
+error.maxLength=Longeur max {0}
+error.email=Adresse de courrier électronique valide
+error.pattern=Doit respecter {0}

@@ -28,6 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
 import play.api.data._
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 
 import notifiers.Mails
 import play.api.libs.Crypto
@@ -63,20 +64,22 @@ object Application extends Controller {
   }
 
   def forgetPassword=Action{
-    Ok(views.html.Application.forgetPassword())
+    Ok(views.html.Application.forgetPassword(emailForm))
   }
 
-  val emailForm=Form("email"->nonEmptyText)
+  val emailForm=Form("email"->(email verifying nonEmpty))
 
   def doForgetPassword()=Action{
     implicit request=>
-    emailForm.bindFromRequest.fold(error=>Redirect(routes.Application.forgetPassword), validEmail=>{
+    emailForm.bindFromRequest.fold(
+      errorForm=>BadRequest(views.html.Application.forgetPassword(errorForm)),
+      validEmail=>{
+        println("Test email reset password "+validEmail)
       Mails.sendResetPasswordLink(validEmail, routes.Application.resetPassword(Crypto.sign(validEmail.toLowerCase.trim),
        new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
       ).absoluteURL())
+      Redirect(routes.Application.index()).flashing("success"->"An email was sent to the provided email address. Please check your mailbox.")
     })
-    Redirect(routes.Application.index()).flashing("success"->"An email was sent to the provided email address. Please check your mailbox.")
-
   }
 
   def resetPassword(t:String, a:String)=Action{
