@@ -69,5 +69,14 @@ object Speaker {
       cursor.headOption()
   }
 
+
+  def delete(email: String) = MongoDB.withCollection("speaker") {
+    implicit collection =>
+      findByEmail(email).map{maybeSpeaker=>
+        maybeSpeaker.map {speaker=>collection.remove[Speaker](speaker)
+        }
+      }
+  }
+
 }
 

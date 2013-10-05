@@ -118,6 +118,7 @@ object Application extends Controller {
             maybeWebuser.map {
               webuser =>
                 val err = Webuser.delete(webuser)
+                Speaker.delete("nicolas@touilleur-express.fr")
                 Redirect(routes.Application.index()).flashing("success"->"User de test effacé")
             }.getOrElse(NotFound("User does not exist"))
         }
