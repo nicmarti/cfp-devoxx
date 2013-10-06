@@ -4,9 +4,9 @@ GET     /logout                     controllers.Application.logout
 
 GET     /signup                     controllers.Application.prepareSignup
 POST    /signup                     controllers.Application.signup
+POST    /login                      controllers.Authentication.login
 
 GET     /signup/github              controllers.Authentication.createFromGithub
-POST    /login                      controllers.Authentication.login
 GET     /login/github               controllers.Authentication.githubLogin
 POST    /github/callback            controllers.Authentication.callbackGithub
 GET     /github/callback            controllers.Authentication.callbackGithub
@@ -29,6 +29,12 @@ GET     /resetEnvForDev             controllers.Application.resetEnvForDev()
 GET     /forget                     controllers.Application.forgetPassword
 POST    /forget/validate            controllers.Application.doForgetPassword()
 GET     /resetpassword              controllers.Application.resetPassword(t:String, a:String)
+
+# OAuth2 google
+GET     /signup/google              controllers.Authentication.createFromGoogle
+GET     /login/google               controllers.Authentication.googleLogin
+GET     /googleoauth2callback       controllers.Authentication.callbackGoogle
+POST    /googleoauth2callback       controllers.Authentication.callbackGoogle
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
