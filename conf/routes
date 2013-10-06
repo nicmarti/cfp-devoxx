@@ -24,7 +24,6 @@ POST    /profile                    controllers.Application.saveProfile
 
 GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker
 
-GET     /resetEnvForDev             controllers.Application.resetEnvForDev()
 
 GET     /forget                     controllers.Application.forgetPassword
 POST    /forget/validate            controllers.Application.doForgetPassword()
@@ -35,6 +34,9 @@ GET     /signup/google              controllers.Authentication.createFromGoogle
 GET     /login/google               controllers.Authentication.googleLogin
 GET     /googleoauth2callback       controllers.Authentication.callbackGoogle
 POST    /googleoauth2callback       controllers.Authentication.callbackGoogle
+
+# for test
+GET     /resetEnvForDev             controllers.Application.resetEnvForDev(email:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

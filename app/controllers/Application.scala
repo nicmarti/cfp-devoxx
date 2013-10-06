@@ -109,16 +109,16 @@ object Application extends Controller {
       }
   }
 
-  def resetEnvForDev() = Action {
+  def resetEnvForDev(email:String) = Action {
     implicit request =>
       Async {
-        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail("nicolas@touilleur-express.fr")
+        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
         futureResult.map {
           maybeWebuser =>
             maybeWebuser.map {
               webuser =>
                 val err = Webuser.delete(webuser)
-                Speaker.delete("nicolas@touilleur-express.fr")
+                Speaker.delete(email)
                 Redirect(routes.Application.index()).flashing("success"->"User de test effacé")
             }.getOrElse(NotFound("User does not exist"))
         }

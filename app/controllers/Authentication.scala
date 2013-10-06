@@ -42,7 +42,6 @@ import notifiers.Mails
 import org.apache.commons.codec.binary.Base64
 import java.security.SecureRandom
 import java.math.BigInteger
-import com.google.api.client.googleapis.auth.AuthKeyValueParser
 
 /**
  * Signup and Signin.
@@ -315,14 +314,14 @@ object Authentication extends Controller {
         clientId: String =>
           val redirectUri = routes.Authentication.callbackGoogle().absoluteURL()
           val state = new BigInteger(130, new SecureRandom()).toString(32)
-          val gitUrl = "https://accounts.google.com/o/oauth2/auth?client_id=" + clientId + "&scope=openid%20email&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
+          val gitUrl = "https://accounts.google.com/o/oauth2/auth?client_id=" + clientId + "&scope=openid%20email%20profile&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
           Redirect(gitUrl).withSession("state" -> state)
       }.getOrElse {
         InternalServerError("github.client_id is not set in application.conf")
       }
   }
 
-  implicit val googleFormat=Json.format[GoogleToken]
+  implicit val googleFormat = Json.format[GoogleToken]
 
   def callbackGoogle = Action {
     implicit request =>
@@ -337,17 +336,17 @@ object Authentication extends Controller {
             auth.map {
               case (clientId, clientSecret) => {
                 val url = "https://accounts.google.com/o/oauth2/token"
-                val redirect_uri=routes.Authentication.callbackGoogle().absoluteURL()
-                val wsCall = WS.url(url).withHeaders(("Accept"->"application/json"),("User-Agent"->"Devoxx France CFP nmartignole@gmail.com")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type"->Seq("authorization_code"),"redirect_uri"->Seq(redirect_uri)))
+                val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
+                val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx France CFP nmartignole@gmail.com")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
                 Async {
                   wsCall.map {
                     result =>
                       result.status match {
                         case 200 => {
                           val b = result.body
-                          println("body received from google "+b)
-                          val googleToken=Json.parse(result.body).as[GoogleToken]
-                          Redirect(routes.Authentication.createFromGoogle).withSession("google_token"->googleToken.access_token)
+                          println("body received from google " + b)
+                          val googleToken = Json.parse(result.body).as[GoogleToken]
+                          Redirect(routes.Authentication.createFromGoogle).withSession("google_token" -> googleToken.access_token)
                         }
                         case _ => {
                           Redirect(routes.Application.index()).flashing("error" -> ("error with Google OAuth2.0 : got HTTP response " + result.status + " " + result.body))
@@ -367,69 +366,60 @@ object Authentication extends Controller {
 
   def createFromGoogle = Action {
     implicit request =>
-    request.session.get("google_token").map{access_token=>
-      val url = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + access_token
-      val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").get()
-      val lang = request.headers.get("Accept-Language")
-      Async {
-        futureResult.map {
-          result =>
-            result.status match {
-              case 200 => {
-                  Ok(result.body).as("application/json")
-//                val json = Json.parse(result.body)
-//                val resultParse = (for (email <- json.\("email").asOpt[String].toRight("email not found").right;
-//                                        name <- json.\("name").asOpt[String].toRight("name not found").right;
-//                                        bio <- json.\("bio").asOpt[String].toRight("bio not found").right) yield (email, name, bio))
-//
-//                resultParse.fold(missingField => BadRequest("Sorry, cannot import your github profile due to : [" + missingField + "]"),
-//                  validFields => {
-//                    validFields match {
-//                      case (emailS, nameS, bioS) =>
-//
-//                        val avatarUrl = json.\("avatar_url").asOpt[String]
-//                        val company = json.\("company").asOpt[String]
-//                        val blog = json.\("blog").asOpt[String]
-//
-//                        // Try to lookup the speaker
-//                        Async {
-//                          Webuser.findByEmail(emailS).map {
-//                            maybeWebuser =>
-//                              maybeWebuser.map {
-//                                w =>
-//                                  Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
-//                              }.getOrElse {
-//                                // Create a new one but ask for confirmation
-//                                val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
-//                                  (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
-//                                } else {
-//                                  (nameS, nameS)
-//                                }
-//                                val w = Webuser(Option(BSONObjectID.generate), emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
-//                                val s = Speaker(Option(BSONObjectID.generate), emailS, bioS, lang, None, avatarUrl, company, blog)
-//                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), Application.speakerForm.fill(s)))
-//                              }
-//                          }
-//                        }
-//                    }
-//                  })
+      request.session.get("google_token").map {
+        access_token =>
+        //for Google account
+          val url = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + access_token
 
-              }
-              case other => {
-                play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                BadRequest("Unable to complete the Github User API call")
-              }
+          // For Google+ profile
+          //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
+          val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").get()
+          val lang = request.headers.get("Accept-Language")
+          Async {
+            futureResult.map {
+              result =>
+                result.status match {
+                  case 200 => {
+                    //Ok(result.body).as("application/json")
+                    val json = Json.parse(result.body)
+
+                    val email = json.\("email").as[String]
+                    val firstName = json.\("given_name").asOpt[String]
+                    val lastName = json.\("family_name").asOpt[String]
+                    val blog = json.\("profile").asOpt[String]
+                    val photo = json.\("picture").asOpt[String]
+
+                    // Try to lookup the speaker
+                    Async {
+                      Webuser.findByEmail(email).map {
+                        maybeWebuser =>
+                          maybeWebuser.map {
+                            w =>
+                              Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
+                          }.getOrElse {
+                            // Create a new one but ask for confirmation
+                            val w = Webuser(Option(BSONObjectID.generate), email, firstName.getOrElse("?"), lastName.getOrElse("?"), RandomStringUtils.randomAlphanumeric(7), "speaker")
+                            val s = Speaker(Option(BSONObjectID.generate), email, "Please enter a bio", lang, None, photo, None, blog)
+                            Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), Application.speakerForm.fill(s)))
+                          }
+                      }
+                    }
+                  }
+                  case other => {
+                    play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
+                    BadRequest("Unable to complete the Github User API call")
+                  }
+                }
             }
-        }
-      }
+          }
 
-    }.getOrElse{
-      Redirect(routes.Application.index()).flashing("error"->"Your Google Access token has expired, please reauthenticate")
-    }
+      }.getOrElse {
+        Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
+      }
   }
 
 }
 
 
-case class GoogleToken(access_token:String,token_type:String,expires_in:Long,id_token:String)
+case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
 
