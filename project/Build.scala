@@ -4,7 +4,6 @@ import play.Project._
 
 object ApplicationBuild extends Build {
 
-<<<<<<< HEAD
   val appName = "cfp-devoxxfr"
   val appVersion = "1.0-SNAPSHOT"
 
@@ -26,22 +25,6 @@ object ApplicationBuild extends Build {
   val main = play.Project(appName, appVersion, appDependencies).settings(
     resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
     resolvers += "Sonatype Google" at "https://oss.sonatype.org/content/repositories/google-releases/"
-=======
-  val appName         = "cfp-devoxxfr"
-  val appVersion      = "1.0-SNAPSHOT"
-
-
-  val appDependencies = Seq(
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.9"
-  )
-
-  libraryDependencies ++= Seq(
-    
-  )
-
-  val main = play.Project(appName, appVersion, appDependencies).settings(
-      resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
->>>>>>> Devoxx France Call for paper, created by N.Martignole
   )
 
 }

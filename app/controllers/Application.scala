@@ -23,7 +23,6 @@
 package controllers
 
 import models._
-<<<<<<< HEAD
 import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
@@ -34,23 +33,11 @@ import play.api.data.validation.Constraints._
 import notifiers.Mails
 import play.api.libs.Crypto
 import org.apache.commons.codec.binary.Base64
-=======
-import play.api._
-import play.api.mvc._
-import play.api.libs.json._
-import scala.concurrent.Future
-import reactivemongo.api._
-import play.modules.reactivemongo.MongoController
-import play.modules.reactivemongo.json.collection.JSONCollection
-import play.api.data.Form
-import models.JsonFormats._
->>>>>>> Devoxx France Call for paper, created by N.Martignole
 
 /**
  * Devoxx France Call For Paper main application.
  * @author Nicolas Martignole
  */
-<<<<<<< HEAD
 object Application extends Controller {
 
   def index = Action {
@@ -157,38 +144,4 @@ object Application extends Controller {
       Ok("saved profile")
   }
 
-=======
-object Application extends Controller with MongoController {
-  def collection: JSONCollection = db.collection[JSONCollection]("persons")
-
-  def index = Action {
-    Ok("It works!")
-  }
-
-  def create = Action {
-
-
-    val user = User(29, "John", "Smith", List(
-      Feed("Slashdot news", "http://slashdot.org/slashdot.rdf")))
-    val futureResult = collection.insert(user)
-    Async {
-      futureResult.map(_ => Ok)
-    }
-  }
-
-  def findByName(name: String) = Action {
-    Async {
-      val cursor: Cursor[User] = collection.
-        find(Json.obj("name" -> name)).
-        sort(Json.obj("created" -> -1)).
-        cursor[User]
-
-      val futureUsersList: Future[List[User]] = cursor.toList
-      futureUsersList.map {
-        persons =>
-          Ok(persons.toString())
-      }
-    }
-  }
->>>>>>> Devoxx France Call for paper, created by N.Martignole
 }
