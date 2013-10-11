@@ -255,7 +255,7 @@ object Authentication extends Controller {
                                 }
                                 val w = Webuser(Option(BSONObjectID.generate), emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
                                 val s = Speaker(Option(BSONObjectID.generate), emailS, bioS, lang, None, avatarUrl, company, blog)
-                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), Application.speakerForm.fill(s)))
+                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                               }
                           }
                         }
@@ -281,7 +281,7 @@ object Authentication extends Controller {
             _ =>
               Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmail(Crypto.sign(validForm.email.toLowerCase.trim),
                 new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
-              Created(views.html.Application.created(validForm.email))
+              Created(views.html.Authentication.created(validForm.email))
           }.recover {
             case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
               Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
@@ -319,11 +319,11 @@ object Authentication extends Controller {
   def validateImportedSpeaker = Action {
     implicit request =>
       newWebuserForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, Application.speakerForm.bindFromRequest)),
+        invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, CallForPaper.speakerForm.bindFromRequest)),
         validForm => Async {
           Webuser.saveAndValidate(validForm).map {
             _ =>
-              Application.speakerForm.bindFromRequest.fold(
+              CallForPaper.speakerForm.bindFromRequest.fold(
                 invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
                 validSpeakerForm => Async {
                   Speaker.save(validSpeakerForm).map {
@@ -444,7 +444,7 @@ object Authentication extends Controller {
                             // Create a new one but ask for confirmation
                             val w = Webuser(Option(BSONObjectID.generate), email, firstName.getOrElse("?"), lastName.getOrElse("?"), RandomStringUtils.randomAlphanumeric(7), "speaker")
                             val s = Speaker(Option(BSONObjectID.generate), email, "Please enter a bio", lang, None, photo, None, blog)
-                            Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), Application.speakerForm.fill(s)))
+                            Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                           }
                       }
                     }

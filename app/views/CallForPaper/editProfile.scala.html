@@ -10,9 +10,10 @@
     </div>
     <div class="col-lg-12">
 
-        <p>Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné comme orateur, ainsi que dans le programem de la conférence :</p>
+        <p>Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné
+            comme orateur, ainsi que dans le programem de la conférence :</p>
 
-        @helper.form(action = routes.Application.saveProfile) {
+        @helper.form(action = routes.CallForPaper.saveProfile) {
             @helper.inputText(speakerForm("company"))
             @helper.textarea(speakerForm("bio"), 'cols -> 40, 'rows -> 5)
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")

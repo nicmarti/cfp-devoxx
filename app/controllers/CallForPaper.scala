@@ -24,13 +24,15 @@
 package controllers
 
 import play.api.mvc._
-import models.Webuser
+import models.{Speaker, Webuser}
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
-import play.api.libs.concurrent.Promise
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 
 /**
- * TODO definition
+ * Main controller for the speakers.
  *
  * Author: nicolas
  * Created: 29/09/2013 12:24
@@ -45,6 +47,38 @@ object CallForPaper extends Controller with Secured {
         }
       }
   }
+
+  val speakerForm = Form(mapping(
+      "email" -> (email verifying nonEmpty),
+      "bio" -> nonEmptyText(maxLength = 500),
+      "lang" -> optional(text),
+      "twitter" -> optional(text),
+      "company" -> optional(text),
+      "blog" -> optional(text)
+    )(Speaker.createSpeaker)(Speaker.unapplyForm))
+
+    def editProfile=Action{
+      implicit request=>
+        Ok(views.html.CallForPaper.editProfile(speakerForm))
+    }
+
+    def saveProfile=Action{
+      implicit request=>
+        Ok("saved profile")
+    }
+
+
+  def findByEmail(email: String) = Action {
+    implicit request =>
+      Async {
+        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
+        futureResult.map {
+          maybeWebuser: Option[Webuser] =>
+            Ok(views.html.CallForPaper.showWebuser(maybeWebuser))
+        }
+      }
+  }
+
 }
 
 /**

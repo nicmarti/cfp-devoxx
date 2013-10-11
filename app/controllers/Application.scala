@@ -26,14 +26,7 @@ import models._
 import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
-import play.api.data._
-import play.api.data.Forms._
-import play.api.data.validation.Constraints._
 
-import notifiers.Mails
-import play.api.libs.Crypto
-import org.apache.commons.codec.binary.Base64
-import play.api.i18n.Messages
 
 /**
  * Devoxx France Call For Paper main application.
@@ -56,17 +49,6 @@ object Application extends Controller {
       Redirect(routes.Application.index).withNewSession
   }
 
-  def findByEmail(email: String) = Action {
-    implicit request =>
-      Async {
-        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
-        futureResult.map {
-          maybeWebuser: Option[Webuser] =>
-            Ok(views.html.Application.showWebuser(maybeWebuser))
-        }
-      }
-  }
-
   def resetEnvForDev(email:String) = Action {
     implicit request =>
       Async {
@@ -83,23 +65,6 @@ object Application extends Controller {
       }
   }
 
-  val speakerForm = Form(mapping(
-    "email" -> (email verifying nonEmpty),
-    "bio" -> nonEmptyText(maxLength = 500),
-    "lang" -> optional(text),
-    "twitter" -> optional(text),
-    "company" -> optional(text),
-    "blog" -> optional(text)
-  )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
-  def editProfile=Action{
-    implicit request=>
-      Ok(views.html.Application.editProfile(speakerForm))
-  }
-
-  def saveProfile=Action{
-    implicit request=>
-      Ok("saved profile")
-  }
 
 }
