@@ -46,6 +46,12 @@ object Application extends Controller {
       Ok(views.html.Application.index(Authentication.loginForm))
   }
 
+  def home = Action {
+    implicit request =>
+      Ok(views.html.Application.home())
+  }
+
+
   def logout=Action{
     implicit request=>
       Redirect(routes.Application.index).withNewSession
