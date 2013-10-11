@@ -304,13 +304,12 @@ object Authentication extends Controller {
           futureMaybeWebuser.map {
             case Some(w) => {
               Webuser.validateEmail(w) // it is generated
-              Redirect(routes.Application.index()).flashing("success" -> ("Yoru account has been validated. Your new password is " + w.password + " (case-sensitive)"))
+              Speaker.save(Speaker.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/"+w.gravatarHash),None,None))
+              Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + w.password + " (case-sensitive)")).withSession("email"->email)
             }
             case _ => Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
           }
         }
-
-
       } else {
         Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
       }

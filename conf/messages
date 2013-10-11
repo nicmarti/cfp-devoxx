@@ -26,3 +26,4 @@ register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget password?
 cfp.closer=The Devoxx France CallForPaper is closed.
+avatarUrl=URL to your latest profile photo

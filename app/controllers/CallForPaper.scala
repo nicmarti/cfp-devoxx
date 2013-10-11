@@ -40,32 +40,73 @@ import play.api.data.validation.Constraints._
 object CallForPaper extends Controller with Secured {
   def homeForSpeaker = IsAuthenticated {
     email => _ =>
+
+      val futureSpeaker = Speaker.findByEmail(email)
+      val futureWebuser = Webuser.findByEmail(email)
+
       Async {
-        Webuser.findByEmail(email).map {
-          webuser =>
-            Ok("Super " + webuser)
+        val result = futureSpeaker.flatMap(o1 => futureWebuser.map(o2 => o1.flatMap(x1 => o2.map(x2 => (x1, x2)))))
+        result.map {
+          tupleWebuserProfile =>
+            tupleWebuserProfile.map {
+              case (speaker, webuser) =>
+                Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser))
+            }.getOrElse {
+              Redirect(routes.Application.index()).flashing("error" -> "Unable to authenticate, please contact the team, something bad happened (you can blame mongodb).")
+            }
         }
       }
   }
 
+  val editWebuserForm = Form(tuple("firstName" -> nonEmptyText, "lastName" -> nonEmptyText))
+
+  def editCurrentWebuser = IsAuthenticated {
+    email => _ =>
+      val futureWebuser = Webuser.findByEmail(email)
+      Async {
+        futureWebuser.map {
+          maybeWebuser =>
+            maybeWebuser.map {
+              webuser =>
+                Ok(views.html.CallForPaper.editWebuser(editWebuserForm.fill(webuser.firstName, webuser.lastName)))
+            }.getOrElse(Unauthorized("User not found"))
+        }
+      }
+  }
+
+  def saveCurrentWebuser = IsAuthenticated {
+    email => _ =>
+      Ok("Saved")
+  }
+
   val speakerForm = Form(mapping(
-      "email" -> (email verifying nonEmpty),
-      "bio" -> nonEmptyText(maxLength = 500),
-      "lang" -> optional(text),
-      "twitter" -> optional(text),
-      "company" -> optional(text),
-      "blog" -> optional(text)
-    )(Speaker.createSpeaker)(Speaker.unapplyForm))
+    "email" -> (email verifying nonEmpty),
+    "bio" -> nonEmptyText(maxLength = 500),
+    "lang" -> optional(text),
+    "twitter" -> optional(text),
+    "avatarUrl" -> optional(text),
+    "company" -> optional(text),
+    "blog" -> optional(text)
+  )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
-    def editProfile=Action{
-      implicit request=>
-        Ok(views.html.CallForPaper.editProfile(speakerForm))
-    }
+  def editProfile = IsAuthenticated {
+    email => _ =>
+      val futureSpeaker = Speaker.findByEmail(email)
+      Async {
+        futureSpeaker.map {
+          maybeSpeaker =>
+            maybeSpeaker.map {
+              speaker =>
+                Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
+            }.getOrElse(Unauthorized("User not found"))
+        }
+      }
+  }
 
-    def saveProfile=Action{
-      implicit request=>
-        Ok("saved profile")
-    }
+  def saveProfile = Action {
+    implicit request =>
+      Ok("saved profile")
+  }
 
 
   def findByEmail(email: String) = Action {
@@ -95,7 +136,7 @@ trait Secured {
   /**
    * Redirect to login if the user in not authorized.
    */
-  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.index).flashing("error"->"Unauthorized : you are not authenticated or your session has expired. Please authenticate.")
+  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.index).flashing("error" -> "Unauthorized : you are not authenticated or your session has expired. Please authenticate.")
 
   /**
    * Action for authenticated users.

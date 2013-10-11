@@ -1,0 +1,28 @@
+@(speaker: Speaker, webuser:Webuser)
+@import helper.twitterBootstrap._
+@import org.apache.commons.lang3.StringUtils
+
+@main("Devoxx France CFP") {
+    <div class="row">
+        <div class="col-lg-4">
+            <h3>Your profile</h3>
+
+            <p>@webuser.firstName @webuser.lastName <a href="@routes.CallForPaper.editCurrentWebuser()">Edit</a> </p>
+            <img src="http://www.gravatar.com/avatar/@webuser.gravatarHash?s=120" alt="@webuser.firstName @webuser.lastName" title="This is you"/>
+            <p><small>Upload and edit directly your photo on http://www.gravatar.com for your email @speaker.email.</small></p>
+
+            <p><strong>Bio : </strong> @StringUtils.abbreviate(speaker.bio, 20)</p>
+            <p><strong>Avatar URL :</strong> @speaker.avatarUrl.getOrElse("?")</p>
+            <p><strong>Blog or website :</strong> @speaker.blog.getOrElse("?")</p>
+            <p><strong>Company :</strong> @speaker.company.getOrElse("?")</p>
+            <p><strong>Twitter :</strong> @speaker.twitter.getOrElse("?")</p>
+
+
+
+        </div>
+
+        <div class="col-lg-8">
+            <h3>Your submission</h3>
+        </div>
+    </div>
+}

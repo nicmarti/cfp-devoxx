@@ -41,24 +41,23 @@ import play.modules.reactivemongo.json.BSONFormats._
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker( id: Option[BSONObjectID], email: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog:Option[String])
+case class Speaker(id: Option[BSONObjectID], email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String], company: Option[String], blog: Option[String])
 
 object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(email:String, bio:String,lang:Option[String], twitter:Option[String], company:Option[String], blog:Option[String]):Speaker={
-    Speaker(None,email,bio,lang,twitter,None,company,blog)
+  def createSpeaker(email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
+    Speaker(None, email, bio, lang, twitter, avatarUrl, company, blog)
   }
 
-  def unapplyForm(s:Speaker):Option[(String,String, Option[String],Option[String],Option[String],Option[String])]={
-    Some(s.email, s.bio, s.lang, s.twitter, s.company,s.blog)
+  def unapplyForm(s: Speaker): Option[(String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
+    Some(s.email, s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
   }
 
   def save(speaker: Speaker): Future[LastError] = MongoDB.withCollection("speaker") {
     implicit collection =>
     // Check home
-      collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, name=Some("idx_speaker")))
+      collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, name = Some("idx_speaker")))
       val result = collection.insert(speaker)
       result
   }
@@ -72,9 +71,11 @@ object Speaker {
 
   def delete(email: String) = MongoDB.withCollection("speaker") {
     implicit collection =>
-      findByEmail(email).map{maybeSpeaker=>
-        maybeSpeaker.map {speaker=>collection.remove[Speaker](speaker)
-        }
+      findByEmail(email).map {
+        maybeSpeaker =>
+          maybeSpeaker.map {
+            speaker => collection.remove[Speaker](speaker)
+          }
       }
   }
 
