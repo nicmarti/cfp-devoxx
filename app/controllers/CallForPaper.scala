@@ -58,7 +58,8 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  val editWebuserForm = Form(tuple("firstName" -> nonEmptyText, "lastName" -> nonEmptyText))
+  val editWebuserForm = Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)) ,
+                                   "lastName" -> text.verifying(nonEmpty, maxLength(40))))
 
   def editCurrentWebuser = IsAuthenticated {
     email => _ =>
@@ -75,13 +76,17 @@ object CallForPaper extends Controller with Secured {
   }
 
   def saveCurrentWebuser = IsAuthenticated {
-    email => _ =>
-      Ok("Saved")
+    email => implicit request =>
+      editWebuserForm.bindFromRequest.fold(errorForm=>BadRequest(views.html.CallForPaper.editWebuser(errorForm)),
+                                           success=>{
+                                              Webuser.update(email, success._1, success._2)
+                                              Redirect(routes.CallForPaper.homeForSpeaker())
+                                           })
   }
 
   val speakerForm = Form(mapping(
     "email" -> (email verifying nonEmpty),
-    "bio" -> nonEmptyText(maxLength = 500),
+    "bio" -> nonEmptyText(maxLength = 200),
     "lang" -> optional(text),
     "twitter" -> optional(text),
     "avatarUrl" -> optional(text),
@@ -103,9 +108,20 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  def saveProfile = Action {
-    implicit request =>
-      Ok("saved profile")
+  def saveProfile = IsAuthenticated {
+    email => implicit request =>
+      speakerForm.bindFromRequest.fold(
+        invalidForm=>BadRequest(views.html.CallForPaper.editProfile(invalidForm)),
+        validForm=>{
+          if(validForm.email!=email){
+            Unauthorized("You can't do that. Come-on, this is not a JSF app my friend.")
+          }else{
+            Speaker.update(email, validForm)
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success"->"Profile saved")
+          }
+        }
+      )
+
   }
 
 

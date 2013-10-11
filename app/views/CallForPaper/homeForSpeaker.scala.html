@@ -16,9 +16,7 @@
             <p><strong>Blog or website :</strong> @speaker.blog.getOrElse("?")</p>
             <p><strong>Company :</strong> @speaker.company.getOrElse("?")</p>
             <p><strong>Twitter :</strong> @speaker.twitter.getOrElse("?")</p>
-
-
-
+            <a href="@routes.CallForPaper.editProfile()" class="btn btn-info">Edit your profile</a>
         </div>
 
         <div class="col-lg-8">

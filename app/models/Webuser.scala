@@ -106,29 +106,34 @@ object Webuser {
       collection.remove[Webuser](webuser)
   }
 
-  def isMember(email: String, securityGroup: String):Boolean = {
-    val futureResult = findByEmail(email).map{
-      case None=>{
+  def isMember(email: String, securityGroup: String): Boolean = {
+    val futureResult = findByEmail(email).map {
+      case None => {
         println("user not found")
         false
       }
-      case Some(webuser)=>webuser.profile==securityGroup
+      case Some(webuser) => webuser.profile == securityGroup
     }
     Await.result[Boolean](futureResult, 10 seconds)
   }
 
-  def changePassword(webuser:Webuser):String=MongoDB.withCollection("webuser"){
-    implicit collection=>
-      val newPassword=RandomStringUtils.randomAlphabetic(7)
+  def changePassword(webuser: Webuser): String = MongoDB.withCollection("webuser") {
+    implicit collection =>
+      val newPassword = RandomStringUtils.randomAlphabetic(7)
       collection.update(Json.obj("email" -> webuser.email), Json.obj("$set" -> Json.obj("password" -> newPassword)), upsert = false)
       newPassword
   }
 
-  def validateEmail(webuser:Webuser):String=MongoDB.withCollection("webuser"){
-      implicit collection=>
-        val newPassword=RandomStringUtils.randomAlphabetic(7)
-        collection.update(Json.obj("email" -> webuser.email), Json.obj("$set" -> Json.obj("profile" -> "speaker")), upsert = false)
-        newPassword
-    }
+  def validateEmail(webuser: Webuser): String = MongoDB.withCollection("webuser") {
+    implicit collection =>
+      val newPassword = RandomStringUtils.randomAlphabetic(7)
+      collection.update(Json.obj("email" -> webuser.email), Json.obj("$set" -> Json.obj("profile" -> "speaker")), upsert = false)
+      newPassword
+  }
+
+  def update(email:String, firstName:String, lastName:String)=MongoDB.withCollection("webuser"){
+    implicit collection=>
+      collection.update(Json.obj("email"->email), Json.obj("$set" -> Json.obj("firstName" -> firstName, "lastName"->lastName)), upsert = false)
+  }
 }
 

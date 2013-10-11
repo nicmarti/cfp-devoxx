@@ -56,10 +56,13 @@ object Speaker {
 
   def save(speaker: Speaker): Future[LastError] = MongoDB.withCollection("speaker") {
     implicit collection =>
-    // Check home
-      collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, name = Some("idx_speaker")))
-      val result = collection.insert(speaker)
-      result
+        collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, name = Some("idx_speaker")))
+        collection.insert(speaker)
+  }
+
+  def update(email:String, speaker:Speaker):Future[LastError] = MongoDB.withCollection("speaker"){
+    implicit collection=>
+      collection.update(Json.obj("email" -> speaker.email), speaker, upsert = true, multi = false)
   }
 
   def findByEmail(email: String): Future[Option[Speaker]] = MongoDB.withCollection("speaker") {
