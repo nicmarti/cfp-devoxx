@@ -64,7 +64,7 @@ object Webuser {
   def save(webuser: Webuser): Future[LastError] = MongoDB.withCollection("webuser") {
     implicit collection =>
       val result = if (webuser.id.isEmpty) {
-        // Check index
+        // Check home
         collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, dropDups = true))
         collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending, "password" -> IndexType.Ascending), name = Some("idx_password")))
         collection.insert(webuser.copy(id = Some(BSONObjectID.generate), profile = "notvalidated"))
@@ -78,7 +78,7 @@ object Webuser {
   def saveAndValidate(webuser: Webuser): Future[LastError] = MongoDB.withCollection("webuser") {
     implicit collection =>
       val result = if (webuser.id.isEmpty) {
-        // Check index
+        // Check home
         collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, dropDups = true))
         collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending, "password" -> IndexType.Ascending), name = Some("idx_password")))
         collection.insert(webuser.copy(id = Some(BSONObjectID.generate), profile = "speaker"))

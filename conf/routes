@@ -1,11 +1,15 @@
 # Home page
-GET     /                           controllers.Application.home
-GET     /index                      controllers.Application.index
+GET     /                           controllers.Application.index
+GET     /home                       controllers.Application.home
 GET     /logout                     controllers.Application.logout
+GET     /find                       controllers.Application.findByEmail(email:String)
 
-GET     /signup                     controllers.Application.prepareSignup
+GET     /profile                    controllers.Application.editProfile
+POST    /profile                    controllers.Application.saveProfile
+
 POST    /login                      controllers.Authentication.login
 
+GET     /signup                     controllers.Authentication.prepareSignup
 GET     /signup/github              controllers.Authentication.createFromGithub
 GET     /login/github               controllers.Authentication.githubLogin
 POST    /github/callback            controllers.Authentication.callbackGithub
@@ -16,18 +20,15 @@ GET     /access_token               controllers.Authentication.showAccessToken
 POST    /newspeaker                 controllers.Authentication.saveNewSpeaker
 GET     /newspeaker/validateMail    controllers.Authentication.validateYourEmail(t:String,a:String)
 POST    /newspeaker/validImported   controllers.Authentication.validateImportedSpeaker
-GET     /find                       controllers.Application.findByEmail(email:String)
 
-# Speaker profile
-GET     /profile                    controllers.Application.editProfile
-POST    /profile                    controllers.Application.saveProfile
+
 
 GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker
 
 
-GET     /forget                     controllers.Application.forgetPassword
-POST    /forget/validate            controllers.Application.doForgetPassword()
-GET     /resetpassword              controllers.Application.resetPassword(t:String, a:String)
+GET     /forget                     controllers.Authentication.forgetPassword
+POST    /forget/validate            controllers.Authentication.doForgetPassword()
+GET     /resetpassword              controllers.Authentication.resetPassword(t:String, a:String)
 
 # OAuth2 google
 GET     /signup/google              controllers.Authentication.createFromGoogle

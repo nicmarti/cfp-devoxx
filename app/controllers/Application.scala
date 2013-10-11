@@ -41,64 +41,19 @@ import play.api.i18n.Messages
  */
 object Application extends Controller {
 
-  def index = Action {
-    implicit request =>
-      Ok(views.html.Application.index(Authentication.loginForm))
-  }
-
   def home = Action {
     implicit request =>
-      Ok(views.html.Application.home())
+      Ok(views.html.Application.home(Authentication.loginForm))
   }
 
+  def index = Action {
+    implicit request =>
+      Ok(views.html.Application.index())
+  }
 
   def logout=Action{
     implicit request=>
       Redirect(routes.Application.index).withNewSession
-  }
-
-  def prepareSignup = Action {
-    implicit request =>
-      Ok(views.html.Application.prepareSignup(Authentication.newWebuserForm))
-  }
-
-  def forgetPassword=Action{
-    Ok(views.html.Application.forgetPassword(emailForm))
-  }
-
-  val emailForm=Form("email"->(email verifying nonEmpty))
-
-  def doForgetPassword()=Action{
-    implicit request=>
-    emailForm.bindFromRequest.fold(
-      errorForm=>BadRequest(views.html.Application.forgetPassword(errorForm)),
-      validEmail=>{
-      Mails.sendResetPasswordLink(validEmail, routes.Application.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
-      ).absoluteURL())
-      Redirect(routes.Application.index()).flashing("success"->Messages("forget.password.confirm"))
-    })
-  }
-
-  def resetPassword(t:String, a:String)=Action{
-    implicit request=>
-      val email= new String(Base64.decodeBase64(a),"UTF-8")
-      if(Crypto.sign(email)==t){
-        val futureMaybeWebuser=Webuser.findByEmail(email)
-
-        Async{
-          futureMaybeWebuser.map{
-            case Some(w)=>{
-              val newPassword=Webuser.changePassword(w) // it is generated
-              Redirect(routes.Application.index()).flashing("success"->("Your new password is "+newPassword + " (case-sensitive)"))
-            }
-            case _=>Redirect(routes.Application.index()).flashing("error"->"Sorry, this email is not registered in your system.")
-          }
-        }
-
-
-      }else{
-        Redirect(routes.Application.index()).flashing("error"->"Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
-      }
   }
 
   def findByEmail(email: String) = Action {

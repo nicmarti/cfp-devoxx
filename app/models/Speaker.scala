@@ -57,7 +57,7 @@ object Speaker {
 
   def save(speaker: Speaker): Future[LastError] = MongoDB.withCollection("speaker") {
     implicit collection =>
-    // Check index
+    // Check home
       collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, name=Some("idx_speaker")))
       val result = collection.insert(speaker)
       result

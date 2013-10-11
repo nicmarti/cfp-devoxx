@@ -1,4 +1,4 @@
-@(loginForm: Form[(String, String)])(implicit lang: Lang, flash: Flash)
+@()(implicit lang: Lang, flash: Flash)
 
 @import helper.twitterBootstrap._
 
@@ -37,7 +37,7 @@
         <div class="container">
             <div class="bs-docs-section clearfix">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                             <h2><i class="icon-comment-alt"></i> Appel aux conférenciers</h2>
                             <em>Call for Paper for Devoxx France 2014</em>
 
@@ -52,33 +52,37 @@
                                 @flash.get("success").get
                             </div>
                         }
+                        <div class="alert alert-info">
+                            @Messages("cfp.closed")
+                        </div>
                     </div>
-                    <div class="col-lg-6">
-                        <h3><i class="icon-signin"></i> @Html(Messages("index.method1"))</h3>
-                        @helper.form(action = routes.Authentication.login) {
-                            @helper.inputText(loginForm("email"))
-                            @helper.inputPassword(loginForm("password"))
-                            <button class="btn btn-default" type="submit">@Messages("btn.login")</button>
-                            <a href="@routes.Application.forgetPassword()">@Messages("forget.password")</a>
-                        }
 
-                        <h3><i class="icon-external-link-sign"></i> @Html(Messages("index.method2"))</h3>
-                        <p>@Html(Messages("index.txt2"))</p>
-                        <p><i class="icon-github-sign"></i> <a href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to Devoxx FR">Github</a></p>
-                        <p><i class="icon-google-plus-sign"></i> <a href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to Devoxx FR">Google +</a></p>
+                    <div class="col-lg-4">
+                        <h3>Agenda</h3>
+                        <p><strong>Ouverture du CFP : </strong> Lundi 2 décembre 2013</p>
+                        <p><strong>Fermeture du CFP : </strong> Dimanche 9 février 2013</p>
+                        <p><strong>Annonce du programme : </strong> Mercredi 13 mars 2013</p>
+                    </div>
+                    <div class="col-lg-5">
+                        <h3>Thèmes</h3>
+                        <p>Les thèmes de l'édition 2014 de Devoxx France :</p>
+                        <ul>
+                        <li>Java SE (java 8)</li>
+                        <li>Java EE 7</li>
+                        <li>Architecture et sécurité</li>
+                        <li>Langages alternatifs</li>
+                        <li>Mobile et développement Web</li>
+                        <li>Java demain, Future&lt;Jaca&gt;</li>
+                        </ul>
+
+                     </div>
+                    <div class="col-lg-3">
+                        <h3>Vidéos de l'édition 2013</h3>
+                        <p>Retrouvez les sessions de l'édition 2013 sur le site <a href="http://www.parleys.com">Parleys</a> </p>
                     </div>
               </div>
             </div>
-
-              <div class="row">
-                    <div class="col-lg-6 col-lg-offset-6">
-                        <hr>
-                        <h3><i class="icon-user"></i> @Html(Messages("index.signupTitle"))</h3>
-                        <p>@Html(Messages("index.signup2"))</p>
-                        <a class="btn btn-default" href="@routes.Application.prepareSignup()">@Messages("index.signup.btn")</a>
-                    </div>
-                </div>
-        </div>
+      </div>
 
         <footer class="footer hidden-print">
           <div class="container">

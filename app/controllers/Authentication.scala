@@ -53,10 +53,53 @@ import play.api.i18n.Messages
 object Authentication extends Controller {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
+  def prepareSignup = Action {
+      implicit request =>
+        Ok(views.html.Authentication.prepareSignup(newWebuserForm))
+    }
+
+    def forgetPassword=Action{
+      Ok(views.html.Authentication.forgetPassword(emailForm))
+    }
+
+    val emailForm=Form("email"->(email verifying nonEmpty))
+
+    def doForgetPassword()=Action{
+      implicit request=>
+      emailForm.bindFromRequest.fold(
+        errorForm=>BadRequest(views.html.Authentication.forgetPassword(errorForm)),
+        validEmail=>{
+        Mails.sendResetPasswordLink(validEmail, routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
+        ).absoluteURL())
+        Redirect(routes.Application.index()).flashing("success"->Messages("forget.password.confirm"))
+      })
+    }
+
+    def resetPassword(t:String, a:String)=Action{
+      implicit request=>
+        val email= new String(Base64.decodeBase64(a),"UTF-8")
+        if(Crypto.sign(email)==t){
+          val futureMaybeWebuser=Webuser.findByEmail(email)
+          Async{
+            futureMaybeWebuser.map{
+              case Some(w)=>{
+                val newPassword=Webuser.changePassword(w) // it is generated
+                Redirect(routes.Application.index()).flashing("success"->("Your new password is "+newPassword + " (case-sensitive)"))
+              }
+              case _=>Redirect(routes.Application.index()).flashing("error"->"Sorry, this email is not registered in your system.")
+            }
+          }
+
+
+        }else{
+          Redirect(routes.Application.index()).flashing("error"->"Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
+        }
+    }
+
   def login = Action {
     implicit request =>
       loginForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Application.index(invalidForm)),
+        invalidForm => BadRequest(views.html.Application.home(invalidForm)),
         validForm => Async {
           Webuser.checkPassword(validForm._1, validForm._2).map {
             validUser =>
@@ -89,7 +132,7 @@ object Authentication extends Controller {
   def callbackGithub = Action {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid form")
+        BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid form")
       }, validForm => {
         validForm match {
           case (code, state) if state == Crypto.sign("ok") => {
@@ -125,7 +168,7 @@ object Authentication extends Controller {
               InternalServerError("github.client_secret is not configured in application.conf")
             }
           }
-          case other => BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid state code")
+          case other => BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
         }
       })
   }
@@ -232,7 +275,7 @@ object Authentication extends Controller {
   def saveNewSpeaker = Action {
     implicit request =>
       newWebuserForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Application.prepareSignup(invalidForm)),
+        invalidForm => BadRequest(views.html.Authentication.prepareSignup(invalidForm)),
         validForm => Async {
           Webuser.save(validForm).map {
             _ =>
@@ -242,7 +285,7 @@ object Authentication extends Controller {
           }.recover {
             case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
               Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
-              if (code.get == 11000) Redirect(routes.Application.prepareSignup).flashing("error"->Messages("email.alreadyexists")) else InternalServerError("Could not create speaker.")
+              if (code.get == 11000) Redirect(routes.Authentication.prepareSignup).flashing("error"->Messages("email.alreadyexists")) else InternalServerError("Could not create speaker.")
             case other => {
               Logger.error("Unknown Error " + other)
               InternalServerError("Unknown MongoDB Error")
@@ -328,7 +371,7 @@ object Authentication extends Controller {
     implicit request =>
       println("request callbackGoogle")
       oauthForm.bindFromRequest.fold(invalidForm => {
-        BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid form")
+        BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid form")
       }, validForm => {
         validForm match {
           case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
@@ -360,7 +403,7 @@ object Authentication extends Controller {
               InternalServerError("github.client_secret is not configured in application.conf")
             }
           }
-          case other => BadRequest(views.html.Application.index(loginForm)).flashing("error" -> "Invalid state code")
+          case other => BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
         }
       })
   }
