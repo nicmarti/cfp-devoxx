@@ -42,6 +42,7 @@ import notifiers.Mails
 import org.apache.commons.codec.binary.Base64
 import java.security.SecureRandom
 import java.math.BigInteger
+import play.api.i18n.Messages
 
 /**
  * Signup and Signin.
@@ -241,7 +242,7 @@ object Authentication extends Controller {
           }.recover {
             case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
               Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
-              if (code.get == 11000) Conflict("Email already exists") else InternalServerError("Could not create speaker.")
+              if (code.get == 11000) Redirect(routes.Application.prepareSignup).flashing("error"->Messages("email.alreadyexists")) else InternalServerError("Could not create speaker.")
             case other => {
               Logger.error("Unknown Error " + other)
               InternalServerError("Unknown MongoDB Error")

@@ -1,12 +1,20 @@
 @(resetUrl:String)
-Did you forget your Devoxx France password?
 
-Someone asked to reset your Devoxx France password. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done
+<h3>Did you forget your CFP Devoxx France password?</h3>
+<p>Someone asked to reset your Devoxx France password. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.</p>
+<p><a href="@Html(resetUrl)">@Html(resetUrl)</a></p>
+<p>Please visit this link to reset your password.</p>
+<p>We don't want to store your super secret password, that might be the same one as your Google Account. We prefer to generate
+a random passwor. We also encourage you to use one of our OpenID's providers like Github or Google+. Simpler, more secure, that just rocks!</p>
+<p>The Devoxx France team</p>
+<hr>
+<h3>Mot de passe oublié sur le site du CFP de Devoxx France ?</h3>
+<p>Quelqu'un a demandé à modifier le mot de passe pour le site de l'appel aux conférenciers de Devoxx France.
+Si ce n'était pas vous, pas de soucis, ignorez simplement ce courrier.</p>
 
-@Html(resetUrl)
+<p>Pour réinitialiser votre mot de passe, merci de visiter cette URL :</p>
+<p><a href="@Html(resetUrl)">@Html(resetUrl)</a></p>
 
-Please visit this link to reset your password.
-
-Have fun!
-
-Devoxx France
+<p>Nous ne voulons pas stocker vos mots de passe et nous préférons les générer au hasard. Par ailleurs, nous vous encourageons à
+utiliser votre profil Github ou Google+ pour vous authentifier. Plus simple, plus moderne.</p>
+<p>L'équipe Devoxx France</p>

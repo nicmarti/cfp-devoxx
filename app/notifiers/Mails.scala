@@ -26,6 +26,7 @@ package notifiers
 
 import com.typesafe.plugin._
 import play.api.Play.current
+import org.joda.time.DateTime
 
 /**
  * Sends all emails
@@ -38,7 +39,7 @@ object Mails {
 
   def sendResetPasswordLink(email: String, resetUrl: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("Reset your Devoxx France password")
+    emailer.setSubject("You asked to reset your Devoxx France speaker's password at "+new DateTime().toString("HH:mm dd/MM"))
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")

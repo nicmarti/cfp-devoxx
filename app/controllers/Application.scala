@@ -33,6 +33,7 @@ import play.api.data.validation.Constraints._
 import notifiers.Mails
 import play.api.libs.Crypto
 import org.apache.commons.codec.binary.Base64
+import play.api.i18n.Messages
 
 /**
  * Devoxx France Call For Paper main application.
@@ -55,10 +56,6 @@ object Application extends Controller {
       Ok(views.html.Application.prepareSignup(Authentication.newWebuserForm))
   }
 
-  def signup = Action {
-    Ok("signup")
-  }
-
   def forgetPassword=Action{
     Ok(views.html.Application.forgetPassword(emailForm))
   }
@@ -72,7 +69,7 @@ object Application extends Controller {
       validEmail=>{
       Mails.sendResetPasswordLink(validEmail, routes.Application.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
       ).absoluteURL())
-      Redirect(routes.Application.index()).flashing("success"->"An email was sent to the provided email address. Please check your mailbox.")
+      Redirect(routes.Application.index()).flashing("success"->Messages("forget.password.confirm"))
     })
   }
 
