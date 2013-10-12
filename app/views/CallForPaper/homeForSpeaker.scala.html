@@ -7,16 +7,46 @@
         <div class="col-lg-4">
             <h3>Your profile</h3>
 
-            <p>@webuser.firstName @webuser.lastName <a href="@routes.CallForPaper.editCurrentWebuser()">Edit</a> </p>
+            <p>@webuser.firstName @webuser.lastName</p>
             <img src="http://www.gravatar.com/avatar/@webuser.gravatarHash?s=120" alt="@webuser.firstName @webuser.lastName" title="This is you"/>
-            <p><small>Upload and edit directly your photo on http://www.gravatar.com for your email @speaker.email.</small></p>
-
-            <p><strong>Bio : </strong> @StringUtils.abbreviate(speaker.bio, 20)</p>
-            <p><strong>Avatar URL :</strong> @speaker.avatarUrl.getOrElse("?")</p>
-            <p><strong>Blog or website :</strong> @speaker.blog.getOrElse("?")</p>
-            <p><strong>Company :</strong> @speaker.company.getOrElse("?")</p>
-            <p><strong>Twitter :</strong> @speaker.twitter.getOrElse("?")</p>
+            <p><small>Upload and edit directly your photo on <a href="http://www.gravatar.com" target="_blank">Gravatar.com</a> for your email @speaker.email. </small></p>
+            <p><strong>Bio : </strong>
+            @if(StringUtils.trimToEmpty(speaker.bio).isEmpty){
+                <i class="icon-exclamation-sign"></i>
+            } else {
+                <i class="icon-ok"></i>
+            }
+            </p>
+            <p><strong>URL to your profile's picture :</strong>
+                @if(StringUtils.trimToEmpty(speaker.avatarUrl.getOrElse("")).isEmpty){
+                    <i class="icon-exclamation-sign"></i>
+                } else {
+                    <i class="icon-ok"></i>
+                }
+            </p>
+            <p><strong>Blog or website :</strong>
+                @if(StringUtils.trimToEmpty(speaker.blog.getOrElse("")).isEmpty){
+                    <i class="icon-exclamation-sign error"></i>
+                } else {
+                    <i class="icon-ok"></i>
+                }
+            </p>
+            <p><strong>Company :</strong>
+                @if(StringUtils.trimToEmpty(speaker.company.getOrElse("")).isEmpty){
+                    <i class="icon-exclamation-sign"></i>
+                } else {
+                    <i class="icon-ok"></i>
+                }
+            </p>
+            <p><strong>Twitter :</strong>
+                @if(StringUtils.trimToEmpty(speaker.twitter.getOrElse("")).isEmpty){
+                    <i class="icon-exclamation-sign"></i>
+                } else {
+                    <i class="icon-ok"></i>
+                }
+            </p>
             <a href="@routes.CallForPaper.editProfile()" class="btn btn-info">Edit your profile</a>
+            <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-primary">Edit your name </a>
         </div>
 
         <div class="col-lg-8">

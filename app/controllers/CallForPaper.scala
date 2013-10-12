@@ -86,7 +86,7 @@ object CallForPaper extends Controller with Secured {
 
   val speakerForm = Form(mapping(
     "email" -> (email verifying nonEmpty),
-    "bio" -> nonEmptyText(maxLength = 200),
+    "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
     "twitter" -> optional(text),
     "avatarUrl" -> optional(text),
