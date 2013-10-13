@@ -25,11 +25,14 @@ package controllers
 
 import play.api.mvc._
 import models.{Speaker, Webuser}
-import scala.concurrent.{ExecutionContext, Future}
-import ExecutionContext.Implicits.global
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api._
+import scala.concurrent._
+import play.api.libs.concurrent.Execution.Implicits._
+
+import io.prismic._
 
 /**
  * Main controller for the speakers.
@@ -38,6 +41,50 @@ import play.api.data.validation.Constraints._
  * Created: 29/09/2013 12:24
  */
 object CallForPaper extends Controller with Secured {
+
+  import Prismic._
+
+  // -- Resolve links to documents
+  def linkResolver(api: Api, ref: Option[String])(implicit request: RequestHeader) = DocumentLinkResolver(api) {
+    case (Fragment.DocumentLink(id, docType, tags, slug, false), maybeBookmarked) => routes.CallForPaper.detail(id, slug, ref).absoluteURL()
+  }
+
+  // -- Page not found
+  def PageNotFound(implicit ctx: Prismic.Context) = NotFound("Page not found")
+
+  // -- Home page
+  def index(ref: Option[String]) = Prismic.action(ref) {
+    implicit request =>
+      for {
+        someDocuments <- ctx.api.forms("everything").ref(ctx.ref).submit()
+      } yield {
+        Ok(views.html.CallForPaper.index(someDocuments))
+      }
+  }
+
+  // -- Document detail
+  def detail(id: String, slug: String, ref: Option[String]) = Prismic.action(ref) {
+    implicit request =>
+      for {
+        maybeDocument <- getDocument(id)
+      } yield {
+        checkSlug(maybeDocument, slug) {
+          case Left(newSlug) => MovedPermanently(routes.CallForPaper.detail(id, newSlug, ref).url)
+          case Right(document) => Ok(views.html.CallForPaper.detail(document))
+        }
+      }
+  }
+
+  // -- Basic Search
+  def search(q: Option[String], ref: Option[String]) = Prismic.action(ref) {
+    implicit request =>
+      for {
+        results <- ctx.api.forms("everything").query( s"""[[:d = fulltext(document, "${q.getOrElse("")}")]]""").ref(ctx.ref).submit()
+      } yield {
+        Ok(views.html.CallForPaper.search(q, results))
+      }
+  }
+
   def homeForSpeaker = IsAuthenticated {
     email => _ =>
 
@@ -58,8 +105,8 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  val editWebuserForm = Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)) ,
-                                   "lastName" -> text.verifying(nonEmpty, maxLength(40))))
+  val editWebuserForm =  play.api.data.Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)),
+    "lastName" -> text.verifying(nonEmpty, maxLength(40))))
 
   def editCurrentWebuser = IsAuthenticated {
     email => _ =>
@@ -77,14 +124,14 @@ object CallForPaper extends Controller with Secured {
 
   def saveCurrentWebuser = IsAuthenticated {
     email => implicit request =>
-      editWebuserForm.bindFromRequest.fold(errorForm=>BadRequest(views.html.CallForPaper.editWebuser(errorForm)),
-                                           success=>{
-                                              Webuser.update(email, success._1, success._2)
-                                              Redirect(routes.CallForPaper.homeForSpeaker())
-                                           })
+      editWebuserForm.bindFromRequest.fold(errorForm => BadRequest(views.html.CallForPaper.editWebuser(errorForm)),
+        success => {
+          Webuser.update(email, success._1, success._2)
+          Redirect(routes.CallForPaper.homeForSpeaker())
+        })
   }
 
-  val speakerForm = Form(mapping(
+  val speakerForm =  play.api.data.Form(mapping(
     "email" -> (email verifying nonEmpty),
     "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
@@ -111,13 +158,13 @@ object CallForPaper extends Controller with Secured {
   def saveProfile = IsAuthenticated {
     email => implicit request =>
       speakerForm.bindFromRequest.fold(
-        invalidForm=>BadRequest(views.html.CallForPaper.editProfile(invalidForm)),
-        validForm=>{
-          if(validForm.email!=email){
+        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)),
+        validForm => {
+          if (validForm.email != email) {
             Unauthorized("You can't do that. Come-on, this is not a JSF app my friend.")
-          }else{
+          } else {
             Speaker.update(email, validForm)
-            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success"->"Profile saved")
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
           }
         }
       )

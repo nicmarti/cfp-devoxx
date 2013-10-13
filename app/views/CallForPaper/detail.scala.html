@@ -1,0 +1,9 @@
+@(document: io.prismic.Document)(implicit ctx: Prismic.Context)
+
+@mainCFP(s"Document detail ${document.slug}") {
+
+    <article id="@document.id">
+      @Html(document.asHtml(ctx.linkResolver))
+    </article>
+
+}

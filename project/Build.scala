@@ -1,15 +1,17 @@
 import sbt._
 import Keys._
 import play.Project._
-
+/**
+ * Build conf file.
+ */
 object ApplicationBuild extends Build {
 
   val appName = "cfp-devoxxfr"
-  val appVersion = "1.0-SNAPSHOT"
+  val appVersion = "1.2-SNAPSHOT"
 
 
   val appDependencies = Seq(
-    "org.reactivemongo" %% "play2-reactivemongo" % "0.9"
+    "org.reactivemongo" %% "play2-reactivemongo" % "0.10.0-SNAPSHOT"
     , "com.typesafe" %% "play-plugins-mailer" % "2.1.0"
     , "commons-lang" % "commons-lang" % "2.6"
     , "commons-io" % "commons-io" % "2.4"
@@ -24,7 +26,12 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-    resolvers += "Sonatype Google" at "https://oss.sonatype.org/content/repositories/google-releases/"
+    resolvers += "Sonatype Google" at "https://oss.sonatype.org/content/repositories/google-releases/",
+    resolvers += "Prismic.io kits" at "https://github.com/prismicio/repository/raw/master/maven/",
+    // The Scala kit
+    libraryDependencies += "io.prismic" %% "scala-kit" % "1.0-M3"
   )
 
 }
+
+
