@@ -86,7 +86,7 @@ object CallForPaper extends Controller with Secured {
   }
 
   def homeForSpeaker = IsAuthenticated {
-    email => _ =>
+    email => implicit request =>
 
       val futureSpeaker = Speaker.findByEmail(email)
       val futureWebuser = Webuser.findByEmail(email)
@@ -105,8 +105,7 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  val editWebuserForm =  play.api.data.Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)),
-    "lastName" -> text.verifying(nonEmpty, maxLength(40))))
+  val editWebuserForm = play.api.data.Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)), "lastName" -> text.verifying(nonEmpty, maxLength(40))))
 
   def editCurrentWebuser = IsAuthenticated {
     email => _ =>
@@ -131,7 +130,7 @@ object CallForPaper extends Controller with Secured {
         })
   }
 
-  val speakerForm =  play.api.data.Form(mapping(
+  val speakerForm = play.api.data.Form(mapping(
     "email" -> (email verifying nonEmpty),
     "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
@@ -142,7 +141,7 @@ object CallForPaper extends Controller with Secured {
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def editProfile = IsAuthenticated {
-    email => _ =>
+    email => implicit request =>
       val futureSpeaker = Speaker.findByEmail(email)
       Async {
         futureSpeaker.map {
@@ -168,18 +167,14 @@ object CallForPaper extends Controller with Secured {
           }
         }
       )
-
   }
 
-
-  def findByEmail(email: String) = Action {
+  def findByEmail(email: String) = Action.async {
     implicit request =>
-      Async {
-        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
-        futureResult.map {
-          maybeWebuser: Option[Webuser] =>
-            Ok(views.html.CallForPaper.showWebuser(maybeWebuser))
-        }
+      val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
+      futureResult.map {
+        maybeWebuser: Option[Webuser] =>
+          Ok(views.html.CallForPaper.showWebuser(maybeWebuser))
       }
   }
 
@@ -189,7 +184,6 @@ object CallForPaper extends Controller with Secured {
  * Provide security features
  */
 trait Secured {
-
 
   /**
    * Retrieve the connected user email.
@@ -204,9 +198,11 @@ trait Secured {
   /**
    * Action for authenticated users.
    */
-  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) {
-    user =>
-      Action(request => f(user)(request))
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = {
+    Security.Authenticated(username, onUnauthorized) {
+      user =>
+        Action(request => f(user)(request))
+    }
   }
 
   /**

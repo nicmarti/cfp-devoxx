@@ -53,9 +53,9 @@ GET     /cfp/search                                     controllers.CallForPaper
 
 
 # Prismic.io OAuth
-GET     /prismic/signin                                     controllers.Prismic.signin
+GET     /prismic/signin                                controllers.Prismic.signin
 GET     /prismic/callback                              controllers.Prismic.callback(code: Option[String], redirect_uri: Option[String])
-POST    /prismic/signout                                    controllers.Prismic.signout()
+POST    /prismic/signout                               controllers.Prismic.signout()
 
 
 # Map static resources from the /public folder to the /assets URL path

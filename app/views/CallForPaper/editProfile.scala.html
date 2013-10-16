@@ -1,4 +1,4 @@
-@(speakerForm: Form[Speaker])
+@(speakerForm: Form[Speaker])(implicit flash:Flash)
 
 @import helper.twitterBootstrap._
 
@@ -24,6 +24,18 @@
             <button class="btn btn-success" type="submit">Enregister</button>
         }
     </div>
-
+    <div class="col-lg-4 col-lg-offset-8">
+        @if(flash.get("error").isDefined){
+              <div class="alert alert-danger alert-dismissable">
+                  <strong>Error :</strong>
+                  @flash.get("error").get
+              </div>
+          }
+          @if(flash.get("success").isDefined){
+              <div class="alert alert-success alert-dismissable">
+                  @flash.get("success").get
+              </div>
+          }
+    </div>
 </div>
 }
