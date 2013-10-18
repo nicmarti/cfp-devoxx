@@ -326,7 +326,7 @@ object Authentication extends Controller {
                 invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
                 validSpeakerForm => Async {
                   Speaker.save(validSpeakerForm).map {
-                    _ => Ok(views.html.Authentication.validateImportedSpeaker(validForm.email, validForm.password))
+                    _ => Ok(views.html.Authentication.validateImportedSpeaker(validForm.email, validForm.password)).withSession("email"->validForm.email)
                   }.recover {
                     case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
                       Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
