@@ -54,9 +54,10 @@ object CallForPaper extends Controller with Secured {
 
   // -- Home page
   def index(ref: Option[String]) = Prismic.action(ref) {
+    val author = "nicolas.martignole@devoxx.fr"
     implicit request =>
       for {
-        someDocuments <- ctx.api.forms("everything").ref(ctx.ref).submit()
+        someDocuments <- ctx.api.forms("talks").query(s"""[[:d = at(document.type, "proposal")][:d = at(document.get("email"), "nicolas.martignole@devoxx.fr")]]""").ref(ctx.ref).submit()
       } yield {
         Ok(views.html.CallForPaper.index(someDocuments))
       }

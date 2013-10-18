@@ -63,6 +63,7 @@ object Prismic extends Controller {
 
   // -- Build a Prismic context
   def buildContext(ref: Option[String])(implicit request: RequestHeader) = {
+    println("Access_token "+Play.configuration.getString("prismic.token"))
     for {
       api <- apiHome(request.session.get(ACCESS_TOKEN).orElse(Play.configuration.getString("prismic.token")))
     } yield {
