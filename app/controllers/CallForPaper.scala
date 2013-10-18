@@ -42,53 +42,8 @@ import io.prismic._
  */
 object CallForPaper extends Controller with Secured {
 
-  import Prismic._
-
-  // -- Resolve links to documents
-  def linkResolver(api: Api, ref: Option[String])(implicit request: RequestHeader) = DocumentLinkResolver(api) {
-    case (Fragment.DocumentLink(id, docType, tags, slug, false), maybeBookmarked) => routes.CallForPaper.detail(id, slug, ref).absoluteURL()
-  }
-
-  // -- Page not found
-  def PageNotFound(implicit ctx: Prismic.Context) = NotFound("Page not found")
-
-  // -- Home page
-  def index(ref: Option[String]) = Prismic.action(ref) {
-    val author = "nicolas.martignole@devoxx.fr"
-    implicit request =>
-      for {
-        someDocuments <- ctx.api.forms("talks").query(s"""[[:d = at(document.type, "proposal")][:d = at(document.get("email"), "nicolas.martignole@devoxx.fr")]]""").ref(ctx.ref).submit()
-      } yield {
-        Ok(views.html.CallForPaper.index(someDocuments))
-      }
-  }
-
-  // -- Document detail
-  def detail(id: String, slug: String, ref: Option[String]) = Prismic.action(ref) {
-    implicit request =>
-      for {
-        maybeDocument <- getDocument(id)
-      } yield {
-        checkSlug(maybeDocument, slug) {
-          case Left(newSlug) => MovedPermanently(routes.CallForPaper.detail(id, newSlug, ref).url)
-          case Right(document) => Ok(views.html.CallForPaper.detail(document))
-        }
-      }
-  }
-
-  // -- Basic Search
-  def search(q: Option[String], ref: Option[String]) = Prismic.action(ref) {
-    implicit request =>
-      for {
-        results <- ctx.api.forms("everything").query( s"""[[:d = fulltext(document, "${q.getOrElse("")}")]]""").ref(ctx.ref).submit()
-      } yield {
-        Ok(views.html.CallForPaper.search(q, results))
-      }
-  }
-
   def homeForSpeaker = IsAuthenticated {
     email => implicit request =>
-
       val futureSpeaker = Speaker.findByEmail(email)
       val futureWebuser = Webuser.findByEmail(email)
 

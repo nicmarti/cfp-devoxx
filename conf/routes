@@ -41,22 +41,5 @@ POST    /googleoauth2callback       controllers.Authentication.callbackGoogle
 # for test
 GET     /resetEnvForDev             controllers.Application.resetEnvForDev(email:String)
 
-
-# Home page
-GET     /cfp/index                  controllers.CallForPaper.index(ref: Option[String] ?= None)
-
-# Document detail
-GET     /cfp/documents/$id<[-_a-zA-Z0-9]{16}>/:slug     controllers.CallForPaper.detail(id, slug, ref: Option[String] ?= None)
-
-# Basic search
-GET     /cfp/search                                     controllers.CallForPaper.search(q: Option[String] ?= None, ref: Option[String] ?= None)
-
-
-# Prismic.io OAuth
-GET     /prismic/signin                                controllers.Prismic.signin
-GET     /prismic/callback                              controllers.Prismic.callback(code: Option[String], redirect_uri: Option[String])
-POST    /prismic/signout                               controllers.Prismic.signout()
-
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
