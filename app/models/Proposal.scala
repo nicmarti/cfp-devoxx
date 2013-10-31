@@ -1,12 +1,7 @@
 package models
 
-import reactivemongo.bson.BSONObjectID
-import scala.concurrent.Future
-import library.MongoDB
-import reactivemongo.api.Cursor
 import play.api.libs.json.Json
-import reactivemongo.core.commands.LastError
-import reactivemongo.api.indexes.{IndexType, Index}
+import library.Redis
 
 /**
  * Proposal
@@ -17,6 +12,8 @@ import reactivemongo.api.indexes.{IndexType, Index}
 case class ProposalType(id: String, label: String)
 
 object ProposalType {
+  implicit val proposalTypeFormat = Json.format[ProposalType]
+
   val all = List(
     ProposalType("conf", "Conference"),
     ProposalType("uni", "University"),
@@ -30,40 +27,41 @@ object ProposalType {
 }
 
 
-object State extends Enumeration{
-  type State = Value
-   val Draft = Value("draft")
-   val Submitted = Value("submitted") 
-   val Deleted=Value("Deleted")
-   val Approved=Value("Approved")
-   val Rejected=Value("Rejected")
-   val Accepted=Value("Accepted")
-   val Declined=Value("Declined")
-   val Backup=Value("Backup")
+case class ProposalState(code: String)
+
+object ProposalState {
+
+  implicit val proposalTypeState = Json.format[ProposalState]
+
+  val all = List(
+    ProposalState("draft"),
+    ProposalState("submitted"),
+    ProposalState("Deleted"),
+    ProposalState("Approved"),
+    ProposalState("Rejected"),
+    ProposalState("Accepted"),
+    ProposalState("Declined"),
+    ProposalState("Backup")
+  )
 }
 
-case class Proposal(id: Option[BSONObjectID], event: String, code: String, lang: String, title: String, mainSpeaker: String,
+case class Proposal(id: String, event: String, code: String, lang: String, title: String, mainSpeaker: String,
                     otherSpeakers: List[String], talkType: ProposalType, audienceLevel: String, summary: String,
-                    privateMessage: String, state: State, sponsorTalk: Boolean = false)
+                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false)
 
 object Proposal {
 
-  def save(proposal:Proposal):Future[LastError] = MongoDB.withCollection("proposal") {
-    implicit collection=>
-val result = if(proposal.id.isEmpty){
-        collection.indexesManager.ensure(Index(List("mailSpeaker" -> IndexType.Ascending), name = Some("idx_mailSpeaker")))
-        collection.insert(proposal.copy(id = Some(BSONObjectID.generate), state = State.Draft))
+  implicit val proposalFormat = Json.format[Proposal]
 
-      } else {
-        collection.insert(proposal
-        )
-      }
-      result
+  def save(proposal: Proposal) = Redis.pool.withClient {
+    client =>
+      val json = Json.toJson(proposal).toString
+      println("Json "+json)
+      client.hset("Proposals","test",json)
   }
 
-  def allMyProposals(email: String): List[Proposal] = MongoDB.withCollection("proposal") {
-    implicit collection =>
-      val cursor: Cursor[Proposal] = collection.find(Json.obj("mainSpeaker" -> email)).cursor[Proposal]
-      cursor.toList()
+  def allMyProposals(email: String): List[Proposal] = Redis.pool.withClient {
+    client =>
+      Nil
   }
 }

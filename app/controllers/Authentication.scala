@@ -24,8 +24,6 @@ package controllers
 
 import models._
 import play.api.mvc._
-import scala.concurrent.ExecutionContext
-import ExecutionContext.Implicits.global
 import play.api.Logger
 import play.api.Play
 import play.api.libs.Crypto
@@ -35,14 +33,17 @@ import play.api.data.validation.Constraints._
 import play.api.libs.ws.WS
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
-import reactivemongo.core.commands.LastError
-import reactivemongo.bson.BSONObjectID
 import play.api.data.format.Formats._
 import notifiers.Mails
 import org.apache.commons.codec.binary.Base64
 import java.security.SecureRandom
 import java.math.BigInteger
 import play.api.i18n.Messages
+
+import play.api.libs.ws._
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 /**
  * Signup and Signin.
@@ -54,62 +55,55 @@ object Authentication extends Controller {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
   def prepareSignup = Action {
-      implicit request =>
-        Ok(views.html.Authentication.prepareSignup(newWebuserForm))
-    }
+    implicit request =>
+      Ok(views.html.Authentication.prepareSignup(newWebuserForm))
+  }
 
-    def forgetPassword=Action{
-      Ok(views.html.Authentication.forgetPassword(emailForm))
-    }
+  def forgetPassword = Action {
+    Ok(views.html.Authentication.forgetPassword(emailForm))
+  }
 
-    val emailForm=Form("email"->(email verifying nonEmpty))
+  val emailForm = Form("email" -> (email verifying nonEmpty))
 
-    def doForgetPassword()=Action{
-      implicit request=>
+  def doForgetPassword() = Action {
+    implicit request =>
       emailForm.bindFromRequest.fold(
-        errorForm=>BadRequest(views.html.Authentication.forgetPassword(errorForm)),
-        validEmail=>{
-        Mails.sendResetPasswordLink(validEmail, routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
-        ).absoluteURL())
-        Redirect(routes.Application.index()).flashing("success"->Messages("forget.password.confirm"))
-      })
-    }
+        errorForm => BadRequest(views.html.Authentication.forgetPassword(errorForm)),
+        validEmail => {
+          Mails.sendResetPasswordLink(validEmail, routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
+          ).absoluteURL())
+          Redirect(routes.Application.index()).flashing("success" -> Messages("forget.password.confirm"))
+        })
+  }
 
-    def resetPassword(t:String, a:String)=Action{
-      implicit request=>
-        val email= new String(Base64.decodeBase64(a),"UTF-8")
-        if(Crypto.sign(email)==t){
-          val futureMaybeWebuser=Webuser.findByEmail(email)
-          Async{
-            futureMaybeWebuser.map{
-              case Some(w)=>{
-                val newPassword=Webuser.changePassword(w) // it is generated
-                Redirect(routes.Application.index()).flashing("success"->("Your new password is "+newPassword + " (case-sensitive)"))
-              }
-              case _=>Redirect(routes.Application.index()).flashing("error"->"Sorry, this email is not registered in your system.")
-            }
-          }
-
-
-        }else{
-          Redirect(routes.Application.index()).flashing("error"->"Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
+  def resetPassword(t: String, a: String) = Action {
+    implicit request =>
+      val email = new String(Base64.decodeBase64(a), "UTF-8")
+      if (Crypto.sign(email) == t) {
+        val futureMaybeWebuser = Webuser.findByEmail(email)
+        futureMaybeWebuser.map {
+          w =>
+            val newPassword = Webuser.changePassword(w) // it is generated
+            Redirect(routes.Application.index()).flashing("success" -> ("Your new password is " + newPassword + " (case-sensitive)"))
+        }.getOrElse {
+          Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
         }
-    }
+      } else {
+        Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
+      }
+  }
 
   def login = Action {
     implicit request =>
       loginForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Application.home(invalidForm)),
-        validForm => Async {
-          Webuser.checkPassword(validForm._1, validForm._2).map {
-            validUser =>
-              if (validUser) {
-                Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> validForm._1)
-              } else {
-                Unauthorized("User not found")
-              }
+        validForm =>
+          Webuser.checkPassword(validForm._1, validForm._2) match {
+            case true =>
+              Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> validForm._1)
+            case false =>
+              Unauthorized("User not found")
           }
-        }
       )
   }
 
@@ -187,17 +181,14 @@ object Authentication extends Controller {
 
   val webuserForm = Form(
     mapping(
-      "id" -> optional(of[String]),
       "email" -> (email verifying nonEmpty),
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
       "password" -> nonEmptyText,
       "profile" -> nonEmptyText
     ) {
-      (id, email, firstName, lastName, password, profile) =>
-        Webuser(
-          id.map(new BSONObjectID(_)),
-          email,
+      (email, firstName, lastName, password, profile) =>
+        Webuser(email,
           firstName,
           lastName,
           password,
@@ -205,17 +196,18 @@ object Authentication extends Controller {
     } {
       w =>
         Some(
-          (w.id.map(_.stringify),
-            w.email,
+          (w.email,
             w.firstName,
             w.lastName,
             w.password,
-            w.profile))
+            w.profile)
+        )
     }
   )
 
   def createFromGithub = Action {
     implicit request =>
+
       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
       val futureResult = WS.url(url).withHeaders("User-agent" -> "nicmarti devoxxfr", "Accept" -> "application/json").get()
       val lang = request.headers.get("Accept-Language")
@@ -240,25 +232,21 @@ object Authentication extends Controller {
                         val blog = json.\("blog").asOpt[String]
 
                         // Try to lookup the speaker
-                        Async {
-                          Webuser.findByEmail(emailS).map {
-                            maybeWebuser =>
-                              maybeWebuser.map {
-                                w =>
-                                  Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
-                              }.getOrElse {
-                                // Create a new one but ask for confirmation
-                                val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
-                                  (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
-                                } else {
-                                  (nameS, nameS)
-                                }
-                                val w = Webuser(Option(BSONObjectID.generate), emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
-                                val s = Speaker(Option(BSONObjectID.generate), emailS, bioS, lang, None, avatarUrl, company, blog)
-                                Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
-                              }
+                        Webuser.findByEmail(emailS).map {
+                          w =>
+                            Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
+                        }.getOrElse {
+                          // Create a new one but ask for confirmation
+                          val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
+                            (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
+                          } else {
+                            (nameS, nameS)
                           }
+                          val w = Webuser(emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
+                          val s = Speaker(emailS, bioS, lang, None, avatarUrl, company, blog)
+                          Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                         }
+
                     }
                   })
 
@@ -276,21 +264,10 @@ object Authentication extends Controller {
     implicit request =>
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.prepareSignup(invalidForm)),
-        validForm => Async {
-          Webuser.save(validForm).map {
-            _ =>
-              Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmail(Crypto.sign(validForm.email.toLowerCase.trim),
-                new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
-              Created(views.html.Authentication.created(validForm.email))
-          }.recover {
-            case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
-              Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
-              if (code.get == 11000) Redirect(routes.Authentication.prepareSignup).flashing("error"->Messages("email.alreadyexists")) else InternalServerError("Could not create speaker.")
-            case other => {
-              Logger.error("Unknown Error " + other)
-              InternalServerError("Unknown MongoDB Error")
-            }
-          }
+        validForm => {
+          Webuser.save(validForm)
+          Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmail(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
+          Created(views.html.Authentication.created(validForm.email))
         }
       )
   }
@@ -300,15 +277,13 @@ object Authentication extends Controller {
       val email = new String(Base64.decodeBase64(a), "UTF-8")
       if (Crypto.sign(email) == t) {
         val futureMaybeWebuser = Webuser.findByEmail(email)
-        Async {
-          futureMaybeWebuser.map {
-            case Some(w) => {
-              Webuser.validateEmail(w) // it is generated
-              Speaker.save(Speaker.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/"+w.gravatarHash),None,None))
-              Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + w.password + " (case-sensitive)")).withSession("email"->email)
-            }
-            case _ => Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
-          }
+        futureMaybeWebuser.map {
+          webuser =>
+            Webuser.validateEmail(webuser) // it is generated
+            Speaker.save(Speaker.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + webuser.gravatarHash), None, None))
+            Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("email" -> email)
+        }.getOrElse {
+          Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
         }
       } else {
         Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
@@ -319,32 +294,15 @@ object Authentication extends Controller {
     implicit request =>
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, CallForPaper.speakerForm.bindFromRequest)),
-        validForm => Async {
-          Webuser.saveAndValidate(validForm).map {
-            _ =>
-              CallForPaper.speakerForm.bindFromRequest.fold(
-                invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
-                validSpeakerForm => Async {
-                  Speaker.save(validSpeakerForm).map {
-                    _ => Ok(views.html.Authentication.validateImportedSpeaker(validForm.email, validForm.password)).withSession("email"->validForm.email)
-                  }.recover {
-                    case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
-                      Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
-                      if (code.get == 11000) Redirect(routes.Application.index()).flashing("error" -> "Profile already exists") else Redirect(routes.Application.index()).flashing("error" -> ("Cannot create profile. MongoDB error code " + code))
-                    case other => {
-                      Redirect(routes.Application.index()).flashing("error" -> ("Cannot create profile. Internal MongoDB error. Shit happens... " + other.getMessage))
-                    }
-                  }
-                }
-              )
-          }.recover {
-            case LastError(ok, err, code, errMsg, originalDocument, updated, updatedExisting) =>
-              Logger.error("Mongo error, ok: " + ok + " err: " + err + " code: " + code + " errMsg: " + errMsg)
-              if (code.get == 11000) Redirect(routes.Application.index()).flashing("error" -> ("This email is already registered")) else Redirect(routes.Application.index()).flashing("error" -> ("Cannot create webuser. MongoDB error code " + code))
-            case other => {
-              Redirect(routes.Application.index()).flashing("error" -> ("Cannot create webuser. Internal MongoDB error. Shit happens... " + other.getMessage))
+        validForm => {
+          Webuser.saveAndValidate(validForm)
+          CallForPaper.speakerForm.bindFromRequest.fold(
+            invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
+            validSpeakerForm => {
+              Speaker.save(validSpeakerForm)
+              Ok(views.html.Authentication.validateImportedSpeaker(validForm.email, validForm.password)).withSession("email" -> validForm.email)
             }
-          }
+          )
         }
       )
   }
@@ -433,19 +391,14 @@ object Authentication extends Controller {
                     val photo = json.\("picture").asOpt[String]
 
                     // Try to lookup the speaker
-                    Async {
-                      Webuser.findByEmail(email).map {
-                        maybeWebuser =>
-                          maybeWebuser.map {
-                            w =>
-                              Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
-                          }.getOrElse {
-                            // Create a new one but ask for confirmation
-                            val w = Webuser(Option(BSONObjectID.generate), email, firstName.getOrElse("?"), lastName.getOrElse("?"), RandomStringUtils.randomAlphanumeric(7), "speaker")
-                            val s = Speaker(Option(BSONObjectID.generate), email, "Please enter a bio", lang, None, photo, None, blog)
-                            Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
-                          }
-                      }
+                    Webuser.findByEmail(email).map {
+                      w =>
+                        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
+                    }.getOrElse {
+                      // Create a new one but ask for confirmation
+                      val w = Webuser(email, firstName.getOrElse("?"), lastName.getOrElse("?"), RandomStringUtils.randomAlphanumeric(7), "speaker")
+                      val s = Speaker(email, "Please enter a bio", lang, None, photo, None, blog)
+                      Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                     }
                   }
                   case other => {

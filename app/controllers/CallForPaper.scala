@@ -32,7 +32,6 @@ import play.api._
 import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
 
-import io.prismic._
 
 /**
  * Main controller for the speakers.
@@ -44,37 +43,18 @@ object CallForPaper extends Controller with Secured {
 
   def homeForSpeaker = IsAuthenticated {
     email => implicit request =>
-      val futureSpeaker = Speaker.findByEmail(email)
-      val futureWebuser = Webuser.findByEmail(email)
-
-      Async {
-        val result = futureSpeaker.flatMap(o1 => futureWebuser.map(o2 => o1.flatMap(x1 => o2.map(x2 => (x1, x2)))))
-        result.map {
-          tupleWebuserProfile =>
-            tupleWebuserProfile.map {
-              case (speaker, webuser) =>
-                Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser))
-            }.getOrElse {
-              Redirect(routes.Application.index()).flashing("error" -> "Unable to authenticate, please contact the team, something bad happened (you can blame mongodb).")
-            }
-        }
-      }
+      val result = for (speaker <- Speaker.findByEmail(email); webuser <- Webuser.findByEmail(email)) yield Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser))
+      result.getOrElse(Redirect(routes.Application.index()).flashing("error" -> "Invalid webuser"))
   }
 
   val editWebuserForm = play.api.data.Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)), "lastName" -> text.verifying(nonEmpty, maxLength(40))))
 
   def editCurrentWebuser = IsAuthenticated {
     email => _ =>
-      val futureWebuser = Webuser.findByEmail(email)
-      Async {
-        futureWebuser.map {
-          maybeWebuser =>
-            maybeWebuser.map {
-              webuser =>
-                Ok(views.html.CallForPaper.editWebuser(editWebuserForm.fill(webuser.firstName, webuser.lastName)))
-            }.getOrElse(Unauthorized("User not found"))
-        }
-      }
+      Webuser.findByEmail(email).map {
+        webuser =>
+          Ok(views.html.CallForPaper.editWebuser(editWebuserForm.fill(webuser.firstName, webuser.lastName)))
+      }.getOrElse(Unauthorized("User not found"))
   }
 
   def saveCurrentWebuser = IsAuthenticated {
@@ -98,16 +78,10 @@ object CallForPaper extends Controller with Secured {
 
   def editProfile = IsAuthenticated {
     email => implicit request =>
-      val futureSpeaker = Speaker.findByEmail(email)
-      Async {
-        futureSpeaker.map {
-          maybeSpeaker =>
-            maybeSpeaker.map {
-              speaker =>
-                Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
-            }.getOrElse(Unauthorized("User not found"))
-        }
-      }
+      Speaker.findByEmail(email).map {
+        speaker =>
+          Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
+      }.getOrElse(Unauthorized("User not found"))
   }
 
   def saveProfile = IsAuthenticated {
@@ -125,13 +99,12 @@ object CallForPaper extends Controller with Secured {
       )
   }
 
-  def findByEmail(email: String) = Action.async {
+  def findByEmail(email: String) = Action {
     implicit request =>
-      val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
-      futureResult.map {
-        maybeWebuser: Option[Webuser] =>
-          Ok(views.html.CallForPaper.showWebuser(maybeWebuser))
-      }
+       Webuser.findByEmail(email).map {
+        webuser =>
+          Ok(views.html.CallForPaper.showWebuser(webuser))
+      }.getOrElse(NotFound("User not found"))
   }
 
 }

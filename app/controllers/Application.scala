@@ -44,27 +44,19 @@ object Application extends Controller {
       Ok(views.html.Application.index())
   }
 
-  def logout=Action{
-    implicit request=>
+  def logout = Action {
+    implicit request =>
       Redirect(routes.Application.index).withNewSession
   }
 
-  def resetEnvForDev(email:String) = Action {
+  def resetEnvForDev(email: String) = Action {
     implicit request =>
-      Async {
-        val futureResult: Future[Option[Webuser]] = Webuser.findByEmail(email)
-        futureResult.map {
-          maybeWebuser =>
-            maybeWebuser.map {
-              webuser =>
-                val err = Webuser.delete(webuser)
-                Speaker.delete(email)
-                Redirect(routes.Application.index()).flashing("success"->"User de test effacé")
-            }.getOrElse(NotFound("User does not exist"))
-        }
-      }
+      Webuser.findByEmail(email).map {
+        webuser =>
+          val err = Webuser.delete(webuser)
+          Speaker.delete(email)
+          Redirect(routes.Application.index()).flashing("success" -> "User de test effacé")
+      }.getOrElse(NotFound("User does not exist"))
   }
-
-
 
 }

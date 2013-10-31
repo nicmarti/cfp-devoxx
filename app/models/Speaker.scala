@@ -23,17 +23,8 @@
 
 package models
 
-import org.apache.commons.lang3.RandomStringUtils
-import reactivemongo.api.Cursor
 import play.api.libs.json.Json
-import scala.concurrent.{ExecutionContext, Future}
-import library.MongoDB
-import reactivemongo.core.commands.LastError
-import ExecutionContext.Implicits.global
-import reactivemongo.api.indexes.{IndexType, Index}
-import reactivemongo.bson.BSONObjectID
-import play.modules.reactivemongo.json.BSONFormats._
-
+import library.Redis
 
 /**
  * Speaker
@@ -41,45 +32,40 @@ import play.modules.reactivemongo.json.BSONFormats._
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(id: Option[BSONObjectID], email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String], company: Option[String], blog: Option[String])
+case class Speaker(email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String], 
+                   company: Option[String], blog: Option[String])
 
 object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
-    Speaker(None, email, bio, lang, twitter, avatarUrl, company, blog)
+  def createSpeaker(email: String, bio: String, lang: Option[String], twitter: Option[String],
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
+    Speaker(email, bio, lang, twitter, avatarUrl, company, blog)
   }
 
   def unapplyForm(s: Speaker): Option[(String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
     Some(s.email, s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
   }
 
-  def save(speaker: Speaker): Future[LastError] = MongoDB.withCollection("speaker") {
-    implicit collection =>
-        collection.indexesManager.ensure(Index(List("email" -> IndexType.Ascending), unique = true, name = Some("idx_speaker")))
-        collection.insert(speaker)
+  def save(speaker: Speaker) = Redis.pool.withClient {
+   client =>
+   // TODO
   }
 
-  def update(email:String, speaker:Speaker):Future[LastError] = MongoDB.withCollection("speaker"){
-    implicit collection=>
-      collection.update(Json.obj("email" -> speaker.email), speaker, upsert = true, multi = false)
+  def update(email:String, speaker:Speaker) = Redis.pool.withClient{
+    client=>
+    //TODO
   }
 
-  def findByEmail(email: String): Future[Option[Speaker]] = MongoDB.withCollection("speaker") {
-    implicit collection =>
-      val cursor: Cursor[Speaker] = collection.find(Json.obj("email" -> email)).cursor[Speaker]
-      cursor.headOption()
+  def findByEmail(email: String) :Option[Speaker] = Redis.pool.withClient {
+    client =>
+      None
   }
 
 
-  def delete(email: String) = MongoDB.withCollection("speaker") {
-    implicit collection =>
-      findByEmail(email).map {
-        maybeSpeaker =>
-          maybeSpeaker.map {
-            speaker => collection.remove[Speaker](speaker)
-          }
-      }
+  def delete(email: String) = Redis.pool.withClient {
+    client =>
+     None
   }
 
 }

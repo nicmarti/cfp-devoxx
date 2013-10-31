@@ -1,16 +1,10 @@
-@(maybeWebuser:Option[Webuser])
+@(webuser:models.Webuser)
 
 @main("Webuser"){
 <div class="row">
     <div class="col-lg-8 col-lg-offset-2">
-    @maybeWebuser.map{webuser=>
       <h3>@webuser.firstName @webuser.lastName</h3>
       @webuser.email<br>
-
-    }.getOrElse{
-        <h2>Not found</h2>
-        <p>No webuser for this email</p>
-    }
     </div>
 </div>
 }
