@@ -25,5 +25,16 @@ email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget password?
-cfp.closer=The Devoxx France CallForPaper is closed.
+cfp.closed=The Devoxx France CallForPaper is closed.
 avatarUrl=URL to your latest profile photo
+
+# CFP Home page
+your.profile=Your profile
+your.submission=Your proposals
+no.proposal=You haven't submitted any proposal yet.
+profile.gravatar=Upload and edit directly your photo on
+profile.gravatar2=for your email
+url.photo=URL to your profile's picture
+blog.website=Blog or website
+edit.profile=Edit your profile
+edit.name=Edit your name

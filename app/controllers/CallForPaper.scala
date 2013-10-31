@@ -24,7 +24,7 @@
 package controllers
 
 import play.api.mvc._
-import models.{Speaker, Webuser}
+import models.{Proposal, Speaker, Webuser}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
@@ -47,8 +47,9 @@ object CallForPaper extends Controller with Secured {
                         webuser <- Webuser.findByEmail(email).toRight("Webuser not found").right) yield (speaker, webuser)
       result.fold(errorMsg => {
         Redirect(routes.Application.index()).flashing("error" -> errorMsg)
-      }, success => {
-        Ok(views.html.CallForPaper.homeForSpeaker(success._1, success._2))
+      }, {
+        case (speaker, webuser) =>
+          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, Proposal.allMyProposals(email)))
       })
   }
 

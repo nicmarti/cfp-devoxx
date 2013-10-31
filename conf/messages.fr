@@ -62,3 +62,15 @@ forget.password.confirm=Un courrier électronique a été envoyé à l''adresse 
 register.withopenid=Inscrivez-vous avec votre profil social
 cfp.closed=Le service est actuellement fermé.
 avatarUrl=URL de votre photo
+
+# CFP Home page
+your.profile=Votre profil
+your.submission=Vos soumissions
+no.proposal=Vous n'avez pas encore proposé de sujets.
+profile.gravatar=Téléchargez et éditez directement votre photo sur
+profile.gravatar2=pour votre adresse email
+edit.profile=Editer votre profil
+edit.name=Editer votre nom
+cfp.closer=Le CFP de Devoxx France est ferm\u00E9.
+url.photo=URL vers votre photo de profile
+blog.website=Blog ou site internet

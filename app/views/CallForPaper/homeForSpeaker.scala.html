@@ -1,56 +1,63 @@
-@(speaker: Speaker, webuser:Webuser)(implicit flash:Flash)
+@(speaker: Speaker, webuser:Webuser, myProposals:List[Proposal])(implicit flash:Flash, lang:Lang)
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
 @main("Devoxx France CFP") {
     <div class="row">
         <div class="col-lg-4">
-            <h3>Your profile</h3>
+            <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>
 
             <p>@webuser.firstName @webuser.lastName</p>
             <img src="http://www.gravatar.com/avatar/@webuser.gravatarHash?s=120" alt="@webuser.firstName @webuser.lastName" title="This is you"/>
-            <p><small>Upload and edit directly your photo on <a href="http://www.gravatar.com" target="_blank">Gravatar.com</a> for your email @speaker.email. </small></p>
-            <p><strong>Bio : </strong>
+            <p><small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small></p>
+            <p><strong>@Html(Messages("bio")) : </strong>
             @if(StringUtils.trimToEmpty(speaker.bio).isEmpty){
                 <i class="icon-exclamation-sign"></i>
             } else {
                 <i class="icon-ok"></i>
             }
             </p>
-            <p><strong>URL to your profile's picture :</strong>
+            <p><strong>@Html(Messages("url.photo")) :</strong>
                 @if(StringUtils.trimToEmpty(speaker.avatarUrl.getOrElse("")).isEmpty){
                     <i class="icon-exclamation-sign"></i>
                 } else {
                     <i class="icon-ok"></i>
                 }
             </p>
-            <p><strong>Blog or website :</strong>
+            <p><strong>@Html(Messages("blog.website")) :</strong>
                 @if(StringUtils.trimToEmpty(speaker.blog.getOrElse("")).isEmpty){
                     <i class="icon-exclamation-sign error"></i>
                 } else {
                     <i class="icon-ok"></i>
                 }
             </p>
-            <p><strong>Company :</strong>
+            <p><strong>@Html(Messages("company")) :</strong>
                 @if(StringUtils.trimToEmpty(speaker.company.getOrElse("")).isEmpty){
                     <i class="icon-exclamation-sign"></i>
                 } else {
                     <i class="icon-ok"></i>
                 }
             </p>
-            <p><strong>Twitter :</strong>
+            <p><strong>@Html(Messages("twitter")) :</strong>
                 @if(StringUtils.trimToEmpty(speaker.twitter.getOrElse("")).isEmpty){
                     <i class="icon-exclamation-sign"></i>
                 } else {
                     <i class="icon-ok"></i>
                 }
             </p>
-            <a href="@routes.CallForPaper.editProfile()" class="btn btn-info">Edit your profile</a>
-            <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-primary">Edit your name </a>
+            <a href="@routes.CallForPaper.editProfile()" class="btn btn-info">@Html(Messages("edit.profile"))</a>
+            <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-primary">@Html(Messages("edit.name")) </a>
         </div>
 
         <div class="col-lg-8">
-            <h3>Your submission</h3>
+            <h3><i class="icon-tasks"></i> @Html(Messages("your.submission"))</h3>
+
+            @if(myProposals.isEmpty){
+                <div class="info">
+                @Html(Messages("no.proposal"))
+                </div>
+            }
+
         </div>
         <div class="col-lg-4 col-lg-offset-8">
             @if(flash.get("error").isDefined){

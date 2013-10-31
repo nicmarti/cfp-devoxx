@@ -11,7 +11,7 @@
     <div class="col-lg-12">
 
         <p>Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné
-            comme orateur, ainsi que dans le programem de la conférence :</p>
+            comme orateur, ainsi que dans le programme de la conférence :</p>
 
         @helper.form(action = routes.CallForPaper.saveProfile) {
             <input type="hidden" name="email" value="@speakerForm("email").value.get">
