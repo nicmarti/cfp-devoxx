@@ -43,8 +43,13 @@ object CallForPaper extends Controller with Secured {
 
   def homeForSpeaker = IsAuthenticated {
     email => implicit request =>
-      val result = for (speaker <- Speaker.findByEmail(email); webuser <- Webuser.findByEmail(email)) yield Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser))
-      result.getOrElse(Redirect(routes.Application.index()).flashing("error" -> "Invalid webuser"))
+      val result = for (speaker <- Speaker.findByEmail(email).toRight("Speaker not found").right;
+                        webuser <- Webuser.findByEmail(email).toRight("Webuser not found").right) yield (speaker, webuser)
+      result.fold(errorMsg => {
+        Redirect(routes.Application.index()).flashing("error" -> errorMsg)
+      }, success => {
+        Ok(views.html.CallForPaper.homeForSpeaker(success._1, success._2))
+      })
   }
 
   val editWebuserForm = play.api.data.Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)), "lastName" -> text.verifying(nonEmpty, maxLength(40))))
@@ -101,7 +106,7 @@ object CallForPaper extends Controller with Secured {
 
   def findByEmail(email: String) = Action {
     implicit request =>
-       Webuser.findByEmail(email).map {
+      Webuser.findByEmail(email).map {
         webuser =>
           Ok(views.html.CallForPaper.showWebuser(webuser))
       }.getOrElse(NotFound("User not found"))

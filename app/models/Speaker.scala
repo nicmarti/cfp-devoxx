@@ -32,7 +32,7 @@ import library.Redis
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String], 
+case class Speaker(email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String])
 
 object Speaker {
@@ -48,24 +48,29 @@ object Speaker {
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
-   client =>
-   // TODO
-  }
-
-  def update(email:String, speaker:Speaker) = Redis.pool.withClient{
-    client=>
-    //TODO
-  }
-
-  def findByEmail(email: String) :Option[Speaker] = Redis.pool.withClient {
     client =>
-      None
+      val jsonSpeaker = Json.toJson(speaker).toString
+      client.hset("Speaker", speaker.email, jsonSpeaker)
   }
 
+  def update(email: String, speaker: Speaker) = Redis.pool.withClient {
+    client =>
+      val cleanEmail = email.toLowerCase.trim
+      val jsonSpeaker = Json.toJson(speaker).toString
+      client.hset("Webuser", cleanEmail, jsonSpeaker)
+  }
+
+  def findByEmail(email: String): Option[Speaker] = Redis.pool.withClient {
+    client =>
+      client.hget("Speaker", email).flatMap {
+        json: String =>
+          Json.parse(json).asOpt[Speaker]
+      }
+  }
 
   def delete(email: String) = Redis.pool.withClient {
     client =>
-     None
+      client.hdel("Speaker", email)
   }
 
 }

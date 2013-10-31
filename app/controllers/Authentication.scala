@@ -265,7 +265,7 @@ object Authentication extends Controller {
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.prepareSignup(invalidForm)),
         validForm => {
-          Webuser.save(validForm)
+          Webuser.saveNewSpeakerEmailNotValidated(validForm)
           Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmail(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
           Created(views.html.Authentication.created(validForm.email))
         }
@@ -276,10 +276,10 @@ object Authentication extends Controller {
     implicit request =>
       val email = new String(Base64.decodeBase64(a), "UTF-8")
       if (Crypto.sign(email) == t) {
-        val futureMaybeWebuser = Webuser.findByEmail(email)
+        val futureMaybeWebuser = Webuser.findNewUserByEmail(email)
         futureMaybeWebuser.map {
           webuser =>
-            Webuser.validateEmail(webuser) // it is generated
+            Webuser.validateEmailForSpeaker(webuser) // it is generated
             Speaker.save(Speaker.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + webuser.gravatarHash), None, None))
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("email" -> email)
         }.getOrElse {
@@ -294,13 +294,13 @@ object Authentication extends Controller {
     implicit request =>
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, CallForPaper.speakerForm.bindFromRequest)),
-        validForm => {
-          Webuser.saveAndValidate(validForm)
+        validWebuser => {
+          Webuser.validateEmailForSpeaker(validWebuser)
           CallForPaper.speakerForm.bindFromRequest.fold(
             invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
             validSpeakerForm => {
               Speaker.save(validSpeakerForm)
-              Ok(views.html.Authentication.validateImportedSpeaker(validForm.email, validForm.password)).withSession("email" -> validForm.email)
+              Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("email" -> validWebuser.email)
             }
           )
         }
