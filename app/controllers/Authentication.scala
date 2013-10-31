@@ -43,6 +43,7 @@ import play.api.i18n.Messages
 import play.api.libs.ws._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.apache.commons.codec.digest.DigestUtils
 
 
 /**
@@ -226,8 +227,7 @@ object Authentication extends Controller {
                   validFields => {
                     validFields match {
                       case (emailS, nameS, bioS) =>
-
-                        val avatarUrl = json.\("avatar_url").asOpt[String]
+                        val avatarUrl = Some("http://www.gravatar.com/avatar/"+DigestUtils.md5Hex(emailS))
                         val company = json.\("company").asOpt[String]
                         val blog = json.\("blog").asOpt[String]
 

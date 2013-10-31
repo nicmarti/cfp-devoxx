@@ -22,10 +22,13 @@
                 @helper.inputText(formWebuser("firstName"))
                 @helper.inputText(formWebuser("lastName"))
 
+
                 @helper.inputText(speakerForm("company"))
                 @helper.textarea(speakerForm("bio"), 'cols -> 80, 'rows -> 5)
                 @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
                 @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
+
+                @helper.inputText(speakerForm("avatarUrl"), 'size -> 80)
 
                 <div class="btn-block">
                     <button type="submit" class="btn btn-success">Enregister et continuer</button>
