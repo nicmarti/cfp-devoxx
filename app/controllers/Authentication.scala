@@ -318,7 +318,7 @@ object Authentication extends Controller {
           val gitUrl = "https://accounts.google.com/o/oauth2/auth?client_id=" + clientId + "&scope=openid%20email%20profile&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
           Redirect(gitUrl).withSession("state" -> state)
       }.getOrElse {
-        InternalServerError("github.client_id is not set in application.conf")
+        InternalServerError("google.client_id is not set in application.conf")
       }
   }
 

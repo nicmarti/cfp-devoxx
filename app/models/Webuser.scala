@@ -28,64 +28,81 @@ object Webuser {
     Webuser(email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "admin")
   }
 
-  def saveNewSpeakerEmailNotValidated(webuser: Webuser)=Redis.pool.withClient {
+  def saveNewSpeakerEmailNotValidated(webuser: Webuser) = Redis.pool.withClient {
     client =>
-      val cleanWebuser = webuser.copy(email=webuser.email.toLowerCase.trim)
+      val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
-      client.hset("Webuser:New",cleanWebuser.email, json)
+      client.hset("Webuser:New", cleanWebuser.email, json)
   }
 
-  def findNewUserByEmail(email: String): Option[Webuser] =Redis.pool.withClient {
+  def findNewUserByEmail(email: String): Option[Webuser] = Redis.pool.withClient {
     client =>
-      client.hget("Webuser:New", email).flatMap{
-        json:String=>
+      client.hget("Webuser:New", email.toLowerCase.trim).flatMap {
+        json: String =>
           Json.parse(json).asOpt[Webuser]
       }
   }
 
-  def validateEmailForSpeaker(webuser: Webuser)= Redis.pool.withClient {
+  def validateEmailForSpeaker(webuser: Webuser) = Redis.pool.withClient {
     client =>
-      val cleanWebuser = webuser.copy(email=webuser.email.toLowerCase.trim)
+      val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
 
       val tx = client.multi()
-      tx.hset("Webuser" , webuser.email, json)
-      tx.sadd("Webuser:"+webuser.profile, webuser.email)
-      tx.hdel("Webuser:New",webuser.email)
+      tx.hset("Webuser", webuser.email, json)
+      tx.sadd("Webuser:" + webuser.profile, webuser.email)
+      tx.hdel("Webuser:New", webuser.email)
       tx.exec()
   }
 
-  def findByEmail(email: String): Option[Webuser] =Redis.pool.withClient {
+  def findByEmail(email: String): Option[Webuser] = Redis.pool.withClient {
     client =>
-      client.hget("Webuser", email).flatMap{
-        json:String=>
-          Json.parse(json).asOpt[Webuser]
+      client.hget("Webuser", email.toLowerCase.trim).map {
+        json: String =>
+          Json.parse(json).as[Webuser]
       }
   }
 
-  def checkPassword(email: String, password: String): Boolean = Redis.pool.withClient{
-    client=>
-      true
+  def checkPassword(email: String, password: String): Boolean = Redis.pool.withClient {
+    client =>
+      findByEmail(email).exists(_.password == password)
   }
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
     client =>
-      true
+      val tx=client.multi()
+      tx.hdel("Webuser", webuser.email)
+      tx.srem("Webuser:"+webuser.profile, webuser.email)
+      tx.exec()
   }
 
   def changePassword(webuser: Webuser): String = Redis.pool.withClient {
     client =>
       val newPassword = RandomStringUtils.randomAlphabetic(7)
+      val updatedWebuser = webuser.copy(password = newPassword)
+      update(updatedWebuser)
       newPassword
   }
 
-
-  def update(email:String, firstName:String, lastName:String)=Redis.pool.withClient{
-   client=>
+  def updateNames(email: String, newFirstName: String, newLastName: String) = Redis.pool.withClient {
+    client =>
+      findByEmail(email).map{
+        webuser=>
+          update(webuser.copy(firstName=newFirstName.toLowerCase.capitalize, lastName=newLastName.toLowerCase.capitalize))
+      }
   }
 
-  def isMember(email: String, securityGroup: String): Boolean = {
-    true
+  def update(webuser:Webuser)=Redis.pool.withClient{
+    client=>
+      val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
+      val json = Json.toJson(cleanWebuser).toString
+println("New json "+json)
+      client.hset("Webuser", webuser.email, json)
+  }
+
+  def isMember(email: String, securityGroup: String): Boolean = Redis.pool.withClient{
+    client=>
+      client.sismember("Webuser:"+securityGroup, email)
   }
 
 }

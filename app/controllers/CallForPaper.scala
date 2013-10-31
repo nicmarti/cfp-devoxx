@@ -66,7 +66,7 @@ object CallForPaper extends Controller with Secured {
     email => implicit request =>
       editWebuserForm.bindFromRequest.fold(errorForm => BadRequest(views.html.CallForPaper.editWebuser(errorForm)),
         success => {
-          Webuser.update(email, success._1, success._2)
+          Webuser.updateNames(email, success._1, success._2)
           Redirect(routes.CallForPaper.homeForSpeaker())
         })
   }

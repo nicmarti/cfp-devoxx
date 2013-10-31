@@ -57,7 +57,7 @@ object Speaker {
     client =>
       val cleanEmail = email.toLowerCase.trim
       val jsonSpeaker = Json.toJson(speaker).toString
-      client.hset("Webuser", cleanEmail, jsonSpeaker)
+      client.hset("Speaker", cleanEmail, jsonSpeaker)
   }
 
   def findByEmail(email: String): Option[Speaker] = Redis.pool.withClient {
