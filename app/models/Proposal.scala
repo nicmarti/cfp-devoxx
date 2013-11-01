@@ -14,16 +14,32 @@ case class ProposalType(id: String, label: String)
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val all = List(
-    ProposalType("conf", "Conference"),
-    ProposalType("uni", "University"),
-    ProposalType("tia", "Tools-in-action"),
-    ProposalType("lab", "Hands-on-labs"),
-    ProposalType("quick", "Quickie"),
-    ProposalType("bof", "BOF"),
-    ProposalType("amd", "AM Decideurs"),
-    ProposalType("key", "Keynote")
-  )
+  val CONF=ProposalType("conf", "Conference")
+  val UNI =ProposalType("uni", "University")
+  val TIA =ProposalType("tia", "Tools-in-action")
+  val LAB =ProposalType("lab", "Hands-on-labs")
+  val QUICK=ProposalType("quick", "Quickie")
+  val BOF=ProposalType("bof", "BOF")
+  val AMD=ProposalType("amd", "AM Decideurs")
+  val KEY=ProposalType("key", "Keynote")
+  val OTHER=ProposalType("other", "Other")
+
+
+  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, AMD, KEY, OTHER)
+
+  def parse(session:String):ProposalType={
+    session match {
+      case "conf" => CONF
+      case "uni"=>UNI
+      case "tia"=>TIA
+      case "lab"=>LAB
+      case "quick"=>QUICK
+      case "bof"=>BOF
+      case "amd"=>AMD
+      case "key"=>KEY
+      case other =>OTHER
+    }
+  }
 }
 
 
@@ -33,19 +49,29 @@ object ProposalState {
 
   implicit val proposalTypeState = Json.format[ProposalState]
 
+  val DRAFT = ProposalState("draft")
+  val SUBMITTED = ProposalState("submitted")
+  val DELETED = ProposalState("deleted")
+  val APPROVED = ProposalState("approved")
+  val REJECTED = ProposalState("rejected")
+  val ACCEPTED = ProposalState("accepted")
+  val DECLINED = ProposalState("declined")
+  val BACKUP = ProposalState("backup")
+
+
   val all = List(
-    ProposalState("draft"),
-    ProposalState("submitted"),
-    ProposalState("Deleted"),
-    ProposalState("Approved"),
-    ProposalState("Rejected"),
-    ProposalState("Accepted"),
-    ProposalState("Declined"),
-    ProposalState("Backup")
+    DRAFT,
+    SUBMITTED,
+    DELETED,
+    APPROVED,
+    REJECTED,
+    ACCEPTED,
+    DECLINED,
+    BACKUP
   )
 }
 
-case class Proposal(id: String, event: String, code: String, lang: String, title: String, mainSpeaker: String,
+case class Proposal(id: Option[String], event: String, code: String, lang: String, title: String, mainSpeaker: String,
                     otherSpeakers: List[String], talkType: ProposalType, audienceLevel: String, summary: String,
                     privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false)
 
@@ -56,8 +82,7 @@ object Proposal {
   def save(proposal: Proposal) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(proposal).toString
-      println("Json "+json)
-      client.hset("Proposals","test",json)
+      client.hset("Proposals", "test", json)
   }
 
   def allMyProposals(email: String): List[Proposal] = Redis.pool.withClient {

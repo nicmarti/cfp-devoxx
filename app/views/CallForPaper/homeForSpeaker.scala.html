@@ -46,7 +46,7 @@
                 }
             </p>
             <a href="@routes.CallForPaper.editProfile()" class="btn btn-info">@Html(Messages("edit.profile"))</a>
-            <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-primary">@Html(Messages("edit.name")) </a>
+            <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-info">@Html(Messages("edit.name")) </a>
         </div>
 
         <div class="col-lg-8">
@@ -57,6 +57,8 @@
                 @Html(Messages("no.proposal"))
                 </div>
             }
+
+            <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">New proposal</a>
 
         </div>
         <div class="col-lg-4 col-lg-offset-8">
