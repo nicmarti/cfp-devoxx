@@ -114,46 +114,17 @@ object CallForPaper extends Controller with Secured {
       }.getOrElse(NotFound("User not found"))
   }
 
-  val proposalForm=Form(mapping(
-      "lang" -> text,
-      "title" -> text,
-      "mainSpeaker" -> text,
-      "otherSpeakers" -> list(text),
-      "talkType" -> text,
-      "audienceLevel"->text,
-      "summary"->text,
-      "privateMessage"->optional(text),
-      "sponsorTalk"->boolean
-    )(validateNewProposal)(unapplyProposalForm))
 
-  def validateNewProposal(lang:String, title:String, mainSpeaker:String, otherSpeakers:List[String],
-                          talkType:String, audienceLevel:String, summary:String, privateMessage:Option[String],
-                          sponsorTalk:Boolean):Proposal={
-    val code=RandomStringUtils.randomAlphabetic(3).toUpperCase+"-"+RandomStringUtils.randomNumeric(3)
-    Proposal(Option(RandomStringUtils.randomAlphanumeric(12)),
-             "Devoxx France 2014",
-             code,
-             lang,
-             title,
-             mainSpeaker,
-             otherSpeakers,
-             ProposalType.parse(talkType),
-             audienceLevel,
-             summary,
-             StringUtils.trimToEmpty(privateMessage.getOrElse("")),
-             ProposalState.DRAFT,
-             sponsorTalk)
-
-  }
-
-  def unapplyProposalForm(p:Proposal):Option[(String,String,String,List[String],String,String,String,Option[String],Boolean)]={
-    Option((p.lang,p.title, p.mainSpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage), p.sponsorTalk))
-  }
 
   def newProposal() = IsAuthenticated {
       email => implicit request =>
-      Ok(views.html.CallForPaper.newProposal())
+      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm))
 
+  }
+
+  def createNewProposal()=IsAuthenticated{
+    email => implicit request=>
+      Ok("top")
   }
 
 }

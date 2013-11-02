@@ -74,3 +74,17 @@ edit.name=Editer votre nom
 cfp.closer=Le CFP de Devoxx France est ferm\u00E9.
 url.photo=URL de votre photo
 blog.website=Blog ou site internet
+new.proposal=Nouvelle proposition
+
+# CFP New
+title=Titre de la présentation
+title.help=Proposez un titre simple, clair, qui résume ce que le participant va apprendre. Beaucoup de conférenciers sélectionnent une conférence au dernier moment, en se basant sur le titre.
+summary=Résumé
+lang=Langue
+mainSpeaker=Présentateur principal
+otherSpeakers=Autres présentateurs
+talkType=Type de présentation
+audienceLevel=Niveau de la présentation
+privateMessage=Message privé pour le comité de sélection
+sponsorTalk=Merci de cocher cette case s''il s'agit d''une présenation "sponsor"
+helpAndTips=Aide et conseils

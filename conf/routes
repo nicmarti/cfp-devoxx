@@ -29,6 +29,7 @@ POST     /cfp/webuser/save           controllers.CallForPaper.saveCurrentWebuser
 
 # proposal
 GET     /cfp/proposal/new           controllers.CallForPaper.newProposal()
+POST    /cfp/proposal/create        controllers.CallForPaper.createNewProposal()
 
 GET     /forget                     controllers.Authentication.forgetPassword
 POST    /forget/validate            controllers.Authentication.doForgetPassword()

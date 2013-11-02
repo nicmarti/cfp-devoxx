@@ -28,6 +28,8 @@ forget.password=Forget password?
 cfp.closed=The Devoxx France CallForPaper is closed.
 avatarUrl=URL to your latest profile photo
 
+format.boolean=
+
 # CFP Home page
 your.profile=Your profile
 your.submission=Your proposals
@@ -38,3 +40,17 @@ url.photo=URL to your profile's picture
 blog.website=Blog or website
 edit.profile=Edit your profile
 edit.name=Edit your name
+new.proposal=New proposal
+
+# CFP New
+title=Presentation title
+title.help=Think carefully and try to create a title that is descriptive enough. Most of the attendees selects a talk at the very last minute, just based on its title.
+summary=Summary
+lang=Main language
+mainSpeaker=Main speaker
+otherSpeakers=Other speakers
+talkType=Type of talk
+audienceLevel=Audience level
+privateMessage=Private message for the program comitee
+sponsorTalk=Check if this talk is a sponsor talk
+helpAndTips=Help and advices

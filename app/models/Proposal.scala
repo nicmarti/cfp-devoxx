@@ -2,6 +2,11 @@ package models
 
 import play.api.libs.json.Json
 import library.Redis
+import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
+
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 
 /**
  * Proposal
@@ -26,6 +31,8 @@ object ProposalType {
 
 
   val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, AMD, KEY, OTHER)
+
+  val allAsId = all.map(a=>(a.id,a.label)).toSeq.sorted
 
   def parse(session:String):ProposalType={
     session match {
@@ -69,6 +76,8 @@ object ProposalState {
     DECLINED,
     BACKUP
   )
+
+  val allAsCode=all.map(_.code)
 }
 
 case class Proposal(id: Option[String], event: String, code: String, lang: String, title: String, mainSpeaker: String,
@@ -79,6 +88,11 @@ object Proposal {
 
   implicit val proposalFormat = Json.format[Proposal]
 
+  val langs=Seq(("en","English"),("fr","French"))
+
+  val audienceLevels=Seq(("novice","Novice"),("intermediate","Intermediate"),("expert","Expert"))
+
+
   def save(proposal: Proposal) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(proposal).toString
@@ -88,5 +102,41 @@ object Proposal {
   def allMyProposals(email: String): List[Proposal] = Redis.pool.withClient {
     client =>
       Nil
+  }
+
+  val proposalForm=Form(mapping(
+      "lang" -> text,
+      "title" -> text(minLength = 5, maxLength = 125),
+      "mainSpeaker" -> nonEmptyText,
+      "otherSpeakers" -> list(text),
+      "talkType" -> nonEmptyText,
+      "audienceLevel"->text,
+      "summary"->text(maxLength = 2000),
+      "privateMessage"->optional(text),
+      "sponsorTalk"->boolean
+    )(validateNewProposal)(unapplyProposalForm))
+
+  def validateNewProposal(lang:String, title:String, mainSpeaker:String, otherSpeakers:List[String],
+                          talkType:String, audienceLevel:String, summary:String, privateMessage:Option[String],
+                          sponsorTalk:Boolean):Proposal={
+    val code=RandomStringUtils.randomAlphabetic(3).toUpperCase+"-"+RandomStringUtils.randomNumeric(3)
+    Proposal(Option(RandomStringUtils.randomAlphanumeric(12)),
+             "Devoxx France 2014",
+             code,
+             lang,
+             title,
+             mainSpeaker,
+             otherSpeakers,
+             ProposalType.parse(talkType),
+             audienceLevel,
+             summary,
+             StringUtils.trimToEmpty(privateMessage.getOrElse("")),
+             ProposalState.DRAFT,
+             sponsorTalk)
+
+  }
+
+  def unapplyProposalForm(p:Proposal):Option[(String,String,String,List[String],String,String,String,Option[String],Boolean)]={
+    Option((p.lang,p.title, p.mainSpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage), p.sponsorTalk))
   }
 }
