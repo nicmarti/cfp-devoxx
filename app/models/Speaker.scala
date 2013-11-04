@@ -24,7 +24,7 @@
 package models
 
 import play.api.libs.json.Json
-import library.Redis
+import library.{ZapJson, Redis}
 
 /**
  * Speaker
@@ -35,7 +35,7 @@ import library.Redis
 case class Speaker(email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String])
 
-object Speaker {
+object SpeakerHelper {
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, bio: String, lang: Option[String], twitter: Option[String],
@@ -49,14 +49,14 @@ object Speaker {
 
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
-      val jsonSpeaker = Json.toJson(speaker).toString
+      val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", speaker.email, jsonSpeaker)
   }
 
   def update(email: String, speaker: Speaker) = Redis.pool.withClient {
     client =>
       val cleanEmail = email.toLowerCase.trim
-      val jsonSpeaker = Json.toJson(speaker).toString
+      val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", cleanEmail, jsonSpeaker)
   }
 
@@ -71,6 +71,23 @@ object Speaker {
   def delete(email: String) = Redis.pool.withClient {
     client =>
       client.hdel("Speaker", email)
+  }
+
+  def allSpeakers(): List[Speaker] = Redis.pool.withClient {
+    client =>
+      client.hvals("Speaker").flatMap {
+        jsString =>
+          val json = Json.parse(jsString)
+          val email = (json \ "email").as[String]
+          val bio = (json \ "bio").as[String]
+          val lang = (json \ "lang").asOpt[String]
+          val twitter = (json \ "twitter").asOpt[String]
+          val avatarUrl = (json \ "avatarUrl").asOpt[String]
+          val company = (json \ "company").asOpt[String]
+          val blog = (json \ "blog").asOpt[String]
+          Some(Speaker(email, bio, lang, twitter, avatarUrl, company, blog))
+      }
+
   }
 
 }
