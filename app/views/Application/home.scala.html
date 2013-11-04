@@ -37,7 +37,7 @@
         <div class="container">
             <div class="bs-docs-section clearfix">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-md-12">
                             <h2><i class="icon-comment-alt"></i> Appel aux conférenciers</h2>
                             <em>Call for Paper for Devoxx France 2014</em>
 
@@ -53,7 +53,7 @@
                             </div>
                         }
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-md-6">
                         <h3><i class="icon-signin"></i> @Html(Messages("index.method1"))</h3>
                         @helper.form(action = routes.Authentication.login) {
                             @helper.inputText(loginForm("email"))
@@ -67,17 +67,19 @@
                         <p><i class="icon-github-sign"></i> <a href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to Devoxx FR">Github</a></p>
                         <p><i class="icon-google-plus-sign"></i> <a href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to Devoxx FR">Google +</a></p>
                     </div>
-              </div>
-            </div>
-
-              <div class="row">
-                    <div class="col-lg-6 col-lg-offset-6">
-                        <hr>
+                    <div class="col-md-6">
                         <h3><i class="icon-user"></i> @Html(Messages("index.signupTitle"))</h3>
                         <p>@Html(Messages("index.signup2"))</p>
                         <a class="btn btn-default" href="@routes.Authentication.prepareSignup()">@Messages("index.signup.btn")</a>
+                        <p>@Html(Messages("index.signup3"))</p>
+                        <p><i class="icon-github-sign"></i> <a href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to Devoxx FR">Github</a></p>
+                        <p><i class="icon-google-plus-sign"></i> <a href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to Devoxx FR">Google +</a></p>
+
                     </div>
-                </div>
+
+              </div>
+            </div>
+
         </div>
 
         <footer class="footer hidden-print">

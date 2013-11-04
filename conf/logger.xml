@@ -1,0 +1,24 @@
+<configuration info="true" scan="false" scanPeriod="30 seconds">
+
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- %X{URL} -->
+            <pattern>%coloredLevel %d{HH:mm:ss,SSS}  %logger: %message%n%ex{10}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="play" level="WARN"/>
+    <logger name="models.Speaker" level="DEBUG"/>
+    <logger name="application" level="INFO"/>
+
+    <logger name="net.sf.ehcache.sizeof.verboseINFOLogging" level="INFO"/>
+    <logger name="net.sf.ehcache" level="WARN"/>
+    <logger name="org.apache.commons.pool" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

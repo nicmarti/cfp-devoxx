@@ -4,7 +4,7 @@
 
 @main("Devoxx France CFP") {
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-md-4">
             <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>
 
             <p>@webuser.firstName @webuser.lastName</p>
@@ -49,7 +49,7 @@
             <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-info">@Html(Messages("edit.name")) </a>
         </div>
 
-        <div class="col-lg-8">
+        <div class="col-md-8">
             <h3><i class="icon-tasks"></i> @Html(Messages("your.submission"))</h3>
 
             @if(myProposals.isEmpty){
@@ -61,7 +61,7 @@
             <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
 
         </div>
-        <div class="col-lg-4 col-lg-offset-8">
+        <div class="col-md-4 col-md-offset-8">
             @if(flash.get("error").isDefined){
                   <div class="alert alert-danger alert-dismissable">
                       <strong>Error :</strong>

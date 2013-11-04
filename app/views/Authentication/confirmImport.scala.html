@@ -5,10 +5,10 @@
 
 @main("Nouveau profil") {
     <div class="row">
-        <div class="col-lg-12 page-header">
+        <div class="col-md-12 page-header">
             <h3>Créer votre profil de présentateur Devoxx France</h3>
         </div>
-        <div class="col-lg-8">
+        <div class="col-md-8">
             @helper.form(action = routes.Authentication.validateImportedSpeaker) {
                 <div class="clearfix  " id="email_field">
                     <label for="email">Adresse email</label>
@@ -35,7 +35,7 @@
                 </div>
             }
         </div>
-        <div class="col-lg-4">
+        <div class="col-md-4">
             <P>Nous utiliserons l'image <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
                 Gravatar</a>  suivante :
                 <img src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))" alt="Gravatar" title="Update your profile on gravatar.com">

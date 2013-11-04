@@ -20,6 +20,7 @@ twitter=Your twitter handle
 blog=Your blog or your company''s website
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for Devoxx France and propose one or more subjects.
+index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
 index.signup.btn=Sign-up
 email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile

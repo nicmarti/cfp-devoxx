@@ -280,7 +280,7 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           webuser =>
             Webuser.validateEmailForSpeaker(webuser) // it is generated
-            Speaker.save(Speaker.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + webuser.gravatarHash), None, None))
+            SpeakerHelper.save(SpeakerHelper.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + webuser.gravatarHash), None, None))
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("email" -> email)
         }.getOrElse {
           Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
@@ -299,7 +299,7 @@ object Authentication extends Controller {
           CallForPaper.speakerForm.bindFromRequest.fold(
             invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
             validSpeakerForm => {
-              Speaker.save(validSpeakerForm)
+              SpeakerHelper.save(validSpeakerForm)
               Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("email" -> validWebuser.email)
             }
           )

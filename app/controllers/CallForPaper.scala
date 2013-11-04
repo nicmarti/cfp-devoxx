@@ -44,7 +44,7 @@ object CallForPaper extends Controller with Secured {
 
   def homeForSpeaker = IsAuthenticated {
     email => implicit request =>
-      val result = for (speaker <- Speaker.findByEmail(email).toRight("Speaker not found").right;
+      val result = for (speaker <- SpeakerHelper.findByEmail(email).toRight("Speaker not found").right;
                         webuser <- Webuser.findByEmail(email).toRight("Webuser not found").right) yield (speaker, webuser)
       result.fold(errorMsg => {
         Redirect(routes.Application.index()).flashing("error" -> errorMsg)
@@ -81,11 +81,11 @@ object CallForPaper extends Controller with Secured {
     "avatarUrl" -> optional(text),
     "company" -> optional(text),
     "blog" -> optional(text)
-  )(Speaker.createSpeaker)(Speaker.unapplyForm))
+  )(SpeakerHelper.createSpeaker)(SpeakerHelper.unapplyForm))
 
   def editProfile = IsAuthenticated {
     email => implicit request =>
-      Speaker.findByEmail(email).map {
+      SpeakerHelper.findByEmail(email).map {
         speaker =>
           Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
       }.getOrElse(Unauthorized("User not found"))
@@ -99,7 +99,7 @@ object CallForPaper extends Controller with Secured {
           if (validForm.email != email) {
             Unauthorized("You can't do that. Come-on, this is not a JSF app my friend.")
           } else {
-            Speaker.update(email, validForm)
+            SpeakerHelper.update(email, validForm)
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
           }
         }

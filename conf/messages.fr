@@ -19,6 +19,7 @@ index.welcome=Déjà inscrit ? Authentifiez-vous avec votre mot de passe :
 index.method2=Authentifiez-vous avec OpenId
 index.signupTitle=Inscription comme orateur
 index.signup2=Inscrivez-vous comme orateur à Devoxx France afin de proposer un ou plusieurs sujets :
+index.signup3=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et mémoriser encore un mot de passe :
 index.signup.btn=S''inscrire
 index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser encore un mot de passe. Si votre profil n''existe pas, il sera automatiquement créé.
 company=Votre société

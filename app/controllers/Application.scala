@@ -53,8 +53,8 @@ object Application extends Controller {
     implicit request =>
       Webuser.findByEmail(email).map {
         webuser =>
-          val err = Webuser.delete(webuser)
-          Speaker.delete(email)
+          Webuser.delete(webuser)
+          SpeakerHelper.delete(email)
           Redirect(routes.Application.index()).flashing("success" -> "User de test effacé")
       }.getOrElse(NotFound("User does not exist"))
   }
