@@ -95,14 +95,28 @@ object Webuser {
   def update(webuser:Webuser)=Redis.pool.withClient{
     client=>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
-      val json = Json.toJson(cleanWebuser).toString
-println("New json "+json)
+      val json = Json.stringify(Json.toJson(cleanWebuser))
       client.hset("Webuser", webuser.email, json)
   }
 
   def isMember(email: String, securityGroup: String): Boolean = Redis.pool.withClient{
     client=>
       client.sismember("Webuser:"+securityGroup, email)
+  }
+
+  def allSpeakers:List[Webuser] = Redis.pool.withClient{
+    client=>
+      val allSpeakerEmails = client.smembers("Webuser:speaker").toList
+      client.hmget("Webuser", allSpeakerEmails).flatMap{ js:String=>
+          Json.parse(js).asOpt[Webuser]
+      }
+  }
+
+  def allSpeakersAsOption:Seq[(String,String)]={
+    allSpeakers.map{ webuser=>
+      val cleanName = webuser.lastName.toLowerCase.capitalize+ " " +webuser.firstName
+      (webuser.email, cleanName)
+    }
   }
 
 }

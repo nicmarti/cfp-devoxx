@@ -44,14 +44,16 @@ edit.name=Edit your name
 new.proposal=New proposal
 
 # CFP New
+New.proposal=New proposal
 title=Presentation title
 title.help=Think carefully and try to create a title that is descriptive enough. Most of the attendees selects a talk at the very last minute, just based on its title.
 summary=Summary
 lang=Main language
 mainSpeaker=Main speaker
-otherSpeakers=Other speakers
+otherSpeakers=2nd speaker
 talkType=Type of talk
 audienceLevel=Audience level
 privateMessage=Private message for the program comitee
 sponsorTalk=Check if this talk is a sponsor talk
 helpAndTips=Help and advices
+moreSpeakerLater=You can add more speakers later, once the proposal is submitted.

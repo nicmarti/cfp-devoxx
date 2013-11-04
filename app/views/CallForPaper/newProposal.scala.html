@@ -6,14 +6,16 @@
 @main("New proposal") {
     <div class="row">
         <div class="col-md-6">
-            <h3>New proposal</h3>
+            <h3>@Messages("New.proposal")</h3>
             @helper.form(action = routes.CallForPaper.createNewProposal()){
                 @helper.inputText(newProposal("title"), 'size->60, 'maxsize->100)
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10)
 
                 @helper.select(field = newProposal("lang"), options=Proposal.langs)
-                @helper.inputText(newProposal("mainSpeaker"))
-                @helper.inputText(newProposal("otherSpeakers"))
+
+                @helper.select(field=newProposal("mainSpeaker"), options=Webuser.allSpeakersAsOption)
+                <em>@Messages("moreSpeakerLater")</em>
+
                 @helper.select(field = newProposal("talkType"), options=ProposalType.allAsId)
 
                 @helper.select(field = newProposal("audienceLevel"), options=Proposal.audienceLevels)
@@ -24,14 +26,9 @@
             }
         </div>
 
-
         <div class="col-md-4">
             <h3>@Messages("helpAndTips")</h3>
             <p><label>@Messages("title") : </label> @Messages("title.help")</p>
-
-
-            @models.SpeakerHelper.allSpeakers().size
-
         </div>
 
     </div>

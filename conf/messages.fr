@@ -19,7 +19,7 @@ index.welcome=Déjà inscrit ? Authentifiez-vous avec votre mot de passe :
 index.method2=Authentifiez-vous avec OpenId
 index.signupTitle=Inscription comme orateur
 index.signup2=Inscrivez-vous comme orateur à Devoxx France afin de proposer un ou plusieurs sujets :
-index.signup3=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et mémoriser encore un mot de passe :
+index.signup3=Inscrivez-vous via l'un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et mémoriser encore un mot de passe :
 index.signup.btn=S''inscrire
 index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser encore un mot de passe. Si votre profil n''existe pas, il sera automatiquement créé.
 company=Votre société
@@ -78,14 +78,16 @@ blog.website=Blog ou site internet
 new.proposal=Nouvelle proposition
 
 # CFP New
+New.proposal=Nouvelle proposition de sujet
 title=Titre de la présentation
 title.help=Proposez un titre simple, clair, qui résume ce que le participant va apprendre. Beaucoup de conférenciers sélectionnent une conférence au dernier moment, en se basant sur le titre.
 summary=Résumé
 lang=Langue
 mainSpeaker=Présentateur principal
-otherSpeakers=Autres présentateurs
+otherSpeakers=Second présentateur
 talkType=Type de présentation
 audienceLevel=Niveau de la présentation
 privateMessage=Message privé pour le comité de sélection
-sponsorTalk=Merci de cocher cette case s''il s'agit d''une présenation "sponsor"
+sponsorTalk=Merci de cocher cette case s''il s'agit d''une présentation "exposant/sponsor"
 helpAndTips=Aide et conseils
+moreSpeakerLater=Vous aurez la possibilité d''ajouter un ou plusieurs speakers plus tard.
