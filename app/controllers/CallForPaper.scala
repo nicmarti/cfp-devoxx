@@ -124,7 +124,16 @@ object CallForPaper extends Controller with Secured {
 
   def createNewProposal()=IsAuthenticated{
     email => implicit request=>
-      Ok("top")
+      Proposal.proposalForm.bindFromRequest.fold(
+      hasErrors=>BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+      validProposal=>{
+        import com.github.rjeschke.txtmark._
+
+        val html = Processor.process(validProposal.summary)
+        Ok(views.html.CallForPaper.confirmSummary(html))
+
+      }
+      )
   }
 
 }

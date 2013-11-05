@@ -7,10 +7,22 @@
     <div class="row">
         <div class="col-md-6">
             <h3>@Messages("New.proposal")</h3>
+
+            @if(flash.get("error").isDefined){
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined){
+                <div class="alert alert-success alert-dismissable">
+                    @flash.get("success").get
+                </div>
+            }
             @helper.form(action = routes.CallForPaper.createNewProposal()){
                 @helper.inputText(newProposal("title"), 'class->"form-control")
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10,  'class->"form-control")
-                <span id="charsremain"></span>
+                <i class="icon-text-width"></i> : <span id="charsremain"></span>
 
                 @helper.select(field = newProposal("lang"), options=Proposal.langs,  'class->"form-control")
 
@@ -24,7 +36,7 @@
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,  'class->"form-control")
                 @helper.checkbox(newProposal("sponsorTalk"),  'class->"form-control")
                 <hr>
-                <button type="submit" class="btn btn-success btn-lg">@Messages("btn.save")</button>
+                <button type="submit" class="btn btn-success btn-lg"><i class="icon-file-text"></i> @Messages("btn.save")</button>
             }
         </div>
 

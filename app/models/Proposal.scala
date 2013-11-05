@@ -111,7 +111,7 @@ object Proposal {
       "otherSpeakers" -> list(text),
       "talkType" -> nonEmptyText,
       "audienceLevel"->text,
-      "summary"->text(maxLength = 2000),
+      "summary"->text(minLength = 10, maxLength = 2000),
       "privateMessage"->optional(text),
       "sponsorTalk"->boolean
     )(validateNewProposal)(unapplyProposalForm))

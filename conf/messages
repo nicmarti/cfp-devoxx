@@ -44,7 +44,9 @@ edit.name=Edit your name
 new.proposal=New proposal
 
 # CFP New
-New.proposal=New proposal
+New.proposal=New proposal - step 1/3
+New.proposal2=New proposal - step 2/3
+New.proposal3=New proposal - step 3/3
 title=Presentation title
 title.help=Think carefully and try to create a title that is descriptive enough. Most of the attendees selects a talk at the very last minute, just based on its title.
 summary=Summary
@@ -58,3 +60,9 @@ privateMessage=Private message for the program comitee
 sponsorTalk=Check if this talk is a sponsor talk
 helpAndTips=Help and advices
 moreSpeakerLater=You can add more speakers later, once the proposal is submitted.
+btn.save=Save and preview
+btn.save2=Confirm
+not.saved=Almost done, your proposal is not yet saved. Please review and check your summary, then click on Confirm.
+validate.summary2=or use
+validate.summary3=the back button
+validate.summary4=of your web browser and edit your summary.
