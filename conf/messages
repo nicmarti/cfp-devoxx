@@ -48,6 +48,7 @@ New.proposal=New proposal
 title=Presentation title
 title.help=Think carefully and try to create a title that is descriptive enough. Most of the attendees selects a talk at the very last minute, just based on its title.
 summary=Summary
+summary.help=Describe your proposal, you can use Markdown syntax. We use the txtmark library.
 lang=Main language
 mainSpeaker=Main speaker
 otherSpeakers=2nd speaker

@@ -8,29 +8,31 @@
         <div class="col-md-6">
             <h3>@Messages("New.proposal")</h3>
             @helper.form(action = routes.CallForPaper.createNewProposal()){
-                @helper.inputText(newProposal("title"), 'size->60, 'maxsize->100)
-                @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10)
+                @helper.inputText(newProposal("title"), 'class->"form-control")
+                @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10,  'class->"form-control")
                 <span id="charsremain"></span>
 
-                @helper.select(field = newProposal("lang"), options=Proposal.langs)
+                @helper.select(field = newProposal("lang"), options=Proposal.langs,  'class->"form-control")
 
-                @helper.select(field=newProposal("mainSpeaker"), options=Webuser.allSpeakersAsOption)
+                @helper.select(field=newProposal("mainSpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
                 <em>@Messages("moreSpeakerLater")</em>
 
-                @helper.select(field = newProposal("talkType"), options=ProposalType.allAsId)
+                @helper.select(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
 
-                @helper.select(field = newProposal("audienceLevel"), options=Proposal.audienceLevels)
+                @helper.select(field = newProposal("audienceLevel"), options=Proposal.audienceLevels,  'class->"form-control")
 
-                @helper.textarea(newProposal("privateMessage"), 'cols->60)
-                @helper.checkbox(newProposal("sponsorTalk"))
+                @helper.textarea(newProposal("privateMessage"), 'cols->60,  'class->"form-control")
+                @helper.checkbox(newProposal("sponsorTalk"),  'class->"form-control")
                 <hr>
-                <button type="submit" class="btn btn-success">@Messages("btn.save")</button>
+                <button type="submit" class="btn btn-success btn-lg">@Messages("btn.save")</button>
             }
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
             <h3>@Messages("helpAndTips")</h3>
             <p><label>@Messages("title") : </label> @Messages("title.help")</p>
+            <p><label>@Messages("summary") : </label> @Messages("summary.help")</p>
+
         </div>
 
     </div>

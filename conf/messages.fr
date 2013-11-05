@@ -82,6 +82,7 @@ New.proposal=Nouvelle proposition de sujet
 title=Titre de la présentation
 title.help=Proposez un titre simple, clair, qui résume ce que le participant va apprendre. Beaucoup de conférenciers sélectionnent une conférence au dernier moment, en se basant sur le titre.
 summary=Résumé
+summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vous pouvez utiliser la syntaxe Markdown. Nous utilisons la librairie txtmark.
 lang=Langue
 mainSpeaker=Présentateur principal
 otherSpeakers=Second présentateur
