@@ -10,6 +10,7 @@
             @helper.form(action = routes.CallForPaper.createNewProposal()){
                 @helper.inputText(newProposal("title"), 'size->60, 'maxsize->100)
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10)
+                <span id="charsremain"></span>
 
                 @helper.select(field = newProposal("lang"), options=Proposal.langs)
 
@@ -22,7 +23,8 @@
 
                 @helper.textarea(newProposal("privateMessage"), 'cols->60)
                 @helper.checkbox(newProposal("sponsorTalk"))
-
+                <hr>
+                <button type="submit" class="btn btn-success">@Messages("btn.save")</button>
             }
         </div>
 
@@ -32,4 +34,13 @@
         </div>
 
     </div>
+
+<script type="text/javascript" src="/assets/js/maxlength.js">
+</script>
+<script type="text/javascript">
+$(document).ready(function($){
+ console.log("ok");
+ setformfieldsize($('#summary'), 2000, 'charsremain');
+})
+</script>
 }
