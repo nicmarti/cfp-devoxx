@@ -19,18 +19,17 @@ case class ProposalType(id: String, label: String)
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val CONF=ProposalType("conf", "Conference")
-  val UNI =ProposalType("uni", "University")
-  val TIA =ProposalType("tia", "Tools-in-action")
-  val LAB =ProposalType("lab", "Hands-on-labs")
-  val QUICK=ProposalType("quick", "Quickie")
-  val BOF=ProposalType("bof", "BOF")
-  val AMD=ProposalType("amd", "AM Decideurs")
-  val KEY=ProposalType("key", "Keynote")
-  val OTHER=ProposalType("other", "Other")
+  val CONF=ProposalType("conf", "conf.label")
+  val UNI =ProposalType("uni", "uni.label")
+  val TIA =ProposalType("tia", "tia.label")
+  val LAB =ProposalType("lab", "lab.label")
+  val QUICK=ProposalType("quick", "quick.label")
+  val BOF=ProposalType("bof", "bof.label")
+  val AMD=ProposalType("amd", "amd.label")
+  val KEY=ProposalType("key", "key.label")
+  val OTHER=ProposalType("other", "other.label")
 
-
-  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, AMD, KEY, OTHER)
+  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF)
 
   val allAsId = all.map(a=>(a.id,a.label)).toSeq.sorted
 
@@ -92,7 +91,6 @@ object Proposal {
 
   val audienceLevels=Seq(("novice","Novice"),("intermediate","Intermediate"),("expert","Expert"))
 
-
   def save(proposal: Proposal) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(proposal).toString
@@ -112,7 +110,7 @@ object Proposal {
       "talkType" -> nonEmptyText,
       "audienceLevel"->text,
       "summary"->text(minLength = 10, maxLength = 2000),
-      "privateMessage"->optional(text),
+      "privateMessage"->optional(text(maxLength = 1000)),
       "sponsorTalk"->boolean
     )(validateNewProposal)(unapplyProposalForm))
 

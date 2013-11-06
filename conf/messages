@@ -66,3 +66,15 @@ not.saved=Almost done, your proposal is not yet saved. Please review and check y
 validate.summary2=or use
 validate.summary3=the back button
 validate.summary4=of your web browser and edit your summary.
+
+
+# Proposal type
+key.label=Keynote, 50mn, thursday and friday
+conf.label=Conference, 45mn, thursday and friday
+uni.label=University, 3h, only wednesday
+tia.label=Tools in Action, 30mn, wednesday
+quick.label=Quickie, 15mn, thursday and friday, during lunch
+amd.label=Après-midi des Décideurs, 30mn, thursday afternoon
+bof.label=Bird of a Feather, 1h, thursday evening only
+other.label=Other
+lab.label=Hand''s on Lab, 3h, wednesday only

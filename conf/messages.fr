@@ -78,7 +78,9 @@ blog.website=Blog ou site internet
 new.proposal=Nouvelle proposition
 
 # CFP New
-New.proposal=Nouvelle proposition de sujet
+New.proposal=Nouvelle proposition de sujet, étape 1/3
+New.proposal2=Nouvelle proposition de sujet, étape 2/3
+New.proposal3=Nouvelle proposition de sujet, étape 3/3
 title=Titre de la présentation
 title.help=Proposez un titre simple, clair, qui résume ce que le participant va apprendre. Beaucoup de conférenciers sélectionnent une conférence au dernier moment, en se basant sur le titre.
 summary=Résumé
@@ -88,13 +90,24 @@ mainSpeaker=Présentateur principal
 otherSpeakers=Second présentateur
 talkType=Type de présentation
 audienceLevel=Niveau de la présentation
-privateMessage=Message privé pour le comité de sélection
+privateMessage=Message privé pour le comité de sélection (program@devoxx.fr)
 sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
 helpAndTips=Aide et conseils
 moreSpeakerLater=Vous aurez la possibilité d''ajouter un ou plusieurs speakers plus tard.
-btn.save=Enregistrer et prévisualiser
+btn.save=Passer à l''étape 2
 btn.save2=Confirmer
 not.saved=C''est presque bon, mais votre proposition n''est pas encore enregistrée. Vérifiez le résumé à destination du participant à Devoxx France, puis cliquez sur Confirmer pour sauver votre proposition.
 validate.summary2=ou sinon utilisez
 validate.summary3=le bouton retour à la page précédente
 validate.summary4=de votre navigateur pour corriger votre texte de résumé.
+
+# Proposal type
+key.label=Keynote, 50mn, jeudi et vendredi matin
+conf.label=Conference, 45mn, jeudi et vendredi
+uni.label=University, 3h, mercredi uniquement
+tia.label=Tools in Action, 30mn, mercredi uniquement
+quick.label=Quickie, 15mn, jeudi et vendredi midi
+amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
+bof.label=Bird of a Feather, 1h, jeudi soir uniquement
+other.label=Autre type de présentation
+lab.label=Hand''s on Lab, 3h, mercredi uniquement

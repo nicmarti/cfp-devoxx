@@ -29,14 +29,14 @@
                 @helper.select(field=newProposal("mainSpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
                 <em>@Messages("moreSpeakerLater")</em>
 
-                @helper.select(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
+                @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
 
                 @helper.select(field = newProposal("audienceLevel"), options=Proposal.audienceLevels,  'class->"form-control")
 
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,  'class->"form-control")
                 @helper.checkbox(newProposal("sponsorTalk"),  'class->"form-control")
                 <hr>
-                <button type="submit" class="btn btn-success btn-lg"><i class="icon-file-text"></i> @Messages("btn.save")</button>
+                <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
             }
         </div>
 
