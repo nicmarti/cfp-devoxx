@@ -1,4 +1,4 @@
-@(htmlSummary:String)(implicit flash: Flash, lang: Lang)
+@(htmlSummary: String, newProposal: Form[models.Proposal])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -14,12 +14,25 @@
             @Html(htmlSummary)
             </blockquote>
         </div>
-         <div class="col-md-6">
+        <div class="col-md-6">
+        @helper.form(action = routes.CallForPaper.saveNewProposal()) {
+            <input type="hidden" name="lang" value="@newProposal("lang").value">
+            <input type="hidden" name="title" value="@newProposal("title").value">
+            <input type="hidden" name="mainSpeaker" value="@newProposal("mainSpeaker").value">
+            <input type="hidden" name="otherSpeakers" value="@newProposal("otherSpeakers").value">
+            <input type="hidden" name="talkType" value="@newProposal("talkType").value">
+            <input type="hidden" name="audienceLevel" value="@newProposal("audienceLevel").value">
+            <input type="hidden" name="summary" value="@newProposal("summary").value">
+            <input type="hidden" name="privateMessage" value="@newProposal("privateMessage").value">
+            <input type="hidden" name="sponsorTalk" value="@newProposal("sponsorTalk").value">
+            <input type="hidden" name="track" value="@newProposal("track").value">
+
             <div class="alert alert-info"><i class="icon-circle-arrow-left"></i> @Messages("not.saved")</div>
-            <p><button type="submit" class="btn btn-success"><i class="icon-file-text"></i> @Messages("btn.save2")</button>
+            <p><button class="btn btn-success"><i class="icon-file-text"></i> @Messages("btn.save2")</button>
                 @Messages("validate.summary2") <a href="javascript:history.back()">@Messages("validate.summary3")</a> @Messages("validate.summary4")
-             </div>
+                }
         </div>
+    </div>
 
 
     </div>

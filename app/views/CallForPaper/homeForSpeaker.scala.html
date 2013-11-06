@@ -56,6 +56,26 @@
                 <div class="info">
                 @Html(Messages("no.proposal"))
                 </div>
+            }else{
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Messages("table.pres.title")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @myProposals.map{prop:Proposal=>
+                           <tr>
+                               <td>@prop.title</td>
+                           </tr>
+                       }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th><span class="badge">@Messages("total.draft", myProposals.size)</span></th>
+                        </tr>
+                    </tfoot>
+                </table>
             }
 
             <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>

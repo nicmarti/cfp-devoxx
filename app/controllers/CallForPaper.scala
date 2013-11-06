@@ -32,6 +32,7 @@ import play.api._
 import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
+import play.api.libs.json.Json
 
 
 /**
@@ -50,7 +51,7 @@ object CallForPaper extends Controller with Secured {
         Redirect(routes.Application.index()).flashing("error" -> errorMsg)
       }, {
         case (speaker, webuser) =>
-          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, Proposal.allMyProposals(email)))
+          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, Proposal.allMyDraftProposals(email)))
       })
   }
 
@@ -115,24 +116,38 @@ object CallForPaper extends Controller with Secured {
   }
 
 
-
+  // Load a new proposal form
   def newProposal() = IsAuthenticated {
-      email => implicit request =>
+    email => implicit request =>
       Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm))
 
   }
 
-  def createNewProposal()=IsAuthenticated{
-    email => implicit request=>
+  // Prerender the proposal, but do not persist
+  def createNewProposal() = IsAuthenticated {
+    email => implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
-      hasErrors=>BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
-      validProposal=>{
-        import com.github.rjeschke.txtmark._
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+        validProposal => {
+          import com.github.rjeschke.txtmark._
+          val html = Processor.process(validProposal.summary) // markdown to HTML
+          Ok(views.html.CallForPaper.confirmSummary(html, Proposal.proposalForm.fill(validProposal)))
+        }
+      )
+  }
 
-        val html = Processor.process(validProposal.summary)
-        Ok(views.html.CallForPaper.confirmSummary(html))
-
-      }
+  // Revalidate to avoid CrossSite forgery and save the proposal
+  def saveNewProposal() = IsAuthenticated {
+    email => implicit request =>
+      Proposal.proposalForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+        validProposal => {
+          import com.github.rjeschke.txtmark._
+          val html = Processor.process(validProposal.summary) // markdown to HTML
+          // Save new proposal
+          Proposal.saveDraft(email, validProposal)
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("success"->"Saved")
+        }
       )
   }
 

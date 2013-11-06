@@ -66,7 +66,7 @@ not.saved=Almost done, your proposal is not yet saved. Please review and check y
 validate.summary2=or use
 validate.summary3=the back button
 validate.summary4=of your web browser and edit your summary.
-
+track=Track for your proposal
 
 # Proposal type
 key.label=Keynote, 50mn, thursday and friday
@@ -78,3 +78,18 @@ amd.label=Après-midi des Décideurs, 30mn, thursday afternoon
 bof.label=Bird of a Feather, 1h, thursday evening only
 other.label=Other
 lab.label=Hand''s on Lab, 3h, wednesday only
+
+#Track
+java.label=Java SE, Java EE
+web.label=Web, HTML5
+mobile.label=Mobile
+cloud.label=Cloud, Big Data, NoSQL
+agilite.label=Agility, DevOps
+lgaltern.label=Alternate languages
+startup.label=Startups & innovation
+
+# Home
+table.pres.title=Draft presentation
+table.pres.validate=Submit
+table.pres.delete=Delete
+total.draft={0} proposal(s)

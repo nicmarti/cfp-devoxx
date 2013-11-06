@@ -30,7 +30,9 @@ POST     /cfp/webuser/save           controllers.CallForPaper.saveCurrentWebuser
 # proposal
 GET     /cfp/proposal/new           controllers.CallForPaper.newProposal()
 POST    /cfp/proposal/create        controllers.CallForPaper.createNewProposal()
+POST    /cfp/proposal/create/saveNewProposal       controllers.CallForPaper.saveNewProposal()
 
+# Password
 GET     /forget                     controllers.Authentication.forgetPassword
 POST    /forget/validate            controllers.Authentication.doForgetPassword()
 GET     /resetpassword              controllers.Authentication.resetPassword(t:String, a:String)
