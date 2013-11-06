@@ -10,9 +10,13 @@
             <hr>
         </div>
         <div class="col-md-6">
-            <blockquote>
-            @Html(htmlSummary)
-            </blockquote>
+            <div class="panel panel-default">
+                <div class="panel-heading">@Messages("summary.preview")</div>
+                <div class="panel-body">
+                @Html(htmlSummary)
+                </div>
+            </div>
+
         </div>
         <div class="col-md-6">
         @helper.form(action = routes.CallForPaper.saveNewProposal()) {

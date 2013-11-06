@@ -101,6 +101,7 @@ validate.summary2=ou sinon utilisez
 validate.summary3=le bouton retour à la page précédente
 validate.summary4=de votre navigateur pour corriger votre texte de résumé.
 track=Thème principal de la présentation
+summary.preview=Aperçu de votre présentation
 
 # Proposal type
 key.label=Keynote, 50mn, jeudi et vendredi matin

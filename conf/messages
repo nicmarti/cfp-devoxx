@@ -67,6 +67,7 @@ validate.summary2=or use
 validate.summary3=the back button
 validate.summary4=of your web browser and edit your summary.
 track=Track for your proposal
+summary.preview=Preview
 
 # Proposal type
 key.label=Keynote, 50mn, thursday and friday
