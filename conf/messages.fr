@@ -122,3 +122,8 @@ cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agilité, DevOps
 lgaltern.label=Langages alternatifs
 startup.label=Startup & Innovation
+
+# Bug report
+Issue.report=Notifier l''équipe
+btn.send=Envoyer
+msg=Votre message

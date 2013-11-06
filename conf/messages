@@ -94,3 +94,7 @@ table.pres.title=Draft presentation
 table.pres.validate=Submit
 table.pres.delete=Delete
 total.draft={0} proposal(s)
+
+# Bug report
+Issue.report=Report an issue
+btn.send=Send

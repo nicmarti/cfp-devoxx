@@ -66,4 +66,16 @@ object Mails {
       views.html.Mails.sendValidateYourEmail(validationLink).toString()
     )
   }
+
+  def sendBugReport(bugReport:(String, String, String, String))={
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+        emailer.setSubject("New issue reported on CFP web site")
+        emailer.addFrom("program@devoxx.fr")
+        emailer.addRecipient("nicolas.martignole@devoxx.fr")
+        emailer.setCharset("utf-8")
+        emailer.send(
+          views.html.Mails.sendBugReport(bugReport).toString(),
+          views.html.Mails.sendBugReport(bugReport).toString()
+        )
+  }
 }

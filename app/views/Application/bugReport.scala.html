@@ -1,0 +1,41 @@
+@(gitVersion: library.GitInfo, myForm:Form[(String,String,String,String)])(implicit flash:Flash, lang:Lang)
+@import helper.twitterBootstrap._
+
+@main("Report an issue"){
+    <div class="row">
+        <div class="col-md-10">
+            <div class="page-header">
+            <h3><i class="icon-bug"></i> @Messages("Issue.report")</h3>
+            </div>
+
+            @if(flash.get("error").isDefined){
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined){
+                <div class="alert alert-success alert-dismissable">
+                    @flash.get("success").get
+                </div>
+            }
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+
+                </div>
+                <div class="panel-body">
+                    @helper.form(action=routes.Application.submitIssue()){
+                        @helper.inputText(myForm("email"), 'class->"form-control")
+                        @helper.textarea(myForm("msg"), 'cols->60, 'rows->10,  'class->"form-control")
+                        <input type="hidden" name="gitHash" value="@gitVersion.version">
+                        <input type="hidden" name="branch" value="@gitVersion.branch">
+                        <hr>
+                        <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.send")</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
