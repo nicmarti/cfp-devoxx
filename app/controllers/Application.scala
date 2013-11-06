@@ -59,4 +59,9 @@ object Application extends Controller {
       }.getOrElse(NotFound("User does not exist"))
   }
 
+  def bugReport=Action{
+    implicit request=>
+      Ok("Please send an email ")
+  }
+
 }

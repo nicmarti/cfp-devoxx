@@ -46,5 +46,7 @@ POST    /googleoauth2callback       controllers.Authentication.callbackGoogle
 # for test
 GET     /resetEnvForDev             controllers.Application.resetEnvForDev(email:String)
 
+GET /bug                            controllers.Application.bugReport
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

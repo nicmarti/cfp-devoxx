@@ -26,7 +26,7 @@ email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget password?
-cfp.closed=The Devoxx France CallForPaper is closed.
+cfp.closed=The Call for paper is closed and will open Mon, 2nd Dec, 2014.
 avatarUrl=URL to your latest profile photo
 
 format.boolean=
