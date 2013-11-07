@@ -118,12 +118,12 @@ object Proposal {
 
   val proposalForm = Form(mapping(
     "lang" -> text,
-    "title" -> text(maxLength = 125),
+    "title" -> nonEmptyText(maxLength = 125),
     "mainSpeaker" -> nonEmptyText,
     "otherSpeakers" -> list(text),
     "talkType" -> nonEmptyText,
     "audienceLevel" -> text,
-    "summary" -> text(maxLength = 2000),
+    "summary" -> nonEmptyText(maxLength = 2000),
     "privateMessage" -> optional(text(maxLength = 1000)),
     "sponsorTalk" -> boolean,
     "track" -> nonEmptyText
