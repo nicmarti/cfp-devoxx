@@ -164,3 +164,15 @@ confirm.import.title=Créer votre profil de présentateur Devoxx France
 confirm.import.save=Enregister et continuer
 avatarUrl.isEmpty=L'URL de votre photo est vide, nous utiliserons votre
 avatarUrl.defined=Votre photo (largeur recommandée 120px)
+
+# Sign-up
+created.title=Demande d''inscription enregistrée
+created.text1=Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.
+created.text2=Validez votre adresse pour terminer votre enregistrement, votre mot de passe vous sera donné lorsque vous validerez votre email.
+created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx France.
+
+# Prepare signup
+signup.title=Inscription orateur
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2014 :
+signup.txt2=Un email de validation est envoyé à l'adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
+signup=S''inscrire

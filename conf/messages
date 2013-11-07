@@ -134,3 +134,14 @@ confirm.import.title=Create your Speaker's profile
 confirm.import.save=Save
 avatarUrl.isEmpty=URL to your picture is empty, so we will try to use your
 avatarUrl.defined=Your photo (recommended width 150px)
+
+created.title=Success!
+created.text1=We just sent you an email so that you can validate your email address.
+created.text2=Your password is generated and is displayed once you validate your email.
+created.text3=You will then be able to log-in and start to post proposals for Devoxx France.
+
+# prepareSignup
+signup.title=Speaker''s registration
+signup.txt1=Sign up to submit a talk for Devoxx France 2014 conference:
+signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated.
+signup=Sign-up

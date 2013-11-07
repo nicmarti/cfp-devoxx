@@ -1,16 +1,16 @@
-@(formWebuser: Form[Webuser])(implicit flash:Flash)
+@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang)
 
 @import helper.twitterBootstrap._
 
-@main("signup") {
+@main("Devoxx France 2014 - " + Messages("signup.title")) {
 
 <div class="row">
     <div class="col-md-12 page-header">
-        <h1>Inscription orateur</h1>
+        <h1><i class="icon-signin"></i> @Messages("signup.title")</h1>
     </div>
     <div class="col-md-8">
-        <h3><i class="icon-signin"></i> Inscription classique</h3>
-        <p>Inscrivez-vous afin de pouvoir ensuite proposer vos sujets de présentation pour la conférence Devoxx France 2014 :</p>
+
+        <p>@Messages("signup.txt1")</p>
 
         @if(flash.get("error").isDefined){
             <div class="alert alert-danger">
@@ -25,8 +25,8 @@
             @helper.inputText(formWebuser("lastName"))
 
 
-            <p>Un email de validation est envoyé à l'adresse indiquée. Votre profil ne sera actif qu'une fois que votre adresse de courrier électronique sera validée.</p>
-            <button class="btn btn-success" type="submit">Enregister</button>
+            <p>@Messages("signup.txt2")</p>
+            <button class="btn btn-success" type="submit">@Messages("signup")</button>
         }
     </div>
 

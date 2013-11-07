@@ -1,12 +1,12 @@
-@(email:String)
+@(email:String)(implicit lang:Lang)
 
 @main("Success"){
 <div class="row">
     <div class="col-md-12">
-        <h1>Demande d'inscription enregistrée</h1>
-        <p>Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.</p>
-        <p>Validez votre adresse pour terminer votre enregistrement, votre mot de passe vous sera donné lorsque vous validerez votre email.</p>
-        <p>Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx France.</p>
+        <h1>@Messages("created.title")</h1>
+        <p>@Messages("created.text1")</p>
+        <p>@Messages("created.text2")</p>
+        <p>@Messages("created.text3")</p>
     </div>
 </div>
 }
