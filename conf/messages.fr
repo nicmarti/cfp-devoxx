@@ -9,7 +9,7 @@ menu.register=S''inscrire
 menu.blog=Site DevoxxFR
 login=S''authentifier
 signup=S''inscrire
-signup.long=S''inscrire en tant qu'orateur pour Devoxx France
+signup.long=S''inscrire en tant qu''orateur pour Devoxx France
 
 index.method1=S''authentifier
 # For single quote, you need to double escape
@@ -95,7 +95,7 @@ privateMessage=Message privé pour le comité de sélection (program@devoxx.fr)
 sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
 helpAndTips=Aide et conseils
 moreSpeakerLater=Vous aurez la possibilité d''ajouter un ou plusieurs speakers plus tard.
-btn.save=Passer à l'étape 2
+btn.save=Passer à l''étape 2
 btn.save2=Continuer et passer à l''étape 3
 not.saved=Vérifiez le résumé à destination du participant à Devoxx France, puis cliquez sur Continuer pour sauver votre proposition.
 validate.summary2=ou sinon utilisez
