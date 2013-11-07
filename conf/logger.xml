@@ -10,6 +10,8 @@
     </appender>
 
     <logger name="play" level="WARN"/>
+    <logger name="library.ZapActor" level="DEBUG"/>
+    <logger name="models.Issue" level="DEBUG"/>
     <logger name="models.Speaker" level="DEBUG"/>
     <logger name="application" level="INFO"/>
 

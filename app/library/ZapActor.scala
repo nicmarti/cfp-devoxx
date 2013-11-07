@@ -40,13 +40,14 @@ import play.api.Play
  * Created: 07/11/2013 16:20
  */
 
+// This is a simple Akka event
 case class ReportIssue(issue:Issue)
 
+// Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
 }
 
-/* The BatchEngine can be tested separately */
 class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
@@ -58,8 +59,8 @@ class ZapActor extends Actor {
       play.Logger.of("application.ZapActor").debug(s"Posting a new bug report to Bitbucket")
     }
 
-    // TODO here
-    println(s"got issue ${issue}")
+    // All the functional code should be outside the Actor, so that we can test it separately
+    Issue.publish(issue)
 
   }
 }

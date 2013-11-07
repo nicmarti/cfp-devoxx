@@ -26,6 +26,10 @@ package models
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.ws.WS
+import org.apache.commons.lang3.StringUtils
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 
 /**
  * An issue or a bug.
@@ -44,5 +48,37 @@ object Issue {
       (Issue.apply)(Issue.unapply)
   )
 
+  def publish(issue: Issue) = {
+    val postUrl = "https://bitbucket.org/api/1.0/repositories/nicolas_martignole/cfp-devoxx-fr/issues"
 
+    val bugReport:String = s"# AUTOMATIC Bug Report\n\n## Message posté du site cfp.devoxx.fr\n## Reporté par ${issue.reportedBy}\n Git Hash ${issue.gitHash}  Git branch: ${issue.gitBranch}\n-----------------\n${issue.msg}"
+
+    // See Bitbucket doc https://confluence.atlassian.com/display/BITBUCKET/issues+Resource#issuesResource-POSTanewissue
+    val futureResult = WS.url(postUrl)
+      .withAuth(username="nicolas_martignole", password="75laure", scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
+      .withHeaders(
+      ("Accept", "application/json"), ("User-Agent", "Devoxx France cfp.devoxx.fr")
+    ).post(
+      Map(
+        "status"-> Seq("new"),
+        "title" -> Seq(StringUtils.abbreviate(issue.msg, 30)),
+        "content" ->Seq(bugReport)
+      )
+    )
+
+
+    futureResult.map {
+      response =>
+        response.status match {
+          case 200 => play.Logger.of("models.Issue").debug("Success")
+          case 201 => play.Logger.of("models.Issue").debug("Created")
+          case other => {
+            play.Logger.of("models.Issue").warn("Bitbucket responded " + other)
+            play.Logger.of("models.Issue").warn(response.body)
+          }
+        }
+
+    }
+
+  }
 }
