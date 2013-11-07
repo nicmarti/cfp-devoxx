@@ -28,7 +28,8 @@ import library.GitUtils
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-
+import play.api.i18n.Lang
+import play.api.Play.current
 
 /**
  * Devoxx France Call For Paper main application.
@@ -77,7 +78,7 @@ object Application extends Controller {
         invalidForm => BadRequest(views.html.Application.bugReport(GitUtils.getGitVersion, invalidForm)),
         validBugReport => {
           notifiers.Mails.sendBugReport(validBugReport)
-          Redirect(routes.Application.index).flashing("success"-> "Your message has been sent to the team. Thanks!")
+          Redirect(routes.Application.index).flashing("success" -> "Your message has been sent to the team. Thanks!")
         })
   }
 

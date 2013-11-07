@@ -26,7 +26,6 @@ email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget password?
-cfp.closed=The Call for paper is closed and will open Mon, 2nd Dec, 2014.
 avatarUrl=URL to your latest profile photo
 
 format.boolean=
@@ -98,3 +97,35 @@ total.draft={0} proposal(s)
 # Bug report
 Issue.report=Report an issue
 btn.send=Send
+
+# Home page
+cfp.closed=The Call for paper is closed and will open Mon, 2nd Dec, 2014.
+appel.conf=Call for Paper
+appel.conf.dates=Devoxx France 2014, 16th to 18th of April, 2014
+cfp.opening=CFP opening:
+cfp.opening.date=Monday, 2nd of December 2013
+cfp.closing=CFO closing :
+cfp.closing.date=Sunday, 2nd of February 2014, midnight
+cfp.program=Program announced :
+cfp.program.date= february/march 2014
+video.title=Videos
+video.tag=Review Devoxx France 2013's videos for free on
+theme.title=Tracks
+theme.track=List of tracks for Devoxx France 2014:
+track.title=Title
+track.description=Description
+track.java.title=Java
+track.java.desc=Java, Java SE 8, Java EE 7 and the JVM.
+track.web.title=Web, HTML5
+track.web.desc=Front development, web architecture, html5.
+track.mobile.title=Mobile
+track.mobile.desc=Android, iOS, tablet, development and tools for Mobile.
+track.startup.title=Startup and entrepreneurship
+track.startup.desc=Lean startup, UX Design, tools and new trends in Startup.
+track.devops.title=Agilité and DevOps
+track.devops.desc=Lean, Kanban, continuous integration, deployment, network and security.
+track.lang.title=Alternates Languages
+track.lang.desc=Javascript, Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
+track.bigdata.title=Cloud, Big Data and NoSQL
+track.bigdata.desc=Deploy, capture, curation, storage, search, sharing, transfer, analysis and visualization.
+
