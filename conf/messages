@@ -34,7 +34,7 @@ format.boolean=
 your.profile=Your profile
 your.submission=Your proposals
 no.proposal=You haven't submitted any proposal yet.
-profile.gravatar=Upload and edit directly your photo on
+profile.gravatar=Your avatar URL is not set, so we will use your
 profile.gravatar2=for your email
 url.photo=URL to your profile's picture
 blog.website=Blog or website
@@ -144,4 +144,8 @@ created.text3=You will then be able to log-in and start to post proposals for De
 signup.title=Speaker''s registration
 signup.txt1=Sign up to submit a talk for Devoxx France 2014 conference:
 signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated.
-signup=Sign-up
+
+# edit profile
+editProfile.title=Your profile
+editProfile.help=Take the time to complete your profile. This content will then be published on the site if you are selected as a speaker, as well as in the conference program:
+editProfile.save=Save

@@ -175,4 +175,8 @@ created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos 
 signup.title=Inscription orateur
 signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2014 :
 signup.txt2=Un email de validation est envoyé à l'adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
-signup=S''inscrire
+
+# edit profile
+editProfile.title=Votre profil
+editProfile.help=Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné comme orateur, ainsi que dans le programme de la conférence :
+editProfle.save=Enregistrer

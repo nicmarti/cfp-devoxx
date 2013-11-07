@@ -13,10 +13,11 @@
                     <tbody>
                         <tr>
                             <td>
+                                @if(speaker.avatarUrl.isEmpty){
                                 <div class="media">
                                     <a class="pull-left" href="#">
                                         <img class="media-object"
-                                        src="http://www.gravatar.com/avatar/@webuser.gravatarHash?s=120"
+                                        src="http://www.gravatar.com/avatar/@webuser.gravatarHash?s=75"
                                         alt="@webuser.firstName @webuser.lastName"
                                         title="This is you" />
                                     </a>
@@ -25,6 +26,17 @@
                                             Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
                                     </div>
                                 </div>
+                                }else{
+                                    <div class="media">
+                                        <a class="pull-left" href="#">
+                                            <img class="media-object"
+                                            width="75"
+                                            src="@speaker.avatarUrl.get"
+                                            alt="@webuser.firstName @webuser.lastName"
+                                            title="This is you" />
+                                        </a>
+                                    </div>
+                                }
                             </td>
                         </tr>
 
