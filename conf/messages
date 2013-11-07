@@ -129,3 +129,8 @@ track.lang.desc=Javascript, Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, G
 track.bigdata.title=Cloud, Big Data and NoSQL
 track.bigdata.desc=Deploy, capture, curation, storage, search, sharing, transfer, analysis and visualization.
 
+# confirm import
+confirm.import.title=Create your Speaker's profile
+confirm.import.save=Save
+avatarUrl.isEmpty=URL to your picture is empty, so we will try to use your
+avatarUrl.defined=Your photo (recommended width 150px)

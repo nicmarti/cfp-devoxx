@@ -1,4 +1,4 @@
-@(formWebuser: Form[Webuser], speakerForm: Form[Speaker])
+@(formWebuser: Form[Webuser], speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.codec.digest.DigestUtils
@@ -6,12 +6,12 @@
 @main("Nouveau profil") {
     <div class="row">
         <div class="col-md-12 page-header">
-            <h3>Créer votre profil de présentateur Devoxx France</h3>
+            <h3>@Messages("confirm.import.title")</h3>
         </div>
-        <div class="col-md-8">
-            @helper.form(action = routes.Authentication.validateImportedSpeaker) {
+  @helper.form(action = routes.Authentication.validateImportedSpeaker) {
+        <div class="col-md-8 panel panel-default">
                 <div class="clearfix  " id="email_field">
-                    <label for="email">Adresse email</label>
+                    <label for="email">@Messages("email")</label>
                     <div class="input">
 
                         <input type="text" id="email" name="email" value="@formWebuser("email").value.getOrElse("")" readonly="true" size=40>
@@ -28,20 +28,26 @@
                 @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
                 @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
-                @helper.inputText(speakerForm("avatarUrl"), 'size -> 80)
 
-                <div class="btn-block">
-                    <button type="submit" class="btn btn-success">Enregister et continuer</button>
-                </div>
-            }
-        </div>
-        <div class="col-md-4">
-            <P>Nous utiliserons l'image <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
-                Gravatar</a>  suivante :
-                <img src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))" alt="Gravatar" title="Update your profile on gravatar.com">
+            @if(speakerForm("avatarUrl").value.isEmpty){
+
+            <P>@Messages("avatarUrl.isEmpty") <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
+                Gravatar</a>
+                <img width="120" src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))?s=150" alt="Gravatar" title="Update your profile on gravatar.com">
             </P>
-            <p>Si vous souhaitez modifier votre photo, rendez-vous directement sur le site <a href="http://www.gravatar.com/" target="_blank" title="Configure a picture">http://www.gravatar.com/</a></p>
+            }else{
+              <p>@Messages("avatarUrl.defined")</p>
+              <img src="@speakerForm("avatarUrl").value" width="120" alt="this is you" title="Recommended width 120 px">
+            }
+
+            @helper.inputText(speakerForm("avatarUrl"), 'size -> 80)
+
+            <div class="btn-block">
+                        <button type="submit" class="btn btn-success">@Messages("confirm.import.save")</button>
+            </div>
         </div>
+        }
+
     </div>
 
 }

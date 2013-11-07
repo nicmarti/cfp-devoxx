@@ -116,7 +116,7 @@ object Webuser {
     allSpeakers.map{ webuser=>
       val cleanName = webuser.lastName.toLowerCase.capitalize+ " " +webuser.firstName
       (webuser.email, cleanName)
-    }
+    }.sortBy(tuple=>tuple._2) // sort by label
   }
 
 }

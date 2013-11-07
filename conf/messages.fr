@@ -158,3 +158,9 @@ track.lang.title=Langages alternatifs
 track.lang.desc=Javascript, Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
 track.bigdata.title=Cloud, Big Data et NoSQL
 track.bigdata.desc=Déployer, stocker, analyser les données et revoir la gestion de la data.
+
+# Confirm import
+confirm.import.title=Créer votre profil de présentateur Devoxx France
+confirm.import.save=Enregister et continuer
+avatarUrl.isEmpty=L'URL de votre photo est vide, nous utiliserons votre
+avatarUrl.defined=Votre photo (largeur recommandée 120px)

@@ -1,4 +1,4 @@
-@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang)
+@(currentUser:String, newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -54,8 +54,10 @@
 </script>
 <script type="text/javascript">
 $(document).ready(function($){
- console.log("ok");
  setformfieldsize($('#summary'), 2000, 'charsremain');
+
+    // Select the current user in the list of speaker
+    $('#mainSpeaker option[value="@currentUser"]').prop('selected', true);
 })
 </script>
 }

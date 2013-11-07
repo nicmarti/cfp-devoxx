@@ -34,7 +34,6 @@ import play.api.libs.concurrent.Execution.Implicits._
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 import play.api.libs.json.Json
 
-
 /**
  * Main controller for the speakers.
  *
@@ -119,7 +118,7 @@ object CallForPaper extends Controller with Secured {
   // Load a new proposal form
   def newProposal() = IsAuthenticated {
     email => implicit request =>
-      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm))
+      Ok(views.html.CallForPaper.newProposal(email, Proposal.proposalForm))
 
   }
 
@@ -127,7 +126,7 @@ object CallForPaper extends Controller with Secured {
   def createNewProposal() = IsAuthenticated {
     email => implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(email, hasErrors)),
         validProposal => {
           import com.github.rjeschke.txtmark._
           val html = Processor.process(validProposal.summary) // markdown to HTML
@@ -140,7 +139,7 @@ object CallForPaper extends Controller with Secured {
   def saveNewProposal() = IsAuthenticated {
     email => implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(email, hasErrors)),
         validProposal => {
           import com.github.rjeschke.txtmark._
           val html = Processor.process(validProposal.summary) // markdown to HTML

@@ -246,7 +246,6 @@ object Authentication extends Controller {
                           val s = Speaker(emailS, bioS, lang, None, avatarUrl, company, blog)
                           Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                         }
-
                     }
                   })
 
@@ -397,7 +396,7 @@ object Authentication extends Controller {
                     }.getOrElse {
                       // Create a new one but ask for confirmation
                       val w = Webuser(email, firstName.getOrElse("?"), lastName.getOrElse("?"), RandomStringUtils.randomAlphanumeric(7), "speaker")
-                      val s = Speaker(email, "Please enter a bio", lang, None, photo, None, blog)
+                      val s = Speaker(email, "", lang, None, photo, None, blog)
                       Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                     }
                   }
