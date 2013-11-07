@@ -27,7 +27,7 @@ register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget password?
 avatarUrl=URL to your latest profile photo
-
+home.txt2=Use one of the following social service, this is simpler and you won't have to remember another password. If your profile does not yet exist, it will be created automatically.
 format.boolean=
 
 # CFP Home page
