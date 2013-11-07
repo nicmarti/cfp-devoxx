@@ -24,11 +24,7 @@ package controllers
 
 import models._
 import play.api.mvc._
-import library.GitUtils
-import play.api.data._
-import play.api.data.Forms._
-import play.api.data.validation.Constraints._
-import play.api.i18n.Lang
+import library._
 import play.api.Play.current
 
 /**
@@ -62,22 +58,20 @@ object Application extends Controller {
       }.getOrElse(NotFound("User does not exist"))
   }
 
-  val bugReportForm = Form(tuple("email" -> (email verifying nonEmpty),
-    "msg" -> nonEmptyText(maxLength = 2000),
-    "gitHash" -> text,
-    "branch" -> text))
+
 
   def bugReport = Action {
     implicit request =>
-      Ok(views.html.Application.bugReport(GitUtils.getGitVersion, bugReportForm))
+      Ok(views.html.Application.bugReport(GitUtils.getGitVersion, Issue.bugReportForm))
   }
 
   def submitIssue() = Action {
     implicit request =>
-      bugReportForm.bindFromRequest.fold(
+      Issue.bugReportForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Application.bugReport(GitUtils.getGitVersion, invalidForm)),
         validBugReport => {
           notifiers.Mails.sendBugReport(validBugReport)
+          ZapActor.actor ! ReportIssue(validBugReport)
           Redirect(routes.Application.index).flashing("success" -> "Your message has been sent to the team. Thanks!")
         })
   }

@@ -27,6 +27,7 @@ package notifiers
 import com.typesafe.plugin._
 import play.api.Play.current
 import org.joda.time.DateTime
+import models.Issue
 
 /**
  * Sends all emails
@@ -67,10 +68,11 @@ object Mails {
     )
   }
 
-  def sendBugReport(bugReport:(String, String, String, String))={
+  def sendBugReport(bugReport:Issue)={
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
         emailer.setSubject("New issue reported on CFP web site")
         emailer.addFrom("program@devoxx.fr")
+        emailer.addCc(bugReport.reportedBy)
         emailer.addRecipient("nicolas.martignole@devoxx.fr")
         emailer.setCharset("utf-8")
         emailer.send(

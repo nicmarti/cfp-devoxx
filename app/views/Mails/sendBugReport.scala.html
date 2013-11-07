@@ -1,13 +1,13 @@
-@(bugReport:(String, String, String, String))
+@(bugReport:models.Issue)
 
 <h3>Nouvel question/incident posté sur le site du CFP</h3>
 <hr>
 
-<p>Expéditeur : @bugReport._1</p>
+<p>Expéditeur : @bugReport.reportedBy</p>
 <p>Message :
-<pre>@bugReport._2</pre>
+<pre>@bugReport.msg</pre>
 </p>
-<p>Git version : @bugReport._3</p>
-<p>Git branch : @bugReport._4</p>
+<p>Git version : @bugReport.gitHash</p>
+<p>Git branch : @bugReport.gitBranch</p>
 <hr>
 
