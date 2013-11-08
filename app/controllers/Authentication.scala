@@ -103,7 +103,7 @@ object Authentication extends Controller {
             case true =>
               Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> validForm._1)
             case false =>
-              Unauthorized("User not found")
+              Redirect(routes.Application.home).flashing("error"->Messages("login.error"))
           }
       )
   }

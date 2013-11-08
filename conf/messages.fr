@@ -1,3 +1,4 @@
+login.error=Email inconnu ou code d''accès invalide
 menu.home=Accueil
 email=Adresse email
 firstName=Prénom

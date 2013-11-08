@@ -1,3 +1,4 @@
+login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
 email=Email
