@@ -187,3 +187,14 @@ signup.txt2=Un email de validation est envoyé à l'adresse indiquée. Votre pro
 editProfile.title=Votre profil
 editProfile.help=Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné comme orateur, ainsi que dans le programme de la conférence :
 editProfle.save=Enregistrer
+
+# Home
+table.pres.title=Titre
+table.pres.speaker=Présentateur
+table.pres.otherSpeakers=Autres présentateurs
+table.pres.edit=Editer
+table.pres.submit=Soumettre
+table.pres.delete=Mettre à la poubelle
+table.pres.action=Actions
+total.draft={0} propositions(s)
+you.speaker=Vous

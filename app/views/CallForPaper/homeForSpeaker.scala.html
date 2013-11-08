@@ -98,8 +98,8 @@
 
 
                 <div class="panel-footer">
-                    <a href="@routes.CallForPaper.editProfile()" class="btn btn-info">@Html(Messages("edit.profile"))</a>
-                    <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-info">@Html(Messages("edit.name"))</a>
+                    <a href="@routes.CallForPaper.editProfile()" class="btn btn-primary">@Html(Messages("edit.profile"))</a>
+                    <a href="@routes.CallForPaper.editCurrentWebuser()" class="btn btn-primary">@Html(Messages("edit.name"))</a>
                 </div>
             </div>
         </div>
@@ -116,12 +116,38 @@
                     <thead>
                         <tr>
                             <th>@Messages("table.pres.title")</th>
+                            <th>@Messages("table.pres.speaker")</th>
+                            <th>@Messages("table.pres.otherSpeakers")</th>
+                            <th>@Messages("table.pres.edit")</th>
+                            <th><i class="icon-comments"></i></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                     @myProposals.map { prop: Proposal =>
                         <tr>
                             <td>@prop.title</td>
+                            <td>@if(prop.mainSpeaker == webuser.email){
+                                <span class="label label-info">@Messages("you.speaker")</span>
+                            }else{
+                                <small>@prop.mainSpeaker</small>
+                            }
+                            </td>
+                            <td>
+                            <a href="#" class="btn btn-sm btn-primary"><i class="icon-plus"></i> </a>
+                            @prop.otherSpeakers.map{s=>
+                                <small><a href="#" class="btn btn-sm btn-default"><i class="icon-minus"></i>s </a></small>
+                            }
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-primary" title="@Messages("table.pres.edit")"><i class="icon-edit"></i></a>
+                            </td>
+                            <td>
+                                <span class="label label-info">0</span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
+                            </td>
                         </tr>
                     }
                     </tbody>

@@ -96,12 +96,6 @@ agilite.label=Agility, DevOps
 lgaltern.label=Alternate languages
 startup.label=Startups & innovation
 
-# Home
-table.pres.title=Draft presentation
-table.pres.validate=Submit
-table.pres.delete=Delete
-total.draft={0} proposal(s)
-
 # Bug report
 Issue.report=Report an issue
 btn.send=Send
@@ -157,3 +151,14 @@ signup.txt2=A validation email will be sent to the address indicated. Your profi
 editProfile.title=Your profile
 editProfile.help=Take the time to complete your profile. This content will then be published on the site if you are selected as a speaker, as well as in the conference program:
 editProfile.save=Save
+
+# Home
+table.pres.title=Title
+table.pres.edit=Edit
+table.pres.submit=Submit
+table.pres.delete=Move to trash
+table.pres.action=Actions
+total.draft={0} proposal(s)
+table.pres.speaker=Speaker
+table.pres.otherSpeakers=Other speakers
+you.speaker=You
