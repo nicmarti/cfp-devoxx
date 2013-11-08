@@ -127,7 +127,7 @@ object CallForPaper extends Controller with Secured {
   def createNewProposal(id: Option[String]) = IsAuthenticated {
     email => implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(email, hasErrors)).flashing("error"->"invalid.form"),
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(email, hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
           import com.github.rjeschke.txtmark._
 
@@ -160,18 +160,18 @@ object CallForPaper extends Controller with Secured {
             Proposal.allMyDraftProposals(email).find(_.id.get == id.get) match {
               case Some(existingProposal) => {
                 // This is an edit operation
-                Proposal.saveDraft(email, validProposal.copy(id=id))
+                Proposal.saveDraft(email, validProposal.copy(id = id))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               }
               case other => {
                 // Check that this is really a new id and that it does not exist
-                if(Proposal.isNew(id.get)){
+                if (Proposal.isNew(id.get)) {
                   // This is a "create new" operation
                   Proposal.saveDraft(email, validProposal)
-                  Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" ->  Messages("saved"))
-                }else{
-                  play.Logger.warn("ID collision "+id)
-                  BadRequest(views.html.CallForPaper.newProposal(email, Proposal.proposalForm.fill(validProposal.copy(id=Proposal.generateId())))).flashing("error" -> "not.yours")
+                  Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
+                } else {
+                  play.Logger.warn("ID collision " + id)
+                  BadRequest(views.html.CallForPaper.newProposal(email, Proposal.proposalForm.fill(validProposal.copy(id = Proposal.generateId())))).flashing("error" -> "not.yours")
                 }
               }
             }
@@ -186,7 +186,6 @@ object CallForPaper extends Controller with Secured {
   def editProposal(proposalId: String) = IsAuthenticated {
     email => implicit request =>
       val maybeProposal = Proposal.allMyDraftProposals(email).find(_.id.get == proposalId)
-
       maybeProposal match {
         case Some(proposal) => {
           Ok(views.html.CallForPaper.newProposal(email, Proposal.proposalForm.fill(proposal)))
@@ -201,7 +200,6 @@ object CallForPaper extends Controller with Secured {
   def editOtherSpeakers(proposalId: String) = IsAuthenticated {
     email => implicit request =>
       val maybeProposal = Proposal.allMyDraftProposals(email).find(_.id.get == proposalId)
-
       maybeProposal match {
         case Some(proposal) => {
           Ok(views.html.CallForPaper.editOtherSpeaker(email, Proposal.proposalForm.fill(proposal)))
@@ -224,6 +222,35 @@ object CallForPaper extends Controller with Secured {
         }
       }
   }
+
+  def deleteProposal(proposalId: String) = IsAuthenticated {
+    email => implicit request =>
+      val maybeProposal = Proposal.allMyDraftProposals(email).find(_.id.get == proposalId)
+      maybeProposal match {
+        case Some(proposal) => {
+          Proposal.delete(email , proposalId)
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("deleted" -> proposalId)
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
+      }
+  }
+
+  def undeleteProposal(proposalId: String) = IsAuthenticated {
+      email => implicit request =>
+        val maybeProposal = Proposal.allMyDeletedProposals(email).find(_.id.get == proposalId)
+        maybeProposal match {
+          case Some(proposal) => {
+            Proposal.draft(email , proposalId)
+            Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.draft"))
+          }
+          case None => {
+            Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          }
+        }
+
+    }
 }
 
 /**

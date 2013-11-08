@@ -6,14 +6,14 @@
     <div class="row">
         <div class="col-md-4">
             <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>
-            
+
             <div class="panel panel-default">
                 <div class="panel-heading"><p>@webuser.firstName @webuser.lastName</p></div>
                 <table class="table">
                     <tbody>
                         <tr>
                             <td>
-                                @if(speaker.avatarUrl.isEmpty){
+                            @if(speaker.avatarUrl.isEmpty) {
                                 <div class="media">
                                     <a class="pull-left" href="#">
                                         <img class="media-object"
@@ -26,17 +26,17 @@
                                             Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
                                     </div>
                                 </div>
-                                }else{
-                                    <div class="media">
-                                        <a class="pull-left" href="#">
-                                            <img class="media-object"
-                                            width="75"
-                                            src="@speaker.avatarUrl.get"
-                                            alt="@webuser.firstName @webuser.lastName"
-                                            title="This is you" />
-                                        </a>
-                                    </div>
-                                }
+                            } else {
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object"
+                                        width="75"
+                                        src="@speaker.avatarUrl.get"
+                                        alt="@webuser.firstName @webuser.lastName"
+                                        title="This is you" />
+                                    </a>
+                                </div>
+                            }
                             </td>
                         </tr>
 
@@ -126,20 +126,20 @@
                     <tbody>
                     @myProposals.map { prop: Proposal =>
                         <tr>
-                            <td>@prop.title<br>
+                            <td>@prop.title <br>
                             <span class="label label-info">@prop.state.code</span>
                             </td>
-                            <td>@if(prop.mainSpeaker == webuser.email){
+                            <td>@if(prop.mainSpeaker == webuser.email) {
                                 <span class="label label-info">@Messages("you.speaker")</span>
-                            }else{
+                            } else {
                                 <small>@prop.mainSpeaker</small>
                             }
                             </td>
                             <td>
-                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id.getOrElse("?"))" class="btn btn-sm btn-primary"><i class="icon-plus"></i> </a>
-                            @prop.otherSpeakers.map{s=>
-                                <small><a href="#" class="btn btn-sm btn-default"><i class="icon-minus"></i>s </a></small>
-                            }
+                                <a href="@routes.CallForPaper.editOtherSpeakers(prop.id.getOrElse("?"))" class="btn btn-sm btn-primary"><i class="icon-plus"></i> </a>
+                                @prop.otherSpeakers.map { s =>
+                                    <small><a href="#" class="btn btn-sm btn-default"><i class="icon-minus"></i>s </a></small>
+                                }
                             </td>
                             <td>
                                 <a href="@routes.CallForPaper.editProposal(prop.id.getOrElse("?"))" class="btn btn-sm btn-primary" title="@Messages("table.pres.edit")"><i class="icon-edit"></i></a>
@@ -149,7 +149,7 @@
                                 <span class="label label-info">0</span>
                             </td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
+                                <a href="@routes.CallForPaper.deleteProposal(prop.id.getOrElse("?"))" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
                             </td>
                         </tr>
                     }
@@ -166,7 +166,7 @@
 
         </div>
 
-        <div class="col-md-4 col-md-offset-8">
+        <div class="col-md-6 col-md-offset-6">
             @if(flash.get("error").isDefined) {
                 <div class="alert alert-danger alert-dismissable">
                     <strong>Error :</strong>
@@ -176,6 +176,14 @@
             @if(flash.get("success").isDefined) {
                 <div class="alert alert-success alert-dismissable">
                 @flash.get("success").get
+                </div>
+            }
+            @if(flash.get("deleted").isDefined) {
+                <div class="alert alert-warning">
+                @Messages("talk.deleted")<br>
+                @flash.get("deleted").map{proposalId:String=>
+                    <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
+                }
                 </div>
             }
         </div>

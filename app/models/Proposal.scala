@@ -128,11 +128,11 @@ object Proposal {
     "track" -> nonEmptyText
   )(validateNewProposal)(unapplyProposalForm))
 
-  def generateId():Option[String]={
+  def generateId(): Option[String] = {
     Some(RandomStringUtils.randomAlphanumeric(12))
   }
 
-  def validateNewProposal(id:Option[String], lang: String, title: String, mainSpeaker: String, otherSpeakers: List[String],
+  def validateNewProposal(id: Option[String], lang: String, title: String, mainSpeaker: String, otherSpeakers: List[String],
                           talkType: String, audienceLevel: String, summary: String, privateMessage: Option[String],
                           sponsorTalk: Boolean, track: String): Proposal = {
     val code = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3)
@@ -154,10 +154,10 @@ object Proposal {
 
   }
 
-  def isNew(id:String):Boolean=Redis.pool.withClient{
-    client=>
-      // Important when we create a new proposal
-      client.hexists("Proposals", id)==false
+  def isNew(id: String): Boolean = Redis.pool.withClient {
+    client =>
+    // Important when we create a new proposal
+      client.hexists("Proposals", id) == false
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, String, List[String], String, String, String, Option[String],
@@ -165,4 +165,56 @@ object Proposal {
     Option((p.id, p.lang, p.title, p.mainSpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
       p.sponsorTalk, p.track.id))
   }
+
+  def delete(owner: String, proposalId: String) = Redis.pool.withClient {
+    client =>
+      val tx = client.multi()
+      tx.srem("Proposals:Draft", proposalId)
+      tx.srem("Proposals:Submitted", proposalId)
+      tx.sadd("Proposals:Deleted", proposalId)
+
+      tx.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} deleted a proposal [${proposalId}]")
+      tx.exec()
+  }
+
+  def submit(owner: String, proposalId: String) = Redis.pool.withClient {
+    client =>
+      val tx = client.multi()
+      tx.srem("Proposals:Draft", proposalId)
+      tx.sadd("Proposals:Submitted", proposalId)
+      tx.srem("Proposals:Deleted", proposalId)
+
+      tx.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} submitted a proposal [${proposalId}]")
+      tx.exec()
+  }
+
+  def draft(owner: String, proposalId: String) = Redis.pool.withClient {
+    client =>
+      val tx = client.multi()
+      tx.sadd("Proposals:Draft", proposalId)
+      tx.srem("Proposals:Submitted", proposalId)
+      tx.srem("Proposals:Deleted", proposalId)
+
+      tx.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} set a proposal to draft [${proposalId}]")
+      tx.exec()
+  }
+
+  def allMyDeletedProposals(email: String): List[Proposal] = Redis.pool.withClient {
+    client =>
+      val allProposalIds: Set[String] = client.sinter("Proposals:Deleted", "Proposals:ByAuthor:" + email)
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal]
+      }.sortBy(_.title)
+  }
+
+  def allMySubmittedProposals(email: String): List[Proposal] = Redis.pool.withClient {
+      client =>
+        val allProposalIds: Set[String] = client.sinter("Proposals:Submitted", "Proposals:ByAuthor:" + email)
+        client.hmget("Proposals", allProposalIds).flatMap {
+          proposalJson: String =>
+            Json.parse(proposalJson).asOpt[Proposal]
+        }.sortBy(_.title)
+    }
+
 }
