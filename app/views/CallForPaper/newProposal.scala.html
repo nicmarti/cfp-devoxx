@@ -34,10 +34,14 @@
                 @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("track"), options=Track.allAsId,  'class->"form-control")
 
-                @helper.select(field = newProposal("audienceLevel"), options=Proposal.audienceLevels,  'class->"form-control")
+                <input type="hidden" name="audienceLevel" value="intermediate">
 
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,  'class->"form-control")
-                @helper.checkbox(newProposal("sponsorTalk"),  'class->"form-control")
+                @tags.checkboxI18N(newProposal("sponsorTalk"),  'text->"sponsorTalk.checkbox")
+                <div id="sponsorTalkMsg" class="alert alert-info">
+                    <p>@Messages("sponsorTalk.help")</p>
+                    <p>@Messages("sponsor.name.plz")</p>
+                </div>
                 <hr>
                 <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
             }
@@ -47,6 +51,8 @@
             <h3>@Messages("helpAndTips")</h3>
             <p><label>@Messages("title") : </label> @Messages("title.help")</p>
             <p><label>@Messages("summary") : </label> @Messages("summary.help")</p>
+            <p><label>@Messages("lang") : </label> @Messages("lang.help")</p>
+            <p><label>@Messages("mainSpeaker") : </label> @Messages("mainSpeaker.help")</p>
 
         </div>
 
@@ -56,7 +62,9 @@
 
 <script type="text/javascript">
 $(document).ready(function($){
- setformfieldsize($('#summary'), 2000, 'charsremain');
+    $('#sponsorTalkMsg' ).hide();
+
+    setformfieldsize($('#summary'), 2000, 'charsremain');
 
     // Select the current user in the list of speaker
     $('#mainSpeaker option[value="@currentUser"]').prop('selected', true);
@@ -64,6 +72,22 @@ $(document).ready(function($){
     // Boost speaker with jQuery select2 (thanks aheritier)
      $("#mainSpeaker").select2({
         allowClear: false
+    });
+
+    // Selet current lang
+    $('#lang option[value="@lang.country.toLowerCase"]').prop('selected', true);
+
+    // When user tick sponsorTalk then we update the private message
+    $('#sponsorTalk').on("click", function() {
+        if (this.checked) {
+            $('#sponsorTalkMsg').show();
+            $('#talkType option[value="conf"]' ).prop('selected', true);
+            $('#talkType').prop('disabled', true);
+        }
+        else {
+            $('#sponsorTalkMsg').hide();
+            $('#talkType').prop('disabled', false);
+        }
     });
 });
 </script>

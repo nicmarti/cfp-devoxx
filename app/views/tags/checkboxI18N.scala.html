@@ -1,0 +1,7 @@
+@(field: play.api.data.Field, args: (Symbol,Any)*)(implicit handler: views.html.helper.FieldConstructor, lang: play.api.i18n.Lang)
+
+@boxValue = @{ args.toMap.get('value).getOrElse("true") }
+
+@helper.input(field, args:_*) { (id, name, value, htmlArgs) =>
+<input type="checkbox" id="@id" name="@name" value="@boxValue" @(if(value == Some(boxValue)) "checked" else "") @toHtmlArgs(htmlArgs.filterKeys(_ != 'value))>&nbsp;@args.toMap.get('text).map(s=>Messages(s.toString))
+}

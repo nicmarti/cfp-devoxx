@@ -51,12 +51,20 @@ title.help=Think carefully and try to create a title that is descriptive enough.
 summary=Summary
 summary.help=Describe your proposal, you can use Markdown syntax. We use the txtmark library.
 lang=Main language
+lang.help=75% of Devoxx France's talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
 mainSpeaker=Main speaker
+mainSpeaker.help=The main speaker. You can add more speakers once the proposal is creatd. We offer a 3-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action.
 otherSpeakers=2nd speaker
 talkType=Type of talk
 audienceLevel=Audience level
 privateMessage=Private message for the program comitee
-sponsorTalk=Check if this talk is a sponsor talk
+sponsorTalk=Is this a sponsor/exhibitor presentation?
+
+sponsorTalk.help.title=Sponsor talk
+sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
+sponsorTalk.help=Silver and Platinium sponsors can submit up to one Conference talk, that is automatically accepted and scheduled.
+sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
+
 helpAndTips=Help and advices
 moreSpeakerLater=You can add more speakers later, once the proposal is submitted.
 btn.save=Save and preview
@@ -117,7 +125,7 @@ track.description=Description
 track.java.title=Java
 track.java.desc=Java, Java SE 8, Java EE 7 and the JVM.
 track.web.title=Web, HTML5
-track.web.desc=Front development, web architecture, html5.
+track.web.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps.
 track.mobile.title=Mobile
 track.mobile.desc=Android, iOS, tablet, development and tools for Mobile.
 track.startup.title=Startup and entrepreneurship
@@ -125,9 +133,9 @@ track.startup.desc=Lean startup, UX Design, tools and new trends in Startup.
 track.devops.title=Agilité and DevOps
 track.devops.desc=Lean, Kanban, continuous integration, deployment, network and security.
 track.lang.title=Alternates Languages
-track.lang.desc=Javascript, Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
+track.lang.desc=Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
 track.bigdata.title=Cloud, Big Data and NoSQL
-track.bigdata.desc=Deploy, capture, curation, storage, search, sharing, transfer, analysis and visualization.
+track.bigdata.desc=Capture, curation, storage, search, sharing, transfer, analysis and visualization.
 
 # confirm import
 confirm.import.title=Create your Speaker's profile
