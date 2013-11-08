@@ -18,20 +18,21 @@ POST    /newspeaker                 controllers.Authentication.saveNewSpeaker
 GET     /newspeaker/validateMail    controllers.Authentication.validateYourEmail(t:String,a:String)
 POST    /newspeaker/validImported   controllers.Authentication.validateImportedSpeaker
 
-
-
 GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker
 GET     /cfp                        controllers.CallForPaper.homeForSpeaker
 GET     /cfp/find                   controllers.CallForPaper.findByEmail(email:String)
 GET     /cfp/profile                controllers.CallForPaper.editProfile
 POST    /cfp/profile                controllers.CallForPaper.saveProfile
 GET     /cfp/webuser/edit           controllers.CallForPaper.editCurrentWebuser
-POST     /cfp/webuser/save           controllers.CallForPaper.saveCurrentWebuser
+POST    /cfp/webuser/save           controllers.CallForPaper.saveCurrentWebuser
 
 # proposal
 GET     /cfp/proposal/new           controllers.CallForPaper.newProposal()
-POST    /cfp/proposal/create        controllers.CallForPaper.createNewProposal()
-POST    /cfp/proposal/create/saveNewProposal       controllers.CallForPaper.saveNewProposal()
+POST    /cfp/proposal/preview       controllers.CallForPaper.createNewProposal(id:Option[String])
+POST    /cfp/proposal/save          controllers.CallForPaper.saveProposal(id:Option[String])
+GET     /cfp/proposal/edit/:proposalId   controllers.CallForPaper.editProposal(proposalId:String)
+GET     /cfp/proposal/edit/:proposalId/otherSpeakers controllers.CallForPaper.editOtherSpeakers(proposalId:String)
+POST    /cfp/proposal/save/:proposalId/otherSpeakers controllers.CallForPaper.saveOtherSpeakers(proposalId:String)
 
 # Password
 GET     /forget                     controllers.Authentication.forgetPassword

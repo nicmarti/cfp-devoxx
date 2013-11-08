@@ -19,7 +19,7 @@
 
         </div>
         <div class="col-md-6">
-        @helper.form(action = routes.CallForPaper.saveNewProposal()) {
+        @helper.form(action = routes.CallForPaper.saveProposal(newProposal("id").value)) {
             <input type="hidden" name="lang" value="@newProposal("lang").value">
             <input type="hidden" name="title" value="@newProposal("title").value">
             <input type="hidden" name="mainSpeaker" value="@newProposal("mainSpeaker").value">

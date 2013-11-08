@@ -108,15 +108,14 @@ object Proposal {
   def allMyDraftProposals(email: String): List[Proposal] = Redis.pool.withClient {
     client =>
       val allProposalIds: Set[String] = client.sinter("Proposals:Draft", "Proposals:ByAuthor:" + email)
-      println("allProposalIds "+allProposalIds)
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
-          println("proposalJSON "+proposalJson)
           Json.parse(proposalJson).asOpt[Proposal]
       }
   }
 
   val proposalForm = Form(mapping(
+    "id" -> optional(text),
     "lang" -> text,
     "title" -> nonEmptyText(maxLength = 125),
     "mainSpeaker" -> nonEmptyText,
@@ -129,11 +128,15 @@ object Proposal {
     "track" -> nonEmptyText
   )(validateNewProposal)(unapplyProposalForm))
 
-  def validateNewProposal(lang: String, title: String, mainSpeaker: String, otherSpeakers: List[String],
+  def generateId():Option[String]={
+    Some(RandomStringUtils.randomAlphanumeric(12))
+  }
+
+  def validateNewProposal(id:Option[String], lang: String, title: String, mainSpeaker: String, otherSpeakers: List[String],
                           talkType: String, audienceLevel: String, summary: String, privateMessage: Option[String],
                           sponsorTalk: Boolean, track: String): Proposal = {
     val code = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3)
-    Proposal(Option(RandomStringUtils.randomAlphanumeric(12)),
+    Proposal(id.orElse(generateId()),
       "Devoxx France 2014",
       code,
       lang,
@@ -151,9 +154,15 @@ object Proposal {
 
   }
 
-  def unapplyProposalForm(p: Proposal): Option[(String, String, String, List[String], String, String, String, Option[String],
+  def isNew(id:String):Boolean=Redis.pool.withClient{
+    client=>
+      // Important when we create a new proposal
+      client.hexists("Proposals", id)==false
+  }
+
+  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, String, List[String], String, String, String, Option[String],
     Boolean, String)] = {
-    Option((p.lang, p.title, p.mainSpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
+    Option((p.id, p.lang, p.title, p.mainSpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
       p.sponsorTalk, p.track.id))
   }
 }

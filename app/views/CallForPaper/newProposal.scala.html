@@ -8,11 +8,14 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h3>@Messages("New.proposal")</h3>
+            @if(newProposal("id").value.isDefined){
+                <h3>@Messages("Edit.proposal")</h3>
+            }else{
+                <h3>@Messages("New.proposal")</h3>
+            }
 
             @if(flash.get("error").isDefined){
                 <div class="alert alert-danger alert-dismissable">
-                    <strong>Error :</strong>
                     @flash.get("error").get
                 </div>
             }
@@ -21,7 +24,7 @@
                     @flash.get("success").get
                 </div>
             }
-            @helper.form(action = routes.CallForPaper.createNewProposal()){
+            @helper.form(action = routes.CallForPaper.createNewProposal(newProposal("id").value)){
                 @helper.inputText(newProposal("title"), 'class->"form-control")
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain"></span>
