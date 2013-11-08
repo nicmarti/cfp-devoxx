@@ -126,7 +126,9 @@
                     <tbody>
                     @myProposals.map { prop: Proposal =>
                         <tr>
-                            <td>@prop.title</td>
+                            <td>@prop.title<br>
+                            <span class="label label-info">@prop.state.code</span>
+                            </td>
                             <td>@if(prop.mainSpeaker == webuser.email){
                                 <span class="label label-info">@Messages("you.speaker")</span>
                             }else{

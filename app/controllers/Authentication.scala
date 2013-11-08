@@ -280,6 +280,7 @@ object Authentication extends Controller {
           webuser =>
             Webuser.validateEmailForSpeaker(webuser) // it is generated
             SpeakerHelper.save(SpeakerHelper.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + webuser.gravatarHash), None, None))
+            Mails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("email" -> email)
         }.getOrElse {
           Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")

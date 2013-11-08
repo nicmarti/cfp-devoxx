@@ -1,0 +1,25 @@
+@(email:String, code:String)
+
+------------------------------------------------------------------------------
+                      Welcome to Devoxx France CFP!
+------------------------------------------------------------------------------
+We created an access code for you (we really don't want to store any of your password here).
+
+  Your login is :  @email
+  Your code is @code
+
+If you want to report an issue, please use http://cfp.devoxx.fr@routes.Application.bugReport()
+
+The Devoxx France team
+------------------------------------------------------------------------------
+
+Bienvenue sur le CFP de Devoxx France
+
+Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
+Votre identifiant est <strong>@email</strong></p>
+Votre code est <strong>@code</strong></p>
+
+Utilisez http://cfp.devoxx.fr@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
+
+L'équipe Devoxx France
+------------------------------------------------------------------------------

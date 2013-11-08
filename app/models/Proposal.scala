@@ -111,7 +111,7 @@ object Proposal {
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal]
-      }
+      }.sortBy(_.title)
   }
 
   val proposalForm = Form(mapping(

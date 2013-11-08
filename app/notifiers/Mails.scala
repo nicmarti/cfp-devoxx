@@ -47,6 +47,19 @@ object Mails {
     emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
   }
 
+  def sendAccessCode(email: String, code: String) = {
+      val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+      emailer.setSubject("Your Devoxx France speaker's access code")
+      emailer.addFrom("program@devoxx.fr")
+      emailer.addRecipient(email)
+      emailer.setCharset("utf-8")
+      emailer.send(
+        views.txt.Mails.sendAccessCode(email, code).toString(),
+         views.html.Mails.sendAccessCode(email, code).toString
+      )
+    }
+
+
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Welcome to Devoxx France ! ")
