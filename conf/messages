@@ -173,3 +173,4 @@ invalid.form=Error in your form, please review and correct, then submit again
 talk.deleted=Proposal deleted.
 talk.deleted2=Undo this operation on proposal
 talk.draft=Proposal status set to Draft
+talk.submitted=Your talk was successfully submitted

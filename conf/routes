@@ -35,6 +35,7 @@ GET     /cfp/proposal/edit/:proposalId/otherSpeakers controllers.CallForPaper.ed
 POST    /cfp/proposal/save/:proposalId/otherSpeakers controllers.CallForPaper.saveOtherSpeakers(proposalId:String)
 GET     /cfp/proposal/delete/:proposalId controllers.CallForPaper.deleteProposal(proposalId:String)
 GET     /cfp/proposal/undelete/:proposalId controllers.CallForPaper.undeleteProposal(proposalId:String)
+GET     /cfp/proposal/submit/:proposalId controllers.CallForPaper.submitProposal(proposalId:String)
 
 # Password
 GET     /forget                     controllers.Authentication.forgetPassword

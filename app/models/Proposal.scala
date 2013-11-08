@@ -105,15 +105,6 @@ object Proposal {
       tx.exec()
   }
 
-  def allMyDraftProposals(email: String): List[Proposal] = Redis.pool.withClient {
-    client =>
-      val allProposalIds: Set[String] = client.sinter("Proposals:Draft", "Proposals:ByAuthor:" + email)
-      client.hmget("Proposals", allProposalIds).flatMap {
-        proposalJson: String =>
-          Json.parse(proposalJson).asOpt[Proposal]
-      }.sortBy(_.title)
-  }
-
   val proposalForm = Form(mapping(
     "id" -> optional(text),
     "lang" -> text,
@@ -199,22 +190,30 @@ object Proposal {
       tx.exec()
   }
 
-  def allMyDeletedProposals(email: String): List[Proposal] = Redis.pool.withClient {
+  private def loadProposalsByState(email:String, state: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     client =>
-      val allProposalIds: Set[String] = client.sinter("Proposals:Deleted", "Proposals:ByAuthor:" + email)
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:${state}", s"Proposals:ByAuthor:${email}")
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
-          Json.parse(proposalJson).asOpt[Proposal]
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = proposalState))
       }.sortBy(_.title)
   }
 
-  def allMySubmittedProposals(email: String): List[Proposal] = Redis.pool.withClient {
-      client =>
-        val allProposalIds: Set[String] = client.sinter("Proposals:Submitted", "Proposals:ByAuthor:" + email)
-        client.hmget("Proposals", allProposalIds).flatMap {
-          proposalJson: String =>
-            Json.parse(proposalJson).asOpt[Proposal]
-        }.sortBy(_.title)
-    }
+  def allMyDraftProposals(email: String): List[Proposal] = {
+    loadProposalsByState(email, "Draft", ProposalState.DRAFT)
+  }
 
+  def allMyDeletedProposals(email: String): List[Proposal] = {
+    loadProposalsByState(email, "Deleted", ProposalState.DELETED)
+  }
+
+  def allMySubmittedProposals(email: String): List[Proposal] = {
+    loadProposalsByState(email, "Submitted", ProposalState.SUBMITTED)
+  }
+
+  def allMyDraftAndSubmittedProposals(email: String): List[Proposal] = {
+    val allDrafts = allMyDraftProposals(email)
+    val allSubmitted = allMySubmittedProposals(email)
+    allDrafts ++ allSubmitted
+  }
 }

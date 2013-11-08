@@ -210,3 +210,4 @@ invalid.form=Il y a une erreur dans votre formulaire. Merci de le corriger et de
 talk.deleted=Proposition de sujet effacée.
 talk.deleted2=Annuler l''effacement de la proposition
 talk.draft=Status de la proposition passé à Draft
+talk.submitted=Votre proposition de sujet a été envoyée
