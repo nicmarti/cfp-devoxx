@@ -211,3 +211,16 @@ talk.deleted=Proposition de sujet effacée.
 talk.deleted2=Annuler l''effacement de la proposition
 talk.draft=Status de la proposition passé à Draft
 talk.submitted=Votre proposition de sujet a été envoyée
+
+# other speakers
+other.speakers=Gestion des présentateurs
+btn.enregistrer=Enregistrer
+cancel.goBackHome=Annuler
+proposal.id=Identifiant
+proposal.title=Titre de la présentation
+proposal.mainSpeaker=Présentateur principal
+proposal.secSpeaker=Présentateur adjoint
+proposal.otherSpeakers=Autres présentateurs
+proposal.buyPass=Entrée 3 jours "speaker" inclus ?
+freepass=Oui
+no.freepass=Non

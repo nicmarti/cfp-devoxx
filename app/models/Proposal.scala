@@ -33,8 +33,8 @@ object ProposalType {
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
-  def parse(session: String): ProposalType = {
-    session match {
+  def parse(proposalType: String): ProposalType = {
+    proposalType match {
       case "conf" => CONF
       case "uni" => UNI
       case "tia" => TIA
@@ -79,8 +79,8 @@ object ProposalState {
   val allAsCode = all.map(_.code)
 }
 
-case class Proposal(id: Option[String], event: String, code: String, lang: String, title: String, mainSpeaker: String,
-                    otherSpeakers: List[String], talkType: ProposalType, audienceLevel: String, summary: String,
+case class Proposal(id: Option[String], event: String, code: String, lang: String, title: String,
+                    mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String], talkType: ProposalType, audienceLevel: String, summary: String,
                     privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track)
 
 object Proposal {
@@ -110,6 +110,7 @@ object Proposal {
     "lang" -> text,
     "title" -> nonEmptyText(maxLength = 125),
     "mainSpeaker" -> nonEmptyText,
+    "secondarySpeaker" -> optional(text),
     "otherSpeakers" -> list(text),
     "talkType" -> nonEmptyText,
     "audienceLevel" -> text,
@@ -120,10 +121,11 @@ object Proposal {
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): Option[String] = {
-    Some(RandomStringUtils.randomAlphanumeric(12))
+    Some(RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3))
   }
 
-  def validateNewProposal(id: Option[String], lang: String, title: String, mainSpeaker: String, otherSpeakers: List[String],
+  def validateNewProposal(id: Option[String], lang: String, title: String, mainSpeaker: String,
+                          secondarySpeaker: Option[String], otherSpeakers: List[String],
                           talkType: String, audienceLevel: String, summary: String, privateMessage: Option[String],
                           sponsorTalk: Boolean, track: String): Proposal = {
     val code = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3)
@@ -133,6 +135,7 @@ object Proposal {
       lang,
       title,
       mainSpeaker,
+      secondarySpeaker,
       otherSpeakers,
       ProposalType.parse(talkType),
       audienceLevel,
@@ -151,9 +154,9 @@ object Proposal {
       client.hexists("Proposals", id) == false
   }
 
-  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, String, List[String], String, String, String, Option[String],
+  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, String, Option[String], List[String], String, String, String, Option[String],
     Boolean, String)] = {
-    Option((p.id, p.lang, p.title, p.mainSpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
+    Option((p.id, p.lang, p.title, p.mainSpeaker, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
       p.sponsorTalk, p.track.id))
   }
 
@@ -190,7 +193,7 @@ object Proposal {
       tx.exec()
   }
 
-  private def loadProposalsByState(email:String, state: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
+  private def loadProposalsByState(email: String, state: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     client =>
       val allProposalIds: Set[String] = client.sinter(s"Proposals:${state}", s"Proposals:ByAuthor:${email}")
       client.hmget("Proposals", allProposalIds).flatMap {
@@ -215,5 +218,16 @@ object Proposal {
     val allDrafts = allMyDraftProposals(email)
     val allSubmitted = allMySubmittedProposals(email)
     allDrafts ++ allSubmitted
+  }
+
+  def givesSpeakerFreeEntrance(proposalType: String): Boolean = {
+    ProposalType.parse(proposalType) match {
+      case ProposalType.CONF => true
+      case ProposalType.KEY => true
+      case ProposalType.LAB => true
+      case ProposalType.UNI => true
+      case ProposalType.TIA => true
+      case other => false
+    }
   }
 }

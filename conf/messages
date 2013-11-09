@@ -174,3 +174,18 @@ talk.deleted=Proposal deleted.
 talk.deleted2=Undo this operation on proposal
 talk.draft=Proposal status set to Draft
 talk.submitted=Your talk was successfully submitted
+
+#other speaker
+other.speakers=Presentation's speakers
+btn.enregistrer=Save
+cancel.goBackHome=Cancel
+proposal.id=Id
+proposal.title=Presentation title
+proposal.mainSpeaker=Main speaker
+proposal.secSpeaker=Secondary speaker
+proposal.otherSpeakers=Other speakers
+proposal.buyPass=3 Days Combi pass included?
+freepass=Yes
+no.freepass=No
+
+

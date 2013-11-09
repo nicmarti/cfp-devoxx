@@ -1,49 +1,112 @@
-@(currentUser:String, newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang)
+@(currentUser: String, proposal: Form[models.Proposal])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
 @main("New proposal") {
-<link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
+    <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
 
     <div class="row">
-        <div class="col-md-6">
-            <h3>@Messages("Other.speakers")</h3>
-            <small>Id: newProposal("id")</small>
+        <div class="col-md-8">
+            <h3>@Messages("other.speakers")</h3>
 
-            @if(flash.get("error").isDefined){
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <th>@Messages("proposal.buyPass")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>@Messages("proposal.title")</th>
+                        <td>@proposal("title").value</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>@Messages("proposal.id")</th>
+                        <td>@proposal("id").value</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>@Messages("talkType")</th>
+                        <td>@Messages(ProposalType.parse(proposal("talkType").value.getOrElse("?")).label)</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            @Messages("proposal.mainSpeaker") <br>
+                        </th>
+                        <td>
+                        @proposal("mainSpeaker").value
+                        </td>
+                        <td>
+                        @if(Proposal.givesSpeakerFreeEntrance(proposal("talkType").value.get)) {
+                            <span class="label label-success">@Messages("freepass")</span>
+                        } else {
+                            <span class="label label-warning">@Messages("no.freepass")</span>
+                        }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>@Messages("proposal.secSpeaker")</th>
+                        <td>@proposal("secondarySpeaker").value</td>
+                        <td>
+                        @if(proposal("secondarySpeaker").value.isDefined){
+                          @if(Proposal.givesSpeakerFreeEntrance(proposal("talkType").value.get)) {
+                            <span class="label label-success">@Messages("freepass")</span>
+                          } else {
+                            <span class="label label-warning">@Messages("no.freepass")</span>
+                          }
+                        }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>@Messages("proposal.otherSpeakers")</th>
+                        <td>@proposal("otherSpeakers").value</td>
+                        <td>
+                        @if(proposal("otherSpeakers").value.isDefined) {
+                            <span class="label label-warning">@Messages("no.freepass")</span>
+                        }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            @if(flash.get("error").isDefined) {
                 <div class="alert alert-danger alert-dismissable">
                     <strong>Error :</strong>
                     @flash.get("error").get
                 </div>
             }
-            @if(flash.get("success").isDefined){
+            @if(flash.get("success").isDefined) {
                 <div class="alert alert-success alert-dismissable">
-                    @flash.get("success").get
+                @flash.get("success").get
                 </div>
             }
 
-                <hr>
-                <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
-
+            <hr>
+            <button type="submit" class="btn btn-success"><i class="icon-arrow-right"></i> @Messages("btn.enregistrer")</button>&nbsp;
+            <a href="@routes.CallForPaper.homeForSpeaker" class="btn btn-default">@Messages("cancel.goBackHome")</a>
         </div>
     </div>
 
-<script type="text/javascript" src="/assets/js/maxlength.js"></script>
+    <script type="text/javascript" src="/assets/js/maxlength.js"></script>
 
-<script type="text/javascript">
-$(document).ready(function($){
+    <script type="text/javascript">
+    $ ( document ).ready ( function ( $ ) {
     // Select the current user in the list of speaker
-    $('#mainSpeaker option[value="@currentUser"]').prop('selected', true);
+    $ ( '#mainSpeaker option[value="     @currentUser "]').prop('selected', true);
 
     // Boost speaker with jQuery select2 (thanks aheritier)
-     $("#mainSpeaker").select2({
-        allowClear: false
-    });
+    $ ( "#mainSpeaker" ).select2 ( {
+    allowClear : false
+    } ) ;
 
-});
-</script>
+    } ) ;
+    </script>
 
-<script type="text/javascript" src="/assets/js/select2-3.4.5/select2.min.js"></script>
+    <script type="text/javascript" src="/assets/js/select2-3.4.5/select2.min.js"></script>
 
 }

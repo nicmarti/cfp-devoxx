@@ -138,12 +138,14 @@
                             <td>
                                 <a href="@routes.CallForPaper.editOtherSpeakers(prop.id.getOrElse("?"))" class="btn btn-sm btn-primary"><i class="icon-plus"></i> </a>
                                 @prop.otherSpeakers.map { s =>
-                                    <small><a href="#" class="btn btn-sm btn-default"><i class="icon-minus"></i>s </a></small>
+                                    <small><a href="#" class="btn btn-sm btn-default"><i class="icon-group"></i>s </a></small>
                                 }
                             </td>
                             <td>
                                 <a href="@routes.CallForPaper.editProposal(prop.id.getOrElse("?"))" class="btn btn-sm btn-primary" title="@Messages("table.pres.edit")"><i class="icon-edit"></i></a>
-                                <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-success" title="@Messages("table.pres.submit")"><i class="icon-external-link"></i></a>
+                                @if(prop.state!=ProposalState.SUBMITTED){
+                                    <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-success" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i></a>
+                                }
                             </td>
                             <td>
                                 <span class="label label-info">0</span>
