@@ -107,6 +107,27 @@
         <div class="col-md-8">
             <h3><i class="icon-tasks"></i> @Html(Messages("your.submission"))</h3>
 
+            @if(flash.get("error").isDefined) {
+                 <div class="alert alert-danger alert-dismissable">
+                     <strong>Error :</strong>
+                     @flash.get("error").get
+                 </div>
+             }
+             @if(flash.get("success").isDefined) {
+                 <div class="alert alert-success alert-dismissable">
+                 @flash.get("success").get
+                 </div>
+             }
+             @if(flash.get("deleted").isDefined) {
+                 <div class="alert alert-warning">
+                 @Messages("talk.deleted")<br>
+                 @flash.get("deleted").map{proposalId:String=>
+                     <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
+                 }
+                 </div>
+             }
+
+
             @if(myProposals.isEmpty) {
                 <div class="info">
                 @Html(Messages("no.proposal"))
@@ -116,39 +137,43 @@
                     <thead>
                         <tr>
                             <th>@Messages("table.pres.title")</th>
+                            <th>@Messages("table.pres.state")</th>
                             <th>@Messages("table.pres.speaker")</th>
-                            <th>@Messages("table.pres.otherSpeakers")</th>
-                            <th>@Messages("table.pres.action")</th>
                             <th><i class="icon-comments"></i></th>
-                            <th></th>
+                            <th>@Messages("table.pres.doSubmit")</th>
+                            <th>@Messages("table.pres.doDelete")</th>
                         </tr>
                     </thead>
                     <tbody>
                     @myProposals.map { prop: Proposal =>
                         <tr>
-                            <td>@prop.title <br>
-                            <span class="label label-info">@prop.state.code</span>
-                            </td>
-                            <td>@if(prop.mainSpeaker == webuser.email) {
+                            <td><a href="@routes.CallForPaper.editProposal(prop.id.getOrElse("?"))" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
+                            <td><span class="label label-info">@prop.state.code</span></td>
+                            <td>
+                            @if(prop.mainSpeaker == webuser.email) {
                                 <span class="label label-info">@Messages("you.speaker")</span>
                             } else {
-                                <small>@prop.mainSpeaker</small>
+                                <span class="label label-info">@StringUtils.abbreviate(prop.mainSpeaker,30)</span>
                             }
-                            </td>
-                            <td>
-                                <a href="@routes.CallForPaper.editOtherSpeakers(prop.id.getOrElse("?"))" class="btn btn-sm btn-primary"><i class="icon-plus-sign-alt"></i> </a>
-                                @prop.otherSpeakers.map { s =>
-                                    <small><a href="#" class="btn btn-sm btn-default"><i class="icon-group"></i>s </a></small>
-                                }
-                            </td>
-                            <td>
-                                <a href="@routes.CallForPaper.editProposal(prop.id.getOrElse("?"))" class="btn btn-sm btn-primary" title="@Messages("table.pres.edit")"><i class="icon-edit"></i></a>
-                                @if(prop.state!=ProposalState.SUBMITTED){
-                                    <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-success" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i></a>
-                                }
+
+                            @prop.secondarySpeaker.map{secSpeaker=>
+                                <span class="label label-info">@StringUtils.abbreviate(secSpeaker,30)</span>
+                            }
+                            @prop.otherSpeakers.map { s =>
+                                 <span class="label label-info">@s</span>
+                            }
+                            <br>
+                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id.getOrElse("?"))" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")">@Messages("table.speaker.addremove")</a>
                             </td>
                             <td>
                                 <span class="label label-info">0</span>
+                            </td>
+                            <td>
+                                @if(prop.state!=ProposalState.SUBMITTED){
+                                    <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-success" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
+                                } else {
+                                    -
+                                }
                             </td>
                             <td>
                                 <a href="@routes.CallForPaper.deleteProposal(prop.id.getOrElse("?"))" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
@@ -168,27 +193,6 @@
 
         </div>
 
-        <div class="col-md-6 col-md-offset-6">
-            @if(flash.get("error").isDefined) {
-                <div class="alert alert-danger alert-dismissable">
-                    <strong>Error :</strong>
-                    @flash.get("error").get
-                </div>
-            }
-            @if(flash.get("success").isDefined) {
-                <div class="alert alert-success alert-dismissable">
-                @flash.get("success").get
-                </div>
-            }
-            @if(flash.get("deleted").isDefined) {
-                <div class="alert alert-warning">
-                @Messages("talk.deleted")<br>
-                @flash.get("deleted").map{proposalId:String=>
-                    <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
-                }
-                </div>
-            }
-        </div>
     </div>
 
 

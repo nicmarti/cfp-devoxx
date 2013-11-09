@@ -49,7 +49,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>@speakerForm("secondarySpeaker").value</td>
+                        <td>
+                            @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
+                        </td>
                         <td>
 
                           @if(Proposal.givesSpeakerFreeEntrance(proposal.talkType)) {
@@ -89,17 +91,18 @@
     </div>
 
 <script type="text/javascript">
-        $(document).ready ( function ($) {
+$(document).ready ( function ($) {
+    $("#mainSpeaker").select2({ allowClear : false } )
+                     .on("change", function(){
 
-        // Select the current user in the list of speaker
-        $('#mainSpeaker option[value="@currentUser"]').prop('selected', true);
+    });
+    $("#secondarySpeaker").select2({ allowClear : false } ).on("change", function(){
 
-        // Boost speaker with jQuery select2 (thanks aheritier)
-        $("#mainSpeaker" ).select2 ( {
-            allowClear : false
-        } ;
+    }) ;
 
-        }) ;
+
+
+}) ;
 </script>
 
 <script type="text/javascript" src="/assets/js/select2-3.4.5/select2.min.js"></script>

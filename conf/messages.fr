@@ -195,12 +195,17 @@ editProfle.save=Enregistrer
 
 # Home
 table.pres.title=Titre
-table.pres.speaker=Présentateur
+table.pres.state=Etat
+table.pres.speaker=Présentateur(s)
+table.speaker.addremove=Ajouter/retirer des présentateurs
 table.pres.otherSpeakers=Autres présentateurs
 table.pres.edit=Editer
 table.pres.submit=Soumettre
 table.pres.delete=Mettre à la poubelle
 table.pres.action=Actions
+table.pres.doSubmit=Soumettre
+table.pres.doDelete=Effacer
+
 total.draft={0} proposition(s)
 you.speaker=Vous
 invalid.proposal=Proposition non trouvée ou dont vous n''êtes pas le propriétaire

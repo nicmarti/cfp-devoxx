@@ -162,8 +162,13 @@ table.pres.edit=Edit
 table.pres.submit=Submit
 table.pres.delete=Move to trash
 table.pres.action=Actions
+table.pres.doSubmit=Submit
+table.pres.doDelete=Delete
+
 total.draft={0} proposal(s)
 table.pres.speaker=Speaker
+table.pres.state=State
+table.speaker.addremove=Add/Remove speakers
 table.pres.otherSpeakers=Other speakers
 you.speaker=You
 invalid.proposal=Invalid proposal
