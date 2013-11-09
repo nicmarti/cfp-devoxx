@@ -46,7 +46,9 @@ object Track {
 
   val all = List(JAVA, WEB, MOBILE, CLOUD, AGILITE, LANG_ALTERNATIF, STARTUP)
 
-  val allAsId = all.map(a=>(a.id,a.label)).toSeq.sorted
+  val allAsIdsAndLabels = all.map(a=>(a.id,a.label)).toSeq.sorted
+
+  val allIDs=all.map(_.id)
 
   def parse(session:String):Track={
     session match {

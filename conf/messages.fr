@@ -224,3 +224,4 @@ proposal.otherSpeakers=Autres présentateurs
 proposal.buyPass=Entrée 3 jours "speaker" inclus ?
 freepass=Oui
 no.freepass=Non
+speakers.updated=Liste des présentateurs mises à jour

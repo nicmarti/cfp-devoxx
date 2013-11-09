@@ -91,18 +91,20 @@ object Proposal {
 
   val audienceLevels = Seq(("novice", "Novice"), ("intermediate", "Intermediate"), ("expert", "Expert"))
 
-  def saveDraft(creator: String, proposal: Proposal) = Redis.pool.withClient {
+  def save(creator: String, proposal: Proposal) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(proposal).toString
 
       // TX
       val tx = client.multi()
       tx.hset("Proposals", proposal.id.get, json)
-      tx.sadd("Proposals:Draft", proposal.id.get)
       tx.sadd("Proposals:ByAuthor:" + creator, proposal.id.get)
-      tx.sadd("Proposals:ByTrack:" + proposal.track.id, proposal.id.get)
-      tx.zadd("Proposals:Event", new java.util.Date().getTime, creator + " posted a new proposal [" + proposal.title + "]")
+      tx.zadd("Proposals:Event", new java.util.Date().getTime, creator + " updated or created a proposal with title [" + proposal.title + "]")
       tx.exec()
+
+      changeTrack(creator, proposal)
+
+      changeProposalState(creator, proposal.id.get, proposal.state)
   }
 
   val proposalForm = Form(mapping(
@@ -160,42 +162,65 @@ object Proposal {
       p.sponsorTalk, p.track.id))
   }
 
-  def delete(owner: String, proposalId: String) = Redis.pool.withClient {
+  private def changeTrack(owner: String, proposal: Proposal) = Redis.pool.withClient {
     client =>
-      val tx = client.multi()
-      tx.srem("Proposals:Draft", proposalId)
-      tx.srem("Proposals:Submitted", proposalId)
-      tx.sadd("Proposals:Deleted", proposalId)
+      val proposalId = proposal.id.get
+    // If we change a proposal to a new track, we need to update all the collections
+    // On Redis, this is very fast (faster than creating a mongoDB index, by an order of x100)
 
-      tx.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} deleted a proposal [${proposalId}]")
-      tx.exec()
+    // SISMember is a O(1) operation
+      val maybeExistingTrack = for (trackId <- Track.allIDs if client.sismember("Proposals:ByTrack:" + trackId, proposalId)) yield trackId
+
+      // Do the operation if and only if we changed the Track
+      maybeExistingTrack.filterNot(_ == proposal.track.id).foreach {
+        oldTrackId: String =>
+        // SMOVE is also a O(1) so it is faster than a SREM and SADD
+          client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
+          // And we are able to track this event
+          client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}")
+      }
+      if (maybeExistingTrack.isEmpty) {
+        // SADD is O(N)
+        client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
+        client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} posted a new talk (${proposalId}}) to ${proposal.track.id}")
+      }
+
   }
 
-  def submit(owner: String, proposalId: String) = Redis.pool.withClient {
+  private def changeProposalState(owner: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
     client =>
-      val tx = client.multi()
-      tx.srem("Proposals:Draft", proposalId)
-      tx.sadd("Proposals:Submitted", proposalId)
-      tx.srem("Proposals:Deleted", proposalId)
+    // Same kind of operation for the proposalState
+      val maybeExistingState = for (state <- ProposalState.allAsCode if client.sismember("Proposals:ByState:" + state, proposalId)) yield state
 
-      tx.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} submitted a proposal [${proposalId}]")
-      tx.exec()
+      // Do the operation on the ProposalState
+      maybeExistingState.filterNot(_ == newState.code).foreach {
+        stateOld: String =>
+        // SMOVE is also a O(1) so it is faster than a SREM and SADD
+          client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
+          client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} changed status of talk ${proposalId} from ${stateOld} to ${newState.code}")
+      }
+      if (maybeExistingState.isEmpty) {
+        // SADD is O(N)
+        client.sadd("Proposals:ByState:" + newState.code, proposalId)
+        client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} posted new talk ${proposalId} with status ${newState.code}")
+      }
   }
 
-  def draft(owner: String, proposalId: String) = Redis.pool.withClient {
-    client =>
-      val tx = client.multi()
-      tx.sadd("Proposals:Draft", proposalId)
-      tx.srem("Proposals:Submitted", proposalId)
-      tx.srem("Proposals:Deleted", proposalId)
-
-      tx.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} set a proposal to draft [${proposalId}]")
-      tx.exec()
+  def delete(owner: String, proposalId: String) {
+    changeProposalState(owner, proposalId, ProposalState.DELETED)
   }
 
-  private def loadProposalsByState(email: String, state: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
+  def submit(owner: String, proposalId: String) = {
+    changeProposalState(owner, proposalId, ProposalState.SUBMITTED)
+  }
+
+  def draft(owner: String, proposalId: String) = {
+    changeProposalState(owner, proposalId, ProposalState.DRAFT)
+  }
+
+  private def loadProposalsByState(email: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     client =>
-      val allProposalIds: Set[String] = client.sinter(s"Proposals:${state}", s"Proposals:ByAuthor:${email}")
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByState:${proposalState.code}", s"Proposals:ByAuthor:${email}")
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = proposalState))
@@ -203,25 +228,25 @@ object Proposal {
   }
 
   def allMyDraftProposals(email: String): List[Proposal] = {
-    loadProposalsByState(email, "Draft", ProposalState.DRAFT)
+    loadProposalsByState(email, ProposalState.DRAFT).sortBy(_.title)
   }
 
   def allMyDeletedProposals(email: String): List[Proposal] = {
-    loadProposalsByState(email, "Deleted", ProposalState.DELETED)
+    loadProposalsByState(email, ProposalState.DELETED).sortBy(_.title)
   }
 
   def allMySubmittedProposals(email: String): List[Proposal] = {
-    loadProposalsByState(email, "Submitted", ProposalState.SUBMITTED)
+    loadProposalsByState(email, ProposalState.SUBMITTED).sortBy(_.title)
   }
 
   def allMyDraftAndSubmittedProposals(email: String): List[Proposal] = {
     val allDrafts = allMyDraftProposals(email)
     val allSubmitted = allMySubmittedProposals(email)
-    allDrafts ++ allSubmitted
+    (allDrafts ++ allSubmitted).sortBy(_.title)
   }
 
-  def givesSpeakerFreeEntrance(proposalType: String): Boolean = {
-    ProposalType.parse(proposalType) match {
+  def givesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
+    proposalType match {
       case ProposalType.CONF => true
       case ProposalType.KEY => true
       case ProposalType.LAB => true
@@ -230,4 +255,10 @@ object Proposal {
       case other => false
     }
   }
+
+  val proposalSpeakerForm = Form(tuple(
+    "mainSpeaker" -> nonEmptyText,
+    "secondarySpeaker" -> optional(text),
+    "otherSpeakers" -> list(text)
+  ))
 }

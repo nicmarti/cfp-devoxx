@@ -35,7 +35,7 @@
                 <em>@Messages("moreSpeakerLater")</em>
 
                 @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
-                @tags.selectI18N(field = newProposal("track"), options=Track.allAsId,  'class->"form-control")
+                @tags.selectI18N(field = newProposal("track"), options=Track.allAsIdsAndLabels,  'class->"form-control")
 
                 <input type="hidden" name="audienceLevel" value="intermediate">
 

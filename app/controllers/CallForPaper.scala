@@ -115,7 +115,6 @@ object CallForPaper extends Controller with Secured {
       }.getOrElse(NotFound("User not found"))
   }
 
-
   // Load a new proposal form
   def newProposal() = IsAuthenticated {
     email => implicit request =>
@@ -160,14 +159,14 @@ object CallForPaper extends Controller with Secured {
             Proposal.allMyDraftProposals(email).find(_.id.get == id.get) match {
               case Some(existingProposal) => {
                 // This is an edit operation
-                Proposal.saveDraft(email, validProposal.copy(id = id))
+                Proposal.save(email, validProposal.copy(id = id, state = ProposalState.DRAFT))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               }
               case other => {
                 // Check that this is really a new id and that it does not exist
                 if (Proposal.isNew(id.get)) {
                   // This is a "create new" operation
-                  Proposal.saveDraft(email, validProposal)
+                  Proposal.save(email, validProposal.copy(state = ProposalState.DRAFT))
                   Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
                 } else {
                   play.Logger.warn("ID collision " + id)
@@ -183,6 +182,7 @@ object CallForPaper extends Controller with Secured {
       )
   }
 
+  // Load a proposal, change the status to DRAFT (not sure this is a goode idea)
   def editProposal(proposalId: String) = IsAuthenticated {
     email => implicit request =>
       val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(email).find(_.id.get == proposalId)
@@ -197,13 +197,13 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-
+  // Load a proposal by its id
   def editOtherSpeakers(proposalId: String) = IsAuthenticated {
     email => implicit request =>
       val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(email).find(_.id.get == proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Ok(views.html.CallForPaper.editOtherSpeaker(email, Proposal.proposalForm.fill(proposal)))
+          Ok(views.html.CallForPaper.editOtherSpeaker(email, proposal, Proposal.proposalSpeakerForm.fill(proposal.mainSpeaker, proposal.secondarySpeaker, proposal.otherSpeakers)))
         }
         case None => {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
@@ -211,17 +211,25 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
+  // Check that the currend authenticated user is the owner
+  // validate the form and then save and redirect.
   def saveOtherSpeakers(proposalId: String) = IsAuthenticated {
     email => implicit request =>
       val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(email).find(_.id.get == proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Ok("Saved")
+          Proposal.proposalSpeakerForm.bindFromRequest.fold(
+            hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(email, proposal, hasErrors)),
+            validNewSpeakers => {
+              Proposal.save(email, proposal.copy(mainSpeaker = validNewSpeakers._1, secondarySpeaker = validNewSpeakers._2, otherSpeakers = validNewSpeakers._3))
+              Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
+            }
+          )
         }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          case None => {
+            Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          }
         }
-      }
   }
 
   def deleteProposal(proposalId: String) = IsAuthenticated {
@@ -305,16 +313,5 @@ trait Secured {
         Results.Forbidden("Sorry, you cannot access this resource")
       }
   }
-
-  /**
-   * Check if the connected user is a owner of this talk.
-   */
-  //  def IsOwnerOf(task: Long)(f: => String => Request[AnyContent] => Result) = IsAuthenticated { user => request =>
-  //    if(Task.isOwner(task, user)) {
-  //      f(user)(request)
-  //    } else {
-  //      Results.Forbidden("Sorrt, you are not the owner of this resource")
-  //    }
-  //  }
 
 }

@@ -1,4 +1,4 @@
-@(currentUser: String, proposal: Form[models.Proposal])(implicit flash: Flash, lang: Lang)
+@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(String,Option[String],List[String])])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -9,40 +9,39 @@
     <div class="row">
         <div class="col-md-8">
             <h3>@Messages("other.speakers")</h3>
-
+@helper.form(action=routes.CallForPaper.saveOtherSpeakers(proposal.id.get)){
             <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <th>@Messages("proposal.buyPass")</th>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr>
                         <th>@Messages("proposal.title")</th>
-                        <td>@proposal("title").value</td>
-                        <td></td>
+                        <td>@proposal.title</td>
                     </tr>
                     <tr>
                         <th>@Messages("proposal.id")</th>
-                        <td>@proposal("id").value</td>
-                        <td></td>
+                        <td>@proposal.id.get</td>
                     </tr>
                     <tr>
                         <th>@Messages("talkType")</th>
-                        <td>@Messages(ProposalType.parse(proposal("talkType").value.getOrElse("?")).label)</td>
-                        <td></td>
+                        <td>@Messages(proposal.talkType.label)</td>
                     </tr>
+                    </tbody>
+                </table>
+
+                <table class="table table-bordered">
+
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <th>@Messages("proposal.buyPass")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
-                        <th>
-                            @Messages("proposal.mainSpeaker") <br>
-                        </th>
                         <td>
-                        @proposal("mainSpeaker").value
+                            @helper.select(field=speakerForm("mainSpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
                         </td>
                         <td>
-                        @if(Proposal.givesSpeakerFreeEntrance(proposal("talkType").value.get)) {
+                        @if(Proposal.givesSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="label label-success">@Messages("freepass")</span>
                         } else {
                             <span class="label label-warning">@Messages("no.freepass")</span>
@@ -50,25 +49,21 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>@Messages("proposal.secSpeaker")</th>
-                        <td>@proposal("secondarySpeaker").value</td>
+                        <td>@speakerForm("secondarySpeaker").value</td>
                         <td>
-                        @if(proposal("secondarySpeaker").value.isDefined){
-                          @if(Proposal.givesSpeakerFreeEntrance(proposal("talkType").value.get)) {
+
+                          @if(Proposal.givesSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="label label-success">@Messages("freepass")</span>
                           } else {
                             <span class="label label-warning">@Messages("no.freepass")</span>
                           }
-                        }
+
                         </td>
                     </tr>
                     <tr>
-                        <th>@Messages("proposal.otherSpeakers")</th>
-                        <td>@proposal("otherSpeakers").value</td>
+                        <td>@speakerForm("otherSpeakers").value</td>
                         <td>
-                        @if(proposal("otherSpeakers").value.isDefined) {
                             <span class="label label-warning">@Messages("no.freepass")</span>
-                        }
                         </td>
                     </tr>
                 </tbody>
@@ -88,25 +83,24 @@
 
             <hr>
             <button type="submit" class="btn btn-success"><i class="icon-arrow-right"></i> @Messages("btn.enregistrer")</button>&nbsp;
+}
             <a href="@routes.CallForPaper.homeForSpeaker" class="btn btn-default">@Messages("cancel.goBackHome")</a>
         </div>
     </div>
 
-    <script type="text/javascript" src="/assets/js/maxlength.js"></script>
+<script type="text/javascript">
+        $(document).ready ( function ($) {
 
-    <script type="text/javascript">
-    $ ( document ).ready ( function ( $ ) {
-    // Select the current user in the list of speaker
-    $ ( '#mainSpeaker option[value="     @currentUser "]').prop('selected', true);
+        // Select the current user in the list of speaker
+        $('#mainSpeaker option[value="@currentUser"]').prop('selected', true);
 
-    // Boost speaker with jQuery select2 (thanks aheritier)
-    $ ( "#mainSpeaker" ).select2 ( {
-    allowClear : false
-    } ) ;
+        // Boost speaker with jQuery select2 (thanks aheritier)
+        $("#mainSpeaker" ).select2 ( {
+            allowClear : false
+        } ;
 
-    } ) ;
-    </script>
+        }) ;
+</script>
 
-    <script type="text/javascript" src="/assets/js/select2-3.4.5/select2.min.js"></script>
-
+<script type="text/javascript" src="/assets/js/select2-3.4.5/select2.min.js"></script>
 }
