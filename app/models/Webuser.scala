@@ -70,9 +70,9 @@ object Webuser {
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
     client =>
-      val tx=client.multi()
+      val tx = client.multi()
       tx.hdel("Webuser", webuser.email)
-      tx.srem("Webuser:"+webuser.profile, webuser.email)
+      tx.srem("Webuser:" + webuser.profile, webuser.email)
       tx.exec()
   }
 
@@ -86,38 +86,45 @@ object Webuser {
 
   def updateNames(email: String, newFirstName: String, newLastName: String) = Redis.pool.withClient {
     client =>
-      findByEmail(email).map{
-        webuser=>
-          update(webuser.copy(firstName=newFirstName.toLowerCase.capitalize, lastName=newLastName.toLowerCase.capitalize))
+      findByEmail(email).map {
+        webuser =>
+          update(webuser.copy(firstName = newFirstName.toLowerCase.capitalize, lastName = newLastName.toLowerCase.capitalize))
       }
   }
 
-  def update(webuser:Webuser)=Redis.pool.withClient{
-    client=>
+  def update(webuser: Webuser) = Redis.pool.withClient {
+    client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.stringify(Json.toJson(cleanWebuser))
       client.hset("Webuser", webuser.email, json)
   }
 
-  def isMember(email: String, securityGroup: String): Boolean = Redis.pool.withClient{
-    client=>
-      client.sismember("Webuser:"+securityGroup, email)
+  def isMember(email: String, securityGroup: String): Boolean = Redis.pool.withClient {
+    client =>
+      client.sismember("Webuser:" + securityGroup, email)
   }
 
-  def allSpeakers:List[Webuser] = Redis.pool.withClient{
-    client=>
+  def allSpeakers: List[Webuser] = Redis.pool.withClient {
+    client =>
       val allSpeakerEmails = client.smembers("Webuser:speaker").toList
-      client.hmget("Webuser", allSpeakerEmails).flatMap{ js:String=>
+      client.hmget("Webuser", allSpeakerEmails).flatMap {
+        js: String =>
           Json.parse(js).asOpt[Webuser]
       }
   }
 
-  def allSpeakersAsOption:Seq[(String,String)]={
-    allSpeakers.map{ webuser=>
-      val cleanName = webuser.lastName.toLowerCase.capitalize+ " " +webuser.firstName
-      (webuser.email, cleanName)
-    }.sortBy(tuple=>tuple._2) // sort by label
+  def allSpeakersAsOption: Seq[(String, String)] = {
+    allSpeakers.map {
+      webuser =>
+        val cleanName = webuser.lastName.toLowerCase.capitalize + " " + webuser.firstName
+        (webuser.email, cleanName)
+    }.sortBy(tuple => tuple._2) // sort by label
   }
 
+  def allSecondarySpeakersAsOption: Seq[(String, String)] = {
+    allSpeakersAsOption.+:(DEFAULT_LABEL) // sort by name
+  }
+
+  val DEFAULT_LABEL = ("", play.api.i18n.Messages("noOther.speaker"))
 }
 

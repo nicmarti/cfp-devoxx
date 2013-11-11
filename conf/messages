@@ -188,11 +188,10 @@ proposal.id=Id
 proposal.title=Presentation title
 proposal.mainSpeaker=Main speaker
 proposal.secSpeaker=Secondary speaker
+secondarySpeaker=Secondary speaker
 proposal.otherSpeakers=Other speakers
 proposal.buyPass=3 Days Combi pass included?
 freepass=Yes
 no.freepass=No
 speakers.updated=Speakers's list updated
-
-
-
+noOther.speaker=---- No other speaker ----

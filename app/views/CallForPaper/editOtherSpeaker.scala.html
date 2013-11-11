@@ -50,20 +50,20 @@
                     </tr>
                     <tr>
                         <td>
-                            @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
+                            @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption,  'class->"form-control")
                         </td>
                         <td>
-
                           @if(Proposal.givesSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="label label-success">@Messages("freepass")</span>
                           } else {
                             <span class="label label-warning">@Messages("no.freepass")</span>
                           }
-
                         </td>
                     </tr>
                     <tr>
-                        <td>@speakerForm("otherSpeakers").value</td>
+                        <td>
+                            @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption,  'class->"form-control", 'multiple->"true" )
+                        </td>
                         <td>
                             <span class="label label-warning">@Messages("no.freepass")</span>
                         </td>
@@ -92,15 +92,19 @@
 
 <script type="text/javascript">
 $(document).ready ( function ($) {
-    $("#mainSpeaker").select2({ allowClear : false } )
-                     .on("change", function(){
 
+    $("#mainSpeaker").select2({
+        allowClear: false
     });
-    $("#secondarySpeaker").select2({ allowClear : false } ).on("change", function(){
 
-    }) ;
+    $("#secondarySpeaker").select2({
+        placeholder: "@Messages("select.secondarySpeaker")",
+        allowClear: true
+    });
 
-
+    $("#otherSpeakers").select2({
+        allowClear : true
+    } );
 
 }) ;
 </script>
