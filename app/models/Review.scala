@@ -31,14 +31,14 @@ import library.Redis
  * Author: nicolas martignole
  * Created: 11/11/2013 10:21
  */
-case class Review(reviewer:String, proposalId:String)
+case class Review(reviewer: String, proposalId: String)
 
-object Review{
+object Review {
 
-  def allProposalsNotReviewed(reviewer:String):List[Proposal]=Redis.pool.withClient{
-    client=>
-      Nil
-
+  def allProposalsNotReviewed(reviewer: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDsForReview = client.sinter(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:ByAuthor:${reviewer}")
+      Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
 }

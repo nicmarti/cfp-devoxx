@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import models.{Event, Webuser}
+import models.{Event, Review}
 
 /**
  * The backoffice controller for the CFP technical commitee.
@@ -11,9 +11,11 @@ import models.{Event, Webuser}
  */
 object CFPAdmin extends Controller with Secured {
 
-  def index()=IsMemberOf("cfp"){
+  def index() = IsMemberOf("cfp") {
     email => implicit request =>
-      Ok(views.html.CFPAdmin.index(Event.loadEvents(20)))
+      val twentyEvents = Event.loadEvents(20)
+      val allProposalsForReview = Review.allProposalsNotReviewed(email)
+      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview))
   }
 }
 

@@ -1,7 +1,7 @@
 package models
 
 import play.api.libs.json.Json
-import library.Redis
+import library.{Dress, Redis}
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 import play.api.data._
@@ -183,7 +183,7 @@ object Proposal {
       if (maybeExistingTrack.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
-        Event.storeEvent(Event("proposal", owner, s"${owner} posted a new talk (${proposalId}}) to ${proposal.track.id}"))
+        Event.storeEvent(Event("proposal", owner, s"${owner} posted a new talk (${proposalId}) to ${proposal.track.id}"))
       }
 
   }
@@ -221,12 +221,18 @@ object Proposal {
   }
 
   private def loadProposalsByState(email: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
-    client =>
+    implicit client =>
       val allProposalIds: Set[String] = client.sinter(s"Proposals:ByState:${proposalState.code}", s"Proposals:ByAuthor:${email}")
-      client.hmget("Proposals", allProposalIds).flatMap {
-        proposalJson: String =>
-          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = proposalState))
-      }.sortBy(_.title)
+      loadProposalByIDs(allProposalIds, proposalState)
+  }
+
+  // Special function that has to be executed with an implicit client
+  def loadProposalByIDs(allProposalIds: Set[String], proposalState:ProposalState)(implicit client:Dress.Wrap): List[Proposal] ={
+    println("loadProposalByIDS")
+    client.hmget("Proposals", allProposalIds).flatMap {
+      proposalJson: String =>
+        Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = proposalState))
+    }.sortBy(_.title)
   }
 
   def allMyDraftProposals(email: String): List[Proposal] = {
