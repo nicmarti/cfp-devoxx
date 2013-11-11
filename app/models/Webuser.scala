@@ -108,7 +108,7 @@ object Webuser {
 
   def isMember(email: String, securityGroup: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember("Webuser:" + securityGroup, email)
+              client.sismember("Webuser:" + securityGroup, email)
   }
 
   def hasAccessToCFPAdmin(email: String): Boolean = isMember(email, "cfp")
