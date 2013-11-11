@@ -58,8 +58,6 @@ object Application extends Controller {
       }.getOrElse(NotFound("User does not exist"))
   }
 
-
-
   def bugReport = Action {
     implicit request =>
       Ok(views.html.Application.bugReport(GitUtils.getGitVersion, Issue.bugReportForm))

@@ -103,7 +103,7 @@ object Authentication extends Controller {
             case true =>
               Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> validForm._1)
             case false =>
-              Redirect(routes.Application.home).flashing("error"->Messages("login.error"))
+              Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
           }
       )
   }
@@ -227,7 +227,7 @@ object Authentication extends Controller {
                   validFields => {
                     validFields match {
                       case (emailS, nameS, bioS) =>
-                        val avatarUrl = Some("http://www.gravatar.com/avatar/"+DigestUtils.md5Hex(emailS))
+                        val avatarUrl = Some("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
                         val company = json.\("company").asOpt[String]
                         val blog = json.\("blog").asOpt[String]
 
@@ -416,6 +416,43 @@ object Authentication extends Controller {
 
 }
 
-
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
 
+/**
+ * Provide security features
+ */
+trait Secured {
+
+  /**
+   * Retrieve the connected user email.
+   */
+  private def username(request: RequestHeader) = request.session.get("email")
+
+  /**
+   * Redirect to login if the user in not authorized.
+   */
+  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.index).flashing("error" -> "Unauthorized : you are not authenticated or your session has expired. Please authenticate.")
+
+  /**
+   * Action for authenticated users.
+   */
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = {
+    Security.Authenticated(username, onUnauthorized) {
+      user =>
+        Action(request => f(user)(request))
+    }
+  }
+
+  /**
+   * Check if the connected user is a member of this security group.
+   */
+  def IsMemberOf(securityGroup: String)(f: => String => Request[AnyContent] => Result) = IsAuthenticated {
+    email => request =>
+      if (Webuser.isMember(email, securityGroup)) {
+        f(email)(request)
+      } else {
+        Results.Forbidden("Sorry, you cannot access this resource. Your email is not a member of "+securityGroup)
+      }
+  }
+
+}

@@ -54,7 +54,11 @@ GET     /resetEnvForDev             controllers.Application.resetEnvForDev(email
 GET     /bug                        controllers.Application.bugReport
 POST    /bug/new                    controllers.Application.submitIssue()
 
-#
+# CFP Admin
+GET     /cfpadmin/                 controllers.CFPAdmin.index()
+GET     /cfpadmin                  controllers.CFPAdmin.index()
+
+
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.png")
 
 # Map static resources from the /public folder to the /assets URL path

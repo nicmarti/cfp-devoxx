@@ -5,6 +5,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import play.api.data.format.Formats._
 import library.Redis
 import org.apache.commons.lang3.RandomStringUtils
+import redis.clients.util.RedisOutputStream
 
 case class Webuser(email: String, firstName: String, lastName: String, password: String, profile: String) {
   def gravatarHash: String = {
@@ -101,8 +102,12 @@ object Webuser {
 
   def isMember(email: String, securityGroup: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember("Webuser:" + securityGroup, email)
+      println(s"sismember Webuser:${securityGroup} ${email}")
+
+              client.sismember("Webuser:" + securityGroup, email)
   }
+
+  def hasAccessToCFPAdmin(email:String):Boolean = isMember(email, "cfp")
 
   def allSpeakers: List[Webuser] = Redis.pool.withClient {
     client =>
