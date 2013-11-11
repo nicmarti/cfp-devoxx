@@ -1,4 +1,4 @@
-@()(implicit lang: Lang, flash: Flash)
+@(events:List[Event])(implicit lang: Lang, flash: Flash)
 
 @main("CFP Admin") {
 
@@ -6,12 +6,38 @@
         <div class="col-lg-offset-4 col-md-4">
             <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
         </div>
-        <div class="col-md-6 panel col-lg-offset-2 panel-default">
+        <div class="clearfix"></div>
+        <div class="col-md-12 panel panel-default">
             <div class="panel-heading">
-                <h3><i class="icon-signin"></i> @Html(Messages("index.method1"))</h3>
+                <h3><i class="icon-stackexchange"></i> Recent events</h3>
             </div>
             <div class="panel-body">
-                <p>Lorem ipsum nec mergitur.</p>
+                <table class="table table-bordered table-strippted">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Author</th>
+                            <th>Source</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @events.map{event:Event=>
+                        <tr>
+                            <td>
+                                @event.date.map(_.toString("dd/MM HH:mm"))
+                            </td>
+                            <td>
+                                @event.author
+                            </td>
+                            <td>@event.source</td>
+                            <td>@event.msg</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+
+
             </div>
         </div>
     </div>

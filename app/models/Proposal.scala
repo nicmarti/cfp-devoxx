@@ -99,8 +99,9 @@ object Proposal {
       val tx = client.multi()
       tx.hset("Proposals", proposal.id.get, json)
       tx.sadd("Proposals:ByAuthor:" + creator, proposal.id.get)
-      tx.zadd("Proposals:Event", new java.util.Date().getTime, creator + " updated or created a proposal with title [" + proposal.title + "]")
       tx.exec()
+
+      Event.storeEvent(Event("proposal", creator, "Updated or created proposal "+proposal.id.get +" with title " + StringUtils.abbreviate(proposal.title, 80)))
 
       changeTrack(creator, proposal)
 
@@ -177,12 +178,12 @@ object Proposal {
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
           // And we are able to track this event
-          client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}")
+          Event.storeEvent(Event("proposal", owner, s"${owner} changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}"))
       }
       if (maybeExistingTrack.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
-        client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} posted a new talk (${proposalId}}) to ${proposal.track.id}")
+        Event.storeEvent(Event("proposal", owner, s"${owner} posted a new talk (${proposalId}}) to ${proposal.track.id}"))
       }
 
   }
@@ -197,12 +198,13 @@ object Proposal {
         stateOld: String =>
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
-          client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} changed status of talk ${proposalId} from ${stateOld} to ${newState.code}")
+          Event.storeEvent(Event("proposal", owner, s"${owner} changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
+
       }
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
-        client.zadd("Proposals:Event", new java.util.Date().getTime, s"${owner} posted new talk ${proposalId} with status ${newState.code}")
+        Event.storeEvent(Event("proposal", owner, s"${owner} posted new talk ${proposalId} with status ${newState.code}"))
       }
   }
 

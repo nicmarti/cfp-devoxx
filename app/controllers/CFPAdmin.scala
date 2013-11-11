@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import models.Webuser
+import models.{Event, Webuser}
 
 /**
  * The backoffice controller for the CFP technical commitee.
@@ -13,7 +13,7 @@ object CFPAdmin extends Controller with Secured {
 
   def index()=IsMemberOf("cfp"){
     email => implicit request =>
-      Ok(views.html.CFPAdmin.index())
+      Ok(views.html.CFPAdmin.index(Event.loadEvents(20)))
   }
 }
 
