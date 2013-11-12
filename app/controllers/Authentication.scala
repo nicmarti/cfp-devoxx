@@ -217,11 +217,11 @@ object Authentication extends Controller {
           result =>
             result.status match {
               case 200 => {
-                //                Ok(result.body).as("application/json")
+                //               Ok(result.body).as("application/json")
                 val json = Json.parse(result.body)
-                val resultParse = (for (email <- json.\("email").asOpt[String].toRight("email not found").right;
-                                        name <- json.\("name").asOpt[String].toRight("name not found").right;
-                                        bio <- json.\("bio").asOpt[String].toRight("bio not found").right) yield (email, name, bio))
+                val resultParse = for (email <- json.\("email").asOpt[String].toRight("email not found").right;
+                                       name <- json.\("name").asOpt[String].toRight("name not found").right;
+                                       bio <- json.\("bio").asOpt[String].toRight("bio not found").right) yield (email, name, bio)
 
                 resultParse.fold(missingField => BadRequest("Sorry, cannot import your github profile due to : [" + missingField + "]"),
                   validFields => {

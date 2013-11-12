@@ -159,14 +159,14 @@ object CallForPaper extends Controller with Secured {
             Proposal.allMyDraftProposals(email).find(_.id.get == id.get) match {
               case Some(existingProposal) => {
                 // This is an edit operation
-                Proposal.save(email, validProposal.copy(id = id, state = ProposalState.DRAFT))
+                Proposal.save(email, validProposal.copy(id = id) , ProposalState.DRAFT)
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               }
               case other => {
                 // Check that this is really a new id and that it does not exist
                 if (Proposal.isNew(id.get)) {
                   // This is a "create new" operation
-                  Proposal.save(email, validProposal.copy(state = ProposalState.DRAFT))
+                  Proposal.save(email, validProposal,  ProposalState.DRAFT)
                   Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
                 } else {
                   play.Logger.warn("ID collision " + id)
@@ -221,7 +221,7 @@ object CallForPaper extends Controller with Secured {
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(email, proposal, hasErrors)),
             validNewSpeakers => {
-              Proposal.save(email, proposal.copy(mainSpeaker = validNewSpeakers._1, secondarySpeaker = validNewSpeakers._2, otherSpeakers = validNewSpeakers._3))
+              Proposal.save(email, proposal.copy(mainSpeaker = validNewSpeakers._1, secondarySpeaker = validNewSpeakers._2, otherSpeakers = validNewSpeakers._3), proposal.state)
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
             }
           )

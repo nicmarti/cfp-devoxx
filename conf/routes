@@ -57,7 +57,8 @@ POST    /bug/new                    controllers.Application.submitIssue()
 # CFP Admin
 GET     /cfpadmin/                 controllers.CFPAdmin.index()
 GET     /cfpadmin                  controllers.CFPAdmin.index()
-
+GET     /cfpadmin/proposal/:proposalId  controllers.CFPAdmin.openForReview(proposalId:String)
+POST    /cfpadmin/proposal/:proposalId/messageToSpeaker controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
 
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.png")
 

@@ -63,6 +63,7 @@ object ProposalState {
   val ACCEPTED = ProposalState("accepted")
   val DECLINED = ProposalState("declined")
   val BACKUP = ProposalState("backup")
+  val UNKNOWN = ProposalState("unknown")
 
 
   val all = List(
@@ -73,12 +74,14 @@ object ProposalState {
     REJECTED,
     ACCEPTED,
     DECLINED,
-    BACKUP
+    BACKUP,
+    UNKNOWN
   )
 
   val allAsCode = all.map(_.code)
 }
 
+// A proposal
 case class Proposal(id: Option[String], event: String, code: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String], talkType: ProposalType, audienceLevel: String, summary: String,
                     privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track)
@@ -91,7 +94,7 @@ object Proposal {
 
   val audienceLevels = Seq(("novice", "Novice"), ("intermediate", "Intermediate"), ("expert", "Expert"))
 
-  def save(creator: String, proposal: Proposal) = Redis.pool.withClient {
+  def save(creator: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(proposal).toString
 
@@ -101,11 +104,11 @@ object Proposal {
       tx.sadd("Proposals:ByAuthor:" + creator, proposal.id.get)
       tx.exec()
 
-      Event.storeEvent(Event("proposal", creator, "Updated or created proposal "+proposal.id.get +" with title " + StringUtils.abbreviate(proposal.title, 80)))
+      Event.storeEvent(Event("proposal", creator, "Updated or created proposal " + proposal.id.get + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
       changeTrack(creator, proposal)
 
-      changeProposalState(creator, proposal.id.get, proposal.state)
+      changeProposalState(creator, proposal.id.get, proposalState)
   }
 
   val proposalForm = Form(mapping(
@@ -144,7 +147,7 @@ object Proposal {
       audienceLevel,
       summary,
       StringUtils.trimToEmpty(privateMessage.getOrElse("")),
-      ProposalState.DRAFT,
+      ProposalState.UNKNOWN,
       sponsorTalk,
       Track.parse(track)
     )
@@ -166,10 +169,10 @@ object Proposal {
   private def changeTrack(owner: String, proposal: Proposal) = Redis.pool.withClient {
     client =>
       val proposalId = proposal.id.get
-    // If we change a proposal to a new track, we need to update all the collections
-    // On Redis, this is very fast (faster than creating a mongoDB index, by an order of x100)
+      // If we change a proposal to a new track, we need to update all the collections
+      // On Redis, this is very fast (faster than creating a mongoDB index, by an order of x100)
 
-    // SISMember is a O(1) operation
+      // SISMember is a O(1) operation
       val maybeExistingTrack = for (trackId <- Track.allIDs if client.sismember("Proposals:ByTrack:" + trackId, proposalId)) yield trackId
 
       // Do the operation if and only if we changed the Track
@@ -227,8 +230,7 @@ object Proposal {
   }
 
   // Special function that has to be executed with an implicit client
-  def loadProposalByIDs(allProposalIds: Set[String], proposalState:ProposalState)(implicit client:Dress.Wrap): List[Proposal] ={
-    println("loadProposalByIDS")
+  def loadProposalByIDs(allProposalIds: Set[String], proposalState: ProposalState)(implicit client: Dress.Wrap): List[Proposal] = {
     client.hmget("Proposals", allProposalIds).flatMap {
       proposalJson: String =>
         Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = proposalState))
@@ -269,4 +271,45 @@ object Proposal {
     "secondarySpeaker" -> optional(text),
     "otherSpeakers" -> list(text)
   ))
+
+  def findById(proposalId: String): Option[Proposal] = Redis.pool.withClient {
+    client =>
+      for (proposalJson <- client.hget("Proposals", proposalId);
+           proposal <- Json.parse(proposalJson).asOpt[Proposal];
+           realState <- findProposalState(proposal.id.get)) yield {
+        proposal.copy(state = realState)
+      }
+
+  }
+
+  def findProposalState(proposalId: String): Option[ProposalState] = Redis.pool.withClient {
+    client =>
+      // I use a for-comprehension to check each of the Set (O(1) operation)
+      // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
+      // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
+      // Here I do the opposite for performance reasons. NMA.
+      // This code retrieves the proposalState in less than 4ms so it is really efficient.
+      val thisProposalState = for (
+        isNotSubmitted <- checkIsNotMember(client, ProposalState.SUBMITTED, proposalId).toRight(ProposalState.SUBMITTED).right;
+        isNotDraft <- checkIsNotMember(client, ProposalState.DRAFT, proposalId).toRight(ProposalState.DRAFT).right;
+        isNotApproved <- checkIsNotMember(client, ProposalState.APPROVED, proposalId).toRight(ProposalState.APPROVED).right;
+        isNotDeleted <- checkIsNotMember(client, ProposalState.DELETED, proposalId).toRight(ProposalState.DELETED).right;
+        isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
+        isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
+        isNotAccepted <- checkIsNotMember(client, ProposalState.ACCEPTED, proposalId).toRight(ProposalState.ACCEPTED).right;
+        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right
+      ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
+
+      thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
+        play.Logger.warn(s"Could not find proposal state for $proposalId")
+        None
+      })
+  }
+
+  private def checkIsNotMember(client: Dress.Wrap, state: ProposalState, proposalId: String): Option[String] = {
+    client.sismember("Proposals:ByState:" + state.code, proposalId) match {
+      case java.lang.Boolean.FALSE => Some("notMember")
+      case other => None
+    }
+  }
 }

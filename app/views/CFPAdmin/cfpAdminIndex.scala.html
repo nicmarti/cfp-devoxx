@@ -1,4 +1,4 @@
-@(events:List[Event], allProposalsForReview:List[Proposal])(implicit lang: Lang, flash: Flash)
+@(events: List[Event], allProposalsForReview: List[Proposal])(implicit lang: Lang, flash: Flash)
 
 @main("CFP Admin") {
 
@@ -22,13 +22,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @events.map{event:Event=>
+                    @events.map { event: Event =>
                         <tr>
                             <td>
                                 @event.date.map(_.toString("dd/MM HH:mm"))
                             </td>
                             <td>
-                                @event.author
+                            @event.author
                             </td>
                             <td>@event.source</td>
                             <td>@event.msg</td>
@@ -40,7 +40,7 @@
         </div>
         <div class="col-md-12 panel panel-default">
             <div class="panel-heading">
-                <h3><i class="icon-reply-all"></i> Your inbox </h3>
+                <h3><i class="icon-reply-all"></i> Your todo list </h3>
             </div>
             <div class="panel-body">
                 <table class="table table-bordered table-strippted">
@@ -49,18 +49,23 @@
                             <th>Title</th>
                             <th>Track</th>
                             <th>Type of talk</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @allProposalsForReview.map{proposal:Proposal=>
+                    @allProposalsForReview.map { proposal: Proposal =>
                         <tr>
                             <td>
                                 @proposal.title
                             </td>
                             <td>
-                                @proposal.track.label
+                            @Messages(proposal.track.label)
                             </td>
-                            <td>@proposal.talkType.label</td>
+                            <td>@Messages(proposal.talkType.label)</td>
+                            <td>
+                                <a href="@routes.CFPAdmin.openForReview(proposal.id.get)" title="Open for review">
+                                    Review</a>
+                            </td>
                         </tr>
                     }
                     </tbody>

@@ -41,7 +41,9 @@ import play.api.Play
  */
 
 // This is a simple Akka event
-case class ReportIssue(issue:Issue)
+case class ReportIssue(issue: Issue)
+
+case class SendMessageToSpeaker(report: String, proposal: Proposal, msg: String)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -51,16 +53,20 @@ object ZapActor {
 class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
+    case SendMessageToSpeaker(report, proposal, msg) => sendMessageToSpeaker(report, proposal, msg)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
-  def publishBugReport(issue:Issue) {
+  def publishBugReport(issue: Issue) {
     if (play.Logger.of("application.ZapActor").isDebugEnabled) {
       play.Logger.of("application.ZapActor").debug(s"Posting a new bug report to Bitbucket")
     }
 
     // All the functional code should be outside the Actor, so that we can test it separately
     Issue.publish(issue)
+  }
+
+  def sendMessageToSpeaker(report:String, proposal:Proposal, msg:String){
 
   }
 }
