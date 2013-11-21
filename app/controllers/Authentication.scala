@@ -279,7 +279,7 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           webuser =>
             Webuser.validateEmailForSpeaker(webuser) // it is generated
-            SpeakerHelper.save(SpeakerHelper.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + webuser.gravatarHash), None, None))
+            SpeakerHelper.save(SpeakerHelper.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None))
             Mails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("email" -> email)
         }.getOrElse {

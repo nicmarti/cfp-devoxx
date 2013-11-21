@@ -27,7 +27,7 @@ package notifiers
 import com.typesafe.plugin._
 import play.api.Play.current
 import org.joda.time.DateTime
-import models.Issue
+import models.{Proposal, Issue}
 
 /**
  * Sends all emails
@@ -92,5 +92,20 @@ object Mails {
           views.html.Mails.sendBugReport(bugReport).toString(),
           views.html.Mails.sendBugReport(bugReport).toString()
         )
+  }
+
+  def sendMessageToSpeakers(fromName:String, fromEmail:String,  proposal:Proposal, msg:String) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+         emailer.setSubject("New question about your presentation ${proposal.id.get} for Devoxx France 2014")
+         emailer.addFrom("program@devoxx.fr")
+         emailer.addRecipient(proposal.mainSpeaker)
+         proposal.secondarySpeaker.map(email=> emailer.addCc(email))
+         proposal.otherSpeakers.foreach(email => emailer.addCc(email))
+         emailer.setCharset("utf-8")
+         emailer.send(
+           views.txt.Mails.sendMessageToSpeaker(fromName, proposal, msg).toString(),
+           views.html.Mails.sendMessageToSpeaker(fromName, proposal, msg).toString()
+         )
+
   }
 }

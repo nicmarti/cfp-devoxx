@@ -1,0 +1,21 @@
+@(fromName:String, proposal:models.Proposal, msg:String)
+
+Hi,
+
+You received a new message from @fromName regarding your talk @proposal.title.
+
+Message:
+------------------------------------------------------------------------------
+@msg
+
+@fromName
+------------------------------------------------------------------------------
+
+How to respond?
+
+Please, use this link to respond directly to the message :
+http://cfp.devoxx.fr/@routes.CFPAdmin.openForReview(proposal.id.get)
+
+Thanks
+
+The Devoxx France team.

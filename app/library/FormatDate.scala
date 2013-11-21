@@ -20,33 +20,39 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-@orange: #e14203;
-@darkorange: #cd4125;
-@lightgrey: #838383;
-@lightpastel: f6f3ee;
-@dark:#1C1C1C;
-@yellow:#F5AF33;
 
+package library
 
-.help-block{
-    font-size:11px;
-    color:#898;
-}
-.error{
-  color: @darkorange;
-}
+import org.joda.time.{Period, DateTime}
+import org.joda.time.format.PeriodFormatterBuilder
 
-.proposal{
-    background-color: rgba(255, 245, 34, 0.33);
-}
+/**
+ * Small helper cause I did not want to add this code in template.
+ * Author: nicolas
+ * Created: 13/11/2013 16:30
+ */
+object FormatDate {
 
-dd.info{
-  display: none;
-}
+  val formatter = new PeriodFormatterBuilder()
+    .appendDays()
+    .appendSuffix(" day", " days")
+    .appendSeparator(" and ")
+    .appendMinutes()
+    .appendSuffix(" minute", " minutes")
+    .appendSeparator(" and ")
+    .appendSeconds()
+    .appendSuffix(" second", " seconds")
+    .appendSuffix(" ago")
+    .toFormatter()
 
-.msgSpeaker{
-  font-family: Geneva, Lato, sans-serif;
-  font-size: 0.9em;
-  color: @dark;
-  display: block;
+  def ellapsed(maybeEventDate: Option[DateTime]): String = {
+    maybeEventDate.map {
+      eventDate =>
+
+        val period: Period = new Period(eventDate, new DateTime())
+        formatter.print(period)
+    }.getOrElse("Unknown")
+
+  }
+
 }

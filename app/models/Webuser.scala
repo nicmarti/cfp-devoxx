@@ -7,15 +7,15 @@ import library.Redis
 import org.apache.commons.lang3.RandomStringUtils
 import redis.clients.util.RedisOutputStream
 
-case class Webuser(email: String, firstName: String, lastName: String, password: String, profile: String) {
-  def gravatarHash: String = {
-    val cleanEmail = email.trim().toLowerCase()
-    DigestUtils.md5Hex(cleanEmail)
-  }
-}
+case class Webuser(email: String, firstName: String, lastName: String, password: String, profile: String)
 
 object Webuser {
   implicit val webuserFormat = Json.format[Webuser]
+
+  def gravatarHash(email:String):String = {
+    val cleanEmail = email.trim().toLowerCase()
+    DigestUtils.md5Hex(cleanEmail)
+  }
 
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
     Webuser(email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")

@@ -31,6 +31,7 @@ import models._
 import org.joda.time._
 import play.libs.Akka
 import play.api.Play
+import notifiers.Mails
 
 
 /**
@@ -43,7 +44,7 @@ import play.api.Play
 // This is a simple Akka event
 case class ReportIssue(issue: Issue)
 
-case class SendMessageToSpeaker(report: String, proposal: Proposal, msg: String)
+case class SendMessageToSpeaker(reporter: String, proposal: Proposal, msg: String)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -53,7 +54,7 @@ object ZapActor {
 class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
-    case SendMessageToSpeaker(report, proposal, msg) => sendMessageToSpeaker(report, proposal, msg)
+    case SendMessageToSpeaker(reporter, proposal, msg) => sendMessageToSpeaker(reporter, proposal, msg)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -66,7 +67,19 @@ class ZapActor extends Actor {
     Issue.publish(issue)
   }
 
-  def sendMessageToSpeaker(report:String, proposal:Proposal, msg:String){
+  def sendMessageToSpeaker(reporter: String, proposal: Proposal, msg: String) {
+    if (play.Logger.of("application.ZapActor").isDebugEnabled) {
+      play.Logger.of("application.ZapActor").debug(s"Sending a message to ${proposal.mainSpeaker}")
+    }
+
+    Event.storeEvent(Event("msgAdmin", reporter, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id.get} ${proposal.title}"))
+
+
+    val reportName = Webuser.findByEmail(reporter).map(s=>s.firstName+" "+s.lastName).getOrElse(reporter)
+
+    Comment.saveCommentForSpeaker(proposal.id.get, reporter, msg)
+
+    Mails.sendMessageToSpeakers(reportName, reporter, proposal, msg)
 
   }
 }

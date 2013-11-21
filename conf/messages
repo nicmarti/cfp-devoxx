@@ -195,3 +195,6 @@ freepass=Yes
 no.freepass=No
 speakers.updated=Speakers's list updated
 noOther.speaker=---- No other speaker ----
+
+# CFPadmin
+msgSpeaker=Your message

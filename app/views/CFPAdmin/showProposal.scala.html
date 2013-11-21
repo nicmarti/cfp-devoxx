@@ -1,4 +1,4 @@
-@(proposal: Proposal, msgToSpeakerForm: Form[String])(implicit lang: Lang, flash: Flash)
+@(proposal: Proposal, speakerComments:List[Comment], msgToSpeakerForm: Form[String])(implicit lang: Lang, flash: Flash)
 
 @import com.github.rjeschke.txtmark._
 
@@ -9,6 +9,18 @@
             <div class="panel-heading">
                 <h3><i class="icon-stackexchange"></i> Proposal</h3>
             </div>
+
+            @if(flash.get("error").isDefined){
+                <div class="alert alert-danger alert-dismissable col-md-12">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined){
+                <div class="alert alert-success alert-dismissable col-md-12">
+                    @flash.get("success").get
+                </div>
+            }
             <div class="panel-body">
                 <table class="table table-bordered">
                     <tbody>
@@ -98,12 +110,12 @@
             </div>
             <div class="panel-body">
             @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id.get)) {
-                @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
+                @helper.textarea(msgToSpeakerForm("msgSpeaker"), 'class -> "form-control input-xs")
                 <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
             }
             </div>
             <div class="panel-body">
-                <strong>Messages</strong>
+                @tags.renderComments(speakerComments)
             </div>
         </div>
         <div class="col-md-6 panel panel-danger">
@@ -118,7 +130,6 @@
                 </div>
             </div>
             <div class="panel-body">
-                <strong>Messages</strong>
             </div>
         </div>
 

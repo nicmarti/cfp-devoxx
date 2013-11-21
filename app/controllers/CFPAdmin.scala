@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import models.{Proposal, Event, Review}
+import models.{Proposal, Event, Review, Comment}
 import play.api.data._
 import play.api.data.Forms._
 import library.{SendMessageToSpeaker, ZapActor}
@@ -21,12 +21,15 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview))
   }
 
-  val messageForm: Form[String] = Form("msg" -> nonEmptyText(maxLength = 1000))
+  val messageForm: Form[String] = Form("msgSpeaker" -> nonEmptyText(maxLength = 1000))
 
   def openForReview(proposalId: String) = IsMemberOf("cfp") {
     email => implicit request =>
       Proposal.findById(proposalId) match {
-        case Some(proposal) => Ok(views.html.CFPAdmin.showProposal(proposal, messageForm))
+        case Some(proposal) => {
+          val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
+          Ok(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, messageForm))
+        }
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
@@ -36,10 +39,13 @@ object CFPAdmin extends Controller with Secured {
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           messageForm.bindFromRequest.fold(
-            hasErrors => BadRequest(views.html.CFPAdmin.showProposal(proposal, hasErrors)),
+            hasErrors => {
+              val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, hasErrors))
+            },
             validMsg => {
               ZapActor.actor ! SendMessageToSpeaker(email, proposal, validMsg)
-              Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent")
+              Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent, it will appear below in a few seconds.")
             }
           )
         }
