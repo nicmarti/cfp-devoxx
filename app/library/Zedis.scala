@@ -106,6 +106,24 @@ trait Dress {
       }
     }
 
+    def zrevrangeByScoreWithScores(key: String, start: Int, end: Int): List[(String, Double)] = {
+      zrevrangeByScoreWithScores(key,start.toString, end.toString)
+    }
+
+    def zrevrangeByScoreWithScores(key: String, start: String, end: String): List[(String, Double)] = {
+      j.zrevrangeByScoreWithScores(key, start, end).asScala.toList.map {
+        tuple: Tuple =>
+          (tuple.getElement, tuple.getScore)
+      }
+    }
+
+    def sdiff(key1: String, key2: String): Set[String] = {
+      j.sdiff(key1, key2).asScala.toSet
+    }
+
+    def sdiffstore(newKey: String, key1: String, key2: String) = {
+      j.sdiffstore(newKey, key1, key2)
+    }
   }
 
   def up(j: Jedis) = new Wrap(j)

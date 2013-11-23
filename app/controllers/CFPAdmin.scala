@@ -29,7 +29,20 @@ object CFPAdmin extends Controller with Secured {
         case Some(proposal) => {
           val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
           val internalDiscussion = Comment.allInternalComments(proposal.id.get)
-          Ok(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm,voteForm))
+          Ok(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm))
+        }
+        case None => NotFound("Proposal not found").as("text/html")
+      }
+  }
+
+  def showVotesForProposal(proposalId: String) = IsMemberOf("cfp") {
+    email => implicit request =>
+      Proposal.findById(proposalId) match {
+        case Some(proposal) => {
+          val score = Review.currentScore(proposalId)
+          val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
+          val countVotes = Review.totalVoteFor(proposalId)
+          Ok(views.html.CFPAdmin.showVotesForProposal(proposal, score, countVotesCast,countVotes))
         }
         case None => NotFound("Proposal not found").as("text/html")
       }
@@ -43,7 +56,7 @@ object CFPAdmin extends Controller with Secured {
             hasErrors => {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
               val internalDiscussion = Comment.allInternalComments(proposal.id.get)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, hasErrors, messageForm,voteForm))
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm))
             },
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id.get, email, validMsg) // Save here so that it appears immediatly
@@ -65,7 +78,7 @@ object CFPAdmin extends Controller with Secured {
             hasErrors => {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
               val internalDiscussion = Comment.allInternalComments(proposal.id.get)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, hasErrors,voteForm))
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm))
             },
             validMsg => {
               Comment.saveInternalComment(proposal.id.get, email, validMsg) // Save here so that it appears immediatly
@@ -78,7 +91,7 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
-  val voteForm: Form[Int] = Form("vote" -> number(min=0, max=10))
+  val voteForm: Form[Int] = Form("vote" -> number(min = 0, max = 10))
 
   def voteForProposal(proposalId: String) = IsMemberOf("cfp") {
     email => implicit request =>
@@ -88,10 +101,11 @@ object CFPAdmin extends Controller with Secured {
             hasErrors => {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
               val internalDiscussion = Comment.allInternalComments(proposal.id.get)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm,messageForm, hasErrors))
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors))
             },
-            validMsg => {
-              Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("vote" -> "Ok, vote submitted")
+            validVote => {
+              Review.voteForProposal(proposalId, email, validVote)
+              Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Ok, vote submitted")
             }
           )
         }
