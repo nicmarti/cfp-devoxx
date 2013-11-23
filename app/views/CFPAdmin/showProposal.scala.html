@@ -1,137 +1,139 @@
-@(proposal: Proposal, speakerComments:List[Comment], internalComments:List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String])(implicit lang: Lang, flash: Flash)
+@(proposal: Proposal, speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int])(implicit lang: Lang, flash: Flash)
 
-@import com.github.rjeschke.txtmark._
+    @import com.github.rjeschke.txtmark._
 
-@main("[CFP] " + proposal.id.get + "/" + proposal.title) {
+    @main("[CFP] " + proposal.id.get + "/" + proposal.title) {
 
-    <div class="row">
-        <div class="col-md-12 panel panel-default">
-            <div class="panel-heading">
-                <h3><i class="icon-stackexchange"></i> Proposal</h3>
-            </div>
+        <div class="row">
+            <div class="col-md-12 panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-stackexchange"></i> Proposal</h3>
+                </div>
 
-            <div class="panel-body">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th>Main speaker</th>
-                            <td>@proposal.mainSpeaker</td>
-                        </tr>
-                        <tr>
-                            <th>Secondary speaker</th>
-                            <td>@proposal.secondarySpeaker</td>
-                        </tr>
-                        <tr>
-                            <th>Other speakers</th>
-                            <td>@proposal.otherSpeakers.mkString(", ")</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered table-strippted">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Track</th>
-                            <th>Type of talk</th>
-                            <th>Lang</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                            @proposal.title
-                            </td>
-                            <td>
-                            @Messages(proposal.track.label)
-                            </td>
-                            <td>@Messages(proposal.talkType.label)</td>
-                            <td>@proposal.lang</td>
-                        </tr>
-                        <tr>
-                            <th colspan="4">
-                                Proposal
-                            </th>
-                        </tr>
-                        <tr>
-                            <td colspan="4">
-                                <div class="proposal">
-                                @defining(Processor.process(proposal.summary)) { htmlSummary =>
-                                    @Html(htmlSummary)
-                                }
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="col-md-12 panel panel-default">
-            <div class="panel-heading">
-                <h3><i class="icon-thumbs-up"></i> Evaluate</h3>
-            </div>
-            <div class="panel-body">
-                <div class="btn-block">
-                    <a href="#" class="btn btn-lg btn-default">-</a>
-                    <a href="#" class="btn btn-lg btn-success">1</a>
-                    <a href="#" class="btn btn-lg btn-success">2</a>
-                    <a href="#" class="btn btn-lg btn-success">3</a>
-                    <a href="#" class="btn btn-lg btn-success">4</a>
-                    <a href="#" class="btn btn-lg btn-success">5</a>
-                    <a href="#" class="btn btn-lg btn-success">6</a>
-                    <a href="#" class="btn btn-lg btn-success">7</a>
-                    <a href="#" class="btn btn-lg btn-success">8</a>
-                    <a href="#" class="btn btn-lg btn-success">9</a>
-                    <a href="#" class="btn btn-lg btn-success">10</a>
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Main speaker</th>
+                                <td>@proposal.mainSpeaker</td>
+                            </tr>
+                            <tr>
+                                <th>Secondary speaker</th>
+                                <td>@proposal.secondarySpeaker</td>
+                            </tr>
+                            <tr>
+                                <th>Other speakers</th>
+                                <td>@proposal.otherSpeakers.mkString(", ")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered table-strippted">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Track</th>
+                                <th>Type of talk</th>
+                                <th>Lang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                @proposal.title
+                                </td>
+                                <td>
+                                @Messages(proposal.track.label)
+                                </td>
+                                <td>@Messages(proposal.talkType.label)</td>
+                                <td>@proposal.lang</td>
+                            </tr>
+                            <tr>
+                                <th colspan="4">
+                                    Proposal
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="proposal">
+                                    @defining(Processor.process(proposal.summary)) { htmlSummary =>
+                                        @Html(htmlSummary)
+                                    }
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        @if(flash.get("error").isDefined){
-            <div class="alert alert-danger alert-dismissable col-md-12">
-                <strong>Error :</strong>
-                @flash.get("error").get
-            </div>
-        }
-        @if(flash.get("success").isDefined){
-            <div class="alert alert-success alert-dismissable col-md-12">
-                @flash.get("success").get
-            </div>
-        }
-
-        <div class="col-md-12 panel panel-default">
-            <div class="panel-heading">
-                <h3><i class="icon-tasks"></i> Discussion</h3>
-            </div>
-        </div>
-        <div class="col-md-6 panel panel-default">
-            <div class="panel-heading">
-                <h4><i class="icon-comments-alt"></i>  Between Speakers and the Committee</h4>
-            </div>
-            <div class="panel-body">
-            @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id.get)) {
-                @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
-                <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable col-md-12">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
             }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable col-md-12">
+                @flash.get("success").get
+                </div>
+            }
+
+            <div class="col-md-12 panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-thumbs-up"></i> Evaluate</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="btn-block">
+                    @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id.get)) {
+                        <button name="vote" value="0" class="btn btn-lg btn-default">-</button>
+                        @for(i<-1 to 10) {
+                            <button name="vote" value="@i" class="btn btn-lg btn-success" accesskey="@i">@i</button>
+                        }
+
+                    }
+                    </div>
+                </div>
+                @if(flash.get("vote").isDefined) {
+                    <div class="alert alert-success alert-dismissable col-md-12">
+                    @flash.get("vote").get
+                    </div>
+                }
+
             </div>
-            <div class="panel-body">
+
+            <div class="col-md-12 panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-tasks"></i> Discussion</h3>
+                </div>
+            </div>
+            <div class="col-md-6 panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="icon-comments-alt"></i>  Between Speakers and the Committee</h4>
+                </div>
+                <div class="panel-body">
+                @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id.get)) {
+                    @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
+                    <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
+                }
+                </div>
+                <div class="panel-body">
                 @tags.renderComments(speakerComments)
+                </div>
             </div>
-        </div>
-        <div class="col-md-6 panel panel-danger">
-            <div class="panel-heading">
-                <h4><i class="icon-comments"></i> Internal discussion</h4>
-            </div>
-            <div class="panel-body">
+            <div class="col-md-6 panel panel-danger">
+                <div class="panel-heading">
+                    <h4><i class="icon-comments"></i> Internal discussion</h4>
+                </div>
+                <div class="panel-body">
                 @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id.get)) {
                     @helper.textarea(msgInternalForm("msg"), 'class -> "form-control input-xs")
                     <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
                 }
+                </div>
+                <div class="panel-body">
+                @tags.renderComments(internalComments)
+                </div>
             </div>
-            <div class="panel-body">
-            @tags.renderComments(internalComments)
-            </div>
-        </div>
 
-    </div>
-}
+        </div>
+    }
