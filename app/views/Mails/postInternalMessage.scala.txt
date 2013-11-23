@@ -1,0 +1,17 @@
+@(fromName:String, proposal:models.Proposal, msg:String)
+
+New comment posted by @fromName for @proposal.title / @proposal.mainSpeaker
+
+Message:
+------------------------------------------------------------------------------
+@msg
+
+@fromName
+------------------------------------------------------------------------------
+
+Please, use this link to respond directly to the message :
+http://cfp.devoxx.fr/@routes.CFPAdmin.openForReview(proposal.id.get)
+
+Thanks
+
+The Devoxx France team.

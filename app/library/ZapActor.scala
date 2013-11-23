@@ -45,6 +45,7 @@ import notifiers.Mails
 case class ReportIssue(issue: Issue)
 
 case class SendMessageToSpeaker(reporter: String, proposal: Proposal, msg: String)
+case class SendMessageInternal(reporter: String, proposal: Proposal, msg: String)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -55,6 +56,7 @@ class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporter, proposal, msg) => sendMessageToSpeaker(reporter, proposal, msg)
+    case SendMessageInternal(reporter, proposal, msg) => postInternalMessage(reporter, proposal, msg)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -71,15 +73,15 @@ class ZapActor extends Actor {
     if (play.Logger.of("application.ZapActor").isDebugEnabled) {
       play.Logger.of("application.ZapActor").debug(s"Sending a message to ${proposal.mainSpeaker}")
     }
-
     Event.storeEvent(Event("msgAdmin", reporter, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id.get} ${proposal.title}"))
-
-
     val reportName = Webuser.findByEmail(reporter).map(s=>s.firstName+" "+s.lastName).getOrElse(reporter)
-
-    Comment.saveCommentForSpeaker(proposal.id.get, reporter, msg)
-
     Mails.sendMessageToSpeakers(reportName, reporter, proposal, msg)
-
   }
+
+  def postInternalMessage(reporter: String, proposal: Proposal, msg: String) {
+    Event.storeEvent(Event("msgAdmin", reporter, s"Posted an internal message fpr ${proposal.id.get} ${proposal.title}"))
+    val reportName = Webuser.findByEmail(reporter).map(s=>s.firstName+" "+s.lastName).getOrElse(reporter)
+    Mails.postInternalMessage(reportName, reporter, proposal, msg)
+  }
+
 }

@@ -1,0 +1,25 @@
+@(fromName:String, proposal:models.Proposal, msg:String)
+
+<p>Hi,</p> 
+
+<p>New comment posted by @fromName for @proposal.title / @proposal.mainSpeaker</p>
+<br>
+<p>Message:</p>
+<hr>
+<pre>
+@msg
+
+@fromName
+</pre>
+<hr>
+   
+<h3>How to respond?</h3>
+
+<p>Please, use this link to respond directly to the message :</p>
+<a href="http://cfp.devoxx.fr/@routes.CFPAdmin.openForReview(proposal.id.get)">http://cfp.devoxx.fr/@routes.CFPAdmin.openForReview(proposal.id.get)</a>
+<br>
+<br>
+
+<p>Thanks</p>
+
+<p>The Devoxx France team.</p>

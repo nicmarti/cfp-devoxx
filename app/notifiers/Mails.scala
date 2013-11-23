@@ -40,7 +40,7 @@ object Mails {
 
   def sendResetPasswordLink(email: String, resetUrl: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("You asked to reset your Devoxx France speaker's password at "+new DateTime().toString("HH:mm dd/MM"))
+    emailer.setSubject("You asked to reset your Devoxx France speaker's password at " + new DateTime().toString("HH:mm dd/MM"))
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
@@ -48,16 +48,16 @@ object Mails {
   }
 
   def sendAccessCode(email: String, code: String) = {
-      val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-      emailer.setSubject("Your Devoxx France speaker's access code")
-      emailer.addFrom("program@devoxx.fr")
-      emailer.addRecipient(email)
-      emailer.setCharset("utf-8")
-      emailer.send(
-        views.txt.Mails.sendAccessCode(email, code).toString(),
-         views.html.Mails.sendAccessCode(email, code).toString
-      )
-    }
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    emailer.setSubject("Your Devoxx France speaker's access code")
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addRecipient(email)
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.sendAccessCode(email, code).toString(),
+      views.html.Mails.sendAccessCode(email, code).toString
+    )
+  }
 
 
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
@@ -69,7 +69,7 @@ object Mails {
     emailer.send(views.txt.Mails.sendWeCreatedAnAccountForYou(firstname, email, tempPassword).toString(), views.html.Mails.sendWeCreatedAnAccountForYou(firstname, email, tempPassword).toString)
   }
 
-  def sendValidateYourEmail(email:String, validationLink:String)={
+  def sendValidateYourEmail(email: String, validationLink: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Devoxx France, please validate your email address now")
     emailer.addFrom("program@devoxx.fr")
@@ -81,31 +81,42 @@ object Mails {
     )
   }
 
-  def sendBugReport(bugReport:Issue)={
+  def sendBugReport(bugReport: Issue) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-        emailer.setSubject("New issue reported on CFP web site")
-        emailer.addFrom("program@devoxx.fr")
-        emailer.addCc(bugReport.reportedBy)
-        emailer.addRecipient("nicolas.martignole@devoxx.fr")
-        emailer.setCharset("utf-8")
-        emailer.send(
-          views.html.Mails.sendBugReport(bugReport).toString(),
-          views.html.Mails.sendBugReport(bugReport).toString()
-        )
+    emailer.setSubject("New issue reported on CFP web site")
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addCc(bugReport.reportedBy)
+    emailer.addRecipient("nicolas.martignole@devoxx.fr")
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.html.Mails.sendBugReport(bugReport).toString(),
+      views.html.Mails.sendBugReport(bugReport).toString()
+    )
   }
 
-  def sendMessageToSpeakers(fromName:String, fromEmail:String,  proposal:Proposal, msg:String) = {
+  def sendMessageToSpeakers(fromName: String, fromEmail: String, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-         emailer.setSubject("New question about your presentation ${proposal.id.get} for Devoxx France 2014")
-         emailer.addFrom("program@devoxx.fr")
-         emailer.addRecipient(proposal.mainSpeaker)
-         proposal.secondarySpeaker.map(email=> emailer.addCc(email))
-         proposal.otherSpeakers.foreach(email => emailer.addCc(email))
-         emailer.setCharset("utf-8")
-         emailer.send(
-           views.txt.Mails.sendMessageToSpeaker(fromName, proposal, msg).toString(),
-           views.html.Mails.sendMessageToSpeaker(fromName, proposal, msg).toString()
-         )
+    emailer.setSubject("New question about your presentation ${proposal.id.get} for Devoxx France 2014")
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addRecipient(proposal.mainSpeaker)
+    proposal.secondarySpeaker.map(email => emailer.addCc(email))
+    proposal.otherSpeakers.foreach(email => emailer.addCc(email))
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.sendMessageToSpeaker(fromName, proposal, msg).toString(),
+      views.html.Mails.sendMessageToSpeaker(fromName, proposal, msg).toString()
+    )
+  }
 
+  def postInternalMessage(fromName: String, fromEmail: String, proposal: Proposal, msg: String) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    emailer.setSubject(s"New comment on proposal ${proposal.id.get} ${proposal.title}")
+    emailer.addFrom(fromEmail)
+    emailer.addCc("program@devoxx.fr")
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.postInternalMessage(fromName, proposal, msg).toString(),
+      views.html.Mails.postInternalMessage(fromName, proposal, msg).toString()
+    )
   }
 }

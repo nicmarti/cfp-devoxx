@@ -55,4 +55,22 @@ object Comment {
       }
       comments
   }
+
+  def saveInternalComment(proposalId: String, author: String, msg: String) = Redis.pool.withClient {
+      client =>
+        val comment = Comment(proposalId, author, msg, None)
+        client.zadd("Comments:Internal:" + proposalId, new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
+    }
+
+
+  def allInternalComments(proposalId: String):List[Comment] = Redis.pool.withClient {
+    client =>
+      val comments= client.zrevrangeWithScores("Comments:Internal:" + proposalId, 0, -1).map {
+        case (json, dateValue) =>
+          val c = Json.parse(json).as[Comment]
+          val date = new Instant(dateValue.toLong)
+          c.copy(eventDate = Option(date.toDateTime))
+      }
+      comments
+  }
 }
