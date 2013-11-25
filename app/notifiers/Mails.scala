@@ -111,7 +111,8 @@ object Mails {
   def postInternalMessage(fromName: String, fromEmail: String, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"New comment on proposal ${proposal.id.get} ${proposal.title}")
-    emailer.addFrom(fromEmail)
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addCc(fromEmail)
     emailer.addCc("program@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(

@@ -14,7 +14,7 @@ Message:
 How to respond?
 
 Please, use this link to respond directly to the message :
-http://cfp.devoxx.fr/@routes.CFPAdmin.openForReview(proposal.id.get)
+http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id.get)
 
 Thanks
 
