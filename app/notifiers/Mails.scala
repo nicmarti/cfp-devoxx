@@ -59,7 +59,6 @@ object Mails {
     )
   }
 
-
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Welcome to Devoxx France ! ")
@@ -110,7 +109,7 @@ object Mails {
 
   def postInternalMessage(fromName: String, fromEmail: String, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"New comment on proposal ${proposal.id.get} ${proposal.title}")
+    emailer.setSubject(s"New private comment on ${proposal.id.get} ${proposal.title} by ${fromEmail}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addCc(fromEmail)
     emailer.addCc("program@devoxx.fr")

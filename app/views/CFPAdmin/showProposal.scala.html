@@ -15,7 +15,12 @@
                         <tbody>
                             <tr>
                                 <th>Main speaker</th>
-                                <td>@proposal.mainSpeaker</td>
+                                <td>@models.SpeakerHelper.findByEmail(proposal.mainSpeaker).map{speaker=>
+                                    @tags.showSpeaker(speaker)
+                                }.getOrElse{
+                                    <small>@proposal.mainSpeaker</small>
+                                }
+                                </td>
                             </tr>
                             <tr>
                                 <th>Secondary speaker</th>
@@ -26,6 +31,14 @@
                                 <td>@proposal.otherSpeakers.mkString(", ")</td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Private message for commitee</th>
+                                <td>
+                                    @proposal.privateMessage
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                     <table class="table table-bordered table-strippted">
                         <thead>

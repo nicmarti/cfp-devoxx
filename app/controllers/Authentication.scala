@@ -247,7 +247,7 @@ object Authentication extends Controller {
                             (nameS, nameS)
                           }
                           val w = Webuser(emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
-                          val s = Speaker(emailS, bioS, lang, None, avatarUrl, company, blog)
+                          val s = SpeakerHelper.createSpeaker(emailS, w.cleanName, bioS, lang, None, avatarUrl, company, blog)
                           Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                         }
                     }
@@ -283,7 +283,7 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           webuser =>
             Webuser.validateEmailForSpeaker(webuser) // it is generated
-            SpeakerHelper.save(SpeakerHelper.createSpeaker(email, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None))
+            SpeakerHelper.save(SpeakerHelper.createSpeaker(email, webuser.cleanName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None))
             Mails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("email" -> email)
         }.getOrElse {
@@ -401,7 +401,8 @@ object Authentication extends Controller {
                     }.getOrElse {
                       // Create a new one but ask for confirmation
                       val w = Webuser(email, firstName.getOrElse("?"), lastName.getOrElse("?"), RandomStringUtils.randomAlphanumeric(7), "speaker")
-                      val s = Speaker(email, "", lang, None, photo, None, blog)
+                      val s = SpeakerHelper.createSpeaker(email, w.cleanName, "", lang, None, photo, None, blog)
+
                       Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
                     }
                   }

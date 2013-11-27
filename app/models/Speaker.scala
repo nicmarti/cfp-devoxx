@@ -32,19 +32,19 @@ import library.{ZapJson, Redis}
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(email: String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
+case class Speaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String])
 
 object SpeakerHelper {
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(email: String, bio: String, lang: Option[String], twitter: Option[String],
+  def createSpeaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
-    Speaker(email, bio, lang, twitter, avatarUrl, company, blog)
+    Speaker(email, name, bio, lang, twitter, avatarUrl, company, blog)
   }
 
-  def unapplyForm(s: Speaker): Option[(String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
-    Some(s.email, s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
+  def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
+    Some(s.email, s.name, s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -60,8 +60,15 @@ object SpeakerHelper {
       client.hset("Speaker", cleanEmail, jsonSpeaker)
   }
 
+  def updateName(email:String, newName:String) = {
+    findByEmail(email).map{ speaker=>
+      SpeakerHelper.update(email, speaker.copy(name=newName))
+    }
+  }
+
   def findByEmail(email: String): Option[Speaker] = Redis.pool.withClient {
     client =>
+      println("find by email "+email)
       client.hget("Speaker", email).flatMap {
         json: String =>
           Json.parse(json).asOpt[Speaker]
@@ -77,15 +84,8 @@ object SpeakerHelper {
     client =>
       client.hvals("Speaker").flatMap {
         jsString =>
-          val json = Json.parse(jsString)
-          val email = (json \ "email").as[String]
-          val bio = (json \ "bio").as[String]
-          val lang = (json \ "lang").asOpt[String]
-          val twitter = (json \ "twitter").asOpt[String]
-          val avatarUrl = (json \ "avatarUrl").asOpt[String]
-          val company = (json \ "company").asOpt[String]
-          val blog = (json \ "blog").asOpt[String]
-          Some(Speaker(email, bio, lang, twitter, avatarUrl, company, blog))
+          val maybeSpeaker = Json.parse(jsString).asOpt[Speaker]
+          maybeSpeaker
       }
 
   }

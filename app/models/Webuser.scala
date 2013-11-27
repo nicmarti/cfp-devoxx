@@ -7,7 +7,9 @@ import library.Redis
 import org.apache.commons.lang3.RandomStringUtils
 import redis.clients.util.RedisOutputStream
 
-case class Webuser(email: String, firstName: String, lastName: String, password: String, profile: String)
+case class Webuser(email: String, firstName: String, lastName: String, password: String, profile: String){
+  def cleanName = firstName.toLowerCase.capitalize+" "+lastName.toLowerCase.capitalize
+}
 
 object Webuser {
   implicit val webuserFormat = Json.format[Webuser]
@@ -98,6 +100,10 @@ object Webuser {
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.stringify(Json.toJson(cleanWebuser))
       client.hset("Webuser", webuser.email, json)
+
+      if(isMember(webuser.email, "speaker")){
+        SpeakerHelper.updateName(webuser.email, webuser.cleanName)
+      }
   }
 
   def isMember(email: String, securityGroup: String): Boolean = Redis.pool.withClient {
@@ -106,6 +112,8 @@ object Webuser {
   }
 
   def hasAccessToCFPAdmin(email: String): Boolean = isMember(email, "cfp")
+
+  def isSpeaker(email: String): Boolean = isMember(email, "speaker")
 
   def allSpeakers: List[Webuser] = Redis.pool.withClient {
     client =>

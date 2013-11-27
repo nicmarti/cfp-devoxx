@@ -76,6 +76,7 @@ object CallForPaper extends Controller with Secured {
 
   val speakerForm = play.api.data.Form(mapping(
     "email" -> (email verifying nonEmpty),
+    "name" -> nonEmptyText(maxLength = 150),
     "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
     "twitter" -> optional(text),
