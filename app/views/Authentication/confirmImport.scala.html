@@ -21,7 +21,7 @@
 
                 @helper.inputText(formWebuser("firstName"))
                 @helper.inputText(formWebuser("lastName"))
-                <input type="hidden" name="name" value="@formWebuser("firstName") @formWebuser("lastName")"/>
+                <input type="hidden" name="name" value=""/>
 
                 @helper.inputText(speakerForm("company"))
                 @helper.textarea(speakerForm("bio"), 'cols -> 80, 'rows -> 5)
