@@ -297,13 +297,17 @@ object Authentication extends Controller {
   def validateImportedSpeaker = Action {
     implicit request =>
       newWebuserForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, CallForPaper.speakerForm.bindFromRequest)),
+        invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, CallForPaper.speakerForm.bindFromRequest)).flashing("error"->"Please check your profile."),
         validWebuser => {
-          Webuser.validateEmailForSpeaker(validWebuser)
           CallForPaper.speakerForm.bindFromRequest.fold(
-            invalidForm2 => BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)),
+            invalidForm2 => {
+              play.Logger.error("validate import" +invalidForm2)
+              BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)).flashing("error"->"Please check your profile.")
+            },
             validSpeakerForm => {
+              Webuser.validateEmailForSpeaker(validWebuser)
               SpeakerHelper.save(validSpeakerForm)
+              SpeakerHelper.updateName(validWebuser.email, validWebuser.cleanName)
               Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("email" -> validWebuser.email)
             }
           )

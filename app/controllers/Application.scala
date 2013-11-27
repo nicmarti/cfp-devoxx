@@ -42,11 +42,11 @@ object Application extends Controller {
             case Some(webuser) =>
               Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> authenticatedEmail)
             case None =>
-              Ok(views.html.Application.home(Authentication.loginForm)).flashing("error"->"Could not authenticate automaticall")
+              Ok(views.html.Application.home(Authentication.loginForm)).withNewSession.flashing("error" -> "Could not authenticate you automatically")
           }
         }
         case None =>
-          Ok(views.html.Application.home(Authentication.loginForm))
+          Ok(views.html.Application.home(Authentication.loginForm)).withNewSession
       }
   }
 
@@ -55,15 +55,13 @@ object Application extends Controller {
       Ok(views.html.Application.index())
   }
 
-
-
   def resetEnvForDev(email: String) = Action {
     implicit request =>
       Webuser.findByEmail(email).map {
         webuser =>
           Webuser.delete(webuser)
           SpeakerHelper.delete(email)
-          Redirect(routes.Application.index()).flashing("success" -> "User de test effacé")
+          Redirect(routes.Application.index()).withNewSession.flashing("success" -> "User de test effacé")
       }.getOrElse(NotFound("User does not exist"))
   }
 
