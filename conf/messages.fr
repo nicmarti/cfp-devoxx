@@ -233,3 +233,11 @@ freepass=Oui
 no.freepass=Non
 speakers.updated=Liste des présentateurs mises à jour
 noOther.speaker=---- Pas d''autre présentateur ----
+
+# short talk
+uni=University
+quick=Quickie
+conf=Conference
+lab=Labs
+tia=ToolsInAction
+bof=BOF

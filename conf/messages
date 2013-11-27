@@ -198,3 +198,12 @@ noOther.speaker=---- No other speaker ----
 
 # CFPadmin
 msgSpeaker=Your message
+
+
+# short talk
+uni=University
+quick=Quickie
+conf=Conference
+lab=Labs
+tia=ToolsInAction
+bof=BOF

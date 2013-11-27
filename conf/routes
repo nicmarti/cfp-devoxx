@@ -1,9 +1,8 @@
 # Home page
 GET     /                           controllers.Application.index
 GET     /home                       controllers.Application.home
-GET     /logout                     controllers.Application.logout
 
-
+GET     /logout                     controllers.Authentication.logout
 POST    /login                      controllers.Authentication.login
 
 GET     /signup                     controllers.Authentication.prepareSignup

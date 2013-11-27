@@ -26,6 +26,7 @@ import models._
 import play.api.mvc._
 import library._
 import play.api.Play.current
+import play.api.i18n.Messages
 
 /**
  * Devoxx France Call For Paper main application.
@@ -35,7 +36,18 @@ object Application extends Controller {
 
   def home = Action {
     implicit request =>
-      Ok(views.html.Application.home(Authentication.loginForm))
+      session.get("email") match {
+        case Some(authenticatedEmail) => {
+          Webuser.findByEmail(authenticatedEmail) match {
+            case Some(webuser) =>
+              Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> authenticatedEmail)
+            case None =>
+              Ok(views.html.Application.home(Authentication.loginForm)).flashing("error"->"Could not authenticate automaticall")
+          }
+        }
+        case None =>
+          Ok(views.html.Application.home(Authentication.loginForm))
+      }
   }
 
   def index = Action {
@@ -43,10 +55,7 @@ object Application extends Controller {
       Ok(views.html.Application.index())
   }
 
-  def logout = Action {
-    implicit request =>
-      Redirect(routes.Application.index).withNewSession
-  }
+
 
   def resetEnvForDev(email: String) = Action {
     implicit request =>

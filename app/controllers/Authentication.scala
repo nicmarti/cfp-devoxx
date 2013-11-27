@@ -108,6 +108,10 @@ object Authentication extends Controller {
       )
   }
 
+  def logout = Action {
+    implicit request =>
+      Redirect(routes.Application.index).withNewSession
+  }
   def githubLogin = Action {
     implicit request =>
       Play.current.configuration.getString("github.client_id").map {
