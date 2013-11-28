@@ -79,6 +79,12 @@ url.photo=URL de votre photo
 blog.website=Blog ou site internet
 new.proposal=Nouvelle proposition
 
+# github login
+github.importprofile.error=Désolé, nous ne pouvons importer votre profil depuis github. Veuillez modifier votre configuration github.
+github.importprofile.error.emailnotfound=L e-mail n'a pu être récupéré.
+github.importprofile.error.namenotfound=Votre nom n'a pu être récupéré.
+github.importprofile.error.advice=Vous pouvez modifier votre configuration sur https://github.com/settings/profile
+
 # CFP New
 New.proposal=Nouvelle proposition de sujet, étape 1/3
 New.proposal2=Nouvelle proposition de sujet, étape 2/3

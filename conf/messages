@@ -43,6 +43,13 @@ edit.profile=Edit your profile
 edit.name=Edit your name
 new.proposal=New proposal
 
+
+# github login
+github.importprofile.error=Sorry, cannot import your github profile.
+github.importprofile.error.emailnotfound=The e-mail is not found.
+github.importprofile.error.namenotfound=Your name is not found.
+github.importprofile.error.advice=You might want to change your github settings on https://github.com/settings/profile.
+
 # CFP New
 New.proposal=New proposal - step 1/3
 New.proposal2=New proposal - step 2/3

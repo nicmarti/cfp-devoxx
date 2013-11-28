@@ -112,6 +112,7 @@ object Authentication extends Controller {
     implicit request =>
       Redirect(routes.Application.index).withNewSession
   }
+  
   def githubLogin = Action {
     implicit request =>
       Play.current.configuration.getString("github.client_id").map {
@@ -221,17 +222,20 @@ object Authentication extends Controller {
           result =>
             result.status match {
               case 200 => {
-                //               Ok(result.body).as("application/json")
                 val json = Json.parse(result.body)
-                val resultParse = for (email <- json.\("email").asOpt[String].toRight("email not found").right;
-                                       name <- json.\("name").asOpt[String].toRight("name not found").right;
-                                       bio <- json.\("bio").asOpt[String].toRight("bio not found").right) yield (email, name, bio)
+                val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
+                                        name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right) 
+                        	   yield (email, name))
 
-                resultParse.fold(missingField => BadRequest("Sorry, cannot import your github profile due to : [" + missingField + "]"),
+                resultParse.fold(missingField =>
+                    Redirect(routes.Application.home()).flashing(
+		      "error" -> (List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString (" ")) ),
                   validFields => {
                     validFields match {
-                      case (emailS, nameS, bioS) =>
-                        val avatarUrl = Some("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
+                      case (emailS, nameS) =>
+                        /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
+                        val bioS = json.\("bio").asOpt[String].getOrElse("")
+                        val avatarUrl = Some("http://www.gravatar.com/avatar/"+DigestUtils.md5Hex(emailS))
                         val company = json.\("company").asOpt[String]
                         val blog = json.\("blog").asOpt[String]
 
