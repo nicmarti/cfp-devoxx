@@ -255,7 +255,7 @@ profile.imported.txt=Votre profil a été importé avec succès. Vous pouvez mod
 profile.continue=Continuer
 profile.username=Votre identifiant
 profile.password=Votre code d''accès
-profile.password.help=Nous ne souhaitons pas stocker l''un de vos mot-de-passe, et nous préférons en générer un pour vous. Nous vous encourageons à utiliser l''accès OpenId via Github ou Google.
+profile.password.help=Nous ne souhaitons pas stocker l''un de vos mots-de-passe, et nous préférons en générer un pour vous. Nous vous encourageons à utiliser l''accès OpenId via Github ou Google.
 
 track.startup.title=Startup et entreprenariat
 msgSpeaker=Votre message

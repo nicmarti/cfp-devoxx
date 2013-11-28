@@ -64,7 +64,7 @@ GET     /cfpadmin/proposal/:proposalId/score        controllers.CFPAdmin.showVot
 GET     /cfpadmin/speaker/:email                    controllers.CFPAdmin.showSpeaker(email:String)
 GET     /cfpadmin/leaderboard                       controllers.CFPAdmin.leaderBoard
 
-GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.png")
+GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.ico")
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
