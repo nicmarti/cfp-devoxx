@@ -338,7 +338,6 @@ object Authentication extends Controller {
 
   def callbackGoogle = Action {
     implicit request =>
-      println("request callbackGoogle")
       oauthForm.bindFromRequest.fold(invalidForm => {
         BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid form")
       }, validForm => {
@@ -357,7 +356,6 @@ object Authentication extends Controller {
                       result.status match {
                         case 200 => {
                           val b = result.body
-                          println("body received from google " + b)
                           val googleToken = Json.parse(result.body).as[GoogleToken]
                           Redirect(routes.Authentication.createFromGoogle).withSession("google_token" -> googleToken.access_token)
                         }
