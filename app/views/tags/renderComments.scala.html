@@ -2,7 +2,7 @@
 
 @comments.map { c =>
 <div class="media">
-    @tags.renderGravatar(c.author)
+   <span class="pull-left">@tags.renderGravatar(c.author)</span>
     <div class="media-body">
        <small>Posted @library.FormatDate.ellapsed(c.eventDate)</small>
        <span class="msgSpeaker">@Html(c.msg.replaceAll("script",".script").replaceAll("\n","<br>"))</span>

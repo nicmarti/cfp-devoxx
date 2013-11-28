@@ -22,7 +22,7 @@
 
         <div class="col-md-12 panel panel-default">
             <div class="panel-heading">
-                <h3><i class="icon-reply-all"></i> Your todo list </h3>
+                <h3><i class="icon-ok-circle"></i> Your todo list </h3>
             </div>
             <div class="panel-body">
                 <table class="table table-bordered table-strippted">
@@ -30,6 +30,7 @@
                         <tr>
                             <th>Title</th>
                             <th>Track</th>
+                            <th>Speaker</th>
                             <th>Type of talk</th>
                             <th>Action</th>
                         </tr>
@@ -42,6 +43,15 @@
                             </td>
                             <td>
                             @Messages(proposal.track.label)
+                            </td>
+                            <td>
+                            @tags.renderGravatar(proposal.mainSpeaker)
+                            @proposal.secondarySpeaker.map{sc=>
+                                @tags.renderGravatar(sc)
+                            }
+                            @proposal.otherSpeakers.map{s=>
+                                @tags.renderGravatar(s)
+                            }
                             </td>
                             <td>@Messages(proposal.talkType.id)</td>
                             <td>

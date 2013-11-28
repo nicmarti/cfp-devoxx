@@ -1,4 +1,4 @@
-@(proposal: models.Proposal, score: Int, totalVotesCast:Long, totalVotes: Long)(implicit flash:Flash)
+@(proposal: models.Proposal, score: Int, totalVotesCast:Long, totalVotes: Long, allVotes:List[(String,Double)])(implicit flash:Flash)
 
 @main("[CFP] Votes for " + proposal.id.get + "/" + proposal.title) {
 <div class="row">
@@ -6,7 +6,6 @@
         <div class="panel-heading">
             <h3><i class="icon-stackexchange"></i> Proposal @proposal.title</h3>
         </div>
-
 
         @if(flash.get("error").isDefined) {
             <div class="alert alert-danger alert-dismissable col-md-12">
@@ -19,12 +18,33 @@
             @flash.get("success").get
             </div>
         }
+    </div>
+        <div class="col-md-4 panel-body">
+            <h3>Current score</h3>
+                <p>Total score : @score</p>
+                <p>Average score : @(score.toDouble./(totalVotesCast.toDouble))</p>
+                <p>Total votes cast : @totalVotesCast</p>
+                <p>Total votes : @totalVotes</p>
+        </div>
+        <div class="col-md-8 panel-body">
+            <h3>All votes</h3>
+            <div class="media">
+            @allVotes.sortBy(_._2).map{case(author,vote)=>
+                <div class="media-body">
+                    <span class="pull-left">
+                                @tags.renderGravatar(author)
+                                </span>
 
-
+                        voted @tags.renderVote(vote.toInt)
+                </div>
+            }
+            </div>
+        </div>
+</div>
+<div class="row">
+    <div class="col-md-12 panel panel-default">
         <div class="panel-body">
-            <p>Current score : @score</p>
-            <p>Total votes cast : @totalVotesCast</p>
-            <p>Total votes : @totalVotes</p>
+            <a class="btn btn-primary" accesskey="n" href="@routes.CFPAdmin.index()">Continue and evaluate the next talk bitch !</a>
         </div>
     </div>
 </div>

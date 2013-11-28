@@ -109,4 +109,9 @@ object Review {
       client.zcount(s"Proposals:Votes:${proposalId}",1,10)
   }
 
+  def allVotesFor(proposalId:String):List[(String,Double)]=Redis.pool.withClient{
+    implicit client=>
+      client.zrevrangeByScoreWithScores(s"Proposals:Votes:${proposalId}",10,0).toList
+  }
+
 }
