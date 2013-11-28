@@ -57,14 +57,13 @@ POST    /bug/new                    controllers.Application.submitIssue()
 GET     /cfpadmin/                 controllers.CFPAdmin.index()
 GET     /cfpadmin                  controllers.CFPAdmin.index()
 GET     /cfpadmin/proposal/:proposalId  controllers.CFPAdmin.openForReview(proposalId:String)
-POST    /cfpadmin/proposal/:proposalId/messageToSpeaker controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
-POST    /cfpadmin/proposal/:proposalId/postInternak controllers.CFPAdmin.postInternalMessage(proposalId:String)
+POST    /cfpadmin/proposal/:proposalId/msgToSpeaker controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
+POST    /cfpadmin/proposal/:proposalId/postInternal controllers.CFPAdmin.postInternalMessage(proposalId:String)
 GET     /cfpadmin/proposal/:proposalId/vote         controllers.CFPAdmin.voteForProposal(proposalId:String)
 GET     /cfpadmin/proposal/:proposalId/score        controllers.CFPAdmin.showVotesForProposal(proposalId:String)
+GET     /cfpadmin/speaker/:email                    controllers.CFPAdmin.showSpeaker(email:String)
 
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.png")
-
-GET /123test    controllers.CFPAdmin.updateSpeaker()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

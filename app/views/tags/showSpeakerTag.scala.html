@@ -1,0 +1,5 @@
+@(speakerEmail:String)
+
+@models.SpeakerHelper.findByEmail(speakerEmail).map{speaker=>
+<a href="@routes.CFPAdmin.showSpeaker(speakerEmail)">@speaker.name</a>
+}.getOrElse("Speaker not found")

@@ -2,12 +2,12 @@
 
 @comments.map { c =>
 <div class="media">
-    <a class="pull-left" href="#">
+    <a class="pull-left" href="@routes.CFPAdmin.showSpeaker(c.author)">
         <img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(c.author)?s=35" alt="@c.author" title="Message fro @c.author"/>
     </a>
     <div class="media-body">
        <small>Posted @library.FormatDate.ellapsed(c.eventDate)</small>
-       <span class="msgSpeaker">@c.msg</span>
+       <span class="msgSpeaker">@Html(c.msg.replaceAll("script",".script").replaceAll("\n","<br>"))</span>
 
     </div>
 </div>

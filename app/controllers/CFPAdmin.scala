@@ -1,10 +1,13 @@
 package controllers
 
 import play.api.mvc._
-import models.{Proposal, Event, Review, Comment}
+import models._
 import play.api.data._
 import play.api.data.Forms._
 import library.{SendMessageInternal, SendMessageToSpeaker, ZapActor}
+import library.SendMessageInternal
+import library.SendMessageToSpeaker
+import scala.Some
 
 /**
  * The backoffice controller for the CFP technical commitee.
@@ -42,7 +45,7 @@ object CFPAdmin extends Controller with Secured {
           val score = Review.currentScore(proposalId)
           val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
           val countVotes = Review.totalVoteFor(proposalId)
-          Ok(views.html.CFPAdmin.showVotesForProposal(proposal, score, countVotesCast,countVotes))
+          Ok(views.html.CFPAdmin.showVotesForProposal(proposal, score, countVotesCast, countVotes))
         }
         case None => NotFound("Proposal not found").as("text/html")
       }
@@ -113,16 +116,13 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
-
-  def updateSpeaker()=Action{
-   import models._
-    Webuser.allSpeakers.map{w=>
-      println(s"Setting ${w.cleanName}")
-     SpeakerHelper.updateName(w.email,w.cleanName)
-    }
-    Ok(s"Updated ${Webuser.allSpeakers.size} speakers")
+  def showSpeaker(speakerEmail: String) = IsMemberOf("cfp") {
+    email => implicit request =>
+      SpeakerHelper.findByEmail(speakerEmail) match {
+        case Some(speaker) => Ok(views.html.CFPAdmin.showSpeaker(speaker))
+        case None => NotFound("Speaker not found")
+      }
   }
-
 }
 
 
