@@ -68,10 +68,9 @@ object SpeakerHelper {
 
   def findByEmail(email: String): Option[Speaker] = Redis.pool.withClient {
     client =>
-      println("find by email "+email)
       client.hget("Speaker", email).flatMap {
         json: String =>
-          Json.parse(json).asOpt[Speaker]
+          Json.parse(json).validate[Speaker].fold(invalid=>{ play.Logger.error("Speaker error. "+ZapJson.showError(invalid));None},validSpeaker=>Some(validSpeaker))
       }
   }
 

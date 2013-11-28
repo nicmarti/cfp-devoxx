@@ -18,7 +18,7 @@
                                 <td>@models.SpeakerHelper.findByEmail(proposal.mainSpeaker).map{speaker=>
                                     @tags.showSpeaker(speaker)
                                 }.getOrElse{
-                                    <small>@proposal.mainSpeaker</small>
+                                    <small>@proposal.mainSpeaker</small>...
                                 }
                                 </td>
                             </tr>

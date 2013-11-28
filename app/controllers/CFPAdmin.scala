@@ -114,7 +114,13 @@ object CFPAdmin extends Controller with Secured {
   }
 
 
-
+  def updateSpeaker()=Action{
+   import models._
+    Webuser.allSpeakers.map{w=>
+     SpeakerHelper.updateName(w.email,w.cleanName)
+    }
+    Ok(s"Updated ${Webuser.allSpeakers.size} speakers")
+  }
 
 }
 
