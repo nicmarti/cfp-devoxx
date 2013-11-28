@@ -259,3 +259,4 @@ profile.password.help=Nous ne souhaitons pas stocker l''un de vos mots-de-passe,
 
 track.startup.title=Startup et entreprenariat
 msgSpeaker=Votre message
+freepass.forIdiots=L''entrée est offerte uniquement si votre présentation est sélectionnée par le comité.

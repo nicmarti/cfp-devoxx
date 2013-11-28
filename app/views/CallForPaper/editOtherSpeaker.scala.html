@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <h3>@Messages("other.speakers")</h3>
 @helper.form(action=routes.CallForPaper.saveOtherSpeakers(proposal.id.get)){
             <table class="table table-bordered">
@@ -62,13 +62,18 @@
                     </tr>
                     <tr>
                         <td>
-                            @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption,  'class->"form-control", 'multiple->"true" )
+                            @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption,  'class->"form-control-devoxx", 'multiple->"true" )
                         </td>
                         <td>
                             <span class="label label-warning">@Messages("no.freepass")</span>
                         </td>
                     </tr>
                 </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"><small>@Messages("freepass.forIdiots")</small></td>
+                        </tr>
+                    </tfoot>
             </table>
 
             @if(flash.get("error").isDefined) {
