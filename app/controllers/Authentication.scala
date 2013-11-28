@@ -118,7 +118,7 @@ object Authentication extends Controller {
       Play.current.configuration.getString("github.client_id").map {
         clientId: String =>
           val redirectUri = routes.Authentication.callbackGithub.absoluteURL()
-          val gitUrl = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&scope=user&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
+          val gitUrl = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
           Redirect(gitUrl)
       }.getOrElse {
         InternalServerError("github.client_id is not set in application.conf")
