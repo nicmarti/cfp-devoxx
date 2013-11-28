@@ -32,7 +32,7 @@ import library.{ZapJson, Redis}
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
+case class Speaker(email: String, name:Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String])
 
 object SpeakerHelper {
@@ -40,11 +40,11 @@ object SpeakerHelper {
 
   def createSpeaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
-    Speaker(email, name, bio, lang, twitter, avatarUrl, company, blog)
+    Speaker(email, Option(name), bio, lang, twitter, avatarUrl, company, blog)
   }
 
   def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
-    Some(s.email, s.name, s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
+    Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -62,7 +62,7 @@ object SpeakerHelper {
 
   def updateName(email:String, newName:String) = {
     findByEmail(email).map{ speaker=>
-      SpeakerHelper.update(email, speaker.copy(name=newName))
+      SpeakerHelper.update(email, speaker.copy(name=Option(newName)))
     }
   }
 
