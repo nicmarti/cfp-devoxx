@@ -274,7 +274,7 @@ object Authentication extends Controller {
         validForm => {
           Webuser.saveNewSpeakerEmailNotValidated(validForm)
           Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmail(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
-          Created(views.html.Authentication.created(validForm.email))
+          Ok(views.html.Authentication.created(validForm.email))
         }
       )
   }

@@ -1,14 +1,18 @@
-@(enail:String, password:String)
+@(email:String, password:String)(implicit flash:Flash, lang:Lang)
 
-
-@main("Profil importé") {
+@main("Profil") {
     <div class="row">
         <div class="col-md-12 page-header">
-            <h3>Profil importé</h3>
+            <h3>@Messages("profile.imported")</h3>
         </div>
         <div class="col-md-12">
-            <p>Votre profil a été importé avec succès. Vous pouvez modifier à tout moment votre bio, vos informations personnelles ou l'adresse de votre blog.</p>
-            <p><a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-default">Continuer</a> </p>
+            <p>@Messages("profile.imported.txt")</p>
+            <p>@Messages("profile.username") : @email</p>
+            <p>@Messages("profile.password") : @password</p>
+            <p><a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-default">@Messages("profile.continue")</a> </p>
+
+            <p></p>
+            <p><small>@Messages("profile.password.help")</small></p>
         </div>
     </div>
 }

@@ -63,7 +63,7 @@ error.pattern=Doit respecter {0}
 email.alreadyexists=Cette adresse email est déjà enregistrée dans notre base.
 forget.password.confirm=Un courrier électronique a été envoyé à l''adresse spécifiée.
 register.withopenid=Inscrivez-vous avec votre profil social
-cfp.closed=Le service est actuellement fermé.
+cfp.closed=Le CFP de Devoxx France est fermé.
 avatarUrl=URL de votre photo
 
 # CFP Home page
@@ -74,7 +74,7 @@ profile.gravatar=Téléchargez et éditez directement votre photo sur
 profile.gravatar2=pour votre adresse email
 edit.profile=Editer votre profil
 edit.name=Editer votre nom
-cfp.closer=Le CFP de Devoxx France est ferm\u00E9.
+
 url.photo=URL de votre photo
 blog.website=Blog ou site internet
 new.proposal=Nouvelle proposition
@@ -109,6 +109,7 @@ privateMessage=Message privé pour le comité de sélection (program@devoxx.fr)
 privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Vous pouvez aussi inclure l'URL vers vos diapositives si vous le souhaitez.
 sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
 sponsorTalk.help=Les sponsors Silver et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée.
+sponsorTalk.help.title=Talk sponsor
 sponsor.name.plz=Merci d''indiquer le nom de votre société dans le champ "Message privé pour le comité"
 sponsorTalk.checkbox=Présentation sponsor/exposant
 helpAndTips=Aide et conseils
@@ -168,7 +169,6 @@ track.web.title=Web, HTML5
 track.web.desc=Les frameworks Web, TML5, CSS3, JavaScript, les libraries et les outils qui vous permettent de construire des applications webs innovantes.
 track.mobile.title=Mobile
 track.mobile.desc=Le développement et les outils pour le mobile et les tablettes.
-tracl.startup.title=Startup et entreprenariat
 track.startup.desc=Lean startup, UX Design, entreprendre et lancer de nouveaux projets.
 track.devops.title=Agilité et DevOps
 track.devops.desc=Lean, Kanban, intégration continue, déploiement, réseau et sécurité.
@@ -197,7 +197,7 @@ signup.txt2=Un email de validation est envoyé à l'adresse indiquée. Votre pro
 # edit profile
 editProfile.title=Votre profil
 editProfile.help=Prenez le temps de compléter votre profil. Ce contenu sera ensuite publié sur le site si vous êtes sélectionné comme orateur, ainsi que dans le programme de la conférence :
-editProfle.save=Enregistrer
+editProfile.save=Enregistrer
 
 # Home
 table.pres.title=Titre
@@ -250,3 +250,12 @@ tia=ToolsInAction
 bof=BOF
 
 tbl.submitted=Envoyé
+profile.imported=Profil importé
+profile.imported.txt=Votre profil a été importé avec succès. Vous pouvez modifier à tout moment votre bio, vos informations personnelles ou l'adresse de votre blog.
+profile.continue=Continuer
+profile.username=Votre identifiant
+profile.password=Votre code d''accès
+profile.password.help=Nous ne souhaitons pas stocker l''un de vos mot-de-passe, et nous préférons en générer un pour vous. Nous vous encourageons à utiliser l''accès OpenId via Github ou Google.
+
+track.startup.title=Startup et entreprenariat
+msgSpeaker=Votre message

@@ -14,7 +14,7 @@ signup.long=Register as a new Devoxx France speaker
 menu.blog=Website DevoxxFR
 index.method1=Sign-in
 index.method2=Authenticate with OpenID
-index.txt2=Use one of the following social service, this is simpler and you won't have to remember another password. If your profile does not yet exist, it will be created automatically.
+index.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
 company=Your company
 bio=A short bio
 twitter=Your twitter handle
@@ -28,16 +28,16 @@ register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget password?
 avatarUrl=URL to your latest profile photo
-home.txt2=Use one of the following social service, this is simpler and you won't have to remember another password. If your profile does not yet exist, it will be created automatically.
+home.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
 format.boolean=
 
 # CFP Home page
 your.profile=Your profile
 your.submission=Your proposals
-no.proposal=You haven't submitted any proposal yet.
+no.proposal=You haven''t submitted any proposal yet.
 profile.gravatar=Your avatar URL is not set, so we will use your
 profile.gravatar2=for your email
-url.photo=URL to your profile's picture
+url.photo=URL to your profile''s picture
 blog.website=Blog or website
 edit.profile=Edit your profile
 edit.name=Edit your name
@@ -62,9 +62,9 @@ title.help=Think carefully and try to create a title that is descriptive enough.
 summary=Summary
 summary.help=Describe your proposal, you can use Markdown syntax. We use the txtmark library.
 lang=Main language
-lang.help=75% of Devoxx France's talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
+lang.help=75% of Devoxx France''s talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
 mainSpeaker=Main speaker
-mainSpeaker.help=The main speaker. You can add more speakers once the proposal is creatd. We offer a 3-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action.
+mainSpeaker.help=The main speaker. You can add more speakers once the proposal is created. We offer a 3-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action.
 otherSpeakers=2nd speaker
 talkType=Type of talk
 audienceLevel=Audience level
@@ -123,7 +123,7 @@ cfp.closing.date=Sunday, 2nd of February 2014, midnight
 cfp.program=Program announced :
 cfp.program.date= february/march 2014
 video.title=Videos
-video.tag=Review Devoxx France 2013's videos for free on
+video.tag=Review Devoxx France 2013''s videos for free on
 theme.title=Tracks
 theme.track=List of tracks for Devoxx France 2014:
 track.title=Title
@@ -144,7 +144,7 @@ track.bigdata.title=Cloud, Big Data and NoSQL
 track.bigdata.desc=Capture, curation, storage, search, sharing, transfer, analysis and visualization.
 
 # confirm import
-confirm.import.title=Create your Speaker's profile
+confirm.import.title=Create your Speaker''s profile
 confirm.import.save=Save
 avatarUrl.isEmpty=URL to your picture is empty, so we will try to use your
 avatarUrl.defined=Your photo (recommended width 150px)
@@ -189,7 +189,7 @@ talk.draft=Proposal status set to Draft
 talk.submitted=Your talk was successfully submitted
 
 #other speaker
-other.speakers=Presentation's speakers
+other.speakers=Presentation''s speakers
 btn.enregistrer=Save
 cancel.goBackHome=Cancel
 proposal.id=Id
@@ -201,7 +201,7 @@ proposal.otherSpeakers=Other speakers
 proposal.buyPass=3 Days Combi pass included?
 freepass=Yes
 no.freepass=No
-speakers.updated=Speakers's list updated
+speakers.updated=Speakers''s list updated
 noOther.speaker=---- No other speaker ----
 
 # CFPadmin
@@ -217,3 +217,14 @@ tia=ToolsInAction
 bof=BOF
 
 tbl.submitted=Submitted
+profile.imported=Profile imported successfully
+profile.imported.txt=Your profile has been successfully imported. You can change at any time your bio, your personal information or the address of your blog on the CFP Home.
+profile.continue=Continue
+profile.username=Your username:
+profile.password=Your password (cannot be change):
+profile.password.help=We do not want to store one of your password. We prefer to generate one for you. We encourage you to use the OpenID access via Github or Google.
+
+error.real=Real number value expected
+constraint.required=Required
+msg=Your message
+select.secondarySpeaker=Select a speaker
