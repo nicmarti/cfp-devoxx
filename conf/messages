@@ -69,6 +69,7 @@ otherSpeakers=2nd speaker
 talkType=Type of talk
 audienceLevel=Audience level
 privateMessage=Private message for the program comitee
+privateMessage.help=Write here any important details about your presentation, that the program comitee should know. You can also set here the URL to your slides, or any other important details.
 sponsorTalk=Is this a sponsor/exhibitor presentation?
 
 sponsorTalk.help.title=Sponsor talk

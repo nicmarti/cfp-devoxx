@@ -106,6 +106,7 @@ talkType.help=blabla
 talkType=Type de présentation
 audienceLevel=Niveau de la présentation
 privateMessage=Message privé pour le comité de sélection (program@devoxx.fr)
+privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Vous pouvez aussi inclure l'URL vers vos diapositives si vous le souhaitez.
 sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
 sponsorTalk.help=Les sponsors Silver et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée.
 sponsor.name.plz=Merci d''indiquer le nom de votre société dans le champ "Message privé pour le comité"
