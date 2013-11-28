@@ -160,7 +160,7 @@ object CallForPaper extends Controller with Secured {
             Proposal.allMyDraftProposals(email).find(_.id.get == id.get) match {
               case Some(existingProposal) => {
                 // This is an edit operation
-                Proposal.save(email, validProposal.copy(id = id) , ProposalState.DRAFT)
+                Proposal.save(email, validProposal.copy(id = id, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers) , ProposalState.DRAFT)
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               }
               case other => {
