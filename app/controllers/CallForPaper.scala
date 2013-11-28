@@ -96,7 +96,7 @@ object CallForPaper extends Controller with Secured {
   def saveProfile = IsAuthenticated {
     email => implicit request =>
       speakerForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)),
+        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)).flashing("error"->"Invalid form, please check and correct errors. "),
         validForm => {
           if (validForm.email != email) {
             Unauthorized("You can't do that. Come-on, this is not a JSF app my friend.")

@@ -23,6 +23,13 @@
           </div>
         }
 
+        @if(speakerForm.hasErrors){
+          <div class="alert alert-danger alert-dismissable">
+              <strong>Error :</strong>
+              @speakerForm.errors
+          </div>
+        }
+
         @helper.form(action = routes.CallForPaper.saveProfile) {
             <input type="hidden" name="email" value="@speakerForm("email").value.get">
             @helper.inputText(speakerForm("avatarUrl"), 'size->80)
@@ -30,7 +37,7 @@
             @helper.textarea(speakerForm("bio"), 'cols -> 70, 'rows -> 5)
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
-
+            <input type="hidden" name="name" value="@speakerForm("name").value">
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
     </div>
