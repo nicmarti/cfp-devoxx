@@ -215,7 +215,7 @@ total.draft={0} proposition(s)
 you.speaker=Vous
 invalid.proposal=Proposition non trouvée ou dont vous n''êtes pas le propriétaire
 not.yours=Hmmm ce n''est pas votre proposition... vous essayez de bidouiller?
-saved=Proposition sauvegardée. N''oubliez pas de soumettre à nouveau ce sujet pour qu''il soit revu par l''équipe
+saved=Proposition sauvegardée. N''oubliez pas de soumettre ce sujet pour qu''il soit revu par l''équipe
 invalid.form=Il y a une erreur dans votre formulaire. Merci de le corriger et de le soumettre à nouveau.
 talk.deleted=Proposition de sujet effacée.
 talk.deleted2=Annuler l''effacement de la proposition
@@ -247,3 +247,5 @@ conf=Conference
 lab=Labs
 tia=ToolsInAction
 bof=BOF
+
+tbl.submitted=Envoyé

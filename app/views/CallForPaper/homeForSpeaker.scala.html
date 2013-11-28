@@ -174,9 +174,9 @@
                             </td>
                             <td>
                                 @if(prop.state!=ProposalState.SUBMITTED){
-                                    <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-success" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
+                                    <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
                                 } else {
-                                    -
+                                    <small><i class="icon-ok">@Messages("tbl.submitted")</i></small>
                                 }
                             </td>
                             <td>

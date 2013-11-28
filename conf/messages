@@ -214,3 +214,5 @@ conf=Conference
 lab=Labs
 tia=ToolsInAction
 bof=BOF
+
+tbl.submitted=Submitted
