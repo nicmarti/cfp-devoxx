@@ -25,6 +25,7 @@
                 <h3><i class="icon-ok-circle"></i> Your todo list </h3>
             </div>
             <div class="panel-body">
+                @if(allProposalsForReview.nonEmpty){
                 <table class="table table-bordered table-strippted">
                     <thead>
                         <tr>
@@ -62,6 +63,10 @@
                     }
                     </tbody>
                 </table>
+                }else{
+                    <P>There is no new talks</P>
+                }
+                <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
             </div>
         </div>
 

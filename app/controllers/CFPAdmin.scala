@@ -124,6 +124,11 @@ object CFPAdmin extends Controller with Secured {
         case None => NotFound("Speaker not found")
       }
   }
+
+  def leaderBoard=IsMemberOf("cfp"){
+    email => implicit request=>
+      Ok(views.html.CFPAdmin.leaderBoard())
+  }
 }
 
 
