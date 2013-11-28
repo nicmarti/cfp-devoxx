@@ -124,6 +124,10 @@ trait Dress {
     def sdiffstore(newKey: String, key1: String, key2: String) = {
       j.sdiffstore(newKey, key1, key2)
     }
+
+    def scard(key:String):Long={
+      j.scard(key).longValue()
+    }
   }
 
   def up(j: Jedis) = new Wrap(j)

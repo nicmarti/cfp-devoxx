@@ -136,6 +136,14 @@ object Webuser {
     allSpeakersAsOption.+:(DEFAULT_LABEL) // sort by name
   }
 
+  def allCFPAdmin(): List[Webuser] = Redis.pool.withClient {
+    client =>
+      val allSpeakerEmails = client.smembers("Webuser:cfp").toList
+      client.hmget("Webuser", allSpeakerEmails).flatMap {
+        js: String =>
+          Json.parse(js).asOpt[Webuser]
+      }
+  }
   val DEFAULT_LABEL = ("", play.api.i18n.Messages("noOther.speaker"))
 }
 

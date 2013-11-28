@@ -92,26 +92,71 @@ object Review {
       history
   }
 
-  def currentScore(proposalId:String):Int=Redis.pool.withClient{
-    implicit client=>
-      val allScores = client.zrevrangeByScoreWithScores(s"Proposals:Votes:${proposalId}",10,0).toList
-      allScores.foldRight(0)((scoreAndReview, accumulated:Int) => accumulated + scoreAndReview._2.toInt )
+  def currentScore(proposalId: String): Int = Redis.pool.withClient {
+    implicit client =>
+      val allScores = client.zrevrangeByScoreWithScores(s"Proposals:Votes:${proposalId}", 10, 0).toList
+      allScores.foldRight(0)((scoreAndReview, accumulated: Int) => accumulated + scoreAndReview._2.toInt)
   }
 
-  def totalVoteFor(proposalId:String):Long=Redis.pool.withClient{
-    implicit client=>
-      client.zcount(s"Proposals:Votes:${proposalId}",0,10) // how many votes between 0 and 10 ?
+  def totalVoteFor(proposalId: String): Long = Redis.pool.withClient {
+    implicit client =>
+      client.zcount(s"Proposals:Votes:${proposalId}", 0, 10) // how many votes between 0 and 10 ?
   }
 
   // If we remove those who voted "0" for a talk, how many votes do we have?
-  def totalVoteCastFor(proposalId:String):Long=Redis.pool.withClient{
-    implicit client=>
-      client.zcount(s"Proposals:Votes:${proposalId}",1,10)
+  def totalVoteCastFor(proposalId: String): Long = Redis.pool.withClient {
+    implicit client =>
+      client.zcount(s"Proposals:Votes:${proposalId}", 1, 10)
   }
 
-  def allVotesFor(proposalId:String):List[(String,Double)]=Redis.pool.withClient{
-    implicit client=>
-      client.zrevrangeByScoreWithScores(s"Proposals:Votes:${proposalId}",10,0).toList
+  def allVotesFor(proposalId: String): List[(String, Double)] = Redis.pool.withClient {
+    implicit client =>
+      client.zrevrangeByScoreWithScores(s"Proposals:Votes:${proposalId}", 10, 0).toList
   }
+
+  type VotesPerProposal = (String, Long)
+
+  def allProposalsAndReviews: List[VotesPerProposal] = Redis.pool.withClient {
+    implicit client =>
+      val totalPerProposal = client.hkeys("Proposals").toList.map {
+        proposalId =>
+          (proposalId, client.scard(s"Proposals:Reviewed:ByProposal:${proposalId}"))
+      }
+      totalPerProposal
+  }
+
+  def countAll(): Long = {
+    val totalPerProposal = allProposalsAndReviews
+    totalPerProposal.map(_._2).sum // total reviewed
+  }
+
+  def countWithNoVotes(): Long = {
+    val totalPerProposal = allProposalsAndReviews.filter(_._2 == 0)
+    totalPerProposal.size
+  }
+
+  def countWithVotes(): Long = {
+    val totalPerProposal = allProposalsAndReviews.filterNot(_._2 == 0)
+    totalPerProposal.size
+  }
+
+  def mostReviewed(): Option[VotesPerProposal] = {
+    val maybeBestProposal = allProposalsAndReviews.sortBy(_._2).reverse.headOption
+    maybeBestProposal
+  }
+
+  def bestReviewer(): (String, Long) = {
+    totalReviewedByCFPuser().sortBy(_._2).reverse.head
+  }
+
+  def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
+    implicit client =>
+      Webuser.allCFPAdmin().map {
+        webuser: Webuser =>
+          val email = webuser.email
+          (email, client.scard(s"Proposals:Reviewed:ByAuthor:$email"))
+      }
+  }
+
 
 }

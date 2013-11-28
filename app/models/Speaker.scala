@@ -86,8 +86,11 @@ object SpeakerHelper {
           val maybeSpeaker = Json.parse(jsString).asOpt[Speaker]
           maybeSpeaker
       }
-
   }
 
+  def countAll():Long = Redis.pool.withClient{
+    client=>
+      client.hlen("Speaker")
+  }
 }
 

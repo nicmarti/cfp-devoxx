@@ -312,4 +312,9 @@ object Proposal {
       case other => None
     }
   }
+
+  def countAll():Long=Redis.pool.withClient{
+    implicit client=>
+      client.hlen("Proposals")
+  }
 }

@@ -1,16 +1,53 @@
-@()
+@(totalSpeakers: Long, totalProposals:Long, totalReviews:Long, totalVotes:Long, totalNoVotes:Long, mostVoted:Option[Review.VotesPerProposal], bestReviewer:(String,Long))
 
 @main("DevoxxFR2014 Leaderboard") {
 <div class="row">
-        <div class="col-md-12 panel panel-default">
+    <div class="col-md-12">
+        <div class="panel panel-default">
             <div class="panel-heading">
-                <h3><i class="icon-trophy"></i> Leaderboard</h3>
+                <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
             </div>
 
             <div class="panel-body">
+                <div class="col-md-1">
+                    <h1>@totalSpeakers</h1>
+                    <small>speakers</small>
+                </div>
 
+                <div class="col-md-1">
+                    <h1>@totalProposals</h1>
+                    <small>proposals</small>
+                </div>
+
+                <div class="col-md-1">
+                    <h1>@totalReviews</h1>
+                    <small>reviews</small>
+                </div>
+
+                <div class="col-md-1">
+                    <h1>@totalVotes</h1>
+                    <small>proposals with vote</small>
+                </div>
+
+                <div class="col-md-1">
+                    <h1>@totalNoVotes</h1>
+                    <small>proposals with no vote</small>
+                </div>
+
+                @mostVoted.map{mv=>
+                <div class="col-md-2">
+                    <h1><a href="@routes.CFPAdmin.showVotesForProposal(mv._1)">@mv._1</a></h1>
+                    <small>most voted with @mv._2 reviews</small>
+                </div>
+                }
+
+                <div class="col-md-1">
+                    <h1>@tags.renderGravatar(bestReviewer._1)</h1>
+                    <small>@bestReviewer._2 talks reviewed.</small>
+                </div>
 
             </div>
         </div>
+    </div>
 </div>
 }

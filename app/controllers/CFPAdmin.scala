@@ -127,7 +127,14 @@ object CFPAdmin extends Controller with Secured {
 
   def leaderBoard=IsMemberOf("cfp"){
     email => implicit request=>
-      Ok(views.html.CFPAdmin.leaderBoard())
+      val totalSpeakers = SpeakerHelper.countAll()
+      val totalProposals = Proposal.countAll()
+      val totalVotes = Review.countAll()
+      val totalWithVotes = Review.countWithVotes()
+      val totalNoVotes   = Review.countWithNoVotes()
+      val maybeMostVoted   = Review.mostReviewed()
+      val bestReviewer = Review.bestReviewer()
+      Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
   }
 }
 

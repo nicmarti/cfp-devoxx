@@ -65,7 +65,7 @@ object Mails {
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
-    emailer.send(views.txt.Mails.sendWeCreatedAnAccountForYou(firstname, email, tempPassword).toString(), views.html.Mails.sendWeCreatedAnAccountForYou(firstname, email, tempPassword).toString)
+    emailer.send(views.txt.Mails.sendAccountCreated(firstname, email, tempPassword).toString(), views.html.Mails.sendAccountCreated(firstname, email, tempPassword).toString)
   }
 
   def sendValidateYourEmail(email: String, validationLink: String) = {
