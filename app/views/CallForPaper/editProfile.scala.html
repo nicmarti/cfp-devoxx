@@ -23,13 +23,6 @@
           </div>
         }
 
-        @if(speakerForm.hasErrors){
-          <div class="alert alert-danger alert-dismissable">
-              <strong>Error :</strong>
-              @speakerForm.errors
-          </div>
-        }
-
         @helper.form(action = routes.CallForPaper.saveProfile) {
             <input type="hidden" name="email" value="@speakerForm("email").value.get">
             @helper.inputText(speakerForm("avatarUrl"), 'size->80)

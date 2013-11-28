@@ -112,7 +112,7 @@ object Authentication extends Controller {
     implicit request =>
       Redirect(routes.Application.index).withNewSession
   }
-  
+
   def githubLogin = Action {
     implicit request =>
       Play.current.configuration.getString("github.client_id").map {
@@ -132,7 +132,7 @@ object Authentication extends Controller {
   def callbackGithub = Action {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid form")
+        BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
       }, validForm => {
         validForm match {
           case (code, state) if state == Crypto.sign("ok") => {
@@ -177,6 +177,16 @@ object Authentication extends Controller {
     implicit request =>
       Ok(request.session.get("access_token").getOrElse("No access token in your current session"))
   }
+
+  val importSpeakerForm = Form(tuple(
+    "firstName" -> nonEmptyText,
+    "lastName" -> nonEmptyText,
+    "bio" -> nonEmptyText,
+    "company" -> optional(text),
+    "twitter" -> optional(text),
+    "blog" -> optional(text),
+    "avatarUrl" -> optional(text)
+  ))
 
   val newWebuserForm: Form[Webuser] = Form(
     mapping(
@@ -224,18 +234,18 @@ object Authentication extends Controller {
               case 200 => {
                 val json = Json.parse(result.body)
                 val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
-                                        name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right) 
-                        	   yield (email, name))
+                                        name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
+                yield (email, name))
 
                 resultParse.fold(missingField =>
-                    Redirect(routes.Application.home()).flashing(
-		      "error" -> (List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString (" ")) ),
+                  Redirect(routes.Application.home()).flashing(
+                    "error" -> (List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" "))),
                   validFields => {
                     validFields match {
                       case (emailS, nameS) =>
                         /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
                         val bioS = json.\("bio").asOpt[String].getOrElse("")
-                        val avatarUrl = Some("http://www.gravatar.com/avatar/"+DigestUtils.md5Hex(emailS))
+                        val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
                         val company = json.\("company").asOpt[String]
                         val blog = json.\("blog").asOpt[String]
 
@@ -250,9 +260,8 @@ object Authentication extends Controller {
                           } else {
                             (nameS, nameS)
                           }
-                          val w = Webuser(emailS, firstName, lastName, RandomStringUtils.randomAlphanumeric(7), "speaker")
-                          val s = SpeakerHelper.createSpeaker(emailS, w.cleanName, bioS, lang, None, avatarUrl, company, blog)
-                          Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
+                          val defaultValues = (firstName, lastName, bioS, company, None, blog, avatarUrl)
+                          Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues))).withSession("tmpEmail" -> emailS)
                         }
                     }
                   })
@@ -300,23 +309,36 @@ object Authentication extends Controller {
 
   def validateImportedSpeaker = Action {
     implicit request =>
-      newWebuserForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm, CallForPaper.speakerForm.bindFromRequest)).flashing("error"->"Please check your profile."),
-        validWebuser => {
-          CallForPaper.speakerForm.bindFromRequest.fold(
-            invalidForm2 => {
-              play.Logger.error("validate import" +invalidForm2)
-              BadRequest(views.html.Authentication.confirmImport(newWebuserForm.bindFromRequest, invalidForm2)).flashing("error"->"Please check your profile.")
-            },
-            validSpeakerForm => {
+
+      request.session.get("tmpEmail") match {
+        case None => Redirect(routes.Application.index()).flashing("error" -> "Unable to import your social profile, maybe your email is not shared for OpenID client on Github or Google? Check your security settings on github or google, and try again.")
+        case Some(e) => {
+          importSpeakerForm.bindFromRequest.fold(
+            invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm)).flashing("error" -> "Please check your profile, invalid webuser."),
+            validFormData => {
+              val firstName = validFormData._1
+              val lastName = validFormData._2
+              val bio = validFormData._3
+              val company = validFormData._4
+              val twitter = validFormData._5
+              val blog = validFormData._6
+              val avatarUrl = validFormData._7
+
+              val validWebuser = Webuser.createSpeaker(e, firstName, lastName)
+
               Webuser.validateEmailForSpeaker(validWebuser)
-              SpeakerHelper.save(validSpeakerForm)
-              SpeakerHelper.updateName(validWebuser.email, validWebuser.cleanName)
+
+              val lang = request.headers.get("Accept-Language")
+              val newSpeaker = SpeakerHelper.createSpeaker(e, validWebuser.cleanName, bio, lang, twitter, avatarUrl, company, blog)
+              SpeakerHelper.save(newSpeaker)
+
               Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("email" -> validWebuser.email)
             }
           )
+
         }
-      )
+      }
+
   }
 
 
@@ -339,7 +361,7 @@ object Authentication extends Controller {
   def callbackGoogle = Action {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid form")
+        BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
       }, validForm => {
         validForm match {
           case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
@@ -385,7 +407,7 @@ object Authentication extends Controller {
           // For Google+ profile
           //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
           val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").get()
-          val lang = request.headers.get("Accept-Language")
+
           Async {
             futureResult.map {
               result =>
@@ -405,11 +427,8 @@ object Authentication extends Controller {
                       w =>
                         Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
                     }.getOrElse {
-                      // Create a new one but ask for confirmation
-                      val w = Webuser(email, firstName.getOrElse("?"), lastName.getOrElse("?"), RandomStringUtils.randomAlphanumeric(7), "speaker")
-                      val s = SpeakerHelper.createSpeaker(email, w.cleanName, "", lang, None, photo, None, blog)
-
-                      Ok(views.html.Authentication.confirmImport(newWebuserForm.fill(w), CallForPaper.speakerForm.fill(s)))
+                      val defaultValues = (firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
+                      Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues))).withSession("tmpEmail" -> email)
                     }
                   }
                   case other => {
@@ -462,7 +481,7 @@ trait Secured {
       if (Webuser.isMember(email, securityGroup)) {
         f(email)(request)
       } else {
-        Results.Forbidden("Sorry, you cannot access this resource. Your email is not a member of "+securityGroup)
+        Results.Forbidden("Sorry, you cannot access this resource. Your email is not a member of " + securityGroup)
       }
   }
 
