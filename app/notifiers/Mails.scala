@@ -61,8 +61,9 @@ object Mails {
 
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("Welcome to Devoxx France ! ")
+    emailer.setSubject("Welcome to the CFP for Devoxx France ! ")
     emailer.addFrom("program@devoxx.fr")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
     emailer.send(views.txt.Mails.sendAccountCreated(firstname, email, tempPassword).toString(), views.html.Mails.sendAccountCreated(firstname, email, tempPassword).toString)
@@ -82,7 +83,7 @@ object Mails {
 
   def sendBugReport(bugReport: Issue) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("New issue reported on CFP web site")
+    emailer.setSubject(s"New issue reported on CFP web site")
     emailer.addFrom("program@devoxx.fr")
     emailer.addCc(bugReport.reportedBy)
     emailer.addRecipient("nicolas.martignole@devoxx.fr")
@@ -95,7 +96,7 @@ object Mails {
 
   def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser:Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("[DevoxxFr2014] Message about your presentation ${proposal.title}")
+    emailer.setSubject(s"[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addCc("program@devoxx.fr")
     emailer.addRecipient(toWebuser.email)
@@ -110,7 +111,7 @@ object Mails {
 
   def sendMessageToComite(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("[DevoxxFr2014] Message about presentation ${proposal.title}")
+    emailer.setSubject(s"[DevoxxFr2014] Message about presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
