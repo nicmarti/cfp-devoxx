@@ -25,6 +25,7 @@ package models
 
 import play.api.libs.json.Json
 import library.{ZapJson, Redis}
+import play.api.libs.Crypto
 
 /**
  * Speaker
@@ -32,7 +33,7 @@ import library.{ZapJson, Redis}
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(email: String, name:Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
+case class Speaker(uuid:String, email: String, name:Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String])
 
 object SpeakerHelper {
@@ -40,7 +41,7 @@ object SpeakerHelper {
 
   def createSpeaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
-    Speaker(email, Option(name), bio, lang, twitter, avatarUrl, company, blog)
+    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog)
   }
 
   def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
@@ -50,33 +51,32 @@ object SpeakerHelper {
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
       val jsonSpeaker = Json.stringify(Json.toJson(speaker))
-      client.hset("Speaker", speaker.email, jsonSpeaker)
+      client.hset("Speaker", speaker.uuid, jsonSpeaker)
   }
 
-  def update(email: String, speaker: Speaker) = Redis.pool.withClient {
+  def update(uuid: String, speaker: Speaker) = Redis.pool.withClient {
     client =>
-      val cleanEmail = email.toLowerCase.trim
-      val jsonSpeaker = Json.stringify(Json.toJson(speaker))
-      client.hset("Speaker", cleanEmail, jsonSpeaker)
+      val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid=uuid)))
+      client.hset("Speaker", uuid, jsonSpeaker)
   }
 
-  def updateName(email:String, newName:String) = {
-    findByEmail(email).map{ speaker=>
-      SpeakerHelper.update(email, speaker.copy(name=Option(newName)))
+  def updateName(uuid:String, newName:String) = {
+    findByUUID(uuid).map{ speaker=>
+      SpeakerHelper.update(uuid, speaker.copy(name=Option(newName)))
     }
   }
 
-  def findByEmail(email: String): Option[Speaker] = Redis.pool.withClient {
+  def findByUUID(uuid: String): Option[Speaker] = Redis.pool.withClient {
     client =>
-      client.hget("Speaker", email).flatMap {
+      client.hget("Speaker", uuid).flatMap {
         json: String =>
           Json.parse(json).validate[Speaker].fold(invalid=>{ play.Logger.error("Speaker error. "+ZapJson.showError(invalid));None},validSpeaker=>Some(validSpeaker))
       }
   }
 
-  def delete(email: String) = Redis.pool.withClient {
+  def delete(uuid: String) = Redis.pool.withClient {
     client =>
-      client.hdel("Speaker", email)
+      client.hdel("Speaker", uuid)
   }
 
   def allSpeakers(): List[Speaker] = Redis.pool.withClient {

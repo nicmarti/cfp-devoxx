@@ -35,7 +35,7 @@ import java.util.Date
  * Author: @nmartignole
  * Created: 11/11/2013 09:39
  */
-case class Event(source: String, author: String, msg: String, date: Option[DateTime] = None)
+case class Event(source: String, uuid: String, msg: String, date: Option[DateTime] = None)
 
 object Event {
   implicit val eventFormat = Json.format[Event]

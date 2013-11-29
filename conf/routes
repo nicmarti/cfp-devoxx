@@ -19,7 +19,6 @@ POST    /newspeaker/validImported   controllers.Authentication.validateImportedS
 
 GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker
 GET     /cfp                        controllers.CallForPaper.homeForSpeaker
-GET     /cfp/find                   controllers.CallForPaper.findByEmail(email:String)
 GET     /cfp/profile                controllers.CallForPaper.editProfile
 POST    /cfp/profile                controllers.CallForPaper.saveProfile
 GET     /cfp/webuser/edit           controllers.CallForPaper.editCurrentWebuser
@@ -27,14 +26,16 @@ POST    /cfp/webuser/save           controllers.CallForPaper.saveCurrentWebuser
 
 # proposal
 GET     /cfp/proposal/new           controllers.CallForPaper.newProposal()
-POST    /cfp/proposal/preview       controllers.CallForPaper.createNewProposal(id:Option[String])
-POST    /cfp/proposal/save          controllers.CallForPaper.saveProposal(id:Option[String])
+POST    /cfp/proposal/preview       controllers.CallForPaper.previewProposal()
+POST    /cfp/proposal/save          controllers.CallForPaper.saveProposal()
+
 GET     /cfp/proposal/edit/:proposalId   controllers.CallForPaper.editProposal(proposalId:String)
 GET     /cfp/proposal/edit/:proposalId/speakers controllers.CallForPaper.editOtherSpeakers(proposalId:String)
 POST    /cfp/proposal/save/:proposalId/speakers controllers.CallForPaper.saveOtherSpeakers(proposalId:String)
 GET     /cfp/proposal/delete/:proposalId controllers.CallForPaper.deleteProposal(proposalId:String)
 GET     /cfp/proposal/undelete/:proposalId controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET     /cfp/proposal/submit/:proposalId controllers.CallForPaper.submitProposal(proposalId:String)
+GET     /cfp/comment/:proposalId        controllers.CallForPaper.comment(proposalId:String)
 
 # Password
 GET     /forget                     controllers.Authentication.forgetPassword
@@ -54,8 +55,8 @@ GET     /bug                        controllers.Application.bugReport
 POST    /bug/new                    controllers.Application.submitIssue()
 
 # CFP Admin
-GET     /cfpadmin/                 controllers.CFPAdmin.index()
-GET     /cfpadmin                  controllers.CFPAdmin.index()
+GET     /cfpadmin/                      controllers.CFPAdmin.index()
+GET     /cfpadmin                       controllers.CFPAdmin.index()
 GET     /cfpadmin/proposal/:proposalId  controllers.CFPAdmin.openForReview(proposalId:String)
 POST    /cfpadmin/proposal/:proposalId/msgToSpeaker controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
 POST    /cfpadmin/proposal/:proposalId/postInternal controllers.CFPAdmin.postInternalMessage(proposalId:String)

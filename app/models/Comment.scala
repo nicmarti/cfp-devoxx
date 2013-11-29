@@ -33,15 +33,15 @@ import play.api.libs.json.Json
  * Author: nicolas martignole
  * Created: 13/11/2013 14:37 created at devoxx
  */
-case class Comment(proposalId: String, author: String, msg: String, eventDate: Option[DateTime])
+case class Comment(proposalId: String, uuidAuthor: String, msg: String, eventDate: Option[DateTime])
 
 object Comment {
 
   implicit val commentFormat  = Json.format[Comment]
 
-  def saveCommentForSpeaker(proposalId: String, author: String, msg: String) = Redis.pool.withClient {
+  def saveCommentForSpeaker(proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {
     client =>
-      val comment = Comment(proposalId, author, msg, None)
+      val comment = Comment(proposalId, uuidAuthor, msg, None)
       client.zadd("Comments:ForSpeaker:" + proposalId, new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
   }
 
@@ -56,9 +56,9 @@ object Comment {
       comments
   }
 
-  def saveInternalComment(proposalId: String, author: String, msg: String) = Redis.pool.withClient {
+  def saveInternalComment(proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {
       client =>
-        val comment = Comment(proposalId, author, msg, None)
+        val comment = Comment(proposalId, uuidAuthor, msg, None)
         client.zadd("Comments:Internal:" + proposalId, new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
     }
 

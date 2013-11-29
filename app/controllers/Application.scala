@@ -27,6 +27,7 @@ import play.api.mvc._
 import library._
 import play.api.Play.current
 import play.api.i18n.Messages
+import play.api.libs.Crypto
 
 /**
  * Devoxx France Call For Paper main application.
@@ -36,11 +37,11 @@ object Application extends Controller {
 
   def home = Action {
     implicit request =>
-      session.get("email") match {
-        case Some(authenticatedEmail) => {
-          Webuser.findByEmail(authenticatedEmail) match {
+      session.get("uuid") match {
+        case Some(validUUID) => {
+          Webuser.findByUUID(validUUID) match {
             case Some(webuser) =>
-              Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> authenticatedEmail)
+              Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> validUUID)
             case None =>
               Ok(views.html.Application.home(Authentication.loginForm)).withNewSession.flashing("error" -> "Could not authenticate you automatically")
           }

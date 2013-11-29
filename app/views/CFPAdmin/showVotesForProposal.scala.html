@@ -1,6 +1,6 @@
 @(proposal: models.Proposal, score: Int, totalVotesCast:Long, totalVotes: Long, allVotes:List[(String,Double)])(implicit flash:Flash)
 
-@main("[CFP] Votes for " + proposal.id.get + "/" + proposal.title) {
+@main("[CFP] Votes for " + proposal.id + "/" + proposal.title) {
 <div class="row">
     <div class="col-md-12 panel panel-default">
         <div class="panel-heading">
@@ -45,7 +45,7 @@
     <div class="col-md-12 panel panel-default">
         <div class="panel-body">
             <a class="btn btn-primary" accesskey="n" href="@routes.CFPAdmin.index()">Continue and evaluate the next talk</a>
-            <a class="btn btn-warning" accesskey="n" href="@routes.CFPAdmin.openForReview(proposal.id.get)">Review or change your vote</a>
+            <a class="btn btn-warning" accesskey="n" href="@routes.CFPAdmin.openForReview(proposal.id)">Review or change your vote</a>
         </div>
     </div>
 </div>

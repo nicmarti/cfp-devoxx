@@ -2,7 +2,7 @@
 
 @import com.github.rjeschke.txtmark._
 
-@main("[CFP] " + proposal.id.get + "/" + proposal.title) {
+@main("[CFP] " + proposal.id + "/" + proposal.title) {
 <div class="row">
         <div class="col-md-12 panel panel-default">
             <div class="panel-heading">
@@ -102,7 +102,7 @@
             </div>
             <div class="panel-body">
                 <div class="btn-block">
-                @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id.get)) {
+                @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
                     <button name="vote" value="0" class="btn btn-lg btn-default">-</button>
                     @for(i<-1 to 10) {
                         <button name="vote" value="@i" class="btn btn-lg btn-success" accesskey="@i">@i</button>
@@ -129,7 +129,7 @@
                 <h4><i class="icon-comments-alt"></i>  Between Speakers and the Committee</h4>
             </div>
             <div class="panel-body">
-            @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id.get)) {
+            @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
                 @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
                 <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
             }
@@ -143,7 +143,7 @@
                 <h4><i class="icon-comments"></i> Internal discussion</h4>
             </div>
             <div class="panel-body">
-            @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id.get)) {
+            @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id)) {
                 @helper.textarea(msgInternalForm("msg"), 'class -> "form-control input-xs")
                 <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
             }

@@ -8,8 +8,8 @@
             <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>
 
             <div class="panel panel-default">
-                <div class="panel-heading"><p>@webuser.firstName @webuser.lastName</p><small>@webuser.email</small></small></div>
-                @if(Webuser.hasAccessToCFPAdmin(webuser.email)){
+                <div class="panel-heading"><p>@webuser.firstName @webuser.lastName</p><small>@webuser.email</small></div>
+                @if(Webuser.hasAccessToCFPAdmin(webuser.uuid)){
                     <a href="@routes.CFPAdmin.index()"><i class="icon-external-link"></i> Switch to CFPAdmin</a>
                 }
 
@@ -151,36 +151,33 @@
                     <tbody>
                     @myProposals.map { prop: Proposal =>
                         <tr>
-                            <td><a href="@routes.CallForPaper.editProposal(prop.id.getOrElse("?"))" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
+                            <td><a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
                             <td><span class="label label-info">@prop.state.code</span></td>
                             <td>
-                            @if(prop.mainSpeaker == webuser.email) {
-                                <span class="label label-info">@Messages("you.speaker")</span>
-                            } else {
-                                <span class="label label-info">@StringUtils.abbreviate(prop.mainSpeaker,30)</span>
+                            @tags.renderGravatar(prop.mainSpeaker)
+                            @prop.secondarySpeaker.map{secondarySpeakerUUID=>
+                                @tags.renderGravatar(secondarySpeakerUUID)
+                            }
+                            @prop.otherSpeakers.map{listOfUUID=>
+                                @listOfUUID.split(",").map{suid=>
+                                    @tags.renderGravatar(suid)
+                                }
                             }
 
-                            @prop.secondarySpeaker.map{secSpeaker=>
-                                <span class="label label-info">@StringUtils.abbreviate(secSpeaker,30)</span>
-                            }
-                            @prop.otherSpeakers.map { s =>
-                                 <span class="label label-info">@s</span>
-                            }
-                            <br>
-                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id.getOrElse("?"))" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")">@Messages("table.speaker.addremove")</a>
+                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")">@Messages("table.speaker.addremove")</a>
                             </td>
                             <td>
                                 <span class="label label-info">0</span>
                             </td>
                             <td>
                                 @if(prop.state!=ProposalState.SUBMITTED){
-                                    <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
+                                    <a href="@routes.CallForPaper.submitProposal(prop.id)#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
                                 } else {
                                     <small><i class="icon-ok">@Messages("tbl.submitted")</i></small>
                                 }
                             </td>
                             <td>
-                                <a href="@routes.CallForPaper.deleteProposal(prop.id.getOrElse("?"))" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
+                                <a href="@routes.CallForPaper.deleteProposal(prop.id)" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
                             </td>
                         </tr>
                     }

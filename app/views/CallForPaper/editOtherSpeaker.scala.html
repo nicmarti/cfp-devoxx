@@ -1,4 +1,4 @@
-@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(String,Option[String],List[String])])(implicit flash: Flash, lang: Lang)
+@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-md-12">
             <h3>@Messages("other.speakers")</h3>
-@helper.form(action=routes.CallForPaper.saveOtherSpeakers(proposal.id.get)){
+@helper.form(action=routes.CallForPaper.saveOtherSpeakers(proposal.id)){
             <table class="table table-bordered">
                 <tbody>
                     <tr>
@@ -18,7 +18,7 @@
                     </tr>
                     <tr>
                         <th>@Messages("proposal.id")</th>
-                        <td>@proposal.id.get</td>
+                        <td>@proposal.id</td>
                     </tr>
                     <tr>
                         <th>@Messages("talkType")</th>
@@ -38,7 +38,7 @@
                     <tbody>
                     <tr>
                         <td>
-                            @helper.select(field=speakerForm("mainSpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
+                            @currentUser
                         </td>
                         <td>
                         @if(Proposal.givesSpeakerFreeEntrance(proposal.talkType)) {
@@ -97,10 +97,6 @@
 
 <script type="text/javascript">
 $(document).ready ( function ($) {
-
-    $("#mainSpeaker").select2({
-        allowClear: false
-    });
 
     $("#secondarySpeaker").select2({
         placeholder: "@Messages("select.secondarySpeaker")",

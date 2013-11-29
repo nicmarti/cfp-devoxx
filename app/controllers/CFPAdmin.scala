@@ -4,7 +4,7 @@ import play.api.mvc._
 import models._
 import play.api.data._
 import play.api.data.Forms._
-import library.{SendMessageInternal, SendMessageToSpeaker, ZapActor}
+import library.ZapActor
 import library.SendMessageInternal
 import library.SendMessageToSpeaker
 import scala.Some
@@ -18,20 +18,20 @@ import scala.Some
 object CFPAdmin extends Controller with Secured {
 
   def index() = IsMemberOf("cfp") {
-    email => implicit request =>
+    uuid => implicit request =>
       val twentyEvents = Event.loadEvents(20)
-      val allProposalsForReview = Review.allProposalsNotReviewed(email)
+      val allProposalsForReview = Review.allProposalsNotReviewed(uuid)
       Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview))
   }
 
   val messageForm: Form[String] = Form("msg" -> nonEmptyText(maxLength = 1000))
 
   def openForReview(proposalId: String) = IsMemberOf("cfp") {
-    email => implicit request =>
+    uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
-          val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
-          val internalDiscussion = Comment.allInternalComments(proposal.id.get)
+          val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
+          val internalDiscussion = Comment.allInternalComments(proposal.id)
           Ok(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm))
         }
         case None => NotFound("Proposal not found").as("text/html")
@@ -39,13 +39,13 @@ object CFPAdmin extends Controller with Secured {
   }
 
   def showVotesForProposal(proposalId: String) = IsMemberOf("cfp") {
-    email => implicit request =>
+    uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           val score = Review.currentScore(proposalId)
           val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
           val countVotes = Review.totalVoteFor(proposalId)
-          val allVotes=Review.allVotesFor(proposalId)
+          val allVotes = Review.allVotesFor(proposalId)
           Ok(views.html.CFPAdmin.showVotesForProposal(proposal, score, countVotesCast, countVotes, allVotes))
         }
         case None => NotFound("Proposal not found").as("text/html")
@@ -53,18 +53,18 @@ object CFPAdmin extends Controller with Secured {
   }
 
   def sendMessageToSpeaker(proposalId: String) = IsMemberOf("cfp") {
-    email => implicit request =>
+    uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           messageForm.bindFromRequest.fold(
             hasErrors => {
-              val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
-              val internalDiscussion = Comment.allInternalComments(proposal.id.get)
+              val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
+              val internalDiscussion = Comment.allInternalComments(proposal.id)
               BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm))
             },
             validMsg => {
-              Comment.saveCommentForSpeaker(proposal.id.get, email, validMsg) // Save here so that it appears immediatly
-              ZapActor.actor ! SendMessageToSpeaker(email, proposal, validMsg)
+              Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
+              ZapActor.actor ! SendMessageToSpeaker(uuid, proposal, validMsg)
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to speaker.")
             }
           )
@@ -75,18 +75,18 @@ object CFPAdmin extends Controller with Secured {
 
   // Post an internal message that is visible only for program committe
   def postInternalMessage(proposalId: String) = IsMemberOf("cfp") {
-    email => implicit request =>
+    uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           messageForm.bindFromRequest.fold(
             hasErrors => {
-              val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
-              val internalDiscussion = Comment.allInternalComments(proposal.id.get)
+              val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
+              val internalDiscussion = Comment.allInternalComments(proposal.id)
               BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm))
             },
             validMsg => {
-              Comment.saveInternalComment(proposal.id.get, email, validMsg) // Save here so that it appears immediatly
-              ZapActor.actor ! SendMessageInternal(email, proposal, validMsg)
+              Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
+              ZapActor.actor ! SendMessageInternal(uuid, proposal, validMsg)
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to program commitee.")
             }
           )
@@ -103,8 +103,8 @@ object CFPAdmin extends Controller with Secured {
         case Some(proposal) => {
           voteForm.bindFromRequest.fold(
             hasErrors => {
-              val speakerDiscussion = Comment.allSpeakerComments(proposal.id.get)
-              val internalDiscussion = Comment.allInternalComments(proposal.id.get)
+              val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
+              val internalDiscussion = Comment.allInternalComments(proposal.id)
               BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors))
             },
             validVote => {
@@ -117,22 +117,22 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
-  def showSpeaker(speakerEmail: String) = IsMemberOf("cfp") {
+  def showSpeaker(uuid: String) = IsMemberOf("cfp") {
     email => implicit request =>
-      SpeakerHelper.findByEmail(speakerEmail) match {
+      SpeakerHelper.findByUUID(uuid) match {
         case Some(speaker) => Ok(views.html.CFPAdmin.showSpeaker(speaker))
         case None => NotFound("Speaker not found")
       }
   }
 
-  def leaderBoard=IsMemberOf("cfp"){
-    email => implicit request=>
+  def leaderBoard = IsMemberOf("cfp") {
+    email => implicit request =>
       val totalSpeakers = SpeakerHelper.countAll()
       val totalProposals = Proposal.countAll()
       val totalVotes = Review.countAll()
       val totalWithVotes = Review.countWithVotes()
-      val totalNoVotes   = Review.countWithNoVotes()
-      val maybeMostVoted   = Review.mostReviewed()
+      val totalNoVotes = Review.countWithNoVotes()
+      val maybeMostVoted = Review.mostReviewed()
       val bestReviewer = Review.bestReviewer()
       Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
   }

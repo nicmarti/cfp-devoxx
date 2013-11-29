@@ -100,17 +100,19 @@ object Authentication extends Controller {
         invalidForm => BadRequest(views.html.Application.home(invalidForm)),
         validForm =>
           Webuser.checkPassword(validForm._1, validForm._2) match {
-            case true =>
-              Redirect(routes.CallForPaper.homeForSpeaker).withSession("email" -> validForm._1)
-            case false =>
+            case Some(webuser) =>
+              val cookie=Cookie("cfp_rm",value=webuser.uuid, maxAge = Some(588000))
+              Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> webuser.uuid).withCookies(cookie)
+            case None =>
               Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
           }
       )
   }
 
   def logout = Action {
-    implicit request =>
-      Redirect(routes.Application.index).withNewSession
+        implicit request =>
+      val discardingCookie = DiscardingCookie("cfp_rm","/", None,false)
+      Redirect(routes.Application.index).discardingCookies(discardingCookie).withNewSession
   }
 
   def githubLogin = Action {
@@ -197,14 +199,16 @@ object Authentication extends Controller {
 
   val webuserForm = Form(
     mapping(
+      "uuid" -> ignored(""),
       "email" -> (email verifying nonEmpty),
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
       "password" -> nonEmptyText,
       "profile" -> nonEmptyText
     ) {
-      (email, firstName, lastName, password, profile) =>
-        Webuser(email,
+      (uuid,email, firstName, lastName, password, profile) =>
+        Webuser(uuid,
+          email,
           firstName,
           lastName,
           password,
@@ -212,7 +216,8 @@ object Authentication extends Controller {
     } {
       w =>
         Some(
-          (w.email,
+          (w.uuid,
+            w.email,
             w.firstName,
             w.lastName,
             w.password,
@@ -252,7 +257,8 @@ object Authentication extends Controller {
                         // Try to lookup the speaker
                         Webuser.findByEmail(emailS).map {
                           w =>
-                            Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
+                            val cookie=Cookie("cfp_rm",value=w.uuid, maxAge = Some(588000))
+                            Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                         }.getOrElse {
                           // Create a new one but ask for confirmation
                           val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
@@ -298,7 +304,7 @@ object Authentication extends Controller {
             Webuser.validateEmailForSpeaker(webuser) // it is generated
             SpeakerHelper.save(SpeakerHelper.createSpeaker(email, webuser.cleanName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None))
             Mails.sendAccessCode(webuser.email, webuser.password)
-            Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("email" -> email)
+            Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
           Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
         }
@@ -332,7 +338,7 @@ object Authentication extends Controller {
               val newSpeaker = SpeakerHelper.createSpeaker(e, validWebuser.cleanName, bio, lang, twitter, avatarUrl, company, blog)
               SpeakerHelper.save(newSpeaker)
 
-              Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("email" -> validWebuser.email)
+              Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid)
             }
           )
 
@@ -425,7 +431,8 @@ object Authentication extends Controller {
                     // Try to lookup the speaker
                     Webuser.findByEmail(email).map {
                       w =>
-                        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("email" -> w.email)
+                        val cookie=Cookie("cfp_rm",value=w.uuid, maxAge = Some(588000))
+                        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                     }.getOrElse {
                       val defaultValues = (firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
                       Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues))).withSession("tmpEmail" -> email)
@@ -456,7 +463,9 @@ trait Secured {
   /**
    * Retrieve the connected user email.
    */
-  private def username(request: RequestHeader) = request.session.get("email")
+  private def username(request: RequestHeader) = {
+    request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(_.value))
+  }
 
   /**
    * Redirect to login if the user in not authorized.
@@ -468,8 +477,8 @@ trait Secured {
    */
   def IsAuthenticated(f: => String => Request[AnyContent] => Result) = {
     Security.Authenticated(username, onUnauthorized) {
-      user =>
-        Action(request => f(user)(request))
+      uuid =>
+        Action(request => f(uuid)(request))
     }
   }
 
@@ -477,11 +486,11 @@ trait Secured {
    * Check if the connected user is a member of this security group.
    */
   def IsMemberOf(securityGroup: String)(f: => String => Request[AnyContent] => Result) = IsAuthenticated {
-    email => request =>
-      if (Webuser.isMember(email, securityGroup)) {
-        f(email)(request)
+    uuid => request =>
+      if (Webuser.isMember(uuid, securityGroup)) {
+        f(uuid)(request)
       } else {
-        Results.Forbidden("Sorry, you cannot access this resource. Your email is not a member of " + securityGroup)
+        Results.Forbidden("Sorry, you cannot access this resource. Your uuid is not a member of " + securityGroup)
       }
   }
 

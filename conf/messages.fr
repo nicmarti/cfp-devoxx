@@ -81,17 +81,15 @@ new.proposal=Nouvelle proposition
 
 # github login
 github.importprofile.error=Désolé, nous ne pouvons importer votre profil depuis github. Veuillez modifier votre configuration github.
-github.importprofile.error.emailnotfound=L e-mail n'a pu être récupéré.
-github.importprofile.error.namenotfound=Votre nom n'a pu être récupéré.
+github.importprofile.error.emailnotfound=L e-mail n''a pu être récupéré.
+github.importprofile.error.namenotfound=Votre nom n''a pu être récupéré.
 github.importprofile.error.advice=Vous pouvez modifier votre configuration sur https://github.com/settings/profile
 
 # CFP New
-New.proposal=Nouvelle proposition de sujet, étape 1/3
-New.proposal2=Nouvelle proposition de sujet, étape 2/3
-New.proposal3=Nouvelle proposition de sujet, étape 3/3
-Edit.proposal=Editer une proposition, étape 1/3
-Edit.proposal2=Editer une proposition, étape 2/3
-Edit.proposal3=Editer une proposition, étape 3/3
+New.proposal=Nouvelle proposition de sujet, étape 1/2
+New.proposal2=Nouvelle proposition de sujet, étape 2/2
+Edit.proposal=Editer une proposition, étape 1/2
+Edit.proposal2=Editer une proposition, étape 2/2
 
 title=Titre de la présentation
 title.help=Proposez un titre simple, clair, qui résume ce que le participant va apprendre. Beaucoup de conférenciers sélectionnent une conférence au dernier moment, en se basant sur le titre.
@@ -180,7 +178,7 @@ track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la dat
 # Confirm import
 confirm.import.title=Créer votre profil de présentateur Devoxx France
 confirm.import.save=Enregister et continuer
-avatarUrl.isEmpty=L'URL de votre photo est vide, nous utiliserons votre
+avatarUrl.isEmpty=L''URL de votre photo est vide, nous utiliserons votre
 avatarUrl.defined=Votre photo (largeur recommandée 120px)
 
 # Sign-up
@@ -192,7 +190,7 @@ created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos 
 # Prepare signup
 signup.title=Inscription orateur
 signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2014 :
-signup.txt2=Un email de validation est envoyé à l'adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
+signup.txt2=Un email de validation est envoyé à l''adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
 
 # edit profile
 editProfile.title=Votre profil

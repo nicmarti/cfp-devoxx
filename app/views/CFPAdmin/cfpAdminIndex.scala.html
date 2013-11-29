@@ -56,7 +56,7 @@
                             </td>
                             <td>@Messages(proposal.talkType.id)</td>
                             <td>
-                                <a href="@routes.CFPAdmin.openForReview(proposal.id.get)" title="Open for review">
+                                <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="Open for review">
                                     Review</a>
                             </td>
                         </tr>
@@ -91,7 +91,7 @@
                                 <small>@event.date.map(_.toString("dd/MM HH:mm"))</small>
                             </td>
                             <td>
-                                @tags.renderGravatar(event.author)
+                                @tags.renderGravatar(event.uuid)
                             </td>
                             <td><small>@event.source</small></td>
                             <td><small>@event.msg</small></td>
