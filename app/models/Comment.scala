@@ -42,18 +42,23 @@ object Comment {
   def saveCommentForSpeaker(proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {
     client =>
       val comment = Comment(proposalId, uuidAuthor, msg, None)
-      client.zadd("Comments:ForSpeaker:" + proposalId, new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
+      client.zadd(s"Comments:ForSpeaker:${proposalId}}", new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
   }
 
   def allSpeakerComments(proposalId: String):List[Comment] = Redis.pool.withClient {
     client =>
-      val comments= client.zrevrangeWithScores("Comments:ForSpeaker:" + proposalId, 0, -1).map {
+      val comments= client.zrevrangeWithScores(s"Comments:ForSpeaker:${proposalId}}", 0, -1).map {
         case (json, dateValue) =>
           val c = Json.parse(json).as[Comment]
           val date = new Instant(dateValue.toLong)
           c.copy(eventDate = Option(date.toDateTime))
       }
       comments
+  }
+
+  def countComments(proposalId:String):Long=Redis.pool.withClient{
+    client=>
+      client.zcard(s"Comments:ForSpeaker:${proposalId}}").longValue
   }
 
   def saveInternalComment(proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {

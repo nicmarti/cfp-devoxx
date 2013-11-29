@@ -25,19 +25,15 @@ package controllers
 
 import play.api.mvc._
 import models._
-import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import play.api._
-import scala.concurrent._
-import play.api.libs.concurrent.Execution.Implicits._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 
 /**
  * Main controller for the speakers.
  *
- * Author: nicolas
+ * Author: nicolas martignole
  * Created: 29/09/2013 12:24
  */
 object CallForPaper extends Controller with Secured {

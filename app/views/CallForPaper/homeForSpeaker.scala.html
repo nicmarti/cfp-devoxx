@@ -167,7 +167,14 @@
                             <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")">@Messages("table.speaker.addremove")</a>
                             </td>
                             <td>
-                                <span class="label label-info">0</span>
+                             @defining(models.Comment.countComments(prop.id)){totalComments:Long=>
+                                @if(totalComments == 0){
+                                    <span class="label label-info">0</span>
+                                }
+                                @if(totalComments > 0){
+                                    <span class="label label-warning">@totalComments</span>
+                                }
+                             }
                             </td>
                             <td>
                                 @if(prop.state!=ProposalState.SUBMITTED){
