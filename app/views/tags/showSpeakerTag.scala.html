@@ -1,5 +1,5 @@
-@(speakerEmail:String)
+@(uuid:String)
 
-@models.SpeakerHelper.findByEmail(speakerEmail).map{speaker=>
-<a href="@routes.CFPAdmin.showSpeaker(speakerEmail)">@speaker.name</a>
+@models.SpeakerHelper.findByUUID(uuid).map{speaker:Speaker=>
+<a href="@routes.CFPAdmin.showSpeaker(speaker.uuid)">@speaker.name</a>
 }.getOrElse("Speaker not found")

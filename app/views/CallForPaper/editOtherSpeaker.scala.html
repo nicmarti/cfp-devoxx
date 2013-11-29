@@ -38,7 +38,7 @@
                     <tbody>
                     <tr>
                         <td>
-                            @helper.select(field=speakerForm("mainSpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
+                            @currentUser
                         </td>
                         <td>
                         @if(Proposal.givesSpeakerFreeEntrance(proposal.talkType)) {
@@ -97,10 +97,6 @@
 
 <script type="text/javascript">
 $(document).ready ( function ($) {
-
-    $("#mainSpeaker").select2({
-        allowClear: false
-    });
 
     $("#secondarySpeaker").select2({
         placeholder: "@Messages("select.secondarySpeaker")",

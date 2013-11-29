@@ -1,4 +1,4 @@
-@(currentUser:String, newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang)
+@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -30,9 +30,6 @@
                 <i class="icon-text-width"></i> : <span id="charsremain"></span>
 
                 @helper.select(field = newProposal("lang"), options=Proposal.langs,  'class->"form-control")
-
-                @helper.select(field=newProposal("mainSpeaker"), options=Webuser.allSpeakersAsOption,  'class->"form-control")
-                <em>@Messages("moreSpeakerLater")</em>
 
                 @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("track"), options=Track.allAsIdsAndLabels,  'class->"form-control")
@@ -70,14 +67,6 @@ $(document).ready(function($){
 
     setformfieldsize($('#summary'), 2000, 'charsremain');
 
-    // Select the current user in the list of speaker
-    $('#mainSpeaker option[value="@currentUser"]').prop('selected', true);
-
-    // Boost speaker with jQuery select2 (thanks aheritier)
-     $("#mainSpeaker").select2({
-        allowClear: false
-    });
-
     // Selet current lang
     $('#lang option[value="@lang.country.toLowerCase"]').prop('selected', true);
 
@@ -96,6 +85,5 @@ $(document).ready(function($){
 });
 </script>
 
-<script type="text/javascript" src="/assets/js/select2-3.4.5/select2.min.js"></script>
 
 }

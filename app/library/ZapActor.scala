@@ -44,8 +44,9 @@ import notifiers.Mails
 // This is a simple Akka event
 case class ReportIssue(issue: Issue)
 
-case class SendMessageToSpeaker(reporter: String, proposal: Proposal, msg: String)
-case class SendMessageInternal(reporter: String, proposal: Proposal, msg: String)
+case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String)
+
+case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -55,8 +56,8 @@ object ZapActor {
 class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
-    case SendMessageToSpeaker(reporter, proposal, msg) => sendMessageToSpeaker(reporter, proposal, msg)
-    case SendMessageInternal(reporter, proposal, msg) => postInternalMessage(reporter, proposal, msg)
+    case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
+    case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -69,19 +70,27 @@ class ZapActor extends Actor {
     Issue.publish(issue)
   }
 
-  def sendMessageToSpeaker(reporter: String, proposal: Proposal, msg: String) {
+  def sendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String) {
     if (play.Logger.of("application.ZapActor").isDebugEnabled) {
       play.Logger.of("application.ZapActor").debug(s"Sending a message to ${proposal.mainSpeaker}")
     }
-    Event.storeEvent(Event("msgAdmin", reporter, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id.get} ${proposal.title}"))
-    val reportName = Webuser.findByEmail(reporter).map(s=>s.firstName+" "+s.lastName).getOrElse(reporter)
-    Mails.sendMessageToSpeakers(reportName, reporter, proposal, msg)
+    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id.get} ${proposal.title}"))
+    Webuser.findByUUID(reporterUUID).map {
+      reporterWebuser: Webuser =>
+        Mails.sendMessageToSpeakers(reporterWebuser, proposal, msg)
+    }.getOrElse {
+      play.Logger.error("User not found with uuid " + reporterUUID)
+    }
   }
 
-  def postInternalMessage(reporter: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event("msgAdmin", reporter, s"Posted an internal message fpr ${proposal.id.get} ${proposal.title}"))
-    val reportName = Webuser.findByEmail(reporter).map(s=>s.firstName+" "+s.lastName).getOrElse(reporter)
-    Mails.postInternalMessage(reportName, reporter, proposal, msg)
+  def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
+    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Posted an internal message fpr ${proposal.id.get} ${proposal.title}"))
+    Webuser.findByUUID(reporterUUID).map {
+      reporterWebuser:Webuser =>
+        Mails.postInternalMessage(reporterWebuser, proposal, msg)
+    }.getOrElse {
+      play.Logger.error("User not found with uuid " + reporterUUID)
+    }
   }
 
 }

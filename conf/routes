@@ -19,7 +19,6 @@ POST    /newspeaker/validImported   controllers.Authentication.validateImportedS
 
 GET     /cfp/home                   controllers.CallForPaper.homeForSpeaker
 GET     /cfp                        controllers.CallForPaper.homeForSpeaker
-GET     /cfp/find                   controllers.CallForPaper.findByEmail(email:String)
 GET     /cfp/profile                controllers.CallForPaper.editProfile
 POST    /cfp/profile                controllers.CallForPaper.saveProfile
 GET     /cfp/webuser/edit           controllers.CallForPaper.editCurrentWebuser

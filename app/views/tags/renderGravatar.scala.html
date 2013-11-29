@@ -1,3 +1,5 @@
-@(email:String)
+@(uuid:String)
 
-<a href="@routes.CFPAdmin.showSpeaker(email)"><img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(email)?s=35" alt="@email" title="@email"/></a>
+@models.Webuser.findByUUID(uuid).map{webuser=>
+<a href="@routes.CFPAdmin.showSpeaker(uuid)"><img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/></a>
+}

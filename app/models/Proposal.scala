@@ -94,28 +94,29 @@ object Proposal {
 
   val audienceLevels = Seq(("novice", "Novice"), ("intermediate", "Intermediate"), ("expert", "Expert"))
 
-  def save(creator: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
+  def save(uuid:String,  proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(proposal).toString
+
+      val creatorName=Webuser.getName(uuid)
 
       // TX
       val tx = client.multi()
       tx.hset("Proposals", proposal.id.get, json)
-      tx.sadd("Proposals:ByAuthor:" + creator, proposal.id.get)
+      tx.sadd("Proposals:ByAuthor:" + uuid, proposal.id.get)
       tx.exec()
 
-      Event.storeEvent(Event("proposal", creator, "Updated or created proposal " + proposal.id.get + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+      Event.storeEvent(Event("proposal", uuid, "Updated or created proposal " + proposal.id.get + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
-      changeTrack(creator, proposal)
+      changeTrack(creatorName, proposal)
 
-      changeProposalState(creator, proposal.id.get, proposalState)
+      changeProposalState(uuid, proposal.id.get, proposalState)
   }
 
   val proposalForm = Form(mapping(
     "id" -> optional(text),
     "lang" -> text,
     "title" -> nonEmptyText(maxLength = 125),
-    "mainSpeaker" -> nonEmptyText,
     "secondarySpeaker" -> optional(text),
     "otherSpeakers" -> list(text),
     "talkType" -> nonEmptyText,
@@ -126,21 +127,25 @@ object Proposal {
     "track" -> nonEmptyText
   )(validateNewProposal)(unapplyProposalForm))
 
-  def generateId(): Option[String] = {
-    Some(RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3))
+  def generateId(): String = {
+    RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3)
   }
 
-  def validateNewProposal(id: Option[String], lang: String, title: String, mainSpeaker: String,
-                          secondarySpeaker: Option[String], otherSpeakers: List[String],
+  def validateNewProposal(id: Option[String],
+                          lang: String,
+                          title: String,
+                          secondarySpeaker: Option[String],
+                          otherSpeakers: List[String],
                           talkType: String, audienceLevel: String, summary: String, privateMessage: Option[String],
                           sponsorTalk: Boolean, track: String): Proposal = {
-    val code = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3)
-    Proposal(id.orElse(generateId()),
+    val code = generateId()
+    Proposal(
+      id.orElse(Some(generateId())),
       "Devoxx France 2014",
       code,
       lang,
       title,
-      mainSpeaker,
+      "no_main_speaker",
       secondarySpeaker,
       otherSpeakers,
       ProposalType.parse(talkType),
@@ -160,13 +165,13 @@ object Proposal {
       client.hexists("Proposals", id) == false
   }
 
-  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, String, Option[String], List[String], String, String, String, Option[String],
+  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, Option[String],
     Boolean, String)] = {
-    Option((p.id, p.lang, p.title, p.mainSpeaker, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
+    Option((p.id, p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
       p.sponsorTalk, p.track.id))
   }
 
-  private def changeTrack(owner: String, proposal: Proposal) = Redis.pool.withClient {
+  private def changeTrack(uuid:String, proposal: Proposal) = Redis.pool.withClient {
     client =>
       val proposalId = proposal.id.get
       // If we change a proposal to a new track, we need to update all the collections
@@ -181,17 +186,17 @@ object Proposal {
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
           // And we are able to track this event
-          Event.storeEvent(Event("proposal", owner, s"${owner} changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}"))
+          Event.storeEvent(Event("proposal", uuid, s"Changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}"))
       }
       if (maybeExistingTrack.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
-        Event.storeEvent(Event("proposal", owner, s"${owner} posted a new talk (${proposalId}) to ${proposal.track.id}"))
+        Event.storeEvent(Event("proposal", uuid, s"Posted a new talk (${proposalId}) to ${proposal.track.id}"))
       }
 
   }
 
-  private def changeProposalState(owner: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
+  private def changeProposalState(uuid: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
     client =>
     // Same kind of operation for the proposalState
       val maybeExistingState = for (state <- ProposalState.allAsCode if client.sismember("Proposals:ByState:" + state, proposalId)) yield state
@@ -201,31 +206,31 @@ object Proposal {
         stateOld: String =>
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
-          Event.storeEvent(Event("proposal", owner, s"${owner} changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
+          Event.storeEvent(Event("proposal", uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
 
       }
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
-        Event.storeEvent(Event("proposal", owner, s"${owner} posted new talk ${proposalId} with status ${newState.code}"))
+        Event.storeEvent(Event("proposal", uuid, s"Posted new talk ${proposalId} with status ${newState.code}"))
       }
   }
 
-  def delete(owner: String, proposalId: String) {
-    changeProposalState(owner, proposalId, ProposalState.DELETED)
+  def delete(uuid: String, proposalId: String) {
+    changeProposalState(uuid, proposalId, ProposalState.DELETED)
   }
 
-  def submit(owner: String, proposalId: String) = {
-    changeProposalState(owner, proposalId, ProposalState.SUBMITTED)
+  def submit(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.SUBMITTED)
   }
 
-  def draft(owner: String, proposalId: String) = {
-    changeProposalState(owner, proposalId, ProposalState.DRAFT)
+  def draft(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.DRAFT)
   }
 
-  private def loadProposalsByState(email: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
+  private def loadProposalsByState(uuid: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByState:${proposalState.code}", s"Proposals:ByAuthor:${email}")
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByState:${proposalState.code}", s"Proposals:ByAuthor:${uuid}")
       loadProposalByIDs(allProposalIds, proposalState)
   }
 
@@ -237,21 +242,21 @@ object Proposal {
     }.sortBy(_.title)
   }
 
-  def allMyDraftProposals(email: String): List[Proposal] = {
-    loadProposalsByState(email, ProposalState.DRAFT).sortBy(_.title)
+  def allMyDraftProposals(uuid: String): List[Proposal] = {
+    loadProposalsByState(uuid, ProposalState.DRAFT).sortBy(_.title)
   }
 
-  def allMyDeletedProposals(email: String): List[Proposal] = {
-    loadProposalsByState(email, ProposalState.DELETED).sortBy(_.title)
+  def allMyDeletedProposals(uuid: String): List[Proposal] = {
+    loadProposalsByState(uuid, ProposalState.DELETED).sortBy(_.title)
   }
 
-  def allMySubmittedProposals(email: String): List[Proposal] = {
-    loadProposalsByState(email, ProposalState.SUBMITTED).sortBy(_.title)
+  def allMySubmittedProposals(uuid: String): List[Proposal] = {
+    loadProposalsByState(uuid, ProposalState.SUBMITTED).sortBy(_.title)
   }
 
-  def allMyDraftAndSubmittedProposals(email: String): List[Proposal] = {
-    val allDrafts = allMyDraftProposals(email)
-    val allSubmitted = allMySubmittedProposals(email)
+  def allMyDraftAndSubmittedProposals(uuid: String): List[Proposal] = {
+    val allDrafts = allMyDraftProposals(uuid)
+    val allSubmitted = allMySubmittedProposals(uuid)
     (allDrafts ++ allSubmitted).sortBy(_.title)
   }
 
