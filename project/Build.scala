@@ -26,7 +26,8 @@ object ApplicationBuild extends Build {
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
+    resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
+    scalacOptions ++= Seq("-Xmax-classfile-name", "100")
   )
 
 }
