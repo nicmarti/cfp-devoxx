@@ -236,7 +236,7 @@ object CallForPaper extends Controller with Secured {
 
   def submitProposal(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
-      val maybeProposal = Proposal.findSubmitted(uuid, proposalId)
+      val maybeProposal = Proposal.findDraft(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.submit(uuid, proposalId)
