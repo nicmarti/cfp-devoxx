@@ -27,6 +27,7 @@ import play.api.mvc._
 import library._
 import play.api.Play.current
 import play.api.i18n.Messages
+import play.api.libs.Crypto
 
 /**
  * Devoxx France Call For Paper main application.

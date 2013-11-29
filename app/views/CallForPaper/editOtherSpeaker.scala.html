@@ -1,4 +1,4 @@
-@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(String,Option[String],List[String])])(implicit flash: Flash, lang: Lang)
+@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils

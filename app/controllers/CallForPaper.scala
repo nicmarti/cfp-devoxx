@@ -31,8 +31,6 @@ import play.api.data.validation.Constraints._
 import play.api._
 import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
-import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
-import play.api.libs.json.Json
 import play.api.i18n.Messages
 
 /**
@@ -45,7 +43,7 @@ object CallForPaper extends Controller with Secured {
 
   def homeForSpeaker = IsAuthenticated {
     uuid => implicit request =>
-      val result = for ( speaker <- SpeakerHelper.findByUUID(uuid).toRight("Speaker not found").right;
+      val result = for (speaker <- SpeakerHelper.findByUUID(uuid).toRight("Speaker not found").right;
                         webuser <- Webuser.findByUUID(uuid).toRight("Webuser not found").right) yield (speaker, webuser)
       result.fold(errorMsg => {
         Redirect(routes.Application.index()).flashing("error" -> errorMsg)
@@ -96,10 +94,10 @@ object CallForPaper extends Controller with Secured {
   def saveProfile = IsAuthenticated {
     uuid => implicit request =>
       speakerForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)).flashing("error"->"Invalid form, please check and correct errors. "),
+        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validForm => {
-            SpeakerHelper.update(uuid, validForm)
-            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
+          SpeakerHelper.update(uuid, validForm)
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
         }
       )
   }
@@ -136,14 +134,14 @@ object CallForPaper extends Controller with Secured {
             Proposal.allMyDraftProposals(uuid).find(_.id.get == id.get) match {
               case Some(existingProposal) => {
                 // This is an edit operation
-                Proposal.save(uuid, validProposal.copy(id = id, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers) , ProposalState.DRAFT)
+                Proposal.save(uuid, validProposal.copy(id = id, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers), ProposalState.DRAFT)
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               }
               case other => {
                 // Check that this is really a new id and that it does not exist
                 if (Proposal.isNew(id.get)) {
                   // This is a "create new" operation
-                  Proposal.save(uuid, validProposal,  ProposalState.DRAFT)
+                  Proposal.save(uuid, validProposal, ProposalState.DRAFT)
                   Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
                 } else {
                   play.Logger.warn("ID collision " + id)
@@ -180,7 +178,7 @@ object CallForPaper extends Controller with Secured {
       val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(uuid).find(_.id.get == proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, Proposal.proposalSpeakerForm.fill(proposal.mainSpeaker, proposal.secondarySpeaker, proposal.otherSpeakers)))
+          Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, Proposal.proposalSpeakerForm.fill(proposal.secondarySpeaker, proposal.otherSpeakers)))
         }
         case None => {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
@@ -188,7 +186,7 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  // Check that the currend authenticated user is the owner
+  // Check that the current authenticated user is the owner
   // validate the form and then save and redirect.
   def saveOtherSpeakers(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
@@ -196,17 +194,17 @@ object CallForPaper extends Controller with Secured {
       maybeProposal match {
         case Some(proposal) => {
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
-            hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)),
+            hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error"->"Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
-              Proposal.save(uuid, proposal.copy(mainSpeaker = validNewSpeakers._1, secondarySpeaker = validNewSpeakers._2, otherSpeakers = validNewSpeakers._3), proposal.state)
+              Proposal.save(uuid, proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2), proposal.state)
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
             }
           )
         }
-          case None => {
-            Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-          }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
         }
+      }
   }
 
   def deleteProposal(proposalId: String) = IsAuthenticated {

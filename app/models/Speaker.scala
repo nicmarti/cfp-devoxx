@@ -41,7 +41,7 @@ object SpeakerHelper {
 
   def createSpeaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
-    Speaker(Crypto.signToken(email), email, Option(name), bio, lang, twitter, avatarUrl, company, blog)
+    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog)
   }
 
   def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {

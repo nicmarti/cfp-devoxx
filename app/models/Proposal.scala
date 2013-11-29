@@ -94,23 +94,22 @@ object Proposal {
 
   val audienceLevels = Seq(("novice", "Novice"), ("intermediate", "Intermediate"), ("expert", "Expert"))
 
-  def save(uuid:String,  proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
+  def save(authorUUID:String,  proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
-      val json = Json.toJson(proposal).toString
-
-      val creatorName=Webuser.getName(uuid)
+      val proposalWithMainSpeaker=proposal.copy(mainSpeaker=authorUUID)
+      val json = Json.toJson(proposalWithMainSpeaker).toString()
 
       // TX
       val tx = client.multi()
-      tx.hset("Proposals", proposal.id.get, json)
-      tx.sadd("Proposals:ByAuthor:" + uuid, proposal.id.get)
+      tx.hset("Proposals", proposalWithMainSpeaker.id.get, json)
+      tx.sadd("Proposals:ByAuthor:" + authorUUID, proposalWithMainSpeaker.id.get)
       tx.exec()
 
-      Event.storeEvent(Event("proposal", uuid, "Updated or created proposal " + proposal.id.get + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+      Event.storeEvent(Event("proposal", authorUUID, "Updated or created proposal " + proposal.id.get + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
-      changeTrack(creatorName, proposal)
+      changeTrack(authorUUID, proposal)
 
-      changeProposalState(uuid, proposal.id.get, proposalState)
+      changeProposalState(authorUUID, proposal.id.get, proposalState)
   }
 
   val proposalForm = Form(mapping(
@@ -272,7 +271,6 @@ object Proposal {
   }
 
   val proposalSpeakerForm = Form(tuple(
-    "mainSpeaker" -> nonEmptyText,
     "secondarySpeaker" -> optional(text),
     "otherSpeakers" -> list(text)
   ))

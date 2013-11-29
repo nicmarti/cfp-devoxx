@@ -21,7 +21,7 @@ object Webuser {
   }
 
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(Crypto.signToken(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
+    Webuser(Crypto.sign(email.trim().toLowerCase), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
   }
 
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
