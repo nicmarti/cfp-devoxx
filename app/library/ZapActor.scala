@@ -74,7 +74,7 @@ class ZapActor extends Actor {
     if (play.Logger.of("application.ZapActor").isDebugEnabled) {
       play.Logger.of("application.ZapActor").debug(s"Sending a message to ${proposal.mainSpeaker}")
     }
-    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id.get} ${proposal.title}"))
+    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         Mails.sendMessageToSpeakers(reporterWebuser, proposal, msg)
@@ -84,7 +84,7 @@ class ZapActor extends Actor {
   }
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Posted an internal message fpr ${proposal.id.get} ${proposal.title}"))
+    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Posted an internal message fpr ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser:Webuser =>
         Mails.postInternalMessage(reporterWebuser, proposal, msg)

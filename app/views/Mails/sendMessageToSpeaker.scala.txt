@@ -14,7 +14,7 @@ Message:
 How to respond?
 
 Please, use this link to respond directly to the message :
-http://cfp.devoxx.fr@routes.CallForPaper.comment(proposal.id.get)
+http://cfp.devoxx.fr@routes.CallForPaper.comment(proposal.id)
 
 Thanks
 

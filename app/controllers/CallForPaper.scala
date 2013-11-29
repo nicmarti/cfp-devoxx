@@ -32,6 +32,7 @@ import play.api._
 import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.i18n.Messages
+import play.api.libs.Crypto
 
 /**
  * Main controller for the speakers.
@@ -105,66 +106,18 @@ object CallForPaper extends Controller with Secured {
   // Load a new proposal form
   def newProposal() = IsAuthenticated {
     uuid => implicit request =>
-      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm))
+      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
 
-  }
-
-  // Prerender the proposal, but do not persist
-  def createNewProposal(id: Option[String]) = IsAuthenticated {
-    uuid => implicit request =>
-      Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
-        validProposal => {
-          import com.github.rjeschke.txtmark._
-
-          val html = Processor.process(validProposal.summary) // markdown to HTML
-          Ok(views.html.CallForPaper.confirmSummary(html, Proposal.proposalForm.fill(validProposal)))
-        }
-      )
-  }
-
-  // Revalidate to avoid CrossSite forgery and save the proposal
-  def saveProposal(id: Option[String]) = IsAuthenticated {
-    uuid => implicit request =>
-      Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
-        validProposal => {
-          if (id.isDefined) {
-            // This is an edit operation
-            Proposal.allMyDraftProposals(uuid).find(_.id.get == id.get) match {
-              case Some(existingProposal) => {
-                // This is an edit operation
-                Proposal.save(uuid, validProposal.copy(id = id, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers), ProposalState.DRAFT)
-                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
-              }
-              case other => {
-                // Check that this is really a new id and that it does not exist
-                if (Proposal.isNew(id.get)) {
-                  // This is a "create new" operation
-                  Proposal.save(uuid, validProposal, ProposalState.DRAFT)
-                  Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
-                } else {
-                  play.Logger.warn("ID collision " + id)
-                  BadRequest(views.html.CallForPaper.newProposal(Proposal.proposalForm.fill(validProposal.copy(id = Some(Proposal.generateId()))))).flashing("error" -> "not.yours")
-                }
-              }
-            }
-          } else {
-            // Hu... no id, something was corrupted
-            BadRequest(views.html.CallForPaper.newProposal(Proposal.proposalForm.fill(validProposal))).flashing("error" -> "Something bad happened...")
-          }
-        }
-      )
   }
 
   // Load a proposal, change the status to DRAFT (not sure this is a goode idea)
   def editProposal(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
-      val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(uuid).find(_.id.get == proposalId)
+      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.draft(uuid, proposalId)
-          Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm.fill(proposal)))
+          Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm.fill(proposal))).withSession(session + ("token" -> Crypto.sign(proposalId)))
         }
         case None => {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
@@ -172,10 +125,55 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
+
+  // Prerender the proposal, but do not persist
+  def previewProposal() = IsAuthenticated {
+    uuid => implicit request =>
+      Proposal.proposalForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
+        validProposal => {
+          import com.github.rjeschke.txtmark._
+          val html = Processor.process(validProposal.summary) // markdown to HTML
+          Ok(views.html.CallForPaper.previewProposal(uuid, html, Proposal.proposalForm.fill(validProposal)))
+        }
+      )
+  }
+
+  // Revalidate to avoid CrossSite forgery and save the proposal
+  def saveProposal() = IsAuthenticated {
+    uuid => implicit request =>
+
+      Proposal.proposalForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+        proposal => {
+          // If the editor is not the owner then findDraft returns None
+          Proposal.findDraft(uuid, proposal.id) match {
+            case Some(existingProposal) => {
+              // This is an edit operation
+              Proposal.save(uuid, proposal.copy(secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers), ProposalState.DRAFT)
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
+            }
+            case other => {
+              // Check that this is really a new id and that it does not exist
+              if (Proposal.isNew(proposal.id)) {
+                // This is a "create new" operation
+                Proposal.save(uuid, proposal, ProposalState.DRAFT)
+                Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
+              } else {
+                // Maybe someone tried to edit someone's else proposal...
+                Event.storeEvent(Event("saveProposal", uuid, s"Tried to edit talk ${proposal.id} but he is not the owner of this talk."))
+                Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
+              }
+            }
+          }
+        }
+      )
+  }
+
   // Load a proposal by its id
   def editOtherSpeakers(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
-      val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(uuid).find(_.id.get == proposalId)
+      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, Proposal.proposalSpeakerForm.fill(proposal.secondarySpeaker, proposal.otherSpeakers)))
@@ -190,11 +188,11 @@ object CallForPaper extends Controller with Secured {
   // validate the form and then save and redirect.
   def saveOtherSpeakers(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
-      val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(uuid).find(_.id.get == proposalId)
+      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
-            hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error"->"Errors in the proposal form, please correct errors"),
+            hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
               Proposal.save(uuid, proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2), proposal.state)
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
@@ -209,7 +207,7 @@ object CallForPaper extends Controller with Secured {
 
   def deleteProposal(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
-      val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(uuid).find(_.id.get == proposalId)
+      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.delete(uuid, proposalId)
@@ -223,7 +221,7 @@ object CallForPaper extends Controller with Secured {
 
   def undeleteProposal(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
-      val maybeProposal = Proposal.allMyDeletedProposals(uuid).find(_.id.get == proposalId)
+      val maybeProposal = Proposal.findDeleted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.draft(uuid, proposalId)
@@ -238,7 +236,7 @@ object CallForPaper extends Controller with Secured {
 
   def submitProposal(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
-      val maybeProposal = Proposal.allMyDraftProposals(uuid).find(_.id.get == proposalId)
+      val maybeProposal = Proposal.findSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.submit(uuid, proposalId)
@@ -251,14 +249,18 @@ object CallForPaper extends Controller with Secured {
   }
 
 
-  def comment(proposalId:String)=IsAuthenticated{
-    uuid=>implicit request =>
-      val res=for(webuser<-Webuser.findByUUID(uuid) if Webuser.isMember(uuid, "speaker");
-                  proposal<-Proposal.findById(proposalId) if Proposal.isSpeakerOf(proposalId, webuser.uuid)
-                ) yield {
-        Ok("Super !!!! ")
+  def comment(proposalId: String) = IsAuthenticated {
+    uuid => implicit request =>
+      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      maybeProposal match {
+        case Some(proposal) => {
+          Proposal.submit(uuid, proposalId)
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.submitted"))
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
       }
-    res.getOrElse(Redirect(routes.Application.index()).flashing("error"->"Could not authenticate you automatically, or this is not one of your proposal.").withNewSession)
 
   }
 }

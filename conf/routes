@@ -26,8 +26,9 @@ POST    /cfp/webuser/save           controllers.CallForPaper.saveCurrentWebuser
 
 # proposal
 GET     /cfp/proposal/new           controllers.CallForPaper.newProposal()
-POST    /cfp/proposal/preview       controllers.CallForPaper.createNewProposal(id:Option[String])
-POST    /cfp/proposal/save          controllers.CallForPaper.saveProposal(id:Option[String])
+POST    /cfp/proposal/preview       controllers.CallForPaper.previewProposal()
+POST    /cfp/proposal/save          controllers.CallForPaper.saveProposal()
+
 GET     /cfp/proposal/edit/:proposalId   controllers.CallForPaper.editProposal(proposalId:String)
 GET     /cfp/proposal/edit/:proposalId/speakers controllers.CallForPaper.editOtherSpeakers(proposalId:String)
 POST    /cfp/proposal/save/:proposalId/speakers controllers.CallForPaper.saveOtherSpeakers(proposalId:String)

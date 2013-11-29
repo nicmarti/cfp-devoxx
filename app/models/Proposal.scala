@@ -82,7 +82,7 @@ object ProposalState {
 }
 
 // A proposal
-case class Proposal(id: Option[String], event: String, code: String, lang: String, title: String,
+case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String], talkType: ProposalType, audienceLevel: String, summary: String,
                     privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track)
 
@@ -94,22 +94,23 @@ object Proposal {
 
   val audienceLevels = Seq(("novice", "Novice"), ("intermediate", "Intermediate"), ("expert", "Expert"))
 
-  def save(authorUUID:String,  proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
+  def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
-      val proposalWithMainSpeaker=proposal.copy(mainSpeaker=authorUUID)
+      val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
+    println("Proposal save "+proposalWithMainSpeaker.id)
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
       // TX
       val tx = client.multi()
-      tx.hset("Proposals", proposalWithMainSpeaker.id.get, json)
-      tx.sadd("Proposals:ByAuthor:" + authorUUID, proposalWithMainSpeaker.id.get)
+      tx.hset("Proposals", proposalWithMainSpeaker.id, json)
+      tx.sadd("Proposals:ByAuthor:" + authorUUID, proposalWithMainSpeaker.id)
       tx.exec()
 
-      Event.storeEvent(Event("proposal", authorUUID, "Updated or created proposal " + proposal.id.get + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+      Event.storeEvent(Event("proposal", authorUUID, "Updated or created proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
       changeTrack(authorUUID, proposal)
 
-      changeProposalState(authorUUID, proposal.id.get, proposalState)
+      changeProposalState(authorUUID, proposal.id, proposalState)
   }
 
   val proposalForm = Form(mapping(
@@ -137,11 +138,10 @@ object Proposal {
                           otherSpeakers: List[String],
                           talkType: String, audienceLevel: String, summary: String, privateMessage: Option[String],
                           sponsorTalk: Boolean, track: String): Proposal = {
-    val code = generateId()
+    println("validate new proposal"+id)
     Proposal(
-      id.orElse(Some(generateId())),
+      id.getOrElse(generateId()),
       "Devoxx France 2014",
-      code,
       lang,
       title,
       "no_main_speaker",
@@ -166,13 +166,13 @@ object Proposal {
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, Option[String],
     Boolean, String)] = {
-    Option((p.id, p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
+    Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
       p.sponsorTalk, p.track.id))
   }
 
-  private def changeTrack(uuid:String, proposal: Proposal) = Redis.pool.withClient {
+  private def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
     client =>
-      val proposalId = proposal.id.get
+      val proposalId = proposal.id
       // If we change a proposal to a new track, we need to update all the collections
       // On Redis, this is very fast (faster than creating a mongoDB index, by an order of x100)
 
@@ -259,6 +259,23 @@ object Proposal {
     (allDrafts ++ allSubmitted).sortBy(_.title)
   }
 
+  def findDraftAndSubmitted(uuid: String, proposalId: String): Option[Proposal] = {
+    allMyDraftAndSubmittedProposals(uuid).find(_.id == proposalId)
+  }
+
+  def findDraft(uuid: String, proposalId: String): Option[Proposal] = {
+    allMyDraftProposals(uuid).find(_.id == proposalId)
+  }
+
+  def findSubmitted(uuid: String, proposalId: String): Option[Proposal] = {
+    allMySubmittedProposals(uuid).find(_.id == proposalId)
+  }
+
+  def findDeleted(uuid: String, proposalId: String): Option[Proposal] = {
+    allMyDeletedProposals(uuid).find(_.id == proposalId)
+  }
+
+
   def givesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
     proposalType match {
       case ProposalType.CONF => true
@@ -279,23 +296,18 @@ object Proposal {
     client =>
       for (proposalJson <- client.hget("Proposals", proposalId);
            proposal <- Json.parse(proposalJson).asOpt[Proposal];
-           realState <- findProposalState(proposal.id.get)) yield {
+           realState <- findProposalState(proposal.id)) yield {
         proposal.copy(state = realState)
       }
   }
 
-  def isSpeakerOf(proposalId:String, uuid:String):Boolean={
-    findById(proposalId).exists(proposal =>
-      proposal.mainSpeaker == uuid || proposal.secondarySpeaker.getOrElse("??") == uuid || proposal.otherSpeakers.contains(uuid))
-  }
-
   def findProposalState(proposalId: String): Option[ProposalState] = Redis.pool.withClient {
     client =>
-      // I use a for-comprehension to check each of the Set (O(1) operation)
-      // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
-      // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
-      // Here I do the opposite for performance reasons. NMA.
-      // This code retrieves the proposalState in less than 4ms so it is really efficient.
+    // I use a for-comprehension to check each of the Set (O(1) operation)
+    // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
+    // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
+    // Here I do the opposite for performance reasons. NMA.
+    // This code retrieves the proposalState in less than 4ms so it is really efficient.
       val thisProposalState = for (
         isNotSubmitted <- checkIsNotMember(client, ProposalState.SUBMITTED, proposalId).toRight(ProposalState.SUBMITTED).right;
         isNotDraft <- checkIsNotMember(client, ProposalState.DRAFT, proposalId).toRight(ProposalState.DRAFT).right;
@@ -320,8 +332,8 @@ object Proposal {
     }
   }
 
-  def countAll():Long=Redis.pool.withClient{
-    implicit client=>
+  def countAll(): Long = Redis.pool.withClient {
+    implicit client =>
       client.hlen("Proposals")
   }
 }

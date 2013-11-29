@@ -7,12 +7,15 @@
 <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
 
     <div class="row">
+        <div class="col-md-12">
+        @if(newProposal("id").value.isDefined) {
+            <h3>@Messages("Edit.proposal")</h3>
+        } else {
+            <h3>@Messages("New.proposal")</h3>
+        }
+        </div>
         <div class="col-md-6">
-            @if(newProposal("id").value.isDefined){
-                <h3>@Messages("Edit.proposal")</h3>
-            }else{
-                <h3>@Messages("New.proposal")</h3>
-            }
+
 
             @if(flash.get("error").isDefined){
                 <div class="alert alert-danger alert-dismissable">
@@ -24,7 +27,8 @@
                     @flash.get("success").get
                 </div>
             }
-            @helper.form(action = routes.CallForPaper.createNewProposal(newProposal("id").value)){
+            @helper.form(action = routes.CallForPaper.previewProposal()){
+                <input type="hidden" name="id" value="@newProposal("id").value">
                 @helper.inputText(newProposal("title"), 'class->"form-control")
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain"></span>

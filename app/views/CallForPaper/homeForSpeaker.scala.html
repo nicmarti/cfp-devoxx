@@ -151,7 +151,7 @@
                     <tbody>
                     @myProposals.map { prop: Proposal =>
                         <tr>
-                            <td><a href="@routes.CallForPaper.editProposal(prop.id.getOrElse("?"))" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
+                            <td><a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
                             <td><span class="label label-info">@prop.state.code</span></td>
                             <td>
                             @tags.renderGravatar(prop.mainSpeaker)
@@ -164,20 +164,20 @@
                                 }
                             }
 
-                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id.getOrElse("?"))" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")">@Messages("table.speaker.addremove")</a>
+                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")">@Messages("table.speaker.addremove")</a>
                             </td>
                             <td>
                                 <span class="label label-info">0</span>
                             </td>
                             <td>
                                 @if(prop.state!=ProposalState.SUBMITTED){
-                                    <a href="@routes.CallForPaper.submitProposal(prop.id.getOrElse("?"))#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
+                                    <a href="@routes.CallForPaper.submitProposal(prop.id)#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
                                 } else {
                                     <small><i class="icon-ok">@Messages("tbl.submitted")</i></small>
                                 }
                             </td>
                             <td>
-                                <a href="@routes.CallForPaper.deleteProposal(prop.id.getOrElse("?"))" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
+                                <a href="@routes.CallForPaper.deleteProposal(prop.id)" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
                             </td>
                         </tr>
                     }
