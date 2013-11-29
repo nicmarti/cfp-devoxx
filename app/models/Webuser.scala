@@ -136,6 +136,18 @@ object Webuser {
 
   def isSpeaker(uuid: String): Boolean = isMember(uuid, "speaker")
 
+  def addToCFPAdmin(uuid:String)=Redis.pool.withClient{
+    client=>
+      client.sadd("Webuser:cfp",uuid)
+  }
+
+  def removeFromCFPAdmin(uuid:String)=Redis.pool.withClient{
+      client=>
+        if(uuid!="9d5b6bfc9154c63afb74ef73dec9d305e3a288c6"){
+          client.srem("Webuser:cfp",uuid)
+        }
+    }
+
   def allSpeakers: List[Webuser] = Redis.pool.withClient {
     client =>
       val allSpeakerUUIDs= client.smembers("Webuser:speaker").toList

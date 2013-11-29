@@ -136,6 +136,21 @@ object CFPAdmin extends Controller with Secured {
       val bestReviewer = Review.bestReviewer()
       Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
   }
+
+  def allSpeakers = IsMemberOf("admin"){
+    email => implicit request =>
+      Ok(views.html.CFPAdmin.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
+  }
+
+  def switchCFPAdmin(uuid:String) = IsMemberOf("admin"){
+      email => implicit request =>
+        if(Webuser.hasAccessToCFPAdmin(uuid)){
+          Webuser.removeFromCFPAdmin(uuid)
+        }else{
+          Webuser.addToCFPAdmin(uuid)
+        }
+        Ok(views.html.CFPAdmin.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
+    }
 }
 
 
