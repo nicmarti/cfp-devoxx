@@ -140,6 +140,7 @@ cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agilité, DevOps
 lgaltern.label=Langages alternatifs
 startup.label=Startup & Innovation
+future.label=Future<Devoxx>
 
 # Bug report
 Issue.report=Notifier l''équipe
@@ -174,7 +175,7 @@ track.lang.title=Langages alternatifs
 track.lang.desc=Groovy, Scala, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
 track.bigdata.title=Cloud, Big Data et NoSQL
 track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
-track.future.title=Future<Java>
+track.future.title=Future<Devoxx>
 track.future.desc=Java et l''internet des objets, la robotique, la domotique et l''embarqué
 
 # Confirm import
