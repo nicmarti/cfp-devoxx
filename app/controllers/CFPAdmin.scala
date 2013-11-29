@@ -149,7 +149,7 @@ object CFPAdmin extends Controller with Secured {
         }else{
           Webuser.addToCFPAdmin(uuid)
         }
-        Ok(views.html.CFPAdmin.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
+        Redirect(routes.CFPAdmin.allSpeakers)
     }
 }
 
