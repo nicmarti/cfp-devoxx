@@ -164,7 +164,7 @@
                                 }
                             }
 
-                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")">@Messages("table.speaker.addremove")</a>
+                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
                             </td>
                             <td>
                              @defining(models.Comment.countComments(prop.id)){totalComments:Long=>
