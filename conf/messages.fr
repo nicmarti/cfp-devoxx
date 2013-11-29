@@ -132,15 +132,7 @@ bof.label=Bird of a Feather, 1h, jeudi soir uniquement
 other.label=Autre type de présentation
 lab.label=Hand''s on Lab, 3h, mercredi uniquement
 
-# track
-java.label=Java SE, Java EE
-web.label=Web, HTML5
-mobile.label=Mobile
-cloud.label=Cloud, Big Data, NoSQL
-agilite.label=Agilité, DevOps
-lgaltern.label=Langages alternatifs
-startup.label=Startup & Innovation
-future.label=Future<Devoxx>
+
 
 # Bug report
 Issue.report=Notifier l''équipe
@@ -168,6 +160,7 @@ track.web.title=Web, HTML5
 track.web.desc=Les frameworks Web, TML5, CSS3, JavaScript, les libraries et les outils qui vous permettent de construire des applications webs innovantes.
 track.mobile.title=Mobile
 track.mobile.desc=Le développement et les outils pour le mobile et les tablettes.
+track.startup.title=Startup et Innovation
 track.startup.desc=Lean startup, UX Design, entreprendre et lancer de nouveaux projets.
 track.devops.title=Agilité et DevOps
 track.devops.desc=Lean, Kanban, intégration continue, déploiement, réseau et sécurité.
@@ -177,6 +170,16 @@ track.bigdata.title=Cloud, Big Data et NoSQL
 track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
 track.future.title=Future<Devoxx>
 track.future.desc=Java et l''internet des objets, la robotique, la domotique et l''embarqué
+
+# track labels
+java.label=Java SE, Java EE
+web.label=Web, HTML5
+mobile.label=Mobile
+cloud.label=Cloud, Big Data, NoSQL
+agilite.label=Agilité, DevOps
+lgaltern.label=Langages alternatifs
+startup.label=Startup & Innovation
+future.label=Future<Devoxx>
 
 # Confirm import
 confirm.import.title=Créer votre profil de présentateur Devoxx France
@@ -258,6 +261,5 @@ profile.username=Votre identifiant
 profile.password=Votre code d''accès
 profile.password.help=Nous ne souhaitons pas stocker l''un de vos mots-de-passe, et nous préférons en générer un pour vous. Nous vous encourageons à utiliser l''accès OpenId via Github ou Google.
 
-track.startup.title=Startup et entreprenariat
 msgSpeaker=Votre message
 freepass.forIdiots=L''entrée est offerte uniquement si votre présentation est sélectionnée par le comité.
