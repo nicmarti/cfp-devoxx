@@ -2,7 +2,7 @@
 
 Hi,
 
-You received a new message from @fromName regarding your talk @proposal.title.
+You received a new message from @fromName regarding your talk "@proposal.title".
 
 Message:
 ------------------------------------------------------------------------------
@@ -15,6 +15,8 @@ How to respond?
 
 Please, use this link to respond directly to the message :
 http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)
+
+Do not reply to this email, please use the CFP web site.
 
 Thanks
 

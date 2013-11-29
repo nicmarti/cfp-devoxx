@@ -72,12 +72,11 @@ class ZapActor extends Actor {
   }
 
   def sendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id} ${proposal.title}"))
-    Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser: Webuser =>
-        Mails.sendMessageToSpeakers(reporterWebuser, proposal, msg)
-    }.getOrElse {
-      play.Logger.error("User not found with uuid " + reporterUUID)
+
+    for(reporter<-Webuser.findByUUID(reporterUUID);
+        speaker<-Webuser.findByUUID(proposal.mainSpeaker)) yield {
+      Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.id} ${proposal.title}"))
+      Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg)
     }
   }
 

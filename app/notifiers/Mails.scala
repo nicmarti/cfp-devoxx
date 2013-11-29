@@ -93,14 +93,14 @@ object Mails {
     )
   }
 
-  def sendMessageToSpeakers(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser:Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addCc("program@devoxx.fr")
-    emailer.addRecipient(proposal.mainSpeaker)
-    proposal.secondarySpeaker.map(email => emailer.addCc(email))
-    proposal.otherSpeakers.foreach(email => emailer.addCc(email))
+    emailer.addRecipient(toWebuser.email)
+    proposal.secondarySpeaker.map(uuid => Webuser.getEmailFromUUID(uuid).map(email=>emailer.addCc(email)))
+    proposal.otherSpeakers.foreach(uuid => Webuser.getEmailFromUUID(uuid).map(email=>emailer.addCc(email)))
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString(),
