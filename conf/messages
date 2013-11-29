@@ -62,9 +62,11 @@ summary.help=Describe your proposal, you can use Markdown syntax. We use the txt
 lang=Main language
 lang.help=75% of Devoxx France''s talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
 mainSpeaker=Main speaker
-mainSpeaker.help=The main speaker. You can add more speakers once the proposal is created. We offer a 3-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action.
+mainSpeaker.help=You can add more speakers once the proposal is created. We offer a 3-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action.
 otherSpeakers=2nd speaker
 talkType=Type of talk
+talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq/" target="new">FAQ</a>.
+
 audienceLevel=Audience level
 privateMessage=Private message for the program comitee
 privateMessage.help=Write here any important details about your presentation, that the program comitee should know. You can also set here the URL to your slides, or any other important details.
