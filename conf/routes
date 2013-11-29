@@ -35,7 +35,8 @@ POST    /cfp/proposal/save/:proposalId/speakers controllers.CallForPaper.saveOth
 GET     /cfp/proposal/delete/:proposalId controllers.CallForPaper.deleteProposal(proposalId:String)
 GET     /cfp/proposal/undelete/:proposalId controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET     /cfp/proposal/submit/:proposalId controllers.CallForPaper.submitProposal(proposalId:String)
-GET     /cfp/comment/:proposalId        controllers.CallForPaper.comment(proposalId:String)
+GET     /cfp/comment/:proposalId         controllers.CallForPaper.showCommentForProposal(proposalId:String)
+POST    /cfp/comment/:proposalId         controllers.CallForPaper.sendMessageToComite(proposalId:String)
 
 # Password
 GET     /forget                     controllers.Authentication.forgetPassword

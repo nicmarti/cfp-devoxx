@@ -45,7 +45,7 @@ import notifiers.Mails
 case class ReportIssue(issue: Issue)
 
 case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String)
-
+case class SendMessageToComite(reporterUUID: String, proposal: Proposal, msg: String)
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
 
 // Defines an actor (no failover strategy here)
@@ -57,6 +57,7 @@ class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
+    case SendMessageToComite(reporterUUID, proposal, msg) => sendMessageToComite(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
@@ -71,13 +72,20 @@ class ZapActor extends Actor {
   }
 
   def sendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String) {
-    if (play.Logger.of("application.ZapActor").isDebugEnabled) {
-      play.Logger.of("application.ZapActor").debug(s"Sending a message to ${proposal.mainSpeaker}")
-    }
     Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to ${proposal.mainSpeaker} about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         Mails.sendMessageToSpeakers(reporterWebuser, proposal, msg)
+    }.getOrElse {
+      play.Logger.error("User not found with uuid " + reporterUUID)
+    }
+  }
+
+  def sendMessageToComite(reporterUUID: String, proposal: Proposal, msg: String) {
+    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to comite about ${proposal.id} ${proposal.title}"))
+    Webuser.findByUUID(reporterUUID).map {
+      reporterWebuser: Webuser =>
+        Mails.sendMessageToComite(reporterWebuser, proposal, msg)
     }.getOrElse {
       play.Logger.error("User not found with uuid " + reporterUUID)
     }

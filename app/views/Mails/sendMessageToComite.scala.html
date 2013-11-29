@@ -1,0 +1,24 @@
+@(fromName:String, proposal:models.Proposal, msg:String)
+
+<p>Hi,</p> 
+
+<p>You received a new message from @fromName regarding talk "@proposal.title".</p>
+<br>
+<p>Message:</p>
+<hr>
+<pre>
+@msg
+
+@fromName
+</pre>
+<hr>
+   
+<h3>How to respond?</h3>
+
+<p>Please, use this link to respond directly to the message :</p>
+<a href="http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)">http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)</a>
+<br>
+<br>
+
+<p>Thanks</p>
+<p>The Devoxx France team.</p>

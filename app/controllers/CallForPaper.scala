@@ -25,10 +25,12 @@ package controllers
 
 import play.api.mvc._
 import models._
+import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
+import library.{SendMessageToComite, SendMessageToSpeaker, ZapActor}
 
 /**
  * Main controller for the speakers.
@@ -244,20 +246,42 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
+  val speakerMsg=Form("msg"->nonEmptyText(maxLength = 2500))
 
-  def comment(proposalId: String) = IsAuthenticated {
+  def showCommentForProposal(proposalId: String) = IsAuthenticated {
     uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Proposal.submit(uuid, proposalId)
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.submitted"))
+          Ok(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), speakerMsg))
         }
         case None => {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
         }
       }
-
   }
+
+  def sendMessageToComite(proposalId: String) = IsAuthenticated {
+    uuid => implicit request =>
+      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      maybeProposal match {
+        case Some(proposal) => {
+          speakerMsg.bindFromRequest.fold(
+            hasErrors=>{
+              BadRequest(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), hasErrors))
+            },
+            validMsg=>{
+              Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg)
+              ZapActor.actor ! SendMessageToComite(uuid, proposal, validMsg)
+              Redirect(routes.CallForPaper.showCommentForProposal(proposalId)).flashing("success"->"Message was sent")
+            }
+          )
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
+      }
+  }
+
 }
 

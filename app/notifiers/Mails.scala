@@ -108,6 +108,17 @@ object Mails {
     )
   }
 
+  def sendMessageToComite(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    emailer.setSubject("[DevoxxFr2014] Message about presentation ${proposal.title}")
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addRecipient("program@devoxx.fr")
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.sendMessageToComite(fromWebuser.cleanName, proposal, msg).toString(),
+      views.html.Mails.sendMessageToComite(fromWebuser.cleanName, proposal, msg).toString()
+    )
+  }
   def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"New private comment on ${proposal.id} ${proposal.title} by ${fromWebuser.cleanName}")

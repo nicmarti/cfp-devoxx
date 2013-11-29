@@ -169,10 +169,10 @@
                             <td>
                              @defining(models.Comment.countComments(prop.id)){totalComments:Long=>
                                 @if(totalComments == 0){
-                                    <span class="label label-info">0</span>
+&nbsp;
                                 }
                                 @if(totalComments > 0){
-                                    <span class="label label-warning">@totalComments</span>
+                                    <a href="@routes.CallForPaper.showCommentForProposal(prop.id)" class="label label-warning">@totalComments</a>
                                 }
                              }
                             </td>
