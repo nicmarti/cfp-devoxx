@@ -105,6 +105,7 @@ cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agility, DevOps
 lgaltern.label=Alternate languages
 startup.label=Startups & innovation
+future.label=Future<Java>
 
 # Bug report
 Issue.report=Report an issue
@@ -116,7 +117,7 @@ appel.conf=Call for Paper
 appel.conf.dates=Devoxx France 2014, 16th to 18th of April, 2014
 cfp.opening=CFP opening:
 cfp.opening.date=Monday, 2nd of December 2013
-cfp.closing=CFO closing :
+cfp.closing=CFP closing :
 cfp.closing.date=Sunday, 2nd of February 2014, midnight
 cfp.program=Program announced :
 cfp.program.date= february/march 2014
@@ -140,6 +141,8 @@ track.lang.title=Alternates Languages
 track.lang.desc=Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
 track.bigdata.title=Cloud, Big Data and NoSQL
 track.bigdata.desc=Capture, curation, storage, search, sharing, transfer, analysis and visualization.
+track.future.title=Future<Java>
+track.future.desc=Java in the Internet of things, robotics, domotics
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile

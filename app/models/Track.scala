@@ -43,8 +43,9 @@ object Track {
   val AGILITE=Track("agilite", "agilite.label")
   val LANG_ALTERNATIF=Track("lg_alter", "lgaltern.label")
   val STARTUP=Track("startup", "startup.label")
+  val FUTURE=Track("future", "future.label")
 
-  val all = List(JAVA, WEB, MOBILE, CLOUD, AGILITE, LANG_ALTERNATIF, STARTUP)
+  val all = List(JAVA, WEB, MOBILE, CLOUD, AGILITE, LANG_ALTERNATIF, STARTUP, FUTURE)
 
   val allAsIdsAndLabels = all.map(a=>(a.id,a.label)).toSeq.sorted
 
@@ -59,6 +60,7 @@ object Track {
       case "agilite" =>AGILITE
       case "lg_alter"=>LANG_ALTERNATIF
       case "startup"=>STARTUP
+      case "future"=>FUTURE
       case other =>JAVA
     }
   }
