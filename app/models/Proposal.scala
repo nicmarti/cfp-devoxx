@@ -282,7 +282,11 @@ object Proposal {
            realState <- findProposalState(proposal.id.get)) yield {
         proposal.copy(state = realState)
       }
+  }
 
+  def isSpeakerOf(proposalId:String, uuid:String):Boolean={
+    findById(proposalId).exists(proposal =>
+      proposal.mainSpeaker == uuid || proposal.secondarySpeaker.getOrElse("??") == uuid || proposal.otherSpeakers.contains(uuid))
   }
 
   def findProposalState(proposalId: String): Option[ProposalState] = Redis.pool.withClient {

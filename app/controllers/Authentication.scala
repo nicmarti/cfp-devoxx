@@ -101,7 +101,8 @@ object Authentication extends Controller {
         validForm =>
           Webuser.checkPassword(validForm._1, validForm._2) match {
             case Some(webuser) =>
-              Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> webuser.uuid)
+              val cookie=Cookie("cfp_rm",value=webuser.uuid, maxAge = Some(588000))
+              Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> webuser.uuid).withCookies(cookie)
             case None =>
               Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
           }
@@ -109,8 +110,9 @@ object Authentication extends Controller {
   }
 
   def logout = Action {
-    implicit request =>
-      Redirect(routes.Application.index).withNewSession
+        implicit request =>
+      val discardingCookie = DiscardingCookie("cfp_rm","/", None,false)
+      Redirect(routes.Application.index).discardingCookies(discardingCookie).withNewSession
   }
 
   def githubLogin = Action {
@@ -255,7 +257,8 @@ object Authentication extends Controller {
                         // Try to lookup the speaker
                         Webuser.findByEmail(emailS).map {
                           w =>
-                            Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid)
+                            val cookie=Cookie("cfp_rm",value=w.uuid, maxAge = Some(588000))
+                            Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                         }.getOrElse {
                           // Create a new one but ask for confirmation
                           val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
@@ -428,7 +431,8 @@ object Authentication extends Controller {
                     // Try to lookup the speaker
                     Webuser.findByEmail(email).map {
                       w =>
-                        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid)
+                        val cookie=Cookie("cfp_rm",value=w.uuid, maxAge = Some(588000))
+                        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                     }.getOrElse {
                       val defaultValues = (firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
                       Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues))).withSession("tmpEmail" -> email)
@@ -459,7 +463,9 @@ trait Secured {
   /**
    * Retrieve the connected user email.
    */
-  private def username(request: RequestHeader) = request.session.get("uuid")
+  private def username(request: RequestHeader) = {
+    request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(_.value))
+  }
 
   /**
    * Redirect to login if the user in not authorized.

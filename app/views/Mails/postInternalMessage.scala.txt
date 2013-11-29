@@ -1,6 +1,6 @@
 @(fromName:String, proposal:models.Proposal, msg:String)
 
-New comment posted by @fromName for @proposal.title / @proposal.mainSpeaker
+New comment posted by @fromName for @proposal.title
 
 Message:
 ------------------------------------------------------------------------------

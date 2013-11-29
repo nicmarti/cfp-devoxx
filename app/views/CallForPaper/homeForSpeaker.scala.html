@@ -8,8 +8,8 @@
             <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>
 
             <div class="panel panel-default">
-                <div class="panel-heading"><p>@webuser.firstName @webuser.lastName</p><small>@webuser.email</small></small></div>
-                @if(Webuser.hasAccessToCFPAdmin(webuser.email)){
+                <div class="panel-heading"><p>@webuser.firstName @webuser.lastName</p><small>@webuser.email</small></div>
+                @if(Webuser.hasAccessToCFPAdmin(webuser.uuid)){
                     <a href="@routes.CFPAdmin.index()"><i class="icon-external-link"></i> Switch to CFPAdmin</a>
                 }
 

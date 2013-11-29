@@ -34,6 +34,7 @@ POST    /cfp/proposal/save/:proposalId/speakers controllers.CallForPaper.saveOth
 GET     /cfp/proposal/delete/:proposalId controllers.CallForPaper.deleteProposal(proposalId:String)
 GET     /cfp/proposal/undelete/:proposalId controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET     /cfp/proposal/submit/:proposalId controllers.CallForPaper.submitProposal(proposalId:String)
+GET     /cfp/comment/:proposalId        controllers.CallForPaper.comment(proposalId:String)
 
 # Password
 GET     /forget                     controllers.Authentication.forgetPassword
@@ -53,8 +54,8 @@ GET     /bug                        controllers.Application.bugReport
 POST    /bug/new                    controllers.Application.submitIssue()
 
 # CFP Admin
-GET     /cfpadmin/                 controllers.CFPAdmin.index()
-GET     /cfpadmin                  controllers.CFPAdmin.index()
+GET     /cfpadmin/                      controllers.CFPAdmin.index()
+GET     /cfpadmin                       controllers.CFPAdmin.index()
 GET     /cfpadmin/proposal/:proposalId  controllers.CFPAdmin.openForReview(proposalId:String)
 POST    /cfpadmin/proposal/:proposalId/msgToSpeaker controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
 POST    /cfpadmin/proposal/:proposalId/postInternal controllers.CFPAdmin.postInternalMessage(proposalId:String)

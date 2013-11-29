@@ -163,7 +163,7 @@ object CallForPaper extends Controller with Secured {
       val maybeProposal = Proposal.allMyDraftAndSubmittedProposals(uuid).find(_.id.get == proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Proposal.draft(Webuser.getName(uuid), proposalId)
+          Proposal.draft(uuid, proposalId)
           Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm.fill(proposal)))
         }
         case None => {
@@ -250,5 +250,16 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
+
+  def comment(proposalId:String)=IsAuthenticated{
+    uuid=>implicit request =>
+      val res=for(webuser<-Webuser.findByUUID(uuid) if Webuser.isMember(uuid, "speaker");
+                  proposal<-Proposal.findById(proposalId) if Proposal.isSpeakerOf(proposalId, webuser.uuid)
+                ) yield {
+        Ok("Super !!!! ")
+      }
+    res.getOrElse(Redirect(routes.Application.index()).flashing("error"->"Could not authenticate you automatically, or this is not one of your proposal.").withNewSession)
+
+  }
 }
 

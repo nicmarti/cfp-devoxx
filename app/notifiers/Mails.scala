@@ -95,9 +95,9 @@ object Mails {
 
   def sendMessageToSpeakers(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("New question about your presentation ${proposal.id.get} for Devoxx France 2014")
+    emailer.setSubject("[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
-    emailer.addCc(fromWebuser.email)
+    emailer.addCc("program@devoxx.fr")
     emailer.addRecipient(proposal.mainSpeaker)
     proposal.secondarySpeaker.map(email => emailer.addCc(email))
     proposal.otherSpeakers.foreach(email => emailer.addCc(email))
@@ -112,8 +112,7 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"New private comment on ${proposal.id.get} ${proposal.title} by ${fromWebuser.cleanName}")
     emailer.addFrom("program@devoxx.fr")
-    emailer.addCc(fromWebuser.email)
-    emailer.addCc("program@devoxx.fr")
+    emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString(),
