@@ -1,63 +1,65 @@
-@(proposal:Proposal, comments:List[Comment], msgToComite: Form[String])(implicit lang: Lang, flash: Flash, uuid:String)
+@(proposal: Proposal, comments: List[Comment], msgToComite: Form[String])(implicit lang: Lang, flash: Flash, uuid: String)
 
 @import com.github.rjeschke.txtmark._
 
-@main("Comments for proposal "+proposal.id) {
-<div class="row">
-    <div class="col-md-12 panel panel-default">
-              <div class="panel-heading">
-                  <h3><i class="icon-bullhorn"></i> Comments for proposal</h3>
-              </div>
+@main("Comments for proposal " + proposal.id) {
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-bullhorn"></i> Comments for proposal</h3>
+                </div>
 
-              <div class="panel-body">
-                  <table class="table table-bordered table-strippted">
-                      <thead>
-                          <tr>
-                              <th>Title</th>
-                              <th>Track</th>
-                              <th>Type of talk</th>
-                              <th>Lang</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                              <td>
-                              @proposal.title
-                              </td>
-                              <td>
-                              @Messages(proposal.track.label)
-                              </td>
-                              <td>@Messages(proposal.talkType.id)</td>
-                              <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
-                          </tr>
-                          <tr>
-                              <th colspan="4">
-                                  Proposal
-                              </th>
-                          </tr>
-                          <tr>
-                              <td colspan="4">
-                                  <div class="proposal">
-                                  @defining(Processor.process(proposal.summary)) { htmlSummary =>
-                                      @Html(htmlSummary)
-                                  }
-                                  </div>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-              </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-strippted">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Track</th>
+                                <th>Type of talk</th>
+                                <th>Lang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                @proposal.title
+                                </td>
+                                <td>
+                                @Messages(proposal.track.label)
+                                </td>
+                                <td>@Messages(proposal.talkType.id)</td>
+                                <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
+                            </tr>
+                            <tr>
+                                <th colspan="4">
+                                    Proposal
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="proposal">
+                                    @defining(Processor.process(proposal.summary)) { htmlSummary =>
+                                        @Html(htmlSummary)
+                                    }
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        <div class="panel-body">
-        @helper.form(action = routes.CallForPaper.sendMessageToComite(proposal.id)) {
-            @helper.textarea(msgToComite("msg"), 'class -> "form-control input-xs")
-            <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
-        }
+                <div class="panel-body">
+                @helper.form(action = routes.CallForPaper.sendMessageToComite(proposal.id)) {
+                    @helper.textarea(msgToComite("msg"), 'class -> "form-control input-xs")
+                    <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
+                }
+                </div>
+
+                <div class="panel-body">
+                @tags.renderComments(comments)
+                </div>
+            </div>
         </div>
-
-        <div class="panel-body">
-            @tags.renderComments(comments)
-        </div>
-  </div>
-</div>
+    </div>
 }
