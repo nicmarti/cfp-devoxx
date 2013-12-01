@@ -141,10 +141,10 @@
                     <thead>
                         <tr>
                             <th>@Messages("table.pres.title")</th>
-                            <th>@Messages("table.pres.state")</th>
                             <th>@Messages("table.pres.speaker")</th>
-                            <th><i class="icon-comments"></i></th>
+                            <th>@Messages("table.pres.state")</th>
                             <th>@Messages("table.pres.doSubmit")</th>
+                            <th><i class="icon-comments"></i></th>
                             <th>@Messages("table.pres.doDelete")</th>
                         </tr>
                     </thead>
@@ -152,19 +152,26 @@
                     @myProposals.map { prop: Proposal =>
                         <tr>
                             <td><a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
+                            <td>
+                                @tags.renderGravatar(prop.mainSpeaker)
+                                @prop.secondarySpeaker.map{secondarySpeakerUUID=>
+                                    @tags.renderGravatar(secondarySpeakerUUID)
+                                }
+                                @prop.otherSpeakers.map{listOfUUID=>
+                                    @listOfUUID.split(",").map{suid=>
+                                        @tags.renderGravatar(suid)
+                                    }
+                                }
+
+                                <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
+                            </td>
                             <td><span class="label label-info">@prop.state.code</span></td>
                             <td>
-                            @tags.renderGravatar(prop.mainSpeaker)
-                            @prop.secondarySpeaker.map{secondarySpeakerUUID=>
-                                @tags.renderGravatar(secondarySpeakerUUID)
+                            @if(prop.state!=ProposalState.SUBMITTED){
+                                <a href="@routes.CallForPaper.submitProposal(prop.id)#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
+                            } else {
+                                <small><i class="icon-ok">@Messages("tbl.submitted")</i></small>
                             }
-                            @prop.otherSpeakers.map{listOfUUID=>
-                                @listOfUUID.split(",").map{suid=>
-                                    @tags.renderGravatar(suid)
-                                }
-                            }
-
-                            <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
                             </td>
                             <td>
                              @defining(models.Comment.countComments(prop.id)){totalComments:Long=>
@@ -175,13 +182,6 @@
                                     <a href="@routes.CallForPaper.showCommentForProposal(prop.id)" class="label label-warning">@totalComments</a>
                                 }
                              }
-                            </td>
-                            <td>
-                                @if(prop.state!=ProposalState.SUBMITTED){
-                                    <a href="@routes.CallForPaper.submitProposal(prop.id)#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
-                                } else {
-                                    <small><i class="icon-ok">@Messages("tbl.submitted")</i></small>
-                                }
                             </td>
                             <td>
                                 <a href="@routes.CallForPaper.deleteProposal(prop.id)" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
