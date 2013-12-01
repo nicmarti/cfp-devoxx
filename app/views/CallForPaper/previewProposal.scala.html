@@ -5,53 +5,48 @@
 @import helper._
 
 @main("New proposal - step 2") {
-    <div class="row">
+<div class="row">
         <div class="col-md-12">
-            @if(newProposal("id").value.isDefined){
+            @if(newProposal("id").value.isDefined) {
                 <h3>@Messages("Edit.proposal2")</h3>
-            }else{
+            } else {
                 <h3>@Messages("New.proposal2")</h3>
             }
             <hr>
         </div>
+
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">@Messages("summary.preview")</div>
                 <div class="panel-body">
-               <span class="label label-default">@newProposal("title").value</span><br>
-               <span class="label label-primary">@Messages(newProposal("talkType").value.getOrElse(""))</span> <span class="label label-primary">@Messages(newProposal("track").value.getOrElse("")+".label")</span><br>
+                    <span class="label label-default">@newProposal("title").value</span><br>
+                    <span class="label label-primary">@Messages(newProposal("talkType").value.getOrElse(""))</span> <span class="label label-primary">@Messages(newProposal("track").value.getOrElse("") + ".label")</span><br>
 
-<small>@Html(htmlSummary)</small>
+                    <small>@Html(htmlSummary)</small>
                 </div>
             </div>
 
         </div>
+
         <div class="col-md-4">
         @helper.form(action = routes.CallForPaper.saveProposal()) {
-<input type="hidden" name="lang" value="@newProposal("lang").value">
-<input type="hidden" name="title" value="@newProposal("title").value">
-<input type="hidden" name="mainSpeaker" value="@newProposal("mainSpeaker").value">
-<input type="hidden" name="otherSpeakers" value="@newProposal("otherSpeakers").value">
-<input type="hidden" name="talkType" value="@newProposal("talkType").value">
-<input type="hidden" name="audienceLevel" value="@newProposal("audienceLevel").value">
-<input type="hidden" name="summary" value="@newProposal("summary").value">
-<input type="hidden" name="privateMessage" value="@newProposal("privateMessage").value">
-<input type="hidden" name="sponsorTalk" value="@newProposal("sponsorTalk").value">
-<input type="hidden" name="track" value="@newProposal("track").value">
-<input type="hidden" name="id" value="@newProposal("id").value">
+            <input type="hidden" name="lang" value="@newProposal("lang").value">
+            <input type="hidden" name="title" value="@newProposal("title").value">
+            <input type="hidden" name="mainSpeaker" value="@newProposal("mainSpeaker").value">
+            <input type="hidden" name="otherSpeakers" value="@newProposal("otherSpeakers").value">
+            <input type="hidden" name="talkType" value="@newProposal("talkType").value">
+            <input type="hidden" name="audienceLevel" value="@newProposal("audienceLevel").value">
+            <input type="hidden" name="summary" value="@newProposal("summary").value">
+            <input type="hidden" name="privateMessage" value="@newProposal("privateMessage").value">
+            <input type="hidden" name="sponsorTalk" value="@newProposal("sponsorTalk").value">
+            <input type="hidden" name="track" value="@newProposal("track").value">
+            <input type="hidden" name="id" value="@newProposal("id").value">
 
-<div class="alert alert-info"><i class="icon-circle-arrow-left"></i> @Messages("not.saved")</div>
-<p><button class="btn btn-success"><i class="icon-file-text"></i> @Messages("btn.save2")</button>
-        <br/>
-    @Messages("validate.summary2") <a href="javascript:history.back()">@Messages("validate.summary3")</a> @Messages("validate.summary4")
+            <div class="alert alert-info"><i class="icon-circle-arrow-left"></i> @Messages("not.saved")</div>
+            <p><button class="btn btn-success"><i class="icon-file-text"></i> @Messages("btn.save2")</button>
+                <br/>
+                @Messages("validate.summary2") <a href="javascript:history.back()">@Messages("validate.summary3")</a> @Messages("validate.summary4")
                 }
         </div>
-<div class="clearfix"></div>
-<div class="cold-md-12">
-    <div class="alert alert-warning">
-        @Messages("preview.warn") <i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i> @Messages("preview.warn2")
-    </div>
-</div>
-    </div>
 </div>
 }
