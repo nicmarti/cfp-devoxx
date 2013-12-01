@@ -87,6 +87,8 @@ validate.summary3=the back button
 validate.summary4=of your web browser and edit your summary.
 track=Track for your proposal
 summary.preview=Preview
+preview.warn=Do no forget to submit your proposal to the program comite, using the icon
+preview.warn2=in the main CFP screen.
 
 # Proposal type
 key.label=Keynote, 50mn, thursday and friday

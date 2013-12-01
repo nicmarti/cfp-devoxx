@@ -18,7 +18,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">@Messages("summary.preview")</div>
                 <div class="panel-body">
-                @Html(htmlSummary)
+               <span class="label label-default">@newProposal("title").value</span><br>
+               <span class="label label-primary">@Messages(newProposal("talkType").value.getOrElse(""))</span> <span class="label label-primary">@Messages(newProposal("track").value.getOrElse("")+".label")</span><br>
+
+<small>@Html(htmlSummary)</small>
                 </div>
             </div>
 
@@ -36,11 +39,18 @@
 <input type="hidden" name="sponsorTalk" value="@newProposal("sponsorTalk").value">
 <input type="hidden" name="track" value="@newProposal("track").value">
 <input type="hidden" name="id" value="@newProposal("id").value">
+
 <div class="alert alert-info"><i class="icon-circle-arrow-left"></i> @Messages("not.saved")</div>
 <p><button class="btn btn-success"><i class="icon-file-text"></i> @Messages("btn.save2")</button>
     @Messages("validate.summary2") <a href="javascript:history.back()">@Messages("validate.summary3")</a> @Messages("validate.summary4")
                 }
         </div>
+<div class="clearfix"></div>
+<div class="cold-md-12">
+    <div class="alert alert-warning">
+        @Messages("preview.warn") <i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i> @Messages("preview.warn2")
+    </div>
+</div>
     </div>
 </div>
 }

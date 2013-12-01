@@ -113,13 +113,15 @@ sponsorTalk.checkbox=Présentation sponsor/exposant
 helpAndTips=Aide et conseils
 moreSpeakerLater=Vous aurez la possibilité d''ajouter un ou plusieurs speakers plus tard.
 btn.save=Passer à l''étape 2
-btn.save2=Continuer et passer à l''étape 3
-not.saved=Vérifiez le résumé à destination du participant à Devoxx France, puis cliquez sur Continuer pour sauver votre proposition.
+btn.save2=Sauvegarder votre proposition
+not.saved=Vérifiez le résumé à destination du participant à Devoxx France, puis cliquez sur "Sauvegarder la proposition" pour continuer.
 validate.summary2=ou sinon utilisez
 validate.summary3=le bouton retour à la page précédente
 validate.summary4=de votre navigateur pour corriger votre texte de résumé.
 track=Thème principal de la présentation
 summary.preview=Aperçu de votre présentation
+preview.warn=Votre proposition est à l''état DRAFT. N''oubliez pas de soumettre la proposition avec l''icône
+preview.warn2=dans le tableau de la page d''accueil.
 
 # Proposal type
 key.label=Keynote, 50mn, jeudi et vendredi matin
@@ -131,6 +133,7 @@ amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
 other.label=Autre type de présentation
 lab.label=Hand''s on Lab, 3h, mercredi uniquement
+
 
 
 
@@ -180,6 +183,8 @@ agilite.label=Agilité, DevOps
 lgaltern.label=Langages alternatifs
 startup.label=Startup & Innovation
 future.label=Future<Devoxx>
+
+
 
 # Confirm import
 confirm.import.title=Créer votre profil de présentateur Devoxx France
