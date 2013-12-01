@@ -1,61 +1,61 @@
-@(proposal: models.Proposal, score: Int, totalVotesCast:Long, totalVotes: Long, allVotes:List[(String,Double)])(implicit lang: Lang, flash: Flash, uuid:String)
+@(proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)])(implicit lang: Lang, flash: Flash, uuid: String)
 
 @main("Votes for " + proposal.id + "/" + proposal.title) {
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3><i class="icon-stackexchange"></i> Proposal @proposal.title</h3>
-            </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-stackexchange"></i> Proposal @proposal.title</h3>
+                </div>
 
-            @if(flash.get("error").isDefined) {
-                <div class="alert alert-danger alert-dismissable col-md-12">
-                    <strong>Error :</strong>
-                    @flash.get("error").get
-                </div>
-            }
-            @if(flash.get("success").isDefined) {
-                <div class="alert alert-success alert-dismissable col-md-12">
-                @flash.get("success").get
-                </div>
-            }
+                @if(flash.get("error").isDefined) {
+                    <div class="alert alert-danger alert-dismissable col-md-12">
+                        <strong>Error :</strong>
+                        @flash.get("error").get
+                    </div>
+                }
+                @if(flash.get("success").isDefined) {
+                    <div class="alert alert-success alert-dismissable col-md-12">
+                    @flash.get("success").get
+                    </div>
+                }
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="panel-body">
-            <h3>Current score</h3>
-            <p>Total score : @score</p>
-            <p>Average score : @(score.toDouble./(totalVotesCast.toDouble))</p>
-            <p>Total votes cast : @totalVotesCast</p>
-            <p>Total votes : @totalVotes</p>
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="panel-body">
-            <h3>All votes</h3>
-            <div class="media">
-            @allVotes.sortBy(_._2).map{case(author,vote)=>
-                <div class="media-body">
-                    <span class="pull-left">
-                                @tags.renderGravatar(author)
-                                </span>
 
-                        voted @tags.renderVote(vote.toInt)
-                </div>
-            }
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
+        <div class="col-md-4">
             <div class="panel-body">
-                <a class="btn btn-primary" accesskey="n" href="@routes.CFPAdmin.index()">Continue and evaluate the next talk</a>
-                <a class="btn btn-warning" accesskey="n" href="@routes.CFPAdmin.openForReview(proposal.id)">Review or change your vote</a>
+                <h3>Current score</h3>
+                <p>Total score : @score</p>
+                <p>Average score : @(score.toDouble./(totalVotesCast.toDouble))</p>
+                <p>Total votes cast : @totalVotesCast</p>
+                <p>Total votes : @totalVotes</p>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="panel-body">
+                <h3>All votes</h3>
+                <div class="media">
+                @allVotes.sortBy(_._2).map { case (author, vote) =>
+                    <div class="media-body">
+                        <span class="pull-left">@tags.renderGravatar(author)</span>
+                        voted @tags.renderVote(vote.toInt)
+                    </div>
+                }
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a class="btn btn-primary" accesskey="n" href="@routes.CFPAdmin.index()">
+                        Continue and evaluate the next talk</a>
+                    <a class="btn btn-warning" accesskey="n" href="@routes.CFPAdmin.openForReview(proposal.id)">
+                        Review or change your vote</a>
+                </div>
+            </div>
+        </div>
+    </div>
 }
