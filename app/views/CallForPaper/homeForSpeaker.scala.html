@@ -153,6 +153,7 @@
                         <tr>
                             <td><a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
                             <td>
+                                <div style="max-width:114px">
                                 @tags.renderGravatar(prop.mainSpeaker)
                                 @prop.secondarySpeaker.map{secondarySpeakerUUID=>
                                     @tags.renderGravatar(secondarySpeakerUUID)
@@ -162,7 +163,8 @@
                                         @tags.renderGravatar(suid)
                                     }
                                 }
-                                <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
+                                </div>
+                                <a style="padding-left:4px;padding-left:3px;" href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
                             </td>
                             <td><span class="label label-info">@prop.state.code</span></td>
                             <td>
