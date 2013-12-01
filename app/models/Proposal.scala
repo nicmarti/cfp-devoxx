@@ -96,8 +96,14 @@ object Proposal {
 
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
-      val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
-    println("Proposal save "+proposalWithMainSpeaker.id)
+    // If it's a sponsor talk, we force it to be a conference
+    // We also enforce the user id, for security reason
+      val proposalWithMainSpeaker = if (proposal.sponsorTalk) {
+        proposal.copy(talkType = ProposalType.CONF, mainSpeaker = authorUUID)
+      } else {
+        proposal.copy(mainSpeaker = authorUUID)
+      }
+
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
       // TX
@@ -138,7 +144,6 @@ object Proposal {
                           otherSpeakers: List[String],
                           talkType: String, audienceLevel: String, summary: String, privateMessage: Option[String],
                           sponsorTalk: Boolean, track: String): Proposal = {
-    println("validate new proposal"+id)
     Proposal(
       id.getOrElse(generateId()),
       "Devoxx France 2014",

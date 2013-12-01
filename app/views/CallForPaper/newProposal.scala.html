@@ -80,13 +80,24 @@ $(document).ready(function($){
         if (this.checked) {
             $('#sponsorTalkMsg').show();
             $('#talkType option[value="conf"]' ).prop('selected', true);
-            $('#talkType').prop('disabled', true);
+//            $('#talkType').prop('disabled', true);
         }
         else {
             $('#sponsorTalkMsg').hide();
             $('#talkType').prop('disabled', false);
         }
     });
+
+    if($('#sponsorTalk').is(':checked') ){
+        console.log("Checked");
+        $('#sponsorTalkMsg').show();
+        $('#talkType option[value="conf"]' ).prop('selected', true);
+//        $('#talkType').prop('disabled', true);
+    }else{
+        console.log("Not checked");
+        $('#sponsorTalkMsg').hide();
+        $('#talkType').prop('disabled', false);
+    }
 });
 </script>
 
