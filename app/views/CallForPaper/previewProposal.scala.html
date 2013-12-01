@@ -14,7 +14,7 @@
             }
             <hr>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">@Messages("summary.preview")</div>
                 <div class="panel-body">
@@ -26,7 +26,7 @@
             </div>
 
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
         @helper.form(action = routes.CallForPaper.saveProposal()) {
 <input type="hidden" name="lang" value="@newProposal("lang").value">
 <input type="hidden" name="title" value="@newProposal("title").value">
@@ -42,6 +42,7 @@
 
 <div class="alert alert-info"><i class="icon-circle-arrow-left"></i> @Messages("not.saved")</div>
 <p><button class="btn btn-success"><i class="icon-file-text"></i> @Messages("btn.save2")</button>
+        <br/>
     @Messages("validate.summary2") <a href="javascript:history.back()">@Messages("validate.summary3")</a> @Messages("validate.summary4")
                 }
         </div>

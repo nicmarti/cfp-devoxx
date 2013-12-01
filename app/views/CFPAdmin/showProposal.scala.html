@@ -1,10 +1,11 @@
-@(proposal: Proposal, speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int])(implicit lang: Lang, flash: Flash, uuid:String)
+@(proposal: Proposal, speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int])(implicit lang: Lang, flash: Flash)
 
 @import com.github.rjeschke.txtmark._
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
 <div class="row">
-        <div class="col-md-12 panel panel-default">
+        <div class="col-md-12">
+            <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><i class="icon-stackexchange"></i> Proposal</h3>
             </div>
@@ -93,20 +94,26 @@
                 </table>
             </div>
         </div>
+        </div>
 
         @if(flash.get("error").isDefined) {
-            <div class="alert alert-danger alert-dismissable col-md-12">
+            <div class="col-md-12">
+                <div class="alert alert-danger alert-dismissable">
                 <strong>Error :</strong>
                 @flash.get("error").get
             </div>
+            </div>
         }
         @if(flash.get("success").isDefined) {
-            <div class="alert alert-success alert-dismissable col-md-12">
+            <div class="col-md-12">
+                <div class="alert alert-success alert-dismissable">
             @flash.get("success").get
+            </div>
             </div>
         }
 
-        <div class="col-md-12 panel panel-default">
+        <div class="col-md-12">
+            <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><i class="icon-thumbs-up"></i> Evaluate</h3>
             </div>
@@ -122,19 +129,20 @@
                 </div>
             </div>
             @if(flash.get("vote").isDefined) {
-                <div class="alert alert-success alert-dismissable col-md-12">
+                    <div class="alert alert-success alert-dismissable">
                 @flash.get("vote").get
                 </div>
             }
 
         </div>
-
-        <div class="col-md-12 panel panel-default">
+            <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><i class="icon-tasks"></i> Discussion</h3>
             </div>
         </div>
-        <div class="col-md-6 panel panel-default">
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
             <div class="panel-heading">
                 <h4><i class="icon-comments-alt"></i>  Between Speakers and the Committee</h4>
             </div>
@@ -148,7 +156,9 @@
             @tags.renderComments(speakerComments)
             </div>
         </div>
-        <div class="col-md-6 panel panel-danger">
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-danger">
             <div class="panel-heading">
                 <h4><i class="icon-comments"></i> Internal discussion</h4>
             </div>
@@ -160,6 +170,7 @@
             </div>
             <div class="panel-body">
             @tags.renderComments(internalComments)
+                </div>
         </div>
     </div>
 </div>

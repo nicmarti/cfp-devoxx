@@ -2,72 +2,72 @@
 
 @main("Speaker " + speaker.name.getOrElse("")) {
 <div class="row">
-        <div class="col-md-12 panel panel-default">
+    <div class="col-md-12">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><i class="icon-user"></i> @speaker.name.getOrElse(speaker.email)</h3>
             </div>
 
             <div class="panel-body">
-
                 <table class="table">
-                                   <tbody>
-                                       <tr>
-                                           <td>
-                                           @if(speaker.avatarUrl.isEmpty) {
-                                               <div class="media">
-                                                   <a class="pull-left" href="#">
-                                                       <img class="media-object"
-                                                       src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=75"
-                                                       alt="@speaker.name.getOrElse("")"
-                                                       title="@speaker.name.getOrElse("")" />
-                                                   </a>
-                                                   <div class="media-body">
-                                                       <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
-                                                           Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
-                                                   </div>
-                                               </div>
-                                           } else {
-                                               <div class="media">
-                                                   <a class="pull-left" href="#">
-                                                       <img class="media-object"
-                                                       width="75"
-                                                       src="@speaker.avatarUrl.get"
-                                                       alt="@speaker.name.getOrElse("")"/>
-                                                   </a>
-                                               </div>
-                                           }
-                                           </td>
-                                       </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                            @if(speaker.avatarUrl.isEmpty) {
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object"
+                                        src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=75"
+                                        alt="@speaker.name.getOrElse("")"
+                                        title="@speaker.name.getOrElse("")" />
+                                    </a>
+                                    <div class="media-body">
+                                        <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
+                                            Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
+                                    </div>
+                                </div>
+                            } else {
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object"
+                                        width="75"
+                                        src="@speaker.avatarUrl.get"
+                                        alt="@speaker.name.getOrElse("")"/>
+                                    </a>
+                                </div>
+                            }
+                            </td>
+                        </tr>
 
-                                       <tr>
-                                           <td><i class="icon-adjust"></i> Bio</td><td>@speaker.bio</td>
-                                       </tr>
-                                       <tr>
-                                           <td><i class="icon-flag"></i> Lang</td><td>@speaker.lang.getOrElse("")</td>
-                                       </tr>
-                                       <tr>
-                                           <td><i class="icon-bullhorn"></i>
-                                           Blog</td>
-                                           <td>
-                                               @speaker.blog.map{b=>
-                                               <a href="@b" target="new">@b</a>
-                                           }.getOrElse("")
-                                           </td>
-                                       </tr>
-                                       <tr>
-                                           <td><i class="icon-building"></i> Company</td>
-                                           <td>@speaker.company.getOrElse("")</td>
-                                       </tr>
-                                       <tr>
-                                           <td><i class="icon-twitter"></i> Twitter</td>
-                                           <td>@speaker.twitter.map{t=>
-                                            <a href="http://www.twitter.com/@t" target="new">@t</a>
-                                           }.getOrElse("")</td>
-                                       </tr>
-                                   </tbody>
-                               </table>
-
+                        <tr>
+                            <td><i class="icon-adjust"></i> Bio</td><td>@speaker.bio</td>
+                        </tr>
+                        <tr>
+                            <td><i class="icon-flag"></i> Lang</td><td>@speaker.lang.getOrElse("")</td>
+                        </tr>
+                        <tr>
+                            <td><i class="icon-bullhorn"></i>
+                                Blog</td>
+                            <td>
+                            @speaker.blog.map{b=>
+                            <a href="@b" target="new">@b</a>
+                            }.getOrElse("")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><i class="icon-building"></i> Company</td>
+                            <td>@speaker.company.getOrElse("")</td>
+                        </tr>
+                        <tr>
+                            <td><i class="icon-twitter"></i> Twitter</td>
+                            <td>@speaker.twitter.map{t=>
+                            <a href="http://www.twitter.com/@t" target="new">@t</a>
+                            }.getOrElse("")</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
 </div>
 }
