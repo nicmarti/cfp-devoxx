@@ -1,25 +1,28 @@
 @(events: List[Event], allProposalsForReview: List[Proposal])(implicit lang: Lang, flash: Flash, uuid:String)
 
 @main("CFP Admin") {
+
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
             <h2><i class="icon-beaker"></i> CFP Admin</h2>
         </div>
         <div class="clearfix"></div>
 
+        <div class="col-md-12">
+
         @if(flash.get("error").isDefined){
-            <div class="alert alert-danger alert-dismissable col-md-12">
+                <div class="alert alert-danger alert-dismissable">
                 <strong>Error :</strong>
                 @flash.get("error").get
             </div>
         }
         @if(flash.get("success").isDefined){
-            <div class="alert alert-success alert-dismissable col-md-12">
+                <div class="alert alert-success alert-dismissable">
                 @flash.get("success").get
             </div>
         }
 
-        <div class="col-md-12 panel panel-default">
+            <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><i class="icon-ok-circle"></i> Your todo list </h3>
             </div>
@@ -63,13 +66,15 @@
                     </tbody>
                 </table>
                 }else{
-                    <P>There is no new talks</P>
+                    <p>There is no new talks</p>
                 }
                 <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
             </div>
         </div>
+        </div>
 
-        <div class="col-md-12 panel panel-default">
+        <div class="col-md-12">
+            <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><i class="icon-stackexchange"></i> Recent events</h3>
             </div>
@@ -100,6 +105,7 @@
                     }
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
     </div>
