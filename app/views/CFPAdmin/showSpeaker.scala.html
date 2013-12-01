@@ -1,4 +1,4 @@
-@(speaker:Speaker)
+@(speaker:Speaker)(implicit lang: Lang, flash: Flash, uuid:String)
 
 @main("Speaker " + speaker.name.getOrElse("")) {
 <div class="row">

@@ -1,9 +1,9 @@
-@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang)
+@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang, uuid:String)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
-@main("New proposal") {
+@main("Edit speaker") {
     <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
 
     <div class="row">

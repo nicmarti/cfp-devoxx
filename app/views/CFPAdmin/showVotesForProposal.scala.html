@@ -1,6 +1,6 @@
-@(proposal: models.Proposal, score: Int, totalVotesCast:Long, totalVotes: Long, allVotes:List[(String,Double)])(implicit flash:Flash)
+@(proposal: models.Proposal, score: Int, totalVotesCast:Long, totalVotes: Long, allVotes:List[(String,Double)])(implicit lang: Lang, flash: Flash, uuid:String)
 
-@main("[CFP] Votes for " + proposal.id + "/" + proposal.title) {
+@main("Votes for " + proposal.id + "/" + proposal.title) {
 <div class="row">
     <div class="col-md-12 panel panel-default">
         <div class="panel-heading">

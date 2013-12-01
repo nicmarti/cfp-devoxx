@@ -1,6 +1,6 @@
-@(totalSpeakers: Long, totalProposals:Long, totalReviews:Long, totalVotes:Long, totalNoVotes:Long, mostVoted:Option[Review.VotesPerProposal], bestReviewer:(String,Long))
+@(totalSpeakers: Long, totalProposals:Long, totalReviews:Long, totalVotes:Long, totalNoVotes:Long, mostVoted:Option[Review.VotesPerProposal], bestReviewer:(String,Long))(implicit lang: Lang, flash: Flash, uuid:String)
 
-@main("DevoxxFR2014 Leaderboard") {
+@main("Leaderboard") {
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">

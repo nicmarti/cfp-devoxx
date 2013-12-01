@@ -1,4 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal])(implicit flash: Flash, lang: Lang)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal])(implicit flash: Flash, lang: Lang, uuid:String)
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
@@ -9,10 +9,6 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading"><p>@webuser.firstName @webuser.lastName</p><small>@webuser.email</small></div>
-                @if(Webuser.hasAccessToCFPAdmin(webuser.uuid)){
-                    <a href="@routes.CFPAdmin.index()"><i class="icon-external-link"></i> Switch to CFPAdmin</a>
-                }
-
                 <table class="table">
                     <tbody>
                         <tr>

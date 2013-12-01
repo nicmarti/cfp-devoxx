@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(implicit lang: Lang, uuid:String)
+@(title: String)(content: Html)(implicit lang: Lang)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,9 +36,6 @@
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav navbar-left">
                 <li><a href="@routes.CallForPaper.homeForSpeaker()">@Messages("nav.homeSpeaker")</a></li>
-                @if(Webuser.hasAccessToCFPAdmin(uuid)){
-                    <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> CFPAdmin</a></li>
-                }
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>
@@ -55,7 +52,6 @@
   <div class="container">
     <div>
       <hr>
-        <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
         <small><i class="icon-bullhorn"></i> Devoxx France Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
         <small><i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">Clever-cloud</a></small>
     </div>

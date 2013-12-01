@@ -41,7 +41,7 @@ import library.{SendMessageToComite, SendMessageToSpeaker, ZapActor}
 object CallForPaper extends Controller with Secured {
 
   def homeForSpeaker = IsAuthenticated {
-    uuid => implicit request =>
+   implicit uuid => implicit request =>
       val result = for (speaker <- SpeakerHelper.findByUUID(uuid).toRight("Speaker not found").right;
                         webuser <- Webuser.findByUUID(uuid).toRight("Webuser not found").right) yield (speaker, webuser)
       result.fold(errorMsg => {
@@ -55,7 +55,7 @@ object CallForPaper extends Controller with Secured {
   val editWebuserForm = play.api.data.Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)), "lastName" -> text.verifying(nonEmpty, maxLength(40))))
 
   def editCurrentWebuser = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       Webuser.findByUUID(uuid).map {
         webuser =>
           Ok(views.html.CallForPaper.editWebuser(editWebuserForm.fill(webuser.firstName, webuser.lastName)))
@@ -63,7 +63,7 @@ object CallForPaper extends Controller with Secured {
   }
 
   def saveCurrentWebuser = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       editWebuserForm.bindFromRequest.fold(errorForm => BadRequest(views.html.CallForPaper.editWebuser(errorForm)),
         success => {
           Webuser.updateNames(uuid, success._1, success._2)
@@ -83,7 +83,7 @@ object CallForPaper extends Controller with Secured {
   )(SpeakerHelper.createSpeaker)(SpeakerHelper.unapplyForm))
 
   def editProfile = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       SpeakerHelper.findByUUID(uuid).map {
         speaker =>
           Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
@@ -91,7 +91,7 @@ object CallForPaper extends Controller with Secured {
   }
 
   def saveProfile = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validForm => {
@@ -103,14 +103,14 @@ object CallForPaper extends Controller with Secured {
 
   // Load a new proposal form
   def newProposal() = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
 
   }
 
   // Load a proposal, change the status to DRAFT (not sure this is a goode idea)
   def editProposal(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -123,23 +123,22 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-
   // Prerender the proposal, but do not persist
   def previewProposal() = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
           import com.github.rjeschke.txtmark._
           val html = Processor.process(validProposal.summary) // markdown to HTML
-          Ok(views.html.CallForPaper.previewProposal(uuid, html, Proposal.proposalForm.fill(validProposal)))
+          Ok(views.html.CallForPaper.previewProposal(html, Proposal.proposalForm.fill(validProposal)))
         }
       )
   }
 
   // Revalidate to avoid CrossSite forgery and save the proposal
   def saveProposal() = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
 
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
@@ -170,7 +169,7 @@ object CallForPaper extends Controller with Secured {
 
   // Load a proposal by its id
   def editOtherSpeakers(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -185,7 +184,7 @@ object CallForPaper extends Controller with Secured {
   // Check that the current authenticated user is the owner
   // validate the form and then save and redirect.
   def saveOtherSpeakers(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -204,7 +203,7 @@ object CallForPaper extends Controller with Secured {
   }
 
   def deleteProposal(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -218,7 +217,7 @@ object CallForPaper extends Controller with Secured {
   }
 
   def undeleteProposal(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDeleted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -233,7 +232,7 @@ object CallForPaper extends Controller with Secured {
   }
 
   def submitProposal(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraft(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -249,7 +248,7 @@ object CallForPaper extends Controller with Secured {
   val speakerMsg=Form("msg"->nonEmptyText(maxLength = 2500))
 
   def showCommentForProposal(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -262,7 +261,7 @@ object CallForPaper extends Controller with Secured {
   }
 
   def sendMessageToComite(proposalId: String) = IsAuthenticated {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {

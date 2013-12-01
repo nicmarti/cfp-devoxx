@@ -234,3 +234,6 @@ constraint.required=Required
 msg=Your message
 select.secondarySpeaker=Select a speaker
 freepass.forIdiots=Free pass included if, and only if, your talk is selected by the program comite
+
+nav.homeSpeaker=Home
+editWebuser.title=Edit your firstname and lastname

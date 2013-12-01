@@ -18,7 +18,7 @@ import scala.Some
 object CFPAdmin extends Controller with Secured {
 
   def index() = IsMemberOf("cfp") {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       val twentyEvents = Event.loadEvents(20)
       val allProposalsForReview = Review.allProposalsNotReviewed(uuid)
       Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview))
@@ -27,7 +27,7 @@ object CFPAdmin extends Controller with Secured {
   val messageForm: Form[String] = Form("msg" -> nonEmptyText(maxLength = 1000))
 
   def openForReview(proposalId: String) = IsMemberOf("cfp") {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
@@ -39,7 +39,7 @@ object CFPAdmin extends Controller with Secured {
   }
 
   def showVotesForProposal(proposalId: String) = IsMemberOf("cfp") {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           val score = Review.currentScore(proposalId)
@@ -53,7 +53,7 @@ object CFPAdmin extends Controller with Secured {
   }
 
   def sendMessageToSpeaker(proposalId: String) = IsMemberOf("cfp") {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           messageForm.bindFromRequest.fold(
@@ -75,7 +75,7 @@ object CFPAdmin extends Controller with Secured {
 
   // Post an internal message that is visible only for program committe
   def postInternalMessage(proposalId: String) = IsMemberOf("cfp") {
-    uuid => implicit request =>
+    implicit uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           messageForm.bindFromRequest.fold(
@@ -98,7 +98,7 @@ object CFPAdmin extends Controller with Secured {
   val voteForm: Form[Int] = Form("vote" -> number(min = 0, max = 10))
 
   def voteForProposal(proposalId: String) = IsMemberOf("cfp") {
-    email => implicit request =>
+    implicit uuid => implicit request =>
       Proposal.findById(proposalId) match {
         case Some(proposal) => {
           voteForm.bindFromRequest.fold(
@@ -108,7 +108,7 @@ object CFPAdmin extends Controller with Secured {
               BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors))
             },
             validVote => {
-              Review.voteForProposal(proposalId, email, validVote)
+              Review.voteForProposal(proposalId, uuid, validVote)
               Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Ok, vote submitted")
             }
           )
@@ -117,16 +117,16 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
-  def showSpeaker(uuid: String) = IsMemberOf("cfp") {
-    email => implicit request =>
-      SpeakerHelper.findByUUID(uuid) match {
+  def showSpeaker(uuidSpeaker: String) = IsMemberOf("cfp") {
+    implicit uuid => implicit request =>
+      SpeakerHelper.findByUUID(uuidSpeaker) match {
         case Some(speaker) => Ok(views.html.CFPAdmin.showSpeaker(speaker))
         case None => NotFound("Speaker not found")
       }
   }
 
   def leaderBoard = IsMemberOf("cfp") {
-    email => implicit request =>
+    implicit uuid => implicit request =>
       val totalSpeakers = SpeakerHelper.countAll()
       val totalProposals = Proposal.countAll()
       val totalVotes = Review.countAll()
@@ -137,20 +137,20 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
   }
 
-  def allSpeakers = IsMemberOf("admin"){
-    email => implicit request =>
+  def allSpeakers = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       Ok(views.html.CFPAdmin.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
   }
 
-  def switchCFPAdmin(uuid:String) = IsMemberOf("admin"){
-      email => implicit request =>
-        if(Webuser.hasAccessToCFPAdmin(uuid)){
-          Webuser.removeFromCFPAdmin(uuid)
-        }else{
-          Webuser.addToCFPAdmin(uuid)
-        }
-        Redirect(routes.CFPAdmin.allSpeakers)
-    }
+  def switchCFPAdmin(uuidSpeaker: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+      if (Webuser.hasAccessToCFPAdmin(uuidSpeaker)) {
+        Webuser.removeFromCFPAdmin(uuidSpeaker)
+      } else {
+        Webuser.addToCFPAdmin(uuidSpeaker)
+      }
+      Redirect(routes.CFPAdmin.allSpeakers)
+  }
 }
 
 

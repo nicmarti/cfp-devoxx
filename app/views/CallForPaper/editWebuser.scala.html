@@ -1,4 +1,4 @@
-@(webuserForm: Form[(String,String)])(implicit flash:Flash, lang:Lang)
+@(webuserForm: Form[(String,String)])(implicit flash:Flash, lang:Lang, uuid:String)
 
 @import helper.twitterBootstrap._
 
@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-md-12 page-header">
-        <h1>Votre profil</h1>
+        <h1>@Messages("editWebuser.title")</h1>
     </div>
     <div class="col-md-12">
         @helper.form(action = routes.CallForPaper.saveCurrentWebuser) {
