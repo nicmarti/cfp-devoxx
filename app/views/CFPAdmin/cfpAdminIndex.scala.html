@@ -8,19 +8,21 @@
         </div>
         <div class="clearfix"></div>
 
-        @if(flash.get("error").isDefined){
-            <div class="alert alert-danger alert-dismissable col-md-12">
-                <strong>Error :</strong>
-                @flash.get("error").get
-            </div>
-        }
-        @if(flash.get("success").isDefined){
-            <div class="alert alert-success alert-dismissable col-md-12">
-                @flash.get("success").get
-            </div>
-        }
+        <div class="col-md-12">
 
-        <div class="col-md-12 panel panel-default">
+            @if(flash.get("error").isDefined){
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined){
+                <div class="alert alert-success alert-dismissable">
+                    @flash.get("success").get
+                </div>
+            }
+
+            <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><i class="icon-ok-circle"></i> Your todo list </h3>
             </div>
@@ -64,18 +66,20 @@
                     </tbody>
                 </table>
                 }else{
-                    <P>There is no new talks</P>
+                    <p>There is no new talks</p>
                 }
                 <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
             </div>
+            </div>
         </div>
 
-        <div class="col-md-12 panel panel-default">
-            <div class="panel-heading">
-                <h3><i class="icon-stackexchange"></i> Recent events</h3>
-            </div>
-            <div class="panel-body">
-                <table class="table table-bordered table-strippted">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3><i class="icon-stackexchange"></i> Recent events</h3>
+    		</div>
+	    	<div class="panel-body">
+                  <table class="table table-bordered table-strippted">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -99,6 +103,7 @@
                     }
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
     </div>
