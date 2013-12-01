@@ -75,13 +75,13 @@ class ZapActor extends Actor {
 
     for(reporter<-Webuser.findByUUID(reporterUUID);
         speaker<-Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.id} ${proposal.title}"))
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${} ${proposal.title}"))
       Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg)
     }
   }
 
   def sendMessageToComite(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Sending a message to comite about ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to comite about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         Mails.sendMessageToComite(reporterWebuser, proposal, msg)
@@ -91,7 +91,7 @@ class ZapActor extends Actor {
   }
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event("msgAdmin", reporterUUID, s"Posted an internal message fpr ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message fpr ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser:Webuser =>
         Mails.postInternalMessage(reporterWebuser, proposal, msg)

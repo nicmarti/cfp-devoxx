@@ -53,6 +53,7 @@ object Review {
       tx.zadd(s"Proposals:Votes:${proposalId}", vote, reviewer) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zadd(s"Proposals:Dates:${proposalId}", new Instant().getMillis, reviewer + "__" + vote) // Store when this user voted for this talk
       tx.exec()
+      Event.storeEvent(Event(proposalId, reviewer, s"Voted ${vote}"))
   }
 
   def allProposalsNotReviewed(reviewer: String): List[Proposal] = Redis.pool.withClient {

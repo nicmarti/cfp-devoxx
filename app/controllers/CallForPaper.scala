@@ -159,7 +159,7 @@ object CallForPaper extends Controller with Secured {
                 Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
-                Event.storeEvent(Event("saveProposal", uuid, s"Tried to edit talk ${proposal.id} but he is not the owner of this talk."))
+                Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
                 Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
               }
             }

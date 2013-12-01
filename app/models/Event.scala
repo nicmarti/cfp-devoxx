@@ -35,20 +35,34 @@ import java.util.Date
  * Author: @nmartignole
  * Created: 11/11/2013 09:39
  */
-case class Event(source: String, uuid: String, msg: String, date: Option[DateTime] = None)
+
+/**
+ *
+ * @param objRef is the unique ID of the object that was modified
+ * @param uuid is the author, the person who did this change
+ * @param msg is a description of what one did
+ * @param date is the event ate
+ */
+case class Event(objRef: String, uuid: String, msg: String, date: Option[DateTime] = None)
 
 object Event {
   implicit val eventFormat = Json.format[Event]
 
+  val ObjRefProposal="(\\w\\w\\w-\\d\\d\\d)".r
+
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
       val jsEvent = Json.stringify(Json.toJson(event))
-      client.zadd("Events", new Instant().getMillis, jsEvent)
+
+      val tx=client.multi()
+      tx.zadd("Events:V2:", new Instant().getMillis, jsEvent)
+      tx.sadd("Events:V2:"+event.objRef,jsEvent)
+      tx.exec()
   }
 
   def loadEvents(maxSize: Int = 20): List[Event] = Redis.pool.withClient {
     client =>
-      client.zrevrangeWithScores("Events", 0, maxSize).flatMap {
+      client.zrevrangeWithScores("Events:V2:", 0, maxSize).flatMap {
         case (json: String, date: Double) => {
           val maybeEvent = Json.parse(json).asOpt
           val dateVal = new Instant(date.toLong)
@@ -56,5 +70,17 @@ object Event {
         }
       }
   }
+
+  implicit object mostRecent extends Ordering[DateTime] { def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)}
+
+  def loadEventsForObjRef(objRef:String):List[Event] = Redis.pool.withClient{
+    client=>
+      implicit val ordering:Ordering[DateTime]=Ordering[DateTime]
+
+      client.smembers("Events:V2:"+objRef).flatMap{json:String=>
+        Json.parse(json).asOpt[Event]
+      }.toList.sortBy(_.date.get)
+  }
+
 
 }

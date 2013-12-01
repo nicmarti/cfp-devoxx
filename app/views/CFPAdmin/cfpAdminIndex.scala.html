@@ -80,7 +80,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Author</th>
-                            <th>Source</th>
+                            <th>Proposal id</th>
                             <th>Message</th>
                         </tr>
                     </thead>
@@ -93,7 +93,9 @@
                             <td>
                                 @tags.renderGravatar(event.uuid)
                             </td>
-                            <td><small>@event.source</small></td>
+                            <td>
+                                @tags.renderObjRef(event.objRef)
+                            </td>
                             <td><small>@event.msg</small></td>
                         </tr>
                     }

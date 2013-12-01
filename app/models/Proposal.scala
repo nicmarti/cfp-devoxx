@@ -106,7 +106,7 @@ object Proposal {
       tx.sadd("Proposals:ByAuthor:" + authorUUID, proposalWithMainSpeaker.id)
       tx.exec()
 
-      Event.storeEvent(Event("proposal", authorUUID, "Updated or created proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+      Event.storeEvent(Event(proposal.id, authorUUID, "Updated or created proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
       changeTrack(authorUUID, proposal)
 
@@ -185,12 +185,12 @@ object Proposal {
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
           // And we are able to track this event
-          Event.storeEvent(Event("proposal", uuid, s"Changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}"))
+          Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}"))
       }
       if (maybeExistingTrack.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
-        Event.storeEvent(Event("proposal", uuid, s"Posted a new talk (${proposalId}) to ${proposal.track.id}"))
+        Event.storeEvent(Event(proposal.id, uuid, s"Posted a new talk (${proposalId}) to ${proposal.track.id}"))
       }
 
   }
@@ -205,13 +205,13 @@ object Proposal {
         stateOld: String =>
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
-          Event.storeEvent(Event("proposal", uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
+          Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
 
       }
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
-        Event.storeEvent(Event("proposal", uuid, s"Posted new talk ${proposalId} with status ${newState.code}"))
+        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk ${proposalId} with status ${newState.code}"))
       }
   }
 
