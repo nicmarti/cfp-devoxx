@@ -176,7 +176,8 @@ table.pres.action=Actions
 table.pres.doSubmit=Submit
 table.pres.doDelete=Delete
 
-total.draft={0} proposal(s)
+total.draft={0} proposals
+total.draft.sing={0} proposal
 table.pres.speaker=Speaker
 table.pres.state=State
 table.speaker.addremove=Add/Remove speakers

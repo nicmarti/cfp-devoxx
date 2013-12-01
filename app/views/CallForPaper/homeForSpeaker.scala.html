@@ -162,7 +162,6 @@
                                         @tags.renderGravatar(suid)
                                     }
                                 }
-
                                 <a href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
                             </td>
                             <td><span class="label label-info">@prop.state.code</span></td>
@@ -191,7 +190,14 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th><span class="badge">@Messages("total.draft", myProposals.size)</span></th>
+                            <th><span class="badge">
+                                    @if(myProposals.size <= 1){
+                                        @Messages("total.draft.sing", myProposals.size)
+                                    }
+                                    @if(myProposals.size > 1){
+                                        @Messages("total.draft", myProposals.size)
+                                    }
+                            </span></th>
                         </tr>
                     </tfoot>
                 </table>
