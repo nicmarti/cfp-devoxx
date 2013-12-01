@@ -1,4 +1,4 @@
-@(events: List[Event], allProposalsForReview: List[Proposal])(implicit lang: Lang, flash: Flash, uuid:String)
+@(events: List[Event], allProposalsForReview: List[Proposal])(implicit lang: Lang, flash: Flash, uuid: String)
 
 @main("CFP Admin") {
 
@@ -10,102 +10,103 @@
 
         <div class="col-md-12">
 
-        @if(flash.get("error").isDefined){
+            @if(flash.get("error").isDefined) {
                 <div class="alert alert-danger alert-dismissable">
-                <strong>Error :</strong>
-                @flash.get("error").get
-            </div>
-        }
-        @if(flash.get("success").isDefined){
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined) {
                 <div class="alert alert-success alert-dismissable">
                 @flash.get("success").get
-            </div>
-        }
+                </div>
+            }
 
             <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3><i class="icon-ok-circle"></i> Your todo list </h3>
-            </div>
-            <div class="panel-body">
-                @if(allProposalsForReview.nonEmpty){
-                <table class="table table-bordered table-strippted">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Track</th>
-                            <th>Speaker</th>
-                            <th>Type of talk</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @allProposalsForReview.map { proposal: Proposal =>
-                        <tr>
-                            <td>
-                                @proposal.title
-                            </td>
-                            <td>
-                            @Messages(proposal.track.label)
-                            </td>
-                            <td>
-                            @tags.renderGravatar(proposal.mainSpeaker)
-                            @proposal.secondarySpeaker.map{sc=>
-                                @tags.renderGravatar(sc)
+                <div class="panel-heading">
+                    <h3><i class="icon-ok-circle"></i> Your todo list </h3>
+                </div>
+                <div class="panel-body">
+                    @if(allProposalsForReview.nonEmpty) {
+                        <table class="table table-bordered table-strippted">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Track</th>
+                                    <th>Speaker</th>
+                                    <th>Type of talk</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @allProposalsForReview.map { proposal: Proposal =>
+                                <tr>
+                                    <td>
+                                        @proposal.title
+                                    </td>
+                                    <td>
+                                    @Messages(proposal.track.label)
+                                    </td>
+                                    <td>
+                                        @tags.renderGravatar(proposal.mainSpeaker)
+                                        @proposal.secondarySpeaker.map { sc =>
+                                            @tags.renderGravatar(sc)
+                                        }
+                                        @proposal.otherSpeakers.map { s =>
+                                            @tags.renderGravatar(s)
+                                        }
+                                    </td>
+                                    <td>@Messages(proposal.talkType.id)</td>
+                                    <td>
+                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="Open for review">
+                                            Review</a>
+                                    </td>
+                                </tr>
                             }
-                            @proposal.otherSpeakers.map{s=>
-                                @tags.renderGravatar(s)
-                            }
-                            </td>
-                            <td>@Messages(proposal.talkType.id)</td>
-                            <td>
-                                <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="Open for review">
-                                    Review</a>
-                            </td>
-                        </tr>
+                            </tbody>
+                        </table>
+                    } else {
+                        <p>There is no new talks</p>
                     }
-                    </tbody>
-                </table>
-                }else{
-                    <p>There is no new talks</p>
-                }
-                <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
+                    <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i>
+                        Show leaderboard</a>
+                </div>
             </div>
-        </div>
         </div>
 
         <div class="col-md-12">
             <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3><i class="icon-stackexchange"></i> Recent events</h3>
-            </div>
-            <div class="panel-body">
-                <table class="table table-bordered table-strippted">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Author</th>
-                            <th>Proposal id</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @events.map { event: Event =>
-                        <tr>
-                            <td>
-                                <small>@event.date.map(_.toString("dd/MM HH:mm"))</small>
-                            </td>
-                            <td>
+                <div class="panel-heading">
+                    <h3><i class="icon-stackexchange"></i> Recent events</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-strippted">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Author</th>
+                                <th>Proposal id</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @events.map { event: Event =>
+                            <tr>
+                                <td>
+                                    <small>@event.date.map(_.toString("dd/MM HH:mm"))</small>
+                                </td>
+                                <td>
                                 @tags.renderGravatar(event.uuid)
-                            </td>
-                            <td>
+                                </td>
+                                <td>
                                 @tags.renderObjRef(event.objRef)
-                            </td>
-                            <td><small>@event.msg</small></td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
+                                </td>
+                                <td><small>@event.msg</small></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
