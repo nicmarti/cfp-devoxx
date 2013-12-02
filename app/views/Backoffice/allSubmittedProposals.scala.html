@@ -1,0 +1,67 @@
+@(proposals:List[Proposal])(implicit lang: Lang, flash: Flash, uuid:String)
+
+@main("CFP Admin - all draft") {
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @Html(flash.get("success").get)
+        </div>
+    }
+
+    <div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Al Proposals with status Submitted</h3>
+        </div>
+        <div class="panel-body">
+            <a href="@routes.Backoffice.allDraftProposals()" class="btn btn-sm btn-primary">See all draft</a>
+
+            @if(proposals.nonEmpty){
+            <table class="table table-bordered table-strippted">
+                <thead>
+                    <tr>
+                        <th>Proposal id</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @proposals.map{ proposal =>
+                    <tr>
+                        <td>
+                            <small><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a></small>
+                        </td>
+                        <td>
+                            <small>@proposal.title</small>
+                        </td>
+                        <td>
+                            @tags.renderGravatar(proposal.mainSpeaker)
+                        </td>
+                        <td>
+                            <small><a href="@routes.Backoffice.moveProposalToDraft(proposal.id)" class="btn btn-sm btn-warning">Draft</a> </small>
+                            <small><a href="@routes.Backoffice.moveSubmittedProposalToTrash(proposal.id)" class="btn btn-sm btn-danger">Trash</a> </small>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            }else{
+                <P>There is no proposal with status submitted</P>
+            }
+        </div>
+        </div>
+    </div>
+</div>
+}

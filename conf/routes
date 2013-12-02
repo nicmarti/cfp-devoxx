@@ -68,8 +68,14 @@ GET     /cfpadmin/leaderboard                       controllers.CFPAdmin.leaderB
 
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.ico")
 
-GET     /admin/webusers                 controllers.CFPAdmin.allSpeakers
-GET     /admin/webusers/switch          controllers.CFPAdmin.switchCFPAdmin(uuid:String)
+GET     /admin/webusers                 controllers.Backoffice.allSpeakers
+GET     /admin/webusers/switch          controllers.Backoffice.switchCFPAdmin(uuid:String)
+GET     /admin/proposals/draft          controllers.Backoffice.allDraftProposals()
+GET     /admin/proposals/submitted      controllers.Backoffice.allSubmittedProposals()
+GET     /admin/proposals/moveSubmit     controllers.Backoffice.moveProposalToSubmit(proposalId:String)
+GET     /admin/proposals/moveTrash      controllers.Backoffice.moveProposalToTrash(proposalId:String)
+GET     /admin/proposals/submitted/moveTrash      controllers.Backoffice.moveSubmittedProposalToTrash(proposalId:String)
+GET     /admin/proposals/moveDraft      controllers.Backoffice.moveProposalToDraft(proposalId:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

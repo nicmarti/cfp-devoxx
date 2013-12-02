@@ -7,7 +7,6 @@ import play.api.data.Forms._
 import library.ZapActor
 import library.SendMessageInternal
 import library.SendMessageToSpeaker
-import scala.Some
 
 /**
  * The backoffice controller for the CFP technical commitee.
@@ -137,20 +136,6 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
   }
 
-  def allSpeakers = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
-      Ok(views.html.CFPAdmin.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
-  }
-
-  def switchCFPAdmin(uuidSpeaker: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
-      if (Webuser.hasAccessToCFPAdmin(uuidSpeaker)) {
-        Webuser.removeFromCFPAdmin(uuidSpeaker)
-      } else {
-        Webuser.addToCFPAdmin(uuidSpeaker)
-      }
-      Redirect(routes.CFPAdmin.allSpeakers)
-  }
 }
 
 

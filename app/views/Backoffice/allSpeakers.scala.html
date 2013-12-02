@@ -48,9 +48,9 @@
                         <td><small>@webuser.firstName @webuser.lastName</small></td>
                         <td>
                             @if(Webuser.hasAccessToCFPAdmin(webuser.uuid)){
-                                <a class="btn btn-sm btn-danger" href="@routes.CFPAdmin.switchCFPAdmin(webuser.uuid)">Remove from CFP</a>
+                                <a class="btn btn-sm btn-danger" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)">Remove from CFP</a>
                             }else{
-                                <a class="btn btn-sm btn-success" href="@routes.CFPAdmin.switchCFPAdmin(webuser.uuid)">Add to CFP</a>
+                                <a class="btn btn-sm btn-success" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)">Add to CFP</a>
                             }
 
                         </td>

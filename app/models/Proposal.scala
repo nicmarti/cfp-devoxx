@@ -341,4 +341,18 @@ object Proposal {
     implicit client =>
       client.hlen("Proposals")
   }
+
+  def allDrafts(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val proposalIDs = client.smembers("Proposals:ByState:draft")
+      loadProposalByIDs(proposalIDs, ProposalState.DRAFT)
+  }
+
+  def allSubmitted(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val proposalIDs = client.smembers("Proposals:ByState:submitted")
+      loadProposalByIDs(proposalIDs, ProposalState.SUBMITTED)
+  }
+
+
 }

@@ -41,7 +41,7 @@ import library.{SendMessageToComite, SendMessageToSpeaker, ZapActor}
 object CallForPaper extends Controller with Secured {
 
   def homeForSpeaker = IsAuthenticated {
-   implicit uuid => implicit request =>
+    implicit uuid => implicit request =>
       val result = for (speaker <- SpeakerHelper.findByUUID(uuid).toRight("Speaker not found").right;
                         webuser <- Webuser.findByUUID(uuid).toRight("Webuser not found").right) yield (speaker, webuser)
       result.fold(errorMsg => {
@@ -228,7 +228,6 @@ object CallForPaper extends Controller with Secured {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
         }
       }
-
   }
 
   def submitProposal(proposalId: String) = IsAuthenticated {
@@ -245,7 +244,7 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  val speakerMsg=Form("msg"->nonEmptyText(maxLength = 2500))
+  val speakerMsg = Form("msg" -> nonEmptyText(maxLength = 2500))
 
   def showCommentForProposal(proposalId: String) = IsAuthenticated {
     implicit uuid => implicit request =>
@@ -266,13 +265,13 @@ object CallForPaper extends Controller with Secured {
       maybeProposal match {
         case Some(proposal) => {
           speakerMsg.bindFromRequest.fold(
-            hasErrors=>{
+            hasErrors => {
               BadRequest(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), hasErrors))
             },
-            validMsg=>{
+            validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg)
               ZapActor.actor ! SendMessageToComite(uuid, proposal, validMsg)
-              Redirect(routes.CallForPaper.showCommentForProposal(proposalId)).flashing("success"->"Message was sent")
+              Redirect(routes.CallForPaper.showCommentForProposal(proposalId)).flashing("success" -> "Message was sent")
             }
           )
         }
