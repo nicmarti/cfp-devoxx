@@ -44,6 +44,7 @@ import play.api.libs.ws._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.apache.commons.codec.digest.DigestUtils
+import javax.crypto.IllegalBlockSizeException
 
 
 /**
@@ -101,7 +102,7 @@ object Authentication extends Controller {
         validForm =>
           Webuser.checkPassword(validForm._1, validForm._2) match {
             case Some(webuser) =>
-              val cookie=Cookie("cfp_rm",value=webuser.uuid, maxAge = Some(588000))
+              val cookie=createCookie(webuser)
               Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> webuser.uuid).withCookies(cookie)
             case None =>
               Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
@@ -257,7 +258,7 @@ object Authentication extends Controller {
                         // Try to lookup the speaker
                         Webuser.findByEmail(emailS).map {
                           w =>
-                            val cookie=Cookie("cfp_rm",value=w.uuid, maxAge = Some(588000))
+                            val cookie=createCookie(w)
                             Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                         }.getOrElse {
                           // Create a new one but ask for confirmation
@@ -338,7 +339,7 @@ object Authentication extends Controller {
               val newSpeaker = SpeakerHelper.createSpeaker(e, validWebuser.cleanName, bio, lang, twitter, avatarUrl, company, blog)
               SpeakerHelper.save(newSpeaker)
 
-              Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid)
+              Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
             }
           )
 
@@ -431,7 +432,7 @@ object Authentication extends Controller {
                     // Try to lookup the speaker
                     Webuser.findByEmail(email).map {
                       w =>
-                        val cookie=Cookie("cfp_rm",value=w.uuid, maxAge = Some(588000))
+                        val cookie=createCookie(w)
                         Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                     }.getOrElse {
                       val defaultValues = (firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
@@ -451,6 +452,10 @@ object Authentication extends Controller {
       }
   }
 
+  private def createCookie(webuser:Webuser)={
+    Cookie("cfp_rm",value=Crypto.encryptAES(webuser.uuid) , maxAge = Some(588000))
+  }
+
 }
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
@@ -464,7 +469,12 @@ trait Secured {
    * Retrieve the connected user email.
    */
   private def username(request: RequestHeader) = {
-    request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(_.value))
+    try{
+      request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(v=>Crypto.decryptAES(v.value)))
+    } catch {
+      case _:IllegalBlockSizeException=>None
+      case _:Exception=>None
+    }
   }
 
   /**
