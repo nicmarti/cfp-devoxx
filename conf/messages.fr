@@ -272,3 +272,6 @@ freepass.forIdiots=L''entrée est offerte uniquement si votre présentation est 
 
 nav.homeSpeaker=Accueil
 editWebuser.title=Votre profil
+
+cfp.isOpen=Le CFP est ouvert
+cfp.open.enter=Proposer un sujet pour Devoxx France\

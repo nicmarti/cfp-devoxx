@@ -56,9 +56,6 @@
                             @flash.get("success").get
                             </div>
                         }
-                        <div class="alert alert-info">
-                        @Messages("cfp.closed")
-                        </div>
                     </div>
 
                     <div class="col-md-5">
@@ -74,7 +71,17 @@
                     </div>
 
                     <div class="clearfix">
+                    </div>
 
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3><i class="icon-bullhorn"></i> @Messages("cfp.isOpen")</h3>
+                        </div>
+                        <div class="panel-body">
+                            <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.open.enter")</a>
+                        </div>
+                        </div>
                     </div>
 
                     <div class="col-md-12">
