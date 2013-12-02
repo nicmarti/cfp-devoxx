@@ -28,6 +28,7 @@
 
         <div class="panel-body">
             <a href="@routes.Backoffice.allSubmittedProposals()" class="btn btn-sm btn-primary">See all submitted</a>
+            <a href="@routes.Backoffice.sendReminderToSpeakersForDraft()" class="btn btn-sm btn-primary">Send an email to all Speakers with a talk set to Draft.</a>
 
             @if(proposals.nonEmpty){
             <table class="table table-bordered table-strippted">

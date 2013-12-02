@@ -45,8 +45,12 @@ import notifiers.Mails
 case class ReportIssue(issue: Issue)
 
 case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String)
+
 case class SendMessageToComite(reporterUUID: String, proposal: Proposal, msg: String)
+
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
+
+case class DraftReminder()
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -59,6 +63,7 @@ class ZapActor extends Actor {
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
     case SendMessageToComite(reporterUUID, proposal, msg) => sendMessageToComite(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
+    case DraftReminder() => sendDraftReminder()
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -73,8 +78,8 @@ class ZapActor extends Actor {
 
   def sendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String) {
 
-    for(reporter<-Webuser.findByUUID(reporterUUID);
-        speaker<-Webuser.findByUUID(proposal.mainSpeaker)) yield {
+    for (reporter <- Webuser.findByUUID(reporterUUID);
+         speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${} ${proposal.title}"))
       Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg)
     }
@@ -93,10 +98,24 @@ class ZapActor extends Actor {
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message fpr ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser:Webuser =>
+      reporterWebuser: Webuser =>
         Mails.postInternalMessage(reporterWebuser, proposal, msg)
     }.getOrElse {
       play.Logger.error("User not found with uuid " + reporterUUID)
+    }
+  }
+
+  def sendDraftReminder() {
+    val allProposalBySpeaker = Proposal.allDrafts().groupBy(_.mainSpeaker)
+    allProposalBySpeaker.foreach {
+      case (speaker: String, draftProposals: List[Proposal]) => {
+        Webuser.findByUUID(speaker).map {
+          speakerUser =>
+            Mails.sendReminderForDraft(speakerUser, draftProposals)
+        }.getOrElse {
+          play.Logger.warn("User not found")
+        }
+      }
     }
   }
 

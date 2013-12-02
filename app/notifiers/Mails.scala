@@ -94,14 +94,14 @@ object Mails {
     )
   }
 
-  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser:Webuser, proposal: Proposal, msg: String) = {
+  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addCc("program@devoxx.fr")
     emailer.addRecipient(toWebuser.email)
-    proposal.secondarySpeaker.map(uuid => Webuser.getEmailFromUUID(uuid).map(email=>emailer.addCc(email)))
-    proposal.otherSpeakers.foreach(uuid => Webuser.getEmailFromUUID(uuid).map(email=>emailer.addCc(email)))
+    proposal.secondarySpeaker.map(uuid => Webuser.getEmailFromUUID(uuid).map(email => emailer.addCc(email)))
+    proposal.otherSpeakers.foreach(uuid => Webuser.getEmailFromUUID(uuid).map(email => emailer.addCc(email)))
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString(),
@@ -120,6 +120,7 @@ object Mails {
       views.html.Mails.sendMessageToComite(fromWebuser.cleanName, proposal, msg).toString()
     )
   }
+
   def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"New private comment on ${proposal.id} ${proposal.title} by ${fromWebuser.cleanName}")
@@ -131,4 +132,22 @@ object Mails {
       views.html.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString()
     )
   }
+
+  def sendReminderForDraft(speaker: Webuser, proposals: List[Proposal]) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    if (proposals.size == 1) {
+      emailer.setSubject("Devoxx France 2014 reminder : you have one proposal with status 'Draft'")
+    }
+    if (proposals.size > 1) {
+      emailer.setSubject(s"Devoxx France 2014 reminder : you have ${proposals.size} proposals to submit")
+    }
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addRecipient(speaker.email)
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.sendReminderForDraft(speaker.firstName, proposals).toString(),
+      views.html.Mails.sendReminderForDraft(speaker.firstName, proposals).toString()
+    )
+  }
+
 }

@@ -1,7 +1,9 @@
 import akka.actor.Props
+import java.util.concurrent.TimeUnit
 import library._
+import org.joda.time.DateMidnight
 import play.api._
-import play.api.mvc.{Action, WithFilters, RequestHeader}
+import play.api.mvc.RequestHeader
 import mvc.Results._
 import Play.current
 import scala.concurrent.Future
@@ -15,7 +17,7 @@ object Global extends GlobalSettings {
 
   override def onStart(app: Application) {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
-      CronTask.computeStats()
+      CronTask.draftReminder()
     } else {
       play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
     }
@@ -45,7 +47,7 @@ object Global extends GlobalSettings {
    */
   override def onHandlerNotFound(request: RequestHeader) = {
     Future.successful(NotFound(Play.maybeApplication.map {
-      case app if app.mode != Mode.Prod =>  views.html.defaultpages.devNotFound.f
+      case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
       case app => views.html.notFound.f
     }.getOrElse(views.html.defaultpages.devNotFound.f)(request, Play.maybeApplication.flatMap(_.routes))))
   }
@@ -55,15 +57,22 @@ object CronTask {
 
   val zapActor = Akka.system.actorOf(Props[ZapActor])
 
-  def computeStats() = {
-    //    val computeStats = Play.configuration.getInt("actor.computeStats.minuts")
-    //    computeStats match {
-    //      case None => play.Logger.debug("CronTask: add [actor.computeStats.minuts=10] to compute stats every 10 minuts")
-    //      case Some(everyX) => {
-    //        play.Logger.debug("CronTask : compute stats every " + everyX + " minuts")
-    //        Akka.system.scheduler.schedule(1 minutes, everyX minutes, zaptravelActor, ComputeStats())
-    //      }
-    //    }
+  def draftReminder() = {
+    val draftTime = Play.configuration.getInt("actor.draftReminder.days")
+    draftTime match {
+      case Some(everyX) => {
+        // Compute delay between now and 8:00 in the morning
+        // This is a trick to avoid to send a message at each restart
+        val tomorrow = DateMidnight.now().plusDays(1)
+        val interval = tomorrow.toInterval
+        val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
+        play.Logger.debug("CronTask : check for Draft proposals every " + everyX + " days and send an email in " + initialDelay.toHours + " hours")
+        Akka.system.scheduler.schedule(initialDelay, everyX days, zapActor, DraftReminder())
+      }
+      case _ => {
+        play.Logger.debug("CronTask : do not send reminder for draft")
+      }
+    }
   }
 
 }

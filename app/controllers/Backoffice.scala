@@ -4,6 +4,7 @@ import models.{Proposal, Webuser}
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import library.{DraftReminder, ZapActor}
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -11,7 +12,7 @@ import play.api.data.Forms._
  * Author: nicolas martignole
  * Created: 02/12/2013 21:34
  */
-object Backoffice extends Controller with Secured{
+object Backoffice extends Controller with Secured {
   def allSpeakers = IsMemberOf("admin") {
     implicit uuid => implicit request =>
       Ok(views.html.Backoffice.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
@@ -27,44 +28,53 @@ object Backoffice extends Controller with Secured{
       Redirect(routes.Backoffice.allSpeakers)
   }
 
-  def allDraftProposals()=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
+  def allDraftProposals() = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       val proposals = Proposal.allDrafts()
       Ok(views.html.Backoffice.allDraftProposals(proposals))
   }
 
-  def allSubmittedProposals()=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
+  def allSubmittedProposals() = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       val proposals = Proposal.allSubmitted()
       Ok(views.html.Backoffice.allSubmittedProposals(proposals))
   }
 
-  def moveProposalToTrash(proposalId:String)=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
+  def moveProposalToTrash(proposalId: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       Proposal.delete(uuid, proposalId)
       val undoDelete = routes.Backoffice.moveProposalToDraft(proposalId).url
-      Redirect(routes.Backoffice.allDraftProposals()).flashing("success"->s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
+      Redirect(routes.Backoffice.allDraftProposals()).flashing("success" -> s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
   }
 
-  def moveSubmittedProposalToTrash(proposalId:String)=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
+  def moveSubmittedProposalToTrash(proposalId: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       Proposal.delete(uuid, proposalId)
       val undoDelete = routes.Backoffice.moveProposalToDraft(proposalId).url
-      Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success"->s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
+      Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success" -> s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
   }
 
-  def moveProposalToDraft(proposalId:String)=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
+  def moveProposalToDraft(proposalId: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       Proposal.draft(uuid, proposalId)
-      Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success"->s"Undeleted proposal ${proposalId}")
+      Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success" -> s"Undeleted proposal ${proposalId}")
   }
 
-  def moveProposalToSubmit(proposalId:String)=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
+  def moveProposalToSubmit(proposalId: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       Proposal.submit(uuid, proposalId)
       val undoSubmit = routes.Backoffice.moveProposalToDraft(proposalId).url
-      Redirect(routes.Backoffice.allDraftProposals()).flashing("success"->s"Proposal ${proposalId} was submitted. <a href='$undoSubmit'>Cancel this submission?</a>")
+      Redirect(routes.Backoffice.allDraftProposals()).flashing("success" -> s"Proposal ${proposalId} was submitted. <a href='$undoSubmit'>Cancel this submission?</a>")
   }
+
+  def sendReminderToSpeakersForDraft() = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+      // Send a message to an Actor
+      ZapActor.actor ! DraftReminder()
+      // Then redirect
+      Redirect(routes.Backoffice.allDraftProposals()).flashing("success"->"An email will be sent to Speakers with Draft proposal")
+  }
+
 }
 
 

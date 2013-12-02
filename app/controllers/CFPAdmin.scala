@@ -136,6 +136,7 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
   }
 
+
 }
 
 
