@@ -4,7 +4,8 @@ import library.Redis
 import org.apache.commons.lang3.RandomStringUtils
 
 /**
- * TODO definition
+ * Systeme de cookie rememberme plus sécurisé.
+ * J'hésite à le mettre en place.
  *
  * Author: nicolas
  * Created: 03/12/2013 00:46
