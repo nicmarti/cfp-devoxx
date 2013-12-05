@@ -24,7 +24,7 @@ L'équipe de sélection de Devoxx France<br>
 <p>Dear @firstName</p>
 <br>
 <p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on Devoxx France CFP.
-You must submit a talk for review on your private CFP section, so that the program comite can review and vote for your proposal.</p>
+You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.</p>
 
 @proposals.map{proposal=>
 - @proposal.title <a href="http://cfp.devoxx.fr@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>

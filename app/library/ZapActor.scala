@@ -86,7 +86,7 @@ class ZapActor extends Actor {
   }
 
   def sendMessageToComite(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to comite about ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         Mails.sendMessageToComite(reporterWebuser, proposal, msg)

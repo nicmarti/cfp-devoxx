@@ -69,7 +69,7 @@ talkType.help=Each type of talk is described on the <a href="http://www.devoxx.f
 
 audienceLevel=Audience level
 privateMessage=Message for the program committee, motivation for your presentation
-privateMessage.help=Write here any important details about your presentation, that the program comitee should know. You can also set here the URL to your slides, or any other important details.
+privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or any other important details.
 sponsorTalk=Is this a sponsor/exhibitor presentation?
 
 sponsorTalk.help.title=Sponsor talk
@@ -87,7 +87,7 @@ validate.summary3=the back button
 validate.summary4=of your web browser and edit your summary.
 track=Track for your proposal
 summary.preview=Preview
-preview.warn=Do no forget to submit your proposal to the program comite, using the icon
+preview.warn=Do no forget to submit your proposal to the program committee, using the icon
 preview.warn2=in the main CFP screen.
 
 # Proposal type
@@ -234,7 +234,7 @@ error.real=Real number value expected
 constraint.required=Required
 msg=Your message
 select.secondarySpeaker=Select a speaker
-freepass.forIdiots=Free pass included if, and only if, your talk is selected by the program comite
+freepass.forIdiots=Free pass included if, and only if, your talk is selected by the program committee
 
 nav.homeSpeaker=Home
 editWebuser.title=Edit your firstname and lastname
