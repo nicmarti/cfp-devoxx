@@ -102,7 +102,7 @@ object Authentication extends Controller {
         validForm =>
           Webuser.checkPassword(validForm._1, validForm._2) match {
             case Some(webuser) =>
-              val cookie=createCookie(webuser)
+              val cookie = createCookie(webuser)
               Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> webuser.uuid).withCookies(cookie)
             case None =>
               Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
@@ -111,8 +111,8 @@ object Authentication extends Controller {
   }
 
   def logout = Action {
-        implicit request =>
-      val discardingCookie = DiscardingCookie("cfp_rm","/", None,false)
+    implicit request =>
+      val discardingCookie = DiscardingCookie("cfp_rm", "/", None, false)
       Redirect(routes.Application.index).discardingCookies(discardingCookie).withNewSession
   }
 
@@ -121,7 +121,7 @@ object Authentication extends Controller {
       Play.current.configuration.getString("github.client_id").map {
         clientId: String =>
           val redirectUri = routes.Authentication.callbackGithub.absoluteURL()
-          val gitUrl = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
+          val gitUrl = "https://github.com/login/oauth/authorize?scope=user:email&client_id=" + clientId + "&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
           Redirect(gitUrl)
       }.getOrElse {
         InternalServerError("github.client_id is not set in application.conf")
@@ -182,6 +182,7 @@ object Authentication extends Controller {
   }
 
   val importSpeakerForm = Form(tuple(
+    "email"-> email,
     "firstName" -> nonEmptyText,
     "lastName" -> nonEmptyText,
     "bio" -> nonEmptyText,
@@ -207,7 +208,7 @@ object Authentication extends Controller {
       "password" -> nonEmptyText,
       "profile" -> nonEmptyText
     ) {
-      (uuid,email, firstName, lastName, password, profile) =>
+      (uuid, email, firstName, lastName, password, profile) =>
         Webuser(uuid,
           email,
           firstName,
@@ -258,7 +259,7 @@ object Authentication extends Controller {
                         // Try to lookup the speaker
                         Webuser.findByEmail(emailS).map {
                           w =>
-                            val cookie=createCookie(w)
+                            val cookie = createCookie(w)
                             Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                         }.getOrElse {
                           // Create a new one but ask for confirmation
@@ -267,7 +268,7 @@ object Authentication extends Controller {
                           } else {
                             (nameS, nameS)
                           }
-                          val defaultValues = (firstName, lastName, bioS, company, None, blog, avatarUrl)
+                          val defaultValues = (emailS, firstName, lastName, bioS, company, None, blog, avatarUrl)
                           Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues))).withSession("tmpEmail" -> emailS)
                         }
                     }
@@ -323,20 +324,27 @@ object Authentication extends Controller {
           importSpeakerForm.bindFromRequest.fold(
             invalidForm => BadRequest(views.html.Authentication.confirmImport(invalidForm)).flashing("error" -> "Please check your profile, invalid webuser."),
             validFormData => {
-              val firstName = validFormData._1
-              val lastName = validFormData._2
-              val bio = validFormData._3
-              val company = validFormData._4
-              val twitter = validFormData._5
-              val blog = validFormData._6
-              val avatarUrl = validFormData._7
+              val email = validFormData._1
+              val firstName = validFormData._2
+              val lastName = validFormData._3
+              val bio = validFormData._4
+              val company = validFormData._5
+              val twitter = validFormData._6
+              val blog = validFormData._7
+              val avatarUrl = validFormData._8
 
-              val validWebuser = Webuser.createSpeaker(e, firstName, lastName)
+              val validWebuser = Webuser.createSpeaker(email, firstName, lastName)
 
               Webuser.validateEmailForSpeaker(validWebuser)
 
-              val lang = request.headers.get("Accept-Language")
-              val newSpeaker = Speaker.createSpeaker(e, validWebuser.cleanName, bio, lang, twitter, avatarUrl, company, blog)
+              val lang = request.headers.get("Accept-Language").map{s=>
+                if(s.contains("fr_FR")){
+                  "fr"
+                }else{
+                  "en"
+                }
+              }
+              val newSpeaker = Speaker.createSpeaker(email, validWebuser.cleanName, bio, lang, twitter, avatarUrl, company, blog)
               Speaker.save(newSpeaker)
 
               Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
@@ -432,10 +440,10 @@ object Authentication extends Controller {
                     // Try to lookup the speaker
                     Webuser.findByEmail(email).map {
                       w =>
-                        val cookie=createCookie(w)
+                        val cookie = createCookie(w)
                         Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
                     }.getOrElse {
-                      val defaultValues = (firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
+                      val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
                       Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues))).withSession("tmpEmail" -> email)
                     }
                   }
@@ -452,8 +460,8 @@ object Authentication extends Controller {
       }
   }
 
-  private def createCookie(webuser:Webuser)={
-    Cookie("cfp_rm",value=Crypto.encryptAES(webuser.uuid) , maxAge = Some(588000))
+  private def createCookie(webuser: Webuser) = {
+    Cookie("cfp_rm", value = Crypto.encryptAES(webuser.uuid), maxAge = Some(588000))
   }
 
 }
@@ -469,11 +477,11 @@ trait Secured {
    * Retrieve the connected user email.
    */
   private def username(request: RequestHeader) = {
-    try{
-      request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(v=>Crypto.decryptAES(v.value)))
+    try {
+      request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(v => Crypto.decryptAES(v.value)))
     } catch {
-      case _:IllegalBlockSizeException=>None
-      case _:Exception=>None
+      case _: IllegalBlockSizeException => None
+      case _: Exception => None
     }
   }
 

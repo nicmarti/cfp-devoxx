@@ -1,4 +1,4 @@
-@(formWebuser: Form[(String,String,String,Option[String],Option[String],Option[String],Option[String])])(implicit flash: Flash, lang: Lang)
+@(formWebuser: Form[(String, String,String,String,Option[String],Option[String],Option[String],Option[String])])(implicit flash: Flash, lang: Lang)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.codec.digest.DigestUtils
@@ -10,6 +10,7 @@
         </div>
   @helper.form(action = routes.Authentication.validateImportedSpeaker) {
         <div class="col-md-12 panel panel-default">
+                @helper.inputText(formWebuser("email"))
                 @helper.inputText(formWebuser("firstName"))
                 @helper.inputText(formWebuser("lastName"))
                 @helper.textarea(formWebuser("bio"), 'cols -> 80, 'rows -> 5)
