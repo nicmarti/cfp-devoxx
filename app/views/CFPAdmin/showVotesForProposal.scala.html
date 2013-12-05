@@ -26,7 +26,7 @@
             <div class="panel-body">
                 <h3>Current score</h3>
                 <p>Total score : @score</p>
-                <p>Average score : @(score.toDouble./(totalVotesCast.toDouble))</p>
+                <p>Average score : @BigDecimal(score.toDouble./(totalVotesCast.toDouble)).round(new java.math.MathContext(2))</p>
                 <p>Total votes cast : @totalVotesCast</p>
                 <p>Total votes : @totalVotes</p>
             </div>
