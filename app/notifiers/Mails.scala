@@ -110,7 +110,7 @@ object Mails {
 
     // For Program committee
 
-     emailer.setSubject(s"New messag from ${fromWebuser.cleanName} to ${toWebuser.cleanName}}")
+     emailer.setSubject(s"New messag from ${fromWebuser.cleanName} to ${toWebuser.cleanName}")
      emailer.addFrom("program@devoxx.fr")
      emailer.addRecipient("program@devoxx.fr")
      emailer.setCharset("utf-8")

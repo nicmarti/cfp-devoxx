@@ -1,4 +1,4 @@
-@(events: List[Event], allProposalsForReview: List[Proposal])(implicit lang: Lang, flash: Flash, uuid: String)
+@(events: List[Event], allProposalsForReview: List[Proposal], totalEvents:Int, page:Int)(implicit lang: Lang, flash: Flash, uuid: String)
 
 @main("CFP Admin") {
 
@@ -85,6 +85,9 @@
                 <div class="panel-heading">
                     <h3><i class="icon-stackexchange"></i> Recent events</h3>
                 </div>
+
+
+
                 <div class="panel-body">
                     <table class="table table-bordered table-strippted">
                         <thead>
@@ -94,6 +97,19 @@
                                 <th>Proposal id</th>
                                 <th>Message</th>
                             </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <small>
+                                    Total events: @totalEvents - Page @page/@(totalEvents/20)
+                                    @if(page > 0){
+                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; Previous page</a> -
+                                    }
+                                    @if(page < totalEvents/20){
+                                      <a href="@routes.CFPAdmin.index(page+1)">Next page &gt;</a>
+                                    }</small>
+                                </td>
+                            </tr>
+
                         </thead>
                         <tbody>
                         @events.map { event: Event =>
@@ -111,6 +127,21 @@
                             </tr>
                         }
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">
+                                    <small>
+                                    Total events: @totalEvents - Page @page/@(totalEvents/20)
+                                    @if(page > 0){
+                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; Previous page</a> -
+                                    }
+                                    @if(page < totalEvents/20){
+                                      <a href="@routes.CFPAdmin.index(page+1)">Next page &gt;</a>
+                                    }
+                                    </small>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

@@ -16,11 +16,11 @@ import library.SendMessageToSpeaker
  */
 object CFPAdmin extends Controller with Secured {
 
-  def index() = IsMemberOf("cfp") {
+  def index(page:Int) = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
-      val twentyEvents = Event.loadEvents(20)
+      val twentyEvents = Event.loadEvents(20,page)
       val allProposalsForReview = Review.allProposalsNotReviewed(uuid)
-      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview))
+      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page))
   }
 
   val messageForm: Form[String] = Form("msg" -> nonEmptyText(maxLength = 1000))

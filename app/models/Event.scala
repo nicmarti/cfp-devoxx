@@ -60,9 +60,9 @@ object Event {
       tx.exec()
   }
 
-  def loadEvents(maxSize: Int = 20): List[Event] = Redis.pool.withClient {
+  def loadEvents(items: Int, page: Int): List[Event] = Redis.pool.withClient {
     client =>
-      client.zrevrangeWithScores("Events:V2:", 0, maxSize).flatMap {
+      client.zrevrangeWithScores("Events:V2:", page*items, (page+1)*items ).flatMap {
         case (json: String, date: Double) => {
           val maybeEvent = Json.parse(json).asOpt
           val dateVal = new Instant(date.toLong)
@@ -71,13 +71,19 @@ object Event {
       }
   }
 
+  // Very fast O(1) operation
+  def totalEvents()=Redis.pool.withClient{
+    client=>
+      client.zcard("Events:V2:").toInt
+  }
+
   implicit object mostRecent extends Ordering[DateTime] { def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)}
 
   def loadEventsForObjRef(objRef:String):List[Event] = Redis.pool.withClient{
     client=>
       implicit val ordering:Ordering[DateTime]=Ordering[DateTime]
 
-      client.smembers("Events:V2:"+objRef).flatMap{json:String=>
+      client.smembers(s"Events:V2:${objRef}").flatMap{json:String=>
         Json.parse(json).asOpt[Event]
       }.toList.sortBy(_.date.get)
   }

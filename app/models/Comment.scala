@@ -37,17 +37,17 @@ case class Comment(proposalId: String, uuidAuthor: String, msg: String, eventDat
 
 object Comment {
 
-  implicit val commentFormat  = Json.format[Comment]
+  implicit val commentFormat = Json.format[Comment]
 
   def saveCommentForSpeaker(proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {
     client =>
       val comment = Comment(proposalId, uuidAuthor, msg, None)
-      client.zadd(s"Comments:ForSpeaker:${proposalId}", new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
+      client.zadd(s"Comments:ForSpeaker:${proposalId}", new Instant().getMillis.toDouble, Json.toJson(comment).toString())
   }
 
-  def allSpeakerComments(proposalId: String):List[Comment] = Redis.pool.withClient {
+  def allSpeakerComments(proposalId: String): List[Comment] = Redis.pool.withClient {
     client =>
-      val comments= client.zrevrangeWithScores(s"Comments:ForSpeaker:${proposalId}}", 0, -1).map {
+      val comments = client.zrevrangeWithScores(s"Comments:ForSpeaker:${proposalId}", 0, -1).map {
         case (json, dateValue) =>
           val c = Json.parse(json).as[Comment]
           val date = new Instant(dateValue.toLong)
@@ -56,21 +56,21 @@ object Comment {
       comments
   }
 
-  def countComments(proposalId:String):Long=Redis.pool.withClient{
-    client=>
-      client.zcard(s"Comments:ForSpeaker:${proposalId}}").longValue
+  def countComments(proposalId: String): Long = Redis.pool.withClient {
+    client =>
+      client.zcard(s"Comments:ForSpeaker:${proposalId}").longValue
   }
 
   def saveInternalComment(proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {
-      client =>
-        val comment = Comment(proposalId, uuidAuthor, msg, None)
-        client.zadd("Comments:Internal:" + proposalId, new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
-    }
-
-
-  def allInternalComments(proposalId: String):List[Comment] = Redis.pool.withClient {
     client =>
-      val comments= client.zrevrangeWithScores("Comments:Internal:" + proposalId, 0, -1).map {
+      val comment = Comment(proposalId, uuidAuthor, msg, None)
+      client.zadd(s"Comments:Internal:${proposalId}", new Instant().getMillis.toDouble, Json.toJson(comment).toString())
+  }
+
+
+  def allInternalComments(proposalId: String): List[Comment] = Redis.pool.withClient {
+    client =>
+      val comments = client.zrevrangeWithScores(s"Comments:Internal:${proposalId}", 0, -1).map {
         case (json, dateValue) =>
           val c = Json.parse(json).as[Comment]
           val date = new Instant(dateValue.toLong)
