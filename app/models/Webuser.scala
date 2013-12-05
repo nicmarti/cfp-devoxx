@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.data.format.Formats._
 import library.Redis
-import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 import redis.clients.util.RedisOutputStream
 import play.api.libs.Crypto
 
@@ -61,15 +61,20 @@ object Webuser {
       tx.exec()
   }
 
-  def findByEmail(email: String): Option[Webuser] = Redis.pool.withClient {
-    client =>
-      client.get("Webuser:Email:" + email.toLowerCase.trim).flatMap {
-        uuid: String =>
-          client.hget("Webuser", uuid).map {
-            json: String =>
-              Json.parse(json).as[Webuser]
+  def findByEmail(email: String): Option[Webuser] = email match {
+    case "" => None
+    case validEmail => {
+      Redis.pool.withClient {
+        client =>
+          client.get("Webuser:Email:" + validEmail.toLowerCase.trim).flatMap {
+            uuid: String =>
+              client.hget("Webuser", uuid).map {
+                json: String =>
+                  Json.parse(json).as[Webuser]
+              }
           }
       }
+    }
   }
 
   def findByUUID(uuid: String): Option[Webuser] = Redis.pool.withClient {

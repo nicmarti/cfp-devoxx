@@ -18,24 +18,26 @@
                 @helper.inputText(formWebuser("twitter"), 'placeholder -> "@nickname")
                 @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
-            @if(formWebuser("avatarUrl").value.isEmpty){
+            @if(formWebuser("email").value!=""){
+@if(formWebuser("avatarUrl").value.isEmpty){
 
-            <P>@Messages("avatarUrl.isEmpty") <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
-                Gravatar</a>
-                <img width="120" src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))?s=150" alt="Gravatar" title="Update your profile on gravatar.com">
-            </P>
-            }else{
-              <p>@Messages("avatarUrl.defined")</p>
-              <img src="@formWebuser("avatarUrl").value" width="120" alt="this is you" title="Recommended width 120 px">
-            }
+        <P>@Messages("avatarUrl.isEmpty") <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
+            Gravatar</a>
+            <img width="120" src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))?s=150" alt="Gravatar" title="Update your profile on gravatar.com">
+        </P>
 
+}else{
+      <p>@Messages("avatarUrl.defined")</p>
+      <img src="@formWebuser("avatarUrl").value" width="120" alt="this is you" title="Recommended width 120 px">
+}
             @helper.inputText(formWebuser("avatarUrl"), 'size -> 80)
-
+            }
             <div class="btn-block">
                         <button type="submit" class="btn btn-success">@Messages("confirm.import.save")</button>
             </div>
         </div>
         }
+
 
     </div>
 
