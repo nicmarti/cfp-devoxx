@@ -18,7 +18,7 @@ index.txt2=Use one of the following social service, this is simpler and you won'
 company=Your company
 bio=A short bio
 twitter=Your twitter handle
-blog=Your blog or your company''s website
+blog=Your blog or company website
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for Devoxx France and propose one or more subjects.
 index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
@@ -26,7 +26,7 @@ index.signup.btn=Sign-up
 email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
-forget.password=Forget password?
+forget.password=Password forgotten?
 avatarUrl=URL to your latest profile photo
 home.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
 format.boolean=
@@ -68,7 +68,7 @@ talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq/" target="new">FAQ</a>.
 
 audienceLevel=Audience level
-privateMessage=Private message for the program comitee
+privateMessage=Private message for the program committee
 privateMessage.help=Write here any important details about your presentation, that the program comitee should know. You can also set here the URL to your slides, or any other important details.
 sponsorTalk=Is this a sponsor/exhibitor presentation?
 
@@ -91,15 +91,15 @@ preview.warn=Do no forget to submit your proposal to the program comite, using t
 preview.warn2=in the main CFP screen.
 
 # Proposal type
-key.label=Keynote, 50mn, thursday and friday
-conf.label=Conference, 45mn, thursday and friday
-uni.label=University, 3h, only wednesday
-tia.label=Tools in Action, 30mn, wednesday
-quick.label=Quickie, 15mn, thursday and friday, during lunch
-amd.label=Après-midi des Décideurs, 30mn, thursday afternoon
-bof.label=Bird of a Feather, 1h, thursday evening only
+key.label=Keynote, 50mn, Thursday and Friday
+conf.label=Conference, 45mn, Thursday and Friday
+uni.label=University, 3h, only Wednesday
+tia.label=Tools in Action, 30mn, Wednesday
+quick.label=Quickie, 15mn, Thursday and Friday, during lunch
+amd.label=Après-midi des Décideurs, 30mn, Thursday afternoon
+bof.label=Bird of a Feather, 1h, Thursday evening only
 other.label=Other
-lab.label=Hand''s on Lab, 3h, wednesday only
+lab.label=Hand''s on Lab, 3h, Wednesday only
 
 #Track
 java.label=Java SE, Java EE
@@ -124,7 +124,7 @@ cfp.opening.date=Monday, 2nd of December 2013
 cfp.closing=CFP closing :
 cfp.closing.date=Sunday, 2nd of February 2014, midnight
 cfp.program=Program announced :
-cfp.program.date= february/march 2014
+cfp.program.date= February/March 2014
 video.title=Videos
 video.tag=Review Devoxx France 2013''s videos for free on
 theme.title=Tracks
