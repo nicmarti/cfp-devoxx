@@ -98,7 +98,6 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
-    emailer.addCc("program@devoxx.fr")
     emailer.addRecipient(toWebuser.email)
     proposal.secondarySpeaker.map(uuid => Webuser.getEmailFromUUID(uuid).map(email => emailer.addCc(email)))
     proposal.otherSpeakers.foreach(uuid => Webuser.getEmailFromUUID(uuid).map(email => emailer.addCc(email)))
@@ -107,6 +106,17 @@ object Mails {
       views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString(),
       views.html.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()
     )
+
+    // For Program committee
+
+     emailer.setSubject(s"New messag from ${fromWebuser.cleanName} to ${toWebuser.cleanName}}")
+     emailer.addFrom("program@devoxx.fr")
+     emailer.addRecipient("program@devoxx.fr")
+     emailer.setCharset("utf-8")
+     emailer.send(
+       views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString(),
+       views.html.Mails.sendMessageToSpeakerCommitte(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()
+     )
   }
 
   def sendMessageToComite(fromWebuser: Webuser, proposal: Proposal, msg: String) = {

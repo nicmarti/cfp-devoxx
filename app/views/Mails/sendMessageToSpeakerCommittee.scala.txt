@@ -1,0 +1,15 @@
+@(fromName:String, toName:String, proposal:models.Proposal, msg:String)
+
+Hello,
+
+A new message was posted from @fromName to @toName regarding talk "@proposal.title".
+
+------------------------------------------------------------------------------
+Dear @toName
+@msg
+
+@fromName
+------------------------------------------------------------------------------
+
+Review this proposal online:
+http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)

@@ -1,0 +1,20 @@
+@(fromName:String, toName:String, proposal:models.Proposal, msg:String)
+
+<p>Hello</p>
+
+<p>A new message was posted from @fromName to @toName regarding talk "@proposal.title".</p>
+<br>
+<hr>
+<pre>
+Dear @toName
+@msg
+
+@fromName
+</pre>
+<hr>
+
+<h3>Follow the discussion</h3>
+<a href="http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)">http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)</a>
+
+<hr>
+<small>This email was not sent from a JSF application. Please, respect the nature and use an energy-free framework. Thanks.</small>
