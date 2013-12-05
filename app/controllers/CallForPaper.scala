@@ -52,7 +52,12 @@ object CallForPaper extends Controller with Secured {
       })
   }
 
-  val editWebuserForm = play.api.data.Form(tuple("firstName" -> text.verifying(nonEmpty, maxLength(40)), "lastName" -> text.verifying(nonEmpty, maxLength(40))))
+  val editWebuserForm = play.api.data.Form(
+    tuple(
+      "firstName" -> text.verifying(nonEmpty, maxLength(50)),
+      "lastName" -> text.verifying(nonEmpty, maxLength(50))
+    )
+  )
 
   def editCurrentWebuser = IsAuthenticated {
     implicit uuid => implicit request =>

@@ -3,42 +3,47 @@
 @import helper.twitterBootstrap._
 @import org.apache.commons.codec.digest.DigestUtils
 
-@template("Nouveau profil") {
-    <div class="row">
-        <div class="col-md-12 page-header">
-            <h3>@Messages("confirm.import.title")</h3>
-        </div>
-  @helper.form(action = routes.Authentication.validateImportedSpeaker) {
-        <div class="col-md-12 panel panel-default">
-                @helper.inputText(formWebuser("email"))
-                @helper.inputText(formWebuser("firstName"))
-                @helper.inputText(formWebuser("lastName"))
-                @helper.textarea(formWebuser("bio"), 'cols -> 80, 'rows -> 5)
-                @helper.inputText(formWebuser("company"))
-                @helper.inputText(formWebuser("twitter"), 'placeholder -> "@nickname")
-                @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
-
-            @if(formWebuser("email").value!=""){
-@if(formWebuser("avatarUrl").value.isEmpty){
-
-        <P>@Messages("avatarUrl.isEmpty") <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
-            Gravatar</a>
-            <img width="120" src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))?s=150" alt="Gravatar" title="Update your profile on gravatar.com">
-        </P>
-
-}else{
-      <p>@Messages("avatarUrl.defined")</p>
-      <img src="@formWebuser("avatarUrl").value" width="120" alt="this is you" title="Recommended width 120 px">
-}
-            @helper.inputText(formWebuser("avatarUrl"), 'size -> 80)
-            }
-            <div class="btn-block">
-                        <button type="submit" class="btn btn-success">@Messages("confirm.import.save")</button>
+@template("New profil") {
+<div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h3>@Messages("confirm.import.title")</h3>
             </div>
         </div>
-        }
+@helper.form(action = routes.Authentication.validateImportedSpeaker) {
+    <div class="col-md-12">
+            @helper.inputText(formWebuser("email") , 'size->50, 'length->50)
+            @helper.inputText(formWebuser("firstName"))
+            @helper.inputText(formWebuser("lastName"))
+            @helper.textarea(formWebuser("bio"), 'cols -> 80, 'rows -> 5)
+            <i class="icon-text-width"></i> : <span id="charsremain"></span>
+            @helper.inputText(formWebuser("company"))
+            @helper.inputText(formWebuser("twitter"), 'placeholder -> "@nickname")
+            @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
-
+            @if(formWebuser("email").value!=""){
+                @if(formWebuser("avatarUrl").value.isEmpty){
+                    <P>@Messages("avatarUrl.isEmpty") <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
+                        Gravatar</a>
+                        <img width="120" src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))?s=150" alt="Gravatar" title="Update your profile on gravatar.com">
+                    </P>
+                }else{
+                    <p>@Messages("avatarUrl.defined")</p>
+                    <img src="@formWebuser("avatarUrl").value" width="120" alt="this is you" title="Recommended width 120 px">
+                    }
+                    @helper.inputText(formWebuser("avatarUrl"), 'size -> 80)
+                }
+                <div class="btn-block">
+                            <button type="submit" class="btn btn-success">@Messages("confirm.import.save")</button>
+                </div>
+            }
     </div>
+</div>
 
+<script type="text/javascript" src="/assets/js/maxlength.js"></script>
+<script type="text/javascript">
+$(document).ready(function($){
+    setformfieldsize($('#bio'), 750, 'charsremain');
+});
+</script>
 }
