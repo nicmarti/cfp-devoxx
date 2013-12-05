@@ -71,7 +71,16 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
+                <a href="@routes.CFPAdmin.index()" class="btn btn-primary">Back to CFP admin</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
 <form action="@routes.Backoffice.deleteSpeaker(speaker.uuid)" method="POST">
+ <h3>Trash</h3>
+ <small>Please enter DEL in this input box and click on the button <input type="text" name="secu" value="" placeholder="type here DEL"></small>
  <button type="submit" class="btn btn-sm btn-danger">Delete this speaker</a>
 </form>
             </div>
