@@ -42,7 +42,7 @@ object Comment {
   def saveCommentForSpeaker(proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {
     client =>
       val comment = Comment(proposalId, uuidAuthor, msg, None)
-      client.zadd(s"Comments:ForSpeaker:${proposalId}}", new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
+      client.zadd(s"Comments:ForSpeaker:${proposalId}", new Instant().getMillis.toDouble,  Json.toJson(comment).toString())
   }
 
   def allSpeakerComments(proposalId: String):List[Comment] = Redis.pool.withClient {
