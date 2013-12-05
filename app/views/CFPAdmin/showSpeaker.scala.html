@@ -7,7 +7,6 @@
             <div class="panel-heading">
                 <h3><i class="icon-user"></i> @speaker.name.getOrElse(speaker.email)</h3>
             </div>
-
             <div class="panel-body">
                 <table class="table">
                     <tbody>
@@ -66,6 +65,15 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+<form action="@routes.Backoffice.deleteSpeaker(speaker.uuid)" method="POST">
+ <button type="submit" class="btn btn-sm btn-danger">Delete this speaker</a>
+</form>
             </div>
         </div>
     </div>

@@ -61,7 +61,7 @@ object Application extends Controller {
       Webuser.findByEmail(email).map {
         webuser =>
           Webuser.delete(webuser)
-          SpeakerHelper.delete(email)
+          Speaker.delete(email)
           Redirect(routes.Application.index()).withNewSession.flashing("success" -> "User de test effacé")
       }.getOrElse(NotFound("User does not exist"))
   }

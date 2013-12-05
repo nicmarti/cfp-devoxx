@@ -42,7 +42,7 @@ object CallForPaper extends Controller with Secured {
 
   def homeForSpeaker = IsAuthenticated {
     implicit uuid => implicit request =>
-      val result = for (speaker <- SpeakerHelper.findByUUID(uuid).toRight("Speaker not found").right;
+      val result = for (speaker <- Speaker.findByUUID(uuid).toRight("Speaker not found").right;
                         webuser <- Webuser.findByUUID(uuid).toRight("Webuser not found").right) yield (speaker, webuser)
       result.fold(errorMsg => {
         Redirect(routes.Application.index()).flashing("error" -> errorMsg)
@@ -80,11 +80,11 @@ object CallForPaper extends Controller with Secured {
     "avatarUrl" -> optional(text),
     "company" -> optional(text),
     "blog" -> optional(text)
-  )(SpeakerHelper.createSpeaker)(SpeakerHelper.unapplyForm))
+  )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def editProfile = IsAuthenticated {
     implicit uuid => implicit request =>
-      SpeakerHelper.findByUUID(uuid).map {
+      Speaker.findByUUID(uuid).map {
         speaker =>
           Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
       }.getOrElse(Unauthorized("User not found"))
@@ -95,7 +95,7 @@ object CallForPaper extends Controller with Secured {
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validForm => {
-          SpeakerHelper.update(uuid, validForm)
+          Speaker.update(uuid, validForm)
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
         }
       )

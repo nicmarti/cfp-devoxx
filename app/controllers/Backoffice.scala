@@ -1,6 +1,6 @@
 package controllers
 
-import models.{Proposal, Webuser}
+import models.{Speaker, Event, Proposal, Webuser}
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -73,6 +73,16 @@ object Backoffice extends Controller with Secured {
       ZapActor.actor ! DraftReminder()
       // Then redirect
       Redirect(routes.Backoffice.allDraftProposals()).flashing("success"->"An email will be sent to Speakers with Draft proposal")
+  }
+
+  def deleteSpeaker(speakerUUIDToDelete:String)=IsMemberOf("admin"){
+    implicit uuid=> implicit request=>
+      Speaker.delete(speakerUUIDToDelete)
+      Webuser.findByUUID(speakerUUIDToDelete).foreach{w=>
+        Webuser.delete(w)
+        Event.storeEvent(Event(speakerUUIDToDelete, uuid, s"Deleted webuser ${w.cleanName} ${w.uuid}"))
+      }
+      Redirect(routes.Backoffice.allDraftProposals()).flashing("success"->s"Speaker $speakerUUIDToDelete deleted")
   }
 
 }

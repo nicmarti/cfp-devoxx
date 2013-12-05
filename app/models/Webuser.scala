@@ -92,11 +92,17 @@ object Webuser {
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
     client =>
+      Proposal.allMyDraftProposals(webuser.uuid).foreach{proposal=>
+        play.Logger.of("models.Webuser").debug(s"Deleting proposal ${proposal}")
+        Proposal.destroy(proposal)
+      }
+
       val tx = client.multi()
       tx.hdel("Webuser", webuser.uuid)
       tx.del("Webuser:UUID:" + webuser.uuid)
       tx.del("Webuser:Email:" + webuser.email)
       tx.srem("Webuser:" + webuser.profile, webuser.email)
+      tx.hdel("Webuser:New", webuser.email)
       tx.exec()
   }
 
@@ -123,7 +129,7 @@ object Webuser {
       client.hset("Webuser", webuser.uuid, json)
 
       if (isSpeaker(webuser.uuid)) {
-        SpeakerHelper.updateName(webuser.email, webuser.cleanName)
+        Speaker.updateName(webuser.email, webuser.cleanName)
       }
   }
 

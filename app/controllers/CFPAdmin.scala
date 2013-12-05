@@ -118,7 +118,7 @@ object CFPAdmin extends Controller with Secured {
 
   def showSpeaker(uuidSpeaker: String) = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
-      SpeakerHelper.findByUUID(uuidSpeaker) match {
+      Speaker.findByUUID(uuidSpeaker) match {
         case Some(speaker) => Ok(views.html.CFPAdmin.showSpeaker(speaker))
         case None => NotFound("Speaker not found")
       }
@@ -126,7 +126,7 @@ object CFPAdmin extends Controller with Secured {
 
   def leaderBoard = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
-      val totalSpeakers = SpeakerHelper.countAll()
+      val totalSpeakers = Speaker.countAll()
       val totalProposals = Proposal.countAll()
       val totalVotes = Review.countAll()
       val totalWithVotes = Review.countWithVotes()

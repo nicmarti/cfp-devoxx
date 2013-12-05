@@ -354,5 +354,21 @@ object Proposal {
       loadProposalByIDs(proposalIDs, ProposalState.SUBMITTED)
   }
 
+  def allProposalsByAuthor(author:String):List[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:${author}")
+      client.hmget("Proposal",allProposalIDs)
+      Nil
+  }
+
+  def destroy(proposal:Proposal)=Redis.pool.withClient{
+    implicit client=>
+      val tx = client.multi()
+      tx.srem(s"Proposals:ByAuthor:${proposal.mainSpeaker}", proposal.id)
+      tx.srem(s"Proposals:ByState:${proposal.state.code}", proposal.id)
+      tx.srem(s"Proposals:ByTrack:${proposal.track.id}", proposal.id)
+      tx.hdel("Proposals", proposal.id)
+      tx.exec()
+  }
 
 }

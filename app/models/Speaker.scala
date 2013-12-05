@@ -36,7 +36,7 @@ import play.api.libs.Crypto
 case class Speaker(uuid:String, email: String, name:Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String])
 
-object SpeakerHelper {
+object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String],
@@ -62,7 +62,7 @@ object SpeakerHelper {
 
   def updateName(uuid:String, newName:String) = {
     findByUUID(uuid).map{ speaker=>
-      SpeakerHelper.update(uuid, speaker.copy(name=Option(newName)))
+      Speaker.update(uuid, speaker.copy(name=Option(newName)))
     }
   }
 
@@ -92,5 +92,7 @@ object SpeakerHelper {
     client=>
       client.hlen("Speaker")
   }
+
+
 }
 

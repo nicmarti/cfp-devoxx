@@ -77,6 +77,7 @@ GET     /admin/proposals/moveTrash      controllers.Backoffice.moveProposalToTra
 GET     /admin/proposals/submitted/moveTrash      controllers.Backoffice.moveSubmittedProposalToTrash(proposalId:String)
 GET     /admin/proposals/moveDraft      controllers.Backoffice.moveProposalToDraft(proposalId:String)
 GET     /admin/draftReminder            controllers.Backoffice.sendReminderToSpeakersForDraft()
+POST    /admin/deleteSpeaker/:speakerUUIDToDelete      controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
