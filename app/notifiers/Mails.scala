@@ -43,6 +43,7 @@ object Mails {
     emailer.setSubject("You asked to reset your Devoxx France speaker's password at " + new DateTime().toString("HH:mm dd/MM"))
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
   }
