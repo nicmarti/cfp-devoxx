@@ -127,8 +127,8 @@ object Proposal {
     "otherSpeakers" -> list(text),
     "talkType" -> nonEmptyText,
     "audienceLevel" -> text,
-    "summary" -> nonEmptyText(maxLength = 2000),
-    "privateMessage" -> optional(text(maxLength = 1000)),
+    "summary" -> nonEmptyText(maxLength = 500),
+    "privateMessage" -> nonEmptyText(maxLength = 3500),
     "sponsorTalk" -> boolean,
     "track" -> nonEmptyText
   )(validateNewProposal)(unapplyProposalForm))
@@ -142,8 +142,12 @@ object Proposal {
                           title: String,
                           secondarySpeaker: Option[String],
                           otherSpeakers: List[String],
-                          talkType: String, audienceLevel: String, summary: String, privateMessage: Option[String],
-                          sponsorTalk: Boolean, track: String): Proposal = {
+                          talkType: String,
+                          audienceLevel: String,
+                          summary: String,
+                          privateMessage: String,
+                          sponsorTalk: Boolean,
+                          track: String): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
       "Devoxx France 2014",
@@ -155,7 +159,7 @@ object Proposal {
       ProposalType.parse(talkType),
       audienceLevel,
       summary,
-      StringUtils.trimToEmpty(privateMessage.getOrElse("")),
+      privateMessage,
       ProposalState.UNKNOWN,
       sponsorTalk,
       Track.parse(track)
@@ -169,9 +173,9 @@ object Proposal {
       client.hexists("Proposals", id) == false
   }
 
-  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, Option[String],
+  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
     Boolean, String)] = {
-    Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, Option(p.privateMessage),
+    Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, p.privateMessage,
       p.sponsorTalk, p.track.id))
   }
 

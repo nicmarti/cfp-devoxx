@@ -14,9 +14,7 @@
             <h3>@Messages("New.proposal")</h3>
         }
         </div>
-        <div class="col-md-6">
-
-
+        <div class="col-md-7">
             @if(flash.get("error").isDefined){
                 <div class="alert alert-danger alert-dismissable">
                     @flash.get("error").get
@@ -30,9 +28,10 @@
             @helper.form(action = routes.CallForPaper.previewProposal()){
                 <input type="hidden" name="id" value="@newProposal("id").value">
                 @helper.inputText(newProposal("title"), 'class->"form-control")
-                @helper.textarea(newProposal("summary"), 'cols->60, 'rows->10,  'class->"form-control")
+                @helper.textarea(newProposal("summary"), 'cols->60, 'rows->6,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain"></span>
-
+                @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
+                <i class="icon-text-width"></i> : <span id="charsremain2"></span>
                 @helper.select(field = newProposal("lang"), options=Proposal.langs,  'class->"form-control")
 
                 @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
@@ -40,7 +39,7 @@
 
                 <input type="hidden" name="audienceLevel" value="intermediate">
 
-                @helper.textarea(newProposal("privateMessage"), 'cols->60,  'class->"form-control")
+
                 @tags.checkboxI18N(newProposal("sponsorTalk"),  'text->"sponsorTalk.checkbox")
                 <div id="sponsorTalkMsg" class="alert alert-info">
                     <p>@Messages("sponsorTalk.help")</p>
@@ -51,15 +50,14 @@
             }
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-5">
             <h3>@Messages("helpAndTips")</h3>
-            <p><label>@Messages("title") : </label> @Messages("title.help")</p>
-            <p><label>@Messages("summary") : </label> @Messages("summary.help")</p>
-            <p><label>@Messages("lang") : </label> @Messages("lang.help")</p>
-            <p><label>@Messages("mainSpeaker") : </label> @Messages("mainSpeaker.help")</p>
-            <p><label>@Messages("talkType") : </label> @Html(Messages("talkType.help"))</p>
-            <p><label>@Messages("privateMessage") : </label> @Messages("privateMessage.help")</p>
-
+            <p><label>@Messages("title") : </label><br> @Messages("title.help")</p>
+            <p><label>@Messages("summary") : </label><br> @Html(Messages("summary.help"))</p>
+            <p><label>@Messages("privateMessage") : </label><br> @Messages("privateMessage.help")</p>
+            <p><label>@Messages("lang") : </label><br> @Messages("lang.help")</p>
+            <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help"))</p>
+            <p><label>@Messages("mainSpeaker") : </label><br> @Messages("mainSpeaker.help")</p>
         </div>
 
     </div>
@@ -70,7 +68,8 @@
 $(document).ready(function($){
     $('#sponsorTalkMsg' ).hide();
 
-    setformfieldsize($('#summary'), 2000, 'charsremain');
+    setformfieldsize($('#summary'), 500, 'charsremain');
+    setformfieldsize($('#privateMessage'), 3500, 'charsremain2');
 
     // Selet current lang
     $('#lang option[value="@lang.country.toLowerCase"]').prop('selected', true);

@@ -57,8 +57,8 @@ Edit.proposal=Edit proposal - step 1/3
 Edit.proposal2=Edit proposal - step 2/2
 title=Presentation title
 title.help=Think carefully and try to create a title that is descriptive enough. Most of the attendees selects a talk at the very last minute, just based on its title.
-summary=Summary
-summary.help=Describe your proposal, you can use Markdown syntax. We use the txtmark library.
+summary=Summary of your presentation, for the attendee
+summary.help=Describe your proposal as it will appear on our website and on the printed program. You can use Markdown syntax.
 lang=Main language
 lang.help=75% of Devoxx France''s talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
 mainSpeaker=Main speaker
@@ -68,7 +68,7 @@ talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq/" target="new">FAQ</a>.
 
 audienceLevel=Audience level
-privateMessage=Private message for the program committee
+privateMessage=Message for the program committee, motivation for your presentation
 privateMessage.help=Write here any important details about your presentation, that the program comitee should know. You can also set here the URL to your slides, or any other important details.
 sponsorTalk=Is this a sponsor/exhibitor presentation?
 

@@ -93,8 +93,8 @@ Edit.proposal2=Editer une proposition, étape 2/2
 
 title=Titre de la présentation
 title.help=Proposez un titre simple, clair, qui résume ce que le participant va apprendre. Beaucoup de conférenciers sélectionnent une conférence au dernier moment, en se basant sur le titre.
-summary=Résumé
-summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vous pouvez utiliser la syntaxe Markdown. Nous utilisons la librairie txtmark.
+summary=Résumé de votre présentation pour le participant
+summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vous pouvez utiliser la syntaxe <a href="http://daringfireball.net/projects/markdown/syntax/" target="_blank">Markdown</a>.
 lang=Langue
 lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
 mainSpeaker=Présentateur principal
@@ -103,8 +103,8 @@ talkType.help=Chaque type de conférence est détaillé sur la page <a href="htt
 
 talkType=Type de présentation
 audienceLevel=Niveau de la présentation
-privateMessage=Message privé pour le comité de sélection (program@devoxx.fr)
-privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation par exemple. Vous pouvez inclure l'URL vers vos diapositives si vous le souhaitez.
+privateMessage=Message pour le comité de sélection
+privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation, l''ensemble des éléments qui doivent nous faire choisir votre proposition de sujet. Vous pouvez inclure l'URL vers vos diapositives si vous le souhaitez.
 sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
 sponsorTalk.help=Les sponsors Silver et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée.
 sponsorTalk.help.title=Talk sponsor
