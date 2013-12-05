@@ -45,20 +45,20 @@ object Review {
   // 3) a Sorted Set where key is "reviewer email" and value is the vote. It keeps only the latest vote.
   //     If you vote more than once for a talk, it keeps only the latest vote
   // 4) a HASH with the Review as JSON. We keep an history of updates on a proposal
-  def voteForProposal(proposalId: String, reviewer: String, vote: Int) = Redis.pool.withClient {
+  def voteForProposal(proposalId: String, reviewerUUID: String, vote: Int) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
-      tx.sadd(s"Proposals:Reviewed:ByAuthor:${reviewer}", proposalId)
-      tx.sadd(s"Proposals:Reviewed:ByProposal:${proposalId}", reviewer)
-      tx.zadd(s"Proposals:Votes:${proposalId}", vote, reviewer) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
-      tx.zadd(s"Proposals:Dates:${proposalId}", new Instant().getMillis, reviewer + "__" + vote) // Store when this user voted for this talk
+      tx.sadd(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)
+      tx.sadd(s"Proposals:Reviewed:ByProposal:${proposalId}", reviewerUUID)
+      tx.zadd(s"Proposals:Votes:${proposalId}", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
+      tx.zadd(s"Proposals:Dates:${proposalId}", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
       tx.exec()
-      Event.storeEvent(Event(proposalId, reviewer, s"Voted ${vote}"))
+      Event.storeEvent(Event(proposalId, reviewerUUID, s"Voted ${vote}"))
   }
 
-  def allProposalsNotReviewed(reviewer: String): List[Proposal] = Redis.pool.withClient {
+  def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:${reviewer}").toSet
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:${reviewerUUID}").toSet
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
@@ -66,8 +66,8 @@ object Review {
     implicit client =>
       val allAuthors = client.smembers(s"Proposals:Reviewed:ByProposal:${proposalId}")
       allAuthors.foreach {
-        author: String =>
-          client.srem(s"Proposals:Reviewed:ByAuthor:${author}", proposalId)
+        reviewerUUID: String =>
+          client.srem(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)
       }
       client.del(s"Proposals:Reviewed:ByProposal:${proposalId}")
       client.del(s"Proposals:Votes:${proposalId}")
@@ -86,7 +86,7 @@ object Review {
           val date = tuple._2
           reviewerAndVote match {
             // Regexp extractor
-            case ReviewerAndVote(reviewer, vote) => Option(Review(reviewer, proposalId, vote.toInt, new Instant(date).toDateTime))
+            case ReviewerAndVote(reviewer, vote) => Option(Review(reviewer, proposalId, vote.toInt, new Instant(date.toLong).toDateTime))
             case _ => None
           }
       }
@@ -154,8 +154,22 @@ object Review {
     implicit client =>
       Webuser.allCFPAdmin().map {
         webuser: Webuser =>
-          val email = webuser.email
-          (email, client.scard(s"Proposals:Reviewed:ByAuthor:$email"))
+          val uuid = webuser.uuid
+          (uuid, client.scard(s"Proposals:Reviewed:ByAuthor:$uuid"))
+      }
+  }
+
+  def lastVoteByUserForOneProposal(reviewerUUID:String, proposalId:String):Option[Review]=Redis.pool.withClient{
+    implicit client=>
+      // If I voted for this proposal - O(1) very fast access
+      if(client.sismember(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}",proposalId)){
+        // Then ok, load the vote... O(log(N)+M) with N: nb of votes and M the number returned (all...)
+        // this method use Redis zrevrangeByScoreWithScores so the list is already sorted
+        // from the most recent vote to the oldest vote for a proposal.
+        // The first Review with author = reviewerUUID is then the most recent vote for this talk
+        allHistoryOfVotes(proposalId).find(review=>review.reviewer==reviewerUUID)
+      }else{
+        None
       }
   }
 

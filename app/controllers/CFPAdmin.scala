@@ -31,7 +31,8 @@ object CFPAdmin extends Controller with Secured {
         case Some(proposal) => {
           val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
           val internalDiscussion = Comment.allInternalComments(proposal.id)
-          Ok(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm))
+          val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
+          Ok(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm, maybeMyVote))
         }
         case None => NotFound("Proposal not found").as("text/html")
       }
@@ -45,6 +46,7 @@ object CFPAdmin extends Controller with Secured {
           val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
           val countVotes = Review.totalVoteFor(proposalId)
           val allVotes = Review.allVotesFor(proposalId)
+
           Ok(views.html.CFPAdmin.showVotesForProposal(proposal, score, countVotesCast, countVotes, allVotes))
         }
         case None => NotFound("Proposal not found").as("text/html")
@@ -59,7 +61,8 @@ object CFPAdmin extends Controller with Secured {
             hasErrors => {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
               val internalDiscussion = Comment.allInternalComments(proposal.id)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm))
+              val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm, maybeMyVote))
             },
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
@@ -81,7 +84,8 @@ object CFPAdmin extends Controller with Secured {
             hasErrors => {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
               val internalDiscussion = Comment.allInternalComments(proposal.id)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm))
+              val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm, maybeMyVote))
             },
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
@@ -104,7 +108,8 @@ object CFPAdmin extends Controller with Secured {
             hasErrors => {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
               val internalDiscussion = Comment.allInternalComments(proposal.id)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors))
+              val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors, maybeMyVote))
             },
             validVote => {
               Review.voteForProposal(proposalId, uuid, validVote)
