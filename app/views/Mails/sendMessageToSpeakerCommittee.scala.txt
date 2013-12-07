@@ -5,7 +5,6 @@ Hello,
 A new message was posted from @fromName to @toName regarding talk "@proposal.title".
 
 ------------------------------------------------------------------------------
-Dear @toName
 @msg
 
 @fromName
