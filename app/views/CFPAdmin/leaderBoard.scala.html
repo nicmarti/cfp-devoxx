@@ -2,34 +2,34 @@
 
 @main("Leaderboard") {
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-22">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
             </div>
 
             <div class="panel-body">
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <h1>@totalSpeakers</h1>
                     <small>speakers</small>
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <h1>@totalProposals</h1>
                     <small>proposals</small>
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <h1>@totalReviews</h1>
                     <small>reviews</small>
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <h1>@totalVotes</h1>
                     <small>proposals with vote</small>
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <h1>@totalNoVotes</h1>
                     <small>proposals with no vote</small>
                 </div>
@@ -41,7 +41,8 @@
                 </div>
                 }
 
-                <div class="col-md-1">
+                <div class="col-md-2">
+                    <h1>Top</h1>
                     <h1>@tags.renderGravatar(bestReviewer._1)</h1>
                     <small>@bestReviewer._2 talks reviewed.</small>
                 </div>

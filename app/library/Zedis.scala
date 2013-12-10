@@ -12,6 +12,7 @@ import redis.clients.jedis._
 import scala.Predef.String
 import scala.collection.immutable._
 import org.apache.commons.lang3.StringUtils
+import redis.clients.jedis.exceptions.JedisConnectionException
 
 trait Dress {
   implicit def delegateToJedis(d: Wrap) = d.j
@@ -106,15 +107,33 @@ trait Dress {
       }
     }
 
-    def zrevrangeByScoreWithScores(key: String, start: Int, end: Int): List[(String, Double)] = {
-      zrevrangeByScoreWithScores(key,start.toString, end.toString)
+    def zrevrangeByScoreWithScores(key: String, max: Int, min: Int): List[(String, Double)] = {
+      zrevrangeByScoreWithScores(key,max.toString, min.toString)
     }
 
-    def zrevrangeByScoreWithScores(key: String, start: String, end: String): List[(String, Double)] = {
-      j.zrevrangeByScoreWithScores(key, start, end).asScala.toList.map {
+    def zrevrangeByScoreWithScores(key: String, max: String, min: String): List[(String, Double)] = {
+      j.zrevrangeByScoreWithScores(key, max, min).asScala.toList.map {
         tuple: Tuple =>
           (tuple.getElement, tuple.getScore)
       }
+    }
+
+    def zrangeByScoreWithScores(key: String, min: Double, max: Double): List[(String, Double)] = {
+       j.zrangeByScoreWithScores(key, min, max).asScala.toList.map {
+         tuple: Tuple =>
+           (tuple.getElement, tuple.getScore)
+       }
+     }
+
+    def zrangeByScoreWithScores(key: String, min: String, max: String): List[(String, Double)] = {
+      j.zrangeByScoreWithScores(key, min, max).asScala.toList.map {
+        tuple: Tuple =>
+          (tuple.getElement, tuple.getScore)
+      }
+    }
+
+    def zrangeByScore(key:String, min:Double, max:Double):Set[String]={
+      j.zrangeByScore(key, min, max).asScala.toSet
     }
 
     def sdiff(key1: String, key2: String): Set[String] = {
@@ -127,6 +146,22 @@ trait Dress {
 
     def scard(key:String):Long={
       j.scard(key).longValue()
+    }
+
+    def keys(pattern:String):Set[String]={
+      j.keys(pattern).asScala.toSet
+    }
+
+    def hexists(key:String, field:String):Boolean={
+      j.hexists(key,field).booleanValue
+    }
+
+    def srem(key:String, member:String):Long={
+      j.srem(key, Seq(member).toSeq:_*).longValue()
+    }
+
+    def srem(key:String, members:Set[String]):Long={
+      j.srem(key, members.toSeq:_*).longValue()
     }
   }
 

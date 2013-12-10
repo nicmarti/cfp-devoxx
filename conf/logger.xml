@@ -10,13 +10,13 @@
     </appender>
 
     <logger name="play" level="WARN"/>
-    <logger name="models.Issue" level="DEBUG"/>
-    <logger name="models.Proposal" level="DEBUG"/>
-    <logger name="models.Review" level="DEBUG"/>
-    <logger name="models.Review" level="DEBUG"/>
-    <logger name="models.Speaker" level="DEBUG"/>
-    <logger name="models.Webuser" level="DEBUG"/>
-    <logger name="library.ZapActor" level="DEBUG"/>
+    <logger name="models.Issue" level="INFO"/>
+    <logger name="models.Proposal" level="INFO"/>
+    <logger name="models.Review" level="INFO"/>
+    <logger name="models.Review" level="INFO"/>
+    <logger name="models.Speaker" level="INFO"/>
+    <logger name="models.Webuser" level="INFO"/>
+    <logger name="library.ZapActor" level="INFO"/>
     <logger name="application" level="INFO"/>
 
     <logger name="net.sf.ehcache.sizeof.verboseINFOLogging" level="INFO"/>

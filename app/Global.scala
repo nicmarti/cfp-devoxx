@@ -18,6 +18,7 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
       CronTask.draftReminder()
+      CronTask.cleanupInvalidReviews()
     } else {
       play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
     }
@@ -57,12 +58,13 @@ object CronTask {
 
   val zapActor = Akka.system.actorOf(Props[ZapActor])
 
+  // Send an email for each Proposal with status draft
   def draftReminder() = {
     val draftTime = Play.configuration.getInt("actor.draftReminder.days")
     draftTime match {
       case Some(everyX) => {
         // Compute delay between now and 8:00 in the morning
-        // This is a trick to avoid to send a message at each restart
+        // This is a trick to avoid to send a message when we restart the server
         val tomorrow = DateMidnight.now().plusDays(1)
         val interval = tomorrow.toInterval
         val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
@@ -73,6 +75,11 @@ object CronTask {
         play.Logger.debug("CronTask : do not send reminder for draft")
       }
     }
+  }
+
+  // Delete votes and reviews for each deleted speaker (or cfp admin reviewer)
+  def cleanupInvalidReviews() = {
+    Akka.system.scheduler.schedule(120 seconds, 1 days, zapActor, CleanupInvalidReviews())
   }
 
 }

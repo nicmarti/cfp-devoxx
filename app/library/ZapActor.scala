@@ -52,6 +52,8 @@ case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: St
 
 case class DraftReminder()
 
+case class CleanupInvalidReviews()
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -64,6 +66,7 @@ class ZapActor extends Actor {
     case SendMessageToComite(reporterUUID, proposal, msg) => sendMessageToComite(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
+    case CleanupInvalidReviews() => cleanupInvalidReviews()
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -117,6 +120,58 @@ class ZapActor extends Actor {
         }
       }
     }
+  }
+
+
+  def cleanupInvalidReviews() {
+    if (play.Logger.of("library.ZapActor").isDebugEnabled()) {
+      play.Logger.of("library.ZapActor").debug("Cleanup invalid reviews")
+    }
+
+    // If we delete an admin, we need to also remove all reviews created by this admin
+    Redis.pool.withClient {
+      client =>
+      // do not use the keys function in the web app, it is a very slow command
+      // There is a SCAN command on Redis 2.8 but we are using 2.6
+      // Since this code runs in an Actor, it is ok to use the Keys here
+        val allProposalWithReviews = client.keys("Proposals:Reviewed:ByProposal:*")
+        allProposalWithReviews.foreach {
+          proposalID: String =>
+//            println("proposal ID " + proposalID)
+            val speakerIDs = client.smembers(proposalID)
+//            println("Reviews:" + speakerIDs.size)
+
+            val invalidSpeakerIDs = speakerIDs.filterNot(id => client.hexists("Speaker", id))
+            val invalidWebuserIDs = speakerIDs.filterNot(id => client.hexists("Webuser", id))
+            if (play.Logger.of("library.ZapActor").isDebugEnabled()) {
+              play.Logger.of("library.ZapActor").debug(s"Checking ${proposalID}")
+              play.Logger.of("library.ZapActor").debug(s"invalidSpeakerIDs ${invalidSpeakerIDs}")
+              play.Logger.of("library.ZapActor").debug(s"invalidWebuserIDs ${invalidWebuserIDs}")
+              if(invalidSpeakerIDs.nonEmpty){
+              client.srem(proposalID, invalidSpeakerIDs)
+              }
+            }
+        }
+
+        val allProposalWithVotes = client.keys("Proposals:Votes:*")
+        allProposalWithVotes.foreach {
+          proposalID: String =>
+            val speakerIDsVotes = client.zrangeByScore(proposalID, 0.toDouble, 10.toDouble)
+            // TODO
+            val invalidSpeakerIDs2 = speakerIDsVotes.filterNot(id => client.hexists("Speaker", id))
+            val invalidWebuserIDs2 = speakerIDsVotes.filterNot(id => client.hexists("Webuser", id))
+            if (play.Logger.of("library.ZapActor").isDebugEnabled()) {
+              play.Logger.of("library.ZapActor").debug(s"Checking ${proposalID}")
+              play.Logger.of("library.ZapActor").debug(s"invalidSpeakerIDs2 ${invalidSpeakerIDs2}")
+              play.Logger.of("library.ZapActor").debug(s"invalidWebuserIDs2 ${invalidWebuserIDs2}")
+              if(invalidSpeakerIDs2.nonEmpty){
+                client.zrem(proposalID, invalidSpeakerIDs2.toSeq:_*) //transforme un Set vers un varargs pour le driver jedis
+              }
+            }
+        }
+    }
+
+
   }
 
 }
