@@ -53,7 +53,6 @@ object Event {
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
       val jsEvent = Json.stringify(Json.toJson(event))
-
       val tx=client.multi()
       tx.zadd("Events:V2:", new Instant().getMillis, jsEvent)
       tx.sadd("Events:V2:"+event.objRef,jsEvent)
