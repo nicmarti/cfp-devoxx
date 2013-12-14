@@ -27,6 +27,14 @@
                     <h3><i class="icon-ok-circle"></i> Your todo list </h3>
                 </div>
                 <div class="panel-body">
+                    <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
+                    <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> All your votes</a>
+
+                    @if(Webuser.isMember(uuid, "admin")){
+                        <a href="@routes.Backoffice.allSpeakers" class="btn btn-sm btn-primary"> All speakers</a>
+                        <a href="@routes.Backoffice.allDraftProposals" class="btn btn-sm btn-primary"> All DRAFT proposals</a>
+                        <a href="@routes.Backoffice.allSubmittedProposals" class="btn btn-sm btn-primary"> All SUBMITTED proposals</a>
+                    }
                     @if(allProposalsForReview.nonEmpty) {
                         <table class="table table-bordered table-strippted">
                             <thead>
@@ -68,14 +76,7 @@
                     } else {
                         <p>There is no new talks</p>
                     }
-                    <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i>
-                        Show leaderboard</a>
 
-                    @if(Webuser.isMember(uuid, "admin")){
-                        <a href="@routes.Backoffice.allSpeakers" class="btn btn-sm btn-primary">All speakers</a>
-                        <a href="@routes.Backoffice.allDraftProposals" class="btn btn-sm btn-primary">All DRAFT proposals</a>
-                        <a href="@routes.Backoffice.allSubmittedProposals" class="btn btn-sm btn-primary">All SUBMITTED proposals</a>
-                    }
                 </div>
             </div>
         </div>
