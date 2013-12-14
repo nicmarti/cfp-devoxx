@@ -23,7 +23,7 @@
 
 package models
 
-import library.Redis
+import library.{Benchmark, Redis}
 import org.joda.time.{Instant, DateTime}
 import play.api.libs.json.{Json, Format}
 
@@ -159,29 +159,49 @@ object Review {
       }
   }
 
-  def lastVoteByUserForOneProposal(reviewerUUID:String, proposalId:String):Option[Review]=Redis.pool.withClient{
-    implicit client=>
-      // If I voted for this proposal - O(1) very fast access
-      if(client.sismember(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}",proposalId)){
+  def lastVoteByUserForOneProposal(reviewerUUID: String, proposalId: String): Option[Review] = Redis.pool.withClient {
+    implicit client =>
+    // If I voted for this proposal - O(1) very fast access
+      if (client.sismember(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)) {
         // Then ok, load the vote... O(log(N)+M) with N: nb of votes and M the number returned (all...)
         // this method use Redis zrevrangeByScoreWithScores so the list is already sorted
         // from the most recent vote to the oldest vote for a proposal.
         // The first Review with author = reviewerUUID is then the most recent vote for this talk
-        allHistoryOfVotes(proposalId).find(review=>review.reviewer==reviewerUUID)
-      }else{
+        allHistoryOfVotes(proposalId).find(review => review.reviewer == reviewerUUID)
+      } else {
         None
       }
   }
 
-  def allVotesFromUser(reviewerUUID:String):Set[(String, Option[Double])]=Redis.pool.withClient{
-    implicit client=>
-      println("reviewer "+reviewerUUID )
-     client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").map{proposalId:String=>
-       println(s"ZSCORE Proposals:Votes:${proposalId} ${reviewerUUID}")
-        val score = Option(client.zscore(s"Proposals:Votes:${proposalId}",reviewerUUID))
-        (proposalId,score.map(_.toDouble))
-      }
-  }
+  def allVotesFromUser(reviewerUUID: String): Set[(String, Option[Double])] = Redis.pool.withClient {
+    implicit client =>
 
+      client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").flatMap {
+        proposalId: String =>
+
+          val score = Option(client.zscore(s"Proposals:Votes:${proposalId}", reviewerUUID))
+
+          score match {
+            case None => {
+              // Load the state only for the "strange" proposal
+              val state = Benchmark.measure(() => Proposal.findProposalState(proposalId), "find state")
+              state.flatMap {
+                case ProposalState.DRAFT => None
+                case ProposalState.DECLINED => None
+                case ProposalState.DELETED => None
+                case ProposalState.ACCEPTED => None
+                case ProposalState.APPROVED => None
+                case ProposalState.REJECTED => None
+                case ProposalState.UNKNOWN => None
+                case other => Option((proposalId, None))
+              }
+            }
+              case Some(_) =>{
+                Option(proposalId, score.map(_.toDouble))
+              }
+            }
+          }
+
+  }
 
 }

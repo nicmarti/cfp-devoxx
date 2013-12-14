@@ -1,7 +1,7 @@
 package models
 
 import play.api.libs.json.Json
-import library.{Dress, Redis}
+import library.{Benchmark, Dress, Redis}
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 import play.api.data._
@@ -316,7 +316,7 @@ object Proposal {
     // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
     // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
     // Here I do the opposite for performance reasons. NMA.
-    // This code retrieves the proposalState in less than 4ms so it is really efficient.
+    // This code retrieves the proposalState in less than 20-30ms.
       val thisProposalState = for (
         isNotSubmitted <- checkIsNotMember(client, ProposalState.SUBMITTED, proposalId).toRight(ProposalState.SUBMITTED).right;
         isNotDraft <- checkIsNotMember(client, ProposalState.DRAFT, proposalId).toRight(ProposalState.DRAFT).right;
@@ -334,9 +334,9 @@ object Proposal {
       })
   }
 
-  private def checkIsNotMember(client: Dress.Wrap, state: ProposalState, proposalId: String): Option[String] = {
+  private def checkIsNotMember(client: Dress.Wrap, state: ProposalState, proposalId: String): Option[Boolean] = {
     client.sismember("Proposals:ByState:" + state.code, proposalId) match {
-      case java.lang.Boolean.FALSE => Some("notMember")
+      case java.lang.Boolean.FALSE => Option(true)
       case other => None
     }
   }

@@ -190,5 +190,18 @@
                 </div>
             </div>
         </div>
+
+        @if(Webuser.isMember(uuid, "admin")){
+        <div class="col-md-4">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h4>For Admin only</h4>
+                </div>
+                <div class="panel-body">
+                    Move this talk <a href="@routes.Backoffice.moveSubmittedProposalToTrash(proposal.id)" class="btn btn-sm btn-danger">to trash</a>
+                </div>
+            </div>
+        </div>
+        }
     </div>
 }
