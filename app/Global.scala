@@ -79,7 +79,7 @@ object CronTask {
 
   // Delete votes and reviews for each deleted speaker (or cfp admin reviewer)
   def cleanupInvalidReviews() = {
-    Akka.system.scheduler.schedule(120 seconds, 1 days, zapActor, CleanupInvalidReviews())
+    Akka.system.scheduler.schedule(600 seconds, 1 days, zapActor, CleanupInvalidReviews())
   }
 
 }
