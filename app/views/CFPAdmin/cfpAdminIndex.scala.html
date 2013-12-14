@@ -29,7 +29,6 @@
                 <div class="panel-body">
                     <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
                     <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> All your votes</a>
-
                     @if(Webuser.isMember(uuid, "admin")){
                         <a href="@routes.Backoffice.allSpeakers" class="btn btn-sm btn-primary"> All speakers</a>
                         <a href="@routes.Backoffice.allDraftProposals" class="btn btn-sm btn-primary"> All DRAFT proposals</a>
