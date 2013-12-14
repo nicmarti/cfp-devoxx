@@ -141,6 +141,12 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
   }
 
+  def allMyVotes = IsMemberOf("cfp"){
+    implicit uuid => implicit request =>
+      val result = Review.allVotesFromUser(uuid)
+      Ok(views.html.CFPAdmin.allMyVotes(result))
+  }
+
 
 }
 

@@ -173,5 +173,15 @@ object Review {
       }
   }
 
+  def allVotesFromUser(reviewerUUID:String):Set[(String, Option[Double])]=Redis.pool.withClient{
+    implicit client=>
+      println("reviewer "+reviewerUUID )
+     client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").map{proposalId:String=>
+       println(s"ZSCORE Proposals:Votes:${proposalId} ${reviewerUUID}")
+        val score = Option(client.zscore(s"Proposals:Votes:${proposalId}",reviewerUUID))
+        (proposalId,score.map(_.toDouble))
+      }
+  }
+
 
 }

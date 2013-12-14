@@ -64,6 +64,7 @@ GET     /cfpadmin/proposal/:proposalId/vote         controllers.CFPAdmin.voteFor
 GET     /cfpadmin/proposal/:proposalId/score        controllers.CFPAdmin.showVotesForProposal(proposalId:String)
 GET     /cfpadmin/speaker/:email                    controllers.CFPAdmin.showSpeaker(email:String)
 GET     /cfpadmin/leaderboard                       controllers.CFPAdmin.leaderBoard
+GET     /cfpadmin/myvotes                           controllers.CFPAdmin.allMyVotes
 
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.ico")
 

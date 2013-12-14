@@ -1,0 +1,640 @@
+#header, #access, #colophon, #branding, #main, .topmenu {
+    width: 1050px;
+}
+
+#header-full, #footer {
+    min-width: 1050px;
+}
+
+#container.one-column {
+}
+
+#container.two-columns-right #secondary {
+    width: 250px;
+    float: right;
+}
+
+#container.two-columns-right #content {
+    width: 780px;
+    float: left;
+}
+
+#container.two-columns-left #primary {
+    width: 250px;
+    float: left;
+}
+
+#container.two-columns-left #content {
+    width: 780px;
+    float: right;
+}
+
+#container.three-columns-right .sidey {
+    width: 125px;
+    float: left;
+}
+
+#container.three-columns-right #primary {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#container.three-columns-right #content {
+    width: 760px;
+    float: left;
+}
+
+#container.three-columns-left .sidey {
+    width: 125px;
+    float: left;
+}
+
+#container.three-columns-left #secondary {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#container.three-columns-left #content {
+    width: 760px;
+    float: right;
+}
+
+#container.three-columns-sided .sidey {
+    width: 125px;
+    float: left;
+}
+
+#container.three-columns-sided #secondary {
+    float: right;
+}
+
+#container.three-columns-sided #content {
+    width: 760px;
+    float: right;
+    margin: 0 145px 0 -1050px;
+}
+
+body {
+    font-family: "Lato";
+}
+
+#content h1.entry-title a, #content h2.entry-title a, #content h1.entry-title, #content h2.entry-title {
+    font-family: "Lato";
+}
+
+.widget-title, .widget-title a {
+    line-height: normal;
+    font-family: Open Sans Light;
+}
+
+.entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4, .entry-content h5, .entry-content h6, #comments #reply-title {
+    font-family: Yanone Kaffeesatz Regular;
+}
+
+#site-title span a {
+    font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+}
+
+#access ul li a, #access ul li a span {
+    font-family: "Lato";
+}
+
+body {
+    color: #333333;
+    background-color: #F7F7F2
+}
+
+a {
+    color: #BF4D28;
+}
+
+a:hover {
+    color: #E6AC27;
+}
+
+#header-full {
+    background-color: #FFFFFF;
+}
+
+#site-title span a {
+    color: #f5af33;
+}
+
+#site-description {
+    color: #444444;
+}
+
+.socials a {
+    background-color: #53b6bc;
+}
+
+.socials-hover {
+    background-color: #333333;
+}
+
+.breadcrumbs:before {
+    border-color: transparent transparent transparent #333333;
+}
+
+#access a {
+    color: #EEEEEE;
+    background-color: #333333;
+}
+
+#access a:hover {
+    color: #E6AC27;
+    background-color: #444444;
+}
+
+#access > .menu > ul > li > a:after, #access > .menu > ul ul:after {
+    border-color: transparent transparent #BF4D28 transparent;
+}
+
+#access ul li:hover a:after {
+    border-bottom-color: #E6AC27;
+}
+
+#access ul li.current_page_item > a, #access ul li.current-menu-item > a, /*#access ul li.current_page_parent > a, #access ul li.current-menu-parent > a,*/
+#access ul li.current_page_ancestor > a, #access ul li.current-menu-ancestor > a {
+    color: #FFFFFF;
+    background-color: #000000;
+}
+
+#access ul li.current_page_item > a:hover, #access ul li.current-menu-item > a:hover, /*#access ul li.current_page_parent > a:hover, #access ul li.current-menu-parent > a:hover,*/
+#access ul li.current_page_ancestor > a:hover, #access ul li.current-menu-ancestor > a:hover {
+    color: #E6AC27;
+}
+
+.topmenu ul li a {
+    color: #666666;
+}
+
+.topmenu ul li a:before {
+    border-color: #BF4D28 transparent transparent transparent;
+}
+
+.topmenu ul li a:hover:before {
+    border-top-color: #E6AC27
+}
+
+.topmenu ul li a:hover {
+    color: #666666;
+    background-color: #FFFFFF;
+}
+
+div.post, div.page, #comments, .comments, .column-text, .column-image, #srights, #slefts, #frontpage blockquote, .page-title, .page-header, article.post, article.page, .contentsearch, #author-info, #nav-below, .yoyo > li {
+    background-color: #FFFFFF;
+}
+
+div.post, div.page, .sidey .widget-container, #comments, .commentlist .comment-body, article.post, article.page, #nav-below, .page-header, .yoyo > li {
+    border-color: #EEEEEE;
+}
+
+#author-info, #entry-author-info {
+    border-color: #F7F7F7;
+}
+
+#entry-author-info #author-avatar, #author-info #author-avatar {
+    border-color: #EEEEEE;
+}
+
+article.sticky {
+    border-color: rgba(230, 172, 39, 0.2);
+}
+
+.sidey .widget-container {
+    color: #333333;
+    background-color: #FFFFFF;
+}
+
+.sidey .widget-title {
+    color: #FFFFFF;
+    background-color: #444444;
+}
+
+.sidey .widget-title:after {
+    border-color: transparent transparent #BF4D28;
+}
+
+.entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4, .entry-content h5, .entry-content h6 {
+    color: #444444;
+}
+
+.entry-title, .entry-title a {
+    color: #444444;
+}
+
+.entry-title a:hover {
+    color: #000000;
+}
+
+#content h3.entry-format {
+    color: #EEEEEE;
+    background-color: #333333;
+    border-color: #333333;
+}
+
+#content h3.entry-format {
+    color: #EEEEEE;
+    background-color: #333333;
+    border-color: #333333;
+}
+
+.comments-link {
+    background-color: #F7F7F7;
+}
+
+.comments-link:before {
+    border-color: #F7F7F7 transparent transparent;
+}
+
+#footer {
+    color: #AAAAAA;
+    background-color: #1A1917;
+}
+
+#footer2 {
+    color: #AAAAAA;
+    background-color: #131211;
+    border-color: rgba(255, 255, 255, .1);
+}
+
+#footer a {
+    color: #BF4D28;
+}
+
+#footer a:hover {
+    color: #E6AC27;
+}
+
+#footer2 a {
+    color: #BF4D28;
+}
+
+#footer2 a:hover {
+    color: #E6AC27;
+}
+
+#footer .widget-container {
+    color: #333333;
+    background-color: #FFFFFF;
+}
+
+#footer .widget-title {
+    color: #FFFFFF;
+    background-color: #444444;
+}
+
+#footer .widget-title:after {
+    border-color: transparent transparent #BF4D28;
+}
+
+.footermenu ul li a:after {
+    border-color: transparent transparent #BF4D28 transparent;
+}
+
+a.continue-reading-link {
+    color: #EEEEEE !important;
+    background: #333333;
+    border-color: # #EEEEEE;
+}
+
+a.continue-reading-link:hover {
+    background-color: #BF4D28;
+}
+
+.file, .button, #respond .form-submit input#submit {
+    background-color: #FFFFFF;
+    border-color: #CCCCCC;
+    box-shadow: 0 -10px 10px 0 #F7F7F7 inset;
+}
+
+.file:hover, .button:hover, #respond .form-submit input#submit:hover {
+    background-color: #F7F7F7;
+}
+
+.entry-content tr th, .entry-content thead th {
+    color: #FFFFFF;
+    background-color: #444444;
+}
+
+.entry-content fieldset, #content tr td {
+    border-color: #CCCCCC;
+}
+
+hr {
+    background-color: #CCCCCC;
+}
+
+input[type="text"], input[type="password"], input[type="email"], input[type="file"], textarea, select {
+    background-color: #F7F7F7;
+    border-color: #CCCCCC #EEEEEE #EEEEEE #CCCCCC;
+    color: #333333;
+}
+
+input[type="submit"], input[type="reset"] {
+    color: #333333;
+    background-color: #FFFFFF;
+    border-color: #CCCCCC;
+    box-shadow: 0 -10px 10px 0 #F7F7F7 inset;
+}
+
+input[type="text"]:hover, input[type="password"]:hover, input[type="email"]:hover, textarea:hover {
+    background-color: rgba(247, 247, 247, 0.4);
+}
+
+.entry-content code {
+    border-color: #CCCCCC;
+    background-color: #F7F7F7;
+}
+
+.entry-content pre {
+    background-color: #F7F7F7;
+}
+
+.entry-content blockquote {
+    border-color: #BF4D28;
+    background-color: #F7F7F7;
+}
+
+abbr, acronym {
+    border-color: #333333;
+}
+
+span.edit-link {
+    color: #333333;
+    background-color: #EEEEEE;
+    border-color: #F7F7F7;
+}
+
+.meta-border .entry-meta span, .meta-border .entry-utility span.bl_posted {
+    border-color: #F7F7F7;
+}
+
+.meta-accented .entry-meta span, .meta-accented .entry-utility span.bl_posted {
+    background-color: #EEEEEE;
+    border-color: #F7F7F7;
+}
+
+.comment-meta a {
+    color: #333333;
+}
+
+.comment-author {
+    background-color: #F7F7F7;
+}
+
+.comment-details:after {
+    border-color: transparent transparent transparent #F7F7F7;
+}
+
+#respond .form-allowed-tags {
+    color: #999999;
+}
+
+.reply a {
+    background-color: #F7F7F7;
+    border-color: #EEEEEE;
+}
+
+.reply a:hover {
+    background-color: #333333;
+    color: #BF4D28;
+}
+
+.nav-next a:hover {
+    background: -moz-linear-gradient(left, #FFFFFF, #F7F7F7);
+    background: -webkit-linear-gradient(left, #FFFFFF, #F7F7F7);
+    background: -ms-linear-gradient(left, #FFFFFF, #F7F7F7);
+    background: -o-linear-gradient(left, #FFFFFF, #F7F7F7);
+    background: linear-gradient(left, #FFFFFF, #F7F7F7);
+}
+
+.nav-previous a:hover {
+    background: -moz-linear-gradient(left, #F7F7F7, #FFFFFF);
+    background: -webkit-linear-gradient(left, #F7F7F7, #FFFFFF);
+    background: -ms-linear-gradient(left, #F7F7F7, #FFFFFF);
+    background: -o-linear-gradient(left, #F7F7F7, #FFFFFF);
+    background: linear-gradient(left, #F7F7F7, #FFFFFF);
+}
+
+.pagination .current {
+    font-weight: bold;
+}
+
+.pagination span, .pagination a {
+    background-color: #FFFFFF;
+    border-color: #EEEEEE;
+}
+
+.pagination a:hover {
+    background-color: #333333;
+}
+
+#searchform input[type="text"] {
+    color: #999999;
+}
+
+#toTop {
+    border-color: transparent transparent #131211;
+}
+
+#toTop:after {
+    border-color: transparent transparent #FFFFFF;
+}
+
+#toTop:hover:after {
+    border-bottom-color: #BF4D28;
+}
+
+.caption-accented .wp-caption {
+    background-color: rgba(191, 77, 40, 0.8);
+    color: #FFFFFF
+}
+
+.meta-themed .entry-meta span {
+    color: #999999;
+    background-color: #F7F7F7;
+    border-color: #EEEEEE;
+}
+
+.meta-themed .entry-meta span:hover {
+    background-color: #EEEEEE;
+}
+
+.meta-themed .entry-meta span a:hover {
+    color: #333333;
+}
+
+#content p, #content ul, #content ol, #content, #frontpage blockquote {
+    text-align: Default;
+}
+
+#content p, #content ul, #content ol, .sidey, .sidey a, table, table td {
+    font-size: 14px;
+    line-height: 1.7em;
+    word-spacing: Default;
+    letter-spacing: Default;
+}
+
+#content h1.entry-title, #content h2.entry-title {
+    font-size: 34px;
+}
+
+.widget-title, .widget-title a {
+    font-size: 18px;
+}
+
+#content .entry-content h1 {
+    font-size: 38px;
+}
+
+#content .entry-content h2 {
+    font-size: 34px;
+}
+
+#content .entry-content h3 {
+    font-size: 29px;
+}
+
+#content .entry-content h4 {
+    font-size: 24px;
+}
+
+#content .entry-content h5 {
+    font-size: 19px;
+}
+
+#content .entry-content h6 {
+    font-size: 14px;
+}
+
+#site-title span a {
+    font-size: 38px;
+}
+
+#access ul li a {
+    font-size: 14px;
+}
+
+#access ul ul ul a {
+    font-size: 12px;
+}
+
+.nocomments, .nocomments2 {
+    display: none;
+}
+
+#header-container > div {
+    margin: 40px 0 0 10px;
+}
+
+#content p, #content ul, #content ol, #content dd, #content pre, #content hr {
+    margin-bottom: 1.0em;
+}
+
+.topmenu ul li a:before, #access > .menu > ul > li > a:after, #access > .menu > ul ul:after, .widget-title:after, .footermenu ul li a:after {
+    display: none;
+}
+
+#branding {
+    height: 120px;
+}
+
+<
+
+/
+style >
+< style type
+
+=
+"text/css"
+>
+.slider-wrapper {
+    max-width: 1050px;
+}
+
+#slider {
+    max-width: 1036px;
+    height: 336px;
+    border: 7px solid #ffffff;
+}
+
+#front-text1 h1, #front-text2 h1 {
+    color: #412323;
+}
+
+#front-columns > div {
+    width:%;
+}
+
+#front-columns > div#column0 {
+    margin-right: 0;
+}
+
+.column-image img {
+    height: 201px;
+}
+
+.nivo-caption {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.nivo-caption, .nivo-caption a {
+    color: #ffffff;
+}
+
+.theme-default .nivoSlider {
+    background-color: #ffffff;
+}
+
+.theme-default .nivo-controlNav:before, .theme-default .nivo-controlNav:after {
+    border-top-color: #ffffff;
+}
+
+.theme-default .nivo-controlNav {
+    background-color: #ffffff;
+}
+
+.slider-bullets .nivo-controlNav a {
+    background-color: #444444;
+}
+
+.slider-bullets .nivo-controlNav a:hover {
+    background-color: #333333;
+}
+
+.slider-bullets .nivo-controlNav a.active {
+    background-color: #BF4D28;
+}
+
+.slider-numbers .nivo-controlNav a {
+    color: #444444;
+    background-color: #F7F7F2;
+}
+
+.slider-numbers .nivo-controlNav a:hover {
+    color: #333333;
+    background-color: #FFFFFF
+}
+
+.slider-numbers .nivo-controlNav a.active {
+    color: #BF4D28;
+}
+
+.column-image h3 {
+    color: #333333;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.columnmore {
+    background-color: #F7F7F2;
+}
+
+.columnmore:before {
+    border-bottom-color: #F7F7F2;
+}
+
+#front-columns h3.column-header-noimage {
+    background: #FFFFFF;
+}
