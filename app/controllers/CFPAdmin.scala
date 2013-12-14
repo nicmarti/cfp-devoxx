@@ -22,7 +22,7 @@ object CFPAdmin extends Controller with Secured {
       val orderer = proposalOrder(ascdesc)
       val allProposalsForReview = sortProposals(Review.allProposalsNotReviewed(uuid), sorter, orderer)
       val twentyEvents = Event.loadEvents(20,page)
-      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page))
+      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc))
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
