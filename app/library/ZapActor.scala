@@ -122,6 +122,7 @@ class ZapActor extends Actor {
     }
   }
 
+  val ReviewerAndVote = "(\\w+)__(\\d+)".r
 
   def cleanupInvalidReviews() {
     if (play.Logger.of("library.ZapActor").isDebugEnabled()) {
@@ -137,9 +138,7 @@ class ZapActor extends Actor {
         val allProposalWithReviews = client.keys("Proposals:Reviewed:ByProposal:*")
         allProposalWithReviews.foreach {
           proposalID: String =>
-//            println("proposal ID " + proposalID)
             val speakerIDs = client.smembers(proposalID)
-//            println("Reviews:" + speakerIDs.size)
 
             val invalidSpeakerIDs = speakerIDs.filterNot(id => client.hexists("Speaker", id))
             val invalidWebuserIDs = speakerIDs.filterNot(id => client.hexists("Webuser", id))
@@ -147,8 +146,8 @@ class ZapActor extends Actor {
               play.Logger.of("library.ZapActor").debug(s"Checking ${proposalID}")
               play.Logger.of("library.ZapActor").debug(s"invalidSpeakerIDs ${invalidSpeakerIDs}")
               play.Logger.of("library.ZapActor").debug(s"invalidWebuserIDs ${invalidWebuserIDs}")
-              if(invalidSpeakerIDs.nonEmpty){
-              client.srem(proposalID, invalidSpeakerIDs)
+              if (invalidSpeakerIDs.nonEmpty) {
+                client.srem(proposalID, invalidSpeakerIDs)
               }
             }
         }
@@ -157,21 +156,40 @@ class ZapActor extends Actor {
         allProposalWithVotes.foreach {
           proposalID: String =>
             val speakerIDsVotes = client.zrangeByScore(proposalID, 0.toDouble, 10.toDouble)
-            // TODO
             val invalidSpeakerIDs2 = speakerIDsVotes.filterNot(id => client.hexists("Speaker", id))
             val invalidWebuserIDs2 = speakerIDsVotes.filterNot(id => client.hexists("Webuser", id))
             if (play.Logger.of("library.ZapActor").isDebugEnabled()) {
               play.Logger.of("library.ZapActor").debug(s"Checking ${proposalID}")
               play.Logger.of("library.ZapActor").debug(s"invalidSpeakerIDs2 ${invalidSpeakerIDs2}")
               play.Logger.of("library.ZapActor").debug(s"invalidWebuserIDs2 ${invalidWebuserIDs2}")
-              if(invalidSpeakerIDs2.nonEmpty){
-                client.zrem(proposalID, invalidSpeakerIDs2.toSeq:_*) //transforme un Set vers un varargs pour le driver jedis
+              if (invalidSpeakerIDs2.nonEmpty) {
+                client.zrem(proposalID, invalidSpeakerIDs2.toSeq: _*) //transforme un Set vers un varargs pour le driver jedis
               }
             }
         }
+
+        val allVotesTimeStamp = client.keys("Proposals:Dates:*")
+        val speakerIDs = client.hkeys("Speaker")
+
+      // Delete all votes from Proposals:Dates if the related speaker was deleted
+        allVotesTimeStamp.foreach {
+          redisKey: String =>
+            client.zrevrangeByScore(redisKey, "+inf", "-inf").map {
+              value: String =>
+                value match {
+                  // Regexp extractor
+                  case ReviewerAndVote(reviewer, vote) if !speakerIDs.contains(reviewer) => {
+                    client.zrem(redisKey, value)
+                  }
+                  case _ => None
+                }
+            }
+        }
+
     }
 
 
   }
+
 
 }

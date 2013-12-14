@@ -26,11 +26,14 @@
                             @if(score>6){
                                 <span class="label label-success">@score</span>
                             }
-                            @if(score<4){
+                            @if(score<4 && score>0){
                                 <span class="label label-danger">@score</span>
                             }
                             @if(score>=4 && score<=6){
                                 <span class="label label-warning">@score</span>
+                            }
+                            @if(score == 0) {
+                                <span class="label label-default">@score</span>
                             }
                         }
                         <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a>

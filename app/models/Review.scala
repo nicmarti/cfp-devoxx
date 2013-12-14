@@ -23,9 +23,8 @@
 
 package models
 
-import library.{Benchmark, Redis}
+import library.Redis
 import org.joda.time.{Instant, DateTime}
-import play.api.libs.json.{Json, Format}
 
 /**
  * When a CFP admin checks or perform a review on a talk, we store this event.
@@ -79,6 +78,12 @@ object Review {
   // Returns the history of votes for a proposal. If a reviewer changed its vote, we will also see it.
   def allHistoryOfVotes(proposalId: String): List[Review] = Redis.pool.withClient {
     implicit client =>
+    // for instance ZREVRANGEBYSCORE Proposals:Dates:BQX-255 +inf -inf WITHSCORES
+    //      1) "b14651a3cd78ab4fd03d522ebef81cdac1d5755c__2" //b14651a3.. = user uuid and 2 is the vote
+    //      2) "1387058296080"                               // time stamp when the person voted
+    //      3) "0867c4e2182ef84e2dfcd412e33e01a9bc98dac2__8"
+    //      4) "1386781873312"
+
       val listOfReviewsAndVotes = client.zrevrangeByScoreWithScores(s"Proposals:Dates:${proposalId}", "+inf", "-inf")
       val history: List[Review] = listOfReviewsAndVotes.flatMap {
         tuple =>
@@ -175,7 +180,6 @@ object Review {
 
   def allVotesFromUser(reviewerUUID: String): Set[(String, Option[Double])] = Redis.pool.withClient {
     implicit client =>
-
       client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").flatMap {
         proposalId: String =>
 
@@ -184,7 +188,7 @@ object Review {
           score match {
             case None => {
               // Load the state only for the "strange" proposal
-              val state = Benchmark.measure(() => Proposal.findProposalState(proposalId), "find state")
+              val state = Proposal.findProposalState(proposalId)
               state.flatMap {
                 case ProposalState.DRAFT => None
                 case ProposalState.DECLINED => None
@@ -196,11 +200,11 @@ object Review {
                 case other => Option((proposalId, None))
               }
             }
-              case Some(_) =>{
-                Option(proposalId, score.map(_.toDouble))
-              }
+            case Some(_) => {
+              Option(proposalId, score.map(_.toDouble))
             }
           }
+      }
 
   }
 

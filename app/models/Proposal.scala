@@ -1,12 +1,11 @@
 package models
 
 import play.api.libs.json.Json
-import library.{Benchmark, Dress, Redis}
+import library.{Dress, Redis}
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 import play.api.data._
 import play.api.data.Forms._
-import play.api.data.validation.Constraints._
 
 /**
  * Proposal

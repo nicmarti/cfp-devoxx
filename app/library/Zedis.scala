@@ -163,6 +163,11 @@ trait Dress {
     def srem(key:String, members:Set[String]):Long={
       j.srem(key, members.toSeq:_*).longValue()
     }
+
+    def zrevrangeByScore(key: String, max: String, min: String): Set[String] = {
+      j.zrevrangeByScore(key, max, min).asScala.toSet
+    }
+
   }
 
   def up(j: Jedis) = new Wrap(j)
