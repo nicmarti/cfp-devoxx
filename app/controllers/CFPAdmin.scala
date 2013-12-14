@@ -33,6 +33,7 @@ object CFPAdmin extends Controller with Secured {
   
   def proposalSorter(sort:Option[String]): Option[Proposal => String] = {
     sort match {
+      case Some("title") => Some (_.title)
       case Some("mainSpeaker") => Some (_.mainSpeaker)
       case Some("track") => Some (_.track.label)
       case Some("talkType") => Some (_.talkType.label)
