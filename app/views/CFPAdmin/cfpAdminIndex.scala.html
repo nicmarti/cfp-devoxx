@@ -38,10 +38,10 @@
                         <table class="table table-bordered table-strippted">
                             <thead>
                                 <tr>
-                                    <th>@Messages("admin.proposals.th.title")</th>
-                                    <th>@Messages("admin.proposals.th.track")</th>
-                                    <th>@Messages("admin.proposals.th.speaker")</th>
-                                    <th>@Messages("admin.proposals.th.talktype")</th>
+                                    <th>@tags.renderThTag("title", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("track", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("mainSpeaker", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("talkType", page, sort, ascdesc)</th>
                                     <th>@Messages("admin.proposals.th.action")</th>
                                 </tr>
                             </thead>

@@ -247,8 +247,8 @@ cfp.open.enter=Create your speaker''s profile
 
 admin.proposals.th.title=Title
 admin.proposals.th.track=Track
-admin.proposals.th.speaker=Speaker
-admin.proposals.th.talktype=Type of talk
+admin.proposals.th.mainSpeaker=Speaker
+admin.proposals.th.talkType=Type of talk
 admin.proposals.th.action=Action
 admin.proposals.todolist.title=Your TODO List
 

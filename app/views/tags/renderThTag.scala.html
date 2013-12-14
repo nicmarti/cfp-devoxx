@@ -1,2 +1,7 @@
 @(label:String, page:Int, sort:Option[String], ascdesc:Option[String])
-    <a href="@routes.CFPAdmin.index(page, sort, ascdesc)" class="btn btn-sm btn-primary">@label</a>
+
+@if(sort==Some(label) &&  ascdesc!=Some("desc")) {
+    <a href="@routes.CFPAdmin.index(page, Some(label), Some("desc"))">@Messages("admin.proposals.th."+ label)</a>
+} else {
+    <a href="@routes.CFPAdmin.index(page, Some(label), Some("asc"))">@Messages("admin.proposals.th."+ label)</a>
+}
