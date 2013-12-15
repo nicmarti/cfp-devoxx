@@ -1,4 +1,4 @@
-@(events: List[Event], allProposalsForReview: List[Proposal], totalEvents:Int, page:Int)(implicit lang: Lang, flash: Flash, uuid: String)
+@(events: List[Event], allProposalsForReview: List[Proposal], totalEvents:Int, page:Int, sort:Option[String], ascdesc:Option[String])(implicit lang: Lang, flash: Flash, uuid: String)
 
 @main("CFP Admin") {
 
@@ -24,7 +24,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-ok-circle"></i> Your todo list </h3>
+                    <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title")</h3>
                 </div>
                 <div class="panel-body">
                     <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
@@ -38,11 +38,11 @@
                         <table class="table table-bordered table-strippted">
                             <thead>
                                 <tr>
-                                    <th>Title</th>
-                                    <th>Track</th>
-                                    <th>Speaker</th>
-                                    <th>Type of talk</th>
-                                    <th>Action</th>
+                                    <th>@tags.renderThTag("title", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("track", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("mainSpeaker", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("talkType", page, sort, ascdesc)</th>
+                                    <th>@Messages("admin.proposals.th.action")</th>
                                 </tr>
                             </thead>
                             <tbody>

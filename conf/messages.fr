@@ -275,3 +275,12 @@ editWebuser.title=Votre profil
 
 cfp.isOpen=Le CFP est ouvert
 cfp.open.enter=Proposer un sujet pour Devoxx France\
+
+
+
+admin.proposals.th.title=Titre
+admin.proposals.th.track=Track
+admin.proposals.th.mainSpeaker=Speaker
+admin.proposals.th.talkType=Format
+admin.proposals.th.action=Action
+admin.proposals.todolist.title=TODO List
