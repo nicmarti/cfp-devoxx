@@ -11,6 +11,38 @@
                 </div>
 
                 <div class="panel-body">
+                    <table class="table table-bordered table-strippted">
+                                           <thead>
+                                               <tr>
+                                                   <th>Title</th>
+                                                   <th>Track</th>
+                                                   <th>Type of talk</th>
+                                                   <th>Lang</th>
+                                               </tr>
+                                           </thead>
+                                           <tbody>
+                                               <tr>
+                                                   <td>@proposal.title</td>
+                                                   <td>@Messages(proposal.track.label)</td>
+                                                   <td>@Messages(proposal.talkType.id)</td>
+                                                   <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
+                                               </tr>
+                                               <tr>
+                                                   <th colspan="4">
+                                                       Proposal for the attendee
+                                                   </th>
+                                               </tr>
+                                               <tr>
+                                                   <td colspan="4">
+                                                       <div class="proposal">
+                                                       @defining(Processor.process(proposal.summary)) { htmlSummary =>
+                                                           @Html(htmlSummary)
+                                                       }
+                                                       </div>
+                                                   </td>
+                                               </tr>
+                                           </tbody>
+                                       </table>
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
@@ -56,42 +88,7 @@
                             }
                         </tfoot>
                     </table>
-                    <table class="table table-bordered table-strippted">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Track</th>
-                                <th>Type of talk</th>
-                                <th>Lang</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                @proposal.title
-                                </td>
-                                <td>
-                                @Messages(proposal.track.label)
-                                </td>
-                                <td>@Messages(proposal.talkType.id)</td>
-                                <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
-                            </tr>
-                            <tr>
-                                <th colspan="4">
-                                    Proposal
-                                </th>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <div class="proposal">
-                                    @defining(Processor.process(proposal.summary)) { htmlSummary =>
-                                        @Html(htmlSummary)
-                                    }
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
                 </div>
             </div>
         </div>
