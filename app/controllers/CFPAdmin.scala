@@ -161,7 +161,9 @@ object CFPAdmin extends Controller with Secured {
       val totalNoVotes = Review.countWithNoVotes()
       val maybeMostVoted = Review.mostReviewed()
       val bestReviewer = Review.bestReviewer()
-      Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes, totalNoVotes, maybeMostVoted, bestReviewer))
+      val totalByCategories = Review.totalSubmittedByTrack()
+      Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes,
+                                          totalNoVotes, maybeMostVoted, bestReviewer, totalByCategories))
   }
 
   def allMyVotes = IsMemberOf("cfp"){

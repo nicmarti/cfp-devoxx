@@ -341,6 +341,7 @@ object Proposal {
     }
   }
 
+
   def countAll(): Long = Redis.pool.withClient {
     implicit client =>
       client.hlen("Proposals")
@@ -374,5 +375,13 @@ object Proposal {
       tx.hdel("Proposals", proposal.id)
       tx.exec()
   }
+
+  def findProposalTrack(proposalId: String): Option[Track] = Redis.pool.withClient {
+    client =>
+      Track.all.find(track =>
+        client.sismember("Proposals:ByTrack:" + track.id, proposalId)
+      )
+  }
+
 
 }

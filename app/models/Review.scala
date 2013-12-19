@@ -182,9 +182,7 @@ object Review {
     implicit client =>
       client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").flatMap {
         proposalId: String =>
-
           val score = Option(client.zscore(s"Proposals:Votes:${proposalId}", reviewerUUID))
-
           score match {
             case None => {
               // Load the state only for the "strange" proposal
@@ -205,7 +203,22 @@ object Review {
             }
           }
       }
-
   }
+
+  // How many talks submitted for Java? for Web?
+  def totalSubmittedByTrack() :List[(Track, Int)] = Redis.pool.withClient {
+      implicit client =>
+
+        val toRetn= for(proposalId<-client.smembers("Proposals:ByState:"+ProposalState.SUBMITTED.code).toList;
+                        track<-Proposal.findProposalTrack(proposalId)
+                        ) yield (track,1)
+
+      toRetn.groupBy(_._1).map{case(category, listOfCategoryAndTotal)=>
+        (category,listOfCategoryAndTotal.map(_._2).sum)
+      }.toList
+
+
+    }
+
 
 }
