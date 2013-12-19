@@ -206,19 +206,18 @@ object Review {
   }
 
   // How many talks submitted for Java? for Web?
-  def totalSubmittedByTrack() :List[(Track, Int)] = Redis.pool.withClient {
-      implicit client =>
+  def totalSubmittedByTrack(): List[(Track, Int)] = Redis.pool.withClient {
+    implicit client =>
 
-        val toRetn= for(proposalId<-client.smembers("Proposals:ByState:"+ProposalState.SUBMITTED.code).toList;
-                        track<-Proposal.findProposalTrack(proposalId)
-                        ) yield (track,1)
+      val toRetn = for (proposalId <- client.smembers("Proposals:ByState:" + ProposalState.SUBMITTED.code).toList;
+                        track <- Proposal.findProposalTrack(proposalId)
+      ) yield (track, 1)
 
-      toRetn.groupBy(_._1).map{case(category, listOfCategoryAndTotal)=>
-        (category,listOfCategoryAndTotal.map(_._2).sum)
+      toRetn.groupBy(_._1).map {
+        case (category, listOfCategoryAndTotal) =>
+          (category, listOfCategoryAndTotal.map(_._2).sum)
       }.toList
-
-
-    }
+  }
 
 
 }
