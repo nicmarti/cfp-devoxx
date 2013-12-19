@@ -155,6 +155,10 @@ object Review {
     totalReviewedByCFPuser().sortBy(_._2).reverse.head
   }
 
+  def worstReviewer(): (String, Long) = {
+    totalReviewedByCFPuser().sortBy(_._2).head
+  }
+
   def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
     implicit client =>
       Webuser.allCFPAdmin().map {
@@ -205,19 +209,7 @@ object Review {
       }
   }
 
-  // How many talks submitted for Java? for Web?
-  def totalSubmittedByTrack(): List[(Track, Int)] = Redis.pool.withClient {
-    implicit client =>
 
-      val toRetn = for (proposalId <- client.smembers("Proposals:ByState:" + ProposalState.SUBMITTED.code).toList;
-                        track <- Proposal.findProposalTrack(proposalId)
-      ) yield (track, 1)
-
-      toRetn.groupBy(_._1).map {
-        case (category, listOfCategoryAndTotal) =>
-          (category, listOfCategoryAndTotal.map(_._2).sum)
-      }.toList
-  }
 
 
 }

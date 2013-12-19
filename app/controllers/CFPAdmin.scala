@@ -16,32 +16,32 @@ import library.SendMessageToSpeaker
  */
 object CFPAdmin extends Controller with Secured {
 
-  def index(page:Int, sort:Option[String], ascdesc:Option[String]) = IsMemberOf("cfp") {
+  def index(page: Int, sort: Option[String], ascdesc: Option[String]) = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
       val sorter = proposalSorter(sort)
       val orderer = proposalOrder(ascdesc)
       val allProposalsForReview = sortProposals(Review.allProposalsNotReviewed(uuid), sorter, orderer)
-      val twentyEvents = Event.loadEvents(20,page)
+      val twentyEvents = Event.loadEvents(20, page)
       Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc))
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
     sorter match {
-      case None => ps 
-      case Some (sorter) =>ps.sortBy(sorter)(orderer)
+      case None => ps
+      case Some(sorter) => ps.sortBy(sorter)(orderer)
     }
-  
-  def proposalSorter(sort:Option[String]): Option[Proposal => String] = {
+
+  def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
     sort match {
-      case Some("title") => Some (_.title)
-      case Some("mainSpeaker") => Some (_.mainSpeaker)
-      case Some("track") => Some (_.track.label)
-      case Some("talkType") => Some (_.talkType.label)
+      case Some("title") => Some(_.title)
+      case Some("mainSpeaker") => Some(_.mainSpeaker)
+      case Some("track") => Some(_.track.label)
+      case Some("talkType") => Some(_.talkType.label)
       case _ => None
     }
   }
 
-  def proposalOrder(ascdesc:Option[String]) = ascdesc match {
+  def proposalOrder(ascdesc: Option[String]) = ascdesc match {
     case Some("desc") => Ordering[String].reverse
     case _ => Ordering[String]
   }
@@ -161,12 +161,20 @@ object CFPAdmin extends Controller with Secured {
       val totalNoVotes = Review.countWithNoVotes()
       val maybeMostVoted = Review.mostReviewed()
       val bestReviewer = Review.bestReviewer()
-      val totalByCategories = Review.totalSubmittedByTrack()
-      Ok(views.html.CFPAdmin.leaderBoard(totalSpeakers, totalProposals, totalVotes, totalWithVotes,
-                                          totalNoVotes, maybeMostVoted, bestReviewer, totalByCategories))
+      val worstReviewer = Review.worstReviewer()
+      val totalByCategories = Proposal.totalSubmittedByTrack()
+      val totalByType = Proposal.totalSubmittedByType()
+      val devoxx2013=Proposal.getDevoxx2013Total()
+      Ok(
+        views.html.CFPAdmin.leaderBoard(
+          totalSpeakers, totalProposals, totalVotes, totalWithVotes,
+          totalNoVotes, maybeMostVoted, bestReviewer,worstReviewer, totalByCategories,
+          totalByType,devoxx2013
+        )
+      )
   }
 
-  def allMyVotes = IsMemberOf("cfp"){
+  def allMyVotes = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
       val result = Review.allVotesFromUser(uuid)
       Ok(views.html.CFPAdmin.allMyVotes(result))

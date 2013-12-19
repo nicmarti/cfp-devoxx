@@ -383,5 +383,38 @@ object Proposal {
       )
   }
 
+    // How many talks submitted for Java? for Web?
+  def totalSubmittedByTrack(): List[(Track, Int)] = Redis.pool.withClient {
+    implicit client =>
+
+      val toRetn = for (proposalId <- client.smembers("Proposals:ByState:" + ProposalState.SUBMITTED.code).toList;
+                        track <- Proposal.findProposalTrack(proposalId)
+      ) yield (track, 1)
+
+      toRetn.groupBy(_._1).map {
+        case (category, listOfCategoryAndTotal) =>
+          (category, listOfCategoryAndTotal.map(_._2).sum)
+      }.toList
+  }
+
+  // How many Conference, University, BOF...
+  def totalSubmittedByType():Map[ProposalType, Int]={
+    allSubmitted().groupBy(_.talkType).map{
+      case(pt:ProposalType,listOfProposals:List[Proposal])=>
+        (pt,listOfProposals.size)
+    }
+  }
+
+  // What we did in 2013
+  def getDevoxx2013Total():Map[ProposalType,Int]={
+    Map(
+      (ProposalType.CONF,68) // 29 sans apres-midi decideur + 39 vendredi
+      ,(ProposalType.UNI,8)
+      ,(ProposalType.TIA,30)
+      ,(ProposalType.LAB,12)
+      ,(ProposalType.QUICK,20)
+      ,(ProposalType.BOF,15)
+    )
+  }
 
 }
