@@ -27,12 +27,12 @@
                     <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title")</h3>
                 </div>
                 <div class="panel-body">
-                    <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> Show leaderboard</a>
-                    <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> All your votes</a>
+                    <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a>
+                    <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> @Messages("admin.btn.myvotes")</a>
                     @if(Webuser.isMember(uuid, "admin")){
-                        <a href="@routes.Backoffice.allSpeakers" class="btn btn-sm btn-primary"> All speakers</a>
-                        <a href="@routes.Backoffice.allDraftProposals" class="btn btn-sm btn-primary"> All DRAFT proposals</a>
-                        <a href="@routes.Backoffice.allSubmittedProposals" class="btn btn-sm btn-primary"> All SUBMITTED proposals</a>
+                        <a href="@routes.Backoffice.allSpeakers" class="btn btn-sm btn-primary"> @Messages("admin.btn.speakers")</a>
+                        <a href="@routes.Backoffice.allDraftProposals" class="btn btn-sm btn-primary"> @Messages("admin.btn.draft")</a>
+                        <a href="@routes.Backoffice.allSubmittedProposals" class="btn btn-sm btn-primary"> @Messages("admin.btn.submitted")</a>
                     }
                     <br>
                     <br>
@@ -67,15 +67,14 @@
                                     </td>
                                     <td>@Messages(proposal.talkType.id)</td>
                                     <td>
-                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="Open for review">
-                                            Review</a>
+                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
                                     </td>
                                 </tr>
                             }
                             </tbody>
                         </table>
                     } else {
-                        <h4>There is no new talks submitted that you haven't reviewed</h4>
+                        <h4>@Messages("admin.cfp.empty")</h4>
                     }
 
                 </div>
@@ -85,29 +84,27 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> Recent events</h3>
+                    <h3><i class="icon-stackexchange"></i> @Messages("admin.cfp.recentEvents")</h3>
                 </div>
-
-
 
                 <div class="panel-body">
                     <table class="table table-bordered table-strippted">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Author</th>
-                                <th>Proposal id</th>
-                                <th>Message</th>
+                                <th>@Messages("admin.cfp.date")</th>
+                                <th>@Messages("admin.cfp.author")</th>
+                                <th>@Messages("admin.cfp.propId")</th>
+                                <th>@Messages("admin.cfp.msg")</th>
                             </tr>
                             <tr>
                                 <td colspan="4">
                                     <small>
-                                    Total events: @totalEvents - Page @page/@(totalEvents/20)
+                                    @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
                                     @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; Previous page</a> -
+                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; @Messages("previous.page")</a> -
                                     }
                                     @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1)">Next page &gt;</a>
+                                      <a href="@routes.CFPAdmin.index(page+1)">@Messages("next.page") &gt;</a>
                                     }</small>
                                 </td>
                             </tr>
@@ -133,12 +130,12 @@
                             <tr>
                                 <td colspan="4">
                                     <small>
-                                    Total events: @totalEvents - Page @page/@(totalEvents/20)
+                                    @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
                                     @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; Previous page</a> -
+                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; @Messages("previous.page")</a> -
                                     }
                                     @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1)">Next page &gt;</a>
+                                      <a href="@routes.CFPAdmin.index(page+1)">@Messages("next.page") &gt;</a>
                                     }
                                     </small>
                                 </td>

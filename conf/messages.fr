@@ -277,10 +277,26 @@ cfp.isOpen=Le CFP est ouvert
 cfp.open.enter=Proposer un sujet pour Devoxx France\
 
 
-
+#CFP admin
 admin.proposals.th.title=Titre
 admin.proposals.th.track=Track
 admin.proposals.th.mainSpeaker=Speaker
 admin.proposals.th.talkType=Format
 admin.proposals.th.action=Action
 admin.proposals.todolist.title=TODO List
+admin.btn.leaderboard=Voir les stats
+admin.btn.myvotes=Vos votes
+admin.btn.speakers=Tous les speakers
+admin.btn.draft=Voir les DRAFT
+admin.btn.submitted=Voir les SUBMITTED
+admin.btn.review=Ouvrir et noter
+admin.cfp.empty=Il n''y a pas de nouvelles propositions soumises pour l''instant.
+admin.cfp.recentEvents=Evénements récents
+admin.cfp.date=Date
+admin.cfp.author=Auteur
+admin.cfp.propId=ID
+admin.cfp.msg=Message de l''événement
+admin.cfp.totalEvents=Total événements
+previous.page=Page précédente
+next.page=Page suivante
+
