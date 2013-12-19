@@ -15,7 +15,7 @@
                             <td>
                             @if(speaker.avatarUrl.isEmpty) {
                                 <div class="media">
-                                    <a class="pull-left" href="#">
+                                    <a class="pull-left" href="@routes.CallForPaper.showSpeaker(uuid)">
                                         <img class="media-object"
                                         src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=75"
                                         alt="@webuser.firstName @webuser.lastName"
@@ -28,7 +28,7 @@
                                 </div>
                             } else {
                                 <div class="media">
-                                    <a class="pull-left" href="#">
+                                    <a class="pull-left" href="@routes.CallForPaper.showSpeaker(uuid)">
                                         <img class="media-object"
                                         width="75"
                                         src="@speaker.avatarUrl.get"

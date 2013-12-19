@@ -37,7 +37,7 @@ GET     /cfp/proposal/undelete/:proposalId controllers.CallForPaper.undeleteProp
 GET     /cfp/proposal/submit/:proposalId controllers.CallForPaper.submitProposal(proposalId:String)
 GET     /cfp/comment/:proposalId         controllers.CallForPaper.showCommentForProposal(proposalId:String)
 POST    /cfp/comment/:proposalId         controllers.CallForPaper.sendMessageToComite(proposalId:String)
-GET     /cfp/speaker/:email              controllers.CallForPaper.showSpeaker(email:String)
+GET     /cfp/speaker/:uuidSpeaker              controllers.CallForPaper.showSpeaker(uuidSpeaker:String)
 
 # Password
 GET     /forget                     controllers.Authentication.forgetPassword
