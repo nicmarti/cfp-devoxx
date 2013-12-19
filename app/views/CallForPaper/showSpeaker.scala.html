@@ -1,6 +1,6 @@
 @(speaker:Speaker)(implicit lang: Lang, flash: Flash, uuid:String)
 
-@main("Speaker " + speaker.name.getOrElse("")) {
+@main("Speaker " + speaker.name.getOrElse("../../../public")) {
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -17,8 +17,8 @@
                                     <a class="pull-left" href="#">
                                         <img class="media-object"
                                         src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=75"
-                                        alt="@speaker.name.getOrElse("")"
-                                        title="@speaker.name.getOrElse("")" />
+                                        alt="@speaker.name.getOrElse("../../../public")"
+                                        title="@speaker.name.getOrElse("../../../public")" />
                                     </a>
                                     <div class="media-body">
                                         <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
@@ -31,7 +31,7 @@
                                         <img class="media-object"
                                         width="75"
                                         src="@speaker.avatarUrl.get"
-                                        alt="@speaker.name.getOrElse("")"/>
+                                        alt="@speaker.name.getOrElse("../../../public")"/>
                                     </a>
                                 </div>
                             }
@@ -42,7 +42,7 @@
                             <td><i class="icon-adjust"></i> Bio</td><td>@speaker.bio</td>
                         </tr>
                         <tr>
-                            <td><i class="icon-flag"></i> Lang</td><td>@speaker.lang.getOrElse("")</td>
+                            <td><i class="icon-flag"></i> Lang</td><td>@speaker.lang.getOrElse("../../../public")</td>
                         </tr>
                         <tr>
                             <td><i class="icon-bullhorn"></i>
@@ -50,41 +50,49 @@
                             <td>
                             @speaker.blog.map{b=>
                             <a href="@b" target="new">@b</a>
-                            }.getOrElse("")
+                            }.getOrElse("../../../public")
                             </td>
                         </tr>
                         <tr>
                             <td><i class="icon-building"></i> Company</td>
-                            <td>@speaker.company.getOrElse("")</td>
+                            <td>@speaker.company.getOrElse("../../../public")</td>
                         </tr>
                         <tr>
                             <td><i class="icon-twitter"></i> Twitter</td>
                             <td>@speaker.twitter.map{t=>
                             <a href="http://www.twitter.com/@t" target="new">@t</a>
-                            }.getOrElse("")</td>
+                            }.getOrElse("../../../public")</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
+            @if(Webuser.isMember(uuid, "cfp")){
                 <a href="@routes.CFPAdmin.index()" class="btn btn-primary">Back to CFP admin</a>
+            }else{
+                <a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-primary">@Messages("menu.home")</a>
+            }
             </div>
         </div>
     </div>
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-body">
-<form action="@routes.Backoffice.deleteSpeaker(speaker.uuid)" method="POST">
- <h3>Trash</h3>
- <small>Please enter DEL in this input box and click on the button <input type="text" name="secu" value="" placeholder="type here DEL"></small>
- <button type="submit" class="btn btn-sm btn-danger">Delete this speaker</a>
-</form>
+
+    @if(Webuser.isMember(uuid, "admin")){
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+    <form action="@routes.Backoffice.deleteSpeaker(speaker.uuid)" method="POST">
+        <h3>Trash</h3>
+        <small>Please enter DEL in this input box and click on the button <input type="text" name="secu" value="" placeholder="type here DEL"></small>
+        <button type="submit" class="btn btn-sm btn-danger">Delete this speaker</a>
+    </form>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>
 }

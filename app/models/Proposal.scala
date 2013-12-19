@@ -83,7 +83,7 @@ object ProposalState {
 // A proposal
 case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
-		    talkType: ProposalType, audienceLevel: String, summary: String,
+                    talkType: ProposalType, audienceLevel: String, summary: String,
                     privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track)
 
 object Proposal {
@@ -106,10 +106,23 @@ object Proposal {
 
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
+      val proposalId = proposalWithMainSpeaker.id
       // TX
       val tx = client.multi()
-      tx.hset("Proposals", proposalWithMainSpeaker.id, json)
-      tx.sadd("Proposals:ByAuthor:" + authorUUID, proposalWithMainSpeaker.id)
+      tx.hset("Proposals", proposalId, json)
+      tx.sadd("Proposals:ByAuthor:" + authorUUID, proposalId)
+
+      // 2nd speaker
+      proposalWithMainSpeaker.secondarySpeaker.map {
+        secondarySpeaker =>
+          tx.sadd("Proposals:ByAuthor:" + secondarySpeaker, proposalId)
+      }
+      // other speaker
+      proposalWithMainSpeaker.otherSpeakers.map {
+        otherSpeaker =>
+          tx.sadd("Proposals:ByAuthor:" + otherSpeaker, proposalId)
+      }
+
       tx.exec()
 
       Event.storeEvent(Event(proposal.id, authorUUID, "Updated or created proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
@@ -341,7 +354,6 @@ object Proposal {
     }
   }
 
-
   def countAll(): Long = Redis.pool.withClient {
     implicit client =>
       client.hlen("Proposals")
@@ -359,19 +371,30 @@ object Proposal {
       loadProposalByIDs(proposalIDs, ProposalState.SUBMITTED)
   }
 
-  def allProposalsByAuthor(author:String):List[Proposal]=Redis.pool.withClient{
-    implicit client=>
+  def allProposalsByAuthor(author: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:${author}")
-      client.hmget("Proposal",allProposalIDs)
+      client.hmget("Proposal", allProposalIDs)
       Nil
   }
 
-  def destroy(proposal:Proposal)=Redis.pool.withClient{
-    implicit client=>
+  def destroy(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
       val tx = client.multi()
       tx.srem(s"Proposals:ByAuthor:${proposal.mainSpeaker}", proposal.id)
       tx.srem(s"Proposals:ByState:${proposal.state.code}", proposal.id)
       tx.srem(s"Proposals:ByTrack:${proposal.track.id}", proposal.id)
+      // 2nd speaker
+      proposal.secondarySpeaker.map {
+        secondarySpeaker =>
+          tx.srem("Proposals:ByAuthor:" + secondarySpeaker, proposal.id)
+      }
+      // other speaker
+      proposal.otherSpeakers.map {
+        otherSpeaker =>
+          tx.srem("Proposals:ByAuthor:" + otherSpeaker, proposal.id)
+      }
+
       tx.hdel("Proposals", proposal.id)
       tx.exec()
   }
@@ -383,7 +406,7 @@ object Proposal {
       )
   }
 
-    // How many talks submitted for Java? for Web?
+  // How many talks submitted for Java? for Web?
   def totalSubmittedByTrack(): List[(Track, Int)] = Redis.pool.withClient {
     implicit client =>
 
@@ -398,23 +421,38 @@ object Proposal {
   }
 
   // How many Conference, University, BOF...
-  def totalSubmittedByType():Map[ProposalType, Int]={
-    allSubmitted().groupBy(_.talkType).map{
-      case(pt:ProposalType,listOfProposals:List[Proposal])=>
-        (pt,listOfProposals.size)
+  def totalSubmittedByType(): Map[ProposalType, Int] = {
+    allSubmitted().groupBy(_.talkType).map {
+      case (pt: ProposalType, listOfProposals: List[Proposal]) =>
+        (pt, listOfProposals.size)
     }
   }
 
   // What we did in 2013
-  def getDevoxx2013Total():Map[ProposalType,Int]={
+  def getDevoxx2013Total(): Map[ProposalType, Int] = {
     Map(
-      (ProposalType.CONF,68) // 29 sans apres-midi decideur + 39 vendredi
-      ,(ProposalType.UNI,8)
-      ,(ProposalType.TIA,30)
-      ,(ProposalType.LAB,12)
-      ,(ProposalType.QUICK,20)
-      ,(ProposalType.BOF,15)
+      (ProposalType.CONF, 68) // 29 sans apres-midi decideur + 39 vendredi
+      , (ProposalType.UNI, 8)
+      , (ProposalType.TIA, 30)
+      , (ProposalType.LAB, 12)
+      , (ProposalType.QUICK, 20)
+      , (ProposalType.BOF, 15)
     )
   }
 
+  // Move a speaker that was 2nd speaker or "otherSpeaker" to mainSpeaker
+  // This is required as any edit operation will automatically set the Proposal's owner to the
+  // current authenticated user
+  def setMainSpeaker(proposal: Proposal, uuid: String): Proposal = {
+    if (proposal.mainSpeaker != uuid) {
+      proposal.secondarySpeaker match {
+        case Some(u) if u==uuid =>  proposal.copy(mainSpeaker = uuid, secondarySpeaker = Option(proposal.mainSpeaker))
+        case _ =>
+          // move the main speaker to "other speaker"
+          proposal.copy(mainSpeaker = uuid, otherSpeakers = proposal.mainSpeaker :: proposal.otherSpeakers.filterNot(_ == uuid))
+      }
+    } else {
+      proposal
+    }
+  }
 }

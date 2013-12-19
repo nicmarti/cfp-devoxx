@@ -32,6 +32,7 @@ import org.joda.time._
 import play.libs.Akka
 import play.api.Play
 import notifiers.Mails
+import play.api.libs.json.Json
 
 
 /**
@@ -54,6 +55,8 @@ case class DraftReminder()
 
 case class CleanupInvalidReviews()
 
+case class CreateMissingIndexOnRedis()
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -67,6 +70,7 @@ class ZapActor extends Actor {
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
     case CleanupInvalidReviews() => cleanupInvalidReviews()
+    case CreateMissingIndexOnRedis() => createMissingIndexOnRedis()
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -171,7 +175,7 @@ class ZapActor extends Actor {
         val allVotesTimeStamp = client.keys("Proposals:Dates:*")
         val speakerIDs = client.hkeys("Speaker")
 
-      // Delete all votes from Proposals:Dates if the related speaker was deleted
+        // Delete all votes from Proposals:Dates if the related speaker was deleted
         allVotesTimeStamp.foreach {
           redisKey: String =>
             client.zrevrangeByScore(redisKey, "+inf", "-inf").map {
@@ -187,8 +191,32 @@ class ZapActor extends Actor {
         }
 
     }
+  }
 
+  def createMissingIndexOnRedis() {
+    Redis.pool.withClient {
+      client =>
+        client.hgetAll("Proposals").foreach {
+          case (proposalId, proposalJSON) =>
 
+            val proposal = Json.parse(proposalJSON).validate[Proposal].get
+
+            val tx = client.multi()
+            tx.del(s"Proposals:Speakers:$proposalId")
+            // 2nd speaker
+            proposal.secondarySpeaker.map {
+              secondarySpeaker =>
+                tx.sadd("Proposals:ByAuthor:" + secondarySpeaker, proposal.id)
+            }
+            // other speaker
+            proposal.otherSpeakers.map {
+              otherSpeaker =>
+                tx.sadd("Proposals:ByAuthor:" + otherSpeaker, proposal.id)
+            }
+
+            tx.exec()
+        }
+    }
   }
 
 

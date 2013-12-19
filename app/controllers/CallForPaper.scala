@@ -48,7 +48,8 @@ object CallForPaper extends Controller with Secured {
         Redirect(routes.Application.index()).flashing("error" -> errorMsg)
       }, {
         case (speaker, webuser) =>
-          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, Proposal.allMyDraftAndSubmittedProposals(uuid)))
+          val allMyDraftAndSubmitted = Proposal.allMyDraftAndSubmittedProposals(uuid)
+          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allMyDraftAndSubmitted))
       })
   }
 
@@ -120,7 +121,23 @@ object CallForPaper extends Controller with Secured {
       maybeProposal match {
         case Some(proposal) => {
           Proposal.draft(uuid, proposalId)
-          Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm.fill(proposal))).withSession(session + ("token" -> Crypto.sign(proposalId)))
+          if (proposal.mainSpeaker == uuid) {
+            val proposalForm = Proposal.proposalForm.fill(proposal)
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+          } else
+          if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
+            // Switch the mainSpeaker and the other Speakers
+            val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+          } else
+          if (proposal.otherSpeakers.contains(uuid)) {
+            // Switch the secondary speaker and this speaker
+            val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+
+          } else {
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
+          }
         }
         case None => {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
@@ -152,7 +169,10 @@ object CallForPaper extends Controller with Secured {
           Proposal.findDraft(uuid, proposal.id) match {
             case Some(existingProposal) => {
               // This is an edit operation
-              Proposal.save(uuid, proposal.copy(secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers), ProposalState.DRAFT)
+              // First we try to reset the speaker's, we do not take the values from the FORM for security reason
+              val updatedProposal = proposal.copy(mainSpeaker=existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
+              // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
+              Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal,uuid), ProposalState.DRAFT)
               Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
             }
             case other => {
@@ -172,13 +192,35 @@ object CallForPaper extends Controller with Secured {
       )
   }
 
+  def showSpeaker(uuidSpeaker: String) = IsAuthenticated {
+    implicit uuid => implicit request =>
+      Speaker.findByUUID(uuidSpeaker) match {
+        case Some(speaker) => Ok(views.html.CallForPaper.showSpeaker(speaker))
+        case None => NotFound("Speaker not found")
+      }
+  }
+
   // Load a proposal by its id
   def editOtherSpeakers(proposalId: String) = IsAuthenticated {
     implicit uuid => implicit request =>
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, Proposal.proposalSpeakerForm.fill(proposal.secondarySpeaker, proposal.otherSpeakers)))
+          if (proposal.mainSpeaker == uuid) {
+            val proposalForm = Proposal.proposalSpeakerForm.fill(proposal.secondarySpeaker, proposal.otherSpeakers)
+            Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, proposalForm))
+          } else
+          if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
+            // Switch the mainSpeaker and the other Speakers
+            val proposalForm = Proposal.proposalSpeakerForm.fill(Option(proposal.mainSpeaker), proposal.otherSpeakers)
+            Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, proposalForm))
+          } else
+          if (proposal.otherSpeakers.contains(uuid)) {
+            // let this speaker as a member of the third list
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("speaker.other.error"))
+          } else {
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
+          }
         }
         case None => {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))

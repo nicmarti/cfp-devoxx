@@ -283,4 +283,4 @@ admin.sp.committee_speaker=Between speaker and committee
 admin.btn.sendMessage=Post your message
 admin.sp.internal=Private internal discussions
 
-
+speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.

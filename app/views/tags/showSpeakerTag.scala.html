@@ -1,5 +1,5 @@
 @(uuid:String)
 
 @models.Speaker.findByUUID(uuid).map{speaker:Speaker=>
-<a href="@routes.CFPAdmin.showSpeaker(speaker.uuid)">@speaker.name</a>
+<a href="@routes.CallForPaper.showSpeaker(speaker.uuid)">@speaker.name</a>
 }.getOrElse("Speaker not found")

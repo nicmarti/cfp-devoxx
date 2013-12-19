@@ -19,6 +19,7 @@ object Global extends GlobalSettings {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
       CronTask.draftReminder()
       CronTask.cleanupInvalidReviews()
+      CronTask.updateProposalByAuthor()
     } else {
       play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
     }
@@ -80,6 +81,10 @@ object CronTask {
   // Delete votes and reviews for each deleted speaker (or cfp admin reviewer)
   def cleanupInvalidReviews() = {
     Akka.system.scheduler.schedule(600 seconds, 1 days, zapActor, CleanupInvalidReviews())
+  }
+
+  def updateProposalByAuthor() = {
+    Akka.system.scheduler.schedule(1 seconds, 7 days, zapActor, CreateMissingIndexOnRedis())
   }
 
 }
