@@ -267,4 +267,20 @@ admin.cfp.totalEvents=Total events
 previous.page=Previous page
 next.page=Next page
 
+admin.proposal=Proposal
+admin.proposals.th.lang=Lang
+admin.proposals.th.abstract=Proposal text
+admin.sp.mainSpeaker=Main speaker
+admin.sp.secSpeaker=Secondary speaker
+admin.sp.otherSpeaker=Other speaker(s)
+admin.sp.privateMessage=Private message for commitee
+admin.sp.sponsorTalk=Talk sponsor
+admin.sp.sponsorTalk.label=This is a sponsor talk
+admin.sp.evaluate=Evaluate this proposal
+admin.sp.voted=You voted
+admin.sp.discussion=Discussion
+admin.sp.committee_speaker=Between speaker and committee
+admin.btn.sendMessage=Post your message
+admin.sp.internal=Private internal discussions
+
 

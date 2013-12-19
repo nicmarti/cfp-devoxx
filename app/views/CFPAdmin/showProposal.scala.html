@@ -7,17 +7,17 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> Proposal</h3>
+                    <h3><i class="icon-stackexchange"></i> @Messages("admin.proposal")</h3>
                 </div>
 
                 <div class="panel-body">
                     <table class="table table-bordered table-strippted">
                                            <thead>
                                                <tr>
-                                                   <th>Title</th>
-                                                   <th>Track</th>
-                                                   <th>Type of talk</th>
-                                                   <th>Lang</th>
+                                                   <th>@Messages("admin.proposals.th.title")</th>
+                                                   <th>@Messages("admin.proposals.th.track")</th>
+                                                   <th>@Messages("admin.proposals.th.talkType")</th>
+                                                   <th>@Messages("admin.proposals.th.lang")</th>
                                                </tr>
                                            </thead>
                                            <tbody>
@@ -29,16 +29,16 @@
                                                </tr>
                                                <tr>
                                                    <th colspan="4">
-                                                       Proposal for the attendee
+                                                   @Messages("admin.proposals.th.abstract")
                                                    </th>
                                                </tr>
                                                <tr>
-                                                   <td colspan="4">
-                                                       <div class="proposal">
+                                                   <td colspan="4" class="proposal">
+
                                                        @defining(Processor.process(proposal.summary)) { htmlSummary =>
                                                            @Html(htmlSummary)
                                                        }
-                                                       </div>
+
                                                    </td>
                                                </tr>
                                            </tbody>
@@ -46,14 +46,14 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
-                                <th>Main speaker</th>
+                                <th>@Messages("admin.sp.mainSpeaker")</th>
                                 <td>
                                 @tags.showSpeakerTag(proposal.mainSpeaker)
                                 </td>
                             </tr>
                             @if(proposal.secondarySpeaker.isDefined) {
                                 <tr>
-                                    <th>Secondary speaker</th>
+                                    <th>@Messages("admin.sp.secSpeaker")</th>
                                     <td>
                                     @proposal.secondarySpeaker.map { secondarySpeaker =>
                                         @tags.showSpeakerTag(secondarySpeaker)
@@ -63,7 +63,7 @@
                             }
                             @if(proposal.otherSpeakers.nonEmpty) {
                                 <tr>
-                                    <th>Other speakers</th>
+                                    <th>@Messages("admin.sp.otherSpeaker")</th>
                                     <td>
                                     @proposal.otherSpeakers.map { sp =>
                                         @tags.showSpeakerTag(sp)
@@ -74,7 +74,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Private message for commitee</th>
+                                <th>@Messages("admin.sp.privateMessage")</th>
                                 <td><small>
                                 @Html(proposal.privateMessage.replaceAll("\n", "<br>"))
                                 </small>
@@ -82,8 +82,8 @@
                             </tr>
                             @if(proposal.sponsorTalk) {
                                 <tr>
-                                    <th>Talk sponsor</th>
-                                    <td><span class="label label-success">This is a sponsor talk</span></td>
+                                    <th>@Messages("admin.sp.sponsorTalk")</th>
+                                    <td><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
                                 </tr>
                             }
                         </tfoot>
@@ -112,11 +112,11 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-thumbs-up"></i> Evaluate</h3>
+                    <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
                 </div>
                 <div class="panel-body">
                     @maybeMyVote.map{review:Review=>
-                        <i class="icon-trophy"></i> You voted  @tags.renderVote(review.vote.toInt) on @review.date.toString("EEEE d MMM YYYY HH:mm")
+                        <i class="icon-trophy"></i> @Messages("admin.sp.voted")  @tags.renderVote(review.vote.toInt) - @review.date.toString("EEEE d MMM YYYY HH:mm")
                     }
                     <div class="btn-block">
                     @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
@@ -151,19 +151,19 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-tasks"></i> Discussion</h3>
+                    <h3><i class="icon-tasks"></i> @Messages("admin.sp.discussion")</h3>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4><i class="icon-comments-alt"></i>  Between Speakers and the Committee</h4>
+                    <h4><i class="icon-comments-alt"></i>  @Messages("admin.sp.committee_speaker")</h4>
                 </div>
                 <div class="panel-body">
                 @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
                     @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
-                    <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
+                    <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
                 }
                 </div>
                 <div class="panel-body">
@@ -174,12 +174,12 @@
         <div class="col-md-6">
             <div class="panel panel-danger">
                 <div class="panel-heading">
-                    <h4><i class="icon-comments"></i> Internal discussion</h4>
+                    <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
                 </div>
                 <div class="panel-body">
                 @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id)) {
                     @helper.textarea(msgInternalForm("msg"), 'class -> "form-control input-xs")
-                    <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
+                    <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
                 }
                 </div>
                 <div class="panel-body">
