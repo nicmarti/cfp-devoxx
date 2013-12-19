@@ -1,4 +1,4 @@
-@(label:String, page:Int, sort:Option[String], ascdesc:Option[String])
+@(label:String, page:Int, sort:Option[String], ascdesc:Option[String])(implicit lang:Lang)
 
 @if(sort==Some(label)) {
     @if(ascdesc==Some("desc")){
