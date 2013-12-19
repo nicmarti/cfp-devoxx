@@ -43,7 +43,6 @@ object Mails {
     emailer.setSubject("You asked to reset your Devoxx France speaker's password at " + new DateTime().toString("HH:mm dd/MM"))
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(email)
-    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
   }
@@ -109,8 +108,7 @@ object Mails {
     )
 
     // For Program committee
-
-     emailer.setSubject(s"New messag from ${fromWebuser.cleanName} to ${toWebuser.cleanName}")
+     emailer.setSubject(s"[${proposal.title}] message sent by ${fromWebuser.cleanName}")
      emailer.addFrom("program@devoxx.fr")
      emailer.addRecipient("program@devoxx.fr")
      emailer.setCharset("utf-8")
@@ -122,7 +120,7 @@ object Mails {
 
   def sendMessageToComite(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"[DevoxxFr2014] Message about presentation ${proposal.title}")
+    emailer.setSubject(s"[${proposal.title}] ${fromWebuser.cleanName} posted a new message")
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
@@ -134,7 +132,7 @@ object Mails {
 
   def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"${proposal.id} ${proposal.title} by ${fromWebuser.cleanName}")
+    emailer.setSubject(s"[${proposal.title}][PRIVATE] ${fromWebuser.cleanName}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
