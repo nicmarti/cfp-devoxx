@@ -84,7 +84,7 @@ object CronTask {
   }
 
   def updateProposalByAuthor() = {
-    Akka.system.scheduler.schedule(1 seconds, 7 days, zapActor, CreateMissingIndexOnRedis())
+    Akka.system.scheduler.schedule(600 seconds, 7 days, zapActor, CreateMissingIndexOnRedis())
   }
 
 }
