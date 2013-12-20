@@ -84,7 +84,12 @@ object ProposalState {
 case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
                     talkType: ProposalType, audienceLevel: String, summary: String,
-                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track)
+                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track){
+
+  val allSpeakerUUIDs:List[String]={
+    mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
+  }
+}
 
 object Proposal {
 

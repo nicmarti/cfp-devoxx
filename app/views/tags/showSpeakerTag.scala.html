@@ -1,5 +1,5 @@
 @(uuid:String)
 
 @models.Speaker.findByUUID(uuid).map{speaker:Speaker=>
-<a href="@routes.CallForPaper.showSpeaker(speaker.uuid)">@speaker.name</a>
+<a class="cfp-gravatars" href="@routes.CallForPaper.showSpeaker(uuid)"><img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=35" alt="@speaker.name" title="@speaker.name"/> @speaker.name</a>
 }.getOrElse("Speaker not found")
