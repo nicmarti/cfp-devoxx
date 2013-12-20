@@ -37,7 +37,7 @@
                     <br>
                     <br>
                     @if(allProposalsForReview.nonEmpty) {
-                        <table class="table table-bordered table-strippted">
+                        <table class="table table-bordered table-striped table-hover table-condensed">
                             <thead>
                                 <tr>
                                     <th>@tags.renderThTag("title", page, sort, ascdesc)</th>
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="panel-body">
-                    <table class="table table-bordered table-strippted">
+                    <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
                             <tr>
                                 <th>@Messages("admin.cfp.date")</th>
@@ -113,13 +113,13 @@
                         <tbody>
                         @events.map { event: Event =>
                             <tr>
-                                <td>
+                                <td class="text-center">
                                     <small>@event.date.map(_.toString("dd/MM HH:mm"))</small>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                 @tags.renderGravatar(event.uuid)
                                 </td>
-                                <td>
+                                <td class="text-center">
                                 @tags.renderObjRef(event.objRef)
                                 </td>
                                 <td><small>@event.msg</small></td>
