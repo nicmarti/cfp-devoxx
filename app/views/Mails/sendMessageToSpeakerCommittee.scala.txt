@@ -10,5 +10,7 @@ A new message was posted from @fromName to @toName regarding talk "@proposal.tit
 @fromName
 ------------------------------------------------------------------------------
 
-Review this proposal online:
+- This message was sent by a Program Committee member
+- Do not reply to this email
+- Review this proposal online:
 http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)

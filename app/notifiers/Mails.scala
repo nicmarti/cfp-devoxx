@@ -99,8 +99,14 @@ object Mails {
     emailer.setSubject(s"[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(toWebuser.email)
-    proposal.secondarySpeaker.map(uuid => Webuser.getEmailFromUUID(uuid).map(email => emailer.addCc(email)))
-    proposal.otherSpeakers.foreach(uuid => Webuser.getEmailFromUUID(uuid).map(email => emailer.addCc(email)))
+
+    // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
+    // I am a Scala coder, please get me out of here...
+    val maybeSecondSpeaker= proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val listOfEmails = maybeOtherEmails++maybeSecondSpeaker.toList
+    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString(),
@@ -152,6 +158,7 @@ object Mails {
     }
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient(speaker.email)
+
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.sendReminderForDraft(speaker.firstName, proposals).toString(),
