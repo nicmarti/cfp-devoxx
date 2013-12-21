@@ -6,6 +6,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import library.{DraftReminder, ZapActor}
+import library.search.{DoIndexProposal, DoIndexSpeaker, ElasticSearchActor}
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -95,6 +96,13 @@ object Backoffice extends Controller with Secured {
           Redirect(routes.CFPAdmin.index()).flashing("success" -> s"Speaker $speakerUUIDToDelete deleted")
         })
       }
+  }
+
+  def testElasticSearch=IsMemberOf("admin"){
+    implicit uuid => implicit request=>
+      ElasticSearchActor.masterActor ! DoIndexSpeaker()
+      ElasticSearchActor.masterActor ! DoIndexProposal()
+      Ok("Elasticsearch : index task started")
   }
 
 }
