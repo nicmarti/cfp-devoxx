@@ -91,7 +91,9 @@ object CronTask {
 
   def elasticSearch() = {
     // Create a cron task
-    // Akka.system.scheduler.schedule(1 seconds, 1 days, ElasticSearchActor.masterActor, DoIndexSpeaker())
+    Akka.system.scheduler.schedule(15 seconds, 2 hours, ElasticSearchActor.masterActor, DoIndexSpeaker())
+    Akka.system.scheduler.schedule(55 seconds, 2 hours, ElasticSearchActor.masterActor, DoIndexProposal())
+    Akka.system.scheduler.schedule(2 minutes, 2 hours, ElasticSearchActor.masterActor, DoIndexEvent())
   }
 
 
