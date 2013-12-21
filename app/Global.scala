@@ -1,16 +1,21 @@
 import akka.actor.Props
 import java.util.concurrent.TimeUnit
 import library._
+import library.DraftReminder
+import library.search._
+import library.search.StopIndex
 import org.joda.time.DateMidnight
 import play.api._
 import play.api.mvc.RequestHeader
 import mvc.Results._
+import play.api.UnexpectedException
 import Play.current
 import scala.concurrent.Future
 import scala.Some
 import play.api.libs.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.duration._
+import scala.Some
 import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
@@ -18,6 +23,7 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
       CronTask.draftReminder()
+      CronTask.elasticSearch()
     } else {
       play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
     }
@@ -51,6 +57,13 @@ object Global extends GlobalSettings {
       case app => views.html.notFound.f
     }.getOrElse(views.html.defaultpages.devNotFound.f)(request, Play.maybeApplication.flatMap(_.routes))))
   }
+
+  override def onStop(app: Application) = {
+    ZapActor.actor ! akka.actor.PoisonPill
+    ElasticSearchActor.masterActor ! StopIndex()
+
+    super.onStop(app)
+  }
 }
 
 object CronTask {
@@ -75,5 +88,11 @@ object CronTask {
       }
     }
   }
+
+  def elasticSearch() = {
+    // Create a cron task
+    // Akka.system.scheduler.schedule(1 seconds, 1 days, ElasticSearchActor.masterActor, DoIndexSpeaker())
+  }
+
 
 }
