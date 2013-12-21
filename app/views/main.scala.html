@@ -14,7 +14,6 @@
 <script src="/assets/js/jquery.min.js" type="text/javascript"></script>
 <script src="/assets/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="/assets/js/bootswatch.js" type="text/javascript"></script>
-<script src="/assets/js/transparency.min.js" type="text/javascript"></script> <!-- lightweight template engine -->
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
 <script src="/assets/js/html5shiv.js" type="text/javascript"></script>
@@ -45,11 +44,13 @@
                 <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>
             </ul>
             @if(Webuser.hasAccessToCFPAdmin(uuid)){
-            <form id="searchForm" class="navbar-form navbar-right" role="search" action="/cfpadmin/search" method="GET">
+            <form id="searchForm" class="navbar-form navbar-right" role="search">
                 <div class="form-group">
                     <label for="searchBox" class="sr-only">Search</label>
-                    <input id="searchBox" name="q" type="text" class="form-control" placeholder="Search">
+                    <input class="searchBox" name="q" type="text" class="form-control search-box" placeholder="Search" autocomplete="off">
                 </div>
+<div class="searchResult">
+</div>
             </form>
             }
         </div>
@@ -81,25 +82,24 @@
 $("#searchForm").on("submit",function(e){
     e.preventDefault();
     var form = $(this);
-
+    $(".searchBox", form ).addClass("searching");
     var url = jsRoutes.controllers.CFPAdmin.search() ;
-
+console.log("url"+url.url);
+console.log("url"+url.method);
     $.ajax({
         url: url.url,
         type: url.method,
-        dataType: "json",
+        dataType: "html",
         data: $(form).serialize(),
         success: function(data, textStatus){
-            console.log(data);
+            $(".searchResult", form ).html(data);
+            $(".searchResult", form ).show();
+            $(".searchBox", form ).removeClass("searching");
         },
         error: function(err) {
-            _.each(err.responseJSON, function(errorMessage) {
-                _.each(errorMessage, function(message, field){
-                    var currentField = $("#" + field, form);
-                    currentField.addClass("error");
-                    currentField.parent().append("<dd class='error'>" + message + "</dd>");
-                });
-            });
+            console.log("Error ");
+            console.log(err);
+            $(".searchBox", form ).addClass("search-error" );
         }
     });
     return false;

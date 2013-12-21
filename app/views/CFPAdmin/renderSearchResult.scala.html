@@ -1,0 +1,6 @@
+@(total:Int, results:Seq[String])
+
+<p>Search result: @total founds</p>
+@results.map{result=>
+    @Html(result)<br>
+}

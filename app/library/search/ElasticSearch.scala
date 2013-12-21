@@ -33,14 +33,13 @@ object ElasticSearch {
   def doSearch(query: String):Future[Try[String]] = {
      val serviceParams = Seq(("q", query))
      val futureResponse = WS.url("http://localhost:9200/_search").withQueryString(serviceParams: _*).get()
-     val prom=futureResponse.map {
+     futureResponse.map {
        response =>
          response.status match {
-           case 200 => Success(response.body)
+           case 200 =>  Success(response.body)
            case other => Failure(new UnknownError("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
          }
      }
-     prom
    }
 
   def doSearch(index: String, query: String) = {

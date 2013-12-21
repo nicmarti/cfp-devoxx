@@ -9,6 +9,7 @@ import library.SendMessageInternal
 import library.SendMessageToSpeaker
 import library.search.ElasticSearch
 import play.api.Routes
+import play.api.libs.json.{JsObject, JsValue, Json}
 
 /**
  * The backoffice controller for the CFP technical commitee.
@@ -176,19 +177,49 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allMyVotes(result))
   }
 
-  def search(q:String)=IsMemberOf("cfp"){
+  def search()=IsMemberOf("cfp"){
     _ => implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+     val query = request.body.asFormUrlEncoded.get("q")(0)
+
     Async{
-      ElasticSearch.doSearch(q).map{
+      ElasticSearch.doSearch(query).map{
         case r if r.isSuccess=>{
-          Ok(r.get).as("application/json")
+          val json=Json.parse(r.get)
+
+          val total=(json \ "hits" \ "total").as[Int]
+          val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
+
+          val results = hitContents.map{jsvalue=>
+            val index = (jsvalue \ "_index").as[String]
+            val source = (jsvalue \ "_source")
+            index match {
+              case "events" => {
+                val objRef = (source \ "objRef").as[String]
+                val uuid = (source \ "uuid").as[String]
+                val msg = (source \ "msg").as[String]
+                s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
+              }
+              case "proposals"=> {
+                val id = (source \ "id").as[String]
+                val title = (source \ "title").as[String]
+                s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a>"
+              }
+              case "speakers"=>{
+                val uuid = (source \ "uuid").as[String]
+                val name = (source \ "name").as[String]
+                s"<i class='icon-user'></i> Speaker <a href='${routes.CallForPaper.showSpeaker(uuid)}'>$name</a>"
+              }
+              case other=>"Unknown"
+            }
+          }
+
+
+          Ok(views.html.CFPAdmin.renderSearchResult(total, results)).as("text/html")
         }
         case r if r.isFailure=>{
-          InternalServerError("{\"error\":\"" +
-            r.get +
-            "\"}").as("application/json")
+          InternalServerError(r.get)
         }
       }
     }
