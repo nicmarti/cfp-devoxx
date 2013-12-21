@@ -7,6 +7,8 @@ import play.api.data.Forms._
 import library.ZapActor
 import library.SendMessageInternal
 import library.SendMessageToSpeaker
+import library.search.ElasticSearch
+import play.api.Routes
 
 /**
  * The backoffice controller for the CFP technical commitee.
@@ -174,6 +176,24 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allMyVotes(result))
   }
 
+  def search(q:String)=IsMemberOf("cfp"){
+    _ => implicit request =>
+      import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+    Async{
+      ElasticSearch.doSearch(q).map{
+        case r if r.isSuccess=>{
+          Ok(r.get).as("application/json")
+        }
+        case r if r.isFailure=>{
+          InternalServerError("{\"error\":\"" +
+            r.get +
+            "\"}").as("application/json")
+        }
+      }
+    }
+
+  }
 
 }
 
