@@ -52,7 +52,7 @@ case class ProposalState(code: String)
 
 object ProposalState {
 
-  implicit val proposalTypeState = Json.format[ProposalState]
+  implicit val proposalStateFormat = Json.format[ProposalState]
 
   val DRAFT = ProposalState("draft")
   val SUBMITTED = ProposalState("submitted")
