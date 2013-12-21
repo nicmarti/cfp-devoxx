@@ -1,4 +1,5 @@
-@(proposal: Proposal, comments: List[Comment], msgToComite: Form[String])(implicit lang: Lang, flash: Flash, uuid: String)
+@(proposal: Proposal, comments: List[Comment], msgToComite: Form[String])(implicit flash: Flash, lang: Lang, uuid: String, req:RequestHeader)
+
 
 @import com.github.rjeschke.txtmark._
 

@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(implicit lang: Lang, uuid:String)
+@(title: String)(content: Html)(implicit lang: Lang, uuid:String, req: RequestHeader)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,6 +43,14 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>
             </ul>
+            @if(Webuser.hasAccessToCFPAdmin(uuid)){
+            <form id="searchForm" class="navbar-form navbar-right" role="search" action="/cfpadmin/search" method="GET">
+                <div class="form-group">
+                    <label for="searchBox" class="sr-only">Search</label>
+                    <input id="searchBox" name="q" type="text" class="form-control" placeholder="Search">
+                </div>
+            </form>
+            }
         </div>
     </div>
 </div>
@@ -63,5 +71,39 @@
 </footer>
 <!-- ****************************************************************************** //-->
 
+
+@if(Webuser.hasAccessToCFPAdmin(uuid)){
+
+@helper.javascriptRouter("jsRoutes")(routes.javascript.CFPAdmin.search)
+
+<script type="text/javascript">
+$("#searchForm").on("submit",function(e){
+    e.preventDefault();
+    var form = $(this);
+
+    var url = jsRoutes.controllers.CFPAdmin.search() ;
+
+    $.ajax({
+        url: url.url,
+        type: url.method,
+        dataType: "json",
+        data: $(form).serialize(),
+        success: function(data, textStatus){
+            console.log(data);
+        },
+        error: function(err) {
+            _.each(err.responseJSON, function(errorMessage) {
+                _.each(errorMessage, function(message, field){
+                    var currentField = $("#" + field, form);
+                    currentField.addClass("error");
+                    currentField.parent().append("<dd class='error'>" + message + "</dd>");
+                });
+            });
+        }
+    });
+    return false;
+});
+</script>
+}
 </body>
 </html>

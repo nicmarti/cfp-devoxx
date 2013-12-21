@@ -1,4 +1,4 @@
-@(totalSpeakers: Long, totalProposals:Long, totalReviews:Long, totalVotes:Long, totalNoVotes:Long, mostVoted:Option[Review.VotesPerProposal],  bestReviewer:(String,Long), worstReviewer:(String,Long), totalByCategories:List[(Track, Int)], totalSubmittedByType:Map[ProposalType, Int], devoxx2013:Map[ProposalType, Int])(implicit lang: Lang, flash: Flash, uuid:String)
+@(totalSpeakers: Long, totalProposals:Long, totalReviews:Long, totalVotes:Long, totalNoVotes:Long, mostVoted:Option[Review.VotesPerProposal],  bestReviewer:(String,Long), worstReviewer:(String,Long), totalByCategories:List[(Track, Int)], totalSubmittedByType:Map[ProposalType, Int], devoxx2013:Map[ProposalType, Int])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("Leaderboard") {
 <div class="row">

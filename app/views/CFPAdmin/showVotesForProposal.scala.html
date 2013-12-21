@@ -1,4 +1,4 @@
-@(proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)])(implicit lang: Lang, flash: Flash, uuid: String)
+@(proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)])(implicit flash: Flash, lang: Lang, uuid: String, req:RequestHeader)
 
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">

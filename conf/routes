@@ -65,6 +65,7 @@ GET     /cfpadmin/proposal/:proposalId/vote         controllers.CFPAdmin.voteFor
 GET     /cfpadmin/proposal/:proposalId/score        controllers.CFPAdmin.showVotesForProposal(proposalId:String)
 GET     /cfpadmin/leaderboard                       controllers.CFPAdmin.leaderBoard
 GET     /cfpadmin/myvotes                           controllers.CFPAdmin.allMyVotes
+GET     /cfpadmin/search                            controllers.CFPAdmin.search(q:String)
 
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.ico")
 
@@ -78,6 +79,9 @@ GET     /admin/proposals/submitted/moveTrash      controllers.Backoffice.moveSub
 GET     /admin/proposals/moveDraft      controllers.Backoffice.moveProposalToDraft(proposalId:String)
 GET     /admin/draftReminder            controllers.Backoffice.sendReminderToSpeakersForDraft()
 POST    /admin/deleteSpeaker/:speakerUUIDToDelete      controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
+
+GET     /admin/elastic                  controllers.Backoffice.testElasticSearch()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

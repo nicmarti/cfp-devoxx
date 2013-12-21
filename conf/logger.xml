@@ -18,6 +18,8 @@
     <logger name="models.Webuser" level="INFO"/>
     <logger name="library.ZapActor" level="INFO"/>
     <logger name="application" level="INFO"/>
+    <logger name="application.IndexMaster" level="DEBUG"/>
+    <logger name="application.Reaper" level="DEBUG"/>
 
     <logger name="net.sf.ehcache.sizeof.verboseINFOLogging" level="INFO"/>
     <logger name="net.sf.ehcache" level="WARN"/>
