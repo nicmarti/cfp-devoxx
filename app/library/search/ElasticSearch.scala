@@ -9,6 +9,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import scala.util.{Try, Failure, Success}
 import java.net.URLEncoder
 import scala.concurrent.{Future, Promise}
+import play.api.Play
 
 /**
  * Wrapper and helper, to reuse the ElasticSearch REST API.
@@ -17,8 +18,11 @@ import scala.concurrent.{Future, Promise}
  * Created: 23/09/2013 12:31
  */
 object ElasticSearch {
+
+  val host = Play.current.configuration.getString("elasticsearch.host").getOrElse("localhost:9200")
+
   def index(index: String, json: String) = {
-    val futureResponse = WS.url("http://localhost:9200/" + index + "?ttl=1d").put(json)
+    val futureResponse = WS.url(host+ "/" + index + "?ttl=1d").put(json)
     futureResponse.map {
       response =>
         response.status match {
@@ -29,10 +33,9 @@ object ElasticSearch {
     }
   }
 
-
   def doSearch(query: String):Future[Try[String]] = {
      val serviceParams = Seq(("q", query))
-     val futureResponse = WS.url("http://localhost:9200/_search").withQueryString(serviceParams: _*).get()
+     val futureResponse = WS.url(host + "/_search").withQueryString(serviceParams: _*).get()
      futureResponse.map {
        response =>
          response.status match {
