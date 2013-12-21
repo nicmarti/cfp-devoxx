@@ -1,4 +1,4 @@
-@(events: List[Event], allProposalsForReview: List[Proposal], totalEvents:Int, page:Int, sort:Option[String], ascdesc:Option[String])(implicit lang: Lang, flash: Flash, uuid: String)
+@(events: List[Event], allProposalsForReview: List[Proposal], totalEvents:Int, page:Int, sort:Option[String], ascdesc:Option[String])(implicit flash: Flash, lang: Lang, uuid: String, req:RequestHeader)
 
 @main("CFP Admin") {
 
@@ -6,6 +6,7 @@
         <div class="col-lg-offset-4 col-md-4">
             <h2><i class="icon-beaker"></i> CFP Admin</h2>
         </div>
+
         <div class="clearfix"></div>
 
         <div class="col-md-12">
