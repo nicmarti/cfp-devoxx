@@ -19,22 +19,61 @@ object ElasticSearchActor {
 }
 
 // Messages
+sealed class ElasticSearchRequest
+
+trait ESType {
+  def path: String
+  def id: String
+  def label: String = id
+  def toJson: play.api.libs.json.JsValue
+}
+
+case class ESSpeaker (speaker: Speaker) extends ESType{
+  import models.Speaker.speakerFormat
+  def toJson= Json.toJson(speaker)
+
+  def path = "/speakers/speaker"
+  def id = speaker.uuid
+  override def label = speaker.name.getOrElse(speaker.email)
+}
+
+case class ESProposal (proposal: Proposal) extends ESType{
+  import models.Proposal.proposalFormat
+  def toJson= Json.toJson(proposal)
+
+  def path = "/proposals/proposal"
+  def id = proposal.id
+}
+
+
+case class ESEvent (event: Event) extends ESType{
+  import models.Event.eventFormat
+  def toJson= Json.toJson(event)
+
+  def path = "/events/event"
+  def id = event.uuid
+}
+
+
 case class DoIndexEvent()
 
 case class DoIndexProposal()
 
 case class DoIndexSpeaker()
 
-case class IndexEvent(event: Event)
-
-case class IndexSpeaker(speaker: Speaker)
-
-case class IndexProposal(proposal: Proposal)
+case class Index(obj:ESType)
 
 case class StopIndex()
 
+trait ESActor extends Actor {
+  import scala.language.implicitConversions
+  implicit def SpeakerToESSpeaker (speaker: Speaker)= ESSpeaker(speaker)
+  implicit def ProposalToESProposal (proposal: Proposal)= ESProposal(proposal)
+  implicit def EventToESEvent (event: Event)= ESEvent(event)
+}
+
 // Main actor for dispatching
-class IndexMaster extends Actor {
+class IndexMaster extends ESActor {
   def receive = {
     case DoIndexSpeaker() => doIndexSpeaker()
     case DoIndexProposal() => doIndexProposal()
@@ -56,8 +95,7 @@ class IndexMaster extends Actor {
     for (page <- 0 to totalEvents / 100) {
       play.Logger.of("application.IndexMaster").debug("Loading event page " + page)
       Event.loadEvents(100, page).map {
-        event =>
-          ElasticSearchActor.reaperActor ! IndexEvent(event)
+        event => ElasticSearchActor.reaperActor ! Index(event)
       }
     }
     play.Logger.of("application.IndexMaster").debug("Done indexing Event")
@@ -66,8 +104,8 @@ class IndexMaster extends Actor {
   def doIndexSpeaker() {
     play.Logger.of("application.IndexMaster").debug("Do index speaker")
 
-    Speaker.allSpeakers().foreach {speaker=>
-      ElasticSearchActor.reaperActor ! IndexSpeaker(speaker)
+    Speaker.allSpeakers().foreach {
+      speaker => ElasticSearchActor.reaperActor ! Index(speaker)
     }
 
     play.Logger.of("application.IndexMaster").debug("Done indexing speaker")
@@ -76,71 +114,35 @@ class IndexMaster extends Actor {
   def doIndexProposal() {
     play.Logger.of("application.IndexMaster").debug("Do index proposal")
 
-    Proposal.allSubmitted().foreach {proposal=>
-      ElasticSearchActor.reaperActor ! IndexProposal(proposal)
+    Proposal.allSubmitted().foreach {
+      proposal => ElasticSearchActor.reaperActor ! Index(proposal)
     }
 
     play.Logger.of("application.IndexMaster").debug("Done indexing proposal")
   }
-
 }
 
 // Actor that is in charge of Indexing content
-class Reaper extends Actor {
-
+class Reaper extends ESActor {
   def receive = {
-    case IndexEvent(event: Event) => doIndexEvent(event)
-    case IndexSpeaker(s: Speaker) => doIndexSpeaker(s)
-    case IndexProposal(p: Proposal) => doIndexProposal(p)
+    case Index(obj: ESType) => doIndex(obj)
     case other => play.Logger.of("application.Reaper").warn("unknown message received " + other)
   }
+  
+  import scala.util.Try
+  import scala.concurrent.Future
 
-  def doIndexEvent(event: Event) {
-    import models.Event.eventFormat
+  def doIndex(obj: ESType) = 
+    logResult (obj, sendRequest(obj))
 
-    val jsonObj = Json.toJson(event)
-    val json: String = Json.stringify(jsonObj)
+  def sendRequest(obj: ESType): Future[Try[String]] =
+    ElasticSearch.index(obj.path + "/" + obj.id, Json.stringify(obj.toJson))
 
-    val maybeSuccess = ElasticSearch.index("/events/event/" + event.uuid, json)
-
+  def logResult(obj: ESType, maybeSuccess: Future[Try[String]]) = 
     maybeSuccess.map {
       case r if r.isSuccess =>
-        play.Logger.of("application.Reaper").debug("Indexed event " + event.uuid)
+	play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")
       case r if r.isFailure =>
-        play.Logger.of("application.Reaper").warn("Could not index event " + event.uuid + " due to " + r.toString)
+	play.Logger.of("application.Reaper").warn("Could not index speaker ${obj.typeName} ${obj} due to ${r}")
     }
-  }
-
-  def doIndexSpeaker(speaker: Speaker) {
-    import models.Speaker.speakerFormat
-
-    val jsonObj = Json.toJson(speaker)
-    val json: String = Json.stringify(jsonObj)
-
-    val maybeSuccess = ElasticSearch.index("/speakers/speaker/" + speaker.uuid, json)
-
-    maybeSuccess.map {
-      case r if r.isSuccess =>
-        play.Logger.of("application.Reaper").debug("Indexed speaker " + speaker.name)
-      case r if r.isFailure =>
-        play.Logger.of("application.Reaper").warn("Could not index speaker " + speaker + " due to " + r.toString)
-    }
-  }
-
-  def doIndexProposal(proposal: Proposal) {
-    import models.Proposal.proposalFormat
-    import models.ProposalState.proposalStateFormat
-
-    val jsonObj = Json.toJson(proposal)
-    val json: String = Json.stringify(jsonObj)
-
-    val maybeSuccess = ElasticSearch.index("/proposals/proposal/" + proposal.id, json)
-
-    maybeSuccess.map {
-      case r if r.isSuccess =>
-        play.Logger.of("application.Reaper").debug("Indexed proposal " + proposal.id)
-      case r if r.isFailure =>
-        play.Logger.of("application.Reaper").warn("Could not index proposal " + proposal + " due to " + r.toString)
-    }
-  }
 }
