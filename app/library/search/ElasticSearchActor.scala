@@ -51,7 +51,7 @@ case class ESEvent (event: Event) extends ESType{
   def toJson= Json.toJson(event)
 
   def path = "/events/event"
-  def id = event.uuid
+  def id = play.api.libs.Crypto.sign(event.toString)
 }
 
 
