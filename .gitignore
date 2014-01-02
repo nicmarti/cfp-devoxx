@@ -1,4 +1,3 @@
-# Extracted from https://github.com/ulrich/macaron-factory/blob/master/.gitignore
 # Ignore all dotfiles...
 .*
 # except for .gitignore
@@ -19,3 +18,18 @@ test-result
 server.pid
 *.iml
 *.eml
+
+### Scala ###
+*.class
+*.log
+
+# sbt specific
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
