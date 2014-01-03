@@ -177,14 +177,12 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allMyVotes(result))
   }
 
-  def search()=IsMemberOf("cfp"){
+  def search(q:String)=IsMemberOf("cfp"){
     _ => implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-     val query = request.body.asFormUrlEncoded.get("q")(0)
-
     Async{
-      ElasticSearch.doSearch(query).map{
+      ElasticSearch.doSearch(q).map{
         case r if r.isSuccess=>{
           val json=Json.parse(r.get)
 
