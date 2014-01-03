@@ -19,7 +19,6 @@ import scala.Some
 import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
-
   override def onStart(app: Application) {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
       CronTask.draftReminder()
@@ -67,6 +66,9 @@ object Global extends GlobalSettings {
 }
 
 object CronTask {
+  // postfix operator days should be enabled by making the implicit value scala.language.postfixOps visible.
+  // This can be achieved by adding the import clause 'import scala.language.postfixOps'
+  import scala.language.postfixOps
 
   val zapActor = Akka.system.actorOf(Props[ZapActor])
 
