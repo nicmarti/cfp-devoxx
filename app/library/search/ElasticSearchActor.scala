@@ -23,34 +23,47 @@ sealed class ElasticSearchRequest
 
 trait ESType {
   def path: String
+
   def id: String
+
   def label: String = id
+
   def toJson: play.api.libs.json.JsValue
 }
 
-case class ESSpeaker (speaker: Speaker) extends ESType{
+case class ESSpeaker(speaker: Speaker) extends ESType {
+
   import models.Speaker.speakerFormat
-  def toJson= Json.toJson(speaker)
+
+  def toJson = Json.toJson(speaker)
 
   def path = "/speakers/speaker"
+
   def id = speaker.uuid
+
   override def label = speaker.name.getOrElse(speaker.email)
 }
 
-case class ESProposal (proposal: Proposal) extends ESType{
+case class ESProposal(proposal: Proposal) extends ESType {
+
   import models.Proposal.proposalFormat
-  def toJson= Json.toJson(proposal)
+
+  def toJson = Json.toJson(proposal)
 
   def path = "/proposals/proposal"
+
   def id = proposal.id
 }
 
 
-case class ESEvent (event: Event) extends ESType{
+case class ESEvent(event: Event) extends ESType {
+
   import models.Event.eventFormat
-  def toJson= Json.toJson(event)
+
+  def toJson = Json.toJson(event)
 
   def path = "/events/event"
+
   def id = play.api.libs.Crypto.sign(event.toString)
 }
 
@@ -61,15 +74,19 @@ case class DoIndexProposal()
 
 case class DoIndexSpeaker()
 
-case class Index(obj:ESType)
+case class Index(obj: ESType)
 
 case class StopIndex()
 
 trait ESActor extends Actor {
+
   import scala.language.implicitConversions
-  implicit def SpeakerToESSpeaker (speaker: Speaker)= ESSpeaker(speaker)
-  implicit def ProposalToESProposal (proposal: Proposal)= ESProposal(proposal)
-  implicit def EventToESEvent (event: Event)= ESEvent(event)
+
+  implicit def SpeakerToESSpeaker(speaker: Speaker) = ESSpeaker(speaker)
+
+  implicit def ProposalToESProposal(proposal: Proposal) = ESProposal(proposal)
+
+  implicit def EventToESEvent(event: Event) = ESEvent(event)
 }
 
 // Main actor for dispatching
@@ -128,21 +145,21 @@ class Reaper extends ESActor {
     case Index(obj: ESType) => doIndex(obj)
     case other => play.Logger.of("application.Reaper").warn("unknown message received " + other)
   }
-  
+
   import scala.util.Try
   import scala.concurrent.Future
 
-  def doIndex(obj: ESType) = 
-    logResult (obj, sendRequest(obj))
+  def doIndex(obj: ESType) =
+    logResult(obj, sendRequest(obj))
 
   def sendRequest(obj: ESType): Future[Try[String]] =
     ElasticSearch.index(obj.path + "/" + obj.id, Json.stringify(obj.toJson))
 
-  def logResult(obj: ESType, maybeSuccess: Future[Try[String]]) = 
+  def logResult(obj: ESType, maybeSuccess: Future[Try[String]]) =
     maybeSuccess.map {
       case r if r.isSuccess =>
-	play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")
+        play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")
       case r if r.isFailure =>
-	play.Logger.of("application.Reaper").warn("Could not index speaker ${obj.typeName} ${obj} due to ${r}")
+        play.Logger.of("application.Reaper").warn("Could not index speaker ${obj.typeName} ${obj} due to ${r}")
     }
 }
