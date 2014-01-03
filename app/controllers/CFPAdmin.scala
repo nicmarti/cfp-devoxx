@@ -147,6 +147,17 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
+  def clearVoteForProposal(proposalId:String) = IsMemberOf("cfp") {
+      implicit uuid => implicit request =>
+        Proposal.findById(proposalId) match {
+          case Some(proposal) => {
+                Review.removeVoteForProposal(proposalId, uuid)
+                Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Removed your vote")
+          }
+          case None => NotFound("Proposal not found").as("text/html")
+        }
+    }
+
 
 
   def leaderBoard = IsMemberOf("cfp") {

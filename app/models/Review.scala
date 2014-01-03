@@ -55,6 +55,17 @@ object Review {
       Event.storeEvent(Event(proposalId, reviewerUUID, s"Voted ${vote}"))
   }
 
+  def removeVoteForProposal(proposalId: String, reviewerUUID: String) = Redis.pool.withClient {
+    implicit client =>
+      val tx = client.multi()
+      tx.srem(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)
+      tx.srem(s"Proposals:Reviewed:ByProposal:${proposalId}", reviewerUUID)
+      tx.zrem(s"Proposals:Votes:${proposalId}", reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
+      tx.zrem(s"Proposals:Dates:${proposalId}", reviewerUUID + "__DEL")
+      tx.exec()
+      Event.storeEvent(Event(proposalId, reviewerUUID, s"Removed its vote on this talk"))
+  }
+
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:${reviewerUUID}").toSet
@@ -208,8 +219,6 @@ object Review {
           }
       }
   }
-
-
 
 
 }

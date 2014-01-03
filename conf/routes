@@ -62,6 +62,7 @@ GET     /cfpadmin/proposal/:proposalId  controllers.CFPAdmin.openForReview(propo
 POST    /cfpadmin/proposal/:proposalId/msgToSpeaker controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
 POST    /cfpadmin/proposal/:proposalId/postInternal controllers.CFPAdmin.postInternalMessage(proposalId:String)
 GET     /cfpadmin/proposal/:proposalId/vote         controllers.CFPAdmin.voteForProposal(proposalId:String)
+GET     /cfpadmin/proposal/:proposalId/clearVote    controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
 GET     /cfpadmin/proposal/:proposalId/score        controllers.CFPAdmin.showVotesForProposal(proposalId:String)
 GET     /cfpadmin/leaderboard                       controllers.CFPAdmin.leaderBoard
 GET     /cfpadmin/myvotes                           controllers.CFPAdmin.allMyVotes

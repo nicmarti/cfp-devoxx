@@ -117,13 +117,16 @@
                 <div class="panel-body">
                     @maybeMyVote.map{review:Review=>
                         <i class="icon-trophy"></i> @Messages("admin.sp.voted")  @tags.renderVote(review.vote.toInt) - @review.date.toString("EEEE d MMM YYYY HH:mm")
+
+                        <a href="@routes.CFPAdmin.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
+
                     }
                     <div class="btn-block">
                     @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
                         @if(maybeMyVote.isDefined && maybeMyVote.get.vote==0){
-                            <button name="vote" value="0" class="btn btn-lg btn-warning">0</button>
+                            <button name="vote" value="0" class="btn btn-lg btn-warning">Abs</button>
                         }else{
-                            <button name="vote" value="0" class="btn btn-lg btn-default">0</button>
+                            <button name="vote" value="0" class="btn btn-lg btn-default">Abs</button>
                         }
 
                         @for(i <- 1 to 10) {
@@ -138,8 +141,8 @@
                                 <button name="vote" value="@i" class="btn btn-lg btn-success" accesskey="@i">@i</button>
                             }
                         }
-
                     }
+
                     </div>
                 </div>
                 @if(flash.get("vote").isDefined) {
