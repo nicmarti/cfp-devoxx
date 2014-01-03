@@ -224,7 +224,6 @@ object CFPAdmin extends Controller with Secured {
             }
           }
 
-
           Ok(views.html.CFPAdmin.renderSearchResult(total, results)).as("text/html")
         }
         case r if r.isFailure=>{
@@ -232,7 +231,6 @@ object CFPAdmin extends Controller with Secured {
         }
       }
     }
-
   }
 
 }

@@ -76,19 +76,14 @@
 
 @if(Webuser.hasAccessToCFPAdmin(uuid)){
 
-@helper.javascriptRouter("jsRoutes")(routes.javascript.CFPAdmin.search)
-
 <script type="text/javascript">
 $("#searchForm").on("submit",function(e){
     e.preventDefault();
     var form = $(this);
     $(".searchBox", form ).addClass("searching");
-    var url = jsRoutes.controllers.CFPAdmin.search() ;
-console.log("url"+url.url);
-console.log("url"+url.method);
     $.ajax({
-        url: url.url,
-        type: url.method,
+        url: "/cfpadmin/search",
+        type: "GET",
         dataType: "html",
         data: $(form).serialize(),
         success: function(data, textStatus){
