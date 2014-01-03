@@ -179,7 +179,7 @@ object Authentication extends Controller {
   }
 
   val importSpeakerForm = Form(tuple(
-    "email"-> email,
+    "email" -> email,
     "firstName" -> nonEmptyText(maxLength = 50),
     "lastName" -> nonEmptyText(maxLength = 50),
     "bio" -> nonEmptyText(maxLength = 750),
@@ -265,7 +265,7 @@ object Authentication extends Controller {
                           } else {
                             (nameS, nameS)
                           }
-                          val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS,750), company, None, blog, avatarUrl)
+                          val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl)
                           Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                         }
                     }
@@ -498,8 +498,18 @@ trait Secured {
       if (Webuser.isMember(uuid, securityGroup)) {
         f(uuid)(request)
       } else {
-        Results.Forbidden("Sorry, you cannot access this resource. Your uuid is not a member of " + securityGroup)
+        Results.Forbidden("Sorry, you cannot access this resource. Your uuid is not a member of this security group.")
       }
   }
+
+  def IsMemberOf(groups: List[String])(f: => String => Request[AnyContent] => Result) = IsAuthenticated {
+    uuid => request =>
+      if (groups.exists(securityGroup => Webuser.isMember(uuid, securityGroup))) {
+        f(uuid)(request)
+      } else {
+        Results.Forbidden("Sorry, you cannot access this resource. Your uuid is not a member of this security group.")
+      }
+  }
+
 
 }
