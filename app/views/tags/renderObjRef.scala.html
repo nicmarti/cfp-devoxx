@@ -1,6 +1,6 @@
 @(objRef:String)
 
-@if(models.Event.ObjRefProposal findFirstIn(objRef) isDefined){
+@if(models.Proposal.ProposalIDRegExp findFirstIn(objRef) isDefined){
 <a href="@routes.CFPAdmin.openForReview(objRef)" class="btn btn-sm btn-primary">@objRef</a>
 }else{
 <small>@objRef</small>

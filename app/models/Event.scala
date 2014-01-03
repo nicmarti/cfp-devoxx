@@ -48,8 +48,6 @@ case class Event(objRef: String, uuid: String, msg: String, date: Option[DateTim
 object Event {
   implicit val eventFormat = Json.format[Event]
 
-  val ObjRefProposal="(\\w\\w\\w-\\d\\d\\d)".r
-
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
       val jsEvent = Json.stringify(Json.toJson(event))

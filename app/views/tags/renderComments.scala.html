@@ -5,7 +5,13 @@
    <span class="pull-left">@tags.renderGravatar(c.uuidAuthor)</span>
     <div class="media-body">
        <small>Posted @library.FormatDate.ellapsed(c.eventDate)</small>
-       <span class="msgSpeaker">@Html(c.msg.replaceAll("script",".script").replaceAll("\n","<br>"))</span>
+        @defining(c.msg.replaceAll("script",".script").replaceAll("\n","<br>")){message:String=>
+        <span class="msgSpeaker">@Html(message)</span>
+        @models.Proposal.ProposalIDRegExp.findAllIn(message).map{proposalIdRef=>
+            <span class="msgSpeaker">@tags.linkToProposal(proposalIdRef)</span>
+        }
+
+        }
     </div>
 </div>
 }

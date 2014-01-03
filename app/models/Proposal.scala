@@ -99,6 +99,9 @@ object Proposal {
 
   val audienceLevels = Seq(("novice", "Novice"), ("intermediate", "Intermediate"), ("expert", "Expert"))
 
+  val ProposalIDRegExp="(\\w\\w\\w-\\d\\d\\d)".r
+
+
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
     // If it's a sponsor talk, we force it to be a conference
