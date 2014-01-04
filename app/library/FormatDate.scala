@@ -23,7 +23,7 @@
 
 package library
 
-import org.joda.time.{Period, DateTime}
+import org.joda.time.{Period, PeriodType, DateTime}
 import org.joda.time.format.PeriodFormatterBuilder
 
 /**
@@ -34,7 +34,10 @@ import org.joda.time.format.PeriodFormatterBuilder
 object FormatDate {
 
   val formatter = new PeriodFormatterBuilder()
+    .appendYears()
+    .appendSuffix(" year", " years")
     .appendDays()
+    .appendSeparator(" ")
     .appendSuffix(" day", " days")
     .appendSeparator(" and ")
     .appendMinutes()
@@ -49,10 +52,8 @@ object FormatDate {
     maybeEventDate.map {
       eventDate =>
 
-        val period: Period = new Period(eventDate, new DateTime())
+        val period: Period = new Period(eventDate, new DateTime(), PeriodType.yearDayTime())
         formatter.print(period)
     }.getOrElse("Unknown")
-
   }
-
 }
