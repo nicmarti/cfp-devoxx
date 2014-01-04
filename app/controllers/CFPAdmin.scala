@@ -188,6 +188,14 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allMyVotes(result))
   }
 
+  // Pour l'instant, je n'ai pas envie que les membres du CFP
+  // utilise la page de résultat pour décider s'ils votent ou non pour un talk
+  def allVotes = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+      val result = Review.allVotes()
+      Ok(views.html.CFPAdmin.allVotes(result))
+  }
+
   def search(q:String)=IsMemberOf("cfp"){
     _ => implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext

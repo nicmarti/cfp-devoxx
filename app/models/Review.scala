@@ -37,7 +37,9 @@ import org.joda.time.{Instant, DateTime}
  */
 case class Review(reviewer: String, proposalId: String, vote: Int, date: DateTime)
 
+
 object Review {
+
   // We use 4 different Redis objects
   // 1) a SET to keep an history of all proposals we voted for
   // 2) a SET to keep an history of all voters for a proposal
@@ -220,5 +222,20 @@ object Review {
       }
   }
 
+  type ScoreAndTotalVotes=(Double,Int)
+
+  def allVotes():Set[(String, ScoreAndTotalVotes)]=Redis.pool.withClient{
+    implicit client=>
+      val allProposalsWithVotes = client.keys("Proposals:Votes:*").toSet
+
+      val allVotes = allProposalsWithVotes.map{ proposalKey=>
+        val allScores = client.zrangeByScoreWithScores(proposalKey,"0","10").map(_._2)
+        val total = allScores.sum
+        val nbrOfVotes = allScores.size
+        val proposalId=proposalKey.substring(proposalKey.lastIndexOf(":")+1)
+        (proposalId, (total,nbrOfVotes))
+      }
+      allVotes
+  }
 
 }

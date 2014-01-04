@@ -1,0 +1,57 @@
+@(allVotes:Set[(String,models.Review.ScoreAndTotalVotes)])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+
+@main("All votes") {
+<div class="row">
+    <div class="col-md-22">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="icon-bar-chart"></i> All votes</h1>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="col-md-6">
+                    <table class="table table-bordered table-striped table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Score</th>
+                                <th>Votes</th>
+                                <th>Proposal ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @allVotes.toList.sortBy(_._2).reverse.map { case (proposalId, voteAndTotalVotes) =>
+                                <tr>
+                                    @defining(Math.round(voteAndTotalVotes._1)) { score =>
+                                        <td>
+                                            <span class="label label-default">@score</span>
+                                        </td>
+                                    }
+                                <td>
+                                @defining(voteAndTotalVotes._2) { totalVotes =>
+                                    @if(totalVotes > 8) {
+                                        <span class="label label-success">@totalVotes</span>
+                                    }
+                                    @if(totalVotes <= 8 && totalVotes >= 4) {
+                                        <span class="label label-warning">@totalVotes</span>
+                                    }
+                                    @if(totalVotes <4) {
+                                        <span class="label label-danger">@totalVotes</span>
+                                    }
+                                }
+                                </td>
+                                <td>
+                                    <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a>
+                                </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
