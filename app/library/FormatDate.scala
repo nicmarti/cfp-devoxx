@@ -37,7 +37,6 @@ object FormatDate {
     .appendYears()
     .appendSuffix(" year", " years")
     .appendDays()
-    .appendSeparator(" ")
     .appendSuffix(" day", " days")
     .appendSeparator(" and ")
     .appendMinutes()
