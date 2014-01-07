@@ -21,11 +21,10 @@
                 <div class="panel-body">
                     <span class="label label-default">@newProposal("title").value</span><br>
                     <span class="label label-primary">@Messages(newProposal("talkType").value.getOrElse(""))</span> <span class="label label-primary">@Messages(newProposal("track").value.getOrElse("") + ".label")</span><br>
-
-                    <small>@Html(htmlSummary)</small>
+                    <br>
+                    <div class="proposal_prev"><small>@Html(htmlSummary)</small></div>
                 </div>
             </div>
-
         </div>
 
         <div class="col-md-4">
@@ -47,6 +46,21 @@
                 <br/>
                 @Messages("validate.summary2") <a href="javascript:history.back()">@Messages("validate.summary3")</a> @Messages("validate.summary4")
                 }
+        </div>
+
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">Preview Conference guide (sample page) :</div>
+                    <div class="panel-body">
+                        <div id="preview_guide">
+                            <div class="title">@newProposal("title").value</div>
+                            <div class="speaker">
+                                   <img src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(newProposal("mainSpeaker").value.getOrElse(uuid))?s=35" title="This is you" />
+                            </div>
+                            <div class="summary">@newProposal("summary").value</div>
+                        </div>
+                </div>
+                <div class="panel panel-default">
         </div>
 </div>
 }

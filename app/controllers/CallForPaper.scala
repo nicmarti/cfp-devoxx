@@ -111,7 +111,6 @@ object CallForPaper extends Controller with Secured {
   def newProposal() = IsAuthenticated {
     implicit uuid => implicit request =>
       Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
-
   }
 
   // Load a proposal, change the status to DRAFT (not sure this is a goode idea)
@@ -120,7 +119,6 @@ object CallForPaper extends Controller with Secured {
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Proposal.draft(uuid, proposalId)
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalForm.fill(proposal)
             Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
@@ -134,7 +132,6 @@ object CallForPaper extends Controller with Secured {
             // Switch the secondary speaker and this speaker
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
             Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
-
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
           }
@@ -152,7 +149,7 @@ object CallForPaper extends Controller with Secured {
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
           import com.github.rjeschke.txtmark._
-          val html = Processor.process(validProposal.summary) // markdown to HTML
+          val html = Processor.process(validProposal.summary.trim()) // markdown to HTML
           Ok(views.html.CallForPaper.previewProposal(html, Proposal.proposalForm.fill(validProposal)))
         }
       )
@@ -166,7 +163,7 @@ object CallForPaper extends Controller with Secured {
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
         proposal => {
           // If the editor is not the owner then findDraft returns None
-          Proposal.findDraft(uuid, proposal.id) match {
+          Proposal.findDraftAndSubmitted(uuid, proposal.id) match {
             case Some(existingProposal) => {
               // This is an edit operation
               // First we try to reset the speaker's, we do not take the values from the FORM for security reason

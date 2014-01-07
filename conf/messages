@@ -79,6 +79,7 @@ sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=Help and advices
 moreSpeakerLater=You can add more speakers later, once the proposal is submitted.
+btn.home=Back to home without saving
 btn.save=Save and preview
 btn.save2=Confirm
 not.saved=Almost done, your proposal is not yet saved. Please review and check your summary, then click on Confirm.
