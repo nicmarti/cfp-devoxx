@@ -36,6 +36,7 @@ object FormatDate {
   val formatter = new PeriodFormatterBuilder()
     .appendYears()
     .appendSuffix(" year", " years")
+    .appendSeparator(" ")
     .appendDays()
     .appendSuffix(" day", " days")
     .appendSeparator(" and ")
