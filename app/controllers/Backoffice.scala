@@ -30,6 +30,11 @@ object Backoffice extends Controller with Secured {
       Redirect(routes.Backoffice.allSpeakers)
   }
 
+  def authenticateAs(uuidSpeaker:String)= IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+      Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
+  }
+
   def allDraftProposals() = IsMemberOf("admin") {
     implicit uuid => implicit request =>
       val proposals = Proposal.allDrafts()
