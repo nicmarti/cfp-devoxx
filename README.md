@@ -14,12 +14,6 @@ J'ai écris cette application en prenant soin de rester simple, pragmatique et p
 - Pas de framework JS côté client sauf si cela devient une nécessité
 - Du code Scala simple et facile à lire
 
-
-Idées pour plus tard :
-
-- Une API en lecture seule simple pour permettre à chaque contributeur de récupérer la liste des speakers
-
-
 ## Installer un environnement de développement local
 
 L'installation d'un environnement de dév est simple et s'effectue en quelques étapes :
@@ -76,7 +70,7 @@ Celui-ci permet d'effectuer des commandes, je vous invite à suivre le petit tut
 # Contributeurs
 
     Nicolas Martignole @nmartignole
-    <your name here>
+    Gabriel Kastenbaum @lambdadevfr
 
 ---
 Fin du document
