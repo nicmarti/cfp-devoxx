@@ -25,13 +25,19 @@ object CFPAdmin extends Controller with Secured {
       val orderer = proposalOrder(ascdesc)
       val allProposalsForReview = sortProposals(Review.allProposalsNotReviewed(uuid), sorter, orderer)
       val twentyEvents = Event.loadEvents(20, page)
-      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc))
+
+      val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
+
+      request.headers.get("If-None-Match") match {
+        case Some(tag) if tag == etag => NotModified
+        case _ => Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc)).withHeaders("ETag" -> etag)
+      }
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
     sorter match {
       case None => ps
-      case Some(sorter) => ps.sortBy(sorter)(orderer)
+      case Some(s) => ps.sortBy(s)(orderer)
     }
 
   def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
@@ -147,18 +153,16 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
-  def clearVoteForProposal(proposalId:String) = IsMemberOf("cfp") {
-      implicit uuid => implicit request =>
-        Proposal.findById(proposalId) match {
-          case Some(proposal) => {
-                Review.removeVoteForProposal(proposalId, uuid)
-                Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Removed your vote")
-          }
-          case None => NotFound("Proposal not found").as("text/html")
+  def clearVoteForProposal(proposalId: String) = IsMemberOf("cfp") {
+    implicit uuid => implicit request =>
+      Proposal.findById(proposalId) match {
+        case Some(proposal) => {
+          Review.removeVoteForProposal(proposalId, uuid)
+          Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Removed your vote")
         }
-    }
-
-
+        case None => NotFound("Proposal not found").as("text/html")
+      }
+  }
 
   def leaderBoard = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
@@ -173,13 +177,14 @@ object CFPAdmin extends Controller with Secured {
       val totalByCategories = Proposal.totalSubmittedByTrack()
       val totalByType = Proposal.totalSubmittedByType()
       val devoxx2013=Proposal.getDevoxx2013Total()
+
       Ok(
         views.html.CFPAdmin.leaderBoard(
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
           totalNoVotes, maybeMostVoted, bestReviewer,worstReviewer, totalByCategories,
           totalByType,devoxx2013
         )
-      )
+      ).withHeaders("Cache-Control"->"public, must-revalidate, max-age=300")
   }
 
   def allMyVotes = IsMemberOf("cfp") {
@@ -196,49 +201,50 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allVotes(result))
   }
 
-  def search(q:String)=IsMemberOf("cfp"){
+  def search(q: String) = IsMemberOf("cfp") {
     _ => implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-    Async{
-      ElasticSearch.doSearch(q).map{
-        case r if r.isSuccess=>{
-          val json=Json.parse(r.get)
+      Async {
+        ElasticSearch.doSearch(q).map {
+          case r if r.isSuccess => {
+            val json = Json.parse(r.get)
 
-          val total=(json \ "hits" \ "total").as[Int]
-          val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
+            val total = (json \ "hits" \ "total").as[Int]
+            val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
-          val results = hitContents.map{jsvalue=>
-            val index = (jsvalue \ "_index").as[String]
-            val source = (jsvalue \ "_source")
-            index match {
-              case "events" => {
-                val objRef = (source \ "objRef").as[String]
-                val uuid = (source \ "uuid").as[String]
-                val msg = (source \ "msg").as[String]
-                s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
-              }
-              case "proposals"=> {
-                val id = (source \ "id").as[String]
-                val title = (source \ "title").as[String]
-                s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a>"
-              }
-              case "speakers"=>{
-                val uuid = (source \ "uuid").as[String]
-                val name = (source \ "name").as[String]
-                s"<i class='icon-user'></i> Speaker <a href='${routes.CallForPaper.showSpeaker(uuid)}'>$name</a>"
-              }
-              case other=>"Unknown"
+            val results = hitContents.map {
+              jsvalue =>
+                val index = (jsvalue \ "_index").as[String]
+                val source = (jsvalue \ "_source")
+                index match {
+                  case "events" => {
+                    val objRef = (source \ "objRef").as[String]
+                    val uuid = (source \ "uuid").as[String]
+                    val msg = (source \ "msg").as[String]
+                    s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
+                  }
+                  case "proposals" => {
+                    val id = (source \ "id").as[String]
+                    val title = (source \ "title").as[String]
+                    s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a>"
+                  }
+                  case "speakers" => {
+                    val uuid = (source \ "uuid").as[String]
+                    val name = (source \ "name").as[String]
+                    s"<i class='icon-user'></i> Speaker <a href='${routes.CallForPaper.showSpeaker(uuid)}'>$name</a>"
+                  }
+                  case other => "Unknown"
+                }
             }
-          }
 
-          Ok(views.html.CFPAdmin.renderSearchResult(total, results)).as("text/html")
-        }
-        case r if r.isFailure=>{
-          InternalServerError(r.get)
+            Ok(views.html.CFPAdmin.renderSearchResult(total, results)).as("text/html")
+          }
+          case r if r.isFailure => {
+            InternalServerError(r.get)
+          }
         }
       }
-    }
   }
 
 }

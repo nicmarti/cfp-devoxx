@@ -50,9 +50,6 @@ GET     /login/google               controllers.Authentication.googleLogin
 GET     /googleoauth2callback       controllers.Authentication.callbackGoogle
 POST    /googleoauth2callback       controllers.Authentication.callbackGoogle
 
-# for test
-GET     /resetEnvForDev             controllers.Application.resetEnvForDev(email:String)
-
 GET     /bug                        controllers.Application.bugReport
 POST    /bug/new                    controllers.Application.submitIssue()
 

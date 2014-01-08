@@ -53,17 +53,7 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
-      Ok(views.html.Application.index())
-  }
-
-  def resetEnvForDev(email: String) = Action {
-    implicit request =>
-      Webuser.findByEmail(email).map {
-        webuser =>
-          Webuser.delete(webuser)
-          Speaker.delete(email)
-          Redirect(routes.Application.index()).withNewSession.flashing("success" -> "User de test effacé")
-      }.getOrElse(NotFound("User does not exist"))
+      Ok(views.html.Application.index()).withHeaders("Cache-Control"->"public, must-revalidate, max-age=84600")
   }
 
   def bugReport = Action {
