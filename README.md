@@ -1,5 +1,13 @@
+ Call for Paper application for Devoxx
+=============
+
 cfp-devoxx-fr
 =============
+
+Original author: Nicolas Martignole @nmartignole
+
+French
+------
 
 Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis 2.6.
 
@@ -65,12 +73,46 @@ Vous pouvez vous amuser avec votre serveur Redis en local avec l'utilitaire "red
 
 Celui-ci permet d'effectuer des commandes, je vous invite à suivre le petit tutorial http://try.redis.io/ pour mieux comprendre.
 
-# Git et gestions des branches
+# Reporter un bug
+
+Le projet est hébergé sur [Bitbucket](https://bitbucket.org/nicolas_martignole/cfp-devoxx-fr)
+
+# Installer sa propre version du CFP
+
+Imaginons que vous êtes Breton et que vous souhaitiez installer ce CFP pour votre conférence :-)
+
+Pour pouvoir faire tourner en production votre propre application du CFP, il est nécessaire de configurer différents éléments dans le fichier **application.conf** de Play 2.2.
+
+Voici ce qu'il vous faut
+
+- un compte [Mailjet](http://www.mailjet.fr) pour l'envoi SMTP des emails transactionnels
+- un compte [Github](http://www.github.com) pour pouvoir créer une clé API pour l'authentification OpenID. Voir [https://github.com/settings/applications](cette page)
+- créer une application via votre compte Google sur [https://cloud.google.com/console#/project](https://cloud.google.com/console#/project) . Configurez une URL pour le développement, comme http://localhost:9000/ et une URL de prod comme http://cfp.devoxx.fr/
+- un serveur Redis 2.6.x protégé par un mot de passe très long
+- un serveur ElasticSearch
+- un compte Trello développeur
+
+Voici ce que vous devez configurer :
+
+- Renommez le fichier **application-please-customize-me.conf** en **application.conf**
+- Générez une chaîne de caractère pour la sécurité de l'application
+
+    application.secret="a_unique_secret"
+
+- Configurez le serveur SMTP en prenant les paramètres de Mailjet
+- Configurez la partie Github
+- Configurez la partie Google pour l'authentification OAuth2.0
+- Configurez enfin le serveur Redis. Prenez soin de configurer un mot de passe très long pour votre serveur Redis
+- Configurez enfin l'adresse d'un serveur ElasticSearch
+
+Au moment de la mise à jour de cette documentation, la partie Trello n'est pas encore codée.
 
 # Contributeurs
 
-    Nicolas Martignole @nmartignole
-    Gabriel Kastenbaum @lambdadevfr
+- Nicolas Martignole [@nmartignole](http://www.twitter.com/nmartignole)
+- Gabriel Kastenbaum [@lambdadevfr](http://www.twitter.com/lambdadevfr)
 
----
-Fin du document
+# Hébergement
+
+Le CFP de Devoxx France est hébergé sur la plateforme [http://www.clever-cloud.com](Clever-Cloud)
+
