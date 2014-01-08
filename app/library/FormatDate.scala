@@ -34,14 +34,22 @@ import org.joda.time.format.PeriodFormatterBuilder
 object FormatDate {
 
   val formatter = new PeriodFormatterBuilder()
+    .printZeroNever()
     .appendYears()
     .appendSuffix(" year", " years")
-    .appendSeparator(" ")
+    .appendSeparator(" and ")
+    .appendWeeks()
+    .appendSuffix(" week"," weeks")
+    .appendSeparator(" and ")
     .appendDays()
     .appendSuffix(" day", " days")
-    .appendSeparator(" and ")
+    .appendSeparator(", ")
+    .appendHours()
+    .appendSuffix(" hour", " hours")
+    .appendSeparator(", ")
     .appendMinutes()
     .appendSuffix(" minute", " minutes")
+    .printZeroRarelyLast()
     .appendSeparator(" and ")
     .appendSeconds()
     .appendSuffix(" second", " seconds")
@@ -51,8 +59,7 @@ object FormatDate {
   def ellapsed(maybeEventDate: Option[DateTime]): String = {
     maybeEventDate.map {
       eventDate =>
-
-        val period: Period = new Period(eventDate, new DateTime(), PeriodType.yearDayTime())
+        val period: Period = new Period(eventDate, new DateTime(), PeriodType.yearWeekDayTime())
         formatter.print(period)
     }.getOrElse("Unknown")
   }
