@@ -6,6 +6,7 @@ import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 import play.api.data._
 import play.api.data.Forms._
+import play.api.templates.HtmlFormat
 
 /**
  * Proposal
@@ -94,7 +95,9 @@ case class Proposal(id: String, event: String, lang: String, title: String,
   }
 
   val summaryAsHtml:String={
-    Processor.process(StringUtils.trimToEmpty(this.summary).trim())
+    val escapedHtml = HtmlFormat.escape(summary).body // escape HTML code and JS
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
+    processedMarkdownTest
   }
 }
 
