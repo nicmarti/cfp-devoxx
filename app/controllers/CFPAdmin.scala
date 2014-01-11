@@ -247,6 +247,12 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
+  def allSponsorTalks=IsMemberOf("cfp"){
+    implicit uuid => implicit request =>
+      val proposals = Proposal.allSponsorsTalk()
+      Ok(views.html.CFPAdmin.allSponsorTalks(proposals))
+  }
+
 }
 
 

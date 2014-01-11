@@ -148,8 +148,7 @@ object CallForPaper extends Controller with Secured {
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
-          import com.github.rjeschke.txtmark._
-          val html = Processor.process(validProposal.summary.trim()) // markdown to HTML
+          val html = validProposal.summaryAsHtml // markdown to HTML
           Ok(views.html.CallForPaper.previewProposal(html, Proposal.proposalForm.fill(validProposal)))
         }
       )

@@ -40,9 +40,7 @@
                             <tr>
                                 <td colspan="4">
                                     <div class="proposal">
-                                    @defining(Processor.process(proposal.summary)) { htmlSummary =>
-                                        @Html(htmlSummary)
-                                    }
+                                        @Html(proposal.summaryAsHtml)
                                     </div>
                                 </td>
                             </tr>

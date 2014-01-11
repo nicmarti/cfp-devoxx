@@ -65,7 +65,7 @@ GET     /cfpadmin/leaderboard                       controllers.CFPAdmin.leaderB
 GET     /cfpadmin/myvotes                           controllers.CFPAdmin.allMyVotes
 GET     /cfpadmin/search                            controllers.CFPAdmin.search(q:String)
 GET     /cfpadmin/allvotes                          controllers.CFPAdmin.allVotes
-
+GET     /cfpadmin/allSponsorTalks                   controllers.CFPAdmin.allSponsorTalks
 
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.ico")
 

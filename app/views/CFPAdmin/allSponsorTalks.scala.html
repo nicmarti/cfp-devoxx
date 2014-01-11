@@ -1,0 +1,31 @@
+@(proposals: List[Proposal])(implicit lang: Lang, flash: Flash, uuid: String, req: RequestHeader)
+
+@main("All sponsors's talks") {
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="icon-bar-chart"></i> Proposals from Sponsor or Exhibitor</h1>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                @proposals.map { proposal =>
+                    <h3>@proposal.title</h3>
+                    <h4>@Messages(proposal.track.label) - @Messages(proposal.talkType.id)</h4>
+                    <p><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a> </p>
+                    @tags.renderGravatar(proposal.mainSpeaker)
+                    @proposal.secondarySpeaker.map { sc =>
+                     @tags.renderGravatar(sc)
+                    }
+                    @proposal.otherSpeakers.map { s =>
+                     @tags.renderGravatar(s)
+                    }
+
+                    <blockquote>@proposal.summary</blockquote>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

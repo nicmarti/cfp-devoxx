@@ -80,6 +80,9 @@ object ProposalState {
   val allAsCode = all.map(_.code)
 }
 
+
+import com.github.rjeschke.txtmark._
+
 // A proposal
 case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
@@ -88,6 +91,10 @@ case class Proposal(id: String, event: String, lang: String, title: String,
 
   val allSpeakerUUIDs:List[String]={
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
+  }
+
+  val summaryAsHtml:String={
+    Processor.process(StringUtils.trimToEmpty(this.summary).trim())
   }
 }
 
@@ -462,5 +469,24 @@ object Proposal {
     } else {
       proposal
     }
+  }
+
+  /**
+   * Returns all Proposals with sponsorTalk=true, whatever is the current status.
+   */
+  def allSponsorsTalk():List[Proposal]={
+    val allTalks = allProposals().filter(_.sponsorTalk)
+    allTalks.map{proposal=>
+      val proposalState = findProposalState(proposal.id)
+      proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
+    }.filterNot(_.state==ProposalState.DELETED).filterNot(_.state==ProposalState.DECLINED)
+  }
+
+  def allProposals(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      client.hvals("Proposals").map {
+        json =>
+          Json.parse(json).as[Proposal]
+      }
   }
 }
