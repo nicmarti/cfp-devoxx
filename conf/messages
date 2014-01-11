@@ -108,7 +108,7 @@ web.label=Web, HTML5
 mobile.label=Mobile
 cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agility, DevOps
-lgaltern.label=Alternate languages
+lg_alter.label=Alternate languages
 startup.label=Startups & innovation
 future.label=Future<Devoxx>
 

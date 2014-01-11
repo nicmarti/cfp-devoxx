@@ -181,7 +181,7 @@ web.label=Web, HTML5
 mobile.label=Mobile
 cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agilité, DevOps
-lgaltern.label=Langages alternatifs
+lg_alter.label=Langages alternatifs
 startup.label=Startup & Innovation
 future.label=Future<Devoxx>
 
