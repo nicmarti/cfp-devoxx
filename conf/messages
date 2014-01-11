@@ -109,6 +109,7 @@ mobile.label=Mobile
 cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agility, DevOps
 lg_alter.label=Alternate languages
+lgaltern.label=Alternate languages
 startup.label=Startups & innovation
 future.label=Future<Devoxx>
 

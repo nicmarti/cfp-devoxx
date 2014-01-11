@@ -182,10 +182,9 @@ mobile.label=Mobile
 cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agilité, DevOps
 lg_alter.label=Langages alternatifs
+lgaltern.label=Langages alternatifs
 startup.label=Startup & Innovation
 future.label=Future<Devoxx>
-
-
 
 # Confirm import
 confirm.import.title=Créer votre profil de présentateur Devoxx France
