@@ -1,4 +1,4 @@
-@(proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)])(implicit flash: Flash, lang: Lang, uuid: String, req:RequestHeader)
+@(proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewer:Option[Proposal])(implicit flash: Flash, lang: Lang, uuid: String, req:RequestHeader)
 
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -51,10 +51,16 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <a class="btn btn-primary" accesskey="n" href="@routes.CFPAdmin.index()">
-                        Continue and evaluate the next talk</a>
-                    <a class="btn btn-warning" accesskey="n" href="@routes.CFPAdmin.openForReview(proposal.id)">
+                    <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon-backward"></i>
                         Review or change your vote</a>
+                    <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()"><i class="icon-home"></i> Go back to home</a>
+
+                @nextToBeReviewer.map{nextProposal=>
+                    <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)"><i class="icon-forward"></i> Continue and evaluate next talk</a>
+
+                }.getOrElse{
+                    <a class="btn btn-default" href="@routes.CFPAdmin.index()">No more proposal to be reviewed</a>
+                }
                 </div>
             </div>
         </div>

@@ -79,7 +79,10 @@ object CFPAdmin extends Controller with Secured {
           val countVotes = Review.totalVoteFor(proposalId)
           val allVotes = Review.allVotesFor(proposalId)
 
-          Ok(views.html.CFPAdmin.showVotesForProposal(proposal, score, countVotesCast, countVotes, allVotes))
+          // The next proposal I should review
+          val nextToBeReviewed = Review.allProposalsNotReviewed(uuid).headOption
+
+          Ok(views.html.CFPAdmin.showVotesForProposal(proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewed))
         }
         case None => NotFound("Proposal not found").as("text/html")
       }
