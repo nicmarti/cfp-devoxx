@@ -96,11 +96,12 @@ object CronTask {
     if(Play.isDev){
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexSpeaker())
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexProposal())
-      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexEvent())
+      // Do not index event for the time being
+      // Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexEvent())
     }else{
       Akka.system.scheduler.schedule(1 minute, 1 hour, ElasticSearchActor.masterActor, DoIndexSpeaker())
       Akka.system.scheduler.schedule(2 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexProposal())
-      Akka.system.scheduler.schedule(3 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexEvent())
+      //Akka.system.scheduler.schedule(3 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexEvent())
     }
   }
 
