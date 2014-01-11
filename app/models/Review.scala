@@ -137,7 +137,8 @@ object Review {
 
   def allProposalsAndReviews: List[VotesPerProposal] = Redis.pool.withClient {
     implicit client =>
-      val totalPerProposal = client.hkeys("Proposals").toList.map {
+      val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
+      val totalPerProposal = onlyValidProposalIDs.toList.map {
         proposalId =>
           (proposalId, client.scard(s"Proposals:Reviewed:ByProposal:${proposalId}"))
       }

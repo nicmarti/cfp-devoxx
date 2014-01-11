@@ -369,9 +369,16 @@ object Proposal {
     }
   }
 
-  def countAll(): Long = Redis.pool.withClient {
+  def allProposalIDsNotDeleted:Set[String]=Redis.pool.withClient {
     implicit client =>
-      client.hlen("Proposals")
+      val allProposalIDs = client.hkeys("Proposals")
+      val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDDeleted)
+      onlyValidProposalIDs
+  }
+
+  def countAll() = {
+    allProposalIDsNotDeleted.size
   }
 
   def allDrafts(): List[Proposal] = Redis.pool.withClient {

@@ -9,38 +9,33 @@
             </div>
 
             <div class="panel-body">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <h1>@totalSpeakers</h1>
                     <small><i class="icon-user"></i> speakers</small>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <h1>@totalProposals</h1>
                     <small><i class="icon-book"></i> proposals</small>
                 </div>
 
-                <div class="col-md-2">
-                    <h1>@totalByCategories.map(_._2).sum</h1>
-                    <small><i class="icon-envelope"></i> with status submitted</small>
-                </div>
-
-                <div class="col-md-2">
-                    <h1>@totalReviews</h1>
-                    <small><i class="icon-camera-retro"></i> reviews</small>
-                </div>
-
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <h1>@totalVotes</h1>
-                    <small><i class="icon-check-sign"></i> proposals with vote</small>
+                    <small><i class="icon-eye-open"></i> proposals with vote</small>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <h1>@totalNoVotes</h1>
                     <small><i class="icon-eye-close"></i> proposals with no vote</small>
                 </div>
 
+                <div class="col-md-3">
+                    <h1>@totalReviews</h1>
+                    <small><i class="icon-camera-retro"></i> reviews</small>
+                </div>
+
                 @mostVoted.map{mv=>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <h3><a href="@routes.CFPAdmin.showVotesForProposal(mv._1)">@mv._1</a></h3>
                     <small><i class="icon-heart"></i> most voted with @mv._2 reviews</small>
                 </div>
