@@ -1,4 +1,4 @@
-@(allVotes:Set[(String,Option[Double])])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(allVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("All my votes") {
 <div class="row">
@@ -10,7 +10,7 @@
 
             <div class="panel-body">
                 <div class="col-md-12">
-                    <h3>Your personnal leaderboard</h3>
+                    <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
                     You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
                     @defining(allVotes.filter(_._2.isDefined).map(_._2.get)){allScores=>
                         Sum of all your points: @Math.round(allScores.sum)<br>
@@ -19,10 +19,24 @@
 
                 </div>
 
-                <div class="col-md-6">
-                    <h4>Proposals for which you voted</h4>
+                <div class="col-md-12">
+                    <h3><i class="icon-bar-chart"></i> Proposals for which you voted</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Score</th>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Track</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
                     @allVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map{case(proposalId, maybeVote)=>
                         @defining(Math.round(maybeVote.get)){score=>
+                            <td>
+                                <small>
                             @if(score>6){
                                 <span class="label label-success">@score</span>
                             }
@@ -35,12 +49,26 @@
                             @if(score == 0) {
                                 <span class="label label-default">@score</span>
                             }
+                                   </small>
+                            </td>
                         }
-                        <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a>
-                        <br>
-
-
+                            <td><a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a></td>
+                        @relatedProposals.get(proposalId).map{proposal=>
+                          <td>
+                              <small>@proposal.title</small>
+                          </td>
+                          <td>
+                              <small>@Messages(proposal.talkType.id)</small>
+                          </td>
+                          <td>
+                              <small>@Messages(proposal.track.label)</small>
+                          </td>
+                        }
+                        </tr>
                     }
+                        </tbody>
+                    </table>
+
                 </div>
                 <div class="col-md-6">
                     @if(allVotes.filter(_._2.isEmpty).nonEmpty){

@@ -497,11 +497,27 @@ object Proposal {
     }.filterNot(_.state==ProposalState.DELETED).filterNot(_.state==ProposalState.DECLINED)
   }
 
+  // This is a slow operation
   def allProposals(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       client.hvals("Proposals").map {
         json =>
           Json.parse(json).as[Proposal]
       }
+  }
+
+  // This code is a bit complex. It's an optimized version that loads from Redis
+  // a set of Proposal. It returns only valid proposal, successfully loaded.
+  def loadAndParseProposals(proposalIDs: Set[String]): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val listOfProposals = proposalIDs.toList
+      val proposals = client.hmget("Proposals", listOfProposals).map {
+        json: String =>
+          Json.parse(json).asOpt[Proposal]
+      }
+      // zipAll is used to merge the list of proposals with the list of parsed/loaded Proposal
+      // If a proposal was not found, the list "proposals" contains a None.
+      // We then dorp the empty Proposal, so that we keep only the ones that we could load
+      listOfProposals.zipAll(proposals, "?", None).filterNot(_._2.isEmpty).map(t => (t._1, t._2.get)).toMap
   }
 }
