@@ -49,41 +49,41 @@ object Review {
   def voteForProposal(proposalId: String, reviewerUUID: String, vote: Int) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
-      tx.sadd(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)
-      tx.sadd(s"Proposals:Reviewed:ByProposal:${proposalId}", reviewerUUID)
-      tx.zadd(s"Proposals:Votes:${proposalId}", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
-      tx.zadd(s"Proposals:Dates:${proposalId}", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
+      tx.sadd(s"Proposals:Reviewed:ByAuthor:$reviewerUUID", proposalId)
+      tx.sadd(s"Proposals:Reviewed:ByProposal:$proposalId", reviewerUUID)
+      tx.zadd(s"Proposals:Votes:$proposalId", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
+      tx.zadd(s"Proposals:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
       tx.exec()
-      Event.storeEvent(Event(proposalId, reviewerUUID, s"Voted ${vote}"))
+      Event.storeEvent(Event(proposalId, reviewerUUID, s"Voted $vote"))
   }
 
   def removeVoteForProposal(proposalId: String, reviewerUUID: String) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
-      tx.srem(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)
-      tx.srem(s"Proposals:Reviewed:ByProposal:${proposalId}", reviewerUUID)
-      tx.zrem(s"Proposals:Votes:${proposalId}", reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
-      tx.zrem(s"Proposals:Dates:${proposalId}", reviewerUUID + "__DEL")
+      tx.srem(s"Proposals:Reviewed:ByAuthor:$reviewerUUID", proposalId)
+      tx.srem(s"Proposals:Reviewed:ByProposal:$proposalId", reviewerUUID)
+      tx.zrem(s"Proposals:Votes:$proposalId", reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
+      tx.zrem(s"Proposals:Dates:$proposalId", reviewerUUID + "__DEL")
       tx.exec()
       Event.storeEvent(Event(proposalId, reviewerUUID, s"Removed its vote on this talk"))
   }
 
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:${reviewerUUID}").toSet
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:$reviewerUUID").toSet
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
   def deleteVoteForProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
-      val allAuthors = client.smembers(s"Proposals:Reviewed:ByProposal:${proposalId}")
+      val allAuthors = client.smembers(s"Proposals:Reviewed:ByProposal:$proposalId")
       allAuthors.foreach {
         reviewerUUID: String =>
-          client.srem(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)
+          client.srem(s"Proposals:Reviewed:ByAuthor:$reviewerUUID", proposalId)
       }
-      client.del(s"Proposals:Reviewed:ByProposal:${proposalId}")
-      client.del(s"Proposals:Votes:${proposalId}")
-      client.del(s"Proposals:Dates:${proposalId}")
+      client.del(s"Proposals:Reviewed:ByProposal:$proposalId")
+      client.del(s"Proposals:Votes:$proposalId")
+      client.del(s"Proposals:Dates:$proposalId")
   }
 
   val ReviewerAndVote = "(\\w+)__(\\d+)".r
@@ -97,7 +97,7 @@ object Review {
     //      3) "0867c4e2182ef84e2dfcd412e33e01a9bc98dac2__8"
     //      4) "1386781873312"
 
-      val listOfReviewsAndVotes = client.zrevrangeByScoreWithScores(s"Proposals:Dates:${proposalId}", "+inf", "-inf")
+      val listOfReviewsAndVotes = client.zrevrangeByScoreWithScores(s"Proposals:Dates:$proposalId", "+inf", "-inf")
       val history: List[Review] = listOfReviewsAndVotes.flatMap {
         tuple =>
           val reviewerAndVote = tuple._1
@@ -113,24 +113,24 @@ object Review {
 
   def currentScore(proposalId: String): Int = Redis.pool.withClient {
     implicit client =>
-      val allScores = client.zrevrangeByScoreWithScores(s"Proposals:Votes:${proposalId}", 10, 0).toList
+      val allScores = client.zrevrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 10, 0).toList
       allScores.foldRight(0)((scoreAndReview, accumulated: Int) => accumulated + scoreAndReview._2.toInt)
   }
 
   def totalVoteFor(proposalId: String): Long = Redis.pool.withClient {
     implicit client =>
-      client.zcount(s"Proposals:Votes:${proposalId}", 0, 10) // how many votes between 0 and 10 ?
+      client.zcount(s"Proposals:Votes:$proposalId", 0, 10) // how many votes between 0 and 10 ?
   }
 
   // If we remove those who voted "0" for a talk, how many votes do we have?
   def totalVoteCastFor(proposalId: String): Long = Redis.pool.withClient {
     implicit client =>
-      client.zcount(s"Proposals:Votes:${proposalId}", 1, 10)
+      client.zcount(s"Proposals:Votes:$proposalId", 1, 10)
   }
 
   def allVotesFor(proposalId: String): List[(String, Double)] = Redis.pool.withClient {
     implicit client =>
-      client.zrevrangeByScoreWithScores(s"Proposals:Votes:${proposalId}", 10, 0).toList
+      client.zrevrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 10, 0).toList
   }
 
   type VotesPerProposal = (String, Long)
@@ -140,7 +140,7 @@ object Review {
       val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
       val totalPerProposal = onlyValidProposalIDs.toList.map {
         proposalId =>
-          (proposalId, client.scard(s"Proposals:Reviewed:ByProposal:${proposalId}"))
+          (proposalId, client.scard(s"Proposals:Reviewed:ByProposal:$proposalId"))
       }
       totalPerProposal
   }
@@ -185,7 +185,7 @@ object Review {
   def lastVoteByUserForOneProposal(reviewerUUID: String, proposalId: String): Option[Review] = Redis.pool.withClient {
     implicit client =>
     // If I voted for this proposal - O(1) very fast access
-      if (client.sismember(s"Proposals:Reviewed:ByAuthor:${reviewerUUID}", proposalId)) {
+      if (client.sismember(s"Proposals:Reviewed:ByAuthor:$reviewerUUID", proposalId)) {
         // Then ok, load the vote... O(log(N)+M) with N: nb of votes and M the number returned (all...)
         // this method use Redis zrevrangeByScoreWithScores so the list is already sorted
         // from the most recent vote to the oldest vote for a proposal.
@@ -200,10 +200,11 @@ object Review {
     implicit client =>
       client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").flatMap {
         proposalId: String =>
-          val score = Option(client.zscore(s"Proposals:Votes:${proposalId}", reviewerUUID))
+          val score = Option(client.zscore(s"Proposals:Votes:$proposalId", reviewerUUID))
           score match {
-            case None => {
-              // Load the state only for the "strange" proposal
+            case None =>
+              // This talk was reviewed but has no votes
+              // This is normal if the talk was deleted.
               val state = Proposal.findProposalState(proposalId)
               state.flatMap {
                 case ProposalState.DRAFT => None
@@ -215,10 +216,8 @@ object Review {
                 case ProposalState.UNKNOWN => None
                 case other => Option((proposalId, None))
               }
-            }
-            case Some(_) => {
+            case Some(_) =>
               Option(proposalId, score.map(_.toDouble))
-            }
           }
       }
   }
