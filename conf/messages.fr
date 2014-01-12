@@ -286,6 +286,7 @@ admin.proposals.th.action=Action
 admin.proposals.todolist.title=TODO List
 admin.btn.leaderboard=Voir les stats
 admin.btn.myvotes=Vos votes
+admin.btn.sponsortalks=Talks sponsors
 admin.btn.speakers=Tous les speakers
 admin.btn.draft=Voir les DRAFT
 admin.btn.submitted=Voir les SUBMITTED
