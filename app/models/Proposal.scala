@@ -372,6 +372,11 @@ object Proposal {
     }
   }
 
+  def allProposalIDs:Set[String]=Redis.pool.withClient {
+    implicit client =>
+      client.hkeys("Proposals")
+  }
+
   def allProposalIDsNotDeleted:Set[String]=Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.hkeys("Proposals")

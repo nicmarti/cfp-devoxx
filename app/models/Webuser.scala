@@ -195,5 +195,10 @@ object Webuser {
   }
 
   val DEFAULT_LABEL = ("", play.api.i18n.Messages("noOther.speaker"))
+
+  def doesNotExist(uuid:String):Boolean = Redis.pool.withClient{
+    client=>
+      !client.exists("Webuser:UUID:"+uuid)
+  }
 }
 

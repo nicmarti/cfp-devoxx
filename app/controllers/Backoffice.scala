@@ -1,12 +1,15 @@
 package controllers
 
-import models.{Speaker, Event, Proposal, Webuser}
+import models._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import library.{DraftReminder, ZapActor}
 import library.search.{DoIndexProposal, DoIndexSpeaker, ElasticSearchActor}
+import library.search.DoIndexSpeaker
+import library.search.DoIndexProposal
+import library.DraftReminder
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -15,11 +18,13 @@ import library.search.{DoIndexProposal, DoIndexSpeaker, ElasticSearchActor}
  * Created: 02/12/2013 21:34
  */
 object Backoffice extends Controller with Secured {
+  // Returns all speakers
   def allSpeakers = IsMemberOf("admin") {
     implicit uuid => implicit request =>
       Ok(views.html.Backoffice.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
   }
 
+  // Add or remove the specified user from "cfp" security group
   def switchCFPAdmin(uuidSpeaker: String) = IsMemberOf("admin") {
     implicit uuid => implicit request =>
       if (Webuser.hasAccessToCFPAdmin(uuidSpeaker)) {
@@ -30,7 +35,8 @@ object Backoffice extends Controller with Secured {
       Redirect(routes.Backoffice.allSpeakers)
   }
 
-  def authenticateAs(uuidSpeaker:String)= IsMemberOf("admin") {
+  // Authenticate on CFP on behalf of specified user.
+  def authenticateAs(uuidSpeaker: String) = IsMemberOf("admin") {
     implicit uuid => implicit request =>
       Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
   }
@@ -103,11 +109,29 @@ object Backoffice extends Controller with Secured {
       }
   }
 
-  def testElasticSearch=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
+  def testElasticSearch = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
       ElasticSearchActor.masterActor ! DoIndexSpeaker()
       ElasticSearchActor.masterActor ! DoIndexProposal()
       Ok("Elasticsearch : index task started")
+  }
+
+  // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
+  def cleanUpVotesIfUserWasDeleted = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+
+      Proposal.allProposalIDs.foreach {
+        proposalID: String =>
+          Review.allVotesFor(proposalID).foreach {
+            case (reviewerUUID, _) => {
+              if (Webuser.doesNotExist(reviewerUUID)) {
+                println(s"Deleting vote on $proposalID for user $reviewerUUID")
+                Review.removeVoteForProposal(proposalID, reviewerUUID)
+              }
+            }
+          }
+      }
+      Ok("Done")
   }
 
 }
