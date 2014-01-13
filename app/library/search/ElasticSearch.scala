@@ -28,11 +28,7 @@ object ElasticSearch {
         response.status match {
           case 201 => Success(response.body)
           case 200 => Success(response.body)
-          case 400 => {
-            play.Logger.of("application.ElasticSearch").warn("Unable to search " + response.body)
-            Success("")
-          }
-          case other => Failure(new UnknownError("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+          case other => Failure(new RuntimeException("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }
@@ -44,11 +40,7 @@ object ElasticSearch {
       response =>
         response.status match {
           case 200 => Success(response.body)
-          case 400 => {
-            play.Logger.of("application.ElasticSearch").warn("Unable to search " + response.body)
-            Success("")
-          }
-          case other => Failure(new UnknownError("Unable to search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+          case other => Failure(new RuntimeException("Unable to search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }
@@ -60,11 +52,7 @@ object ElasticSearch {
       response =>
         response.status match {
           case 200 => Success(response.body)
-          case 400 => {
-            play.Logger.of("application.ElasticSearch").warn("Unable to search " + response.body)
-            Success("")
-          }
-          case other => Failure(new UnknownError("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+          case other => Failure(new RuntimeException("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }
