@@ -2,13 +2,22 @@
 
 @main("All votes") {
 <div class="row">
-    <div class="col-md-22">
+    <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title"><i class="icon-bar-chart"></i> All votes</h1>
             </div>
 
             <div class="panel-body">
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <div class="chart-container">
+                            <div id="chart_container">
+                                    <div id="y_axis"></div>
+                                    <div id="chart"></div>
+                            </div>
+                        </div>
+                    </div>
 
                 <div class="col-md-6">
                     <table class="table table-bordered table-striped table-hover table-condensed">
@@ -75,4 +84,50 @@
         </div>
     </div>
 </div>
+    <link type="text/css" rel="stylesheet" href="/assets/js/rick/rickshaw.min.css">
+    <script src="/assets/js/rick/d3.v3.js"></script>
+    <script src="/assets/js/rick/d3.layout.min.js"></script>
+    <script src="/assets/js/rick/rickshaw.min.js"></script>
+
+
+    <script>
+<!-- See http://code.shutterstock.com/rickshaw/ -->
+
+    var graph = new Rickshaw.Graph( {
+    	element: document.querySelector("#chart"),
+    	width: 800,
+    	height: 450,
+    	renderer: 'scatterplot',
+    	stroke: true,
+    	padding: { top: 0.05, left: 0.05, right: 0.05 },
+    	series: [ {
+            data:[ @allVotes.sortBy(_._2._2).map { case (proposalId, voteAndTotalVotes) =>
+               {  x: @voteAndTotalVotes._2, y: @Math.round(voteAndTotalVotes._1) }
+            }.mkString(", ")
+            ],
+    		color: 'steelblue'
+    	} ]
+    } );
+
+var x_axis = new Rickshaw.Graph.Axis.X( { graph: graph } );
+
+var y_axis = new Rickshaw.Graph.Axis.Y( {
+        graph: graph,
+        orientation: 'left',
+        tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+        element: document.getElementById('y_axis'),
+} );
+
+    graph.render();
+
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+	graph: graph,
+	formatter: function(series, x, y) {
+		var content =  y + ' pts for ' + x + ' votes';
+		return content;
+	}
+} );
+
+    </script>
+
 }
