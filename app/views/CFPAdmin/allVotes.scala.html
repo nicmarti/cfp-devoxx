@@ -90,8 +90,19 @@
     <script src="/assets/js/rick/rickshaw.min.js"></script>
 
 
-    <script>
-<!-- See http://code.shutterstock.com/rickshaw/ -->
+    <script type="text/javascript">
+
+    var devoxxSeries=[
+        @allVotes.sortBy(_._2._2).map{case(proposalId, voteAndTotalVotes) =>
+            {
+                name: '@proposalId',
+                data:[
+                   {  x: @voteAndTotalVotes._2, y: @Math.round(voteAndTotalVotes._1) }
+                ],
+        		color: 'steelblue'
+        	},
+        }
+    ];
 
     var graph = new Rickshaw.Graph( {
     	element: document.querySelector("#chart"),
@@ -100,14 +111,8 @@
     	renderer: 'scatterplot',
     	stroke: true,
     	padding: { top: 0.05, left: 0.05, right: 0.05 },
-    	series: [ {
-            data:[ @allVotes.sortBy(_._2._2).map { case (proposalId, voteAndTotalVotes) =>
-               {  x: @voteAndTotalVotes._2, y: @Math.round(voteAndTotalVotes._1) }
-            }.mkString(", ")
-            ],
-    		color: 'steelblue'
-    	} ]
-    } );
+    	series: devoxxSeries
+    });
 
 var x_axis = new Rickshaw.Graph.Axis.X( { graph: graph } );
 
@@ -123,7 +128,7 @@ var y_axis = new Rickshaw.Graph.Axis.Y( {
 var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 	graph: graph,
 	formatter: function(series, x, y) {
-		var content =  y + ' pts for ' + x + ' votes';
+		var content =  series.name + ' ' + y + ' pts for ' + x + ' votes';
 		return content;
 	}
 } );
