@@ -10,7 +10,9 @@
         @models.Proposal.ProposalIDRegExp.findAllIn(message).map{proposalIdRef=>
             <span class="msgSpeaker">@tags.linkToProposal(proposalIdRef)</span>
         }
-
+        @models.Proposal.HttpUrl.findAllIn(message).map{proposalIdRef=>
+            <span class="msgSpeaker">@tags.linkToProposal(proposalIdRef)</span>
+        }
         }
     </div>
 </div>
