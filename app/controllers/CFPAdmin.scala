@@ -239,7 +239,7 @@ object CFPAdmin extends Controller with Secured {
                   case "speakers" => {
                     val uuid = (source \ "uuid").as[String]
                     val name = (source \ "name").as[String]
-                    s"<i class='icon-user'></i> Speaker <a href='${routes.CallForPaper.showSpeaker(uuid)}'>$name</a>"
+                    s"<i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$name</a>"
                   }
                   case other => "Unknown"
                 }
@@ -260,6 +260,16 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allSponsorTalks(proposals))
   }
 
+  def showSpeakerAndTalks(uuidSpeaker: String) = IsMemberOf("cfp") {
+    implicit uuid => implicit request =>
+      Speaker.findByUUID(uuidSpeaker) match {
+        case Some(speaker) => {
+          val proposals = Proposal.allProposalsByAuthor(speaker.uuid)
+          Ok(views.html.CFPAdmin.showSpeakerAndTalks(speaker, proposals))
+        }
+        case None => NotFound("Speaker not found")
+      }
+  }
 }
 
 

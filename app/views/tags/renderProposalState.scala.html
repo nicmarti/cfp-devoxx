@@ -1,0 +1,7 @@
+@(state:ProposalState)
+
+@if(state==ProposalState.DELETED){
+    <i class="icon-trash"></i> @Messages(state.code)
+}else{
+    @Messages(state.code)
+}

@@ -401,11 +401,10 @@ object Proposal {
       loadProposalByIDs(proposalIDs, ProposalState.SUBMITTED)
   }
 
-  def allProposalsByAuthor(author: String): List[Proposal] = Redis.pool.withClient {
+  def allProposalsByAuthor(author: String): Map[String,Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:${author}")
-      client.hmget("Proposal", allProposalIDs)
-      Nil
+      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$author")
+      loadAndParseProposals(allProposalIDs)
   }
 
   def destroy(proposal: Proposal) = Redis.pool.withClient {
@@ -513,11 +512,13 @@ object Proposal {
       val listOfProposals = proposalIDs.toList
       val proposals = client.hmget("Proposals", listOfProposals).map {
         json: String =>
-          Json.parse(json).asOpt[Proposal]
+          Json.parse(json).asOpt[Proposal].map(p=> p.copy(state=findProposalState(p.id).getOrElse(p.state)))
       }
       // zipAll is used to merge the list of proposals with the list of parsed/loaded Proposal
       // If a proposal was not found, the list "proposals" contains a None.
       // We then dorp the empty Proposal, so that we keep only the ones that we could load
       listOfProposals.zipAll(proposals, "?", None).filterNot(_._2.isEmpty).map(t => (t._1, t._2.get)).toMap
   }
+
+
 }

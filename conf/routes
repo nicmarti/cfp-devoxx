@@ -37,7 +37,7 @@ GET     /cfp/proposal/undelete/:proposalId controllers.CallForPaper.undeleteProp
 GET     /cfp/proposal/submit/:proposalId controllers.CallForPaper.submitProposal(proposalId:String)
 GET     /cfp/comment/:proposalId         controllers.CallForPaper.showCommentForProposal(proposalId:String)
 POST    /cfp/comment/:proposalId         controllers.CallForPaper.sendMessageToComite(proposalId:String)
-GET     /cfp/speaker/:uuidSpeaker              controllers.CallForPaper.showSpeaker(uuidSpeaker:String)
+GET     /cfp/speaker/:uuidSpeaker        controllers.CallForPaper.showSpeaker(uuidSpeaker:String)
 
 # Password
 GET     /forget                     controllers.Authentication.forgetPassword
@@ -66,6 +66,7 @@ GET     /cfpadmin/myvotes                           controllers.CFPAdmin.allMyVo
 GET     /cfpadmin/search                            controllers.CFPAdmin.search(q:String)
 GET     /cfpadmin/allvotes                          controllers.CFPAdmin.allVotes
 GET     /cfpadmin/allSponsorTalks                   controllers.CFPAdmin.allSponsorTalks
+GET     /cfpadmin/speaker/:uuidSpeaker              controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
 
 GET     /favicon.ico                controllers.Assets.at(path="/public/images", file="favicon.ico")
 
