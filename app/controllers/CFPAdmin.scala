@@ -202,10 +202,18 @@ object CFPAdmin extends Controller with Secured {
 
   // Pour l'instant, je n'ai pas envie que les membres du CFP
   // utilise la page de résultat pour décider s'ils votent ou non pour un talk
-  def allVotes = IsMemberOf("admin") {
+  def allVotes(sortBy:Option[String]) = IsMemberOf("admin") {
     implicit uuid => implicit request =>
-      val result = Review.allVotes()
-      Ok(views.html.CFPAdmin.allVotes(result))
+
+      val result = sortBy match {
+        case Some(s) if s=="-score"=>Review.allVotes().toList.sortBy(_._2._1).reverse
+        case Some(s) if s=="+score"=>Review.allVotes().toList.sortBy(_._2._1)
+        case Some(s) if s=="-vote"=>Review.allVotes().toList.sortBy(_._2._2).reverse
+        case Some(s) if s=="+vote"=>Review.allVotes().toList.sortBy(_._2._2)
+        case Some(s) if s=="id"=>Review.allVotes().toList.sortBy(_._1)
+        case None=>Review.allVotes().toList.sortBy(_._2._1).reverse
+      }
+      Ok(views.html.CFPAdmin.allVotes(result,sortBy.getOrElse("-score")))
   }
 
   def search(q: String) = IsMemberOf("cfp") {

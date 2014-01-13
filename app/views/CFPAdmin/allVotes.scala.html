@@ -1,4 +1,4 @@
-@(allVotes:Set[(String,models.Review.ScoreAndTotalVotes)])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(allVotes:List[(String,models.Review.ScoreAndTotalVotes)],sortBy:String)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("All votes") {
 <div class="row">
@@ -14,13 +14,34 @@
                     <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th>Score</th>
-                                <th>Votes</th>
-                                <th>Proposal ID</th>
+                                <th>
+                                    @if(sortBy=="+score"){
+                                        <a href="@routes.CFPAdmin.allVotes(Some("-score"))"><i class="icon-arrow-up"></i> Total Score</a>
+                                    }
+                                    @if(sortBy=="-score"){
+                                        <a href="@routes.CFPAdmin.allVotes(Some("+score"))"><i class="icon-arrow-down"></i> Total Score</a>
+                                    }
+                                    @if(sortBy!="+score" && sortBy!="-score"){
+                                        <a href="@routes.CFPAdmin.allVotes(Some("+score"))">Total Score</a>
+                                    }
+
+                                </th>
+                                <th>
+                                    @if(sortBy=="+vote"){
+                                        <a href="@routes.CFPAdmin.allVotes(Some("-vote"))"><i class="icon-arrow-up"></i> Nb of votes</a>
+                                    }
+                                    @if(sortBy=="-vote"){
+                                        <a href="@routes.CFPAdmin.allVotes(Some("+vote"))"><i class="icon-arrow-down"></i> Nb of votes</a>
+                                    }
+                                    @if(sortBy!="-vote" && sortBy!="+vote"){
+                                        <a href="@routes.CFPAdmin.allVotes(Some("+vote"))">Nb of votes</a>
+                                    }
+                                </th>
+                                <th><a href="@routes.CFPAdmin.allVotes(Some("id"))">Proposal ID</a></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @allVotes.toList.sortBy(_._2).reverse.map { case (proposalId, voteAndTotalVotes) =>
+                            @allVotes.map { case (proposalId, voteAndTotalVotes) =>
                                 <tr>
                                     @defining(Math.round(voteAndTotalVotes._1)) { score =>
                                         <td>

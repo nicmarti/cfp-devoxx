@@ -317,6 +317,7 @@ admin.sp.committee_speaker=Entre le speaker et le comité
 admin.btn.sendMessage=Envoyer votre message
 admin.sp.internal=Discussions internes et privées
 admin.sp.deleteMyVote=Annuler mon vote
+admin.btn.allvotes=Tous les votes
 
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
 admin.draft.warning=Attention

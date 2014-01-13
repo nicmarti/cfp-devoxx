@@ -64,7 +64,7 @@ GET     /cfpadmin/proposal/:proposalId/score        controllers.CFPAdmin.showVot
 GET     /cfpadmin/leaderboard                       controllers.CFPAdmin.leaderBoard
 GET     /cfpadmin/myvotes                           controllers.CFPAdmin.allMyVotes
 GET     /cfpadmin/search                            controllers.CFPAdmin.search(q:String)
-GET     /cfpadmin/allvotes                          controllers.CFPAdmin.allVotes
+GET     /cfpadmin/allvotes                          controllers.CFPAdmin.allVotes(sortBy:Option[String])
 GET     /cfpadmin/allSponsorTalks                   controllers.CFPAdmin.allSponsorTalks
 GET     /cfpadmin/speaker/:uuidSpeaker              controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
 
