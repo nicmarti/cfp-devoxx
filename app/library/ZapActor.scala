@@ -82,7 +82,7 @@ class ZapActor extends Actor {
 
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${} ${proposal.title}"))
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.title}"))
       Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg)
     }
   }
