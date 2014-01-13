@@ -22,36 +22,48 @@ object ElasticSearch {
   val host = Play.current.configuration.getString("elasticsearch.host").getOrElse("localhost:9200")
 
   def index(index: String, json: String) = {
-    val futureResponse = WS.url(host+ "/" + index + "?ttl=1d").put(json)
+    val futureResponse = WS.url(host + "/" + index + "?ttl=1d").put(json)
     futureResponse.map {
       response =>
         response.status match {
           case 201 => Success(response.body)
           case 200 => Success(response.body)
+          case 400 => {
+            play.Logger.of("application.ElasticSearch").warn("Unable to search " + response.body)
+            Success("")
+          }
           case other => Failure(new UnknownError("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }
 
-  def doSearch(query: String):Future[Try[String]] = {
-     val serviceParams = Seq(("q", query))
-     val futureResponse = WS.url(host + "/_search").withQueryString(serviceParams: _*).get()
-     futureResponse.map {
-       response =>
-         response.status match {
-           case 200 =>  Success(response.body)
-           case other => Failure(new UnknownError("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
-         }
-     }
-   }
-
-  def doSearch(index: String, query: String) = {
+  def doSearch(query: String): Future[Try[String]] = {
     val serviceParams = Seq(("q", query))
-    val futureResponse = WS.url("http://localhost:9200/" + index + "/_search").withQueryString(serviceParams: _*).get()
+    val futureResponse = WS.url(host + "/_search").withQueryString(serviceParams: _*).get()
     futureResponse.map {
       response =>
         response.status match {
           case 200 => Success(response.body)
+          case 400 => {
+            play.Logger.of("application.ElasticSearch").warn("Unable to search " + response.body)
+            Success("")
+          }
+          case other => Failure(new UnknownError("Unable to search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+  }
+
+  def doSearch(index: String, query: String) = {
+    val serviceParams = Seq(("q", query))
+    val futureResponse = WS.url(host + "/" + index + "/_search").withQueryString(serviceParams: _*).get()
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 200 => Success(response.body)
+          case 400 => {
+            play.Logger.of("application.ElasticSearch").warn("Unable to search " + response.body)
+            Success("")
+          }
           case other => Failure(new UnknownError("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
