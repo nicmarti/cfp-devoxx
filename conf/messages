@@ -288,3 +288,6 @@ admin.sp.internal=Private internal discussions
 admin.sp.deleteMyVote=Delete my vote
 
 speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.
+admin.draft.warning=Warning
+admin.draft.warning2=This proposal state is not SUBMITTED, thus you cannot vote this talk.
+admin.draft.warning3=Current proposal state :

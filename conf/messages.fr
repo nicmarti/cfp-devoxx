@@ -319,3 +319,6 @@ admin.sp.internal=Discussions internes et privées
 admin.sp.deleteMyVote=Annuler mon vote
 
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
+admin.draft.warning=Attention
+admin.draft.warning2=Cette proposition n''est pas à l''état SUBMITTED. Vous ne pouvez pas voter.
+admin.draft.warning3=Etat actuel de cette proposition :
