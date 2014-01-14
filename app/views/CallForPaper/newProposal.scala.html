@@ -29,7 +29,7 @@
                 <input type="hidden" name="id" value="@newProposal("id").value">
                 @helper.inputText(newProposal("title"), 'class->"form-control")
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->6,  'class->"form-control")
-                <i class="icon-text-width"></i> : <span id="charsremain"></span>
+                <i class="icon-text-width"></i> : <span id="charsremain"></span> <small>@Messages("newProposal.maxLength")</small>
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
                 @helper.select(field = newProposal("lang"), options=Proposal.langs,  'class->"form-control")

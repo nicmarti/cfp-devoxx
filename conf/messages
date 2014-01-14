@@ -292,3 +292,6 @@ speaker.other.error=You cannot change the speaker''s list if you are not one of 
 admin.draft.warning=Warning
 admin.draft.warning2=This proposal state is not SUBMITTED, thus you cannot vote this talk.
 admin.draft.warning3=Current proposal state :
+
+newProposal.maxLength=Max size is 600 characters. This abstract length is restricted, in order to fit on the printed program.
+preview.txt=Preview Conference guide (sample page)

@@ -323,3 +323,6 @@ speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lor
 admin.draft.warning=Attention
 admin.draft.warning2=Cette proposition n''est pas à l''état SUBMITTED. Vous ne pouvez pas voter.
 admin.draft.warning3=Etat actuel de cette proposition :
+
+newProposal.maxLength=Maximum 600 caractères. Ce texte sera édité dans le programme papier, la longueur de votre texte doit rester limitée.
+preview.txt=Aperçu de votre présentation dans le programme papier
