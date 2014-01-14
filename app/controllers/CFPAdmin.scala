@@ -4,9 +4,7 @@ import play.api.mvc._
 import models._
 import play.api.data._
 import play.api.data.Forms._
-import library.ZapActor
-import library.SendMessageInternal
-import library.SendMessageToSpeaker
+import library.{Benchmark, ZapActor, SendMessageInternal, SendMessageToSpeaker}
 import library.search.ElasticSearch
 import play.api.Routes
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -169,17 +167,17 @@ object CFPAdmin extends Controller with Secured {
 
   def leaderBoard = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
-      val totalSpeakers = Speaker.countAll()
-      val totalProposals = Proposal.countAll()
-      val totalVotes = Review.countAll()
-      val totalWithVotes = Review.countWithVotes()
-      val totalNoVotes = Review.countWithNoVotes()
-      val maybeMostVoted = Review.mostReviewed()
-      val bestReviewer = Review.bestReviewer()
-      val worstReviewer = Review.worstReviewer()
-      val totalByCategories = Proposal.totalSubmittedByTrack()
-      val totalByType = Proposal.totalSubmittedByType()
-      val devoxx2013=Proposal.getDevoxx2013Total()
+      val totalSpeakers = Benchmark.measure(() => Speaker.countAll() , "count all speakers")
+      val totalProposals = Benchmark.measure(() =>Proposal.countAll(), "count all proposals")
+      val totalVotes = Benchmark.measure(() =>Review.countAll(), "***** count all reviews")
+      val totalWithVotes =  Benchmark.measure(() =>Review.countWithVotes(), "count all review with votes")
+      val totalNoVotes =  Benchmark.measure(() =>Review.countWithNoVotes(), "count all review with no votes")
+      val maybeMostVoted = Benchmark.measure(() =>Review.mostReviewed(), "most reviewer")
+      val bestReviewer = Benchmark.measure(() =>Review.bestReviewer(), "best reviewer")
+      val worstReviewer = Benchmark.measure(() =>Review.worstReviewer(), "lanterne rouge")
+      val totalByCategories = Benchmark.measure(()=>Proposal.totalSubmittedByTrack(), "total submitted by track")
+      val totalByType = Benchmark.measure(() =>Proposal.totalSubmittedByType(), "total submitted by type")
+      val devoxx2013=Benchmark.measure(() =>Proposal.getDevoxx2013Total(), "devoxx 2013 total")
 
       Ok(
         views.html.CFPAdmin.leaderBoard(
@@ -187,7 +185,7 @@ object CFPAdmin extends Controller with Secured {
           totalNoVotes, maybeMostVoted, bestReviewer,worstReviewer, totalByCategories,
           totalByType,devoxx2013
         )
-      ).withHeaders("Cache-Control"->"public, must-revalidate, max-age=300")
+      ).withHeaders("Cache-Control"->"public, must-revalidate, max-age=600")
   }
 
   def allMyVotes = IsMemberOf("cfp") {

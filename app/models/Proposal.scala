@@ -1,7 +1,7 @@
 package models
 
 import play.api.libs.json.Json
-import library.{Dress, Redis}
+import library.{Benchmark, Dress, Redis}
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 import play.api.data._
@@ -212,27 +212,30 @@ object Proposal {
       p.sponsorTalk, p.track.id))
   }
 
-  private def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
+  def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
     client =>
       val proposalId = proposal.id
       // If we change a proposal to a new track, we need to update all the collections
       // On Redis, this is very fast (faster than creating a mongoDB index, by an order of x100)
 
-      // SISMember is a O(1) operation
-      val maybeExistingTrack = for (trackId <- Track.allIDs if client.sismember("Proposals:ByTrack:" + trackId, proposalId)) yield trackId
+      val maybeExistingTrackId = client.hget("Proposals:TrackFor",proposalId)
 
       // Do the operation if and only if we changed the Track
-      maybeExistingTrack.filterNot(_ == proposal.track.id).foreach {
+      maybeExistingTrackId.map {
         oldTrackId: String =>
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
+          client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
+
           // And we are able to track this event
-          Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id ${proposalId}  from ${oldTrackId} to ${proposal.track.id}"))
+          Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
       }
-      if (maybeExistingTrack.isEmpty) {
+      if (maybeExistingTrackId.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
-        Event.storeEvent(Event(proposal.id, uuid, s"Posted a new talk (${proposalId}) to ${proposal.track.id}"))
+        client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
+
+        Event.storeEvent(Event(proposal.id, uuid, s"Posted a new talk ($proposalId) to ${proposal.track.id}"))
       }
 
   }
@@ -415,6 +418,7 @@ object Proposal {
       tx.srem(s"Proposals:ByAuthor:${proposal.mainSpeaker}", proposal.id)
       tx.srem(s"Proposals:ByState:${proposal.state.code}", proposal.id)
       tx.srem(s"Proposals:ByTrack:${proposal.track.id}", proposal.id)
+      tx.hdel("Proposals:TrackForProposal", proposal.id)
       // 2nd speaker
       proposal.secondarySpeaker.map {
         secondarySpeaker =>
@@ -432,9 +436,9 @@ object Proposal {
 
   def findProposalTrack(proposalId: String): Option[Track] = Redis.pool.withClient {
     client =>
-      Track.all.find(track =>
-        client.sismember("Proposals:ByTrack:" + track.id, proposalId)
-      )
+      client.hget("Proposals:TrackForProposal", proposalId).flatMap{trackId=>
+        Track.all.find(_.id==trackId)
+      }
   }
 
   // How many talks submitted for Java? for Web?

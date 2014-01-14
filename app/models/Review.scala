@@ -23,9 +23,10 @@
 
 package models
 
-import library.Redis
+import library.{Benchmark, Redis}
 import org.joda.time.{Instant, DateTime}
-
+import play.api.cache.Cache
+import play.api.Play.current
 /**
  * When a CFP admin checks or perform a review on a talk, we store this event.
  *
@@ -137,12 +138,20 @@ object Review {
 
   def allProposalsAndReviews: List[VotesPerProposal] = Redis.pool.withClient {
     implicit client =>
-      val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
-      val totalPerProposal = onlyValidProposalIDs.toList.map {
-        proposalId =>
-          (proposalId, client.scard(s"Proposals:Reviewed:ByProposal:$proposalId"))
+
+    // Le souci est que Redis est heberge sur le touilleur express
+    // alors que l'application play2 tourne sur clever-cloud
+    // bref on se prend 6 sec ici car le montant transfere entre les 2 serveurs
+    // est important. Donc je met en cache en memoire locale temporairement la liste
+    // Bref ce Cache.getOrElse devra degager quand les 2 serveurs seront colocalises
+      Cache.getOrElse[List[VotesPerProposal]]("allProposalsAndReviews") {
+        val onlyValidProposalIDs = Benchmark.measure(() => Proposal.allProposalIDsNotDeleted, "all proposals not deleted")
+        val totalPerProposal = onlyValidProposalIDs.map {
+          proposalId =>
+            (proposalId, totalVoteCastFor(proposalId))
+        }
+        totalPerProposal.toList
       }
-      totalPerProposal
   }
 
   def countAll(): Long = {
@@ -175,10 +184,12 @@ object Review {
 
   def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
     implicit client =>
-      Webuser.allCFPAdmin().map {
-        webuser: Webuser =>
-          val uuid = webuser.uuid
-          (uuid, client.scard(s"Proposals:Reviewed:ByAuthor:$uuid"))
+      Cache.getOrElse[List[(String, Long)]]("totalReviewedByCFPUser") {
+        Webuser.allCFPAdmin().map {
+          webuser: Webuser =>
+            val uuid = webuser.uuid
+            (uuid, client.scard(s"Proposals:Reviewed:ByAuthor:$uuid"))
+        }
       }
   }
 
