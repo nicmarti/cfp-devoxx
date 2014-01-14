@@ -14,8 +14,8 @@ import models.{Proposal, Speaker, Event}
  */
 object ElasticSearchActor {
   val system = ActorSystem("ElasticSearch")
-  val masterActor = system.actorOf(Props[IndexMaster])
-  val reaperActor = system.actorOf(Props[Reaper])
+  val masterActor = system.actorOf(Props[IndexMaster], "masterActorIndex")
+  val reaperActor = system.actorOf(Props[Reaper], "reaperActor")
 }
 
 // Messages
