@@ -3,7 +3,7 @@ menu.home=Accueil
 email=Adresse email
 firstName=Prénom
 lastName=Nom de famille
-password=Mot de passe
+password=Code d''accès
 CallForPaper=Appel aux conférenciers
 btn.login=Continuer
 menu.register=S''inscrire
@@ -15,20 +15,20 @@ signup.long=S''inscrire en tant qu''orateur pour Devoxx France
 index.method1=S''authentifier
 # For single quote, you need to double escape
 # http://stackoverflow.com/questions/12070093/how-to-use-single-quotes-in-i18n-in-playframework2
-index.welcome=Déjà inscrit ? Authentifiez-vous avec votre mot de passe :
+index.welcome=Déjà inscrit ? Authentifiez-vous avec votre code d''accès :
 
 index.method2=Authentifiez-vous avec OpenId
 index.signupTitle=S''inscrire comme orateur
 index.signup2=Inscrivez-vous comme orateur à Devoxx France afin de proposer un ou plusieurs sujets :
-index.signup3=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et mémoriser encore un mot de passe :
+index.signup3=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et utiliser un code d''accès :
 index.signup.btn=S''inscrire
-index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser encore un mot de passe. Si votre profil n''existe pas, il sera automatiquement créé.
+index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser un code d''accès. Si votre profil n''existe pas, il sera automatiquement créé.
 company=Votre société
 bio=Présentez-vous en quelques lignes
 twitter=Votre pseudo Twitter
 blog=Votre blog ou votre site internet
-forget.password=Mot de passe oublié ?
-home.txt2=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et mémoriser encore un mot de passe.
+forget.password=Code d''accès oublié ?
+home.txt2=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et mémoriser encore un code d''accès.
 
 # Messages de play
 # --- Constraints
@@ -195,7 +195,7 @@ avatarUrl.defined=Votre photo (largeur recommandée 120px)
 # Sign-up
 created.title=Demande d''inscription enregistrée
 created.text1=Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.
-created.text2=Validez votre adresse pour terminer votre enregistrement, votre mot de passe vous sera donné lorsque vous validerez votre email.
+created.text2=Validez votre adresse pour terminer votre enregistrement, votre code d''accès vous sera donné lorsque vous validerez votre email.
 created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx France.
 
 # Prepare signup
