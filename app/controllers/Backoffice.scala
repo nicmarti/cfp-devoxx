@@ -125,7 +125,7 @@ object Backoffice extends Controller with Secured {
           Review.allVotesFor(proposalID).foreach {
             case (reviewerUUID, _) => {
               if (Webuser.doesNotExist(reviewerUUID)) {
-                println(s"Deleting vote on $proposalID for user $reviewerUUID")
+                play.Logger.of("application.Backoffice").debug(s"Deleting vote on $proposalID for user $reviewerUUID")
                 Review.removeVoteForProposal(proposalID, reviewerUUID)
               }
             }
@@ -134,6 +134,11 @@ object Backoffice extends Controller with Secured {
       Ok("Done")
   }
 
+  def updateRedis() = IsMemberOf("admin"){
+    implicit uuid => implicit request=>
+      // Placeholder that I use when I want to trigger special redis maintenance operation
+      Ok("Done ")
+  }
 }
 
 

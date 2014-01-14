@@ -81,6 +81,7 @@ GET     /admin/proposals/moveDraft      controllers.Backoffice.moveProposalToDra
 GET     /admin/draftReminder            controllers.Backoffice.sendReminderToSpeakersForDraft()
 POST    /admin/deleteSpeaker/:speakerUUIDToDelete      controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
 GET     /admin/cleanUpVotesIfUserWasDeleted controllers.Backoffice.cleanUpVotesIfUserWasDeleted
+GET     /admin/updateRedis              controllers.Backoffice.updateRedis()
 
 # Authenticate and admin as a regular user
 GET     /admin/authenticateAs/:uuid              controllers.Backoffice.authenticateAs(uuid:String)
