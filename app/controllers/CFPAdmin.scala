@@ -190,7 +190,6 @@ object CFPAdmin extends Controller with Secured {
 
   def allMyVotes = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
-
       val result = Review.allVotesFromUser(uuid)
       val allProposalIDs = result.map(_._1)
       val allProposals = Proposal.loadAndParseProposals(allProposalIDs)

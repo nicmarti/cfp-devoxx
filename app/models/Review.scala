@@ -27,6 +27,7 @@ import library.{Benchmark, Redis}
 import org.joda.time.{Instant, DateTime}
 import play.api.cache.Cache
 import play.api.Play.current
+
 /**
  * When a CFP admin checks or perform a review on a talk, we store this event.
  *
@@ -144,7 +145,7 @@ object Review {
     // bref on se prend 6 sec ici car le montant transfere entre les 2 serveurs
     // est important. Donc je met en cache en memoire locale temporairement la liste
     // Bref ce Cache.getOrElse devra degager quand les 2 serveurs seront colocalises
-      Cache.getOrElse[List[VotesPerProposal]]("allProposalsAndReviews",120) {
+      Cache.getOrElse[List[VotesPerProposal]]("allProposalsAndReviews", 120) {
         val onlyValidProposalIDs = Benchmark.measure(() => Proposal.allProposalIDsNotDeleted, "all proposals not deleted")
         val totalPerProposal = onlyValidProposalIDs.map {
           proposalId =>
@@ -184,7 +185,7 @@ object Review {
 
   def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
     implicit client =>
-      Cache.getOrElse[List[(String, Long)]]("totalReviewedByCFPUser",120) {
+      Cache.getOrElse[List[(String, Long)]]("totalReviewedByCFPUser", 120) {
         Webuser.allCFPAdmin().map {
           webuser: Webuser =>
             val uuid = webuser.uuid
@@ -209,42 +210,51 @@ object Review {
 
   def allVotesFromUser(reviewerUUID: String): Set[(String, Option[Double])] = Redis.pool.withClient {
     implicit client =>
+      if (play.Logger.of("models.Review").isDebugEnabled) {
+        play.Logger.of("models.Review").debug(s"SMembers Proposals:Reviewed:ByAuthor:$reviewerUUID")
+      }
       client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").flatMap {
         proposalId: String =>
           val score = Option(client.zscore(s"Proposals:Votes:$proposalId", reviewerUUID))
           score match {
             case None =>
-              // This talk was reviewed but has no votes
-              // This is normal if the talk was deleted.
               val state = Proposal.findProposalState(proposalId)
               state.flatMap {
                 case ProposalState.DRAFT => None
                 case ProposalState.DECLINED => None
                 case ProposalState.DELETED => None
-                case ProposalState.ACCEPTED => None
-                case ProposalState.APPROVED => None
                 case ProposalState.REJECTED => None
                 case ProposalState.UNKNOWN => None
                 case other => Option((proposalId, None))
               }
             case Some(_) =>
-              Option(proposalId, score.map(_.toDouble))
+              val state = Proposal.findProposalState(proposalId)
+              state.flatMap {
+                case ProposalState.DRAFT => None
+                case ProposalState.DECLINED => None
+                case ProposalState.DELETED => None
+                case ProposalState.REJECTED => None
+                case ProposalState.UNKNOWN => None
+                case other =>
+                  Option((proposalId, score.map(_.toDouble)))
+              }
           }
       }
   }
 
-  type ScoreAndTotalVotes=(Double,Int)
+  type ScoreAndTotalVotes = (Double, Int)
 
-  def allVotes():Set[(String, ScoreAndTotalVotes)]=Redis.pool.withClient{
-    implicit client=>
+  def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
+    implicit client =>
       val allProposalsWithVotes = client.keys("Proposals:Votes:*").toSet
 
-      val allVotes = allProposalsWithVotes.map{ proposalKey=>
-        val allScores = client.zrangeByScoreWithScores(proposalKey,"0","10").map(_._2)
-        val total = allScores.sum
-        val nbrOfVotes = allScores.size
-        val proposalId=proposalKey.substring(proposalKey.lastIndexOf(":")+1)
-        (proposalId, (total,nbrOfVotes))
+      val allVotes = allProposalsWithVotes.map {
+        proposalKey =>
+          val allScores = client.zrangeByScoreWithScores(proposalKey, "0", "10").map(_._2)
+          val total = allScores.sum
+          val nbrOfVotes = allScores.size
+          val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
+          (proposalId, (total, nbrOfVotes))
       }
       allVotes
   }
