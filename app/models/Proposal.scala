@@ -99,6 +99,12 @@ case class Proposal(id: String, event: String, lang: String, title: String,
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
+
+  val privateMessageAsHtml:String={
+    val escapedHtml = HtmlFormat.escape(privateMessage).body // escape HTML code and JS
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
+    processedMarkdownTest
+  }
 }
 
 object Proposal {
@@ -111,8 +117,7 @@ object Proposal {
 
   val ProposalIDRegExp="([A-Z][A-Z][A-Z]-\\d\\d\\d)".r
 
-  val HttpUrl="(((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)/)".r
-
+  val HttpUrl="((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)".r
 
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
