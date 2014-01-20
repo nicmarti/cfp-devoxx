@@ -144,7 +144,7 @@ object Review {
     // bref on se prend 6 sec ici car le montant transfere entre les 2 serveurs
     // est important. Donc je met en cache en memoire locale temporairement la liste
     // Bref ce Cache.getOrElse devra degager quand les 2 serveurs seront colocalises
-      Cache.getOrElse[List[VotesPerProposal]]("allProposalsAndReviews") {
+      Cache.getOrElse[List[VotesPerProposal]]("allProposalsAndReviews",120) {
         val onlyValidProposalIDs = Benchmark.measure(() => Proposal.allProposalIDsNotDeleted, "all proposals not deleted")
         val totalPerProposal = onlyValidProposalIDs.map {
           proposalId =>
@@ -184,7 +184,7 @@ object Review {
 
   def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
     implicit client =>
-      Cache.getOrElse[List[(String, Long)]]("totalReviewedByCFPUser") {
+      Cache.getOrElse[List[(String, Long)]]("totalReviewedByCFPUser",120) {
         Webuser.allCFPAdmin().map {
           webuser: Webuser =>
             val uuid = webuser.uuid
