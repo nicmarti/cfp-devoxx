@@ -295,3 +295,4 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 600 characters. This abstract length is restricted, in order to fit on the printed program.
 preview.txt=Preview Conference guide (sample page)
+tags.renderComment.postedBy=Posted  by

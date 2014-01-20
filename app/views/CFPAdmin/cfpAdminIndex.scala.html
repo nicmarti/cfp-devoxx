@@ -120,7 +120,7 @@
                                     <small>@event.date.map(_.toString("dd/MM HH:mm"))</small>
                                 </td>
                                 <td class="text-center">
-                                @tags.renderGravatar(event.uuid)
+                                @tags.renderGravatar(event.uuid,showName = false)
                                 </td>
                                 <td class="text-center">
                                 @tags.renderObjRef(event.objRef)

@@ -19,6 +19,7 @@ object ApplicationBuild extends Build {
     , "commons-io" % "commons-io" % "2.4"
     , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
     , "com.typesafe.play" %% "play-cache" % "2.2.0"
+    ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
   )
 
   libraryDependencies ++= Seq(

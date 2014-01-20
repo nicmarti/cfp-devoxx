@@ -150,13 +150,13 @@
                             <td><a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
                             <td>
                                 <div style="max-width:114px">
-                                @tags.renderGravatar(prop.mainSpeaker)
+                                @tags.renderGravatar(prop.mainSpeaker,showName = false)
                                 @prop.secondarySpeaker.map{secondarySpeakerUUID=>
-                                    @tags.renderGravatar(secondarySpeakerUUID)
+                                    @tags.renderGravatar(secondarySpeakerUUID,showName = false)
                                 }
                                 @prop.otherSpeakers.map{listOfUUID=>
                                     @listOfUUID.split(",").map{suid=>
-                                        @tags.renderGravatar(suid)
+                                        @tags.renderGravatar(suid,showName = false)
                                     }
                                 }
                                 </div>

@@ -326,3 +326,4 @@ admin.draft.warning3=Etat actuel de cette proposition :
 
 newProposal.maxLength=Maximum 600 caractères. Ce texte sera édité dans le programme papier, la longueur de votre texte doit rester limitée.
 preview.txt=Aperçu de votre présentation dans le programme papier
+tags.renderComment.postedBy=Posté par

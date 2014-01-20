@@ -24,43 +24,23 @@
 package library
 
 import org.joda.time.{Period, PeriodType, DateTime}
-import org.joda.time.format.PeriodFormatterBuilder
+import org.joda.time.format.{PeriodFormat, PeriodFormatterBuilder}
+import org.ocpsoft.prettytime.PrettyTime
 
 /**
  * Small helper cause I did not want to add this code in template.
- * Author: nicolas
+ * See PrettyTime
+ *
+ * Author: @nmartignole
  * Created: 13/11/2013 16:30
  */
 object FormatDate {
 
-  val formatter = new PeriodFormatterBuilder()
-    .printZeroNever()
-    .appendYears()
-    .appendSuffix(" year", " years")
-    .appendSeparator(" and ")
-    .appendWeeks()
-    .appendSuffix(" week"," weeks")
-    .appendSeparator(" and ")
-    .appendDays()
-    .appendSuffix(" day", " days")
-    .appendSeparator(", ")
-    .appendHours()
-    .appendSuffix(" hour", " hours")
-    .appendSeparator(", ")
-    .appendMinutes()
-    .appendSuffix(" minute", " minutes")
-    .printZeroRarelyLast()
-    .appendSeparator(" and ")
-    .appendSeconds()
-    .appendSuffix(" second", " seconds")
-    .appendSuffix(" ago")
-    .toFormatter()
-
   def ellapsed(maybeEventDate: Option[DateTime]): String = {
     maybeEventDate.map {
       eventDate =>
-        val period: Period = new Period(eventDate, new DateTime(), PeriodType.yearWeekDayTime())
-        formatter.print(period)
+        val p:PrettyTime = new PrettyTime()
+        p.format(eventDate.toDate)
     }.getOrElse("Unknown")
   }
 }

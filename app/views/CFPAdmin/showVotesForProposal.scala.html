@@ -40,7 +40,7 @@
                 <div class="media">
                   @allVotes.sortBy(_._2).map { case (author, vote) =>
                     <div class="media-body">
-                        <span class="pull-left">@tags.renderGravatar(author)</span>&nbsp;voted @tags.renderVote(vote.toInt)
+                        <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;voted @tags.renderVote(vote.toInt)
                     </div>
                 }
                 </div>

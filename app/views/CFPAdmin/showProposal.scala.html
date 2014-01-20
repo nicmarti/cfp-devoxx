@@ -165,7 +165,6 @@
                     <h4><i class="icon-comments-alt"></i>  @Messages("admin.sp.committee_speaker")</h4>
                 </div>
                 <div class="panel-body">
-                    @proposal.allSpeakerUUIDs.map(tags.renderGravatar(_))
                 @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
                     @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
                     <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
