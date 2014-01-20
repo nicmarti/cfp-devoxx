@@ -12,9 +12,9 @@
                 <div class="col-md-12">
                     <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
                     You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
-                    @defining(allVotes.filter(_._2.isDefined).map(_._2.get)){allScores=>
+                    @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){allScores=>
                         Sum of all your points: @Math.round(allScores.sum)<br>
-                        Your average vote is @Math.round(allScores.sum/allScores.size)
+                        Your average vote is @BigDecimal(allScores.sum/allScores.size).round(new java.math.MathContext(3))
                     }
 
                 </div>
