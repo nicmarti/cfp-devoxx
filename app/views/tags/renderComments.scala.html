@@ -26,8 +26,8 @@
             @models.Proposal.ProposalIDRegExp.findAllIn(message).map { proposalIdRef =>
                 <span class="msgSpeaker media-object">@tags.linkToProposal(proposalIdRef)</span>
             }
-            @models.Proposal.HttpUrl.findAllIn(message).map { proposalIdRef =>
-                <span class="msgSpeaker media-object">@tags.linkToProposal(proposalIdRef)</span>
+            @models.Proposal.HttpUrl.findAllIn(message).map { test =>
+                <span class="msgSpeaker media-object"><a href="@test" target="_blank"><i class="icon-external-link"></i> @test</a></span>
             }
             }
         </div>
