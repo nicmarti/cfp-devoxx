@@ -185,7 +185,7 @@ object CFPAdmin extends Controller with Secured {
           totalNoVotes, maybeMostVoted, bestReviewer,worstReviewer, totalByCategories,
           totalByType,devoxx2013
         )
-      ).withHeaders("Cache-Control"->"public, must-revalidate, max-age=600")
+      )
   }
 
   def allMyVotes = IsMemberOf("cfp") {
