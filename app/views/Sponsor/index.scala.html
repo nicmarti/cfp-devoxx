@@ -57,6 +57,13 @@
                          <a href="@routes.Sponsor.index(Some("author"))">Speaker</a>
                         }
                         </th>
+                        <th>
+                        @if(sortBy == Some("date")) {
+                            Last modified <i class="icon-arrow-down"></i>
+                        } else {
+                            <a href="@routes.Sponsor.index(Some("date"))">Last modified</a>
+                        }
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,6 +84,9 @@
                         <td>
                             @tags.renderGravatar(proposal.mainSpeaker)
                             @proposal.secondarySpeaker.map(tags.renderGravatar(_))
+                        </td>
+                        <td>
+                        @Messages(proposal. )
                         </td>
                     </tr>
                 }
