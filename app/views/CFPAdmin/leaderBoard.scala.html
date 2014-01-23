@@ -81,12 +81,10 @@
                         <h3>Submitted by Type</h3>
                         @totalSubmittedByType.map { case (propType, total) =>
                                 @Messages(propType) : <span class="label label-warning">@total</span>
-                                submissions for <span class="label label-success">@devoxx2013.get(propType)
-                        </span> slots<br>
+
+                                submissions for <span class="label label-success">@devoxx2013.get(propType+".label")</span> slots<br>
                             }
-
                     </div>
-
                 </div>
             </div>
         </div>
