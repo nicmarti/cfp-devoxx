@@ -124,7 +124,6 @@ class ZapActor extends Actor {
   }
 
   def doComputeLeaderboard(){
-    println("doComputeLeaderboard")
     Leaderboard.computeStats()
   }
 
