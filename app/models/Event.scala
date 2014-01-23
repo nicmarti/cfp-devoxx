@@ -50,10 +50,12 @@ object Event {
 
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
-      val jsEvent = Json.stringify(Json.toJson(event))
+      val jsEvent = Json.stringify(Json.toJson(event.copy(date=Some(new DateTime()))))
       val tx=client.multi()
-      tx.zadd("Events:V2:", new Instant().getMillis, jsEvent)
+      val now = new Instant().getMillis
+      tx.zadd("Events:V2:", now, jsEvent)
       tx.sadd("Events:V2:"+event.objRef,jsEvent)
+      tx.lpush("Events:ByRef:"+event.objRef, now.toString)
       tx.exec()
   }
 
@@ -78,12 +80,16 @@ object Event {
 
   def loadEventsForObjRef(objRef:String):List[Event] = Redis.pool.withClient{
     client=>
-      implicit val ordering:Ordering[DateTime]=Ordering[DateTime]
-
       client.smembers(s"Events:V2:${objRef}").flatMap{json:String=>
         Json.parse(json).asOpt[Event]
-      }.toList.sortBy(_.date.get)
+      }.toList
   }
 
+  def getMostRecentDateFor(objRef:String):Option[DateTime]=Redis.pool.withClient{
+    client=>
+      client.lrange("Events:ByRef:"+objRef, 0, 0).headOption.map{s=>
+        new Instant().withMillis(s.toLong).toDateTime
+      }
 
+  }
 }

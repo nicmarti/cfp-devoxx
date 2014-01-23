@@ -1,6 +1,13 @@
-@(proposals:List[Proposal], sortBy:Option[String])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(proposals:List[Proposal])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("All submitted") {
+
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -11,58 +18,35 @@
             </div>
         </div>
     </div>
-    <div class="col-md-12">
+    <div class="col-lg-12">
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>All Proposals with status Submitted</h3>
         </div>
         <div class="panel-body">
             @if(proposals.nonEmpty){
-            <table class="table table-bordered table-strippted">
+            <table id="allProposals" class="table table-bordered table-strippted">
                 <thead>
                     <tr>
                         <th>
-                        @if(sortBy==Some("id")){
-                            Title <i class="icon-arrow-down"></i>
-                        }else{
-                            <a href="@routes.Sponsor.index(Some("id"))">Id</a>
-                        }
+                            Id
                         </th>
                         <th>
-                        @if(sortBy==Some("title")){
-                            Title <i class="icon-arrow-down"></i>
-                        }else{
-                            <a href="@routes.Sponsor.index(Some("title"))">Title</a>
-                        }
-
+                            Title
                         </th>
                         <th>
-                        @if(sortBy == Some("type")) {
-                            Talk Type <i class="icon-arrow-down"></i>
-                        } else {
-                            <a href="@routes.Sponsor.index(Some("type"))">Talk Type</a>
-                        }
+                            Abstract
                         </th>
                         <th>
-                        @if(sortBy == Some("track")) {
-                            Track <i class="icon-arrow-down"></i>
-                        } else {
-                            <a href="@routes.Sponsor.index(Some("track"))">Track</a>
-                        }
+                            Talk Type
+                        </th>
+                        <th>Track</th>
+                        <th>
+                            Speaker
                         </th>
                         <th>
-                        @if(sortBy == Some("author")) {
-                         Speaker <i class="icon-arrow-down"></i>
-                        } else {
-                         <a href="@routes.Sponsor.index(Some("author"))">Speaker</a>
-                        }
-                        </th>
-                        <th>
-                        @if(sortBy == Some("date")) {
-                            Last modified <i class="icon-arrow-down"></i>
-                        } else {
-                            <a href="@routes.Sponsor.index(Some("date"))">Last modified</a>
-                        }
+                            Last modified
                         </th>
                     </tr>
                 </thead>
@@ -76,6 +60,9 @@
                             <small>@proposal.title</small>
                         </td>
                         <td>
+                            <small>@Html(proposal.summaryAsHtml)</small>
+                        </td>
+                        <td>
                             @Messages(proposal.talkType.id)
                         </td>
                         <td>
@@ -86,8 +73,10 @@
                             @proposal.secondarySpeaker.map(tags.renderGravatar(_))
                         </td>
                         <td>
+                            @Event.getMostRecentDateFor(proposal.id).map(_.toString("dd/MM/yy HH:mm")).getOrElse("")
                         </td>
                     </tr>
+
                 }
                 </tbody>
             </table>
@@ -98,4 +87,10 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+$('#allProposals').dataTable();
+} );
+</script>
 }

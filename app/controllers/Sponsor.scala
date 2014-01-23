@@ -35,19 +35,11 @@ import models.Proposal
  */
 object Sponsor extends Controller with Secured {
 
-  def index(sortBy: Option[String]) = IsMemberOf(List("cfp", "sponsor", "admin")) {
+  def index() = IsMemberOf(List("cfp", "sponsor", "admin")) {
     implicit uuid =>
       implicit request =>
-
-        val proposals = sortBy match {
-          case None => Proposal.allSubmitted()
-          case Some("id") => Proposal.allSubmitted().sortBy(_.id)
-          case Some("track") => Proposal.allSubmitted().sortBy(_.track.id)
-          case Some("type") => Proposal.allSubmitted().sortBy(_.talkType.id)
-          case Some("author") => Proposal.allSubmitted().sortBy(_.mainSpeaker)
-          case other => Proposal.allSubmitted()
-        }
-        Ok(views.html.Sponsor.index(proposals, sortBy))
+        val proposals = Proposal.allSubmitted()
+        Ok(views.html.Sponsor.index(proposals))
   }
 
 }
