@@ -90,7 +90,10 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-$('#allProposals').dataTable();
+    $('#allProposals').dataTable({
+        "iDisplayLength": 25,
+        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+    });
 } );
 </script>
 }
