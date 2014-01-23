@@ -11,7 +11,6 @@ import mvc.Results._
 import play.api.UnexpectedException
 import Play.current
 import scala.concurrent.Future
-import scala.Some
 import play.api.libs.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.duration._
@@ -23,6 +22,7 @@ object Global extends GlobalSettings {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
       CronTask.draftReminder()
       CronTask.elasticSearch()
+      CronTask.doComputeLeaderboard()
     } else {
       play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
     }
@@ -70,7 +70,6 @@ object CronTask {
   // This can be achieved by adding the import clause 'import scala.language.postfixOps'
   import scala.language.postfixOps
 
-  val zapActor = Akka.system.actorOf(Props[ZapActor])
 
   // Send an email for each Proposal with status draft
   def draftReminder() = {
@@ -83,7 +82,7 @@ object CronTask {
         val interval = tomorrow.toInterval
         val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
         play.Logger.debug("CronTask : check for Draft proposals every " + everyX + " days and send an email in " + initialDelay.toHours + " hours")
-        Akka.system.scheduler.schedule(initialDelay, everyX days, zapActor, DraftReminder())
+        Akka.system.scheduler.schedule(initialDelay, everyX days, ZapActor.actor, DraftReminder())
       }
       case _ => {
         play.Logger.debug("CronTask : do not send reminder for draft")
@@ -102,6 +101,15 @@ object CronTask {
       Akka.system.scheduler.schedule(10 minute, 1 hour, ElasticSearchActor.masterActor, DoIndexSpeaker())
       Akka.system.scheduler.schedule(12 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexProposal())
       //Akka.system.scheduler.schedule(3 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexEvent())
+    }
+  }
+
+  def doComputeLeaderboard()={
+    // Create a cron task
+    if(Play.isDev){
+      Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, ComputeLeaderboard())
+    }else{
+      Akka.system.scheduler.schedule(5 minutes, 10 minutes, ZapActor.actor, ComputeLeaderboard())
     }
   }
 

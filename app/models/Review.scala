@@ -25,7 +25,6 @@ package models
 
 import library.{Benchmark, Redis}
 import org.joda.time.{Instant, DateTime}
-import play.api.cache.Cache
 import play.api.Play.current
 
 /**
@@ -139,20 +138,15 @@ object Review {
 
   def allProposalsAndReviews: List[VotesPerProposal] = Redis.pool.withClient {
     implicit client =>
-
-    // Le souci est que Redis est heberge sur le touilleur express
+    // Le souci est que Redis est hebergé sur le touilleur express
     // alors que l'application play2 tourne sur clever-cloud
-    // bref on se prend 6 sec ici car le montant transfere entre les 2 serveurs
-    // est important. Donc je met en cache en memoire locale temporairement la liste
-    // Bref ce Cache.getOrElse devra degager quand les 2 serveurs seront colocalises
-      Cache.getOrElse[List[VotesPerProposal]]("allProposalsAndReviews", 120) {
-        val onlyValidProposalIDs = Benchmark.measure(() => Proposal.allProposalIDsNotDeleted, "all proposals not deleted")
+    // bref on se prend 6 sec ici car le montant transfere entre les 2 serveurs est important
+        val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
         val totalPerProposal = onlyValidProposalIDs.map {
           proposalId =>
             (proposalId, totalVoteCastFor(proposalId))
         }
         totalPerProposal.toList
-      }
   }
 
   def countAll(): Long = {
@@ -185,12 +179,10 @@ object Review {
 
   def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
     implicit client =>
-      Cache.getOrElse[List[(String, Long)]]("totalReviewedByCFPUser", 120) {
         Webuser.allCFPAdmin().map {
           webuser: Webuser =>
             val uuid = webuser.uuid
             (uuid, client.scard(s"Proposals:Reviewed:ByAuthor:$uuid"))
-        }
       }
   }
 

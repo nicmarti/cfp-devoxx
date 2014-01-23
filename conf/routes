@@ -61,6 +61,7 @@ GET         /cfpadmin/proposal/:proposalId/vote                controllers.CFPAd
 GET         /cfpadmin/proposal/:proposalId/clearVote           controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
 GET         /cfpadmin/proposal/:proposalId/score               controllers.CFPAdmin.showVotesForProposal(proposalId:String)
 GET         /cfpadmin/leaderboard                              controllers.CFPAdmin.leaderBoard
+GET         /cfpadmin/leaderboard/compute                      controllers.CFPAdmin.doComputeLeaderBoard
 GET         /cfpadmin/myvotes                                  controllers.CFPAdmin.allMyVotes
 GET         /cfpadmin/search                                   controllers.CFPAdmin.search(q:String)
 GET         /cfpadmin/allvotes                                 controllers.CFPAdmin.allVotes(sortBy:Option[String])
@@ -82,7 +83,7 @@ POST        /admin/deleteSpeaker/:speakerUUIDToDelete          controllers.Backo
 GET         /admin/cleanUpVotesIfUserWasDeleted                controllers.Backoffice.cleanUpVotesIfUserWasDeleted
 GET         /admin/updateRedis                                 controllers.Backoffice.updateRedis()
 GET         /admin/pb                                          controllers.ProgramBuilder.index
-GET         /admin/pb/exportToCSV                                    controllers.ProgramBuilder.exportToCSV(sortBy:Option[String])
+GET         /admin/pb/exportToCSV                              controllers.ProgramBuilder.exportToCSV(sortBy:Option[String])
 
 # Authenticate and admin as a regular user
 GET         /admin/authenticateAs/:uuid                        controllers.Backoffice.authenticateAs(uuid:String)

@@ -1,84 +1,91 @@
-@(totalSpeakers: Long, totalProposals:Long, totalReviews:Long, totalVotes:Long, totalNoVotes:Long, mostVoted:Option[Review.VotesPerProposal],  bestReviewer:(String,Long), worstReviewer:(String,Long), totalByCategories:List[(Track, Int)], totalSubmittedByType:Map[ProposalType, Int], devoxx2013:Map[ProposalType, Int])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], worstReviewer: Option[(String, String)], totalByCategories: Map[String, Int], totalSubmittedByType: Map[String, Int], devoxx2013: Map[String, Int])(implicit lang: Lang, flash: Flash, uuid: String, req: RequestHeader)
 
 @main("Leaderboard") {
-<div class="row">
-    <div class="col-sm-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
-            </div>
-
-            <div class="panel-body">
-                <div class="col-md-3">
-                    <h1>@totalSpeakers</h1>
-                    <small><i class="icon-user"></i> speakers</small>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
                 </div>
 
-                <div class="col-md-3">
-                    <h1>@totalProposals</h1>
-                    <small><i class="icon-book"></i> proposals</small>
-                </div>
+                <div class="panel-body">
+                    <div class="col-md-3">
+                        <h1>@totalSpeakers</h1>
+                        <small><i class="icon-user"></i> speakers</small>
+                    </div>
 
-                <div class="col-md-3">
-                    <h1>@totalVotes</h1>
-                    <small><i class="icon-eye-open"></i> proposals with vote</small>
-                </div>
+                    <div class="col-md-3">
+                        <h1>@totalProposals</h1>
+                        <small><i class="icon-book"></i> proposals</small>
+                    </div>
 
-                <div class="col-md-3">
-                    <h1>@totalNoVotes</h1>
-                    <small><i class="icon-eye-close"></i> proposals with no vote (incl. Draft)</small>
-                </div>
+                    <div class="col-md-3">
+                        <h1>@totalVotes</h1>
+                        <small><i class="icon-eye-open"></i> proposals with vote</small>
+                    </div>
 
-                <div class="col-md-3">
-                    <h1>@totalReviews</h1>
-                    <small><i class="icon-camera-retro"></i> reviews</small>
-                </div>
+                    <div class="col-md-3">
+                        <h1>@totalNoVotes</h1>
+                        <small><i class="icon-eye-close"></i> proposals with no vote (incl. Draft)</small>
+                    </div>
 
-                @mostVoted.map{mv=>
-                <div class="col-md-3">
-                    <h3><a href="@routes.CFPAdmin.showVotesForProposal(mv._1)">@mv._1</a></h3>
-                    <small><i class="icon-heart"></i> most voted with @mv._2 reviews</small>
-                </div>
-                }
+                    <div class="col-md-3">
+                        <h1>@totalReviews</h1>
+                        <small><i class="icon-camera-retro"></i> reviews</small>
+                    </div>
 
-                <div class="col-md-3">
-                    <h3>Top Reviewer</h3>
-                    @tags.renderGravatar(bestReviewer._1)
-                    <small>@bestReviewer._2 talks reviewed.</small>
-                </div>
+                    @mostVoted.map { mv =>
+                        <div class="col-md-3">
+                            <h3><a href="@routes.CFPAdmin.showVotesForProposal(mv._1)">@mv._1</a></h3>
+                            <small><i class="icon-heart"></i> most voted with @mv._2 reviews</small>
+                        </div>
+                    }
 
-                <div class="col-md-3">
-                       <h3>Lanterne rouge</h3>
-                       @tags.renderGravatar(worstReviewer._1)
-                       <small>@worstReviewer._2 talk@if(worstReviewer._2>1){s} reviewed.</small>
-                   </div>
+                    <div class="col-md-3">
+                        <h3>Top Reviewer</h3>
+                        @bestReviewer.map { br =>
+                            @tags.renderGravatar(br._1)
+                            <small>@br._2 talks reviewed.</small>
+                        }
+                    </div>
 
-                <div class="clearfix"></div>
+                    <div class="col-md-3">
+                        <h3>Lanterne rouge</h3>
+                        @worstReviewer.map { wr =>
+                            @tags.renderGravatar(wr._1)
+                            <small>@wr._2 talk@if(wr._2.toInt > 1) {s} reviewed.</small>
+                        }
+                    </div>
 
-                <div class="col-md-6">
-                    <h3>Submitted by Track</h3>
-                    @defining(100/(totalByCategories.map(_._2).max)){ratio=>
-                        @totalByCategories.map{case(track,total)=>
-                        <span class="label label-info">@total</span> @Messages(track.label)
+                    <div class="clearfix"></div>
+
+                    <div class="col-md-6">
+                        <h3>Submitted by Track</h3>
+                        @defining(100/(totalByCategories.map(_._2).max)){ratio=>
+                            @totalByCategories.map{case(track,total)=>
+                            <span class="label label-info">@total</span> @Messages(track)
                             <div class="progress">
-                              <div class="progress-bar" role="progressbar" aria-valuenow="@(total*ratio)" aria-valuemin="0" aria-valuemax="100" style="width: @(ratio*total)%;">
-                                <span class="sr-only">@Messages(track.label)</span>
-                              </div>
+                                <div class="progress-bar" role="progressbar" aria-valuenow="@(total*ratio)" aria-valuemin="0" aria-valuemax="100" style="width: @(ratio*total)%;">
+                                    <span class="sr-only">@Messages(track)</span>
+                            </div>
                             </div>
 
+                            }
                         }
-                    }
-               </div>
-                <div class="col-md-6">
-                    <h3>Submitted by Type</h3>
-                    @totalSubmittedByType.map{case(propType,total)=>
-                        @Messages(propType.id) : <span class="label label-warning">@total</span> submissions for <span class="label label-success">@devoxx2013.get(propType)</span> slots<br>
-                    }
+                    </div>
+
+                    <div class="col-md-6">
+                        <h3>Submitted by Type</h3>
+                        @totalSubmittedByType.map { case (propType, total) =>
+                                @Messages(propType) : <span class="label label-warning">@total</span>
+                                submissions for <span class="label label-success">@devoxx2013.get(propType)
+                        </span> slots<br>
+                            }
+
+                    </div>
 
                 </div>
-
             </div>
         </div>
     </div>
-</div>
 }

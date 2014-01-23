@@ -469,14 +469,14 @@ object Proposal {
   }
 
   // What we did in 2013
-  def getDevoxx2013Total(): Map[ProposalType, Int] = {
+  val getDevoxx2013Total: Map[String, Int] = {
     Map(
-      (ProposalType.CONF, 68) // 29 sans apres-midi decideur + 39 vendredi
-      , (ProposalType.UNI, 8)
-      , (ProposalType.TIA, 30)
-      , (ProposalType.LAB, 12)
-      , (ProposalType.QUICK, 20)
-      , (ProposalType.BOF, 15)
+      (ProposalType.CONF.label, 68) // 29 sans apres-midi decideur + 39 vendredi
+      , (ProposalType.UNI.label, 8)
+      , (ProposalType.TIA.label, 30)
+      , (ProposalType.LAB.label, 12)
+      , (ProposalType.QUICK.label, 20)
+      , (ProposalType.BOF.label, 15)
     )
   }
 

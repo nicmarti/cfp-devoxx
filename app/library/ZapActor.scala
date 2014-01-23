@@ -53,6 +53,7 @@ case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: St
 
 case class DraftReminder()
 
+case class ComputeLeaderboard()
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -66,6 +67,7 @@ class ZapActor extends Actor {
     case SendMessageToComite(reporterUUID, proposal, msg) => sendMessageToComite(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
+    case ComputeLeaderboard() => doComputeLeaderboard()
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -121,5 +123,9 @@ class ZapActor extends Actor {
     }
   }
 
+  def doComputeLeaderboard(){
+    println("doComputeLeaderboard")
+    Leaderboard.computeStats()
+  }
 
 }
