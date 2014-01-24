@@ -13,6 +13,7 @@ import scala.Some
 import library.SendMessageToSpeaker
 import play.api.libs.json.JsObject
 import play.api.i18n.Messages
+import models.Review.ScoreAndTotalVotes
 
 /**
  * The backoffice controller for the CFP technical commitee.
@@ -208,26 +209,31 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
   }
 
-  // Pour l'instant, je n'ai pas envie que les membres du CFP
-  // utilise la page de résultat pour décider s'ils votent ou non pour un talk
-  def allVotes(sortBy:Option[String]) = IsMemberOf("admin") {
+  def allVotes() = IsMemberOf("admin") {
     implicit uuid => implicit request =>
 
-      val result = sortBy match {
-        case Some(s) if s=="-score"=>Review.allVotes().toList.sortBy(_._2._1).reverse
-        case Some(s) if s=="+score"=>Review.allVotes().toList.sortBy(_._2._1)
-        case Some(s) if s=="-vote"=>Review.allVotes().toList.sortBy(_._2._2).reverse
-        case Some(s) if s=="+vote"=>Review.allVotes().toList.sortBy(_._2._2)
-        case Some(s) if s=="id"=>Review.allVotes().toList.sortBy(_._1)
-        case None=>Review.allVotes().toList.sortBy(_._2._1).reverse
+      val result = Review.allVotes().toList.sortBy(_._2._1).reverse
+
+      val allProposalIDs=result.map(_._1)
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+
+      val listToDisplay:List[(Proposal, ScoreAndTotalVotes)] = result.flatMap{
+        case(proposalId,scoreAndVotes)=>
+          allProposalWithVotes.get(proposalId).map{
+            proposal:Proposal=>
+            (proposal, scoreAndVotes)
+          }
+      }.filter{case(proposal,_)=>
+        proposal.state==ProposalState.SUBMITTED
       }
-      Ok(views.html.CFPAdmin.allVotes(result,sortBy.getOrElse("-score")))
+
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay))
   }
 
   def doComputeVotesTotal()=IsMemberOf("cfp"){
     implicit uuid=>implicit request=>
       ZapActor.actor ! ComputeVotesAndScore()
-      Redirect(routes.CFPAdmin.allVotes(None)).flashing("success"->"Recomputing votes and scores...")
+      Redirect(routes.CFPAdmin.allVotes()).flashing("success"->"Recomputing votes and scores...")
   }
 
   def search(q: String) = IsMemberOf("cfp") {

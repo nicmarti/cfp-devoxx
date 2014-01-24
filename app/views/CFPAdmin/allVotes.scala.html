@@ -1,12 +1,17 @@
-@(allVotes:List[(String,models.Review.ScoreAndTotalVotes)],sortBy:String)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("All votes") {
+
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title"><i class="icon-bar-chart"></i> All votes</h1>
-
             </div>
 
             <div class="panel-body">
@@ -21,61 +26,44 @@
                         </div>
                     </div>
 
-                <div class="col-md-6">
-                    <table class="table table-bordered table-striped table-hover table-condensed">
+                <div class="col-md-12">
+                    <small>All proposals with state set to SUBMITTED</small>
+                    <table id="allProposals" class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th>
-                                    @if(sortBy=="+score"){
-                                        <a href="@routes.CFPAdmin.allVotes(Some("-score"))"><i class="icon-arrow-up"></i> Total Score</a>
-                                    }
-                                    @if(sortBy=="-score"){
-                                        <a href="@routes.CFPAdmin.allVotes(Some("+score"))"><i class="icon-arrow-down"></i> Total Score</a>
-                                    }
-                                    @if(sortBy!="+score" && sortBy!="-score"){
-                                        <a href="@routes.CFPAdmin.allVotes(Some("+score"))">Total Score</a>
-                                    }
-
-                                </th>
-                                <th>
-                                    @if(sortBy=="+vote"){
-                                        <a href="@routes.CFPAdmin.allVotes(Some("-vote"))"><i class="icon-arrow-up"></i> Nb of votes</a>
-                                    }
-                                    @if(sortBy=="-vote"){
-                                        <a href="@routes.CFPAdmin.allVotes(Some("+vote"))"><i class="icon-arrow-down"></i> Nb of votes</a>
-                                    }
-                                    @if(sortBy!="-vote" && sortBy!="+vote"){
-                                        <a href="@routes.CFPAdmin.allVotes(Some("+vote"))">Nb of votes</a>
-                                    }
-                                </th>
-                                <th><a href="@routes.CFPAdmin.allVotes(Some("id"))">Proposal ID</a></th>
+                                <th>Total Score</th>
+                                <th>Nb of votes</th>
+                                <th>Proposal title</th>
+                                <th>Main speaker</th>
+                                <th>Track</th>
+                                <th>Type</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @allVotes.map { case (proposalId, voteAndTotalVotes) =>
+                            @allVotes.map { case (proposal, voteAndTotalVotes) =>
                                 <tr>
+                                    <td>
                                     @defining(Math.round(voteAndTotalVotes._1)) { score =>
-                                        <td>
-                                            <span class="label label-default">@score</span>
-                                        </td>
+                                        @score
                                     }
-                                <td>
-                                @defining(voteAndTotalVotes._2) { totalVotes =>
-                                    @if(totalVotes > 8) {
-                                        <span class="label label-success">@totalVotes</span>
+                                    </td>
+                                    <td>
+                                    @defining(voteAndTotalVotes._2) { totalVotes =>
+                                      @totalVotes
                                     }
-                                    @if(totalVotes <= 8 && totalVotes >= 4) {
-                                        <span class="label label-warning">@totalVotes</span>
-                                    }
-                                    @if(totalVotes <4) {
-                                        <span class="label label-danger">@totalVotes</span>
-                                    }
-                                }
-                                </td>
-                                <td>
-                                    <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a>
-                                </td>
-
+                                    </td>
+                                    <td>
+                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
+                                    </td>
+                                    <td>
+                                        @tags.renderGravatar(proposal.mainSpeaker)
+                                    </td>
+                                    <td>
+                                        @Messages(proposal.track.id)
+                                    </td>
+                                    <td>
+                                        @Messages(proposal.talkType.id)
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -91,13 +79,12 @@
     <script src="/assets/js/rick/d3.layout.min.js"></script>
     <script src="/assets/js/rick/rickshaw.min.js"></script>
 
-
     <script type="text/javascript">
 
     var devoxxSeries=[
-        @allVotes.sortBy(_._2._2).map{case(proposalId, voteAndTotalVotes) =>
+        @allVotes.sortBy(_._2._2).map{case(proposal, voteAndTotalVotes) =>
             {
-                name: '@proposalId',
+                name: '@proposal.id',
                 data:[
                    {  x: @voteAndTotalVotes._2, y: @Math.round(voteAndTotalVotes._1) }
                 ],
@@ -136,5 +123,23 @@ var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 } );
 
     </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+    $('#allProposals').dataTable({
+    "aaSorting": [[ 0, "desc" ]],
+    "iDisplayLength": 50,
+    "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+    "bStateSave": true,
+    "aoColumns": [
+        { "sType": "numeric"},
+        { "sType": "numeric"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"}
+        ]
+    });
+    } );
+</script>
 
 }
