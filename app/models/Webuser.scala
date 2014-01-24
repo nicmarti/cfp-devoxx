@@ -67,25 +67,29 @@ object Webuser {
   def findByEmail(email: String): Option[Webuser] = email match {
     case "" => None
     case validEmail => {
-      Redis.pool.withClient {
-        client =>
-          client.get("Webuser:Email:" + validEmail.toLowerCase.trim).flatMap {
-            uuid: String =>
-              client.hget("Webuser", uuid).map {
-                json: String =>
-                  Json.parse(json).as[Webuser]
-              }
-          }
+      Cache.getOrElse[Option[Webuser]]("web:email:"+email, 3600){
+        Redis.pool.withClient {
+          client =>
+            client.get("Webuser:Email:" + validEmail.toLowerCase.trim).flatMap {
+              uuid: String =>
+                client.hget("Webuser", uuid).map {
+                  json: String =>
+                    Json.parse(json).as[Webuser]
+                }
+            }
+        }
       }
     }
   }
 
   def findByUUID(uuid: String): Option[Webuser] = Redis.pool.withClient {
     client =>
-          client.hget("Webuser", uuid).map {
-            json: String =>
-              Json.parse(json).as[Webuser]
-          }
+      Cache.getOrElse[Option[Webuser]]("web:uuid:" + uuid, 3600) {
+        client.hget("Webuser", uuid).map {
+          json: String =>
+            Json.parse(json).as[Webuser]
+        }
+      }
   }
 
   def checkPassword(email: String, password: String): Option[Webuser] = Redis.pool.withClient {
@@ -112,6 +116,9 @@ object Webuser {
       tx.srem("Webuser:" + webuser.profile, webuser.email)
       tx.hdel("Webuser:New", webuser.email)
       tx.exec()
+
+      Cache.remove("web:uuid:"+webuser.uuid)
+      Cache.remove("web:email:"+webuser.email)
   }
 
   def changePassword(webuser: Webuser): String = Redis.pool.withClient {
@@ -135,6 +142,8 @@ object Webuser {
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.stringify(Json.toJson(cleanWebuser))
       client.hset("Webuser", webuser.uuid, json)
+      Cache.remove("web:uuid:"+webuser.uuid)
+      Cache.remove("web:email:"+webuser.email)
 
       if (isSpeaker(webuser.uuid)) {
         Speaker.updateName(webuser.email, webuser.cleanName)

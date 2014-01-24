@@ -26,7 +26,8 @@ package models
 import play.api.libs.json.Json
 import library.{ZapJson, Redis}
 import play.api.libs.Crypto
-
+import play.api.cache.Cache
+import play.api.Play.current
 /**
  * Speaker
  *
@@ -68,9 +69,12 @@ object Speaker {
 
   def findByUUID(uuid: String): Option[Speaker] = Redis.pool.withClient {
     client =>
-      client.hget("Speaker", uuid).flatMap {
-        json: String =>
-          Json.parse(json).validate[Speaker].fold(invalid=>{ play.Logger.error("Speaker error. "+ZapJson.showError(invalid));None},validSpeaker=>Some(validSpeaker))
+
+      Cache.getOrElse[Option[Speaker]]("speaker:uuid:"+uuid,3600){
+        client.hget("Speaker", uuid).flatMap {
+          json: String =>
+            Json.parse(json).validate[Speaker].fold(invalid=>{ play.Logger.error("Speaker error. "+ZapJson.showError(invalid));None},validSpeaker=>Some(validSpeaker))
+        }
       }
   }
 
