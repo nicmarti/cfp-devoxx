@@ -183,7 +183,7 @@ object CFPAdmin extends Controller with Secured {
       val worstReviewer = Leaderboard.worstReviewer()
       val totalByCategories = Leaderboard.totalByCategories()
       val totalByType = Leaderboard.totalByType()
-      val devoxx2013=Benchmark.measure(() =>Proposal.getDevoxx2013Total, "devoxx 2013 total")
+      val devoxx2013=Proposal.getDevoxx2013Total
 
       Ok(
         views.html.CFPAdmin.leaderBoard(
@@ -192,6 +192,11 @@ object CFPAdmin extends Controller with Secured {
           totalByType,devoxx2013
         )
       )
+  }
+
+  def reviewerLeaderBoard = IsMemberOf("cfp"){
+    implicit uuid => implicit request=>
+        Ok(views.html.CFPAdmin.reviewerLeaderBoard(Review.totalReviewedByCFPuser()))
   }
 
   def doComputeLeaderBoard()=IsMemberOf("cfp"){

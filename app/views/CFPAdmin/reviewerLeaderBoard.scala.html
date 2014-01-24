@@ -1,0 +1,25 @@
+@(reviewers:List[(String, Long)])(implicit flash:Flash, lang:Lang, uuid: String, req: RequestHeader)
+
+
+@main("Leaderboard Reviewers") {
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
+                </div>
+
+                <div class="panel-body">
+
+                    <div class="col-md-12">
+                        <h2>Number of proposals reviewed by user</h2>
+                       @reviewers.sortBy(_._2).reverse.map{ uuidAndTotal=>
+                           <h3>@uuidAndTotal._2 @tags.renderGravatar(uuidAndTotal._1)</h3>
+                       }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

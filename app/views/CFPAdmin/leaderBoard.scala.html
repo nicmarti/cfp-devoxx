@@ -41,8 +41,9 @@
                             <small><i class="icon-heart"></i> most voted with @mv._2 reviews</small>
                         </div>
                     }
+                    <div class="clearfix"></div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>Top Reviewer</h3>
                         @bestReviewer.map { br =>
                             @tags.renderGravatar(br._1)
@@ -50,12 +51,16 @@
                         }
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>Lanterne rouge</h3>
                         @worstReviewer.map { wr =>
                             @tags.renderGravatar(wr._1)
                             <small>@wr._2 talk@if(wr._2.toInt > 1) {s} reviewed.</small>
                         }
+                    </div>
+                    <div class="col-md-4">
+                        <h3>More stats</h3>
+                        <small><a href="@routes.CFPAdmin.reviewerLeaderBoard()" class="btn btn-sm btn-primary">See all reviewers</a></small>
                     </div>
 
                     <div class="clearfix"></div>
