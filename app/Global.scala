@@ -10,9 +10,8 @@ import play.api.mvc.RequestHeader
 import mvc.Results._
 import play.api.UnexpectedException
 import Play.current
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import play.api.libs.concurrent._
-import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.duration._
 import scala.Some
 import scala.util.control.NonFatal
@@ -22,7 +21,7 @@ object Global extends GlobalSettings {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
       CronTask.draftReminder()
       CronTask.elasticSearch()
-      CronTask.doComputeLeaderboard()
+      CronTask.doComputeStats()
     } else {
       play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
     }
@@ -73,6 +72,8 @@ object CronTask {
 
   // Send an email for each Proposal with status draft
   def draftReminder() = {
+    import play.api.libs.concurrent.Execution.Implicits._
+
     val draftTime = Play.configuration.getInt("actor.draftReminder.days")
     draftTime match {
       case Some(everyX) => {
@@ -91,6 +92,8 @@ object CronTask {
   }
 
   def elasticSearch() = {
+    import Contexts.elasticSearchContext
+
     // Create a cron task
     if(Play.isDev){
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexSpeaker())
@@ -104,12 +107,16 @@ object CronTask {
     }
   }
 
-  def doComputeLeaderboard()={
+  def doComputeStats()={
+    import Contexts.statsContext
+
     // Create a cron task
     if(Play.isDev){
-      Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, ComputeLeaderboard())
+      Akka.system.scheduler.schedule(10 minute, 10 minutes, ZapActor.actor, ComputeLeaderboard())
+      Akka.system.scheduler.schedule(15 minute, 10 minutes, ZapActor.actor, ComputeVotesAndScore())
     }else{
       Akka.system.scheduler.schedule(5 minutes, 10 minutes, ZapActor.actor, ComputeLeaderboard())
+      Akka.system.scheduler.schedule(2 minutes, 10 minutes, ZapActor.actor, ComputeVotesAndScore())
     }
   }
 

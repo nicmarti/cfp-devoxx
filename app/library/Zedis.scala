@@ -179,6 +179,9 @@ class Pool(val underlying: JedisPool) {
 
   def withClient[T](body: Dress.Wrap => T): T = {
     val jedis: Jedis = underlying.getResource
+    if(play.Logger.of("library.Zedis").isDebugEnabled){
+      play.Logger.of("library.Zedis").debug("withClient "+jedis.hashCode())
+    }
 
     try {
       body(Dress.up(jedis))

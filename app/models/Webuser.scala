@@ -4,9 +4,10 @@ import play.api.libs.json.Json
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.data.format.Formats._
 import library.Redis
-import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
-import redis.clients.util.RedisOutputStream
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.libs.Crypto
+import play.api.cache.Cache
+import play.api.Play.current
 
 case class Webuser(uuid: String, email: String, firstName: String, lastName: String, password: String, profile: String) {
   def cleanName = firstName.toLowerCase.capitalize + " " + lastName.toLowerCase.capitalize
@@ -16,8 +17,10 @@ object Webuser {
   implicit val webuserFormat = Json.format[Webuser]
 
   def gravatarHash(email: String): String = {
-    val cleanEmail = email.trim().toLowerCase()
-    DigestUtils.md5Hex(cleanEmail)
+    Cache.getOrElse[String]("gravatar:"+email){
+      val cleanEmail = email.trim().toLowerCase()
+      DigestUtils.md5Hex(cleanEmail)
+    }
   }
 
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
@@ -140,7 +143,9 @@ object Webuser {
 
   def isMember(uuid: String, securityGroup: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember("Webuser:" + securityGroup, uuid)
+      Cache.getOrElse[Boolean](s"Webuser:$securityGroup:$uuid",84600){
+        client.sismember("Webuser:" + securityGroup, uuid)
+      }
   }
 
   def hasAccessToCFPAdmin(uuid: String): Boolean = isMember(uuid, "cfp")
@@ -150,12 +155,14 @@ object Webuser {
   def addToCFPAdmin(uuid:String)=Redis.pool.withClient{
     client=>
       client.sadd("Webuser:cfp",uuid)
+      Cache.remove(s"Webuser:cfp:$uuid")
   }
 
   def removeFromCFPAdmin(uuid:String)=Redis.pool.withClient{
       client=>
         if(uuid!="9d5b6bfc9154c63afb74ef73dec9d305e3a288c6"){
           client.srem("Webuser:cfp",uuid)
+          Cache.remove(s"Webuser:cfp:$uuid")
         }
     }
 
@@ -191,7 +198,9 @@ object Webuser {
 
   def getEmailFromUUID(uuid:String):Option[String]=Redis.pool.withClient{
     client=>
-      client.get("Webuser:UUID:"+uuid)
+      Cache.getOrElse[Option[String]]("Webuser:UUID:"+uuid,84600){
+        client.get("Webuser:UUID:"+uuid)
+      }
   }
 
   val DEFAULT_LABEL = ("", play.api.i18n.Messages("noOther.speaker"))

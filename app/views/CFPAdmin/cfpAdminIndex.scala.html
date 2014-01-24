@@ -33,7 +33,7 @@
                     <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
                     <a href="@routes.Sponsor.index()" class="btn btn-sm btn-primary"><i class="icon-list"></i> @Messages("admin.btn.sponsor")</a>
                     @if(Webuser.isMember(uuid, "admin")){
-                        <a href="@routes.CFPAdmin.allVotes(Some("+score"))" class="btn btn-sm btn-primary"> @Messages("admin.btn.allvotes")</a>
+                        <a href="@routes.CFPAdmin.allVotes(Some("+score"))" class="btn btn-sm btn-warning"><i class="icon-large"></i> @Messages("admin.btn.allvotes")</a>
                         <a href="@routes.Backoffice.allSpeakers" class="btn btn-sm btn-primary"> @Messages("admin.btn.speakers")</a>
                         <a href="@routes.Backoffice.allDraftProposals" class="btn btn-sm btn-primary"> @Messages("admin.btn.draft")</a>
                         <a href="@routes.Backoffice.allSubmittedProposals" class="btn btn-sm btn-primary"> @Messages("admin.btn.submitted")</a>

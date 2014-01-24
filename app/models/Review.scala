@@ -26,6 +26,7 @@ package models
 import library.{Benchmark, Redis}
 import org.joda.time.{Instant, DateTime}
 import play.api.Play.current
+import scala.concurrent.Future
 
 /**
  * When a CFP admin checks or perform a review on a talk, we store this event.
@@ -141,12 +142,12 @@ object Review {
     // Le souci est que Redis est hebergé sur le touilleur express
     // alors que l'application play2 tourne sur clever-cloud
     // bref on se prend 6 sec ici car le montant transfere entre les 2 serveurs est important
-        val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
-        val totalPerProposal = onlyValidProposalIDs.map {
-          proposalId =>
-            (proposalId, totalVoteCastFor(proposalId))
-        }
-        totalPerProposal.toList
+      val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
+      val totalPerProposal = onlyValidProposalIDs.map {
+        proposalId =>
+          (proposalId, totalVoteCastFor(proposalId))
+      }
+      totalPerProposal.toList
   }
 
   def countAll(): Long = {
@@ -179,10 +180,10 @@ object Review {
 
   def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
     implicit client =>
-        Webuser.allCFPAdmin().map {
-          webuser: Webuser =>
-            val uuid = webuser.uuid
-            (uuid, client.scard(s"Proposals:Reviewed:ByAuthor:$uuid"))
+      Webuser.allCFPAdmin().map {
+        webuser: Webuser =>
+          val uuid = webuser.uuid
+          (uuid, client.scard(s"Proposals:Reviewed:ByAuthor:$uuid"))
       }
   }
 
@@ -237,18 +238,54 @@ object Review {
   type ScoreAndTotalVotes = (Double, Int)
 
   def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
-    implicit client =>
-      val allProposalsWithVotes = client.keys("Proposals:Votes:*").toSet
+    client =>
+      val allVoters = client.hgetAll("Computed:Voters")
+      client.hgetAll("Computed:Scores").map {
+        case (proposalKey: String, scores: String) =>
+          val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":")+1)
+          (proposalId, (scores.toDouble, allVoters.get(proposalKey).map(_.toInt).getOrElse(0) ))
+      }.toSet
+  }
 
-      val allVotes = allProposalsWithVotes.map {
-        proposalKey =>
-          val allScores = client.zrangeByScoreWithScores(proposalKey, "0", "10").map(_._2)
-          val total = allScores.sum
-          val nbrOfVotes = allScores.size
-          val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
-          (proposalId, (total, nbrOfVotes))
+  // internal function that upload to Redis a LUA Script
+  // The function returns the Script SHA1
+  val loadLUAScript:String = Redis.pool.withClient{
+    client=>
+      val script=
+        """
+          | -- Compute and store the total score for a proposal and
+          | -- the total number of voters
+          |local proposals = redis.call("KEYS", "Proposals:Votes:*")
+          |for i = 1, #proposals do
+          |	redis.log(redis.LOG_DEBUG, "proposal i=" .. proposals[i])
+          |
+          |	local uuidAndScores = redis.call("ZRANGE", proposals[i], 0, 10, "WITHSCORES")
+          |	redis.call("HSET", "Computed:Scores", proposals[i], 0)
+          | redis.call("HSET", "Computed:Voters", proposals[i], 0)
+          | redis.call("HDEL", "Computed:Votes:ScoreAndCount", proposals[i], 0)
+          |
+          |	for j=1,#uuidAndScores,2 do
+          |  	redis.log(redis.LOG_DEBUG, "uuid:"..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
+          |		redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
+          |		redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
+          |	end
+          |end
+          |return #proposals
+        """.stripMargin
+
+      val sha1script = client.scriptLoad(script)
+      play.Logger.of("models.Review").info("Uploaded LUA script to Redis "+sha1script)
+      sha1script
+  }
+
+  def computeAndGenerateVotes()=Redis.pool.withClient{
+    implicit client=>
+      if(client.scriptExists(loadLUAScript)){
+        play.Logger.of("models.Review").debug("Computing votes and scores on Redis")
+        client.evalsha(loadLUAScript, 0)
+      }else{
+        play.Logger.of("models.Review").error("There is no LUA script to compute scores and votes on Redis")
       }
-      allVotes
   }
 
 }

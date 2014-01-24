@@ -5,7 +5,8 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <!-- %X{URL} -->
-            <pattern>%coloredLevel %d{HH:mm:ss,SSS}  %logger: %message%n%ex{10}</pattern>
+            <!-- %-4relative [%thread] %-5level %logger{35} - %msg %n -->
+            <pattern>%coloredLevel %d{HH:mm:ss,SSS} [%thread{15}] %logger{15}: %15message%n%ex{10}</pattern>
         </encoder>
     </appender>
 
@@ -16,10 +17,11 @@
     <logger name="models.Speaker" level="INFO"/>
     <logger name="models.Webuser" level="INFO"/>
     <logger name="library.ZapActor" level="INFO"/>
+    <logger name="library.Zedis" level="DEBUG"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="DEBUG"/>
-    <logger name="application.IndexMaster" level="DEBUG"/>
-    <logger name="application.Reaper" level="DEBUG"/>
+    <logger name="application.IndexMaster" level="INFO"/>
+    <logger name="application.Reaper" level="INFO"/>
 
     <logger name="net.sf.ehcache.sizeof.verboseINFOLogging" level="INFO"/>
     <logger name="net.sf.ehcache" level="WARN"/>

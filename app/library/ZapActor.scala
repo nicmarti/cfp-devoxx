@@ -55,6 +55,8 @@ case class DraftReminder()
 
 case class ComputeLeaderboard()
 
+case class ComputeVotesAndScore()
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -68,6 +70,7 @@ class ZapActor extends Actor {
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
     case ComputeLeaderboard() => doComputeLeaderboard()
+    case ComputeVotesAndScore() => doComputeVotesAndScore()
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -125,6 +128,10 @@ class ZapActor extends Actor {
 
   def doComputeLeaderboard(){
     Leaderboard.computeStats()
+  }
+
+  def doComputeVotesAndScore(){
+    Review.computeAndGenerateVotes()
   }
 
 }
