@@ -224,6 +224,12 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allVotes(result,sortBy.getOrElse("-score")))
   }
 
+  def doComputeVotesTotal()=IsMemberOf("cfp"){
+    implicit uuid=>implicit request=>
+      ZapActor.actor ! ComputeVotesAndScore()
+      Redirect(routes.CFPAdmin.allVotes(None)).flashing("success"->"Recomputing votes and scores...")
+  }
+
   def search(q: String) = IsMemberOf("cfp") {
     _ => implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
