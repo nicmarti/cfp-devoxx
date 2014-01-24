@@ -252,6 +252,7 @@ object Review {
           | -- Compute and store the total score for a proposal and
           | -- the total number of voters
           |local proposals = redis.call("KEYS", "Proposals:Votes:*")
+          | redis.call("DEL", "Computed:Reviewer:Total")
           |for i = 1, #proposals do
           |	redis.log(redis.LOG_DEBUG, "proposal i=" .. proposals[i])
           |
@@ -264,6 +265,7 @@ object Review {
           |  	redis.log(redis.LOG_DEBUG, "uuid:"..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
           |		redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
           |		redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
+          |		redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
           |	end
           |end
           |return #proposals
@@ -282,6 +284,16 @@ object Review {
       } else {
         play.Logger.of("models.Review").error("There is no LUA script to compute scores and votes on Redis")
       }
+  }
+
+  def allReviewersAndStats()=Redis.pool.withClient{
+    client=>
+      client.hgetAll("Computed:Reviewer:Total").map{
+        case(uuid:String, totalPoints:String)=>
+          val nbrOfTalksReviewed = client.scard(s"Proposals:Reviewed:ByAuthor:$uuid")
+          (uuid,totalPoints.toInt, nbrOfTalksReviewed)
+      }.toList
+
   }
 
 }

@@ -61,7 +61,7 @@ GET         /cfpadmin/proposal/:proposalId/vote                controllers.CFPAd
 GET         /cfpadmin/proposal/:proposalId/clearVote           controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
 GET         /cfpadmin/proposal/:proposalId/score               controllers.CFPAdmin.showVotesForProposal(proposalId:String)
 GET         /cfpadmin/leaderboard                              controllers.CFPAdmin.leaderBoard
-GET         /cfpadmin/leaderboard/reviewers                    controllers.CFPAdmin.reviewerLeaderBoard
+GET         /cfpadmin/leaderboard/reviewerStats                controllers.CFPAdmin.allReviewersAndStats
 GET         /cfpadmin/leaderboard/compute                      controllers.CFPAdmin.doComputeLeaderBoard
 GET         /cfpadmin/myvotes                                  controllers.CFPAdmin.allMyVotes
 GET         /cfpadmin/search                                   controllers.CFPAdmin.search(q:String)

@@ -194,9 +194,9 @@ object CFPAdmin extends Controller with Secured {
       )
   }
 
-  def reviewerLeaderBoard = IsMemberOf("cfp"){
+  def allReviewersAndStats = IsMemberOf("cfp"){
     implicit uuid => implicit request=>
-        Ok(views.html.CFPAdmin.reviewerLeaderBoard(Review.totalReviewedByCFPuser()))
+      Ok(views.html.CFPAdmin.allReviewersAndStats(Review.allReviewersAndStats()))
   }
 
   def doComputeLeaderBoard()=IsMemberOf("cfp"){

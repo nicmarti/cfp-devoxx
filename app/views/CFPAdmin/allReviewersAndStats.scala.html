@@ -1,0 +1,68 @@
+@(reviewers:List[(String,Int, Long)])(implicit flash:Flash, lang:Lang, uuid: String, req: RequestHeader)
+
+
+@main("Leaderboard Reviewers") {
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
+                </div>
+
+                <div class="panel-body">
+                    <table id="reviewer" class="table table-bordered table-stripped">
+                        <thead>
+                            <tr>
+                                <th>Reviewer</th>
+                                <th>Nbr of proposals reviewed</th>
+                                <th>Total points</th>
+                                <th>Average</th>
+                            </tr>
+                        </thead>
+                    @reviewers.sortBy(_._2).reverse.map { uuidAndTotal =>
+                        <tr>
+                            <td>
+                                @tags.renderGravatar(uuidAndTotal._1)
+                            </td>
+                            <td>
+                                @uuidAndTotal._3
+                            </td>
+                            <td>
+                                @uuidAndTotal._2
+                            </td>
+                            <td>
+                            @if(uuidAndTotal._3 > 0) {
+                                @BigDecimal(uuidAndTotal._2.toDouble./(uuidAndTotal._3.toDouble)).round(new java.math.MathContext(3))
+                            }else{
+                                0
+                            }
+                            </td>
+                        </tr>
+                    }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+    $('#reviewer').dataTable({
+    "aaSorting": [[ 0, "desc" ]],
+    "aLengthMenu": [[-1], ["All"]],
+    "bStateSave": true,
+        "aoColumns": [
+            { "sType": "string"},
+            { "sType": "numeric"},
+            { "sType": "numeric"},
+            { "sType": "numeric"}
+        ]
+    });
+    } );
+    </script>
+}
