@@ -17,14 +17,14 @@
     <logger name="models.Speaker" level="INFO"/>
     <logger name="models.Webuser" level="INFO"/>
     <logger name="library.ZapActor" level="INFO"/>
-    <logger name="library.Zedis" level="DEBUG"/>
+    <logger name="library.Zedis" level="INFO"/>
     <logger name="library.Zedis.client" level="INFO"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="DEBUG"/>
     <logger name="application.IndexMaster" level="INFO"/>
     <logger name="application.Reaper" level="INFO"/>
 
-    <logger name="net.sf.ehcache.sizeof.verboseINFOLogging" level="INFO"/>
+    <logger name="net.sf.ehcache.sizeof.verboseDebugLogging" level="DEBUG"/>
     <logger name="net.sf.ehcache" level="WARN"/>
     <logger name="org.apache.commons.pool" level="INFO"/>
 

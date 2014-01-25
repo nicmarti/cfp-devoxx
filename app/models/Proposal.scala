@@ -395,6 +395,12 @@ object Proposal {
       onlyValidProposalIDs
   }
 
+  def allProposalIDsDeleted:Set[String]=Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
+      allProposalIDDeleted
+  }
+
   def countAll() = {
     allProposalIDsNotDeleted.size
   }

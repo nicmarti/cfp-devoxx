@@ -57,6 +57,8 @@ case class ComputeLeaderboard()
 
 case class ComputeVotesAndScore()
 
+case class RemoveVotesForDeletedProposal()
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -71,6 +73,7 @@ class ZapActor extends Actor {
     case DraftReminder() => sendDraftReminder()
     case ComputeLeaderboard() => doComputeLeaderboard()
     case ComputeVotesAndScore() => doComputeVotesAndScore()
+    case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -126,12 +129,19 @@ class ZapActor extends Actor {
     }
   }
 
-  def doComputeLeaderboard(){
+  def doComputeLeaderboard() {
     Leaderboard.computeStats()
   }
 
-  def doComputeVotesAndScore(){
+  def doComputeVotesAndScore() {
     Review.computeAndGenerateVotes()
   }
 
+  // Delete votes if a proposal was deleted
+  def doRemoveVotesForDeletedProposal() {
+    Proposal.allProposalIDsDeleted.map {
+      proposalId =>
+        Review.deleteVoteForProposal(proposalId)
+    }
+  }
 }
