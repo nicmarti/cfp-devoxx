@@ -33,7 +33,6 @@ object Leaderboard {
   def computeStats() = Redis.pool.withClient {
     implicit client =>
 
-
       val tx = client.multi()
       tx.del("Leaderboard:totalByCategories")
       tx.del("Leaderboard:totalByType")

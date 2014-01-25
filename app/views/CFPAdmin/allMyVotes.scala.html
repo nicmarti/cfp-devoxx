@@ -11,14 +11,18 @@
             <div class="panel-body">
                 <div class="col-md-12">
                     <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
-                    You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
-                    @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){allScores=>
-                        Sum of all your points: @Math.round(allScores.sum)<br>
-                        Your average vote is @BigDecimal(allScores.sum/allScores.size).round(new java.math.MathContext(3))
+                    @if(allVotes.nonEmpty){
+                        You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
+                        @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){allScores=>
+                            Sum of all your points: @Math.round(allScores.sum)<br>
+                            Your average vote is @BigDecimal(allScores.sum/allScores.size).round(new java.math.MathContext(3))
+                        }
+                    }else{
+                        You haven't vote for any proposal so far.
                     }
 
                 </div>
-
+                @if(allVotes.nonEmpty){
                 <div class="col-md-12">
                     <h3><i class="icon-bar-chart"></i> Proposals for which you voted</h3>
                     <table class="table table-bordered">
@@ -78,7 +82,7 @@
                         }
                     }
                 </div>
-
+                }
             </div>
         </div>
     </div>

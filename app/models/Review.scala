@@ -174,7 +174,7 @@ object Review {
   }
 
   def worstReviewer(): (String, Long) = {
-    totalReviewedByCFPuser().sortBy(_._2).head
+    totalReviewedByCFPuser().filterNot(_._2<=5L).sortBy(_._2).head
   }
 
   def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {

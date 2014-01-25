@@ -50,11 +50,15 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-    $(document).ready(function() {
+<script type="text/javascript">
+$(document).ready(function() {
     $('#reviewer').dataTable({
-    "aaSorting": [[ 0, "desc" ]],
-    "aLengthMenu": [[-1], ["All"]],
+    "aaSorting": [[ 1, "desc" ]],
+    "iDisplayLength" : -1,
+    "aLengthMenu": [
+    [25, 50, 100, 200, -1],
+    [25, 50, 100, 200, "All"]
+    ],
     "bStateSave": true,
         "aoColumns": [
             { "sType": "string"},
@@ -63,6 +67,6 @@
             { "sType": "numeric"}
         ]
     });
-    } );
-    </script>
+} );
+</script>
 }

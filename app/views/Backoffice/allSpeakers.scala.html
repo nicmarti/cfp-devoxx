@@ -45,8 +45,7 @@
                             <small>@webuser.email</small>
                         </td>
                         <td>@tags.renderGravatar(webuser.uuid)</td>
-                        <td><small>@webuser.firstName @webuser.lastName</small>
-                            <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
+                        <td><a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
                         </td>
                         <td>
                             @if(Webuser.hasAccessToCFPAdmin(webuser.uuid)){
