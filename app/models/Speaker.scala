@@ -51,17 +51,20 @@ object Speaker {
 
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
+      Cache.remove("speaker:uuid:"+speaker.uuid)
       val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", speaker.uuid, jsonSpeaker)
   }
 
   def update(uuid: String, speaker: Speaker) = Redis.pool.withClient {
     client =>
+      Cache.remove("speaker:uuid:"+uuid)
       val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid=uuid)))
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
   def updateName(uuid:String, newName:String) = {
+    Cache.remove("speaker:uuid:"+uuid)
     findByUUID(uuid).map{ speaker=>
       Speaker.update(uuid, speaker.copy(name=Option(newName)))
     }
@@ -69,7 +72,6 @@ object Speaker {
 
   def findByUUID(uuid: String): Option[Speaker] = Redis.pool.withClient {
     client =>
-
       Cache.getOrElse[Option[Speaker]]("speaker:uuid:"+uuid,3600){
         client.hget("Speaker", uuid).flatMap {
           json: String =>
@@ -80,6 +82,7 @@ object Speaker {
 
   def delete(uuid: String) = Redis.pool.withClient {
     client =>
+      Cache.remove("speaker:uuid:"+uuid)
       client.hdel("Speaker", uuid)
   }
 
@@ -96,7 +99,6 @@ object Speaker {
     client=>
       client.hlen("Speaker")
   }
-
 
 }
 

@@ -17,7 +17,7 @@ object Webuser {
   implicit val webuserFormat = Json.format[Webuser]
 
   def gravatarHash(email: String): String = {
-    Cache.getOrElse[String]("gravatar:"+email){
+    Cache.getOrElse[String]("gravatar:" + email) {
       val cleanEmail = email.trim().toLowerCase()
       DigestUtils.md5Hex(cleanEmail)
     }
@@ -28,7 +28,7 @@ object Webuser {
   }
 
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
-    Some( webuser.email, webuser.firstName, webuser.lastName)
+    Some(webuser.email, webuser.firstName, webuser.lastName)
   }
 
   def getName(uuid: String): String = {
@@ -54,6 +54,8 @@ object Webuser {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
+      Cache.remove("web:email:" + webuser.email)
+      Cache.remove("web:uuid:" + webuser.uuid)
 
       val tx = client.multi()
       tx.hset("Webuser", webuser.uuid, json)
@@ -67,7 +69,7 @@ object Webuser {
   def findByEmail(email: String): Option[Webuser] = email match {
     case "" => None
     case validEmail => {
-      Cache.getOrElse[Option[Webuser]]("web:email:"+email, 3600){
+      Cache.getOrElse[Option[Webuser]]("web:email:" + email, 3600) {
         Redis.pool.withClient {
           client =>
             client.get("Webuser:Email:" + validEmail.toLowerCase.trim).flatMap {
@@ -94,19 +96,20 @@ object Webuser {
 
   def checkPassword(email: String, password: String): Option[Webuser] = Redis.pool.withClient {
     client =>
-      val maybeUser=findByEmail(email)
-      if(maybeUser.exists(_.password == password)){
+      val maybeUser = findByEmail(email)
+      if (maybeUser.exists(_.password == password)) {
         maybeUser
-      }else{
+      } else {
         None
       }
   }
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
     client =>
-      Proposal.allMyDraftProposals(webuser.uuid).foreach{proposal=>
-        play.Logger.of("models.Webuser").debug(s"Deleting proposal ${proposal}")
-        Proposal.destroy(proposal)
+      Proposal.allMyDraftProposals(webuser.uuid).foreach {
+        proposal =>
+          play.Logger.of("models.Webuser").debug(s"Deleting proposal ${proposal}")
+          Proposal.destroy(proposal)
       }
 
       val tx = client.multi()
@@ -117,8 +120,8 @@ object Webuser {
       tx.hdel("Webuser:New", webuser.email)
       tx.exec()
 
-      Cache.remove("web:uuid:"+webuser.uuid)
-      Cache.remove("web:email:"+webuser.email)
+      Cache.remove("web:uuid:" + webuser.uuid)
+      Cache.remove("web:email:" + webuser.email)
   }
 
   def changePassword(webuser: Webuser): String = Redis.pool.withClient {
@@ -142,8 +145,8 @@ object Webuser {
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.stringify(Json.toJson(cleanWebuser))
       client.hset("Webuser", webuser.uuid, json)
-      Cache.remove("web:uuid:"+webuser.uuid)
-      Cache.remove("web:email:"+webuser.email)
+      Cache.remove("web:uuid:" + webuser.uuid)
+      Cache.remove("web:email:" + webuser.email)
 
       if (isSpeaker(webuser.uuid)) {
         Speaker.updateName(webuser.email, webuser.cleanName)
@@ -152,7 +155,7 @@ object Webuser {
 
   def isMember(uuid: String, securityGroup: String): Boolean = Redis.pool.withClient {
     client =>
-      Cache.getOrElse[Boolean](s"Webuser:$securityGroup:$uuid",84600){
+      Cache.getOrElse[Boolean](s"Webuser:$securityGroup:$uuid", 84600) {
         client.sismember("Webuser:" + securityGroup, uuid)
       }
   }
@@ -161,23 +164,22 @@ object Webuser {
 
   def isSpeaker(uuid: String): Boolean = isMember(uuid, "speaker")
 
-  def addToCFPAdmin(uuid:String)=Redis.pool.withClient{
-    client=>
-      client.sadd("Webuser:cfp",uuid)
-      Cache.remove(s"Webuser:cfp:$uuid")
+  def addToCFPAdmin(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.sadd("Webuser:cfp", uuid)
   }
 
-  def removeFromCFPAdmin(uuid:String)=Redis.pool.withClient{
-      client=>
-        if(uuid!="9d5b6bfc9154c63afb74ef73dec9d305e3a288c6"){
-          client.srem("Webuser:cfp",uuid)
-          Cache.remove(s"Webuser:cfp:$uuid")
-        }
-    }
+  def removeFromCFPAdmin(uuid: String) = Redis.pool.withClient {
+    client =>
+      if (uuid != "9d5b6bfc9154c63afb74ef73dec9d305e3a288c6") {
+        client.srem("Webuser:cfp", uuid)
+        Cache.remove(s"Webuser:cfp:$uuid")
+      }
+  }
 
   def allSpeakers: List[Webuser] = Redis.pool.withClient {
     client =>
-      val allSpeakerUUIDs= client.smembers("Webuser:speaker").toList
+      val allSpeakerUUIDs = client.smembers("Webuser:speaker").toList
       client.hmget("Webuser", allSpeakerUUIDs).flatMap {
         js: String =>
           Json.parse(js).asOpt[Webuser]
@@ -205,18 +207,16 @@ object Webuser {
       }
   }
 
-  def getEmailFromUUID(uuid:String):Option[String]=Redis.pool.withClient{
-    client=>
-      Cache.getOrElse[Option[String]]("Webuser:UUID:"+uuid,84600){
-        client.get("Webuser:UUID:"+uuid)
-      }
+  def getEmailFromUUID(uuid: String): Option[String] = Redis.pool.withClient {
+    client =>
+        client.get("Webuser:UUID:" + uuid)
   }
 
   val DEFAULT_LABEL = ("", play.api.i18n.Messages("noOther.speaker"))
 
-  def doesNotExist(uuid:String):Boolean = Redis.pool.withClient{
-    client=>
-      !client.exists("Webuser:UUID:"+uuid)
+  def doesNotExist(uuid: String): Boolean = Redis.pool.withClient {
+    client =>
+      !client.exists("Webuser:UUID:" + uuid)
   }
 }
 
