@@ -133,6 +133,13 @@ object Mails {
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.addHeader("Message-ID", proposal.id)
+
+    // Send also a copy of the message to the other speakers
+    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
+    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+
     emailer.send(
       views.txt.Mails.sendMessageToComite(fromWebuser.cleanName, proposal, msg).toString(),
       views.html.Mails.sendMessageToComite(fromWebuser.cleanName, proposal, msg).toString()
