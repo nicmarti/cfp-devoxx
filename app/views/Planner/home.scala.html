@@ -1,4 +1,4 @@
-@()(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(result:String)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("Planner - home"){
 
@@ -8,8 +8,7 @@
                 <h3><i class="icon-signin"></i> Planner authentication</h3>
             </div>
             <div class="panel-body">
-<a class="btn btn-default" href="@routes.Planner.googleLogin()"
-title="Sign-in with your Google account to Devoxx FR"><i class="icon-google-plus-sign"></i> Google</a>
+                    <h3>Authenticated on Trello</h3>
                 </p>
             </div>
         </div>

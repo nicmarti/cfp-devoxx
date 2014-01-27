@@ -23,7 +23,7 @@
 
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{RequestHeader, Action, Controller}
 import play.api.Play
 import java.math.BigInteger
 import java.security.SecureRandom
@@ -33,162 +33,109 @@ import play.api.libs.ws.WS
 import models.{ProposalType, Proposal, Webuser}
 import library.Contexts
 import java.net.URLEncoder
+import play.api.libs.oauth._
+import play.api.libs.oauth.ServiceInfo
+import play.api.libs.oauth.OAuth
+import play.api.libs.oauth.RequestToken
+import play.api.libs.oauth.ConsumerKey
+import scala.Some
+import Contexts.statsContext
+import com.julienvey.trello.impl.TrelloImpl
+import com.julienvey.trello.domain.Card
+import scala.collection.JavaConverters._
+import com.julienvey.trello.impl.domaininternal.Label
 
 /**
  * Planner object that interacts with Google Calendar API.
  * Created by nicolas on 25/01/2014.
  */
-object Planner extends Controller with Secured{
+object Planner extends Controller with Secured {
 
-  def home=IsMemberOf("admin"){
-    implicit uuid => implicit request=>
-//    https://www.googleapis.com/calendar/v3/users/me/calendarList
+  val KEY = ConsumerKey("65eee1bd3ca6ece922cf66ece724dd66", "bdb165bd38af368eb05c266255b325007942d26c50e0141d67da845baa472f88")
 
-    Ok(views.html.Planner.home())
-  }
-  // See Google documentation https://developers.google.com/accounts/docs/OAuth2Login
-  def googleLogin = Action {
-    implicit request =>
-      Play.current.configuration.getString("google.client_id").map {
-        clientId: String =>
-          val redirectUri = routes.Planner.callbackGoogle().absoluteURL()
-          val state = new BigInteger(130, new SecureRandom()).toString(32)
-          val googleURL = "https://accounts.google.com/o/oauth2/auth?client_id=" + clientId + "&scope=https://www.googleapis.com/auth/calendar&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
-          Redirect(googleURL).withSession("state" -> state)
-      }.getOrElse {
-        InternalServerError("google.client_id is not set in application.conf")
-      }
+  val TRELLO_OAUTH = OAuth(ServiceInfo(
+    "https://trello.com/1/OAuthGetRequestToken",
+    "https://trello.com/1/OAuthGetAccessToken",
+    "https://trello.com/1/OAuthAuthorizeToken?scope=read,write", KEY),
+    use10a = false)
+
+  def index = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+    Ok(views.html.Planner.index())
+
   }
 
-  case class PlannerGoogleToken(access_token: String, token_type: String, expires_in: Long)
+  def getBoard=IsMemberOf("admin"){
+    implicit uuid=>
+      implicit request=>
+        sessionTokenPair match {
+          case Some(credentials) =>
 
-  implicit val plannerGoogleFormat = Json.format[PlannerGoogleToken]
+            val trelloAccessToken = credentials.token
+            val trelloApi = new TrelloImpl("65eee1bd3ca6ece922cf66ece724dd66", trelloAccessToken)
+            val boardId = "zUx2QoSx"
 
-  def callbackGoogle = Action {
-    implicit request =>
-      import Contexts.statsContext
+            val board = trelloApi.getBoard(boardId)
 
-      Authentication.oauthForm.bindFromRequest.fold(invalidForm => {
-        BadRequest("Bad request").flashing("error" -> "Invalid form")
-      }, validForm => {
-        validForm match {
-          case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
-            val auth = for (clientId <- Play.current.configuration.getString("google.client_id");
-                            clientSecret <- Play.current.configuration.getString("google.client_secret")) yield (clientId, clientSecret)
-            auth.map {
-              case (clientId, clientSecret) => {
-                val url = "https://accounts.google.com/o/oauth2/token"
-                val redirect_uri = routes.Planner.callbackGoogle().absoluteURL()
-                val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx France CFP")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
-                Async {
-                  wsCall.map {
-                    result =>
-                      result.status match {
-                        case 200 => {
-                          val b = result.body
-println("Google body" + b)
-                          val googleToken = Json.parse(result.body).as[PlannerGoogleToken]
-                          Redirect(routes.Planner.listCalendars).withSession("google_token" -> googleToken.access_token)
-                        }
-                        case _ => {
-                          Redirect(routes.Application.index()).flashing("error" -> ("error with Google OAuth2.0 : got HTTP response " + result.status + " " + result.body))
-                        }
-                      }
-                  }
-                }
-              }
-            }.getOrElse {
-              InternalServerError("github.client_secret is not configured in application.conf")
+            //val lists= board.fetchLists()
+
+            val listId="52e69c284ae96664717a1492"
+
+            val universities = Proposal.allSubmitted().filter(_.talkType==ProposalType.UNI).take(1)
+
+            universities.foreach{
+              proposal=>
+            val card = new Card()
+              card.setDesc(proposal.summary)
+              card.setIdBoard(boardId)
+              card.setName(proposal.title)
+              card.setIdList("52e69c284ae96664717a1492")
+              val label = new com.julienvey.trello.domain.Label()
+              label.setColor("orange")
+              label.setName("Labs")
+              card.setLabels(List(label).asJava)
+              trelloApi.createCard(listId,card)
             }
-          }
-          case other => BadRequest("Bad request, invalid state code").flashing("error" -> "Invalid state code")
+            Ok("Created cards on Trello: "+universities.size)
+
+          case _ => Redirect(routes.Planner.authenticate)
         }
-      })
   }
 
-  def listCalendars = Action {
-    implicit request =>
-      import Contexts.statsContext
 
-      request.session.get("google_token").map {
-        access_token =>
-          val url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=" + access_token
-          val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").get()
-          Async {
-            futureResult.map {
-              result =>
-                result.status match {
-                  case 200 => {
-                    Ok(result.body).as("application/json")
-                  }
-                  case other => {
-                    play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                    BadRequest("Unable to complete the Google API call due to "+result.statusText)
-                  }
-                }
+  def authenticate = Action {
+    request =>
+      request.queryString.get("oauth_verifier").flatMap(_.headOption).map {
+        verifier =>
+          val tokenPair = sessionTokenPair(request).get
+          // We got the verifier; now get the access token, store it and back to index
+          TRELLO_OAUTH.retrieveAccessToken(tokenPair, verifier) match {
+            case Right(t) => {
+              // We received the authorized tokens in the OAuth object - store it before we proceed
+              Redirect(routes.Planner.index).withSession("token" -> t.token, "secret" -> t.secret)
             }
+            case Left(e) => throw e
           }
-
-      }.getOrElse {
-        Redirect(routes.Planner.home()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
-      }
+      }.getOrElse(
+          TRELLO_OAUTH.retrieveRequestToken("http://localhost:9000/trello/auth") match {
+            case Right(t) => {
+              // We received the unauthorized tokens in the OAuth object - store it before we proceed
+              Redirect(TRELLO_OAUTH.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
+            }
+            case Left(e) => throw e
+          })
   }
 
-  case class GoogleDate(dateTime:String)
-  case class NewEvent(start:GoogleDate, end:GoogleDate,location:String,summary:String,description:String, colorId:String)
+  def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
+    for {
+      token <- request.session.get("token")
+      secret <- request.session.get("secret")
+    } yield {
+      RequestToken(token, secret)
+    }
+  }
 
-  implicit val GoogleDateWriter=Json.writes[GoogleDate]
-  implicit val NewEventWriter=Json.writes[NewEvent]
-
-  def createEvent()=Action{
-    implicit request=>
-      import Contexts.statsContext
-
-      request.session.get("google_token").map {
-        access_token =>
-          val calendar_id="m8uht8cilrjs45247qq2ari1b0%40group.calendar.google.com"
-
-          val handsOnLabs = Proposal.allSubmitted().filter(_.talkType==ProposalType.LAB).take(12)
-
-          handsOnLabs.map{
-            proposal:Proposal=>
-              val newEvent=Json.toJson(
-                NewEvent(
-                  GoogleDate("2014-01-26T10:00:02+00:00"),
-                  GoogleDate("2014-01-26T11:00:02+00:00"),
-                  "La Seine A",
-                  proposal.title,
-                  proposal.summary,
-                  "4"
-                )
-              )
-
-              val url = s"https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events?maxAttendees=1&sendNotifications=false&access_token=$access_token"
-              val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").post(newEvent)
-
-              futureResult.map {
-                result =>
-                  result.status match {
-                    case 200 => {
-                      play.Logger.debug("Request sent... " + proposal.id)
-                    }
-                    case other => {
-                      play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                    }
-                  }
-              }
-
-          }
-
-          Ok("Done")
-
-
-
-
-      }.getOrElse {
-        Redirect(routes.Planner.home()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
-      }
-      //POST
-
+  def logout = Action {
+    Redirect(routes.Planner.index).withNewSession
   }
 }
