@@ -50,6 +50,11 @@
                                     <th>@tags.renderThTag("talkType", page, sort, ascdesc)</th>
                                     <th>@Messages("admin.proposals.th.action")</th>
                                 </tr>
+                                <tr>
+                                    <th colspan="5">
+                                       <small>Your todo list size: @allProposalsForReview.size</small>
+                                    </th>
+                                </tr>
                             </thead>
                             <tbody>
                             @allProposalsForReview.map { proposal: Proposal =>
