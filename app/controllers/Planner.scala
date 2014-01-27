@@ -30,7 +30,7 @@ import java.security.SecureRandom
 import play.api.libs.Crypto
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
-import models.Webuser
+import models.{ProposalType, Proposal, Webuser}
 import library.Contexts
 import java.net.URLEncoder
 
@@ -148,33 +148,42 @@ println("Google body" + b)
         access_token =>
           val calendar_id="m8uht8cilrjs45247qq2ari1b0%40group.calendar.google.com"
 
-          val newEvent=  Json.toJson(NewEvent(
-            GoogleDate("2014-01-26T10:00:02+00:00"),
-            GoogleDate("2014-01-26T11:00:02+00:00"),
-            "La Seine A",
-            "Couleur 4",
-            "description et formatage de test",
-            "4"
-          )
-          )
+          val handsOnLabs = Proposal.allSubmitted().filter(_.talkType==ProposalType.LAB).take(12)
 
+          handsOnLabs.map{
+            proposal:Proposal=>
+              val newEvent=Json.toJson(
+                NewEvent(
+                  GoogleDate("2014-01-26T10:00:02+00:00"),
+                  GoogleDate("2014-01-26T11:00:02+00:00"),
+                  "La Seine A",
+                  proposal.title,
+                  proposal.summary,
+                  "4"
+                )
+              )
 
-          val url = s"https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events?maxAttendees=1&sendNotifications=false&access_token=$access_token"
-          val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").post(newEvent)
-          Async {
-            futureResult.map {
-              result =>
-                result.status match {
-                  case 200 => {
-                    Ok(result.body).as("application/json")
+              val url = s"https://www.googleapis.com/calendar/v3/calendars/$calendar_id/events?maxAttendees=1&sendNotifications=false&access_token=$access_token"
+              val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").post(newEvent)
+
+              futureResult.map {
+                result =>
+                  result.status match {
+                    case 200 => {
+                      play.Logger.debug("Request sent... " + proposal.id)
+                    }
+                    case other => {
+                      play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
+                    }
                   }
-                  case other => {
-                    play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                    BadRequest("Unable to complete the Google API call due to "+result.statusText)
-                  }
-                }
-            }
+              }
+
           }
+
+          Ok("Done")
+
+
+
 
       }.getOrElse {
         Redirect(routes.Planner.home()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
