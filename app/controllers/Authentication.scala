@@ -100,7 +100,8 @@ object Authentication extends Controller {
           Webuser.checkPassword(validForm._1, validForm._2) match {
             case Some(webuser) =>
               val cookie = createCookie(webuser)
-              Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> webuser.uuid).withCookies(cookie)
+              Redirect(routes.CallForPaper.homeForSpeaker).flashing("success"->(Messages("cfp.closing")+" "+Messages("cfp.closing.date"))).withSession("uuid" -> webuser.uuid).withCookies(cookie)
+
             case None =>
               Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
           }
@@ -257,7 +258,7 @@ object Authentication extends Controller {
                         Webuser.findByEmail(emailS).map {
                           w =>
                             val cookie = createCookie(w)
-                            Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
+                            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success"->(Messages("cfp.closing")+" "+Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
                         }.getOrElse {
                           // Create a new one but ask for confirmation
                           val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
@@ -431,7 +432,7 @@ object Authentication extends Controller {
                     Webuser.findByEmail(email).map {
                       w =>
                         val cookie = createCookie(w)
-                        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
+                        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success"->(Messages("cfp.closing")+" "+Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
                     }.getOrElse {
                       val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
                       Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
