@@ -95,5 +95,12 @@ GET         /admin/elastic                                     controllers.Backo
 # Special access for Alexis MP
 GET         /show/proposals                                    controllers.Sponsor.index()
 
+# Planner
+GET         /planner                                           controllers.Planner.home
+GET         /planner/googleLogin                               controllers.Planner.googleLogin
+GET         /planner/googleLogin/callback                      controllers.Planner.callbackGoogle
+GET         /planner/listCalendars                             controllers.Planner.listCalendars
+GET         /planner/newEvent                                  controllers.Planner.createEvent()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                      controllers.Assets.at(path="/public", file)
