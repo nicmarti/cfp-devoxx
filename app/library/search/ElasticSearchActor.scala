@@ -160,6 +160,6 @@ class Reaper extends ESActor {
       case r if r.isSuccess =>
         play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")
       case r if r.isFailure =>
-        play.Logger.of("application.Reaper").warn("Could not index speaker ${obj.typeName} ${obj} due to ${r}")
+        play.Logger.of("application.Reaper").warn(s"Could not index speaker ${obj.typeName} ${obj} due to ${r}")
     }
 }
