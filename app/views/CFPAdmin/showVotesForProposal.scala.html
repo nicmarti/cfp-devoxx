@@ -27,10 +27,11 @@
                 <h3>Current score</h3>
                 <p>Total score : @score</p>
                 @if(totalVotesCast>0){
-                    <p>Average score : @BigDecimal(score.toDouble./(totalVotesCast.toDouble)).round(new java.math.MathContext(2))</p>
+                    <p>Average score : @library.Stats.average(allVotes.map(_._2))</p>
                 }
                 <p>Total votes cast : @totalVotesCast</p>
                 <p>Total votes : @totalVotes</p>
+                <p>Standard deviation : @library.Stats.standardDeviation(allVotes.map(_._2))</p>
             </div>
         </div>
 

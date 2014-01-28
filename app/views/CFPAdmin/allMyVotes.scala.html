@@ -20,7 +20,8 @@
                         You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
                         @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){allScores=>
                             Sum of all your points: @Math.round(allScores.sum)<br>
-                            Your average vote is @BigDecimal(allScores.sum/allScores.size).round(new java.math.MathContext(3))
+                            Your average vote is @library.Stats.average(allScores)<br>
+                            Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br>
                         }
                     }else{
                         You haven't vote for any proposal so far.
@@ -42,10 +43,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                    @allVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map{case(proposalId, maybeVote)=>
-                        @defining(Math.round(maybeVote.get)){score=>
-                            <td>@score</td>
-                        }
+                            @allVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map{case(proposalId, maybeVote)=>
+                                @defining(Math.round(maybeVote.get)){score=>
+                                     <td>@score</td>
+                             }
                             <td><a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a></td>
                         @relatedProposals.get(proposalId).map{proposal=>
                           <td>

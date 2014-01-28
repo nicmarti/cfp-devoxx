@@ -33,7 +33,10 @@
                             <tr>
                                 <th>Total Score</th>
                                 <th>Nb of votes</th>
+                                <th>Nb of votes cast</th>
+                                <th>Nb of abstention</th>
                                 <th>Proposal title</th>
+                                <th>Proposal id</th>
                                 <th>Main speaker</th>
                                 <th>Track</th>
                                 <th>Type</th>
@@ -48,13 +51,24 @@
                                     }
                                     </td>
                                     <td>
-                                    @defining(voteAndTotalVotes._2) { totalVotes =>
-                                      @totalVotes
+                                    @defining(voteAndTotalVotes._2) { totalVoters =>
+                                      @totalVoters
+                                    }
+                                    </td>
+                                    <td>
+                                    @defining(voteAndTotalVotes._2-voteAndTotalVotes._3) { totalVoteCast =>
+                                        @totalVoteCast
+                                    }
+                                    </td>
+                                    <td>
+                                    @defining(voteAndTotalVotes._3) { totalAbstentions =>
+                                        @totalAbstentions
                                     }
                                     </td>
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
                                     </td>
+                                    <td>@proposal.id</td>
                                     <td>
                                         @tags.renderGravatar(proposal.mainSpeaker)
                                     </td>
@@ -86,7 +100,7 @@
             {
                 name: '@proposal.id',
                 data:[
-                   {  x: @voteAndTotalVotes._2, y: @Math.round(voteAndTotalVotes._1) }
+                   {  x: @(voteAndTotalVotes._2-voteAndTotalVotes._3), y: @Math.round(voteAndTotalVotes._1) }
                 ],
         		color: 'steelblue'
         	},
@@ -133,6 +147,9 @@ var hoverDetail = new Rickshaw.Graph.HoverDetail( {
     "aoColumns": [
         { "sType": "numeric"},
         { "sType": "numeric"},
+        { "sType": "numeric"},
+        { "sType": "numeric"},
+        { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
