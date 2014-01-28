@@ -95,11 +95,6 @@ GET         /admin/elastic                                     controllers.Backo
 # Special access for Alexis MP
 GET         /show/proposals                                    controllers.Sponsor.index()
 
-# TrelloPlanner
-GET         /planner/trello                                           controllers.TrelloPlanner.index
-GET         /planner/trello/getBoard                                  controllers.TrelloPlanner.getBoard
-GET         /planner/trello/logout                                    controllers.TrelloPlanner.logout
-GET         /trello/auth                                       controllers.TrelloPlanner.authenticate
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                      controllers.Assets.at(path="/public", file)
