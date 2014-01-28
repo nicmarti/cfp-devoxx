@@ -35,6 +35,8 @@
                                 <th>Nb of votes</th>
                                 <th>Nb of votes cast</th>
                                 <th>Nb of abstention</th>
+                                <th>Average</th>
+                                <th>Standard Deviation</th>
                                 <th>Proposal title</th>
                                 <th>Proposal id</th>
                                 <th>Main speaker</th>
@@ -63,6 +65,16 @@
                                     <td>
                                     @defining(voteAndTotalVotes._3) { totalAbstentions =>
                                         @totalAbstentions
+                                    }
+                                    </td>
+                                    <td>
+                                    @defining(voteAndTotalVotes._4) { average =>
+                                        @average
+                                    }
+                                    </td>
+                                    <td>
+                                    @defining(voteAndTotalVotes._5) { stdev =>
+                                        @stdev
                                     }
                                     </td>
                                     <td>
@@ -145,6 +157,8 @@ var hoverDetail = new Rickshaw.Graph.HoverDetail( {
     "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
     "bStateSave": true,
     "aoColumns": [
+        { "sType": "numeric"},
+        { "sType": "numeric"},
         { "sType": "numeric"},
         { "sType": "numeric"},
         { "sType": "numeric"},

@@ -27,6 +27,7 @@ import library.{Benchmark, Redis}
 import org.joda.time.{Instant, DateTime}
 import play.api.Play.current
 import scala.concurrent.Future
+import scala.math.BigDecimal.RoundingMode
 
 /**
  * When a CFP admin checks or perform a review on a talk, we store this event.
@@ -231,19 +232,26 @@ object Review {
       }
   }
 
-  type ScoreAndTotalVotes = (Double, Int, Int)
+  type ScoreAndTotalVotes = (Double, Int, Int, Double, Double)
 
   def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
     client =>
       val allVoters = client.hgetAll("Computed:Voters")
       val allAbstentions = client.hgetAll("Computed:VotersAbstention")
+      val allAverages = client.hgetAll("Computed:Average")
+      val allStandardDev = client.hgetAll("Computed:StandardDeviation")
 
       client.hgetAll("Computed:Scores").map {
         case (proposalKey: String, scores: String) =>
           val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
           (proposalId,
             (scores.toDouble, allVoters.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0)
+              allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0),
+              allAverages.get(proposalKey).map(d=>BigDecimal(d.toDouble).setScale(3,RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
+              allStandardDev.get(proposalKey).filterNot(_=="nan").map{
+                d=>
+                  BigDecimal(d.toDouble).setScale(3,RoundingMode.HALF_EVEN).toDouble
+              }.getOrElse(0.toDouble)
             )
           )
       }.toSet
@@ -260,20 +268,50 @@ object Review {
           |local proposals = redis.call("KEYS", "Proposals:Votes:*")
           | redis.call("DEL", "Computed:Reviewer:Total")
           |for i = 1, #proposals do
-          |	-- redis.log(redis.LOG_DEBUG, "proposal i=" .. proposals[i])
+          |	redis.log(redis.LOG_DEBUG, "proposal i=" .. proposals[i])
           |
           |	local uuidAndScores = redis.call("ZRANGEBYSCORE", proposals[i], 1, 10, "WITHSCORES")
           |	redis.call("HSET", "Computed:Scores", proposals[i], 0)
           | redis.call("HSET", "Computed:Voters", proposals[i], 0)
+          | redis.call("HSET", "Computed:Average", proposals[i], 0)
           | redis.call("HDEL", "Computed:Votes:ScoreAndCount", proposals[i])
           | redis.call("HDEL", "Computed:VotersAbstention", proposals[i])
+          | redis.call("HDEL", "Computed:StandardDeviation" , proposals[i])
+          |
           |
           |	for j=1,#uuidAndScores,2 do
-          |  	-- redis.log(redis.LOG_DEBUG, "uuid:"..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
+          |  	redis.log(redis.LOG_DEBUG, "uuid:"..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
           |		redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
           |		redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
           |		redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
           |	end
+          |
+          | -- compute average
+          | local count = redis.call("HGET", "Computed:Voters", proposals[i])
+          | local total = redis.call("HGET", "Computed:Scores", proposals[i])
+          | local avg = 0
+          |   if (count and total) then
+          |        avg = tonumber(total)/tonumber(count)
+          |        redis.call("HSET", "Computed:Average", proposals[i], avg)
+          |   end
+          |
+          | redis.log(redis.LOG_DEBUG, "Average: " .. avg)
+          |
+          | -- compute standard deviation
+          |  local vm = 0
+          |  local sum2 = 0
+          |  local count2 = 0
+          |  local standardDev
+          |
+          |  for z=1,#uuidAndScores,2 do
+          |      vm = uuidAndScores[z + 1] - avg
+          |      sum2 = sum2 + (vm * vm)
+          |      count2 = count2 + 1
+          |  end
+          |
+          |  standardDev = math.sqrt(sum2 / (count2-1))
+          |  redis.log(redis.LOG_DEBUG, "Standard Deviation: " .. standardDev)
+          |  redis.call("HSET", "Computed:StandardDeviation" , proposals[i], standardDev)
           |
           | -- compute abstention
           | local countAbstention = redis.call("ZCOUNT", proposals[i], 0, 0)
@@ -294,6 +332,8 @@ object Review {
       if (client.scriptExists(loadLUAScript)) {
         play.Logger.of("models.Review").debug("Computing votes and scores on Redis")
         client.evalsha(loadLUAScript, 0)
+        play.Logger.of("models.Review").debug("Computation in progress...")
+
       } else {
         play.Logger.of("models.Review").error("There is no LUA script to compute scores and votes on Redis")
       }
