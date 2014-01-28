@@ -24,32 +24,20 @@
 package controllers
 
 import play.api.mvc.{RequestHeader, Action, Controller}
-import play.api.Play
-import java.math.BigInteger
-import java.security.SecureRandom
-import play.api.libs.Crypto
-import play.api.libs.json.Json
-import play.api.libs.ws.WS
-import models.{ProposalType, Proposal, Webuser}
-import library.Contexts
-import java.net.URLEncoder
-import play.api.libs.oauth._
+import models.{ProposalType, Proposal}
 import play.api.libs.oauth.ServiceInfo
 import play.api.libs.oauth.OAuth
 import play.api.libs.oauth.RequestToken
 import play.api.libs.oauth.ConsumerKey
-import scala.Some
-import Contexts.statsContext
 import com.julienvey.trello.impl.TrelloImpl
 import com.julienvey.trello.domain.Card
 import scala.collection.JavaConverters._
-import com.julienvey.trello.impl.domaininternal.Label
 
 /**
- * Planner object that interacts with Google Calendar API.
+ * TrelloPlanner object that interacts with Google Calendar API or Trello API.
  * Created by nicolas on 25/01/2014.
  */
-object Planner extends Controller with Secured {
+object TrelloPlanner extends Controller with Secured {
 
   val KEY = ConsumerKey("65eee1bd3ca6ece922cf66ece724dd66", "bdb165bd38af368eb05c266255b325007942d26c50e0141d67da845baa472f88")
 
@@ -61,8 +49,7 @@ object Planner extends Controller with Secured {
 
   def index = IsMemberOf("admin") {
     implicit uuid => implicit request =>
-    Ok(views.html.Planner.index())
-
+    Ok(views.html.TrelloPlanner.index())
   }
 
   def getBoard=IsMemberOf("admin"){
@@ -98,7 +85,7 @@ object Planner extends Controller with Secured {
             }
             Ok("Created cards on Trello: "+universities.size)
 
-          case _ => Redirect(routes.Planner.authenticate)
+          case _ => Redirect(routes.TrelloPlanner.authenticate)
         }
   }
 
@@ -112,7 +99,7 @@ object Planner extends Controller with Secured {
           TRELLO_OAUTH.retrieveAccessToken(tokenPair, verifier) match {
             case Right(t) => {
               // We received the authorized tokens in the OAuth object - store it before we proceed
-              Redirect(routes.Planner.index).withSession("token" -> t.token, "secret" -> t.secret)
+              Redirect(routes.TrelloPlanner.index).withSession("token" -> t.token, "secret" -> t.secret)
             }
             case Left(e) => throw e
           }
@@ -136,6 +123,6 @@ object Planner extends Controller with Secured {
   }
 
   def logout = Action {
-    Redirect(routes.Planner.index).withNewSession
+    Redirect(routes.TrelloPlanner.index).withNewSession
   }
 }

@@ -137,7 +137,7 @@ object Backoffice extends Controller with Secured {
   def updateRedis() = IsMemberOf("admin"){
     implicit uuid => implicit request=>
       // Placeholder that I use when I want to trigger special redis maintenance operation
-      Ok("Done ")
+      NoContent
   }
 }
 
