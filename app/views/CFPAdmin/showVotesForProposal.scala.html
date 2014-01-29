@@ -38,8 +38,8 @@
         <div class="col-md-8">
             <div class="panel-body">
                 <h3>All votes</h3>
-                @if(proposal.mainSpeaker==uuid){
-                    <em>Sorry, we do not display votes for your talk</em>
+                @if(proposal.mainSpeaker==uuid || proposal.secondarySpeaker==Some(uuid) || proposal.otherSpeakers.contains(uuid)){
+                    <em>Sorry, votes for your talk are hidden.</em>
                 }else{
                     <div class="media">
                       @allVotes.sortBy(_._2).map { case (author, vote) =>
