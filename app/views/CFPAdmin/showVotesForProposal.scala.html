@@ -38,13 +38,17 @@
         <div class="col-md-8">
             <div class="panel-body">
                 <h3>All votes</h3>
-                <div class="media">
-                  @allVotes.sortBy(_._2).map { case (author, vote) =>
-                    <div class="media-body">
-                        <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;voted @tags.renderVote(vote.toInt)
+                @if(proposal.mainSpeaker==uuid){
+                    <em>Sorry, we do not display votes for your talk</em>
+                }else{
+                    <div class="media">
+                      @allVotes.sortBy(_._2).map { case (author, vote) =>
+                        <div class="media-body">
+                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;voted @tags.renderVote(vote.toInt)
+                        </div>
+                    }
                     </div>
                 }
-                </div>
             </div>
         </div>
     </div>
