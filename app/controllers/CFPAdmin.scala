@@ -214,33 +214,6 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
   }
 
-  def allVotes() = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
-
-      val result = Review.allVotes().toList.sortBy(_._2._1).reverse
-
-      val allProposalIDs=result.map(_._1)
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
-
-      val listToDisplay:List[(Proposal, ScoreAndTotalVotes)] = result.flatMap{
-        case(proposalId,scoreAndVotes)=>
-          allProposalWithVotes.get(proposalId).map{
-            proposal:Proposal=>
-            (proposal, scoreAndVotes)
-          }
-      }.filter{case(proposal,_)=>
-        proposal.state==ProposalState.SUBMITTED
-      }
-
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay))
-  }
-
-  def doComputeVotesTotal()=IsMemberOf("cfp"){
-    implicit uuid=>implicit request=>
-      ZapActor.actor ! ComputeVotesAndScore()
-      Redirect(routes.CFPAdmin.allVotes()).flashing("success"->"Recomputing votes and scores...")
-  }
-
   def search(q: String) = IsMemberOf("cfp") {
     _ => implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -301,6 +274,73 @@ object CFPAdmin extends Controller with Secured {
           Ok(views.html.CFPAdmin.showSpeakerAndTalks(speaker, proposals))
         }
         case None => NotFound("Speaker not found")
+      }
+  }
+
+  def allVotes(confType:String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+
+      val result = Review.allVotes().toList.sortBy(_._2._1).reverse
+
+      val allProposalIDs=result.map(_._1)
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+
+      val listOfProposals:List[(Proposal, ScoreAndTotalVotes)] = result.flatMap{
+        case(proposalId,scoreAndVotes)=>
+          allProposalWithVotes.get(proposalId).map{
+            proposal:Proposal=>
+              (proposal, scoreAndVotes)
+          }
+      }.filter{case(proposal,_)=>
+        proposal.state==ProposalState.SUBMITTED
+      }
+
+      val listToDisplay = confType match {
+        case "all"=>listOfProposals
+        case filterType=>listOfProposals.filter(_._1.talkType.id==filterType)
+      }
+
+      val totalPreaccepted = AcceptService.countPreaccepted(confType)
+      val totalRemaining = AcceptService.remainingSlots(confType)
+
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalPreaccepted, totalRemaining))
+  }
+
+  def doComputeVotesTotal()=IsMemberOf("cfp"){
+    implicit uuid=>implicit request=>
+      ZapActor.actor ! ComputeVotesAndScore()
+      Redirect(routes.CFPAdmin.allVotes("all")).flashing("success"->"Recomputing votes and scores...")
+  }
+
+  def doPreAccept(proposalId: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+      Proposal.findById(proposalId).map {
+        proposal =>
+          proposal.state match {
+            case ProposalState.SUBMITTED =>
+              AcceptService.preaccept(proposalId, proposal.talkType.id)
+              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been preaccepted.")
+            case _ =>
+              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}")
+          }
+      }.getOrElse {
+        Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found")
+      }
+  }
+
+  def cancelPreAccept(proposalId: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+      Proposal.findById(proposalId).map {
+        proposal =>
+          proposal.state match {
+            case ProposalState.SUBMITTED =>
+              AcceptService.cancelPreaccept(proposalId, proposal.talkType.id)
+              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been removed from preaccepted list.")
+            case _ =>
+              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}")
+          }
+      }.getOrElse {
+        Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found")
       }
   }
 }

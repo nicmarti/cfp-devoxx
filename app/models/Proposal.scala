@@ -555,5 +555,4 @@ object Proposal {
       listOfProposals.zipAll(proposals, "?", None).filterNot(_._2.isEmpty).map(t => (t._1, t._2.get)).toMap
   }
 
-
 }

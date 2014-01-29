@@ -1,4 +1,4 @@
-@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalAccepted:Long, totalRemaining:Long)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("All votes") {
 
@@ -17,18 +17,34 @@
             <div class="panel-body">
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-primary btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
-                        <div class="chart-container">
-                            <div id="chart_container">
-                                    <div id="y_axis"></div>
-                                    <div id="chart"></div>
+
+                        <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
+                        |
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
+
+                        @if(flash.get("error").isDefined) {
+                            <div class="alert alert-danger alert-dismissable">
+                                <strong>Error :</strong>
+                                @flash.get("error").get
                             </div>
-                        </div>
+                        }
+                        @if(flash.get("success").isDefined) {
+                            <div class="alert alert-success alert-dismissable">
+                                @flash.get("success").get
+                            </div>
+                        }
+                   <br>
+                    <span class="label label-success">@totalAccepted accepted</span> <span class="label label-warning">@totalRemaining remaining</span>
                     </div>
+
 
                 <div class="col-md-12">
                     <small>All proposals with state set to SUBMITTED</small>
-                    <table id="allProposals" class="table table-bordered table-striped table-hover table-condensed">
+                    <table id="allProposals" class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
                                 <th>Total Score</th>
@@ -42,11 +58,14 @@
                                 <th>Main speaker</th>
                                 <th>Track</th>
                                 <th>Type</th>
+                                <th>Pre-accept</th>
                             </tr>
                         </thead>
                         <tbody>
                             @allVotes.map { case (proposal, voteAndTotalVotes) =>
-                                <tr>
+                                @defining(AcceptService.isPreselected(proposal.id, proposal.talkType.id)){preselected=>
+                                <tr class="preselected_@preselected">
+
                                     <td>
                                     @defining(Math.round(voteAndTotalVotes._1)) { score =>
                                         @score
@@ -82,7 +101,7 @@
                                     </td>
                                     <td>@proposal.id</td>
                                     <td>
-                                        @tags.renderGravatar(proposal.mainSpeaker)
+                                        @tags.renderGravatar(proposal.mainSpeaker,showName = true, showPhoto = false)
                                     </td>
                                     <td>
                                         @Messages(proposal.track.id)
@@ -90,12 +109,30 @@
                                     <td>
                                         @Messages(proposal.talkType.id)
                                     </td>
+                                    <td>
+                                        @if(preselected){
+                                            <a href="@routes.CFPAdmin.cancelPreAccept(proposal.id)">Remove</a>
+                                        }else{
+                                            <a href="@routes.CFPAdmin.doPreAccept(proposal.id)">Pre-accept</a>
+                                        }
+                                    </td>
                                 </tr>
+                                }
                             }
                         </tbody>
                     </table>
 
                 </div>
+
+                    <div class="col-md-12">
+                        <h3>Chart</h3>
+                        <div class="chart-container">
+                            <div id="chart_container">
+                                <div id="y_axis"></div>
+                                <div id="chart"></div>
+                            </div>
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -151,6 +188,10 @@ var hoverDetail = new Rickshaw.Graph.HoverDetail( {
     </script>
 <script type="text/javascript">
     $(document).ready(function() {
+
+    $.fn.dataTableExt.oStdClasses.sStripeOdd = '';
+    $.fn.dataTableExt.oStdClasses.sStripeEven = '';
+
     $('#allProposals').dataTable({
     "aaSorting": [[ 0, "desc" ]],
     "iDisplayLength": 50,
@@ -163,6 +204,7 @@ var hoverDetail = new Rickshaw.Graph.HoverDetail( {
         { "sType": "numeric"},
         { "sType": "numeric"},
         { "sType": "numeric"},
+        { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
