@@ -83,7 +83,6 @@ GET         /admin/proposals/moveDraft                         controllers.Backo
 GET         /admin/draftReminder                               controllers.Backoffice.sendReminderToSpeakersForDraft()
 POST        /admin/deleteSpeaker/:speakerUUIDToDelete          controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
 GET         /admin/cleanUpVotesIfUserWasDeleted                controllers.Backoffice.cleanUpVotesIfUserWasDeleted
-GET         /admin/updateRedis                                 controllers.Backoffice.updateRedis()
 GET         /admin/pb                                          controllers.ProgramBuilder.index
 GET         /admin/pb/exportToCSV                              controllers.ProgramBuilder.exportToCSV(sortBy:Option[String])
 
@@ -95,6 +94,7 @@ GET         /admin/elastic                                     controllers.Backo
 # Special access for Alexis MP
 GET         /show/proposals                                    controllers.Sponsor.index()
 
+GET         /redis_nico_test    controllers.Backoffice.updateRedis()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                      controllers.Assets.at(path="/public", file)

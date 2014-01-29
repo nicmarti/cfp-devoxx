@@ -109,7 +109,7 @@ class IndexMaster extends ESActor {
     // Load events by 100
     val totalEvents = Event.totalEvents()
 
-    for (page <- 0 to totalEvents / 100) {
+    for (page <- 0 to totalEvents.toInt / 100) {
       play.Logger.of("application.IndexMaster").debug("Loading event page " + page)
       Event.loadEvents(100, page).map {
         event => ElasticSearchActor.reaperActor ! Index(event)

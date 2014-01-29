@@ -5,11 +5,10 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import library.{DraftReminder, ZapActor}
+import library.{Redis, Benchmark, DraftReminder, ZapActor}
 import library.search.{DoIndexProposal, DoIndexSpeaker, ElasticSearchActor}
 import library.search.DoIndexSpeaker
 import library.search.DoIndexProposal
-import library.DraftReminder
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -137,7 +136,29 @@ object Backoffice extends Controller with Secured {
   def updateRedis() = IsMemberOf("admin"){
     implicit uuid => implicit request=>
       // Placeholder that I use when I want to trigger special redis maintenance operation
-      NoContent
+
+      val allProposalIDsSubmitted = Proposal.allProposalIDsSubmitted
+
+    val allEvents = Benchmark.measure(()=>Event.loadEvents(Event.totalEvents.toInt,0) , "Loading all events")
+
+    Redis.pool.withClient{
+      implicit client=>
+      val tx=client.multi()
+      allProposalIDsSubmitted.foreach{proposalId:String=>
+        allEvents.find{
+          event=>
+            event.msg.startsWith(s"Changed status of talk $proposalId from draft to submitted")
+        }.map{event=>
+          event.date.map{
+            zeDate=>
+            tx.hset("Proposal:SubmittedDate",proposalId,zeDate.toDate.getTime.toString)
+          }
+        }
+      }
+        tx.exec()
+   }
+      Ok("Test ")
+
   }
 }
 

@@ -46,7 +46,7 @@
                             Speaker
                         </th>
                         <th>
-                            Last modified
+                            Submission date
                         </th>
                     </tr>
                 </thead>
@@ -73,7 +73,7 @@
                             @proposal.secondarySpeaker.map(tags.renderGravatar(_))
                         </td>
                         <td>
-                            @Event.getMostRecentDateFor(proposal.id).map(_.toString("dd/MM/yy HH:mm")).getOrElse("")
+                           @Proposal.getSubmissionDate(proposal.id).getOrElse(new java.util.Date().getTime())
                         </td>
                     </tr>
 
@@ -89,10 +89,27 @@
 </div>
 
 <script type="text/javascript">
+
 $(document).ready(function() {
     $('#allProposals').dataTable({
-        "iDisplayLength": 25,
-        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+        "iDisplayLength": -1,
+        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+    "aoColumns": [
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "numeric"}
+    ],
+    "aoColumnDefs": [ {
+    "aTargets": [ 6 ],
+        "mData": "download_link",
+        "mRender": function ( data, type, full ) {
+        return new Date(parseInt(data));
+    }
+    } ]
     });
 } );
 </script>

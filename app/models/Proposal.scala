@@ -7,6 +7,7 @@ import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.templates.HtmlFormat
+import org.joda.time.{DateTime, Instant}
 
 /**
  * Proposal
@@ -257,11 +258,22 @@ object Proposal {
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
           Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
 
+          if(newState==ProposalState.SUBMITTED){
+            client.hset("Proposal:SubmittedDate",proposalId, new Instant().getMillis.toString)
+          }
       }
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
         Event.storeEvent(Event(proposalId, uuid, s"Posted new talk ${proposalId} with status ${newState.code}"))
+      }
+  }
+
+  def getSubmissionDate(proposalId:String):Option[Long]=Redis.pool.withClient{
+    implicit client=>
+      client.hget("Proposal:SubmittedDate", proposalId).map{
+        date:String=>
+          date.toLong
       }
   }
 
@@ -399,6 +411,12 @@ object Proposal {
     implicit client =>
       val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
       allProposalIDDeleted
+  }
+
+  def allProposalIDsSubmitted:Set[String]=Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDsSubmitted = client.smembers(s"Proposals:ByState:${ProposalState.SUBMITTED.code}")
+      allProposalIDsSubmitted
   }
 
   def countAll() = {

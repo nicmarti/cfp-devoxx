@@ -73,7 +73,7 @@ object Event {
   // Very fast O(1) operation
   def totalEvents()=Redis.pool.withClient{
     client=>
-      client.zcard("Events:V2:").toInt
+      client.zcard("Events:V2:")
   }
 
   implicit object mostRecent extends Ordering[DateTime] { def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)}
