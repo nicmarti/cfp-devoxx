@@ -247,7 +247,7 @@ object Review {
           (proposalId,
             (scores.toDouble, allVoters.get(proposalKey).map(_.toInt).getOrElse(0),
               allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAverages.get(proposalKey).map(d=>BigDecimal(d.toDouble).setScale(3,RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
+              allAverages.get(proposalKey).filterNot(_=="nan").filterNot(_=="_nan").map(d=>BigDecimal(d.toDouble).setScale(3,RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
               allStandardDev.get(proposalKey).filterNot(_=="nan").filterNot(_=="_nan").map{
                 d=>
                   BigDecimal(d.toDouble).setScale(3,RoundingMode.HALF_EVEN).toDouble
