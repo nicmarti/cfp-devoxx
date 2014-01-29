@@ -69,17 +69,16 @@
                     <div class="col-md-6">
                         <h3>Submitted by Track</h3>
                         @if(totalByCategories.nonEmpty){
-                        @defining(100/(totalByCategories.map(_._2).max)){ratio=>
+                            @defining(totalByCategories.map(_._2).max){maxValue=>
                             @totalByCategories.map{case(track,total)=>
-                            <span class="label label-info">@total</span> @Messages(track)
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="@(total*ratio)" aria-valuemin="0" aria-valuemax="100" style="width: @(ratio*total)%;">
-                                    <span class="sr-only">@Messages(track)</span>
-                            </div>
-                            </div>
-
+                                <span class="label label-info">@total</span> @Messages(track)
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
+                                        <span class="sr-only">@Messages(track)</span>
+                                </div>
+                                </div>
                             }
-                        }
+                            }
                         }
                     </div>
 
