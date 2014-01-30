@@ -70,6 +70,8 @@ GET         /cfpadmin/recompute/allvotes                       controllers.CFPAd
 GET         /cfpadmin/allSponsorTalks                          controllers.CFPAdmin.allSponsorTalks
 GET         /cfpadmin/speaker/:uuidSpeaker                     controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
 GET         /cfpadmin/sponsorTalk/remove/:proposalId           controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
+GET         /cfpadmin/proposals/byType/:confType               controllers.CFPAdmin.allProposalsByType(confType:String)
+GET         /cfpadmin/proposals/byTrack/:track                 controllers.CFPAdmin.allProposalsByTrack(track:String)
 
 # AcceptOrReject controller
 GET         /preaccept/:proposalId                             controllers.AcceptOrReject.doAccept(proposalId:String)

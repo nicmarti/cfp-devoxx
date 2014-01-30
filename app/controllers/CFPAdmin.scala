@@ -319,6 +319,19 @@ object CFPAdmin extends Controller with Secured {
       Redirect(routes.CFPAdmin.allSponsorTalks).flashing("success"->s"Removed sponsor talk on $proposalId")
   }
 
+  def allProposalsByTrack(track:String)=IsMemberOf("cfp"){
+    implicit uuid=>
+      implicit request=>
+      val proposals = Proposal.allSubmitted().filter(_.track.id==track)
+      Ok(views.html.CFPAdmin.allProposalsByTrack(proposals,track))
+  }
+
+  def allProposalsByType(confType:String)=IsMemberOf("cfp"){
+    implicit uuid=>
+      implicit request=>
+      val proposals = Proposal.allSubmitted().filter(_.talkType.id==confType)
+      Ok(views.html.CFPAdmin.allProposalsByType(proposals,confType))
+  }
 }
 
 

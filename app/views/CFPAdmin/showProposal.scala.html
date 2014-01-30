@@ -13,8 +13,14 @@
                                            <thead>
                                                <tr>
                                                    <th>@Messages("admin.proposals.th.title")</th>
-                                                   <th>@Messages("admin.proposals.th.track")</th>
-                                                   <th>@Messages("admin.proposals.th.talkType")</th>
+                                                   <th>
+                                                   @Messages("admin.proposals.th.track")
+<small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                   </th>
+
+                                                   <th>@Messages("admin.proposals.th.talkType")
+<small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                   </th>
                                                    <th>@Messages("admin.proposals.th.lang")</th>
                                                </tr>
                                            </thead>
