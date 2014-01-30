@@ -302,3 +302,4 @@ leaderboard.compute=Computing stats
 
 admin.sp.accepted=Accepted
 admin.sp.accepted.txt=This talk has been accepted. Either during the final decision, or because it''s a sponsor talk or a speaker on the wishlist.
+btn.abstention=Vote 0 for this talk
