@@ -9,6 +9,8 @@ import library.{Redis, Benchmark, DraftReminder, ZapActor}
 import library.search.{DoIndexProposal, DoIndexSpeaker, ElasticSearchActor}
 import library.search.DoIndexSpeaker
 import library.search.DoIndexProposal
+import org.joda.time.{Instant, DateTime}
+import scala.collection.immutable.HashMap
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -135,30 +137,19 @@ object Backoffice extends Controller with Secured {
 
   def updateRedis() = IsMemberOf("admin"){
     implicit uuid => implicit request=>
-      // Placeholder that I use when I want to trigger special redis maintenance operation
 
-      val allProposalIDsSubmitted = Proposal.allProposalIDsSubmitted
-
-    val allEvents = Benchmark.measure(()=>Event.loadEvents(Event.totalEvents.toInt,0) , "Loading all events")
-
-    Redis.pool.withClient{
-      implicit client=>
-      val tx=client.multi()
-      allProposalIDsSubmitted.foreach{proposalId:String=>
-        allEvents.find{
-          event=>
-            event.msg.startsWith(s"Changed status of talk $proposalId from draft to submitted")
-        }.map{event=>
-          event.date.map{
-            zeDate=>
-            tx.hset("Proposal:SubmittedDate",proposalId,zeDate.toDate.getTime.toString)
-          }
+      Redis.pool.withClient{
+        client=>
+        val toReturn = client.hgetAll("Proposal:SubmittedDate").map{case(proposal,submitted)=>
+          (proposal, new Instant(submitted.toLong).toDateTime.toDateMidnight.toString("dd-MM-yyyy"))
+        }.groupBy(_._2).map{
+          tuple=>
+            (tuple._1, tuple._2.size)
         }
-      }
-        tx.exec()
-   }
-      Ok("Test ")
 
+
+        Ok(toReturn.mkString("\n")).as("text/plain")
+      }
   }
 }
 
