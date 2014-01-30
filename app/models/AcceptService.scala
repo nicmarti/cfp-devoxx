@@ -31,42 +31,42 @@ import library.Redis
  */
 object AcceptService {
 
-  def countPreaccepted(talkType:String):Long=Redis.pool.withClient{
+  def countAccepted(talkType:String):Long=Redis.pool.withClient{
     client=>
-      client.scard("Preaccepted:"+talkType)
+      client.scard("Accepted:"+talkType)
   }
 
-  def isPreselected(proposalId:String, talkType:String):Boolean=Redis.pool.withClient{
+  def isAccepted(proposalId:String, talkType:String):Boolean=Redis.pool.withClient{
     client=>
-      client.sismember("Preaccepted:"+talkType, proposalId)
+      client.sismember("Accepted:"+talkType, proposalId)
   }
 
   def remainingSlots(talkType:String):Long={
     talkType match {
       case ProposalType.UNI.id =>
-        12 - countPreaccepted(talkType)
+        12 - countAccepted(talkType)
       case ProposalType.CONF.id =>
-        68 - countPreaccepted(talkType)
+        68 - countAccepted(talkType)
       case ProposalType.TIA.id =>
-        30 - countPreaccepted(talkType)
+        30 - countAccepted(talkType)
       case ProposalType.LAB.id =>
-        12 - countPreaccepted(talkType)
+        12 - countAccepted(talkType)
       case ProposalType.BOF.id =>
-        15 - countPreaccepted(talkType)
+        15 - countAccepted(talkType)
       case ProposalType.QUICK.id =>
-        20 - countPreaccepted(talkType)
+        20 - countAccepted(talkType)
       case other => 0
     }
   }
 
-  def preaccept(proposalId:String, talkType:String)=Redis.pool.withClient{
+  def accept(proposalId:String, talkType:String)=Redis.pool.withClient{
     implicit client=>
-      client.sadd("Preaccepted:"+talkType, proposalId)
+      client.sadd("Accepted:"+talkType, proposalId)
   }
 
-  def cancelPreaccept(proposalId:String, talkType:String)=Redis.pool.withClient{
+  def cancelAccept(proposalId:String, talkType:String)=Redis.pool.withClient{
     implicit client=>
-      client.srem("Preaccepted:"+talkType, proposalId)
+      client.srem("Accepted:"+talkType, proposalId)
   }
 
 

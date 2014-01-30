@@ -300,10 +300,10 @@ object CFPAdmin extends Controller with Secured {
         case filterType=>listOfProposals.filter(_._1.talkType.id==filterType)
       }
 
-      val totalPreaccepted = AcceptService.countPreaccepted(confType)
+      val totalAccepted = AcceptService.countAccepted(confType)
       val totalRemaining = AcceptService.remainingSlots(confType)
 
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalPreaccepted, totalRemaining))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalAccepted, totalRemaining))
   }
 
   def doComputeVotesTotal()=IsMemberOf("cfp"){
@@ -312,37 +312,7 @@ object CFPAdmin extends Controller with Secured {
       Redirect(routes.CFPAdmin.allVotes("all")).flashing("success"->"Recomputing votes and scores...")
   }
 
-  def doPreAccept(proposalId: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
-      Proposal.findById(proposalId).map {
-        proposal =>
-          proposal.state match {
-            case ProposalState.SUBMITTED =>
-              AcceptService.preaccept(proposalId, proposal.talkType.id)
-              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been preaccepted.")
-            case _ =>
-              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}")
-          }
-      }.getOrElse {
-        Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found")
-      }
-  }
 
-  def cancelPreAccept(proposalId: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
-      Proposal.findById(proposalId).map {
-        proposal =>
-          proposal.state match {
-            case ProposalState.SUBMITTED =>
-              AcceptService.cancelPreaccept(proposalId, proposal.talkType.id)
-              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been removed from preaccepted list.")
-            case _ =>
-              Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}")
-          }
-      }.getOrElse {
-        Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found")
-      }
-  }
 }
 
 

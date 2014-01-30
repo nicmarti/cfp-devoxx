@@ -17,14 +17,12 @@
             <div class="panel-body">
                 <div class="panel-body">
                     <div class="col-md-12">
-
-                        <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
-                        |
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
+| <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
 
                         @if(flash.get("error").isDefined) {
                             <div class="alert alert-danger alert-dismissable">
@@ -37,8 +35,8 @@
                                 @flash.get("success").get
                             </div>
                         }
-                   <br>
-                    <span class="label label-success">@totalAccepted accepted</span> <span class="label label-warning">@totalRemaining remaining</span>
+                       <br>
+                        <span class="label label-success">@totalAccepted accepted</span> <span class="label label-warning">@totalRemaining remaining</span>
                     </div>
 
 
@@ -58,14 +56,13 @@
                                 <th>Main speaker</th>
                                 <th>Track</th>
                                 <th>Type</th>
-                                <th>Pre-accept</th>
+                                <th>Accept</th>
                             </tr>
                         </thead>
                         <tbody>
                             @allVotes.map { case (proposal, voteAndTotalVotes) =>
-                                @defining(AcceptService.isPreselected(proposal.id, proposal.talkType.id)){preselected=>
-                                <tr class="preselected_@preselected">
-
+                                @defining(AcceptService.isAccepted(proposal.id, proposal.talkType.id)){accepted=>
+                                <tr class="preselected_@accepted">
                                     <td>
                                     @defining(Math.round(voteAndTotalVotes._1)) { score =>
                                         @score
@@ -110,10 +107,10 @@
                                         @Messages(proposal.talkType.id)
                                     </td>
                                     <td>
-                                        @if(preselected){
-                                            <a href="@routes.CFPAdmin.cancelPreAccept(proposal.id)">Remove</a>
+                                        @if(accepted){
+                                            <a href="@routes.AcceptOrReject.cancelAccept(proposal.id)">Cancel accept</a>
                                         }else{
-                                            <a href="@routes.CFPAdmin.doPreAccept(proposal.id)">Pre-accept</a>
+                                            <a href="@routes.AcceptOrReject.doAccept(proposal.id)">Accept</a>
                                         }
                                     </td>
                                 </tr>

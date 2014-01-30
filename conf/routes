@@ -67,10 +67,12 @@ GET         /cfpadmin/myvotes                                  controllers.CFPAd
 GET         /cfpadmin/search                                   controllers.CFPAdmin.search(q:String)
 GET         /cfpadmin/allvotes/:confType                       controllers.CFPAdmin.allVotes(confType:String)
 GET         /cfpadmin/recompute/allvotes                       controllers.CFPAdmin.doComputeVotesTotal()
-GET         /cfpadmin/preaccept/:proposalId                    controllers.CFPAdmin.doPreAccept(proposalId:String)
-GET         /cfpadmin/cancelPreaccept/:proposalId              controllers.CFPAdmin.cancelPreAccept(proposalId:String)
 GET         /cfpadmin/allSponsorTalks                          controllers.CFPAdmin.allSponsorTalks
 GET         /cfpadmin/speaker/:uuidSpeaker                     controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
+
+# AcceptOrReject controller
+GET         /preaccept/:proposalId                              controllers.AcceptOrReject.doAccept(proposalId:String)
+GET         /cancelPreaccept/:proposalId                        controllers.AcceptOrReject.cancelAccept(proposalId:String)
 
 GET         /favicon.ico                                       controllers.Assets.at(path="/public/images", file="favicon.ico")
 
