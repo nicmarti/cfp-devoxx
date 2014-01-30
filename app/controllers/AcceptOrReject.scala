@@ -24,7 +24,8 @@
 package controllers
 
 import play.api.mvc.Controller
-import models.{AcceptService, ProposalState, Proposal}
+import models.{Event, AcceptService, ProposalState, Proposal}
+import play.api.i18n.Messages
 
 /**
  * Sans doute le controller le plus sadique du monde qui accepte ou rejette les propositions
@@ -44,6 +45,7 @@ object AcceptOrReject extends Controller with Secured{
           proposal.state match {
             case ProposalState.SUBMITTED =>
               AcceptService.accept(proposalId, proposal.talkType.id)
+              Event.storeEvent(Event(proposalId, uuid, s"Accepted ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
               Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been accepted.")
             case _ =>
               Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}")
@@ -60,6 +62,8 @@ object AcceptOrReject extends Controller with Secured{
           proposal.state match {
             case ProposalState.SUBMITTED =>
               AcceptService.cancelAccept(proposalId, proposal.talkType.id)
+              Event.storeEvent(Event(proposalId, uuid, s"Cancel Accepted on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
+
               Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been removed from Accepted list.")
             case _ =>
               Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}")
