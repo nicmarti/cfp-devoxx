@@ -16,7 +16,7 @@ import play.api.i18n.Messages
 import models.Review.ScoreAndTotalVotes
 
 /**
- * The backoffice controller for the CFP technical commitee.
+ * The backoffice controller for the CFP technical committee.
  *
  * Author: @nmartignole
  * Created: 11/11/2013 09:09 in Thalys, heading to Devoxx2013
@@ -129,7 +129,7 @@ object CFPAdmin extends Controller with Secured {
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
               ZapActor.actor ! SendMessageInternal(uuid, proposal, validMsg)
-              Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to program commitee.")
+              Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to program committee.")
             }
           )
         }
@@ -183,7 +183,7 @@ object CFPAdmin extends Controller with Secured {
       val worstReviewer = Leaderboard.worstReviewer()
       val totalByCategories = Leaderboard.totalByCategories()
       val totalByType = Leaderboard.totalByType()
-      val devoxx2013=Proposal.getDevoxx2013Total
+      val devoxx2013=AcceptService.getDevoxx2013Total
 
       Ok(
         views.html.CFPAdmin.leaderBoard(
@@ -312,6 +312,12 @@ object CFPAdmin extends Controller with Secured {
       Redirect(routes.CFPAdmin.allVotes("all")).flashing("success"->"Recomputing votes and scores...")
   }
 
+  def removeSponsorTalkFlag(proposalId:String)=IsMemberOf("admin"){
+    implicit uuid=>
+      implicit request=>
+      Proposal.removeSponsorTalkFlag(uuid,proposalId)
+      Redirect(routes.CFPAdmin.allSponsorTalks).flashing("success"->s"Removed sponsor talk on $proposalId")
+  }
 
 }
 

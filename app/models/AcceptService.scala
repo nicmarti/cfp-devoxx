@@ -30,6 +30,17 @@ import library.Redis
  * Created by nicolas on 29/01/2014.
  */
 object AcceptService {
+  // What we did in 2013
+  val getDevoxx2013Total: Map[String, Int] = {
+    Map(
+      (ProposalType.CONF.label, 68) // 29 sans apres-midi decideur + 39 vendredi
+      , (ProposalType.UNI.label, 8)
+      , (ProposalType.TIA.label, 30)
+      , (ProposalType.LAB.label, 12)
+      , (ProposalType.QUICK.label, 20)
+      , (ProposalType.BOF.label, 15)
+    )
+  }
 
   def countAccepted(talkType:String):Long=Redis.pool.withClient{
     client=>

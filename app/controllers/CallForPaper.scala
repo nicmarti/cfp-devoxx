@@ -31,6 +31,7 @@ import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import library.{SendMessageToComite, SendMessageToSpeaker, ZapActor}
+import org.apache.commons.lang3.StringUtils
 
 /**
  * Main controller for the speakers.
@@ -169,6 +170,8 @@ object CallForPaper extends Controller with Secured {
               val updatedProposal = proposal.copy(mainSpeaker=existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
               // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
               Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal,uuid), ProposalState.DRAFT)
+              Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+
               Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
             }
             case other => {
@@ -176,6 +179,7 @@ object CallForPaper extends Controller with Secured {
               if (Proposal.isNew(proposal.id)) {
                 // This is a "create new" operation
                 Proposal.save(uuid, proposal, ProposalState.DRAFT)
+                Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
                 Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
@@ -234,6 +238,8 @@ object CallForPaper extends Controller with Secured {
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
+              Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+
               Proposal.save(uuid, proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2), proposal.state)
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
             }

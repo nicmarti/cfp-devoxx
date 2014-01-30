@@ -151,7 +151,6 @@ object Proposal {
 
       tx.exec()
 
-      Event.storeEvent(Event(proposal.id, authorUUID, "Updated or created proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
       changeTrack(authorUUID, proposal)
 
@@ -226,23 +225,26 @@ object Proposal {
 
       val maybeExistingTrackId = client.hget("Proposals:TrackFor",proposalId)
 
-      // Do the operation if and only if we changed the Track
-      maybeExistingTrackId.map {
-        oldTrackId: String =>
-        // SMOVE is also a O(1) so it is faster than a SREM and SADD
-          client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
-          client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
-          // And we are able to track this event
-          Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
-      }
-      if (maybeExistingTrackId.isEmpty) {
-        // SADD is O(N)
-        client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
-        client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
+      println(maybeExistingTrackId)
 
-        Event.storeEvent(Event(proposal.id, uuid, s"Posted a new talk ($proposalId) to ${proposal.track.id}"))
-      }
+//      // Do the operation if and only if we changed the Track
+//      maybeExistingTrackId.map {
+//        oldTrackId: String =>
+//        // SMOVE is also a O(1) so it is faster than a SREM and SADD
+//          client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
+//          client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
+//
+//          // And we are able to track this event
+//          Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
+//      }
+//      if (maybeExistingTrackId.isEmpty) {
+//        // SADD is O(N)
+//        client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
+//        client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
+//
+//        Event.storeEvent(Event(proposal.id, uuid, s"Posted a new talk ($proposalId) to ${proposal.track.id}"))
+//      }
 
   }
 
@@ -336,7 +338,6 @@ object Proposal {
   def findDeleted(uuid: String, proposalId: String): Option[Proposal] = {
     allMyDeletedProposals(uuid).find(_.id == proposalId)
   }
-
 
   def givesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
     proposalType match {
@@ -492,17 +493,7 @@ object Proposal {
     }
   }
 
-  // What we did in 2013
-  val getDevoxx2013Total: Map[String, Int] = {
-    Map(
-      (ProposalType.CONF.label, 68) // 29 sans apres-midi decideur + 39 vendredi
-      , (ProposalType.UNI.label, 8)
-      , (ProposalType.TIA.label, 30)
-      , (ProposalType.LAB.label, 12)
-      , (ProposalType.QUICK.label, 20)
-      , (ProposalType.BOF.label, 15)
-    )
-  }
+
 
   // Move a speaker that was 2nd speaker or "otherSpeaker" to mainSpeaker
   // This is required as any edit operation will automatically set the Proposal's owner to the
@@ -555,4 +546,10 @@ object Proposal {
       listOfProposals.zipAll(proposals, "?", None).filterNot(_._2.isEmpty).map(t => (t._1, t._2.get)).toMap
   }
 
+  def removeSponsorTalkFlag(authorUUID:String,proposalId:String)={
+    Proposal.findById(proposalId).filter(_.sponsorTalk==true).map{ proposal=>
+      Event.storeEvent(Event(proposal.id, authorUUID, "Removed [sponsorTalkFlag] on proposal "+proposal.title))
+      Proposal.save(proposal.mainSpeaker, proposal.copy(sponsorTalk = false), proposal.state)
+    }
+  }
 }

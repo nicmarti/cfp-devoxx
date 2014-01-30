@@ -74,7 +74,7 @@ sponsorTalk=Is this a sponsor/exhibitor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Silver and Platinium sponsors can submit up to one Conference talk, that is automatically accepted and scheduled.
+sponsorTalk.help=Silver and Platinium sponsors can submit up to one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to propose a proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=Help and advices
@@ -276,7 +276,7 @@ admin.proposals.th.abstract=Proposal text
 admin.sp.mainSpeaker=Main speaker
 admin.sp.secSpeaker=Secondary speaker
 admin.sp.otherSpeaker=Other speaker(s)
-admin.sp.privateMessage=Private message for commitee
+admin.sp.privateMessage=Private message for committee
 admin.sp.sponsorTalk=Talk sponsor
 admin.sp.sponsorTalk.label=This is a sponsor talk
 admin.sp.evaluate=Evaluate this proposal
@@ -303,3 +303,4 @@ leaderboard.compute=Computing stats
 admin.sp.accepted=Accepted
 admin.sp.accepted.txt=This talk has been accepted. Either during the final decision, or because it''s a sponsor talk or a speaker on the wishlist.
 btn.abstention=Vote 0 for this talk
+remove.sponsorFlag=Remove the sponsor''s flag on this talk
