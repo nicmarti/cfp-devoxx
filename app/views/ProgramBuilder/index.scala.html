@@ -1,5 +1,30 @@
 @()(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
-@main("Export CSV and Program Builder"){
-    TODO
+@main("Program builder"){
+  <div class="row">
+
+    <div class="col-md-12">
+        <div class="panel panel-default">
+        <div class="panel-heading">
+           <h2><i class="icon-calendar"></i> Program builder</h2>
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+        </div>
+    }
+
+        </div>
+        <div class="panel-body">
+            <a href="@routes.ProgramBuilder.createCalendars()"><i class="icon-calendar-empty"></i> Create calendars</a><br>
+            <a href="@routes.ProgramBuilder.prepareExport()"><i class="icon-calendar"></i> Prepare export to calendar</a>
+        </div>
+        </div>
+    </div>
+</div>
 }

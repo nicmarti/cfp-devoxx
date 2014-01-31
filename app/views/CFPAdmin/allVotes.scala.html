@@ -47,7 +47,6 @@
                             <tr>
                                 <th>Total Score</th>
                                 <th>Nb of votes</th>
-                                <th>Nb of votes cast</th>
                                 <th>Nb of abstention</th>
                                 <th>Average</th>
                                 <th>Standard Deviation</th>
@@ -71,11 +70,6 @@
                                     <td>
                                     @defining(voteAndTotalVotes._2) { totalVoters =>
                                       @totalVoters
-                                    }
-                                    </td>
-                                    <td>
-                                    @defining(voteAndTotalVotes._2-voteAndTotalVotes._3) { totalVoteCast =>
-                                        @totalVoteCast
                                     }
                                     </td>
                                     <td>

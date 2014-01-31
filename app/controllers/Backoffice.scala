@@ -25,6 +25,12 @@ object Backoffice extends Controller with Secured {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(true)
   }
 
+  def homeBackoffice()=IsMemberOf("admin"){
+    implicit uuid =>
+      implicit request=>
+      Ok(views.html.Backoffice.homeBackoffice())
+  }
+
   // Returns all speakers
   def allSpeakers = IsMemberOf("admin") {
     implicit uuid => implicit request =>
@@ -116,11 +122,11 @@ object Backoffice extends Controller with Secured {
       }
   }
 
-  def testElasticSearch = IsMemberOf("admin") {
+  def doIndexElasticSearch() = IsMemberOf("admin") {
     implicit uuid => implicit request =>
       ElasticSearchActor.masterActor ! DoIndexSpeaker()
       ElasticSearchActor.masterActor ! DoIndexProposal()
-      Ok("Elasticsearch : index task started")
+      Redirect(routes.Backoffice.homeBackoffice).flashing("success"->"Elastic search actor started...")
   }
 
   // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
@@ -158,11 +164,6 @@ object Backoffice extends Controller with Secured {
       }
   }
 
-  def homeBackoffice()=IsMemberOf("admin"){
-    implicit uuid =>
-      implicit request=>
-      Ok(views.html.Backoffice.homeBackoffice())
-  }
 }
 
 
