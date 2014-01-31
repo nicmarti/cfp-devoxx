@@ -66,6 +66,11 @@ object Webuser {
       tx.exec()
   }
 
+  def isEmailRegistered(email:String):Boolean=Redis.pool.withClient{
+    implicit client=>
+      client.exists("Webuser:Email:"+email.toLowerCase.trim)
+  }
+
   def findByEmail(email: String): Option[Webuser] = email match {
     case "" => None
     case validEmail => {

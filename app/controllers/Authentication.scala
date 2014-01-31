@@ -59,19 +59,25 @@ object Authentication extends Controller {
   }
 
   def forgetPassword = Action {
+    implicit request=>
     Ok(views.html.Authentication.forgetPassword(emailForm))
   }
 
-  val emailForm = Form("email" -> (email verifying nonEmpty))
+  val emailForm = Form("email" -> (email verifying(nonEmpty, maxLength(50))))
 
   def doForgetPassword() = Action {
     implicit request =>
       emailForm.bindFromRequest.fold(
         errorForm => BadRequest(views.html.Authentication.forgetPassword(errorForm)),
         validEmail => {
-          Mails.sendResetPasswordLink(validEmail, routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
-          ).absoluteURL())
-          Redirect(routes.Application.index()).flashing("success" -> Messages("forget.password.confirm"))
+
+          if(Webuser.isEmailRegistered(validEmail)){
+            Mails.sendResetPasswordLink(validEmail, routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
+            ).absoluteURL())
+            Redirect(routes.Application.index()).flashing("success" -> Messages("forget.password.confirm"))
+          }else{
+            Redirect(routes.Authentication.forgetPassword()).flashing("error"->Messages("forget.password.notfound"))
+          }
         })
   }
 
@@ -83,7 +89,7 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           w =>
             val newPassword = Webuser.changePassword(w) // it is generated
-            Redirect(routes.Application.index()).flashing("success" -> ("Your new password is " + newPassword + " (case-sensitive)"))
+             Ok(views.html.Authentication.resetPassword(loginForm.fill((w.email,newPassword)), newPassword))
         }.getOrElse {
           Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
         }

@@ -340,3 +340,10 @@ cfp.isClosed.expl=Le CFP est maintenant fermé. Cependant vous pouvez encore éd
 cfp.closed.enter=S''authentifier
 tbl.cfp.closed=CFP fermé
 cfp.closed.restrictions=Le CFP est fermé. Vous pouvez éditer votre proposition. Cependant, merci de ne pas la modifier complètement par rapport à la version originale, sans quoi nous l''annulerons systématiquement.
+
+forget.password.title=Code d''accès oublié ?
+forget.password.txt=Envoyez-moi un email de réinitialisation
+forget.password.notfound=Cet email n''existe pas, vous n''êtes pas enregistré.
+
+new.accesscode.title=Nouveau code d''accès
+new.accesscode=Votre nouveau code d''accès est :

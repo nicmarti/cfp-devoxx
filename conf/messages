@@ -4,7 +4,7 @@ menu.register=Sign-in
 email=Email
 firstName=First name
 lastName=Last name
-password=Password
+password=Access code
 CallForPaper=Call for papers
 index.welcome=Already registered as a speaker? Please use this form to sign-in :
 btn.login=Sign-in
@@ -26,7 +26,7 @@ index.signup.btn=Sign-up
 email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
-forget.password=Password forgotten?
+forget.password=Access code forgotten?
 avatarUrl=URL to your latest profile photo
 home.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
 format.boolean=
@@ -241,11 +241,8 @@ freepass.forIdiots=Free pass included if, and only if, your talk is selected by 
 nav.homeSpeaker=Home
 editWebuser.title=Edit your firstname and lastname
 
-
-cfp.isOpen=CFP is now open!
-cfp.open.enter=Create your speaker''s profile
-
-
+cfp.isOpen=CFP is open
+cfp.open.enter=Create your speaker''s profile or sign-in
 
 admin.proposals.th.title=Title
 admin.proposals.th.track=Track
@@ -310,3 +307,10 @@ cfp.isClosed.expl=CFP is closed. You cannot submit a new proposal anymore. Howev
 cfp.closed.enter=Sign-in
 tbl.cfp.closed=CFP closed
 cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
+
+forget.password.title=Forget your access code?
+forget.password.txt=Send me an email
+forget.password.notfound=This email is not registered
+
+new.accesscode.title=Your new access code
+new.accesscode=Your new access code is :
