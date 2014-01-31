@@ -338,3 +338,5 @@ btn.abstention=Voter 0 pour passer au suivant
 cfp.isClosed=Le CFP est fermé
 cfp.isClosed.expl=Le CFP est maintenant fermé. Cependant vous pouvez encore éditer votre proposition, avec quelques restrictions.
 cfp.closed.enter=S''authentifier
+tbl.cfp.closed=CFP fermé
+cfp.closed.restrictions=Le CFP est fermé. Vous pouvez éditer votre proposition. Cependant, merci de ne pas la modifier complètement par rapport à la version originale, sans quoi nous l''annulerons systématiquement.

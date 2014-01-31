@@ -308,3 +308,5 @@ remove.sponsorFlag=Remove the sponsor''s flag on this talk
 cfp.isClosed=The CFP is now closed
 cfp.isClosed.expl=CFP is closed. You cannot submit a new proposal anymore. However you can still edit your proposal with some restrictions.
 cfp.closed.enter=Sign-in
+tbl.cfp.closed=CFP closed
+cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.

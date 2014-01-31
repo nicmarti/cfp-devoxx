@@ -8,11 +8,20 @@
 
     <div class="row">
         <div class="col-md-12">
-        @if(newProposal("id").value.isDefined) {
-            <h3>@Messages("Edit.proposal")</h3>
-        } else {
-            <h3>@Messages("New.proposal")</h3>
-        }
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                @if(newProposal("id").value.isDefined) {
+                    <h2>@Messages("Edit.proposal")</h2>
+                } else {
+                    <h2>@Messages("New.proposal")</h2>
+                }
+                @if(controllers.Backoffice.isCFPOpen==false){
+                    <div class="alert alert-info">
+                        @Messages("cfp.closed.restrictions")
+                    </div>
+                }
+                </div>
+            </div>
         </div>
         <div class="col-md-7">
             @if(flash.get("error").isDefined){
