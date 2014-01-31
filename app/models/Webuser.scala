@@ -131,7 +131,7 @@ object Webuser {
 
   def changePassword(webuser: Webuser): String = Redis.pool.withClient {
     client =>
-      val newPassword = RandomStringUtils.randomAlphabetic(7)
+      val newPassword = RandomStringUtils.randomAlphanumeric(16)
       val updatedWebuser = webuser.copy(password = newPassword)
       update(updatedWebuser)
       newPassword
