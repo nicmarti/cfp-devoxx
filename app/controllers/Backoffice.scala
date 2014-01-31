@@ -151,6 +151,12 @@ object Backoffice extends Controller with Secured {
         Ok(toReturn.mkString("\n")).as("text/plain")
       }
   }
+
+  def homeBackoffice()=IsMemberOf("admin"){
+    implicit uuid =>
+      implicit request=>
+      Ok(views.html.Backoffice.homeBackoffice())
+  }
 }
 
 

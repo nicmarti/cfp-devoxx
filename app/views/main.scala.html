@@ -39,6 +39,9 @@
                 @if(Webuser.hasAccessToCFPAdmin(uuid)){
                     <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> CFPAdmin</a></li>
                 }
+                 @if(Webuser.isMember(uuid, "admin")){
+                    <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
+                }
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>

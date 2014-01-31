@@ -1,0 +1,33 @@
+@()(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+
+@main("Backoffice") {
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-magnet"></i> Backoffice</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+        </div>
+    }
+
+    <div class="col-md-12">
+        <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Home backoffice</h3>
+        </div>
+        <div class="panel-body">
+            <p>body....</p>
+        </div>
+            </div>
+    </div>
+</div>
+}

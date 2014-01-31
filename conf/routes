@@ -92,6 +92,7 @@ POST        /admin/deleteSpeaker/:speakerUUIDToDelete          controllers.Backo
 GET         /admin/cleanUpVotesIfUserWasDeleted                controllers.Backoffice.cleanUpVotesIfUserWasDeleted
 GET         /admin/pb                                          controllers.ProgramBuilder.index
 GET         /admin/pb/exportToCSV                              controllers.ProgramBuilder.exportToCSV(sortBy:Option[String])
+GET         /admin                                             controllers.Backoffice.homeBackoffice()
 
 # Authenticate and admin as a regular user
 GET         /admin/authenticateAs/:uuid                        controllers.Backoffice.authenticateAs(uuid:String)
