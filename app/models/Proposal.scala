@@ -225,26 +225,23 @@ object Proposal {
 
       val maybeExistingTrackId = client.hget("Proposals:TrackFor",proposalId)
 
+      // Do the operation if and only if we changed the Track
+      maybeExistingTrackId.map {
+        oldTrackId: String =>
+        // SMOVE is also a O(1) so it is faster than a SREM and SADD
+          client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
+          client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
-      println(maybeExistingTrackId)
+          // And we are able to track this event
+          Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
+      }
+      if (maybeExistingTrackId.isEmpty) {
+        // SADD is O(N)
+        client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
+        client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
-//      // Do the operation if and only if we changed the Track
-//      maybeExistingTrackId.map {
-//        oldTrackId: String =>
-//        // SMOVE is also a O(1) so it is faster than a SREM and SADD
-//          client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
-//          client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
-//
-//          // And we are able to track this event
-//          Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
-//      }
-//      if (maybeExistingTrackId.isEmpty) {
-//        // SADD is O(N)
-//        client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
-//        client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
-//
-//        Event.storeEvent(Event(proposal.id, uuid, s"Posted a new talk ($proposalId) to ${proposal.track.id}"))
-//      }
+        Event.storeEvent(Event(proposal.id, uuid, s"Posted a new talk ($proposalId) to ${proposal.track.id}"))
+      }
 
   }
 
