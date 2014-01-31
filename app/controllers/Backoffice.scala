@@ -11,6 +11,7 @@ import library.search.DoIndexSpeaker
 import library.search.DoIndexProposal
 import org.joda.time.{Instant, DateTime}
 import scala.collection.immutable.HashMap
+import play.api.Play
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -19,6 +20,11 @@ import scala.collection.immutable.HashMap
  * Created: 02/12/2013 21:34
  */
 object Backoffice extends Controller with Secured {
+
+   val isCFPOpen:Boolean ={
+    Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(true)
+  }
+
   // Returns all speakers
   def allSpeakers = IsMemberOf("admin") {
     implicit uuid => implicit request =>

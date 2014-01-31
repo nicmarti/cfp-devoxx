@@ -334,3 +334,7 @@ leaderboard.compute=Calcul des stats en cours...
 admin.sp.accepted=Accepté
 admin.sp.accepted.txt=Ce sujet a été Accepté. Il s''agit d''un speaker invité, d''un talk sponsor ou d''un sujet accepté lors des délibérations.
 btn.abstention=Voter 0 pour passer au suivant
+
+cfp.isClosed=Le CFP est fermé
+cfp.isClosed.expl=Le CFP est maintenant fermé. Cependant vous pouvez encore éditer votre proposition, avec quelques restrictions.
+cfp.closed.enter=S''authentifier

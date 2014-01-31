@@ -304,3 +304,7 @@ admin.sp.accepted=Accepted
 admin.sp.accepted.txt=This talk has been accepted. Either during the final decision, or because it''s a sponsor talk or a speaker on the wishlist.
 btn.abstention=Vote 0 for this talk
 remove.sponsorFlag=Remove the sponsor''s flag on this talk
+
+cfp.isClosed=The CFP is now closed
+cfp.isClosed.expl=CFP is closed. You cannot submit a new proposal anymore. However you can still edit your proposal with some restrictions.
+cfp.closed.enter=Sign-in

@@ -61,7 +61,11 @@
                     <div class="col-md-5">
                         <h3><i class="icon-calendar"></i> Agenda</h3>
                         <p><strong>@Messages("cfp.opening")</strong> @Messages("cfp.opening.date")</p>
-                        <p><strong>@Messages("cfp.closing")</strong> <span class="label label-warning">@Messages("cfp.closing.date")</span> </p>
+                        @if(controllers.Backoffice.isCFPOpen){
+                            <p><strong>@Messages("cfp.closing")</strong> <span class="label label-warning">@Messages("cfp.closing.date")</span> </p>
+                        }else{
+                            <p><strong>@Messages("cfp.closing")</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
+                        }
                         <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date")</p>
                     </div>
 
@@ -76,10 +80,19 @@
                     <div class="col-md-12">
                         <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3><i class="icon-bullhorn"></i> @Messages("cfp.isOpen")</h3>
+                            @if(controllers.Backoffice.isCFPOpen){
+                                <h3><i class="icon-bullhorn"></i> @Messages("cfp.isOpen")</h3>
+                            }else{
+                                <h3><i class="icon-bullhorn"></i> @Messages("cfp.isClosed")</h3>
+                            }
                         </div>
                         <div class="panel-body">
-                            <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.open.enter")</a>
+                            @if(controllers.Backoffice.isCFPOpen){
+                                <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.open.enter")</a>
+                            }else{
+                                <p>@Messages("cfp.isClosed.expl")</p>
+                                <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.closed.enter")</a>
+                            }
                         </div>
                         </div>
                     </div>
