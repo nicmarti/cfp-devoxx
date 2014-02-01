@@ -56,6 +56,8 @@ import java.util.TimeZone
 import scala.collection.JavaConversions._
 import org.apache.commons.lang3.RandomStringUtils
 import library.calendar.CalendarSample
+import play.api.data.Forms._
+import models.Speaker
 
 /**
  * Controller created to build and to export the Program.
@@ -81,7 +83,71 @@ object ProgramBuilder extends Controller with Secured {
         Ok(views.html.ProgramBuilder.index())
   }
 
-  def createCalendars() = IsMemberOf("admin") {
+  def listCalendars() = IsMemberOf("admin") {
+    implicit uuid =>
+      implicit request =>
+
+      // initialize the transport
+        httpTransport = GoogleNetHttpTransport.newTrustedTransport
+
+        // initialize the data store factory
+        dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
+
+        // authorization
+        val credential: Credential = authorize
+
+        // set up global Calendar instance
+        client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
+
+        val calendarLists: CalendarList = client.calendarList.list.execute
+        val listOfCalendars = calendarLists.getItems.toList.filterNot(_.getId() == "nmartignole@gmail.com").filterNot(_.getId() == "vdgasl0hs6tv1lni0bnk03umj4@group.calendar.google.com")
+        Ok(views.html.ProgramBuilder.listCalendars(listOfCalendars))
+
+  }
+
+  val newCalendar = play.api.data.Form(
+    tuple(
+      "summary_cal" -> nonEmptyText(maxLength = 100),
+      "description_cal" -> nonEmptyText(maxLength = 350)
+    ))
+
+
+  def prepareNewCalendar() = IsMemberOf("admin") {
+    implicit uuid =>
+      implicit request =>
+        Ok(views.html.ProgramBuilder.prepareNewCalendar(newCalendar))
+  }
+
+  def createCalendar() = IsMemberOf("admin") {
+    implicit uuid: String =>
+      implicit request =>
+
+        newCalendar.bindFromRequest().fold(hasErrors => BadRequest(views.html.ProgramBuilder.prepareNewCalendar(hasErrors)),
+          validNewCalendar => {
+            // initialize the transport
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport
+
+            // initialize the data store factory
+            dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
+
+            // authorization
+            val credential: Credential = authorize
+
+            // set up global Calendar instance
+            client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
+
+            val newCalendar = new Calendar()
+            newCalendar.setSummary(validNewCalendar._1)
+            newCalendar.setDescription(validNewCalendar._2)
+            newCalendar.setLocation("Paris")
+            newCalendar.setTimeZone("Europe/Paris")
+            val createdCalendar = client.calendars().insert(newCalendar).execute()
+
+            Redirect(routes.ProgramBuilder.listCalendars()).flashing("success"->("Created new calendar "+createdCalendar.getId()))
+          })
+  }
+
+  def deleteCalendar(calendarId: String) = IsMemberOf("admin") {
     implicit uuid: String =>
       implicit request =>
 
@@ -97,38 +163,13 @@ object ProgramBuilder extends Controller with Secured {
         // set up global Calendar instance
         client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
 
-        // run commands
-//        val feed: CalendarList = client.calendarList.list.execute
-//        feed.getItems.toList.map {
-//          item =>
-//            println("Calendar id " + item.getId())
-//            println("Calendar summary " + item.getSummary)
-//            println("------------------")
-//        }
-
-        //      val newCalendar = new Calendar()
-        //      newCalendar.setDescription("Test de calendar")
-        //      newCalendar.setLocation("Paris")
-        //      newCalendar.setSummary("Resume du calendar")
-        //      newCalendar.setTimeZone("Europe/Paris")
-        //      val createdCalendar = client.calendars().insert(newCalendar).execute()
-        //      println("Created a calendar "+createdCalendar.getId())
-
-        val createdCalendar = client.calendars().get("b4m0h1v6r3uvhhms8fdd5dtbvo@group.calendar.google.com").execute()
-
-        // New event
-        val event: Event = newEvent()
-        val result: Event = client.events().insert(createdCalendar.getId(), event).execute()
-
-
-
-
-        Ok("<h1>Ok</h1>").as("text/html")
+     //   client.calendars().delete(calendarId).execute()
+        Redirect(routes.ProgramBuilder.index()).flashing("success" -> ("Deleted calendar " + calendarId))
   }
 
   def newEvent(): Event = {
     val event = new Event()
-    event.setSummary("New Event "+RandomStringUtils.randomAlphabetic(4))
+    event.setSummary("New Event " + RandomStringUtils.randomAlphabetic(4))
     val startDate = new Date()
     val endDate = new Date(startDate.getTime() + 3600000)
     val start = new DateTime(startDate, TimeZone.getTimeZone("UTC"))

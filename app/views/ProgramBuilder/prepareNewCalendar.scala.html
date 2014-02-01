@@ -1,6 +1,7 @@
-@()(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(newCalendarForm:Form[(String,String)])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
-@main("Program builder"){
+@import helper.twitterBootstrap._
+@main("Program builder - New Calendar"){
   <div class="row">
 
     <div class="col-md-12">
@@ -21,9 +22,12 @@
 
         </div>
         <div class="panel-body">
-            <a href="@routes.ProgramBuilder.listCalendars()"  class="btn btn-success"><i class="icon-calendar-empty"></i> List all calendars</a><br>
-            <a href="@routes.ProgramBuilder.prepareNewCalendar()"  class="btn btn-success"><i class="icon-calendar-empty"></i> Create one calendar</a><br>
-            <a href="@routes.ProgramBuilder.prepareExport()" class="btn btn-success"><i class="icon-calendar"></i> Prepare export to calendar</a>
+            <h2>New calendar</h2>
+            @helper.form(action = routes.ProgramBuilder.createCalendar) {
+                @helper.inputText(newCalendarForm("summary_cal"))
+                @helper.inputText(newCalendarForm("description_cal"))
+                <button class="btn btn-success" type="submit">Create</button>
+            }
         </div>
         </div>
     </div>

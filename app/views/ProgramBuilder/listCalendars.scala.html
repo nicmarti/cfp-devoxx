@@ -1,6 +1,6 @@
-@()(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(listOfCalendars:List[com.google.api.services.calendar.model.CalendarListEntry])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
-@main("Program builder"){
+@main("Program builder - List of Calendars"){
   <div class="row">
 
     <div class="col-md-12">
@@ -21,9 +21,14 @@
 
         </div>
         <div class="panel-body">
-            <a href="@routes.ProgramBuilder.listCalendars()"  class="btn btn-success"><i class="icon-calendar-empty"></i> List all calendars</a><br>
-            <a href="@routes.ProgramBuilder.prepareNewCalendar()"  class="btn btn-success"><i class="icon-calendar-empty"></i> Create one calendar</a><br>
-            <a href="@routes.ProgramBuilder.prepareExport()" class="btn btn-success"><i class="icon-calendar"></i> Prepare export to calendar</a>
+<h2>List of calendars</h2>
+            @listOfCalendars.map{calendar=>
+              <h5>@calendar.getSummary()</h5>
+                <p>Id: @calendar.getId()</p>
+                <p>@calendar.getDescription()</p>
+                <a href="@routes.ProgramBuilder.deleteCalendar(calendar.getId())" class="btn btn-sm btn-danger">Delete this calendar</a>
+
+            }
         </div>
         </div>
     </div>
