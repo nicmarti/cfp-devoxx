@@ -79,6 +79,7 @@ object Review {
 
   def deleteVoteForProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
+      play.Logger.of("proposal.Review").debug(s"Deleting vote for proposal $proposalId")
       val allAuthors = client.smembers(s"Proposals:Reviewed:ByProposal:$proposalId")
       val tx = client.multi()
       allAuthors.foreach {
@@ -350,7 +351,7 @@ object Review {
 
   def diffReviewBetween(firstUUID:String, secondUUID:String):Set[String]=Redis.pool.withClient{
     client=>
-      client.sdiff(s"Proposals:Reviewed:ByAuthor:$firstUUID",s"Proposals:Reviewed:ByAuthor:$secondUUID")
+      client.sdiff(s"Proposals:Reviewed:ByAuthor:$firstUUID",s"Proposals:Reviewed:ByAuthor:$secondUUID", "Proposals:ByState:"+ProposalState.DELETED.code)
   }
 
 }

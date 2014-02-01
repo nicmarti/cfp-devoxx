@@ -115,11 +115,11 @@ object CronTask {
     if(Play.isDev){
       Akka.system.scheduler.schedule(30 minute, 10 minutes, ZapActor.actor, ComputeLeaderboard())
       Akka.system.scheduler.schedule(45 minute, 30 minutes, ZapActor.actor, ComputeVotesAndScore())
-      Akka.system.scheduler.schedule(1 minute, 2 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
+      Akka.system.scheduler.schedule(10 seconds, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
     }else{
       Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
       Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
-      Akka.system.scheduler.schedule(2 minutes, 60 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
+      Akka.system.scheduler.schedule(2 minutes, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
     }
 
 
