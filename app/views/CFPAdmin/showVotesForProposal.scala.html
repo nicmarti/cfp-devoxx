@@ -27,11 +27,11 @@
                 <h3>Current score</h3>
                 <p>Total score : @score</p>
                 @if(totalVotesCast>0){
-                    <p>Average score : @library.Stats.average(allVotes.map(_._2))</p>
+                    <p>Average score : @library.Stats.average(allVotes.map(_._2).filterNot(_==0))</p>
                 }
                 <p>Total votes cast : @totalVotesCast</p>
                 <p>Total votes : @totalVotes</p>
-                <p>Standard deviation : @library.Stats.standardDeviation(allVotes.map(_._2))</p>
+                <p>Standard deviation : @library.Stats.standardDeviation(allVotes.map(_._2).filterNot(_==0))</p>
             </div>
         </div>
 
