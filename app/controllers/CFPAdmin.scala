@@ -277,7 +277,7 @@ object CFPAdmin extends Controller with Secured {
       }
   }
 
-  def allVotes(confType:String) = IsMemberOf("admin") {
+  def allVotes(confType:String) = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
 
       val result = Review.allVotes().toList.sortBy(_._2._1).reverse
