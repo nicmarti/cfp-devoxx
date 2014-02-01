@@ -171,20 +171,21 @@ object Review {
     maybeBestProposal
   }
 
-  def bestReviewer(): (String, Long) = {
+  def bestReviewer(): (String, Int) = {
     totalReviewedByCFPuser().sortBy(_._2).reverse.head
   }
 
-  def worstReviewer(): (String, Long) = {
-    totalReviewedByCFPuser().filterNot(_._2<=5L).sortBy(_._2).head
+  def worstReviewer(): (String, Int) = {
+    totalReviewedByCFPuser().filterNot(_._2<=5).sortBy(_._2).head
   }
 
-  def totalReviewedByCFPuser(): List[(String, Long)] = Redis.pool.withClient {
+  def totalReviewedByCFPuser(): List[(String, Int)] = Redis.pool.withClient {
     implicit client =>
       Webuser.allCFPAdmin().map {
         webuser: Webuser =>
           val uuid = webuser.uuid
-          (uuid, client.scard(s"Proposals:Reviewed:ByAuthor:$uuid"))
+          val total = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid", "Proposals:ByState:"+ProposalState.DELETED.code)
+          (uuid, total.size)
       }
   }
 
