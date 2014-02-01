@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package library;
+package library.calendar;
 
 /**
  * Created by nicolas on 31/01/2014.

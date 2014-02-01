@@ -347,3 +347,5 @@ forget.password.notfound=Cet email n''existe pas, vous n''êtes pas enregistré.
 
 new.accesscode.title=Nouveau code d''accès
 new.accesscode=Votre nouveau code d''accès est :
+
+admin.btn.otherReviewer=Comparer mes votes

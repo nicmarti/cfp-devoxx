@@ -332,6 +332,20 @@ object CFPAdmin extends Controller with Secured {
       val proposals = Proposal.allSubmitted().filter(_.talkType.id==confType)
       Ok(views.html.CFPAdmin.allProposalsByType(proposals,confType))
   }
+
+  def showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])=IsMemberOf("cfp"){
+    implicit uuid=>
+      implicit request=>
+        maybeReviewer match {
+          case None=>
+            Ok(views.html.CFPAdmin.showCFPUsers(Webuser.allCFPAdmin()))
+          case Some(otherReviewer)=>
+            val diffProposalIDs=Review.diffReviewBetween(otherReviewer,uuid)
+            Ok(views.html.CFPAdmin.showProposalsNotReviewedCompareTo(diffProposalIDs, otherReviewer))
+
+        }
+
+  }
 }
 
 

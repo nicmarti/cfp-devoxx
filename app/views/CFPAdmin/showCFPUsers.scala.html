@@ -1,0 +1,19 @@
+@(webusers:List[Webuser])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+
+@main("Diff between you and another reviewer"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3><i class="icon-list"></i> Select another user to compare with:</h3>
+            </div>
+
+            <div class="panel-body">
+    @webusers.sortBy(_.firstName).map{webuser=>
+        <p><a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(Some(webuser.uuid))">@webuser.cleanName</a></p>
+    }
+            </div>
+        </div>
+    </div>
+</div>
+}

@@ -52,7 +52,10 @@ import java.io.{File, FileInputStream, IOException, InputStreamReader}
 import java.util.Collections
 import java.util.Date
 import java.util.TimeZone
-import library.CalendarSample
+
+import scala.collection.JavaConversions._
+import org.apache.commons.lang3.RandomStringUtils
+import library.calendar.CalendarSample
 
 /**
  * Controller created to build and to export the Program.
@@ -62,15 +65,15 @@ import library.CalendarSample
 object ProgramBuilder extends Controller with Secured {
 
   val APPLICATION_NAME = "DevoxxFrance_CFP"
-    /** Directory to store user credentials. */
-  val DATA_STORE_DIR:java.io.File = new java.io.File(System.getProperty("user.home"), ".store/calendar_sample")
+  /** Directory to store user credentials. */
+  val DATA_STORE_DIR: java.io.File = new java.io.File(System.getProperty("user.home"), ".store/calendar_sample")
 
   private var dataStoreFactory: FileDataStoreFactory = null
   /** Global instance of the HTTP transport. */
   private var httpTransport: HttpTransport = null
   /** Global instance of the JSON factory. */
   private final val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance
-  private var client: com.google.api.services.calendar.Calendar  = null
+  private var client: com.google.api.services.calendar.Calendar = null
 
   def index = IsMemberOf(List("admin")) {
     implicit uuid: String =>
@@ -92,22 +95,54 @@ object ProgramBuilder extends Controller with Secured {
         val credential: Credential = authorize
 
         // set up global Calendar instance
-        client =new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
+        client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
 
         // run commands
 //        val feed: CalendarList = client.calendarList.list.execute
-//        println("feed " + feed)
+//        feed.getItems.toList.map {
+//          item =>
+//            println("Calendar id " + item.getId())
+//            println("Calendar summary " + item.getSummary)
+//            println("------------------")
+//        }
 
-      val newCalendar = new Calendar()
+        //      val newCalendar = new Calendar()
+        //      newCalendar.setDescription("Test de calendar")
+        //      newCalendar.setLocation("Paris")
+        //      newCalendar.setSummary("Resume du calendar")
+        //      newCalendar.setTimeZone("Europe/Paris")
+        //      val createdCalendar = client.calendars().insert(newCalendar).execute()
+        //      println("Created a calendar "+createdCalendar.getId())
 
-      newCalendar.setDescription("Test de calendar")
-      newCalendar.setLocation("Paris")
-      newCalendar.setSummary("Resume du calendar")
-      newCalendar.setTimeZone("Europe/Paris")
+        val createdCalendar = client.calendars().get("b4m0h1v6r3uvhhms8fdd5dtbvo@group.calendar.google.com").execute()
 
-      val createdCalendar = client.calendars().insert(newCalendar).execute()
+        // New event
+        val event: Event = newEvent()
+        val result: Event = client.events().insert(createdCalendar.getId(), event).execute()
 
-        Ok(""+createdCalendar)
+
+
+
+        Ok("<h1>Ok</h1>").as("text/html")
+  }
+
+  def newEvent(): Event = {
+    val event = new Event()
+    event.setSummary("New Event "+RandomStringUtils.randomAlphabetic(4))
+    val startDate = new Date()
+    val endDate = new Date(startDate.getTime() + 3600000)
+    val start = new DateTime(startDate, TimeZone.getTimeZone("UTC"))
+    event.setStart(new EventDateTime().setDateTime(start))
+    val end = new DateTime(endDate, TimeZone.getTimeZone("UTC"))
+    event.setEnd(new EventDateTime().setDateTime(end))
+
+    event.setColorId("4")
+    event.setDescription("Une très belle description d'événement")
+    event.setSource(new Event.Source().setUrl("http://cfp.devoxx.fr").setTitle("CFP de Devoxx"))
+    event.setVisibility("public")
+    event.setLocation("La Seine A - Niveau principal")
+
+    event
   }
 
   /** Authorizes the installed application to access user's protected data. */

@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package library;
+package library.calendar;
 /*
  * Copyright (c) 2010 Google Inc.
  *

@@ -346,7 +346,11 @@ object Review {
           val nbrOfTalksReviewed = client.scard(s"Proposals:Reviewed:ByAuthor:$uuid")
           (uuid,totalPoints.toInt, nbrOfTalksReviewed)
       }.toList
+  }
 
+  def diffReviewBetween(firstUUID:String, secondUUID:String):Set[String]=Redis.pool.withClient{
+    client=>
+      client.sdiff(s"Proposals:Reviewed:ByAuthor:$firstUUID",s"Proposals:Reviewed:ByAuthor:$secondUUID")
   }
 
 }
