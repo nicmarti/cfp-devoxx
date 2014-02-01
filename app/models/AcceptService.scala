@@ -33,7 +33,7 @@ object AcceptService {
   // What we did in 2013
   val getDevoxx2013Total: Map[String, Int] = {
     Map(
-      (ProposalType.CONF.label, 68) // 29 sans apres-midi decideur + 39 vendredi
+      (ProposalType.CONF.label, 69) // 30 sans apres-midi decideur + 39 vendredi
       , (ProposalType.UNI.label, 8)
       , (ProposalType.TIA.label, 30)
       , (ProposalType.LAB.label, 12)
@@ -57,7 +57,7 @@ object AcceptService {
       case ProposalType.UNI.id =>
         12 - countAccepted(talkType)
       case ProposalType.CONF.id =>
-        68 - countAccepted(talkType)
+        69 - countAccepted(talkType)
       case ProposalType.TIA.id =>
         30 - countAccepted(talkType)
       case ProposalType.LAB.id =>

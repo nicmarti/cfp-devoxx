@@ -57,7 +57,7 @@ import scala.collection.JavaConversions._
 import org.apache.commons.lang3.RandomStringUtils
 import library.calendar.CalendarSample
 import play.api.data.Forms._
-import models.Speaker
+import models.{Slot, Speaker}
 
 /**
  * Controller created to build and to export the Program.
@@ -201,7 +201,7 @@ object ProgramBuilder extends Controller with Secured {
   def prepareExport() = IsMemberOf("admin") {
     implicit uuid: String =>
       implicit request =>
-        Ok("ok 2")
+        Ok(views.html.ProgramBuilder.showSlot(Slot.conferenceSlotsFriday))
   }
 }
 
