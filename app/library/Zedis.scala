@@ -216,6 +216,13 @@ trait Dress {
       j.sdiff(key1, key2, key3).asScala.toSet
     }
 
+    def sdiff(key1: String, key2: String, key3:String, key4:String): Set[String] = {
+      if(play.Logger.of("library.Zedis").isDebugEnabled){
+        play.Logger.of("library.Zedis").debug(s"sdiff $key1 $key2 $key3 $key4")
+      }
+      j.sdiff(key1, key2, key3, key4).asScala.toSet
+    }
+
     def sdiffstore(newKey: String, key1: String, key2: String) = {
       if(play.Logger.of("library.Zedis").isDebugEnabled){
         play.Logger.of("library.Zedis").debug(s"sdiff $newKey $key1 $key2")

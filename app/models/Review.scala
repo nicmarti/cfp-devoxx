@@ -345,14 +345,14 @@ object Review {
     client=>
       client.hgetAll("Computed:Reviewer:Total").map{
         case(uuid:String, totalPoints:String)=>
-          val nbrOfTalksReviewed = client.scard(s"Proposals:Reviewed:ByAuthor:$uuid")
+          val nbrOfTalksReviewed = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid","Proposals:ByState:"+ProposalState.DELETED.code, "Proposals:ByState:"+ProposalState.DRAFT.code).size
           (uuid,totalPoints.toInt, nbrOfTalksReviewed)
       }.toList
   }
 
   def diffReviewBetween(firstUUID:String, secondUUID:String):Set[String]=Redis.pool.withClient{
     client=>
-      client.sdiff(s"Proposals:Reviewed:ByAuthor:$firstUUID",s"Proposals:Reviewed:ByAuthor:$secondUUID", "Proposals:ByState:"+ProposalState.DELETED.code)
+      client.sdiff(s"Proposals:Reviewed:ByAuthor:$firstUUID",s"Proposals:Reviewed:ByAuthor:$secondUUID", "Proposals:ByState:"+ProposalState.DELETED.code, "Proposals:ByState:"+ProposalState.DRAFT.code)
   }
 
 }
