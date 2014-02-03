@@ -21,14 +21,14 @@ import play.api.Play
  */
 object Backoffice extends Controller with Secured {
 
-   val isCFPOpen:Boolean ={
+  val isCFPOpen: Boolean = {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(true)
   }
 
-  def homeBackoffice()=IsMemberOf("admin"){
+  def homeBackoffice() = IsMemberOf("admin") {
     implicit uuid =>
-      implicit request=>
-      Ok(views.html.Backoffice.homeBackoffice())
+      implicit request =>
+        Ok(views.html.Backoffice.homeBackoffice())
   }
 
   // Returns all speakers
@@ -126,7 +126,7 @@ object Backoffice extends Controller with Secured {
     implicit uuid => implicit request =>
       ElasticSearchActor.masterActor ! DoIndexSpeaker()
       ElasticSearchActor.masterActor ! DoIndexProposal()
-      Redirect(routes.Backoffice.homeBackoffice).flashing("success"->"Elastic search actor started...")
+      Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Elastic search actor started...")
   }
 
   // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
@@ -147,20 +147,32 @@ object Backoffice extends Controller with Secured {
       Ok("Done")
   }
 
-  def updateRedis() = IsMemberOf("admin"){
-    implicit uuid => implicit request=>
-
-      Redis.pool.withClient{
-        client=>
-        val toReturn = client.hgetAll("Proposal:SubmittedDate").map{case(proposal,submitted)=>
-          (proposal, new Instant(submitted.toLong).toDateTime.toDateMidnight.toString("dd-MM-yyyy"))
-        }.groupBy(_._2).map{
-          tuple=>
-            (tuple._1, tuple._2.size)
+  def deleteVotesForPropal(proposalId: String) = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+      Review.allVotesFor(proposalId).foreach {
+        case (reviewerUUID, score) => {
+          play.Logger.of("application.Backoffice").info(s"Deleting vote on $proposalId by $reviewerUUID of score $score")
+          Review.deleteVoteForProposal(proposalId)
         }
+      }
+      Redirect(routes.CFPAdmin.showVotesForProposal(proposalId))
+  }
+
+  def updateRedis() = IsMemberOf("admin") {
+    implicit uuid => implicit request =>
+
+      Redis.pool.withClient {
+        client =>
+          val toReturn = client.hgetAll("Proposal:SubmittedDate").map {
+            case (proposal, submitted) =>
+              (proposal, new Instant(submitted.toLong).toDateTime.toDateMidnight.toString("dd-MM-yyyy"))
+          }.groupBy(_._2).map {
+            tuple =>
+              (tuple._1, tuple._2.size)
+          }
 
 
-        Ok(toReturn.mkString("\n")).as("text/plain")
+          Ok(toReturn.mkString("\n")).as("text/plain")
       }
   }
 

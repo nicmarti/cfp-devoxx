@@ -70,4 +70,15 @@
             </div>
         </div>
     </div>
+     @if(Webuser.isMember(uuid, "admin")){
+    <div class="row">
+        <div class="col-md-4 col-lg-offset-7">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a class="btn btn-danger" href="@routes.Backoffice.deleteVotesForPropal(proposal.id)"><i class="icon-exclamation-sign"></i>Delete all votes for this talk</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
 }
