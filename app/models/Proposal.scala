@@ -28,9 +28,10 @@ object ProposalType {
   val BOF = ProposalType("bof", "bof.label")
   val AMD = ProposalType("amd", "amd.label")
   val KEY = ProposalType("key", "key.label")
+  val HACK = ProposalType("key", "key.label")
   val OTHER = ProposalType("other", "other.label")
 
-  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF)
+  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, HACK, KEY, AMD, OTHER)
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
@@ -42,8 +43,9 @@ object ProposalType {
       case "lab" => LAB
       case "quick" => QUICK
       case "bof" => BOF
-      case "amd" => AMD
+      case "hack" => HACK
       case "key" => KEY
+      case "amd" => AMD
       case other => OTHER
     }
   }
