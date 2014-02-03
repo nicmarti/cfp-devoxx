@@ -259,6 +259,9 @@ conf=Conference
 lab=Labs
 tia=ToolsInAction
 bof=BOF
+hack=Hackaton
+key=Keynote
+amd=Après-midi des Décideurs
 
 tbl.submitted=Envoyé
 profile.imported=Profil importé
