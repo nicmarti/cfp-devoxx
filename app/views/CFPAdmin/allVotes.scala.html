@@ -45,10 +45,10 @@
                     <table id="allProposals" class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th>Total Score</th>
+                                <th>Average</th>
+                                <th>Median</th>
                                 <th>Nb of votes</th>
                                 <th>Nb of abstention</th>
-                                <th>Average</th>
                                 <th>Standard Deviation</th>
                                 <th>Proposal title</th>
                                 <th>Proposal id</th>
@@ -63,10 +63,12 @@
                                 @defining(AcceptService.isAccepted(proposal.id, proposal.talkType.id)){accepted=>
                                 <tr class="preselected_@accepted">
                                     <td>
-                                    @defining(Math.round(voteAndTotalVotes._1)) { score =>
-                                        @score
+                                    @defining(voteAndTotalVotes._4) { average =>
+                                        @average
                                     }
                                     </td>
+                                    <td>
+                                        @voteAndTotalVotes._6
                                     <td>
                                     @defining(voteAndTotalVotes._2) { totalVoters =>
                                       @totalVoters
@@ -75,11 +77,6 @@
                                     <td>
                                     @defining(voteAndTotalVotes._3) { totalAbstentions =>
                                         @totalAbstentions
-                                    }
-                                    </td>
-                                    <td>
-                                    @defining(voteAndTotalVotes._4) { average =>
-                                        @average
                                     }
                                     </td>
                                     <td>
