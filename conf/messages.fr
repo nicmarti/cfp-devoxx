@@ -352,3 +352,4 @@ new.accesscode.title=Nouveau code d''accès
 new.accesscode=Votre nouveau code d''accès est :
 
 admin.btn.otherReviewer=Comparer mes votes
+btn.showVotes=Voir les votes

@@ -118,9 +118,7 @@
                 <div class="panel-body">
                     @Messages("admin.sp.accepted.txt")
                     <br>
-                    @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
-                        <button name="vote" value="0" class="btn btn-small btn-success">@Messages("btn.abstention")</button>
-                    }
+                    <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
                 </div>
             </div>
         }else{
