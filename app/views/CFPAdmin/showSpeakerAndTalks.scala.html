@@ -77,8 +77,10 @@
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>You voted</th>
-                            <th>State</th>
+                            @if(Webuser.isMember(uuid,"cfp")){
+                                <th>You voted</th>
+                                <th>State</th>
+                            }
                             <th>Type</th>
                             <th>Track</th>
                         </tr>
@@ -87,6 +89,7 @@
                 @proposals.values.toList.sortBy(_.state.code).map{proposal:Proposal=>
                   <tr>
                       <td><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a></td>
+                  @if(Webuser.isMember(uuid,"cfp")){
                       <td>@Review.lastVoteByUserForOneProposal(uuid, proposal.id).map{review:Review=>
                         @defining(review.vote){score=>
                             <small>
@@ -109,7 +112,9 @@
                           <span class="label label-default">-</span>
                       }
                       </td>
+
                       <td>@tags.renderProposalState(proposal.state)</td>
+                  }
                       <td>@Messages(proposal.talkType.id)</td>
                       <td>@Messages(proposal.track.id)</td>
 

@@ -32,7 +32,7 @@ object Backoffice extends Controller with Secured {
   }
 
   // Returns all speakers
-  def allSpeakers = IsMemberOf("admin") {
+  def allSpeakers = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
       Ok(views.html.Backoffice.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
   }
@@ -49,7 +49,7 @@ object Backoffice extends Controller with Secured {
   }
 
   // Authenticate on CFP on behalf of specified user.
-  def authenticateAs(uuidSpeaker: String) = IsMemberOf("admin") {
+  def authenticateAs(uuidSpeaker: String) = IsMemberOf("cfp") {
     implicit uuid => implicit request =>
       Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
   }

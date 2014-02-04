@@ -266,7 +266,7 @@ object CFPAdmin extends Controller with Secured {
       Ok(views.html.CFPAdmin.allSponsorTalks(proposals))
   }
 
-  def showSpeakerAndTalks(uuidSpeaker: String) = IsMemberOf("cfp") {
+  def showSpeakerAndTalks(uuidSpeaker: String) = IsAuthenticated {
     implicit uuid => implicit request =>
       Speaker.findByUUID(uuidSpeaker) match {
         case Some(speaker) => {
