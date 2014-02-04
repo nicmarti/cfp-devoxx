@@ -1,4 +1,4 @@
-@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalAccepted:Long, totalRemaining:Long)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalAccepted:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
 
 @main("All votes") {
 
@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon-bar-chart"></i> All votes</h1>
+                <h1><i class="icon-bar-chart"></i> @Messages(confType)</h1>
             </div>
 
             <div class="panel-body">
@@ -22,6 +22,7 @@
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
                         <a href="@routes.CFPAdmin.allVotes(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a>
 | <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
 
                         @if(flash.get("error").isDefined) {
@@ -39,7 +40,8 @@
                         <span class="label label-success">@totalAccepted accepted</span> <span class="label label-warning">@totalRemaining remaining</span>
                         <br>
                         <span class="label label-primary">@allVotes.map(_._1).filter(_.lang=="fr").size FR</span> <span class="label label-default">@allVotes.map(_._1).filter(_.lang=="en").size EN</span>
-                    </div>
+
+                   </div>
 
 
                 <div class="col-md-12">
@@ -95,7 +97,7 @@
                                         @tags.renderGravatar(proposal.mainSpeaker,showName = true, showPhoto = false)
                                     </td>
                                     <td>
-                                        @Messages(proposal.track.id)
+                                        @Messages(proposal.track.label)
                                     </td>
                                     <td>
                                         @Messages(proposal.talkType.id)

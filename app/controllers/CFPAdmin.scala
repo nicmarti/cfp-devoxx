@@ -303,7 +303,7 @@ object CFPAdmin extends Controller with Secured {
       val totalAccepted = AcceptService.countAccepted(confType)
       val totalRemaining = AcceptService.remainingSlots(confType)
 
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalAccepted, totalRemaining))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalAccepted, totalRemaining,confType))
   }
 
   def doComputeVotesTotal()=IsMemberOf("cfp"){

@@ -44,7 +44,12 @@ object AcceptService {
 
   def countAccepted(talkType:String):Long=Redis.pool.withClient{
     client=>
-      client.scard("Accepted:"+talkType)
+      talkType match {
+        case "all" =>
+          client.scard("Accepted:conf")+ client.scard("Accepted:lab") + client.scard("Accepted:bof")+ client.scard("Accepted:tia")+ client.scard("Accepted:uni")+ client.scard("Accepted:quick")
+        case other =>
+          client.scard(s"Accepted:$talkType")
+      }
   }
 
   def isAccepted(proposalId:String, talkType:String):Boolean=Redis.pool.withClient{
@@ -55,7 +60,7 @@ object AcceptService {
   def remainingSlots(talkType:String):Long={
     talkType match {
       case ProposalType.UNI.id =>
-        12 - countAccepted(talkType)
+        8 - countAccepted(talkType)
       case ProposalType.CONF.id =>
         69 - countAccepted(talkType)
       case ProposalType.TIA.id =>
@@ -66,7 +71,7 @@ object AcceptService {
         15 - countAccepted(talkType)
       case ProposalType.QUICK.id =>
         20 - countAccepted(talkType)
-      case other => 0
+      case other => 154 - countAccepted("all")
     }
   }
 
