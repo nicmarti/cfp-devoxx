@@ -28,7 +28,7 @@ object ProposalType {
   val BOF = ProposalType("bof", "bof.label")
   val AMD = ProposalType("amd", "amd.label")
   val KEY = ProposalType("key", "key.label")
-  val HACK = ProposalType("key", "key.label")
+  val HACK = ProposalType("hack", "hack.label")
   val OTHER = ProposalType("other", "other.label")
 
   val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, HACK, KEY, AMD, OTHER)

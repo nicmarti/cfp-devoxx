@@ -101,6 +101,7 @@ amd.label=Après-midi des Décideurs, 30mn, Thursday afternoon
 bof.label=Bird of a Feather, 1h, Thursday evening only
 other.label=Other
 lab.label=Hand''s on Lab, 3h, Wednesday only
+hack.label=Hackaton (special event)
 
 #Track
 java.label=Java SE, Java EE

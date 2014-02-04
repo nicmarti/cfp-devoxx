@@ -135,7 +135,7 @@ amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
 other.label=Autre type de présentation
 lab.label=Hand''s on Lab, 3h, mercredi uniquement
-
+hack.label=Hackaton (événement spécial)
 
 
 
