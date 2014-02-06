@@ -52,8 +52,8 @@ object CallForPaper extends Controller with Secured {
         Redirect(routes.Application.index()).flashing("error" -> errorMsg)
       }, {
         case (speaker, webuser) =>
-          val allMyDraftAndSubmitted = Proposal.allMyDraftAndSubmittedProposals(uuid)
-          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allMyDraftAndSubmitted))
+          val allProposals = Proposal.allMyProposals(uuid)
+          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allProposals))
       })
   }
 
@@ -120,7 +120,7 @@ object CallForPaper extends Controller with Secured {
   // Load a proposal, change the status to DRAFT (not sure this is a goode idea)
   def editProposal(proposalId: String) = IsAuthenticated {
     implicit uuid => implicit request =>
-      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           if (proposal.mainSpeaker == uuid) {
@@ -166,16 +166,22 @@ object CallForPaper extends Controller with Secured {
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
         proposal => {
           // If the editor is not the owner then findDraft returns None
-          Proposal.findDraftAndSubmitted(uuid, proposal.id) match {
+          Proposal.findProposal(uuid, proposal.id) match {
             case Some(existingProposal) => {
               // This is an edit operation
               // First we try to reset the speaker's, we do not take the values from the FORM for security reason
               val updatedProposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
-              // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
-              Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
-              Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
-              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
+              // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
+              if(existingProposal.state==ProposalState.DRAFT || existingProposal.state==ProposalState.SUBMITTED){
+                Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
+                Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
+              }else{
+               Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
+                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state [" + existingProposal.state.code+"]" ))
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
+              }
             }
             case other => {
               // Check that this is really a new id and that it does not exist

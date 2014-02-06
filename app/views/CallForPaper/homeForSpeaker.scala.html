@@ -162,9 +162,22 @@
                                 </div>
                                 <a style="padding-left:4px;padding-left:3px;" href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
                             </td>
-                            <td><span class="label label-info">@prop.state.code</span></td>
                             <td>
-                            @if(prop.state!=ProposalState.SUBMITTED){
+                            @if(prop.state.code=="accepted" || prop.state.code=="approved"){
+                                <span class="label label-success">@prop.state.code</span>
+                            }
+                            @if(prop.state.code=="declined" || prop.state.code=="rejected" ||prop.state.code=="deleted"){
+                                <span class="label label-danger">@prop.state.code</span>
+                            }
+                             @if(prop.state.code=="draft"){
+                                <span class="label label-warning">@prop.state.code</span>
+                            }
+                            @if(prop.state.code=="submitted"){
+                                <span class="label label-info">@prop.state.code</span>
+                            }
+                            </td>
+                            <td>
+                            @if(prop.state==ProposalState.DRAFT){
                                 <a href="@routes.CallForPaper.submitProposal(prop.id)#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>
                             } else {
                                 <small><i class="icon-ok">&nbsp;@Messages("tbl.submitted")</i></small>
@@ -181,9 +194,7 @@
                              }
                             </td>
                             <td>
-                                @if(controllers.Backoffice.isCFPOpen){
-                                    <a href="@routes.CallForPaper.deleteProposal(prop.id)" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
-                                }else{
+                                @if(prop.state==ProposalState.SUBMITTED ||prop.state==ProposalState.DRAFT ){
                                     <a href="@routes.CallForPaper.deleteProposal(prop.id)" class="btn btn-sm btn-danger" title="@Messages("table.pres.trash")"><i class="icon-trash"></i></a>
                                 }
 

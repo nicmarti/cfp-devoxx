@@ -354,3 +354,6 @@ new.accesscode=Votre nouveau code d''accès est :
 admin.btn.otherReviewer=Comparer mes votes
 btn.showVotes=Voir les votes
 comment.proposal=Fil de discussion
+
+saved1=Proposition enregistrée. Pensez à soumettre le sujet en cliquant sur l''enveloppe orange !
+saved2=Proposition éditée et enregistrée.
