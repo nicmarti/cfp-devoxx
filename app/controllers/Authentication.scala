@@ -43,6 +43,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.apache.commons.codec.digest.DigestUtils
 import javax.crypto.IllegalBlockSizeException
+import play.api.libs.concurrent.Promise
 
 /**
  * Signup and Signin.
@@ -136,47 +137,43 @@ object Authentication extends Controller {
   val oauthForm = Form(tuple("code" -> text, "state" -> text))
   val accessTokenForm = Form("access_token" -> text)
 
-  def callbackGithub = Action {
+  def callbackGithub = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
-      }, validForm => {
-        validForm match {
-          case (code, state) if state == Crypto.sign("ok") => {
-            val auth = for (clientId <- Play.current.configuration.getString("github.client_id");
-                            clientSecret <- Play.current.configuration.getString("github.client_secret")) yield (clientId, clientSecret)
-            auth.map {
-              case (clientId, clientSecret) => {
-                val url = "https://github.com/login/oauth/access_token"
-                val wsCall = WS.url(url).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code)))
-                Async {
-                  wsCall.map {
-                    result =>
-                      result.status match {
-                        case 200 => {
-                          val b = result.body
-                          try {
-                            val accessToken = b.substring(b.indexOf("=") + 1, b.indexOf("&"))
-                            Redirect(routes.Authentication.createFromGithub()).withSession("access_token" -> accessToken)
-                          } catch {
-                            case e: IndexOutOfBoundsException => {
-                              Redirect(routes.Application.index()).flashing("error" -> "access token not found in query string")
-                            }
-                          }
-                        }
-                        case _ => {
-                          Redirect(routes.Application.index()).flashing("error" -> ("Could not complete Github OAuth, got HTTP response" + result.status + " " + result.body))
+        Future.successful(BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form"))
+      }, {
+        case (code, state) if state == Crypto.sign("ok") => {
+          val auth = for (clientId <- Play.current.configuration.getString("github.client_id");
+                          clientSecret <- Play.current.configuration.getString("github.client_secret")) yield (clientId, clientSecret)
+          auth.map {
+            case (clientId, clientSecret) => {
+              val url = "https://github.com/login/oauth/access_token"
+              val wsCall = WS.url(url).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code)))
+              wsCall.map {
+                result =>
+                  result.status match {
+                    case 200 => {
+                      val b = result.body
+                      try {
+                        val accessToken = b.substring(b.indexOf("=") + 1, b.indexOf("&"))
+                        Redirect(routes.Authentication.createFromGithub()).withSession("access_token" -> accessToken)
+                      } catch {
+                        case e: IndexOutOfBoundsException => {
+                          Redirect(routes.Application.index()).flashing("error" -> "access token not found in query string")
                         }
                       }
+                    }
+                    case _ => {
+                      Redirect(routes.Application.index()).flashing("error" -> ("Could not complete Github OAuth, got HTTP response" + result.status + " " + result.body))
+                    }
                   }
-                }
               }
-            }.getOrElse {
-              InternalServerError("github.client_secret is not configured in application.conf")
             }
+          }.getOrElse {
+             Future.successful(InternalServerError("github.client_secret is not configured in application.conf"))
           }
-          case other => BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
         }
+        case other =>  Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
       })
   }
 
@@ -232,13 +229,12 @@ object Authentication extends Controller {
     }
   )
 
-  def createFromGithub = Action {
+  def createFromGithub = Action.async {
     implicit request =>
 
       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
       val futureResult = WS.url(url).withHeaders("User-agent" -> "nicmarti devoxxfr", "Accept" -> "application/json").get()
       val lang = request.headers.get("Accept-Language")
-      Async {
         futureResult.map {
           result =>
             result.status match {
@@ -285,7 +281,7 @@ object Authentication extends Controller {
               }
             }
         }
-      }
+
   }
 
   def saveNewSpeaker = Action {
@@ -370,10 +366,12 @@ object Authentication extends Controller {
 
   implicit val googleFormat = Json.format[GoogleToken]
 
-  def callbackGoogle = Action {
+  def callbackGoogle = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
+         Future.successful{
+           BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
+         }
       }, validForm => {
         validForm match {
           case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
@@ -384,7 +382,6 @@ object Authentication extends Controller {
                 val url = "https://accounts.google.com/o/oauth2/token"
                 val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
                 val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx France CFP")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
-                Async {
                   wsCall.map {
                     result =>
                       result.status match {
@@ -398,18 +395,22 @@ object Authentication extends Controller {
                         }
                       }
                   }
-                }
               }
             }.getOrElse {
-              InternalServerError("github.client_secret is not configured in application.conf")
+               Future.successful{
+                 InternalServerError("github.client_secret is not configured in application.conf")
+               }
             }
           }
-          case other => BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
+          case other =>  Future.successful{
+            BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
+          }
         }
       })
   }
 
-  def createFromGoogle = Action {
+
+  def createFromGoogle = Action.async {
     implicit request =>
       request.session.get("google_token").map {
         access_token =>
@@ -420,7 +421,6 @@ object Authentication extends Controller {
           //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
           val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").get()
 
-          Async {
             futureResult.map {
               result =>
                 result.status match {
@@ -450,10 +450,10 @@ object Authentication extends Controller {
                   }
                 }
             }
-          }
-
       }.getOrElse {
-        Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
+         Future.successful{
+           Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
+         }
       }
   }
 
@@ -473,7 +473,7 @@ trait Secured {
   /**
    * Retrieve the connected user email.
    */
-  private def username(request: RequestHeader) = {
+  private def username(request: RequestHeader):Option[String] = {
     try {
       request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(v => Crypto.decryptAES(v.value)))
     } catch {
@@ -485,22 +485,24 @@ trait Secured {
   /**
    * Redirect to login if the user in not authorized.
    */
-  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.index).flashing("error" -> "Unauthorized : you are not authenticated or your session has expired. Please authenticate.")
+  private def onUnauthorized(request: RequestHeader):SimpleResult = Results.Redirect(routes.Application.index).flashing("error" -> "Unauthorized : you are not authenticated or your session has expired. Please authenticate.")
 
   /**
    * Action for authenticated users.
    */
-  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = {
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result): EssentialAction = {
     Security.Authenticated(username, onUnauthorized) {
       uuid =>
-        Action(request => f(uuid)(request))
+        Action{
+          request => f(uuid)(request)
+        }
     }
   }
 
   /**
    * Check if the connected user is a member of this security group.
    */
-  def IsMemberOf(securityGroup: String)(f: => String => Request[AnyContent] => Result) = IsAuthenticated {
+  def IsMemberOf(securityGroup: String)(f: => String => Request[AnyContent] => Result):EssentialAction = IsAuthenticated {
     uuid => request =>
       if (Webuser.isMember(uuid, securityGroup)) {
         f(uuid)(request)
@@ -509,7 +511,7 @@ trait Secured {
       }
   }
 
-  def IsMemberOf(groups: List[String])(f: => String => Request[AnyContent] => Result) = IsAuthenticated {
+  def IsMemberOf(groups: List[String])(f: => String => Request[AnyContent] => Result):EssentialAction = IsAuthenticated {
     uuid => request =>
       if (groups.exists(securityGroup => Webuser.isMember(uuid, securityGroup))) {
         f(uuid)(request)
