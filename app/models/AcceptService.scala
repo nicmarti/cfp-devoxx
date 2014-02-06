@@ -24,6 +24,7 @@
 package models
 
 import library.Redis
+import models.Review._
 
 /**
  * Accepted proposal.
@@ -83,6 +84,13 @@ object AcceptService {
   def cancelAccept(proposalId:String, talkType:String)=Redis.pool.withClient{
     implicit client=>
       client.srem("Accepted:"+talkType, proposalId)
+  }
+
+  def allAcceptedByTalkType(talkType:String):List[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      val allProposalIDs = client.smembers("Accepted:"+talkType)
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+      allProposalWithVotes.values.toList
   }
 
 

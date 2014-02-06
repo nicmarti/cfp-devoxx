@@ -73,4 +73,10 @@ object AcceptOrReject extends Controller with Secured{
       }
   }
 
+  def allAcceptedByTalkType(talkType:String)=IsMemberOf("admin"){
+    implicit uuid=>
+      implicit request=>
+      Ok(views.html.AcceptOrReject.allAcceptedByTalkType(AcceptService.allAcceptedByTalkType(talkType),talkType))
+  }
+
 }

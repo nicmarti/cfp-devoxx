@@ -1,0 +1,98 @@
+@(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+
+@main("AcceptOrReject - All votes") {
+
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1><i class="icon-bar-chart"></i> @Messages(confType)</h1>
+            </div>
+
+            <div class="panel-body">
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        @if(flash.get("error").isDefined) {
+                            <div class="alert alert-danger alert-dismissable">
+                                <strong>Error :</strong>
+                                @flash.get("error").get
+                            </div>
+                        }
+                        @if(flash.get("success").isDefined) {
+                            <div class="alert alert-success alert-dismissable">
+                                @flash.get("success").get
+                            </div>
+                        }
+                       <br>
+                       <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
+                       <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
+
+                   </div>
+
+
+                <div class="col-md-12">
+                    <small>All proposals accepted</small>
+                    <table id="allProposals" class="table table-bordered table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Proposal title</th>
+                                <th>Proposal id</th>
+                                <th>Main speaker</th>
+                                <th>Track</th>
+                                <th>Type</th>
+                                <th>Lang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @allProposals.map { proposal =>
+                                <tr>
+                                    <td>
+                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
+                                    </td>
+                                    <td>@proposal.id</td>
+                                    <td>
+                                        @tags.renderGravatar(proposal.mainSpeaker,showName = true, showPhoto = false)
+                                    </td>
+                                    <td>
+                                        @Messages(proposal.track.label)
+                                    </td>
+                                    <td>
+                                        @Messages(proposal.talkType.id)
+                                    </td>
+                                    <td>@proposal.lang</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+    $('#allProposals').dataTable({
+    "aaSorting": [[ 0, "desc" ]],
+    "iDisplayLength": 50,
+    "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+    "bStateSave": true,
+    "aoColumns": [
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"}
+        ]
+    });
+    } );
+</script>
+
+}
