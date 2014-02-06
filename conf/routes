@@ -108,7 +108,7 @@ GET         /programbuilder/prepareExport                      controllers.Progr
 GET         /programbuilder/deleteCalendars                    controllers.ProgramBuilder.deleteCalendar(calendarId:String)
 
 GET         /programbuilder/allAccepted/:talkType              controllers.AcceptOrReject.allAcceptedByTalkType(talkType:String)
-GET         /acceptReject/notifyAccept/:talkType               controllers.AcceptOrReject.notifyAccept(talkType:String)
+GET         /acceptReject/notifyAccept/:talkType               controllers.AcceptOrReject.notifyAccept(talkType:String, proposalId:Option[String])
 GET         /ar/:proposalId                                    controllers.AcceptOrReject.showApproveTerms(proposalId:String)
 
 GET         /cloudtags                                         controllers.CallForPaper.cloudTags()

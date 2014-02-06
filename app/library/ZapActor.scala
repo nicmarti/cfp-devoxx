@@ -59,9 +59,9 @@ case class ComputeVotesAndScore()
 
 case class RemoveVotesForDeletedProposal()
 
-case class SendProposalAccepted(reporterUUID:String, proposal:Proposal)
+case class ProposalAccepted(reporterUUID:String, proposal:Proposal)
 
-case class SendProposalRefused(reporterUUID:String, proposal:Proposal)
+case class ProposalRejected(reporterUUID:String, proposal:Proposal)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -78,8 +78,8 @@ class ZapActor extends Actor {
     case ComputeLeaderboard() => doComputeLeaderboard()
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
-    case SendProposalAccepted(reporterUUID, proposal) => sendProposalAccepted(reporterUUID, proposal)
-    case SendProposalRefused(reporterUUID, proposal) => sendProposalRefused(reporterUUID, proposal)
+    case ProposalAccepted(reporterUUID, proposal) => doProposalAccepted(reporterUUID, proposal)
+    case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -151,19 +151,21 @@ class ZapActor extends Actor {
     }
   }
 
-  def sendProposalAccepted(reporterUUID: String, proposal: Proposal) {
+  def doProposalAccepted(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal ACCEPTED"))
-      Mails.sendProposalAccepted(reporter, speaker, proposal)
+      Mails.sendProposalAccepted(speaker, proposal)
+      Proposal.accept(reporterUUID, proposal.id)
     }
   }
 
-  def sendProposalRefused(reporterUUID: String, proposal: Proposal) {
+  def doProposalRejected(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal REFUSED"))
-      Mails.sendProposalRefused(reporter, speaker, proposal)
+      Mails.sendProposalRejected(speaker, proposal)
+      Proposal.reject(reporterUUID, proposal.id)
     }
   }
 }

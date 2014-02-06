@@ -127,7 +127,7 @@ cfp.opening.date=Monday, 2nd of December 2013
 cfp.closing=CFP closing :
 cfp.closing.date=Sunday, 2nd of February 2014, midnight
 cfp.program=Program announced :
-cfp.program.date= TBA
+cfp.program.date=from Monday, 17th February, 2014
 video.title=Videos
 video.tag=Review Devoxx France 2013''s videos for free on
 theme.title=Tracks
@@ -322,3 +322,4 @@ new.accesscode=Your new access code is :
 
 admin.btn.otherReviewer=Compare with other Reviewer
 btn.showVotes=Show votes
+comment.proposal=Comments for proposal

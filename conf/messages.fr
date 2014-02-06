@@ -152,7 +152,7 @@ cfp.opening.date=Lundi 2 décembre 2013
 cfp.closing=Fermeture du CFP :
 cfp.closing.date=Dimanche 2 février 2014 minuit
 cfp.program=Annonce du programme :
-cfp.program.date= date annoncée prochainement
+cfp.program.date=à partir du lundi 17 février 2014
 video.title=Vidéos de l''édition 2013
 video.tag=Retrouvez les sessions de l''édition 2013 sur le site
 theme.title=Thèmes
@@ -353,3 +353,4 @@ new.accesscode=Votre nouveau code d''accès est :
 
 admin.btn.otherReviewer=Comparer mes votes
 btn.showVotes=Voir les votes
+comment.proposal=Fil de discussion

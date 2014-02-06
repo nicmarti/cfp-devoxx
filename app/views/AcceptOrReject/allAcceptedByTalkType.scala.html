@@ -32,7 +32,7 @@
                        <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
                        <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
 
-                        <a href="@routes.AcceptOrReject.notifyAccept(confType)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
+                        <a href="@routes.AcceptOrReject.notifyAccept(confType, None)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
 
                    </div>
 
@@ -48,6 +48,7 @@
                                 <th>Track</th>
                                 <th>Type</th>
                                 <th>Lang</th>
+                                <th>Notify</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,6 +68,9 @@
                                         @Messages(proposal.talkType.id)
                                     </td>
                                     <td>@proposal.lang</td>
+                                    <td>
+                                        <a href="@routes.AcceptOrReject.notifyAccept(confType, Option(proposal.id))" class="label label-danger"><i class="icon-envelope"></i> Notify accepted</a>
+</td>
                                 </tr>
                             }
                         </tbody>
