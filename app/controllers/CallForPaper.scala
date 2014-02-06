@@ -335,7 +335,7 @@ object CallForPaper extends Controller with Secured {
 
   case class TermCount(term: String, count: Int)
 
-  def cloudTags() = IsMemberOf("admin") {
+  def cloudTags() = IsMemberOf("cfp") {
     implicit uuid =>
       implicit request =>
         import play.api.libs.concurrent.Execution.Implicits.defaultContext
