@@ -324,3 +324,8 @@ new.accesscode=Your new access code is :
 admin.btn.otherReviewer=Compare with other Reviewer
 btn.showVotes=Show votes
 comment.proposal=Comments for proposal
+
+approve.title=Devoxx France, Speaker Consent Form
+accept.chk=I accept the Terms and Conditions
+acceptTerm.pleaseRead=Please read and accept Devoxx France Terms and Conditions
+accept.term.checked=Please check this box if you agree with the Terms and Conditions

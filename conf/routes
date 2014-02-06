@@ -109,8 +109,9 @@ GET         /programbuilder/deleteCalendars                    controllers.Progr
 
 GET         /programbuilder/allAccepted/:talkType              controllers.AcceptOrReject.allAcceptedByTalkType(talkType:String)
 GET         /acceptReject/notifyAccept/:talkType               controllers.AcceptOrReject.notifyAccept(talkType:String, proposalId:Option[String])
-GET         /ar/:proposalId                                    controllers.AcceptOrReject.showApproveTerms(proposalId:String)
-
+GET         /ar/show/:proposalId                               controllers.AcceptOrReject.showApproveTerms(proposalId:String)
+GET         /ar/accept/:proposalId                             controllers.AcceptOrReject.acceptTermsAndConditions(proposalId:String)
+GET         /ar/acceptOrRefuseTalk/:proposalId                 controllers.AcceptOrReject.acceptOrRefuseTalk(proposalId:String)
 GET         /cloudtags                                         controllers.CallForPaper.cloudTags()
 
 # Special access for Alexis MP

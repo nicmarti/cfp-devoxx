@@ -357,3 +357,8 @@ comment.proposal=Fil de discussion
 
 saved1=Proposition enregistrée. Pensez à soumettre le sujet en cliquant sur l''enveloppe orange !
 saved2=Proposition éditée et enregistrée.
+
+approve.title=Devoxx France, Termes et Conditions du Présentateur
+accept.chk=J''accepte les conditions de Devoxx France
+acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à Devoxx France :
+accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de Devoxx France

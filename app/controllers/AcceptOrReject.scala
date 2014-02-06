@@ -24,9 +24,14 @@
 package controllers
 
 import play.api.mvc.Controller
-import models.{Event, AcceptService, ProposalState, Proposal}
+import models._
 import play.api.i18n.Messages
-import library.{ProposalAccepted,  ZapActor}
+import library.ZapActor
+import library.ProposalAccepted
+import scala.Some
+
+import play.api.data.Form
+import play.api.data.Forms._
 
 /**
  * Sans doute le controller le plus sadique du monde qui accepte ou rejette les propositions
@@ -80,27 +85,64 @@ object AcceptOrReject extends Controller with Secured {
         Ok(views.html.AcceptOrReject.allAcceptedByTalkType(AcceptService.allAcceptedByTalkType(talkType), talkType))
   }
 
-  def notifyAccept(talkType: String, proposalId:Option[String]) = IsMemberOf("admin") {
+  def notifyAccept(talkType: String, proposalId: Option[String]) = IsMemberOf("admin") {
     implicit uuid =>
       implicit request =>
-        proposalId match{
-          case None=>AcceptService.allAcceptedByTalkType(talkType).foreach {
-          proposal: Proposal =>
-            ZapActor.actor ! ProposalAccepted(uuid, proposal)
+        proposalId match {
+          case None => AcceptService.allAcceptedByTalkType(talkType).foreach {
+            proposal: Proposal =>
+              ZapActor.actor ! ProposalAccepted(uuid, proposal)
           }
-          case Some(pid)=>
-              Proposal.findById(pid).map{
-                proposal=>
-                  ZapActor.actor ! ProposalAccepted(uuid, proposal)
-              }
+          case Some(pid) =>
+            Proposal.findById(pid).map {
+              proposal =>
+                ZapActor.actor ! ProposalAccepted(uuid, proposal)
+            }
         }
-      Redirect(routes.Backoffice.homeBackoffice())
+        Redirect(routes.Backoffice.homeBackoffice())
   }
 
-  def showApproveTerms(proposalId:String)=IsAuthenticated{
+  val formAccept = Form(
+    "accept.chk" -> checked("accept.term.checked")
+  )
+
+  def showApproveTerms(proposalId: String) = IsAuthenticated {
+    implicit uuid =>
+      implicit request =>
+        if (Speaker.needsToAccept(uuid)) {
+          Proposal.findById(proposalId).map {
+            proposal =>
+              Ok(views.html.AcceptOrReject.showApproveTerms(formAccept, proposal))
+          }.getOrElse {
+            NotFound("Sorry, this proposal does not exist or you are not the owner.")
+          }
+        } else {
+          Redirect(routes.AcceptOrReject.acceptOrRefuseTalk(proposalId))
+        }
+  }
+
+  def acceptTermsAndConditions(proposalId: String) = IsAuthenticated {
+    implicit uuid =>
+      implicit request =>
+        Proposal.findById(proposalId).filter(_.allSpeakerUUIDs.contains(uuid)).map {
+          proposal =>
+            formAccept.bindFromRequest().fold(
+              hasErrors => BadRequest(views.html.AcceptOrReject.showApproveTerms(hasErrors, proposal)),
+              successForm => {
+                Speaker.acceptTerms(uuid)
+                Event.storeEvent(Event(proposalId, uuid, "has accepted Terms and conditions"))
+                Redirect(routes.AcceptOrReject.showApproveTerms(proposalId))
+              }
+            )
+        }.getOrElse {
+          NotFound("Sorry, this proposal does not exist or you are not the owner.")
+        }
+  }
+
+  def acceptOrRefuseTalk(proposalId:String)=IsAuthenticated{
     implicit uuid=>
       implicit request=>
-      Ok("todo !")
+      Ok("acceptOrRefuseTalk")
   }
 
 }

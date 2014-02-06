@@ -28,6 +28,9 @@ import library.{ZapJson, Redis}
 import play.api.libs.Crypto
 import play.api.cache.Cache
 import play.api.Play.current
+import org.joda.time.Instant
+import org.joda.time.DateTime
+
 /**
  * Speaker
  *
@@ -98,6 +101,23 @@ object Speaker {
   def countAll():Long = Redis.pool.withClient{
     client=>
       client.hlen("Speaker")
+  }
+
+  def needsToAccept(speakerId:String)=Redis.pool.withClient{
+    client=>
+      client.hexists("TermsAndConditions",speakerId)==false
+  }
+
+  def acceptTerms(speakerId:String)=Redis.pool.withClient{
+    client=>
+      client.hset("TermsAndConditions",speakerId, new Instant().getMillis.toString)
+  }
+
+  def getAcceptedDate(speakerId:String):Option[DateTime]=Redis.pool.withClient{
+    client=>
+      client.hget("TermsAndConditions", speakerId).map{dateStr:String=>
+        new org.joda.time.Instant(dateStr).toDateTime
+      }
   }
 
 }
