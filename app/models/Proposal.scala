@@ -81,6 +81,16 @@ object ProposalState {
     UNKNOWN
   )
 
+    val allButDeleted = List(
+    DRAFT,
+    SUBMITTED,
+    APPROVED,
+    REJECTED,
+    ACCEPTED,
+    DECLINED,
+    BACKUP
+  )
+
   val allAsCode = all.map(_.code)
 }
 
@@ -225,7 +235,7 @@ object Proposal {
       // If we change a proposal to a new track, we need to update all the collections
       // On Redis, this is very fast (faster than creating a mongoDB index, by an order of x100)
 
-      val maybeExistingTrackId = client.hget("Proposals:TrackFor",proposalId)
+      val maybeExistingTrackId = client.hget("Proposals:TrackForProposal",proposalId)
 
       // Do the operation if and only if we changed the Track
       maybeExistingTrackId.map {
@@ -338,8 +348,19 @@ object Proposal {
     (allDrafts ++ allSubmitted).sortBy(_.title)
   }
 
+  def allMyProposals(uuid: String): List[Proposal] = {
+    ProposalState.allButDeleted.flatMap{
+      proposalState =>
+        loadProposalsByState(uuid, proposalState)
+    }
+  }
+
   def findDraftAndSubmitted(uuid: String, proposalId: String): Option[Proposal] = {
     allMyDraftAndSubmittedProposals(uuid).find(_.id == proposalId)
+  }
+
+  def findProposal(uuid:String, proposalId:String):Option[Proposal]={
+    allMyProposals(uuid).find(_.id==proposalId)
   }
 
   def findDraft(uuid: String, proposalId: String): Option[Proposal] = {
