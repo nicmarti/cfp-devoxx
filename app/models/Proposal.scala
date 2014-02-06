@@ -286,6 +286,22 @@ object Proposal {
     changeProposalState(uuid, proposalId, ProposalState.SUBMITTED)
   }
 
+  def accept(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.ACCEPTED)
+  }
+
+  def approve(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.APPROVED)
+  }
+
+  def reject(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.REJECTED)
+  }
+
+  def decline(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.DECLINED)
+  }
+
   def draft(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.DRAFT)
   }
