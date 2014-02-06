@@ -32,6 +32,9 @@ import play.api.i18n.Messages
 import play.api.libs.Crypto
 import library.{SendMessageToComite, SendMessageToSpeaker, ZapActor}
 import org.apache.commons.lang3.StringUtils
+import play.api.libs.json.Json
+import library.search.ElasticSearch
+import play.api.cache.Cache
 
 /**
  * Main controller for the speakers.
@@ -167,9 +170,9 @@ object CallForPaper extends Controller with Secured {
             case Some(existingProposal) => {
               // This is an edit operation
               // First we try to reset the speaker's, we do not take the values from the FORM for security reason
-              val updatedProposal = proposal.copy(mainSpeaker=existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
+              val updatedProposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
               // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
-              Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal,uuid), ProposalState.DRAFT)
+              Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
               Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
 
               Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
@@ -329,6 +332,36 @@ object CallForPaper extends Controller with Secured {
         }
       }
   }
+
+  case class TermCount(term: String, count: Int)
+
+  def cloudTags() = IsMemberOf("admin") {
+    implicit uuid =>
+      implicit request =>
+        import play.api.libs.concurrent.Execution.Implicits.defaultContext
+        import play.api.Play.current
+      
+        implicit val termCountFormat = Json.reads[TermCount]
+
+        Cache.getOrElse("elasticSearch", 3600) {
+          Async {
+            ElasticSearch.getTag("proposals/proposal").map {
+              case r if r.isSuccess => {
+                val json = Json.parse(r.get)
+                val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
+                Ok(views.html.CallForPaper.cloudTags(tags))
+              }
+              case r if r.isFailure => {
+                play.Logger.error(r.get)
+                InternalServerError
+              }
+            }
+          }
+        }
+
+
+  }
+
 
 }
 

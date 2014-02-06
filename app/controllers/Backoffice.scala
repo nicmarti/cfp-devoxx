@@ -6,12 +6,14 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import library.{Redis, Benchmark, DraftReminder, ZapActor}
-import library.search.{DoIndexProposal, DoIndexSpeaker, ElasticSearchActor}
-import library.search.DoIndexSpeaker
-import library.search.DoIndexProposal
+import library.search._
 import org.joda.time.{Instant, DateTime}
 import scala.collection.immutable.HashMap
 import play.api.Play
+import library.search.DoIndexSpeaker
+import library.search.DoIndexProposal
+import library.DraftReminder
+import play.api.libs.json.{JsObject, Json}
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -175,6 +177,8 @@ object Backoffice extends Controller with Secured {
           Ok(toReturn.mkString("\n")).as("text/plain")
       }
   }
+
+
 
 }
 

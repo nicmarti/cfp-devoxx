@@ -106,6 +106,8 @@ POST        /programbuilder/createCalendar                           controllers
 GET         /programbuilder/prepareExport                            controllers.ProgramBuilder.prepareExport()
 GET         /programbuilder/deleteCalendars                          controllers.ProgramBuilder.deleteCalendar(calendarId:String)
 
+GET         /cloudtags                                        controllers.CallForPaper.cloudTags()
+
 # Special access for Alexis MP
 GET         /show/proposals                                    controllers.Sponsor.index()
 
