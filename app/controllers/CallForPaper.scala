@@ -362,6 +362,5 @@ object CallForPaper extends Controller with Secured {
 
   }
 
-
 }
 

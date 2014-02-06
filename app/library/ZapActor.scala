@@ -59,6 +59,10 @@ case class ComputeVotesAndScore()
 
 case class RemoveVotesForDeletedProposal()
 
+case class SendProposalAccepted(reporterUUID:String, proposal:Proposal)
+
+case class SendProposalRefused(reporterUUID:String, proposal:Proposal)
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -74,6 +78,8 @@ class ZapActor extends Actor {
     case ComputeLeaderboard() => doComputeLeaderboard()
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
+    case SendProposalAccepted(reporterUUID, proposal) => sendProposalAccepted(reporterUUID, proposal)
+    case SendProposalRefused(reporterUUID, proposal) => sendProposalRefused(reporterUUID, proposal)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -142,6 +148,22 @@ class ZapActor extends Actor {
     Proposal.allProposalIDsDeleted.map {
       proposalId =>
         Review.deleteVoteForProposal(proposalId)
+    }
+  }
+
+  def sendProposalAccepted(reporterUUID: String, proposal: Proposal) {
+    for (reporter <- Webuser.findByUUID(reporterUUID);
+         speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal ACCEPTED"))
+      Mails.sendProposalAccepted(reporter, speaker, proposal)
+    }
+  }
+
+  def sendProposalRefused(reporterUUID: String, proposal: Proposal) {
+    for (reporter <- Webuser.findByUUID(reporterUUID);
+         speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal REFUSED"))
+      Mails.sendProposalRefused(reporter, speaker, proposal)
     }
   }
 }

@@ -1,0 +1,3 @@
+@(proposal:models.Proposal)(implicit lang:Lang)
+
+TODO

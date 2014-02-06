@@ -177,4 +177,48 @@ object Mails {
     )
   }
 
+  def sendProposalAccepted(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    emailer.setSubject(s"[TEST] Your proposal has been accepted ${proposal.title}")
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addHeader("Message-ID", proposal.id)
+    emailer.addRecipient(toWebuser.email)
+
+    // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
+    // I am a Scala coder, please get me out of here...
+    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
+    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.acceptrefuse.sendProposalAccepted(proposal).toString(),
+      views.html.Mails.acceptrefuse.sendProposalAccepted(proposal).toString()
+    )
+
+  }
+
+  def sendProposalRefused(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    emailer.setSubject(s"[TEST] Your proposal has been refused ${proposal.title}")
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addHeader("Message-ID", proposal.id)
+    emailer.addRecipient(toWebuser.email)
+
+    // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
+    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
+    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString(),
+      views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()
+    )
+
+  }
+
+
 }

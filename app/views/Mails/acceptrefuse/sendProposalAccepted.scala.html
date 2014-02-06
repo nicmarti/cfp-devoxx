@@ -1,0 +1,33 @@
+@(proposal:models.Proposal)(implicit lang:Lang)
+
+<strong>English version below</strong>
+<p>Bonjour,</p>
+<p>Nous avons le plaisir de vous informer que la présentation <strong>@proposal.title</strong> au format
+[<strong>@Messages(proposal.talkType.label)</strong>] a été <strong>acceptée !</strong></p>
+<hr>
+<h3>Comment valider ou non votre participation ?</h3>
+<p>Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
+présence à Devoxx France comme présentateur.</p>
+<p><strong>Merci de valider dès maintenant en suivant ce lien dans votre navigateur :</strong></p>
+<a href="http://cfp.devoxx.fr@routes.AcceptOrReject.showApproveTerms(proposal.id)">http://cfp.devoxx.fr@routes.AcceptOrReject.showApproveTerms(proposal.id)</a>
+<h3>Comment poser une question ?</h3>
+<p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
+<a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)">http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
+<br>
+<p>L'équipe de sélection de la conférence Devoxx France</p>
+<hr>
+<p>Hi,</p>
+<p>We're glad to inform you that your proposal for Devoxx France 2014 has been <strong>accepted</strong></p>
+<p>Proposition title : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.label)</strong>].</p>
+<hr>
+<h3>What's next?</h3>
+<p>You must now validate or decline the general terms and conditions, and confirm that you are still ok to do
+this presentation :</p>
+<a href="http://cfp.devoxx.fr@routes.AcceptOrReject.showApproveTerms(proposal.id)">http://cfp.devoxx.fr@routes.AcceptOrReject.showApproveTerms(proposal.id)</a>
+
+<h3>For any question regarding your talk</h3>
+<p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests to respond quickly.</p>
+<a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)">http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
+<br>
+<p>The Devoxx France team</p>
+

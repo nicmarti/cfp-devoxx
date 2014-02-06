@@ -26,16 +26,17 @@ package controllers
 import play.api.mvc.Controller
 import models.{Event, AcceptService, ProposalState, Proposal}
 import play.api.i18n.Messages
+import library.{SendProposalAccepted, ZapActor}
 
 /**
  * Sans doute le controller le plus sadique du monde qui accepte ou rejette les propositions
  * Created by nmartignole on 30/01/2014.
  */
-object AcceptOrReject extends Controller with Secured{
+object AcceptOrReject extends Controller with Secured {
 
-  def acceptHome()=IsMemberOf("admin"){
+  def acceptHome() = IsMemberOf("admin") {
     implicit uuid => implicit request =>
-    Ok("todo")
+      Ok("todo")
   }
 
   def doAccept(proposalId: String) = IsMemberOf("admin") {
@@ -73,10 +74,27 @@ object AcceptOrReject extends Controller with Secured{
       }
   }
 
-  def allAcceptedByTalkType(talkType:String)=IsMemberOf("admin"){
+  def allAcceptedByTalkType(talkType: String) = IsMemberOf("admin") {
+    implicit uuid =>
+      implicit request =>
+        Ok(views.html.AcceptOrReject.allAcceptedByTalkType(AcceptService.allAcceptedByTalkType(talkType), talkType))
+  }
+
+  def notifyAccept(talkType: String) = IsMemberOf("admin") {
+    implicit uuid =>
+      implicit request =>
+        AcceptService.allAcceptedByTalkType(talkType).foreach {
+          proposal: Proposal =>
+            ZapActor.actor ! SendProposalAccepted(uuid, proposal)
+        }
+      Redirect(routes.Backoffice.homeBackoffice())
+  }
+
+  def showApproveTerms(proposalId:String)=IsAuthenticated{
     implicit uuid=>
       implicit request=>
-      Ok(views.html.AcceptOrReject.allAcceptedByTalkType(AcceptService.allAcceptedByTalkType(talkType),talkType))
+      Ok("todo !")
   }
 
 }
+

@@ -32,6 +32,8 @@
                        <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
                        <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
 
+                        <a href="@routes.AcceptOrReject.notifyAccept(confType)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
+
                    </div>
 
 
