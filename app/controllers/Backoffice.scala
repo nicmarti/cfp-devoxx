@@ -160,7 +160,7 @@ object Backoffice extends Controller with Secured {
       Redirect(routes.CFPAdmin.showVotesForProposal(proposalId))
   }
 
-  def updateRedis() = IsMemberOf("admin") {
+  def submittedByDate() = IsMemberOf("admin") {
     implicit uuid => implicit request =>
 
       Redis.pool.withClient {
@@ -171,10 +171,11 @@ object Backoffice extends Controller with Secured {
           }.groupBy(_._2).map {
             tuple =>
               (tuple._1, tuple._2.size)
+          }.toList.sortBy(_._1).map{s=>
+            s._1+", "+s._2+"\n"
           }
 
-
-          Ok(toReturn.mkString("\n")).as("text/plain")
+          Ok("Date, total\n"+toReturn.mkString).as("text/plain")
       }
   }
 
