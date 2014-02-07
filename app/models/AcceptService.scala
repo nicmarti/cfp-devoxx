@@ -31,15 +31,23 @@ import models.Review._
  * Created by nicolas on 29/01/2014.
  */
 object AcceptService {
+
+  val totalConf = 69 // 30 sans apres-midi decideur + 39 vendredi
+  val totalUni = 8
+  val totalLabs = 12
+  val totalTia = 30
+  val totalQuickies = 20
+  val totalBOF = 18
+
   // What we did in 2013
   val getDevoxx2013Total: Map[String, Int] = {
     Map(
-      (ProposalType.CONF.label, 69) // 30 sans apres-midi decideur + 39 vendredi
-      , (ProposalType.UNI.label, 8)
-      , (ProposalType.TIA.label, 30)
-      , (ProposalType.LAB.label, 12)
-      , (ProposalType.QUICK.label, 20)
-      , (ProposalType.BOF.label, 15)
+      (ProposalType.CONF.label, totalConf)
+      , (ProposalType.UNI.label, totalUni)
+      , (ProposalType.TIA.label, totalTia)
+      , (ProposalType.LAB.label, totalLabs)
+      , (ProposalType.QUICK.label, totalQuickies)
+      , (ProposalType.BOF.label, totalBOF)
     )
   }
 
@@ -61,18 +69,18 @@ object AcceptService {
   def remainingSlots(talkType:String):Long={
     talkType match {
       case ProposalType.UNI.id =>
-        8 - countAccepted(talkType)
+        totalUni - countAccepted(talkType)
       case ProposalType.CONF.id =>
-        69 - countAccepted(talkType)
+        totalConf - countAccepted(talkType)
       case ProposalType.TIA.id =>
-        30 - countAccepted(talkType)
+        totalTia - countAccepted(talkType)
       case ProposalType.LAB.id =>
-        12 - countAccepted(talkType)
+        totalLabs - countAccepted(talkType)
       case ProposalType.BOF.id =>
-        15 - countAccepted(talkType)
+        totalBOF - countAccepted(talkType)
       case ProposalType.QUICK.id =>
-        20 - countAccepted(talkType)
-      case other => 154 - countAccepted("all")
+        totalQuickies - countAccepted(talkType)
+      case other => (totalUni+totalBOF+totalConf+totalLabs+totalTia+totalQuickies) - countAccepted("all")
     }
   }
 

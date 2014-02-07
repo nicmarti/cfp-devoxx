@@ -245,9 +245,24 @@ object Slot {
         Slot(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T18:05:00.000+02:00"), new DateTime("2014-04-17T18:55:00.000+02:00"), r)
     }
 
-
-
     c1 ++ c2 ++ c3 ++ c4 ++ c5 ++ c6 ++ c7
   }
+
+    val bofSlotsThursday: List[Slot] = {
+
+    val bof01 = Room.allRoomsLabs.map {
+      r =>
+        Slot(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T19:30:00.000+02:00"), new DateTime("2014-04-17T20:20:00.000+02:00"), r)
+    }
+    val bof02 = Room.allRoomsLabs.map {
+      r =>
+        Slot(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T20:30:00.000+02:00"), new DateTime("2014-04-17T21:20:00.000+02:00"), r)
+    }
+    val bof03 = Room.allRoomsLabs.map {
+      r =>
+        Slot(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T21:30:00.000+02:00"), new DateTime("2014-04-17T22:20:00.000+02:00"), r)
+    }
+    bof01 ++ bof02 ++ bof03
+    }
 
 }

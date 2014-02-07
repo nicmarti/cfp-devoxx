@@ -104,7 +104,7 @@ GET         /programbuilder                                    controllers.Progr
 GET         /programbuilder/listCalendars                      controllers.ProgramBuilder.listCalendars()
 GET         /programbuilder/createCalendar                     controllers.ProgramBuilder.prepareNewCalendar()
 POST        /programbuilder/createCalendar                     controllers.ProgramBuilder.createCalendar()
-GET         /programbuilder/prepareExport                      controllers.ProgramBuilder.prepareExport()
+GET         /programbuilder/schedule/:confType                 controllers.ProgramBuilder.schedule(confType:String)
 GET         /programbuilder/deleteCalendars                    controllers.ProgramBuilder.deleteCalendar(calendarId:String)
 
 GET         /programbuilder/allAccepted/:talkType              controllers.AcceptOrReject.allAcceptedByTalkType(talkType:String)

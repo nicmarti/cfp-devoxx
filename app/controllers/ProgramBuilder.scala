@@ -48,7 +48,7 @@ import java.util.TimeZone
 import scala.collection.JavaConversions._
 import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.Forms._
-import models.Slot
+import models.{AcceptService, Slot}
 
 /**
  * Controller created to build and to export the Program.
@@ -182,9 +182,16 @@ object ProgramBuilder extends SecureCFPController {
   }
 
 
-  def prepareExport() = SecuredAction(IsMemberOf("admin")) {
+  def schedule(confType:String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      Ok(views.html.ProgramBuilder.showSlot(Slot.conferenceSlotsFriday))
+      val slots =  Slot.universitySlots
+      val proposals = AcceptService.allAcceptedByTalkType(confType)
+
+      val preAllocated =  slots.zip(proposals.sortBy(_.track.label))
+
+
+//      Ok(views.html.ProgramBuilder.schedule(Slot.bofSlotsThursday))
+      Ok("top "+preAllocated)
   }
 }
 
