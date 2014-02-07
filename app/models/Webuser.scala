@@ -165,7 +165,8 @@ object Webuser {
       }
   }
 
-  def hasAccessToCFPAdmin(uuid: String): Boolean = isMember(uuid, "cfp")
+  def hasAccessToCFP(uuid: String): Boolean = isMember(uuid, "cfp")
+  def hasAccessToAdmin(uuid: String): Boolean = isMember(uuid, "admin")
 
   def isSpeaker(uuid: String): Boolean = isMember(uuid, "speaker")
 

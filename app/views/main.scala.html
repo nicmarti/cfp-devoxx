@@ -36,17 +36,17 @@
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav navbar-left">
                 <li><a href="@routes.CallForPaper.homeForSpeaker()">@Messages("nav.homeSpeaker")</a></li>
-                @if(SecureCFPController.hasAccessToCFPAdmin()){
+                @if(SecureCFPController.hasAccessToCFP(req)){
                     <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> CFPAdmin</a></li>
                 }
-                 @if(SecureCFPController.hasAccessToBackoffice()){
+                 @if(SecureCFPController.hasAccessToAdmin(req)){
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
                 }
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>
             </ul>
-            @if(SecureCFPController.hasAccessToCFPAdmin()){
+            @if(SecureCFPController.hasAccessToCFP(req)){
             <form id="searchForm" class="navbar-form navbar-right" role="search">
                 <div class="form-group">
                     <label for="searchBox" class="sr-only">Search</label>
@@ -77,7 +77,7 @@
 <!-- ****************************************************************************** //-->
 
 
-@if(SecureCFPController.hasAccessToCFPAdmin()){
+@if(SecureCFPController.hasAccessToCFP(req)){
 
 <script type="text/javascript">
 $("#searchForm").on("submit",function(e){

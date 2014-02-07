@@ -60,15 +60,15 @@ trait Authorization {
 }
 
 /* Checks if user is membef of a security group */
-case class IsMemberOf(securityGroup:String) extends Authorization{
-  def isAuthorized(webuser:Webuser):Boolean={
+case class IsMemberOf(securityGroup: String) extends Authorization {
+  def isAuthorized(webuser: Webuser): Boolean = {
     Webuser.isMember(webuser.uuid, securityGroup)
   }
 }
 
-case class IsMemberOfGroups(groups:List[String]) extends Authorization{
-  def isAuthorized(webuser:Webuser):Boolean={
-    groups.exists(securityGroup=>Webuser.isMember(webuser.uuid, securityGroup))
+case class IsMemberOfGroups(groups: List[String]) extends Authorization {
+  def isAuthorized(webuser: Webuser): Boolean = {
+    groups.exists(securityGroup => Webuser.isMember(webuser.uuid, securityGroup))
   }
 }
 
@@ -147,7 +147,7 @@ trait SecureCFPController extends Controller {
     }
   }
 
-/**
+  /**
    * Get the current logged in user.  This method can be used from public actions that need to
    * access the current user if there's any
    *
@@ -173,7 +173,7 @@ object SecureCFPController {
 
   def findAuthenticator(implicit request: RequestHeader): Option[String] = {
     try {
-      val res=request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(v => Crypto.decryptAES(v.value)))
+      val res = request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(v => Crypto.decryptAES(v.value)))
       res
     } catch {
       case _: IllegalBlockSizeException => None
@@ -185,15 +185,17 @@ object SecureCFPController {
     Webuser.findByUUID(uuid)
   }
 
-  def hasAccessToCFPAdmin():Boolean={
-    false
+  def hasAccessToCFP(implicit request: RequestHeader): Boolean = {
+    findAuthenticator.exists(uuid =>
+      Webuser.hasAccessToCFP(uuid)
+    )
   }
 
-  def hasAccessToBackoffice():Boolean={
-    false
+  def hasAccessToAdmin(implicit request: RequestHeader): Boolean = {
+    findAuthenticator.exists(uuid =>
+      Webuser.hasAccessToAdmin(uuid)
+    )
   }
-
-
 
 
 }

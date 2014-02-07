@@ -37,7 +37,7 @@ object Backoffice extends SecureCFPController {
   // Add or remove the specified user from "cfp" security group
   def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      if (Webuser.hasAccessToCFPAdmin(uuidSpeaker)) {
+      if (Webuser.hasAccessToCFP(uuidSpeaker)) {
         Webuser.removeFromCFPAdmin(uuidSpeaker)
       } else {
         Webuser.addToCFPAdmin(uuidSpeaker)

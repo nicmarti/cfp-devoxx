@@ -77,7 +77,7 @@
                     <thead>
                         <tr>
                             <th>Title</th>
-                            @if(SecureCFPController.hasAccessToCFPAdmin()){
+                            @if(SecureCFPController.hasAccessToCFP(req)){
                                 <th>You voted</th>
                                 <th>State</th>
                             }
@@ -89,7 +89,7 @@
                 @proposals.values.toList.sortBy(_.state.code).map{proposal:Proposal=>
                   <tr>
                       <td><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a></td>
-                  @if(SecureCFPController.hasAccessToCFPAdmin()){
+                  @if(SecureCFPController.hasAccessToCFP(req)){
                       <td>@Review.lastVoteByUserForOneProposal(currentUser, proposal.id).map{review:Review=>
                         @defining(review.vote){score=>
                             <small>
@@ -125,7 +125,7 @@
         </div>
     </div>
 
-    @if(SecureCFPController.hasAccessToBackoffice()){
+    @if(SecureCFPController.hasAccessToAdmin(req)){
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">

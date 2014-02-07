@@ -70,7 +70,7 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
-            @if(SecureCFPController.hasAccessToCFPAdmin()){
+            @if(SecureCFPController.hasAccessToCFP(req)){
                 <a href="@routes.CFPAdmin.index()" class="btn btn-primary">Back to CFP admin</a>
             }else{
                 <a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-primary">@Messages("menu.home")</a>
