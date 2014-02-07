@@ -10,8 +10,8 @@ var cfpApp = angular.module('cfpApp', [
 ]);
 
 cfpApp.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/', {
-      templateUrl: 'partials/partial1.html',
+  $routeProvider.when('/slots', {
+      templateUrl: 'partials/slots.html',
       controller: 'MainController'
   });
   $routeProvider.otherwise({redirectTo: '/'});
