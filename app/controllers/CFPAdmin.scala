@@ -223,12 +223,11 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
   }
 
-  def search(q: String) = SecuredAction(IsMemberOf("cfp")) {
+  def search(q: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request =>
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-      Async {
         ElasticSearch.doSearch(q).map {
           case r if r.isSuccess => {
             val json = Json.parse(r.get)
@@ -267,7 +266,7 @@ object CFPAdmin extends SecureCFPController {
             InternalServerError(r.get)
           }
         }
-      }
+
   }
 
   def allSponsorTalks = SecuredAction(IsMemberOf("cfp")) {
