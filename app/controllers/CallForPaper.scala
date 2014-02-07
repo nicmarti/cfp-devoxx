@@ -23,14 +23,13 @@
 
 package controllers
 
-import play.api.mvc._
 import models._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
-import library.{SendMessageToComite, SendMessageToSpeaker, ZapActor}
+import library.{SendMessageToComite, ZapActor}
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.json.Json
 import library.search.ElasticSearch
@@ -42,10 +41,11 @@ import play.api.cache.Cache
  * Author: nicolas martignole
  * Created: 29/09/2013 12:24
  */
-object CallForPaper extends Controller with Secured {
+object CallForPaper extends SecureCFPController {
 
-  def homeForSpeaker = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def homeForSpeaker = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val result = for (speaker <- Speaker.findByUUID(uuid).toRight("Speaker not found").right;
                         webuser <- Webuser.findByUUID(uuid).toRight("Webuser not found").right) yield (speaker, webuser)
       result.fold(errorMsg => {
@@ -55,6 +55,7 @@ object CallForPaper extends Controller with Secured {
           val allProposals = Proposal.allMyProposals(uuid)
           Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allProposals))
       })
+
   }
 
   val editWebuserForm = Form(
@@ -64,16 +65,14 @@ object CallForPaper extends Controller with Secured {
     )
   )
 
-  def editCurrentWebuser = IsAuthenticated {
-    implicit uuid => implicit request =>
-      Webuser.findByUUID(uuid).map {
-        webuser =>
-          Ok(views.html.CallForPaper.editWebuser(editWebuserForm.fill(webuser.firstName, webuser.lastName)))
-      }.getOrElse(Unauthorized("User not found"))
+  def editCurrentWebuser = SecuredAction {
+    implicit request =>
+      Ok(views.html.CallForPaper.editWebuser(editWebuserForm.fill(request.webuser.firstName, request.webuser.lastName)))
   }
 
-  def saveCurrentWebuser = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def saveCurrentWebuser = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       editWebuserForm.bindFromRequest.fold(errorForm => BadRequest(views.html.CallForPaper.editWebuser(errorForm)),
         success => {
           Webuser.updateNames(uuid, success._1, success._2)
@@ -92,16 +91,18 @@ object CallForPaper extends Controller with Secured {
     "blog" -> optional(text)
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
-  def editProfile = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def editProfile = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       Speaker.findByUUID(uuid).map {
         speaker =>
           Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
       }.getOrElse(Unauthorized("User not found"))
   }
 
-  def saveProfile = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def saveProfile = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validForm => {
@@ -112,14 +113,16 @@ object CallForPaper extends Controller with Secured {
   }
 
   // Load a new proposal form
-  def newProposal() = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def newProposal() = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
   }
 
   // Load a proposal, change the status to DRAFT (not sure this is a goode idea)
-  def editProposal(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def editProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -147,20 +150,21 @@ object CallForPaper extends Controller with Secured {
   }
 
   // Prerender the proposal, but do not persist
-  def previewProposal() = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def previewProposal() = SecuredAction {
+    implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
           val html = validProposal.summaryAsHtml // markdown to HTML
-          Ok(views.html.CallForPaper.previewProposal(html, Proposal.proposalForm.fill(validProposal)))
+          Ok(views.html.CallForPaper.previewProposal(html, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
         }
       )
   }
 
   // Revalidate to avoid CrossSite forgery and save the proposal
-  def saveProposal() = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def saveProposal() = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
 
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
@@ -173,13 +177,13 @@ object CallForPaper extends Controller with Secured {
               val updatedProposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
 
               // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
-              if(existingProposal.state==ProposalState.DRAFT || existingProposal.state==ProposalState.SUBMITTED){
+              if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
                 Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
-              }else{
-               Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
-                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state [" + existingProposal.state.code+"]" ))
+              } else {
+                Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
+                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state [" + existingProposal.state.code + "]"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
               }
             }
@@ -201,8 +205,8 @@ object CallForPaper extends Controller with Secured {
       )
   }
 
-  def showSpeaker(uuidSpeaker: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def showSpeaker(uuidSpeaker: String) = SecuredAction {
+    implicit request =>
       Speaker.findByUUID(uuidSpeaker) match {
         case Some(speaker) => Ok(views.html.CallForPaper.showSpeaker(speaker))
         case None => NotFound("Speaker not found")
@@ -210,8 +214,9 @@ object CallForPaper extends Controller with Secured {
   }
 
   // Load a proposal by its id
-  def editOtherSpeakers(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def editOtherSpeakers(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -239,8 +244,9 @@ object CallForPaper extends Controller with Secured {
 
   // Check that the current authenticated user is the owner
   // validate the form and then save and redirect.
-  def saveOtherSpeakers(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def saveOtherSpeakers(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -260,8 +266,9 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  def deleteProposal(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def deleteProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -274,8 +281,9 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  def undeleteProposal(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def undeleteProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDeleted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -288,8 +296,9 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  def submitProposal(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def submitProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraft(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -304,8 +313,9 @@ object CallForPaper extends Controller with Secured {
 
   val speakerMsg = Form("msg" -> nonEmptyText(maxLength = 2500))
 
-  def showCommentForProposal(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def showCommentForProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -317,8 +327,9 @@ object CallForPaper extends Controller with Secured {
       }
   }
 
-  def sendMessageToComite(proposalId: String) = IsAuthenticated {
-    implicit uuid => implicit request =>
+  def sendMessageToComite(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
@@ -341,31 +352,28 @@ object CallForPaper extends Controller with Secured {
 
   case class TermCount(term: String, count: Int)
 
-  def cloudTags() = IsMemberOf("cfp") {
-    implicit uuid =>
-      implicit request =>
-        import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        import play.api.Play.current
-      
-        implicit val termCountFormat = Json.reads[TermCount]
+  def cloudTags() = SecuredAction {
+    implicit request =>
+      import play.api.libs.concurrent.Execution.Implicits.defaultContext
+      import play.api.Play.current
 
-        Cache.getOrElse("elasticSearch", 3600) {
-          Async {
-            ElasticSearch.getTag("proposals/proposal").map {
-              case r if r.isSuccess => {
-                val json = Json.parse(r.get)
-                val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
-                Ok(views.html.CallForPaper.cloudTags(tags))
-              }
-              case r if r.isFailure => {
-                play.Logger.error(r.get)
-                InternalServerError
-              }
+      implicit val termCountFormat = Json.reads[TermCount]
+
+      Cache.getOrElse("elasticSearch", 3600) {
+        Async {
+          ElasticSearch.getTag("proposals/proposal").map {
+            case r if r.isSuccess => {
+              val json = Json.parse(r.get)
+              val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
+              Ok(views.html.CallForPaper.cloudTags(tags))
+            }
+            case r if r.isFailure => {
+              play.Logger.error(r.get)
+              InternalServerError
             }
           }
         }
-
-
+      }
   }
 
 }

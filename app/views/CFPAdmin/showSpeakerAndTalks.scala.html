@@ -1,4 +1,4 @@
-@(speaker:Speaker, proposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(speaker:Speaker, proposals:Map[String,Proposal], currentUser:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("Speaker " + speaker.name.getOrElse("")) {
 <div class="row">
@@ -77,7 +77,7 @@
                     <thead>
                         <tr>
                             <th>Title</th>
-                            @if(Webuser.isMember(uuid,"cfp")){
+                            @if(SecureCFPController.hasAccessToCFPAdmin()){
                                 <th>You voted</th>
                                 <th>State</th>
                             }
@@ -89,8 +89,8 @@
                 @proposals.values.toList.sortBy(_.state.code).map{proposal:Proposal=>
                   <tr>
                       <td><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a></td>
-                  @if(Webuser.isMember(uuid,"cfp")){
-                      <td>@Review.lastVoteByUserForOneProposal(uuid, proposal.id).map{review:Review=>
+                  @if(SecureCFPController.hasAccessToCFPAdmin()){
+                      <td>@Review.lastVoteByUserForOneProposal(currentUser, proposal.id).map{review:Review=>
                         @defining(review.vote){score=>
                             <small>
                            @if(score>6){
@@ -125,7 +125,7 @@
         </div>
     </div>
 
-    @if(Webuser.isMember(uuid, "admin")){
+    @if(SecureCFPController.hasAccessToBackoffice()){
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">

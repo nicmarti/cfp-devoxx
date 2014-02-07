@@ -1,4 +1,4 @@
-@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], worstReviewer: Option[(String, String)], totalByCategories: Map[String, Int], totalSubmittedByType: Map[String, Int], devoxx2013: Map[String, Int])(implicit lang: Lang, flash: Flash, uuid: String, req: RequestHeader)
+@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], worstReviewer: Option[(String, String)], totalByCategories: Map[String, Int], totalSubmittedByType: Map[String, Int], devoxx2013: Map[String, Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Leaderboard") {
     <div class="row">

@@ -1,4 +1,4 @@
-@(speaker:Speaker)(implicit lang: Lang, flash: Flash, uuid:String, req:RequestHeader)
+@(speaker:Speaker)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("Speaker " + speaker.name.getOrElse("")) {
 <div class="row">
@@ -70,7 +70,7 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-body">
-            @if(Webuser.isMember(uuid, "cfp")){
+            @if(SecureCFPController.hasAccessToCFPAdmin()){
                 <a href="@routes.CFPAdmin.index()" class="btn btn-primary">Back to CFP admin</a>
             }else{
                 <a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-primary">@Messages("menu.home")</a>

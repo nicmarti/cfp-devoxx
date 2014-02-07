@@ -42,8 +42,6 @@ import play.api.libs.ws._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.apache.commons.codec.digest.DigestUtils
-import javax.crypto.IllegalBlockSizeException
-import play.api.libs.concurrent.Promise
 
 /**
  * Signup and Signin.
@@ -234,7 +232,6 @@ object Authentication extends Controller {
 
       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
       val futureResult = WS.url(url).withHeaders("User-agent" -> "nicmarti devoxxfr", "Accept" -> "application/json").get()
-      val lang = request.headers.get("Accept-Language")
         futureResult.map {
           result =>
             result.status match {
@@ -372,39 +369,37 @@ object Authentication extends Controller {
          Future.successful{
            BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
          }
-      }, validForm => {
-        validForm match {
-          case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
-            val auth = for (clientId <- Play.current.configuration.getString("google.client_id");
-                            clientSecret <- Play.current.configuration.getString("google.client_secret")) yield (clientId, clientSecret)
-            auth.map {
-              case (clientId, clientSecret) => {
-                val url = "https://accounts.google.com/o/oauth2/token"
-                val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
-                val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx France CFP")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
-                  wsCall.map {
-                    result =>
-                      result.status match {
-                        case 200 => {
-                          val b = result.body
-                          val googleToken = Json.parse(result.body).as[GoogleToken]
-                          Redirect(routes.Authentication.createFromGoogle).withSession("google_token" -> googleToken.access_token)
-                        }
-                        case _ => {
-                          Redirect(routes.Application.index()).flashing("error" -> ("error with Google OAuth2.0 : got HTTP response " + result.status + " " + result.body))
-                        }
-                      }
+      }, {
+        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
+          val auth = for (clientId <- Play.current.configuration.getString("google.client_id");
+                          clientSecret <- Play.current.configuration.getString("google.client_secret")) yield (clientId, clientSecret)
+          auth.map {
+            case (clientId, clientSecret) => {
+              val url = "https://accounts.google.com/o/oauth2/token"
+              val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
+              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx France CFP")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+              wsCall.map {
+                result =>
+                  result.status match {
+                    case 200 => {
+                      val b = result.body
+                      val googleToken = Json.parse(result.body).as[GoogleToken]
+                      Redirect(routes.Authentication.createFromGoogle).withSession("google_token" -> googleToken.access_token)
+                    }
+                    case _ => {
+                      Redirect(routes.Application.index()).flashing("error" -> ("error with Google OAuth2.0 : got HTTP response " + result.status + " " + result.body))
+                    }
                   }
               }
-            }.getOrElse {
-               Future.successful{
-                 InternalServerError("github.client_secret is not configured in application.conf")
-               }
+            }
+          }.getOrElse {
+            Future.successful {
+              InternalServerError("github.client_secret is not configured in application.conf")
             }
           }
-          case other =>  Future.successful{
-            BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
-          }
+        }
+        case other => Future.successful {
+          BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
         }
       })
   }
@@ -465,60 +460,3 @@ object Authentication extends Controller {
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
 
-/**
- * Provide security features
- */
-trait Secured {
-
-  /**
-   * Retrieve the connected user email.
-   */
-  private def username(request: RequestHeader):Option[String] = {
-    try {
-      request.session.get("uuid").orElse(request.cookies.get("cfp_rm").map(v => Crypto.decryptAES(v.value)))
-    } catch {
-      case _: IllegalBlockSizeException => None
-      case _: Exception => None
-    }
-  }
-
-  /**
-   * Redirect to login if the user in not authorized.
-   */
-  private def onUnauthorized(request: RequestHeader):SimpleResult = Results.Redirect(routes.Application.index).flashing("error" -> "Unauthorized : you are not authenticated or your session has expired. Please authenticate.")
-
-  /**
-   * Action for authenticated users.
-   */
-  def IsAuthenticated(f: => String => Request[AnyContent] => Result): EssentialAction = {
-    Security.Authenticated(username, onUnauthorized) {
-      uuid =>
-        Action{
-          request => f(uuid)(request)
-        }
-    }
-  }
-
-  /**
-   * Check if the connected user is a member of this security group.
-   */
-  def IsMemberOf(securityGroup: String)(f: => String => Request[AnyContent] => Result):EssentialAction = IsAuthenticated {
-    uuid => request =>
-      if (Webuser.isMember(uuid, securityGroup)) {
-        f(uuid)(request)
-      } else {
-        Results.Forbidden("Sorry, you cannot access this resource. Your uuid is not a member of this security group.")
-      }
-  }
-
-  def IsMemberOf(groups: List[String])(f: => String => Request[AnyContent] => Result):EssentialAction = IsAuthenticated {
-    uuid => request =>
-      if (groups.exists(securityGroup => Webuser.isMember(uuid, securityGroup))) {
-        f(uuid)(request)
-      } else {
-        Results.Forbidden("Sorry, you cannot access this resource. Your uuid is not a member of this security group.")
-      }
-  }
-
-
-}

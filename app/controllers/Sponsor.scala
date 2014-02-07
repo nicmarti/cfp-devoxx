@@ -23,7 +23,6 @@
 
 package controllers
 
-import play.api.mvc.Controller
 import models.Proposal
 
 /**
@@ -33,11 +32,10 @@ import models.Proposal
  * Author: nicolas martignole
  * Created: 03/01/2014 17:17
  */
-object Sponsor extends Controller with Secured {
+object Sponsor extends SecureCFPController{
 
-  def index() = IsMemberOf(List("cfp", "sponsor", "admin")) {
-    implicit uuid =>
-      implicit request =>
+  def index() = SecuredAction(IsMemberOfGroups(List("cfp","sponsor","admin"))) {
+    implicit request =>
         val proposals = Proposal.allSubmitted()
         Ok(views.html.Sponsor.index(proposals))
   }

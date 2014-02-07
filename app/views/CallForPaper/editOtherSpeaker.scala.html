@@ -1,4 +1,4 @@
-@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang, uuid:String, req:RequestHeader)
+@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -50,7 +50,7 @@
                     </tr>
                     <tr>
                         <td>
-                            @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==uuid),  'class->"form-control")
+                            @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control")
                         </td>
                         <td>
                           @if(Proposal.givesSpeakerFreeEntrance(proposal.talkType)) {
@@ -62,7 +62,7 @@
                     </tr>
                     <tr>
                         <td>
-                            @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==uuid),  'class->"form-control-devoxx", 'multiple->"true" )
+                            @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control-devoxx", 'multiple->"true" )
                         </td>
                         <td>
                             <span class="label label-warning">@Messages("no.freepass")</span>

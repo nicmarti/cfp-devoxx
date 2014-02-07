@@ -1,4 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal])(implicit flash: Flash, lang: Lang, uuid:String, req:RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
@@ -15,7 +15,7 @@
                             <td>
                             @if(speaker.avatarUrl.isEmpty) {
                                 <div class="media">
-                                    <a class="pull-left" href="@routes.CallForPaper.showSpeaker(uuid)">
+                                    <a class="pull-left" href="@routes.CallForPaper.showSpeaker(webuser.uuid)">
                                         <img class="media-object"
                                         src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=75"
                                         alt="@webuser.firstName @webuser.lastName"
@@ -28,7 +28,7 @@
                                 </div>
                             } else {
                                 <div class="media">
-                                    <a class="pull-left" href="@routes.CallForPaper.showSpeaker(uuid)">
+                                    <a class="pull-left" href="@routes.CallForPaper.showSpeaker(webuser.uuid)">
                                         <img class="media-object"
                                         width="75"
                                         src="@speaker.avatarUrl.get"

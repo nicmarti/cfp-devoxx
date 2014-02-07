@@ -1,4 +1,4 @@
-@(htmlSummary: String, newProposal: Form[models.Proposal])(implicit flash: Flash, lang: Lang, uuid:String, req:RequestHeader)
+@(htmlSummary: String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -55,7 +55,7 @@
                         <div id="preview_guide">
                             <div class="title">@newProposal("title").value</div>
                             <div class="speaker">
-                                   <img src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(newProposal("mainSpeaker").value.getOrElse(uuid))?s=35" title="This is you" />
+                                   <img src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(newProposal("mainSpeaker").value.getOrElse(currentUser))?s=35" title="This is you" />
                             </div>
                             <div class="summary">@newProposal("summary").value</div>
                         </div>

@@ -1,4 +1,4 @@
-@(proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewer:Option[Proposal])(implicit flash: Flash, lang: Lang, uuid: String, req:RequestHeader)
+@(currentUser:String, proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewer:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -38,7 +38,7 @@
         <div class="col-md-8">
             <div class="panel-body">
                 <h3>All votes</h3>
-                @if(proposal.mainSpeaker==uuid || proposal.secondarySpeaker==Some(uuid) || proposal.otherSpeakers.contains(uuid)){
+                @if(proposal.mainSpeaker==currentUser|| proposal.secondarySpeaker==Some(currentUser) || proposal.otherSpeakers.contains(currentUser)){
                     <em>Sorry, votes for your talk are hidden.</em>
                 }else{
                     <div class="media">
@@ -70,7 +70,7 @@
             </div>
         </div>
     </div>
-     @if(Webuser.isMember(uuid, "admin")){
+     @if(SecureCFPController.hasAccessToBackoffice()){
     <div class="row">
         <div class="col-md-4 col-lg-offset-7">
             <div class="panel panel-default">

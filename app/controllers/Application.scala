@@ -25,9 +25,6 @@ package controllers
 import models._
 import play.api.mvc._
 import library._
-import play.api.Play.current
-import play.api.i18n.Messages
-import play.api.libs.Crypto
 
 /**
  * Devoxx France Call For Paper main application.
@@ -53,7 +50,7 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
-      Ok(views.html.Application.index()).withHeaders("Cache-Control"->"public, must-revalidate, max-age=84600")
+      Ok(views.html.Application.index())
   }
 
   def bugReport = Action {
@@ -71,6 +68,5 @@ object Application extends Controller {
           Redirect(routes.Application.index).flashing("success" -> "Your message has been sent to the team. Thanks!")
         })
   }
-
 
 }

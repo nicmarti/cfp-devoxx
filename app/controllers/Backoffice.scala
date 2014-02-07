@@ -1,19 +1,15 @@
 package controllers
 
 import models._
-import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import play.api.data.validation.Constraints._
-import library.{Redis, Benchmark, DraftReminder, ZapActor}
+import library.{Redis, ZapActor}
 import library.search._
-import org.joda.time.{Instant, DateTime}
-import scala.collection.immutable.HashMap
+import org.joda.time.Instant
 import play.api.Play
 import library.search.DoIndexSpeaker
 import library.search.DoIndexProposal
 import library.DraftReminder
-import play.api.libs.json.{JsObject, Json}
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -21,27 +17,26 @@ import play.api.libs.json.{JsObject, Json}
  * Author: nicolas martignole
  * Created: 02/12/2013 21:34
  */
-object Backoffice extends Controller with Secured {
+object Backoffice extends SecureCFPController {
 
   val isCFPOpen: Boolean = {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(true)
   }
 
-  def homeBackoffice() = IsMemberOf("admin") {
-    implicit uuid =>
-      implicit request =>
-        Ok(views.html.Backoffice.homeBackoffice())
+  def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.homeBackoffice())
   }
 
   // Returns all speakers
-  def allSpeakers = IsMemberOf("cfp") {
-    implicit uuid => implicit request =>
+  def allSpeakers = SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
       Ok(views.html.Backoffice.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
   }
 
   // Add or remove the specified user from "cfp" security group
-  def switchCFPAdmin(uuidSpeaker: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       if (Webuser.hasAccessToCFPAdmin(uuidSpeaker)) {
         Webuser.removeFromCFPAdmin(uuidSpeaker)
       } else {
@@ -51,52 +46,56 @@ object Backoffice extends Controller with Secured {
   }
 
   // Authenticate on CFP on behalf of specified user.
-  def authenticateAs(uuidSpeaker: String) = IsMemberOf("cfp") {
-    implicit uuid => implicit request =>
+  def authenticateAs(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
       Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
   }
 
-  def allDraftProposals() = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def allDraftProposals() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       val proposals = Proposal.allDrafts()
       Ok(views.html.Backoffice.allDraftProposals(proposals))
   }
 
-  def allSubmittedProposals() = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def allSubmittedProposals() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       val proposals = Proposal.allSubmitted()
       Ok(views.html.Backoffice.allSubmittedProposals(proposals))
   }
 
-  def moveProposalToTrash(proposalId: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def moveProposalToTrash(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val uuid = request.webuser.uuid
       Proposal.delete(uuid, proposalId)
       val undoDelete = routes.Backoffice.moveProposalToDraft(proposalId).url
       Redirect(routes.Backoffice.allDraftProposals()).flashing("success" -> s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
   }
 
-  def moveSubmittedProposalToTrash(proposalId: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def moveSubmittedProposalToTrash(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val uuid = request.webuser.uuid
       Proposal.delete(uuid, proposalId)
       val undoDelete = routes.Backoffice.moveProposalToDraft(proposalId).url
       Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success" -> s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
   }
 
-  def moveProposalToDraft(proposalId: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def moveProposalToDraft(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val uuid = request.webuser.uuid
       Proposal.draft(uuid, proposalId)
       Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success" -> s"Undeleted proposal ${proposalId}")
   }
 
-  def moveProposalToSubmit(proposalId: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def moveProposalToSubmit(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val uuid = request.webuser.uuid
       Proposal.submit(uuid, proposalId)
       val undoSubmit = routes.Backoffice.moveProposalToDraft(proposalId).url
       Redirect(routes.Backoffice.allDraftProposals()).flashing("success" -> s"Proposal ${proposalId} was submitted. <a href='$undoSubmit'>Cancel this submission?</a>")
   }
 
-  def sendReminderToSpeakersForDraft() = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def sendReminderToSpeakersForDraft() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
     // Send a message to an Actor
       ZapActor.actor ! DraftReminder()
       // Then redirect
@@ -105,8 +104,9 @@ object Backoffice extends Controller with Secured {
 
   val formSecu = Form("secu" -> nonEmptyText())
 
-  def deleteSpeaker(speakerUUIDToDelete: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def deleteSpeaker(speakerUUIDToDelete: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val uuid = request.webuser.uuid
       if (Webuser.isMember(speakerUUIDToDelete, "cfp") || Webuser.isMember(speakerUUIDToDelete, "admin")) {
         Redirect(routes.Backoffice.allDraftProposals()).flashing("error" -> s"We cannot delete CFP admin user...")
       } else {
@@ -124,17 +124,16 @@ object Backoffice extends Controller with Secured {
       }
   }
 
-  def doIndexElasticSearch() = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def doIndexElasticSearch() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       ElasticSearchActor.masterActor ! DoIndexSpeaker()
       ElasticSearchActor.masterActor ! DoIndexProposal()
       Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Elastic search actor started...")
   }
 
   // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
-  def cleanUpVotesIfUserWasDeleted = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
-
+  def cleanUpVotesIfUserWasDeleted = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       Proposal.allProposalIDs.foreach {
         proposalID: String =>
           Review.allVotesFor(proposalID).foreach {
@@ -149,8 +148,8 @@ object Backoffice extends Controller with Secured {
       Ok("Done")
   }
 
-  def deleteVotesForPropal(proposalId: String) = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def deleteVotesForPropal(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       Review.allVotesFor(proposalId).foreach {
         case (reviewerUUID, score) => {
           play.Logger.of("application.Backoffice").info(s"Deleting vote on $proposalId by $reviewerUUID of score $score")
@@ -160,8 +159,8 @@ object Backoffice extends Controller with Secured {
       Redirect(routes.CFPAdmin.showVotesForProposal(proposalId))
   }
 
-  def submittedByDate() = IsMemberOf("admin") {
-    implicit uuid => implicit request =>
+  def submittedByDate() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
 
       Redis.pool.withClient {
         client =>
@@ -171,15 +170,14 @@ object Backoffice extends Controller with Secured {
           }.groupBy(_._2).map {
             tuple =>
               (tuple._1, tuple._2.size)
-          }.toList.sortBy(_._1).map{s=>
-            s._1+", "+s._2+"\n"
+          }.toList.sortBy(_._1).map {
+            s =>
+              s._1 + ", " + s._2 + "\n"
           }
 
-          Ok("Date, total\n"+toReturn.mkString).as("text/plain")
+          Ok("Date, total\n" + toReturn.mkString).as("text/plain")
       }
   }
-
-
 
 }
 

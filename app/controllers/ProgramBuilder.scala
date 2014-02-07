@@ -23,48 +23,39 @@
 
 package controllers
 
-import play.api.mvc.Controller
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
-import com.google.api.client.googleapis.batch.BatchRequest
-import com.google.api.client.googleapis.batch.json.JsonBatchCallback
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.googleapis.json.GoogleJsonError
-import com.google.api.client.http.HttpHeaders
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.DateTime
-import com.google.api.client.util.Lists
-import com.google.api.client.util.store.DataStoreFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Calendar
 import com.google.api.services.calendar.model.CalendarList
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
-import com.google.api.services.calendar.model.Events
 
-import java.io.{File, FileInputStream, IOException, InputStreamReader}
+import java.io.{File, FileInputStream, InputStreamReader}
 import java.util.Collections
 import java.util.Date
 import java.util.TimeZone
 
 import scala.collection.JavaConversions._
 import org.apache.commons.lang3.RandomStringUtils
-import library.calendar.CalendarSample
 import play.api.data.Forms._
-import models.{Slot, Speaker}
+import models.Slot
 
 /**
  * Controller created to build and to export the Program.
  *
  * Created by nicolas on 20/01/2014.
  */
-object ProgramBuilder extends Controller with Secured {
+object ProgramBuilder extends SecureCFPController {
 
   val APPLICATION_NAME = "DevoxxFrance_CFP"
   /** Directory to store user credentials. */
@@ -77,31 +68,28 @@ object ProgramBuilder extends Controller with Secured {
   private final val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance
   private var client: com.google.api.services.calendar.Calendar = null
 
-  def index = IsMemberOf(List("admin")) {
-    implicit uuid: String =>
-      implicit request =>
-        Ok(views.html.ProgramBuilder.index())
+  def index = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.ProgramBuilder.index())
   }
 
-  def listCalendars() = IsMemberOf("admin") {
-    implicit uuid =>
-      implicit request =>
+  def listCalendars() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+    // initialize the transport
+      httpTransport = GoogleNetHttpTransport.newTrustedTransport
 
-      // initialize the transport
-        httpTransport = GoogleNetHttpTransport.newTrustedTransport
+      // initialize the data store factory
+      dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
 
-        // initialize the data store factory
-        dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
+      // authorization
+      val credential: Credential = authorize
 
-        // authorization
-        val credential: Credential = authorize
+      // set up global Calendar instance
+      client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
 
-        // set up global Calendar instance
-        client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
-
-        val calendarLists: CalendarList = client.calendarList.list.execute
-        val listOfCalendars = calendarLists.getItems.toList.filterNot(_.getId() == "nmartignole@gmail.com").filterNot(_.getId() == "vdgasl0hs6tv1lni0bnk03umj4@group.calendar.google.com")
-        Ok(views.html.ProgramBuilder.listCalendars(listOfCalendars))
+      val calendarLists: CalendarList = client.calendarList.list.execute
+      val listOfCalendars = calendarLists.getItems.toList.filterNot(_.getId() == "nmartignole@gmail.com").filterNot(_.getId() == "vdgasl0hs6tv1lni0bnk03umj4@group.calendar.google.com")
+      Ok(views.html.ProgramBuilder.listCalendars(listOfCalendars))
 
   }
 
@@ -112,59 +100,55 @@ object ProgramBuilder extends Controller with Secured {
     ))
 
 
-  def prepareNewCalendar() = IsMemberOf("admin") {
-    implicit uuid =>
-      implicit request =>
-        Ok(views.html.ProgramBuilder.prepareNewCalendar(newCalendar))
+  def prepareNewCalendar() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.ProgramBuilder.prepareNewCalendar(newCalendar))
   }
 
-  def createCalendar() = IsMemberOf("admin") {
-    implicit uuid: String =>
-      implicit request =>
+  def createCalendar() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      newCalendar.bindFromRequest().fold(hasErrors => BadRequest(views.html.ProgramBuilder.prepareNewCalendar(hasErrors)),
+        validNewCalendar => {
+          // initialize the transport
+          httpTransport = GoogleNetHttpTransport.newTrustedTransport
 
-        newCalendar.bindFromRequest().fold(hasErrors => BadRequest(views.html.ProgramBuilder.prepareNewCalendar(hasErrors)),
-          validNewCalendar => {
-            // initialize the transport
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport
+          // initialize the data store factory
+          dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
 
-            // initialize the data store factory
-            dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
+          // authorization
+          val credential: Credential = authorize
 
-            // authorization
-            val credential: Credential = authorize
+          // set up global Calendar instance
+          client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
 
-            // set up global Calendar instance
-            client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
+          val newCalendar = new Calendar()
+          newCalendar.setSummary(validNewCalendar._1)
+          newCalendar.setDescription(validNewCalendar._2)
+          newCalendar.setLocation("Paris")
+          newCalendar.setTimeZone("Europe/Paris")
+          val createdCalendar = client.calendars().insert(newCalendar).execute()
 
-            val newCalendar = new Calendar()
-            newCalendar.setSummary(validNewCalendar._1)
-            newCalendar.setDescription(validNewCalendar._2)
-            newCalendar.setLocation("Paris")
-            newCalendar.setTimeZone("Europe/Paris")
-            val createdCalendar = client.calendars().insert(newCalendar).execute()
-
-            Redirect(routes.ProgramBuilder.listCalendars()).flashing("success"->("Created new calendar "+createdCalendar.getId()))
-          })
+          Redirect(routes.ProgramBuilder.listCalendars()).flashing("success" -> ("Created new calendar " + createdCalendar.getId()))
+        })
   }
 
-  def deleteCalendar(calendarId: String) = IsMemberOf("admin") {
-    implicit uuid: String =>
-      implicit request =>
+  def deleteCalendar(calendarId: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
 
-      // initialize the transport
-        httpTransport = GoogleNetHttpTransport.newTrustedTransport
+    // initialize the transport
+      httpTransport = GoogleNetHttpTransport.newTrustedTransport
 
-        // initialize the data store factory
-        dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
+      // initialize the data store factory
+      dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR)
 
-        // authorization
-        val credential: Credential = authorize
+      // authorization
+      val credential: Credential = authorize
 
-        // set up global Calendar instance
-        client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
+      // set up global Calendar instance
+      client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build
 
-     //   client.calendars().delete(calendarId).execute()
-        Redirect(routes.ProgramBuilder.index()).flashing("success" -> ("Deleted calendar " + calendarId))
+      //   client.calendars().delete(calendarId).execute()
+      Redirect(routes.ProgramBuilder.index()).flashing("success" -> ("Deleted calendar " + calendarId))
   }
 
   def newEvent(): Event = {
@@ -198,10 +182,9 @@ object ProgramBuilder extends Controller with Secured {
   }
 
 
-  def prepareExport() = IsMemberOf("admin") {
-    implicit uuid: String =>
-      implicit request =>
-        Ok(views.html.ProgramBuilder.showSlot(Slot.conferenceSlotsFriday))
+  def prepareExport() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.ProgramBuilder.showSlot(Slot.conferenceSlotsFriday))
   }
 }
 
