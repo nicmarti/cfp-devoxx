@@ -28,17 +28,21 @@
                                 @flash.get("success").get
                             </div>
                         }
-                       <br>
-                       <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
-                       <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
-
-                        <a href="@routes.AcceptOrReject.notifyAccept(confType, None)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
-
                    </div>
 
 
                 <div class="col-md-12">
-                    <small>All proposals accepted</small>
+                    <h3>@allProposals.size proposals accepted</h3>
+                       <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
+                       <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
+
+
+                    @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
+                        <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
+                    }
+
+                    <br>
+
                     <table id="allProposals" class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
@@ -75,6 +79,7 @@
                             }
                         </tbody>
                     </table>
+                    <a href="@routes.AcceptOrReject.notifyAccept(confType, None)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
 
                 </div>
             </div>

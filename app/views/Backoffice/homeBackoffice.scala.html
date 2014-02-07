@@ -25,10 +25,7 @@
             <h3>Home backoffice</h3>
         </div>
         <div class="panel-body">
-            <a href="@routes.Backoffice.doIndexElasticSearch()" class="label label-primary"><i class="icon-search"></i> Trigger Elasticsearch indexer</a><br>
-            <a href="@routes.ProgramBuilder.index()" class="label label-primary"><i class="icon-calendar"></i> Planner</a><br>
-
-            <h4>Accept or reject service</h4>
+            <h4>Accept or reject notification service</h4>
             <a href="@routes.AcceptOrReject.allAcceptedByTalkType(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
             <a href="@routes.AcceptOrReject.allAcceptedByTalkType(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
             <a href="@routes.AcceptOrReject.allAcceptedByTalkType(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
@@ -36,8 +33,11 @@
             <a href="@routes.AcceptOrReject.allAcceptedByTalkType(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
             <a href="@routes.AcceptOrReject.allAcceptedByTalkType(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a>
 
+            <h4>Planner</h4>
+            <a href="@routes.ProgramBuilder.index()" class="btn btn-primary btn-sm"><i class="icon-calendar"></i> Planner</a><br>
 
-
+            <h4>Other services</h4>
+            <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Trigger Elasticsearch indexer</a><br>
         </div>
         </div>
     </div>
