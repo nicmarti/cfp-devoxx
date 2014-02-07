@@ -24,9 +24,8 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import models.Slot
-import play.api.libs.json.Json
-
+import models.{AcceptService, Slot}
+import play.api.libs.json.{JsNumber, JsString, Json}
 
 
 /**
@@ -39,6 +38,21 @@ object ApiController extends Controller {
 
       val jsSlots = Json.toJson(Slot.universitySlots)
       Ok(Json.stringify(Json.toJson(Map("slots"->jsSlots)))).as("application/json")
+  }
+
+  def acceptedTalks(confType:String) = Action{
+    implicit request =>
+      import models.Proposal.proposalFormat
+      val proposals = AcceptService.allAcceptedByTalkType(confType)
+      val json=Json.toJson(
+        Map("acceptedTalks"->Json.toJson(
+          Map("confType"->JsString(confType),
+              "total"->JsNumber(proposals.size),
+               "talks"->Json.toJson(proposals))
+          )
+        )
+      )
+      Ok(Json.stringify(json)).as("application/json")
   }
 
 }

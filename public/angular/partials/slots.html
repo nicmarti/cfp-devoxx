@@ -1,5 +1,18 @@
 <p>All  slots</p>
 
-  <div ng-repeat="slot in slots" class="slot">
+
+<div class="panel_talks">
+<div ng-repeat="talk in acceptedTalks.talks"
+     class="talk"
+     drag="talk" dragStyle="columnDrag"
+     dropStyle="columnDrop">
+    {{talk.id}} {{talk.title}}
+</div>
+</div>
+
+<div class="panel_slots">
+    <div ng-repeat="slot in slots" class="slot"  drop="slot" dropStyle="columnDrop">
     {{slot.id}}
-  </div>
+    </div>
+</div>
+

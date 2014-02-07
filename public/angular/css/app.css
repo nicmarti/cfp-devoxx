@@ -1,3 +1,24 @@
+body{
+    font-family: "Helvetica",sans-serif;
+    font-size: 12px;
+}
+.panel_talks{
+    float: left;
+    width: 400px;
+    border-right: 3px solid red;
+}
+.panel_slots{
+    float:left;
+    width: 500px;
+}
+.talk{
+    display: block;
+    width: 200px;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: #ddd725;
+}
 .slot{
     display: block;
     width: 300px;
@@ -5,4 +26,23 @@
     padding: 5px;
     margin: 5px;
     background-color: #b6dd7b;
+}
+
+.column {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    text-align: center;
+    border: 1px solid black;
+    display:inline-block;
+    margin: 50px;
+}
+
+.columnDrag {
+    opacity: 0.7;
+    background-color: blue;
+}
+
+.columnDrop {
+    background-color: green;
 }
