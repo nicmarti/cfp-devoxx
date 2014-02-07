@@ -6,6 +6,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1 class="panel-title"><i class="icon-bar-chart"></i> Proposals from Sponsor or Exhibitor</h1>
+                    @proposals.size talks
                 </div>
             </div>
         </div>
@@ -24,10 +25,6 @@
                     @proposal.otherSpeakers.map { s =>
                         @tags.renderGravatar(s)
                     }
-
-                    <h4>Abstract</h4>
-                    <blockquote>@proposal.summary</blockquote>
-
                     <h4>Private message</h4>
                     <small>
                         @Html(proposal.privateMessageAsHtml)
