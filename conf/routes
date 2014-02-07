@@ -117,6 +117,8 @@ GET         /cloudtags                                         controllers.CallF
 # Special access for Alexis MP
 GET         /show/proposals                                    controllers.Sponsor.index()
 
+# API
+GET         /api/fr14/slots                                    controllers.ApiController.slots()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                      controllers.Assets.at(path="/public", file)

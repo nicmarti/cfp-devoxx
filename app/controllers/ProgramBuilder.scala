@@ -187,11 +187,9 @@ object ProgramBuilder extends SecureCFPController {
       val slots =  Slot.universitySlots
       val proposals = AcceptService.allAcceptedByTalkType(confType)
 
-      val preAllocated =  slots.zip(proposals.sortBy(_.track.label))
+//      val preAllocated =  slots.zip(proposals.sortBy(_.track.label))
 
-
-//      Ok(views.html.ProgramBuilder.schedule(Slot.bofSlotsThursday))
-      Ok("top "+preAllocated)
+      Ok(views.html.ProgramBuilder.schedule())
   }
 }
 
