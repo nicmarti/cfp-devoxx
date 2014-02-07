@@ -352,7 +352,7 @@ object CallForPaper extends SecureCFPController {
 
   case class TermCount(term: String, count: Int)
 
-  def cloudTags() = SecuredAction {
+  def cloudTags() = SecuredAction.async {
     implicit request =>
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
       import play.api.Play.current
@@ -360,7 +360,6 @@ object CallForPaper extends SecureCFPController {
       implicit val termCountFormat = Json.reads[TermCount]
 
       Cache.getOrElse("elasticSearch", 3600) {
-        Async {
           ElasticSearch.getTag("proposals/proposal").map {
             case r if r.isSuccess => {
               val json = Json.parse(r.get)
@@ -372,7 +371,6 @@ object CallForPaper extends SecureCFPController {
               InternalServerError
             }
           }
-        }
       }
   }
 
