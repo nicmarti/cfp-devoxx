@@ -28,12 +28,6 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.homeBackoffice())
   }
 
-  // Returns all speakers
-  def allSpeakers = SecuredAction(IsMemberOf("cfp")) {
-    implicit request =>
-      Ok(views.html.Backoffice.allSpeakers(Webuser.allSpeakers.sortBy(_.email)))
-  }
-
   // Add or remove the specified user from "cfp" security group
   def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
@@ -42,7 +36,7 @@ object Backoffice extends SecureCFPController {
       } else {
         Webuser.addToCFPAdmin(uuidSpeaker)
       }
-      Redirect(routes.Backoffice.allSpeakers)
+      Redirect(routes.CFPAdmin.allSpeakers(onlyWithProposals=false,export=false))
   }
 
   // Authenticate on CFP on behalf of specified user.

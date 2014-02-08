@@ -23,8 +23,11 @@
         <div class="panel panel-default">
         <div class="panel-heading">
             <h3>All speakers</h3>
+            <span class="label label-info">@speakers.size users</span>
         </div>
         <div class="panel-body">
+            <a href="@routes.CFPAdmin.allSpeakers(onlyWithProposals=true,export=false)" class="btn btn-sm btn-primary"><i class="icon-filter"></i> Only with at least one proposal</a>
+            <a href="@routes.CFPAdmin.allSpeakers(onlyWithProposals=true,export=true)" class="btn btn-sm btn-primary"><i class="icon-eject"></i> Export to CSV</a>
             @if(speakers.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>

@@ -73,6 +73,7 @@ GET         /cfpadmin/sponsorTalk/remove/:proposalId           controllers.CFPAd
 GET         /cfpadmin/proposals/byType/:confType               controllers.CFPAdmin.allProposalsByType(confType:String)
 GET         /cfpadmin/proposals/byTrack/:track                 controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET         /cfpadmin/compareReviewer                          controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
+GET         /cfpadmin/allSpeakers                              controllers.CFPAdmin.allSpeakers(onlyWithProposals:Boolean,export:Boolean)
 
 # AcceptOrReject controller
 GET         /preaccept/:proposalId                             controllers.AcceptOrReject.doAccept(proposalId:String)
@@ -81,7 +82,6 @@ GET         /cancelPreaccept/:proposalId                       controllers.Accep
 GET         /favicon.ico                                       controllers.Assets.at(path="/public/images", file="favicon.ico")
 
 GET         /admin                                             controllers.Backoffice.homeBackoffice()
-GET         /admin/webusers                                    controllers.Backoffice.allSpeakers
 GET         /admin/webusers/switch                             controllers.Backoffice.switchCFPAdmin(uuid:String)
 GET         /admin/proposals/draft                             controllers.Backoffice.allDraftProposals()
 GET         /admin/proposals/submitted                         controllers.Backoffice.allSubmittedProposals()

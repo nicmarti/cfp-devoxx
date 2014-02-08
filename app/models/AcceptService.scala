@@ -32,7 +32,8 @@ import models.Review._
  */
 object AcceptService {
 
-  val totalConf = 69 // 30 sans apres-midi decideur + 39 vendredi
+  val totalConf = 69
+  // 30 sans apres-midi decideur + 39 vendredi
   val totalUni = 8
   val totalLabs = 12
   val totalTia = 30
@@ -51,22 +52,22 @@ object AcceptService {
     )
   }
 
-  def countAccepted(talkType:String):Long=Redis.pool.withClient{
-    client=>
+  def countAccepted(talkType: String): Long = Redis.pool.withClient {
+    client =>
       talkType match {
         case "all" =>
-          client.scard("Accepted:conf")+ client.scard("Accepted:lab") + client.scard("Accepted:bof")+ client.scard("Accepted:tia")+ client.scard("Accepted:uni")+ client.scard("Accepted:quick")
+          client.scard("Accepted:conf") + client.scard("Accepted:lab") + client.scard("Accepted:bof") + client.scard("Accepted:tia") + client.scard("Accepted:uni") + client.scard("Accepted:quick")
         case other =>
           client.scard(s"Accepted:$talkType")
       }
   }
 
-  def isAccepted(proposalId:String, talkType:String):Boolean=Redis.pool.withClient{
-    client=>
-      client.sismember("Accepted:"+talkType, proposalId)
+  def isAccepted(proposalId: String, talkType: String): Boolean = Redis.pool.withClient {
+    client =>
+      client.sismember("Accepted:" + talkType, proposalId)
   }
 
-  def remainingSlots(talkType:String):Long={
+  def remainingSlots(talkType: String): Long = {
     talkType match {
       case ProposalType.UNI.id =>
         totalUni - countAccepted(talkType)
@@ -80,26 +81,27 @@ object AcceptService {
         totalBOF - countAccepted(talkType)
       case ProposalType.QUICK.id =>
         totalQuickies - countAccepted(talkType)
-      case other => (totalUni+totalBOF+totalConf+totalLabs+totalTia+totalQuickies) - countAccepted("all")
+      case other => (totalUni + totalBOF + totalConf + totalLabs + totalTia + totalQuickies) - countAccepted("all")
     }
   }
 
-  def accept(proposalId:String, talkType:String)=Redis.pool.withClient{
-    implicit client=>
-      client.sadd("Accepted:"+talkType, proposalId)
+  def accept(proposalId: String, talkType: String) = Redis.pool.withClient {
+    implicit client =>
+      client.sadd("Accepted:" + talkType, proposalId)
   }
 
-  def cancelAccept(proposalId:String, talkType:String)=Redis.pool.withClient{
-    implicit client=>
-      client.srem("Accepted:"+talkType, proposalId)
+  def cancelAccept(proposalId: String, talkType: String) = Redis.pool.withClient {
+    implicit client =>
+      client.srem("Accepted:" + talkType, proposalId)
   }
 
-  def allAcceptedByTalkType(talkType:String):List[Proposal]=Redis.pool.withClient{
-    implicit client=>
-      val allProposalIDs = client.smembers("Accepted:"+talkType)
+  def allAcceptedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.smembers("Accepted:" + talkType)
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
+
 
 
 }

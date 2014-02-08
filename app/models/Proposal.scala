@@ -529,8 +529,6 @@ object Proposal {
     }
   }
 
-
-
   // Move a speaker that was 2nd speaker or "otherSpeaker" to mainSpeaker
   // This is required as any edit operation will automatically set the Proposal's owner to the
   // current authenticated user
@@ -587,5 +585,10 @@ object Proposal {
       Event.storeEvent(Event(proposal.id, authorUUID, "Removed [sponsorTalkFlag] on proposal "+proposal.title))
       Proposal.save(proposal.mainSpeaker, proposal.copy(sponsorTalk = false), proposal.state)
     }
+  }
+
+  def hasOneProposal(uuid:String):Boolean=Redis.pool.withClient{
+    implicit client=>
+      client.exists(s"Proposals:ByAuthor:$uuid")
   }
 }

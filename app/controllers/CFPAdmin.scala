@@ -354,6 +354,35 @@ object CFPAdmin extends SecureCFPController {
           Ok(views.html.CFPAdmin.showProposalsNotReviewedCompareTo(diffProposalIDs, otherReviewer))
       }
   }
+
+  // Returns all speakers
+  def allSpeakers(onlyWithProposals:Boolean=false, export:Boolean=false) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      val speakers = onlyWithProposals match{
+        case true=>Webuser.allSpeakers.sortBy(_.email).filter(w=>Proposal.hasOneProposal(w.uuid))
+        case false=>Webuser.allSpeakers.sortBy(_.email)
+      }
+    export match{
+      case true=>{
+        val buffer=new StringBuffer("email,firstName,lastName,uuid\n")
+        speakers.foreach{ s=>
+          buffer.append(s.email.toLowerCase)
+          buffer.append(",")
+          buffer.append(s.firstName.toLowerCase.capitalize)
+          buffer.append(",")
+          buffer.append(s.lastName.toLowerCase.capitalize)
+          buffer.append(",")
+          buffer.append(s.uuid)
+          buffer.append("\n")
+        }
+        Ok(buffer.toString).as("text/csv")
+      }
+      case false=>Ok(views.html.CFPAdmin.allSpeakers(speakers))
+    }
+
+  }
+
+
 }
 
 
