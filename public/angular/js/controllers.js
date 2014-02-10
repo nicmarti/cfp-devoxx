@@ -14,23 +14,33 @@ mainController.controller('MainController', function MainController($rootScope, 
 
     $rootScope.$on('dropEvent', function (evt, dragged, dropped) {
 
-        var maybeSlot = _.find($scope.slots, function (slot) {
+        var maybeSlot2 = _.find($scope.slots, function (slot) {
             return slot.id == dropped.id;
         });
-        if (_.isUndefined(maybeSlot)) {
+        if (_.isUndefined(maybeSlot2)) {
             console.log("old slot not found");
         } else {
+            if(_.isUndefined(maybeSlot2.proposal)==false){
+                // if there is a talk, remove it
+                var oldTalk=maybeSlot2.proposal ;
+
+                // Remove from left
+                 maybeSlot2.proposal=undefined;
+            }
+
             // Update the slot
-            maybeSlot.proposal = dragged;
+            maybeSlot2.proposal = dragged;
 
             // remove from accepted talks
             $scope.acceptedTalks.talks = _.reject($scope.acceptedTalks.talks, function (a) {
                 return a.id === dragged.id
             });
+            // Add back to right
+            if(_.isUndefined(oldTalk)==false){
+                $scope.acceptedTalks.talks = $scope.acceptedTalks.talks.concat(oldTalk);
+            }
 
             $scope.$apply();
-
-
         }
     });
 
@@ -50,4 +60,5 @@ mainController.controller('MainController', function MainController($rootScope, 
             $scope.acceptedTalks.talks = $scope.acceptedTalks.talks.concat(talk);
         }
     };
+
 });

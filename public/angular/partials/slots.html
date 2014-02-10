@@ -1,24 +1,32 @@
 <p>All slots</p>
 
 
-<div class="panel_talks">
+<div class="col-lg-3 panel_talks">
 <div ng-repeat="talk in acceptedTalks.talks"
      class="talk"
      drag="talk" dragStyle="columnDrag"
      dropStyle="columnDrop">
-    {{talk.id}} {{talk.title}}<br>
-    <small>{{talk.mainSpeaker}}</small>
+     <span class="proposalTitle">{{talk.title}}</span>
+     <span class="label label-default">{{talk.id}}</span>
+     <div class="label label-info">{{talk.lang}} - {{talk.track.id}}</div>
+     <div class="label label-success">{{talk.mainSpeaker}}</div>
+
 </div>
 </div>
 
-<div class="col-lg-7 col-lg-offset-4 panel_slots">
-    <div ng-repeat="slot in slots" class="slot"  drop="slot" dropStyle="columnDrop">
-        <span class="slotTitle">{{slot.id}}</span>
+<div class="col-lg-9 panel_slots">
+
+    <div ng-repeat="slot in slots" class="col-lg-5 slot"  drop="slot" dropStyle="columnDrop">
+        {{slot.room.name}}<br>
+        {{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}
         <div ng-show="slot.proposal">
             <button class="btn btn-sm btn-warning" ng-click="unallocate(slot.id)">Clear</button>
-            {{slot.proposal.title}}<br>
-            {{slot.proposal.id}}<br>
-            {{slot.proposal.lang}} - {{slot.proposal.track.id}} - {{slot.proposal.mainSpeaker}}
+            <span class="proposalTitle">{{slot.proposal.title}}</span>
+             <span class="label label-default">{{slot.proposal.id}}</span>
+     <div class="label label-info">
+          {{slot.proposal.lang}} - {{slot.proposal.track.id}} - {{slot.proposal.mainSpeaker}}
+     </div>
+
         </div>
     </div>
 </div>

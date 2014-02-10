@@ -3,13 +3,7 @@ body{
     font-size: 12px;
 }
 .panel_talks{
-float: none;
-position: fixed;
-top:200px;
-   min-height: 1px;
-padding-right: 15px;
-padding-left: 15px;
-    width: 25%;
+border: 1px solid #eeeeee;
 }
 .panel_slots{
     border: 1px solid #eeeeee;
@@ -19,7 +13,7 @@ padding-left: 15px;
     border: 2px solid black;
     padding: 5px;
     margin: 5px;
-    background-color: #ddd725;
+    background-color: #fceec3;
     border-radius: 3px;
     box-shadow: 2px 2px #bbb;
 }
@@ -34,8 +28,15 @@ padding-left: 15px;
     display: block;
     color:#000000;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 9px;
 }
+.proposalTitle{
+    display: block;
+    color: #3a0b07;
+    font-weight: bold;
+    font-size: 12px;
+}
+
 
 .slot.ng-hide-add, .slot.ng-hide-remove {
   transition:0.5s linear all;
