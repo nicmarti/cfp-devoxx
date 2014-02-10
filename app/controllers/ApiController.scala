@@ -26,24 +26,25 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import models.{Webuser, Speaker, AcceptService, Slot}
 import play.api.libs.json.{JsNumber, JsString, Json}
+import library.{SaveSlots, ZapActor}
 
 
 /**
  * Created by nicolas on 07/02/2014.
  */
 object ApiController extends SecureCFPController {
-  def slots(confType:String) = Action {
+  def slots(confType: String) = Action {
     implicit request =>
       import Slot.slotFormat
 
-      val jsSlots =confType match{
-        case "uni"=>Json.toJson(Slot.universitySlots)
-        case "confThursday"=>Json.toJson(Slot.conferenceSlotsThursday)
-        case "confFriday"=>Json.toJson(Slot.conferenceSlotsFriday)
-        case "bof"=>Json.toJson(Slot.bofSlotsThursday)
-        case "tia"=>Json.toJson(Slot.toolsInActionSlots)
-        case "labs"=>Json.toJson(Slot.labsSlots)
-        case other=>Json.toJson(Slot.universitySlots)
+      val jsSlots = confType match {
+        case "uni" => Json.toJson(Slot.universitySlots)
+        case "confThursday" => Json.toJson(Slot.conferenceSlotsThursday)
+        case "confFriday" => Json.toJson(Slot.conferenceSlotsFriday)
+        case "bof" => Json.toJson(Slot.bofSlotsThursday)
+        case "tia" => Json.toJson(Slot.toolsInActionSlots)
+        case "labs" => Json.toJson(Slot.labsSlots)
+        case other => Json.toJson(Slot.universitySlots)
       }
 
 
@@ -78,13 +79,22 @@ object ApiController extends SecureCFPController {
       Ok(Json.stringify(json)).as("application/json")
   }
 
-  def saveSlots(confType:String)=SecuredAction(IsMemberOf("admin")){
+  def saveSlots(confType: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-    println(confType)
+      request.body.asJson.map {
+        json =>
+          val newSlots=json.as[List[Slot]]
+
+          ZapActor.actor ! SaveSlots(newSlots,request.webuser)
+
+          Ok("{\"status\":\"success\"}").as("application/json")
+      }.getOrElse {
+        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+      }
 
 
 
-    Ok("{\"status\":\"ok\"}").as("application/json")
   }
 
 }

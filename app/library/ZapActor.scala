@@ -63,6 +63,8 @@ case class ProposalAccepted(reporterUUID:String, proposal:Proposal)
 
 case class ProposalRejected(reporterUUID:String, proposal:Proposal)
 
+case class SaveSlots(slots:List[Slot], createdBy:Webuser)
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -80,6 +82,7 @@ class ZapActor extends Actor {
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case ProposalAccepted(reporterUUID, proposal) => doProposalAccepted(reporterUUID, proposal)
     case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
+    case SaveSlots(slots:List[Slot], createdBy:Webuser)=> doSaveSlots(slots:List[Slot], createdBy:Webuser)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -167,5 +170,9 @@ class ZapActor extends Actor {
       Mails.sendProposalRejected(speaker, proposal)
       Proposal.reject(reporterUUID, proposal.id)
     }
+  }
+
+  def doSaveSlots(slots:List[Slot], createdBy:Webuser){
+    play.Logger.info("Saving slot... "+slots)
   }
 }
