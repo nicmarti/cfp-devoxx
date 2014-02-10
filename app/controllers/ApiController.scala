@@ -31,16 +31,26 @@ import play.api.libs.json.{JsNumber, JsString, Json}
 /**
  * Created by nicolas on 07/02/2014.
  */
-object ApiController extends Controller {
-  def slots() = Action {
+object ApiController extends SecureCFPController {
+  def slots(confType:String) = Action {
     implicit request =>
       import Slot.slotFormat
 
-      val jsSlots = Json.toJson(Slot.universitySlots)
+      val jsSlots =confType match{
+        case "uni"=>Json.toJson(Slot.universitySlots)
+        case "confThursday"=>Json.toJson(Slot.conferenceSlotsThursday)
+        case "confFriday"=>Json.toJson(Slot.conferenceSlotsFriday)
+        case "bof"=>Json.toJson(Slot.bofSlotsThursday)
+        case "tia"=>Json.toJson(Slot.toolsInActionSlots)
+        case "labs"=>Json.toJson(Slot.labsSlots)
+        case other=>Json.toJson(Slot.universitySlots)
+      }
+
+
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 
-  def acceptedTalks(confType: String) = Action {
+  def acceptedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       import models.Proposal.proposalFormat
       val proposals = AcceptService.allAcceptedByTalkType(confType)
@@ -66,6 +76,15 @@ object ApiController extends Controller {
         )
       )
       Ok(Json.stringify(json)).as("application/json")
+  }
+
+  def saveSlots(confType:String)=SecuredAction(IsMemberOf("admin")){
+
+    println(confType)
+
+
+
+    Ok("{\"status\":\"ok\"}").as("application/json")
   }
 
 }

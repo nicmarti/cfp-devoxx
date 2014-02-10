@@ -4,7 +4,7 @@
 var mainController = angular.module('mainController', []);
 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, AcceptedTalksService) {
-    SlotService.get(function (jsonArray) {
+    SlotService.get({confType: $routeParams.confType}, function (jsonArray) {
         $scope.slots = jsonArray["allSlots"];
     });
 
@@ -60,5 +60,10 @@ mainController.controller('MainController', function MainController($rootScope, 
             $scope.acceptedTalks.talks = $scope.acceptedTalks.talks.concat(talk);
         }
     };
+
+    $scope.saveAllocation=function(){
+        SlotService.save({confType: $routeParams.confType}, $scope.slots);
+    };
+
 
 });
