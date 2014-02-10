@@ -81,6 +81,8 @@ case class DoIndexAllSpeakers()
 
 case class DoIndexAllAccepted()
 
+case class DoIndexAllEvents()
+
 case class Index(obj: ESType)
 
 case class StopIndex()
@@ -104,6 +106,7 @@ class IndexMaster extends ESActor {
     case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
     case DoIndexAllProposals() => doIndexAllProposals()
     case DoIndexAllAccepted() => doIndexAllAccepted()
+    case DoIndexAllEvents() => doIndexAllEvents()
     case DoIndexEvent() => doIndexEvent()
     case StopIndex() => stopIndex()
     case other => play.Logger.of("application.IndexMaster").error("Received an invalid actor message: " + other)
@@ -204,6 +207,26 @@ class IndexMaster extends ESActor {
     ElasticSearch.indexBulk(sb.toString())
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all proposals")
+  }
+
+  def doIndexAllEvents() {
+    play.Logger.of("application.IndexMaster").debug("Do index all events")
+
+    val events = Event.loadEvents(Event.totalEvents().toInt, 0)
+
+    val sb = new StringBuilder
+    events.foreach {
+      event: Event =>
+        sb.append("{\"index\":{\"_index\":\"events\",\"_type\":\"event\",\"_id\":\"" + play.api.libs.Crypto.sign(event.toString) + "\"}}")
+        sb.append("\n")
+        sb.append(Json.toJson(event))
+        sb.append("\n")
+    }
+    sb.append("\n")
+
+    ElasticSearch.indexBulk(sb.toString())
+
+    play.Logger.of("application.IndexMaster").debug("Done indexing all events")
   }
 }
 

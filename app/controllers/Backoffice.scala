@@ -121,8 +121,9 @@ object Backoffice extends SecureCFPController {
   def doIndexElasticSearch() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       ElasticSearchActor.masterActor ! DoIndexAllSpeakers()
-      ElasticSearchActor.masterActor ! DoIndexAllAccepted()
       ElasticSearchActor.masterActor ! DoIndexAllProposals()
+      ElasticSearchActor.masterActor ! DoIndexAllEvents()
+      //ElasticSearchActor.masterActor ! DoIndexAllAccepted()
       Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Elastic search actor started...")
   }
 
