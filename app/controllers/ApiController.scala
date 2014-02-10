@@ -37,7 +37,7 @@ object ApiController extends Controller {
       import Slot.slotFormat
 
       val jsSlots = Json.toJson(Slot.universitySlots)
-      Ok(Json.stringify(Json.toJson(Map("slots" -> jsSlots)))).as("application/json")
+      Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 
   def acceptedTalks(confType: String) = Action {

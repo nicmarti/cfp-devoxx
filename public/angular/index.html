@@ -2,16 +2,51 @@
 <html lang="en" ng-app="cfpApp">
 <head>
   <meta charset="utf-8">
-  <title>My AngularJS App</title>
+  <title>Devoxx Planner</title>
   <link rel="stylesheet" href="css/app.css"/>
+
+<link rel="stylesheet" href="/assets/css/bootstrap.cosmo.min.css">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/bootswatch.min.css">
+
 </head>
 <body>
-    <h3>Devoxx France - Planner</h3>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Devox<span class="yl">x</span> France CFP</a>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ****************************************************************************** //-->
+<div class="container">
+ <h3>Devoxx France - Planner</h3>
   <ul class="menu">
     <li><a href="#/slots?confType=uni">All university slots</a></li>
   </ul>
 
   <div ng-view></div>
+
+
+</div>
+<footer class="footer hidden-print">
+  <div class="container">
+    <div>
+      <hr>
+        <small><i class="icon-bullhorn"></i> Devoxx France Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
+        <small><i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">Clever-cloud</a></small>
+    </div>
+  </div>
+</footer>
+<!-- ****************************************************************************** //-->
+
+
 
 
   <script src="lib/angular/angular.js" type="text/javascript"></script>

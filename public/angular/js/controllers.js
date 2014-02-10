@@ -4,8 +4,8 @@
 var mainController = angular.module('mainController', []);
 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, AcceptedTalksService) {
-    SlotService.get(function (allSlots) {
-        $scope.slots = allSlots["slots"];
+    SlotService.get(function (jsonArray) {
+        $scope.slots = jsonArray["allSlots"];
     });
 
     AcceptedTalksService.get({confType: $routeParams.confType}, function (allAccepted) {
@@ -13,14 +13,6 @@ mainController.controller('MainController', function MainController($rootScope, 
     });
 
     $rootScope.$on('dropEvent', function (evt, dragged, dropped) {
-        console.log(dragged);
-        console.log(dropped);
-
-        dropped.proposalId = dragged.id;
-        dropped.proposalTitle = dragged.title;
-        dropped.proposalLang = dragged.lang;
-        dropped.proposalTrack = dragged.track.id;
-        dropped.proposalSpeaker = dragged.mainSpeaker;
 
         var maybeSlot = _.find($scope.slots, function (slot) {
             return slot.id == dropped.id;
@@ -29,9 +21,7 @@ mainController.controller('MainController', function MainController($rootScope, 
             console.log("old slot not found");
         } else {
             // Update the slot
-            maybeSlot.proposalId = dragged.id;
-            maybeSlot.proposalTitle = dragged.title;
-            maybeSlot.proposalLang = dragged.lang;
+            maybeSlot.proposal = dragged;
 
             // remove from accepted talks
             $scope.acceptedTalks.talks = _.reject($scope.acceptedTalks.talks, function (a) {
@@ -43,4 +33,21 @@ mainController.controller('MainController', function MainController($rootScope, 
 
         }
     });
+
+    $scope.unallocate = function(slotId){
+       var maybeSlot = _.find($scope.slots, function (slot) {
+            return slot.id == slotId;
+        });
+        if (_.isUndefined(maybeSlot)) {
+            console.log("old slot not found");
+        } else {
+            var talk=maybeSlot.proposal ;
+
+            // Remove from left
+            maybeSlot.proposal=undefined;
+
+            // Add back to right
+            $scope.acceptedTalks.talks = $scope.acceptedTalks.talks.concat(talk);
+        }
+    };
 });

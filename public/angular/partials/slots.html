@@ -11,15 +11,15 @@
 </div>
 </div>
 
-<div class="panel_slots">
+<div class="col-lg-7 col-lg-offset-4 panel_slots">
     <div ng-repeat="slot in slots" class="slot"  drop="slot" dropStyle="columnDrop">
-    {{slot.id}}<br>
-        {{slot.proposalTitle}}<br>
-        {{slot.proposalId}}<br>
-        {{slot.proposalLang}} /
-        {{slot.proposalTrack}} <br>
-        {{slot.proposalSpeaker}}
-
+        <span class="slotTitle">{{slot.id}}</span>
+        <div ng-show="slot.proposal">
+            <button class="btn btn-sm btn-warning" ng-click="unallocate(slot.id)">Clear</button>
+            {{slot.proposal.title}}<br>
+            {{slot.proposal.id}}<br>
+            {{slot.proposal.lang}} - {{slot.proposal.track.id}} - {{slot.proposal.mainSpeaker}}
+        </div>
     </div>
 </div>
 
