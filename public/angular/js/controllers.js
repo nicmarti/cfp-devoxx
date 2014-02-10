@@ -8,26 +8,39 @@ mainController.controller('MainController', function MainController($rootScope, 
         $scope.slots = allSlots["slots"];
     });
 
-    AcceptedTalksService.get({confType: $routeParams.confType},function(allAccepted){
+    AcceptedTalksService.get({confType: $routeParams.confType}, function (allAccepted) {
         $scope.acceptedTalks = allAccepted["acceptedTalks"];
     });
 
-    $rootScope.$on('dropEvent', function(evt, dragged, dropped) {
+    $rootScope.$on('dropEvent', function (evt, dragged, dropped) {
         console.log(dragged);
         console.log(dropped);
-//        var i, oldIndex1, oldIndex2;
-//        for(i=0; i<$scope.columns.length; i++) {
-//            var c = $scope.columns[i];
-//            if(dragged.title === c.title) {
-//                oldIndex1 = i;
-//            }
-//            if(dropped.title === c.title) {
-//                oldIndex2 = i;
-//            }
-//        }
-//        var temp = $scope.columns[oldIndex1];
-//        $scope.columns[oldIndex1] = $scope.columns[oldIndex2];
-//        $scope.columns[oldIndex2] = temp;
-//        $scope.$apply();
+
+        dropped.proposalId = dragged.id;
+        dropped.proposalTitle = dragged.title;
+        dropped.proposalLang = dragged.lang;
+        dropped.proposalTrack = dragged.track.id;
+        dropped.proposalSpeaker = dragged.mainSpeaker;
+
+        var maybeSlot = _.find($scope.slots, function (slot) {
+            return slot.id == dropped.id;
+        });
+        if (_.isUndefined(maybeSlot)) {
+            console.log("old slot not found");
+        } else {
+            // Update the slot
+            maybeSlot.proposalId = dragged.id;
+            maybeSlot.proposalTitle = dragged.title;
+            maybeSlot.proposalLang = dragged.lang;
+
+            // remove from accepted talks
+            $scope.acceptedTalks.talks = _.reject($scope.acceptedTalks.talks, function (a) {
+                return a.id === dragged.id
+            });
+
+            $scope.$apply();
+
+
+        }
     });
 });

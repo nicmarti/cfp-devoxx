@@ -184,11 +184,6 @@ object ProgramBuilder extends SecureCFPController {
 
   def schedule(confType:String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val slots =  Slot.universitySlots
-      val proposals = AcceptService.allAcceptedByTalkType(confType)
-
-//      val preAllocated =  slots.zip(proposals.sortBy(_.track.label))
-
       Ok(views.html.ProgramBuilder.schedule())
   }
 }

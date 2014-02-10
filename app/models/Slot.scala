@@ -105,7 +105,9 @@ object Room {
   }
 }
 
-case class Slot(id:String, name: String, day: String, from: DateTime, to: DateTime, room: Room) {
+case class Slot(id:String, name: String, day: String, from: DateTime, to: DateTime, room: Room,
+                proposalId:Option[String], proposalTitle:Option[String], proposalLang:Option[String],
+                proposalSpeaker:Option[String], proposalTrack:Option[String]) {
   override def toString: String = {
     s"Slot[" + id + "]"
   } 
@@ -115,7 +117,7 @@ object SlotBuilder{
   
   def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, name, day, from, to, room)
+    Slot(id, name, day, from, to, room, None, None, None, None, None)
   }
 }
 

@@ -1,4 +1,4 @@
-<p>All  slots</p>
+<p>All slots</p>
 
 
 <div class="panel_talks">
@@ -6,13 +6,20 @@
      class="talk"
      drag="talk" dragStyle="columnDrag"
      dropStyle="columnDrop">
-    {{talk.id}} {{talk.title}}
+    {{talk.id}} {{talk.title}}<br>
+    <small>{{talk.mainSpeaker}}</small>
 </div>
 </div>
 
 <div class="panel_slots">
     <div ng-repeat="slot in slots" class="slot"  drop="slot" dropStyle="columnDrop">
-    {{slot.id}}
+    {{slot.id}}<br>
+        {{slot.proposalTitle}}<br>
+        {{slot.proposalId}}<br>
+        {{slot.proposalLang}} /
+        {{slot.proposalTrack}} <br>
+        {{slot.proposalSpeaker}}
+
     </div>
 </div>
 

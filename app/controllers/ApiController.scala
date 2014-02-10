@@ -24,7 +24,7 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import models.{AcceptService, Slot}
+import models.{Webuser, Speaker, AcceptService, Slot}
 import play.api.libs.json.{JsNumber, JsString, Json}
 
 
@@ -37,19 +37,32 @@ object ApiController extends Controller {
       import Slot.slotFormat
 
       val jsSlots = Json.toJson(Slot.universitySlots)
-      Ok(Json.stringify(Json.toJson(Map("slots"->jsSlots)))).as("application/json")
+      Ok(Json.stringify(Json.toJson(Map("slots" -> jsSlots)))).as("application/json")
   }
 
-  def acceptedTalks(confType:String) = Action{
+  def acceptedTalks(confType: String) = Action {
     implicit request =>
       import models.Proposal.proposalFormat
       val proposals = AcceptService.allAcceptedByTalkType(confType)
-      val json=Json.toJson(
-        Map("acceptedTalks"->Json.toJson(
-          Map("confType"->JsString(confType),
-              "total"->JsNumber(proposals.size),
-               "talks"->Json.toJson(proposals))
+
+      val proposalsWithSpeaker = proposals.map {
+        p =>
+          val mainWebuser = Webuser.findByUUID(p.mainSpeaker)
+          val secWebuser = p.secondarySpeaker.flatMap(Webuser.findByUUID(_))
+          // (p, mainWebuser.map(_.cleanName), secWebuser.map(_.cleanName))
+          p.copy(
+            mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
+            secondarySpeaker = secWebuser.map(_.cleanName)
           )
+
+      }
+
+      val json = Json.toJson(
+        Map("acceptedTalks" -> Json.toJson(
+          Map("confType" -> JsString(confType),
+            "total" -> JsNumber(proposals.size),
+            "talks" -> Json.toJson(proposalsWithSpeaker))
+        )
         )
       )
       Ok(Json.stringify(json)).as("application/json")
