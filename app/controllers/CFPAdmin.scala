@@ -12,6 +12,7 @@ import library.SendMessageToSpeaker
 import play.api.libs.json.JsObject
 import play.api.i18n.Messages
 import models.Review.ScoreAndTotalVotes
+import org.apache.commons.lang3.RandomStringUtils
 
 /**
  * The backoffice controller for the CFP technical committee.
@@ -364,7 +365,7 @@ object CFPAdmin extends SecureCFPController {
       }
     export match{
       case true=>{
-        val buffer=new StringBuffer("email,firstName,lastName,uuid\n")
+        val buffer=new StringBuffer("email,firstName,lastName,uuid,code\n")
         speakers.foreach{ s=>
           buffer.append(s.email.toLowerCase)
           buffer.append(",")
@@ -373,6 +374,9 @@ object CFPAdmin extends SecureCFPController {
           buffer.append(s.lastName.toLowerCase.capitalize)
           buffer.append(",")
           buffer.append(s.uuid)
+          buffer.append(",")
+          buffer.append("SPK-")
+          buffer.append(s.uuid.substring(7,15).toUpperCase)
           buffer.append("\n")
         }
         Ok(buffer.toString).as("text/csv")
