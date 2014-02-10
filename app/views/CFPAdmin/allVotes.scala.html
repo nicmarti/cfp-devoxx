@@ -139,11 +139,11 @@
     <script type="text/javascript">
 
     var devoxxSeries=[
-        @allVotes.sortBy(_._2._2).map{case(proposal, voteAndTotalVotes) =>
+        @allVotes.sortBy(_._2._2).filter(_._2._4>7).map{case(proposal, voteAndTotalVotes) =>
             {
                 name: '@proposal.id',
                 data:[
-                   {  x: @voteAndTotalVotes._2, y: @Math.round(voteAndTotalVotes._1) }
+                   {  x: @voteAndTotalVotes._2, y: @voteAndTotalVotes._4 }
                 ],
         		color: 'steelblue'
         	},
