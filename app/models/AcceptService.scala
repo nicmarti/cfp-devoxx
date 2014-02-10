@@ -102,6 +102,19 @@ object AcceptService {
       allProposalWithVotes.values.toList
   }
 
+  def allAccepted(): Set[Proposal] = Redis.pool.withClient {
+    implicit client =>
+
+      val allKeys = client.keys("Accepted:*")
+
+      val finalList = allKeys.map {
+        key =>
+          val allProposalIDs = client.smembers(key).toList
+          val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+          allProposalWithVotes.values.toList
+      }.flatten
+      finalList
+  }
 
 
 }

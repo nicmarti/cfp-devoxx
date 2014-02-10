@@ -3,7 +3,8 @@ package library.search
 import play.api.libs.json.Json
 import akka.actor._
 import play.api.libs.concurrent.Execution.Implicits._
-import models.{Proposal, Speaker, Event}
+import models.{AcceptService, Proposal, Speaker, Event}
+import controllers.AcceptOrReject
 
 /**
  * ElasticSearch Akka Actor. Yes, I should write more doc, I know.
@@ -70,9 +71,15 @@ case class ESEvent(event: Event) extends ESType {
 
 case class DoIndexEvent()
 
-case class DoIndexProposal()
+case class DoIndexProposal(proposal: Proposal)
 
-case class DoIndexSpeaker()
+case class DoIndexAllProposals()
+
+case class DoIndexSpeaker(speaker: Speaker)
+
+case class DoIndexAllSpeakers()
+
+case class DoIndexAllAccepted()
 
 case class Index(obj: ESType)
 
@@ -92,8 +99,11 @@ trait ESActor extends Actor {
 // Main actor for dispatching
 class IndexMaster extends ESActor {
   def receive = {
-    case DoIndexSpeaker() => doIndexSpeaker()
-    case DoIndexProposal() => doIndexProposal()
+    case DoIndexSpeaker(speaker: Speaker) => doIndexSpeaker(speaker)
+    case DoIndexAllSpeakers() => doIndexAllSpeakers()
+    case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
+    case DoIndexAllProposals() => doIndexAllProposals()
+    case DoIndexAllAccepted() => doIndexAllAccepted()
     case DoIndexEvent() => doIndexEvent()
     case StopIndex() => stopIndex()
     case other => play.Logger.of("application.IndexMaster").error("Received an invalid actor message: " + other)
@@ -118,24 +128,82 @@ class IndexMaster extends ESActor {
     play.Logger.of("application.IndexMaster").debug("Done indexing Event")
   }
 
-  def doIndexSpeaker() {
+  def doIndexSpeaker(speaker: Speaker) {
     play.Logger.of("application.IndexMaster").debug("Do index speaker")
 
-    Speaker.allSpeakers().foreach {
-      speaker => ElasticSearchActor.reaperActor ! Index(speaker)
-    }
+    ElasticSearchActor.reaperActor ! Index(speaker)
 
     play.Logger.of("application.IndexMaster").debug("Done indexing speaker")
   }
 
-  def doIndexProposal() {
-    play.Logger.of("application.IndexMaster").debug("Do index proposal")
 
-    Proposal.allSubmitted().foreach {
-      proposal => ElasticSearchActor.reaperActor ! Index(proposal)
+  def doIndexAllSpeakers() {
+    play.Logger.of("application.IndexMaster").debug("Do index speaker")
+
+    val speakers = Speaker.allSpeakers()
+
+
+    val sb = new StringBuilder
+    speakers.foreach {
+      speaker: Speaker =>
+        sb.append("{\"index\":{\"_index\":\"speakers\",\"_type\":\"speaker\",\"_id\":\"" + speaker.uuid + "\"}}")
+        sb.append("\n")
+        sb.append(Json.toJson(speaker))
+        sb.append("\n")
     }
+    sb.append("\n")
+
+    ElasticSearch.indexBulk(sb.toString())
+
+    play.Logger.of("application.IndexMaster").debug("Done indexing all speakers")
+  }
+
+  def doIndexProposal(proposal: Proposal) {
+    play.Logger.of("application.IndexMaster").debug("Do index proposal")
+    ElasticSearchActor.reaperActor ! Index(proposal)
 
     play.Logger.of("application.IndexMaster").debug("Done indexing proposal")
+  }
+
+  def doIndexAllProposals() {
+    play.Logger.of("application.IndexMaster").debug("Do index all proposals")
+
+    val proposals = Proposal.allSubmitted()
+
+    val sb = new StringBuilder
+    proposals.foreach {
+      proposal: Proposal =>
+        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("\n")
+        sb.append(Json.toJson(proposal))
+        sb.append("\n")
+    }
+    sb.append("\n")
+
+    ElasticSearch.indexBulk(sb.toString())
+
+    play.Logger.of("application.IndexMaster").debug("Done indexing all proposals")
+  }
+
+
+  def doIndexAllAccepted() {
+    play.Logger.of("application.IndexMaster").debug("Do index all proposals")
+
+    val proposals = AcceptService.allAccepted()
+
+    val sb = new StringBuilder
+    proposals.foreach {
+      proposal: Proposal =>
+        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"accepted\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("\n")
+        sb.append(Json.toJson(proposal))
+        sb.append("\n")
+    }
+    sb.append("\n")
+
+    ElasticSearch.indexBulk(sb.toString())
+
+    play.Logger.of("application.IndexMaster").debug("Done indexing all proposals")
   }
 }
 

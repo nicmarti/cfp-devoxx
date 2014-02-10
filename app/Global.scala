@@ -97,13 +97,13 @@ object CronTask {
 
     // Create a cron task
     if(Play.isDev){
-      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexSpeaker())
-      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexProposal())
+      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
+      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllProposals())
       // Do not index event for the time being
       // Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexEvent())
     }else{
-      Akka.system.scheduler.schedule(10 hour, 1 hour, ElasticSearchActor.masterActor, DoIndexSpeaker())
-      Akka.system.scheduler.schedule(25 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexProposal())
+      Akka.system.scheduler.schedule(10 hour, 1 hour, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
+      Akka.system.scheduler.schedule(25 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexAllProposals())
       //Akka.system.scheduler.schedule(3 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexEvent())
     }
   }

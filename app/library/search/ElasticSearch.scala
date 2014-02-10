@@ -1,7 +1,7 @@
 package library.search
 
 import play.api.libs.ws.WS
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import akka.actor._
 import play.api.Play.current
 import controllers.routes
@@ -30,6 +30,18 @@ object ElasticSearch {
           case 201 => Success(response.body)
           case 200 => Success(response.body)
           case other => Failure(new RuntimeException("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+  }
+
+  def indexBulk(json:String)={
+    val futureResponse = WS.url(host + "/_bulk?ttl=1d").post(json)
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 201 => Success(response.body)
+          case 200 => Success(response.body)
+          case other => Failure(new RuntimeException("Unable to bulkd index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }
