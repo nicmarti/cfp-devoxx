@@ -75,9 +75,6 @@ GET         /cfpadmin/proposals/byTrack/:track                 controllers.CFPAd
 GET         /cfpadmin/compareReviewer                          controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 GET         /cfpadmin/allSpeakers                              controllers.CFPAdmin.allSpeakers(onlyWithProposals:Boolean,export:Boolean)
 
-# AcceptOrReject controller
-GET         /preaccept/:proposalId                             controllers.AcceptOrReject.doAccept(proposalId:String)
-GET         /cancelPreaccept/:proposalId                       controllers.AcceptOrReject.cancelAccept(proposalId:String)
 
 GET         /favicon.ico                                       controllers.Assets.at(path="/public/images", file="favicon.ico")
 
@@ -107,11 +104,18 @@ POST        /programbuilder/createCalendar                     controllers.Progr
 GET         /programbuilder/schedule/:confType                 controllers.ProgramBuilder.schedule(confType:String)
 GET         /programbuilder/deleteCalendars                    controllers.ProgramBuilder.deleteCalendar(calendarId:String)
 
-GET         /programbuilder/allAccepted/:talkType              controllers.AcceptOrReject.allAcceptedByTalkType(talkType:String)
-GET         /acceptReject/notifyAccept/:talkType               controllers.AcceptOrReject.notifyAccept(talkType:String, proposalId:Option[String])
-GET         /ar/show/:proposalId                               controllers.AcceptOrReject.showApproveTerms(proposalId:String)
-GET         /ar/accept/:proposalId                             controllers.AcceptOrReject.acceptTermsAndConditions(proposalId:String)
-GET         /ar/acceptOrRefuseTalk/:proposalId                 controllers.AcceptOrReject.acceptOrRefuseTalk(proposalId:String)
+# ApproveOrRefuse controller
+GET         /preaccept/:proposalId                             controllers.ApproveOrRefuse.doApprove(proposalId:String)
+GET         /cancelPreaccept/:proposalId                       controllers.ApproveOrRefuse.cancelApprove(proposalId:String)
+
+GET         /programbuilder/allApproved/:talkType              controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
+GET         /acceptReject/notifyApprove/:talkType              controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:Option[String])
+GET         /ar/showAcceptTerms                                controllers.ApproveOrRefuse.showAcceptTerms()
+GET         /ar/accept                                         controllers.ApproveOrRefuse.acceptTermsAndConditions()
+GET         /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
+POST        /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.acceptOrRefuseTalks()
+
+
 GET         /cloudtags                                         controllers.CallForPaper.cloudTags()
 
 # Special access for Alexis MP
@@ -119,7 +123,7 @@ GET         /show/proposals                                    controllers.Spons
 
 # API
 GET         /api/fr14/slots/:confType                          controllers.ApiController.slots(confType:String)
-GET         /api/fr14/acceptedTalks/:confType                  controllers.ApiController.acceptedTalks(confType:String)
+GET         /api/fr14/acceptedTalks/:confType                  controllers.ApiController.approvedTalks(confType:String)
 POST        /api/fr14/slots/:confType                          controllers.ApiController.saveSlots(confType:String)
 
 # Map static resources from the /public folder to the /assets URL path

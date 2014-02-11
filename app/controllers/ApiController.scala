@@ -23,13 +23,14 @@
 
 package controllers
 
-import play.api.mvc.{Action, Controller}
-import models.{Webuser, Speaker, AcceptService, Slot}
+import play.api.mvc.Action
+import models.{Proposal, ApprovedProposal, Webuser, Slot}
 import play.api.libs.json.{JsNumber, JsString, Json}
 import library.{SaveSlots, ZapActor}
 
 
 /**
+ * API Controller
  * Created by nicolas on 07/02/2014.
  */
 object ApiController extends SecureCFPController {
@@ -51,13 +52,13 @@ object ApiController extends SecureCFPController {
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 
-  def acceptedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+  def approvedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
-      val proposals = AcceptService.allAcceptedByTalkType(confType)
+      val proposals = ApprovedProposal.allApprovedByTalkType(confType)
 
       val proposalsWithSpeaker = proposals.map {
-        p =>
+        p:Proposal =>
           val mainWebuser = Webuser.findByUUID(p.mainSpeaker)
           val secWebuser = p.secondarySpeaker.flatMap(Webuser.findByUUID(_))
           // (p, mainWebuser.map(_.cleanName), secWebuser.map(_.cleanName))
@@ -65,11 +66,10 @@ object ApiController extends SecureCFPController {
             mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
             secondarySpeaker = secWebuser.map(_.cleanName)
           )
-
       }
 
       val json = Json.toJson(
-        Map("acceptedTalks" -> Json.toJson(
+        Map("approvedTalks" -> Json.toJson(
           Map("confType" -> JsString(confType),
             "total" -> JsNumber(proposals.size),
             "talks" -> Json.toJson(proposalsWithSpeaker))

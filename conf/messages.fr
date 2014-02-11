@@ -335,7 +335,11 @@ admin.btn.sponsor=Voir comme un sponsor
 leaderboard.compute=Calcul des stats en cours...
 
 admin.sp.accepted=Accepté
-admin.sp.accepted.txt=Ce sujet a été Accepté. Il s''agit d''un speaker invité, d''un talk sponsor ou d''un sujet accepté lors des délibérations.
+admin.sp.approved=Approuvé
+admin.sp.refused=Refusé
+admin.sp.rejected=Rejeté
+admin.sp.accepted.txt=Ce sujet a été Accepté par le speaker.
+admin.sp.approved.txt=Ce sujet a été Approuvé par le comité de sélection.
 btn.abstention=Voter 0 pour passer au suivant
 
 cfp.isClosed=Le CFP est fermé

@@ -3,8 +3,7 @@ package library.search
 import play.api.libs.json.Json
 import akka.actor._
 import play.api.libs.concurrent.Execution.Implicits._
-import models.{AcceptService, Proposal, Speaker, Event}
-import controllers.AcceptOrReject
+import models.{ApprovedProposal, Proposal, Speaker, Event}
 
 /**
  * ElasticSearch Akka Actor. Yes, I should write more doc, I know.
@@ -79,7 +78,7 @@ case class DoIndexSpeaker(speaker: Speaker)
 
 case class DoIndexAllSpeakers()
 
-case class DoIndexAllAccepted()
+case class DoIndexAllApproved()
 
 case class DoIndexAllEvents()
 
@@ -105,7 +104,7 @@ class IndexMaster extends ESActor {
     case DoIndexAllSpeakers() => doIndexAllSpeakers()
     case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
     case DoIndexAllProposals() => doIndexAllProposals()
-    case DoIndexAllAccepted() => doIndexAllAccepted()
+    case DoIndexAllApproved() => doIndexAllApproved()
     case DoIndexAllEvents() => doIndexAllEvents()
     case DoIndexEvent() => doIndexEvent()
     case StopIndex() => stopIndex()
@@ -189,10 +188,10 @@ class IndexMaster extends ESActor {
   }
 
 
-  def doIndexAllAccepted() {
+  def doIndexAllApproved() {
     play.Logger.of("application.IndexMaster").debug("Do index all proposals")
 
-    val proposals = AcceptService.allAccepted()
+    val proposals = ApprovedProposal.allApproved()
 
     val sb = new StringBuilder
     proposals.foreach {

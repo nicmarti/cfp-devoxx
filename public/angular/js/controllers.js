@@ -3,13 +3,13 @@
 /* Controllers */
 var mainController = angular.module('mainController', []);
 
-mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, AcceptedTalksService) {
+mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, ApprovedTalksService) {
     SlotService.get({confType: $routeParams.confType}, function (jsonArray) {
         $scope.slots = jsonArray["allSlots"];
     });
 
-    AcceptedTalksService.get({confType: $routeParams.confType}, function (allAccepted) {
-        $scope.acceptedTalks = allAccepted["acceptedTalks"];
+    ApprovedTalksService.get({confType: $routeParams.confType}, function (allApproved) {
+        $scope.approvedTalks = allApproved["approvedTalks"];
     });
 
     $rootScope.$on('dropEvent', function (evt, dragged, dropped) {
@@ -32,12 +32,12 @@ mainController.controller('MainController', function MainController($rootScope, 
             maybeSlot2.proposal = dragged;
 
             // remove from accepted talks
-            $scope.acceptedTalks.talks = _.reject($scope.acceptedTalks.talks, function (a) {
+            $scope.approvedTalks.talks = _.reject($scope.approvedTalks.talks, function (a) {
                 return a.id === dragged.id
             });
             // Add back to right
             if(_.isUndefined(oldTalk)==false){
-                $scope.acceptedTalks.talks = $scope.acceptedTalks.talks.concat(oldTalk);
+                $scope.approvedTalks.talks = $scope.approvedTalks.talks.concat(oldTalk);
             }
 
             $scope.$apply();
@@ -57,7 +57,7 @@ mainController.controller('MainController', function MainController($rootScope, 
             maybeSlot.proposal=undefined;
 
             // Add back to right
-            $scope.acceptedTalks.talks = $scope.acceptedTalks.talks.concat(talk);
+            $scope.approvedTalks.talks = $scope.approvedTalks.talks.concat(talk);
         }
     };
 

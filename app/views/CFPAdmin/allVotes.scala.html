@@ -1,4 +1,4 @@
-@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalAccepted:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All votes") {
 
@@ -37,7 +37,7 @@
                             </div>
                         }
                        <br>
-                        <span class="label label-success">@totalAccepted accepted</span> <span class="label label-warning">@totalRemaining remaining</span>
+                        <span class="label label-success">@totalApproved approved</span> <span class="label label-warning">@totalRemaining remaining</span>
                         <br>
                         <span class="label label-primary">@allVotes.map(_._1).filter(_.lang=="fr").size FR</span> <span class="label label-default">@allVotes.map(_._1).filter(_.lang=="en").size EN</span>
 
@@ -65,8 +65,8 @@
                         </thead>
                         <tbody>
                             @allVotes.map { case (proposal, voteAndTotalVotes) =>
-                                @defining(AcceptService.isAccepted(proposal.id, proposal.talkType.id)){accepted=>
-                                <tr class="preselected_@accepted">
+                                @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
+                                <tr class="preselected_@approved">
                                     <td>
                                     @defining(voteAndTotalVotes._4) { average =>
                                         @average
@@ -104,10 +104,10 @@
                                     </td>
                                     <td>@proposal.lang</td>
                                     <td>
-                                        @if(accepted){
-                                            <a href="@routes.AcceptOrReject.cancelAccept(proposal.id)">Cancel accept</a>
+                                        @if(approved){
+                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)">Cancel Approve</a>
                                         }else{
-                                            <a href="@routes.AcceptOrReject.doAccept(proposal.id)">Accept</a>
+                                            <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)">Approve</a>
                                         }
                                     </td>
                                 </tr>

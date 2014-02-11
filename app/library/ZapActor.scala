@@ -59,9 +59,9 @@ case class ComputeVotesAndScore()
 
 case class RemoveVotesForDeletedProposal()
 
-case class ProposalAccepted(reporterUUID:String, proposal:Proposal)
+case class ProposalApproved(reporterUUID:String, proposal:Proposal)
 
-case class ProposalRejected(reporterUUID:String, proposal:Proposal)
+case class ProposalRefused(reporterUUID:String, proposal:Proposal)
 
 case class SaveSlots(slots:List[Slot], createdBy:Webuser)
 
@@ -80,8 +80,8 @@ class ZapActor extends Actor {
     case ComputeLeaderboard() => doComputeLeaderboard()
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
-    case ProposalAccepted(reporterUUID, proposal) => doProposalAccepted(reporterUUID, proposal)
-    case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
+    case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
+    case ProposalRefused(reporterUUID, proposal) => doProposalRefused(reporterUUID, proposal)
     case SaveSlots(slots:List[Slot], createdBy:Webuser)=> doSaveSlots(slots:List[Slot], createdBy:Webuser)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
@@ -154,25 +154,26 @@ class ZapActor extends Actor {
     }
   }
 
-  def doProposalAccepted(reporterUUID: String, proposal: Proposal) {
+  def doProposalApproved(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal ACCEPTED"))
-      Mails.sendProposalAccepted(speaker, proposal)
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Approved"))
+      Mails.sendProposalApproved(speaker, proposal)
       Proposal.accept(reporterUUID, proposal.id)
     }
   }
 
-  def doProposalRejected(reporterUUID: String, proposal: Proposal) {
+  def doProposalRefused(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal REFUSED"))
-      Mails.sendProposalRejected(speaker, proposal)
+      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Refused"))
+      Mails.sendProposalRefused(speaker, proposal)
       Proposal.reject(reporterUUID, proposal.id)
     }
   }
 
   def doSaveSlots(slots:List[Slot], createdBy:Webuser){
     play.Logger.info("Saving slot... "+slots)
+    // TODO save the slost
   }
 }

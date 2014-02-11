@@ -110,13 +110,13 @@
         }
         <div class="col-md-12">
             <div class="panel panel-default">
-        @defining(AcceptService.isAccepted(proposal.id, proposal.talkType.id)){accepted=>
-           @if(accepted){
+        @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
+           @if(approved){
                <div class="panel-heading">
-                    <h3><i class="icon-check"></i> <span class="label label-success">@Messages("admin.sp.accepted")</span> </h3>
+                    <h3><i class="icon-check"></i> <span class="label label-success">@Messages("admin.sp.approved")</span> </h3>
                 </div>
                 <div class="panel-body">
-                    @Messages("admin.sp.accepted.txt")
+                    @Messages("admin.sp.approved.txt")
                     <br>
                     <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
                 </div>

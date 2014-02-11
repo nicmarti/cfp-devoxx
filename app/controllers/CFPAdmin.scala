@@ -12,7 +12,6 @@ import library.SendMessageToSpeaker
 import play.api.libs.json.JsObject
 import play.api.i18n.Messages
 import models.Review.ScoreAndTotalVotes
-import org.apache.commons.lang3.RandomStringUtils
 
 /**
  * The backoffice controller for the CFP technical committee.
@@ -190,7 +189,7 @@ object CFPAdmin extends SecureCFPController {
       val worstReviewer = Leaderboard.worstReviewer()
       val totalByCategories = Leaderboard.totalByCategories()
       val totalByType = Leaderboard.totalByType()
-      val devoxx2013 = AcceptService.getDevoxx2013Total
+      val devoxx2013 = ApprovedProposal.getDevoxx2013Total
 
       Ok(
         views.html.CFPAdmin.leaderBoard(
@@ -293,7 +292,9 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       val reviews = Review.allVotes()
-      val newEtag:String = reviews.hashCode()+"_"+AcceptService.countAccepted(confType)
+    val totalApproved = ApprovedProposal.countApproved(confType)
+
+      val newEtag:String = reviews.hashCode()+"_"+totalApproved
 
       request.headers.get("If-None-Match") match {
         case Some(eTag) if eTag == newEtag => NotModified
@@ -320,10 +321,9 @@ object CFPAdmin extends SecureCFPController {
             case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
           }
 
-          val totalAccepted = AcceptService.countAccepted(confType)
-          val totalRemaining = AcceptService.remainingSlots(confType)
+          val totalRemaining = ApprovedProposal.remainingSlots(confType)
 
-          Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalAccepted, totalRemaining, confType)).withHeaders("ETag" -> newEtag)
+          Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalApproved, totalRemaining, confType)).withHeaders("ETag" -> newEtag)
       }
   }
 

@@ -26,7 +26,7 @@ package controllers
 import models._
 import play.api.i18n.Messages
 import library.ZapActor
-import library.ProposalAccepted
+import library.ProposalApproved
 
 import play.api.data.Form
 import play.api.data.Forms._
@@ -36,21 +36,21 @@ import scala.concurrent.{Future, Promise}
  * Sans doute le controller le plus sadique du monde qui accepte ou rejette les propositions
  * Created by nmartignole on 30/01/2014.
  */
-object AcceptOrReject extends SecureCFPController {
+object ApproveOrRefuse extends SecureCFPController {
 
   def acceptHome() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok("todo")
   }
 
-  def doAccept(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+  def doApprove(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
           proposal.state match {
             case ProposalState.SUBMITTED =>
-              AcceptService.accept(proposalId, proposal.talkType.id)
-              Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Accepted ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
+              ApprovedProposal.approve(proposalId, proposal.talkType.id)
+              Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Approved ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
               Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
             case _ =>
               Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}"))
@@ -60,83 +60,84 @@ object AcceptOrReject extends SecureCFPController {
       }
   }
 
-  def cancelAccept(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+  def cancelApprove(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
           proposal.state match {
             case ProposalState.SUBMITTED =>
 
-              AcceptService.cancelAccept(proposalId, proposal.talkType.id)
-              Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Cancel Accepted on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
-              Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been removed from Accepted list."))
+              ApprovedProposal.cancelApprove(proposalId, proposal.talkType.id)
+              Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Cancel Approved on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
+              Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
             case _ =>
               Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} is not in state SUBMITTED, current state is ${proposal.state}"))
           }
       }.getOrElse {
-       Future.successful( Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found"))
+        Future.successful(Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found"))
       }
   }
 
-  def allAcceptedByTalkType(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
+  def allApprovedByTalkType(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.AcceptOrReject.allAcceptedByTalkType(AcceptService.allAcceptedByTalkType(talkType), talkType))
+      Ok(views.html.ApproveOrRefuse.allApprovedByTalkType(ApprovedProposal.allApprovedByTalkType(talkType), talkType))
   }
 
-  def notifyAccept(talkType: String, proposalId: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+  def notifyApprove(talkType: String, proposalId: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       proposalId match {
-        case None => AcceptService.allAcceptedByTalkType(talkType).foreach {
+        case None => ApprovedProposal.allApprovedByTalkType(talkType).foreach {
           proposal: Proposal =>
-            ZapActor.actor ! ProposalAccepted(request.webuser.uuid, proposal)
+            ZapActor.actor ! ProposalApproved(request.webuser.uuid, proposal)
         }
         case Some(pid) =>
           Proposal.findById(pid).map {
             proposal =>
-              ZapActor.actor ! ProposalAccepted(request.webuser.uuid, proposal)
+              ZapActor.actor ! ProposalApproved(request.webuser.uuid, proposal)
           }
       }
       Redirect(routes.Backoffice.homeBackoffice())
   }
 
-  val formAccept = Form(
+  val formApprove = Form(
     "accept.chk" -> checked("accept.term.checked")
   )
 
-  def showApproveTerms(proposalId: String) = SecuredAction {
-    implicit request =>
+  def showAcceptTerms() = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       if (Speaker.needsToAccept(request.webuser.uuid)) {
-        Proposal.findById(proposalId).map {
-          proposal =>
-            Ok(views.html.AcceptOrReject.showApproveTerms(formAccept, proposal))
-        }.getOrElse {
-          NotFound("Sorry, this proposal does not exist or you are not the owner.")
-        }
+         Ok(views.html.ApproveOrRefuse.showAcceptTerms(formApprove))
       } else {
-        Redirect(routes.AcceptOrReject.acceptOrRefuseTalk(proposalId))
+        Redirect(routes.ApproveOrRefuse.acceptOrRefuseTalks())
       }
   }
 
-  def acceptTermsAndConditions(proposalId: String) = SecuredAction {
-    implicit request =>
-      Proposal.findById(proposalId).filter(_.allSpeakerUUIDs.contains(request.webuser.uuid)).map {
-        proposal =>
-          formAccept.bindFromRequest().fold(
-            hasErrors => BadRequest(views.html.AcceptOrReject.showApproveTerms(hasErrors, proposal)),
-            successForm => {
-              Speaker.acceptTerms(request.webuser.uuid)
-              Event.storeEvent(Event(proposalId, request.webuser.uuid, "has accepted Terms and conditions"))
-              Redirect(routes.AcceptOrReject.showApproveTerms(proposalId))
-            }
-          )
-      }.getOrElse {
-        NotFound("Sorry, this proposal does not exist or you are not the owner.")
-      }
+  def acceptTermsAndConditions() = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+        formApprove.bindFromRequest().fold(
+          hasErrors => BadRequest(views.html.ApproveOrRefuse.showAcceptTerms(hasErrors)),
+          successForm => {
+            Speaker.acceptTerms(request.webuser.uuid)
+            Event.storeEvent(Event(request.webuser.uuid, request.webuser.uuid, "has accepted Terms and conditions"))
+            Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks())
+          }
+        )
   }
 
-  def acceptOrRefuseTalk(proposalId: String) = SecuredAction {
-    implicit request =>
-      Ok("acceptOrRefuseTalk")
+
+
+  def showAcceptOrRefuseTalks() = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val proposals=Proposal.allMyProposals(request.webuser.uuid).filter(_.state==ProposalState.SUBMITTED).filter(p=>ApprovedProposal.isApproved(p.id,p.talkType))
+
+      Ok(views.html.ApproveOrRefuse.acceptOrRefuseTalks(proposals))
+
+  }
+
+  def acceptOrRefuseTalks() = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok("top")
   }
 
 }

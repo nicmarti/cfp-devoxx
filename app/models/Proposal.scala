@@ -296,16 +296,16 @@ object Proposal {
     changeProposalState(uuid, proposalId, ProposalState.SUBMITTED)
   }
 
-  def accept(uuid: String, proposalId: String) = {
-    changeProposalState(uuid, proposalId, ProposalState.ACCEPTED)
-  }
-
   def approve(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.APPROVED)
   }
 
   def reject(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.REJECTED)
+  }
+
+  def accept(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.ACCEPTED)
   }
 
   def decline(uuid: String, proposalId: String) = {
@@ -411,10 +411,10 @@ object Proposal {
         isNotSubmitted <- checkIsNotMember(client, ProposalState.SUBMITTED, proposalId).toRight(ProposalState.SUBMITTED).right;
         isNotDraft <- checkIsNotMember(client, ProposalState.DRAFT, proposalId).toRight(ProposalState.DRAFT).right;
         isNotApproved <- checkIsNotMember(client, ProposalState.APPROVED, proposalId).toRight(ProposalState.APPROVED).right;
+        isNotAccepted <- checkIsNotMember(client, ProposalState.ACCEPTED, proposalId).toRight(ProposalState.ACCEPTED).right;
         isNotDeleted <- checkIsNotMember(client, ProposalState.DELETED, proposalId).toRight(ProposalState.DELETED).right;
         isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
         isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
-        isNotAccepted <- checkIsNotMember(client, ProposalState.ACCEPTED, proposalId).toRight(ProposalState.ACCEPTED).right;
         isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right
       ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
 

@@ -304,6 +304,10 @@ admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
 
 admin.sp.accepted=Accepted
+admin.sp.approved=Approved
+admin.sp.refused=Refused
+admin.sp.rejected=Rejected
+admin.sp.approved.txt=This talk has been approved by the Program committee.
 admin.sp.accepted.txt=This talk has been accepted. Either during the final decision, or because it''s a sponsor talk or a speaker on the wishlist.
 btn.abstention=Vote 0 for this talk
 remove.sponsorFlag=Remove the sponsor''s flag on this talk

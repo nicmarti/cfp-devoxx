@@ -1,0 +1,47 @@
+@(proposals: List[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Please review your approved list of talks") {
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1><i class="icon-bullhorn"></i> @Messages("acceptedProposals.title")</h1>
+                </div>
+
+                <div class="panel-body">
+                    <div class="panel-body">
+
+                        @if(flash.get("error").isDefined) {
+                            <div class="col-md-12">
+                                <div class="alert alert-danger alert-dismissable">
+                                    <strong>Error :</strong>
+                                    @flash.get("error").get
+                                </div>
+                            </div>
+                        }
+                        @if(flash.get("success").isDefined) {
+                            <div class="col-md-12">
+                                <div class="alert alert-success alert-dismissable">
+                                @flash.get("success").get
+                                </div>
+                            </div>
+                        }
+
+                        <div class="col-md-8 col-lg-offset-2">
+
+                          @proposals.map{proposal=>
+                            @proposal
+
+                          }
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}

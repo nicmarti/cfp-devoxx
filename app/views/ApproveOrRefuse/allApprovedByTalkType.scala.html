@@ -1,6 +1,6 @@
 @(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@main("AcceptOrReject - All votes") {
+@main("ApproveOrRefuse - All votes") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
@@ -73,13 +73,13 @@
                                     </td>
                                     <td>@proposal.lang</td>
                                     <td>
-                                        <a href="@routes.AcceptOrReject.notifyAccept(confType, Option(proposal.id))" class="label label-danger"><i class="icon-envelope"></i> Notify accepted</a>
+                                        <a href="@routes.ApproveOrRefuse.notifyApprove(confType, Option(proposal.id))" class="label label-danger"><i class="icon-envelope"></i> Notify approved</a>
 </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
-                    <a href="@routes.AcceptOrReject.notifyAccept(confType, None)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
+                    <a href="@routes.ApproveOrRefuse.notifyApprove(confType, None)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
 
                 </div>
             </div>

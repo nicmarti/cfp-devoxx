@@ -177,9 +177,9 @@ object Mails {
     )
   }
 
-  def sendProposalAccepted(toWebuser: Webuser, proposal: Proposal) = {
+  def sendProposalApproved(toWebuser: Webuser, proposal: Proposal) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"[TEST] Your proposal has been accepted ${proposal.title}")
+    emailer.setSubject(s"[TEST] Your proposal has been approved ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
     emailer.addHeader("Message-ID", proposal.id)
     emailer.addRecipient(toWebuser.email)
@@ -193,13 +193,13 @@ object Mails {
 
     emailer.setCharset("utf-8")
     emailer.send(
-      views.txt.Mails.acceptrefuse.sendProposalAccepted(proposal).toString(),
-      views.html.Mails.acceptrefuse.sendProposalAccepted(proposal).toString()
+      views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString(),
+      views.html.Mails.acceptrefuse.sendProposalApproved(proposal).toString()
     )
 
   }
 
-  def sendProposalRejected(toWebuser: Webuser, proposal: Proposal) = {
+  def sendProposalRefused(toWebuser: Webuser, proposal: Proposal) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[TEST] Your proposal has been refused ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
@@ -214,8 +214,8 @@ object Mails {
 
     emailer.setCharset("utf-8")
     emailer.send(
-      views.txt.Mails.acceptrefuse.sendProposalRejected(proposal).toString(),
-      views.html.Mails.acceptrefuse.sendProposalRejected(proposal).toString()
+      views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString(),
+      views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()
     )
 
   }

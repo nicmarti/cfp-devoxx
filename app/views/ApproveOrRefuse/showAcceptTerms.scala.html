@@ -1,4 +1,4 @@
-@(formAccept: Form[Boolean], proposal: Proposal)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(formAccept: Form[Boolean])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Accept or refuse Devoxx terms") {
 
@@ -29,9 +29,6 @@
                         }
 
                         <div class="col-md-8 col-lg-offset-2">
-
-                            <h4>@proposal.title</h4>
-                           <strong>@Messages(proposal.talkType.label) in @Messages(proposal.track.label)</strong>
 
                             <p>@Messages("acceptTerm.pleaseRead")</p>
 
@@ -76,7 +73,7 @@ Devoxx ne se voit pas accorder de droits complémentaires, ou d'autres autorisat
  }
 </textarea>
                             </div>
-                            @helper.form(routes.AcceptOrReject.acceptTermsAndConditions(proposal.id)) {
+                            @helper.form(routes.ApproveOrRefuse.acceptTermsAndConditions()) {
                                 @helper.checkbox(formAccept("accept.chk"))
                                 <input type="submit" value="Validate" class="btn btn-lg btn-success">
                                 <a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-lg btn-danger">Decline</a>

@@ -1,0 +1,28 @@
+@(proposal:models.Proposal)(implicit lang:Lang)
+
+Bonjour,
+
+Nous avons le regret de vous informer que votre proposition @proposal.title au format @proposal.talkType.label n'a pas été acceptée.
+Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.
+
+Si vous souhaitez vous inscrire, nous avons prolongé l'offre "early-bird" afin de vous faire
+bénéficier du prix discount. La sélection cette année a encore été difficile. Nous communiquerons sur
+notre site plus d'informations sur la sélection.
+
+Merci pour votre proposition,
+
+L'équipe de sélection de la conférence Devoxx France
+
+----------------------------------------------------------------------------------------------------------------
+
+Hi,
+
+We're sorry to inform you that your proposal for Devoxx France 2014 was refused
+Proposition title : @proposal.title, @proposal.talkType.label.
+
+We'd like to thank you sincerly, for the time and your work.
+If you like to register, we still have our early bird price, please visit http://reg.devoxx.fr.
+
+Thanks for your time,
+The Devoxx France team
+ 
