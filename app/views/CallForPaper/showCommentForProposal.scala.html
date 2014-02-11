@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="panel-body">
-                @helper.form(action = routes.CallForPaper.sendMessageToComite(proposal.id)) {
+                @helper.form(action = routes.CallForPaper.sendMessageToCommitte(proposal.id)) {
                     @helper.textarea(msgToComite("msg"), 'class -> "form-control input-xs")
                     <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
                 }

@@ -576,7 +576,7 @@ object Proposal {
       }
       // zipAll is used to merge the list of proposals with the list of parsed/loaded Proposal
       // If a proposal was not found, the list "proposals" contains a None.
-      // We then dorp the empty Proposal, so that we keep only the ones that we could load
+      // We then drop the empty Proposal, so that we keep only the ones that we could load
       listOfProposals.zipAll(proposals, "?", None).filterNot(_._2.isEmpty).map(t => (t._1, t._2.get)).toMap
   }
 

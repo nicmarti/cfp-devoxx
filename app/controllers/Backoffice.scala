@@ -173,6 +173,15 @@ object Backoffice extends SecureCFPController {
       }
   }
 
+  def updateAcceptedSpeakers()=SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      ApprovedProposal.allApproved().foreach{p:Proposal=>
+        ApprovedProposal.approve(p)
+      }
+      Ok("Done")
+  }
+
+
 }
 
 

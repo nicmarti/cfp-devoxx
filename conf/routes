@@ -35,7 +35,7 @@ GET         /cfp/proposal/delete/:proposalId                   controllers.CallF
 GET         /cfp/proposal/undelete/:proposalId                 controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET         /cfp/proposal/submit/:proposalId                   controllers.CallForPaper.submitProposal(proposalId:String)
 GET         /cfp/comment/:proposalId                           controllers.CallForPaper.showCommentForProposal(proposalId:String)
-POST        /cfp/comment/:proposalId                           controllers.CallForPaper.sendMessageToComite(proposalId:String)
+POST        /cfp/comment/:proposalId                           controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
 GET         /cfp/speaker/:uuidSpeaker                          controllers.CallForPaper.showSpeaker(uuidSpeaker:String)
 
 # Password
@@ -109,12 +109,12 @@ GET         /preaccept/:proposalId                             controllers.Appro
 GET         /cancelPreaccept/:proposalId                       controllers.ApproveOrRefuse.cancelApprove(proposalId:String)
 
 GET         /programbuilder/allApproved/:talkType              controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
-GET         /acceptReject/notifyApprove/:talkType              controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:Option[String])
+GET         /acceptReject/notifyApprove/:talkType              controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
 GET         /ar/showAcceptTerms                                controllers.ApproveOrRefuse.showAcceptTerms()
 GET         /ar/accept                                         controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET         /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST        /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.acceptOrRefuseTalks()
-
+GET         /ar/notifyAllSpeakers                              controllers.ApproveOrRefuse.notifyAllSpeakers()
 
 GET         /cloudtags                                         controllers.CallForPaper.cloudTags()
 
@@ -125,6 +125,8 @@ GET         /show/proposals                                    controllers.Spons
 GET         /api/fr14/slots/:confType                          controllers.ApiController.slots(confType:String)
 GET         /api/fr14/approvedTalks/:confType                  controllers.ApiController.approvedTalks(confType:String)
 POST        /api/fr14/slots/:confType                          controllers.ApiController.saveSlots(confType:String)
+
+GET /backoffice/updateAcceptedSpeakers  controllers.Backoffice.updateAcceptedSpeakers()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                      controllers.Assets.at(path="/public", file)

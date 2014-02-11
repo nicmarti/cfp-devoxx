@@ -73,13 +73,13 @@
                                     </td>
                                     <td>@proposal.lang</td>
                                     <td>
-                                        <a href="@routes.ApproveOrRefuse.notifyApprove(confType, Option(proposal.id))" class="label label-danger"><i class="icon-envelope"></i> Notify approved</a>
-</td>
+                                        <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="label label-danger"><i class="icon-envelope"></i> Notify approved</a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
-                    <a href="@routes.ApproveOrRefuse.notifyApprove(confType, None)" class="label label-danger"><i class="icon-envelope"></i> Notify all speakers</a>
+                    <a href="@routes.ApproveOrRefuse.notifyAllSpeakers()" class="label label-success"><i class="icon-envelope"></i> Notify all speakers</a>
 
                 </div>
             </div>

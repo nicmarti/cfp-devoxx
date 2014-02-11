@@ -24,8 +24,6 @@
 package models
 
 import library.Redis
-import models.Review._
-import play.api.libs.json.Json
 
 /**
  * Approve or reject a proposal
@@ -63,8 +61,8 @@ object ApprovedProposal {
       }
   }
 
-  def isApproved(proposalId:String, talkType:ProposalType):Boolean={
-    isApproved(proposalId,talkType.id)
+  def isApproved(proposal:Proposal):Boolean={
+    isApproved(proposal.id, proposal.talkType.id)
   }
 
   def isApproved(proposalId: String, talkType: String): Boolean = Redis.pool.withClient {
@@ -93,12 +91,13 @@ object ApprovedProposal {
   def approve(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
+      tx.sadd("ApprovedById:", proposal.id.toString)
       tx.sadd("Approved:" + proposal.talkType.id, proposal.id.toString)
 
-      tx.hset("ApprovedSpeaker:"+proposal.mainSpeaker, proposal.id.toString, "mainSpeaker")
-      proposal.secondarySpeaker.map(secondarySpeaker => tx.hset("ApprovedSpeaker:"+secondarySpeaker , proposal.id.toString, "secondarySpeaker"))
+      tx.sadd("ApprovedSpeakers:"+proposal.mainSpeaker, proposal.id.toString)
+      proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("ApprovedSpeakers:"+secondarySpeaker , proposal.id.toString))
       proposal.otherSpeakers.foreach{otherSpeaker:String=>
-        tx.hset("ApprovedSpeaker:"+otherSpeaker , proposal.id.toString, "otherSpeaker")
+        tx.sadd("ApprovedSpeakers:"+otherSpeaker , proposal.id.toString)
       }
       tx.exec()
   }
@@ -106,19 +105,19 @@ object ApprovedProposal {
   def cancelApprove(proposal:Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
+      tx.srem("ApprovedById:", proposal.id.toString)
       tx.srem("Approved:" + proposal.talkType.id, proposal.id.toString)
-      tx.hdel("ApprovedSpeaker:"+proposal.mainSpeaker, proposal.id.toString)
+      tx.srem("ApprovedSpeakers:"+proposal.mainSpeaker, proposal.id.toString)
 
       proposal.secondarySpeaker.map{
         secondarySpeaker:String=>
-          tx.hdel("ApprovedSpeaker:"+secondarySpeaker, proposal.id.toString)
+          tx.srem("ApprovedSpeakers:"+secondarySpeaker, proposal.id.toString)
       }
 
       proposal.otherSpeakers.foreach{
         otherSpeaker:String=>
-          tx.hdel("ApprovedSpeaker:"+otherSpeaker, proposal.id.toString)
+          tx.srem("ApprovedSpeakers:"+otherSpeaker, proposal.id.toString)
       }
-
       tx.exec()
   }
 
@@ -132,9 +131,7 @@ object ApprovedProposal {
 
   def allApproved(): Set[Proposal] = Redis.pool.withClient {
     implicit client =>
-
       val allKeys = client.keys("Approved:*")
-
       val finalList = allKeys.map {
         key =>
           val allProposalIDs = client.smembers(key).toList
@@ -144,5 +141,14 @@ object ApprovedProposal {
       finalList
   }
 
+  def allApprovedSpeakers()=Redis.pool.withClient{
+    implicit client=>
+
+     client.keys("ApprovedSpeakers:*").flatMap{
+       key=>
+         val speakerUUID=key.substring("ApprovedSpeakers:".length)
+         for(speaker<-Speaker.findByUUID(speakerUUID)) yield( (speaker, Proposal.loadAndParseProposals(client.smembers(key)).values))
+     }
+  }
 
 }

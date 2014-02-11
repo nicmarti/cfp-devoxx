@@ -366,3 +366,13 @@ approve.title=Devoxx France, Termes et Conditions du Présentateur
 accept.chk=J''accepte les conditions de Devoxx France
 acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à Devoxx France :
 accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de Devoxx France
+
+acceptedProposals.title=Liste de vos soumissions approuvées/refusées
+ar.approved=Soumissions approuvées
+ar.rejected=Soumissions refusées
+ar.noneApproved=Nous avons le regret de vous informer qu''aucune de vos soumissions n''a été acceptée.
+ar.pleaseAccept=Pour chaque soumission approuvée par le comité, merci d''indiquer si vous présenterez ou non ce sujet :
+ar.IAccept=J''accepte
+ar.IDecline=Je refuse
+ar.IBackup=Comme backup
+ar.currentStatus=Status actuel

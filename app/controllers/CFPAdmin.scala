@@ -292,9 +292,9 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       val reviews = Review.allVotes()
-    val totalApproved = ApprovedProposal.countApproved(confType)
+      val totalApproved = ApprovedProposal.countApproved(confType)
 
-      val newEtag:String = reviews.hashCode()+"_"+totalApproved
+      val newEtag: String = reviews.hashCode() + "_" + totalApproved
 
       request.headers.get("If-None-Match") match {
         case Some(eTag) if eTag == newEtag => NotModified
@@ -311,9 +311,10 @@ object CFPAdmin extends SecureCFPController {
                 proposal: Proposal =>
                   (proposal, scoreAndVotes)
               }
-          }.filter {
+          }.filterNot {
             case (proposal, _) =>
-              proposal.state == ProposalState.SUBMITTED
+              proposal.state == ProposalState.DRAFT ||
+              proposal.state == ProposalState.DELETED
           }
 
           val listToDisplay = confType match {

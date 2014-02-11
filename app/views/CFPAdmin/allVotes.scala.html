@@ -60,31 +60,32 @@
                                 <th>Track</th>
                                 <th>Type</th>
                                 <th>Lang</th>
-                                <th>Accept</th>
+                                <th>Pre-approve</th>
                             </tr>
                         </thead>
                         <tbody>
                             @allVotes.map { case (proposal, voteAndTotalVotes) =>
                                 @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
                                 <tr class="preselected_@approved">
-                                    <td>
+                                    <td class="average_table">
                                     @defining(voteAndTotalVotes._4) { average =>
-                                        @average
+                                       @average
                                     }
                                     </td>
-                                    <td>
+                                    <td class="number_table">
                                         @voteAndTotalVotes._6
-                                    <td>
+                                    </td>
+                                    <td  class="number_table">
                                     @defining(voteAndTotalVotes._2) { totalVoters =>
                                       @totalVoters
                                     }
                                     </td>
-                                    <td>
+                                    <td  class="number_table">
                                     @defining(voteAndTotalVotes._3) { totalAbstentions =>
                                         @totalAbstentions
                                     }
                                     </td>
-                                    <td>
+                                    <td  class="number_table">
                                     @defining(voteAndTotalVotes._5) { stdev =>
                                         @stdev
                                     }
@@ -105,10 +106,12 @@
                                     <td>@proposal.lang</td>
                                     <td>
                                         @if(approved){
-                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)">Cancel Approve</a>
+                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel</a>
                                         }else{
-                                            <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)">Approve</a>
+                                            <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="btn btn-sm btn-success"><i class="icon-check"></i> Approve</a>
                                         }
+                                        <br>
+                                        <span class="label label-primary">@proposal.state.code</span>
                                     </td>
                                 </tr>
                                 }

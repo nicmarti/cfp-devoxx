@@ -1,4 +1,4 @@
-@(proposals: List[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(approvedProposals: List[Proposal], rejectedProposals:List[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Please review your approved list of talks") {
 
@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1><i class="icon-bullhorn"></i> @Messages("acceptedProposals.title")</h1>
+                    <h3><i class="icon-bullhorn"></i> @Messages("acceptedProposals.title")</h3>
                 </div>
 
                 <div class="panel-body">
@@ -28,14 +28,56 @@
                             </div>
                         }
 
-                        <div class="col-md-8 col-lg-offset-2">
+                        <div class="col-md-12">
+                            <h3><i class="icon-play-circle"></i> @Messages("ar.approved")</h3>
+                            @if(approvedProposals.isEmpty){
+                                @Messages("ar.noneApproved")
+                            }else{
+                                <div class="panel panel-success">
+                                    <div class="panel-body">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">Important :</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            @Messages("ar.pleaseAccept")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                          @approvedProposals.map{proposal=>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <span class="label label-info">@proposal.title</span><br>
+                                    <span class="label label-primary">@Messages(proposal.talkType.id)</span>
+                                    <p>@Messages("ar.currentStatus") <span class="label label-default">@Messages(proposal.state.code)</span></p>
+                                </div>
 
-                          @proposals.map{proposal=>
-                            @proposal
-
+                                <div class="panel-body">
+                                    <div class="btn-group" data-toggle="buttons">
+                                         <label class="btn btn-sm btn-success">
+                                            <input type="radio" name="options" id="option1"> @Messages("ar.IAccept")
+                                        </label>
+                                        <label class="btn btn-sm btn-danger">
+                                            <input type="radio" name="options" id="option2"> @Messages("ar.IDecline")
+                                        </label>
+                                        <label class="btn btn-sm btn-warning">
+                                            <input type="radio" name="options" id="option3"> @Messages("ar.IBackup")
+                                        </label>
+                                  </div>
+                                </div>
+                             </div>
                           }
-
-
+                            </div>
+                        <div class="col-md-12">
+                              <h3><i class="icon-stop"></i> @Messages("ar.rejected")</h3>
+                          @rejectedProposals.map{proposal=>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <span class="label label-info">@proposal.title</span><br>
+                                    <span class="label label-primary">@Messages(proposal.talkType.id)</span>
+                                </div>
+                            </div>
+                          }
                         </div>
                     </div>
                 </div>

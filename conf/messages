@@ -333,3 +333,13 @@ approve.title=Devoxx France, Speaker Consent Form
 accept.chk=I accept the Terms and Conditions
 acceptTerm.pleaseRead=Please read and accept Devoxx France Terms and Conditions
 accept.term.checked=Please check this box if you agree with the Terms and Conditions
+
+acceptedProposals.title=List of accepted/refused proposals for Devoxx France
+ar.approved=Approved proposals
+ar.rejected=Refused proposals
+ar.noneApproved=We are very sorry to inform you that none of your proposals have been accepted.
+ar.pleaseAccept=Please confirm for each accepted proposal, that you accept to present this talk
+ar.IAccept=I accept
+ar.IDecline=I decline
+ar.IBackup=As a Backup
+ar.currentStatus=Current status

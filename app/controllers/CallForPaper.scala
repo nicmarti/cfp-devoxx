@@ -316,7 +316,7 @@ object CallForPaper extends SecureCFPController {
   def showCommentForProposal(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Ok(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), speakerMsg))
@@ -327,7 +327,7 @@ object CallForPaper extends SecureCFPController {
       }
   }
 
-  def sendMessageToComite(proposalId: String) = SecuredAction {
+  def sendMessageToCommitte(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)

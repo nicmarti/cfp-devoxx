@@ -61,7 +61,7 @@ case class RemoveVotesForDeletedProposal()
 
 case class ProposalApproved(reporterUUID:String, proposal:Proposal)
 
-case class ProposalRefused(reporterUUID:String, proposal:Proposal)
+case class ProposalRejected(reporterUUID:String, proposal:Proposal)
 
 case class SaveSlots(slots:List[Slot], createdBy:Webuser)
 
@@ -81,7 +81,7 @@ class ZapActor extends Actor {
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
-    case ProposalRefused(reporterUUID, proposal) => doProposalRefused(reporterUUID, proposal)
+    case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
     case SaveSlots(slots:List[Slot], createdBy:Webuser)=> doSaveSlots(slots:List[Slot], createdBy:Webuser)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
@@ -163,7 +163,7 @@ class ZapActor extends Actor {
     }
   }
 
-  def doProposalRefused(reporterUUID: String, proposal: Proposal) {
+  def doProposalRejected(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Refused"))
