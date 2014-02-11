@@ -229,44 +229,44 @@ object CFPAdmin extends SecureCFPController {
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-        ElasticSearch.doSearch(q).map {
-          case r if r.isSuccess => {
-            val json = Json.parse(r.get)
+      ElasticSearch.doSearch(q).map {
+        case r if r.isSuccess => {
+          val json = Json.parse(r.get)
 
-            val total = (json \ "hits" \ "total").as[Int]
-            val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
+          val total = (json \ "hits" \ "total").as[Int]
+          val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
-            val results = hitContents.map {
-              jsvalue =>
-                val index = (jsvalue \ "_index").as[String]
-                val source = (jsvalue \ "_source")
-                index match {
-                  case "events" => {
-                    val objRef = (source \ "objRef").as[String]
-                    val uuid = (source \ "uuid").as[String]
-                    val msg = (source \ "msg").as[String]
-                    s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
-                  }
-                  case "proposals" => {
-                    val id = (source \ "id").as[String]
-                    val title = (source \ "title").as[String]
-                    s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a>"
-                  }
-                  case "speakers" => {
-                    val uuid = (source \ "uuid").as[String]
-                    val name = (source \ "name").as[String]
-                    s"<i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$name</a>"
-                  }
-                  case other => "Unknown"
+          val results = hitContents.map {
+            jsvalue =>
+              val index = (jsvalue \ "_index").as[String]
+              val source = (jsvalue \ "_source")
+              index match {
+                case "events" => {
+                  val objRef = (source \ "objRef").as[String]
+                  val uuid = (source \ "uuid").as[String]
+                  val msg = (source \ "msg").as[String]
+                  s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
                 }
-            }
+                case "proposals" => {
+                  val id = (source \ "id").as[String]
+                  val title = (source \ "title").as[String]
+                  s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a>"
+                }
+                case "speakers" => {
+                  val uuid = (source \ "uuid").as[String]
+                  val name = (source \ "name").as[String]
+                  s"<i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$name</a>"
+                }
+                case other => "Unknown"
+              }
+          }
 
-            Ok(views.html.CFPAdmin.renderSearchResult(total, results)).as("text/html")
-          }
-          case r if r.isFailure => {
-            InternalServerError(r.get)
-          }
+          Ok(views.html.CFPAdmin.renderSearchResult(total, results)).as("text/html")
         }
+        case r if r.isFailure => {
+          InternalServerError(r.get)
+        }
+      }
 
   }
 
@@ -290,33 +290,41 @@ object CFPAdmin extends SecureCFPController {
   }
 
   def allVotes(confType: String) = SecuredAction(IsMemberOf("cfp")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val result = Review.allVotes().toList.sortBy(_._2._1).reverse
+      val reviews = Review.allVotes()
+      val newEtag:String = reviews.hashCode()+"_"+AcceptService.countAccepted(confType)
 
-      val allProposalIDs = result.map(_._1)
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+      request.headers.get("If-None-Match") match {
+        case Some(eTag) if eTag == newEtag => NotModified
+        case other =>
 
-      val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
-        case (proposalId, scoreAndVotes) =>
-          allProposalWithVotes.get(proposalId).map {
-            proposal: Proposal =>
-              (proposal, scoreAndVotes)
+          val result = reviews.toList.sortBy(_._2._1).reverse
+
+          val allProposalIDs = result.map(_._1)
+          val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+
+          val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
+            case (proposalId, scoreAndVotes) =>
+              allProposalWithVotes.get(proposalId).map {
+                proposal: Proposal =>
+                  (proposal, scoreAndVotes)
+              }
+          }.filter {
+            case (proposal, _) =>
+              proposal.state == ProposalState.SUBMITTED
           }
-      }.filter {
-        case (proposal, _) =>
-          proposal.state == ProposalState.SUBMITTED
+
+          val listToDisplay = confType match {
+            case "all" => listOfProposals
+            case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
+          }
+
+          val totalAccepted = AcceptService.countAccepted(confType)
+          val totalRemaining = AcceptService.remainingSlots(confType)
+
+          Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalAccepted, totalRemaining, confType)).withHeaders("ETag" -> newEtag)
       }
-
-      val listToDisplay = confType match {
-        case "all" => listOfProposals
-        case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
-      }
-
-      val totalAccepted = AcceptService.countAccepted(confType)
-      val totalRemaining = AcceptService.remainingSlots(confType)
-
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalAccepted, totalRemaining, confType))
   }
 
   def doComputeVotesTotal() = SecuredAction(IsMemberOf("cfp")) {
@@ -357,32 +365,33 @@ object CFPAdmin extends SecureCFPController {
   }
 
   // Returns all speakers
-  def allSpeakers(onlyWithProposals:Boolean=false, export:Boolean=false) = SecuredAction(IsMemberOf("cfp")) {
+  def allSpeakers(onlyWithProposals: Boolean = false, export: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
-      val speakers = onlyWithProposals match{
-        case true=>Webuser.allSpeakers.sortBy(_.email).filter(w=>Proposal.hasOneProposal(w.uuid))
-        case false=>Webuser.allSpeakers.sortBy(_.email)
+      val speakers = onlyWithProposals match {
+        case true => Webuser.allSpeakers.sortBy(_.email).filter(w => Proposal.hasOneProposal(w.uuid))
+        case false => Webuser.allSpeakers.sortBy(_.email)
       }
-    export match{
-      case true=>{
-        val buffer=new StringBuffer("email,firstName,lastName,uuid,code\n")
-        speakers.foreach{ s=>
-          buffer.append(s.email.toLowerCase)
-          buffer.append(",")
-          buffer.append(s.firstName.toLowerCase.capitalize)
-          buffer.append(",")
-          buffer.append(s.lastName.toLowerCase.capitalize)
-          buffer.append(",")
-          buffer.append(s.uuid)
-          buffer.append(",")
-          buffer.append("SPK-")
-          buffer.append(s.uuid.substring(7,15).toUpperCase)
-          buffer.append("\n")
+      export match {
+        case true => {
+          val buffer = new StringBuffer("email,firstName,lastName,uuid,code\n")
+          speakers.foreach {
+            s =>
+              buffer.append(s.email.toLowerCase)
+              buffer.append(",")
+              buffer.append(s.firstName.toLowerCase.capitalize)
+              buffer.append(",")
+              buffer.append(s.lastName.toLowerCase.capitalize)
+              buffer.append(",")
+              buffer.append(s.uuid)
+              buffer.append(",")
+              buffer.append("SPK-")
+              buffer.append(s.uuid.substring(7, 15).toUpperCase)
+              buffer.append("\n")
+          }
+          Ok(buffer.toString).as("text/csv")
         }
-        Ok(buffer.toString).as("text/csv")
+        case false => Ok(views.html.CFPAdmin.allSpeakers(speakers))
       }
-      case false=>Ok(views.html.CFPAdmin.allSpeakers(speakers))
-    }
 
   }
 

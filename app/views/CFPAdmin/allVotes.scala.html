@@ -90,7 +90,7 @@
                                     }
                                     </td>
                                     <td>
-                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
+                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id">@proposal.title</a>
                                     </td>
                                     <td>@proposal.id</td>
                                     <td>
@@ -139,7 +139,7 @@
     <script type="text/javascript">
 
     var devoxxSeries=[
-        @allVotes.sortBy(_._2._2).filter(_._2._4>7).map{case(proposal, voteAndTotalVotes) =>
+        @allVotes.sortBy(_._2._2).map{case(proposal, voteAndTotalVotes) =>
             {
                 name: '@proposal.id',
                 data:[
@@ -189,7 +189,7 @@ var hoverDetail = new Rickshaw.Graph.HoverDetail( {
     $('#allProposals').dataTable({
     "aaSorting": [[ 0, "desc" ]],
     "iDisplayLength": 50,
-    "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+    "aLengthMenu": [[5, 10, 25, 50, 69, -1], [5, 10, 25, 50, 69, "All"]],
     "bStateSave": true,
     "aoColumns": [
         { "sType": "numeric"},
