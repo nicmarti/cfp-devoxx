@@ -1,0 +1,29 @@
+@(speaker:Speaker)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@views.html.Publisher.devoxxFR2014(speaker.name.getOrElse("")){
+<section id="container" class="one-column">
+    <div id="content" role="main">
+        <div id="post-5" class="post-5 page type-page status-publish hentry">
+            <h1 class="entry-title">@speaker.name</h1>
+            <div class="entry-content">
+                @speaker.avatarUrl.map{url=>
+                    <img class="alignleft size-medium wp-image-44"  src="@url" width="128" height="128" alt="@speaker.name" title="@speaker.name"><br>
+                }
+                <p>@speaker.bio</p>
+                @speaker.twitter.map{tw=>
+                    <p><img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: bottom"><a href="http://www.twitter.com/@tw" rel="no-follow">@tw</a></p>
+                }
+                @speaker.blog.map{blog=>
+                    <p><i class="icon-bullhorn"></i> Blog : <a href="@blog" rel="no-follow">@blog</a></p>
+                }
+                @speaker.company.map{cp=>
+                    <p><i class="icon-building"></i> Société : @cp</p>
+                }
+
+            </div>
+            <div class="entry-content">
+                <h3>Présentations</h3>
+            </div>
+        </div>
+    </div>
+</section>
+}

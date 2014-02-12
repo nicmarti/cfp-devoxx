@@ -1,0 +1,27 @@
+@(speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@views.html.Publisher.devoxxFR2014("Speakers"){
+<section id="container" class="one-column">
+    <div id="content" role="main">
+        <div id="post-5" class="post-5 page type-page status-publish hentry">
+            <h1 class="entry-title">Speakers</h1>
+            <div class="entry-content">
+                <table>
+                @speakers.sortBy(_.name).sliding(4,4).map{fourSpeakers:List[Speaker]=>
+                    <tr>
+                    @fourSpeakers.map{speaker:Speaker=>
+                        <td>
+                            <a href="@routes.Publisher.showSpeaker(speaker.uuid,speaker.name.getOrElse(""))">
+                            @speaker.avatarUrl.map{url=>
+                                <img src="@url" width="64" height="64" alt="@speaker.name" title="@speaker.name"><br>
+                            }
+                            @speaker.name</a>
+                        </td>
+                    }
+                    </tr>
+                }
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+}

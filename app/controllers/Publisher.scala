@@ -25,13 +25,29 @@ package controllers
 
 import models._
 import play.api.mvc._
+
 /**
  * Simple content publisher
  * Created by nicolas on 12/02/2014.
  */
-object Publisher extends Controller{
-  def homePublisher=Action{
-    implicit request=>
+object Publisher extends Controller {
+  def homePublisher = Action {
+    implicit request =>
       Ok(views.html.Publisher.homePublisher())
+  }
+
+  def showAllSpeakers = Action {
+    implicit request =>
+      val speakers = Speaker.allSpeakers().take(130)
+      Ok(views.html.Publisher.showAllSpeakers(speakers))
+  }
+
+  def showSpeaker(uuid: String, name: String) = Action {
+    implicit request =>
+      val maybeSpeaker=Speaker.findByUUID(uuid)
+      maybeSpeaker match {
+        case Some(speaker)=>Ok(views.html.Publisher.showSpeaker(speaker))
+        case None=>NotFound("Speaker not found")
+      }
   }
 }

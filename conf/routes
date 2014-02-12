@@ -129,7 +129,10 @@ POST        /api/fr14/slots/:confType                          controllers.ApiCo
 GET /backoffice/updateAcceptedSpeakers  controllers.Backoffice.updateAcceptedSpeakers()
 
 # Content Publisher
-GET /devoxxfr2014   controllers.Publisher.homePublisher()
+GET /devoxxfr2014                       controllers.Publisher.homePublisher()
+GET /devoxxfr2014/                      controllers.Publisher.homePublisher()
+GET /devoxxfr2014/speakers              controllers.Publisher.showAllSpeakers()
+GET /devoxxfr2014/speaker/:name/:uuid   controllers.Publisher.showSpeaker(uuid:String, name:String)
 
 
 # Map static resources from the /public folder to the /assets URL path
