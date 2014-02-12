@@ -48,7 +48,6 @@ import java.util.TimeZone
 import scala.collection.JavaConversions._
 import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.Forms._
-import models.{ApprovedProposal, Slot}
 
 /**
  * Controller created to build and to export the Program.

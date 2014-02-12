@@ -30,6 +30,7 @@ import library._
 import play.api.data.Form
 import play.api.data.Forms._
 import scala.concurrent.Future
+import akka.util.Crypt
 
 /**
  * Sans doute le controller le plus sadique du monde qui accepte ou rejette les propositions
@@ -90,7 +91,7 @@ object ApproveOrRefuse extends SecureCFPController {
       if (Speaker.needsToAccept(request.webuser.uuid)) {
         Ok(views.html.ApproveOrRefuse.showAcceptTerms(formApprove))
       } else {
-        Redirect(routes.ApproveOrRefuse.acceptOrRefuseTalks())
+        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks())
       }
   }
 
@@ -100,7 +101,7 @@ object ApproveOrRefuse extends SecureCFPController {
         hasErrors => BadRequest(views.html.ApproveOrRefuse.showAcceptTerms(hasErrors)),
         successForm => {
           Speaker.acceptTerms(request.webuser.uuid)
-          Event.storeEvent(Event(request.webuser.uuid, "", "has accepted Terms and conditions"))
+          Event.storeEvent(Event("speaker", request.webuser.uuid, "has accepted Terms and conditions"))
           Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks())
         }
       )
@@ -108,14 +109,70 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def showAcceptOrRefuseTalks() = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import org.apache.commons.lang3.RandomStringUtils
       val allMyProposals = Proposal.allMyProposals(request.webuser.uuid)
-      val (accepted, rejected) = allMyProposals.partition(p => p.state == ProposalState.APPROVED || p.state == ProposalState.DECLINED || p.state == ProposalState.ACCEPTED || p.state == ProposalState.BACKUP)
-      Ok(views.html.ApproveOrRefuse.acceptOrRefuseTalks(accepted, rejected.filter(_.state == ProposalState.REJECTED)))
+      val cssrf=RandomStringUtils.randomAlphanumeric(24)
+
+      val (accepted, rejected) = allMyProposals.partition(p => p.state == ProposalState.SUBMITTED || p.state == ProposalState.APPROVED || p.state == ProposalState.DECLINED || p.state == ProposalState.ACCEPTED || p.state == ProposalState.BACKUP)
+      Ok(views.html.ApproveOrRefuse.acceptOrRefuseTalks(accepted, rejected.filter(_.state == ProposalState.REJECTED), cssrf))
+          .withSession(session.+(("CSSRF", Crypt.sha1(cssrf))))
   }
 
-  def acceptOrRefuseTalks() = SecuredAction {
+  val formAccept=Form(tuple("proposalId"->nonEmptyText(maxLength=8),"dec"->nonEmptyText,"cssrf_t"->nonEmptyText))
+
+  def doAcceptOrRefuseTalk() = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("POST Formulaire todo")
+
+      formAccept.bindFromRequest().fold(hasErrors=>
+        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error"->"Invalid form, please check and validate again")
+        , validForm=>
+        {
+          val cssrf=Crypt.sha1(validForm._3)
+          val fromSession = session.get("CSSRF")
+          if(Some(cssrf)!=fromSession){
+            Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error"->"Invalid CSSRF token")
+          }else{
+
+          val proposalId=validForm._1
+          val choice=validForm._2
+          val maybeProposal = Proposal.findById(proposalId)
+            maybeProposal match {
+              case None=> Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error"->Messages("ar.proposalNotFound"))
+              case Some(p) if Proposal.isSpeaker(proposalId, request.webuser.uuid) => {
+
+                choice match {
+                  case "accept"=>{
+                    Proposal.accept(request.webuser.uuid, proposalId)
+                    val validMsg = "Speaker has set the status of this proposal to ACCEPTED"
+                    Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
+                    ZapActor.actor ! SendMessageToComite(request.webuser.uuid, p, validMsg)
+
+                  }
+                  case "decline"=>{
+                    Proposal.decline(request.webuser.uuid, proposalId)
+                    val validMsg = "Speaker has set the status of this proposal to DECLINED"
+                    Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
+                    ZapActor.actor ! SendMessageToComite(request.webuser.uuid, p, validMsg)
+                  }
+                  case "backup"=>{
+                    val validMsg = "Speaker has set the status of this proposal to BACKUP"
+                    Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
+                    ZapActor.actor ! SendMessageToComite(request.webuser.uuid, p, validMsg)
+                    Proposal.backup(request.webuser.uuid, proposalId)
+                  }
+                  case other=> play.Logger.error("Invalid choice for ApproveOrRefuse doAcceptOrRefuseTalk for proposalId "+proposalId+" choice="+choice)
+                }
+
+
+                Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success"->Messages("ar.choiceRecorded",proposalId,choice))
+              }
+              case other =>  Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error"->"Hmmm not a good idea to try to update someone else proposal... this event has been logged.")
+            }
+
+
+          }
+        }
+      )
   }
 
   def notifyAllSpeakers() = SecuredAction(IsMemberOf("admin")) {
@@ -130,18 +187,16 @@ object ApproveOrRefuse extends SecureCFPController {
           val allAcceptedAsSet = proposals.toSet
           val allRefusedAsSet = allProposalsAsSet.diff(allAcceptedAsSet)
 
-
-
           // RISKY !!!
           allRefusedAsSet.map {
             proposal =>
-              Proposal.reject(request.webuser.uuid, proposal.id)
-              println("Reject " + proposal.id + " / " + proposal.title)
+             //Proposal.reject(request.webuser.uuid, proposal.id)
+             println("Reject " + proposal.id + " / " + proposal.title)
           }
 
           allAcceptedAsSet.map{
             proposal=>
-              Proposal.approve(request.webuser.uuid, proposal.id)
+             // Proposal.approve(request.webuser.uuid, proposal.id)
               println("Accepted "+proposal.id + "/" +proposal.title)
           }
       }

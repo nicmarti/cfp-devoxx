@@ -132,6 +132,11 @@ object Proposal {
 
   val HttpUrl="((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)".r
 
+  def isSpeaker(proposalId:String, uuid:String):Boolean=Redis.pool.withClient{
+    implicit client=>
+      client.sismember("Proposals:ByAuthor:" + uuid, proposalId)
+  }
+
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
     // If it's a sponsor talk, we force it to be a conference
@@ -310,6 +315,10 @@ object Proposal {
 
   def decline(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.DECLINED)
+  }
+
+  def backup(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.BACKUP)
   }
 
   def draft(uuid: String, proposalId: String) = {

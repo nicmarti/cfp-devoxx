@@ -1,4 +1,4 @@
-@(approvedProposals: List[Proposal], rejectedProposals:List[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(approvedProposals: List[Proposal], rejectedProposals:List[Proposal], cssrf:String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Please review your approved list of talks") {
 
@@ -45,45 +45,56 @@
                                 </div>
                             }
                           @approvedProposals.map{proposal=>
-                            <div class="panel panel-default">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3>@proposal.title</h3>
+                                </div>
                                 <div class="panel-body">
-                                    <span class="label label-info">@proposal.title</span><br>
-                                    <span class="label label-primary">@Messages(proposal.talkType.id)</span>
-                                    <p>@Messages("ar.currentStatus") <span class="label label-default">@Messages(proposal.state.code)</span></p>
+                                    <span class="label label-info">@proposal.id</span><br>
+                                    <span class="label label-primary">@Messages(proposal.talkType.label)</span><br>
+                                    @Messages("ar.currentStatus") <span class="label label-default">@Messages(proposal.state.code)</span>
                                 </div>
 
                                 <div class="panel-body">
-                                    <div class="btn-group" data-toggle="buttons">
-                                         <label class="btn btn-sm btn-success">
-                                            <input type="radio" name="options" id="option1"> @Messages("ar.IAccept")
-                                        </label>
-                                        <label class="btn btn-sm btn-danger">
-                                            <input type="radio" name="options" id="option2"> @Messages("ar.IDecline")
-                                        </label>
-                                        <label class="btn btn-sm btn-warning">
-                                            <input type="radio" name="options" id="option3"> @Messages("ar.IBackup")
-                                        </label>
+                                    <div class="btn-group">
+                                        <p>@Messages("ar.pleaseSelect")</p>
+                                        <form action="@routes.ApproveOrRefuse.doAcceptOrRefuseTalk()" method="post">
+                                            <button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button> <br>
+                                            <button name="dec" value="decline" class="btn btn-sm btn-danger"> @Messages("ar.IDecline")</button> <br>
+                                            <button name="dec" value="backup" class="btn btn-sm btn-warning"> @Messages("ar.IBackup")</button>
+                                            <input type="hidden" name="cssrf_t" value="@cssrf">
+                                            <!-- ne vous amusez pas à passer un id different ici, car je verifie du cote serveur le proprietaire de la soumission ;-) //-->
+                                            <input type="hidden" name="proposalId" value="@proposal.id">
+                                        </form>
                                   </div>
                                 </div>
                              </div>
                           }
-                            </div>
+                        </div>
+
+                        @if(rejectedProposals.nonEmpty){
                         <div class="col-md-12">
                               <h3><i class="icon-stop"></i> @Messages("ar.rejected")</h3>
                           @rejectedProposals.map{proposal=>
-                            <div class="panel panel-default">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3>@proposal.title</h3>
+                                </div>
                                 <div class="panel-body">
-                                    <span class="label label-info">@proposal.title</span><br>
+                                    <span class="label label-info">@proposal.id</span><br>
                                     <span class="label label-primary">@Messages(proposal.talkType.id)</span>
                                 </div>
                             </div>
                           }
                         </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-lg-12">
+            <a href="@routes.CallForPaper.homeForSpeaker" class="btn btn-primary">@Messages("ar.goBackHome")</a>
+        </div>
     </div>
-
 
 }

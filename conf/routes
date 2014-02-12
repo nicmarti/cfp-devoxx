@@ -113,7 +113,7 @@ GET         /acceptReject/notifyApprove/:talkType              controllers.Appro
 GET         /ar/showAcceptTerms                                controllers.ApproveOrRefuse.showAcceptTerms()
 GET         /ar/accept                                         controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET         /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
-POST        /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.acceptOrRefuseTalks()
+POST        /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
 GET         /ar/notifyAllSpeakers                              controllers.ApproveOrRefuse.notifyAllSpeakers()
 
 GET         /cloudtags                                         controllers.CallForPaper.cloudTags()

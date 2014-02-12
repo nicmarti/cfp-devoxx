@@ -127,6 +127,7 @@
                  </div>
              }
 
+            <a href="@routes.ApproveOrRefuse.showAcceptTerms()" class="btn btn-primary">@Messages("ar.checkMyProposals")</a>
 
             @if(myProposals.isEmpty) {
                 <div class="info">
@@ -174,6 +175,9 @@
                             }
                             @if(prop.state.code=="submitted"){
                                 <span class="label label-info">@prop.state.code</span>
+                            }
+                            @if(prop.state.code=="backup"){
+                                <span class="label label-warning">@prop.state.code</span>
                             }
                             </td>
                             <td>

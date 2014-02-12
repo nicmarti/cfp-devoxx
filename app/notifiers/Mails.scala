@@ -126,7 +126,7 @@ object Mails {
     )
   }
 
-  def sendMessageToComite(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def sendMessageToCommitte(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[${proposal.title}] ${fromWebuser.cleanName} posted a new message")
     emailer.addFrom("program@devoxx.fr")
@@ -137,12 +137,12 @@ object Mails {
     // Send also a copy of the message to the other speakers
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
     val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
+    val listOfEmails = Some(proposal.mainSpeaker).toList ++ maybeOtherEmails ++ maybeSecondSpeaker.toList
     emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
 
     emailer.send(
-      views.txt.Mails.sendMessageToComite(fromWebuser.cleanName, proposal, msg).toString(),
-      views.html.Mails.sendMessageToComite(fromWebuser.cleanName, proposal, msg).toString()
+      views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString(),
+      views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()
     )
   }
 
@@ -196,7 +196,6 @@ object Mails {
       views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString(),
       views.html.Mails.acceptrefuse.sendProposalApproved(proposal).toString()
     )
-
   }
 
   def sendProposalRefused(toWebuser: Webuser, proposal: Proposal) = {
