@@ -36,8 +36,8 @@ object ApprovedProposal {
   val totalUni = 8
   val totalLabs = 12
   val totalTia = 30
-  val totalQuickies = 20
-  val totalBOF = 18
+  val totalQuickies = 22
+  val totalBOF = 16
 
   // What we did in 2013
   val getDevoxx2013Total: Map[String, Int] = {
