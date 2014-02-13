@@ -144,19 +144,19 @@ object ApproveOrRefuse extends SecureCFPController {
                     Proposal.accept(request.webuser.uuid, proposalId)
                     val validMsg = "Speaker has set the status of this proposal to ACCEPTED"
                     Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
-                    ZapActor.actor ! SendMessageToComite(request.webuser.uuid, p, validMsg)
+                    ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
 
                   }
                   case "decline"=>{
                     Proposal.decline(request.webuser.uuid, proposalId)
                     val validMsg = "Speaker has set the status of this proposal to DECLINED"
                     Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
-                    ZapActor.actor ! SendMessageToComite(request.webuser.uuid, p, validMsg)
+                    ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
                   }
                   case "backup"=>{
                     val validMsg = "Speaker has set the status of this proposal to BACKUP"
                     Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
-                    ZapActor.actor ! SendMessageToComite(request.webuser.uuid, p, validMsg)
+                    ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
                     Proposal.backup(request.webuser.uuid, proposalId)
                   }
                   case other=> play.Logger.error("Invalid choice for ApproveOrRefuse doAcceptOrRefuseTalk for proposalId "+proposalId+" choice="+choice)

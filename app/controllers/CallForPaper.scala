@@ -29,7 +29,7 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
-import library.{SendMessageToComite, ZapActor}
+import library.{SendMessageToCommitte, ZapActor}
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.json.Json
 import library.search.ElasticSearch
@@ -339,7 +339,7 @@ object CallForPaper extends SecureCFPController {
             },
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg)
-              ZapActor.actor ! SendMessageToComite(uuid, proposal, validMsg)
+              ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
               Redirect(routes.CallForPaper.showCommentForProposal(proposalId)).flashing("success" -> "Message was sent")
             }
           )
