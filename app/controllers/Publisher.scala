@@ -56,6 +56,8 @@ object Publisher extends Controller {
 
   def showByTalkType(talkType:String)=Action{
     implicit request=>
+      // TODO a changer avant passage prod
+//      val proposals=ApprovedProposal.allApprovedByTalkType(talkType)
       val proposals=ApprovedProposal.allAcceptedByTalkType(talkType)
       Ok(views.html.Publisher.showByTalkType(proposals,talkType))
   }

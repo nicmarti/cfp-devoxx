@@ -159,7 +159,7 @@ class ZapActor extends Actor {
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Approved"))
       Mails.sendProposalApproved(speaker, proposal)
-      Proposal.accept(reporterUUID, proposal.id)
+      Proposal.approve(reporterUUID, proposal.id)
     }
   }
 
