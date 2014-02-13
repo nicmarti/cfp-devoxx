@@ -7,9 +7,6 @@
             @if(proposals.nonEmpty){
             <div class="entry-content">
                 <h3>@Messages("sw.talkType")</h3>
-<div class="panel panel-danger">
-<i class="icon-warning-sign"></i>Talks avec le status "Approved" (et pas "Accepted")
-</div>
                  @proposals.groupBy(_.track).map{case(track:Track, proposalsTrack:List[Proposal])=>
                      <h4>@Messages(track.label)</h4>
                      <ul>
