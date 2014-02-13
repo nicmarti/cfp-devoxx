@@ -61,7 +61,6 @@
                                         <form action="@routes.ApproveOrRefuse.doAcceptOrRefuseTalk()" method="post">
                                             <button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button> <br>
                                             <button name="dec" value="decline" class="btn btn-sm btn-danger"> @Messages("ar.IDecline")</button> <br>
-                                            <button name="dec" value="backup" class="btn btn-sm btn-warning"> @Messages("ar.IBackup")</button>
                                             <input type="hidden" name="cssrf_t" value="@cssrf">
                                             <!-- ne vous amusez pas à passer un id different ici, car je verifie du cote serveur le proprietaire de la soumission ;-) //-->
                                             <input type="hidden" name="proposalId" value="@proposal.id">
