@@ -16,34 +16,35 @@
                     <p><i class="icon-bullhorn"></i> Blog : <a href="@blog" rel="no-follow">@blog</a></p>
                 }
                 @speaker.company.map{cp=>
-                    <p><i class="icon-building"></i> Société : @cp</p>
+                    <p><i class="icon-building"></i> @Messages("sw.company"): @cp</p>
                 }
 
             </div>
             @if(acceptedProposals.nonEmpty){
             <div class="entry-content">
-                <h3>Présentations</h3>
+                <h3>@Messages("sw.proposals")</h3>
 
                 @acceptedProposals.map{proposal:Proposal=>
                     <table>
                         <tbody>
                             <tr>
-                                <th>@Messages("proposal.title")</th><td>@proposal.title</td>
+                                <th>@Messages("sw.proposal.title")</th>
+                                <td>@proposal.title</td>
                             </tr>
                             <tr>
-                                <th>@Messages("proposal.talkType")</th>
+                                <th>@Messages("sw.proposal.talkType")</th>
                                 <td>@Messages(proposal.talkType.label)</td>
                             </tr>
                             <tr>
-                                <th>@Messages("proposal.summary")</th>
+                                <th>@Messages("sw.proposal.summary")</th>
                                 <td>@Html(proposal.summaryAsHtml)</td>
                             </tr>
                             <tr>
-                                <th>@Messages("proposal.track")</th>
+                                <th>@Messages("sw.proposal.track")</th>
                                 <td>@Messages(proposal.track.label)</td>
                             </tr>
                             <tr>
-                                <th>@Messages("proposal.lang")</th>
+                                <th>@Messages("sw.proposal.lang")</th>
                                 <td>@proposal.lang</td>
                             </tr>
                         </tbody>

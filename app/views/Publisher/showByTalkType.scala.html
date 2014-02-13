@@ -1,0 +1,24 @@
+@(proposals:Iterable[Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@views.html.Publisher.devoxxFR2014(Messages(talkType)){
+<section id="container" class="one-column">
+    <div id="content" role="main">
+        <div id="post-5" class="post-5 page type-page status-publish hentry">
+            <h1 class="entry-title">@Messages(talkType)</h1>
+            @if(proposals.nonEmpty){
+            <div class="entry-content">
+                <h3>@Messages("sw.talkType")</h3>
+
+                 @proposals.groupBy(_.track).map{case(track:Track, proposalsTrack:List[Proposal])=>
+                     <p><strong>@Messages(track.label)</strong></p>
+                     <ul>
+                     @proposalsTrack.sortBy(_.title).map{ proposal=>
+                        <li>@proposal.title</li>
+                     }
+                    </ul>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</section>
+}

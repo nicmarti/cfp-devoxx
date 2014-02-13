@@ -53,4 +53,10 @@ object Publisher extends Controller {
         case None=>NotFound("Speaker not found")
       }
   }
+
+  def showByTalkType(talkType:String)=Action{
+    implicit request=>
+      val proposals=ApprovedProposal.allApprovedByTalkType(talkType)
+      Ok(views.html.Publisher.showByTalkType(proposals,talkType))
+  }
 }

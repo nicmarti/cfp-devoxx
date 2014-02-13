@@ -126,14 +126,14 @@ GET         /api/fr14/slots/:confType                          controllers.ApiCo
 GET         /api/fr14/approvedTalks/:confType                  controllers.ApiController.approvedTalks(confType:String)
 POST        /api/fr14/slots/:confType                          controllers.ApiController.saveSlots(confType:String)
 
-GET /backoffice/updateAcceptedSpeakers  controllers.Backoffice.updateAcceptedSpeakers()
+GET         /backoffice/updateAcceptedSpeakers                 controllers.Backoffice.updateAcceptedSpeakers()
 
 # Content Publisher
-GET /devoxxfr2014                       controllers.Publisher.homePublisher()
-GET /devoxxfr2014/                      controllers.Publisher.homePublisher()
-GET /devoxxfr2014/speakers              controllers.Publisher.showAllSpeakers()
-GET /devoxxfr2014/speaker/:name/:uuid   controllers.Publisher.showSpeaker(uuid:String, name:String)
-
+GET         /devoxxfr2014                                      controllers.Publisher.homePublisher()
+GET         /devoxxfr2014/                                     controllers.Publisher.homePublisher()
+GET         /devoxxfr2014/speakers                             controllers.Publisher.showAllSpeakers()
+GET         /devoxxfr2014/speaker/:name/:uuid                  controllers.Publisher.showSpeaker(uuid:String, name:String)
+GET         /devoxxfr2014/talks/:talkType                      controllers.Publisher.showByTalkType(talkType:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                      controllers.Assets.at(path="/public", file)
