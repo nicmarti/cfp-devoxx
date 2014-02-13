@@ -38,7 +38,7 @@ object Publisher extends Controller {
 
   def showAllSpeakers = Action {
     implicit request =>
-      val speakers = Speaker.allSpeakers()
+      val speakers = Speaker.allSpeakersWithAcceptedTerms()
       Ok(views.html.Publisher.showAllSpeakers(speakers))
   }
 
@@ -47,7 +47,7 @@ object Publisher extends Controller {
       val maybeSpeaker=Speaker.findByUUID(uuid)
       maybeSpeaker match {
         case Some(speaker)=>{
-          val acceptedProposals = ApprovedProposal.allTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
           Ok(views.html.Publisher.showSpeaker(speaker,acceptedProposals))
         }
         case None=>NotFound("Speaker not found")
@@ -56,7 +56,19 @@ object Publisher extends Controller {
 
   def showByTalkType(talkType:String)=Action{
     implicit request=>
+      // TODO a changer avant passage prod
       val proposals=ApprovedProposal.allApprovedByTalkType(talkType)
+//      val proposals=ApprovedProposal.allAcceptedByTalkType(talkType)
       Ok(views.html.Publisher.showByTalkType(proposals,talkType))
+  }
+
+  def showDetailsForProposal(proposalId:String, proposalTitle:String)=Action{
+    implicit request=>
+      Proposal.findById(proposalId) match {
+        case None=>NotFound("Proposal not found")
+        case Some(proposal)=>
+          Ok(views.html.Publisher.showProposal(proposal))
+      }
+
   }
 }

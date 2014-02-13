@@ -1,0 +1,46 @@
+@(proposal:Proposal)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@views.html.Publisher.devoxxFR2014(proposal.id+" "+proposal.title){
+<section id="container" class="one-column">
+    <div id="content" role="main">
+        <div id="post-5" class="post-5 page type-page status-publish hentry">
+            <div class="entry-content">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>@Messages("sw.proposal.title")</th>
+                            <td>@proposal.title</td>
+                        </tr>
+                        <tr>
+                            <th>@Messages("sw.proposal.talkType")</th>
+                            <td>@Messages(proposal.talkType.label)</td>
+                        </tr>
+                        <tr>
+                            <th>@Messages("sw.proposal.summary")</th>
+                            <td>@Html(proposal.summaryAsHtml)</td>
+                        </tr>
+                        <tr>
+                            <th>@Messages("sw.proposal.track")</th>
+                            <td>@Messages(proposal.track.label)</td>
+                        </tr>
+                        <tr>
+                            <th>@Messages("sw.proposal.lang")</th>
+                            <td>@proposal.lang</td>
+                        </tr>
+                        <tr>
+                            <th>@Messages("sw.proposal.speaker")</th>
+                            <td>
+                            @proposal.allSpeakerUUIDs.map{uuid=>
+                              @tags.publisher.renderSpeaker(uuid,true)
+                            }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+}

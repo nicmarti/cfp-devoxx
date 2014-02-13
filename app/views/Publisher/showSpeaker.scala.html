@@ -22,7 +22,12 @@
             </div>
             @if(acceptedProposals.nonEmpty){
             <div class="entry-content">
-                <h3>@Messages("sw.proposals")</h3>
+                @if(acceptedProposals.size>1){
+                    <h3>@Messages("sw.proposals")</h3>
+                }else{
+                    <h3>@Messages("sw.proposal")</h3>
+                }
+
 
                 @acceptedProposals.map{proposal:Proposal=>
                     <table>

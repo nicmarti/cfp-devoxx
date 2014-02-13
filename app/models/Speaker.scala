@@ -120,5 +120,14 @@ object Speaker {
       }
   }
 
+  def allSpeakersWithAcceptedTerms()=Redis.pool.withClient{
+    client=>
+      val speakerIDs = client.hkeys("TermsAndConditions")
+      client.hmget("Speaker",speakerIDs).flatMap{
+        json: String =>
+            Json.parse(json).validate[Speaker].fold(invalid=>{ play.Logger.error("Speaker error. "+ZapJson.showError(invalid));None},validSpeaker=>Some(validSpeaker))
+      }
+  }
+
 }
 

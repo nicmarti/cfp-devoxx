@@ -44,7 +44,7 @@
                                     </div>
                                 </div>
                             }
-                          @approvedProposals.map{proposal=>
+                          @approvedProposals.sortBy(_.title).map{proposal=>
                             <div class="panel panel-success">
                                 <div class="panel-heading">
                                     <h3>@proposal.title</h3>
