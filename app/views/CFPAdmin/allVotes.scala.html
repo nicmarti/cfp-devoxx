@@ -12,18 +12,25 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1><i class="icon-bar-chart"></i> @Messages(confType)</h1>
+                @allVotes.size elements
             </div>
 
             <div class="panel-body">
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a>
-| <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
+                        <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i> All</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.UNI.id, None)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.LAB.id, None)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.TIA.id, None)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.CONF.id, None)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.BOF.id, None)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
+                        <a href="@routes.CFPAdmin.allVotes(ProposalType.QUICK.id, None)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a>
+                        | <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
+                        <br>
+                        <i class="icon-filter"></i> Show only:
+                        @Track.allIDs.map{idTrack=>
+                            <a href="@routes.CFPAdmin.allVotes(confType,Some(idTrack))" class="btn btn-default btn-sm">@idTrack - @confType</a>
+                        }
 
                         @if(flash.get("error").isDefined) {
                             <div class="alert alert-danger alert-dismissable">
@@ -40,12 +47,10 @@
                         <span class="label label-success">@totalApproved approved</span> <span class="label label-warning">@totalRemaining remaining</span>
                         <br>
                         <span class="label label-primary">@allVotes.map(_._1).filter(_.lang=="fr").size FR</span> <span class="label label-default">@allVotes.map(_._1).filter(_.lang=="en").size EN</span>
-
-                   </div>
-
+                </div>
 
                 <div class="col-md-12">
-                    <small>All proposals with state set to SUBMITTED</small>
+                    <small>All proposals with state set to SUBMITTED/APPROVED/ACCEPTED/BACKUP</small>
                     <table id="allProposals" class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>

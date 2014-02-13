@@ -49,10 +49,9 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal =>
           ApprovedProposal.approve(proposal)
           Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Approved ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
-
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id,Some(proposal.track.id))).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found"))
+        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
       }
   }
 
@@ -62,9 +61,9 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal =>
           ApprovedProposal.cancelApprove(proposal)
           Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Cancel Approved on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, Some(proposal.track.id))).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes("all")).flashing("error" -> "Talk not found"))
+        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
       }
   }
 

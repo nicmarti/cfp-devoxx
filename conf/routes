@@ -65,7 +65,7 @@ GET         /cfpadmin/leaderboard/reviewerStats                controllers.CFPAd
 GET         /cfpadmin/leaderboard/compute                      controllers.CFPAdmin.doComputeLeaderBoard
 GET         /cfpadmin/myvotes                                  controllers.CFPAdmin.allMyVotes
 GET         /cfpadmin/search                                   controllers.CFPAdmin.search(q:String)
-GET         /cfpadmin/allvotes/:confType                       controllers.CFPAdmin.allVotes(confType:String)
+GET         /cfpadmin/allvotes/:confType                       controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
 GET         /cfpadmin/recompute/allvotes                       controllers.CFPAdmin.doComputeVotesTotal()
 GET         /cfpadmin/allSponsorTalks                          controllers.CFPAdmin.allSponsorTalks
 GET         /cfpadmin/speaker/:uuidSpeaker                     controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)

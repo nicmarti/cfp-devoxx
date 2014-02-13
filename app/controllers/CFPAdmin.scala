@@ -288,20 +288,18 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def allVotes(confType: String) = SecuredAction(IsMemberOf("cfp")) {
+  def allVotes(confType: String, track:Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       val reviews = Review.allVotes()
       val totalApproved = ApprovedProposal.countApproved(confType)
 
-      val newEtag: String = reviews.hashCode() + "_" + totalApproved
+      val newEtag:String = reviews.hashCode()+"_"+totalApproved+"_"+track.getOrElse("")
 
       request.headers.get("If-None-Match") match {
         case Some(eTag) if eTag == newEtag => NotModified
         case other =>
-
           val result = reviews.toList.sortBy(_._2._1).reverse
-
           val allProposalIDs = result.map(_._1)
           val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
 
@@ -317,9 +315,13 @@ object CFPAdmin extends SecureCFPController {
               proposal.state == ProposalState.DELETED
           }
 
-          val listToDisplay = confType match {
+          val listToDisplay1 = confType match {
             case "all" => listOfProposals
             case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
+          }
+          val listToDisplay = track match {
+            case None=>listToDisplay1
+            case Some(trackId)=>listToDisplay1.filter(_._1.track.id==trackId)
           }
 
           val totalRemaining = ApprovedProposal.remainingSlots(confType)
@@ -331,7 +333,7 @@ object CFPAdmin extends SecureCFPController {
   def doComputeVotesTotal() = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
       ZapActor.actor ! ComputeVotesAndScore()
-      Redirect(routes.CFPAdmin.allVotes("all")).flashing("success" -> "Recomputing votes and scores...")
+      Redirect(routes.CFPAdmin.allVotes("conf",None)).flashing("success" -> "Recomputing votes and scores...")
   }
 
   def removeSponsorTalkFlag(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
