@@ -74,6 +74,8 @@ case class DoIndexProposal(proposal: Proposal)
 
 case class DoIndexAllProposals()
 
+case class DoIndexAllReviews()
+
 case class DoIndexSpeaker(speaker: Speaker)
 
 case class DoIndexAllSpeakers()
@@ -105,6 +107,7 @@ class IndexMaster extends ESActor {
     case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
     case DoIndexAllProposals() => doIndexAllProposals()
     case DoIndexAllApproved() => doIndexAllApproved()
+    case DoIndexAllReviews() => doIndexAllReviews()
     case DoIndexAllEvents() => doIndexAllEvents()
     case DoIndexEvent() => doIndexEvent()
     case StopIndex() => stopIndex()
@@ -199,6 +202,38 @@ class IndexMaster extends ESActor {
         sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"accepted\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
         sb.append(Json.toJson(proposal))
+        sb.append("\n")
+    }
+    sb.append("\n")
+
+    ElasticSearch.indexBulk(sb.toString())
+
+    play.Logger.of("application.IndexMaster").debug("Done indexing all proposals")
+  }
+
+  def doIndexAllReviews() {
+    play.Logger.of("application.IndexMaster").debug("Do index all reviews")
+
+    val reviews = models.Review.allVotes()
+
+    val sb = new StringBuilder
+    reviews.foreach {
+      case (proposalId, reviewAndVotes) =>
+        val proposal = Proposal.findById(proposalId).get
+        sb.append("{\"index\":{\"_index\":\"reviews\",\"_type\":\"review\",\"_id\":\"" + proposalId + "\"}}")
+        sb.append("\n")
+        sb.append("{")
+        sb.append("\"totalVoters\": " + reviewAndVotes._2 + ", ")
+        sb.append("\"totalAbstentions\": " + reviewAndVotes._3 + ", ")
+        sb.append("\"average\": " + reviewAndVotes._4 + ", ")
+        sb.append("\"standardDeviation\": " +reviewAndVotes._5 +", ")
+        sb.append("\"median\": " + reviewAndVotes._6 + ",")
+        sb.append("\"title\": \"" + proposal.title + "\",")
+        sb.append("\"track\": \"" + proposal.track.id + "\",")
+        sb.append("\"lang\": \"" + proposal.lang + "\",")
+        sb.append("\"sponsor\": \"" + proposal.sponsorTalk + "\",")
+        sb.append("\"type\": \"" + proposal.talkType.id + "\"")
+        sb.append("}\n")
         sb.append("\n")
     }
     sb.append("\n")
