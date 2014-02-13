@@ -151,4 +151,9 @@ object ApprovedProposal {
      }
   }
 
+  def allTalksForSpeaker(speakerId:String):Iterable[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      Proposal.loadAndParseProposals(client.smembers("ApprovedSpeakers:"+speakerId)).values
+  }
+
 }

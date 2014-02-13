@@ -1,4 +1,4 @@
-@(speaker:Speaker)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @views.html.Publisher.devoxxFR2014(speaker.name.getOrElse("")){
 <section id="container" class="one-column">
     <div id="content" role="main">
@@ -20,9 +20,38 @@
                 }
 
             </div>
+            @if(acceptedProposals.nonEmpty){
             <div class="entry-content">
                 <h3>Présentations</h3>
+
+                @acceptedProposals.map{proposal:Proposal=>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>@Messages("proposal.title")</th><td>@proposal.title</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("proposal.talkType")</th>
+                                <td>@Messages(proposal.talkType.label)</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("proposal.summary")</th>
+                                <td>@Html(proposal.summaryAsHtml)</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("proposal.track")</th>
+                                <td>@Messages(proposal.track.label)</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("proposal.lang")</th>
+                                <td>@proposal.lang</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+
             </div>
+            }
         </div>
     </div>
 </section>

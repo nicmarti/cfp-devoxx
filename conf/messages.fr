@@ -381,3 +381,9 @@ ar.proposalNotFound=Proposition de sujet non trouvée
 ar.choiceRecorded=Votre choix ({1}) pour la proposition {0} a bien été enregistré.
 ar.checkMyProposals=Accepter ou décliner les soumissions approuvées par le comité.
 ar.goBackHome=Retour à l''accueil
+
+proposal.title=Titre
+proposal.talkType=Type de presentation
+proposal.summary=Résumé
+proposal.track=Track
+proposal.lang=Langue

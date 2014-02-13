@@ -348,3 +348,10 @@ ar.proposalNotFound=Proposal not found
 ar.choiceRecorded=Your choice for proposal {0} has been updated to {1}
 ar.checkMyProposals=Accept or decline approved proposals
 ar.goBackHome=Go back to home page
+
+proposal.title=Title
+proposal.talkType=Type of presentation
+proposal.summary=Summary
+proposal.track=Track
+proposal.lang=Lang
+
