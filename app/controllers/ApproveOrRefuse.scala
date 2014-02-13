@@ -49,7 +49,7 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal =>
           ApprovedProposal.approve(proposal)
           Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Approved ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id,Some(proposal.track.id))).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id,None)).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
       }.getOrElse {
         Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
       }
