@@ -112,7 +112,7 @@ object ApproveOrRefuse extends SecureCFPController {
       val allMyProposals = Proposal.allMyProposals(request.webuser.uuid)
       val cssrf=RandomStringUtils.randomAlphanumeric(24)
 
-      val (accepted, rejected) = allMyProposals.partition(p => p.state == ProposalState.SUBMITTED || p.state == ProposalState.APPROVED || p.state == ProposalState.DECLINED || p.state == ProposalState.ACCEPTED || p.state == ProposalState.BACKUP)
+      val (accepted, rejected) = allMyProposals.partition(p =>  p.state == ProposalState.APPROVED || p.state == ProposalState.DECLINED || p.state == ProposalState.ACCEPTED || p.state == ProposalState.BACKUP)
       Ok(views.html.ApproveOrRefuse.acceptOrRefuseTalks(accepted, rejected.filter(_.state == ProposalState.REJECTED), cssrf))
           .withSession(session.+(("CSSRF", Crypt.sha1(cssrf))))
   }
