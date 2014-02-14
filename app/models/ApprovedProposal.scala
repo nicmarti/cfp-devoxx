@@ -70,6 +70,16 @@ object ApprovedProposal {
       client.sismember("Approved:" + talkType, proposalId)
   }
 
+
+  def isRefused(proposal: Proposal): Boolean = {
+    isRefused(proposal.id, proposal.talkType.id)
+  }
+
+  def isRefused(proposalId: String, talkType: String): Boolean = Redis.pool.withClient {
+    client =>
+      client.sismember("Refused:" + talkType, proposalId)
+  }
+
   def remainingSlots(talkType: String): Long = {
     talkType match {
       case ProposalType.UNI.id =>
@@ -103,6 +113,22 @@ object ApprovedProposal {
       tx.exec()
   }
 
+  def refuse(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
+      cancelApprove(proposal)
+      val tx = client.multi()
+      tx.sadd("RefusedById:", proposal.id.toString)
+      tx.sadd("Refused:" + proposal.talkType.id, proposal.id.toString)
+
+      tx.sadd("RefusedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
+      proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("RefusedSpeakers:" + secondarySpeaker, proposal.id.toString))
+      proposal.otherSpeakers.foreach {
+        otherSpeaker: String =>
+          tx.sadd("RefusedSpeakers:" + otherSpeaker, proposal.id.toString)
+      }
+      tx.exec()
+  }
+
   def cancelApprove(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
@@ -123,12 +149,39 @@ object ApprovedProposal {
   }
 
 
+  def cancelRefuse(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
+      val tx = client.multi()
+      tx.srem("RefusedById:", proposal.id.toString)
+      tx.srem("Refused:" + proposal.talkType.id, proposal.id.toString)
+      tx.srem("RefusedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
+
+      proposal.secondarySpeaker.map {
+        secondarySpeaker: String =>
+          tx.srem("RefusedSpeakers:" + secondarySpeaker, proposal.id.toString)
+      }
+
+      proposal.otherSpeakers.foreach {
+        otherSpeaker: String =>
+          tx.srem("RefusedSpeakers:" + otherSpeaker, proposal.id.toString)
+      }
+      tx.exec()
+  }
+
   def allApprovedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers("Approved:" + talkType)
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
+
+    def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.smembers("Refused:" + talkType)
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+      allProposalWithVotes.values.toList
+  }
+
 
   def allApproved(): Set[Proposal] = Redis.pool.withClient {
     implicit client =>

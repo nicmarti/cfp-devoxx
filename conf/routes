@@ -105,8 +105,10 @@ GET         /programbuilder/schedule/:confType                 controllers.Progr
 GET         /programbuilder/deleteCalendars                    controllers.ProgramBuilder.deleteCalendar(calendarId:String)
 
 # ApproveOrRefuse controller
-GET         /preaccept/:proposalId                             controllers.ApproveOrRefuse.doApprove(proposalId:String)
-GET         /cancelPreaccept/:proposalId                       controllers.ApproveOrRefuse.cancelApprove(proposalId:String)
+GET         /ar/preaccept/:proposalId                             controllers.ApproveOrRefuse.doApprove(proposalId:String)
+GET         /ar/refuse/:proposalId                                controllers.ApproveOrRefuse.doRefuse(proposalId:String)
+GET         /ar/cancelPreaccept/:proposalId                       controllers.ApproveOrRefuse.cancelApprove(proposalId:String)
+GET         /ar/cancelPrerefuse/:proposalId                       controllers.ApproveOrRefuse.cancelRefuse(proposalId:String)
 
 GET         /programbuilder/allApproved/:talkType              controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
 GET         /acceptReject/notifyApprove/:talkType              controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)

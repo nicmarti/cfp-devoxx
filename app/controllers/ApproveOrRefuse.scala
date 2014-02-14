@@ -55,6 +55,18 @@ object ApproveOrRefuse extends SecureCFPController {
       }
   }
 
+  def doRefuse(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Proposal.findById(proposalId).map {
+        proposal =>
+          ApprovedProposal.refuse(proposal)
+          Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Refused ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id,None)).flashing("success" -> s"Talk ${proposal.id} has been refused."))
+      }.getOrElse {
+        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
+      }
+  }
+
   def cancelApprove(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
@@ -62,6 +74,18 @@ object ApproveOrRefuse extends SecureCFPController {
           ApprovedProposal.cancelApprove(proposal)
           Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Cancel Approved on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
           Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, Some(proposal.track.id))).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
+      }.getOrElse {
+        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
+      }
+  }
+
+    def cancelRefuse(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Proposal.findById(proposalId).map {
+        proposal =>
+          ApprovedProposal.cancelRefuse(proposal)
+          Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Cancel Refused on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, Some(proposal.track.id))).flashing("success" -> s"Talk ${proposal.id} has been removed from Refused list."))
       }.getOrElse {
         Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
       }
