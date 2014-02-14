@@ -217,7 +217,7 @@ object CallForPaper extends SecureCFPController {
   def editOtherSpeakers(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           if (proposal.mainSpeaker == uuid) {
@@ -247,7 +247,7 @@ object CallForPaper extends SecureCFPController {
   def saveOtherSpeakers(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
@@ -269,7 +269,7 @@ object CallForPaper extends SecureCFPController {
   def deleteProposal(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
           Proposal.delete(uuid, proposalId)
@@ -330,7 +330,7 @@ object CallForPaper extends SecureCFPController {
   def sendMessageToCommitte(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findDraftAndSubmitted(uuid, proposalId)
+      val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state==ProposalState.DELETED)
       maybeProposal match {
         case Some(proposal) => {
           speakerMsg.bindFromRequest.fold(

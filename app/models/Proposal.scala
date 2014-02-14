@@ -364,10 +364,6 @@ object Proposal {
     }
   }
 
-  def findDraftAndSubmitted(uuid: String, proposalId: String): Option[Proposal] = {
-    allMyDraftAndSubmittedProposals(uuid).find(_.id == proposalId)
-  }
-
   def findProposal(uuid:String, proposalId:String):Option[Proposal]={
     allMyProposals(uuid).find(_.id==proposalId)
   }
