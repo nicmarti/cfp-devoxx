@@ -119,6 +119,13 @@
                     @Messages("admin.sp.approved.txt")
                     <br>
                     <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
+                    @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
+                            @if(maybeMyVote.isDefined && maybeMyVote.get.vote==0){
+                                <button name="vote" value="0" class="btn btn-sm btn-warning">Vote 0</button>
+                            }else{
+                                <button name="vote" value="0" class="btn btn-sm btn-default">Vote 0</button>
+                            }
+                    }
                 </div>
             </div>
         }else{
