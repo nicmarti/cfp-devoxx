@@ -110,13 +110,15 @@
                                     </td>
                                     <td>@proposal.lang</td>
                                     <td>
-                                        @if(approved){
-                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel</a>
-                                        }else{
-                                            <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="btn btn-sm btn-success"><i class="icon-check"></i> Approve</a>
+                                        @if(proposal.state==ProposalState.SUBMITTED){
+                                            @if(approved){
+                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel</a>
+                                            }else{
+                                                <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="btn btn-sm btn-success"><i class="icon-check"></i> Approve</a>
+                                            }
                                         }
                                         <br>
-                                        <span class="label label-primary">@proposal.state.code</span>
+                                        <span class="label label-@proposal.state.code">@proposal.state.code</span>
                                     </td>
                                 </tr>
                                 }
