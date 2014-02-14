@@ -113,7 +113,7 @@
                                     <td>
                                         @if(proposal.state==ProposalState.SUBMITTED){
                                             @if(approved){
-                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel accept</a>
+                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel approve</a>
                                             }else{
                                                 @if(refused){
                                                     <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel refuse</a>
