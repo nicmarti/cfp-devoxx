@@ -1,4 +1,4 @@
-@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], worstReviewer: Option[(String, String)], totalByCategories: Map[String, Int], totalSubmittedByType: Map[String, Int], devoxx2013: Map[String, Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], worstReviewer: Option[(String, String)], totalByCategories: Map[String, Int], totalSubmittedByType: Map[String, Int], devoxx2013: Map[String, Int], totalApprovedSpeakers:Long, totalWithTickets:Long,totalWithOneProposal:Long, totalRefusedSpeakers:Long)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Leaderboard") {
     <div class="row">
@@ -14,6 +14,26 @@
                     <div class="col-md-3">
                         <h1>@totalSpeakers</h1>
                         <small><i class="icon-user"></i> speakers</small>
+                    </div>
+
+                    <div class="col-md-3">
+                        <h1>@totalWithOneProposal</h1>
+                        <small><i class="icon-user"></i> proposed a subject</small><br>
+                    </div>
+
+                    <div class="col-md-3">
+                        <h1>@totalApprovedSpeakers</h1>
+                        <small><i class="icon-user"></i> approved speakers</small><br>
+                    </div>
+
+                    <div class="col-md-3">
+                        <h1>@totalRefusedSpeakers</h1>
+                        <small><i class="icon-user"></i> refused speakers</small><br>
+                    </div>
+
+                    <div class="col-md-3">
+                        <h1>@totalWithTickets</h1>
+                        <small><i class="icon-user"></i> with a Devoxx Pass</small><br>
                     </div>
 
                     <div class="col-md-3">

@@ -75,6 +75,30 @@ object Leaderboard {
         case (propType: ProposalType, total: Int) =>
           tx.hset("Leaderboard:totalByType", propType.id, total.toString)
       }
+
+      val allWebusers= Webuser.allCFPAdmin().toSet
+      val totalApprovedSpeakers = ApprovedProposal.allApprovedSpeakerIDs().diff(allWebusers.map(_.uuid)).size
+      tx.set("Leaderboard:totalApprovedSpeakers", totalApprovedSpeakers.toString)
+
+      val totalWithTickets = ApprovedProposal.allApprovedSpeakersWithFreePass().map(_.uuid).diff(allWebusers.map(_.uuid)).size
+      tx.set("Leaderboard:totalWithTickets", totalWithTickets.toString)
+
+      val totalWithOneProposal = Proposal.totalWithOneProposal()
+      tx.set("Leaderboard:totalWithOneProposal", totalWithOneProposal.toString)
+
+    val allCFPAdmin= Webuser.allCFPAdmin().map(w=>w.uuid).toSet
+    val allApprovedIDs= ApprovedProposal.allApprovedSpeakerIDs()
+    val allRejectedIDs= ApprovedProposal.allRefusedSpeakerIDs()
+
+    val refusedSpeakers = allRejectedIDs.diff(allCFPAdmin).diff(allApprovedIDs)
+
+//    val allSpeakers = Speaker.allSpeakers().filter(s=>refusedSpeakers.contains(s.uuid))
+//    println("all refused speakers "+allSpeakers.filter(_.lang==Some("en")).size)
+
+    val totalRefusedSpeakers = refusedSpeakers.size
+    tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
+
+
       tx.exec()
   }
 
@@ -137,5 +161,21 @@ object Leaderboard {
   private def getFromRedis(key: String): Long = Redis.pool.withClient {
     implicit client =>
       client.get(key).map(_.toLong).getOrElse(0L)
+  }
+
+  def totalApprovedSpeakers() ={
+      getFromRedis("Leaderboard:totalApprovedSpeakers")
+  }
+
+  def totalWithTickets() ={
+      getFromRedis("Leaderboard:totalWithTickets")
+  }
+
+  def totalWithOneProposal() ={
+      getFromRedis("Leaderboard:totalWithOneProposal")
+  }
+
+  def totalRefusedSpeakers()={
+    getFromRedis("Leaderboard:totalRefusedSpeakers")
   }
 }

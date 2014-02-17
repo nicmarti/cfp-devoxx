@@ -192,10 +192,6 @@ object ApproveOrRefuse extends SecureCFPController {
       )
   }
 
-  def notifyAllSpeakers() = SecuredAction(IsMemberOf("admin")) {
-    Ok("nothing")
-  }
-
   def markSubmittedNotRefused() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
@@ -207,7 +203,14 @@ object ApproveOrRefuse extends SecureCFPController {
          play.Logger.of("application.ApproveOrRefuse").debug(s"Mark as refused ${proposal.id} / ${proposal.title}")
       }
 
-      //      val speakersAndProposals: Set[(Speaker, Iterable[Proposal])] = ApprovedProposal.allApprovedSpeakers()
+      Redirect(routes.CFPAdmin.index())
+  }
+
+  def updateAllProposalsStatus()=SecuredAction(IsMemberOf("admin")){
+    implicit  request:SecuredRequest[play.api.mvc.AnyContent] =>
+
+    val speakersAndProposals: Set[(Speaker, Iterable[Proposal])] = ApprovedProposal.allApprovedSpeakersAndTalks()
+    Ok("Speakers "+speakersAndProposals.size)
       //
       //      speakersAndProposals.foreach {
       //        case (speaker, proposals) =>
@@ -234,8 +237,6 @@ object ApproveOrRefuse extends SecureCFPController {
       //
       //          speaker.uuid
       //      }
-
-      Ok("Result " + submittedNotRefused.size)
   }
 
 }

@@ -596,4 +596,9 @@ object Proposal {
     implicit client=>
       client.exists(s"Proposals:ByAuthor:$uuid")
   }
+
+  def totalWithOneProposal():Int=Redis.pool.withClient{
+    implicit client=>
+      client.keys("Proposals:ByAuthor:*").size
+  }
 }

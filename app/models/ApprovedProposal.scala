@@ -167,14 +167,23 @@ object ApprovedProposal {
       tx.exec()
   }
 
-  def onlySubmittedRefused():Iterable[Proposal]=Redis.pool.withClient{
-    implicit client=>
+    def allRefusedSpeakerIDs(): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.keys("RefusedSpeakers:*").map {
+        key =>
+          val speakerUUID = key.substring("RefusedSpeakers:".length)
+          speakerUUID
+      }
+  }
+
+  def onlySubmittedRefused(): Iterable[Proposal] = Redis.pool.withClient {
+    implicit client =>
       val proposalIDs = client.sinter(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "RefusedById:")
       Proposal.loadAndParseProposals(proposalIDs).values
   }
 
-  def onlySubmittedNotRefused():Iterable[Proposal]=Redis.pool.withClient{
-    implicit client=>
+  def onlySubmittedNotRefused(): Iterable[Proposal] = Redis.pool.withClient {
+    implicit client =>
       val proposalIDs = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "RefusedById:", "ApprovedById:")
       Proposal.loadAndParseProposals(proposalIDs).values
   }
@@ -186,7 +195,7 @@ object ApprovedProposal {
       allProposalWithVotes.values.toList
   }
 
-    def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
+  def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers("Refused:" + talkType)
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
@@ -206,13 +215,31 @@ object ApprovedProposal {
       finalList
   }
 
-  def allApprovedSpeakers() = Redis.pool.withClient {
+  def allApprovedSpeakersAndTalks() = Redis.pool.withClient {
     implicit client =>
 
       client.keys("ApprovedSpeakers:*").flatMap {
         key =>
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
           for (speaker <- Speaker.findByUUID(speakerUUID)) yield ((speaker, Proposal.loadAndParseProposals(client.smembers(key)).values))
+      }
+  }
+
+  def allApprovedSpeakers() = Redis.pool.withClient {
+    implicit client =>
+      client.keys("ApprovedSpeakers:*").flatMap {
+        key =>
+          val speakerUUID = key.substring("ApprovedSpeakers:".length)
+          for (speaker <- Speaker.findByUUID(speakerUUID)) yield speaker
+      }
+  }
+
+  def allApprovedSpeakerIDs(): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.keys("ApprovedSpeakers:*").map {
+        key =>
+          val speakerUUID = key.substring("ApprovedSpeakers:".length)
+          speakerUUID
       }
   }
 
@@ -228,4 +255,19 @@ object ApprovedProposal {
       allProposalWithVotes.values.filter(_.state == ProposalState.ACCEPTED).toList
   }
 
+
+  def allApprovedSpeakersWithFreePass():Set[Speaker] = Redis.pool.withClient {
+    implicit client =>
+      val allSpeakers = client.keys("ApprovedSpeakers:*").flatMap {
+        key =>
+          val speakerUUID = key.substring("ApprovedSpeakers:".length)
+          for (speaker <- Speaker.findByUUID(speakerUUID)) yield {
+            (speaker,
+              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p=>Proposal.givesSpeakerFreeEntrance(p.talkType))
+            )
+          }
+      }
+      val setOfSpeakers = allSpeakers.filterNot(_._2.isEmpty).map(_._1)
+      setOfSpeakers
+  }
 }
