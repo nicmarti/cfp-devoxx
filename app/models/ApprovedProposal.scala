@@ -148,7 +148,6 @@ object ApprovedProposal {
       tx.exec()
   }
 
-
   def cancelRefuse(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
@@ -166,6 +165,18 @@ object ApprovedProposal {
           tx.srem("RefusedSpeakers:" + otherSpeaker, proposal.id.toString)
       }
       tx.exec()
+  }
+
+  def onlySubmittedRefused():Iterable[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      val proposalIDs = client.sinter(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "RefusedById:")
+      Proposal.loadAndParseProposals(proposalIDs).values
+  }
+
+  def onlySubmittedNotRefused():Iterable[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      val proposalIDs = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "RefusedById:", "ApprovedById:")
+      Proposal.loadAndParseProposals(proposalIDs).values
   }
 
   def allApprovedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
