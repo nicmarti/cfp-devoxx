@@ -1,0 +1,103 @@
+@(toSpeaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])(implicit lang:Lang)
+<small>English version below</small>
+<hr>
+Cher(e) @toSpeaker.name.getOrElse("speaker")
+
+@if(listOfApprovedProposals.size==1){
+  <p>Nous avons le plaisir de vous annoncer qu'une proposition a été retenue pour Devoxx France 2014 !</p>
+  <h3>Proposition acceptée: @listOfApprovedProposals.head.title</h3>
+  <p>Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et
+      conditions de Devoxx France. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter
+      ce sujet.</p>
+  <br>
+  <a href="http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()</a>
+
+  @if(listOfRefusedProposals.size==1){
+  <P>Votre deuxième proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
+  }
+  @if(listOfRefusedProposals.size>1){
+  <P>Cependant, @listOfRefusedProposals.size propositions n'ont pas été retenues, mais nous tenons à vous remercier pour les sujets proposés.</P>
+  }
+  <h3>Comment poser une question ?</h3>
+  <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
+  <a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
+}
+
+@if(listOfApprovedProposals.size>1){
+  <p>Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour Devoxx France 2014 !</p>
+  <h3>Propositions acceptées</h3>
+  @listOfApprovedProposals.map{proposal=>
+     <p>- @proposal.title [<a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]</p>
+  }
+  @if(listOfRefusedProposals.size==1){
+  <P>Une proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
+  }
+  @if(listOfRefusedProposals.size>1){
+  <P>@listOfRefusedProposals.size de vos propositions n'ont pas été retenues, mais nous tenons à vous remercier pour les sujets proposés.</P>
+  }
+  <p>Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et conditions de Devoxx France. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.</p>
+  <br>
+  <a href="http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <h3>Comment poser une question ?</h3>
+  <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
+  <a href="http://cfp.devoxx.fr@routes.CallForPaper.homeForSpeaker()">http://cfp.devoxx.fr@routes.CallForPaper.homeForSpeaker()</a>
+}
+
+@if(listOfApprovedProposals.size==0){
+ <p>Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour Devoxx France 2014.</p>
+ <p>Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 670 propositions de sujets
+    pour 154 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s). Au nom de toute
+    l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le 16 avril à Devoxx France.</p>
+}
+<p>L'équipe de sélection de la conférence Devoxx France</p>
+    <!--************************************* ------->
+<hr>
+Dear @toSpeaker.name.getOrElse("speaker")
+
+@if(listOfApprovedProposals.size==1){
+  <p>We're glad to inform you that your proposal for Devoxx France 2014 has been approved!</p>
+<h3>@listOfApprovedProposals.head.title</h3>
+<h3>What's next?</h3>
+<p>For us to now program your talks, you must accept or decline the general terms and conditions of
+   Devoxx France. You will then be able to confirm that you are still ok to present your session :</p>
+
+  <a href="http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()</a>
+@if(listOfRefusedProposals.size==1){
+  <P>Your other proposal was not approved, however we thank you for this proposal.</P>
+}
+@if(listOfRefusedProposals.size>1){
+  <P>@listOfRefusedProposals.size other proposals were not selected and approved. However, we would like to thank you for your work.</P>
+}
+ <h3>For any question regarding your talk</h3>
+ <p>Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.</p>
+ <a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
+}
+
+@if(listOfApprovedProposals.size>1){
+  <p>We're glad to inform you that several of your proposals have been approved for Devoxx France 2014!</p>
+  <h3>Approved proposals:</h3>
+  @listOfApprovedProposals.map{proposal=>
+    <p>- @proposal.title [<a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">view online</a>]</p>
+  }
+@if(listOfRefusedProposals.size==1){
+  <P>One of your proposal was not approved, mainly because we preferred to select some of your other talks.</P>
+}
+@if(listOfRefusedProposals.size>1){
+  <P>@listOfRefusedProposals.size other proposals were not selected and approved, we preferred to select some of your other talks for our program.</P>
+}
+  <p>For us to now program your talks, you must accept or decline the general terms and conditions of
+      Devoxx France. You will then be able to confirm that you are still ok to present your sessions :</p>
+  <br>
+  <a href="http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <h3>For any question regarding your talks</h3>
+  <p>Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.</p>
+  <a href="http://cfp.devoxx.fr@routes.CallForPaper.homeForSpeaker()">http://cfp.devoxx.fr@routes.CallForPaper.homeForSpeaker()</a>
+}
+
+@if(listOfApprovedProposals.size==0){
+ <p>We're sorry to inform you that none of your proposals has been accepted for Devoxx France 2014.</p>
+ <p>The program committee has received more than 670 proposals for 154 available slots. As you can imagine, the selection of speakers wasn’t an easy task, considering that we received a lot of very interesting propositions for the conference. We would like to thank you for your time and we hope to see you as an attendee in April, at Devoxx France.</p>
+ <p>Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com</p>
+}
+<br>
+<p>The Devoxx France program committee.</p>

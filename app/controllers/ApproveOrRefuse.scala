@@ -38,12 +38,7 @@ import akka.util.Crypt
  */
 object ApproveOrRefuse extends SecureCFPController {
 
-  def acceptHome() = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("todo")
-  }
-
-  def doApprove(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+  def doApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
@@ -55,7 +50,7 @@ object ApproveOrRefuse extends SecureCFPController {
       }
   }
 
-  def doRefuse(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+  def doRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
@@ -67,7 +62,7 @@ object ApproveOrRefuse extends SecureCFPController {
       }
   }
 
-  def cancelApprove(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+  def cancelApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
@@ -79,7 +74,7 @@ object ApproveOrRefuse extends SecureCFPController {
       }
   }
 
-    def cancelRefuse(proposalId: String) = SecuredAction(IsMemberOf("admin")).async {
+    def cancelRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
@@ -207,24 +202,28 @@ object ApproveOrRefuse extends SecureCFPController {
         case (speaker, proposals) =>
           val allProposals = Proposal.allProposalsByAuthor(speaker.uuid).filterNot(_._2.state == ProposalState.DELETED)
           val allProposalsAsSet = allProposals.values.toSet
-          val allAcceptedAsSet = proposals.toSet
-          val allRefusedAsSet = allProposalsAsSet.diff(allAcceptedAsSet)
+          val allApprovedAsSet = proposals.toSet
+          val allRefusedAsSet = allProposalsAsSet.diff(allApprovedAsSet)
 
           // RISKY !!!
-          allRefusedAsSet.map {
+          allRefusedAsSet.foreach {
             proposal =>
              //Proposal.reject(request.webuser.uuid, proposal.id)
-             println("Reject " + proposal.id + " / " + proposal.title)
+             play.Logger.of("ApproveOrRefuse").debug(s"Reject ${proposal.id} / ${proposal.title}")
           }
 
-          allAcceptedAsSet.map{
+          allApprovedAsSet.foreach{
             proposal=>
-             // Proposal.approve(request.webuser.uuid, proposal.id)
-              println("Accepted "+proposal.id + "/" +proposal.title)
+             //Proposal.approve(request.webuser.uuid, proposal.id)
+             play.Logger.of("ApproveOrRefuse").debug(s"Accepted ${proposal.id} / ${proposal.title}")
           }
+
+          notifiers.Mails.sendResultToSpeaker(speaker, allApprovedAsSet, allRefusedAsSet)
+
+          speaker.uuid
       }
 
-      Ok("")
+      Ok("Result ")
   }
 
 }

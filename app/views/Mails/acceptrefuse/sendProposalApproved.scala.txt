@@ -10,25 +10,26 @@ Nous avons le plaisir de vous informer que la présentation [@proposal.title] au
 [@Messages(proposal.talkType.label)] a été approuvée pour Devoxx France 2014 !
 
 Comment valider ou non votre participation ?
---------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
 Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
 présence à Devoxx France comme présentateur.
+
 Merci de valider dès maintenant en suivant ce lien dans votre navigateur :
 
  http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()
 
-Vous serez ensuite amené à accepté ou refusé votre(vos) présentation(s).
+Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).
 
 Comment poser une question ?
---------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.
 
 http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)
 
 L'équipe de sélection de la conférence Devoxx France
 
------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
  Hi,
 

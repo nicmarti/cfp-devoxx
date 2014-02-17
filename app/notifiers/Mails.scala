@@ -27,7 +27,7 @@ package notifiers
 import com.typesafe.plugin._
 import play.api.Play.current
 import org.joda.time.DateTime
-import models.{Webuser, Proposal, Issue}
+import models.{Speaker, Webuser, Proposal, Issue}
 
 /**
  * Sends all emails
@@ -98,7 +98,6 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
-    emailer.addHeader("Message-ID", proposal.id)
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -119,7 +118,6 @@ object Mails {
     emailer.addFrom(fromWebuser.email)
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
-    emailer.addHeader("Message-ID", proposal.id + "_c")
     emailer.send(
       views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString(),
       views.html.Mails.sendMessageToSpeakerCommitte(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()
@@ -132,7 +130,6 @@ object Mails {
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
-    emailer.addHeader("Message-ID", proposal.id)
 
     // Send also a copy of the message to the other speakers
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
@@ -152,7 +149,6 @@ object Mails {
     emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
-    emailer.addHeader("Message-ID", proposal.id + "_c")
     emailer.send(
       views.txt.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString(),
       views.html.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString()
@@ -181,7 +177,6 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"Your proposal has been approved ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
-    emailer.addHeader("Message-ID", proposal.id)
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -202,7 +197,6 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"Your proposal has been refused ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
-    emailer.addHeader("Message-ID", proposal.id)
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -216,7 +210,20 @@ object Mails {
       views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString(),
       views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()
     )
+  }
 
+  def sendResultToSpeaker(speaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])={
+     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+
+    emailer.setSubject(s"Call for Paper Devoxx France 2014")
+    emailer.addFrom("program@devoxx.fr")
+    emailer.addRecipient(speaker.email)
+
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString(),
+      views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()
+    )
   }
 
 
