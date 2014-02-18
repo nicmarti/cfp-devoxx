@@ -111,13 +111,16 @@
                                     </td>
                                     <td>@proposal.lang</td>
                                     <td>
-                                        @if(proposal.state==ProposalState.SUBMITTED){
+                                        @if(proposal.state==ProposalState.SUBMITTED || proposal.state==ProposalState.BACKUP){
                                             @if(approved){
                                                 <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel approve</a>
                                             }else{
                                                 @if(refused){
                                                     <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-remove"></i> Cancel refuse</a>
                                                 }else{
+                                                    @if(proposal.state==ProposalState.BACKUP){
+                                                        <i class="icon-exclamation-sign"></i> Backup
+                                                    }
                                                     <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-sm btn-success"><i class="icon-thumbs-up"></i> Approve</a>
                                                     <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-sm btn-danger"><i class="icon-thumbs-down"></i> Refuse</a>
                                                 }

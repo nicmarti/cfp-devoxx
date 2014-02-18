@@ -327,7 +327,7 @@ object Proposal {
 
   private def loadProposalsByState(uuid: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByState:${proposalState.code}", s"Proposals:ByAuthor:${uuid}")
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:${uuid}", s"Proposals:ByState:${proposalState.code}")
       loadProposalByIDs(allProposalIds, proposalState)
   }
 
@@ -600,5 +600,20 @@ object Proposal {
   def totalWithOneProposal():Int=Redis.pool.withClient{
     implicit client=>
       client.keys("Proposals:ByAuthor:*").size
+  }
+
+  def allApprovedForSpeaker(author:String):List[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      loadProposalsByState(author, ProposalState.APPROVED)
+  }
+
+  def allRejectedForSpeaker(author:String):List[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      loadProposalsByState(author, ProposalState.REJECTED)
+  }
+
+  def allBackupForSpeaker(author:String):List[Proposal]=Redis.pool.withClient{
+    implicit client=>
+      loadProposalsByState(author, ProposalState.BACKUP)
   }
 }

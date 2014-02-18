@@ -116,8 +116,8 @@ GET         /ar/showAcceptTerms                                controllers.Appro
 GET         /ar/accept                                         controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET         /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST        /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
-GET         /ar/markSubmittedNotRefused                        controllers.ApproveOrRefuse.markSubmittedNotRefused()
 GET         /ar/updateAllProposalsStatus                       controllers.ApproveOrRefuse.updateAllProposalsStatus()
+GET         /ar/notifySpeakers                                 controllers.ApproveOrRefuse.notifySpeakers()
 
 GET         /cloudtags                                         controllers.CallForPaper.cloudTags()
 

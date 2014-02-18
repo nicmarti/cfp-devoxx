@@ -215,14 +215,14 @@ object ApprovedProposal {
       finalList
   }
 
-  def allApprovedSpeakersAndTalks() = Redis.pool.withClient {
+  def allApprovedProposalIDs() = Redis.pool.withClient {
     implicit client =>
+      client.smembers("ApprovedById:")
+  }
 
-      client.keys("ApprovedSpeakers:*").flatMap {
-        key =>
-          val speakerUUID = key.substring("ApprovedSpeakers:".length)
-          for (speaker <- Speaker.findByUUID(speakerUUID)) yield ((speaker, Proposal.loadAndParseProposals(client.smembers(key)).values))
-      }
+  def allRefusedProposalIDs()= Redis.pool.withClient {
+    implicit client =>
+      client.smembers("RefusedById:")
   }
 
   def allApprovedSpeakers() = Redis.pool.withClient {
