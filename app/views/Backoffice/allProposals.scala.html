@@ -22,10 +22,10 @@
     <div class="col-md-12">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3>Al Proposals with status Submitted</h3>
+            <h3>Al Proposals</h3>
         </div>
+
         <div class="panel-body">
-            <a href="@routes.Backoffice.allDraftProposals()" class="btn btn-sm btn-primary">See all draft</a>
 
             @if(proposals.nonEmpty){
             <table class="table table-bordered table-strippted">
@@ -34,6 +34,7 @@
                         <th>Proposal id</th>
                         <th>Title</th>
                         <th>Author</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -47,21 +48,28 @@
                             <small>@proposal.title</small>
                         </td>
                         <td>
-                            @tags.renderGravatar(proposal.mainSpeaker)
+                            @tags.renderGravatar(proposal.mainSpeaker,  showPhoto=false)
                         </td>
                         <td>
-                            <small><a href="@routes.Backoffice.moveProposalToDraft(proposal.id)" class="btn btn-sm btn-warning">Draft</a> </small>
-                            <small><a href="@routes.Backoffice.moveSubmittedProposalToTrash(proposal.id)" class="btn btn-sm btn-danger">Trash</a> </small>
+                            <span class="label label-@proposal.state.code">@proposal.state.code</span>
+                        </td>
+                        <td>
+                            <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.SUBMITTED.code)" class="btn btn-sm btn-success">Submitted</a> </small>
+                            <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.APPROVED.code)" class="btn btn-sm btn-default">Approved</a> </small>
+                            <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.ACCEPTED.code)" class="btn btn-sm btn-success">Accepted</a> </small>
+                            <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.BACKUP.code)" class="btn btn-sm btn-warning">Backup</a> </small>
+                            <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.DECLINED.code)" class="btn btn-sm btn-primary">Declined</a> </small>
+                            <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.REJECTED.code)" class="btn btn-sm btn-danger">Rejected</a> </small>
                         </td>
                     </tr>
                 }
                 </tbody>
             </table>
             }else{
-                <P>There is no proposal with status submitted</P>
+                <P>There is no proposal with status draft</P>
             }
         </div>
-        </div>
+    </div>
     </div>
 </div>
 }

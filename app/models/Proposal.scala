@@ -92,6 +92,20 @@ object ProposalState {
   )
 
   val allAsCode = all.map(_.code)
+
+  def parse(state: String): ProposalState = {
+    state match {
+        case "draft"=>DRAFT
+        case "submitted"=>SUBMITTED
+        case "deleted"=>DELETED
+        case "approved"=>APPROVED
+        case "rejected"=>REJECTED
+        case "accepted"=>ACCEPTED
+        case "declined"=>DECLINED
+        case "backup"=> BACKUP
+        case other=>UNKNOWN
+    }
+  }
 }
 
 
@@ -262,7 +276,7 @@ object Proposal {
 
   }
 
-  private def changeProposalState(uuid: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
+  def changeProposalState(uuid: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
     client =>
     // Same kind of operation for the proposalState
       val maybeExistingState = for (state <- ProposalState.allAsCode if client.sismember("Proposals:ByState:" + state, proposalId)) yield state
@@ -566,7 +580,9 @@ object Proposal {
     implicit client =>
       client.hvals("Proposals").map {
         json =>
-          Json.parse(json).as[Proposal]
+          val proposal=Json.parse(json).as[Proposal]
+          val proposalState = findProposalState(proposal.id)
+          proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
       }
   }
 

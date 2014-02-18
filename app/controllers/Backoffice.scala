@@ -45,55 +45,17 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
   }
 
-  def allDraftProposals() = SecuredAction(IsMemberOf("admin")) {
+  def allProposals() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val proposals = Proposal.allDrafts()
-      Ok(views.html.Backoffice.allDraftProposals(proposals))
+      val proposals = Proposal.allProposals().take(5)
+      Ok(views.html.Backoffice.allProposals(proposals))
   }
 
-  def allSubmittedProposals() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      val proposals = Proposal.allSubmitted()
-      Ok(views.html.Backoffice.allSubmittedProposals(proposals))
-  }
-
-  def moveProposalToTrash(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+  def changeProposalState(proposalId: String, state:String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val uuid = request.webuser.uuid
-      Proposal.delete(uuid, proposalId)
-      val undoDelete = routes.Backoffice.moveProposalToDraft(proposalId).url
-      Redirect(routes.Backoffice.allDraftProposals()).flashing("success" -> s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
-  }
-
-  def moveSubmittedProposalToTrash(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      Proposal.delete(uuid, proposalId)
-      val undoDelete = routes.Backoffice.moveProposalToDraft(proposalId).url
-      Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success" -> s"Deleted Proposal. <a href='$undoDelete'>Undo delete</a>")
-  }
-
-  def moveProposalToDraft(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      Proposal.draft(uuid, proposalId)
-      Redirect(routes.Backoffice.allSubmittedProposals()).flashing("success" -> s"Undeleted proposal ${proposalId}")
-  }
-
-  def moveProposalToSubmit(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      Proposal.submit(uuid, proposalId)
-      val undoSubmit = routes.Backoffice.moveProposalToDraft(proposalId).url
-      Redirect(routes.Backoffice.allDraftProposals()).flashing("success" -> s"Proposal ${proposalId} was submitted. <a href='$undoSubmit'>Cancel this submission?</a>")
-  }
-
-  def sendReminderToSpeakersForDraft() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-    // Send a message to an Actor
-      ZapActor.actor ! DraftReminder()
-      // Then redirect
-      Redirect(routes.Backoffice.allDraftProposals()).flashing("success" -> "An email will be sent to Speakers with Draft proposal")
+      Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
+      Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to "+state))
   }
 
   val formSecu = Form("secu" -> nonEmptyText())
@@ -102,7 +64,7 @@ object Backoffice extends SecureCFPController {
     implicit request =>
       val uuid = request.webuser.uuid
       if (Webuser.isMember(speakerUUIDToDelete, "cfp") || Webuser.isMember(speakerUUIDToDelete, "admin")) {
-        Redirect(routes.Backoffice.allDraftProposals()).flashing("error" -> s"We cannot delete CFP admin user...")
+        Redirect(routes.CFPAdmin.index()).flashing("error" -> s"We cannot delete CFP admin user...")
       } else {
         formSecu.bindFromRequest.fold(invalid => {
           Redirect(routes.CFPAdmin.index()).flashing("error" -> "You did not enter DEL... are you drunk?")

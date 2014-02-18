@@ -80,13 +80,9 @@ GET         /favicon.ico                                         controllers.Ass
 
 GET         /admin                                               controllers.Backoffice.homeBackoffice()
 GET         /admin/webusers/switch                               controllers.Backoffice.switchCFPAdmin(uuid:String)
-GET         /admin/proposals/draft                               controllers.Backoffice.allDraftProposals()
-GET         /admin/proposals/submitted                           controllers.Backoffice.allSubmittedProposals()
-GET         /admin/proposals/moveSubmit                          controllers.Backoffice.moveProposalToSubmit(proposalId:String)
-GET         /admin/proposals/moveTrash                           controllers.Backoffice.moveProposalToTrash(proposalId:String)
-GET         /admin/proposals/submitted/moveTrash                 controllers.Backoffice.moveSubmittedProposalToTrash(proposalId:String)
-GET         /admin/proposals/moveDraft                           controllers.Backoffice.moveProposalToDraft(proposalId:String)
-GET         /admin/draftReminder                                 controllers.Backoffice.sendReminderToSpeakersForDraft()
+GET         /admin/proposals/all                                 controllers.Backoffice.allProposals()
+GET         /admin/proposals/changeState/:proposalId             controllers.Backoffice.changeProposalState(proposalId:String,state:String)
+
 POST        /admin/deleteSpeaker/:speakerUUIDToDelete            controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
 GET         /admin/cleanUpVotesIfUserWasDeleted                  controllers.Backoffice.cleanUpVotesIfUserWasDeleted
 GET         /admin/deleteAllVotes                                controllers.Backoffice.deleteVotesForPropal(proposalId:String)
@@ -130,14 +126,13 @@ POST        /api/fr14/slots/:confType                            controllers.Api
 GET         /backoffice/updateAcceptedSpeakers                   controllers.Backoffice.updateAcceptedSpeakers()
 
 # Content Publisher
-GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
-GET         /devoxxfr2014/                                       controllers.Publisher.homePublisher()
 GET         /devoxxfr2014/speakers                               controllers.Publisher.showAllSpeakers()
-GET         /devoxxfr2014/speaker/:uuid/:name                    controllers.Publisher.showSpeaker(uuid:String, name:String)
 GET         /devoxxfr2014/speaker/:uuid                          controllers.Publisher.showSpeaker(uuid:String, name:String="")
+GET         /devoxxfr2014/speaker/:uuid/:name                    controllers.Publisher.showSpeaker(uuid:String, name:String)
 GET         /devoxxfr2014/talks/:talkType                        controllers.Publisher.showByTalkType(talkType:String)
-GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET         /devoxxfr2014/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
+GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                        controllers.Assets.at(path="/public", file)
