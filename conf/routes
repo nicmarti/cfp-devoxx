@@ -117,9 +117,6 @@ GET         /ar/accept                                           controllers.App
 GET         /ar/acceptOrRefuseTalks                              controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST        /ar/acceptOrRefuseTalks                              controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
 
-GET         /ar/updateDraft                                      controllers.ApproveOrRefuse.updateDraft()
-
-
 GET         /cloudtags                                           controllers.CallForPaper.cloudTags()
 
 # Special access for Alexis MP
