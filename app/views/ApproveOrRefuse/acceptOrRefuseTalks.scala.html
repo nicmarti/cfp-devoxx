@@ -59,7 +59,12 @@
                                     <div class="btn-group">
                                         <p>@Messages("ar.pleaseSelect")</p>
                                         <form action="@routes.ApproveOrRefuse.doAcceptOrRefuseTalk()" method="post">
+                                            @if(proposal.state!=ProposalState.BACKUP){
                                             <button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button> <br>
+                                            }else{
+                                                <p>This is a <span class="label label-warning">BACKUP</span> talk. We will notify you if it is approved at a later time.</p>
+                                                <p>However you can decline if you don't want to keep this talk as a backup</p>
+                                            }
                                             <button name="dec" value="decline" class="btn btn-sm btn-danger"> @Messages("ar.IDecline")</button> <br>
                                             <input type="hidden" name="cssrf_t" value="@cssrf">
                                             <!-- ne vous amusez pas à passer un id different ici, car je verifie du cote serveur le proprietaire de la soumission ;-) //-->

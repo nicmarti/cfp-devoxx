@@ -199,7 +199,14 @@ object ApproveOrRefuse extends SecureCFPController {
 
       val approvedIDs = ApprovedProposal.allApprovedProposalIDs()
       val refusedIDs = ApprovedProposal.allRefusedProposalIDs()
-      val allProposalIDsSubmitted = Proposal.allProposalIDsSubmitted
+
+      val allProposalIDs=Proposal.allProposalIDsNotDeleted
+      val allBackups = allProposalIDs.diff(approvedIDs).diff(refusedIDs)
+
+      allBackups.foreach {
+        proposalId: String =>
+          Proposal.backup(request.webuser.uuid, proposalId)
+      }
 
       approvedIDs.foreach {
         proposalId: String =>
@@ -211,12 +218,9 @@ object ApproveOrRefuse extends SecureCFPController {
           Proposal.reject(request.webuser.uuid, proposalId)
       }
 
-      allProposalIDsSubmitted.foreach {
-        proposalId: String =>
-          Proposal.backup(request.webuser.uuid, proposalId)
-      }
 
-      Ok("allProposalIDsSubmitted " + allProposalIDsSubmitted.size)
+
+      Ok("allProposalIDsSubmitted " )
   }
 
   def notifySpeakers() = SecuredAction(IsMemberOf("admin")) {
