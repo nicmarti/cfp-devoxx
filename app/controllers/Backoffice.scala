@@ -47,7 +47,7 @@ object Backoffice extends SecureCFPController {
 
   def allProposals() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val proposals = Proposal.allProposals().take(5)
+      val proposals = Proposal.allProposals().sortBy(_.state.code)
       Ok(views.html.Backoffice.allProposals(proposals))
   }
 
