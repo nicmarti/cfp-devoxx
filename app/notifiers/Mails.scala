@@ -133,8 +133,9 @@ object Mails {
 
     // Send also a copy of the message to the other speakers
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val mainSpeaker = Webuser.getEmailFromUUID(proposal.mainSpeaker)
     val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val listOfEmails = Some(proposal.mainSpeaker).toList ++ maybeOtherEmails ++ maybeSecondSpeaker.toList
+    val listOfEmails = mainSpeaker ++ maybeOtherEmails ++ maybeSecondSpeaker.toList
     emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
 
     emailer.send(

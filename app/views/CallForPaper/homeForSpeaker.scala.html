@@ -127,7 +127,8 @@
                  </div>
              }
 
-        
+            <a href="@routes.ApproveOrRefuse.showAcceptTerms()" class="btn btn-primary">@Messages("ar.checkMyProposals")</a>
+
             @if(myProposals.isEmpty) {
                 <div class="info">
                 @Html(Messages("no.proposal"))
