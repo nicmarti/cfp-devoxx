@@ -48,12 +48,22 @@
                                 <td><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></td>
                             </tr>
                             <tr>
-                                <th>@Messages("sw.proposal.summary")</th>
-                                <td>@Html(proposal.summaryAsHtml)</td>
-                            </tr>
-                            <tr>
                                 <th>@Messages("sw.proposal.track")</th>
                                 <td>@Messages(proposal.track.label)</td>
+                            </tr>
+                            @if(proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).nonEmpty){
+                             <tr>
+                                <th>@Messages("sw.proposal.presentedWith")</th>
+                                <td>
+                                    @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
+                                     @tags.publisher.renderSpeaker(uuid,true)
+                                    }
+                                </td>
+                            </tr>
+                            }
+                            <tr>
+                                <th>@Messages("sw.proposal.summary")</th>
+                                <td>@Html(proposal.summaryAsHtml)</td>
                             </tr>
                             <tr>
                                 <th>@Messages("sw.proposal.lang")</th>

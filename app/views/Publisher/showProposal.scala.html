@@ -10,7 +10,7 @@
                     <tbody>
                         <tr>
                             <th>@Messages("sw.proposal.title")</th>
-                            <td>@proposal.title</td>
+                            <td><h3>@proposal.title</h3></td>
                         </tr>
                         <tr>
                             <th>@Messages("sw.proposal.talkType")</th>
@@ -18,14 +18,15 @@
                                 <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.label)</a>
                             </td>
                         </tr>
+                         <tr>
+                            <th>@Messages("sw.proposal.track")</th>
+                            <td>@Messages(proposal.track.label)</td>
+                        </tr>
                         <tr>
                             <th>@Messages("sw.proposal.summary")</th>
                             <td>@Html(proposal.summaryAsHtml)</td>
                         </tr>
-                        <tr>
-                            <th>@Messages("sw.proposal.track")</th>
-                            <td>@Messages(proposal.track.label)</td>
-                        </tr>
+
                         <tr>
                             <th>@Messages("sw.proposal.lang")</th>
                             <td>@proposal.lang</td>
