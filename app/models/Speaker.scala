@@ -37,13 +37,13 @@ import org.joda.time.DateTime
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(uuid:String, email: String, name:Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
+case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String])
 
 object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(email: String, name:String, bio: String, lang: Option[String], twitter: Option[String],
+  def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
     Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog)
   }
@@ -54,38 +54,41 @@ object Speaker {
 
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
-      Cache.remove("speaker:uuid:"+speaker.uuid)
+      Cache.remove("speaker:uuid:" + speaker.uuid)
       val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", speaker.uuid, jsonSpeaker)
   }
 
   def update(uuid: String, speaker: Speaker) = Redis.pool.withClient {
     client =>
-      Cache.remove("speaker:uuid:"+uuid)
-      val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid=uuid)))
+      Cache.remove("speaker:uuid:" + uuid)
+      val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid = uuid)))
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
-  def updateName(uuid:String, newName:String) = {
-    Cache.remove("speaker:uuid:"+uuid)
-    findByUUID(uuid).map{ speaker=>
-      Speaker.update(uuid, speaker.copy(name=Option(newName)))
+  def updateName(uuid: String, newName: String) = {
+    Cache.remove("speaker:uuid:" + uuid)
+    findByUUID(uuid).map {
+      speaker =>
+        Speaker.update(uuid, speaker.copy(name = Option(newName)))
     }
   }
 
   def findByUUID(uuid: String): Option[Speaker] = Redis.pool.withClient {
     client =>
-      Cache.getOrElse[Option[Speaker]]("speaker:uuid:"+uuid,3600){
+      Cache.getOrElse[Option[Speaker]]("speaker:uuid:" + uuid, 3600) {
         client.hget("Speaker", uuid).flatMap {
           json: String =>
-            Json.parse(json).validate[Speaker].fold(invalid=>{ play.Logger.error("Speaker error. "+ZapJson.showError(invalid));None},validSpeaker=>Some(validSpeaker))
+            Json.parse(json).validate[Speaker].fold(invalid => {
+              play.Logger.error("Speaker error. " + ZapJson.showError(invalid)); None
+            }, validSpeaker => Some(validSpeaker))
         }
       }
   }
 
   def delete(uuid: String) = Redis.pool.withClient {
     client =>
-      Cache.remove("speaker:uuid:"+uuid)
+      Cache.remove("speaker:uuid:" + uuid)
       client.hdel("Speaker", uuid)
   }
 
@@ -98,34 +101,41 @@ object Speaker {
       }
   }
 
-  def countAll():Long = Redis.pool.withClient{
-    client=>
+  def countAll(): Long = Redis.pool.withClient {
+    client =>
       client.hlen("Speaker")
   }
 
-  def needsToAccept(speakerId:String)=Redis.pool.withClient{
-    client=>
-      client.hexists("TermsAndConditions",speakerId)==false
+  def needsToAccept(speakerId: String) = Redis.pool.withClient {
+    client =>
+      client.hexists("TermsAndConditions", speakerId) == false
   }
 
-  def acceptTerms(speakerId:String)=Redis.pool.withClient{
-    client=>
-      client.hset("TermsAndConditions",speakerId, new Instant().getMillis.toString)
+  def acceptTerms(speakerId: String) = Redis.pool.withClient {
+    client =>
+      Cache.remove("allSpeakersWithAcceptedTerms")
+      client.hset("TermsAndConditions", speakerId, new Instant().getMillis.toString)
   }
 
-  def getAcceptedDate(speakerId:String):Option[DateTime]=Redis.pool.withClient{
-    client=>
-      client.hget("TermsAndConditions", speakerId).map{dateStr:String=>
-        new org.joda.time.Instant(dateStr).toDateTime
+  def getAcceptedDate(speakerId: String): Option[DateTime] = Redis.pool.withClient {
+    client =>
+      client.hget("TermsAndConditions", speakerId).map {
+        dateStr: String =>
+          new org.joda.time.Instant(dateStr).toDateTime
       }
   }
 
-  def allSpeakersWithAcceptedTerms()=Redis.pool.withClient{
-    client=>
-      val speakerIDs = client.hkeys("TermsAndConditions")
-      client.hmget("Speaker",speakerIDs).flatMap{
-        json: String =>
-            Json.parse(json).validate[Speaker].fold(invalid=>{ play.Logger.error("Speaker error. "+ZapJson.showError(invalid));None},validSpeaker=>Some(validSpeaker))
+  def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
+    client =>
+      Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 3600) {
+        val speakerIDs = client.hkeys("TermsAndConditions").filter(uuid => Proposal.hasOneAcceptedOrApprovedProposal(uuid))
+        val allSpeakers = client.hmget("Speaker", speakerIDs).flatMap {
+          json: String =>
+            Json.parse(json).validate[Speaker].fold(invalid => {
+              play.Logger.error("Speaker error. " + ZapJson.showError(invalid)); None
+            }, validSpeaker => Some(validSpeaker))
+        }
+        allSpeakers
       }
   }
 

@@ -25,6 +25,7 @@ package controllers
 
 import models._
 import play.api.mvc._
+import akka.util.Crypt
 
 /**
  * Simple content publisher
@@ -33,13 +34,25 @@ import play.api.mvc._
 object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
-      Ok(views.html.Publisher.homePublisher())
+      val result=views.html.Publisher.homePublisher()
+      val etag = Crypt.md5(result.toString()).toString
+      val maybeETag = request.headers.get("If-None-Match")
+
+      maybeETag match {
+        case Some(oldEtag) if oldEtag == etag => NotModified
+        case other=>Ok(result).withHeaders("ETag" -> etag)
+      }
   }
 
   def showAllSpeakers = Action {
     implicit request =>
       val speakers = Speaker.allSpeakersWithAcceptedTerms()
-      Ok(views.html.Publisher.showAllSpeakers(speakers))
+      val etag = speakers.hashCode().toString
+      val maybeETag = request.headers.get("If-None-Match")
+      maybeETag match {
+        case Some(oldEtag) if oldEtag == etag => NotModified
+        case other => Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders("ETag" -> etag)
+      }
   }
 
   def showSpeaker(uuid: String, name: String) = Action {

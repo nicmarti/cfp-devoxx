@@ -639,4 +639,20 @@ object Proposal {
       loadProposalByIDs(allProposalIds, ProposalState.ACCEPTED).filter(_.talkType.id==talkType)
   }
 
+  def hasOneAcceptedOrApprovedProposal(speakerUUID:String):Boolean=Redis.pool.withClient{
+    implicit client=>
+      val allAcceptedAndApproved = client.sunion(s"Proposals:ByState:${ProposalState.ACCEPTED.code}", s"Proposals:ByState:${ProposalState.APPROVED.code}")
+      val proposals = client.hmget("Proposals", allAcceptedAndApproved.toList.toSeq:_*).flatMap {
+        json: String =>
+          Json.parse(json).asOpt[Proposal]
+      }
+      proposals.exists{p=>
+        p.mainSpeaker==speakerUUID ||
+        p.secondarySpeaker==Option(speakerUUID) ||
+        p.otherSpeakers.contains(speakerUUID)
+      }
+
+
+  }
+
 }

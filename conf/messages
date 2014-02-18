@@ -371,6 +371,7 @@ key=Keynote
 other=Other format
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
+
 sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
@@ -380,3 +381,9 @@ sw.all.lab=All hand''s on labs
 sw.all.quick=All quickies
 sw.all.bof=All BOFs
 sw.all.tia=All tools in Action
+sw.speakers=Speakers
+sw.intro=The agenda is published every day, starting 18th of February. Schedule will be available later in March.
+sw.programme=Agenda
+sw.presentations=Talks
+sw.events=Special events
+sw.allSpeakers=List of speakers that accepted Terms & Conditions.

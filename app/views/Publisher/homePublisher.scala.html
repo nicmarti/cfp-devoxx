@@ -3,14 +3,15 @@
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <h1 class="entry-title">Programme</h1>
+            <h1 class="entry-title">@Messages("sw.programme")</h1>
             <div class="entry-content">
-                <p>Le contenu des conférences est disponible progressivement à partir du 17 février. La plannification sera disponible en mars.</p>
 
-                <h2>Speakers</h2>
+                <p>@Messages("sw.intro")</p>
+
+                <h2>@Messages("sw.speakers")</h2>
                 <p><a href="@routes.Publisher.showAllSpeakers()" title="Show all speakers">Voir tous les orateurs</a></p>
 
-                <h2>Présentations</h2>
+                <h2>@Messages("sw.presentations")</h2>
                 <ul>
                     <li><a href="@routes.Publisher.showByTalkType(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
                     <li><a href="@routes.Publisher.showByTalkType(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
@@ -22,7 +23,7 @@
                 <h2>Keynotes</h2>
                 <p>TBA</p>
 
-                <h2>Evénements spéciaux</h2>
+                <h2>@Messages("sw.events")</h2>
                 <ul>
                     <li>Devoxx4Kids</li>
                     <li>HackerGarten</li>
