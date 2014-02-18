@@ -403,3 +403,5 @@ other=Autres formats de conférence
 sw.details=Voir les détails
 sw.proposal.speaker=Présenté par
 admin.btn.changeState=Changer le status d''un Talk
+sw.talkType.warn=Liste des sujets approuvés par le comité et confirmés par le présentateur
+sw.showDetails=Voir le sujet

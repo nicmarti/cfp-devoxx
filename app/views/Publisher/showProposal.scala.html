@@ -13,7 +13,9 @@
                         </tr>
                         <tr>
                             <th>@Messages("sw.proposal.talkType")</th>
-                            <td>@Messages(proposal.talkType.label)</td>
+                            <td>
+                                <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.label)</a>
+                            </td>
                         </tr>
                         <tr>
                             <th>@Messages("sw.proposal.summary")</th>

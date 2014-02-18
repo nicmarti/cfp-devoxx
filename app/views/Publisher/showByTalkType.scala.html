@@ -7,6 +7,7 @@
             @if(proposals.nonEmpty){
             <div class="entry-content">
                 <h3>@Messages("sw.talkType")</h3>
+                <small>@Messages("sw.talkType.warn")</small>
                  @proposals.groupBy(_.track).map{case(track:Track, proposalsTrack:List[Proposal])=>
                      <h4>@Messages(track.label)</h4>
                      <ul>

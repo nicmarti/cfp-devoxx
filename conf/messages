@@ -371,3 +371,5 @@ key=Keynote
 other=Other format
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
+sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
+sw.showDetails=See details
