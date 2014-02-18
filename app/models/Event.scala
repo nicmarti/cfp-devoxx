@@ -94,16 +94,16 @@ object Event {
 
   def speakerNotified(speaker:Speaker, allApproved:Set[Proposal], allRejected:Set[Proposal], allBackups:Set[Proposal])=Redis.pool.withClient{
     client=>
-      client.sadd("NotifiedSpeakers",speaker.uuid)
+      client.sadd("NotifiedSpeakers2",speaker.uuid)
       // Pas de backup et rien d'approuvé
       if(allApproved.isEmpty && allBackups.isEmpty && allRejected.nonEmpty){
-        client.sadd("Notified:RefusedSpeakers",speaker.uuid)
+        client.sadd("Notified:RefusedSpeakers2",speaker.uuid)
       }
       if(allApproved.nonEmpty){
-        client.sadd("Notified:ApprovedSpeakers",speaker.uuid)
+        client.sadd("Notified:ApprovedSpeakers2",speaker.uuid)
       }
       if(allApproved.isEmpty && allBackups.nonEmpty){
-        client.sadd("Notified:BackupSpeakers",speaker.uuid)
+        client.sadd("Notified:BackupSpeakers2",speaker.uuid)
       }
   }
 }
