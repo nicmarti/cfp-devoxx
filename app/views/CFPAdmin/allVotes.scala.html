@@ -43,8 +43,10 @@
                                 @flash.get("success").get
                             </div>
                         }
-                       <br>
-                        <span class="label label-success">@totalApproved approved</span> <span class="label label-warning">@totalRemaining remaining</span>
+                        <br>
+                        @defining(allVotes.filter(_._1.state==ProposalState.DECLINED).size){declinedTotal=>
+                        <span class="label label-success">@totalApproved approved</span> <span class="label label-declined">- @declinedTotal declined</span> <span class="label label-warning">= @(totalRemaining+declinedTotal) remaining</span>
+                        }
                         <br>
                         <span class="label label-primary">@allVotes.map(_._1).filter(_.lang=="fr").size FR</span> <span class="label label-default">@allVotes.map(_._1).filter(_.lang=="en").size EN</span>
                 </div>
