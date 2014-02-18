@@ -616,4 +616,11 @@ object Proposal {
     implicit client=>
       loadProposalsByState(author, ProposalState.BACKUP)
   }
+
+  def allAcceptedByTalkType(talkType:String):List[Proposal]= Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.smembers(s"Proposals:ByState:${talkType}")
+      loadProposalByIDs(allProposalIds, ProposalState.ACCEPTED).filter(_.talkType==ProposalType.parse(talkType))
+  }
+
 }

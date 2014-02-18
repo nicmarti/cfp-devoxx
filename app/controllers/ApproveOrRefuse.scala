@@ -194,61 +194,61 @@ object ApproveOrRefuse extends SecureCFPController {
   }
 
 
-  def updateAllProposalsStatus() = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      val approvedIDs = ApprovedProposal.allApprovedProposalIDs()
-      val refusedIDs = ApprovedProposal.allRefusedProposalIDs()
-
-      val allProposalIDs=Proposal.allProposalIDsNotDeleted
-      val allBackups = allProposalIDs.diff(approvedIDs).diff(refusedIDs)
-
-      allBackups.foreach {
-        proposalId: String =>
-          Proposal.backup(request.webuser.uuid, proposalId)
-      }
-
-      approvedIDs.foreach {
-        proposalId: String =>
-          Proposal.approve(request.webuser.uuid, proposalId)
-      }
-
-      refusedIDs.foreach {
-        proposalId: String =>
-          Proposal.reject(request.webuser.uuid, proposalId)
-      }
-
-
-
-      Ok("allProposalIDsSubmitted " )
-  }
-
-  def notifySpeakers() = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      val speakersWithProposals = Speaker.allSpeakers().filter(s => Proposal.hasOneProposal(s.uuid))
-      speakersWithProposals.foreach {
-        speaker =>
-          val allApproved = Proposal.allApprovedForSpeaker(speaker.uuid).toSet
-          val allRejected = Proposal.allRejectedForSpeaker(speaker.uuid).toSet
-          val allBackups = Proposal.allBackupForSpeaker(speaker.uuid).toSet
-          if (allApproved.nonEmpty || allRejected.nonEmpty) {
-            if (allApproved.isEmpty && allBackups.nonEmpty) {
-              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-            } else {
-              Event.speakerNotified(speaker, allApproved, allRejected, allBackups)
-              Mails.sendResultToSpeaker(speaker,allApproved,allRejected)
-            }
-          } else {
-            if (allBackups.isEmpty) {
-              play.Logger.of("application.ApproveOrRefuse").error("No approved/refused for speaker " + speaker.name.get + " " + speaker.uuid)
-            } else {
-              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-            }
-          }
-      }
-
-      Ok("Speakers with proposals " + speakersWithProposals.size)
-  }
+//  def updateAllProposalsStatus() = SecuredAction(IsMemberOf("admin")) {
+//    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+//
+//      val approvedIDs = ApprovedProposal.allApprovedProposalIDs()
+//      val refusedIDs = ApprovedProposal.allRefusedProposalIDs()
+//
+//      val allProposalIDs=Proposal.allProposalIDsNotDeleted
+//      val allBackups = allProposalIDs.diff(approvedIDs).diff(refusedIDs)
+//
+//      allBackups.foreach {
+//        proposalId: String =>
+//          Proposal.backup(request.webuser.uuid, proposalId)
+//      }
+//
+//      approvedIDs.foreach {
+//        proposalId: String =>
+//          Proposal.approve(request.webuser.uuid, proposalId)
+//      }
+//
+//      refusedIDs.foreach {
+//        proposalId: String =>
+//          Proposal.reject(request.webuser.uuid, proposalId)
+//      }
+//
+//
+//
+//      Ok("allProposalIDsSubmitted " )
+//  }
+//
+//  def notifySpeakers() = SecuredAction(IsMemberOf("admin")) {
+//    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+//
+//      val speakersWithProposals = Speaker.allSpeakers().filter(s => Proposal.hasOneProposal(s.uuid))
+//      speakersWithProposals.foreach {
+//        speaker =>
+//          val allApproved = Proposal.allApprovedForSpeaker(speaker.uuid).toSet
+//          val allRejected = Proposal.allRejectedForSpeaker(speaker.uuid).toSet
+//          val allBackups = Proposal.allBackupForSpeaker(speaker.uuid).toSet
+//          if (allApproved.nonEmpty || allRejected.nonEmpty) {
+//            if (allApproved.isEmpty && allBackups.nonEmpty) {
+//              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
+//            } else {
+//              Event.speakerNotified(speaker, allApproved, allRejected, allBackups)
+//              Mails.sendResultToSpeaker(speaker,allApproved,allRejected)
+//            }
+//          } else {
+//            if (allBackups.isEmpty) {
+//              play.Logger.of("application.ApproveOrRefuse").error("No approved/refused for speaker " + speaker.name.get + " " + speaker.uuid)
+//            } else {
+//              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
+//            }
+//          }
+//      }
+//
+//      Ok("Speakers with proposals " + speakersWithProposals.size)
+//  }
 }
 
