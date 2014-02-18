@@ -370,3 +370,4 @@ hack=Hackaton
 key=Keynote
 other=Other format
 sw.proposal.speaker=Presented by
+admin.btn.changeState=Change one proposal state
