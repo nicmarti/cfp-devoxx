@@ -11,7 +11,7 @@ import play.api.Play.current
 
 case class Webuser(uuid: String, email: String, firstName: String, lastName: String, password: String, profile: String) {
   val cleanName = {
-    firstName.toLowerCase.capitalize + " " + lastName
+    firstName.capitalize + " " + lastName
   }
 }
 
