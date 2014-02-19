@@ -81,7 +81,7 @@ object ProposalState {
     UNKNOWN
   )
 
-    val allButDeleted = List(
+  val allButDeleted = List(
     DRAFT,
     SUBMITTED,
     APPROVED,
@@ -95,15 +95,15 @@ object ProposalState {
 
   def parse(state: String): ProposalState = {
     state match {
-        case "draft"=>DRAFT
-        case "submitted"=>SUBMITTED
-        case "deleted"=>DELETED
-        case "approved"=>APPROVED
-        case "rejected"=>REJECTED
-        case "accepted"=>ACCEPTED
-        case "declined"=>DECLINED
-        case "backup"=> BACKUP
-        case other=>UNKNOWN
+      case "draft" => DRAFT
+      case "submitted" => SUBMITTED
+      case "deleted" => DELETED
+      case "approved" => APPROVED
+      case "rejected" => REJECTED
+      case "accepted" => ACCEPTED
+      case "declined" => DECLINED
+      case "backup" => BACKUP
+      case other => UNKNOWN
     }
   }
 }
@@ -115,19 +115,19 @@ import com.github.rjeschke.txtmark._
 case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
                     talkType: ProposalType, audienceLevel: String, summary: String,
-                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track){
+                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track) {
 
-  val allSpeakerUUIDs:List[String]={
+  val allSpeakerUUIDs: List[String] = {
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
   }
 
-  val summaryAsHtml:String={
+  val summaryAsHtml: String = {
     val escapedHtml = HtmlFormat.escape(summary).body // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
 
-  val privateMessageAsHtml:String={
+  val privateMessageAsHtml: String = {
     val escapedHtml = HtmlFormat.escape(privateMessage).body // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
@@ -142,12 +142,12 @@ object Proposal {
 
   val audienceLevels = Seq(("novice", "Novice"), ("intermediate", "Intermediate"), ("expert", "Expert"))
 
-  val ProposalIDRegExp="([A-Z][A-Z][A-Z]-\\d\\d\\d)".r
+  val ProposalIDRegExp = "([A-Z][A-Z][A-Z]-\\d\\d\\d)".r
 
-  val HttpUrl="((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)".r
+  val HttpUrl = "((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)".r
 
-  def isSpeaker(proposalId:String, uuid:String):Boolean=Redis.pool.withClient{
-    implicit client=>
+  def isSpeaker(proposalId: String, uuid: String): Boolean = Redis.pool.withClient {
+    implicit client =>
       client.sismember("Proposals:ByAuthor:" + uuid, proposalId)
   }
 
@@ -254,7 +254,7 @@ object Proposal {
       // If we change a proposal to a new track, we need to update all the collections
       // On Redis, this is very fast (faster than creating a mongoDB index, by an order of x100)
 
-      val maybeExistingTrackId = client.hget("Proposals:TrackForProposal",proposalId)
+      val maybeExistingTrackId = client.hget("Proposals:TrackForProposal", proposalId)
 
       // Do the operation if and only if we changed the Track
       maybeExistingTrackId.map {
@@ -288,8 +288,8 @@ object Proposal {
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
           Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
 
-          if(newState==ProposalState.SUBMITTED){
-            client.hset("Proposal:SubmittedDate",proposalId, new Instant().getMillis.toString)
+          if (newState == ProposalState.SUBMITTED) {
+            client.hset("Proposal:SubmittedDate", proposalId, new Instant().getMillis.toString)
           }
       }
       if (maybeExistingState.isEmpty) {
@@ -299,10 +299,10 @@ object Proposal {
       }
   }
 
-  def getSubmissionDate(proposalId:String):Option[Long]=Redis.pool.withClient{
-    implicit client=>
-      client.hget("Proposal:SubmittedDate", proposalId).map{
-        date:String=>
+  def getSubmissionDate(proposalId: String): Option[Long] = Redis.pool.withClient {
+    implicit client =>
+      client.hget("Proposal:SubmittedDate", proposalId).map {
+        date: String =>
           date.toLong
       }
   }
@@ -372,14 +372,14 @@ object Proposal {
   }
 
   def allMyProposals(uuid: String): List[Proposal] = {
-    ProposalState.allButDeleted.flatMap{
+    ProposalState.allButDeleted.flatMap {
       proposalState =>
         loadProposalsByState(uuid, proposalState)
     }
   }
 
-  def findProposal(uuid:String, proposalId:String):Option[Proposal]={
-    allMyProposals(uuid).find(_.id==proposalId)
+  def findProposal(uuid: String, proposalId: String): Option[Proposal] = {
+    allMyProposals(uuid).find(_.id == proposalId)
   }
 
   def findDraft(uuid: String, proposalId: String): Option[Proposal] = {
@@ -450,12 +450,12 @@ object Proposal {
     }
   }
 
-  def allProposalIDs:Set[String]=Redis.pool.withClient {
+  def allProposalIDs: Set[String] = Redis.pool.withClient {
     implicit client =>
       client.hkeys("Proposals")
   }
 
-  def allProposalIDsNotDeleted:Set[String]=Redis.pool.withClient {
+  def allProposalIDsNotDeleted: Set[String] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.hkeys("Proposals")
       val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
@@ -463,13 +463,13 @@ object Proposal {
       onlyValidProposalIDs
   }
 
-  def allProposalIDsDeleted:Set[String]=Redis.pool.withClient {
+  def allProposalIDsDeleted: Set[String] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
       allProposalIDDeleted
   }
 
-  def allProposalIDsSubmitted:Set[String]=Redis.pool.withClient {
+  def allProposalIDsSubmitted: Set[String] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDsSubmitted = client.smembers(s"Proposals:ByState:${ProposalState.SUBMITTED.code}")
       allProposalIDsSubmitted
@@ -491,7 +491,7 @@ object Proposal {
       loadProposalByIDs(proposalIDs, ProposalState.SUBMITTED)
   }
 
-  def allProposalsByAuthor(author: String): Map[String,Proposal] = Redis.pool.withClient {
+  def allProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$author")
       loadAndParseProposals(allProposalIDs)
@@ -521,8 +521,9 @@ object Proposal {
 
   def findProposalTrack(proposalId: String): Option[Track] = Redis.pool.withClient {
     client =>
-      client.hget("Proposals:TrackForProposal", proposalId).flatMap{trackId=>
-        Track.all.find(_.id==trackId)
+      client.hget("Proposals:TrackForProposal", proposalId).flatMap {
+        trackId =>
+          Track.all.find(_.id == trackId)
       }
   }
 
@@ -554,7 +555,7 @@ object Proposal {
   def setMainSpeaker(proposal: Proposal, uuid: String): Proposal = {
     if (proposal.mainSpeaker != uuid) {
       proposal.secondarySpeaker match {
-        case Some(u) if u==uuid =>  proposal.copy(mainSpeaker = uuid, secondarySpeaker = Option(proposal.mainSpeaker))
+        case Some(u) if u == uuid => proposal.copy(mainSpeaker = uuid, secondarySpeaker = Option(proposal.mainSpeaker))
         case _ =>
           // move the main speaker to "other speaker"
           proposal.copy(mainSpeaker = uuid, otherSpeakers = proposal.mainSpeaker :: proposal.otherSpeakers.filterNot(_ == uuid))
@@ -567,12 +568,13 @@ object Proposal {
   /**
    * Returns all Proposals with sponsorTalk=true, whatever is the current status.
    */
-  def allSponsorsTalk():List[Proposal]={
+  def allSponsorsTalk(): List[Proposal] = {
     val allTalks = allProposals().filter(_.sponsorTalk)
-    allTalks.map{proposal=>
-      val proposalState = findProposalState(proposal.id)
-      proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
-    }.filterNot(_.state==ProposalState.DELETED).filterNot(_.state==ProposalState.DECLINED)
+    allTalks.map {
+      proposal =>
+        val proposalState = findProposalState(proposal.id)
+        proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
+    }.filterNot(_.state == ProposalState.DELETED).filterNot(_.state == ProposalState.DECLINED)
   }
 
   // This is a slow operation
@@ -580,7 +582,7 @@ object Proposal {
     implicit client =>
       client.hvals("Proposals").map {
         json =>
-          val proposal=Json.parse(json).as[Proposal]
+          val proposal = Json.parse(json).as[Proposal]
           val proposalState = findProposalState(proposal.id)
           proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
       }
@@ -593,7 +595,7 @@ object Proposal {
       val listOfProposals = proposalIDs.toList
       val proposals = client.hmget("Proposals", listOfProposals).map {
         json: String =>
-          Json.parse(json).asOpt[Proposal].map(p=> p.copy(state=findProposalState(p.id).getOrElse(p.state)))
+          Json.parse(json).asOpt[Proposal].map(p => p.copy(state = findProposalState(p.id).getOrElse(p.state)))
       }
       // zipAll is used to merge the list of proposals with the list of parsed/loaded Proposal
       // If a proposal was not found, the list "proposals" contains a None.
@@ -601,58 +603,62 @@ object Proposal {
       listOfProposals.zipAll(proposals, "?", None).filterNot(_._2.isEmpty).map(t => (t._1, t._2.get)).toMap
   }
 
-  def removeSponsorTalkFlag(authorUUID:String,proposalId:String)={
-    Proposal.findById(proposalId).filter(_.sponsorTalk==true).map{ proposal=>
-      Event.storeEvent(Event(proposal.id, authorUUID, "Removed [sponsorTalkFlag] on proposal "+proposal.title))
-      Proposal.save(proposal.mainSpeaker, proposal.copy(sponsorTalk = false), proposal.state)
+  def removeSponsorTalkFlag(authorUUID: String, proposalId: String) = {
+    Proposal.findById(proposalId).filter(_.sponsorTalk == true).map {
+      proposal =>
+        Event.storeEvent(Event(proposal.id, authorUUID, "Removed [sponsorTalkFlag] on proposal " + proposal.title))
+        Proposal.save(proposal.mainSpeaker, proposal.copy(sponsorTalk = false), proposal.state)
     }
   }
 
-  def hasOneProposal(uuid:String):Boolean=Redis.pool.withClient{
-    implicit client=>
+  def hasOneProposal(uuid: String): Boolean = Redis.pool.withClient {
+    implicit client =>
       client.exists(s"Proposals:ByAuthor:$uuid")
   }
 
-  def totalWithOneProposal():Int=Redis.pool.withClient{
-    implicit client=>
+  def totalWithOneProposal(): Int = Redis.pool.withClient {
+    implicit client =>
       client.keys("Proposals:ByAuthor:*").size
   }
 
-  def allApprovedForSpeaker(author:String):List[Proposal]=Redis.pool.withClient{
-    implicit client=>
+  def allApprovedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
       loadProposalsByState(author, ProposalState.APPROVED)
   }
 
-  def allRejectedForSpeaker(author:String):List[Proposal]=Redis.pool.withClient{
-    implicit client=>
+  def allRejectedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
       loadProposalsByState(author, ProposalState.REJECTED)
   }
 
-  def allBackupForSpeaker(author:String):List[Proposal]=Redis.pool.withClient{
-    implicit client=>
+  def allBackupForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
       loadProposalsByState(author, ProposalState.BACKUP)
   }
 
-  def allAcceptedByTalkType(talkType:String):List[Proposal]= Redis.pool.withClient {
+  def allAcceptedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds: Set[String] = client.smembers(s"Proposals:ByState:${ProposalState.ACCEPTED.code}")
-      loadProposalByIDs(allProposalIds, ProposalState.ACCEPTED).filter(_.talkType.id==talkType)
+      loadProposalByIDs(allProposalIds, ProposalState.ACCEPTED).filter(_.talkType.id == talkType)
   }
 
-  def hasOneAcceptedOrApprovedProposal(speakerUUID:String):Boolean=Redis.pool.withClient{
+  def hasOneAcceptedOrApprovedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
+      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal=>proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.ACCEPTED)
+  }
+
+  def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
+      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal=>proposal.state==ProposalState.REJECTED)
+  }
+
+  def hasOnlyRejectedProposals(speakerUUID:String):Boolean=Redis.pool.withClient{
     implicit client=>
-      val allAcceptedAndApproved = client.sunion(s"Proposals:ByState:${ProposalState.ACCEPTED.code}", s"Proposals:ByState:${ProposalState.APPROVED.code}")
-      val proposals = client.hmget("Proposals", allAcceptedAndApproved.toList.toSeq:_*).flatMap {
-        json: String =>
-          Json.parse(json).asOpt[Proposal]
-      }
-      proposals.exists{p=>
-        p.mainSpeaker==speakerUUID ||
-        p.secondarySpeaker==Option(speakerUUID) ||
-        p.otherSpeakers.contains(speakerUUID)
-      }
-
-
+      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
+      val proposals = loadAndParseProposals(allProposalIDs).values.toSet
+      proposals.exists(proposal=>proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.ACCEPTED)==false && proposals.exists(proposal=>proposal.state==ProposalState.REJECTED)
   }
 
 }

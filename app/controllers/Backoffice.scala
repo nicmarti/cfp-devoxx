@@ -36,7 +36,7 @@ object Backoffice extends SecureCFPController {
       } else {
         Webuser.addToCFPAdmin(uuidSpeaker)
       }
-      Redirect(routes.CFPAdmin.allSpeakers(onlyWithProposals=false,export=false))
+      Redirect(routes.CFPAdmin.allSpeakers(export=false,rejected=false,accepted=false))
   }
 
   // Authenticate on CFP on behalf of specified user.

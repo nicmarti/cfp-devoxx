@@ -366,22 +366,31 @@ object CFPAdmin extends SecureCFPController {
   }
 
   // Returns all speakers
-  def allSpeakers(onlyWithProposals: Boolean = false, export: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
+  def allSpeakers(export: Boolean = false, rejected:Boolean=true, accepted:Boolean=true) = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
-      val speakers = onlyWithProposals match {
-        case true => Webuser.allSpeakers.sortBy(_.email).filter(w => Proposal.hasOneProposal(w.uuid))
-        case false => Webuser.allSpeakers.sortBy(_.email)
+
+      val allSpeakers = Speaker.allSpeakers()
+
+      val speakers1 = accepted match {
+        case true => allSpeakers.filter(s=>Proposal.hasOneAcceptedOrApprovedProposal(s.uuid))
+        case false =>  allSpeakers
       }
+
+      val speakers = rejected match {
+        case true => allSpeakers.filter(s=>Proposal.hasOnlyRejectedProposals(s.uuid))
+        case false => speakers1
+      }
+
       export match {
         case true => {
-          val buffer = new StringBuffer("email,firstName,lastName,uuid,code\n")
+          val buffer = new StringBuffer("email,name,lang,uuid,code\n")
           speakers.foreach {
             s =>
               buffer.append(s.email.toLowerCase)
               buffer.append(",")
-              buffer.append(s.firstName.toLowerCase.capitalize)
+              buffer.append(s.cleanName)
               buffer.append(",")
-              buffer.append(s.lastName.toLowerCase.capitalize)
+              buffer.append(s.cleanLang)
               buffer.append(",")
               buffer.append(s.uuid)
               buffer.append(",")
@@ -391,9 +400,15 @@ object CFPAdmin extends SecureCFPController {
           }
           Ok(buffer.toString).as("text/csv")
         }
-        case false => Ok(views.html.CFPAdmin.allSpeakers(speakers))
+        case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.name.getOrElse(""))))
       }
 
+  }
+
+  def allWebusers() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      val allSpeakers = Webuser.allSpeakers.sortBy(_.cleanName)
+      Ok(views.html.CFPAdmin.allWebusers(allSpeakers))
   }
 
 

@@ -419,3 +419,4 @@ sw.presentations=Présentations
 sw.events=Evénements spéciaux
 sw.allSpeakers=Liste des présentateurs ayant accepté les termes et conditions.
 sw.proposal.presentedWith=Présenté avec
+admin.btn.webuser=Webusers

@@ -38,7 +38,25 @@ import org.joda.time.DateTime
  * Created: 28/09/2013 11:01
  */
 case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
-                   company: Option[String], blog: Option[String])
+                   company: Option[String], blog: Option[String]){
+  val cleanName:String=name.map{n=>
+    n.split(" ").map{s=>s.toLowerCase.capitalize}.mkString(" ")
+  }.getOrElse("?")
+
+  val cleanLang:String=lang.map{
+    l=>
+      val cleanL=if(l.contains(",")){
+        l.substring(0, l.indexOf(","))
+      }else{
+        l.toLowerCase
+      }
+      if(cleanL.contains("-")){
+        cleanL.substring(0, l.indexOf("-"))
+      }else{
+        cleanL
+      }
+  }.getOrElse("fr")
+}
 
 object Speaker {
   implicit val speakerFormat = Json.format[Speaker]

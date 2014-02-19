@@ -1,6 +1,6 @@
-@(speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speakers:List[Webuser])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@main("CFP Speakers") {
+@main("CFP Admin webuser") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
         <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
@@ -26,46 +26,45 @@
             <span class="label label-info">@speakers.size users</span>
         </div>
         <div class="panel-body">
-            <a href="@routes.CFPAdmin.allSpeakers(export=false,rejected=false,accepted=true)" class="btn btn-sm btn-success"><i class="icon-filter"></i> Only Speakers with at least one accepted/approved proposal</a>
-            <a href="@routes.CFPAdmin.allSpeakers(export=false,rejected=true,accepted=false)" class="btn btn-sm btn-warning"><i class="icon-filter"></i> Only Speakers with refused proposals</a>
-            <a href="@routes.CFPAdmin.allSpeakers(export=true,rejected=false,accepted=true)" class="btn btn-sm btn-success"><i class="icon-eject"></i> Export to CSV accepted</a>
-            <a href="@routes.CFPAdmin.allSpeakers(export=true,rejected=true,accepted=false)" class="btn btn-sm btn-warning"><i class="icon-eject"></i> Export to CSV refused</a>
             @if(speakers.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Lang</th>
-                        <th>Company</th>
+                        <th>UUID</th>
                         <th>Email</th>
+                        <th>Gravatar</th>
+                        <th>Name</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                @speakers.map{ speaker: Speaker =>
+                @speakers.map{ webuser: Webuser =>
                     <tr>
-                       <td>
-                           @speaker.cleanName
-                       </td>
                         <td>
-                            @speaker.cleanLang
+                            <small>@webuser.uuid</small>
                         </td>
                         <td>
-                            @speaker.company.getOrElse("")
+                            <small>@webuser.email</small>
+                        </td>
+                        <td>@tags.renderGravatar(webuser.uuid)</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
                         </td>
                         <td>
-                            <small>@speaker.email</small>
+                           @if(SecureCFPController.hasAccessToAdmin(req)){
+                                @if(Webuser.hasAccessToCFP(webuser.uuid)){
+                                    <a class="btn btn-sm btn-danger" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)">Remove from CFP</a>
+                                }else{
+                                    <a class="btn btn-sm btn-success" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)">Add to CFP</a>
+                                }
+                           }
                         </td>
-                        <td>
-                            <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(speaker.uuid)"><i class="icon-lock"></i> Authenticate</a>
-                        </td>
-
                     </tr>
                 }
                 </tbody>
             </table>
             }else{
-                <P>There is no speaker.</P>
+                <P>There is no webuser</P>
             }
         </div>
         </div>
