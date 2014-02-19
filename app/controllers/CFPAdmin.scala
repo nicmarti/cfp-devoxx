@@ -366,14 +366,15 @@ object CFPAdmin extends SecureCFPController {
   }
 
   // Returns all speakers
-  def allSpeakers(export: Boolean = false, rejected:Boolean=true, accepted:Boolean=true) = SecuredAction(IsMemberOf("cfp")) {
+  def allSpeakers(export: Boolean = false, rejected:Boolean=true, accepted:Boolean=true, onlyWithSpeakerPass:Boolean=false) = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
 
       val allSpeakers = Speaker.allSpeakers()
 
-      val speakers1 = accepted match {
-        case true => allSpeakers.filter(s=>Proposal.hasOneAcceptedOrApprovedProposal(s.uuid))
-        case false =>  allSpeakers
+      val speakers1 = (accepted,onlyWithSpeakerPass) match {
+        case (true,false) => allSpeakers.filter(s=>Proposal.hasOneAcceptedOrApprovedProposal(s.uuid)).filterNot(s=>Webuser.isMember(s.uuid,"cfp"))
+        case (_,true) => allSpeakers.filter(s=>Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filterNot(s=>Webuser.isMember(s.uuid,"cfp"))
+        case other =>  allSpeakers
       }
 
       val speakers = rejected match {

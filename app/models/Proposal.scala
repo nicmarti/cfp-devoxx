@@ -661,4 +661,11 @@ object Proposal {
       proposals.exists(proposal=>proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.ACCEPTED)==false && proposals.exists(proposal=>proposal.state==ProposalState.REJECTED)
   }
 
+  def hasOneProposalWithSpeakerTicket(speakerUUID:String):Boolean=Redis.pool.withClient{
+    implicit client=>
+      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
+      val onlyAcceptedOrApproved = loadAndParseProposals(allProposalIDs).values.toSet.filter(proposal=>proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.ACCEPTED)
+      onlyAcceptedOrApproved.filter(p=>Proposal.givesSpeakerFreeEntrance(p.talkType)).nonEmpty
+  }
+
 }

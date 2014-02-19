@@ -74,7 +74,7 @@ GET         /cfpadmin/proposals/byType/:confType                 controllers.CFP
 GET         /cfpadmin/proposals/byTrack/:track                   controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET         /cfpadmin/compareReviewer                            controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 GET         /cfpadmin/allWebusers                                controllers.CFPAdmin.allWebusers()
-GET         /cfpadmin/allSpeakers                                controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean)
+GET         /cfpadmin/allSpeakers                                controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
 
 GET         /favicon.ico                                         controllers.Assets.at(path="/public/images", file="favicon.ico")
 
