@@ -63,7 +63,7 @@ lang=Main language
 lang.help=75% of Devoxx France''s talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
 mainSpeaker=Main speaker
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a 3-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action.
-otherSpeakers=2nd speaker
+otherSpeakers=Other speakers
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq/#confType" target="new">FAQ</a>.
 
