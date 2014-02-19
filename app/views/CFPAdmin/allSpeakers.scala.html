@@ -48,7 +48,8 @@
                 @speakers.map{ speaker: Speaker =>
                     <tr>
                        <td>
-                           @speaker.cleanName
+                           @speaker.name<br>
+                           <a href="@routes.CFPAdmin.editSpeakerName(speaker.uuid)">edit name</a>
                        </td>
                         <td>
                             @speaker.cleanLang

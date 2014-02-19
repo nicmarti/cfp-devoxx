@@ -6,12 +6,15 @@ import play.api.data.Forms._
 import library._
 import library.search.ElasticSearch
 import play.api.libs.json.Json
-import library.SendMessageInternal
-import scala.Some
-import library.SendMessageToSpeaker
-import play.api.libs.json.JsObject
 import play.api.i18n.Messages
 import models.Review.ScoreAndTotalVotes
+import play.api.data.validation.Constraints._
+import scala.Some
+import library.ComputeVotesAndScore
+import library.ComputeLeaderboard
+import library.SendMessageInternal
+import library.SendMessageToSpeaker
+import play.api.libs.json.JsObject
 
 /**
  * The backoffice controller for the CFP technical committee.
@@ -378,7 +381,7 @@ object CFPAdmin extends SecureCFPController {
       }
 
       val speakers = rejected match {
-        case true => allSpeakers.filter(s=>Proposal.hasOnlyRejectedProposals(s.uuid))
+        case true => allSpeakers.filter(s=>Proposal.hasOnlyRejectedProposals(s.uuid)).filterNot(s=>Webuser.isMember(s.uuid,"cfp"))
         case false => speakers1
       }
 
@@ -389,7 +392,7 @@ object CFPAdmin extends SecureCFPController {
             s =>
               buffer.append(s.email.toLowerCase)
               buffer.append(",")
-              buffer.append(s.cleanName)
+              buffer.append(s.name)
               buffer.append(",")
               buffer.append(s.cleanLang)
               buffer.append(",")
@@ -410,6 +413,31 @@ object CFPAdmin extends SecureCFPController {
     implicit request =>
       val allSpeakers = Webuser.allSpeakers.sortBy(_.cleanName)
       Ok(views.html.CFPAdmin.allWebusers(allSpeakers))
+  }
+
+  val editSpeakerForm = Form(
+    tuple(
+      "uuid" -> text.verifying(nonEmpty, maxLength(50)),
+      "firstName" -> text.verifying(nonEmpty, maxLength(30)),
+      "lastName" -> text.verifying(nonEmpty, maxLength(30))
+    )
+  )
+
+  def editSpeakerName(uuid: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      Webuser.findByUUID(uuid).map {
+        webuser =>
+          Ok(views.html.CFPAdmin.editSpeakerName(editSpeakerForm.fill((webuser.uuid, webuser.firstName, webuser.lastName))))
+      }.getOrElse(NotFound("Speaker not found"))
+  }
+
+  def saveSpeakerName() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      editSpeakerForm.bindFromRequest.fold(errorForm =>BadRequest(views.html.CFPAdmin.editSpeakerName(errorForm)).flashing("error"->"Please correct errors"),
+        success => {
+          Webuser.updateNames(success._1, success._2,success._3)
+          Redirect(routes.CFPAdmin.allSpeakers(export = false, rejected=false, accepted=false, onlyWithSpeakerPass=false)).flashing("success"->"Speaker updated")
+        })
   }
 
 

@@ -60,8 +60,8 @@ object CallForPaper extends SecureCFPController {
 
   val editWebuserForm = Form(
     tuple(
-      "firstName" -> text.verifying(nonEmpty, maxLength(50)),
-      "lastName" -> text.verifying(nonEmpty, maxLength(50))
+      "firstName" -> text.verifying(nonEmpty, maxLength(30)),
+      "lastName" -> text.verifying(nonEmpty, maxLength(30))
     )
   )
 

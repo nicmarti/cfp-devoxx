@@ -12,7 +12,7 @@
         @helper.form(action = routes.CallForPaper.saveCurrentWebuser) {
             @helper.inputText(webuserForm("firstName"))
             @helper.inputText(webuserForm("lastName"))
-            <button class="btn btn-success" type="submit">Enregister</button>
+            <button class="btn btn-success" type="submit">@Messages("confirm.import.save")</button>
         }
         </div>
 

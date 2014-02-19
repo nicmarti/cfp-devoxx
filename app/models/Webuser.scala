@@ -141,7 +141,9 @@ object Webuser {
     client =>
       findByUUID(uuid).map {
         webuser =>
-          update(webuser.copy(firstName = newFirstName.toLowerCase.capitalize, lastName = newLastName.toLowerCase.capitalize))
+          Cache.remove("web:uuid:" + webuser.uuid)
+          Cache.remove("web:email:" + webuser.email)
+          update(webuser.copy(firstName = newFirstName, lastName = newLastName))
       }
   }
 
@@ -154,7 +156,7 @@ object Webuser {
       Cache.remove("web:email:" + webuser.email)
 
       if (isSpeaker(webuser.uuid)) {
-        Speaker.updateName(webuser.email, webuser.cleanName)
+        Speaker.updateName(webuser.uuid, webuser.cleanName)
       }
   }
 
@@ -195,8 +197,7 @@ object Webuser {
   def allSpeakersAsOption: Seq[(String, String)] = {
     allSpeakers.map {
       webuser =>
-        val cleanName = webuser.lastName.toLowerCase.capitalize + " " + webuser.firstName
-        (webuser.uuid, cleanName)
+        (webuser.uuid, webuser.cleanName)
     }.sortBy(tuple => tuple._2) // sort by label
   }
 
