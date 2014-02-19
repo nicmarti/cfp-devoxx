@@ -10,7 +10,13 @@ import play.api.cache.Cache
 import play.api.Play.current
 
 case class Webuser(uuid: String, email: String, firstName: String, lastName: String, password: String, profile: String) {
-  def cleanName = firstName.toLowerCase.capitalize + " " + lastName.toLowerCase.capitalize
+  val cleanName = {
+    if(lastName!=null && lastName.toLowerCase().startsWith("le ")){
+      firstName.toLowerCase.capitalize + " " + lastName
+    }else{
+      firstName.toLowerCase.capitalize + " " + lastName.toLowerCase.capitalize
+    }
+  }
 }
 
 object Webuser {

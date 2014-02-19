@@ -436,7 +436,7 @@ object CFPAdmin extends SecureCFPController {
       editSpeakerForm.bindFromRequest.fold(errorForm =>BadRequest(views.html.CFPAdmin.editSpeakerName(errorForm)).flashing("error"->"Please correct errors"),
         success => {
           Webuser.updateNames(success._1, success._2,success._3)
-          Redirect(routes.CFPAdmin.allSpeakers(export = false, rejected=false, accepted=false, onlyWithSpeakerPass=false)).flashing("success"->"Speaker updated")
+          Redirect(routes.CFPAdmin.allSpeakers(export = false, rejected=false, accepted=true, onlyWithSpeakerPass=false)).flashing("success"->"Speaker updated")
         })
   }
 
