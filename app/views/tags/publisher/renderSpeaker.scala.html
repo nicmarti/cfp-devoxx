@@ -6,7 +6,9 @@
 <div class="speaker">
 <a href="@routes.Publisher.showSpeaker(uuid, webuser.cleanName)">
 @if(renderPhoto){
- <img width="32" height="32" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+@speaker.avatarUrl.map{url=>
+ <img width="32" height="32" src="@url" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+}
 }
 @webuser.cleanName
 </a>
