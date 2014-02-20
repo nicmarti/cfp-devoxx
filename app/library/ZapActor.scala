@@ -65,6 +65,8 @@ case class ProposalRejected(reporterUUID:String, proposal:Proposal)
 
 case class SaveSlots(slots:List[Slot], createdBy:Webuser)
 
+case class LogURL(url:String, objRef:String, objValue:String)
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -83,6 +85,7 @@ class ZapActor extends Actor {
     case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
     case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
     case SaveSlots(slots:List[Slot], createdBy:Webuser)=> doSaveSlots(slots:List[Slot], createdBy:Webuser)
+    case LogURL(url:String, objRef:String, objValue:String)=>doLogURL(url:String, objRef:String,objValue:String)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -175,5 +178,9 @@ class ZapActor extends Actor {
   def doSaveSlots(slots:List[Slot], createdBy:Webuser){
     play.Logger.info("Saving slot... "+slots)
     // TODO save the slost
+  }
+
+  def doLogURL(url:String, objRef:String, objValue:String){
+    HitView.storeLogURL(url,objRef, objValue)
   }
 }

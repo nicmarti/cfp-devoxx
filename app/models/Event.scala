@@ -50,18 +50,18 @@ object Event {
 
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
-      val jsEvent = Json.stringify(Json.toJson(event.copy(date=Some(new DateTime()))))
-      val tx=client.multi()
+      val jsEvent = Json.stringify(Json.toJson(event.copy(date = Some(new DateTime()))))
+      val tx = client.multi()
       val now = new Instant().getMillis
       tx.zadd("Events:V2:", now, jsEvent)
-      tx.sadd("Events:V2:"+event.objRef,jsEvent)
-      tx.lpush("Events:ByRef:"+event.objRef, now.toString)
+      tx.sadd("Events:V2:" + event.objRef, jsEvent)
+      tx.lpush("Events:ByRef:" + event.objRef, now.toString)
       tx.exec()
   }
 
   def loadEvents(items: Int, page: Int): List[Event] = Redis.pool.withClient {
     client =>
-      client.zrevrangeWithScores("Events:V2:", page*items, (page+1)*items ).flatMap {
+      client.zrevrangeWithScores("Events:V2:", page * items, (page + 1) * items).flatMap {
         case (json: String, date: Double) => {
           val maybeEvent = Json.parse(json).asOpt
           val dateVal = new Instant(date.toLong)
@@ -71,39 +71,45 @@ object Event {
   }
 
   // Very fast O(1) operation
-  def totalEvents()=Redis.pool.withClient{
-    client=>
+  def totalEvents() = Redis.pool.withClient {
+    client =>
       client.zcard("Events:V2:")
   }
 
-  implicit object mostRecent extends Ordering[DateTime] { def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)}
+  implicit object mostRecent extends Ordering[DateTime] {
+    def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)
+  }
 
-  def loadEventsForObjRef(objRef:String):List[Event] = Redis.pool.withClient{
-    client=>
-      client.smembers(s"Events:V2:${objRef}").flatMap{json:String=>
-        Json.parse(json).asOpt[Event]
+  def loadEventsForObjRef(objRef: String): List[Event] = Redis.pool.withClient {
+    client =>
+      client.smembers(s"Events:V2:${objRef}").flatMap {
+        json: String =>
+          Json.parse(json).asOpt[Event]
       }.toList
   }
 
-  def getMostRecentDateFor(objRef:String):Option[DateTime]=Redis.pool.withClient{
-    client=>
-      client.lrange("Events:ByRef:"+objRef, 0, 0).headOption.map{s=>
-        new Instant().withMillis(s.toLong).toDateTime
+  def getMostRecentDateFor(objRef: String): Option[DateTime] = Redis.pool.withClient {
+    client =>
+      client.lrange("Events:ByRef:" + objRef, 0, 0).headOption.map {
+        s =>
+          new Instant().withMillis(s.toLong).toDateTime
       }
   }
 
-  def speakerNotified(speaker:Speaker, allApproved:Set[Proposal], allRejected:Set[Proposal], allBackups:Set[Proposal])=Redis.pool.withClient{
-    client=>
-      client.sadd("NotifiedSpeakers",speaker.uuid)
+  def speakerNotified(speaker: Speaker, allApproved: Set[Proposal], allRejected: Set[Proposal], allBackups: Set[Proposal]) = Redis.pool.withClient {
+    client =>
+      client.sadd("NotifiedSpeakers", speaker.uuid)
       // Pas de backup et rien d'approuvé
-      if(allApproved.isEmpty && allBackups.isEmpty && allRejected.nonEmpty){
-        client.sadd("Notified:RefusedSpeakers",speaker.uuid)
+      if (allApproved.isEmpty && allBackups.isEmpty && allRejected.nonEmpty) {
+        client.sadd("Notified:RefusedSpeakers", speaker.uuid)
       }
-      if(allApproved.nonEmpty){
-        client.sadd("Notified:ApprovedSpeakers",speaker.uuid)
+      if (allApproved.nonEmpty) {
+        client.sadd("Notified:ApprovedSpeakers", speaker.uuid)
       }
-      if(allApproved.isEmpty && allBackups.nonEmpty){
-        client.sadd("Notified:BackupSpeakers",speaker.uuid)
+      if (allApproved.isEmpty && allBackups.nonEmpty) {
+        client.sadd("Notified:BackupSpeakers", speaker.uuid)
       }
   }
+
+
 }

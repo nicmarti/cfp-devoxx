@@ -26,6 +26,7 @@ package controllers
 import models._
 import play.api.mvc._
 import akka.util.Crypt
+import library.{LogURL, ZapActor}
 
 /**
  * Simple content publisher
@@ -61,6 +62,7 @@ object Publisher extends Controller {
       maybeSpeaker match {
         case Some(speaker)=>{
           val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          ZapActor.actor ! LogURL("showSpeaker",uuid,name)
           Ok(views.html.Publisher.showSpeaker(speaker,acceptedProposals))
         }
         case None=>NotFound("Speaker not found")
@@ -78,6 +80,7 @@ object Publisher extends Controller {
       Proposal.findById(proposalId) match {
         case None=>NotFound("Proposal not found")
         case Some(proposal)=>
+          ZapActor.actor ! LogURL("showTalk",proposalId, proposalTitle)
           Ok(views.html.Publisher.showProposal(proposal))
       }
 
