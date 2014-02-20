@@ -64,16 +64,29 @@ object Leaderboard {
       tx.set("Leaderboard:worstReviewer:uuid", worstReviewer._1)
       tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString())
 
-      val totalByCategories = Proposal.totalSubmittedByTrack()
-      totalByCategories.map {
+      val totalSubmittedByCategories = Proposal.totalSubmittedByTrack()
+      totalSubmittedByCategories.map {
         case (track: Track, total: Int) =>
-          tx.hset("Leaderboard:totalByCategories", track.label, total.toString)
+          tx.hset("Leaderboard:totalSubmittedByCategories,ByCategories", track.label, total.toString)
       }
 
-      val totalByType = Proposal.totalSubmittedByType()
-      totalByType.toList.map {
+      val totalSubmittedByType = Proposal.totalSubmittedByType()
+      totalSubmittedByType.toList.map {
         case (propType: ProposalType, total: Int) =>
-          tx.hset("Leaderboard:totalByType", propType.id, total.toString)
+          tx.hset("Leaderboard:totalSubmittedByType", propType.id, total.toString)
+      }
+
+      val totalAcceptedByCategories = Proposal.totalAcceptedByTrack()
+      totalAcceptedByCategories.map {
+        case (track: Track, total: Int) =>
+          tx.hset("Leaderboard:totalAcceptedByCategories", track.label, total.toString)
+      }
+
+      val totalAcceptedByType = Proposal.totalAcceptedByType()
+    println("totalAcceptedByType "+totalAcceptedByType.size)
+      totalAcceptedByType.toList.map {
+        case (propType: ProposalType, total: Int) =>
+          tx.hset("Leaderboard:totalAcceptedByType", propType.id, total.toString)
       }
 
       val allWebusers= Webuser.allCFPAdmin().toSet
@@ -142,17 +155,33 @@ object Leaderboard {
            score <- client.get("Leaderboard:worstReviewer:score")) yield (uuid, score)
   }
 
-  def totalByCategories() = Redis.pool.withClient {
+  def totalSubmittedByCategories() = Redis.pool.withClient {
     implicit client =>
-      client.hgetAll("Leaderboard:totalByCategories").map {
+      client.hgetAll("Leaderboard:totalSubmittedByCategories").map {
         case (key: String, value: String) =>
           (key, value.toInt)
       }
   }
 
-  def totalByType() = Redis.pool.withClient {
+  def totalSubmittedByType() = Redis.pool.withClient {
     implicit client =>
-      client.hgetAll("Leaderboard:totalByType").map {
+      client.hgetAll("Leaderboard:totalSubmittedByType").map {
+        case (key: String, value: String) =>
+          (key, value.toInt)
+      }
+  }
+
+  def totalAcceptedByCategories() = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll("Leaderboard:totalAcceptedByCategories").map {
+        case (key: String, value: String) =>
+          (key, value.toInt)
+      }
+  }
+
+  def totalAcceptedByType() = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll("Leaderboard:totalAcceptedByType").map {
         case (key: String, value: String) =>
           (key, value.toInt)
       }

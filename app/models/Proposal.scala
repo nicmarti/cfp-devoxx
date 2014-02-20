@@ -350,7 +350,7 @@ object Proposal {
     client.hmget("Proposals", allProposalIds).flatMap {
       proposalJson: String =>
         Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = proposalState))
-    }.sortBy(_.title)
+    }
   }
 
   def allMyDraftProposals(uuid: String): List[Proposal] = {
@@ -481,14 +481,31 @@ object Proposal {
 
   def allDrafts(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val proposalIDs = client.smembers("Proposals:ByState:draft")
-      loadProposalByIDs(proposalIDs, ProposalState.DRAFT)
+      val allProposalIds = client.smembers("Proposals:ByState:"+ProposalState.DRAFT.code)
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.DRAFT))
+      }
   }
 
   def allSubmitted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val proposalIDs = client.smembers("Proposals:ByState:submitted")
-      loadProposalByIDs(proposalIDs, ProposalState.SUBMITTED)
+      val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.SUBMITTED.code)
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.SUBMITTED))
+      }
+  }
+
+  def allAccepted(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
+    println("all accepted "+allProposalIds.size)
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
+      }
+
   }
 
   def allProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {
@@ -530,7 +547,6 @@ object Proposal {
   // How many talks submitted for Java? for Web?
   def totalSubmittedByTrack(): List[(Track, Int)] = Redis.pool.withClient {
     implicit client =>
-
       val toRetn = for (proposalId <- client.smembers("Proposals:ByState:" + ProposalState.SUBMITTED.code).toList;
                         track <- Proposal.findProposalTrack(proposalId)
       ) yield (track, 1)
@@ -544,6 +560,27 @@ object Proposal {
   // How many Conference, University, BOF...
   def totalSubmittedByType(): Map[ProposalType, Int] = {
     allSubmitted().groupBy(_.talkType).map {
+      case (pt: ProposalType, listOfProposals: List[Proposal]) =>
+        (pt, listOfProposals.size)
+    }
+  }
+
+  def totalAcceptedByTrack(): List[(Track, Int)] = Redis.pool.withClient {
+    implicit client =>
+      val toRetn = for (proposalId <- client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code).toList;
+                        track <- Proposal.findProposalTrack(proposalId)
+      ) yield (track, 1)
+
+      toRetn.groupBy(_._1).map {
+        case (category, listOfCategoryAndTotal) =>
+          (category, listOfCategoryAndTotal.map(_._2).sum)
+      }.toList
+  }
+
+  // How many Conference, University, BOF...
+  def totalAcceptedByType(): Map[ProposalType, Int] = {
+    println("allAccepted() " + allAccepted().size)
+    allAccepted().groupBy(_.talkType).map {
       case (pt: ProposalType, listOfProposals: List[Proposal]) =>
         (pt, listOfProposals.size)
     }
@@ -645,27 +682,27 @@ object Proposal {
   def hasOneAcceptedOrApprovedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal=>proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.ACCEPTED)
+      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED)
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal=>proposal.state==ProposalState.REJECTED)
+      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal => proposal.state == ProposalState.REJECTED)
   }
 
-  def hasOnlyRejectedProposals(speakerUUID:String):Boolean=Redis.pool.withClient{
-    implicit client=>
+  def hasOnlyRejectedProposals(speakerUUID: String): Boolean = Redis.pool.withClient {
+    implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val proposals = loadAndParseProposals(allProposalIDs).values.toSet
-      proposals.exists(proposal=>proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.ACCEPTED)==false && proposals.exists(proposal=>proposal.state==ProposalState.REJECTED)
+      proposals.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED) == false && proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
   }
 
-  def hasOneProposalWithSpeakerTicket(speakerUUID:String):Boolean=Redis.pool.withClient{
-    implicit client=>
+  def hasOneProposalWithSpeakerTicket(speakerUUID: String): Boolean = Redis.pool.withClient {
+    implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      val onlyAcceptedOrApproved = loadAndParseProposals(allProposalIDs).values.toSet.filter(proposal=>proposal.state==ProposalState.APPROVED || proposal.state==ProposalState.ACCEPTED)
-      onlyAcceptedOrApproved.filter(p=>Proposal.givesSpeakerFreeEntrance(p.talkType)).nonEmpty
+      val onlyAcceptedOrApproved = loadAndParseProposals(allProposalIDs).values.toSet.filter(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED)
+      onlyAcceptedOrApproved.filter(p => Proposal.givesSpeakerFreeEntrance(p.talkType)).nonEmpty
   }
 
 }
