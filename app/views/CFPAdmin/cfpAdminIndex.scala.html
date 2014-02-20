@@ -35,7 +35,7 @@
                     <a href="@routes.Sponsor.index()" class="btn btn-sm btn-primary"><i class="icon-list"></i> @Messages("admin.btn.sponsor")</a>
                     <a href="@routes.CFPAdmin.allVotes("all",None)" class="btn btn-sm btn-warning"><i class="icon-large"></i><i class="icon-adjust"></i> @Messages("admin.btn.allvotes")</a>
                     <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=false, accepted=false, onlyWithSpeakerPass=false)" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
-                    <a href="@routes.CFPAdmin.newSpeaker()" class="btn btn-sm btn-primary"><i class="icon-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a>
+                    <a href="@routes.CFPAdmin.newOrEditSpeaker(None)" class="btn btn-sm btn-primary"><i class="icon-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a>
                     @if(SecureCFPController.hasAccessToAdmin(req)){
                         <a href="@routes.Backoffice.allProposals()" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("admin.btn.changeState")</a>
                     }

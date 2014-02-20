@@ -49,7 +49,6 @@
                     <tr>
                        <td>
                            @speaker.name<br>
-                           <a href="@routes.CFPAdmin.editSpeakerName(speaker.uuid)">edit name</a>
                        </td>
                         <td>
                             @speaker.cleanLang
@@ -61,7 +60,9 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                            <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(speaker.uuid)"><i class="icon-lock"></i> Authenticate</a>
+                           <a href="@routes.CFPAdmin.editSpeakerName(speaker.uuid)" class="btn btn-sm btn-primary">@Messages("sp.editName")</a>
+                           <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
+                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
                         </td>
 
                     </tr>

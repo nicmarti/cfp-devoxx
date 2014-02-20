@@ -193,17 +193,17 @@ object CFPAdmin extends SecureCFPController {
       val totalByCategories = Leaderboard.totalByCategories()
       val totalByType = Leaderboard.totalByType()
       val devoxx2013 = ApprovedProposal.getDevoxx2013Total
-      val totalApprovedSpeakers= Leaderboard.totalApprovedSpeakers()
-      val totalWithTickets= Leaderboard.totalWithTickets()
-      val totalWithOneProposal= Leaderboard.totalWithOneProposal()
-      val totalRefusedSpeakers= Leaderboard.totalRefusedSpeakers()
+      val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
+      val totalWithTickets = Leaderboard.totalWithTickets()
+      val totalWithOneProposal = Leaderboard.totalWithOneProposal()
+      val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
 
 
       Ok(
         views.html.CFPAdmin.leaderBoard(
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
           totalNoVotes, maybeMostVoted, bestReviewer, worstReviewer, totalByCategories,
-          totalByType, devoxx2013, totalApprovedSpeakers,totalWithTickets,totalWithOneProposal, totalRefusedSpeakers
+          totalByType, devoxx2013, totalApprovedSpeakers, totalWithTickets, totalWithOneProposal, totalRefusedSpeakers
         )
       )
   }
@@ -328,13 +328,13 @@ object CFPAdmin extends SecureCFPController {
       }
 
       val totalRemaining = ApprovedProposal.remainingSlots(confType)
-    Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalApproved, totalRemaining, confType))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalApproved, totalRemaining, confType))
   }
 
   def doComputeVotesTotal() = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
       ZapActor.actor ! ComputeVotesAndScore()
-      Redirect(routes.CFPAdmin.allVotes("conf",None)).flashing("success" -> "Recomputing votes and scores...")
+      Redirect(routes.CFPAdmin.allVotes("conf", None)).flashing("success" -> "Recomputing votes and scores...")
   }
 
   def removeSponsorTalkFlag(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
@@ -369,19 +369,19 @@ object CFPAdmin extends SecureCFPController {
   }
 
   // Returns all speakers
-  def allSpeakers(export: Boolean = false, rejected:Boolean=true, accepted:Boolean=true, onlyWithSpeakerPass:Boolean=false) = SecuredAction(IsMemberOf("cfp")) {
+  def allSpeakers(export: Boolean = false, rejected: Boolean = true, accepted: Boolean = true, onlyWithSpeakerPass: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
 
       val allSpeakers = Speaker.allSpeakers()
 
-      val speakers1 = (accepted,onlyWithSpeakerPass) match {
-        case (true,false) => allSpeakers.filter(s=>Proposal.hasOneAcceptedOrApprovedProposal(s.uuid)).filterNot(s=>Webuser.isMember(s.uuid,"cfp"))
-        case (_,true) => allSpeakers.filter(s=>Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filterNot(s=>Webuser.isMember(s.uuid,"cfp"))
-        case other =>  allSpeakers
+      val speakers1 = (accepted, onlyWithSpeakerPass) match {
+        case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedOrApprovedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+        case other => allSpeakers
       }
 
       val speakers = rejected match {
-        case true => allSpeakers.filter(s=>Proposal.hasOnlyRejectedProposals(s.uuid)).filterNot(s=>Webuser.isMember(s.uuid,"cfp"))
+        case true => allSpeakers.filter(s => Proposal.hasOnlyRejectedProposals(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
         case false => speakers1
       }
 
@@ -433,23 +433,53 @@ object CFPAdmin extends SecureCFPController {
 
   def saveSpeakerName() = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
-      editSpeakerForm.bindFromRequest.fold(errorForm =>BadRequest(views.html.CFPAdmin.editSpeakerName(errorForm)).flashing("error"->"Please correct errors"),
+      editSpeakerForm.bindFromRequest.fold(errorForm => BadRequest(views.html.CFPAdmin.editSpeakerName(errorForm)).flashing("error" -> "Please correct errors"),
         success => {
-          Webuser.updateNames(success._1, success._2,success._3)
-          Redirect(routes.CFPAdmin.allSpeakers(export = false, rejected=false, accepted=true, onlyWithSpeakerPass=false)).flashing("success"->"Speaker updated")
+          Webuser.updateNames(success._1, success._2, success._3)
+          Redirect(routes.CFPAdmin.showSpeakerAndTalks(success._1)).flashing("success" -> "Speaker updated")
         })
   }
 
-  def newSpeaker()=SecuredAction(IsMemberOf("cfp")) {
+  val speakerForm = play.api.data.Form(mapping(
+    "uuid" -> optional(text),
+    "email" -> (email verifying nonEmpty),
+    "name" -> text,
+    "bio2" -> nonEmptyText(maxLength = 750),
+    "lang2" -> optional(text),
+    "twitter2" -> optional(text),
+    "avatarUrl2" -> optional(text),
+    "company2" -> optional(text),
+    "blog2" -> optional(text)
+  )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
+
+
+  def newOrEditSpeaker(speakerUUID: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
-      Ok("new speaker")
+      speakerUUID match {
+        case Some(uuid) => {
+          Speaker.findByUUID(uuid).map {
+            speaker: Speaker =>
+              Ok(views.html.CFPAdmin.newSpeaker(speakerForm.fill(speaker))).flashing("success" -> "You are currently editing an existing speaker")
+          }.getOrElse {
+            Ok(views.html.CFPAdmin.newSpeaker(speakerForm)).flashing("error" -> "Speaker not found")
+          }
+        }
+        case None => Ok(views.html.CFPAdmin.newSpeaker(speakerForm))
+      }
+
   }
 
-  def saveNewSpeaker()=SecuredAction(IsMemberOf("cfp")) {
+  def saveNewSpeaker() = SecuredAction(IsMemberOf("cfp")) {
     implicit request =>
-      Ok("Saved")
+      speakerForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.CFPAdmin.newSpeaker(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
+        validSpeaker => {
+          Speaker.save(validSpeaker)
+          Event.storeEvent(Event("speakerAdmin", request.webuser.uuid, "created or updated speaker [" + validSpeaker.name.getOrElse("?") + "]"))
+          Redirect(routes.CFPAdmin.showSpeakerAndTalks(validSpeaker.uuid)).flashing("success" -> "Profile saved")
+        }
+      )
   }
-
 
 }
 

@@ -63,8 +63,18 @@ object Speaker {
     Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog)
   }
 
+  def createOrEditSpeaker(uuid:Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
+    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog)
+  }
+
+
   def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
     Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
+  }
+
+  def unapplyFormEdit(s: Speaker): Option[(Option[String],String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {

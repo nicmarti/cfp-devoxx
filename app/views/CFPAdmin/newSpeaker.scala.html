@@ -1,0 +1,47 @@
+@(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@import helper.twitterBootstrap._
+
+@main("Create a new speaker") {
+
+<div class="row">
+    <div class="col-md-12 page-header">
+        <h3>@Messages("newSpeaker.title")</h3>
+    </div>
+    <div class="col-md-12">
+        @if(flash.get("error").isDefined){
+          <div class="alert alert-danger alert-dismissable">
+              <strong>Error :</strong>
+              @flash.get("error").get
+          </div>
+        }
+        @if(flash.get("success").isDefined){
+          <div class="alert alert-success alert-dismissable">
+              @flash.get("success").get
+          </div>
+        }
+
+        @helper.form(action = routes.CFPAdmin.saveNewSpeaker) {
+            @helper.inputText(speakerForm("uuid"), 'size->40)
+            @helper.inputText(speakerForm("name"), 'size->40)
+            @helper.inputText(speakerForm("email"), 'size->40)
+            @helper.inputText(speakerForm("avatarUrl2"), 'size->80, 'label->"URL to image")
+            @helper.inputText(speakerForm("company2"))
+            @helper.textarea(speakerForm("bio2"), 'cols -> 70, 'rows -> 5)
+            <i class="icon-text-width"></i> : <span id="charsremain"></span>
+            @helper.inputText(speakerForm("twitter2"), 'placeholder -> "@nickname")
+            @helper.inputText(speakerForm("blog2"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
+            @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "fr")
+            <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
+        }
+    </div>
+</div>
+
+<script type="text/javascript" src="/assets/js/maxlength.js"></script>
+<script type="text/javascript">
+$(document).ready(function($){
+    setformfieldsize($('#bio'), 750, 'charsremain');
+});
+</script>
+
+}

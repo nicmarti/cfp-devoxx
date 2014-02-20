@@ -79,7 +79,7 @@ GET         /cfpadmin/allSpeakers                                controllers.CFP
 GET         /cfpadmin/editSpeakerName                            controllers.CFPAdmin.editSpeakerName(uuid:String)
 POST        /cfpadmin/saveSpeakerName                            controllers.CFPAdmin.saveSpeakerName()
 
-GET         /cfpadmin/newSpeaker                                 controllers.CFPAdmin.newSpeaker()
+GET         /cfpadmin/newOrEditSpeaker                           controllers.CFPAdmin.newOrEditSpeaker(speakerUUID:Option[String])
 POST        /cfpadmin/saveNewSpeaker                             controllers.CFPAdmin.saveNewSpeaker()
 
 GET         /admin                                               controllers.Backoffice.homeBackoffice()

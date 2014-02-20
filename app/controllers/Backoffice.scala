@@ -32,9 +32,11 @@ object Backoffice extends SecureCFPController {
   def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       if (Webuser.hasAccessToCFP(uuidSpeaker)) {
+        Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, "removed user from CFP group"))
         Webuser.removeFromCFPAdmin(uuidSpeaker)
       } else {
         Webuser.addToCFPAdmin(uuidSpeaker)
+        Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, "added user to CFP group"))
       }
       Redirect(routes.CFPAdmin.allWebusers())
   }

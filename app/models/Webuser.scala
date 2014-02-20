@@ -181,7 +181,7 @@ object Webuser {
 
   def removeFromCFPAdmin(uuid: String) = Redis.pool.withClient {
     client =>
-      if (uuid != "9d5b6bfc9154c63afb74ef73dec9d305e3a288c6") {
+      if (uuid != "b14651a3cd78ab4fd03d522ebef81cdac1d5755c") {
         client.srem("Webuser:cfp", uuid)
         Cache.remove(s"Webuser:cfp:$uuid")
       }

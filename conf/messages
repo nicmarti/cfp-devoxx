@@ -391,3 +391,15 @@ sw.proposal.presentedWith=Presented also by
 admin.btn.webuser=Webusers
 editSpeakerName=Edit Speaker name
 admin.btn.createNewspeaker=Create a new speaker
+
+newSpeaker.title=Create a new speaker
+avatarUrl2=URL of speaker''s photo
+name=Full name
+bio2=Speaker''s bio
+twitter2=Twitter''s handle
+company2=Company
+blog2=Web site or personnal blog
+lang2=Will speak in English or French? (en/fr)
+sp.editSpeaker=Edit this speaker
+sp.authenticateAs=Authenticate as
+sp.editName=Edit name

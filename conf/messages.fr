@@ -422,3 +422,15 @@ sw.proposal.presentedWith=Présenté avec
 admin.btn.webuser=Webusers
 editSpeakerName=Editer le nom et le prénom du speaker
 admin.btn.createNewspeaker=Créer un nouveau speaker
+
+newSpeaker.title=Créer un nouveau speaker
+avatarUrl2=URL vers une photo du speaker (linkedin, google+)
+name=Prénom et nom de famille
+bio2=Bio du speaker
+twitter2=Twitter (avec @ au début)
+company2=Société
+blog2=Blog ou site internet
+lang2=Indiquez "fr" pour un speaker francophone, sinon "en"
+sp.editSpeaker=Editer ce speaker
+sp.editName=Editer prénom et nom
+sp.authenticateAs=S''authentifier avec ce compte

@@ -23,7 +23,7 @@
             }
 
             @helper.form(action = routes.CFPAdmin.saveSpeakerName) {
-            <input type="text" name="uuid" value="@webuserForm.value.map(_._1)">
+            <input type="hidden" name="uuid" value="@webuserForm.value.map(_._1)">
             @helper.inputText(webuserForm("firstName"))
             @helper.inputText(webuserForm("lastName"))
             <button class="btn btn-success" type="submit">@Messages("confirm.import.save")</button>
