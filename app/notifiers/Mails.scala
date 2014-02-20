@@ -98,6 +98,7 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[DevoxxFr2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.fr")
+
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -115,7 +116,7 @@ object Mails {
 
     // For Program committee
     emailer.setSubject(s"[${proposal.title} ${proposal.id}]")
-    emailer.addFrom(fromWebuser.email)
+    emailer.addFrom("program@devoxx.fr")
     emailer.addRecipient("program@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(
