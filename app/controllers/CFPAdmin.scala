@@ -475,7 +475,7 @@ object CFPAdmin extends SecureCFPController {
         invalidForm => BadRequest(views.html.CFPAdmin.newSpeaker(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validSpeaker => {
           Speaker.save(validSpeaker)
-          Event.storeEvent(Event("speakerAdmin", request.webuser.uuid, "created or updated speaker [" + validSpeaker.name.getOrElse("?") + "]"))
+          Event.storeEvent(Event( validSpeaker.name.getOrElse("?") , request.webuser.uuid, "created or updated a speaker"))
           Redirect(routes.CFPAdmin.showSpeakerAndTalks(validSpeaker.uuid)).flashing("success" -> "Profile saved")
         }
       )

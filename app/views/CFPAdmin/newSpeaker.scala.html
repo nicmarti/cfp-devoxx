@@ -22,7 +22,7 @@
         }
 
         @helper.form(action = routes.CFPAdmin.saveNewSpeaker) {
-            @helper.inputText(speakerForm("uuid"), 'size->40)
+            <input type="hidden" name="uuid" value='@speakerForm("uuid").value.getOrElse("")'>
             @helper.inputText(speakerForm("name"), 'size->40)
             @helper.inputText(speakerForm("email"), 'size->40)
             @helper.inputText(speakerForm("avatarUrl2"), 'size->80, 'label->"URL to image")
