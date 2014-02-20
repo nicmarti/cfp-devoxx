@@ -1,4 +1,5 @@
 # Home page
+GET         /favicon.ico                                         controllers.Assets.at(path="/public/images", file="favicon.ico")
 GET         /                                                    controllers.Application.index
 GET         /home                                                controllers.Application.home
 
@@ -78,7 +79,8 @@ GET         /cfpadmin/allSpeakers                                controllers.CFP
 GET         /cfpadmin/editSpeakerName                            controllers.CFPAdmin.editSpeakerName(uuid:String)
 POST        /cfpadmin/saveSpeakerName                            controllers.CFPAdmin.saveSpeakerName()
 
-GET         /favicon.ico                                         controllers.Assets.at(path="/public/images", file="favicon.ico")
+GET         /cfpadmin/newSpeaker                                 controllers.CFPAdmin.newSpeaker()
+POST        /cfpadmin/saveNewSpeaker                             controllers.CFPAdmin.saveNewSpeaker()
 
 GET         /admin                                               controllers.Backoffice.homeBackoffice()
 GET         /admin/webusers/switch                               controllers.Backoffice.switchCFPAdmin(uuid:String)

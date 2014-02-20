@@ -440,6 +440,16 @@ object CFPAdmin extends SecureCFPController {
         })
   }
 
+  def newSpeaker()=SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      Ok("new speaker")
+  }
+
+  def saveNewSpeaker()=SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      Ok("Saved")
+  }
+
 
 }
 
