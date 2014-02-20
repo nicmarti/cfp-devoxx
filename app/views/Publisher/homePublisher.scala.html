@@ -12,6 +12,7 @@
                 <p><a href="@routes.Publisher.showAllSpeakers()" title="Show all speakers">Voir tous les orateurs</a></p>
 
                 <h2>@Messages("sw.presentations")</h2>
+                <p>@Messages("sw.faq") <a href="http://www.devoxx.fr/faq/#format">FAQ</a> </p>
                 <ul>
                     <li><a href="@routes.Publisher.showByTalkType(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
                     <li><a href="@routes.Publisher.showByTalkType(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
@@ -23,11 +24,16 @@
                 <h2>Keynotes</h2>
                 <p>TBA</p>
 
+                <h2>@Messages("sw.hackatons")</h2>
+                <p>@Messages("sw.hackatons.describe")</p>
+                <ul>
+                    <li><a href="@routes.Publisher.showByTalkType(ProposalType.HACK.id)" class="btn btn-primary btn-sm"><i class="icon-gears"></i> Hackatons</a></li>
+                </ul>
+
                 <h2>@Messages("sw.events")</h2>
                 <ul>
                     <li>L'après-midi des Décideurs</li>
                     <li>Devoxx4Kids</li>
-                    <li>HackerGarten</li>
                     <li>CodeStory</li>
                     <li>Les mercenaires du Devops</li>
                 </ul>

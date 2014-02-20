@@ -434,3 +434,6 @@ lang2=Indiquez "fr" pour un speaker francophone, sinon "en"
 sp.editSpeaker=Editer ce speaker
 sp.editName=Editer prénom et nom
 sp.authenticateAs=S''authentifier avec ce compte
+sw.hackatons.describe=Evénements de développements organisés pendant la conférence
+sw.all.hack=Hackatons
+sw.faq=Plus d''explications sur chaque format ? Voir notre
