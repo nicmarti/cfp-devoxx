@@ -27,9 +27,11 @@ import play.api.libs.json._
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsNumber
 import library.Redis
+import org.joda.time.DateTime
 
 /**
- * Created by nicolas on 20/02/2014.
+ * Stats on which speaker and which proposal is the most popular.
+ * Created by nicolas martignole on a rainy day after a cool chat with Stephan 20/02/2014.
  */
 case class HitView(url: String, objRef: String, objName: String, date: Long)
 
@@ -57,12 +59,27 @@ object HitView {
     client =>
       val tx = client.multi
       tx.zadd("Url:Hit:"+url,System.currentTimeMillis(),createJSON(url, objRef, objValue))
+      tx.sadd("Url:Stored",url)
       tx.exec()
+  }
+
+  def allStoredURL():Set[String]=Redis.pool.withClient{
+    client=>
+      client.smembers("Url:Stored")
+  }
+
+  def loadHitViews(url:String, startDate:DateTime, endDate:DateTime):Set[HitView]=Redis.pool.withClient{
+    client=>
+      client.zrangeByScore("Url:Hit:"+url, startDate.getMillis, endDate.getMillis).flatMap{
+        json:String=>
+          Json.parse(json).asOpt[HitView]
+      }
+
   }
 
   private def createJSON(url: String, objRef: String, objValue: String): String = {
     val hit = new HitView(url, objRef,objValue, System.currentTimeMillis / 1000)
-    play.api.libs.json.Json.toJson(hit).toString
+    Json.toJson(hit).toString
   }
 }
 

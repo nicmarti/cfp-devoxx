@@ -3,7 +3,9 @@ package library.search
 import play.api.libs.json.Json
 import akka.actor._
 import play.api.libs.concurrent.Execution.Implicits._
-import models.{ApprovedProposal, Proposal, Speaker, Event}
+import models._
+import org.joda.time.DateMidnight
+import org.joda.time.DateTime
 
 /**
  * ElasticSearch Akka Actor. Yes, I should write more doc, I know.
@@ -84,6 +86,8 @@ case class DoIndexAllApproved()
 
 case class DoIndexAllEvents()
 
+case class DoIndexAllHitViews()
+
 case class Index(obj: ESType)
 
 case class StopIndex()
@@ -110,6 +114,7 @@ class IndexMaster extends ESActor {
     case DoIndexAllReviews() => doIndexAllReviews()
     case DoIndexAllEvents() => doIndexAllEvents()
     case DoIndexEvent() => doIndexEvent()
+    case DoIndexAllHitViews() => doIndexAllHitViews()
     case StopIndex() => stopIndex()
     case other => play.Logger.of("application.IndexMaster").error("Received an invalid actor message: " + other)
   }
@@ -261,6 +266,17 @@ class IndexMaster extends ESActor {
     ElasticSearch.indexBulk(sb.toString())
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all events")
+  }
+
+  def doIndexAllHitViews(){
+
+    HitView.allStoredURL().foreach{url=>
+      val hits = HitView.loadHitViews(url,new DateMidnight().minusDays(1).toDateTime, new DateTime())
+      hits.foreach{hit=>
+        println("hit "+hit)
+      }
+    }
+
   }
 }
 
