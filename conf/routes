@@ -21,8 +21,6 @@ POST        /newspeaker/validImported                            controllers.Aut
 GET         /cfp/home                                            controllers.CallForPaper.homeForSpeaker
 GET         /cfp/profile                                         controllers.CallForPaper.editProfile
 POST        /cfp/profile                                         controllers.CallForPaper.saveProfile
-GET         /cfp/webuser/edit                                    controllers.CallForPaper.editCurrentWebuser
-POST        /cfp/webuser/save                                    controllers.CallForPaper.saveCurrentWebuser
 
 # proposal
 GET         /cfp/proposal/new                                    controllers.CallForPaper.newProposal()

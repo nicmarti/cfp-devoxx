@@ -25,13 +25,13 @@
 
         @helper.form(action = routes.CallForPaper.saveProfile) {
             <input type="hidden" name="email" value="@speakerForm("email").value.get">
+            @helper.inputText(speakerForm("name"), 'size->80)
             @helper.inputText(speakerForm("avatarUrl"), 'size->80)
             @helper.inputText(speakerForm("company"))
             @helper.textarea(speakerForm("bio"), 'cols -> 70, 'rows -> 5)
             <i class="icon-text-width"></i> : <span id="charsremain"></span>
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
-            <input type="hidden" name="name" value="@speakerForm("name").value">
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
     </div>

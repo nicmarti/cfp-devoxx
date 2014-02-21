@@ -58,31 +58,10 @@ object CallForPaper extends SecureCFPController {
 
   }
 
-  val editWebuserForm = Form(
-    tuple(
-      "firstName" -> text.verifying(nonEmpty, maxLength(30)),
-      "lastName" -> text.verifying(nonEmpty, maxLength(30))
-    )
-  )
-
-  def editCurrentWebuser = SecuredAction {
-    implicit request =>
-      Ok(views.html.CallForPaper.editWebuser(editWebuserForm.fill(request.webuser.firstName, request.webuser.lastName)))
-  }
-
-  def saveCurrentWebuser = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      editWebuserForm.bindFromRequest.fold(errorForm => BadRequest(views.html.CallForPaper.editWebuser(errorForm)),
-        success => {
-          Webuser.updateNames(uuid, success._1, success._2)
-          Redirect(routes.CallForPaper.homeForSpeaker())
-        })
-  }
 
   val speakerForm = play.api.data.Form(mapping(
     "email" -> (email verifying nonEmpty),
-    "name" -> text,
+    "name" -> nonEmptyText(maxLength=25),
     "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
     "twitter" -> optional(text),
