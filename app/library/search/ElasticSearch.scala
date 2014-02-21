@@ -41,9 +41,22 @@ object ElasticSearch {
         response.status match {
           case 201 => Success(response.body)
           case 200 => Success(response.body)
-          case other => Failure(new RuntimeException("Unable to bulkd index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+          case other => Failure(new RuntimeException("Unable to bulk import, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
+  }
+
+  def deleteIndex(indexName:String)={
+    val futureResponse = WS.url(host + "/" + indexName + "/").delete()
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 201 => Success(response.body)
+          case 200 => Success(response.body)
+          case other => Failure(new RuntimeException("Unable to delete index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+
   }
 
   def doSearch(query: String): Future[Try[String]] = {

@@ -270,6 +270,8 @@ class IndexMaster extends ESActor {
 
   def doIndexAllHitViews() {
 
+     ElasticSearch.deleteIndex("hitviews")
+
     HitView.allStoredURL().foreach {
       url =>
         val hits = HitView.loadHitViews(url, new DateMidnight().minusDays(1).toDateTime, new DateTime())
@@ -277,16 +279,15 @@ class IndexMaster extends ESActor {
         val sb = new StringBuilder
         hits.foreach {
           hit: HitView =>
-            sb.append("{\"index\":{\"_index\":\"urls234\", \"_timestamp\":{\"enabled\":true,\"path\":\"date\"}, \"_type\":\"url3\",\"_id\":\"" + hit.hashCode().toString + "\"}}")
+            sb.append("{\"index\":{\"_index\":\"hitviews\", \"_type\":\"hitview\",\"_id\":\"" + hit.hashCode().toString + "\", \"_timestamp\":{\"enabled\":true}}}")
             sb.append("\n")
-            val date=new DateTime(hit.date*1000).toString("yyyy/MM/dd HH:mm:ss Z")
-            sb.append("{\"url\":\"").append(hit.url).append("\",\"objRef\":\"").append(hit.objRef)
-            sb.append("\",\"objName\":\"")
-            sb.append(hit.objName).append("\",\"date\":\"").append(date).append("\"}")
+            val date=new DateTime(hit.date*1000).toString()
+            sb.append("{\"@tags\":\"").append(hit.url).append("\",\"@messages\":\"")
+            //.append(hit.objRef).append(" ")
+            sb.append(hit.objName.replaceAll("[-,\\s+]","_")).append("\",\"@timestamp\":\"").append(date).append("\"}")
             sb.append("\n")
         }
         sb.append("\n")
-println(sb.toString())
 
         ElasticSearch.indexBulk(sb.toString())
 
