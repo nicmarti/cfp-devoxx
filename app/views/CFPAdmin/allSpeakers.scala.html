@@ -60,7 +60,6 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                           <a href="@routes.CFPAdmin.editSpeakerName(speaker.uuid)" class="btn btn-sm btn-primary">@Messages("sp.editName")</a>
                            <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
                            <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
                         </td>

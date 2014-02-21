@@ -76,8 +76,6 @@ GET         /cfpadmin/proposals/byTrack/:track                   controllers.CFP
 GET         /cfpadmin/compareReviewer                            controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 GET         /cfpadmin/allWebusers                                controllers.CFPAdmin.allWebusers()
 GET         /cfpadmin/allSpeakers                                controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
-GET         /cfpadmin/editSpeakerName                            controllers.CFPAdmin.editSpeakerName(uuid:String)
-POST        /cfpadmin/saveSpeakerName                            controllers.CFPAdmin.saveSpeakerName()
 
 GET         /cfpadmin/setPreferredDay                            controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
 GET         /cfpadmin/resetPreferredDay                            controllers.CFPAdmin.resetPreferredDay(proposalId:String)

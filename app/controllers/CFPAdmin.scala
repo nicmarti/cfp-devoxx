@@ -429,23 +429,6 @@ object CFPAdmin extends SecureCFPController {
     )
   )
 
-  def editSpeakerName(uuid: String) = SecuredAction(IsMemberOf("cfp")) {
-    implicit request =>
-      Webuser.findByUUID(uuid).map {
-        webuser =>
-          Ok(views.html.CFPAdmin.editSpeakerName(editSpeakerForm.fill((webuser.uuid, webuser.firstName, webuser.lastName))))
-      }.getOrElse(NotFound("Speaker not found"))
-  }
-
-  def saveSpeakerName() = SecuredAction(IsMemberOf("cfp")) {
-    implicit request =>
-      editSpeakerForm.bindFromRequest.fold(errorForm => BadRequest(views.html.CFPAdmin.editSpeakerName(errorForm)).flashing("error" -> "Please correct errors"),
-        success => {
-          Webuser.updateNames(success._1, success._2, success._3)
-          Redirect(routes.CFPAdmin.showSpeakerAndTalks(success._1)).flashing("success" -> "Speaker updated")
-        })
-  }
-
   val speakerForm = play.api.data.Form(mapping(
     "uuid" -> optional(text),
     "email" -> (email verifying nonEmpty),
@@ -480,7 +463,16 @@ object CFPAdmin extends SecureCFPController {
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CFPAdmin.newSpeaker(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validSpeaker => {
+
+          Webuser.findByUUID(validSpeaker.uuid).map{existingWebuser=>
+            Webuser.updateNames(validSpeaker.uuid,validSpeaker.name.getOrElse("?"),validSpeaker.name.getOrElse("?"))
+          }.getOrElse{
+            val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.name.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname") )
+            Webuser.saveNewSpeakerEmailNotValidated(webuser)
+            Webuser.validateEmailForSpeaker(webuser)
+          }
           Speaker.save(validSpeaker)
+
           Event.storeEvent(Event( validSpeaker.name.getOrElse("?") , request.webuser.uuid, "created or updated a speaker"))
           Redirect(routes.CFPAdmin.showSpeakerAndTalks(validSpeaker.uuid)).flashing("success" -> "Profile saved")
         }

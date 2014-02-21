@@ -55,7 +55,6 @@ object Backoffice extends SecureCFPController {
 
   def changeProposalState(proposalId: String, state:String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val uuid = request.webuser.uuid
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
       Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to "+state))
   }

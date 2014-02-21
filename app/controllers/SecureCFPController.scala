@@ -118,8 +118,7 @@ trait SecureCFPController extends Controller {
 
       result.getOrElse({
         val response = {
-          Redirect(routes.Application.home()).flashing("error" -> Messages("loginRequired"))
-
+          Redirect(routes.Application.home()).flashing("error" -> Messages("Cannot access this resource, your profile does not belong to this security group"))
         }
         Future.successful(response)
       })

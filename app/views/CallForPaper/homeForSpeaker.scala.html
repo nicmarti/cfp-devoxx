@@ -8,7 +8,7 @@
             <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>
 
             <div class="panel panel-default">
-                <div class="panel-heading"><p>@webuser.firstName @webuser.lastName</p><small>@webuser.email</small></div>
+                <div class="panel-heading"><p>@speaker.name.getOrElse(webuser.cleanName)</p><small>@webuser.email</small></div>
                 <table class="table">
                     <tbody>
                         <tr>
