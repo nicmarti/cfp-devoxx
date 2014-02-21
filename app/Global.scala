@@ -1,17 +1,15 @@
-import akka.actor.Props
 import java.util.concurrent.TimeUnit
 import library._
 import library.DraftReminder
 import library.search._
 import library.search.StopIndex
-import models.{Review, Proposal}
 import org.joda.time.DateMidnight
 import play.api._
 import play.api.mvc.RequestHeader
 import mvc.Results._
 import play.api.UnexpectedException
 import Play.current
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import play.api.libs.concurrent._
 import scala.concurrent.duration._
 import scala.Some
@@ -20,7 +18,7 @@ import scala.util.control.NonFatal
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
-      CronTask.draftReminder()
+      //  CronTask.draftReminder()
       CronTask.elasticSearch()
       CronTask.doComputeStats()
     } else {
@@ -99,12 +97,11 @@ object CronTask {
     if(Play.isDev){
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllProposals())
-      // Do not index event for the time being
-      // Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexEvent())
+      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllHitViews())
     }else{
       Akka.system.scheduler.schedule(10 hour, 1 hour, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
       Akka.system.scheduler.schedule(25 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexAllProposals())
-      //Akka.system.scheduler.schedule(3 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexEvent())
+      Akka.system.scheduler.schedule(2 minutes, 20 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews())
     }
   }
 
