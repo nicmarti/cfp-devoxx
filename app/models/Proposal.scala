@@ -704,4 +704,23 @@ object Proposal {
       onlyAcceptedOrApproved.filter(p => Proposal.givesSpeakerFreeEntrance(p.talkType)).nonEmpty
   }
 
+  def setPreferredDay(proposalId:String, day:String)=Redis.pool.withClient{
+    implicit client=>
+      client.hset("PreferredDay", proposalId, day)
+  }
+
+  def resetPreferredDay(proposalId:String)=Redis.pool.withClient{
+    implicit client=>
+      client.hdel("PreferredDay", proposalId)
+  }
+
+  def hasPreferredDay(proposalId:String):Boolean=Redis.pool.withClient{
+    implicit client=>
+      client.hexists("PreferredDay", proposalId)
+  }
+
+  def getPreferredDay(proposalId:String):Option[String]=Redis.pool.withClient{
+    implicit client=>
+      client.hget("PreferredDay", proposalId)
+  }
 }
