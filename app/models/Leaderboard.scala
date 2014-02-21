@@ -83,7 +83,7 @@ object Leaderboard {
       }
 
       val totalAcceptedByType = Proposal.totalAcceptedByType()
-    println("totalAcceptedByType "+totalAcceptedByType.size)
+
       totalAcceptedByType.toList.map {
         case (propType: ProposalType, total: Int) =>
           tx.hset("Leaderboard:totalAcceptedByType", propType.id, total.toString)

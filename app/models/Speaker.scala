@@ -95,7 +95,6 @@ object Speaker {
     Cache.remove("speaker:uuid:" + uuid)
     findByUUID(uuid).map {
       speaker =>
-        println("speaker update name "+newName)
         Speaker.update(uuid, speaker.copy(name = Option(newName)))
     }
   }

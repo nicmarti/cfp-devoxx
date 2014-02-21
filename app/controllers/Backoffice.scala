@@ -86,6 +86,7 @@ object Backoffice extends SecureCFPController {
     implicit request =>
       ElasticSearchActor.masterActor ! DoIndexAllSpeakers()
       ElasticSearchActor.masterActor ! DoIndexAllProposals()
+      ElasticSearchActor.masterActor ! DoIndexAllHitViews()
       if(Play.current.mode==play.api.Mode.Dev){
         ElasticSearchActor.masterActor ! DoIndexAllReviews()
       }

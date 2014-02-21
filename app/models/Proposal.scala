@@ -500,7 +500,7 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
-    println("all accepted "+allProposalIds.size)
+
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
@@ -579,7 +579,6 @@ object Proposal {
 
   // How many Conference, University, BOF...
   def totalAcceptedByType(): Map[ProposalType, Int] = {
-    println("allAccepted() " + allAccepted().size)
     allAccepted().groupBy(_.talkType).map {
       case (pt: ProposalType, listOfProposals: List[Proposal]) =>
         (pt, listOfProposals.size)
