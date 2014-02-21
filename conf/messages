@@ -406,3 +406,7 @@ sp.editName=Edit name
 sw.hackatons=Hackatons
 sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
+calendar.pref=Speaker''s preferences for schedulling
+calendar.pref.thursday=Thursday
+calendar.pref.friday=Friday
+calendar.pref.reset=No preferences

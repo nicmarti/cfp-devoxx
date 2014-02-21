@@ -200,6 +200,18 @@
             </div>
         </div>
         <div class="col-md-6">
+            @if(proposal.talkType==ProposalType.QUICK||proposal.talkType==ProposalType.CONF||proposal.talkType==ProposalType.KEY||proposal.talkType==ProposalType.HACK||proposal.talkType==ProposalType.OTHER){
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
+                </div>
+                <div class="panel-body">
+                    <a href="#" class="btn btn-sm btn-default">@Messages("calendar.pref.thursday")</a>
+                    <a href="#" class="btn btn-sm btn-default">@Messages("calendar.pref.friday")</a>
+                    <a href="#" class="btn btn-sm btn-default">@Messages("calendar.pref.reset")</a>
+                </div>
+            </div>
+            }
             <div class="panel panel-danger">
                 <div class="panel-heading">
                     <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
@@ -214,6 +226,7 @@
                 @tags.renderComments(internalComments)
                 </div>
             </div>
+
         </div>
     </div>
 }

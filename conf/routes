@@ -79,6 +79,9 @@ GET         /cfpadmin/allSpeakers                                controllers.CFP
 GET         /cfpadmin/editSpeakerName                            controllers.CFPAdmin.editSpeakerName(uuid:String)
 POST        /cfpadmin/saveSpeakerName                            controllers.CFPAdmin.saveSpeakerName()
 
+GET         /cfpadmin/setPreferredDay                            controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
+GET         /cfpadmin/resetPreferredDay                            controllers.CFPAdmin.resetPreferredDay(proposalId:String)
+
 GET         /cfpadmin/newOrEditSpeaker                           controllers.CFPAdmin.newOrEditSpeaker(speakerUUID:Option[String])
 POST        /cfpadmin/saveNewSpeaker                             controllers.CFPAdmin.saveNewSpeaker()
 

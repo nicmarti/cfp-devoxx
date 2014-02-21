@@ -437,3 +437,7 @@ sp.authenticateAs=S''authentifier avec ce compte
 sw.hackatons.describe=Evénements de développements organisés pendant la conférence
 sw.all.hack=Hackatons
 sw.faq=Plus d''explications sur chaque format ? Voir notre
+calendar.pref=Préférences de plannification
+calendar.pref.thursday=Le jeudi
+calendar.pref.friday=Le vendredi
+calendar.pref.reset=Pas de préférences

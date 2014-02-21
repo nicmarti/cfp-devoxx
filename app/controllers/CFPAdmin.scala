@@ -487,6 +487,15 @@ object CFPAdmin extends SecureCFPController {
       )
   }
 
+  def setPreferredDay(proposalId:String, day:String)= SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success"->("Preferred day set to "+day))
+  }
+
+  def resetPreferredDay(proposalId:String)= SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success"->"No preferences")
+  }
 }
 
 
