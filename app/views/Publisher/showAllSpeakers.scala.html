@@ -9,15 +9,15 @@
             <p>@Messages("sw.allSpeakers")</p>
             <div class="entry-content">
                 <table>
-                @speakers.sortBy(_.name).sliding(4,4).map{fourSpeakers:List[Speaker]=>
+                @speakers.sortBy(_.cleanName).sliding(4,4).map{fourSpeakers:List[Speaker]=>
                     <tr>
                     @fourSpeakers.map{speaker:Speaker=>
                         <td>
-                            <a href="@routes.Publisher.showSpeaker(speaker.uuid,speaker.name.getOrElse(""))">
+                            <a href="@routes.Publisher.showSpeaker(speaker.uuid,speaker.cleanName)">
                             @speaker.avatarUrl.map{url=>
-                                <img src="@url" width="64" height="64" alt="@speaker.name" title="@speaker.name"><br>
+                                <img src="@url" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName"><br>
                             }
-                            @speaker.name</a>
+                            @speaker.cleanName</a>
                         </td>
                     }
                     </tr>

@@ -4,10 +4,10 @@
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
             <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></small>
-            <h1 class="entry-title">@speaker.name</h1>
+            <h1 class="entry-title">@speaker.cleanName</h1>
             <div class="entry-content">
                 @speaker.avatarUrl.map{url=>
-                    <img class="alignleft size-medium wp-image-44"  src="@url" width="128" height="128" alt="@speaker.name" title="@speaker.name"><br>
+                    <img class="alignleft size-medium wp-image-44"  src="@url" width="128" height="128" alt="@speaker.cleanName" title="@speaker.cleanName"><br>
                 }
                 <p>@speaker.bio</p>
                 @speaker.twitter.map{tw=>
