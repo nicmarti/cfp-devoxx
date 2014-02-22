@@ -158,7 +158,7 @@ object Webuser {
       Cache.remove("web:email:" + webuser.email)
 
       if (isSpeaker(webuser.uuid)) {
-        Speaker.updateName(webuser.uuid, webuser.cleanName)
+        Speaker.updateName(webuser.uuid, webuser.firstName, webuser.lastName)
       }
   }
 
@@ -193,6 +193,14 @@ object Webuser {
       client.hmget("Webuser", allSpeakerUUIDs).flatMap {
         js: String =>
           Json.parse(js).asOpt[Webuser]
+      }
+  }
+
+  def allWebusers:Map[String, Option[Webuser]]=Redis.pool.withClient {
+    client =>
+      client.hgetAll("Webuser").map {
+        case (key:String, valueJson: String) =>
+          (key, Json.parse(valueJson).asOpt[Webuser])
       }
   }
 

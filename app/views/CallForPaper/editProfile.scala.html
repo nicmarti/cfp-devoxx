@@ -25,7 +25,8 @@
 
         @helper.form(action = routes.CallForPaper.saveProfile) {
             <input type="hidden" name="email" value="@speakerForm("email").value.get">
-            @helper.inputText(speakerForm("name"), 'size->80)
+            @helper.inputText(speakerForm("firstName"), 'size->80)
+            @helper.inputText(speakerForm("lastName"), 'size->80)
             @helper.inputText(speakerForm("avatarUrl"), 'size->80)
             @helper.inputText(speakerForm("company"))
             @helper.textarea(speakerForm("bio"), 'cols -> 70, 'rows -> 5)

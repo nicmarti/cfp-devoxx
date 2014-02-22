@@ -432,13 +432,14 @@ object CFPAdmin extends SecureCFPController {
   val speakerForm = play.api.data.Form(mapping(
     "uuid" -> optional(text),
     "email" -> (email verifying nonEmpty),
-    "name" -> text,
+    "lastName" -> text,
     "bio2" -> nonEmptyText(maxLength = 750),
     "lang2" -> optional(text),
     "twitter2" -> optional(text),
     "avatarUrl2" -> optional(text),
     "company2" -> optional(text),
-    "blog2" -> optional(text)
+    "blog2" -> optional(text),
+    "firstName"->text
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
 
@@ -473,7 +474,7 @@ object CFPAdmin extends SecureCFPController {
           }
           Speaker.save(validSpeaker)
 
-          Event.storeEvent(Event( validSpeaker.name.getOrElse("?") , request.webuser.uuid, "created or updated a speaker"))
+          Event.storeEvent(Event( validSpeaker.cleanName , request.webuser.uuid, "created or updated a speaker"))
           Redirect(routes.CFPAdmin.showSpeakerAndTalks(validSpeaker.uuid)).flashing("success" -> "Profile saved")
         }
       )

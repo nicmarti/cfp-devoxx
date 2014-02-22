@@ -61,13 +61,14 @@ object CallForPaper extends SecureCFPController {
 
   val speakerForm = play.api.data.Form(mapping(
     "email" -> (email verifying nonEmpty),
-    "name" -> nonEmptyText(maxLength=25),
+    "lastName" -> nonEmptyText(maxLength=25),
     "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
     "twitter" -> optional(text),
     "avatarUrl" -> optional(text),
     "company" -> optional(text),
-    "blog" -> optional(text)
+    "blog" -> optional(text),
+    "firstName" -> nonEmptyText(maxLength=25)
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def editProfile = SecuredAction {

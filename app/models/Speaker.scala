@@ -38,7 +38,12 @@ import org.joda.time.DateTime
  * Created: 28/09/2013 11:01
  */
 case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
-                   company: Option[String], blog: Option[String]){
+                   company: Option[String], blog: Option[String], firstName:Option[String]){
+
+  val cleanName:String={
+    firstName.getOrElse("")+name.map(n=>" "+n).getOrElse("")
+  }
+
 
   val cleanLang:String=lang.map{
     l=>
@@ -59,22 +64,21 @@ object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
-    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog)
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName:String): Speaker = {
+    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName))
   }
 
   def createOrEditSpeaker(uuid:Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String]): Speaker = {
-    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog)
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName:String): Speaker = {
+    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
   }
 
-
-  def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
-    Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
+  def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String)] = {
+    Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""))
   }
 
-  def unapplyFormEdit(s: Speaker): Option[(Option[String],String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String])] = {
-    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog)
+  def unapplyFormEdit(s: Speaker): Option[(Option[String],String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String)] = {
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""))
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -91,11 +95,11 @@ object Speaker {
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
-  def updateName(uuid: String, newName: String) = {
+  def updateName(uuid: String, firstName: String, lastName: String) = {
     Cache.remove("speaker:uuid:" + uuid)
     findByUUID(uuid).map {
       speaker =>
-        Speaker.update(uuid, speaker.copy(name = Option(newName)))
+        Speaker.update(uuid, speaker.copy(name = Option(lastName), firstName=Option(firstName)))
     }
   }
 
@@ -163,8 +167,6 @@ object Speaker {
         allSpeakers
       }
   }
-
-
 
 }
 

@@ -5,7 +5,7 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3><i class="icon-user"></i> @speaker.name.getOrElse(speaker.email)</h3>
+                <h3><i class="icon-user"></i> @speaker.firstName @speaker.name</h3>
             </div>
             <div class="panel-body">
         @if(flash.get("error").isDefined){
@@ -19,9 +19,10 @@
               @flash.get("success").get
           </div>
         }
-<a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
-<a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
-
+@if(SecureCFPController.hasAccessToCFP(req)){
+    <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
+    <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
+}
                 <table class="table">
                     <tbody>
                         <tr>
@@ -80,7 +81,7 @@
             </div>
         </div>
     </div>
-
+@if(SecureCFPController.hasAccessToCFP(req)){
     <div class="col-md-12">
         <div class="panel-heading">
             <h3><i class="icon-bullhorn"></i> Talks</h3>
@@ -138,7 +139,7 @@
             </div>
         </div>
     </div>
-
+}
     @if(SecureCFPController.hasAccessToAdmin(req)){
         <div class="col-md-12">
             <div class="panel panel-default">

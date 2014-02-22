@@ -140,14 +140,20 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def updateAcceptedSpeakers()=SecuredAction(IsMemberOf("admin")) {
+  def doUpdateSpeakers()=SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      ApprovedProposal.allApproved().foreach{p:Proposal=>
-        ApprovedProposal.approve(p)
+      val mapOfWebusers=Webuser.allWebusers
+     for(speaker<-Speaker.allSpeakers()) yield{
+        mapOfWebusers.get(speaker.uuid).map{ webuser=>
+          Speaker.updateName(speaker.uuid, webuser.get.firstName, webuser.get.lastName)
+        }.getOrElse{
+          val webuser = Webuser.createSpeaker(speaker.email, speaker.name.getOrElse("Firstname"), speaker.firstName.getOrElse("Lastname") )
+          Webuser.saveNewSpeakerEmailNotValidated(webuser)
+          Webuser.validateEmailForSpeaker(webuser)
+        }
       }
-      Ok("Done")
+      Ok("Updated speaker")
   }
-
 
 }
 

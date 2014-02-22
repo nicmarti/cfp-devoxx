@@ -126,7 +126,6 @@ GET         /api/fr14/slots/:confType                            controllers.Api
 GET         /api/fr14/approvedTalks/:confType                    controllers.ApiController.approvedTalks(confType:String)
 POST        /api/fr14/slots/:confType                            controllers.ApiController.saveSlots(confType:String)
 
-GET         /backoffice/updateAcceptedSpeakers                   controllers.Backoffice.updateAcceptedSpeakers()
 
 # Content Publisher
 GET         /devoxxfr2014/speakers                               controllers.Publisher.showAllSpeakers()
@@ -136,6 +135,9 @@ GET         /devoxxfr2014/talks/:talkType                        controllers.Pub
 GET         /devoxxfr2014/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
+
+GET /backoffice/updateSpeakers  controllers.Backoffice.doUpdateSpeakers()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                        controllers.Assets.at(path="/public", file)
