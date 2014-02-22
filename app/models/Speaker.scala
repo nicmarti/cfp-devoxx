@@ -40,12 +40,11 @@ import org.joda.time.DateTime
 case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String], firstName:Option[String]){
 
-  val cleanName:String={
+  def cleanName:String={
     firstName.getOrElse("")+name.map(n=>" "+n).getOrElse("")
   }
 
-
-  val cleanLang:String=lang.map{
+  def cleanLang:String=lang.map{
     l=>
       val cleanL=if(l.contains(",")){
         l.substring(0, l.indexOf(","))
