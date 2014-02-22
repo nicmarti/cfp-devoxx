@@ -1,11 +1,11 @@
 @(speaker:Speaker, proposals:Map[String,Proposal], currentUser:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@main("Speaker " + speaker.name.getOrElse("")) {
+@main("Speaker " + speaker.cleanName) {
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3><i class="icon-user"></i> @speaker.firstName @speaker.name</h3>
+                <h3><i class="icon-user"></i> @speaker.cleanName</h3>
             </div>
             <div class="panel-body">
         @if(flash.get("error").isDefined){
@@ -32,8 +32,8 @@
                                     <a class="pull-left" href="#">
                                         <img class="media-object"
                                         src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=75"
-                                        alt="@speaker.name.getOrElse("")"
-                                        title="@speaker.name.getOrElse("")" />
+                                        alt="@speaker.cleanName"
+                                        title="@speaker.cleanName" />
                                     </a>
                                     <div class="media-body">
                                         <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
@@ -45,7 +45,7 @@
                                     <a class="pull-left" href="#">
                                         <img class="media-object" width="75"
                                         src="@speaker.avatarUrl.get"
-                                        alt="@speaker.name.getOrElse("")"/>
+                                        alt="@speaker.cleanName"/>
                                     </a>
                                 </div>
                             }

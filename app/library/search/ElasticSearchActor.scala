@@ -43,7 +43,7 @@ case class ESSpeaker(speaker: Speaker) extends ESType {
 
   def id = speaker.uuid
 
-  override def label = speaker.name.getOrElse(speaker.email)
+  override def label = speaker.cleanName
 }
 
 case class ESProposal(proposal: Proposal) extends ESType {

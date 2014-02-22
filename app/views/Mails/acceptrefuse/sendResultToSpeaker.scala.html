@@ -1,7 +1,7 @@
 @(toSpeaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])(implicit lang:Lang)
 <small>English version below</small>
 <hr>
-Cher(e) @toSpeaker.name.getOrElse("speaker")
+Cher(e) @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
   <p>Nous avons le plaisir de vous annoncer qu'une proposition a été retenue pour Devoxx France 2014 !</p>
@@ -64,7 +64,7 @@ pour les BOFs.</p>
 <p>L'équipe de sélection de la conférence Devoxx France</p>
     <!--************************************* ------->
 <hr>
-Dear @toSpeaker.name.getOrElse("speaker")
+Dear @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
   <p>We're glad to inform you that your proposal for Devoxx France 2014 has been approved!</p>

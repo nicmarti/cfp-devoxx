@@ -185,14 +185,6 @@ object CallForPaper extends SecureCFPController {
       )
   }
 
-  def showSpeaker(uuidSpeaker: String) = SecuredAction {
-    implicit request =>
-      Speaker.findByUUID(uuidSpeaker) match {
-        case Some(speaker) => Ok(views.html.CallForPaper.showSpeaker(speaker))
-        case None => NotFound("Speaker not found")
-      }
-  }
-
   // Load a proposal by its id
   def editOtherSpeakers(proposalId: String) = SecuredAction {
     implicit request =>

@@ -398,7 +398,7 @@ object CFPAdmin extends SecureCFPController {
             s =>
               buffer.append(s.email.toLowerCase)
               buffer.append(",")
-              buffer.append(s.name)
+              buffer.append(s.cleanName)
               buffer.append(",")
               buffer.append(s.cleanLang)
               buffer.append(",")
@@ -410,7 +410,7 @@ object CFPAdmin extends SecureCFPController {
           }
           Ok(buffer.toString).as("text/csv")
         }
-        case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.name.getOrElse(""))))
+        case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }
 
   }
@@ -466,9 +466,9 @@ object CFPAdmin extends SecureCFPController {
         validSpeaker => {
 
           Webuser.findByUUID(validSpeaker.uuid).map{existingWebuser=>
-            Webuser.updateNames(validSpeaker.uuid,validSpeaker.name.getOrElse("?"),validSpeaker.name.getOrElse("?"))
+            Webuser.updateNames(validSpeaker.uuid, validSpeaker.firstName.getOrElse("?"), validSpeaker.name.getOrElse("?"))
           }.getOrElse{
-            val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.name.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname") )
+            val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname") )
             Webuser.saveNewSpeakerEmailNotValidated(webuser)
             Webuser.validateEmailForSpeaker(webuser)
           }

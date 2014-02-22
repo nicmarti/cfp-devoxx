@@ -35,7 +35,6 @@ GET         /cfp/proposal/undelete/:proposalId                   controllers.Cal
 GET         /cfp/proposal/submit/:proposalId                     controllers.CallForPaper.submitProposal(proposalId:String)
 GET         /cfp/comment/:proposalId                             controllers.CallForPaper.showCommentForProposal(proposalId:String)
 POST        /cfp/comment/:proposalId                             controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
-GET         /cfp/speaker/:uuidSpeaker                            controllers.CallForPaper.showSpeaker(uuidSpeaker:String)
 
 # Password
 GET         /forget                                              controllers.Authentication.forgetPassword
@@ -135,9 +134,6 @@ GET         /devoxxfr2014/talks/:talkType                        controllers.Pub
 GET         /devoxxfr2014/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
-
-GET /backoffice/updateSpeakers  controllers.Backoffice.doUpdateSpeakers()
-
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                        controllers.Assets.at(path="/public", file)

@@ -1,5 +1,5 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@views.html.Publisher.devoxxFR2014(speaker.name.getOrElse("")){
+@views.html.Publisher.devoxxFR2014(speaker.cleanName){
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">

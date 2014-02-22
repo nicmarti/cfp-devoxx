@@ -3,7 +3,7 @@
  English version below
 ------------------------------------------------------------------------------------
 
-Cher(e) @toSpeaker.name.getOrElse("speaker")
+Cher(e) @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
 Nous avons le plaisir de vous annoncer qu'une proposition a été retenue pour Devoxx France 2014 !
@@ -61,7 +61,7 @@ L'équipe de sélection de la conférence Devoxx France
 
 ------------------------------------------------------------------------------------------------------------------
 
-Dear @toSpeaker.name.getOrElse("speaker")
+Dear @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
 We're glad to inform you that your proposal for Devoxx France 2014 has been approved!
