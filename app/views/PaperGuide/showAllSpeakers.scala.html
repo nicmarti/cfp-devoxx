@@ -1,0 +1,6 @@
+@(speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+id,prénom,nom,blog,twitter,société,lang<br>
+@speakers.map{s=>
+@s.uuid,@s.firstName.getOrElse("?"),@s.name.getOrElse("?"),@s.blog.getOrElse(""),@s.twitter.getOrElse(""),@s.company.getOrElse(""),@s.lang.getOrElse("fr")<br>
+}
