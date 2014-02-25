@@ -78,7 +78,7 @@ object RestAPI extends Controller {
               }
             )
           )
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,"Links"-> ("<"+routes.RestAPI.profile("conferences").absoluteURL().toString+">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links"-> ("<"+routes.RestAPI.profile("conferences").absoluteURL().toString+">; rel=\"profile\""))
         }
       }
   }
@@ -110,12 +110,11 @@ object RestAPI extends Controller {
                     Link(
                       routes.RestAPI.showSpeakers(conference.eventCode).absoluteURL().toString,
                       routes.RestAPI.profile("speaker").absoluteURL().toString,
-                      "See all speakers"),
-                    Link(routes.RestAPI.profile("conference").absoluteURL().toString,"profile","Profile documentation for Conference")
+                      "See all speakers")
                   ))
                 )
               )
-              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag)
+              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links"-> ("<"+routes.RestAPI.profile("conference").absoluteURL().toString+">; rel=\"profile\""))
             }
           }
       }.getOrElse(NotFound("Conference not found"))
@@ -184,32 +183,24 @@ object RestAPI extends Controller {
                 proposal: Proposal =>
                   val allSpeakers = proposal.allSpeakerUUIDs.flatMap {
                     uuid => Speaker.findByUUID(uuid)
+                  }.map{ speaker=>
+                     Link(routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
+                          routes.RestAPI.profile("speaker").absoluteURL().toString,
+                          speaker.cleanName)
                   }
 
                   Map(
                     "id" -> Json.toJson(proposal.id),
-                    "link" -> Json.toJson(
-                      Link(routes.RestAPI.showTalk(eventCode, proposal.id).absoluteURL().toString,
-                      routes.RestAPI.profile("talk").absoluteURL().toString,
-                      proposal.title
-                      )
-
-                    ),
                     "title" -> Json.toJson(proposal.title),
                     "track" -> Json.toJson(Messages(proposal.track.label)),
                     "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
-                    "speakers" -> Json.toJson(allSpeakers.map {
-                      speaker =>
-                        Map(
-                          "link" -> Json.toJson(
-                            Link(routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
-                            routes.RestAPI.profile("speaker").absoluteURL().toString,
-                            speaker.cleanName
-                          )),
-                          "name" -> Json.toJson(speaker.cleanName)
+                    "links" -> Json.toJson(
+                      List(
+                        Link(routes.RestAPI.showTalk(eventCode, proposal.id).absoluteURL().toString,
+                             routes.RestAPI.profile("talk").absoluteURL().toString, "More details about this talk"
                         )
-                    })
-
+                      ).++(allSpeakers)
+                    )
                   )
               }
 
@@ -228,7 +219,7 @@ object RestAPI extends Controller {
                 )
 
               val jsonObject = Json.toJson(updatedSpeaker)
-              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag)
+              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links"-> ("<"+routes.RestAPI.profile("speaker").absoluteURL().toString+">; rel=\"profile\""))
             }
           }
       }.getOrElse(NotFound("Speaker not found"))
