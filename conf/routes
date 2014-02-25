@@ -141,7 +141,7 @@ GET         /guide/allPhotos                                     controllers.Pap
 
 # REST API
 GET         /api                                                 controllers.RestAPI.index()
-GET         /api/conferences                                     controllers.RestAPI.showAllConferences()
+GET         /api/conference/all                                  controllers.RestAPI.showAllConferences()
 GET         /api/conference/:eventCode                           controllers.RestAPI.showConference(eventCode:String)
 GET         /api/conference/:eventCode/speakers                  controllers.RestAPI.showSpeakers(eventCode:String)
 GET         /api/conference/:eventCode/speaker/:uuid             controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
