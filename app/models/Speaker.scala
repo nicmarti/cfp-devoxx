@@ -37,8 +37,10 @@ import org.joda.time.DateTime
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String], twitter: Option[String], avatarUrl: Option[String],
-                   company: Option[String], blog: Option[String], firstName:Option[String]){
+case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String],
+                   twitter: Option[String], avatarUrl: Option[String],
+                   company: Option[String], blog: Option[String],
+                   firstName:Option[String]){
 
   def cleanName:String={
     firstName.getOrElse("")+name.map(n=>" "+n).getOrElse("")

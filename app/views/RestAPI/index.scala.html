@@ -1,0 +1,19 @@
+@api("Devoxx API"){
+
+    <h1>Devoxx API</h1>
+    <hr>
+    <h3>Welcome to Devoxx France REST API.</h3>
+    <p><strong>Please, use a JSON client and discover our very simple REST API.</strong></p>
+
+<pre>
+curl -H "Accept: application/json" @routes.RestAPI.showAllConferences()
+curl -H "Accept: application/json" @routes.RestAPI.showConference(models.Conference.devoxxFrance2014.eventCode)
+curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeakers(models.Conference.devoxxFrance2014.eventCode)
+</pre>
+
+<h3>French is also supported, use Accept-language header :</h3>
+<pre>
+curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551")
+</pre>
+
+}

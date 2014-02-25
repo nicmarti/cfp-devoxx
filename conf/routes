@@ -75,7 +75,7 @@ GET         /cfpadmin/allWebusers                                controllers.CFP
 GET         /cfpadmin/allSpeakers                                controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
 
 GET         /cfpadmin/setPreferredDay                            controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
-GET         /cfpadmin/resetPreferredDay                            controllers.CFPAdmin.resetPreferredDay(proposalId:String)
+GET         /cfpadmin/resetPreferredDay                          controllers.CFPAdmin.resetPreferredDay(proposalId:String)
 
 GET         /cfpadmin/newOrEditSpeaker                           controllers.CFPAdmin.newOrEditSpeaker(speakerUUID:Option[String])
 POST        /cfpadmin/saveNewSpeaker                             controllers.CFPAdmin.saveNewSpeaker()
@@ -137,7 +137,15 @@ GET         /devoxxfr2014                                        controllers.Pub
 
 # For Paper guide
 GET         /guide/speakers                                      controllers.PaperGuide.showAllSpeakers()
-GET         /guide/allPhotos                                      controllers.PaperGuide.downloadAllSpeakersPhotos()
+GET         /guide/allPhotos                                     controllers.PaperGuide.downloadAllSpeakersPhotos()
+
+# REST API
+GET         /api                                                 controllers.RestAPI.index()
+GET         /api/allConferences                                  controllers.RestAPI.showAllConferences()
+GET         /api/conf/:eventCode                                 controllers.RestAPI.showConference(eventCode:String)
+GET         /api/conf/:eventCode/speakers                        controllers.RestAPI.showSpeakers(eventCode:String)
+GET         /api/conf/:eventCode/speaker/:uuid                   controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                        controllers.Assets.at(path="/public", file)
