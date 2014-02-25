@@ -141,11 +141,11 @@ GET         /guide/allPhotos                                     controllers.Pap
 
 # REST API
 GET         /api                                                 controllers.RestAPI.index()
-GET         /api/allConferences                                  controllers.RestAPI.showAllConferences()
-GET         /api/conf/:eventCode                                 controllers.RestAPI.showConference(eventCode:String)
-GET         /api/conf/:eventCode/speakers                        controllers.RestAPI.showSpeakers(eventCode:String)
-GET         /api/conf/:eventCode/speaker/:uuid                   controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
-GET         /api/conf/:eventCode/talk/:id                        controllers.RestAPI.showTalk(eventCode:String,id:String)
+GET         /api/conferences                                     controllers.RestAPI.showAllConferences()
+GET         /api/conference/:eventCode                           controllers.RestAPI.showConference(eventCode:String)
+GET         /api/conference/:eventCode/speakers                  controllers.RestAPI.showSpeakers(eventCode:String)
+GET         /api/conference/:eventCode/speaker/:uuid             controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
+GET         /api/conference/:eventCode/talk/:id                  controllers.RestAPI.showTalk(eventCode:String,id:String)
 
 
 # Map static resources from the /public folder to the /assets URL path

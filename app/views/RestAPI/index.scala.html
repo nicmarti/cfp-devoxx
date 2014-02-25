@@ -1,3 +1,5 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
 @api("Devoxx API") {
 <div class="row">
     <div class="col-md-12">
@@ -9,30 +11,30 @@
 
     <h4>See all events</h4>
     <code>
-        curl -H "Accept: application/json" @routes.RestAPI.showAllConferences()
+        curl -H "Accept: application/json" @routes.RestAPI.showAllConferences().absoluteURL()
     </code>
 
     <h4>See details for an event</h4>
     <code>
-        curl -H "Accept: application/json" @routes.RestAPI.showConference(models.Conference.devoxxFrance2014.eventCode)
+        curl -H "Accept: application/json" @routes.RestAPI.showConference(models.Conference.devoxxFrance2014.eventCode).absoluteURL()
     </code>
 
     <h4>See all speakers for this event</h4>
     <code>
-        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeakers(models.Conference.devoxxFrance2014.eventCode)
+        curl -H "Accept: application/json" @routes.RestAPI.showSpeakers(models.Conference.devoxxFrance2014.eventCode).absoluteURL()
     </code>
 
     <h4>See details for a specific speaker</h4>
     <code>
-        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551")
+        curl -H "Accept: application/json" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()
     </code>
 
     <h4>See details for a talk</h4>
     <code>
-        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showTalk(models.Conference.devoxxFrance2014.eventCode, "QDI-693")
+        curl -H "Accept: application/json" @routes.RestAPI.showTalk(models.Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()
     </code>
 
-    <h5>French is also supported, use Accept-language header :</h5>
+    <h4>French is also supported, use Accept-language header :</h4>
     <code>
         curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551")
     </code>
