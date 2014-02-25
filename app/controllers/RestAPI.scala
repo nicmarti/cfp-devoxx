@@ -147,12 +147,14 @@ object RestAPI extends Controller {
 
                   Map(
                   "id"->Json.toJson(proposal.id),
+                  "ref"->Json.toJson(routes.RestAPI.showTalk(eventCode, proposal.id).toString),
                   "title"->Json.toJson(proposal.title),
                   "track"->Json.toJson(Messages(proposal.track.label)),
                   "talkType"->Json.toJson(Messages(proposal.talkType.id)),
-                  "speakers"->Json.toJson(allSpeakers.map{ speaker=>
+                  "speakers"->Json.toJson(allSpeakers.map{
+                    speaker=>
                       Map(
-                        "ref"->Json.toJson(routes.RestAPI.showSpeaker(eventCode,uuid).toString),
+                        "ref"->Json.toJson(routes.RestAPI.showSpeaker(eventCode,speaker.uuid).toString),
                         "name"->Json.toJson(speaker.cleanName)
                       )
                   })
@@ -180,4 +182,42 @@ object RestAPI extends Controller {
           }
       }.getOrElse(NotFound("Speaker not found"))
   }
+
+  def showTalk(eventCode:String, proposalId:String)=Action{
+     implicit request =>
+      Proposal.findById(proposalId).map{
+        proposal=>
+          val etag = proposal.hashCode.toString
+
+          request.headers.get("If-None-Match") match {
+            case Some(tag) if tag == etag => {
+              NotModified
+            }
+            case other => {
+              val allSpeakers = proposal.allSpeakerUUIDs.flatMap{uuid=>Speaker.findByUUID(uuid)}
+
+              val updatedProposal =
+                Map(
+                  "id" -> Json.toJson(proposal.id),
+                  "title"->Json.toJson(proposal.title),
+                  "lang"->Json.toJson(proposal.lang),
+                  "summaryAsHtml"->Json.toJson(proposal.summaryAsHtml),
+                  "summary"->Json.toJson(proposal.summary),
+                  "track"->Json.toJson(Messages(proposal.track.label)),
+                  "talkType"->Json.toJson(Messages(proposal.talkType.id)),
+                  "speakers"->Json.toJson(allSpeakers.map{
+                    speaker=>
+                      Map(
+                        "ref"->Json.toJson(routes.RestAPI.showSpeaker(eventCode,speaker.uuid).toString),
+                        "name"->Json.toJson(speaker.cleanName)
+                      )
+                  })
+                )
+              val jsonObject = Json.toJson(updatedProposal)
+              Ok(jsonObject).as("application/json").withHeaders("ETag" -> etag)
+            }
+          }
+      }.getOrElse(NotFound("Proposal not found"))
+  }
+
 }

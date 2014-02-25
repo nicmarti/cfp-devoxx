@@ -4,8 +4,48 @@
 <html>
 <head>
   <title>@title</title>
+  <link rel="stylesheet" href="/assets/css/bootstrap.cosmo.min.css">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/bootswatch.min.css">
+<link rel="stylesheet"  href="/assets/css/devoxx.css" id="theme"/>
 </head>
 <body>
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Devox<span class="yl">x</span> France CFP</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="@routes.CallForPaper.homeForSpeaker()">@Messages("nav.homeSpeaker")</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
 @content
+</div>
+    <!-- ****************************************************************************** //-->
+<div class="container">
+@content
+</div>
+<footer class="footer hidden-print">
+  <div class="container">
+    <div>
+      <hr>
+        <small><i class="icon-bullhorn"></i> Devoxx France Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
+        <small><i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">Clever-cloud</a></small>
+    </div>
+  </div>
+</footer>
+<!-- ****************************************************************************** //-->
+
 </body>
 </html>

@@ -1,19 +1,46 @@
-@api("Devoxx API"){
-
+@api("Devoxx API") {
+<div class="row">
+    <div class="col-md-12">
     <h1>Devoxx API</h1>
     <hr>
     <h3>Welcome to Devoxx France REST API.</h3>
     <p><strong>Please, use a JSON client and discover our very simple REST API.</strong></p>
+    <p>Each result returns an ETag. Please, check and use <code>If-None-Match</code> to avoid too many calls to the server.</p>
 
-<pre>
-curl -H "Accept: application/json" @routes.RestAPI.showAllConferences()
-curl -H "Accept: application/json" @routes.RestAPI.showConference(models.Conference.devoxxFrance2014.eventCode)
-curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeakers(models.Conference.devoxxFrance2014.eventCode)
-</pre>
+    <h4>See all events</h4>
+    <code>
+        curl -H "Accept: application/json" @routes.RestAPI.showAllConferences()
+    </code>
 
-<h3>French is also supported, use Accept-language header :</h3>
-<pre>
-curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551")
-</pre>
+    <h4>See details for an event</h4>
+    <code>
+        curl -H "Accept: application/json" @routes.RestAPI.showConference(models.Conference.devoxxFrance2014.eventCode)
+    </code>
+
+    <h4>See all speakers for this event</h4>
+    <code>
+        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeakers(models.Conference.devoxxFrance2014.eventCode)
+    </code>
+
+    <h4>See details for a specific speaker</h4>
+    <code>
+        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551")
+    </code>
+
+    <h4>See details for a talk</h4>
+    <code>
+        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showTalk(models.Conference.devoxxFrance2014.eventCode, "QDI-693")
+    </code>
+
+    <h5>French is also supported, use Accept-language header :</h5>
+    <code>
+        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551")
+    </code>
+    </div>
+    <div class="col-md-12">
+        <h3>Work in progress</h3>
+        <p>I am still working on the scheduling part of Devoxx France. Slots and Agenda should be available mid-march for testing.</p>
+    </div>
+</div>
 
 }
