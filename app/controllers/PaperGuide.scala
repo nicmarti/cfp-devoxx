@@ -22,70 +22,97 @@
  */
 
 package controllers
+
 import models._
 import play.api.mvc._
 import org.apache.commons.lang3.StringEscapeUtils
+import play.api.libs.ws._
+import play.api.libs.ws.WS.WSRequestHolder
+import scala.concurrent.Future
+import play.api.libs.iteratee._
+import java.io.{BufferedOutputStream, File, FileOutputStream, OutputStream}
+import org.apache.commons.io.FileUtils
 
 /**
  * Used for Printed program
  * Created by nicolas on 22/02/2014.
  */
-object PaperGuide  extends Controller {
+object PaperGuide extends Controller {
   def showAllSpeakers = Action {
     implicit request =>
       val speakers = Speaker.allSpeakersWithAcceptedTerms()
 
-      val sb:StringBuilder=new StringBuilder()
-      sb.append("\u00EF\u00BB\u00BF")
-      sb.append("id,prénom,nom,twitter,société,blog,bio,lang,@photo")
-      sb.append("\n")
-      speakers.map{speaker=>
-        sb.append(speaker.uuid).append(",")
-        sb.append(speaker.firstName.getOrElse("")).append(",")
-        sb.append(speaker.name.map(s=>StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
-        sb.append(speaker.twitter.map(s=>StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
-        sb.append(speaker.company.map(s=>StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
-        sb.append(speaker.blog.map(s=>StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
-        sb.append(StringEscapeUtils.escapeCsv(speaker.bio.replaceAll("\r","").replaceAll("\n"," "))).append(",")
+      val sb: StringBuilder = new StringBuilder()
 
-        sb.append(speaker.lang.getOrElse("fr")).append(",")
-        sb.append(speaker.avatarUrl.map(s=>StringEscapeUtils.escapeCsv(s)).getOrElse("ERROR no photo"))
-        sb.append("\n")
+      sb.append("id,email,prénom,nom,twitter,société,blog,bio,lang,@photo\n")
+      speakers.sortBy(_.firstName.getOrElse("?")).map {
+        speaker =>
+          sb.append(speaker.uuid).append(",")
+          sb.append(speaker.email).append(",")
+          sb.append(speaker.firstName.getOrElse("")).append(",")
+          sb.append(speaker.name.map(s => StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
+          sb.append(speaker.twitter.map(s => StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
+          sb.append(speaker.company.map(s => StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
+          sb.append(speaker.blog.map(s => StringEscapeUtils.escapeCsv(s)).getOrElse("")).append(",")
+          sb.append(StringEscapeUtils.escapeCsv(speaker.bio.replaceAll("\r", "").replaceAll("\n", " "))).append(",")
+          sb.append(speaker.lang.map(s => StringEscapeUtils.escapeCsv(s)).getOrElse("fr")).append(",")
+          sb.append(speaker.email)
+          sb.append("\n")
       }
 
-      // echo "\xEF\xBB\xBF"; // UTF-8 BOM
+    // On Mac, Microsoft Excel or Adobe InDesign are able to import only MacRoman encoded files...
+    // 1. MacRoman
+    Ok(sb.toString().getBytes("MacRoman")).withHeaders(("Content-Encoding", "MacRoman"), ("Content-Disposition", "attachment;filename=speakers_mac_roman_encoding.csv"), ("Cache-control", "private"), ("Content-type", "text/csv; charset=MacRoman"))
 
-      Ok(sb.toString()).withHeaders(("Content-Encoding", "UTF-8"),("Content-Disposition", "attachment;filename=speakers.csv"),("Cache-control", "private"),("Content-type","text/csv; charset=UTF-8"))
-
+    // 2. UTF-8
+    //Ok(sb.toString()).withHeaders(("Content-Encoding", "UTF-8"), ("Content-Disposition", "attachment;filename=speaker_utf8.csv"), ("Cache-control", "private"), ("Content-type", "text/csv; charset=utf-8"))
   }
-//
-//  def showSpeaker(uuid: String, name: String) = Action {
-//    implicit request =>
-//      val maybeSpeaker=Speaker.findByUUID(uuid)
-//      maybeSpeaker match {
-//        case Some(speaker)=>{
-//          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
-//          ZapActor.actor ! LogURL("showSpeaker",uuid,name)
-//          Ok(views.html.Publisher.showSpeaker(speaker,acceptedProposals))
-//        }
-//        case None=>NotFound("Speaker not found")
-//      }
-//  }
-//
-//  def showByTalkType(talkType:String)=Action{
-//    implicit request=>
-//      val proposals=Proposal.allAcceptedByTalkType(talkType)
-//      Ok(views.html.Publisher.showByTalkType(proposals,talkType))
-//  }
-//
-//  def showDetailsForProposal(proposalId:String, proposalTitle:String)=Action{
-//    implicit request=>
-//      Proposal.findById(proposalId) match {
-//        case None=>NotFound("Proposal not found")
-//        case Some(proposal)=>
-//          ZapActor.actor ! LogURL("showTalk",proposalId, proposalTitle)
-//          Ok(views.html.Publisher.showProposal(proposal))
-//      }
-//
-//  }
+
+  def downloadAllSpeakersPhotos=Action{
+    implicit request=>
+    implicit val context = scala.concurrent.ExecutionContext.Implicits.global
+
+      val speakers=Speaker.allSpeakersWithAcceptedTerms()
+      val dir=new File("./target/guide")
+      FileUtils.forceMkdir(dir)
+
+      speakers.sortBy(_.email).foreach{
+        speaker=>
+          speaker.avatarUrl.map{
+            url:String=>
+
+
+            val finalUrl = url match {
+              case s if s.toLowerCase.startsWith("http://www.gravatar.com/avatar") && s.contains("?")==false =>{
+                s+"?size=256"
+              }
+              case other=>other
+            }
+            println(s"${speaker.email} - Downloading [$finalUrl]")
+            val holder : WSRequestHolder = WS.url(finalUrl.trim).withRequestTimeout(5000)
+            val file=new File(dir, speaker.email)
+            val outputStream: OutputStream = new BufferedOutputStream(new FileOutputStream(file))
+            val futureResponse = holder.get {
+              headers =>
+                fromStream(outputStream)
+            }.map(_.run)
+          }
+      }
+
+      Ok("Done.")
+  }
+
+
+  def fromStream(stream: OutputStream): Iteratee[Array[Byte], Unit] = Cont {
+    case e@Input.EOF =>
+      stream.close()
+      Done((), e)
+    case Input.El(data) =>
+      stream.write(data)
+      fromStream(stream)
+    case Input.Empty =>
+      fromStream(stream)
+  }
+
+
 }

@@ -137,6 +137,7 @@ GET         /devoxxfr2014                                        controllers.Pub
 
 # For Paper guide
 GET         /guide/speakers                                      controllers.PaperGuide.showAllSpeakers()
+GET         /guide/allPhotos                                      controllers.PaperGuide.downloadAllSpeakersPhotos()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                        controllers.Assets.at(path="/public", file)
