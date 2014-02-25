@@ -7,36 +7,51 @@
     <hr>
     <h3>Welcome to Devoxx France REST API.</h3>
     <p><strong>Please, use a JSON client and discover our very simple REST API.</strong></p>
-    <p>Each result returns an ETag. Please, check and use <code>If-None-Match</code> to avoid too many calls to the server.</p>
+    <p>Each Response contains:</p>
+     <ul>
+        <li>an ETag. Please, check and use <code>If-None-Match</code> to avoid too many calls to the server.</li>
+        <li>a Links HTTP Header (<a href="http://tools.ietf.org/html/rfc6906" rel="help" title="RFC 6906">RFC 6906</a>) with a short documentation about each resource.</li>
+     </ul>
+
+    <h3>Resources</h3>
+    <p>The API serves the following content:</p>
+        <ul>
+            <li><a href="@routes.RestAPI.profile("conferences")" rel="glossary">A collection of Conferences</a></li>
+            <li><a href="@routes.RestAPI.profile("conference")" rel="glossary">A conference</a></li>
+            <li><a href="@routes.RestAPI.profile("list-of-speakers")" rel="glossary">A list of speakers</a></li>
+            <li><a href="@routes.RestAPI.profile("speaker")" rel="glossary">A speaker</a></li>
+            <li><a href="@routes.RestAPI.profile("talk")" rel="glossary">A talk</a></li>
+        </ul>
+
 
     <h4>See all events</h4>
     <code>
-        curl -H "Accept: application/json" @routes.RestAPI.showAllConferences().absoluteURL()
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllConferences().absoluteURL()" rel="contents">@routes.RestAPI.showAllConferences().absoluteURL()</a>
     </code>
 
     <h4>See details for an event</h4>
     <code>
-        curl -H "Accept: application/json" @routes.RestAPI.showConference(models.Conference.devoxxFrance2014.eventCode).absoluteURL()
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
     </code>
 
     <h4>See all speakers for this event</h4>
     <code>
-        curl -H "Accept: application/json" @routes.RestAPI.showSpeakers(models.Conference.devoxxFrance2014.eventCode).absoluteURL()
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showSpeakers(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
     </code>
 
     <h4>See details for a specific speaker</h4>
     <code>
-        curl -H "Accept: application/json" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
     </code>
 
     <h4>See details for a talk</h4>
     <code>
-        curl -H "Accept: application/json" @routes.RestAPI.showTalk(models.Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()">@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()</a>
     </code>
 
     <h4>French is also supported, use Accept-language header :</h4>
     <code>
-        curl -H "Accept: application/json" -H "Accept-language: fr-FR" @routes.RestAPI.showSpeaker(models.Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551")
+        curl -H "Accept: application/json" -H "Accept-language: fr-FR" <a href="@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
     </code>
     </div>
     <div class="col-md-12">
