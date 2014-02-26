@@ -37,22 +37,22 @@ object Publisher extends Controller {
     implicit request =>
       val result=views.html.Publisher.homePublisher()
       val etag = Crypt.md5(result.toString()).toString
-      val maybeETag = request.headers.get("If-None-Match")
+      val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
         case Some(oldEtag) if oldEtag == etag => NotModified
-        case other=>Ok(result).withHeaders("ETag" -> etag)
+        case other=>Ok(result).withHeaders(ETAG -> etag)
       }
   }
 
   def showAllSpeakers = Action {
     implicit request =>
       val speakers = Speaker.allSpeakersWithAcceptedTerms()
-      val etag = speakers.hashCode().toString
-      val maybeETag = request.headers.get("If-None-Match")
+      val etag = speakers.hashCode().toString+"_2"
+      val maybeETag = request.headers.get(IF_NONE_MATCH)
       maybeETag match {
         case Some(oldEtag) if oldEtag == etag => NotModified
-        case other => Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders("ETag" -> etag)
+        case other => Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
       }
   }
 
@@ -83,6 +83,5 @@ object Publisher extends Controller {
           ZapActor.actor ! LogURL("showTalk",proposalId, proposalTitle)
           Ok(views.html.Publisher.showProposal(proposal))
       }
-
   }
 }
