@@ -2,17 +2,15 @@
 
 
 @models.Speaker.findByUUID(uuid).map { speaker =>
-    @models.Webuser.findByUUID(uuid).map { webuser =>
 <div class="speaker">
-<a href="@routes.Publisher.showSpeaker(uuid, webuser.cleanName)">
+<a href="@routes.Publisher.showSpeaker(uuid, speaker.cleanName)">
 @if(renderPhoto){
 @speaker.avatarUrl.map{url=>
- <img width="32" height="32" src="@url" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+ <img width="32" height="32" src="@url" alt="@speaker.cleanName" title="@speaker.cleanName"/>
 }
 }
-@webuser.cleanName
+@speaker.cleanName
 </a>
 </div>
-    }
 }
 
