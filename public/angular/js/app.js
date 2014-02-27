@@ -8,7 +8,8 @@ var cfpApp = angular.module('cfpApp', [
     'remoteServices',
     'mainController',
     'homeController',
-    'scheduleConfController'
+    'scheduleConfController',
+    'loadSlotController'
 ]);
 
 cfpApp.config(['$routeProvider', function ($routeProvider) {
@@ -23,6 +24,10 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/slots', {
         templateUrl: 'partials/slots.html',
         controller: 'MainController'
+    });
+        $routeProvider.when('/loadSlots', {
+        templateUrl: 'partials/slots.html',
+        controller: 'LoadSlotController'
     });
 
     $routeProvider.otherwise({redirectTo: '/'});

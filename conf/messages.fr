@@ -441,3 +441,4 @@ calendar.pref=Préférences de plannification
 calendar.pref.thursday=Le jeudi
 calendar.pref.friday=Le vendredi
 calendar.pref.reset=Pas de préférences
+sw.all.other=Evénements spéciaux
