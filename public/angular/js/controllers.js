@@ -76,8 +76,16 @@ homeController.controller('HomeController', function HomeController($rootScope, 
     });
 });
 
-scheduleConfController.controller('ScheduleConfController', function ScheduleConfController($rootScope, $scope, $routeParams, ScheduledConfiguration) {
+scheduleConfController.controller('ScheduleConfController', function ScheduleConfController($location, $scope, $routeParams, ScheduledConfiguration) {
     ScheduledConfiguration.get({id: $routeParams.id}, function (jsonObj){
        $scope.loadedScheduledConfiguration = jsonObj;
+        if (_.isUndefined($scope.loadedScheduledConfiguration)) {
+            console.log("ERR: conf type not found");
+        } else {
+            var newConfType = $scope.loadedScheduledConfiguration.confType;
+            $location.path('/slots').search({confType: newConfType}).replace();
+        }
     });
+
+
 });
