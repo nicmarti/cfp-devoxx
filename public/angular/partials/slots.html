@@ -20,16 +20,12 @@
 <div class="col-lg-9 panel_slots">
 
     <div ng-repeat="slot in slots" class="col-lg-5 slot"  drop="slot" dropStyle="columnDrop">
-        {{slot.room.name}}<br>
-        {{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}
+        <span class="label label-default">{{slot.room.name}}</span> <small>{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
         <div ng-show="slot.proposal">
             <button class="btn btn-sm btn-warning" ng-click="unallocate(slot.id)">Clear</button>
             <span class="proposalTitle">{{slot.proposal.title}}</span>
-             <span class="label label-default">{{slot.proposal.id}}</span>
-     <div class="label label-info">
-          {{slot.proposal.lang}} - {{slot.proposal.track.id}} - {{slot.proposal.mainSpeaker}}
-     </div>
-
+            <span class="label label-default">{{slot.proposal.id}}</span>
+            <span class="label label-info">{{slot.proposal.lang}} - {{slot.proposal.track.id}} - {{slot.proposal.mainSpeaker}}</span>
         </div>
     </div>
 </div>

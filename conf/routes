@@ -120,11 +120,6 @@ GET         /cloudtags                                           controllers.Cal
 # Special access for Alexis MP
 GET         /show/proposals                                      controllers.Sponsor.index()
 
-# API
-GET         /api/fr14/slots/:confType                            controllers.ApiController.slots(confType:String)
-GET         /api/fr14/approvedTalks/:confType                    controllers.ApiController.approvedTalks(confType:String)
-POST        /api/fr14/slots/:confType                            controllers.ApiController.saveSlots(confType:String)
-
 
 # Content Publisher
 GET         /devoxxfr2014/speakers                               controllers.Publisher.showAllSpeakers()
@@ -151,7 +146,16 @@ GET         /api/conferences/:eventCode/talks/:id                controllers.Res
 GET         /api/conferences/:eventCode/talks/                   controllers.RestAPI.redirectToTalks(eventCode:String)
 GET         /api/conferences/:eventCode/talks                    controllers.RestAPI.showTalks(eventCode:String)
 
-GET         /api/profile/:docName                                 controllers.RestAPI.profile(docName:String)
+GET         /api/profile/:docName                                controllers.RestAPI.profile(docName:String)
+
+# API for AngularJS
+GET         /api/fr14/slots                                      controllers.ApiController.slots(confType:String)
+GET         /api/fr14/approvedTalks                              controllers.ApiController.approvedTalks(confType:String)
+GET         /api/fr14/scheduledConfigurations                    controllers.ApiController.allScheduledConfiguration()
+GET         /api/fr14/loadScheduledConfiguration                 controllers.ApiController.loadScheduledConfiguration(id:String)
+
+POST        /api/fr14/slots                                      controllers.ApiController.saveSlots(confType:String)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                        controllers.Assets.at(path="/public", file)

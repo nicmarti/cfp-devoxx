@@ -24,9 +24,13 @@
 package controllers
 
 import play.api.mvc.Action
-import models.{Proposal, ApprovedProposal, Speaker, Slot}
-import play.api.libs.json.{JsNumber, JsString, Json}
-import library.{SaveSlots, ZapActor}
+import models._
+import play.api.libs.json.Json
+import library.ZapActor
+import library.SaveSlots
+import play.api.libs.json.JsString
+import play.api.libs.json.JsNumber
+import com.google.api.client.util.DateTime
 
 
 /**
@@ -47,15 +51,17 @@ object ApiController extends SecureCFPController {
         case "labs" => Json.toJson(Slot.labsSlots)
         case other => Json.toJson(Slot.universitySlots)
       }
-
-
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 
   def approvedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
-      val proposals = ApprovedProposal.allApprovedByTalkType(confType)
+      val proposals = confType match{
+        case "confThursday"=>ApprovedProposal.allApprovedByTalkType("conf")
+        case "confFriday"=>ApprovedProposal.allApprovedByTalkType("conf")
+        case other=>ApprovedProposal.allApprovedByTalkType(confType)
+      }
 
       val proposalsWithSpeaker = proposals.map {
         p:Proposal =>
@@ -86,15 +92,39 @@ object ApiController extends SecureCFPController {
         json =>
           val newSlots=json.as[List[Slot]]
 
-          ZapActor.actor ! SaveSlots(newSlots,request.webuser)
+          ZapActor.actor ! SaveSlots(confType, newSlots,request.webuser)
 
           Ok("{\"status\":\"success\"}").as("application/json")
       }.getOrElse {
         BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
       }
-
-
-
   }
 
+  def allScheduledConfiguration()=SecuredAction(IsMemberOf("admin")){
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ScheduleConfiguration.scheduleSavedFormat
+
+      val scheduledSlotsKey = ScheduleConfiguration.allScheduledConfiguration()
+        val json = Json.toJson(Map("scheduledConfigurations"->Json.toJson(
+          scheduledSlotsKey.map{
+            case(key,dateAsDouble)=>
+              val scheduledSaved = Json.parse(key).as[ScheduleSaved]
+              Map("key"->Json.toJson(scheduledSaved),
+                  "date"->Json.toJson(new DateTime(dateAsDouble.toLong*1000).toString()))
+          })
+        )
+      )
+      Ok(Json.stringify(json)).as("application/json")
+  }
+
+  def loadScheduledConfiguration(id:String)=SecuredAction(IsMemberOf("admin")){
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ScheduleConfiguration.scheduleConfFormat
+
+      val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(id)
+      maybeScheduledConfiguration match{
+        case None=>NotFound
+        case Some(config)=>Ok(Json.toJson(config)).as(JSON)
+      }
+  }
 }

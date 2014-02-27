@@ -28,11 +28,16 @@
 <div class="container">
  <h3>Devoxx France - Planner</h3>
   <ul class="menu">
-    <li><a href="#/slots?confType=uni">All university slots</a></li>
+    <li><a href="#/saved">Reload a saved configuration of slots/talks</a></li>
+    <li><a href="#/slots?confType=uni">All University slots</a></li>
+    <li><a href="#/slots?confType=conf">All Conferences slots</a></li>
+    <li><a href="#/slots?confType=labs">All Hand's on Labs slots</a></li>
   </ul>
 
   <div ng-view></div>
 
+
+    {{allScheduledConfiguration}}
 
 </div>
 <!-- ****************************************************************************** //-->

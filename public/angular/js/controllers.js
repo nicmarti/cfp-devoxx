@@ -2,6 +2,8 @@
 
 /* Controllers */
 var mainController = angular.module('mainController', []);
+var homeController = angular.module('homeController', []);
+var scheduleConfController = angular.module('scheduleConfController', []);
 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, ApprovedTalksService) {
     SlotService.get({confType: $routeParams.confType}, function (jsonArray) {
@@ -66,4 +68,16 @@ mainController.controller('MainController', function MainController($rootScope, 
     };
 
 
+});
+
+homeController.controller('HomeController', function HomeController($rootScope, $scope, $routeParams, AllScheduledConfiguration) {
+    AllScheduledConfiguration.get(function(jsonArray){
+       $scope.allScheduledConfiguration = jsonArray["scheduledConfigurations"];
+    });
+});
+
+scheduleConfController.controller('ScheduleConfController', function ScheduleConfController($rootScope, $scope, $routeParams, ScheduledConfiguration) {
+    ScheduledConfiguration.get({id: $routeParams.id}, function (jsonObj){
+       $scope.loadedScheduledConfiguration = jsonObj;
+    });
 });

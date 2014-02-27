@@ -63,7 +63,7 @@ case class ProposalApproved(reporterUUID:String, proposal:Proposal)
 
 case class ProposalRejected(reporterUUID:String, proposal:Proposal)
 
-case class SaveSlots(slots:List[Slot], createdBy:Webuser)
+case class SaveSlots(confType:String, slots:List[Slot], createdBy:Webuser)
 
 case class LogURL(url:String, objRef:String, objValue:String)
 
@@ -84,7 +84,7 @@ class ZapActor extends Actor {
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
     case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
-    case SaveSlots(slots:List[Slot], createdBy:Webuser)=> doSaveSlots(slots:List[Slot], createdBy:Webuser)
+    case SaveSlots(confType:String, slots:List[Slot], createdBy:Webuser)=> doSaveSlots(confType:String, slots:List[Slot], createdBy:Webuser)
     case LogURL(url:String, objRef:String, objValue:String)=>doLogURL(url:String, objRef:String,objValue:String)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
@@ -175,9 +175,8 @@ class ZapActor extends Actor {
     }
   }
 
-  def doSaveSlots(slots:List[Slot], createdBy:Webuser){
-    play.Logger.info("Saving slot... "+slots)
-    // TODO save the slost
+  def doSaveSlots(confType:String, slots:List[Slot], createdBy:Webuser){
+    ScheduleConfiguration.persist(confType, slots,createdBy)
   }
 
   def doLogURL(url:String, objRef:String, objValue:String){
