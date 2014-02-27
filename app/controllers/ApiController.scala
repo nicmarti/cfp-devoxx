@@ -24,7 +24,7 @@
 package controllers
 
 import play.api.mvc.Action
-import models.{Proposal, ApprovedProposal, Webuser, Slot}
+import models.{Proposal, ApprovedProposal, Speaker, Slot}
 import play.api.libs.json.{JsNumber, JsString, Json}
 import library.{SaveSlots, ZapActor}
 
@@ -59,8 +59,8 @@ object ApiController extends SecureCFPController {
 
       val proposalsWithSpeaker = proposals.map {
         p:Proposal =>
-          val mainWebuser = Webuser.findByUUID(p.mainSpeaker)
-          val secWebuser = p.secondarySpeaker.flatMap(Webuser.findByUUID(_))
+          val mainWebuser = Speaker.findByUUID(p.mainSpeaker)
+          val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID(_))
           // (p, mainWebuser.map(_.cleanName), secWebuser.map(_.cleanName))
           p.copy(
             mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
