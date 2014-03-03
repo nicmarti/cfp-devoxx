@@ -22,7 +22,7 @@
         }
 
         @helper.form(action = routes.CFPAdmin.saveNewSpeaker) {
-            <input type="hidden" name="uuid" value='@speakerForm("uuid").value.getOrElse("")'>
+            <label for="name">UUID:</label> <input type="text" readonly name="uuid" value='@speakerForm("uuid").value.getOrElse("")'>
             @helper.inputText(speakerForm("firstName"), 'size->40)
             @helper.inputText(speakerForm("lastName"), 'size->40)
             @helper.inputText(speakerForm("email"), 'size->40)

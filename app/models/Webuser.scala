@@ -25,8 +25,14 @@ object Webuser {
     }
   }
 
+  def generateUUID(email:String):String={
+    val uuid=Crypto.sign(email.trim().toLowerCase)
+    println("generatedUUID ["+email+"]")
+    uuid
+  }
+
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(Crypto.sign(email.trim().toLowerCase), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
+    Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
   }
 
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
@@ -52,7 +58,7 @@ object Webuser {
       }
   }
 
-  def validateEmailForSpeaker(webuser: Webuser) = Redis.pool.withClient {
+  def validateEmailForSpeaker(webuser: Webuser):String = Redis.pool.withClient {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
@@ -66,6 +72,7 @@ object Webuser {
       tx.sadd("Webuser:" + webuser.profile, webuser.uuid)
       tx.hdel("Webuser:New", webuser.email)
       tx.exec()
+      webuser.uuid
   }
 
   def isEmailRegistered(email:String):Boolean=Redis.pool.withClient{

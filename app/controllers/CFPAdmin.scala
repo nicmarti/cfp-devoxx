@@ -464,18 +464,29 @@ object CFPAdmin extends SecureCFPController {
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CFPAdmin.newSpeaker(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validSpeaker => {
-
-          Webuser.findByUUID(validSpeaker.uuid).map{existingWebuser=>
-            Webuser.updateNames(validSpeaker.uuid, validSpeaker.firstName.getOrElse("?"), validSpeaker.name.getOrElse("?"))
-          }.getOrElse{
-            val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname") )
-            Webuser.saveNewSpeakerEmailNotValidated(webuser)
-            Webuser.validateEmailForSpeaker(webuser)
+          Option(validSpeaker.uuid) match {
+            case Some(existingUUID)=>{
+              play.Logger.of("application.CFPAdmin").debug("Updating existing speaker "+existingUUID)
+              Webuser.findByUUID(existingUUID).map{
+                existingWebuser=>
+                  Webuser.updateNames(existingUUID, validSpeaker.firstName.getOrElse("?"), validSpeaker.name.getOrElse("?"))
+              }.getOrElse{
+                play.Logger.error("Unable to retrieve Webuser for speaker uuid "+existingUUID)
+              }
+              Speaker.save(validSpeaker)
+              Event.storeEvent(Event( validSpeaker.cleanName , request.webuser.uuid, "updated a speaker ["+validSpeaker.uuid+"]"))
+              Redirect(routes.CFPAdmin.showSpeakerAndTalks(existingUUID)).flashing("success" -> "Profile updated")
+            }
+            case None=>  {
+             val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname") )
+              Webuser.saveNewSpeakerEmailNotValidated(webuser)
+              val newUUID=Webuser.validateEmailForSpeaker(webuser)
+              Speaker.save(validSpeaker.copy(uuid=newUUID))
+              Event.storeEvent(Event( validSpeaker.cleanName , request.webuser.uuid, "created a speaker ["+validSpeaker.uuid+"]"))
+              Redirect(routes.CFPAdmin.showSpeakerAndTalks(newUUID)).flashing("success" -> "Profile saved")
+            }
           }
-          Speaker.save(validSpeaker)
 
-          Event.storeEvent(Event( validSpeaker.cleanName , request.webuser.uuid, "created or updated a speaker"))
-          Redirect(routes.CFPAdmin.showSpeakerAndTalks(validSpeaker.uuid)).flashing("success" -> "Profile saved")
         }
       )
   }

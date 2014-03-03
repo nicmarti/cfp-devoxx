@@ -40,22 +40,22 @@ import org.joda.time.DateTime
 case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String],
                    twitter: Option[String], avatarUrl: Option[String],
                    company: Option[String], blog: Option[String],
-                   firstName:Option[String]){
+                   firstName: Option[String]) {
 
-  def cleanName:String={
-    firstName.getOrElse("")+name.map(n=>" "+n).getOrElse("")
+  def cleanName: String = {
+    firstName.getOrElse("") + name.map(n => " " + n).getOrElse("")
   }
 
-  def cleanLang:String=lang.map{
-    l=>
-      val cleanL=if(l.contains(",")){
+  def cleanLang: String = lang.map {
+    l =>
+      val cleanL = if (l.contains(",")) {
         l.substring(0, l.indexOf(","))
-      }else{
+      } else {
         l.toLowerCase
       }
-      if(cleanL.contains("-")){
+      if (cleanL.contains("-")) {
         cleanL.substring(0, l.indexOf("-"))
-      }else{
+      } else {
         cleanL
       }
   }.getOrElse("fr")
@@ -65,20 +65,26 @@ object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName:String): Speaker = {
-    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName))
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String): Speaker = {
+    Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName))
   }
 
-  def createOrEditSpeaker(uuid:Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName:String): Speaker = {
-    Speaker(Crypto.sign(email.trim().toLowerCase), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
+  def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
+                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String): Speaker = {
+    uuid match {
+      case None =>
+        Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
+      case Some(validUuid) =>
+        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
+    }
+
   }
 
   def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String)] = {
     Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""))
   }
 
-  def unapplyFormEdit(s: Speaker): Option[(Option[String],String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String)] = {
+  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String)] = {
     Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""))
   }
 
@@ -100,7 +106,7 @@ object Speaker {
     Cache.remove("speaker:uuid:" + uuid)
     findByUUID(uuid).map {
       speaker =>
-        Speaker.update(uuid, speaker.copy(name = Option(lastName), firstName=Option(firstName)))
+        Speaker.update(uuid, speaker.copy(name = Option(lastName), firstName = Option(firstName)))
     }
   }
 
@@ -110,7 +116,8 @@ object Speaker {
         client.hget("Speaker", uuid).flatMap {
           json: String =>
             Json.parse(json).validate[Speaker].fold(invalid => {
-              play.Logger.error("Speaker error. " + ZapJson.showError(invalid)); None
+              play.Logger.error("Speaker error. " + ZapJson.showError(invalid));
+              None
             }, validSpeaker => Some(validSpeaker))
         }
       }
@@ -162,7 +169,8 @@ object Speaker {
         val allSpeakers = client.hmget("Speaker", speakerIDs).flatMap {
           json: String =>
             Json.parse(json).validate[Speaker].fold(invalid => {
-              play.Logger.error("Speaker error. " + ZapJson.showError(invalid)); None
+              play.Logger.error("Speaker error. " + ZapJson.showError(invalid));
+              None
             }, validSpeaker => Some(validSpeaker))
         }
         allSpeakers
