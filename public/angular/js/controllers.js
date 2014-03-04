@@ -16,7 +16,6 @@ mainController.controller('MainController', function MainController($rootScope, 
     $scope.listOfTracks=[];
 
     ApprovedTalksService.get({confType: $routeParams.confType}, function (allApproved) {
-        console.log("Appel de approve service...");
         $rootScope.allApprovedTalks = allApproved["approvedTalks"];
         $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
 
@@ -91,21 +90,42 @@ mainController.controller('MainController', function MainController($rootScope, 
 
         if(newValue=="all"){
             $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
+            $scope.showCurrentTrack="All";
+            return;
         }
-        if(newValue=="fr"){
-            var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks , function(talk){
-                     return talk.lang == newValue;
-            });
-            $scope.approvedTalks=filteredArrayOfTalks;
-        }
-        if(newValue=="en"){
-           var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks, function(talk){
-                return talk.lang == newValue;
-            });
-            $scope.approvedTalks=filteredArrayOfTalks;
+        var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks , function(talk){
+                if($scope.showCurrentTrack!="All"){
+                    return (talk.lang == $scope.showLang && talk.track.id == $scope.showCurrentTrack);
+                }else{
+                     return talk.lang == $scope.showLang;
+                }
+        });
+        $scope.approvedTalks=filteredArrayOfTalks;
+        //$scope.$apply();
+    });
+
+      $scope.$watch('showCurrentTrack', function(newValue, oldValue) {
+        // Ignore initial setup.
+        if (newValue === oldValue) {
+            return;
         }
 
-            $scope.$apply();
+        if(newValue=="All"){
+            $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
+            $scope.showLang="all";
+            return;
+        }
+
+        var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks , function(talk){
+            if($scope.showLang!="all"){
+                return (talk.lang == $scope.showLang && talk.track.id == $scope.showCurrentTrack);
+            }else{
+                return talk.track.id == $scope.showCurrentTrack;
+            }
+        });
+
+        $scope.approvedTalks=filteredArrayOfTalks;
+        //$scope.$apply();
     });
 });
 
