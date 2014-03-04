@@ -411,3 +411,5 @@ calendar.pref.thursday=Thursday
 calendar.pref.friday=Friday
 calendar.pref.reset=No preferences
 sw.all.other=Other kind of presentation
+acceptTermsConditions=Accept  Terms/Conditions to display this bio on the web site
+sp.authenticateAndCreate=Authenticate as this speaker and create a new talk

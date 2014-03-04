@@ -442,3 +442,5 @@ calendar.pref.thursday=Le jeudi
 calendar.pref.friday=Le vendredi
 calendar.pref.reset=Pas de préférences
 sw.all.other=Evénements spéciaux
+acceptTermsConditions=Accepter les Termes/Conditions pour afficher la bio sur le site
+sp.authenticateAndCreate=S''authentifier comme ce speaker et créér un talk

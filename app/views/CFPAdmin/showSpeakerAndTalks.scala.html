@@ -22,6 +22,7 @@
 @if(SecureCFPController.hasAccessToCFP(req)){
     <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
     <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
+    <a href="@routes.Backoffice.authenticateAndCreateTalk(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAndCreate")</a>
 }
                 <table class="table">
                     <tbody>
@@ -53,7 +54,7 @@
                         </tr>
 
                         <tr>
-                            <td><i class="icon-adjust"></i> Bio</td><td>@speaker.bio</td>
+                            <td><i class="icon-adjust"></i> Bio</td><td>@Html(speaker.bioAsHtml)</td>
                         </tr>
                         <tr>
                             <td><i class="icon-flag"></i> Lang</td><td>@speaker.lang.getOrElse("")</td>

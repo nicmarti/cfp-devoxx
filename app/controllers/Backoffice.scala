@@ -47,6 +47,12 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
   }
 
+  def authenticateAndCreateTalk(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request =>
+      Redirect(routes.CallForPaper.newProposal).withSession("uuid" -> uuidSpeaker)
+  }
+
+
   def allProposals() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val proposals = Proposal.allProposals().sortBy(_.state.code)

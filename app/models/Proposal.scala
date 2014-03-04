@@ -121,13 +121,13 @@ case class Proposal(id: String, event: String, lang: String, title: String,
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
   }
 
-  val summaryAsHtml: String = {
+  lazy val summaryAsHtml: String = {
     val escapedHtml = HtmlFormat.escape(summary).body // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
 
-  val privateMessageAsHtml: String = {
+  lazy val privateMessageAsHtml: String = {
     val escapedHtml = HtmlFormat.escape(privateMessage).body // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest

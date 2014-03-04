@@ -92,6 +92,7 @@ GET         /admin/submittedByDate                               controllers.Bac
 
 # Authenticate and admin as a regular user
 GET         /admin/authenticateAs/:uuid                          controllers.Backoffice.authenticateAs(uuid:String)
+GET         /admin/authenticateAndCreate/:uuid                   controllers.Backoffice.authenticateAndCreateTalk(uuid:String)
 
 GET         /admin/elastic                                       controllers.Backoffice.doIndexElasticSearch()
 

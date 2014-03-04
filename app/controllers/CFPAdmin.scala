@@ -443,7 +443,8 @@ object CFPAdmin extends SecureCFPController {
     "avatarUrl2" -> optional(text),
     "company2" -> optional(text),
     "blog2" -> optional(text),
-    "firstName"->text
+    "firstName"->text,
+    "acceptTermsConditions"->boolean
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
 
@@ -492,6 +493,7 @@ object CFPAdmin extends SecureCFPController {
               Redirect(routes.CFPAdmin.showSpeakerAndTalks(newUUID)).flashing("success" -> "Profile saved")
             }
           }
+
 
         }
       )

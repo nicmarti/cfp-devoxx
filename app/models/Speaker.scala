@@ -30,6 +30,9 @@ import play.api.cache.Cache
 import play.api.Play.current
 import org.joda.time.Instant
 import org.joda.time.DateTime
+import play.api.templates.HtmlFormat
+import com.github.rjeschke.txtmark.Processor
+import org.apache.commons.lang3.StringUtils
 
 /**
  * Speaker
@@ -59,6 +62,13 @@ case class Speaker(uuid: String, email: String, name: Option[String], bio: Strin
         cleanL
       }
   }.getOrElse("fr")
+
+
+  lazy val bioAsHtml: String = {
+    val escapedHtml = HtmlFormat.escape(bio).body // escape HTML code and JS
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
+    processedMarkdownTest
+  }
 }
 
 object Speaker {
@@ -70,11 +80,22 @@ object Speaker {
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String): Speaker = {
+                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms:Boolean): Speaker = {
     uuid match {
       case None =>
-        Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
+        val newUUID=Webuser.generateUUID(email)
+        if(acceptTerms){
+          doAcceptTerms(newUUID)
+        }else{
+          refuseTerms(newUUID)
+        }
+        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
       case Some(validUuid) =>
+        if(acceptTerms){
+          doAcceptTerms(validUuid)
+        }else{
+          refuseTerms(validUuid)
+        }
         Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
     }
 
@@ -84,8 +105,8 @@ object Speaker {
     Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""))
   }
 
-  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String)] = {
-    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""))
+  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean)] = {
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), needsToAccept(s.uuid)==false)
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -148,11 +169,18 @@ object Speaker {
       client.hexists("TermsAndConditions", speakerId) == false
   }
 
-  def acceptTerms(speakerId: String) = Redis.pool.withClient {
+  def doAcceptTerms(speakerId: String) = Redis.pool.withClient {
     client =>
       Cache.remove("allSpeakersWithAcceptedTerms")
       client.hset("TermsAndConditions", speakerId, new Instant().getMillis.toString)
   }
+
+  def refuseTerms(speakerId:String) = Redis.pool.withClient {
+    client =>
+      Cache.remove("allSpeakersWithAcceptedTerms")
+      client.hdel("TermsAndConditions", speakerId)
+  }
+
 
   def getAcceptedDate(speakerId: String): Option[DateTime] = Redis.pool.withClient {
     client =>
@@ -169,7 +197,7 @@ object Speaker {
         val allSpeakers = client.hmget("Speaker", speakerIDs).flatMap {
           json: String =>
             Json.parse(json).validate[Speaker].fold(invalid => {
-              play.Logger.error("Speaker error. " + ZapJson.showError(invalid));
+              play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
               None
             }, validSpeaker => Some(validSpeaker))
         }

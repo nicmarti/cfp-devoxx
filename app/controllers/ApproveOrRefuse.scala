@@ -119,7 +119,7 @@ object ApproveOrRefuse extends SecureCFPController {
       formApprove.bindFromRequest().fold(
         hasErrors => BadRequest(views.html.ApproveOrRefuse.showAcceptTerms(hasErrors)),
         successForm => {
-          Speaker.acceptTerms(request.webuser.uuid)
+          Speaker.doAcceptTerms(request.webuser.uuid)
           Event.storeEvent(Event("speaker", request.webuser.uuid, "has accepted Terms and conditions"))
           Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks())
         }
