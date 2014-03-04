@@ -47,7 +47,7 @@ object Publisher extends Controller {
 
   def showAllSpeakers = Action {
     implicit request =>
-      val speakers = Speaker.allSpeakersWithAcceptedTerms().filter(_.uuid=="0756dcacee31c3025d51b0645b0eb777915bc76b")
+      val speakers = Speaker.allSpeakersWithAcceptedTerms()
       val etag = speakers.hashCode().toString+"_2"
       val maybeETag = request.headers.get(IF_NONE_MATCH)
       maybeETag match {

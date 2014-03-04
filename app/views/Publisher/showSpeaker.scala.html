@@ -9,7 +9,7 @@
                 @speaker.avatarUrl.map{url=>
                     <img class="alignleft size-medium wp-image-44"  src="@url" width="128" height="128" alt="@speaker.cleanName" title="@speaker.cleanName"><br>
                 }
-                <p>@speaker.bioAsHtml</p>
+                @Html(speaker.bioAsHtml)
                 @speaker.twitter.map{tw=>
                     <p><img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: bottom"><a href="http://www.twitter.com/@tw" rel="no-follow">@tw</a></p>
                 }
