@@ -49,7 +49,7 @@ object ApiController extends SecureCFPController {
         case "bof" => Json.toJson(Slot.bofSlotsThursday)
         case "tia" => Json.toJson(Slot.toolsInActionSlots)
         case "labs" => Json.toJson(Slot.labsSlots)
-        case other => Json.toJson(Slot.universitySlots)
+        case other => Json.toJson(List.empty[Slot])
       }
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
@@ -58,9 +58,9 @@ object ApiController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
       val proposals = confType match{
-        case "confThursday"=>ApprovedProposal.allApprovedByTalkType("conf")
-        case "confFriday"=>ApprovedProposal.allApprovedByTalkType("conf")
-        case other=>ApprovedProposal.allApprovedByTalkType(confType)
+        case "confThursday"=>Proposal.allAcceptedByTalkType("conf")
+        case "confFriday"=>Proposal.allAcceptedByTalkType("conf")
+        case other=>Proposal.allAcceptedByTalkType("conf")
       }
 
       val proposalsWithSpeaker = proposals.map {

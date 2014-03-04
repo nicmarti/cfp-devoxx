@@ -202,7 +202,6 @@ object ApprovedProposal {
       allProposalWithVotes.values.toList
   }
 
-
   def allApproved(): Set[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allKeys = client.keys("Approved:*")
