@@ -11,8 +11,23 @@ mainController.controller('MainController', function MainController($rootScope, 
         $scope.slots = jsonArray["allSlots"];
     });
 
+    $scope.showLang = 'all';
+    $scope.showCurrentTrack = undefined;
+    $scope.listOfTracks=[];
+
     ApprovedTalksService.get({confType: $routeParams.confType}, function (allApproved) {
-        $scope.approvedTalks = allApproved["approvedTalks"];
+        console.log("Appel de approve service...");
+        $rootScope.allApprovedTalks = allApproved["approvedTalks"];
+        $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
+
+
+       var listOfTracks = _.map($rootScope.allApprovedTalks.talks,function(talk){
+            return talk.track.id;
+        });
+
+        $scope.listOfTracks = _.uniq(listOfTracks);
+        $scope.listOfTracks.push("All");
+        $scope.showCurrentTrack = "All";
     });
 
     $rootScope.$on('dropEvent', function (evt, dragged, dropped) {
@@ -35,12 +50,12 @@ mainController.controller('MainController', function MainController($rootScope, 
             maybeSlot2.proposal = dragged;
 
             // remove from accepted talks
-            $scope.approvedTalks.talks = _.reject($scope.approvedTalks.talks, function (a) {
+            $scope.approvedTalks = _.reject($scope.approvedTalks, function (a) {
                 return a.id === dragged.id
             });
             // Add back to right
             if(_.isUndefined(oldTalk)==false){
-                $scope.approvedTalks.talks = $scope.approvedTalks.talks.concat(oldTalk);
+                $scope.approvedTalks = $scope.approvedTalks.concat(oldTalk);
             }
 
             $scope.$apply();
@@ -60,7 +75,7 @@ mainController.controller('MainController', function MainController($rootScope, 
             maybeSlot.proposal=undefined;
 
             // Add back to right
-            $scope.approvedTalks.talks = $scope.approvedTalks.talks.concat(talk);
+            $scope.approvedTalks = $scope.approvedTalks.concat(talk);
         }
     };
 
@@ -68,6 +83,30 @@ mainController.controller('MainController', function MainController($rootScope, 
         SlotService.save({confType: $routeParams.confType}, $scope.slots);
     };
 
+    $scope.$watch('showLang', function(newValue, oldValue) {
+        // Ignore initial setup.
+        if (newValue === oldValue) {
+            return;
+        }
+
+        if(newValue=="all"){
+            $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
+        }
+        if(newValue=="fr"){
+            var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks , function(talk){
+                     return talk.lang == newValue;
+            });
+            $scope.approvedTalks=filteredArrayOfTalks;
+        }
+        if(newValue=="en"){
+           var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks, function(talk){
+                return talk.lang == newValue;
+            });
+            $scope.approvedTalks=filteredArrayOfTalks;
+        }
+
+            $scope.$apply();
+    });
 });
 
 homeController.controller('HomeController', function HomeController($rootScope, $scope, $routeParams, AllScheduledConfiguration) {

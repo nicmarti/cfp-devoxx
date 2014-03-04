@@ -7,21 +7,37 @@
 </div>
 </div>
 
-<div class="col-lg-3 panel_talks">
-<div ng-repeat="talk in approvedTalks.talks"
-     class="talk"
-     drag="talk" dragStyle="columnDrag"
-     dropStyle="columnDrop">
-     <span class="proposalTitle">{{talk.title}}</span>
-     <span class="label label-default">{{talk.id}}</span>
-     <div class="label label-info">{{talk.lang}} - {{talk.track.id}}</div>
-     <div class="label label-success">{{talk.mainSpeaker}}</div>
+<div class="col-lg-12">
+<h3>Filter</h3>
+<label>Lang
+<select name="lang" data-ng-model="showLang">
+    <option value="all">All</option>
+    <option value="fr">fr</option>
+    <option value="en">en</option>
+</select>
+</label>
+<label>Show Track
+    <select name="currentTrack"
+            data-ng-model="showCurrentTrack"
+            data-ng-options="label for label in listOfTracks">
+    </select>
+</label>
 
 </div>
+
+<div class="col-lg-3 panel_talks">
+    <div ng-repeat="talk in approvedTalks"
+         class="talk"
+         drag="talk" dragStyle="columnDrag"
+         dropStyle="columnDrop">
+         <span class="proposalTitle">{{talk.title}}</span>
+         <span class="label label-default">{{talk.id}}</span>
+         <div class="label label-info">{{talk.lang}} - {{talk.track.id}}</div>
+         <div class="label label-success">{{talk.mainSpeaker}}</div>
+    </div>
 </div>
 
 <div class="col-lg-9 panel_slots">
-
     <div ng-repeat="slot in slots" class="col-lg-5 slot"  drop="slot" dropStyle="columnDrop">
         <span class="label label-default">{{slot.room.name}}</span> <small>{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
         <div ng-show="slot.proposal">
