@@ -26,9 +26,7 @@ object Webuser {
   }
 
   def generateUUID(email:String):String={
-    val uuid=Crypto.sign(email.trim().toLowerCase)
-    println("generatedUUID ["+email+"]")
-    uuid
+    Crypto.sign(email.trim().toLowerCase)
   }
 
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {

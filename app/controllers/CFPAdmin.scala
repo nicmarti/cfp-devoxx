@@ -242,10 +242,9 @@ object CFPAdmin extends SecureCFPController {
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-      ElasticSearch.doSearch(q).map {
+      ElasticSearch.doSearch("speakers,proposals",q).map {
         case r if r.isSuccess => {
           val json = Json.parse(r.get)
-
           val total = (json \ "hits" \ "total").as[Int]
           val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
@@ -261,16 +260,21 @@ object CFPAdmin extends SecureCFPController {
                   s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
                 }
                 case "proposals" => {
+                            println("Json result "+json)
                   val id = (source \ "id").as[String]
                   val title = (source \ "title").as[String]
-                  s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a>"
+                  val talkType = (source \ "talkType" \ "id").as[String]
+                  val code = (source \ "state" \"code").as[String]
+                  s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - $talkType"
                 }
                 case "speakers" => {
                   val uuid = (source \ "uuid").as[String]
                   val name = (source \ "name").as[String]
-                  s"<i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$name</a>"
+                  val firstName = (source \ "firstName").as[String]
+                  val email = (source \ "email").as[String]
+                  s"<i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a> $email"
                 }
-                case other => "Unknown"
+                case other => "Unknown format "+index
               }
           }
 

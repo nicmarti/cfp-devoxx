@@ -178,7 +178,7 @@ class IndexMaster extends ESActor {
   def doIndexAllProposals() {
     play.Logger.of("application.IndexMaster").debug("Do index all proposals")
 
-    val proposals = Proposal.allSubmitted()
+    val proposals = Proposal.allAccepted()++Proposal.allSubmitted()
 
     val sb = new StringBuilder
     proposals.foreach {
