@@ -437,7 +437,7 @@ object CFPAdmin extends SecureCFPController {
     "uuid" -> optional(text),
     "email" -> (email verifying nonEmpty),
     "lastName" -> text,
-    "bio2" -> nonEmptyText(maxLength = 750),
+    "bio2" -> nonEmptyText(maxLength = 1200),
     "lang2" -> optional(text),
     "twitter2" -> optional(text),
     "avatarUrl2" -> optional(text),
@@ -475,7 +475,9 @@ object CFPAdmin extends SecureCFPController {
                 existingWebuser=>
                   Webuser.updateNames(existingUUID, validSpeaker.firstName.getOrElse("?"), validSpeaker.name.getOrElse("?"))
               }.getOrElse{
-                play.Logger.error("Unable to retrieve Webuser for speaker uuid "+existingUUID)
+                val newWebuser= Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("?"), validSpeaker.name.getOrElse("?"))
+                val newUUID=Webuser.saveAndValidateWebuser(newWebuser)
+                play.Logger.warn("Created missing webuser "+newUUID)
               }
               Speaker.save(validSpeaker)
               Event.storeEvent(Event( validSpeaker.cleanName , request.webuser.uuid, "updated a speaker ["+validSpeaker.uuid+"]"))
@@ -484,7 +486,7 @@ object CFPAdmin extends SecureCFPController {
             case None=>  {
              val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname") )
               Webuser.saveNewSpeakerEmailNotValidated(webuser)
-              val newUUID=Webuser.validateEmailForSpeaker(webuser)
+              val newUUID=Webuser.saveAndValidateWebuser(webuser)
               Speaker.save(validSpeaker.copy(uuid=newUUID))
               Event.storeEvent(Event( validSpeaker.cleanName , request.webuser.uuid, "created a speaker ["+validSpeaker.uuid+"]"))
               Redirect(routes.CFPAdmin.showSpeakerAndTalks(newUUID)).flashing("success" -> "Profile saved")

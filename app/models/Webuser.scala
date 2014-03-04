@@ -56,7 +56,7 @@ object Webuser {
       }
   }
 
-  def validateEmailForSpeaker(webuser: Webuser):String = Redis.pool.withClient {
+  def saveAndValidateWebuser(webuser: Webuser):String = Redis.pool.withClient {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString

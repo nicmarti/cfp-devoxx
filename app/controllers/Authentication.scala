@@ -300,7 +300,7 @@ object Authentication extends Controller {
         val futureMaybeWebuser = Webuser.findNewUserByEmail(email)
         futureMaybeWebuser.map {
           webuser =>
-            Webuser.validateEmailForSpeaker(webuser) // it is generated
+            Webuser.saveAndValidateWebuser(webuser) // it is generated
             Speaker.save(Speaker.createSpeaker(email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName))
             Mails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
@@ -328,7 +328,7 @@ object Authentication extends Controller {
 
           val validWebuser = Webuser.createSpeaker(email, firstName, lastName)
 
-          Webuser.validateEmailForSpeaker(validWebuser)
+          Webuser.saveAndValidateWebuser(validWebuser)
 
           val lang = request.headers.get("Accept-Language").map {
             s =>
