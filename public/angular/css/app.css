@@ -1,14 +1,17 @@
-body{
-    font-family: "Helvetica",sans-serif;
+body {
+    font-family: "Helvetica", sans-serif;
     font-size: 12px;
 }
-.panel_talks{
-border: 1px solid #eeeeee;
-}
-.panel_slots{
+
+.panel_talks {
     border: 1px solid #eeeeee;
 }
-.talk{
+
+.panel_slots {
+    border: 1px solid #eeeeee;
+}
+
+.talk {
     display: block;
     border: 2px solid black;
     padding: 5px;
@@ -17,32 +20,33 @@ border: 1px solid #eeeeee;
     border-radius: 3px;
     box-shadow: 2px 2px #bbb;
 }
-.slot{
-    display: block;
+
+.slot {
+
     border: 2px solid black;
     padding: 5px;
     margin: 5px;
     background-color: #b6dd7b;
 }
-.slotTitle{
+
+.slotTitle {
     display: block;
-    color:#000000;
+    color: #000000;
     font-weight: bold;
     font-size: 9px;
 }
-.proposalTitle{
+
+.proposalTitle {
     display: block;
     color: #3a0b07;
     font-weight: bold;
     font-size: 12px;
 }
 
-
 .slot.ng-hide-add, .slot.ng-hide-remove {
-  transition:0.5s linear all;
-  display:block!important;
+    transition: 0.5s linear all;
+    display: block !important;
 }
-
 
 .columnDrag {
     opacity: 0.7;
@@ -51,4 +55,32 @@ border: 1px solid #eeeeee;
 
 .columnDrop {
     background-color: green;
+}
+
+
+.animate-repeat {
+    line-height: 40px;
+    list-style: none;
+    box-sizing: border-box;
+}
+
+.animate-repeat.ng-move,
+.animate-repeat.ng-enter,
+.animate-repeat.ng-leave {
+    -webkit-transition: all linear 0.5s;
+    transition: all linear 0.5s;
+}
+
+.animate-repeat.ng-leave.ng-leave-active,
+.animate-repeat.ng-move,
+.animate-repeat.ng-enter {
+    opacity: 0;
+    max-height: 0;
+}
+
+.animate-repeat.ng-leave,
+.animate-repeat.ng-move.ng-move-active,
+.animate-repeat.ng-enter.ng-enter-active {
+    opacity: 1;
+    max-height: 40px;
 }
