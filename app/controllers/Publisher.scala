@@ -86,10 +86,9 @@ object Publisher extends Controller {
       }
   }
 
-  def showAgendaByConfType(confType:String)=Action{
+  def showAgendaByConfType(confType:String,slotId:String)=Action{
     implicit request=>
-      val id="XClbjDoA"
-      val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(id)
+      val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(slotId)
       maybeScheduledConfiguration match{
         case Some(slots)=>Ok(views.html.Publisher.showAgendaByConfType(slots,confType))
         case None=>NotFound

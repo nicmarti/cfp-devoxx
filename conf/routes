@@ -130,7 +130,7 @@ GET         /devoxxfr2014/talks/:talkType                        controllers.Pub
 GET         /devoxxfr2014/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
-GET         /devoxxfr2014/agenda/:confType                       controllers.Publisher.showAgendaByConfType(confType:String)
+GET         /devoxxfr2014/agenda/:confType                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:String)
 
 # For Paper guide
 GET         /guide/speakers                                      controllers.PaperGuide.showAllSpeakers()

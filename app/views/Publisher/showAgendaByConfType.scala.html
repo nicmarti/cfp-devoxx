@@ -8,17 +8,43 @@
             <h2><i class="icon-calendar"></i> @Messages("day-"+talkType)</h2>
 
             <div class="entry-content">
-                @schedule.slots.groupBy(_.room).toList.sortBy(_._1.name).map{case(room:Room,slots)=>
-                    <h4><i class="icon-sitemap"></i> @Messages(room.name)</h4>
-                    @slots.map{slot:Slot=>
-                      <h5><i class="icon-time"></i> @slot.from.toString("HH:mm") - @slot.to.toString("HH:mm")</h5>
-                      @slot.proposal.map{proposal:Proposal=>
-                         <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id,proposal.title)">@proposal.title</a></strong>
-                         <br>
-                        @proposal.allSpeakerUUIDs
-                      }
-                    }
-                }
+<table>
+<tr>
+    <th><i class="icon-time"></i> Time</th>
+
+    @schedule.timeSlots.toSet.map{ts:TimeSlot=>
+      <td>@ts.start.toString("HH:mm")-@ts.end.toString("HH:mm")</td>
+
+    }
+</tr>
+@schedule.slots.groupBy(_.room).toList.sortBy(_._1.name).map{case(room:Room,slots)=>
+<tr>
+<th>
+@Messages(room.name)
+</th>
+@slots.map{slot:Slot=>
+<td>
+@slot.proposal.map{p=>
+  <a href="@routes.Publisher.showDetailsForProposal(p.id,p.title)">@p.title</a><br>
+   @tags.publisher.renderIconForTrack(p.track.id) @Messages(p.track.label) @if(p.lang=="en"){<img src="/assets/images/en.png" alt="English"/>}
+}
+</td>
+
+}
+</tr>
+}
+</table>
+
+<ul>
+    <li>@Messages(Track.LANG_ALTERNATIF.label) @tags.publisher.renderIconForTrack(Track.LANG_ALTERNATIF.id)</li>
+    <li>@Messages(Track.FUTURE.label) @tags.publisher.renderIconForTrack(Track.FUTURE.id)</li>
+    <li>@Messages(Track.WEB.label) @tags.publisher.renderIconForTrack(Track.WEB.id)</li>
+    <li>@Messages(Track.MOBILE.label) @tags.publisher.renderIconForTrack(Track.MOBILE.id)</li>
+    <li>@Messages(Track.JAVA.label) @tags.publisher.renderIconForTrack(Track.JAVA.id)</li>
+    <li>@Messages(Track.STARTUP.label) @tags.publisher.renderIconForTrack(Track.STARTUP.id)</li>
+    <li>@Messages(Track.AGILITE.label) @tags.publisher.renderIconForTrack(Track.AGILITE.id)</li>
+    <li>@Messages(Track.CLOUD.label) @tags.publisher.renderIconForTrack(Track.CLOUD.id)</li>
+</ul>
             </div>
         </div>
     </div>

@@ -25,7 +25,7 @@ package models
 
 import library.Redis
 import play.api.libs.json.Json
-import com.google.api.client.util.DateTime
+import org.joda.time.DateTime
 import org.apache.commons.lang3.RandomStringUtils
 
 /**
@@ -33,11 +33,24 @@ import org.apache.commons.lang3.RandomStringUtils
  *
  * Created by Nicolas Martignole on 27/02/2014.
  */
-case class ScheduleConfiguration( confType: String, slots: List[Slot])
+case class TimeSlot(start:DateTime,end:DateTime){
+  override def hashCode(): Int = {start.hashCode()+end.hashCode()}
+
+  override def equals(obj: scala.Any): Boolean = {
+    if(obj.isInstanceOf[TimeSlot]){
+      val d2=obj.asInstanceOf[TimeSlot]
+      d2.start.equals(this.start) && d2.end.equals(this.end)
+    }else{
+      false
+    }
+  }
+}
+case class ScheduleConfiguration( confType: String, slots: List[Slot], timeSlots:List[TimeSlot])
 
 case class ScheduleSaved(id:String, confType:String, createdBy:String, hashCodeSlots:Int)
 
 object ScheduleConfiguration {
+  implicit val timeSlotFormat = Json.format[TimeSlot]
   implicit val scheduleConfFormat = Json.format[ScheduleConfiguration]
   implicit val scheduleSavedFormat = Json.format[ScheduleSaved]
 
@@ -48,7 +61,11 @@ object ScheduleConfiguration {
       val jsonKey = Json.toJson(key).toString()
       client.zadd("ScheduleConfiguration", System.currentTimeMillis() / 1000, jsonKey)
 
-      val config = ScheduleConfiguration(confType, slots)
+    val timeSlots=slots.map{slot=>
+      TimeSlot(slot.from,slot.to)
+    }.sortBy(_.start.getMillis)
+
+      val config = ScheduleConfiguration(confType, slots, timeSlots)
       val json = Json.toJson(config).toString()
       client.hset("ScheduleConfigurationByID", id, json)
   }
