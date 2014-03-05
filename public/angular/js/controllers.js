@@ -11,22 +11,8 @@ mainController.controller('MainController', function MainController($rootScope, 
         $scope.slots = jsonArray["allSlots"];
     });
 
-    $scope.showLang = 'all';
-    $scope.showCurrentTrack = undefined;
-    $scope.listOfTracks=[];
-
     ApprovedTalksService.get({confType: $routeParams.confType}, function (allApproved) {
-        $rootScope.allApprovedTalks = allApproved["approvedTalks"];
-        $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
-
-
-       var listOfTracks = _.map($rootScope.allApprovedTalks.talks,function(talk){
-            return talk.track.id;
-        });
-
-        $scope.listOfTracks = _.uniq(listOfTracks);
-        $scope.listOfTracks.push("All");
-        $scope.showCurrentTrack = "All";
+        $scope.approvedTalks = allApproved["approvedTalks"].talks;
     });
 
     $rootScope.$on('dropEvent', function (evt, dragged, dropped) {
@@ -82,51 +68,7 @@ mainController.controller('MainController', function MainController($rootScope, 
         SlotService.save({confType: $routeParams.confType}, $scope.slots);
     };
 
-    $scope.$watch('showLang', function(newValue, oldValue) {
-        // Ignore initial setup.
-        if (newValue === oldValue) {
-            return;
-        }
 
-        if(newValue=="all"){
-            $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
-            $scope.showCurrentTrack="All";
-            return;
-        }
-        var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks , function(talk){
-                if($scope.showCurrentTrack!="All"){
-                    return (talk.lang == $scope.showLang && talk.track.id == $scope.showCurrentTrack);
-                }else{
-                     return talk.lang == $scope.showLang;
-                }
-        });
-        $scope.approvedTalks=filteredArrayOfTalks;
-        //$scope.$apply();
-    });
-
-      $scope.$watch('showCurrentTrack', function(newValue, oldValue) {
-        // Ignore initial setup.
-        if (newValue === oldValue) {
-            return;
-        }
-
-        if(newValue=="All"){
-            $scope.approvedTalks = $rootScope.allApprovedTalks.talks;
-            $scope.showLang="all";
-            return;
-        }
-
-        var filteredArrayOfTalks =_.filter($rootScope.allApprovedTalks.talks , function(talk){
-            if($scope.showLang!="all"){
-                return (talk.lang == $scope.showLang && talk.track.id == $scope.showCurrentTrack);
-            }else{
-                return talk.track.id == $scope.showCurrentTrack;
-            }
-        });
-
-        $scope.approvedTalks=filteredArrayOfTalks;
-        //$scope.$apply();
-    });
 });
 
 homeController.controller('HomeController', function HomeController($rootScope, $scope, $routeParams, AllScheduledConfiguration) {

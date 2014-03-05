@@ -10,24 +10,14 @@
 
 <div class="col-lg-12">
 <h3>Filter</h3>
-<label>Lang
-<select name="lang" data-ng-model="showLang">
-    <option value="all">All</option>
-    <option value="fr">fr</option>
-    <option value="en">en</option>
-</select>
-</label>
-<label>Show Track
-    <select name="currentTrack"
-            data-ng-model="showCurrentTrack"
-            data-ng-options="label for label in listOfTracks">
-    </select>
-</label>
-
 </div>
 
+<div class="col-lg-12">
+<input type="search" ng-model="filterTalk" placeholder="Filter Talks..." />
+</div>
 <div class="col-lg-3 panel_talks">
-    <div ng-repeat="talk in approvedTalks"
+
+    <div ng-repeat="talk in approvedTalks | filter:filterTalk"
          class="talk"
          drag="talk" dragStyle="columnDrag"
          dropStyle="columnDrop">
