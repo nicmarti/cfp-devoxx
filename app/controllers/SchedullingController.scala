@@ -34,10 +34,11 @@ import com.google.api.client.util.DateTime
 
 
 /**
- * API Controller
- * Created by nicolas on 07/02/2014.
+ * Schedulling Controller.
+ * Plannification et création des agendas par type de conférence.
+ * Created by nicolas martignole on 07/02/2014.
  */
-object ApiController extends SecureCFPController {
+object SchedullingController extends SecureCFPController {
   def slots(confType: String) = Action {
     implicit request =>
       import Slot.slotFormat
@@ -60,7 +61,7 @@ object ApiController extends SecureCFPController {
       val proposals = confType match{
         case "confThursday"=>Proposal.allAcceptedByTalkType("conf")
         case "confFriday"=>Proposal.allAcceptedByTalkType("conf")
-        case other=>Proposal.allAcceptedByTalkType("conf")
+        case other=>Proposal.allAcceptedByTalkType(confType)
       }
 
       val proposalsWithSpeaker = proposals.map {

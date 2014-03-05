@@ -27,6 +27,7 @@ import models._
 import play.api.mvc._
 import akka.util.Crypt
 import library.{LogURL, ZapActor}
+import play.api.libs.json.Json
 
 /**
  * Simple content publisher
@@ -82,6 +83,16 @@ object Publisher extends Controller {
         case Some(proposal)=>
           ZapActor.actor ! LogURL("showTalk",proposalId, proposalTitle)
           Ok(views.html.Publisher.showProposal(proposal))
+      }
+  }
+
+  def showAgendaByConfType(confType:String)=Action{
+    implicit request=>
+      val id="XClbjDoA"
+      val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(id)
+      maybeScheduledConfiguration match{
+        case Some(slots)=>Ok(views.html.Publisher.showAgendaByConfType(slots,confType))
+        case None=>NotFound
       }
   }
 }

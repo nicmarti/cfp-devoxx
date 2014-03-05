@@ -130,6 +130,7 @@ GET         /devoxxfr2014/talks/:talkType                        controllers.Pub
 GET         /devoxxfr2014/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
+GET         /devoxxfr2014/agenda/:confType                       controllers.Publisher.showAgendaByConfType(confType:String)
 
 # For Paper guide
 GET         /guide/speakers                                      controllers.PaperGuide.showAllSpeakers()
@@ -150,12 +151,11 @@ GET         /api/conferences/:eventCode/talks                    controllers.Res
 GET         /api/profile/:docName                                controllers.RestAPI.profile(docName:String)
 
 # API for AngularJS
-GET         /api/fr14/slots                                      controllers.ApiController.slots(confType:String)
-GET         /api/fr14/approvedTalks                              controllers.ApiController.approvedTalks(confType:String)
-GET         /api/fr14/scheduledConfigurations                    controllers.ApiController.allScheduledConfiguration()
-GET         /api/fr14/loadScheduledConfiguration                 controllers.ApiController.loadScheduledConfiguration(id:String)
-
-POST        /api/fr14/slots                                      controllers.ApiController.saveSlots(confType:String)
+GET         /schedulling/fr14/slots                              controllers.SchedullingController.slots(confType:String)
+GET         /schedulling/fr14/approvedTalks                      controllers.SchedullingController.approvedTalks(confType:String)
+GET         /schedulling/fr14/scheduledConfigurations            controllers.SchedullingController.allScheduledConfiguration()
+GET         /schedulling/fr14/loadScheduledConfiguration         controllers.SchedullingController.loadScheduledConfiguration(id:String)
+POST        /schedulling/fr14/slots                              controllers.SchedullingController.saveSlots(confType:String)
 
 
 # Map static resources from the /public folder to the /assets URL path
