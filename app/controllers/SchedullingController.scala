@@ -59,8 +59,18 @@ object SchedullingController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
       val proposals = confType match{
-        case "confThursday"=>Proposal.allAcceptedByTalkType("conf")
-        case "confFriday"=>Proposal.allAcceptedByTalkType("conf")
+        case "confThursday"=>{
+          Proposal.allAcceptedByTalkType("conf").filter{proposal=>
+            val preferredDay = Proposal.getPreferredDay(proposal.id)
+            preferredDay==None || preferredDay==Some("Thu")
+          }
+        }
+        case "confFriday"=>{
+          Proposal.allAcceptedByTalkType("conf").filter{proposal=>
+            val preferredDay = Proposal.getPreferredDay(proposal.id)
+            preferredDay==None || preferredDay==Some("Fri")
+          }
+        }
         case other=>Proposal.allAcceptedByTalkType(confType)
       }
 

@@ -5,18 +5,17 @@
     <div class="alert alert-success" ng-show="flash.getMessage()">
     <p>{{flash.getMessage()}}</p>
     </div>
-<p>Note : Please, use full-screen for best experience</p>
+<p>Note : Please, use full-screen for best experience. Slots are also filtered by preferred day.</p>
 </div>
 
 <div class="col-lg-12">
 <h3>Filter</h3>
 </div>
 
-<div class="col-lg-12">
-<input type="search" ng-model="filterTalk" placeholder="Filter Talks..." />
-</div>
-<div class="col-lg-3 panel_talks">
 
+<div class="col-lg-3 panel_talks">
+    <input type="search" ng-model="filterTalk" placeholder="Filter Talks..." /><br>
+    <small>Slots: {{approvedTalks.length}}</small>
     <div ng-repeat="talk in approvedTalks | filter:filterTalk"
          class="talk"
          drag="talk" dragStyle="columnDrag"
@@ -29,6 +28,7 @@
 </div>
 
 <div class="col-lg-9 panel_slots">
+<small>Scheduled: {{slots.length}}</small>
     <div class="col-lg-9">
         <input type="search" ng-model="q" placeholder="Filter Slots..." />
     </div>
