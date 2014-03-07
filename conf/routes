@@ -156,6 +156,7 @@ GET         /schedulling/fr14/approvedTalks                      controllers.Sch
 GET         /schedulling/fr14/scheduledConfigurations            controllers.SchedullingController.allScheduledConfiguration()
 GET         /schedulling/fr14/loadScheduledConfiguration         controllers.SchedullingController.loadScheduledConfiguration(id:String)
 POST        /schedulling/fr14/slots                              controllers.SchedullingController.saveSlots(confType:String)
+GET         /schedulling/fr14/deletescheduledConfigurations/:id  controllers.SchedullingController.deleteScheduleConfiguration(id:String)
 
 
 # Map static resources from the /public folder to the /assets URL path

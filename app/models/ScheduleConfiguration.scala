@@ -56,18 +56,35 @@ object ScheduleConfiguration {
 
   def persist(confType: String, slots: List[Slot], createdBy: Webuser) = Redis.pool.withClient {
     implicit client =>
-      val id=RandomStringUtils.randomAlphabetic(8)
+      val id = confType+(RandomStringUtils.randomAlphabetic(3)+"-"+RandomStringUtils.randomNumeric(2)).toLowerCase
       val key = ScheduleSaved(id, confType, createdBy.firstName, slots.hashCode())
       val jsonKey = Json.toJson(key).toString()
       client.zadd("ScheduleConfiguration", System.currentTimeMillis() / 1000, jsonKey)
 
-    val timeSlots=slots.map{slot=>
-      TimeSlot(slot.from,slot.to)
-    }.sortBy(_.start.getMillis)
+      val timeSlots = slots.map {
+        slot =>
+          TimeSlot(slot.from, slot.to)
+      }.sortBy(_.start.getMillis)
 
       val config = ScheduleConfiguration(confType, slots, timeSlots)
       val json = Json.toJson(config).toString()
       client.hset("ScheduleConfigurationByID", id, json)
+  }
+
+  def delete(id:String)=Redis.pool.withClient{
+    implicit client=>
+      val scheduledSlotsKey = client.zrevrangeWithScores("ScheduleConfiguration", 0, -1)
+      val tx=client.multi()
+
+      scheduledSlotsKey.map {
+        case (key:String,_) =>
+          val scheduleSaved = Json.parse(key).as[ScheduleSaved]
+          if (scheduleSaved.id == id) {
+            tx.zrem("ScheduleConfiguration", key)
+          }
+      }
+      tx.hdel("ScheduleConfigurationByID", id)
+      tx.exec()
   }
 
   def allScheduledConfiguration(): List[(String, Double)] = Redis.pool.withClient {

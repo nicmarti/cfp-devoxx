@@ -58,33 +58,35 @@ object SchedullingController extends SecureCFPController {
   def approvedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
-      val proposals = confType match{
-        case "confThursday"=>{
-          Proposal.allAcceptedByTalkType("conf").filter{proposal=>
-            val preferredDay = Proposal.getPreferredDay(proposal.id)
-            preferredDay==None || preferredDay==Some("Thu")
+      val proposals = confType match {
+        case "confThursday" => {
+          Proposal.allAcceptedByTalkType("conf").filter {
+            proposal =>
+              val preferredDay = Proposal.getPreferredDay(proposal.id)
+              preferredDay == None || preferredDay == Some("Thu")
           }
         }
-        case "confFriday"=>{
-          Proposal.allAcceptedByTalkType("conf").filter{proposal=>
-            val preferredDay = Proposal.getPreferredDay(proposal.id)
-            preferredDay==None || preferredDay==Some("Fri")
+        case "confFriday" => {
+          Proposal.allAcceptedByTalkType("conf").filter {
+            proposal =>
+              val preferredDay = Proposal.getPreferredDay(proposal.id)
+              preferredDay == None || preferredDay == Some("Fri")
           }
         }
-        case other=>Proposal.allAcceptedByTalkType(confType)
+        case other => Proposal.allAcceptedByTalkType(confType)
       }
 
       val proposalsWithSpeaker = proposals.map {
-        p:Proposal =>
+        p: Proposal =>
           val mainWebuser = Speaker.findByUUID(p.mainSpeaker)
           val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID(_))
           val oSpeakers = p.otherSpeakers.map(Speaker.findByUUID(_))
 
-        // Transform speakerUUID to Speaker name, this simplify Angular Code
+          // Transform speakerUUID to Speaker name, this simplify Angular Code
           p.copy(
             mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
             secondarySpeaker = secWebuser.map(_.cleanName),
-            otherSpeakers = oSpeakers.flatMap(s=>s.map(_.cleanName))
+            otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
           )
       }
 
@@ -104,19 +106,19 @@ object SchedullingController extends SecureCFPController {
 
       request.body.asJson.map {
         json =>
-          val newSlots=json.as[List[Slot]]
-          val saveSlotsWithSpeakerUUIDs=newSlots.map{
-            slot:Slot=>
-            slot.proposal match{
-              case Some(proposal)=>{
-                // Transform back speaker name to speaker UUID when we store the slots
-                slot.copy(proposal = Proposal.findById(proposal.id))
+          val newSlots = json.as[List[Slot]]
+          val saveSlotsWithSpeakerUUIDs = newSlots.map {
+            slot: Slot =>
+              slot.proposal match {
+                case Some(proposal) => {
+                  // Transform back speaker name to speaker UUID when we store the slots
+                  slot.copy(proposal = Proposal.findById(proposal.id))
+                }
+                case other => slot
               }
-              case other=>slot
-            }
           }
 
-          ZapActor.actor ! SaveSlots(confType, saveSlotsWithSpeakerUUIDs,request.webuser)
+          ZapActor.actor ! SaveSlots(confType, saveSlotsWithSpeakerUUIDs, request.webuser)
 
           Ok("{\"status\":\"success\"}").as("application/json")
       }.getOrElse {
@@ -124,31 +126,60 @@ object SchedullingController extends SecureCFPController {
       }
   }
 
-  def allScheduledConfiguration()=SecuredAction(IsMemberOf("admin")){
+  def allScheduledConfiguration() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleSavedFormat
 
       val scheduledSlotsKey = ScheduleConfiguration.allScheduledConfiguration()
-        val json = Json.toJson(Map("scheduledConfigurations"->Json.toJson(
-          scheduledSlotsKey.map{
-            case(key,dateAsDouble)=>
-              val scheduledSaved = Json.parse(key).as[ScheduleSaved]
-              Map("key"->Json.toJson(scheduledSaved),
-                  "date"->Json.toJson(new DateTime(dateAsDouble.toLong*1000).toString()))
-          })
-        )
+      val json = Json.toJson(Map("scheduledConfigurations" -> Json.toJson(
+        scheduledSlotsKey.map {
+          case (key, dateAsDouble) =>
+            val scheduledSaved = Json.parse(key).as[ScheduleSaved]
+            Map("key" -> Json.toJson(scheduledSaved),
+              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toString()))
+        })
+      )
       )
       Ok(Json.stringify(json)).as("application/json")
   }
 
-  def loadScheduledConfiguration(id:String)=SecuredAction(IsMemberOf("admin")){
+  def loadScheduledConfiguration(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleConfFormat
 
       val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(id)
-      maybeScheduledConfiguration match{
-        case None=>NotFound
-        case Some(config)=>Ok(Json.toJson(config)).as(JSON)
+      maybeScheduledConfiguration match {
+        case None => NotFound
+        case Some(config) => {
+          val configWithSpeakerNames = config.slots.map {
+            slot: Slot =>
+              slot.proposal match {
+                case Some(definedProposal) => {
+                  val proposalWithSpeakerNames = {
+                    val mainWebuser = Speaker.findByUUID(definedProposal.mainSpeaker)
+                    val secWebuser = definedProposal.secondarySpeaker.flatMap(Speaker.findByUUID(_))
+                    val oSpeakers = definedProposal.otherSpeakers.map(Speaker.findByUUID(_))
+                    // Transform speakerUUID to Speaker name, this simplify Angular Code
+                    definedProposal.copy(
+                      mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
+                      secondarySpeaker = secWebuser.map(_.cleanName),
+                      otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+                    )
+                  }
+                  slot.copy(proposal = Option(proposalWithSpeakerNames))
+                }
+                case None => slot
+              }
+          }
+          Ok(Json.toJson(config.copy(slots = configWithSpeakerNames))).as(JSON)
+        }
       }
   }
+
+  def deleteScheduleConfiguration(id:String)=SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      ScheduleConfiguration.delete(id)
+      Ok("{\"status\":\"deleted\"}").as("application/json")
+  }
+
 }
