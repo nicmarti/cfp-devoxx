@@ -33,38 +33,52 @@ import play.api.libs.functional.syntax._
  * Created by nicolas on 01/02/2014.
  */
 
-case class Room(id: String, name: String, capacity: Int)
+case class Room(id: String, name: String, capacity: Int, setup:String)
 
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val SEINE_A = Room("seine_a", "Seine A", 280)
-  val SEINE_B = Room("seine_b", "Seine B", 280)
-  val SEINE_C = Room("seine_c", "Seine C", 260)
-  val AUDITORIUM = Room("auditorium", "Auditorium", 160)
-  val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 80)
-  val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 290) // En fait E.Fitzgerald + Armstrong
-  val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 30)
-  val LOUIS_ARMSTRONG_CD = Room("la_cd", "Louis Armstrong CD", 30)
-  val MILES_DAVIS_A = Room("md_a", "Miles Davis A", 24)
-  val MILES_DAVIS_B = Room("md_b", "Miles Davis B", 24)
-  val MILES_DAVIS_C = Room("md_c", "Miles Davis C", 48)
-  val MILES_DAVIS = Room("md_full", "Miles Davis", 220)
-  val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15)
-  val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300)
-  val OTHER = Room("other_room", "Other room", 100)
+  val SEINE_A = Room("seine_a", "Seine A", 280, "theatre")
+  val SEINE_B = Room("seine_b", "Seine B", 280, "theatre")
+  val SEINE_C = Room("seine_c", "Seine C", 260, "theatre")
+  val AUDITORIUM = Room("auditorium", "Auditorium", 160, "theatre")
+  val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 290,"theatre")
+
+  val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 45, "classe")
+  val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 30, "classe")
+  val LOUIS_ARMSTRONG_CD = Room("la_cd", "Louis Armstrong CD", 30, "classe")
+  val MILES_DAVIS_A = Room("md_a", "Miles Davis A", 24, "classe")
+  val MILES_DAVIS_B = Room("md_b", "Miles Davis B", 24, "classe")
+  val MILES_DAVIS_C = Room("md_c", "Miles Davis C", 48, "classe")
+
+  val ELLA_FITZGERALD_AB_TH = Room("el_ab_th", "E.Fitzgerald AB", 80, "theatre")
+  val LOUIS_ARMSTRONG_AB_TH = Room("la_ab_th", "L.Armstrong AB", 80, "theatre")
+  val LOUIS_ARMSTRONG_CD_TH = Room("la_cd_th", "L.Armstrong CD", 80, "theatre")
+  val MILES_DAVIS_A_TH = Room("md_a_th", "M.Davis A", 50, "theatre")
+  val MILES_DAVIS_B_TH = Room("md_b_th", "M.Davis B", 50, "theatre")
+  val MILES_DAVIS_C_TH = Room("md_c_th", "M.Davis C", 80, "theatre")
+
+  val MILES_DAVIS = Room("md_full", "M.Davis", 220, "theatre")
+  val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15, "classe")
+  val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300, "classe")
+  val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
   val all = List(SEINE_A,
     SEINE_B,
     SEINE_C,
     AUDITORIUM,
-    ELLA_FITZGERALD_AB,
     ELLA_FITZGERALD,
+    ELLA_FITZGERALD_AB,
+    ELLA_FITZGERALD_AB_TH,
     LOUIS_ARMSTRONG_AB,
+    LOUIS_ARMSTRONG_AB_TH,
     LOUIS_ARMSTRONG_CD,
+    LOUIS_ARMSTRONG_CD_TH,
     MILES_DAVIS_A,
-    MILES_DAVIS_B,
-    MILES_DAVIS_C,
+    MILES_DAVIS_A_TH,
+    MILES_DAVIS_B_TH,
+    MILES_DAVIS_C_TH,
+
     MILES_DAVIS,
     DUKE_ELLINGTON,
     FOYER_BAS,
@@ -73,9 +87,10 @@ object Room {
   val allBigRoom = List(Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.AUDITORIUM)
 
   val allRoomsLabs = List(Room.ELLA_FITZGERALD_AB, Room.LOUIS_ARMSTRONG_AB, Room.LOUIS_ARMSTRONG_CD,
-    Room.MILES_DAVIS_A, Room.MILES_DAVIS_B, Room.MILES_DAVIS_C)
-
-  val allRoomsTIA = allBigRoom ++ allRoomsLabs
+                          Room.MILES_DAVIS_A, Room.MILES_DAVIS_B, Room.MILES_DAVIS_C)
+  val allRoomsTIA = List(Room.ELLA_FITZGERALD_AB_TH, Room.LOUIS_ARMSTRONG_AB_TH, Room.LOUIS_ARMSTRONG_CD_TH,
+                         Room.MILES_DAVIS_A_TH, Room.MILES_DAVIS_B_TH, Room.MILES_DAVIS_C_TH,
+                         Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.AUDITORIUM)
 
   val allRooms = allBigRoom ++ List(Room.ELLA_FITZGERALD, Room.MILES_DAVIS)
 
@@ -91,12 +106,18 @@ object Room {
       case "seine_c" => SEINE_C
       case "auditorium" => AUDITORIUM
       case "el_ab" => ELLA_FITZGERALD_AB
+      case "el_ab_th" => ELLA_FITZGERALD_AB_TH
       case "el_ab_full" => ELLA_FITZGERALD
       case "la_ab" => LOUIS_ARMSTRONG_AB
+      case "la_ab_th" => LOUIS_ARMSTRONG_AB_TH
       case "la_cd" => LOUIS_ARMSTRONG_CD
+      case "la_cd_th" => LOUIS_ARMSTRONG_CD_TH
       case "md_a" => MILES_DAVIS_A
+      case "md_a_th" => MILES_DAVIS_A_TH
       case "md_b" => MILES_DAVIS_B
+      case "md_b_th" => MILES_DAVIS_B_TH
       case "md_c" => MILES_DAVIS_C
+      case "md_c_th" => MILES_DAVIS_C_TH
       case "md_full" => MILES_DAVIS
       case "duke" => DUKE_ELLINGTON
       case "foyer_bas" => FOYER_BAS
@@ -140,25 +161,25 @@ object Slot {
   val toolsInActionSlots: List[Slot] = {
     val t1 = Room.allRoomsTIA.map {
       r =>
-        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T17:00:00.000+02:00"), new DateTime("2014-04-16T17:30:00.000+02:00"), r)
+        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T17:15:00.000+02:00"), new DateTime("2014-04-16T17:45:00.000+02:00"), r)
     }
     val t2 = Room.allRoomsTIA.map {
       r =>
-        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T17:40:00.000+02:00"), new DateTime("2014-04-16T18:10:00.000+02:00"), r)
+        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T18:00:00.000+02:00"), new DateTime("2014-04-16T18:30:00.000+02:00"), r)
     }
     val t3 = Room.allRoomsTIA.map {
       r =>
-        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T18:20:00.000+02:00"), new DateTime("2014-04-16T18:50:00.000+02:00"), r)
+        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T18:45:00.000+02:00"), new DateTime("2014-04-16T19:15:00.000+02:00"), r)
     }
     t1 ++ t2 ++ t3
   }
 
   val labsSlots: List[Slot] = {
-    val l1 = Room.allBigRoom.map {
+    val l1 = Room.allRoomsLabs.map {
       r =>
         SlotBuilder(ProposalType.LAB.id, "mercredi", new DateTime("2014-04-16T09:30:00.000+02:00"), new DateTime("2014-04-16T12:30:00.000+02:00"), r)
     }
-    val l2 = Room.allBigRoom.map {
+    val l2 = Room.allRoomsLabs.map {
       r2 =>
         SlotBuilder(ProposalType.LAB.id, "mercredi", new DateTime("2014-04-16T13:30:00.000+02:00"), new DateTime("2014-04-16T16:30:00.000+02:00"), r2)
     }
@@ -181,11 +202,11 @@ object Slot {
 
     val quickie03 = Room.allRoomsButAMD.map {
       r =>
-        SlotBuilder(ProposalType.QUICK.id, "vendredi", new DateTime("2014-04-17T12:35:00.000+02:00"), new DateTime("2014-04-17T12:50:00.000+02:00"), r)
+        SlotBuilder(ProposalType.QUICK.id, "vendredi", new DateTime("2014-04-18T12:35:00.000+02:00"), new DateTime("2014-04-18T12:50:00.000+02:00"), r)
     }
     val quickie04 = Room.allRoomsButAMD.map {
       r =>
-        SlotBuilder(ProposalType.QUICK.id, "vendredi", new DateTime("2014-04-17T13:00:00.000+02:00"), new DateTime("2014-04-17T13:15:00.000+02:00"), r)
+        SlotBuilder(ProposalType.QUICK.id, "vendredi", new DateTime("2014-04-18T13:00:00.000+02:00"), new DateTime("2014-04-18T13:15:00.000+02:00"), r)
     }
     quickie03 ++ quickie04
   }
@@ -213,8 +234,8 @@ object Slot {
       r =>
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T17:00:00.000+02:00"), new DateTime("2014-04-17T17:50:00.000+02:00"), r)
     }
-    // No more MilesDavis
-    val c6 = Room.allRoomsButAMD.filterNot(_.id == Room.MILES_DAVIS.id).map {
+
+    val c6 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T18:05:00.000+02:00"), new DateTime("2014-04-17T18:55:00.000+02:00"), r)
     }
@@ -224,34 +245,34 @@ object Slot {
   val conferenceSlotsFriday: List[Slot] = {
     val c1 = Room.allRooms.map {
       r =>
-        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T10:40:00.000+02:00"), new DateTime("2014-04-17T11:30:00.000+02:00"), r)
+        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T10:40:00.000+02:00"), new DateTime("2014-04-18T11:30:00.000+02:00"), r)
     }
     val c2 = Room.allRooms.map {
       r =>
-        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T11:45:00.000+02:00"), new DateTime("2014-04-17T12:35:00.000+02:00"), r)
+        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T11:45:00.000+02:00"), new DateTime("2014-04-18T12:35:00.000+02:00"), r)
     }
 
     val c3 = Room.allRooms.map {
       r =>
-        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T13:30:00.000+02:00"), new DateTime("2014-04-17T14:20:00.000+02:00"), r)
+        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T13:30:00.000+02:00"), new DateTime("2014-04-18T14:20:00.000+02:00"), r)
     }
     val c4 = Room.allRooms.map {
       r =>
-        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T14:35:00.000+02:00"), new DateTime("2014-04-17T15:25:00.000+02:00"), r)
+        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T14:35:00.000+02:00"), new DateTime("2014-04-18T15:25:00.000+02:00"), r)
     }
     val c5 = Room.allRooms.map {
       r =>
-        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T15:40:00.000+02:00"), new DateTime("2014-04-17T16:30:00.000+02:00"), r)
+        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T15:40:00.000+02:00"), new DateTime("2014-04-18T16:30:00.000+02:00"), r)
     }
 
     val c6 = Room.allRooms.map {
       r =>
-        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T17:00:00.000+02:00"), new DateTime("2014-04-17T17:50:00.000+02:00"), r)
+        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T17:00:00.000+02:00"), new DateTime("2014-04-18T17:50:00.000+02:00"), r)
     }
 
     val c7 = List( Room.MILES_DAVIS,Room.ELLA_FITZGERALD,Room.AUDITORIUM).map {
       r =>
-        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T18:05:00.000+02:00"), new DateTime("2014-04-17T18:55:00.000+02:00"), r)
+        SlotBuilder(ProposalType.CONF.id, "vendredi", new DateTime("2014-04-18T18:05:00.000+02:00"), new DateTime("2014-04-18T18:55:00.000+02:00"), r)
     }
 
     c1 ++ c2 ++ c3 ++ c4 ++ c5 ++ c6 ++ c7
@@ -261,15 +282,15 @@ object Slot {
 
     val bof01 = Room.allRoomsLabs.map {
       r =>
-        SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T19:30:00.000+02:00"), new DateTime("2014-04-17T20:20:00.000+02:00"), r)
+        SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T19:30:00.000+02:00"), new DateTime("2014-04-17T20:30:00.000+02:00"), r)
     }
     val bof02 = Room.allRoomsLabs.map {
       r =>
-        SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T20:30:00.000+02:00"), new DateTime("2014-04-17T21:20:00.000+02:00"), r)
+        SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T20:30:00.000+02:00"), new DateTime("2014-04-17T21:30:00.000+02:00"), r)
     }
     val bof03 = Room.allRoomsLabs.map {
       r =>
-        SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T21:30:00.000+02:00"), new DateTime("2014-04-17T22:20:00.000+02:00"), r)
+        SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T21:30:00.000+02:00"), new DateTime("2014-04-17T22:30:00.000+02:00"), r)
     }
     bof01 ++ bof02 ++ bof03
     }
