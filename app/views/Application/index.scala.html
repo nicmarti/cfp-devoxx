@@ -4,171 +4,172 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-        <title>Devoxx France CFP</title>
-        <link rel="stylesheet" href="/assets/css/bootstrap.cosmo.min.css">
-        <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" href="/assets/css/bootswatch.min.css">
-        <link rel="stylesheet" href="/assets/css/devoxx.css" id="theme"/>
-            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-            <!--[if lt IE 9]>
+<head>
+<meta charset="utf-8" />
+<meta name="generator" content="Play! 2.2 Scala"/>
+<meta name="author" content="Nicolas Martignole"/>
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+<title>Devoxx France 2014 CFP</title>
+<link rel="stylesheet" href="/assets/css/bootstrap.cosmo.min.css">
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<link rel="stylesheet" href="/assets/css/bootswatch.min.css">
+<link rel="stylesheet" href="/assets/css/devoxx.css" id="theme"/>
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
 <script src="/assets/js/html5shiv.js"></script>
 <script src="/assets/js/respond.min.js"></script>
 <![endif]-->
-        <meta name="generator" content="Play! 2.2 Scala"/>
-    </head>
-    <body>
-        <div class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="/" class="navbar-brand">Devox<span class="yl">x</span> France CFP</a>
+</head>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+<div class="container">
+<div class="navbar-header">
+<a href="/" class="navbar-brand">Devox<span class="yl">x</span> France CFP</a>
+</div>
+<div class="navbar-collapse collapse" id="navbar-main">
+<ul class="nav navbar-nav navbar-right">
+<li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i>
+Devox<span class="yl">x</span> France website</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="container">
+    <div class="bs-docs-section clearfix">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
+                        @Messages("appel.conf.dates")</small></h2>
                 </div>
-                <div class="navbar-collapse collapse" id="navbar-main">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i>
-                            Devox<span class="yl">x</span> France website</a></li>
-                    </ul>
+            </div>
+            <div class="col-md-12">
+                @if(flash.get("error").isDefined) {
+                    <div class="alert alert-danger alert-dismissable">
+                        <strong>Error :</strong>
+                        @flash.get("error").get
+                    </div>
+                }
+                @if(flash.get("success").isDefined) {
+                    <div class="alert alert-success alert-dismissable">
+                    @flash.get("success").get
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-5">
+                <h3><i class="icon-calendar"></i> Agenda</h3>
+                <p><strong>@Messages("cfp.opening")</strong> @Messages("cfp.opening.date")</p>
+                @if(controllers.Backoffice.isCFPOpen){
+                    <p><strong>@Messages("cfp.closing")</strong> <span class="label label-warning">@Messages("cfp.closing.date")</span> </p>
+                }else{
+                    <p><strong>@Messages("cfp.closing")</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
+                }
+                <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date")</p>
+            </div>
+
+            <div class="col-md-5">
+                <h3><i class="icon-facetime-video"></i> @Messages("video.title")</h3>
+                <p>@Messages("video.tag") <a href="http://www.parleys.com/channel/516409b4e4b082c6506c9e3a/presentations" target="new">Parleys.com</a> </p>
+            </div>
+
+            <div class="clearfix">
+            </div>
+
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                <div class="panel-heading">
+                    @if(controllers.Backoffice.isCFPOpen){
+                        <h3><i class="icon-bullhorn"></i> @Messages("cfp.isOpen")</h3>
+                    }else{
+                        <h3><i class="icon-bullhorn"></i> @Messages("cfp.isClosed")</h3>
+                    }
                 </div>
+                <div class="panel-body">
+                    @if(controllers.Backoffice.isCFPOpen){
+                        <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.open.enter")</a>
+                    }else{
+                        <p>@Messages("cfp.isClosed.expl")</p>
+                        <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.closed.enter")</a>
+                    }
+                </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <h3><i class="icon-book"></i> @Messages("theme.title")</h3>
+                <p>@Messages("theme.track")</p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Messages("track.title")</th>
+                            <th>@Messages("track.description")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Messages("track.java.title")</td>
+                            <td>@Messages("track.java.desc")</td>
+                        </tr>
+                        <tr>
+                            <td>@Messages("track.web.title")</td>
+                            <td>@Messages("track.web.desc")</td>
+                        </tr>
+                        <tr>
+                            <td>@Messages("track.mobile.title")</td>
+                            <td>@Messages("track.mobile.desc")</td>
+                        </tr>
+                        <tr>
+                            <td>@Messages("track.startup.title")</td>
+                            <td>@Messages("track.startup.desc")</td>
+                        </tr>
+                        <tr>
+                            <td>@Messages("track.devops.title")</td>
+                            <td>@Messages("track.devops.desc")</td>
+                        </tr>
+                        <tr>
+                            <td>@Messages("track.lang.title")</td>
+                            <td>@Messages("track.lang.desc")</td>
+                        </tr>
+                        <tr>
+                            <td>@Messages("track.bigdata.title")</td>
+                            <td>@Messages("track.bigdata.desc")</td>
+                        </tr>
+                        <tr>
+                            <td>@Messages("track.future.title")</td>
+                            <td>@Messages("track.future.desc")</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+            <div class="col-md-12">
+                <h3><i class="icon-flag"></i> English?</h3>
+                <p>Devoxx France's presentations are 25% in English and 75% French.</p>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="container">
-            <div class="bs-docs-section clearfix">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="page-header">
-                            <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
-                                @Messages("appel.conf.dates")</small></h2>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        @if(flash.get("error").isDefined) {
-                            <div class="alert alert-danger alert-dismissable">
-                                <strong>Error :</strong>
-                                @flash.get("error").get
-                            </div>
-                        }
-                        @if(flash.get("success").isDefined) {
-                            <div class="alert alert-success alert-dismissable">
-                            @flash.get("success").get
-                            </div>
-                        }
-                    </div>
-
-                    <div class="col-md-5">
-                        <h3><i class="icon-calendar"></i> Agenda</h3>
-                        <p><strong>@Messages("cfp.opening")</strong> @Messages("cfp.opening.date")</p>
-                        @if(controllers.Backoffice.isCFPOpen){
-                            <p><strong>@Messages("cfp.closing")</strong> <span class="label label-warning">@Messages("cfp.closing.date")</span> </p>
-                        }else{
-                            <p><strong>@Messages("cfp.closing")</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
-                        }
-                        <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date")</p>
-                    </div>
-
-                    <div class="col-md-5">
-                        <h3><i class="icon-facetime-video"></i> @Messages("video.title")</h3>
-                        <p>@Messages("video.tag") <a href="http://www.parleys.com/channel/516409b4e4b082c6506c9e3a/presentations" target="new">Parleys.com</a> </p>
-                    </div>
-
-                    <div class="clearfix">
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="panel panel-default">
-                        <div class="panel-heading">
-                            @if(controllers.Backoffice.isCFPOpen){
-                                <h3><i class="icon-bullhorn"></i> @Messages("cfp.isOpen")</h3>
-                            }else{
-                                <h3><i class="icon-bullhorn"></i> @Messages("cfp.isClosed")</h3>
-                            }
-                        </div>
-                        <div class="panel-body">
-                            @if(controllers.Backoffice.isCFPOpen){
-                                <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.open.enter")</a>
-                            }else{
-                                <p>@Messages("cfp.isClosed.expl")</p>
-                                <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.closed.enter")</a>
-                            }
-                        </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <h3><i class="icon-book"></i> @Messages("theme.title")</h3>
-                        <p>@Messages("theme.track")</p>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>@Messages("track.title")</th>
-                                    <th>@Messages("track.description")</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>@Messages("track.java.title")</td>
-                                    <td>@Messages("track.java.desc")</td>
-                                </tr>
-                                <tr>
-                                    <td>@Messages("track.web.title")</td>
-                                    <td>@Messages("track.web.desc")</td>
-                                </tr>
-                                <tr>
-                                    <td>@Messages("track.mobile.title")</td>
-                                    <td>@Messages("track.mobile.desc")</td>
-                                </tr>
-                                <tr>
-                                    <td>@Messages("track.startup.title")</td>
-                                    <td>@Messages("track.startup.desc")</td>
-                                </tr>
-                                <tr>
-                                    <td>@Messages("track.devops.title")</td>
-                                    <td>@Messages("track.devops.desc")</td>
-                                </tr>
-                                <tr>
-                                    <td>@Messages("track.lang.title")</td>
-                                    <td>@Messages("track.lang.desc")</td>
-                                </tr>
-                                <tr>
-                                    <td>@Messages("track.bigdata.title")</td>
-                                    <td>@Messages("track.bigdata.desc")</td>
-                                </tr>
-                                <tr>
-                                    <td>@Messages("track.future.title")</td>
-                                    <td>@Messages("track.future.desc")</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                    </div>
-
-
-                    <div class="col-md-12">
-                        <h3><i class="icon-flag"></i> English?</h3>
-                        <p>Devoxx France's presentations are 25% in English and 75% French.</p>
-                    </div>
-                </div>
-            </div>
+<footer class="footer hidden-print">
+    <div class="container">
+        <div>
+            <hr>
+            <small><i class="icon-bullhorn"></i>
+                Devoxx France Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a> <br>
+                <i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">
+                    Clever-cloud</a>
+            </small>
         </div>
-
-        <footer class="footer hidden-print">
-            <div class="container">
-                <div>
-                    <hr>
-                    <small><i class="icon-bullhorn"></i>
-                        Devoxx France Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a> <br>
-                        <i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">
-                            Clever-cloud</a>
-                    </small>
-                </div>
-            </div>
-        </footer>
-            <!-- ****************************************************************************** //-->
-        <script src="/assets/js/jquery.min.js"></script>
-        <script src="/assets/js/bootstrap.min.js"></script>
-        <script src="/assets/js/bootswatch.js"></script>
-    </body>
+    </div>
+</footer>
+    <!-- ****************************************************************************** //-->
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/bootswatch.js"></script>
+</body>
 </html>
