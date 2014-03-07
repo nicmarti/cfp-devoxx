@@ -38,6 +38,8 @@ case class Room(id: String, name: String, capacity: Int, setup:String)
 object Room {
   implicit val roomFormat = Json.format[Room]
 
+  val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, "special")
+
   val SEINE_A = Room("seine_a", "Seine A", 280, "theatre")
   val SEINE_B = Room("seine_b", "Seine B", 280, "theatre")
   val SEINE_C = Room("seine_c", "Seine C", 260, "theatre")
@@ -120,14 +122,26 @@ object Room {
       case "md_c_th" => MILES_DAVIS_C_TH
       case "md_full" => MILES_DAVIS
       case "duke" => DUKE_ELLINGTON
+      case "hall" => HALL_EXPO
       case "foyer_bas" => FOYER_BAS
       case other => OTHER
     }
   }
 }
 
+case class SlotBreak(id:String, nameEN:String, nameFR:String, room:Room)
+
+object SlotBreak{
+  implicit val slotBreakFormat=Json.format[SlotBreak]
+
+  val petitDej=SlotBreak("dej","Welcome and Breakfast","Accueil et petit-déjeuner",Room.HALL_EXPO)
+  val coffee=SlotBreak("coffee","Coffee Break","Pause café",Room.HALL_EXPO)
+  val lunch=SlotBreak("lunch","Lunch","Pause déjeuner",Room.HALL_EXPO)
+  val shortBreak=SlotBreak("chgt","Break","Pause courte",Room.HALL_EXPO)
+}
+
 case class Slot(id:String, name: String, day: String, from: DateTime, to: DateTime, room: Room,
-                proposal:Option[Proposal]) {
+                proposal:Option[Proposal], break:Option[SlotBreak]) {
   override def toString: String = {
     s"Slot[" + id + "]"
   } 
@@ -137,7 +151,11 @@ object SlotBuilder{
   
   def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, name, day, from, to, room, None)
+    Slot(id, name, day, from, to, room, None, None)
+  }
+  def apply(slotBreak:SlotBreak, day:String, from: DateTime, to: DateTime): Slot = {
+    val id = slotBreak.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
+    Slot(id, slotBreak.nameEN, day, from, to, slotBreak.room, None, Some(slotBreak))
   }
 }
 
@@ -294,5 +312,9 @@ object Slot {
     }
     bof01 ++ bof02 ++ bof03
     }
+
+  val wednesday:List[Slot]={
+    List(SlotBuilder(SlotBreak.petitDej, "mercredi", new DateTime("2014-04-16T08:00:00.000+02:00"),new DateTime("2014-04-16T09:30:00.000+02:00")))
+  }
 
 }
