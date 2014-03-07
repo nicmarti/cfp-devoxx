@@ -56,7 +56,7 @@ object ScheduleConfiguration {
 
   def persist(confType: String, slots: List[Slot], createdBy: Webuser) = Redis.pool.withClient {
     implicit client =>
-      val id = confType+(RandomStringUtils.randomAlphabetic(3)+"-"+RandomStringUtils.randomNumeric(2)).toLowerCase
+      val id = confType+"-"+(RandomStringUtils.randomAlphabetic(3)+"-"+RandomStringUtils.randomNumeric(2)).toLowerCase
       val key = ScheduleSaved(id, confType, createdBy.firstName, slots.hashCode())
       val jsonKey = Json.toJson(key).toString()
       client.zadd("ScheduleConfiguration", System.currentTimeMillis() / 1000, jsonKey)

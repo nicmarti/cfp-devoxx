@@ -5,6 +5,7 @@ var mainController = angular.module('mainController', []);
 var homeController = angular.module('homeController', []);
 var scheduleConfController = angular.module('scheduleConfController', []);
 var loadSlotController = angular.module('loadSlotController', []);
+var deleteSlotController = angular.module('deleteSlotController', []);
 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, ApprovedTalksService) {
     SlotService.get({confType: $routeParams.confType}, function (jsonArray) {
@@ -153,4 +154,10 @@ loadSlotController.controller('LoadSlotController', function LoadSlotController(
         SlotService.save({confType: $routeParams.confType}, $scope.slots);
     };
 
+});
+
+deleteSlotController.controller('DeleteSlotController', function DeleteSlotController($routeParams,$location, DeleteScheduledConfiguration ){
+    DeleteScheduledConfiguration.delete({id: $routeParams.id}, function (jsonObj){
+        $location.path('/saved').replace();
+    });
 });

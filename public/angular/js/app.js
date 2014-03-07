@@ -9,7 +9,8 @@ var cfpApp = angular.module('cfpApp', [
     'mainController',
     'homeController',
     'scheduleConfController',
-    'loadSlotController'
+    'loadSlotController',
+    'deleteSlotController'
 ]);
 
 cfpApp.config(['$routeProvider', function ($routeProvider) {
@@ -25,9 +26,13 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
         templateUrl: 'partials/slots.html',
         controller: 'MainController'
     });
-        $routeProvider.when('/loadSlots', {
+    $routeProvider.when('/loadSlots', {
         templateUrl: 'partials/slots.html',
         controller: 'LoadSlotController'
+    });
+    $routeProvider.when('/deleteSchedule', {
+        templateUrl: 'partials/slots.html',
+        controller: 'DeleteSlotController'
     });
 
     $routeProvider.otherwise({redirectTo: '/'});
