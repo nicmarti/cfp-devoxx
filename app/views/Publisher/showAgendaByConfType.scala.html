@@ -22,9 +22,10 @@
 </th>
 @slots.map{slot:Slot=>
 <td>
-@slot.proposal.map{p=>
-  <a href="@routes.Publisher.showDetailsForProposal(p.id,p.title)">@p.title</a><br>
-   @tags.publisher.renderIconForTrack(p.track.id) @Messages(p.track.label) @if(p.lang=="en"){<img src="/assets/images/en.png" alt="English"/>}
+@slot.proposal.map{p:Proposal=>
+    <a href="@routes.Publisher.showDetailsForProposal(p.id,p.title)">@p.title</a><br>
+    <small>@p.allSpeakerUUIDs.flatMap(uuid=>Speaker.findByUUID(uuid).map(_.cleanName)).mkString(", ")</small><br>
+    @tags.publisher.renderIconForTrack(p.track.id) @Messages(p.track.label) @if(p.lang=="en"){<img src="/assets/images/en.png" alt="English"/>}
 }
 </td>
 }

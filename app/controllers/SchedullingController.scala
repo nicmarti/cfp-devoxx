@@ -80,7 +80,7 @@ object SchedullingController extends SecureCFPController {
           val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID(_))
           val oSpeakers = p.otherSpeakers.map(Speaker.findByUUID(_))
 
-        // Transform speakerUUID to Speaker name
+        // Transform speakerUUID to Speaker name, this simplify Angular Code
           p.copy(
             mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
             secondarySpeaker = secWebuser.map(_.cleanName),
@@ -105,8 +105,18 @@ object SchedullingController extends SecureCFPController {
       request.body.asJson.map {
         json =>
           val newSlots=json.as[List[Slot]]
+          val saveSlotsWithSpeakerUUIDs=newSlots.map{
+            slot:Slot=>
+            slot.proposal match{
+              case Some(proposal)=>{
+                // Transform back speaker name to speaker UUID when we store the slots
+                slot.copy(proposal = Proposal.findById(proposal.id))
+              }
+              case other=>slot
+            }
+          }
 
-          ZapActor.actor ! SaveSlots(confType, newSlots,request.webuser)
+          ZapActor.actor ! SaveSlots(confType, saveSlotsWithSpeakerUUIDs,request.webuser)
 
           Ok("{\"status\":\"success\"}").as("application/json")
       }.getOrElse {
