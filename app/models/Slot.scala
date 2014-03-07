@@ -38,21 +38,21 @@ case class Room(id: String, name: String, capacity: Int)
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val SEINE_A = Room("seine_a", "Seine A", 300)
-  val SEINE_B = Room("seine_b", "Seine B", 300)
-  val SEINE_C = Room("seine_c", "Seine C", 300)
-  val AUDITORIUM = Room("auditorium", "Auditorium", 200)
-  val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 60)
-  val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 190)
-  val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 60)
-  val LOUIS_ARMSTRONG_CD = Room("la_cd", "Louis Armstrong CD", 60)
-  val MILES_DAVIS_A = Room("md_a", "Miles Davis A", 60)
-  val MILES_DAVIS_B = Room("md_b", "Miles Davis B", 60)
-  val MILES_DAVIS_C = Room("md_c", "Miles Davis C", 60)
-  val MILES_DAVIS = Room("md_full", "Miles Davis", 190)
-  val DUKE_ELLINGTON = Room("duke", "Duke Ellignton", 20)
-  val CHARLIE_PARKER = Room("charlie_parker", "Miles Davis", 190)
-  val OTHER = Room("other_room", "Other room", 190)
+  val SEINE_A = Room("seine_a", "Seine A", 280)
+  val SEINE_B = Room("seine_b", "Seine B", 280)
+  val SEINE_C = Room("seine_c", "Seine C", 260)
+  val AUDITORIUM = Room("auditorium", "Auditorium", 160)
+  val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 80)
+  val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 290) // En fait E.Fitzgerald + Armstrong
+  val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 30)
+  val LOUIS_ARMSTRONG_CD = Room("la_cd", "Louis Armstrong CD", 30)
+  val MILES_DAVIS_A = Room("md_a", "Miles Davis A", 24)
+  val MILES_DAVIS_B = Room("md_b", "Miles Davis B", 24)
+  val MILES_DAVIS_C = Room("md_c", "Miles Davis C", 48)
+  val MILES_DAVIS = Room("md_full", "Miles Davis", 220)
+  val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15)
+  val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300)
+  val OTHER = Room("other_room", "Other room", 100)
 
   val all = List(SEINE_A,
     SEINE_B,
@@ -67,7 +67,7 @@ object Room {
     MILES_DAVIS_C,
     MILES_DAVIS,
     DUKE_ELLINGTON,
-    CHARLIE_PARKER,
+    FOYER_BAS,
     OTHER)
 
   val allBigRoom = List(Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.AUDITORIUM)
@@ -79,8 +79,8 @@ object Room {
 
   val allRooms = allBigRoom ++ List(Room.ELLA_FITZGERALD, Room.MILES_DAVIS)
 
-  // No Auditorium
-  val allRoomsButAuditorium = List(Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.ELLA_FITZGERALD, Room.MILES_DAVIS)
+  // No E.Fitzgerald for Apres-midi des decideurs
+  val allRoomsButAMD = List(Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.AUDITORIUM, Room.MILES_DAVIS)
 
   val allAsId = all.map(a => (a.id, a.name)).toSeq.sorted
 
@@ -99,7 +99,7 @@ object Room {
       case "md_c" => MILES_DAVIS_C
       case "md_full" => MILES_DAVIS
       case "duke" => DUKE_ELLINGTON
-      case "charlie_parker" => CHARLIE_PARKER
+      case "foyer_bas" => FOYER_BAS
       case other => OTHER
     }
   }
@@ -166,11 +166,11 @@ object Slot {
   }
 
   val quickiesSlotsThursday: List[Slot] = {
-    val quickie01 = Room.allRoomsButAuditorium.map {
+    val quickie01 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.QUICK.id, "jeudi", new DateTime("2014-04-17T12:35:00.000+02:00"), new DateTime("2014-04-17T12:50:00.000+02:00"), r)
     }
-    val quickie02 = Room.allRoomsButAuditorium.map {
+    val quickie02 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.QUICK.id, "jeudi", new DateTime("2014-04-17T13:00:00.000+02:00"), new DateTime("2014-04-17T13:15:00.000+02:00"), r)
     }
@@ -179,11 +179,11 @@ object Slot {
 
   val quickiesSlotsFriday: List[Slot] = {
 
-    val quickie03 = Room.allRoomsButAuditorium.map {
+    val quickie03 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.QUICK.id, "vendredi", new DateTime("2014-04-17T12:35:00.000+02:00"), new DateTime("2014-04-17T12:50:00.000+02:00"), r)
     }
-    val quickie04 = Room.allRoomsButAuditorium.map {
+    val quickie04 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.QUICK.id, "vendredi", new DateTime("2014-04-17T13:00:00.000+02:00"), new DateTime("2014-04-17T13:15:00.000+02:00"), r)
     }
@@ -197,24 +197,24 @@ object Slot {
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T11:30:00.000+02:00"), new DateTime("2014-04-17T12:20:00.000+02:00"), r)
     }
     // Pas d'auditorium car apres-midi des décideurs
-    val c2 = Room.allRoomsButAuditorium.map {
+    val c2 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T13:25:00.000+02:00"), new DateTime("2014-04-17T14:15:00.000+02:00"), r)
     }
-    val c3 = Room.allRoomsButAuditorium.map {
+    val c3 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T14:30:00.000+02:00"), new DateTime("2014-04-17T15:20:00.000+02:00"), r)
     }
-    val c4 = Room.allRoomsButAuditorium.map {
+    val c4 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T15:35:00.000+02:00"), new DateTime("2014-04-17T16:25:00.000+02:00"), r)
     }
-    val c5 = Room.allRoomsButAuditorium.map {
+    val c5 = Room.allRoomsButAMD.map {
       r =>
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T17:00:00.000+02:00"), new DateTime("2014-04-17T17:50:00.000+02:00"), r)
     }
     // No more MilesDavis
-    val c6 = Room.allRoomsButAuditorium.filterNot(_.id == Room.MILES_DAVIS.id).map {
+    val c6 = Room.allRoomsButAMD.filterNot(_.id == Room.MILES_DAVIS.id).map {
       r =>
         SlotBuilder(ProposalType.CONF.id, "jeudi", new DateTime("2014-04-17T18:05:00.000+02:00"), new DateTime("2014-04-17T18:55:00.000+02:00"), r)
     }
