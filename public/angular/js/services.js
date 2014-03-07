@@ -20,7 +20,7 @@ remoteServices.factory('AllScheduledConfiguration', ['$resource', function($reso
     return $resource('/schedulling/fr14/scheduledConfigurations', null, {'query': {method: 'GET', isArray: true, responseType:'json'}})
 }]);
 
-remoteServices.factory('ScheduledConfiguration', ['$resource', function($resource){
+remoteServices.factory('ReloadScheduleConf', ['$resource', function($resource){
     return $resource('/schedulling/fr14/loadScheduledConfiguration', null, {'query': {method: 'GET', isArray: false, responseType:'json'}})
 }]);
 

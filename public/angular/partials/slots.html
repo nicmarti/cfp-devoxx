@@ -16,7 +16,7 @@
 <div class="col-lg-3 panel_talks">
     <input type="search" ng-model="filterTalk" placeholder="Filter Talks..." /><br>
     <small>Slots: {{approvedTalks.length}}</small>
-    <div ng-repeat="talk in approvedTalks | filter:filterTalk"
+    <div ng-repeat="talk in approvedTalks track by talk.id | filter:filterTalk"
          class="talk"
          drag="talk" dragStyle="columnDrag"
          dropStyle="columnDrop">
@@ -37,7 +37,7 @@
     <div class="col-lg-9">
         <input type="search" ng-model="q" placeholder="Filter Slots..." />
     </div>
-    <div ng-repeat="slot in slots | filter:q" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
+    <div ng-repeat="slot in slots track by slot.id | filter:q" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
         <span class="label label-default">{{slot.room.name}}</span>
         <small>{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
         <div ng-show="slot.proposal">
