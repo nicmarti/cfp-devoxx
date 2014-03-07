@@ -9,7 +9,8 @@ var cfpApp = angular.module('cfpApp', [
     'mainController',
     'homeController',
     'reloadScheduleConfController',
-    'deleteSlotController'
+    'deleteSlotController',
+    'flash'
 ]);
 
 cfpApp.config(['$routeProvider', function ($routeProvider) {
@@ -32,3 +33,4 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.otherwise({redirectTo: '/'});
 }]);
+
