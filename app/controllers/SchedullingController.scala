@@ -78,10 +78,13 @@ object SchedullingController extends SecureCFPController {
         p:Proposal =>
           val mainWebuser = Speaker.findByUUID(p.mainSpeaker)
           val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID(_))
-          // (p, mainWebuser.map(_.cleanName), secWebuser.map(_.cleanName))
+          val oSpeakers = p.otherSpeakers.map(Speaker.findByUUID(_))
+
+        // Transform speakerUUID to Speaker name
           p.copy(
             mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
-            secondarySpeaker = secWebuser.map(_.cleanName)
+            secondarySpeaker = secWebuser.map(_.cleanName),
+            otherSpeakers = oSpeakers.flatMap(s=>s.map(_.cleanName))
           )
       }
 
