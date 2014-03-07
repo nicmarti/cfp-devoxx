@@ -14,9 +14,6 @@ homeController.controller('HomeController', function HomeController($rootScope, 
 });
 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, ApprovedTalksService, flash) {
-    $scope.flash = flash;
-    $scope.message = "Hello World";
-
     // Left column, list of accepted proposal
     ApprovedTalksService.get({confType: $routeParams.confType}, function (allApproved) {
         // If a ScheduleConfiguration was reloade, then we need to filter-out the list of ApprovedTalks

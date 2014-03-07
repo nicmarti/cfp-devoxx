@@ -47,6 +47,10 @@ object SchedullingController extends SecureCFPController {
         case "uni" => Json.toJson(Slot.universitySlots)
         case "confThursday" => Json.toJson(Slot.conferenceSlotsThursday)
         case "confFriday" => Json.toJson(Slot.conferenceSlotsFriday)
+
+        case "quickThursday" => Json.toJson(Slot.quickiesSlotsThursday)
+        case "quickFriday" => Json.toJson(Slot.quickiesSlotsFriday)
+
         case "bof" => Json.toJson(Slot.bofSlotsThursday)
         case "tia" => Json.toJson(Slot.toolsInActionSlots)
         case "labs" => Json.toJson(Slot.labsSlots)
@@ -60,14 +64,28 @@ object SchedullingController extends SecureCFPController {
       import models.Proposal.proposalFormat
       val proposals = confType match {
         case "confThursday" => {
-          Proposal.allAcceptedByTalkType("conf").filter {
+          Proposal.allAcceptedByTalkType(ProposalType.CONF.id).filter {
+            proposal =>
+              val preferredDay = Proposal.getPreferredDay(proposal.id)
+              preferredDay == None || preferredDay == Some("Thu")
+          }
+        }
+        case "quickThursday" => {
+          Proposal.allAcceptedByTalkType(ProposalType.QUICK.id).filter {
             proposal =>
               val preferredDay = Proposal.getPreferredDay(proposal.id)
               preferredDay == None || preferredDay == Some("Thu")
           }
         }
         case "confFriday" => {
-          Proposal.allAcceptedByTalkType("conf").filter {
+          Proposal.allAcceptedByTalkType(ProposalType.CONF.id).filter {
+            proposal =>
+              val preferredDay = Proposal.getPreferredDay(proposal.id)
+              preferredDay == None || preferredDay == Some("Fri")
+          }
+        }
+        case "quickFriday" => {
+          Proposal.allAcceptedByTalkType(ProposalType.QUICK.id).filter {
             proposal =>
               val preferredDay = Proposal.getPreferredDay(proposal.id)
               preferredDay == None || preferredDay == Some("Fri")

@@ -5,7 +5,16 @@
 
 <div class="col-lg-12">
     <ul ng-repeat="savedConf in allScheduledConfiguration">
-        <li><strong>{{savedConf.key.confType}}</strong> created by <em>{{savedConf.key.createdBy}}</em> on <em>{{savedConf.date|date:'EEE d MMMM HH:mm:ss'}}</em> <a class="icon-edit-sign" href="#/slots/{{savedConf.key.id}}">{{savedConf.key.id}}</a> <a href="/devoxxfr2014/agenda/{{savedConf.key.confType}}?slotId={{savedConf.key.id}}" class="icon-calendar">open agenda</a> <a class="btn btn-sm btn-danger" href="#/deleteSchedule?id={{savedConf.key.id}}"><i class="icon-trash"></i></a> </li>
+        <li>
+            <strong>{{savedConf.key.confType}}</strong>
+            created by
+            <em>{{savedConf.key.createdBy}}</em>
+            on
+            <em>{{savedConf.date|date:'EEE d MMMM HH:mm:ss'}}</em>
+            <a class="icon-edit-sign" href="#/slots/{{savedConf.key.id}}">{{savedConf.key.id}}</a>
+            <a href="/devoxxfr2014/agenda/{{savedConf.key.confType}}?slotId={{savedConf.key.id}}" target="_blank"
+               class="icon-calendar">View on web site</a>
+            <a class="btn btn-sm btn-danger" href="#/deleteSchedule?id={{savedConf.key.id}}"><i class="icon-trash"></i></a> </li>
     </ul>
 </div>
 

@@ -2,10 +2,6 @@
 <div class="col-lg-12">
     <h3>All slots</h3>
     <button class="btn btn-success" ng-click="saveAllocation()">Save allocation</button>
-    <div class="alert alert-success" ng-show="flash.getMessage()">
-    <p>{{flash.getMessage()}}</p>
-    </div>
-
 <flash-messages>
 </flash-messages>
 <p>Note : Please, use full-screen for best experience. Slots are also filtered by preferred day.</p>
@@ -15,11 +11,10 @@
 <h3>Filter</h3>
 </div>
 
-
 <div class="col-lg-3 panel_talks">
     <input type="search" ng-model="filterTalk" placeholder="Filter Talks..." /><br>
     <small>Slots: {{approvedTalks.length}}</small>
-    <div ng-repeat="talk in approvedTalks track by talk.id | filter:filterTalk"
+    <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
          class="talk"
          drag="talk" dragStyle="columnDrag"
          dropStyle="columnDrop">
@@ -40,8 +35,8 @@
     <div class="col-lg-9">
         <input type="search" ng-model="q" placeholder="Filter Slots..." />
     </div>
-    <div ng-repeat="slot in slots track by slot.id | filter:q" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
-        <span class="label label-default">{{slot.room.name}}</span>
+    <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
+        <span class="label label-default">{{slot.room.name}} ({{slot.room.capacity}})</span>
         <small>{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
         <div ng-show="slot.proposal">
             <button class="btn btn-sm btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> remove</button>
