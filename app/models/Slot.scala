@@ -180,15 +180,15 @@ object Slot {
   val toolsInActionSlots: List[Slot] = {
     val t1 = Room.allRoomsTIA.map {
       r =>
-        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T17:15:00.000+02:00"), new DateTime("2014-04-16T17:45:00.000+02:00"), r)
+        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T17:10:00.000+02:00"), new DateTime("2014-04-16T17:40:00.000+02:00"), r)
     }
     val t2 = Room.allRoomsTIA.map {
       r =>
-        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T18:00:00.000+02:00"), new DateTime("2014-04-16T18:30:00.000+02:00"), r)
+        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T17:50:00.000+02:00"), new DateTime("2014-04-16T18:20:00.000+02:00"), r)
     }
     val t3 = Room.allRoomsTIA.map {
       r =>
-        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T18:45:00.000+02:00"), new DateTime("2014-04-16T19:15:00.000+02:00"), r)
+        SlotBuilder(ProposalType.TIA.id, "mercredi", new DateTime("2014-04-16T18:30:00.000+02:00"), new DateTime("2014-04-16T19:00:00.000+02:00"), r)
     }
     t1 ++ t2 ++ t3
   }
