@@ -40,7 +40,7 @@
                             </tr>
                             <tr>
                                 <th>Id</th>
-                                <td>@proposal.id</td>
+                                <td><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)">@proposal.id <i class="icon-arrow-right"></i> </a></td>
                             </tr>
                             <tr>
                                 <th>@Messages("sw.proposal.talkType")</th>
@@ -48,7 +48,7 @@
                             </tr>
                             <tr>
                                 <th>@Messages("sw.proposal.track")</th>
-                                <td>@Messages(proposal.track.label)</td>
+                                <td>@tags.publisher.renderIconForTrack(proposal.track.id) @Messages(proposal.track.label)</td>
                             </tr>
                             @if(proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).nonEmpty){
                              <tr>

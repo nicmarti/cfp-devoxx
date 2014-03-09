@@ -45,6 +45,7 @@ object Room {
   val SEINE_C = Room("seine_c", "Seine C", 260, "theatre")
   val AUDITORIUM = Room("auditorium", "Auditorium", 160, "theatre")
   val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 290,"theatre")
+  val MILES_DAVIS = Room("md_full", "M.Davis", 220, "theatre")
 
   val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 45, "classe")
   val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 30, "classe")
@@ -60,7 +61,7 @@ object Room {
   val MILES_DAVIS_B_TH = Room("md_b_th", "M.Davis B", 50, "theatre")
   val MILES_DAVIS_C_TH = Room("md_c_th", "M.Davis C", 80, "theatre")
 
-  val MILES_DAVIS = Room("md_full", "M.Davis", 220, "theatre")
+
   val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15, "classe")
   val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300, "classe")
   val OTHER = Room("other_room", "Other room", 100, "sans objet")

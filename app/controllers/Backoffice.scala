@@ -62,6 +62,18 @@ object Backoffice extends SecureCFPController {
   def changeProposalState(proposalId: String, state:String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
+      if(state==ProposalState.ACCEPTED.code){
+        Proposal.findById(proposalId).map{
+          proposal=>
+            ApprovedProposal.approve(proposal)
+        }
+      }
+      if(state==ProposalState.DECLINED.code){
+        Proposal.findById(proposalId).map{
+          proposal=>
+            ApprovedProposal.refuse(proposal)
+        }
+      }
       Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to "+state))
   }
 

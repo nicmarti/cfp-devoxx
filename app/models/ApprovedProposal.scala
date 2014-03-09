@@ -103,7 +103,6 @@ object ApprovedProposal {
       val tx = client.multi()
       tx.sadd("ApprovedById:", proposal.id.toString)
       tx.sadd("Approved:" + proposal.talkType.id, proposal.id.toString)
-
       tx.sadd("ApprovedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
       proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("ApprovedSpeakers:" + secondarySpeaker, proposal.id.toString))
       proposal.otherSpeakers.foreach {
@@ -253,7 +252,6 @@ object ApprovedProposal {
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.filter(_.state == ProposalState.ACCEPTED).toList
   }
-
 
   def allApprovedSpeakersWithFreePass():Set[Speaker] = Redis.pool.withClient {
     implicit client =>
