@@ -449,6 +449,7 @@ day-labs=Mercredi
 day-tia=Mercredi
 day-confThursday=Jeudi
 day-confFriday=Vendredi
+day-bof=Jeudi soir, 19h30
 sw.all.confThursday=Conférences le Jeudi
 confThursday=Conférences le Jeudi
 sw.otherEvents=Evénements spéciaux
