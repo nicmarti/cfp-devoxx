@@ -3,9 +3,164 @@
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; @Messages("sw.show.thu")</small>
+            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; <a href="@routes.Publisher.showByDay("mercredi")">@Messages("sw.agenda.wed")</a> / <strong>@Messages("sw.show.thu")</strong> / <a href="@routes.Publisher.showByDay("vendredi")">@Messages("sw.agenda.fri")</a></small>
+
             <h1 class="entry-title">@Messages("sw.show.title.thu")</h1>
             <div class="entry-content">
+<table>
+<tr>
+    <th>@Messages("sw.horaires")</th>
+    <th>@Messages("sw.mainEvents")</th>
+    <th>@Messages("sw.otherEvents")</th>
+</tr>
+
+<tr>
+    <td>7h30 - 09h00</td>
+    <td colspan="2">@Messages("sw.breakfast")</td>
+</tr>
+<tr>
+    <td>09h00 - 10h45</td>
+    <td>
+        <ul>
+            <li>Welcome to Devoxx France 2014</li>
+            <li>Keynote 1</li>
+            <li>Keynote 2</li>
+            <li>Keynote 3</li>
+        </ul>
+    </td>
+    <td></td>
+</tr>
+
+<tr>
+    <td>10h45 - 11h30</td>
+    <td colspan="2">
+        <i class="icon-coffee"> @Messages("sw.coffee.break")</i>
+    </td>
+</tr>
+<tr>
+    <td>11h30 - 12h20</td>
+    <td>
+        <ul>
+            <li>6 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>12h20 - 13h25</td>
+    <td>
+        <ul>
+            <li>12h35 - 12h50 <a href="@routes.Publisher.showByTalkType(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
+            <li>13h00 - 13h15 <a href="@routes.Publisher.showByTalkType(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
+        </ul>
+    </td>
+    <td>
+        @Messages("sw.lunch")
+    </td>
+</tr>
+
+<tr>
+    <td>13h25 - 14h15</td>
+    <td>
+        <ul>
+            <li>5 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+    <td rowspan="6">
+        <ul>
+            <li><a href="http://www.devoxx.fr/amd-2014/">L'Après-midi des Décideurs</a> 13h30 - 18h30</li>
+            <li><a href="@routes.Publisher.showByTalkType(ProposalType.CODESTORY.id)">Code Story</a> @Messages("cstory"), 13h30 - 18h55</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>14h30 - 15h20</td>
+    <td>
+        <ul>
+            <li>5 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>15h35 - 16h25</td>
+    <td>
+        <ul>
+            <li>5 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+
+<tr>
+    <td>16h25 - 17h00</td>
+    <td>
+        <i class="icon-coffee"> @Messages("sw.coffee.break")</i>
+    </td>
+</tr>
+
+
+<tr>
+    <td>17h00 - 17h50</td>
+    <td>
+        <ul>
+            <li>5 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>18h05 - 18h55</td>
+    <td>
+        <ul>
+            <li>5 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+
+<tr>
+    <td>18h55 - 19h30</td>
+    <td colspan="2">
+        <i class="icon-glass"> @Messages("sw.cocktail")</i>
+    </td>
+</tr>
+
+<tr>
+    <td>19h30 - 20h30</td>
+    <td>
+        <ul>
+            <li><a href="@routes.Publisher.showByTalkType(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
+        </ul>
+    </td>
+    <td rowspan="3">
+        <ul>
+            <li><i class="icon-glass"> @Messages("sw.cocktail")</i></li>
+            <li><a href="@routes.Publisher.showDetailsForProposal("ILO-992","Seed-Networking")">Seed-Networking à Devoxx France</a> à partir de 19h30</li>
+            <li><i class="icon-music"></i> <a href="@routes.Publisher.showDetailsForProposal("KLH-063","DJ BOF Mix")">DJ BOF Mix</a> jeudi soir à partir de 19h30</li>
+        </ul>
+    </td>
+</tr>
+
+<tr>
+    <td>20h30 - 21h30</td>
+    <td>
+        <ul>
+            <li><a href="@routes.Publisher.showByTalkType(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>21h30 - 22h30</td>
+    <td>
+        <ul>
+            <li><a href="@routes.Publisher.showByTalkType(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>22h30</td>
+    <td colspan="2">
+        End of day 2
+    </td>
+</tr>
+
+</table>
             </div>
         </div>
     </div>

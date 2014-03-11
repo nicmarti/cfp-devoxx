@@ -469,3 +469,4 @@ sw.mainEvents=Evénements principaux
 sw.lunch=Déjeuner
 sw.coffee.break=Pause café
 sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition
+sw.cocktail=Soirée Meet and Greet dans l''espace d''exposition jusqu''à 22h30

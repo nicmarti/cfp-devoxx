@@ -3,9 +3,140 @@
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; @Messages("sw.show.fri")</small>
+<small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;  <a href="@routes.Publisher.showByDay("mercredi")">@Messages("sw.show.wed")</a> / <a href="@routes.Publisher.showByDay("jeudi")">@Messages("sw.agenda.thu")</a>  / <strong>@Messages("sw.agenda.fri")</strong></small>
             <h1 class="entry-title">@Messages("sw.show.title.fri")</h1>
             <div class="entry-content">
+<table>
+<tr>
+    <th>@Messages("sw.horaires")</th>
+    <th>@Messages("sw.mainEvents")</th>
+    <th>@Messages("sw.otherEvents")</th>
+</tr>
+
+<tr>
+    <td>08h00 - 09h00</td>
+    <td colspan="2">@Messages("sw.breakfast")</td>
+</tr>
+<tr>
+    <td>09h00 - 10h10</td>
+    <td>
+        <ul>
+            <li>Welcome to Devoxx France 2014</li>
+            <li>Keynote 1</li>
+            <li>Keynote 2</li>
+            <li>Keynote 3</li>
+        </ul>
+    </td>
+    <td></td>
+</tr>
+
+<tr>
+    <td>10h10 - 10h40</td>
+    <td colspan="2">
+        <i class="icon-coffee"> @Messages("sw.coffee.break")</i>
+    </td>
+</tr>
+<tr>
+    <td>10h40 - 11h30</td>
+    <td>
+        <ul>
+            <li>6 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+    <td rowspan="2">
+        <ul>
+          <li><i class="icon-hand-up"></i> <a href="@routes.Publisher.showDetailsForProposal("JCB-280","Les mercenaires du Devops")">Devops Mercenaries 3.0 : Let's ops !</a> événement le vendredi de 10h40 à 12h35</li>
+        </ul>
+    </td>
+</tr>
+    <tr>
+    <td>11h45 - 12h35</td>
+    <td>
+        <ul>
+            <li>6 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>12h35 - 13h30</td>
+    <td>
+        <ul>
+            <li>12h45 - 13h00 <a href="@routes.Publisher.showByTalkType(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
+            <li>13h10 - 13h25 <a href="@routes.Publisher.showByTalkType(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
+        </ul>
+    </td>
+    <td>
+        @Messages("sw.lunch")
+    </td>
+</tr>
+
+<tr>
+    <td>13h30 - 14h20</td>
+    <td>
+        <ul>
+            <li>6 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+    <td rowspan="3">
+        <ul>
+            <li><i class="icon-hand-up"></i> <a href="@routes.Publisher.showDetailsForProposal("JCB-280","Les mercenaires du Devops")">Devops Mercenaries 3.0 : Let's ops !</a> événement le vendredi de 13h30 à 16h30</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>14h35 - 15h25</td>
+    <td>
+        <ul>
+            <li>6 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>15h40 - 16h30</td>
+    <td>
+        <ul>
+            <li>6 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>16h30 - 17h00</td>
+    <td colspan="2">
+        <i class="icon-coffee"> @Messages("sw.coffee.break")</i>
+    </td>
+</tr>
+  <tr>
+    <td>17h00 - 17h50</td>
+    <td>
+        <ul>
+            <li>6 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+    <td><i class="icon-warning-sign"></i> Fermeture de l'espace d''exposition à 18h00 </td>
+</tr>
+    <tr>
+    <td>18h05 - 18h55</td>
+    <td>
+        <ul>
+            <li>2 <a href="@routes.Publisher.showByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+        </ul>
+    </td>
+    <td>
+        <ul>
+            <li><i class="icon-headphones"></i> <a href="@routes.Publisher.showDetailsForProposal("UBD-388","Les mercenaires du Devops")">Enregistrement du podcast Les Cast-Codeurs</a></li>
+        </ul>
+    </td>
+</tr>
+
+<tr>
+    <td>19h00</td>
+    <td colspan="2">
+        Fin de Devoxx France 2014
+    </td>
+</tr>
+
+</table>
+
             </div>
         </div>
     </div>
