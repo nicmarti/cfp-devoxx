@@ -100,10 +100,21 @@ object Publisher extends Controller {
     day match {
       case "mercredi" => Ok(views.html.Publisher.showWednesday())
       case "wednesday" => Ok(views.html.Publisher.showWednesday())
+      case ProposalType.LAB.id => Ok(views.html.Publisher.showWednesday())
+      case ProposalType.TIA.id => Ok(views.html.Publisher.showWednesday())
+      case ProposalType.UNI.id => Ok(views.html.Publisher.showWednesday())
+
       case "jeudi" => Ok(views.html.Publisher.showThursday())
+      case "confThursday" => Ok(views.html.Publisher.showThursday())
+      case "quickThursday" => Ok(views.html.Publisher.showThursday())
       case "thursday" => Ok(views.html.Publisher.showThursday())
+      case ProposalType.BOF.id => Ok(views.html.Publisher.showThursday())
+
       case "vendredi" => Ok(views.html.Publisher.showFriday())
       case "friday" => Ok(views.html.Publisher.showFriday())
+      case "confFriday" => Ok(views.html.Publisher.showFriday())
+      case "quickFriday" => Ok(views.html.Publisher.showFriday())
+
       case other => NotFound
     }
   }

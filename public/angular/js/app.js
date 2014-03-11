@@ -10,6 +10,7 @@ var cfpApp = angular.module('cfpApp', [
     'homeController',
     'reloadScheduleConfController',
     'deleteSlotController',
+    'publishController',
     'flash'
 ]);
 
@@ -27,8 +28,12 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
         controller: 'ReloadScheduleConfController'
     });
     $routeProvider.when('/deleteSchedule', {
-        templateUrl: 'partials/slots.html',
+        templateUrl: 'partials/savedSlots.html',
         controller: 'DeleteSlotController'
+    });
+    $routeProvider.when('/publish', {
+        templateUrl: 'partials/savedSlots.html',
+        controller: 'PublishController'
     });
 
     $routeProvider.otherwise({redirectTo: '/'});

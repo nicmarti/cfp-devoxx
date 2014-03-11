@@ -27,3 +27,7 @@ remoteServices.factory('ReloadScheduleConf', ['$resource', function($resource){
 remoteServices.factory('DeleteScheduledConfiguration', ['$resource', function($resource){
   return $resource('/schedulling/fr14/deletescheduledConfigurations', null, {'query': {method: 'DELETE', isArray: false, responseType:'json'}})
 }]);
+
+remoteServices.factory('PublishScheduledConfiguration', ['$resource', function($resource){
+  return $resource('/schedulling/fr14/publish', null, {'save': { method:'POST'}});
+}]);

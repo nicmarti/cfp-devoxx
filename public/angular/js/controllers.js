@@ -5,6 +5,7 @@ var mainController = angular.module('mainController', []);
 var homeController = angular.module('homeController', []);
 var reloadScheduleConfController = angular.module('reloadScheduleConfController', []);
 var deleteSlotController = angular.module('deleteSlotController', []);
+var publishController = angular.module('publishController', []);
 
 
 homeController.controller('HomeController', function HomeController($rootScope, $scope, $routeParams, AllScheduledConfiguration) {
@@ -122,8 +123,14 @@ reloadScheduleConfController.controller('ReloadScheduleConfController', function
 
 });
 
-deleteSlotController.controller('DeleteSlotController', function DeleteSlotController($routeParams,$location, DeleteScheduledConfiguration ){
+deleteSlotController.controller('DeleteSlotController', function DeleteSlotController($routeParams,$location, DeleteScheduledConfiguration,flash ){
     DeleteScheduledConfiguration.delete({id: $routeParams.id}, function (jsonObj){
-        $location.path('/saved').replace();
+        flash("Deleted configuration");
+    });
+});
+
+publishController.controller('PublishController', function PublishController($routeParams,$location, PublishScheduledConfiguration, flash ){
+    PublishScheduledConfiguration.save({id: $routeParams.id, confType: $routeParams.confType}, function (jsonObj){
+        flash("Configuration published");
     });
 });

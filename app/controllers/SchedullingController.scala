@@ -31,6 +31,7 @@ import library.SaveSlots
 import play.api.libs.json.JsString
 import play.api.libs.json.JsNumber
 import com.google.api.client.util.DateTime
+import play.api.i18n.Messages
 
 
 /**
@@ -201,6 +202,32 @@ object SchedullingController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       ScheduleConfiguration.delete(id)
       Ok("{\"status\":\"deleted\"}").as("application/json")
+  }
+
+  def publishScheduleConfiguration()=SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+       request.body.asJson.map {
+        json =>
+          val id=json.\("id").as[String]
+          val confType=json.\("confType").as[String]
+
+          ScheduleConfiguration.publishConf(id,confType)
+
+          Ok("{\"status\":\"success\"}").as("application/json")
+      }.getOrElse {
+        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+      }
+
+
+  }
+
+  def getPublishedSchedule(confType:String)=Action{
+    implicit request=>
+      ScheduleConfiguration.getPublishedSchedule(confType) match {
+        case Some(id)=> Redirect(routes.Publisher.showAgendaByConfType(confType,id))
+        case None=>Redirect(routes.Publisher.homePublisher).flashing("success"->Messages("not.published"))
+      }
   }
 
 }

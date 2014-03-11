@@ -99,4 +99,15 @@ object ScheduleConfiguration {
           Json.parse(json).as[ScheduleConfiguration]
       }
   }
+
+  def publishConf(id:String, confType:String)=Redis.pool.withClient{
+    implicit client=>
+      client.hset("Published:Schedule", confType, id)
+  }
+
+  def getPublishedSchedule(confType:String):Option[String]=Redis.pool.withClient{
+    implicit client=>
+      client.hget("Published:Schedule",confType)
+  }
+
 }
