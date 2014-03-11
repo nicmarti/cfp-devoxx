@@ -447,6 +447,25 @@ confThursday=Conférences le Jeudi
 sw.otherEvents=Evénements spéciaux
 sw.allEvents=Voir tous les événements
 sw.all.key=Les Keynotes
-sw.all.cstory=Code Story 2014
-cstory=Les événements de Code Story
+sw.all.cstory=Code-Story 2014
+cstory=Sessions de live coding Code-Story
 sw.all.amd=Présentations de l''Après-midi des Décideurs
+sw.agenda=Agenda
+sw.agenda.txt=Horaires par journée
+sw.agenda.wed=Mercredi
+sw.agenda.thu=Jeudi
+sw.agenda.fri=Vendredi
+sw.show.wed=Mercredi
+sw.show.thu=Jeudi
+sw.show.fri=Vendredi
+sw.show.title.wed=Journée du Mercredi 16 avril 2014
+sw.show.title.thu=Journée du Jeudi 17 avril 2014
+sw.show.title.fri=Journée du Vendredi 18 avril 2014
+
+
+sw.horaires=Horaires
+sw.breakfast=Accueil et petit-déjeuner
+sw.mainEvents=Evénements principaux
+sw.lunch=Déjeuner
+sw.coffee.break=Pause café
+sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition

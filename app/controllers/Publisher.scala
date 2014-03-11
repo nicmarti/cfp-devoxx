@@ -94,4 +94,17 @@ object Publisher extends Controller {
         case None=>NotFound
       }
   }
+
+  def showByDay(day:String)=Action{
+     implicit request=>
+    day match {
+      case "mercredi" => Ok(views.html.Publisher.showWednesday())
+      case "wednesday" => Ok(views.html.Publisher.showWednesday())
+      case "jeudi" => Ok(views.html.Publisher.showThursday())
+      case "thursday" => Ok(views.html.Publisher.showThursday())
+      case "vendredi" => Ok(views.html.Publisher.showFriday())
+      case "friday" => Ok(views.html.Publisher.showFriday())
+      case other => NotFound
+    }
+  }
 }

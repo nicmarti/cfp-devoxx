@@ -131,6 +131,7 @@ GET         /devoxxfr2014/talk/:proposalId                       controllers.Pub
 GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
 GET         /devoxxfr2014/agenda/:confType                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:String)
+GET         /devoxxfr2014/byday/:day                             controllers.Publisher.showByDay(day:String)
 
 # For Paper guide
 GET         /guide/speakers                                      controllers.PaperGuide.showAllSpeakers()
