@@ -66,12 +66,14 @@ object Backoffice extends SecureCFPController {
         Proposal.findById(proposalId).map{
           proposal=>
             ApprovedProposal.approve(proposal)
+            ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.ACCEPTED))
         }
       }
       if(state==ProposalState.DECLINED.code){
         Proposal.findById(proposalId).map{
           proposal=>
             ApprovedProposal.refuse(proposal)
+            ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.DECLINED))
         }
       }
       Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to "+state))

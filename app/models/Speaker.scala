@@ -80,20 +80,20 @@ object Speaker {
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms:Boolean): Speaker = {
+                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms: Boolean): Speaker = {
     uuid match {
       case None =>
-        val newUUID=Webuser.generateUUID(email)
-        if(acceptTerms){
+        val newUUID = Webuser.generateUUID(email)
+        if (acceptTerms) {
           doAcceptTerms(newUUID)
-        }else{
+        } else {
           refuseTerms(newUUID)
         }
         Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
       case Some(validUuid) =>
-        if(acceptTerms){
+        if (acceptTerms) {
           doAcceptTerms(validUuid)
-        }else{
+        } else {
           refuseTerms(validUuid)
         }
         Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
@@ -106,12 +106,13 @@ object Speaker {
   }
 
   def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean)] = {
-    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), needsToAccept(s.uuid)==false)
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), needsToAccept(s.uuid) == false)
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
       Cache.remove("speaker:uuid:" + speaker.uuid)
+
       val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", speaker.uuid, jsonSpeaker)
   }
@@ -119,12 +120,14 @@ object Speaker {
   def update(uuid: String, speaker: Speaker) = Redis.pool.withClient {
     client =>
       Cache.remove("speaker:uuid:" + uuid)
+      Cache.remove("allSpeakersWithAcceptedTerms")
       val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid = uuid)))
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
   def updateName(uuid: String, firstName: String, lastName: String) = {
     Cache.remove("speaker:uuid:" + uuid)
+    Cache.remove("allSpeakersWithAcceptedTerms")
     findByUUID(uuid).map {
       speaker =>
         Speaker.update(uuid, speaker.copy(name = Option(lastName), firstName = Option(firstName)))
@@ -146,6 +149,7 @@ object Speaker {
 
   def delete(uuid: String) = Redis.pool.withClient {
     client =>
+      Cache.remove("allSpeakersWithAcceptedTerms")
       Cache.remove("speaker:uuid:" + uuid)
       client.hdel("Speaker", uuid)
   }
@@ -175,7 +179,7 @@ object Speaker {
       client.hset("TermsAndConditions", speakerId, new Instant().getMillis.toString)
   }
 
-  def refuseTerms(speakerId:String) = Redis.pool.withClient {
+  def refuseTerms(speakerId: String) = Redis.pool.withClient {
     client =>
       Cache.remove("allSpeakersWithAcceptedTerms")
       client.hdel("TermsAndConditions", speakerId)
