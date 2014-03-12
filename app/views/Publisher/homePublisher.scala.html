@@ -4,11 +4,11 @@
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
             <h1 class="entry-title">@Messages("sw.programme")</h1>
-            <div class="entry-content">
+            <div class="entry-content col-xs-12">
 
-                <p>@Messages("sw.intro")</p>
+        <p>@Messages("sw.intro")</p>
 
-
+        <div class="col-xs-12">
             @if(flash.get("error").isDefined){
                 <div class="alert alert-danger alert-dismissable">
                     <strong>Error :</strong>
@@ -20,12 +20,29 @@
                    <strong>@flash.get("success").get</strong>
                 </div>
             }
+        </div>
 
+
+        <div class="col-xs-3">
                 <h2>@Messages("sw.speakers")</h2>
                 <ul>
                     <li><a href="@routes.Publisher.showAllSpeakers()" title="Show all speakers">Voir tous les orateurs</a></li>
                 </ul>
+        </div>
 
+        <div class="col-xs-3">
+            <h2>@Messages("sw.agenda")</h2>
+            <p>@Messages("sw.agenda.txt")</p>
+            <ul>
+                <li><a href="@routes.Publisher.showByDay("mercredi")">@Messages("sw.agenda.wed")</a></li>
+                <li><a href="@routes.Publisher.showByDay("jeudi")">@Messages("sw.agenda.thu")</a>
+                    (en cours de construction)</li>
+                <li><a href="@routes.Publisher.showByDay("vendredi")">@Messages("sw.agenda.fri")</a>
+                    (en cours de construction)</li>
+            </ul>
+        </div>
+
+        <div class="col-xs-4">
                 <h2>@Messages("sw.presentations")</h2>
                 <p>@Messages("sw.faq") <a href="http://www.devoxx.fr/faq/#format">FAQ</a> </p>
                 <ul>
@@ -36,24 +53,9 @@
                     <li><a href="@routes.Publisher.showByTalkType(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
                     <li><a href="@routes.Publisher.showByTalkType(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
                 </ul>
+        </div>
 
-                <h2>@Messages("sw.agenda")</h2>
-                <p>@Messages("sw.agenda.txt")</p>
-                <ul>
-                    <li><a href="@routes.Publisher.showByDay("mercredi")">@Messages("sw.agenda.wed")</a></li>
-                    <li><a href="@routes.Publisher.showByDay("jeudi")">@Messages("sw.agenda.thu")</a> (pas encore publié)</li>
-                    <li><a href="@routes.Publisher.showByDay("vendredi")">@Messages("sw.agenda.fri")</a> (pas encore publié)</li>
-                </ul>
-
-                <h2>Keynotes</h2>
-                <p>TBA</p>
-
-                <h2>@Messages("sw.hackatons")</h2>
-                <p>@Messages("sw.hackatons.describe")</p>
-                <ul>
-                    <li><a href="@routes.Publisher.showByTalkType(ProposalType.HACK.id)" class="btn btn-primary btn-sm"><i class="icon-gears"></i> Hackatons</a></li>
-                </ul>
-
+        <div class="col-xs-4">
                 <h2>@Messages("sw.events")</h2>
                 <ul>
                     <li><a href="http://www.devoxx.fr/open-data-camp-2014/">Open-Data Camp</a> Mercredi 9h30 à 18h30</li>
@@ -65,6 +67,22 @@
                     <li><a href="http://www.devoxx.fr/soiree-meet-and-greet-2014/">Soirée Meet and Greet</a> jeudi soir à partir de 19h30. Accès gratuit, sur inscription.</li>
                     <li><i class="icon-music"></i> <a href="@routes.Publisher.showDetailsForProposal("KLH-063","DJ BOF Mix")">DJ BOF Mix</a> jeudi soir à partir de 19h30</li>
                 </ul>
+        </div>
+
+        <div class="col-xs-3">
+                <h2>Keynotes</h2>
+                <p>Annoncé prochainement</p>
+        </div>
+
+        <div class="col-xs-3">
+                <h2>@Messages("sw.hackatons")</h2>
+                <p>@Messages("sw.hackatons.describe")</p>
+                <ul>
+                    <li><a href="@routes.Publisher.showByTalkType(ProposalType.HACK.id)" class="btn btn-primary btn-sm"><i class="icon-gears"></i> Hackatons</a></li>
+                </ul>
+        </div>
+
+
 
             </div>
         </div>
