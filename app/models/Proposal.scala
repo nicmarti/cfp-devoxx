@@ -117,10 +117,21 @@ import com.github.rjeschke.txtmark._
 case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
                     talkType: ProposalType, audienceLevel: String, summary: String,
-                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false, track: Track) {
+                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false,
+                    track: Track) {
 
-  val allSpeakerUUIDs: List[String] = {
+  def allSpeakerUUIDs: List[String] = {
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
+  }
+
+  def allSpeakers:List[Speaker]={
+    allSpeakerUUIDs.flatMap{uuid=>
+      Speaker.findByUUID(uuid)
+    }
+  }
+
+  def allSpeakersGravatar:List[String]={
+    allSpeakers.flatMap(_.avatarUrl)
   }
 
   lazy val summaryAsHtml: String = {

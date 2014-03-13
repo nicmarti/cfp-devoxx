@@ -112,7 +112,7 @@ object Speaker {
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
       Cache.remove("speaker:uuid:" + speaker.uuid)
-
+      Cache.remove("allSpeakersWithAcceptedTerms")
       val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", speaker.uuid, jsonSpeaker)
   }

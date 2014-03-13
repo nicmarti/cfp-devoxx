@@ -134,8 +134,9 @@ GET         /devoxxfr2014/agenda/:confType                       controllers.Pub
 GET         /devoxxfr2014/byday/:day                             controllers.Publisher.showByDay(day:String)
 
 # For Paper guide
-GET         /guide/speakers                                      controllers.PaperGuide.showAllSpeakers()
+GET         /guide/speakers                                      controllers.PaperGuide.exportSpeakers()
 GET         /guide/allPhotos                                     controllers.PaperGuide.downloadAllSpeakersPhotos()
+GET         /guide/exported                                      controllers.PaperGuide.exportProgram()
 
 # REST API
 GET         /api                                                 controllers.RestAPI.index()
