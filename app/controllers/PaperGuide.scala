@@ -169,7 +169,7 @@ object PaperGuide extends SecureCFPController {
                       writer.print(StringEscapeUtils.escapeCsv(StringUtils.stripAccents(speaker.cleanName.replaceAll(" ", "_").toLowerCase)))
                       writer.print(",")
                   }.getOrElse(writer.print(",,"))
-                
+
                   proposal.secondarySpeaker.map {
                     secSpeaker =>
                       Speaker.findByUUID(secSpeaker).map {
