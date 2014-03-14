@@ -149,6 +149,10 @@ GET         /api/conferences/:eventCode/speakers/:uuid           controllers.Res
 GET         /api/conferences/:eventCode/talks/:id                controllers.RestAPI.showTalk(eventCode:String,id:String)
 GET         /api/conferences/:eventCode/talks/                   controllers.RestAPI.redirectToTalks(eventCode:String)
 GET         /api/conferences/:eventCode/talks                    controllers.RestAPI.showTalks(eventCode:String)
+GET         /api/conferences/:eventCode/schedules/               controllers.RestAPI.showAllSchedules(eventCode:String)
+GET         /api/conferences/:eventCode/schedules                controllers.RestAPI.showAllSchedules(eventCode:String)
+GET         /api/conferences/:eventCode/schedules/:day/          controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
+GET         /api/conferences/:eventCode/schedules/:day           controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
 
 GET         /api/profile/:docName                                controllers.RestAPI.profile(docName:String)
 

@@ -110,4 +110,34 @@ object ScheduleConfiguration {
       client.hget("Published:Schedule",confType)
   }
 
+  def getPublishedScheduleByDay(day:String):List[Slot]={
+
+    val listOfSlots = day match {
+      case "wednesday"=>{
+        Slot.wednesday ++ loadSlotsForConfType(ProposalType.UNI.id) ++ loadSlotsForConfType(ProposalType.LAB.id) ++ loadSlotsForConfType(ProposalType.TIA.id)
+      }
+      case "thursday"=>{
+        val fullList = Slot.thursday ++ loadSlotsForConfType(ProposalType.QUICK.id+"Thursday") ++ loadSlotsForConfType(ProposalType.KEY.id+"Thursday") ++ loadSlotsForConfType(ProposalType.CONF.id+"Thursday") ++ loadSlotsForConfType(ProposalType.BOF.id)
+        fullList.filter(_.day=="jeudi")
+      }
+      case "friday"=>{
+        val fullList = Slot.friday ++ loadSlotsForConfType(ProposalType.QUICK.id+"Friday") ++ loadSlotsForConfType(ProposalType.KEY.id+"Friday") ++ loadSlotsForConfType(ProposalType.CONF.id+"Friday")
+        fullList.filter(_.day=="vendredi")
+      }
+      case other=>Nil
+    }
+
+    listOfSlots.sortBy(_.from.getMillis)
+  }
+
+  def loadSlotsForConfType(confType:String):List[Slot]={
+    getPublishedSchedule(confType).flatMap{
+        id:String=>
+        loadScheduledConfiguration(id).map{
+          scheduledConf=>
+            scheduledConf.slots
+        }
+      }.getOrElse(List.empty[Slot])
+  }
+
 }
