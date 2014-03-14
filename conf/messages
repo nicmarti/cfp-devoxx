@@ -450,3 +450,7 @@ sw.endOfDay=End of day, exhibition floor closing
 sw.cocktail=Meet and Greet party until 10:30pm in the main exhibition hall
 sw.showAllDay=Show complete agenda for this day
 not.published=The agenda for this conference is not yet published
+
+day-wed=Wednesday
+day-thu=Thursday
+day-fri=Friday

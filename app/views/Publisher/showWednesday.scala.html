@@ -3,7 +3,7 @@
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; <strong>@Messages("sw.show.wed")</strong> / <a href="@routes.Publisher.showByDay("jeudi")">@Messages("sw.agenda.thu")</a>  / <a href="@routes.Publisher.showByDay("vendredi")">@Messages("sw.agenda.fri")</a></small>
+            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; <strong>@Messages("sw.show.wed")</strong> / <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a>  / <a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a></small>
             <h1 class="entry-title">@Messages("sw.show.title.wed")</h1>
             <div class="entry-content">
 <table>
@@ -28,8 +28,8 @@
     <td>09h30 - 12h30</td>
     <td>
         <ul>
-            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
-            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
+            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.UNI.id, Some("wed"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
+            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.LAB.id, Some("wed"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
         </ul>
     </td>
 </tr>
@@ -42,8 +42,8 @@
     <td>13h30 - 16h30</td>
     <td>
         <ul>
-            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
-            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
+            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.UNI.id, Some("wed"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
+            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.LAB.id, Some("wed"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
             <li><a href="@routes.Publisher.showDetailsForProposal("QIY-889","Hackergarten")">Hackergarten</a></li>
         </ul>
     </td>
@@ -58,7 +58,7 @@
     <td>17h10 - 17h40</td>
     <td>
       <ul>
-          <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
+          <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.TIA.id, Some("wed"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
       </ul>
     </td>
 </tr>
@@ -66,7 +66,7 @@
     <td>17h50 - 18h20</td>
     <td>
       <ul>
-          <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
+          <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.TIA.id, Some("wed"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
       </ul>
     </td>
 </tr>
@@ -75,7 +75,7 @@
     <td>18h30 - 19h00</td>
     <td>
       <ul>
-          <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
+          <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.TIA.id, Some("wed"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
       </ul>
     </td>
 </tr>

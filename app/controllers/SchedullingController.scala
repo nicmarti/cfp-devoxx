@@ -150,12 +150,17 @@ object SchedullingController extends SecureCFPController {
                     val mainWebuser = Speaker.findByUUID(definedProposal.mainSpeaker)
                     val secWebuser = definedProposal.secondarySpeaker.flatMap(Speaker.findByUUID(_))
                     val oSpeakers = definedProposal.otherSpeakers.map(Speaker.findByUUID(_))
+                    val preferredDay = Proposal.getPreferredDay(definedProposal.id)
+
                     // Transform speakerUUID to Speaker name, this simplify Angular Code
                     definedProposal.copy(
-                      mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
-                      secondarySpeaker = secWebuser.map(_.cleanName),
-                      otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+                      mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
+                      , secondarySpeaker = secWebuser.map(_.cleanName)
+                      , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+                      , privateMessage = preferredDay.getOrElse("")
+
                     )
+
                   }
                   slot.copy(proposal = Option(proposalWithSpeakerNames))
                 }
@@ -191,10 +196,10 @@ object SchedullingController extends SecureCFPController {
 
   }
 
-  def getPublishedSchedule(confType:String)=Action{
+  def getPublishedSchedule(confType:String, day:Option[String])=Action{
     implicit request=>
       ScheduleConfiguration.getPublishedSchedule(confType) match {
-        case Some(id)=> Redirect(routes.Publisher.showAgendaByConfType(confType,id))
+        case Some(id)=> Redirect(routes.Publisher.showAgendaByConfType(confType, id, day))
         case None=>Redirect(routes.Publisher.homePublisher).flashing("success"->Messages("not.published"))
       }
   }

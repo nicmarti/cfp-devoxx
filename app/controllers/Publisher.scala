@@ -86,11 +86,34 @@ object Publisher extends Controller {
       }
   }
 
-  def showAgendaByConfType(confType:String,slotId:String)=Action{
+  def showAgendaByConfType(confType:String,slotId:String, day:Option[String] )=Action{
     implicit request=>
+      play.Logger.debug("Show agenda by conf type "+day)
       val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(slotId)
       maybeScheduledConfiguration match{
-        case Some(slots)=>Ok(views.html.Publisher.showAgendaByConfType(slots,confType))
+        case Some(slotConfig) if day==Some("thu")=>{
+          val updatedConf=slotConfig.copy(slots = slotConfig.slots.filter(_.day=="jeudi")
+          , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek==4))
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "thu"))
+        }
+        case Some(slotConfig) if day==Some("fri")=>{
+          val updatedConf=slotConfig.copy(
+            slots = slotConfig.slots.filter(_.day=="vendredi")
+          , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek==5)
+          )
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "fri"))
+        }
+        case Some(slotConfig) if day==Some("wed")=>{
+          val updatedConf=slotConfig.copy(
+            slots = slotConfig.slots.filter(_.day=="mercredi")
+          , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek==3)
+          )
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "wed"))
+        }
+        case Some(slotConfig) =>{
+          val updatedConf=slotConfig.copy(slots = slotConfig.slots)
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "wed"))
+        }
         case None=>NotFound
       }
   }
@@ -98,24 +121,10 @@ object Publisher extends Controller {
   def showByDay(day:String)=Action{
      implicit request=>
     day match {
-      case "mercredi" => Ok(views.html.Publisher.showWednesday())
-      case "wednesday" => Ok(views.html.Publisher.showWednesday())
-      case ProposalType.LAB.id => Ok(views.html.Publisher.showWednesday())
-      case ProposalType.TIA.id => Ok(views.html.Publisher.showWednesday())
-      case ProposalType.UNI.id => Ok(views.html.Publisher.showWednesday())
-
-      case "jeudi" => Ok(views.html.Publisher.showThursday())
-      case "thursday" => Ok(views.html.Publisher.showThursday())
-      case "confThursday" => Ok(views.html.Publisher.showThursday())
-      case "quickThursday" => Ok(views.html.Publisher.showThursday())
-      case ProposalType.BOF.id => Ok(views.html.Publisher.showThursday())
-
-      case "vendredi" => Ok(views.html.Publisher.showFriday())
-      case "friday" => Ok(views.html.Publisher.showFriday())
-      case "confFriday" => Ok(views.html.Publisher.showFriday())
-      case "quickFriday" => Ok(views.html.Publisher.showFriday())
-
-      case other => NotFound
+      case "wed" => Ok(views.html.Publisher.showWednesday())
+      case "thu" => Ok(views.html.Publisher.showThursday())
+      case "fri" => Ok(views.html.Publisher.showFriday())
+      case other => NotFound("Day not found "+day)
     }
   }
 }

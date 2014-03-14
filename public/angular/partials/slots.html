@@ -39,7 +39,7 @@
     <div class="col-lg-9">
         <input type="search" ng-model="q" placeholder="Filter Slots..." />
     </div>
-    <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
+    <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-4 slot" drop="slot" dropStyle="columnDrop">
         <span class="label label-default">{{slot.room.name}} ({{slot.room.capacity}}/{{slot.room.setup}})</span>
         <small>{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
         <div ng-show="slot.proposal">

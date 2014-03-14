@@ -130,7 +130,7 @@ GET         /devoxxfr2014/talks/:talkType                        controllers.Pub
 GET         /devoxxfr2014/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET         /devoxxfr2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET         /devoxxfr2014                                        controllers.Publisher.homePublisher()
-GET         /devoxxfr2014/agenda/:confType                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:String)
+GET         /devoxxfr2014/agenda/:confType                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:String, day:Option[String])
 GET         /devoxxfr2014/byday/:day                             controllers.Publisher.showByDay(day:String)
 
 # For Paper guide
@@ -164,7 +164,7 @@ GET         /schedulling/fr14/loadScheduledConfiguration         controllers.Sch
 POST        /schedulling/fr14/slots                              controllers.SchedullingController.saveSlots(confType:String)
 DELETE      /schedulling/fr14/deletescheduledConfigurations      controllers.SchedullingController.deleteScheduleConfiguration(id:String)
 POST        /schedulling/fr14/publish                            controllers.SchedullingController.publishScheduleConfiguration()
-GET         /schedulling/fr14/published                          controllers.SchedullingController.getPublishedSchedule(confType:String)
+GET         /schedulling/fr14/published                          controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                        controllers.Assets.at(path="/public", file)

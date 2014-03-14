@@ -63,6 +63,7 @@ object Room {
 
   val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15, "classe")
   val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300, "classe")
+  val LABO = Room("foyer_labo", "Labo", 40, "special")
   val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
   val all = List(SEINE_A,
@@ -84,12 +85,17 @@ object Room {
     MILES_DAVIS,
     DUKE_ELLINGTON,
     FOYER_BAS,
+    LABO,
     OTHER)
 
   val allBigRoom = List(Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.AUDITORIUM)
 
   val allRoomsLabs = List(Room.ELLA_FITZGERALD_AB, Room.LOUIS_ARMSTRONG_AB, Room.LOUIS_ARMSTRONG_CD,
     Room.MILES_DAVIS_A, Room.MILES_DAVIS_B, Room.MILES_DAVIS_C)
+
+  val allRoomsBOFs= List(Room.ELLA_FITZGERALD_AB, Room.LOUIS_ARMSTRONG_AB, Room.LOUIS_ARMSTRONG_CD,
+    Room.MILES_DAVIS_A, Room.MILES_DAVIS_B, Room.MILES_DAVIS_C, Room.LABO)
+
   val allRoomsTIA = List(Room.ELLA_FITZGERALD_AB_TH, Room.LOUIS_ARMSTRONG_AB_TH, Room.LOUIS_ARMSTRONG_CD_TH,
     Room.MILES_DAVIS_A_TH, Room.MILES_DAVIS_B_TH, Room.MILES_DAVIS_C_TH,
     Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.AUDITORIUM)
@@ -124,6 +130,7 @@ object Room {
       case "duke" => DUKE_ELLINGTON
       case "hall" => HALL_EXPO
       case "foyer_bas" => FOYER_BAS
+      case "foyer_labo" => LABO
       case other => OTHER
     }
   }
@@ -304,15 +311,15 @@ object Slot {
 
   val bofSlotsThursday: List[Slot] = {
 
-    val bof01 = Room.allRoomsLabs.map {
+    val bof01 = Room.allRoomsBOFs.map {
       r =>
         SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T19:30:00.000+02:00"), new DateTime("2014-04-17T20:30:00.000+02:00"), r)
     }
-    val bof02 = Room.allRoomsLabs.map {
+    val bof02 = Room.allRoomsBOFs.map {
       r =>
         SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T20:30:00.000+02:00"), new DateTime("2014-04-17T21:30:00.000+02:00"), r)
     }
-    val bof03 = Room.allRoomsLabs.map {
+    val bof03 = Room.allRoomsBOFs.map {
       r =>
         SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T21:30:00.000+02:00"), new DateTime("2014-04-17T22:30:00.000+02:00"), r)
     }

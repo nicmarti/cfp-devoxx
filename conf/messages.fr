@@ -473,3 +473,6 @@ sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition
 sw.cocktail=Soirée Meet and Greet dans l''espace d''exposition jusqu''à 22h30
 sw.showAllDay=Voir l''agenda de toute la journée
 not.published=L''agenda pour ce type de conférence n''est pas encore publié.
+day-thu=Jeudi
+day-fri=Vendredi
+day-wed=Mercredi
