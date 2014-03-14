@@ -312,7 +312,7 @@ object RestAPI extends Controller {
           ))
         )
       )
-      Ok(jsonObject).as(JSON).withHeaders("Links" -> ("<" + routes.RestAPI.profile("agendas").absoluteURL().toString + ">; rel=\"profile\""))
+      Ok(jsonObject).as(JSON).withHeaders("Links" -> ("<" + routes.RestAPI.profile("schedules").absoluteURL().toString + ">; rel=\"profile\""))
   }
 
   def showScheduleFor(eventCode: String, day: String) = UserAgentAction {
@@ -370,7 +370,7 @@ object RestAPI extends Controller {
           "slots" -> Json.toJson(finalListOfSlots)
         )
       )
-      Ok(jsonObject).as(JSON).withHeaders("Links" -> ("<" + routes.RestAPI.profile("agenda").absoluteURL().toString + ">; rel=\"profile\""))
+      Ok(jsonObject).as(JSON).withHeaders("Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL().toString + ">; rel=\"profile\""))
 
   }
 

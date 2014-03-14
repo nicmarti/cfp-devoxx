@@ -30,6 +30,8 @@
             <li><a href="@routes.RestAPI.profile("list-of-speakers")" rel="glossary">A list of speakers</a></li>
             <li><a href="@routes.RestAPI.profile("speaker")" rel="glossary">A speaker</a></li>
             <li><a href="@routes.RestAPI.profile("talk")" rel="glossary">A talk</a></li>
+            <li><a href="@routes.RestAPI.profile("schedules")" rel="glossary">A set of schedules</a></li>
+            <li><a href="@routes.RestAPI.profile("schedule")" rel="glossary">A schedule</a></li>
         </ul>
 
 
@@ -58,14 +60,21 @@
         curl -H "Accept: application/json" <a href="@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()">@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()</a>
     </code>
 
+    <h4>See the list of Schedules</h4>
+    <code>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+    </code>
+
+
+    <h4>See the schedule for Wednesday</h4>
+    <code>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()</a>
+    </code>
+
     <h4>French is also supported, use Accept-language header :</h4>
     <code>
         curl -H "Accept: application/json" -H "Accept-language: fr-FR" <a href="@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
     </code>
-    </div>
-    <div class="col-md-12">
-        <h3>Work in progress</h3>
-        <p>I am still working on the scheduling part of Devoxx France. Slots and Agenda should be available mid-march for testing.</p>
     </div>
 </div>
 
