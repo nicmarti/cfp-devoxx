@@ -46,12 +46,8 @@ object SchedullingController extends SecureCFPController {
 
       val jsSlots = confType match {
         case ProposalType.UNI.id => Json.toJson(Slot.universitySlots)
-        case "confThursday" => Json.toJson(Slot.conferenceSlotsThursday)
-        case "confFriday" => Json.toJson(Slot.conferenceSlotsFriday)
-
-        case "quickThursday" => Json.toJson(Slot.quickiesSlotsThursday)
-        case "quickFriday" => Json.toJson(Slot.quickiesSlotsFriday)
-
+        case ProposalType.CONF.id => Json.toJson(Slot.conferenceSlotsThursday ++ Slot.conferenceSlotsFriday)
+        case ProposalType.QUICK.id => Json.toJson(Slot.quickiesSlotsThursday ++ Slot.quickiesSlotsFriday)
         case ProposalType.BOF.id => Json.toJson(Slot.bofSlotsThursday)
         case ProposalType.TIA.id => Json.toJson(Slot.toolsInActionSlots)
         case ProposalType.LAB.id => Json.toJson(Slot.labsSlots)
@@ -66,50 +62,23 @@ object SchedullingController extends SecureCFPController {
   def approvedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
-      val proposals = confType match {
-        case "confThursday" => {
-          Proposal.allAcceptedByTalkType(ProposalType.CONF.id).filter {
-            proposal =>
-              val preferredDay = Proposal.getPreferredDay(proposal.id)
-              preferredDay == None || preferredDay == Some("Thu")
-          }
-        }
-        case "quickThursday" => {
-          Proposal.allAcceptedByTalkType(ProposalType.QUICK.id).filter {
-            proposal =>
-              val preferredDay = Proposal.getPreferredDay(proposal.id)
-              preferredDay == None || preferredDay == Some("Thu")
-          }
-        }
-        case "confFriday" => {
-          Proposal.allAcceptedByTalkType(ProposalType.CONF.id).filter {
-            proposal =>
-              val preferredDay = Proposal.getPreferredDay(proposal.id)
-              preferredDay == None || preferredDay == Some("Fri")
-          }
-        }
-        case "quickFriday" => {
-          Proposal.allAcceptedByTalkType(ProposalType.QUICK.id).filter {
-            proposal =>
-              val preferredDay = Proposal.getPreferredDay(proposal.id)
-              preferredDay == None || preferredDay == Some("Fri")
-          }
-        }
-        case other => Proposal.allAcceptedByTalkType(confType)
-      }
+      val proposals =Proposal.allAcceptedByTalkType(confType)
 
       val proposalsWithSpeaker = proposals.map {
         p: Proposal =>
           val mainWebuser = Speaker.findByUUID(p.mainSpeaker)
           val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID(_))
           val oSpeakers = p.otherSpeakers.map(Speaker.findByUUID(_))
+          val preferredDay = Proposal.getPreferredDay(p.id)
 
           // Transform speakerUUID to Speaker name, this simplify Angular Code
           p.copy(
-            mainSpeaker = mainWebuser.map(_.cleanName).getOrElse(""),
-            secondarySpeaker = secWebuser.map(_.cleanName),
-            otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+            mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
+            , secondarySpeaker = secWebuser.map(_.cleanName)
+            , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+           , privateMessage=preferredDay.getOrElse("")
           )
+
       }
 
       val json = Json.toJson(

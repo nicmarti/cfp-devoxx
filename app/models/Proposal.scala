@@ -53,7 +53,6 @@ object ProposalType {
   }
 }
 
-
 case class ProposalState(code: String)
 
 object ProposalState {

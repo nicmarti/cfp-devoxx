@@ -27,6 +27,10 @@
          <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
              {{otherSpeaker}}
          </div>
+         <div class="label label-danger" ng-show="talk.privateMessage">
+             {{talk.privateMessage}}
+         </div>
+
     </div>
 </div>
 

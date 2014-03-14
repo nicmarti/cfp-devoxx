@@ -117,11 +117,11 @@ object ScheduleConfiguration {
         Slot.wednesday ++ loadSlotsForConfType(ProposalType.UNI.id) ++ loadSlotsForConfType(ProposalType.LAB.id) ++ loadSlotsForConfType(ProposalType.TIA.id)
       }
       case "thursday"=>{
-        val fullList = Slot.thursday ++ loadSlotsForConfType(ProposalType.QUICK.id+"Thursday") ++ loadSlotsForConfType(ProposalType.KEY.id+"Thursday") ++ loadSlotsForConfType(ProposalType.CONF.id+"Thursday") ++ loadSlotsForConfType(ProposalType.BOF.id)
+        val fullList = Slot.thursday ++ loadSlotsForConfType(ProposalType.QUICK.id) ++ loadSlotsForConfType(ProposalType.KEY.id) ++ loadSlotsForConfType(ProposalType.CONF.id) ++ loadSlotsForConfType(ProposalType.BOF.id)
         fullList.filter(_.day=="jeudi")
       }
       case "friday"=>{
-        val fullList = Slot.friday ++ loadSlotsForConfType(ProposalType.QUICK.id+"Friday") ++ loadSlotsForConfType(ProposalType.KEY.id+"Friday") ++ loadSlotsForConfType(ProposalType.CONF.id+"Friday")
+        val fullList = Slot.friday ++ loadSlotsForConfType(ProposalType.QUICK.id) ++ loadSlotsForConfType(ProposalType.KEY.id) ++ loadSlotsForConfType(ProposalType.CONF.id)
         fullList.filter(_.day=="vendredi")
       }
       case other=>Nil

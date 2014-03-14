@@ -105,9 +105,9 @@ object Publisher extends Controller {
       case ProposalType.UNI.id => Ok(views.html.Publisher.showWednesday())
 
       case "jeudi" => Ok(views.html.Publisher.showThursday())
+      case "thursday" => Ok(views.html.Publisher.showThursday())
       case "confThursday" => Ok(views.html.Publisher.showThursday())
       case "quickThursday" => Ok(views.html.Publisher.showThursday())
-      case "thursday" => Ok(views.html.Publisher.showThursday())
       case ProposalType.BOF.id => Ok(views.html.Publisher.showThursday())
 
       case "vendredi" => Ok(views.html.Publisher.showFriday())
