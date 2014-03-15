@@ -397,7 +397,7 @@ object CFPAdmin extends SecureCFPController {
 
       export match {
         case true => {
-          val buffer = new StringBuffer("email,name,lang,uuid,code\n")
+          val buffer = new StringBuffer("email,name,lang,uuid\n")
           speakers.foreach {
             s =>
               buffer.append(s.email.toLowerCase)
@@ -407,12 +407,9 @@ object CFPAdmin extends SecureCFPController {
               buffer.append(s.cleanLang)
               buffer.append(",")
               buffer.append(s.uuid)
-              buffer.append(",")
-              buffer.append("SPK-")
-              buffer.append(s.uuid.substring(7, 15).toUpperCase)
               buffer.append("\n")
           }
-          Ok(buffer.toString).as("text/csv")
+          Ok(buffer.toString().getBytes("MacRoman")).withHeaders(("Content-Encoding", "MacRoman"), ("Content-Disposition", "attachment;filename=speakers_with_ticket.csv"), ("Cache-control", "private"), ("Content-type", "text/csv; charset=MacRoman"))
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }

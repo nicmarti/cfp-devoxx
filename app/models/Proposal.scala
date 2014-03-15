@@ -413,6 +413,7 @@ object Proposal {
       case ProposalType.LAB => true
       case ProposalType.UNI => true
       case ProposalType.TIA => true
+      case ProposalType.HACK  => true
       case other => false
     }
   }
