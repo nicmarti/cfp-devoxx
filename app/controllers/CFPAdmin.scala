@@ -15,6 +15,7 @@ import library.ComputeLeaderboard
 import library.SendMessageInternal
 import library.SendMessageToSpeaker
 import play.api.libs.json.JsObject
+import org.apache.commons.lang3.{StringUtils, StringEscapeUtils}
 
 /**
  * The backoffice controller for the CFP technical committee.
@@ -397,18 +398,27 @@ object CFPAdmin extends SecureCFPController {
 
       export match {
         case true => {
-          val buffer = new StringBuffer("email,name,lang,uuid\n")
+          val buffer = new StringBuffer("email,firstLetter,firstName,name,lang,uuid,company,blog\n")
           speakers.foreach {
             s =>
               buffer.append(s.email.toLowerCase)
               buffer.append(",")
-              buffer.append(s.cleanName)
+              buffer.append(s.name.map(_.toUpperCase.charAt(0)).getOrElse(""))
+              buffer.append(",")
+              buffer.append(s.firstName.getOrElse("?"))
+              buffer.append(",")
+              buffer.append(s.name.map(_.toUpperCase).getOrElse("?"))
               buffer.append(",")
               buffer.append(s.cleanLang)
               buffer.append(",")
               buffer.append(s.uuid)
+              buffer.append(",")
+              buffer.append(s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),45)).getOrElse(""))
+              buffer.append(",")
+              buffer.append(s.blog.map(s=> StringEscapeUtils.escapeCsv(s)).getOrElse(""))
               buffer.append("\n")
           }
+
           Ok(buffer.toString().getBytes("MacRoman")).withHeaders(("Content-Encoding", "MacRoman"), ("Content-Disposition", "attachment;filename=speakers_with_ticket.csv"), ("Cache-control", "private"), ("Content-type", "text/csv; charset=MacRoman"))
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
