@@ -16,6 +16,8 @@ import library.SendMessageInternal
 import library.SendMessageToSpeaker
 import play.api.libs.json.JsObject
 import org.apache.commons.lang3.{StringUtils, StringEscapeUtils}
+import java.io.{PrintWriter, File}
+import org.apache.commons.io.FileUtils
 
 /**
  * The backoffice controller for the CFP technical committee.
@@ -382,6 +384,8 @@ object CFPAdmin extends SecureCFPController {
   // Returns all speakers
   def allSpeakers(export: Boolean = false, rejected: Boolean = true, accepted: Boolean = true, onlyWithSpeakerPass: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import net.glxn.qrgen._
+      import library.VCard
 
       val allSpeakers = Speaker.allSpeakers()
 
@@ -395,31 +399,57 @@ object CFPAdmin extends SecureCFPController {
         case true => allSpeakers.filter(s => Proposal.hasOnlyRejectedProposals(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
         case false => speakers1
       }
-
       export match {
         case true => {
-          val buffer = new StringBuffer("email,firstLetter,firstName,name,lang,uuid,company,blog\n")
-          speakers.foreach {
-            s =>
-              buffer.append(s.email.toLowerCase)
-              buffer.append(",")
-              buffer.append(s.name.map(_.toUpperCase.charAt(0)).getOrElse(""))
-              buffer.append(",")
-              buffer.append(s.firstName.getOrElse("?"))
-              buffer.append(",")
-              buffer.append(s.name.map(_.toUpperCase).getOrElse("?"))
-              buffer.append(",")
-              buffer.append(s.cleanLang)
-              buffer.append(",")
-              buffer.append(s.uuid)
-              buffer.append(",")
-              buffer.append(s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),45)).getOrElse(""))
-              buffer.append(",")
-              buffer.append(s.blog.map(s=> StringEscapeUtils.escapeCsv(s)).getOrElse(""))
-              buffer.append("\n")
-          }
 
-          Ok(buffer.toString().getBytes("MacRoman")).withHeaders(("Content-Encoding", "MacRoman"), ("Content-Disposition", "attachment;filename=speakers_with_ticket.csv"), ("Cache-control", "private"), ("Content-type", "text/csv; charset=MacRoman"))
+          val dir = new File("./public/speakers")
+          FileUtils.forceMkdir(dir)
+
+          val file = new File(dir, "speakers_badges.csv")
+          val writer = new PrintWriter(file, "MacRoman")
+
+          writer.println("email,firstLetter,firstName,name,lang,uuid,company,blog,@qrcode\n")
+          speakers.sortBy(s=>StringUtils.stripAccents(s.name.getOrElse("a")).charAt(0).toUpper).foreach {
+            s =>
+              writer.print(s.email.toLowerCase)
+              writer.print(",")
+              writer.print(s.name.map(s=>StringUtils.stripAccents(s).charAt(0).toUpper).getOrElse(""))
+              writer.print(",")
+              writer.print(s.firstName.getOrElse("?"))
+              writer.print(",")
+              writer.print(s.name.map(_.toUpperCase).getOrElse("?"))
+              writer.print(",")
+              writer.print(s.cleanLang)
+              writer.print(",")
+              writer.print(s.uuid)
+              writer.print(",")
+              writer.print(s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),40)).getOrElse(""))
+              writer.print(",")
+              writer.print(s.blog.map(s=> StringEscapeUtils.escapeCsv(s)).getOrElse(""))
+              writer.print(",")
+
+              val zeVCard = new VCard(
+                    firstName = s.firstName
+                  , lastName = s.name
+                  , company=s.company
+                  , email=Some(s.email)
+                  , website=s.blog
+                  , phonenumber = None
+                  , title=Some("Speaker at Devoxx France 2014")
+              )
+
+
+              val f:java.io.File = QRCode.from(zeVCard.toString).file()
+              val tmpFile=new File("./public/speakers", StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase))
+              f.renameTo(tmpFile)
+
+              // @qrcode
+              writer.print(StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase))
+              writer.println()
+          }
+          writer.close()
+
+          Ok("Generated speakers_badges.csv /assets/speakers")
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }

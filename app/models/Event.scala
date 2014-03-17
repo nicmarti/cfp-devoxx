@@ -55,7 +55,7 @@ object Event {
       val now = new Instant().getMillis
       tx.zadd("Events:V2:", now, jsEvent)
       tx.sadd("Events:V2:" + event.objRef, jsEvent)
-      tx.lpush("Events:ByRef:" + event.objRef, now.toString)
+      tx.set("Events:LastUpdated:" + event.objRef, now.toString)
       tx.exec()
   }
 
@@ -90,7 +90,7 @@ object Event {
 
   def getMostRecentDateFor(objRef: String): Option[DateTime] = Redis.pool.withClient {
     client =>
-      client.lrange("Events:ByRef:" + objRef, 0, 0).headOption.map {
+      client.get("Events:LastUpdated:" + objRef).map {
         s =>
           new Instant().withMillis(s.toLong).toDateTime
       }
