@@ -303,21 +303,26 @@ object Review {
           |if cnt > 0 then
           |        if cnt%2 > 0 then
           |                local mid = math.floor(cnt/2)
-          |                -- redis.log(redis.LOG_DEBUG, "mid = " .. mid)
+          |                redis.log(redis.LOG_DEBUG, "mid = " .. mid)
           |                local idMedian = withoutAbst[mid+1]
-          |                -- redis.log(redis.LOG_DEBUG, "idMedian = " .. idMedian)
+          |                redis.log(redis.LOG_DEBUG, "idMedian = " .. idMedian)
           |                local median1 = redis.call("ZSCORE",proposals[i],idMedian)
-          |                -- redis.log(redis.LOG_DEBUG , "Mid1 via zscore " .. median1)
+          |                redis.log(redis.LOG_DEBUG , "Mid1 via zscore " .. median1)
           |                redis.call("HSET", "Computed:Median", proposals[i], median1)
           |        else
-          |                -- redis.log(redis.LOG_DEBUG, "CNT " .. cnt)
+          |                redis.log(redis.LOG_DEBUG, "CNT " .. cnt)
           |                local mid3 = math.floor(cnt/2)
-          |                -- redis.log(redis.LOG_DEBUG, "Mid 2=" .. mid3)
-          |                -- redis.log(redis.LOG_DEBUG, "ZRANGE " .. proposals[1]  .. " " .. mid3 .. " " .. mid3 +1 .. " WITHSCORES")
+          |                redis.log(redis.LOG_DEBUG, "Mid 2=" .. mid3)
+          |                redis.log(redis.LOG_DEBUG, "ZRANGE " .. proposals[1]  .. " " .. mid3 .. " " .. mid3 +1 .. " WITHSCORES")
           |                local vals = redis.call("ZRANGE", proposals[1], mid3, mid3 + 1 , "WITHSCORES")
-          |                local median2 = tostring((tonumber(vals[2]) + tonumber(vals[4]))/2.0)
-          |                -- redis.log(redis.LOG_DEBUG, "median2 " .. median2)
-          |                redis.call("HSET", "Computed:Median", proposals[i], median2)
+          |                if next(vals) == nil then
+          |                 redis.log(redis.LOG_DEBUG, "Store 0...")
+          |                 redis.call("HSET", "Computed:Median", proposals[i], 0)
+          |                else
+          |                  local median2 = tostring((tonumber(vals[2]) + tonumber(vals[4]))/2.0)
+          |                  redis.log(redis.LOG_DEBUG, "median2 " .. median2)
+          |                  redis.call("HSET", "Computed:Median", proposals[i], median2)
+          |                end
           |        end
           |else
           |        redis.call("HDEL", "Computed:Median", proposals[i])
@@ -347,7 +352,18 @@ object Review {
           |      count2 = count2 + 1
           |  end
           |
-          |  standardDev = math.sqrt(sum2 / (count2-1))
+          | redis.log(redis.LOG_DEBUG, "Standard Deviation sum2: " .. sum2)
+          | redis.log(redis.LOG_DEBUG, "Standard Deviation count2: " .. count2)
+          | if  sum2 < 1  then
+          |  standardDev = 0
+          | else
+          |  if(count2>1) then
+          |     standardDev = math.sqrt(sum2 / (count2-1))
+          |  else
+          |    standardDev = 0
+          |  end
+          | end
+          |
           |  redis.log(redis.LOG_DEBUG, "Standard Deviation: " .. standardDev)
           |  redis.call("HSET", "Computed:StandardDeviation" , proposals[i], standardDev)
           |
