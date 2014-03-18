@@ -131,10 +131,14 @@ object PaperGuide extends SecureCFPController {
       allScheduledConf.foreach {
         scheduleConf: ScheduleConfiguration =>
           val dir = new File("./target/guide/" + scheduleConf.confType)
-        FileUtils.forceMkdir(dir)
+          FileUtils.forceMkdir(dir)
+
+          // Copy icons
+          FileUtils.copyDirectory(new File("./public/images/track"), dir)
+
           val file = new File(dir, scheduleConf.confType + "_" + scheduleConf.hashCode() + ".csv")
           val writer = new PrintWriter(file, "MacRoman")
-          writer.println("id,name,day,from,to,roomName,proposalId,proposalTitle,proposalLang,track,summary,speakerName,@speakerPhoto,secSpeakerName,@secSpeakerPhoto,thirdSpeaker,@thirdSpeaker,fourthSpeaker,@fourthSpeaker")
+          writer.println("id,name,day,from,to,roomName,proposalId,proposalTitle,proposalLang,track,summary,@logoTrack,speakerName,@speakerPhoto,secSpeakerName,@secSpeakerPhoto,thirdSpeaker,@thirdSpeaker,fourthSpeaker,@fourthSpeaker")
           scheduleConf.slots.foreach {
             slot: Slot =>
               writer.print(slot.id)
@@ -143,9 +147,9 @@ object PaperGuide extends SecureCFPController {
               writer.print(",")
               writer.print(slot.day)
               writer.print(",")
-              writer.print(slot.from)
+              writer.print(slot.from.toString("HH:mm"))
               writer.print(",")
-              writer.print(slot.to)
+              writer.print(slot.to.toString("HH:mm"))
               writer.print(",")
               writer.print(slot.room.name)
               writer.print(",")
@@ -160,6 +164,8 @@ object PaperGuide extends SecureCFPController {
                   writer.print(StringEscapeUtils.escapeCsv(Messages(proposal.track.label)))
                   writer.print(",")
                   writer.print(StringEscapeUtils.escapeCsv(proposal.summary.replaceAll("\r", "").replaceAll("\n", " ").replaceAll("\\s+", " ")))
+                  writer.print(",")
+                  writer.print("icon-" + proposal.track.id + ".png")
                   writer.print(",")
 
                   Speaker.findByUUID(proposal.mainSpeaker).map {
@@ -196,8 +202,20 @@ object PaperGuide extends SecureCFPController {
                       }
                       writer.print(",,")
                     }
-                    case 2=>{
-                       proposal.otherSpeakers.map {
+                    case 2 => {
+                      proposal.otherSpeakers.map {
+                        otherSpeakerId =>
+                          Speaker.findByUUID(otherSpeakerId).map {
+                            s2: Speaker =>
+                              writer.print(StringEscapeUtils.escapeCsv(s2.cleanName))
+                              writer.print(",")
+                              writer.print(StringEscapeUtils.escapeCsv(StringUtils.stripAccents(s2.cleanName.replaceAll(" ", "_").toLowerCase)))
+                              writer.print(",")
+                          }.getOrElse(writer.print(",,"))
+                      }
+                    }
+                    case 3 => {
+                      proposal.otherSpeakers.map {
                         otherSpeakerId =>
                           Speaker.findByUUID(otherSpeakerId).map {
                             s2: Speaker =>

@@ -449,6 +449,8 @@ object CFPAdmin extends SecureCFPController {
           }
           writer.close()
 
+
+
           Ok("Generated speakers_badges.csv /assets/speakers")
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
