@@ -49,6 +49,11 @@ case class Speaker(uuid: String, email: String, name: Option[String], bio: Strin
     firstName.getOrElse("") + name.map(n => " " + n).getOrElse("")
   }
 
+  def cleanShortName: String = {
+    firstName.map(_.charAt(0)).getOrElse("") + name.map(n => "." + n).getOrElse("")
+  }
+
+
   def cleanLang: String = lang.map {
     l =>
       val cleanL = if (l.contains(",")) {

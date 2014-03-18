@@ -88,7 +88,6 @@ object Publisher extends Controller {
 
   def showAgendaByConfType(confType:String,slotId:String, day:Option[String] )=Action{
     implicit request=>
-      play.Logger.debug("Show agenda by conf type "+day)
       val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(slotId)
       maybeScheduledConfiguration match{
         case Some(slotConfig) if day==Some("thu")=>{

@@ -1,0 +1,379 @@
+
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013 Association du Paris Java User Group.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+#header, #access, #colophon, #branding, #main, .topmenu
+{ width: 1050px; }
+
+#header-full, #footer { min-width: 1050px; }
+
+#container.one-column { }
+
+#container.two-columns-right #secondary { width:250px; float:right; }
+
+#container.two-columns-right #content { width:780px; float:left; }
+
+#container.two-columns-left #primary { width:250px; float:left; }
+
+#container.two-columns-left #content { width:780px; float:right; }
+
+#container.three-columns-right .sidey { width:125px; float:left; }
+
+#container.three-columns-right #primary { margin-left:20px; margin-right:20px; }
+
+#container.three-columns-right #content { width:760px; float:left; }
+
+#container.three-columns-left .sidey { width:125px; float:left; }
+
+#container.three-columns-left #secondary { margin-left:20px;margin-right:20px; }
+
+#container.three-columns-left #content { width:760px; float:right;}
+
+#container.three-columns-sided .sidey { width:125px; float:left; }
+
+#container.three-columns-sided #secondary { float:right; }
+
+#container.three-columns-sided #content { width:760px; float:right; margin: 0 145px 0 -1050px; }
+
+body { font-family: "Lato"; }
+
+#content h1.entry-title a, #content h2.entry-title a, #content h1.entry-title , #content h2.entry-title {
+font-family: "Lato"; }
+
+.widget-title, .widget-title a { line-height: normal; font-family: Open Sans Light; }
+
+.entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4, .entry-content h5, .entry-content h6, #comments #reply-title { font-family: Yanone Kaffeesatz Regular; }
+
+#site-title span a { font-family: Helvetica Neue, Arial, Helvetica, sans-serif; }
+ #access ul li a, #access ul li a span { font-family: "Lato"; }
+ body { color: #333333; background-color: #F7F7F2 }
+ a { color: #df9334; }
+ a:hover { color: #f0c947; }
+ #header-full { background-color: #FFFFFF; }
+ #site-title span a { color:#f5af33; }
+ #site-description { color:#444444; }
+ .socials a { background-color: #f5af33; }
+ .socials-hover { background-color: #333333; }
+ .breadcrumbs:before { border-color: transparent transparent transparent #333333; }
+
+#access a { color: #EEEEEE; background-color: #333333; }
+
+#access a:hover { color: #53b6bc; background-color: #444444; }
+
+#access > .menu > ul > li > a:after, #access > .menu > ul ul:after { border-color: transparent transparent #f5af33 transparent; }
+ #access ul li:hover a:after { border-bottom-color:#53b6bc;}
+
+#access ul li.current_page_item > a, #access ul li.current-menu-item > a, /*#access ul li.current_page_parent > a, #access ul li.current-menu-parent > a,*/ #access ul li.current_page_ancestor > a, #access ul li.current-menu-ancestor > a { color: #FFFFFF; background-color: #000000; }
+ #access ul li.current_page_item > a:hover, #access ul li.current-menu-item > a:hover, /*#access ul li.current_page_parent > a:hover, #access ul li.current-menu-parent > a:hover,*/ #access ul li.current_page_ancestor > a:hover, #access ul li.current-menu-ancestor > a:hover { color: #53b6bc; }
+ .topmenu ul li a { color: #666666; }
+
+.topmenu ul li a:before { border-color: #f5af33 transparent transparent transparent; }
+ .topmenu ul li a:hover:before{border-top-color:#53b6bc}
+ .topmenu ul li a:hover { color: #666666; background-color: #FFFFFF; }
+ div.post, div.page, div.hentry, #comments, .comments, .column-text, .column-image, #srights, #slefts, #frontpage blockquote, .page-title, .page-header, article.post, article.page, article.hentry, .contentsearch, #author-info, #nav-below, .yoyo > li { background-color: #FFFFFF; }
+
+div.post, div.page, div.hentry, .sidey .widget-container, #comments, .commentlist .comment-body, article.post, article.page, article.hentry, #nav-below, .page-header, .yoyo > li { border-color: #EEEEEE; }
+
+#author-info, #entry-author-info { border-color: #F7F7F7; }
+ #entry-author-info #author-avatar, #author-info #author-avatar { border-color: #EEEEEE; }
+ article.sticky { box-shadow:0 0 1px rgba(83,182,188,1) inset; border-color:#FFFFFF}
+ .sidey .widget-container { color: #333333; background-color: #FFFFFF; }
+ .sidey .widget-title { color: #FFFFFF; background-color: #444444; }
+ .sidey .widget-title:after { border-color: transparent transparent #f5af33; }
+ .entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4, .entry-content h5, .entry-content h6 { color: #444444; }
+
+.entry-title, .entry-title a { color: #444444; }
+
+.entry-title a:hover { color: #000000; }
+ #content h3.entry-format { color: #EEEEEE; background-color: #333333; border-color: #333333; }
+ #content h3.entry-format { color: #EEEEEE; background-color: #333333; border-color: #333333; }
+
+.comments-link { background-color: #F7F7F7; }
+
+.comments-link:before { border-color: #F7F7F7 transparent transparent; }
+
+#footer { color: #AAAAAA; background-color: #1A1917; }
+
+#footer2 { color: #AAAAAA; background-color: #131211; border-color:rgba(255,255,255,.1); }
+
+#footer a { color: #f5af33; }
+ #footer a:hover { color: #53b6bc; }
+
+#footer2 a { color: #f5af33; }
+ #footer2 a:hover { color: #53b6bc; }
+
+#footer .widget-container { color: #333333; background-color: #FFFFFF; }
+
+#footer .widget-title { color: #FFFFFF; background-color: #53b6bc; }
+ #footer .widget-title:after { border-color: transparent transparent #f5af33; }
+ .footermenu ul li a:after { border-color: transparent transparent #f5af33 transparent; }
+ a.continue-reading-link { color:#EEEEEE !important; background:#333333; border-color:##EEEEEE; }
+ a.continue-reading-link:hover { background-color:#f5af33; }
+ .file, .button, #respond .form-submit input#submit { background-color: #FFFFFF; border-color: #CCCCCC; box-shadow: 0 -10px 10px 0 #F7F7F7 inset; }
+
+.file:hover, .button:hover, #respond .form-submit input#submit:hover { background-color: #F7F7F7; }
+
+.entry-content tr th, .entry-content thead th { color: #FFFFFF; background-color: #444444; }
+
+.entry-content fieldset, #content tr td { border-color: #CCCCCC; }
+
+hr { background-color: #CCCCCC; }
+ input[type="text"], input[type="password"], input[type="email"], input[type="file"], textarea, select { background-color: #F7F7F7; border-color: #CCCCCC #EEEEEE #EEEEEE #CCCCCC; color: #333333; }
+ input[type="submit"], input[type="reset"] { color: #333333; background-color: #FFFFFF; border-color: #CCCCCC; box-shadow: 0 -10px 10px 0 #F7F7F7 inset; }
+ input[type="text"]:hover, input[type="password"]:hover, input[type="email"]:hover, textarea:hover { background-color: rgba(247,247,247,0.4); }
+ .entry-content code { border-color: #CCCCCC; background-color: #F7F7F7; }
+ .entry-content pre { background-color: #F7F7F7; }
+
+.entry-content blockquote { border-color: #f5af33; background-color: #F7F7F7; }
+ abbr, acronym { border-color: #333333; }
+
+span.edit-link { color: #333333; background-color: #EEEEEE; border-color: #F7F7F7; }
+
+.meta-border .entry-meta span, .meta-border .entry-utility span.bl_posted { border-color: #F7F7F7; }
+
+.meta-accented .entry-meta span, .meta-accented .entry-utility span.bl_posted { background-color: #EEEEEE; border-color: #F7F7F7; }
+ .comment-meta a { color: #333333; }
+ .comment-author { background-color: #F7F7F7; }
+ .comment-details:after { border-color: transparent transparent transparent #F7F7F7; }
+
+#respond .form-allowed-tags { color: #999999; }
+ .reply a { background-color: #F7F7F7; border-color: #EEEEEE; }
+
+.reply a:hover { background-color: #333333;color: #df9334; }
+
+.nav-next a:hover { background:-moz-linear-gradient(left, #FFFFFF, #F7F7F7); background:-webkit-linear-gradient(left, #FFFFFF, #F7F7F7); background:-ms-linear-gradient(left, #FFFFFF, #F7F7F7); background:-o-linear-gradient(left, #FFFFFF, #F7F7F7); background:linear-gradient(left, #FFFFFF, #F7F7F7); }
+ .nav-previous a:hover { background: -moz-linear-gradient(left, #F7F7F7, #FFFFFF); background: -webkit-linear-gradient(left, #F7F7F7, #FFFFFF); background: -ms-linear-gradient(left, #F7F7F7, #FFFFFF); background: -o-linear-gradient(left, #F7F7F7, #FFFFFF); background: linear-gradient(left, #F7F7F7, #FFFFFF); }
+ .pagination .current { font-weight: bold; }
+ .pagination span, .pagination a { background-color: #FFFFFF; }
+ .pagination a:hover { background-color: #333333;color:#df9334}
+
+.page-link em {background-color: #333333; color:#EEEEEE; color:#f5af33;}
+
+.page-link a em {color:#53b6bc;}
+ .page-link a:hover em {background-color:#444444;}
+
+#searchform input[type="text"] {color:#999999;}
+ #toTop {border-color:transparent transparent #131211;}
+
+#toTop:after {border-color:transparent transparent #FFFFFF;}
+ #toTop:hover:after {border-bottom-color:#f5af33;}
+
+.caption-accented .wp-caption { background-color:rgba(245,175,51,0.8); color:#FFFFFF}
+
+.meta-themed .entry-meta span { color: #999999; background-color: #F7F7F7; border-color: #EEEEEE; }
+
+.meta-themed .entry-meta span:hover { background-color: #EEEEEE; }
+ .meta-themed .entry-meta span a:hover { color: #333333; }
+ #content p, #content ul, #content ol, #content, #frontpage blockquote { text-align:Default ; }
+ #content p, #content ul, #content ol, .sidey, .sidey a, table, table td {
+  word-spacing:Default; letter-spacing:Default; }
+ #content p, #content ul, #content ol, .sidey, .sidey a { line-height:1.7em; }
+ #content h1.entry-title, #content h2.entry-title { font-size:34px ;}
+ .widget-title, .widget-title a { font-size:18px ;}
+
+#content .entry-content h1 { font-size: 38px;}
+ #content .entry-content h2 { font-size: 34px;}
+ #content .entry-content h3 { font-size: 29px;}
+ #content .entry-content h4 { font-size: 24px;}
+ #content .entry-content h5 { font-size: 19px;}
+ #content .entry-content h6 { font-size: 14px;}
+
+#site-title span a { font-size:38px ;}
+ #access ul li a { font-size:14px ;}
+ #access ul ul ul a {font-size:12px;}
+ .nocomments, .nocomments2 {display:none;}
+ #header-container > div { margin:40px 0 0 10px;}
+ #content p, #content ul, #content ol, #content dd, #content pre, #content hr { margin-bottom: 1.0em; }
+ .topmenu ul li a:before, #access > .menu > ul > li > a:after, #access > .menu > ul ul:after, .widget-title:after, .footermenu ul li a:after { display: none; }
+
+#branding { height:120px; }
+
+
+#content table.agendaByConfType{
+    font-size:12px;
+}
+#content td.agendaByConfType{
+    font-size:12px;
+}
+#content th.agendaByConfType{
+    font-size:12px;
+}
+
+#content tr th, #content thead th{
+    font-size: 12px;
+    padding: 3px 5px;
+}
+
+#sponsor_footer {
+    text-align: center;
+    display: block;
+    background-color: white;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 21px;
+    border: 1px solid transparent;
+    border-radius: 0
+}
+
+.alert h4 {
+    margin-top: 0;
+    color: inherit
+}
+
+.alert .alert-link {
+    font-weight: bold
+}
+
+.alert > p, .alert > ul {
+    margin-bottom: 0
+}
+
+.alert > p + p {
+    margin-top: 5px
+}
+
+.alert-dismissable {
+    padding-right: 35px
+}
+
+.alert-dismissable .close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+    color: inherit
+}
+
+.alert-success {
+    color: #fff;
+    background-color: #3fb618;
+    border-color: #4e9f15
+}
+
+.alert-success hr {
+    border-top-color: #438912
+}
+
+.alert-success .alert-link {
+    color: #e6e6e6
+}
+
+.alert-info {
+    color: #fff;
+    background-color: #9954bb;
+    border-color: #7643a8
+}
+
+.alert-info hr {
+    border-top-color: #693c96
+}
+
+.alert-info .alert-link {
+    color: #e6e6e6
+}
+
+.alert-warning {
+    color: #fff;
+    background-color: #ff7518;
+    border-color: #ff4309
+}
+
+.alert-warning hr {
+    border-top-color: #ee3800
+}
+
+.alert-warning .alert-link {
+    color: #e6e6e6
+}
+
+.alert-danger {
+    color: #fff;
+    background-color: #ff0039;
+    border-color: #f0005e
+}
+
+.alert-danger hr {
+    border-top-color: #d60054
+}
+
+.alert-danger .alert-link {
+    color: #e6e6e6
+}
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11 {
+    float: left
+}
+
+.col-xs-1 {
+    width: 8.333333333333332%
+}
+
+.col-xs-2 {
+    width: 16.666666666666664%
+}
+
+.col-xs-3 {
+    width: 25%
+}
+
+.col-xs-4 {
+    width: 33.33333333333333%
+}
+
+.col-xs-5 {
+    width: 41.66666666666667%
+}
+
+.col-xs-6 {
+    width: 50%
+}
+
+.col-xs-7 {
+    width: 58.333333333333336%
+}
+
+.col-xs-8 {
+    width: 66.66666666666666%
+}
+
+.col-xs-9 {
+    width: 75%
+}
+
+.col-xs-10 {
+    width: 83.33333333333334%
+}
+
+.col-xs-11 {
+    width: 91.66666666666666%
+}
+
+.col-xs-12 {
+    width: 100%
+}
