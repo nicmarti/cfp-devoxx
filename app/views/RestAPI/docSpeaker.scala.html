@@ -1,0 +1,77 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("Doc doc speaker") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>Devoxx API</h1>
+    <hr>
+       <h3>Documentation for "speaker"</h3>
+
+        <p>Returns a JSON object that describes a Speaker.</p>
+        <ul>
+            <li>uuid<sup>*</sup>: Unique String identifier</li>
+            <li>bio <sup>*</sup>: plain text with Markdown syntax, to descibe speaker's profile</li>
+            <li>bioAsHtml<sup>*</sup>: bio as HTML</li>
+            <li>firstName<sup>*</sup>: First name</li>
+            <li>lastName<sup>*</sup>: Family name</li>
+            <li>avatarURL: URL to a photo</li>
+            <li>company: Company name</li>
+            <li>blog: Company name</li>
+            <li>twitter: Twitter handle</li>
+            <li>lang: Company name</li>
+            <li>acceptedTalks: an array of <a href="@routes.RestAPI.profile("link")">links</a> to each accepted talk presented by this speaker</li>
+        </ul>
+
+        <sup>*</sup>: indicate a mandatory field, cannot be null or blank
+
+        <h4>Sample:</h4>
+    <code>
+curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
+    </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+{
+    "uuid": "6cbb41adbc049f923c4327ed3642f208faf4e03f",
+    "bio": "Agnès est une activiste. Une Java activiste tout d'abord ! Depuis 12 ans, elle prend plaisir à bâtir des architectures Java et les implémenter. Elle a fondé avec 3 autres ninjas la société coopérative (tous égaux, tous actionnaires) Ninja Squad au sein de laquelle ils partagent tous la même passion pour le développement. Parce qu'elle aime également apprendre et partager, Agnès est très active dans la communauté. Elle a été élue Java Champion en octobre 2012. Elle est leader de 2 Java Users Groups en France : le Lyon JUG et Duchess France et a cofondé la conférence Mix-IT, mix de Java et d'Agilité. Elle est également présidente de l'association Avataria qui organise des concerts ou FabLab dans des lieux du patrimoine industriel de sa ville.",
+    "bioAsHtml": "<p>Agnès est une activiste. Une Java activiste tout d&#x27;abord ! Depuis 12 ans, elle prend plaisir à bâtir des architectures Java et les implémenter. Elle a fondé avec 3 autres ninjas la société coopérative (tous égaux, tous actionnaires) Ninja Squad au sein de laquelle ils partagent tous la même passion pour le développement. Parce qu&#x27;elle aime également apprendre et partager, Agnès est très active dans la communauté. Elle a été élue Java Champion en octobre 2012. Elle est leader de 2 Java Users Groups en France : le Lyon JUG et Duchess France et a cofondé la conférence Mix-IT, mix de Java et d&#x27;Agilité. Elle est également présidente de l&#x27;association Avataria qui organise des concerts ou FabLab dans des lieux du patrimoine industriel de sa ville.</p>\n",
+    "firstName": "Agnès",
+    "lastName": "Crepet",
+    "avatarURL": "https://lh4.googleusercontent.com/-gFmJ8jdbvV4/AAAAAAAAAAI/AAAAAAAAC1M/T3EGEKd_yK4/photo.jpg",
+    "company": "Ninja Squad",
+    "blog": "http://www.ninja-squad.fr",
+    "twitter": "@@agnes_crepet",
+    "lang": "fr",
+    "acceptedTalks": [
+        {
+            "talkType": "Conference",
+            "track": "Agilité, DevOps",
+            "links": [
+                {
+                    "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/talks/BBV-277",
+                    "rel": "http://cfp.devoxx.fr/api/profile/talk",
+                    "title": "More details about this talk"
+                },
+                {
+                    "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/speakers/6cbb41adbc049f923c4327ed3642f208faf4e03f",
+                    "rel": "http://cfp.devoxx.fr/api/profile/speaker",
+                    "title": "Agnès Crepet"
+                },
+                {
+                    "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/speakers/5926b150dbddc5ae5214ad045de64d806306ed67",
+                    "rel": "http://cfp.devoxx.fr/api/profile/speaker",
+                    "title": "Guillaume Ehret"
+                }
+            ],
+            "id": "BBV-277",
+            "title": "Le bon testeur il teste.... et le mauvais testeur il teste aussi..."
+        }
+    ]
+}               </pre>
+
+            </code>
+        </div>
+</div>
+
+}

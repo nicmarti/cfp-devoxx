@@ -48,8 +48,8 @@ object RestAPI extends Controller {
       docName match {
         case "link" =>  Ok(views.html.RestAPI.docLink())
         case "links" =>  Ok(views.html.RestAPI.docLink())
-        case "speaker" => Ok("Documentation on speaker")
-        case "list-of-speakers" => Ok("This resource describes a list of Speakers, using Links.")
+        case "speaker" => Ok(views.html.RestAPI.docSpeaker())
+        case "list-of-speakers" =>  Ok(views.html.RestAPI.docSpeakers())
         case "talk" => Ok("Documentation on talk")
         case "conference" =>  Ok(views.html.RestAPI.docConference())
         case "conferences" => Ok(views.html.RestAPI.docConferences())

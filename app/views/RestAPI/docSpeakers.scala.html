@@ -1,0 +1,62 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("Doc doc speakers") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>Devoxx API</h1>
+    <hr>
+       <h3>Documentation for "list-of-speakers"</h3>
+
+        <p>Returns a JSON Array of short description for each speakers.</p>
+        <ul>
+            <li>uuid: Unique String identifier</li>
+            <li>fisrtName: first name</li>
+            <li>lastName: Family name</li>
+            <li>links: A Link to the <a href="@routes.RestAPI.profile("speaker")" rel="glossary">Speaker</a> object </li>
+            <li>avatarURL: URL to a photo</li>
+        </ul>
+
+        <h4>Sample:</h4>
+    <code>
+curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showSpeakers(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+    </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+[
+    {
+        "uuid": "6cbb41adbc049f923c4327ed3642f208faf4e03f",
+        "lastName": "Crepet",
+        "links": [
+            {
+                "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/speakers/6cbb41adbc049f923c4327ed3642f208faf4e03f",
+                "rel": "http://cfp.devoxx.fr/api/profile/speaker",
+                "title": "Agnès Crepet"
+            }
+        ],
+        "firstName": "Agnès",
+        "avatarURL": "https://lh4.googleusercontent.com/-gFmJ8jdbvV4/AAAAAAAAAAI/AAAAAAAAC1M/T3EGEKd_yK4/photo.jpg"
+    },
+    {
+        "uuid": "bf8a71eed7ae0339dd4f1aca4899939fad7ad87b",
+        "lastName": "Regnier",
+        "links": [
+            {
+                "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/speakers/bf8a71eed7ae0339dd4f1aca4899939fad7ad87b",
+                "rel": "http://cfp.devoxx.fr/api/profile/speaker",
+                "title": "Alain Regnier"
+            }
+        ],
+        "firstName": "Alain",
+        "avatarURL": "https://lh6.googleusercontent.com/-DsgSFTFOLC8/AAAAAAAAAAI/AAAAAAAAAKw/RMXo8fKPKiY/photo.jpg"
+    }
+]
+                </pre>
+
+            </code>
+        </div>
+    </div>
+</div>
+
+}
