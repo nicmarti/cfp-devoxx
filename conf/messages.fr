@@ -253,14 +253,15 @@ speakers.updated=Liste des présentateurs mises à jour
 noOther.speaker=---- Pas d''autre présentateur ----
 
 # short talk
-uni=University
-quick=Quickie
 conf=Conference
-lab=Labs
-tia=ToolsInAction
-bof=BOF
+uni=University
+tia=Tools-in-Action
+lab=Hand''s on Labs
+quick=Quickie
+bof=BOF (Bird of a Feather)
 hack=Hackaton
 key=Keynote
+all=All
 amd=Après-midi des Décideurs
 
 tbl.submitted=Envoyé

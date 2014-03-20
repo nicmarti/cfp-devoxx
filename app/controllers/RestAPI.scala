@@ -50,7 +50,7 @@ object RestAPI extends Controller {
         case "links" =>  Ok(views.html.RestAPI.docLink())
         case "speaker" => Ok(views.html.RestAPI.docSpeaker())
         case "list-of-speakers" =>  Ok(views.html.RestAPI.docSpeakers())
-        case "talk" => Ok("Documentation on talk")
+        case "talk" => Ok(views.html.RestAPI.docTalk())
         case "conference" =>  Ok(views.html.RestAPI.docConference())
         case "conferences" => Ok(views.html.RestAPI.docConferences())
         case "schedules" => Ok("Contains all Schedules for a specific conference.")
@@ -255,11 +255,11 @@ object RestAPI extends Controller {
                 Map(
                   "id" -> Json.toJson(proposal.id),
                   "title" -> Json.toJson(proposal.title),
-                  "lang" -> Json.toJson(proposal.lang),
-                  "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
-                  "summary" -> Json.toJson(proposal.summary),
-                  "track" -> Json.toJson(Messages(proposal.track.label)),
                   "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                  "lang" -> Json.toJson(proposal.lang),
+                  "summary" -> Json.toJson(proposal.summary),
+                  "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
+                  "track" -> Json.toJson(Messages(proposal.track.label)),
                   "speakers" -> Json.toJson(allSpeakers.map {
                     speaker =>
                       Map(

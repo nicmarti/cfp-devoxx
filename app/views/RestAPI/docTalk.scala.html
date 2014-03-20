@@ -1,0 +1,65 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("talk") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>Devoxx API</h1>
+    <hr>
+       <h3>Documentation for "talk"</h3>
+
+        <p>Returns a JSON object that describes a Talk.</p>
+        <ul>
+            <li>id<sup>*</sup>: Unique ID for this talk, used everywhere, in our printed program, on the web site, etc.</li>
+            <li>title<sup>*</sup>: Title of this talk</li>
+            <li>talkType<sup>*</sup>: talk format (translated to French or English, depending on your "Accept-language" Header)</li>
+            <li>track<sup>*</sup>: The track label (translated to French or English, depending on your "Accept-language" Header)</li>
+            <li>lang<sup>*</sup>: "en" if the presentation is in English, "fr" if it's in French, etc.</li>
+            <li>summary<sup>*</sup>: short description of this proposal, might use markdown syntax.</li>
+            <li>summaryAsHtml<sup>*</sup>: HTML version, markdown transformed to HTML</li>
+            <li>speakers: an array of <a href="@routes.RestAPI.profile("link")">links</a> to each <a href="@routes.RestAPI.profile("speaker")">speaker</a>, with its full name</li>
+        </ul>
+
+        <sup>*</sup>: indicate a mandatory field, cannot be null or blank
+
+        <h4>Sample:</h4>
+    <code>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "BBV-277").absoluteURL()">@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "BBV-277").absoluteURL()</a>
+    </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+{
+    "id": "BBV-277",
+    "title": "Le bon testeur il teste.... et le mauvais testeur il teste aussi...",
+    "talkType": "Conference",
+    "track": "Agilité, DevOps",
+    "lang": "fr"
+    "summary": "Pourquoi proposer une nouvelle conférence sur les tests ? Il est néanmoins toujours bon de rappeler certains principes. Quelle est la différence entre un bon et un mauvais testeur ? Le bon testeur il teste.... et le mauvais testeur il teste aussi ! Plusieurs règles simples permettent d'améliorer la qualité de ses tests, certains outils ou librairies (FestAssert, AssertJ, InfiniTest, DBSetup) vont vous simplifier la vie ! Tour d’horizon des bonnes pratiques au programme, le tout en livecoding ! Il est toujours bon de refaire un peu d’évangélisation sur les tests : débutants bienvenus!"
+    "summaryAsHtml": "<p>Pourquoi proposer une nouvelle conférence sur les tests ? Il est néanmoins toujours bon de rappeler certains principes. Quelle est la différence entre un bon et un mauvais testeur ? Le bon testeur il teste.... et le mauvais testeur il teste aussi ! Plusieurs règles simples permettent d&#x27;améliorer la qualité de ses tests, certains outils ou librairies (FestAssert, AssertJ, InfiniTest, DBSetup) vont vous simplifier la vie ! Tour d’horizon des bonnes pratiques au programme, le tout en livecoding ! Il est toujours bon de refaire un peu d’évangélisation sur les tests : débutants bienvenus!</p>\n",
+    "speakers": [
+        {
+            "link": {
+                "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/speakers/6cbb41adbc049f923c4327ed3642f208faf4e03f",
+                "rel": "http://cfp.devoxx.fr/api/profile/speaker",
+                "title": "Agnès Crepet"
+            },
+            "name": "Agnès Crepet"
+        },
+        {
+            "link": {
+                "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/speakers/5926b150dbddc5ae5214ad045de64d806306ed67",
+                "rel": "http://cfp.devoxx.fr/api/profile/speaker",
+                "title": "Guillaume Ehret"
+            },
+            "name": "Guillaume Ehret"
+        }
+    ]
+}
+</pre>
+
+            </code>
+        </div>
+</div>
+
+}

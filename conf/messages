@@ -220,16 +220,7 @@ msgSpeaker=Your message
 
 
 # short talk
-all=All
-uni=University
-quick=Quickie
-conf=Conference
-lab=Labs
-tia=ToolsInAction
-bof=BOF
-hack=Hackaton
-key=Keynote
-amd=Après-midi des Décideurs
+
 
 tbl.submitted=Submitted
 profile.imported=Profile imported successfully
@@ -370,6 +361,9 @@ bof=BOF (Bird of a Feather)
 hack=Hackaton
 key=Keynote
 other=Other format
+all=All
+amd=Après-midi des Décideurs
+
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
 

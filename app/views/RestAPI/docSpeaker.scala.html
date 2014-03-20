@@ -1,6 +1,6 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@api("Doc doc speaker") {
+@api("speaker") {
 <div class="row">
     <div class="col-md-12">
     <h1>Devoxx API</h1>
@@ -19,7 +19,7 @@
             <li>blog: Company name</li>
             <li>twitter: Twitter handle</li>
             <li>lang: Company name</li>
-            <li>acceptedTalks: an array of <a href="@routes.RestAPI.profile("link")">links</a> to each accepted talk presented by this speaker</li>
+            <li>acceptedTalks: an array of <a href="@routes.RestAPI.profile("link")">links</a> to each accepted <a href="@routes.RestAPI.profile("talk")">talk</a> presented by this speaker</li>
         </ul>
 
         <sup>*</sup>: indicate a mandatory field, cannot be null or blank
