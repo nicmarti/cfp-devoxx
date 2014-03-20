@@ -1,0 +1,47 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("schedules") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>Devoxx API</h1>
+    <hr>
+       <h3>Documentation for "schedules"</h3>
+
+        <p>Returns a JSON Array of <a href="@routes.RestAPI.profile("link")">Links</a> to each schedule.
+            Each conference has one schedule per day.</p>
+
+        <h4>Sample:</h4>
+    <code>
+curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+    </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+{
+    "links": [
+        {
+            "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/schedules/wednesday/",
+            "rel": "http://cfp.devoxx.fr/api/profile/schedule",
+            "title": "Schedule for Wednesday 16th April 2014"
+        },
+        {
+            "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/schedules/thursday/",
+            "rel": "http://cfp.devoxx.fr/api/profile/schedule",
+            "title": "Schedule for Thursday 17th April 2014"
+        },
+        {
+            "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/schedules/friday/",
+            "rel": "http://cfp.devoxx.fr/api/profile/schedule",
+            "title": "Schedule for Friday 18th April 2014"
+        }
+    ]
+}
+   </pre>
+
+            </code>
+        </div>
+    </div>
+</div>
+
+}

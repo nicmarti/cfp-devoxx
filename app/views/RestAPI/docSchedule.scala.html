@@ -1,0 +1,143 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("schedule") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>Devoxx API</h1>
+    <hr>
+       <h3>Documentation for "schedule"</h3>
+
+
+        <p>A Schedule is a list of time slots for a specific day. Each slot is either <font color="green">a break slot</font> or a <font color="#ff8c00">talk</font> slot.</p>
+        <p>A break slot is a short or long break such as lunch, coffee break in the agenda.</p>
+        <p>A talk slot is a short description of a <a href="@routes.RestAPI.profile("talk")">talk</a> with links to <a href="@routes.RestAPI.profile("speaker")">Speaker's profile</a>.</p>
+
+        <h4>Break slot</h4>
+        <ul>
+            <li>slotId: a unique identifier for the room</li>
+            <li>roomId: a unique identifier for the room</li>
+            <li>roomName: the room full name</li>
+            <li>day: day of week</li>
+            <li>fromTime: start time formatted as HH:mm</li>
+            <li>fromTimeMillis: start time as timestamp</li>
+            <li>toTime: end time formatted as HH:mm</li>
+            <li>toTimeMillis: end time as timestamp</li>
+            <li>break: a break object
+                <ul>
+                    <li>id: break id</li>
+                    <li>nameEN: Label you should use in English</li>
+                    <li>nameFR: Label you should use in French (<small>We should really use Accept-language here instead</small>)</li>
+                    <li>room: room full description, capacity and setup (theatre, conference, special)</li>
+                </ul>
+            </li>
+            <li>talk: <strong>always null for a break slot</strong></li>
+        </ul>
+
+        <h4>Presentation/talk slot</h4>
+        <ul>
+            <li>slotId: a unique identifier for the room</li>
+            <li>roomId: a unique identifier for the room</li>
+            <li>roomName: the room full name</li>
+            <li>day: day of week</li>
+            <li>fromTime: start time formatted as HH:mm</li>
+            <li>fromTimeMillis: start time as timestamp</li>
+            <li>toTime: end time formatted as HH:mm</li>
+            <li>toTimeMillis: end time as timestamp</li>
+            <li>break: <strong>always null for a talk slot</strong></li>
+            <li>talk: </li>
+                <li>id: unique talk ID</li>
+                <li>talkType: Conference, University, Hands-on Labs, etc</li>
+                <li>track: Java, Web, Agilité, etc</li>
+                <li>summary: short summary about this proposal, might use Markdown</li>
+                <li>summaryAsHtml: short summary, transformed to HTML</li>
+                <li>title: presentation's title</li>
+                <li>lang: fr or en</li>
+                <li>speakers: array of <a href="@routes.RestAPI.profile("speaker")" rel="glossary">speakers</a>
+                    <ul>
+                        <li>name: name of <a href="@routes.RestAPI.profile("speaker")" rel="glossary">speaker</a></li>
+                        <li>link: link if you want more details about a specific speaker</li>
+                            <li>href: URI</li>
+                            <li>rel: Link to profile</li>
+                            <li>title: Name of this link</li>
+                    </ul>
+                </li>
+
+        </ul>
+        
+        
+        <h4>Sample:</h4>
+    <code>
+    curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()</a>
+    </code>
+
+    <h4>Result:</h4>
+    <code>
+<pre>
+{
+"slots": [
+<font color="green">{
+        "slotId": "dej_mercredi_16_8h0_9h30",
+        "day": "mercredi"
+        "roomId": "hall",
+        "roomName": "Espace d'exposition",
+        "fromTime": "08:00",
+        "fromTimeMillis": 1397628000000,
+        "toTime": "09:30",
+        "toTimeMillis": 1397633400000,
+        "break": {
+            "id": "dej",
+            "nameEN": "Welcome and Breakfast",
+            "nameFR": "Accueil et petit-déjeuner",
+            "room": {
+                "id": "hall",
+                "name": "Espace d'exposition",
+                "capacity": 1500,
+                "setup": "special"
+            }
+        },
+        "talk": null
+    },
+</font>
+<font color="#ff8c00">
+    {
+            "roomId": "seine_a",
+            "fromTimeMillis": 1397647800000,
+            "break": null,
+            "talk": {
+                "talkType": "University",
+                "track": "Java SE, Java EE",
+                "summaryAsHtml": "<p>Java 8 est la, on en parle au présent. La nouveauté majeure de Java 8 est bien sûr l&#x27;introduction des lambda expressions. Cette introduction n&#x27;aurait pas été utile si l&#x27;API Collection n&#x27;avait été revue. Cette révision s&#x27;appelle l&#x27;API Stream, qui, ajoutée à la notion de Collector, rend un peu vieillot notre bon vieux pattern Iterator. Cette université se propose de présenter les patterns construits sur les Streams, et de montrer sur de nombreux exemples, simples et complexes, les nouveaux patterns proposés par cette API. On parlera patterns, parallélisation, implémentation et performances.</p>\n",
+                "id": "DNY-501",
+                "speakers": [
+                    {
+                        "link": {
+                            "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014/speakers/70365c89d2a734da0d24d091f7ec0af77ba90701",
+                            "rel": "http://cfp.devoxx.fr/api/profile/speaker",
+                            "title": "José Paumard"
+                        },
+                        "name": "José Paumard"
+                    }
+                ],
+                "title": "Java 8 Streams & Collectors : patterns, performances, parallélisation",
+                "lang": "fr",
+                "summary": "Java 8 est la, on en parle au présent. La nouveauté majeure de Java 8 est bien sûr l'introduction des lambda expressions. Cette introduction n'aurait pas été utile si l'API Collection n'avait été revue. Cette révision s'appelle l'API Stream, qui, ajoutée à la notion de Collector, rend un peu vieillot notre bon vieux pattern Iterator. Cette université se propose de présenter les patterns construits sur les Streams, et de montrer sur de nombreux exemples, simples et complexes, les nouveaux patterns proposés par cette API. On parlera patterns, parallélisation, implémentation et performances. "
+            },
+            "fromTime": "13:30",
+            "toTimeMillis": 1397658600000,
+            "toTime": "16:30",
+            "roomName": "Seine A",
+            "slotId": "uni_seine_a_mercredi_16_13h30_16h30",
+            "day": "mercredi"
+        },
+    </font>
+    ...
+    ]
+}
+</pre>
+
+
+    </code>
+    </div>
+</div>
+
+}

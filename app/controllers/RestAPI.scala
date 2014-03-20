@@ -53,8 +53,8 @@ object RestAPI extends Controller {
         case "talk" => Ok(views.html.RestAPI.docTalk())
         case "conference" =>  Ok(views.html.RestAPI.docConference())
         case "conferences" => Ok(views.html.RestAPI.docConferences())
-        case "schedules" => Ok("Contains all Schedules for a specific conference.")
-        case "schedule" => Ok("A Schedule per day, with the list of conferences.")
+        case "schedules" => Ok(views.html.RestAPI.docSchedules())
+        case "schedule" => Ok(views.html.RestAPI.docSchedule())
         case other => NotFound("Sorry, no documentation for this profile")
       }
   }
@@ -356,8 +356,8 @@ object RestAPI extends Controller {
           Map(
             "slotId"->Json.toJson(slot.id)
             , "day"->Json.toJson(slot.day)
-            , "roomName"->Json.toJson(slot.room.name)
             , "roomId"->Json.toJson(slot.room.id)
+            , "roomName"->Json.toJson(slot.room.name)
             , "fromTime"->Json.toJson(slot.from.toString("HH:mm"))
             , "fromTimeMillis"->Json.toJson(slot.from.getMillis)
             , "toTime"->Json.toJson(slot.to.toString("HH:mm"))
