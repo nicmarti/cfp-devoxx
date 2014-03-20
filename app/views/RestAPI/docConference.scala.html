@@ -1,0 +1,45 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("Doc docConferences") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>Devoxx API</h1>
+    <hr>
+       <h3>Documentation for "conference"</h3>
+
+        <p>Returns a JSON Array of <a href="@routes.RestAPI.profile("link")" rel="glossary">Link</a> object.</p>
+        <P>A conference is described by an eventCode, a label and a list of links to extra resources such as the list of speakers
+        and the list of schedules.</P>
+
+        <h4>Sample:</h4>
+    <code>
+ curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+      </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+{
+    "eventCode": "devoxxFR2014",
+    "label": "Devoxx France 2014, 16 au 18 avril 2014",
+    "links": [
+        {
+            "href": "http://localhost:9000/api/conferences/devoxxFR2014/speakers",
+            "rel": "http://localhost:9000/api/profile/list-of-speakers",
+            "title": "See all speakers"
+        },
+        {
+            "href": "http://localhost:9000/api/conferences/devoxxFR2014/schedules/",
+            "rel": "http://localhost:9000/api/profile/schedules",
+            "title": "See the whole agenda"
+        }
+    ]
+}
+                </pre>
+
+            </code>
+        </div>
+    </div>
+</div>
+
+}

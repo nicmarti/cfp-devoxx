@@ -46,11 +46,13 @@ object RestAPI extends Controller {
     implicit request =>
 
       docName match {
+        case "link" =>  Ok(views.html.RestAPI.docLink())
+        case "links" =>  Ok(views.html.RestAPI.docLink())
         case "speaker" => Ok("Documentation on speaker")
         case "list-of-speakers" => Ok("This resource describes a list of Speakers, using Links.")
         case "talk" => Ok("Documentation on talk")
-        case "conference" => Ok("A conference object, has an eventCode, a label and links to other CFP objects such as speakers or talks.")
-        case "conferences" => Ok("This resource describes a list of Conferences, using Links.")
+        case "conference" =>  Ok(views.html.RestAPI.docConference())
+        case "conferences" => Ok(views.html.RestAPI.docConferences())
         case "schedules" => Ok("Contains all Schedules for a specific conference.")
         case "schedule" => Ok("A Schedule per day, with the list of conferences.")
         case other => NotFound("Sorry, no documentation for this profile")

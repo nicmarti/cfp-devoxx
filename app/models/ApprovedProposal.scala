@@ -31,7 +31,7 @@ import library.Redis
  */
 object ApprovedProposal {
 
-  val totalConf = 69
+  val totalConf = 70
   // 30 sans apres-midi decideur + 39 vendredi
   val totalUni = 8
   val totalLabs = 12

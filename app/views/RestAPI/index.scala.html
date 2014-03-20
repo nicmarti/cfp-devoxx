@@ -16,6 +16,7 @@
 
     </div>
     <p><strong>Please, use a JSON client and discover our very simple REST API.</strong></p>
+    <p>The User-Agent HTTP field is mandatory.</p>
     <p>Each Response contains:</p>
      <ul>
         <li>an ETag. Please, check and use <code>If-None-Match</code> to avoid too many calls to the server.</li>
@@ -32,10 +33,11 @@
             <li><a href="@routes.RestAPI.profile("talk")" rel="glossary">A talk</a></li>
             <li><a href="@routes.RestAPI.profile("schedules")" rel="glossary">A set of schedules</a></li>
             <li><a href="@routes.RestAPI.profile("schedule")" rel="glossary">A schedule</a></li>
+            <li><a href="@routes.RestAPI.profile("link")" rel="glossary">A link</a></li>
         </ul>
 
 
-    <h4>See all events</h4>
+    <h4>See all conferences</h4>
     <code>
         curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllConferences().absoluteURL()" rel="contents">@routes.RestAPI.showAllConferences().absoluteURL()</a>
     </code>

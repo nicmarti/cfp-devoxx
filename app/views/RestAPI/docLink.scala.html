@@ -1,0 +1,35 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("Doc docConferences") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>Devoxx API</h1>
+    <hr>
+       <h3>Documentation for "links"</h3>
+
+        <p>The "Link" profile object is a Devoxx object that defines a relationship between 2 resources.</p>
+        <ul>
+            <li><strong>Href</strong> is an absolute URL, that a client may follow to load this resource's content.</li>
+            <li><strong>Rel</strong> is an absolute URL to a Profile definition for the target resource designed by href.</li>
+            <li><strong>Title</strong> is the link title.</li>
+        </ul>
+
+        <h4>Sample:</h4>
+            <code>
+                <pre>
+{
+    "link":
+        {
+            "href": "http://cfp.devoxx.fr/api/conferences/devoxxFR2014",
+            "rel": "http://cfp.devoxx.fr/api/profile/conference",
+            "title": "See more details about Devoxx France 2014"
+        }
+}
+                </pre>
+
+            </code>
+        </div>
+    </div>
+</div>
+
+}
