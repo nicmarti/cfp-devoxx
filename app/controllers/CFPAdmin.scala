@@ -390,8 +390,8 @@ object CFPAdmin extends SecureCFPController {
       val allSpeakers = Speaker.allSpeakers()
 
       val speakers1 = (accepted, onlyWithSpeakerPass) match {
-        case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedOrApprovedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
-        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+        case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filter(s=>Proposal.hasOneAcceptedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
         case other => allSpeakers
       }
 

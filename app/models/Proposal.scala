@@ -691,10 +691,10 @@ object Proposal {
       loadProposalByIDs(allProposalIds, ProposalState.ACCEPTED).filter(_.talkType.id == talkType)
   }
 
-  def hasOneAcceptedOrApprovedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
+  def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED)
+      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal => proposal.state == ProposalState.ACCEPTED)
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {

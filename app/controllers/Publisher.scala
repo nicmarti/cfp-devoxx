@@ -28,6 +28,7 @@ import play.api.mvc._
 import akka.util.Crypt
 import library.{LogURL, ZapActor}
 import play.api.libs.json.Json
+import play.api.cache.Cache
 
 /**
  * Simple content publisher
@@ -36,20 +37,23 @@ import play.api.libs.json.Json
 object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
-      val result=views.html.Publisher.homePublisher()
+      val result = views.html.Publisher.homePublisher()
       val etag = Crypt.md5(result.toString()).toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
         case Some(oldEtag) if oldEtag == etag => NotModified
-        case other=>Ok(result).withHeaders(ETAG -> etag)
+        case other => Ok(result).withHeaders(ETAG -> etag)
       }
   }
 
   def showAllSpeakers = Action {
     implicit request =>
-      val speakers = Speaker.allSpeakersWithAcceptedTerms()
-      val etag = speakers.hashCode().toString+"_2"
+      import play.api.Play.current
+      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 3600) {
+        Speaker.allSpeakersWithAcceptedTerms()
+      }
+      val etag = speakers.hashCode().toString + "_2"
       val maybeETag = request.headers.get(IF_NONE_MATCH)
       maybeETag match {
         case Some(oldEtag) if oldEtag == etag => NotModified
@@ -59,71 +63,71 @@ object Publisher extends Controller {
 
   def showSpeaker(uuid: String, name: String) = Action {
     implicit request =>
-      val maybeSpeaker=Speaker.findByUUID(uuid)
+      val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
-        case Some(speaker)=>{
+        case Some(speaker) => {
           val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
-          ZapActor.actor ! LogURL("showSpeaker",uuid,name)
-          Ok(views.html.Publisher.showSpeaker(speaker,acceptedProposals))
+          ZapActor.actor ! LogURL("showSpeaker", uuid, name)
+          Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
-        case None=>NotFound("Speaker not found")
+        case None => NotFound("Speaker not found")
       }
   }
 
-  def showByTalkType(talkType:String)=Action{
-    implicit request=>
-      val proposals=Proposal.allAcceptedByTalkType(talkType)
-      Ok(views.html.Publisher.showByTalkType(proposals,talkType))
+  def showByTalkType(talkType: String) = Action {
+    implicit request =>
+      val proposals = Proposal.allAcceptedByTalkType(talkType)
+      Ok(views.html.Publisher.showByTalkType(proposals, talkType))
   }
 
-  def showDetailsForProposal(proposalId:String, proposalTitle:String)=Action{
-    implicit request=>
+  def showDetailsForProposal(proposalId: String, proposalTitle: String) = Action {
+    implicit request =>
       Proposal.findById(proposalId) match {
-        case None=>NotFound("Proposal not found")
-        case Some(proposal)=>
-          ZapActor.actor ! LogURL("showTalk",proposalId, proposalTitle)
+        case None => NotFound("Proposal not found")
+        case Some(proposal) =>
+          ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
           Ok(views.html.Publisher.showProposal(proposal))
       }
   }
 
-  def showAgendaByConfType(confType:String,slotId:String, day:Option[String] )=Action{
-    implicit request=>
+  def showAgendaByConfType(confType: String, slotId: String, day: Option[String]) = Action {
+    implicit request =>
       val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(slotId)
-      maybeScheduledConfiguration match{
-        case Some(slotConfig) if day==Some("thu")=>{
-          val updatedConf=slotConfig.copy(slots = slotConfig.slots.filter(_.day=="jeudi")
-          , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek==4))
-          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "thu"))
+      maybeScheduledConfiguration match {
+        case Some(slotConfig) if day == Some("thu") => {
+          val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == "jeudi")
+            , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 4))
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "thu"))
         }
-        case Some(slotConfig) if day==Some("fri")=>{
-          val updatedConf=slotConfig.copy(
-            slots = slotConfig.slots.filter(_.day=="vendredi")
-          , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek==5)
+        case Some(slotConfig) if day == Some("fri") => {
+          val updatedConf = slotConfig.copy(
+            slots = slotConfig.slots.filter(_.day == "vendredi")
+            , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 5)
           )
-          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "fri"))
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "fri"))
         }
-        case Some(slotConfig) if day==Some("wed")=>{
-          val updatedConf=slotConfig.copy(
-            slots = slotConfig.slots.filter(_.day=="mercredi")
-          , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek==3)
+        case Some(slotConfig) if day == Some("wed") => {
+          val updatedConf = slotConfig.copy(
+            slots = slotConfig.slots.filter(_.day == "mercredi")
+            , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 3)
           )
-          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "wed"))
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wed"))
         }
-        case Some(slotConfig) =>{
-          val updatedConf=slotConfig.copy(slots = slotConfig.slots)
-          Ok(views.html.Publisher.showAgendaByConfType(updatedConf,confType, "wed"))
+        case Some(slotConfig) => {
+          val updatedConf = slotConfig.copy(slots = slotConfig.slots)
+          Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wed"))
         }
-        case None=>NotFound
+        case None => NotFound
       }
   }
 
-  def showByDay(day:String)=Action{
-     implicit request=>
-    day match {
-      case "wed" => Ok(views.html.Publisher.showWednesday())
-      case "thu" => Ok(views.html.Publisher.showThursday())
-      case "fri" => Ok(views.html.Publisher.showFriday())
-      case other => NotFound("Day not found "+day)
-    }
+  def showByDay(day: String) = Action {
+    implicit request =>
+      day match {
+        case "wed" => Ok(views.html.Publisher.showWednesday())
+        case "thu" => Ok(views.html.Publisher.showThursday())
+        case "fri" => Ok(views.html.Publisher.showFriday())
+        case other => NotFound("Day not found " + day)
+      }
   }
 }

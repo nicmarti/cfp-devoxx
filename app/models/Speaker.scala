@@ -25,7 +25,6 @@ package models
 
 import play.api.libs.json.Json
 import library.{ZapJson, Redis}
-import play.api.libs.Crypto
 import play.api.cache.Cache
 import play.api.Play.current
 import org.joda.time.Instant
@@ -201,17 +200,15 @@ object Speaker {
 
   def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
     client =>
-      Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 3600) {
-        val speakerIDs = client.hkeys("TermsAndConditions").filter(uuid => Proposal.hasOneAcceptedOrApprovedProposal(uuid))
-        val allSpeakers = client.hmget("Speaker", speakerIDs).flatMap {
-          json: String =>
-            Json.parse(json).validate[Speaker].fold(invalid => {
-              play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
-              None
-            }, validSpeaker => Some(validSpeaker))
-        }
-        allSpeakers
+      val speakerIDs = client.hkeys("TermsAndConditions").filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
+      val allSpeakers = client.hmget("Speaker", speakerIDs).flatMap {
+        json: String =>
+          Json.parse(json).validate[Speaker].fold(invalid => {
+            play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
+            None
+          }, validSpeaker => Some(validSpeaker))
       }
+      allSpeakers
   }
 
 }
