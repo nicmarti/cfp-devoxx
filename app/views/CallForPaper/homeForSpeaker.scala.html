@@ -98,17 +98,7 @@
                 </div>
 
             </div>
-            @if(Webuser.isMember(webuser.uuid, "cfp")) {
 
-                <div class="panel panel-warning">
-                    <div class="panel-heading"><h4><i class="icon-warning-sign"></i> Accès spécial membre du CFP</h4></div>
-                    <div class="panel-body">
-                    <a href="@routes.CallForPaper.newProposal()" class="btn btn-sm btn-primary">Créer un sujet</a> à la place de ce speaker<br>
-                    <a href="@routes.ApproveOrRefuse.showAcceptTerms()" class="btn btn-sm btn-primary">Approuver/refuser les Termes/Conditions</a>
-                    </div>
-                </div>
-
-            }
         </div>
 
         <div class="col-md-8">
