@@ -477,3 +477,4 @@ not.published=L''agenda pour ce type de conférence n''est pas encore publié.
 day-thu=Jeudi
 day-fri=Vendredi
 day-wed=Mercredi
+acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !

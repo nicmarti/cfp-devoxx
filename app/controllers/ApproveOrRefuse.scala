@@ -110,7 +110,7 @@ object ApproveOrRefuse extends SecureCFPController {
       if (Speaker.needsToAccept(request.webuser.uuid)) {
         Ok(views.html.ApproveOrRefuse.showAcceptTerms(formApprove))
       } else {
-        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks())
+        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success"->Messages("acceptedTerms.msg"))
       }
   }
 
