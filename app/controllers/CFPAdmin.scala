@@ -405,10 +405,10 @@ object CFPAdmin extends SecureCFPController {
           val dir = new File("./public/speakers")
           FileUtils.forceMkdir(dir)
 
-          val file = new File(dir, "speakers_badges.csv")
-          val writer = new PrintWriter(file, "MacRoman")
+          val file = new File(dir, "speakers_badges_utf8.csv")
+          val writer = new PrintWriter(file, "UTF-8")
 
-          writer.println("email,firstLetter,firstName,name,lang,uuid,company,blog,@qrcode\n")
+          writer.println("email,firstLetter,firstName,name,lang,uuid,company,blog,hasFreePass,hasOneAccepted,isCFP,@qrcode")
           speakers.sortBy(s=>StringUtils.stripAccents(s.name.getOrElse("a")).charAt(0).toUpper).foreach {
             s =>
               writer.print(s.email.toLowerCase)
@@ -443,15 +443,28 @@ object CFPAdmin extends SecureCFPController {
               val tmpFile=new File("./public/speakers", StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase))
               f.renameTo(tmpFile)
 
+
+              // freepass
+              writer.print(Proposal.hasOneProposalWithSpeakerTicket(s.uuid))
+              writer.print(",")
+
+              writer.print(Proposal.hasOneAcceptedProposal(s.uuid))
+              writer.print(",")
+
+              writer.print(Webuser.isMember(s.uuid, "cfp"))
+              writer.print(",")
+
               // @qrcode
               writer.print(StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase))
+
+
               writer.println()
           }
           writer.close()
 
 
 
-          Ok("Generated speakers_badges.csv /assets/speakers")
+          Ok("Generated speakers_badges.csv with qrcode <a href=/assets/speakers/speakers_badges.csv>See result</a>").as(HTML)
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }
