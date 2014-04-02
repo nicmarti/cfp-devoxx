@@ -1,4 +1,4 @@
-@(gitVersion: library.GitInfo, myForm:Form[models.Issue])(implicit flash:Flash, lang:Lang)
+@(myForm:Form[(models.Issue)])(implicit flash:Flash, lang:Lang)
 @import helper.twitterBootstrap._
 
 @template("Report an issue"){
@@ -28,8 +28,7 @@
                     @helper.form(action=routes.Application.submitIssue()){
                         @helper.inputText(myForm("email"), 'class->"form-control")
                         @helper.textarea(myForm("msg"), 'cols->60, 'rows->10,  'class->"form-control")
-                        <input type="hidden" name="gitHash" value="@gitVersion.version">
-                        <input type="hidden" name="branch" value="@gitVersion.branch">
+                        @helper.inputText(myForm("antispam"), 'class->"form-control")
                         <hr>
                         <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.send")</button>
                     }

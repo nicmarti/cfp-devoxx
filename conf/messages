@@ -450,3 +450,6 @@ day-thu=Thursday
 day-fri=Friday
 nav.homeREST=REST API
 acceptedTerms.msg=Terms and Conditions accepted ! Thanks.
+
+antispam=To check that you are not a robot, what is the result of 38 + 4 ?
+bugReport.sent=Your message has been sent to the team. Thanks!

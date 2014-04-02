@@ -25,6 +25,7 @@ package controllers
 import models._
 import play.api.mvc._
 import library._
+import play.api.i18n.Messages
 
 /**
  * Devoxx France Call For Paper main application.
@@ -55,17 +56,17 @@ object Application extends Controller {
 
   def bugReport = Action {
     implicit request =>
-      Ok(views.html.Application.bugReport(GitUtils.getGitVersion, Issue.bugReportForm))
+      Ok(views.html.Application.bugReport(Issue.bugReportForm))
   }
 
   def submitIssue() = Action {
     implicit request =>
       Issue.bugReportForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Application.bugReport(GitUtils.getGitVersion, invalidForm)),
+        invalidForm => BadRequest(views.html.Application.bugReport(invalidForm)),
         validBugReport => {
           notifiers.Mails.sendBugReport(validBugReport)
           ZapActor.actor ! ReportIssue(validBugReport)
-          Redirect(routes.Application.index).flashing("success" -> "Your message has been sent to the team. Thanks!")
+          Redirect(routes.Application.index).flashing("success" -> Messages("bugReport.sent"))
         })
   }
 

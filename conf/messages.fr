@@ -478,3 +478,6 @@ day-thu=Jeudi
 day-fri=Vendredi
 day-wed=Mercredi
 acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !
+
+antispam=Pour prouver que vous n''êtes pas un robot mais un humain, combien font 38+4 ?
+bugReport.sent=Votre message a été envoyé à l''équipe, merci !

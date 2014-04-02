@@ -29,6 +29,7 @@ import play.api.data.validation.Constraints._
 import play.api.libs.ws.WS
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import library.GitUtils
 
 
 /**
@@ -43,10 +44,18 @@ object Issue {
     mapping(
       "email" -> (email verifying nonEmpty),
       "msg" -> nonEmptyText(maxLength = 2000),
-      "gitHash" -> text,
-      "branch" -> text)
-      (Issue.apply)(Issue.unapply)
+      "antispam" -> number(min = 42, max = 42))
+      (Issue.customApply)(Issue.customUnapply)
   )
+
+  def customApply(email:String, msg:String, antispam:Int):Issue={
+    val gitversion = GitUtils.getGitVersion
+    Issue(email, msg, gitversion.version, gitversion.branch)
+  }
+
+  def customUnapply(issue:Issue)={
+    Some((issue.reportedBy, issue.msg, 0))
+  }
 
   def publish(issue: Issue) = {
     val postUrl = "https://bitbucket.org/api/1.0/repositories/nicolas_martignole/cfp-devoxx-fr/issues"
