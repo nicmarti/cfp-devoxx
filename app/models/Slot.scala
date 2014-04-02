@@ -393,12 +393,10 @@ object Slot {
       val key05 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T09:00:00.000+02:00"), new DateTime("2014-04-18T09:20:00.000+02:00"), Room.KEYNOTE_SEINE, geert)
 
       val oracle=Proposal.findById("BHX-731")
+      val key06 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T09:30:00.000+02:00"), new DateTime("2014-04-18T09:50:00.000+02:00"), Room.KEYNOTE_SEINE, oracle)
 
       val serge=Proposal.findById("KOC-474")
-          
-      val key06 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T09:30:00.000+02:00"), new DateTime("2014-04-18T09:50:00.000+02:00"), Room.KEYNOTE_SEINE, serge)
-
-      val key07 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T10:00:00.000+02:00"), new DateTime("2014-04-18T10:20:00.000+02:00"), Room.KEYNOTE_SEINE, oracle)
+      val key07 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T10:00:00.000+02:00"), new DateTime("2014-04-18T10:20:00.000+02:00"), Room.KEYNOTE_SEINE, serge)
 
       List(key05, key06, key07)
     }
