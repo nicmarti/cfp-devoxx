@@ -140,4 +140,9 @@ object ScheduleConfiguration {
       }.getOrElse(List.empty[Slot])
   }
 
+  // Retrieve the time slot for a specific proposalId
+  def findSlotForConfType(confType:String, proposalId:String):Option[Slot]={
+    loadSlotsForConfType(confType).filter(_.proposal.isDefined).filter(_.proposal.get.id==proposalId).headOption
+  }
+
 }

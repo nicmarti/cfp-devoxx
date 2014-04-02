@@ -3,12 +3,15 @@
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div class="page type-page status-publish hentry">
-            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all."+talkType)</a> &gt; Agenda</small>
+            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
+                <a href="@routes.Publisher.showByDay(day)">@Messages("sw.showAllDay")</a> &gt;
+                <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all."+talkType)</a>  &gt;
+                @Messages("day-"+day)</small>
             <h1 class="entry-title">@Messages(talkType)</h1>
             <h2><i class="icon-calendar"></i> @Messages("day-"+day)</h2>
 
             <div class="entry-content">
-<a href="@routes.Publisher.showByDay(day)">@Messages("sw.showAllDay")</a>
+
 
 <table class="agendaByConfType">
 <tr>

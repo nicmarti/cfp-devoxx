@@ -453,3 +453,7 @@ acceptedTerms.msg=Terms and Conditions accepted ! Thanks.
 
 antispam=To check that you are not a robot, what is the result of 38 + 4 ?
 bugReport.sent=Your message has been sent to the team. Thanks!
+sw.whenWhere=Schedule time and room
+day-jeudi=Thursday
+day-friday=Friday
+day-wednesday=Wednesday

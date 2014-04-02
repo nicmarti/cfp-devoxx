@@ -481,3 +481,7 @@ acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !
 
 antispam=Pour prouver que vous n''êtes pas un robot mais un humain, combien font 38+4 ?
 bugReport.sent=Votre message a été envoyé à l''équipe, merci !
+sw.proposal.whenWhere=Heure de passage et salle
+day-jeudi=Jeudi
+day-vendredi=Vendredi
+day-mercredi=Mercredi

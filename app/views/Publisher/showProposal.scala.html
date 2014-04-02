@@ -1,11 +1,20 @@
-@(proposal:Proposal)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposal:Proposal,publishedConfiguration:Option[String], slot:Option[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @views.html.Publisher.devoxxFR2014(proposal.id+" "+proposal.title){
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
             <div class="entry-content">
-                <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all."+proposal.talkType.id)</a></small>
+
+                @if(slot.isDefined && publishedConfiguration.isDefined) {
+                    <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+                           <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages("sw.showAllDay")</a> &gt;
+                           <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all."+proposal.talkType.id)</a>  &gt;
+                           <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration.get, slot.map(_.day))">@Messages("day-"+slot.get.day)</a>
+                    </small>
+                }else{
+                    <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></small>
+                }
                 <table>
                     <tbody>
                         <tr>
@@ -15,9 +24,18 @@
                         <tr>
                             <th>@Messages("sw.proposal.talkType")</th>
                             <td>
-                                <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.label)</a>
+                                <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a>
                             </td>
                         </tr>
+                        @if(slot.isDefined) {
+                            <tr>
+                                <th>@Messages("sw.proposal.whenWhere")</th>
+                                <td>
+                                    @slot.map(_.room.name)<br>
+                                    @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")
+                                </td>
+                            </tr>
+                        }
                          <tr>
                             <th>@Messages("sw.proposal.track")</th>
                             <td>@tags.publisher.renderIconForTrack(proposal.track.id) @Messages(proposal.track.label)</td>
