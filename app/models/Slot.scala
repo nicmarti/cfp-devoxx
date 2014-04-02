@@ -387,9 +387,23 @@ object Slot {
   }
 
   val friday: List[Slot] = {
+
+  val keynoteFriday: List[Slot] = {
+      val geert=Proposal.findById("JEJ-167")
+      val key05 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T09:00:00.000+02:00"), new DateTime("2014-04-18T09:20:00.000+02:00"), Room.KEYNOTE_SEINE, geert)
+
+      val serge=Proposal.findById("KOC-474")
+      val key06 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T09:30:00.000+02:00"), new DateTime("2014-04-18T09:50:00.000+02:00"), Room.KEYNOTE_SEINE, serge)
+
+      val oracle=Proposal.findById("BHX-731")
+      val key07 = SlotBuilder(ProposalType.KEY.id, "vendredi", new DateTime("2014-04-18T10:00:00.000+02:00"), new DateTime("2014-04-18T10:20:00.000+02:00"), Room.KEYNOTE_SEINE, oracle)
+
+      List(key05, key06, key07)
+    }
+
     val fridayBreaks = List(
       SlotBuilder(SlotBreak.petitDej, "vendredi", new DateTime("2014-04-18T08:00:00.000+02:00"), new DateTime("2014-04-18T09:00:00.000+02:00"))
-      , SlotBuilder(SlotBreak.coffee, "vendredi", new DateTime("2014-04-18T10:10:00.000+02:00"), new DateTime("2014-04-18T10:40:00.000+02:00"))
+      , SlotBuilder(SlotBreak.coffee, "vendredi", new DateTime("2014-04-18T10:20:00.000+02:00"), new DateTime("2014-04-18T10:40:00.000+02:00"))
       , SlotBuilder(SlotBreak.lunch, "vendredi", new DateTime("2014-04-18T12:35:00.000+02:00"), new DateTime("2014-04-18T13:30:00.000+02:00"))
       , SlotBuilder(SlotBreak.coffee, "vendredi", new DateTime("2014-04-18T16:30:00.000+02:00"), new DateTime("2014-04-18T17:00:00.000+02:00"))
     )
@@ -400,6 +414,6 @@ object Slot {
       SlotBuilder(ProposalType.OTHER.id, "vendredi", new DateTime("2014-04-18T10:40:00.000+02:00"), new DateTime("2014-04-18T16:30:00.000+02:00"), Room.DUKE_ELLINGTON, mercenaires)
     )
 
-    fridayBreaks ++ specialEvents
+    fridayBreaks ++ specialEvents ++ keynoteFriday
   }
 }
