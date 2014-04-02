@@ -364,6 +364,8 @@ object RestAPI extends Controller {
             , "toTimeMillis"->Json.toJson(slot.to.getMillis)
             , "talk"->upProposal.map(Json.toJson(_)).getOrElse(JsNull)
             , "break"->Json.toJson(slot.break)
+            , "roomSetup" -> Json.toJson(slot.room.setup)
+            , "roomCapacity" -> Json.toJson(slot.room.capacity)
             , "notAllocated"->Json.toJson(slot.notAllocated)
           )
       }
