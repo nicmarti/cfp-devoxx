@@ -46,12 +46,12 @@ object RestAPI extends Controller {
     implicit request =>
 
       docName match {
-        case "link" =>  Ok(views.html.RestAPI.docLink())
-        case "links" =>  Ok(views.html.RestAPI.docLink())
+        case "link" => Ok(views.html.RestAPI.docLink())
+        case "links" => Ok(views.html.RestAPI.docLink())
         case "speaker" => Ok(views.html.RestAPI.docSpeaker())
-        case "list-of-speakers" =>  Ok(views.html.RestAPI.docSpeakers())
+        case "list-of-speakers" => Ok(views.html.RestAPI.docSpeakers())
         case "talk" => Ok(views.html.RestAPI.docTalk())
-        case "conference" =>  Ok(views.html.RestAPI.docConference())
+        case "conference" => Ok(views.html.RestAPI.docConference())
         case "conferences" => Ok(views.html.RestAPI.docConferences())
         case "schedules" => Ok(views.html.RestAPI.docSchedules())
         case "schedule" => Ok(views.html.RestAPI.docSchedule())
@@ -293,89 +293,106 @@ object RestAPI extends Controller {
 
   def showAllSchedules(eventCode: String) = UserAgentAction {
     implicit request =>
-      val jsonObject = Json.toJson(
-        Map(
-          "links" -> Json.toJson(List(
-            Link(
-              routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL().toString,
-              routes.RestAPI.profile("schedule").absoluteURL().toString,
-              "Schedule for Wednesday 16th April 2014"
-            ),
-            Link(
-              routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL().toString,
-              routes.RestAPI.profile("schedule").absoluteURL().toString,
-              "Schedule for Thursday 17th April 2014"
-            ),
-            Link(
-              routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL().toString,
-              routes.RestAPI.profile("schedule").absoluteURL().toString,
-              "Schedule for Friday 18th April 2014"
-            )
-          ))
-        )
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val mapOfSchedules = Map(
+        "links" -> Json.toJson(List(
+          Link(
+            routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL().toString,
+            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            "Schedule for Wednesday 16th April 2014"
+          ),
+          Link(
+            routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL().toString,
+            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            "Schedule for Thursday 17th April 2014"
+          ),
+          Link(
+            routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL().toString,
+            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            "Schedule for Friday 18th April 2014"
+          )
+        ))
       )
-      Ok(jsonObject).as(JSON).withHeaders("Links" -> ("<" + routes.RestAPI.profile("schedules").absoluteURL().toString + ">; rel=\"profile\""))
+      val newEtag = mapOfSchedules.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == newEtag => NotModified
+        case other => {
+          val jsonObject = Json.toJson(mapOfSchedules)
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedules").absoluteURL().toString + ">; rel=\"profile\""))
+        }
+      }
   }
 
   def showScheduleFor(eventCode: String, day: String) = UserAgentAction {
     implicit request =>
 
-      val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day).map {
-        slot =>
-          val upProposal = slot.proposal.map {
-            proposal =>
-              val allSpeakers = proposal.allSpeakerUUIDs.flatMap {
-                uuid => Speaker.findByUUID(uuid)
-              }
-              val updatedProposal =
-                Map(
-                  "id" -> Json.toJson(proposal.id),
-                  "title" -> Json.toJson(proposal.title),
-                  "lang" -> Json.toJson(proposal.lang),
-                  "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
-                  "summary" -> Json.toJson(proposal.summary),
-                  "track" -> Json.toJson(Messages(proposal.track.label)),
-                  "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
-                  "speakers" -> Json.toJson(allSpeakers.map {
-                    speaker =>
-                      Map(
-                        "link" -> Json.toJson(
-                          Link(
-                            routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
-                            routes.RestAPI.profile("speaker").absoluteURL().toString,
-                            speaker.cleanName
-                          )
-                        ),
-                        "name" -> Json.toJson(speaker.cleanName)
-                      )
-                  })
-                )
-              updatedProposal
-          }
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
+      val newEtag = finalListOfSlots.hashCode().toString
 
-          Map(
-            "slotId"->Json.toJson(slot.id)
-            , "day"->Json.toJson(slot.day)
-            , "roomId"->Json.toJson(slot.room.id)
-            , "roomName"->Json.toJson(slot.room.name)
-            , "fromTime"->Json.toJson(slot.from.toString("HH:mm"))
-            , "fromTimeMillis"->Json.toJson(slot.from.getMillis)
-            , "toTime"->Json.toJson(slot.to.toString("HH:mm"))
-            , "toTimeMillis"->Json.toJson(slot.to.getMillis)
-            , "talk"->upProposal.map(Json.toJson(_)).getOrElse(JsNull)
-            , "break"->Json.toJson(slot.break)
-            , "roomSetup" -> Json.toJson(slot.room.setup)
-            , "roomCapacity" -> Json.toJson(slot.room.capacity)
-            , "notAllocated"->Json.toJson(slot.notAllocated)
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == newEtag => NotModified
+        case other => {
+          val toReturn = finalListOfSlots.map {
+            slot =>
+              val upProposal = slot.proposal.map {
+                proposal =>
+                  val allSpeakers = proposal.allSpeakerUUIDs.flatMap {
+                    uuid => Speaker.findByUUID(uuid)
+                  }
+                  val updatedProposal =
+                    Map(
+                      "id" -> Json.toJson(proposal.id),
+                      "title" -> Json.toJson(proposal.title),
+                      "lang" -> Json.toJson(proposal.lang),
+                      "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
+                      "summary" -> Json.toJson(proposal.summary),
+                      "track" -> Json.toJson(Messages(proposal.track.label)),
+                      "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                      "speakers" -> Json.toJson(allSpeakers.map {
+                        speaker =>
+                          Map(
+                            "link" -> Json.toJson(
+                              Link(
+                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
+                                routes.RestAPI.profile("speaker").absoluteURL().toString,
+                                speaker.cleanName
+                              )
+                            ),
+                            "name" -> Json.toJson(speaker.cleanName)
+                          )
+                      })
+                    )
+                  updatedProposal
+              }
+
+              Map(
+                "slotId" -> Json.toJson(slot.id)
+                , "day" -> Json.toJson(slot.day)
+                , "roomId" -> Json.toJson(slot.room.id)
+                , "roomName" -> Json.toJson(slot.room.name)
+                , "fromTime" -> Json.toJson(slot.from.toString("HH:mm"))
+                , "fromTimeMillis" -> Json.toJson(slot.from.getMillis)
+                , "toTime" -> Json.toJson(slot.to.toString("HH:mm"))
+                , "toTimeMillis" -> Json.toJson(slot.to.getMillis)
+                , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
+                , "break" -> Json.toJson(slot.break)
+                , "roomSetup" -> Json.toJson(slot.room.setup)
+                , "roomCapacity" -> Json.toJson(slot.room.capacity)
+                , "notAllocated" -> Json.toJson(slot.notAllocated)
+              )
+          }
+          val jsonObject = Json.toJson(
+            Map(
+              "slots" -> Json.toJson(toReturn)
+            )
           )
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL().toString + ">; rel=\"profile\""))
+        }
       }
 
-     val jsonObject = Json.toJson(
-        Map(
-          "slots" -> Json.toJson(finalListOfSlots)
-        )
-      )
-      Ok(jsonObject).as(JSON).withHeaders("Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL().toString + ">; rel=\"profile\""))
 
   }
 

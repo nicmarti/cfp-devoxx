@@ -40,6 +40,7 @@ object Room {
 
   val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, "special")
 
+  val KEYNOTE_SEINE = Room("seine_keynote", "Seine", 980, "keynote")
   val SEINE_A = Room("seine_a", "Seine A", 280, "theatre")
   val SEINE_B = Room("seine_b", "Seine B", 280, "theatre")
   val SEINE_C = Room("seine_c", "Seine C", 260, "theatre")
@@ -66,7 +67,8 @@ object Room {
   val LABO = Room("foyer_labo", "Labo", 40, "special")
   val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
-  val all = List(SEINE_A,
+  val all = List(KEYNOTE_SEINE,
+    SEINE_A,
     SEINE_B,
     SEINE_C,
     AUDITORIUM,
@@ -93,7 +95,7 @@ object Room {
   val allRoomsLabs = List(Room.ELLA_FITZGERALD_AB, Room.LOUIS_ARMSTRONG_AB, Room.LOUIS_ARMSTRONG_CD,
     Room.MILES_DAVIS_A, Room.MILES_DAVIS_B, Room.MILES_DAVIS_C)
 
-  val allRoomsBOFs= List(Room.ELLA_FITZGERALD_AB, Room.LOUIS_ARMSTRONG_AB, Room.LOUIS_ARMSTRONG_CD,
+  val allRoomsBOFs = List(Room.ELLA_FITZGERALD_AB, Room.LOUIS_ARMSTRONG_AB, Room.LOUIS_ARMSTRONG_CD,
     Room.MILES_DAVIS_A, Room.MILES_DAVIS_B, Room.MILES_DAVIS_C, Room.LABO)
 
   val allRoomsTIA = List(Room.ELLA_FITZGERALD_AB_TH, Room.LOUIS_ARMSTRONG_AB_TH, Room.LOUIS_ARMSTRONG_CD_TH,
@@ -109,6 +111,7 @@ object Room {
 
   def parse(proposalType: String): Room = {
     proposalType match {
+      case "seine_keynote" => KEYNOTE_SEINE
       case "seine_a" => SEINE_A
       case "seine_b" => SEINE_B
       case "seine_c" => SEINE_C
@@ -153,7 +156,7 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
     s"Slot[" + id + "]"
   }
 
-  def notAllocated:Boolean={
+  def notAllocated: Boolean = {
     break.isEmpty && proposal.isEmpty
   }
 
@@ -246,7 +249,6 @@ object Slot {
     }
     quickie03 ++ quickie04
   }
-
 
   val conferenceSlotsThursday: List[Slot] = {
     val c1 = Room.allRooms.map {
@@ -350,6 +352,23 @@ object Slot {
   }
 
   val thursday: List[Slot] = {
+
+    val keynoteThursday: List[Slot] = {
+      val welcomeKeynote = Proposal.findById("DSD-030")
+      val key01 = SlotBuilder(ProposalType.KEY.id, "jeudi", new DateTime("2014-04-17T09:00:00.000+02:00"), new DateTime("2014-04-17T09:10:00.000+02:00"), Room.KEYNOTE_SEINE, welcomeKeynote)
+
+      val babinet=Proposal.findById("IIH-512")
+      val key02 = SlotBuilder(ProposalType.KEY.id, "jeudi", new DateTime("2014-04-17T09:10:00.000+02:00"), new DateTime("2014-04-17T09:30:00.000+02:00"), Room.KEYNOTE_SEINE, babinet)
+
+      val guyMamou=Proposal.findById("RCV-236")
+      val key03 = SlotBuilder(ProposalType.KEY.id, "jeudi", new DateTime("2014-04-17T09:40:00.000+02:00"), new DateTime("2014-04-17T10:00:00.000+02:00"), Room.KEYNOTE_SEINE, guyMamou)
+
+      val simplon=Proposal.findById("TAX-972")
+      val key04 = SlotBuilder(ProposalType.KEY.id, "jeudi", new DateTime("2014-04-17T10:10:00.000+02:00"), new DateTime("2014-04-17T10:30:00.000+02:00"), Room.KEYNOTE_SEINE, simplon)
+
+      List(key01, key02, key03, key04)
+    }
+
     val thursdayBreaks = List(
       SlotBuilder(SlotBreak.petitDej, "jeudi", new DateTime("2014-04-17T07:30:00.000+02:00"), new DateTime("2014-04-17T09:00:00.000+02:00"))
       , SlotBuilder(SlotBreak.coffee, "jeudi", new DateTime("2014-04-17T10:45:00.000+02:00"), new DateTime("2014-04-17T11:30:00.000+02:00"))
@@ -361,10 +380,10 @@ object Slot {
     val codeStory = Proposal.findById("ZDC-067")
 
     val specialEvents = List(
-      SlotBuilder(ProposalType.CODESTORY.id, "jeudi", new DateTime("2014-04-17T09:30:00.000+02:00"), new DateTime("2014-04-17T18:00:00.000+02:00"), Room.DUKE_ELLINGTON, codeStory)
+      SlotBuilder(ProposalType.CODESTORY.id, "jeudi", new DateTime("2014-04-17T11:00:00.000+02:00"), new DateTime("2014-04-17T18:00:00.000+02:00"), Room.DUKE_ELLINGTON, codeStory)
     )
 
-    thursdayBreaks ++ specialEvents
+    thursdayBreaks ++ specialEvents ++ keynoteThursday
   }
 
   val friday: List[Slot] = {
