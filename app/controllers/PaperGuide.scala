@@ -125,9 +125,6 @@ object PaperGuide extends SecureCFPController {
                                                                scheduledConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId)
       ) yield scheduledConf
 
-
-
-
       allScheduledConf.foreach {
         scheduleConf: ScheduleConfiguration =>
           val dir = new File("./target/guide/" + scheduleConf.confType)

@@ -405,8 +405,8 @@ object CFPAdmin extends SecureCFPController {
           val dir = new File("./public/speakers")
           FileUtils.forceMkdir(dir)
 
-          val file = new File(dir, "speakers_badges_utf8.csv")
-          val writer = new PrintWriter(file, "UTF-8")
+          val file = new File(dir, "speakers_badges_macroman.csv")
+          val writer = new PrintWriter(file, "Macroman")
 
           writer.println("email,firstLetter,firstName,name,lang,uuid,company,blog,hasFreePass,hasOneAccepted,isCFP,@qrcode")
           speakers.sortBy(s=>StringUtils.stripAccents(s.name.getOrElse("a")).charAt(0).toUpper).foreach {
@@ -423,7 +423,7 @@ object CFPAdmin extends SecureCFPController {
               writer.print(",")
               writer.print(s.uuid)
               writer.print(",")
-              writer.print(s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),40)).getOrElse(""))
+              writer.print(s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),32)).getOrElse(""))
               writer.print(",")
               writer.print(s.blog.map(s=> StringEscapeUtils.escapeCsv(s)).getOrElse(""))
               writer.print(",")
@@ -431,7 +431,7 @@ object CFPAdmin extends SecureCFPController {
               val zeVCard = new VCard(
                     firstName = s.firstName
                   , lastName = s.name
-                  , company=s.company
+                  , company=s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),32))
                   , email=Some(s.email)
                   , website=s.blog
                   , phonenumber = None
@@ -440,9 +440,8 @@ object CFPAdmin extends SecureCFPController {
 
 
               val f:java.io.File = QRCode.from(zeVCard.toString).file()
-              val tmpFile=new File("./public/speakers", StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase))
+              val tmpFile=new File("./public/speakers", StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase +"_qrcode.png"))
               f.renameTo(tmpFile)
-
 
               // freepass
               writer.print(Proposal.hasOneProposalWithSpeakerTicket(s.uuid))
@@ -455,7 +454,7 @@ object CFPAdmin extends SecureCFPController {
               writer.print(",")
 
               // @qrcode
-              writer.print(StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase))
+              writer.print(tmpFile.getName())
 
 
               writer.println()
@@ -464,7 +463,7 @@ object CFPAdmin extends SecureCFPController {
 
 
 
-          Ok("Generated speakers_badges.csv with qrcode <a href=/assets/speakers/speakers_badges.csv>See result</a>").as(HTML)
+          Ok("Generated speakers_badges.csv with qrcode <a href=/assets/speakers/speakers_badges_macroman.csv>See result</a>").as(HTML)
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }
