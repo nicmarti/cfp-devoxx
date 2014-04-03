@@ -170,6 +170,7 @@ GET           /schedulling/fr14/published                            controllers
 GET           /tweetwall                                             controllers.Tweetwall.index()
 GET           /tweetwall/authenticate                                controllers.Tweetwall.authenticate()
 GET           /tweetwall/stream/:query                               controllers.Tweetwall.search(query:String)
+GET          /tweetwall/debug                                       controllers.Tweetwall.outputRequest()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)

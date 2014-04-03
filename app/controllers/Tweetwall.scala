@@ -40,6 +40,8 @@ import play.api.libs._
 import play.api.libs.concurrent._
 import play.api.libs.iteratee._
 import com.ning.http.client.Realm.AuthScheme
+import play.api.libs.ws.WS.WSRequestHolder
+import org.joda.time.Instant
 
 /**
  * Tweet wall, using new Twitter Stream API.
@@ -48,41 +50,56 @@ import com.ning.http.client.Realm.AuthScheme
  */
 object Tweetwall extends Controller {
 
-  val KEY=ConsumerKey("EfaMkGwGeCFyPzAMQQU4iaQ6E", "S8LtQQotNLBm79K6TuhqnS4UkaUJKEdeUAYcihy2iP9k5FmW7C")
+  val KEY = ConsumerKey("EfaMkGwGeCFyPzAMQQU4iaQ6E", "S8LtQQotNLBm79K6TuhqnS4UkaUJKEdeUAYcihy2iP9k5FmW7C")
 
   val TWITTER = OAuth(ServiceInfo(
     "https://api.twitter.com/oauth/request_token",
     "https://api.twitter.com/oauth/access_token",
-    "https://api.twitter.com/oauth/authorize", KEY))
+    "https://api.twitter.com/oauth/authorize", KEY), use10a = true)
 
-    def index = Action{
-      implicit request=>
-        request.session.get("token").map{token:String=>
+  def index = Action {
+    implicit request =>
+      request.session.get("token").map {
+        token: String =>
           Ok(views.html.Tweetwall.wallDevoxxFR2014())
-        }.getOrElse{
-          Redirect(routes.Tweetwall.authenticate)
-        }
-    }
-
-  def authenticate = Action { implicit request =>
-    request.queryString.get("oauth_verifier").flatMap(_.headOption).map { verifier =>
-      val tokenPair = sessionTokenPair(request).get
-      // We got the verifier; now get the access token, store it and back to index
-      TWITTER.retrieveAccessToken(tokenPair, verifier) match {
-        case Right(t) => {
-          // We received the unauthorized tokens in the OAuth object - store it before we proceed
-          Redirect(routes.Tweetwall.index).withSession("token" -> t.token, "secret" -> t.secret)
-        }
-        case Left(e) => throw e
+      }.getOrElse {
+        Redirect(routes.Tweetwall.authenticate)
       }
-    }.getOrElse(
-      TWITTER.retrieveRequestToken(routes.Tweetwall.authenticate.absoluteURL()) match {
-        case Right(t) => {
-          // We received the unauthorized tokens in the OAuth object - store it before we proceed
-          Redirect(TWITTER.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
-        }
-        case Left(e) => throw e
-      })
+  }
+
+
+  def outputRequest() = Action {
+    implicit request =>
+      println("URI "+request.uri)
+      request.headers.toSimpleMap.foreach{token=>
+        println("Header "+ token._1+"="+token._2)
+      }
+      println("Body "+request.body.asFormUrlEncoded)
+      println("---")
+      Ok("Done")
+  }
+
+  def authenticate = Action {
+    implicit request =>
+      request.queryString.get("oauth_verifier").flatMap(_.headOption).map {
+        verifier =>
+          val tokenPair = sessionTokenPair(request).get
+          // We got the verifier; now get the access token, store it and back to index
+          TWITTER.retrieveAccessToken(tokenPair, verifier) match {
+            case Right(t) => {
+              // We received the unauthorized tokens in the OAuth object - store it before we proceed
+              Redirect(routes.Tweetwall.index).withSession("token" -> t.token, "secret" -> t.secret)
+            }
+            case Left(e) => throw e
+          }
+      }.getOrElse(
+          TWITTER.retrieveRequestToken(routes.Tweetwall.authenticate.absoluteURL()) match {
+            case Right(t) => {
+              // We received the unauthorized tokens in the OAuth object - store it before we proceed
+              Redirect(TWITTER.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
+            }
+            case Left(e) => throw e
+          })
   }
 
   def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
@@ -104,8 +121,8 @@ object Tweetwall extends Controller {
       val tokens = sessionTokenPair(request).get
 
       // Serve a 200 OK text/event-stream
-        Ok.feed(Tweet.search(query, tokens) &> asJson &> EventSource()
-        ).as("text/event-stream")
+      Ok.feed(Tweet.search(query, tokens) &> asJson &> EventSource()
+      ).as("text/event-stream")
 
   }
 
@@ -150,34 +167,38 @@ object Tweetwall extends Controller {
           )
       )
 
-    def fetchPage(query: String, page: Int, secureToken:RequestToken): Future[Seq[Tweet]] = {
+    def fetchPage(query: String, page: Int, secureToken: RequestToken): Future[Seq[Tweet]] = {
+      println("Fetch page...")
       // Fetch the twitter search API with the corresponding parameters (see the Twitter API documentation)
-      WS.url("https://stream.twitter.com/1.1/statuses/filter.json")
+      WS.url("http://localhost")
         .sign(OAuthCalculator(KEY, secureToken))
-        .post(Map("track"->Seq(query)))
+        .withQueryString("track"->query)
+        .get()
         .map(r => r.status match {
 
         // We got a 200 OK response, try to convert the JSON body to a Seq[Tweet]
         // by using the previously defined implicit Reads[Seq[Tweet]]
         case 200 => {
-          play.Logger.of("application.Tweetwall").info("Received "+r.body)
+          play.Logger.of("application.Tweetwall").info("Received " + r.body)
           r.json.asOpt[Seq[Tweet]].getOrElse(Nil)
         }
 
         // Really? There is nothing todo for us
         case x => {
-          play.Logger.of("application.Tweetwall").error("Unable to fetch Twitter Stream api "+r.statusText)
-          play.Logger.of("application.Tweetwall").error("response"+r.body)
-          sys.error(s"Bad response status $x")
+          play.Logger.of("application.Tweetwall").error("2 Unable to fetch Twitter Stream api " + r.statusText)
+          play.Logger.of("application.Tweetwall").error(r.getAHCResponse.getHeaders().toString)
+          sys.error("Fatal")
+
         }
       })
 
     }
 
+
     /**
      * Create a stream of Tweet object from a Twitter query (such as #devoxx)
      */
-    def search(query: String, secureToken:RequestToken): Enumerator[Tweet] = {
+    def search(query: String, secureToken: RequestToken): Enumerator[Tweet] = {
 
       // Flatenize an Enumerator[Seq[Tweet]] as n Enumerator[Tweet]
       val flatenize = Enumeratee.mapConcat[Seq[Tweet]](identity)
