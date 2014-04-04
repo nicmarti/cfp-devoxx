@@ -1,26 +1,71 @@
-@()(implicit request:RequestHeader)
-
+@()(implicit request: Request[AnyContent])
 <!DOCTYPE html>
-<html>
-    <head lang="en">
-        <meta charset="UTF-8">
-        <title></title>
-        <link rel="stylesheet" media="screen" href="/assets/css/tweetwall.css">
-        <script src="/assets/js/jquery.min.js" type="text/javascript"></script>
-        <script src="/assets/js/tweetwall.js" type="text/javascript"></script>
-        @helper.javascriptRouter("Router")(routes.javascript.Tweetwall.search)
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Devoxx France Tweetwall</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <script src="//cdn.jsdelivr.net/jsrender/1.0pre35/jsrender.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     </head>
-    <body>
-<h1>Tweet wall</h1>
+<body>
 
-        Token @request.session.get("token")<BR>
-        Secret @request.session.get("secret")<BR>
+<form class="form-search">
+    <input type="text" id="keywordsInput" class="input-medium search-query" />
+    <button id="runKeywordsButton" class="btn btn-large btn-success">Stream</button>
+</form>
 
-    <div id="searchBox">
-    	<label for="query">Search on twitter</label>
-    	<span><input type="search" id="query"></span>
-    </div>
+            <hr>
 
-    <ul id="images"></ul>
-</body>
+            <div class="row-fluid">
+                <ul id="list">
+                    <script id="tweetTemplate" type="text/x-jsrender">
+                        <li>
+                            <div class="media">
+                                <a class="pull-left" href="#">
+                                    <img class="media-object" data-src="holder.js/48x48" alt="48x48" style="width: 48px; height: 48px;" src="{{>user.profile_image_url}}">
+                                </a>
+                                <div class="media-body">
+                                    <h4 class="media-heading"><span>{{>user.name}}</span> <small><i>@@{{>user.screen_name}}</i></small> <small><i>{{>user.created_at}}</i></small></h4>
+                                    {{>text}}
+                                </div>
+                            </div>
+                        </li>
+                    </script>
+                </ul>
+            </div>
+
+            <hr>
+
+            <script type="text/javascript">
+
+                var cometMessage = function(event) {
+                    var tweet = event;
+                    if (tweet && tweet.user) {
+                       $('#list').prepend($("#tweetTemplate").render(tweet));
+                    }
+                }
+
+                $(document).ready(function(){
+
+                    $('#runKeywordsButton').click(function(){
+
+                        var keywords = $('#keywordsInput').val();
+
+                        $('#commetIframe').remove();
+
+                        $('body').append('<iframe width="700" scrolling="no" height="400" frameborder="0" seamless="seamless" id="commetIframe" src="@routes.Tweetwall.watchTweets("").absoluteURL()' + keywords + '"></iframe>');
+
+                        return false;
+                    });
+
+                });
+
+            </script>
+
+        </div> <!-- /container -->
+
+    </body>
 </html>
