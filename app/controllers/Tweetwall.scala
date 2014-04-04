@@ -31,17 +31,14 @@ import play.api.libs.iteratee._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
-import com.ning.http.client.Realm.AuthScheme
-import play.api.libs.oauth.{ConsumerKey, OAuthCalculator}
 import play.api.libs.ws._
 import play.api.libs.oauth._
 import play.api.mvc._
 import play.api.libs._
-import play.api.libs.concurrent._
 import play.api.libs.iteratee._
-import com.ning.http.client.Realm.AuthScheme
-import play.api.libs.ws.WS.WSRequestHolder
-import org.joda.time.Instant
+import play.Play
+import java.net.URLEncoder
+
 
 /**
  * Tweet wall, using new Twitter Stream API.
@@ -50,12 +47,16 @@ import org.joda.time.Instant
  */
 object Tweetwall extends Controller {
 
-  val KEY = ConsumerKey("EfaMkGwGeCFyPzAMQQU4iaQ6E", "S8LtQQotNLBm79K6TuhqnS4UkaUJKEdeUAYcihy2iP9k5FmW7C")
+  val cfg = Play.application.configuration
+
+ val KEY = ConsumerKey(cfg.getString("twitter.consumerKey"), cfg.getString("twitter.consumerSecret"))
+
 
   val TWITTER = OAuth(ServiceInfo(
     "https://api.twitter.com/oauth/request_token",
     "https://api.twitter.com/oauth/access_token",
-    "https://api.twitter.com/oauth/authorize", KEY), use10a = true)
+    "https://api.twitter.com/oauth/authorize", KEY),
+    use10a = false)
 
   def index = Action {
     implicit request =>
@@ -70,6 +71,7 @@ object Tweetwall extends Controller {
 
   def outputRequest() = Action {
     implicit request =>
+
       println("URI "+request.uri)
       request.headers.toSimpleMap.foreach{token=>
         println("Header "+ token._1+"="+token._2)
@@ -170,27 +172,39 @@ object Tweetwall extends Controller {
     def fetchPage(query: String, page: Int, secureToken: RequestToken): Future[Seq[Tweet]] = {
       println("Fetch page...")
       // Fetch the twitter search API with the corresponding parameters (see the Twitter API documentation)
-      WS.url("http://localhost")
+
+
+      WS.url("https://stream.twitter.com/1.1/statuses/filter.json?track=" + URLEncoder.encode(query, "UTF-8"))
         .sign(OAuthCalculator(KEY, secureToken))
-        .withQueryString("track"->query)
-        .get()
-        .map(r => r.status match {
+        .get().map{
+        result=>
+          println("Result "+result.body)
+          sys.error("nothing")
+      }
 
-        // We got a 200 OK response, try to convert the JSON body to a Seq[Tweet]
-        // by using the previously defined implicit Reads[Seq[Tweet]]
-        case 200 => {
-          play.Logger.of("application.Tweetwall").info("Received " + r.body)
-          r.json.asOpt[Seq[Tweet]].getOrElse(Nil)
-        }
-
-        // Really? There is nothing todo for us
-        case x => {
-          play.Logger.of("application.Tweetwall").error("2 Unable to fetch Twitter Stream api " + r.statusText)
-          play.Logger.of("application.Tweetwall").error(r.getAHCResponse.getHeaders().toString)
-          sys.error("Fatal")
-
-        }
-      })
+//     WS.url("https://stream.twitter.com/1.1/statuses/filter.json")
+//WS.url("http://localhost:7777/debug")
+//        .sign(OAuthCalculator(KEY, secureToken))
+//        .withHeaders(("Connection"->"close"))
+//        .post(Map("track"->Seq("tennis")))
+//
+//        .map(r => r.status match {
+//
+//        // We got a 200 OK response, try to convert the JSON body to a Seq[Tweet]
+//        // by using the previously defined implicit Reads[Seq[Tweet]]
+//        case 200 => {
+//          play.Logger.of("application.Tweetwall").info("Received " + r.body)
+//          r.json.asOpt[Seq[Tweet]].getOrElse(Nil)
+//        }
+//
+//        // Really? There is nothing todo for us
+//        case x => {
+//          play.Logger.of("application.Tweetwall").error("2 Unable to fetch Twitter Stream api " + r.statusText)
+//          play.Logger.of("application.Tweetwall").error(r.getAHCResponse.getHeaders().toString)
+//          sys.error("Fatal")
+//
+//        }
+//      })
 
     }
 
