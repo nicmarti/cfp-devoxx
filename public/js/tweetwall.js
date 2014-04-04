@@ -24,25 +24,38 @@
 $(function() {
 
     // Search
-    var search = function(query) {
-        var stream = new EventSource(Router.controllers.Tweetwall.search(encodeURIComponent(query)).url)
+    var search = function (query) {
+        var stream = new EventSource(Router.controllers.Tweetwall.watchTweets(encodeURIComponent(query)).url)
 
-        $(stream).on('message', function(e) {
+
+
+        $(stream).on('message', function (e) {
             var tweet = JSON.parse(e.originalEvent.data);
-            $('<img>').attr('src', tweet.image).load(function() {
-                $('#images').removeClass('loading').append($('<li>').append(this))
-            })
+            if (tweet && tweet.user) {
+                  $('#list').prepend($("#tweetTemplate").render(tweet));
+                  if($('#list li').length>10) {
+                      $('#list').find('li:last-child').remove();
+                  }
+
+//                allTweets.push($("#tweetTemplate").render(tweet));
+//                var toWrite=allTweets.slice(0,5);
+//                 $('#list').empty();
+//                _.each(toWrite,function(t){
+//                    $('#list').prepend(t);
+//                });
+//                allTweets.shift();// drop oldest
+
+            }
         })
     };
 
-    $('#query')
-        .keypress(function(e) {
-            if(e.keyCode == 13) {
-                $(this).blur();
-                $('#images').addClass('loading');
-                search($(this).val())
-            }
-        });
+    $('#query').keypress(function (e) {
+        if (e.keyCode == 13) {
+            $(this).blur();
+            $(this).hide();
+            search($(this).val());
+        }
+    });
 
 
 });

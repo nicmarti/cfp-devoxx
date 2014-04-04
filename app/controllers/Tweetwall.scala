@@ -38,6 +38,11 @@ import play.api.libs._
 import play.api.libs.iteratee._
 import play.Play
 import java.net.URLEncoder
+import play.api.libs.oauth.OAuth
+import play.api.libs.oauth.ServiceInfo
+import play.api.libs.oauth.RequestToken
+import play.api.libs.oauth.OAuthCalculator
+import play.api.libs.oauth.ConsumerKey
 
 
 /**
@@ -114,10 +119,11 @@ object Tweetwall extends Controller {
         ba =>
           val msg = new String(ba, "UTF-8")
           val tweet = Json.parse(msg)
+        println("Received msg...")
           tweetChanel.push(tweet)
       }).flatMap(_.run)
 
-      Ok.chunked(tweetsOut &> Comet(callback = "parent.cometMessage"))
+     Ok.feed(tweetsOut &> EventSource()).as("text/event-stream")
   }
 
   def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {

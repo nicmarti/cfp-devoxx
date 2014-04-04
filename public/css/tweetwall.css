@@ -1,0 +1,45 @@
+body {
+    font: 13px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+    color: #555;
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+}
+
+#content {
+    width: 960px;
+    margin: 0 auto;
+    padding-top: 0;
+    min-height: 400px;
+    margin-bottom: 6em;
+    overflow: hidden;
+}
+
+#content-outer {
+    padding-top: 0;
+    min-height: 400px;
+    margin-bottom: 6em;
+    overflow: hidden;
+}
+
+.row-tweets {
+    width: 100%;
+    margin-right: 0;
+    float: none;
+    background-color: #000000;
+}
+.tweet{
+    background-color: #eee;
+}
+.tweet-photo{
+    height: 48px;
+    width: 48px;
+}
+.sn{
+    color:red;
+}
+.un{
+   color:black;
+}
+.tx{
+    color:blue;
+}
