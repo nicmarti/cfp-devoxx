@@ -1,70 +1,184 @@
-body {
-    line-height: 1.5;
+.tweetWall {
+    margin: 0;
     font-size: 13px;
     font-family: 'Roboto', sans-serif;
     color: #fff;
     font-weight: 400;
-    background: #ffffff;
+    background: #3a3836;
     -webkit-font-smoothing: antialiased;
 }
-strong{
+
+@font-face {
+    font-family: 'GothamBook';
+    src: url('../font/gotham-black-webfont-webfont.eot');
+    src: url('../font/gotham-black-webfont-webfont.eot?#iefix') format('embedded-opentype'), url('../font/gotham-black-webfont-webfont.woff') format('woff'), url('../font/gotham-black-webfont-webfont.ttf') format('truetype'), url('../font/gotham-black-webfont-webfont.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+strong {
     font-weight: 700;
 }
 
 #content {
+    width: 100%;
     margin: 0 auto;
     padding-top: 0;
     min-height: 400px;
-    margin-bottom: 6em;
     overflow: hidden;
 }
 
-#content-outer {
-    padding-top: 0;
-    min-height: 400px;
-    margin-bottom: 6em;
-    overflow: hidden;
+#header {
+    height: 36px;
+    border-bottom: 8px #ffffff solid;
+}
+
+.title {
+    position: fixed;
+    top: 0;
+    left: 17px;
+}
+
+.time {
+    width: 60px;
+    margin: 0 auto;
+}
+
+.helper {
+    position: fixed;
+    top: 5px;
+    right: 17px;
 }
 
 .row-tweets {
-    width: 100%;
-    margin-right: 0;
-    padding: 10px;
-    float: none;
-    background-color: #6d8fdd;
+    width: 50%;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    float: left;
+    background-color: #3a3836;
 }
-.tweet{
-    background-color: #fcce87;
+.row-tweets-header {
+      padding-top: 0;
+    padding-right: 0;
+    padding-left: 17px;
+    padding-bottom: 0;
 }
-.tweet-photo{
+.row-tweets-content{
+    padding-top: 0;
+    padding-right: 0;
+    padding-left: 17px;
+    padding-bottom: 0;
+}
+
+ul{
+  list-style-type: none;
+}
+
+.best-talks {
+    width: 50%;
+    padding: 0;
+    float: left;
+    background-color: #3a3836;
+}
+
+.best-talks-header {
+    padding-top: 0;
+    padding-right: 17px;
+    padding-left: 17px;
+    padding-bottom: 0;
+}
+
+.best-talks-content {
+    padding-top: 0;
+    padding-right:17px;
+    padding-left: 17px;
+    padding-bottom: 0;
+}
+
+small.best-talks-header {
+    font-size: 14px;
+}
+
+.next-talks {
+    width: 50%;
+    padding: 0;
+    float: left;
+    background-color: #3a3836;
+}
+
+.next-talks-header {
+    padding-top: 0;
+    padding-right: 17px;
+    padding-left: 17px;
+    padding-bottom: 0;
+}
+
+.next-talks-content {
+    padding-top: 0;
+    padding-right:17px;
+    padding-left: 17px;
+    padding-bottom: 0;
+}
+
+.tweet {
+    background-color: #fafceb;
+    margin-bottom: 12px;
+    padding-top: 0;
+    padding-bottom: 2px;
+    clear: left;
+    min-height: 60px;
+}
+
+.tweet-photo {
     height: 48px;
     width: 48px;
+    float: left;
+    padding: 7px;
+    background-color: white;
 }
-.sn{
-    color:red;
+
+.sn {
+    color: red;
 }
-.un{
-   color:black;
+
+.un {
+    color: black;
 }
-.tx{
-    color:#f5f5f5;
+
+.tx {
+    color: #333;
     font-family: 'Lato', sans-serif;
     font-weight: 400;
-    font-size: 22px;
+    font-size: 18px;
+    margin-left: 70px;
 }
 
 h1 {
-    font-family: 'Lato', sans-serif;
+    font-family: 'GothamBook', sans-serif;
     font-size: 28px;
     font-weight: 900;
 }
+
 h2 {
-    font-family: 'Lato', sans-serif;
-    font-size: 17px;
+    font-family: 'GothamBook', sans-serif;
+    font-size: 22px;
     font-weight: 900;
 }
+
 h3 {
     font-family: 'Lato', sans-serif;
     font-size: 16px;
     font-weight: 900;
+}
+
+li.oneTweet {
+    display: block;
+    list-style-type: none;
+    list-style-image: none;
+}
+ul{
+    padding-left: 0;
+    -webkit-padding-start: 0;
 }
