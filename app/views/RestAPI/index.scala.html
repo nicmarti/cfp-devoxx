@@ -6,17 +6,19 @@
     <h1>Devoxx API</h1>
     <hr>
     <h3>Welcome to Devoxx France REST API.</h3>
-    <div class="panel panel-danger">
+    <div class="panel panel-info">
         <div class="panel-heading">
-            <h4><i class="icon-warning-sign"></i> API is in Beta mode</h4>
+            <h4><i class="icon-info-sign"></i> API is now stable and ready for Devoxx France</h4>
         </div>
         <div class="panel-body">
             <p>Please, report issue with <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> our bug tracker</a></p>
+            <p>I designed this API based on <a href="http://martinfowler.com/articles/richardsonMaturityModel.html">Richardson's
+                REST API maturity level3</a>, with hypermedia link between resources.</p>
+            <p>Nicolas Martignole (<a href="http://www.twitter.com/nmartignole">@@nmartignole</a>).</p>
         </div>
 
     </div>
-    <p><strong>Please, use a JSON client and discover our very simple REST API.</strong></p>
-    <p>The User-Agent HTTP field is mandatory.</p>
+    <p><i class="icon-warning-sign"></i> The User-Agent HTTP field is mandatory.</p>
     <p>Each Response contains:</p>
      <ul>
         <li>an ETag. Please, check and use <code>If-None-Match</code> to avoid too many calls to the server.</li>
