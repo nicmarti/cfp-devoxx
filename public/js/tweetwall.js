@@ -32,12 +32,14 @@ $(function () {
             if (tweet && tweet.user) {
                 createTweet(tweet);
             }
+            if(tweet && tweet.disconnect){
+                console.log("Disconnected");
+                console.log(tweet);
+            }
         })
     };
 
     var createTweet = function (tweet) {
-        console.log(tweet);
-
         var tweetBox = '<li> ' +
             '<img class="tweet-photo" alt="48x48" src="' + tweet.user.profile_image_url + '">' +
             '<span class="sn">' + tweet.user.screen_name +
@@ -61,7 +63,6 @@ $(function () {
              });
 
         };
-        console.log($('#listTweets li').length);
     };
 
     function checkTime(i) {
@@ -89,7 +90,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("tennis"); // the keyword, the hashtag to stream
+        loadTweets("thevoice"); // the keyword, the hashtag to stream
     };
 
     init();
