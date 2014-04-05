@@ -73,18 +73,6 @@ object Tweetwall extends Controller {
       }
   }
 
-  def outputRequest() = Action {
-    implicit request =>
-
-      println("URI " + request.uri)
-      request.headers.toSimpleMap.foreach {
-        token =>
-          println("Header " + token._1 + "=" + token._2)
-      }
-      println("Body " + request.body.asFormUrlEncoded)
-      println("---")
-      Ok("Done")
-  }
 
   def authenticate = Action {
     implicit request =>

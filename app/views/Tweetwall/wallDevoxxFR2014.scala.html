@@ -8,7 +8,6 @@
         <link rel="stylesheet" media="screen" href="/assets/css/tweetwall.css">
         <script src="/assets/js/jquery.min.js" type="text/javascript"></script>
         <script src="/assets/js/tweetwall.js" type="text/javascript"></script>
-         <script src="//cdn.jsdelivr.net/jsrender/1.0pre35/jsrender.min.js"></script>
         <script src="/assets/angular/lib/angular/underscore-min.js" type="text/javascript"></script>
         @helper.javascriptRouter("Router")(routes.javascript.Tweetwall.watchTweets)
 <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900|Roboto:400,700,900&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
@@ -32,34 +31,21 @@
             <h2>Derniers tweets</h2>
         </div>
         <div class="row-tweets-content">
-            <script id="tweetTemplate" type="text/x-jsrender">
-                        <li class="oneTweet">
-                            <div class="tweet">
-                                 <img class="tweet-photo" data-src="holder.js/48x48" alt="48x48" src="{{>user.profile_image_url}}">
-                                    <span class="sn">@@{{>user.screen_name}}</span> (<span class="un">{{>user.name}}</span>)<br>
-                                    <div class="tx">{{>text}}</div>
-                            </div>
-                        </li>
-                    </script>
-            <ul id="list">
+            <ul id="listTweets" class="tweets">
             </ul>
         </div>
     </div>
 
     <div class="best-talks">
         <div class="best-talks-header">
-            <h2>Sessions les plus populaires <small>données proposées par Xebia</small></h2>
+            <h2>Sessions les plus populaires <small>(données proposées par Xebia)</small></h2>
         </div>
         <div class="best-talks-content">
-            <ul>
-                <li class="oneTweet">
-                    <div class="tweet">
-                        <img class="tweet-photo" data-src="holder.js/48x48" alt="48x48" style="width : 48 px ; height : 48 px ;" src="http://pbs.twimg.com/profile_images/378800000834608051/e316a257979941ec47f51799690f3138_normal.png">
-                        <span class="sn">@@MoSportsRedux</span> (<span class="un">MissouriSportsRedux</span>
-                        )<br>
-                        <span class="tx">
-                            Redux Report: Wash U Tennis Advances To Midwest Invite Championship http://t.co/Na9a0r80b9 #ThePowerOfSport #MissouriSports</span>
-                    </div>
+            <ul id="sessionPop" class="tweets">
+                <li>
+                <img class="tweet-photo" data-src="holder.js/48x48" alt="48x48" style="width : 48 px ; height : 48 px ;" src="http://pbs.twimg.com/profile_images/378800000834608051/e316a257979941ec47f51799690f3138_normal.png">
+                <span class="sn">@@MoSportsRedux</span> (<span class="un">MissouriSportsRedux</span>)<br>
+                <div class="tx"> Redux Report: Wash U Tennis Advances To Midwest Invite Championship http://t.co/Na9a0r80b9 #ThePowerOfSport #MissouriSports</div>
                 </li>
             </ul>
         </div>
@@ -70,23 +56,16 @@
             <h1>Prochaines présentations</h1>
         </div>
         <div class="next-talks-content">
-            <ul>
-                <li class="oneTweet">
-                    <div class="tweet">
-                        <img class="tweet-photo" data-src="holder.js/48x48" alt="48x48" style="width : 48 px ; height : 48 px ;" src="http://pbs.twimg.com/profile_images/378800000834608051/e316a257979941ec47f51799690f3138_normal.png">
-                        <span class="sn">@@MoSportsRedux</span> (<span class="un">MissouriSportsRedux</span>
-                        )<br>
-                        <span class="tx">
-                            Redux Report: Wash U Tennis Advances To Midwest Invite Championship http://t.co/Na9a0r80b9 #ThePowerOfSport #MissouriSports</span>
-                    </div>
+            <ul class="actif">
+                <li>
+                    <img class="tweet-photo" data-src="holder.js/48x48" alt="48x48" style="width : 48 px ; height : 48 px ;" src="http://pbs.twimg.com/profile_images/378800000834608051/e316a257979941ec47f51799690f3138_normal.png">
+                    <span class="sn">@@nmartignole</span> (<span class="un">Nicolas Martignole</span>)<br>
+                    <div class="tx"> DEMO : je stream le hashtag #tennis pour ma demo à gauche</div>
                 </li>
             </ul>
         </div>
     </div>
 
 </div>
-    <div id="searchBox">
-        <span><input type="search" id="query" placeholder="Enter a Twitter hashtag or a keyword"></span>
-    </div>
 </body>
 </html>

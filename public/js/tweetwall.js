@@ -21,41 +21,48 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-$(function() {
+$(function () {
 
     // Search
-    var search = function (query) {
+    var loadTweets = function (query) {
         var stream = new EventSource(Router.controllers.Tweetwall.watchTweets(encodeURIComponent(query)).url)
-
-
 
         $(stream).on('message', function (e) {
             var tweet = JSON.parse(e.originalEvent.data);
             if (tweet && tweet.user) {
-                  $('#list').prepend($("#tweetTemplate").render(tweet));
-                  if($('#list li').length>7) {
-                      $('#list').find('li:last-child').remove();
-                  }
-
-//                allTweets.push($("#tweetTemplate").render(tweet));
-//                var toWrite=allTweets.slice(0,5);
-//                 $('#list').empty();
-//                _.each(toWrite,function(t){
-//                    $('#list').prepend(t);
-//                });
-//                allTweets.shift();// drop oldest
-
+                createTweet(tweet);
             }
         })
     };
 
-    $('#query').keypress(function (e) {
-        if (e.keyCode == 13) {
-            $(this).blur();
-            $(this).hide();
-            search($(this).val());
-        }
-    });
+    var createTweet = function (tweet) {
+        console.log(tweet);
+
+        var tweetBox = '<li> ' +
+            '<img class="tweet-photo" alt="48x48" src="' + tweet.user.profile_image_url + '">' +
+            '<span class="sn">' + tweet.user.screen_name +
+            '</span> (<span class="un">' + tweet.user.name +
+            '</span>)<br>' +
+            '<div class="tx">' + tweet.text + '</div>' +
+            '</li>';
+
+        var zeList = $('#listTweets');
+
+        var tweetBox2 = $(tweetBox).addClass('new-item');
+        zeList.prepend(tweetBox2);
+
+        //$('#listTweets li:nth-child(n+1)').removeClass("new-item");
+
+        if($('#listTweets li').length >=8) {
+            var lastItem = $('#listTweets li:nth-child(8)');
+
+             $(lastItem).addClass('removed-item').one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+                $(this).remove();
+             });
+
+        };
+        console.log($('#listTweets li').length);
+    };
 
     function checkTime(i) {
         if (i < 10) {
@@ -63,6 +70,7 @@ $(function() {
         }
         return i;
     }
+
 
     function startTime() {
         var today = new Date();
@@ -78,7 +86,12 @@ $(function() {
         }, 500);
     }
 
-    startTime();
 
+    var init = function () {
+        startTime();
+        loadTweets("tennis"); // the keyword, the hashtag to stream
+    };
+
+    init();
 
 });
