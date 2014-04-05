@@ -135,5 +135,9 @@ object Tweetwall extends Controller {
     }
   }
 
+  def testCSS()=Action{
+    implicit request=>
+      Ok(views.html.Tweetwall.testCSS())
+  }
 
 }
