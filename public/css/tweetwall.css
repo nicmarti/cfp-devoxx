@@ -1,3 +1,6 @@
+.body{
+    overflow:hidden; /* hide scrollbar */
+}
 .tweetWall {
     margin: 0;
     font-size: 13px;
@@ -10,6 +13,7 @@
     background-size: 100%;
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
+    overflow:hidden;
 }
 
 @font-face {
@@ -61,11 +65,10 @@ strong {
     padding-top: 0;
     padding-bottom: 0;
     float: left;
-    background-image: url('../images/pixel_gris.png');
-    background-repeat: repeat;
+
 }
 .row-tweets-header {
-      padding-top: 0;
+    padding-top: 0;
     padding-right: 0;
     padding-left: 17px;
     padding-bottom: 0;
@@ -241,10 +244,10 @@ li.new-item {
 }
 /***********************************************************************/
 li.removed-item {
-  -webkit-animation: removed-item-animation 1s cubic-bezier(0.55, -0.04, 0.91, 0.94) forwards;
-  -o-animation: removed-item-animation 1s cubic-bezier(0.55, -0.04, 0.91, 0.94) forwards;
-  animation: removed-item-animation 1s cubic-bezier(0.55, -0.04, 0.91, 0.94) forwards;
-  -webkit-transform-origin: 0% 100%;
+  -webkit-animation: removed-item-animation 1s linear forwards;
+  -webkit-transform-origin: 0;
+  animation: removed-item-animation 1s linear forwards  transform-origin: 0% 100%
+ -webkit-transform-origin: 0% 100%;
   -ms-transform-origin: 0% 100%;
   -o-transform-origin: 0% 100%;
   transform-origin: 0% 100%
@@ -253,18 +256,18 @@ li.removed-item {
 @keyframes removed-item-animation {
   0% {
     opacity: 1;
-    -webkit-transform: rotateZ(0);
-    -ms-transform: rotateZ(0);
-    -o-transform: rotateZ(0);
-    transform: rotateZ(0)
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0)
   }
 
   100% {
     opacity: 0;
-    -webkit-transform: translateY(600px) rotateZ(90deg);
-    -ms-transform: translateY(600px) rotateZ(90deg);
-    -o-transform: translateY(600px) rotateZ(90deg);
-    transform: translateY(600px) rotateZ(90deg)
+    -webkit-transform: translateY(200px);
+    -ms-transform: translateY(200px);
+    -o-transform: translateY(200px);
+    transform: translateY(200px)
   }
 }
 
@@ -272,14 +275,14 @@ li.removed-item {
 @-webkit-keyframes removed-item-animation {
   0% {
     opacity: 1;
-    -webkit-transform: rotateZ(0);
-    transform: rotateZ(0)
+    -webkit-transform: translateY(0);
+    transform: translateY(0)
   }
 
   100% {
     opacity: 0;
-    -webkit-transform: translateY(600px) rotateZ(90deg);
-    transform: translateY(600px) rotateZ(90deg)
+    -webkit-transform: translateY(200px);
+    transform: translateY(200px)
   }
 }
 

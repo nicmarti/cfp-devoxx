@@ -32,11 +32,27 @@ $(function () {
             if (tweet && tweet.user) {
                 createTweet(tweet);
             }
-            if(tweet && tweet.disconnect){
+            if (tweet && tweet.disconnect) {
                 console.log("Disconnected");
                 console.log(tweet);
             }
-        })
+        });
+
+        $(stream).on('open', function (e) {
+            console.log("Server-sent event connected");
+            return false;
+        });
+
+        $(stream).on('error', function (e) {
+            console.log("Server-sent event error");
+            console.log(e);
+            if (e.readyState == EventSource.CLOSED) {
+                // Connection was closed.
+                console.log("event source closed");
+
+            }
+            return false;
+        });
     };
 
     var createTweet = function (tweet) {
@@ -55,14 +71,15 @@ $(function () {
 
         //$('#listTweets li:nth-child(n+1)').removeClass("new-item");
 
-        if($('#listTweets li').length >=8) {
+        if ($('#listTweets li').length >= 8) {
             var lastItem = $('#listTweets li:nth-child(8)');
 
-             $(lastItem).addClass('removed-item').one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+            $(lastItem).addClass('removed-item').one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function (e) {
                 $(this).remove();
-             });
+            });
 
-        };
+        }
+        ;
     };
 
     function checkTime(i) {
@@ -90,7 +107,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("thevoice"); // the keyword, the hashtag to stream
+        loadTweets("tennis"); // the keyword, the hashtag to stream
     };
 
     init();

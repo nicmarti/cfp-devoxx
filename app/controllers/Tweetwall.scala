@@ -115,14 +115,13 @@ object Tweetwall extends Controller {
       val (tweetsOut, tweetChanel) = Concurrent.broadcast[JsValue]
     // See Twitter parameters doc https://dev.twitter.com/docs/streaming-apis/parameters
      WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&track=" + URLEncoder.encode(keywords, "UTF-8"))
+        .withRequestTimeout(-1) // Connected forever
         .sign(OAuthCalculator(KEY, sessionTokenPair.get))
         .withHeaders("Connection"->"keep-alive")
         .postAndRetrieveStream("")(headers => Iteratee.foreach[Array[Byte]] {
         ba =>
           val msg = new String(ba, "UTF-8")
           val tweet = Json.parse(msg)
-          println("Received msg..." +tweet)
-          println("---")
           tweetChanel.push(tweet)
       }).flatMap(_.run)
 
