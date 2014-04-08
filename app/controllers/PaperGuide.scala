@@ -115,6 +115,69 @@ object PaperGuide extends SecureCFPController {
       fromStream(stream)
   }
 
+  def exportProgramByRoomAndHours()=SecuredAction(IsMemberOf("cfp")) {
+      implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+        val allScheduledConfs = for (confType <- ProposalType.all;
+                                  scheduleId <- ScheduleConfiguration.getPublishedSchedule(confType.id);
+                                  scheduledConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId)
+
+        ) yield scheduledConf
+
+      val allSlotsByRoom = allScheduledConfs.flatMap(sc=>sc.slots.filter(_.day=="mercredi"))
+
+      val dir = new File("./target/guide" )
+      FileUtils.forceMkdir(dir)
+      val csvFile = new File(dir, "allSlots.csv")
+      val writer = new PrintWriter(csvFile, "MacRoman")
+
+      writer.print("Time")
+      writer.print(";")
+
+      val groupedByRoom= allSlotsByRoom.groupBy(_.room.name)
+
+      // Print header
+      val listOfRooms = groupedByRoom.keys.toList.sorted
+
+      listOfRooms.foreach{
+        room:String=>
+          writer.print(room)
+          writer.print(";")
+      }
+      writer.println()
+
+      val timeSlotsAsSet:Set[TimeSlot] = allScheduledConfs.flatMap(_.timeSlots).filter(_.start.getDayOfWeek==3).toSet
+      val timeSlots = timeSlotsAsSet.toList.sortBy(_.start.toDate.getTime)
+
+      timeSlots.foreach{
+        ts=>
+          writer.print(ts.start.toString("HH:mm"))
+          writer.print("-")
+          writer.print(ts.end.toString("HH:mm"))
+          writer.println(";")
+
+          listOfRooms.foreach{
+            room:String=>
+              val list=allSlotsByRoom.filter(s=>s.room.name==room && s.from==ts.start)
+              list.foreach{
+                slotUnique=>
+                  writer.print(slotUnique)
+              }
+              writer.print(";")
+
+              writer.println()
+          }
+
+
+      }
+      writer.println()
+
+
+      writer.close()
+
+      Ok("Done")
+  }
+
   def exportProgram() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       implicit val context = scala.concurrent.ExecutionContext.Implicits.global

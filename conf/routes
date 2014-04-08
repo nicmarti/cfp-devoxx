@@ -137,6 +137,7 @@ GET           /devoxxfr2014/byday/:day                               controllers
 GET           /guide/speakers                                        controllers.PaperGuide.exportSpeakers()
 GET           /guide/allPhotos                                       controllers.PaperGuide.downloadAllSpeakersPhotos()
 GET           /guide/exported                                        controllers.PaperGuide.exportProgram()
+GET           /guide/exportedByRoom                                  controllers.PaperGuide.exportProgramByRoomAndHours()
 
 # REST API
 GET           /api                                                   controllers.RestAPI.index()

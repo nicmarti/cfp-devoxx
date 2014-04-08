@@ -56,13 +56,21 @@ $(function () {
     };
 
     var createTweet = function (tweet) {
+        var thumImages = [];
+        if(tweet.entities && tweet.entities.media) {
+            thumImages = _.map(tweet.entities.media,function(m){
+                return '<img src="' + m.media_url +'" alt="image">';
+            });
+            console.log(thumImages);
+        }
+
         var tweetBox = '<li> ' +
             '<img class="tweet-photo" alt="48x48" src="' + tweet.user.profile_image_url + '">' +
             '<span class="sn">' + tweet.user.screen_name +
             '</span> (<span class="un">' + tweet.user.name +
             '</span>)<br>' +
             '<div class="tx">' + tweet.text + '</div>' +
-            '</li>';
+            thumImages + '</li>';
 
         var zeList = $('#listTweets');
 

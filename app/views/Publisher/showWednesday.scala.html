@@ -1,5 +1,6 @@
 @()(implicit lang: Lang, req:RequestHeader)
 @views.html.Publisher.devoxxFR2014(Messages("sw.show.wed")){
+
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
@@ -16,17 +17,17 @@
 <tr>
     <td>8h00 - 09h30</td>
     <td>@Messages("sw.breakfast")</td>
-    <td rowspan="7">
+    <td rowspan="2">
         <ul>
-            <li><a href="http://www.devoxx.fr/open-data-camp-2014/">Open-Data Camp</a> 9h30 - 18h00</li>
-            <li><a href="http://www.devoxx.fr/devoxx4kids-2014/">Devoxx4Kids</a> 9h30 - 18h00</li>
+            <li><a href="http://www.devoxx.fr/open-data-camp-2014/">Open-Data Camp</a> 9h30 - 18h00 Salle Montsouris, Niv 2</li>
+            <li><a href="http://www.devoxx.fr/devoxx4kids-2014/">Devoxx4Kids</a> 9h30 - 18h00 Salle Jardin des Plantes, Niv 2</li>
         </ul>
 
     </td>
 </tr>
 <tr>
     <td>09h30 - 12h30</td>
-    <td>
+    <td colspan="2">
         <ul>
             <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.UNI.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
             <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.LAB.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
@@ -44,8 +45,12 @@
         <ul>
             <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.UNI.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
             <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.LAB.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
-            <li><a href="@routes.Publisher.showDetailsForProposal("QIY-889","Hackergarten")">Hackergarten</a></li>
         </ul>
+    </td>
+    <td>
+        <ul>
+        <li><a href="@routes.Publisher.showDetailsForProposal("QIY-889","Hackergarten")">Hackergarten</a> 13h30 à 16h30 niveau -1</li>
+    </ul>
     </td>
 </tr>
 <tr>
