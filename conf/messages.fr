@@ -485,3 +485,5 @@ sw.proposal.whenWhere=Heure de passage et salle
 day-jeudi=Jeudi
 day-vendredi=Vendredi
 day-mercredi=Mercredi
+
+showAgendaByRoom=Agenda par salle

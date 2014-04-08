@@ -457,3 +457,6 @@ sw.whenWhere=Schedule time and room
 day-jeudi=Thursday
 day-friday=Friday
 day-wednesday=Wednesday
+
+showAgendaByRoom=Agenda by Room
+sw.proposal.whenWhere=Scheduled time and room
