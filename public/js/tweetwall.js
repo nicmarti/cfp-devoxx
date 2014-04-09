@@ -68,11 +68,12 @@ $(function () {
             '<img class="tweet-photo" alt="48x48" src="' + tweet.user.profile_image_url + '">' +
             '<span class="sn">' + tweet.user.screen_name +
             '</span> (<span class="un">' + tweet.user.name +
-            '</span>)<br>' +
-            '<div class="tx">' + tweet.text + '</div>' +
-            '<img src="http://whichlang.appspot.com/posneg?img=true&text=' +
+            '</span>)' +
+            '<img class="humoricon" src="http://whichlang.appspot.com/posneg?img=true&png=true&text=' +
             encodeURIComponent(tweet.text) +
             '">' +
+            '<br>' +
+            '<div class="tx">' + tweet.text + '</div>' +
             '</li>';
 
         var zeList = $('#listTweets');
@@ -133,7 +134,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("tennis"); // the keyword, the hashtag to stream
+        loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
         loadBestTalks();
     };
 

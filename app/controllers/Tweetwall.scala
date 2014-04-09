@@ -25,14 +25,9 @@ package controllers
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 
-import play.api.libs.iteratee._
-
-
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
 import play.api.libs.ws._
-import play.api.libs.oauth._
 import play.api.mvc._
 import play.api.libs._
 import play.api.libs.iteratee._
@@ -43,7 +38,6 @@ import play.api.libs.oauth.ServiceInfo
 import play.api.libs.oauth.RequestToken
 import play.api.libs.oauth.OAuthCalculator
 import play.api.libs.oauth.ConsumerKey
-import library.WSEnumerator
 
 
 /**
@@ -101,7 +95,7 @@ object Tweetwall extends Controller {
 
       val (tweetsOut, tweetChanel) = Concurrent.broadcast[JsValue]
       // See Twitter parameters doc https://dev.twitter.com/docs/streaming-apis/parameters
-      WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&track=" + URLEncoder.encode(keywords, "UTF-8"))
+      WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&language=fr,en&filter_level=none&track=" + URLEncoder.encode(keywords, "UTF-8"))
         .withRequestTimeout(-1) // Connected forever
         .sign(OAuthCalculator(KEY, sessionTokenPair.get))
         .withHeaders("Connection" -> "keep-alive")
