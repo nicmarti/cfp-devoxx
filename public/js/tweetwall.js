@@ -110,9 +110,21 @@ $(function () {
         _.each(bestTalks, function(talk){
             console.log(talk);
 
-            var speakerBox = '<li> ' +
+            var photos = _.map(talk.gravatars,function(g){
+               return '<img src="' + g + '" class="bestTalkSpeakers">';
+            });
+
+            var speakerBox = '<li>' +
+                '<div class="bestTalk"> ' +
+            '<div class="bestTalkPhotos">' +
+                photos +
+            '</div>' +
             '<div class="bestTalkTitle"> '+
                 talk.title +
+            '</div>' +
+            '<div class="bestTalkTrack">' +
+                talk.track + '<br>' + talk.speakers +
+            '</div>'+
             '</div>' +
             '</li>';
 
@@ -157,7 +169,7 @@ $(function () {
 
     var init = function () {
         startTime();
-      //  loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
+        loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
         loadBestTalks();
     };
 

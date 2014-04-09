@@ -88,9 +88,6 @@ ul{
     width: 50%;
     padding: 0;
     float: left;
-    background-image: url('../images/pixel_gris.png');
-    background-repeat: repeat;
-
 }
 
 .best-talks-header {
@@ -110,30 +107,6 @@ ul{
 small.best-talks-header {
     font-size: 14px;
 }
-
-.next-talks {
-    width: 50%;
-    padding: 0;
-    float: left;
-    background-image: url('../images/pixel_gris.png');
-    background-repeat: repeat;
-
-}
-
-.next-talks-header {
-    padding-top: 0;
-    padding-right: 17px;
-    padding-left: 17px;
-    padding-bottom: 0;
-}
-
-.next-talks-content {
-    padding-top: 0;
-    padding-right:17px;
-    padding-left: 17px;
-    padding-bottom: 0;
-}
-
 
 
 h1 {
@@ -307,9 +280,53 @@ li.removed-item {
     padding: 2px;
     background-color: white;
 }
-
+.bestTalk{
+    padding: 3px;
+    z-index: 2;
+}
 .bestTalkTitle{
     color:#000;
     font-family: GothamBook,Arial,sans-serif;
     font-size: 20px;
+}
+.bestTalkTrack{
+    color:#444;
+    font-size: 14px;
+    font-family: Lato,sans-serif;
+    font-weight: 600;
+}
+.bestTalkSpeakers{
+   height: 56px;
+   max-width: 56px;
+
+}
+.bestTalkPhotos{
+    float:right;
+    position:relative;
+    z-index: 5;
+}
+
+
+.next-talks {
+    width: 50%;
+    padding: 0;
+    float: right;
+}
+
+.next-talks-header {
+    padding-top: 0;
+    padding-right: 17px;
+    padding-left: 17px;
+    padding-bottom: 0;
+}
+
+.next-talks-content {
+    padding-top: 0;
+    padding-right:17px;
+    padding-left: 17px;
+    padding-bottom: 0;
+}
+.nextTalk{
+    color:#000;
+    padding: 3px;
 }

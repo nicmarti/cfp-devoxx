@@ -9,8 +9,7 @@
         <script src="/assets/js/jquery.min.js" type="text/javascript"></script>
         <script src="/assets/js/tweetwall.js" type="text/javascript"></script>
         <script src="/assets/angular/lib/angular/underscore-min.js" type="text/javascript"></script>
-        @helper.javascriptRouter("Router")(routes.javascript.Tweetwall.watchTweets)
-        @helper.javascriptRouter("Router")(routes.javascript.Tweetwall.watchBestTalks)
+        @helper.javascriptRouter("Router")(routes.javascript.Tweetwall.watchTweets,routes.javascript.Tweetwall.watchBestTalks)
 <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900|Roboto:400,700,900&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     </head>
 <body class="tweetWall">
@@ -43,10 +42,23 @@
         </div>
         <div class="best-talks-content">
             <ul id="sessionPop" class="tweets">
-                <li>
-                <img class="tweet-photo" data-src="holder.js/48x48" alt="48x48" style="width : 48 px ; height : 48 px ;" src="http://pbs.twimg.com/profile_images/378800000834608051/e316a257979941ec47f51799690f3138_normal.png">
-                <span class="sn">@@MoSportsRedux</span> (<span class="un">MissouriSportsRedux</span>)<br>
-                <div class="tx"> Redux Report: Wash U Tennis Advances To Midwest Invite Championship http://t.co/Na9a0r80b9 #ThePowerOfSport #MissouriSports</div>
+                <li class="new-item">
+                    <div class="bestTalk">
+                    <div class="bestTalkPhotos">
+                     <img src="https://pbs.twimg.com/profile_images/1517315599/alex-photo.jpg" class="bestTalkSpeakers">
+                    ,<img src="http://www.gravatar.com/avatar/eb1b78b26d8ecc164642705d0f1eb304.png" class="bestTalkSpeakers">
+                    </div>
+                    <div class="bestTalkTitle"> Deux années de Continuous Delivery au pays des traders Votez pour nous ! L'internet des objets par l'exemple.</div>
+                    <div class="bestTalkTrack">Agilité, DevOps</div>
+                    </div>
+                </li>
+                <li class="new-item">
+
+                    <div class="bestTalk">
+                    <div class="bestTalkPhotos"><img src="http://www.gravatar.com/avatar/0cf8b9a32877d98e3e6fe9080ba78165.png" class="bestTalkSpeakers"></div>
+                    <div class="bestTalkTitle"> Se plugger dans le compilateur Java</div>
+                    <div class="bestTalkTrack">Java SE, Java EE</div>
+                            </div>
                 </li>
             </ul>
         </div>
@@ -54,10 +66,17 @@
 
     <div class="next-talks">
         <div class="next-talks-header">
-            <h1>Prochaines présentations</h1>
+            <h2>Prochaines présentations</h2>
         </div>
         <div class="next-talks-content">
-
+            <ul id="nextTalk" class="tweets"><li class="new-item"><div class="bestTalk"> <div class="bestTalkPhotos"><img src="https://lh5.googleusercontent.com/-mKbAuNmfNAw/UpMr-C6UnjI/AAAAAAAAAJA/o9gnIX14fAU/w1128-h1126-no/Francesc+Campoy+%25281%2529.jpg" class="bestTalkSpeakers"></div> <div class="bestTalkTitle"> Go pour Javaneros</div> <div class="bestTalkTrack">Langages alternatifs<br>
+                Francesc Campoy Flores</div></div>
+            </li> <li class="new-item"><div class="bestTalk"> <div class="bestTalkPhotos"><img src="https://lh4.googleusercontent.com/-0t_DHFWMri8/AAAAAAAAAAI/AAAAAAAATII/-0t0-K0kwz8/photo.jpg" class="bestTalkSpeakers"></div> <div class="bestTalkTitle"> SARAH: connecter et interagir avec l'Internet des Objets au quotidien</div> <div class="bestTalkTrack">Future<devoxx><br>
+                Jean-Philippe Encausse</devoxx></div></div>
+            </li> <li class="new-item"><div class="bestTalk"> <div class="bestTalkPhotos"><img src="http://www.gravatar.com/avatar/dcdcd4c1b4e6d56cc45c9128fb18d0dc.png?size=512" class="bestTalkSpeakers"></div> <div class="bestTalkTitle"> Truly Native Java Apps on iOS with RoboVM</div> <div class="bestTalkTrack">Mobile<br>
+                Niklas Therning</div></div>
+            </li>
+            </ul>
         </div>
     </div>
 
