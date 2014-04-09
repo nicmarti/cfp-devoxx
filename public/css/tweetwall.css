@@ -308,3 +308,8 @@ li.removed-item {
     background-color: white;
 }
 
+.bestTalkTitle{
+    color:#000;
+    font-family: GothamBook,Arial,sans-serif;
+    font-size: 20px;
+}

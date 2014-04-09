@@ -38,6 +38,9 @@ import play.api.libs.oauth.ServiceInfo
 import play.api.libs.oauth.RequestToken
 import play.api.libs.oauth.OAuthCalculator
 import play.api.libs.oauth.ConsumerKey
+import models.{Speaker, Proposal}
+import play.api.i18n.Messages.Message
+import play.api.i18n.Messages
 
 
 /**
@@ -122,27 +125,46 @@ object Tweetwall extends Controller {
     implicit request =>
       import scala.concurrent.duration._
 
-      val url = routes.SchedullingController.giveMeBestTalks.absoluteURL()
+      val url:String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
 
-      val timeStream: Enumerator[JsValue] = Enumerator.generateM[JsValue] {
-        WS.url(url).get().map {
-          response =>
-            response.status match {
-              case 200 => Some(Json.parse(response.body))
-              case other => None
-            }
-        }
+      def futureIDs:Future[Option[JsValue]] = WS.url(url).get().map {
+        response =>
+          response.status match {
+            case 200 => Some(Json.parse(response.body))
+            case other => None
+          }
       }
 
-      //       Promise.timeout(
-      //        Some( Json.obj(
-      //          "id" -> UUID.randomUUID().toString(),
-      //          "amount" -> Random.nextInt(1000),
-      //          "access" -> if (Random.nextBoolean) "public" else "private"
-      //        ))
-      //       ,1000
-      //      )
+      val bestProposalIDs: Enumerator[JsValue] = Enumerator.generateM[JsValue] {
+         futureIDs.flatMap(r=>play.api.libs.concurrent.Promise.timeout(r, 2 seconds))
+      }
 
-      Ok.feed(timeStream &> EventSource()).as("text/event-stream")
+      val jsIDstoProposal:Enumeratee[JsValue,JsValue] = Enumeratee.map{
+        jsValue=>
+
+          val ids=jsValue.as[List[String]]
+
+          val proposals = Proposal.loadAndParseProposals(ids.toSet).values.toSeq
+
+         val jsonObject = Json.toJson(
+                proposals.map {
+                  proposal =>
+                    Json.toJson(
+                      Map(
+                        "id"->JsString(proposal.id),
+                        "title"->JsString(proposal.title),
+                        "speakers"->JsString(proposal.allSpeakers.map(s=>s.cleanShortName).mkString(", ")),
+                        "gravatars"->Json.toJson(proposal.allSpeakersGravatar),
+                        "track"->JsString(Messages(proposal.track.id))
+                      )
+                    )
+                }
+          )
+          Json.toJson(jsonObject)
+      }
+
+      Ok.feed(bestProposalIDs  &> jsIDstoProposal &> EventSource()).as("text/event-stream")
   }
+
+
 }

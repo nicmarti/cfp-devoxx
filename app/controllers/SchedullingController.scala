@@ -216,9 +216,9 @@ object SchedullingController extends SecureCFPController {
       maybeConf match {
         case Some(confSlots) => {
           val slots = Random.shuffle(confSlots.slots).take(3)
-          val toReturn = slots.map {
+          val toReturn = slots.flatMap {
             slot =>
-              slot.id
+              slot.proposal.map(_.id)
           }
           Ok(Json.toJson(toReturn)).as(JSON)
         }
