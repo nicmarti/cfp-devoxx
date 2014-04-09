@@ -173,6 +173,7 @@ GET           /tweetwall/authenticate                                controllers
 GET           /tweetwall/callback                                    controllers.Tweetwall.authenticate()
 GET           /tweetwall/stream                                      controllers.Tweetwall.watchTweets(keywords:String)
 GET           /tweetwall/besttalks                                   controllers.Tweetwall.watchBestTalks()
+GET           /tweetwall/nexttalks                                   controllers.Tweetwall.loadNextTalks()
 
 # Temp
 GET           /schedulling/fr14/giveMeBestTalks                      controllers.SchedullingController.giveMeBestTalks()

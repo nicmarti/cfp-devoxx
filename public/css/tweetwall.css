@@ -58,6 +58,22 @@ strong {
     right: 17px;
 }
 
+.messageBoxContainer{
+    float: left;
+    clear: both;
+    width: 100%;
+}
+.messageBox{
+    margin: 0 auto;
+    width: 95%;
+    background-color: #ff5b51;
+    border: 5px solid #f00;
+    padding-top: 0;
+    padding-right: 6px;
+    padding-left: 6px;
+    padding-bottom: 0;
+}
+
 .row-tweets {
     width: 50%;
     padding-left: 0;
@@ -68,10 +84,11 @@ strong {
 
 }
 .row-tweets-header {
-    padding-top: 0;
-    padding-right: 0;
-    padding-left: 17px;
-    padding-bottom: 0;
+padding-top: 2px;
+padding-left: 7px;
+padding-bottom: 2px;
+background-color: #222;
+margin-left: 17px;
 }
 .row-tweets-content{
     padding-top: 0;
@@ -91,23 +108,24 @@ ul{
 }
 
 .best-talks-header {
-    padding-top: 0;
-    padding-right: 17px;
-    padding-left: 17px;
-    padding-bottom: 0;
+padding-top: 2px;
+padding-left: 7px;
+padding-bottom: 2px;
+background-color: #222;
+margin-left: 17px;
 }
 
 .best-talks-content {
     padding-top: 0;
-    padding-right:17px;
-    padding-left: 17px;
+    padding-right:0;
+    padding-left: 0;
     padding-bottom: 0;
+    margin-left: 17px;
 }
 
 small.best-talks-header {
     font-size: 14px;
 }
-
 
 h1 {
     font-family: 'GothamBook', sans-serif;
@@ -281,7 +299,7 @@ li.removed-item {
     background-color: white;
 }
 .bestTalk{
-    padding: 3px;
+    padding: 7px;
     z-index: 2;
 }
 .bestTalkTitle{
@@ -306,7 +324,7 @@ li.removed-item {
     z-index: 5;
 }
 
-
+/***********************************************************************/
 .next-talks {
     width: 50%;
     padding: 0;
@@ -314,10 +332,11 @@ li.removed-item {
 }
 
 .next-talks-header {
-    padding-top: 0;
-    padding-right: 17px;
-    padding-left: 17px;
-    padding-bottom: 0;
+padding-top: 2px;
+padding-left: 7px;
+padding-bottom: 2px;
+background-color: #222;
+margin-left: 17px;
 }
 
 .next-talks-content {
@@ -326,9 +345,51 @@ li.removed-item {
     padding-left: 17px;
     padding-bottom: 0;
 }
+.nextTalkPanel{
+    padding-right: 5px;
+}
 .nextTalk{
+color: #000;
+z-index: 2;
+width: 420px;
+background-color: white;
+display: inline-block;
+float: left;
+min-height: 88px;
+padding: 7px;
+}
+.nextTalkTitle{
     color:#000;
-    padding: 3px;
+    font-family: GothamBook,Arial,sans-serif;
+    font-size: 16px;
+}
+.nextTalkTrack{
+    color:#444;
+    font-size: 14px;
+    font-family: Lato,sans-serif;
+    font-weight: 600;
+}
+.nextTalkSpeakers{
+   height: 56px;
+   max-width: 56px;
+
+}
+.nextTalkRoom{
+    float:right;
+    position:relative;
+    z-index: 5;
+    background-color: #f15f15;
+    color:#ffffff;
+    font-family: GothamBook,sans-serif;
+    width: 90px;
+    height: 60px;
+    text-align: center;
+    vertical-align: middle;
+    text-wrap: normal;
+}
+.special-block{
+    display: inline-block;
+    margin-right: 10px;
 }
 
 /***********************************************************************/

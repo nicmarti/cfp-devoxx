@@ -108,13 +108,6 @@ $(function () {
     var createBestTalkPanels = function(bestTalks){
         _.each(bestTalks, function(talk){
 
-
-            var lastItem = $('#sessionPop li');
-            $(lastItem).addClass('removed-horiz-item').one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function (e) {
-                $(this).remove();
-            });
-
-
             var photos = _.map(talk.gravatars,function(g){
                return '<img src="' + g + '" class="bestTalkSpeakers">';
             });
@@ -137,6 +130,50 @@ $(function () {
             var tweetBox2 = $(speakerBox).addClass('new-item');
             zeList.prepend(tweetBox2);
 
+            if ($('#sessionPop li').length >= 4) {
+                var lastItem = $('#sessionPop li:nth-child(4)');
+                $(lastItem).remove();
+            }
+
+
+            return speakerBox;
+        });
+
+
+    };
+
+    var loadNextTalks = function (query) {
+        var stream = new EventSource(Router.controllers.Tweetwall.loadNextTalks().url);
+
+        $(stream).on('message', function (e) {
+            var nextTalks = JSON.parse(e.originalEvent.data);
+            if (nextTalks) {
+                createNextTalks(nextTalks);
+            }
+        });
+    };
+
+     var createNextTalks = function(nextTalks){
+         $('#nextTalkPanel').empty();
+
+        _.each(nextTalks, function(talk){
+            var speakerBox = '<div>' +
+                '<div class="nextTalk"> ' +
+            '<div class="nextTalkRoom">' +
+                talk.room +
+            '</div>' +
+            '<div class="nextTalkTitle"> '+
+                talk.title +
+            '</div>' +
+            '<div class="nextTalkTrack">' +
+                talk.track + '<br>' + talk.speakers +
+            '</div>'+
+            '</div>' +
+            '</div>';
+
+            var zeList = $('#nextTalkPanel');
+            var tweetBox2 = $(speakerBox).addClass('new-item').addClass('special-block');
+            zeList.prepend(tweetBox2);
 
             return speakerBox;
         });
@@ -168,8 +205,9 @@ $(function () {
 
     var init = function () {
         startTime();
-      loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
+        loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
         loadBestTalks();
+        loadNextTalks();
     };
 
     init();

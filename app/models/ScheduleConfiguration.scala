@@ -27,27 +27,31 @@ import library.Redis
 import play.api.libs.json.Json
 import org.joda.time.DateTime
 import org.apache.commons.lang3.RandomStringUtils
+import scala.util.Random
 
 /**
  * Slots that are scheduled.
  *
  * Created by Nicolas Martignole on 27/02/2014.
  */
-case class TimeSlot(start:DateTime,end:DateTime){
-  override def hashCode(): Int = {start.hashCode()+end.hashCode()}
+case class TimeSlot(start: DateTime, end: DateTime) {
+  override def hashCode(): Int = {
+    start.hashCode() + end.hashCode()
+  }
 
   override def equals(obj: scala.Any): Boolean = {
-    if(obj.isInstanceOf[TimeSlot]){
-      val d2=obj.asInstanceOf[TimeSlot]
+    if (obj.isInstanceOf[TimeSlot]) {
+      val d2 = obj.asInstanceOf[TimeSlot]
       d2.start.equals(this.start) && d2.end.equals(this.end)
-    }else{
+    } else {
       false
     }
   }
 }
-case class ScheduleConfiguration( confType: String, slots: List[Slot], timeSlots:List[TimeSlot])
 
-case class ScheduleSaved(id:String, confType:String, createdBy:String, hashCodeSlots:Int)
+case class ScheduleConfiguration(confType: String, slots: List[Slot], timeSlots: List[TimeSlot])
+
+case class ScheduleSaved(id: String, confType: String, createdBy: String, hashCodeSlots: Int)
 
 object ScheduleConfiguration {
   implicit val timeSlotFormat = Json.format[TimeSlot]
@@ -56,7 +60,7 @@ object ScheduleConfiguration {
 
   def persist(confType: String, slots: List[Slot], createdBy: Webuser) = Redis.pool.withClient {
     implicit client =>
-      val id = confType+"-"+(RandomStringUtils.randomAlphabetic(3)+"-"+RandomStringUtils.randomNumeric(2)).toLowerCase
+      val id = confType + "-" + (RandomStringUtils.randomAlphabetic(3) + "-" + RandomStringUtils.randomNumeric(2)).toLowerCase
       val key = ScheduleSaved(id, confType, createdBy.firstName, slots.hashCode())
       val jsonKey = Json.toJson(key).toString()
       client.zadd("ScheduleConfiguration", System.currentTimeMillis() / 1000, jsonKey)
@@ -71,13 +75,13 @@ object ScheduleConfiguration {
       client.hset("ScheduleConfigurationByID", id, json)
   }
 
-  def delete(id:String)=Redis.pool.withClient{
-    implicit client=>
+  def delete(id: String) = Redis.pool.withClient {
+    implicit client =>
       val scheduledSlotsKey = client.zrevrangeWithScores("ScheduleConfiguration", 0, -1)
-      val tx=client.multi()
+      val tx = client.multi()
 
       scheduledSlotsKey.map {
-        case (key:String,_) =>
+        case (key: String, _) =>
           val scheduleSaved = Json.parse(key).as[ScheduleSaved]
           if (scheduleSaved.id == id) {
             tx.zrem("ScheduleConfiguration", key)
@@ -92,57 +96,75 @@ object ScheduleConfiguration {
       client.zrevrangeWithScores("ScheduleConfiguration", 0, -1)
   }
 
-  def loadScheduledConfiguration(id:String):Option[ScheduleConfiguration]=Redis.pool.withClient{
-    implicit client=>
-      client.hget("ScheduleConfigurationByID",id).map{
-        json:String=>
+  def loadScheduledConfiguration(id: String): Option[ScheduleConfiguration] = Redis.pool.withClient {
+    implicit client =>
+      client.hget("ScheduleConfigurationByID", id).map {
+        json: String =>
           Json.parse(json).as[ScheduleConfiguration]
       }
   }
 
-  def publishConf(id:String, confType:String)=Redis.pool.withClient{
-    implicit client=>
+  def publishConf(id: String, confType: String) = Redis.pool.withClient {
+    implicit client =>
       client.hset("Published:Schedule", confType, id)
   }
 
-  def getPublishedSchedule(confType:String):Option[String]=Redis.pool.withClient{
-    implicit client=>
-      client.hget("Published:Schedule",confType)
+  def getPublishedSchedule(confType: String): Option[String] = Redis.pool.withClient {
+    implicit client =>
+      client.hget("Published:Schedule", confType)
   }
 
-  def getPublishedScheduleByDay(day:String):List[Slot]={
+  def getPublishedScheduleByDay(day: String): List[Slot] = {
 
     val listOfSlots = day match {
-      case "wednesday"=>{
+      case "wednesday" => {
         Slot.wednesday ++ loadSlotsForConfType(ProposalType.UNI.id) ++ loadSlotsForConfType(ProposalType.LAB.id) ++ loadSlotsForConfType(ProposalType.TIA.id)
       }
-      case "thursday"=>{
+      case "thursday" => {
         val fullList = Slot.thursday ++ loadSlotsForConfType(ProposalType.QUICK.id) ++ loadSlotsForConfType(ProposalType.KEY.id) ++ loadSlotsForConfType(ProposalType.CONF.id) ++ loadSlotsForConfType(ProposalType.BOF.id)
-        fullList.filter(_.day=="jeudi")
+        fullList.filter(_.day == "jeudi")
       }
-      case "friday"=>{
+      case "friday" => {
         val fullList = Slot.friday ++ loadSlotsForConfType(ProposalType.QUICK.id) ++ loadSlotsForConfType(ProposalType.KEY.id) ++ loadSlotsForConfType(ProposalType.CONF.id)
-        fullList.filter(_.day=="vendredi")
+        fullList.filter(_.day == "vendredi")
       }
-      case other=>Nil
+      case other => Nil
     }
 
     listOfSlots.sortBy(_.from.getMillis)
   }
 
-  def loadSlotsForConfType(confType:String):List[Slot]={
-    getPublishedSchedule(confType).flatMap{
-        id:String=>
-        loadScheduledConfiguration(id).map{
-          scheduledConf=>
+  def loadSlotsForConfType(confType: String): List[Slot] = {
+    getPublishedSchedule(confType).flatMap {
+      id: String =>
+        loadScheduledConfiguration(id).map {
+          scheduledConf =>
             scheduledConf.slots
         }
-      }.getOrElse(List.empty[Slot])
+    }.getOrElse(List.empty[Slot])
   }
 
   // Retrieve the time slot for a specific proposalId
-  def findSlotForConfType(confType:String, proposalId:String):Option[Slot]={
-    loadSlotsForConfType(confType).filter(_.proposal.isDefined).filter(_.proposal.get.id==proposalId).headOption
+  def findSlotForConfType(confType: String, proposalId: String): Option[Slot] = {
+    loadSlotsForConfType(confType).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId).headOption
+  }
+
+  def loadAllConfigurations() = {
+    val allConfs = for (confType <- ProposalType.allIDsOnly;
+                        slotId <- ScheduleConfiguration.getPublishedSchedule(confType);
+                        configuration <- ScheduleConfiguration.loadScheduledConfiguration(slotId)
+    ) yield configuration
+
+    allConfs
+  }
+
+
+  def loadNextTalks() = {
+    val allAgendas = ScheduleConfiguration.loadAllConfigurations()
+    val slots = allAgendas.map(_.slots).flatten
+    //slots.filter(_.from.hourOfDay() == new DateTime().hourOfDay())
+    //println(slots.filter(_.proposal.isDefined).size)
+    Option(Random.shuffle(slots.toList).take(12))
   }
 
 }

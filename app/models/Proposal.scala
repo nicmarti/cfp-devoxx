@@ -36,6 +36,8 @@ object ProposalType {
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
+  val allIDsOnly=allAsId.map(_._1)
+
   def parse(proposalType: String): ProposalType = {
     proposalType match {
       case "conf" => CONF

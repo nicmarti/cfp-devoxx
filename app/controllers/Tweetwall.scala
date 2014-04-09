@@ -38,9 +38,17 @@ import play.api.libs.oauth.ServiceInfo
 import play.api.libs.oauth.RequestToken
 import play.api.libs.oauth.OAuthCalculator
 import play.api.libs.oauth.ConsumerKey
-import models.{Speaker, Proposal}
+import models._
 import play.api.i18n.Messages.Message
 import play.api.i18n.Messages
+import org.joda.time.DateTime
+import play.api.libs.oauth.OAuth
+import play.api.libs.json.JsString
+import scala.Some
+import play.api.libs.oauth.ServiceInfo
+import play.api.libs.oauth.RequestToken
+import play.api.libs.oauth.OAuthCalculator
+import play.api.libs.oauth.ConsumerKey
 
 
 /**
@@ -125,9 +133,9 @@ object Tweetwall extends Controller {
     implicit request =>
       import scala.concurrent.duration._
 
-      val url:String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
+      val url: String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
 
-      def futureIDs:Future[Option[JsValue]] = WS.url(url).get().map {
+      def futureIDs: Future[Option[JsValue]] = WS.url(url).get().map {
         response =>
           response.status match {
             case 200 => Some(Json.parse(response.body))
@@ -136,35 +144,82 @@ object Tweetwall extends Controller {
       }
 
       val bestProposalIDs: Enumerator[JsValue] = Enumerator.generateM[JsValue] {
-         futureIDs.flatMap(r=>play.api.libs.concurrent.Promise.timeout(r, 2 seconds))
+        futureIDs.flatMap(r => play.api.libs.concurrent.Promise.timeout(r, 30 seconds))
       }
 
-      val jsIDstoProposal:Enumeratee[JsValue,JsValue] = Enumeratee.map{
-        jsValue=>
+      val jsIDstoProposal: Enumeratee[JsValue, JsValue] = Enumeratee.map {
+        jsValue =>
 
-          val ids=jsValue.as[List[String]]
+          val ids = jsValue.as[List[String]]
 
           val proposals = Proposal.loadAndParseProposals(ids.toSet).values.toSeq
 
-         val jsonObject = Json.toJson(
-                proposals.map {
-                  proposal =>
-                    Json.toJson(
-                      Map(
-                        "id"->JsString(proposal.id),
-                        "title"->JsString(proposal.title),
-                        "speakers"->JsString(proposal.allSpeakers.map(s=>s.cleanName).mkString(", ")),
-                        "gravatars"->Json.toJson(proposal.allSpeakersGravatar),
-                        "track"->JsString(Messages(proposal.track.label))
-                      )
-                    )
-                }
+          val jsonObject = Json.toJson(
+            proposals.map {
+              proposal =>
+                Json.toJson(
+                  Map(
+                    "id" -> JsString(proposal.id),
+                    "title" -> JsString(proposal.title),
+                    "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
+                    "gravatars" -> Json.toJson(proposal.allSpeakersGravatar),
+                    "track" -> JsString(Messages(proposal.track.label))
+                  )
+                )
+            }
           )
           Json.toJson(jsonObject)
       }
 
-      Ok.feed(bestProposalIDs  &> jsIDstoProposal &> EventSource()).as("text/event-stream")
+      Ok.feed(bestProposalIDs &> jsIDstoProposal &> EventSource()).as("text/event-stream")
   }
 
+  def loadNextTalks() = Action {
+    implicit request =>
+      import scala.concurrent.duration._
+
+
+      val nextTalks: Enumerator[Seq[Slot]] = Enumerator.generateM[Seq[Slot]] {
+        play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 20 seconds)
+      }
+
+      val proposalsToJSON: Enumeratee[Seq[Slot], JsValue] = Enumeratee.map {
+        slots =>
+          val jsonObject = Json.toJson(
+            slots.map {
+              slot =>
+                slot match {
+                  case s if slot.proposal.isDefined => {
+                    val proposal = slot.proposal.get
+                    Json.toJson(
+                      Map(
+                        "id" -> JsString(proposal.id),
+                        "title" -> JsString(proposal.title),
+                        "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
+                        "room" -> JsString(slot.room.name),
+                        "track" -> JsString(Messages(proposal.track.label))
+                      )
+                    )
+                  }
+                  case s if slot.break.isDefined => {
+                    val zeBreak = slot.break.get
+                    Json.toJson(
+                      Map(
+                        "id" -> JsString(zeBreak.id),
+                        "title" -> JsString(zeBreak.nameFR),
+                        "room" -> JsString(zeBreak.room.name),
+                        "track" -> JsString(""),
+                        "speakers" -> JsString("")
+                      )
+                    )
+                  }
+                }
+            }
+          )
+          Json.toJson(jsonObject)
+      }
+
+      Ok.feed(nextTalks &> proposalsToJSON &> EventSource()).as("text/event-stream")
+  }
 
 }
