@@ -170,6 +170,7 @@ GET           /schedulling/fr14/published                            controllers
 # Tweetwall
 GET           /tweetwall                                             controllers.Tweetwall.index()
 GET           /tweetwall/authenticate                                controllers.Tweetwall.authenticate()
+GET           /tweetwall/callback                                    controllers.Tweetwall.authenticate()
 GET           /tweetwall/stream                                      controllers.Tweetwall.watchTweets(keywords:String)
 GET           /tweetwall/besttalks                                   controllers.Tweetwall.watchBestTalks()
 
