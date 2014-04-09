@@ -43,6 +43,7 @@ import play.api.libs.oauth.ServiceInfo
 import play.api.libs.oauth.RequestToken
 import play.api.libs.oauth.OAuthCalculator
 import play.api.libs.oauth.ConsumerKey
+import library.WSEnumerator
 
 
 /**
@@ -55,7 +56,6 @@ object Tweetwall extends Controller {
   val cfg = Play.application.configuration
 
   val KEY = ConsumerKey(cfg.getString("twitter.consumerKey"), cfg.getString("twitter.consumerSecret"))
-
 
   val TWITTER = OAuth(ServiceInfo(
     "https://api.twitter.com/oauth/request_token",
@@ -71,19 +71,6 @@ object Tweetwall extends Controller {
       }.getOrElse {
         Redirect(routes.Tweetwall.authenticate)
       }
-  }
-
-
-  def outputRequest() = Action {
-    implicit request =>
-
-      println("URI "+request.uri)
-      request.headers.toSimpleMap.foreach{token=>
-        println("Header "+ token._1+"="+token._2)
-      }
-      println("Body "+request.body.asFormUrlEncoded)
-      println("---")
-      Ok("Done")
   }
 
   def authenticate = Action {
@@ -113,11 +100,11 @@ object Tweetwall extends Controller {
     implicit request =>
 
       val (tweetsOut, tweetChanel) = Concurrent.broadcast[JsValue]
-    // See Twitter parameters doc https://dev.twitter.com/docs/streaming-apis/parameters
-     WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&track=" + URLEncoder.encode(keywords, "UTF-8"))
+      // See Twitter parameters doc https://dev.twitter.com/docs/streaming-apis/parameters
+      WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&track=" + URLEncoder.encode(keywords, "UTF-8"))
         .withRequestTimeout(-1) // Connected forever
         .sign(OAuthCalculator(KEY, sessionTokenPair.get))
-        .withHeaders("Connection"->"keep-alive")
+        .withHeaders("Connection" -> "keep-alive")
         .postAndRetrieveStream("")(headers => Iteratee.foreach[Array[Byte]] {
         ba =>
           val msg = new String(ba, "UTF-8")
@@ -125,7 +112,7 @@ object Tweetwall extends Controller {
           tweetChanel.push(tweet)
       }).flatMap(_.run)
 
-     Ok.feed(tweetsOut &> EventSource()).as("text/event-stream")
+      Ok.feed(tweetsOut &> EventSource()).as("text/event-stream")
   }
 
   def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
@@ -137,9 +124,32 @@ object Tweetwall extends Controller {
     }
   }
 
-  def testCSS()=Action{
+  def watchBestTalks()=Action{
     implicit request=>
-      Ok(views.html.Tweetwall.testCSS())
-  }
+      import scala.concurrent.duration._
 
+      val url = routes.SchedullingController.giveMeBestTalks.absoluteURL()
+
+
+     val timeStream:Enumerator[JsValue] = Enumerator.generateM[JsValue] {
+        WS.url(url).get().map{
+          response=>
+            response.status match {
+              case 200 =>Some(Json.parse(response.body))
+              case other =>None
+            }
+        }
+
+//       Promise.timeout(
+//        Some( Json.obj(
+//          "id" -> UUID.randomUUID().toString(),
+//          "amount" -> Random.nextInt(1000),
+//          "access" -> if (Random.nextBoolean) "public" else "private"
+//        ))
+//       ,1000
+//      )
+    }
+
+      Ok.feed(timeStream &> EventSource()).as("text/event-stream")
+  }
 }

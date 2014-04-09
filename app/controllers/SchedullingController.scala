@@ -32,6 +32,7 @@ import play.api.libs.json.JsString
 import play.api.libs.json.JsNumber
 import com.google.api.client.util.DateTime
 import play.api.i18n.Messages
+import scala.util.Random
 
 
 /**
@@ -203,6 +204,28 @@ object SchedullingController extends SecureCFPController {
         case Some(id)=> Redirect(routes.Publisher.showAgendaByConfType(confType, id, day))
         case None=>Redirect(routes.Publisher.homePublisher).flashing("success"->Messages("not.published"))
       }
+  }
+
+  // Mock function that returns 3 random talks for Demo purpose only
+  def giveMeBestTalks()=Action{
+    implicit request=>
+      val maybeConf = for(slotId<-ScheduleConfiguration.getPublishedSchedule("conf") ;
+                          configuration <- ScheduleConfiguration.loadScheduledConfiguration(slotId)
+      ) yield configuration
+
+      maybeConf match{
+        case Some(confSlots)=> {
+          val slots = Random.shuffle(confSlots.slots).take(3)
+          val toReturn = slots.map{
+            slot=>
+              slot.id
+          }
+
+          Ok(Json.toJson(toReturn)).as(JSON)
+        }
+        case None=>NoContent
+      }
+
   }
 
 }

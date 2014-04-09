@@ -171,7 +171,10 @@ GET           /schedulling/fr14/published                            controllers
 GET           /tweetwall                                             controllers.Tweetwall.index()
 GET           /tweetwall/authenticate                                controllers.Tweetwall.authenticate()
 GET           /tweetwall/stream                                      controllers.Tweetwall.watchTweets(keywords:String)
-GET           /tweetwall/debug                                      controllers.Tweetwall.outputRequest()
+GET           /tweetwall/besttalks                                   controllers.Tweetwall.watchBestTalks()
+
+# Temp
+GET           /schedulling/fr14/giveMeBestTalks                      controllers.SchedullingController.giveMeBestTalks()
 
 
 # Map static resources from the /public folder to the /assets URL path

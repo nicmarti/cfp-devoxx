@@ -70,7 +70,10 @@ $(function () {
             '</span> (<span class="un">' + tweet.user.name +
             '</span>)<br>' +
             '<div class="tx">' + tweet.text + '</div>' +
-            thumImages + '</li>';
+            '<img src="http://whichlang.appspot.com/posneg?img=true&text=' +
+            encodeURIComponent(tweet.text) +
+            '">' +
+            '</li>';
 
         var zeList = $('#listTweets');
 
@@ -87,7 +90,22 @@ $(function () {
             });
 
         }
-        ;
+
+    };
+
+    var loadBestTalks = function (query) {
+        var stream = new EventSource(Router.controllers.Tweetwall.watchBestTalks().url);
+
+        $(stream).on('message', function (e) {
+            var bestTalks = JSON.parse(e.originalEvent.data);
+            if (bestTalks) {
+                createBestTalkPanels(bestTalks);
+            }
+        });
+    };
+
+    var createBestTalkPanels = function(bestTalks){
+        $('#sessionPop').prepend(bestTalks);
     };
 
     function checkTime(i) {
@@ -116,6 +134,7 @@ $(function () {
     var init = function () {
         startTime();
         loadTweets("tennis"); // the keyword, the hashtag to stream
+        loadBestTalks();
     };
 
     init();
