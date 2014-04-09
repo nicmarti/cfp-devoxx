@@ -106,9 +106,14 @@ $(function () {
     };
 
     var createBestTalkPanels = function(bestTalks){
-
         _.each(bestTalks, function(talk){
-            console.log(talk);
+
+
+            var lastItem = $('#sessionPop li');
+            $(lastItem).addClass('removed-horiz-item').one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function (e) {
+                $(this).remove();
+            });
+
 
             var photos = _.map(talk.gravatars,function(g){
                return '<img src="' + g + '" class="bestTalkSpeakers">';
@@ -132,12 +137,6 @@ $(function () {
             var tweetBox2 = $(speakerBox).addClass('new-item');
             zeList.prepend(tweetBox2);
 
-            if ($('#sessionPop li').length > 3) {
-                var lastItem = $('#sessionPop li:nth-child(4)');
-                $(lastItem).addClass('removed-item').one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function (e) {
-                    $(this).remove();
-                });
-            }
 
             return speakerBox;
         });
@@ -169,7 +168,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
+      loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
         loadBestTalks();
     };
 

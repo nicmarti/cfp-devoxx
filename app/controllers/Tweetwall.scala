@@ -136,7 +136,7 @@ object Tweetwall extends Controller {
       }
 
       val bestProposalIDs: Enumerator[JsValue] = Enumerator.generateM[JsValue] {
-         futureIDs.flatMap(r=>play.api.libs.concurrent.Promise.timeout(r, 5 seconds))
+         futureIDs.flatMap(r=>play.api.libs.concurrent.Promise.timeout(r, 2 seconds))
       }
 
       val jsIDstoProposal:Enumeratee[JsValue,JsValue] = Enumeratee.map{

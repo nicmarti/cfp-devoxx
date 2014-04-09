@@ -237,13 +237,12 @@ li.removed-item {
 
   100% {
     opacity: 0;
-    -webkit-transform: translateY(200px);
-    -ms-transform: translateY(200px);
-    -o-transform: translateY(200px);
-    transform: translateY(200px)
+    -webkit-transform: translateY(1000px);
+    -ms-transform: translateY(1000px);
+    -o-transform: translateY(1000px);
+    transform: translateY(1000px)
   }
 }
-
 
 @-webkit-keyframes removed-item-animation {
   0% {
@@ -254,10 +253,11 @@ li.removed-item {
 
   100% {
     opacity: 0;
-    -webkit-transform: translateY(200px);
-    transform: translateY(200px)
+    -webkit-transform: translateY(1000px);
+    transform: translateY(1000px)
   }
 }
+/****************************************************/
 
 .actif{
     z-index: 1;
@@ -330,3 +330,47 @@ li.removed-item {
     color:#000;
     padding: 3px;
 }
+
+/***********************************************************************/
+li.removed-horiz-item {
+  -webkit-animation: removed-horiz-item-animation 0.5s linear forwards;
+  -webkit-transform-origin: 0;
+  animation: removed-horiz-item-animation 0.5s linear forwards  transform-origin: 0% 100%
+ -webkit-transform-origin: 0% 100%;
+  -ms-transform-origin: 0% 100%;
+  -o-transform-origin: 0% 100%;
+  transform-origin: 0% 100%
+}
+
+@keyframes removed-horiz-item-animation {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1)
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    transform: scale(0)
+  }
+}
+
+@-webkit-keyframes removed-horiz-item-animation {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+}
+/************ removed horizontal ***************/
