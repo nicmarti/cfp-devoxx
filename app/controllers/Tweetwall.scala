@@ -118,31 +118,30 @@ object Tweetwall extends Controller {
     }
   }
 
-  def watchBestTalks()=Action{
-    implicit request=>
+  def watchBestTalks() = Action {
+    implicit request =>
       import scala.concurrent.duration._
 
       val url = routes.SchedullingController.giveMeBestTalks.absoluteURL()
 
-
-     val timeStream:Enumerator[JsValue] = Enumerator.generateM[JsValue] {
-        WS.url(url).get().map{
-          response=>
+      val timeStream: Enumerator[JsValue] = Enumerator.generateM[JsValue] {
+        WS.url(url).get().map {
+          response =>
             response.status match {
-              case 200 =>Some(Json.parse(response.body))
-              case other =>None
+              case 200 => Some(Json.parse(response.body))
+              case other => None
             }
         }
+      }
 
-//       Promise.timeout(
-//        Some( Json.obj(
-//          "id" -> UUID.randomUUID().toString(),
-//          "amount" -> Random.nextInt(1000),
-//          "access" -> if (Random.nextBoolean) "public" else "private"
-//        ))
-//       ,1000
-//      )
-    }
+      //       Promise.timeout(
+      //        Some( Json.obj(
+      //          "id" -> UUID.randomUUID().toString(),
+      //          "amount" -> Random.nextInt(1000),
+      //          "access" -> if (Random.nextBoolean) "public" else "private"
+      //        ))
+      //       ,1000
+      //      )
 
       Ok.feed(timeStream &> EventSource()).as("text/event-stream")
   }

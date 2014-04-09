@@ -384,10 +384,7 @@ object Review {
   def computeAndGenerateVotes() = Redis.pool.withClient {
     implicit client =>
       if (client.scriptExists(loadLUAScript)) {
-        play.Logger.of("models.Review").debug("Computing votes and scores on Redis")
         client.evalsha(loadLUAScript, 0)
-        play.Logger.of("models.Review").debug("Computation in progress...")
-
       } else {
         play.Logger.of("models.Review").error("There is no LUA script to compute scores and votes on Redis")
       }
