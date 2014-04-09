@@ -20,7 +20,7 @@
     <logger name="library.Zedis" level="INFO"/>
     <logger name="library.Zedis.client" level="INFO"/>
     <logger name="application" level="INFO"/>
-    <logger name="application.Benchmark" level="DEBUG"/>
+    <logger name="application.Benchmark" level="ERROR"/>
     <logger name="application.IndexMaster" level="INFO"/>
     <logger name="application.Reaper" level="INFO"/>
     <logger name="application.Tweetwall" level="DEBUG"/>
@@ -30,7 +30,7 @@
     <logger name="net.sf.ehcache" level="WARN"/>
     <logger name="org.apache.commons.pool" level="INFO"/>
 
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="STDOUT"/>
     </root>
 
