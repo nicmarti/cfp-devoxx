@@ -29,7 +29,9 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 /**
- * Time slot.
+ * Time slots, specific of course to Devoxx France 2014.
+ * Instead of using a database, it's way simpler to define once for all everything as scala.
+ * Trust me.
  * Created by nicolas on 01/02/2014.
  */
 
@@ -280,19 +282,19 @@ object Slot {
   }
 
   val amdThursday: List[Slot] = {
-    val c1 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T13:30:00.000+02:00"), new DateTime("2014-04-17T13:50:00.000+02:00"), Room.ELLA_FITZGERALD)
+    val c1 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T13:30:00.000+02:00"), new DateTime("2014-04-17T13:55:00.000+02:00"), Room.ELLA_FITZGERALD)
 
-    val c2 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T13:50:00.000+02:00"), new DateTime("2014-04-17T14:10:00.000+02:00"), Room.ELLA_FITZGERALD)
+    val c2 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T14:10:00.000+02:00"), new DateTime("2014-04-17T14:35:00.000+02:00"), Room.ELLA_FITZGERALD)
 
-    val c3 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T14:10:00.000+02:00"), new DateTime("2014-04-17T14:30:00.000+02:00"), Room.ELLA_FITZGERALD)
+    val c3 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T14:50:00.000+02:00"), new DateTime("2014-04-17T15:15:00.000+02:00"), Room.ELLA_FITZGERALD)
 
-    val c4 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T14:40:00.000+02:00"), new DateTime("2014-04-17T15:00:00.000+02:00"), Room.ELLA_FITZGERALD)
+    val c4 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T16:05:00.000+02:00"), new DateTime("2014-04-17T16:30:00.000+02:00"), Room.ELLA_FITZGERALD)
 
-    val c5 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T15:10:00.000+02:00"), new DateTime("2014-04-17T15:30:00.000+02:00"), Room.ELLA_FITZGERALD)
+    val c5 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T16:45:00.000+02:00"), new DateTime("2014-04-17T17:10:00.000+02:00"), Room.ELLA_FITZGERALD)
 
-    val c6 =  SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T15:40:00.000+02:00"), new DateTime("2014-04-17T16:00.000+02:00"), Room.ELLA_FITZGERALD)
+    val c6 =  SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T17:25:00.000+02:00"), new DateTime("2014-04-17T17:50.000+02:00"), Room.ELLA_FITZGERALD)
 
-    val c7 =  SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T17:30.000+02:00"), new DateTime("2014-04-17T18:30:00.000+02:00"), Room.ELLA_FITZGERALD)
+    val c7 =  SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T18:00.000+02:00"), new DateTime("2014-04-17T18:30:00.000+02:00"), Room.ELLA_FITZGERALD)
 
     List(c1, c2, c3, c4, c5, c6, c7)
   }
