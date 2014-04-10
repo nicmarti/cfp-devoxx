@@ -161,6 +161,8 @@ $(function () {
                 '<div class="nextTalk"> ' +
             '<div class="nextTalkRoom">' +
                 talk.room +
+            '<br>' +
+                talk.from +'-'+ talk.to +
             '</div>' +
             '<div class="nextTalkTitle"> '+
                 talk.title +

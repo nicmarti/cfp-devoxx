@@ -134,6 +134,7 @@ object Tweetwall extends Controller {
       import scala.concurrent.duration._
 
       val url: String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
+      //val url: String = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/most-popular"
 
       def futureIDs: Future[Option[JsValue]] = WS.url(url).get().map {
         response =>
@@ -197,7 +198,9 @@ object Tweetwall extends Controller {
                         "title" -> JsString(proposal.title),
                         "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
                         "room" -> JsString(slot.room.name),
-                        "track" -> JsString(Messages(proposal.track.label))
+                        "track" -> JsString(Messages(proposal.track.label)),
+                        "from" -> JsString(slot.from.toString("HH:mm")),
+                        "to" -> JsString(slot.from.toString("HH:mm"))
                       )
                     )
                   }
@@ -209,7 +212,9 @@ object Tweetwall extends Controller {
                         "title" -> JsString(zeBreak.nameFR),
                         "room" -> JsString(zeBreak.room.name),
                         "track" -> JsString(""),
-                        "speakers" -> JsString("")
+                        "speakers" -> JsString(""),
+                      "from" -> JsString(slot.from.toString("HH:mm")),
+                        "to" -> JsString(slot.from.toString("HH:mm"))
                       )
                     )
                   }
