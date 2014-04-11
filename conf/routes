@@ -178,6 +178,11 @@ GET           /tweetwall/nexttalks                                   controllers
 # Temp
 GET           /schedulling/fr14/giveMeBestTalks                      controllers.SchedullingController.giveMeBestTalks()
 
+# Badges
+GET           /badges                                                controllers.Badge.home()
+POST          /badges                                                controllers.Badge.uploadCSV()
+GET           /badges/test                                           controllers.Badge.test()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)

@@ -33,7 +33,10 @@ import play.libs.Akka
 import play.api.Play
 import notifiers.Mails
 import play.api.libs.json.Json
-
+import java.io.File
+import org.apache.commons.io.FileUtils
+import scala.collection.JavaConverters._
+import org.apache.commons.io.filefilter.{SuffixFileFilter, WildcardFileFilter}
 
 /**
  * Akka actor that is in charge to process batch operations and long running queries
@@ -59,13 +62,17 @@ case class ComputeVotesAndScore()
 
 case class RemoveVotesForDeletedProposal()
 
-case class ProposalApproved(reporterUUID:String, proposal:Proposal)
+case class ProposalApproved(reporterUUID: String, proposal: Proposal)
 
-case class ProposalRejected(reporterUUID:String, proposal:Proposal)
+case class ProposalRejected(reporterUUID: String, proposal: Proposal)
 
-case class SaveSlots(confType:String, slots:List[Slot], createdBy:Webuser)
+case class SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
 
-case class LogURL(url:String, objRef:String, objValue:String)
+case class LogURL(url: String, objRef: String, objValue: String)
+
+case class ProcessCSVFile(fileName: String)
+
+case class ProcessCSVDir(dir: String)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -84,8 +91,10 @@ class ZapActor extends Actor {
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
     case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
-    case SaveSlots(confType:String, slots:List[Slot], createdBy:Webuser)=> doSaveSlots(confType:String, slots:List[Slot], createdBy:Webuser)
-    case LogURL(url:String, objRef:String, objValue:String)=>doLogURL(url:String, objRef:String,objValue:String)
+    case SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) => doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
+    case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
+    case ProcessCSVFile(fileName: String) => doProcessCSV(fileName)
+    case ProcessCSVDir(dir: String) => doProcessCSVDir(dir)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -175,11 +184,41 @@ class ZapActor extends Actor {
     }
   }
 
-  def doSaveSlots(confType:String, slots:List[Slot], createdBy:Webuser){
-    ScheduleConfiguration.persist(confType, slots,createdBy)
+  def doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) {
+    ScheduleConfiguration.persist(confType, slots, createdBy)
   }
 
-  def doLogURL(url:String, objRef:String, objValue:String){
-    HitView.storeLogURL(url,objRef, objValue)
+  def doLogURL(url: String, objRef: String, objValue: String) {
+    HitView.storeLogURL(url, objRef, objValue)
+  }
+
+  def doProcessCSV(fileName: String) {
+    play.Logger.info("Processing csv file " + fileName)
+    library.csv.CSVProcessor.handle(fileName)
+  }
+
+  val csvBadgesFolderFilter: java.io.FilenameFilter = new WildcardFileFilter("*-badges")
+  val csvFiles: java.io.FilenameFilter = new SuffixFileFilter(".csv")
+
+  def doProcessCSVDir(dir: String) {
+
+    val directory: java.io.File = new File(dir)
+
+    if (directory.exists() && directory.canRead) {
+      play.Logger.info("Processing dir [" + directory.getAbsolutePath +"]")
+      val badgesFolders = directory.listFiles(csvBadgesFolderFilter)
+
+      badgesFolders.foreach {
+        d =>
+          d.listFiles(csvFiles).foreach {
+            csvFile: File =>
+              ZapActor.actor ! doProcessCSV(csvFile.getAbsolutePath)
+          }
+      }
+    } else {
+      play.Logger.error("Cannot read or parse directory " + dir)
+    }
+
+
   }
 }

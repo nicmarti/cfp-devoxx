@@ -435,3 +435,7 @@ li.removed-horiz-item {
   }
 }
 /************ removed horizontal ***************/
+.mediaTweet{
+    max-height: 300px;
+    max-width: 600px;
+}

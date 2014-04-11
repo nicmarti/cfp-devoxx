@@ -57,14 +57,12 @@ $(function () {
 
     var createTweet = function (tweet) {
         var thumImages = [];
+        var tweetBox;
         if(tweet.entities && tweet.entities.media) {
             thumImages = _.map(tweet.entities.media,function(m){
-                return '<img src="' + m.media_url +'" alt="image">';
+                return '<img src="' + m.media_url +'" alt="image" class="mediaTweet">';
             });
-            console.log(thumImages);
-        }
-
-        var tweetBox = '<li> ' +
+             tweetBox = '<li> ' +
             '<img class="tweet-photo" alt="48x48" src="' + tweet.user.profile_image_url + '">' +
             '<span class="sn">' + tweet.user.screen_name +
             '</span> (<span class="un">' + tweet.user.name +
@@ -74,7 +72,21 @@ $(function () {
             '">' +
             '<br>' +
             '<div class="tx">' + tweet.text + '</div>' +
+            thumImages +
+            '">' +
             '</li>';
+        }else {
+            tweetBox = '<li> ' +
+                '<img class="tweet-photo" alt="48x48" src="' + tweet.user.profile_image_url + '">' +
+                '<span class="sn">' + tweet.user.screen_name +
+                '</span> (<span class="un">' + tweet.user.name +
+                '</span>)' +
+                '<img class="humoricon" src="http://whichlang.appspot.com/posneg?img=true&png=true&text=' +
+                encodeURIComponent(tweet.text) +
+                '">' +
+                '<br>' +
+                '<div class="tx">' + tweet.text + '</div></li>';
+        }
 
         var zeList = $('#listTweets');
 
@@ -207,7 +219,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("tennis,devoxx,devoxxfr,cfp.devoxx.fr,www.devoxx.fr,devoxx.fr,devoxxuk"); // the keyword, the hashtag to stream
+        loadTweets("scrumdays,scrumdaysfr,srumday,scrumdayfr"); // the keyword, the hashtag to stream
         loadBestTalks();
         loadNextTalks();
     };

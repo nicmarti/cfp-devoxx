@@ -9,7 +9,6 @@ import play.api.libs.json.Json
 import play.api.i18n.Messages
 import models.Review.ScoreAndTotalVotes
 import play.api.data.validation.Constraints._
-import scala.Some
 import library.ComputeVotesAndScore
 import library.ComputeLeaderboard
 import library.SendMessageInternal
