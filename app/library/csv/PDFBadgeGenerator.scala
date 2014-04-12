@@ -79,7 +79,6 @@ object PDFBadgeGenerator {
 
     // Create table
     val largeTable: PdfPTable = new PdfPTable(5)
-//    largeTable.setTotalWidth(Utilities.millimetersToPoints(195.58f))
     largeTable.setTotalWidth(Array[Float](Utilities.millimetersToPoints(63.5f),Utilities.millimetersToPoints(2.54f),Utilities.millimetersToPoints(63.5f),Utilities.millimetersToPoints(2.54f),Utilities.millimetersToPoints(63.5f)))
     largeTable.setLockedWidth(true)
 
@@ -155,6 +154,7 @@ object PDFBadgeGenerator {
 
     val c4: PdfPCell = new PdfPCell
     c4.setFixedHeight(Utilities.millimetersToPoints(6.8f))
+    c4.setPaddingLeft(4f)
 
     c4.setBackgroundColor(lightRed)
     if (attendee.registration_type == "COMBI") {
@@ -222,6 +222,8 @@ object PDFBadgeGenerator {
     cellFirstName.disableBorderSide(Rectangle.BOX)
     cellFirstName.setColspan(2)
     cellFirstName.setFixedHeight(Utilities.millimetersToPoints(9.61f))
+    cellFirstName.setPaddingLeft(Utilities.millimetersToPoints(3f))
+
     sticker1.addCell(cellFirstName)
 
     val pLastName: Phrase = new Phrase(attendee.lastName.toUpperCase, fontFN)
@@ -230,6 +232,7 @@ object PDFBadgeGenerator {
     cellLastName.disableBorderSide(Rectangle.BOX)
     cellLastName.setColspan(2)
     cellLastName.setFixedHeight(Utilities.millimetersToPoints(9.65f))
+    cellLastName.setPaddingLeft(Utilities.millimetersToPoints(3f))
     sticker1.addCell(cellLastName)
 
     // **********
@@ -239,6 +242,8 @@ object PDFBadgeGenerator {
     cellCompany.addElement(phraseCompany)
     cellCompany.disableBorderSide(Rectangle.BOX)
     cellCompany.setColspan(3)
+    cellCompany.setPaddingLeft(Utilities.millimetersToPoints(3f))
+
     sticker1.addCell(cellCompany)
 
     sticker1
