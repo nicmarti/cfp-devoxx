@@ -43,70 +43,80 @@ import com.itextpdf.text.pdf.qrcode.ErrorCorrectionLevel
 object CSVProcessor {
 
   final val NORMAL: Font = new Font(Font.FontFamily.HELVETICA, 10)
-  final val FONT_COMPANY: Font = new Font(Font.FontFamily.HELVETICA, 10)
-  final val lightGreen: BaseColor = new BaseColor(171, 255, 171)
-  final val lightOrange: BaseColor = new BaseColor(255, 178, 102)
+  final val FONT_COMPANY: Font = new Font(Font.FontFamily.HELVETICA, 8)
+
+  final val lightGreen: BaseColor = new BaseColor(91, 255, 18)
+  final val lightOrange: BaseColor = new BaseColor(238, 134, 31)
+
   final val lightBlue: BaseColor = new BaseColor(102, 200, 255)
-  final val darkBlue: BaseColor = new BaseColor(0, 49, 113)
+  final val darkBlue: BaseColor = new BaseColor(1, 39, 123)
   final val lightRed: BaseColor = new BaseColor(242, 129, 129)
   final val lightGray: BaseColor = new BaseColor(90, 90, 90)
 
   def handle(fileName: String) = {
     val inputFile = new File(fileName)
-    val lines = scala.io.Source.fromFile(inputFile)(Codec.UTF8).getLines()
-    val file = new File(inputFile.getParentFile,"output.pdf")
+    val lines = scala.io.Source.fromFile(inputFile)(Codec.UTF8).getLines().toList
+    val file = new File(inputFile.getParentFile, "output.pdf")
     file.createNewFile()
 
     // step 1
     val pageSize: Rectangle = new Rectangle(Utilities.millimetersToPoints(210f), Utilities.millimetersToPoints(297f))
 
     val document: Document = new Document(pageSize,
-      Utilities.millimetersToPoints(7f), //left margin
-      Utilities.millimetersToPoints(7f), //right margin
-      Utilities.millimetersToPoints(15.7f),
-      Utilities.millimetersToPoints(14.6f))
+      Utilities.millimetersToPoints(7.5f), //left margin
+      Utilities.millimetersToPoints(7.5f), //right margin
+      Utilities.millimetersToPoints(15f),
+      Utilities.millimetersToPoints(15f))
 
     // step 2
-    PdfWriter.getInstance(document, new FileOutputStream(file))
+    val writer = PdfWriter.getInstance(document, new FileOutputStream(file))
+    writer.setCompressionLevel(0)
+
     document.open()
 
     // step 3 Create font
-    val embeddeFont: BaseFont = BaseFont.createFont("public/font/museo_slab_500-webfont.ttf", BaseFont.WINANSI, true)
+    val embeddeFont: BaseFont = BaseFont.createFont("public/font/museo_slab_500-webfont.ttf", BaseFont.WINANSI, BaseFont.EMBEDDED)
+    val gothamFont: BaseFont = BaseFont.createFont("public/font/gotham-black-webfont-webfont.ttf", "UTF-8", BaseFont.EMBEDDED)
 
     // Create table
-    val largeTable: PdfPTable = new PdfPTable(2)
+    val largeTable: PdfPTable = new PdfPTable(3)
     largeTable.setTotalWidth(Utilities.millimetersToPoints(195f))
     largeTable.setLockedWidth(true)
 
     // step 4
     var cell: PdfPCell = null
-    var sticker: PdfPTable = null
+    var sticker: Element = null
 
-    import scala.collection.JavaConversions._
-
-    lines.foreach {
+    lines.drop(1).foreach {
       line: String =>
-        sticker = generateSticker(Attendee.parse(line), embeddeFont, day=0)
+        sticker = generateSticker(Attendee.parse(line), embeddeFont, gothamFont)
         cell = new PdfPCell
-        cell.addElement(sticker)
+
         cell.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE)
+        cell.setFixedHeight(Utilities.millimetersToPoints(38.1f))
+        cell.setVerticalAlignment(Element.ALIGN_TOP)
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT)
+        cell.addElement(sticker)
         largeTable.addCell(cell)
     }
 
-    //
-    //    if (attendees.size % 2 eq 1) {
-    //      cell = new PdfPCell
-    //      cell.addElement(new Phrase("Sample"))
-    //      cell.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
-    //      cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE)
-    //      largeTable.addCell(cell)
-    //    }
+    if ((lines.size-1) % 4 == 0) {
+      val bouchon = new PdfPCell
+      bouchon.addElement(new Phrase("  "))
+      bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
+      largeTable.addCell(bouchon)
+      largeTable.addCell(bouchon)
+    }
+
+    if ((lines.size-1) % 5 == 0) {
+      val bouchon = new PdfPCell
+      bouchon.addElement(new Phrase("  "))
+      bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
+      largeTable.addCell(bouchon)
+    }
 
 
     document.add(largeTable)
-
-
     document.addCreationDate()
     document.addAuthor("Nicolas MARTIGNOLE")
     document.addCreator("Play! Framework")
@@ -116,58 +126,19 @@ object CSVProcessor {
 
   }
 
-  private def generateSticker(attendee: Attendee, embeddedFont: BaseFont, day: Int): PdfPTable = {
-    val sticker1: PdfPTable = new PdfPTable(Array[Float](1, 2, 2))
+
+  private def generateSticker(attendee: Attendee, embeddedFont: BaseFont, gothamFont: BaseFont): PdfPTable = {
+    val sticker1: PdfPTable = new PdfPTable(Array[Float](1, 1, 1))
     sticker1.setTotalWidth(Utilities.millimetersToPoints(63.5f))
     sticker1.setLockedWidth(true)
-    var img: Image = null
-    val qrcode: BarcodeQRCode = new BarcodeQRCode(attendee.lastName + "," + attendee.firstName + "," + attendee.email + "," + attendee.company, 9, 9, null)
-    val cell: PdfPCell = new PdfPCell
-    try {
-      img = qrcode.getImage
-      cell.addElement(img)
-    }
-    catch {
-      case e: BadElementException => {
-        play.Logger.error("QRCode error", e)
-        cell.addElement(new Phrase("QRCode ERR"))
-      }
-    }
-    cell.setHorizontalAlignment(Element.ALIGN_CENTER)
-    cell.setVerticalAlignment(Element.ALIGN_MIDDLE)
-    cell.setBorder(1)
-    cell.setRowspan(5)
-    sticker1.addCell(cell)
-    val pLastName: Phrase = new Phrase(attendee.lastName.toUpperCase, NORMAL)
-    val cell1: PdfPCell = new PdfPCell
-    cell1.addElement(pLastName)
-    cell1.enableBorderSide(4)
-    sticker1.addCell(cell1)
-    val p3: Phrase = new Phrase
-    p3.setFont(FONT_COMPANY)
-    if (attendee.company == null) {
-      p3.add(" ")
-    }
-    else {
-      p3.add(StringUtils.abbreviate(attendee.company, 18))
-    }
-    val c3: PdfPCell = new PdfPCell
-    c3.setNoWrap(true)
-    c3.addElement(p3)
-    c3.setBorder(0)
-    sticker1.addCell(c3)
-    val fontFN: Font = new Font(embeddedFont, 16)
-    fontFN.setColor(darkBlue)
-    val p2: Phrase = new Phrase(attendee.firstName.toUpperCase(), fontFN)
-    val c2: PdfPCell = new PdfPCell
-    c2.addElement(p2)
-    c2.setBorder(0)
-    sticker1.addCell(c2)
+
+    // Type de badge
     val p4: Phrase = new Phrase(attendee.registration_type)
     p4.setFont(NORMAL)
+
     val c4: PdfPCell = new PdfPCell
-    c4.addElement(p4)
-    c4.setBorder(0)
+    c4.setFixedHeight(Utilities.millimetersToPoints(6.8f))
+
     c4.setBackgroundColor(lightRed)
     if (attendee.registration_type == "COMBI") {
       c4.setBackgroundColor(lightGreen)
@@ -184,37 +155,75 @@ object CSVProcessor {
     if (attendee.registration_type == "STUDENT") {
       c4.setBackgroundColor(lightOrange)
     }
-    if (day != 0) {
-      var p5: Phrase = null
-      val c5: PdfPCell = new PdfPCell
-      day match {
-        case 1 =>
-          p5 = new Phrase("MERCREDI")
-          c5.setBackgroundColor(lightOrange)
-        case 2 =>
-          p5 = new Phrase("JEUDI")
-          c5.setBackgroundColor(lightBlue)
-        case 3 =>
-          p5 = new Phrase("VENDREDI")
-          c5.setBackgroundColor(lightGreen)
-        case _ =>
-          p5 = new Phrase("TRAINING")
+    c4.enableBorderSide(Rectangle.BOX)
+    c4.addElement(p4)
+
+    sticker1.addCell(c4)
+
+    //********************
+    // Lettrine
+    val pLettrine: Phrase = new Phrase(attendee.lastName.toUpperCase.head.toString)
+    pLettrine.setFont(new Font(gothamFont, 10))
+    val cellLett: PdfPCell = new PdfPCell
+    cellLett.setFixedHeight(Utilities.millimetersToPoints(6.8f))
+    cellLett.enableBorderSide(Rectangle.BOX)
+    cellLett.setHorizontalAlignment(Element.ALIGN_CENTER)
+    cellLett.setVerticalAlignment(Element.ALIGN_TOP)
+    cellLett.addElement(pLettrine)
+
+    sticker1.addCell(cellLett)
+
+    //********************
+
+    var img: Image = null
+    val qrcode: BarcodeQRCode = new BarcodeQRCode(attendee.lastName + "," + attendee.firstName + "," + attendee.email + "," + attendee.company + ", " + attendee.organization + ", " + attendee.position + ", " + attendee.registration_type, 9, 9, null)
+    val cellQRCode: PdfPCell = new PdfPCell
+    try {
+      img = qrcode.getImage
+      cellQRCode.addElement(img)
+    }
+    catch {
+      case e: BadElementException => {
+        play.Logger.error("QRCode error", e)
+        cellQRCode.addElement(new Phrase("QRCode ERR"))
       }
-      p5.setFont(NORMAL)
-      c5.addElement(p5)
-      sticker1.addCell(c5)
     }
-    else {
-      sticker1.addCell(c4)
-    }
-    val font: Font = new Font(embeddedFont, 5)
-    font.setColor(lightGray)
-    val p6: Phrase = new Phrase("Devoxx France", font)
-    val c6: PdfPCell = new PdfPCell
-    c6.addElement(p6)
-    c6.setBorder(0)
-    c6.setColspan(2)
-    sticker1.addCell(c6)
+    cellQRCode.setHorizontalAlignment(Element.ALIGN_RIGHT)
+    cellQRCode.setVerticalAlignment(Element.ALIGN_TOP)
+    cellQRCode.enableBorderSide(Rectangle.BOX)
+    cellQRCode.setRowspan(3)
+    cellQRCode.setFixedHeight(Utilities.millimetersToPoints(26.3f))
+
+    sticker1.addCell(cellQRCode)
+
+    //********************
+
+    val fontFN: Font = new Font(embeddedFont,9)
+    val p2: Phrase = new Phrase(attendee.firstName, fontFN)
+    val cellFirstName: PdfPCell = new PdfPCell
+    cellFirstName.addElement(p2)
+    cellFirstName.enableBorderSide(Rectangle.BOX)
+    cellFirstName.setColspan(2)
+    cellFirstName.setFixedHeight(Utilities.millimetersToPoints(9.61f))
+    sticker1.addCell(cellFirstName)
+
+    val pLastName: Phrase = new Phrase(attendee.lastName.toUpperCase, fontFN)
+    val cellLastName: PdfPCell = new PdfPCell
+    cellLastName.addElement(pLastName)
+    cellLastName.enableBorderSide(Rectangle.BOX)
+    cellLastName.setColspan(2)
+    cellLastName.setFixedHeight(Utilities.millimetersToPoints(9.65f))
+    sticker1.addCell(cellLastName)
+
+    // **********
+    var phraseCompany: Phrase = new Phrase(attendee.company, new Font(embeddedFont, 12))
+
+    val cellCompany: PdfPCell = new PdfPCell
+    cellCompany.addElement(phraseCompany)
+    cellCompany.enableBorderSide(Rectangle.BOX)
+    cellCompany.setColspan(3)
+    sticker1.addCell(cellCompany)
+
     sticker1
   }
 }
@@ -238,6 +247,6 @@ object Attendee {
     val organization = tokens(8)
     val attendee_type = tokens(9)
     val registration_type = tokens(10)
-    Attendee(id,firstName,lastName,email, position, opt_in_phone, phone,company_name, organization, attendee_type, registration_type)
+    Attendee(id, firstName, lastName, email, position, opt_in_phone, phone, company_name, organization, attendee_type, registration_type)
   }
 }
