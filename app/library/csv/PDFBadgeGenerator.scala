@@ -40,7 +40,7 @@ import com.itextpdf.text.pdf.qrcode.ErrorCorrectionLevel
  * Utility class for Devoxx France, that help us to generate QRCode for the list of attendees
  * Created by nicolas on 10/04/2014.
  */
-object CSVProcessor {
+object PDFBadgeGenerator {
 
   final val NORMAL: Font = new Font(Font.FontFamily.HELVETICA, 10)
   final val FONT_COMPANY: Font = new Font(Font.FontFamily.HELVETICA, 8)
@@ -233,25 +233,3 @@ object CSVProcessor {
   }
 }
 
-case class Attendee(id: String, firstName: String, lastName: String, email: String,
-                    position: String, opt_in_phone: String, phone: String,
-                    company: String, organization: String, attendee_type: String,
-                    registration_type: String)
-
-object Attendee {
-  def parse(line: String): Attendee = {
-    val tokens = line.split(";")
-    val id = tokens(0)
-    val firstName = tokens(1)
-    val lastName = tokens(2)
-    val email = tokens(3)
-    val position = tokens(4)
-    val opt_in_phone = tokens(5)
-    val phone = tokens(6)
-    val company_name = tokens(7)
-    val organization = tokens(8)
-    val attendee_type = tokens(9)
-    val registration_type = tokens(10)
-    Attendee(id, firstName, lastName, email, position, opt_in_phone, phone, company_name, organization, attendee_type, registration_type)
-  }
-}

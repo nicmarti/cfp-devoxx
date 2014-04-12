@@ -194,7 +194,8 @@ class ZapActor extends Actor {
 
   def doProcessCSV(fileName: String) {
     play.Logger.info("Processing csv file " + fileName)
-    library.csv.CSVProcessor.handle(fileName)
+    library.csv.PDFBadgeGenerator.handle(fileName)
+    //library.csv.QRCodeGenerator.handle(fileName)
   }
 
   val csvBadgesFolderFilter: java.io.FilenameFilter = new WildcardFileFilter("*-badges")
