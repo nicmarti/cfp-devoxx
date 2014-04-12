@@ -63,15 +63,13 @@ object PDFBadgeGenerator {
     val pageSize: Rectangle = new Rectangle(Utilities.millimetersToPoints(210f), Utilities.millimetersToPoints(297f))
 
     val document: Document = new Document(pageSize,
-      Utilities.millimetersToPoints(7.5f), //left margin
-      Utilities.millimetersToPoints(7.5f), //right margin
-      Utilities.millimetersToPoints(15f),
-      Utilities.millimetersToPoints(15f))
+      Utilities.millimetersToPoints(7.21f), //left margin
+      Utilities.millimetersToPoints(7.21f), //right margin
+      Utilities.millimetersToPoints(15.15f),
+      Utilities.millimetersToPoints(15.15f))
 
     // step 2
     val writer = PdfWriter.getInstance(document, new FileOutputStream(file))
-    writer.setCompressionLevel(0)
-
 
     document.open()
 
@@ -80,13 +78,19 @@ object PDFBadgeGenerator {
     val gothamFont: BaseFont = BaseFont.createFont("public/font/gotham-black-webfont-webfont.ttf", "UTF-8", BaseFont.EMBEDDED)
 
     // Create table
-    val largeTable: PdfPTable = new PdfPTable(3)
-    largeTable.setTotalWidth(Utilities.millimetersToPoints(196f))
+    val largeTable: PdfPTable = new PdfPTable(5)
+//    largeTable.setTotalWidth(Utilities.millimetersToPoints(195.58f))
+    largeTable.setTotalWidth(Array[Float](Utilities.millimetersToPoints(63.5f),Utilities.millimetersToPoints(2.54f),Utilities.millimetersToPoints(63.5f),Utilities.millimetersToPoints(2.54f),Utilities.millimetersToPoints(63.5f)))
     largeTable.setLockedWidth(true)
 
     // step 4
     var cell: PdfPCell = null
-    var sticker: Element = null
+    var sticker: PdfPTable = null
+
+
+    var cpt=1
+    val gouttiere = new PdfPCell
+
 
     lines.drop(1).foreach {
       line: String =>
@@ -94,13 +98,20 @@ object PDFBadgeGenerator {
         cell = new PdfPCell
         cell.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
         cell.setFixedHeight(Utilities.millimetersToPoints(38.1f))
-        cell.setVerticalAlignment(Element.ALIGN_TOP)
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT)
-        cell.addElement(sticker)
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE)
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER)
         cell.enableBorderSide(Rectangle.BOX)
         cell.setBorderColor(BaseColor.RED)
+        cell.addElement(sticker)
         largeTable.addCell(cell)
+
+        if(cpt%3!=0){
+          largeTable.addCell(gouttiere)
+        }
+      cpt=cpt+1
     }
+
+
 
     if ((lines.size-1) % 4 == 0) {
       val bouchon = new PdfPCell
@@ -108,6 +119,7 @@ object PDFBadgeGenerator {
       bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
       bouchon.disableBorderSide(Rectangle.BOX)
       largeTable.addCell(bouchon)
+      largeTable.addCell(gouttiere)
       largeTable.addCell(bouchon) // 2 times
     }
 
