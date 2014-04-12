@@ -72,6 +72,7 @@ object CSVProcessor {
     val writer = PdfWriter.getInstance(document, new FileOutputStream(file))
     writer.setCompressionLevel(0)
 
+
     document.open()
 
     // step 3 Create font
@@ -80,7 +81,7 @@ object CSVProcessor {
 
     // Create table
     val largeTable: PdfPTable = new PdfPTable(3)
-    largeTable.setTotalWidth(Utilities.millimetersToPoints(195f))
+    largeTable.setTotalWidth(Utilities.millimetersToPoints(196f))
     largeTable.setLockedWidth(true)
 
     // step 4
@@ -91,12 +92,13 @@ object CSVProcessor {
       line: String =>
         sticker = generateSticker(Attendee.parse(line), embeddeFont, gothamFont)
         cell = new PdfPCell
-
         cell.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
         cell.setFixedHeight(Utilities.millimetersToPoints(38.1f))
         cell.setVerticalAlignment(Element.ALIGN_TOP)
         cell.setHorizontalAlignment(Element.ALIGN_LEFT)
         cell.addElement(sticker)
+        cell.enableBorderSide(Rectangle.BOX)
+        cell.setBorderColor(BaseColor.RED)
         largeTable.addCell(cell)
     }
 
@@ -104,14 +106,16 @@ object CSVProcessor {
       val bouchon = new PdfPCell
       bouchon.addElement(new Phrase("  "))
       bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
+      bouchon.disableBorderSide(Rectangle.BOX)
       largeTable.addCell(bouchon)
-      largeTable.addCell(bouchon)
+      largeTable.addCell(bouchon) // 2 times
     }
 
     if ((lines.size-1) % 5 == 0) {
       val bouchon = new PdfPCell
       bouchon.addElement(new Phrase("  "))
       bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
+      bouchon.disableBorderSide(Rectangle.BOX)
       largeTable.addCell(bouchon)
     }
 
@@ -129,6 +133,7 @@ object CSVProcessor {
 
   private def generateSticker(attendee: Attendee, embeddedFont: BaseFont, gothamFont: BaseFont): PdfPTable = {
     val sticker1: PdfPTable = new PdfPTable(Array[Float](1, 1, 1))
+
     sticker1.setTotalWidth(Utilities.millimetersToPoints(63.5f))
     sticker1.setLockedWidth(true)
 
@@ -155,7 +160,7 @@ object CSVProcessor {
     if (attendee.registration_type == "STUDENT") {
       c4.setBackgroundColor(lightOrange)
     }
-    c4.enableBorderSide(Rectangle.BOX)
+    c4.disableBorderSide(Rectangle.BOX)
     c4.addElement(p4)
 
     sticker1.addCell(c4)
@@ -166,7 +171,7 @@ object CSVProcessor {
     pLettrine.setFont(new Font(gothamFont, 10))
     val cellLett: PdfPCell = new PdfPCell
     cellLett.setFixedHeight(Utilities.millimetersToPoints(6.8f))
-    cellLett.enableBorderSide(Rectangle.BOX)
+    cellLett.disableBorderSide(Rectangle.BOX)
     cellLett.setHorizontalAlignment(Element.ALIGN_CENTER)
     cellLett.setVerticalAlignment(Element.ALIGN_TOP)
     cellLett.addElement(pLettrine)
@@ -190,7 +195,7 @@ object CSVProcessor {
     }
     cellQRCode.setHorizontalAlignment(Element.ALIGN_RIGHT)
     cellQRCode.setVerticalAlignment(Element.ALIGN_TOP)
-    cellQRCode.enableBorderSide(Rectangle.BOX)
+    cellQRCode.disableBorderSide(Rectangle.BOX)
     cellQRCode.setRowspan(3)
     cellQRCode.setFixedHeight(Utilities.millimetersToPoints(26.3f))
 
@@ -202,7 +207,7 @@ object CSVProcessor {
     val p2: Phrase = new Phrase(attendee.firstName, fontFN)
     val cellFirstName: PdfPCell = new PdfPCell
     cellFirstName.addElement(p2)
-    cellFirstName.enableBorderSide(Rectangle.BOX)
+    cellFirstName.disableBorderSide(Rectangle.BOX)
     cellFirstName.setColspan(2)
     cellFirstName.setFixedHeight(Utilities.millimetersToPoints(9.61f))
     sticker1.addCell(cellFirstName)
@@ -210,7 +215,7 @@ object CSVProcessor {
     val pLastName: Phrase = new Phrase(attendee.lastName.toUpperCase, fontFN)
     val cellLastName: PdfPCell = new PdfPCell
     cellLastName.addElement(pLastName)
-    cellLastName.enableBorderSide(Rectangle.BOX)
+    cellLastName.disableBorderSide(Rectangle.BOX)
     cellLastName.setColspan(2)
     cellLastName.setFixedHeight(Utilities.millimetersToPoints(9.65f))
     sticker1.addCell(cellLastName)
@@ -220,7 +225,7 @@ object CSVProcessor {
 
     val cellCompany: PdfPCell = new PdfPCell
     cellCompany.addElement(phraseCompany)
-    cellCompany.enableBorderSide(Rectangle.BOX)
+    cellCompany.disableBorderSide(Rectangle.BOX)
     cellCompany.setColspan(3)
     sticker1.addCell(cellCompany)
 
