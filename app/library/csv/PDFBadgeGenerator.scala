@@ -152,40 +152,43 @@ object PDFBadgeGenerator {
     val p4: Phrase = new Phrase(attendee.registration_type)
     p4.setFont(NORMAL)
 
-    val c4: PdfPCell = new PdfPCell
-    c4.setFixedHeight(Utilities.millimetersToPoints(6.8f))
-    c4.setPaddingLeft(4f)
+    val cellLettr: PdfPCell = new PdfPCell
+    cellLettr.setFixedHeight(Utilities.millimetersToPoints(7.5f))
+    cellLettr.setPaddingLeft(4f)
 
-    c4.setBackgroundColor(lightRed)
+    cellLettr.setBackgroundColor(lightRed)
     if (attendee.registration_type == "COMBI") {
-      c4.setBackgroundColor(lightGreen)
+      cellLettr.setBackgroundColor(lightGreen)
     }
     if (attendee.registration_type == "UNI") {
-      c4.setBackgroundColor(lightOrange)
+      cellLettr.setBackgroundColor(lightOrange)
     }
     if (attendee.registration_type == "CONF") {
-      c4.setBackgroundColor(lightBlue)
+      cellLettr.setBackgroundColor(lightBlue)
     }
     if (attendee.registration_type == "DCAMP") {
-      c4.setBackgroundColor(lightOrange)
+      cellLettr.setBackgroundColor(lightOrange)
     }
     if (attendee.registration_type == "STUDENT") {
-      c4.setBackgroundColor(lightOrange)
+      cellLettr.setBackgroundColor(lightOrange)
     }
-    c4.disableBorderSide(Rectangle.BOX)
-    c4.addElement(p4)
+    cellLettr.disableBorderSide(Rectangle.BOX)
+    cellLettr.addElement(p4)
 
-    sticker1.addCell(c4)
+    sticker1.addCell(cellLettr)
 
     //********************
     // Lettrine
-    val pLettrine: Phrase = new Phrase(attendee.lastName.toUpperCase.head.toString)
-    pLettrine.setFont(new Font(gothamFont, 10))
+    val pLettrine: Phrase = new Phrase(attendee.lastName.toUpperCase.take(3).toString)
+    pLettrine.setFont(new Font(gothamFont, 11, 0, BaseColor.WHITE))
+
     val cellLett: PdfPCell = new PdfPCell
-    cellLett.setFixedHeight(Utilities.millimetersToPoints(6.8f))
+    cellLett.setFixedHeight(Utilities.millimetersToPoints(7.5f))
     cellLett.disableBorderSide(Rectangle.BOX)
     cellLett.setHorizontalAlignment(Element.ALIGN_CENTER)
     cellLett.setVerticalAlignment(Element.ALIGN_TOP)
+    cellLett.setBackgroundColor(BaseColor.DARK_GRAY)
+
     cellLett.addElement(pLettrine)
 
     sticker1.addCell(cellLett)
@@ -215,7 +218,7 @@ object PDFBadgeGenerator {
 
     //********************
 
-    val fontFN: Font = new Font(embeddedFont,9)
+    val fontFN: Font = new Font(embeddedFont,10)
     val p2: Phrase = new Phrase(attendee.firstName, fontFN)
     val cellFirstName: PdfPCell = new PdfPCell
     cellFirstName.addElement(p2)
