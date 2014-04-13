@@ -42,6 +42,7 @@ object PDFBadgeGenerator {
 
   final val lightGreen: BaseColor = new BaseColor(91, 255, 18)
   final val lightOrange: BaseColor = new BaseColor(238, 134, 31)
+  final val otherColor: BaseColor = new BaseColor(15, 104, 231)
 
   final val lightBlue: BaseColor = new BaseColor(102, 200, 255)
   final val darkBlue: BaseColor = new BaseColor(1, 39, 123)
@@ -52,21 +53,22 @@ object PDFBadgeGenerator {
     val inputFile = new File(fileName)
     val lines = scala.io.Source.fromFile(inputFile)(Codec.UTF8).getLines().toList
 
-    val badgeLines:List[BadgeLine] = lines.flatMap{line:String=>BadgeLine.parse(line)}
+    val badgeLines: List[BadgeLine] = lines.flatMap {
+      line: String => BadgeLine.parse(line)
+    }
 
     val badgesByID = badgeLines.drop(1).groupBy(_.id)
 
     badgesByID.map {
-      case(groupName:String, groupOfBadges:List[BadgeLine])=>
+      case (groupName: String, groupOfBadges: List[BadgeLine]) =>
         createPDFFile(inputFile.getParentFile, groupName, groupOfBadges)
     }
 
 
-
   }
 
-  def createPDFFile(parentFolder:File, groupName:String, groupOfBadges:List[BadgeLine])={
-     val file = new File(parentFolder, groupName+".pdf")
+  def createPDFFile(parentFolder: File, groupName: String, groupOfBadges: List[BadgeLine]) = {
+    val file = new File(parentFolder, groupName + ".pdf")
     file.createNewFile()
 
     // step 1
@@ -89,17 +91,16 @@ object PDFBadgeGenerator {
 
     // Create table
     val largeTable: PdfPTable = new PdfPTable(5)
-    largeTable.setTotalWidth(Array[Float](Utilities.millimetersToPoints(63.5f),Utilities.millimetersToPoints(2.54f),Utilities.millimetersToPoints(63.5f),Utilities.millimetersToPoints(2.54f),Utilities.millimetersToPoints(63.5f)))
+    largeTable.setTotalWidth(Array[Float](Utilities.millimetersToPoints(63.5f), Utilities.millimetersToPoints(2.54f), Utilities.millimetersToPoints(63.5f), Utilities.millimetersToPoints(2.54f), Utilities.millimetersToPoints(63.5f)))
     largeTable.setLockedWidth(true)
 
     // step 4
     var cell: PdfPCell = null
     var sticker: PdfPTable = null
 
-
-    var cpt=1
+    var cpt = 1
     val gouttiere = new PdfPCell
-
+    gouttiere.disableBorderSide(Rectangle.BOX)
 
     groupOfBadges.foreach {
       badge: BadgeLine =>
@@ -109,20 +110,17 @@ object PDFBadgeGenerator {
         cell.setFixedHeight(Utilities.millimetersToPoints(38.1f))
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE)
         cell.setHorizontalAlignment(Element.ALIGN_CENTER)
-        cell.enableBorderSide(Rectangle.BOX)
-        cell.setBorderColor(BaseColor.RED)
+        cell.disableBorderSide(Rectangle.BOX)
         cell.addElement(sticker)
         largeTable.addCell(cell)
 
-        if(cpt%3!=0){
+        if (cpt % 3 != 0) {
           largeTable.addCell(gouttiere)
         }
-      cpt=cpt+1
+        cpt = cpt + 1
     }
 
-
-
-    if ((groupOfBadges.size-1) % 4 == 0) {
+    if ((groupOfBadges.size - 1) % 4 == 0) {
       val bouchon = new PdfPCell
       bouchon.addElement(new Phrase("  "))
       bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
@@ -132,14 +130,13 @@ object PDFBadgeGenerator {
       largeTable.addCell(bouchon) // 2 times
     }
 
-    if ((groupOfBadges.size-1) % 5 == 0) {
+    if ((groupOfBadges.size - 1) % 5 == 0) {
       val bouchon = new PdfPCell
       bouchon.addElement(new Phrase("  "))
       bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
       bouchon.disableBorderSide(Rectangle.BOX)
       largeTable.addCell(bouchon)
     }
-
 
     document.add(largeTable)
     document.addCreationDate()
@@ -149,7 +146,6 @@ object PDFBadgeGenerator {
 
     document.close()
   }
-
 
   private def generateSticker(badge: BadgeLine, embeddedFont: BaseFont, gothamFont: BaseFont): PdfPTable = {
     val sticker1: PdfPTable = new PdfPTable(Array[Float](1, 1, 1))
@@ -161,30 +157,32 @@ object PDFBadgeGenerator {
     val p4: Phrase = new Phrase(badge.badgeType)
     p4.setFont(NORMAL)
 
-    val cellLettr: PdfPCell = new PdfPCell
-    cellLettr.setFixedHeight(Utilities.millimetersToPoints(7.5f))
-    cellLettr.setPaddingLeft(4f)
+    val cellTypeBadge: PdfPCell = new PdfPCell
+    cellTypeBadge.setFixedHeight(Utilities.millimetersToPoints(7.5f))
+    cellTypeBadge.setPaddingLeft(4f)
 
-    cellLettr.setBackgroundColor(lightRed)
-    if (badge.badgeType == "COMBI") {
-      cellLettr.setBackgroundColor(lightGreen)
-    }
-    if (badge.badgeType == "UNI") {
-      cellLettr.setBackgroundColor(lightOrange)
-    }
-    if (badge.badgeType == "CONF") {
-      cellLettr.setBackgroundColor(lightBlue)
-    }
-    if (badge.badgeType == "DCAMP") {
-      cellLettr.setBackgroundColor(lightOrange)
-    }
-    if (badge.badgeType == "STUDENT") {
-      cellLettr.setBackgroundColor(lightOrange)
-    }
-    cellLettr.disableBorderSide(Rectangle.BOX)
-    cellLettr.addElement(p4)
 
-    sticker1.addCell(cellLettr)
+
+    badge.badgeType match {
+      case "COMBI" =>
+        cellTypeBadge.setBackgroundColor(lightGreen)
+      case "UNIV" =>
+        cellTypeBadge.setBackgroundColor(lightOrange)
+      case "CONF" =>
+        cellTypeBadge.setBackgroundColor(lightBlue)
+      case "DCAMP" =>
+        cellTypeBadge.setBackgroundColor(lightOrange)
+      case "STUDENT" =>
+        cellTypeBadge.setBackgroundColor(lightOrange)
+      case other =>
+        println("Unknown badgeType [" + badge.badgeType + "]")
+        cellTypeBadge.setBackgroundColor(lightRed)
+    }
+
+    cellTypeBadge.disableBorderSide(Rectangle.BOX)
+    cellTypeBadge.addElement(p4)
+
+    sticker1.addCell(cellTypeBadge)
 
     //********************
     // Lettrine
@@ -227,7 +225,7 @@ object PDFBadgeGenerator {
 
     //********************
 
-    val fontFN: Font = new Font(embeddedFont,10)
+    val fontFN: Font = new Font(embeddedFont, 10)
     val p2: Phrase = new Phrase(badge.firstName, fontFN)
     val cellFirstName: PdfPCell = new PdfPCell
     cellFirstName.addElement(p2)
@@ -253,10 +251,48 @@ object PDFBadgeGenerator {
     val cellCompany: PdfPCell = new PdfPCell
     cellCompany.addElement(phraseCompany)
     cellCompany.disableBorderSide(Rectangle.BOX)
-    cellCompany.setColspan(3)
+    cellCompany.setColspan(2)
     cellCompany.setPaddingLeft(Utilities.millimetersToPoints(3f))
 
     sticker1.addCell(cellCompany)
+
+    // VIP, PRESSe, etc
+    // Type de badge
+    val zoneID: Phrase = new Phrase(badge.id)
+    zoneID.setFont(NORMAL)
+
+    val cellZoneID: PdfPCell = new PdfPCell
+    cellZoneID.setFixedHeight(Utilities.millimetersToPoints(7.5f))
+    cellZoneID.setPaddingLeft(4f)
+
+    badge.id match {
+      case "VIP" =>
+        cellZoneID.setBackgroundColor(lightRed)
+      case "PRESSE" =>
+        cellZoneID.setBackgroundColor(lightRed)
+      case "SPEAKER" =>
+        cellZoneID.setBackgroundColor(lightRed)
+      case "ATTENDEE" =>
+        cellZoneID.setBackgroundColor(BaseColor.LIGHT_GRAY)
+      case "COMBI" =>
+        cellZoneID.setBackgroundColor(BaseColor.LIGHT_GRAY)
+      case "DVX4K" =>
+        cellZoneID.setBackgroundColor(BaseColor.YELLOW)
+      case "GUEST" =>
+        cellZoneID.setBackgroundColor(lightRed)
+      case "ORGA" =>
+        cellZoneID.setBackgroundColor(BaseColor.RED)
+      case "VIDEO" =>
+        cellZoneID.setBackgroundColor(BaseColor.RED)
+      case other =>
+        println("Unknown ID " + badge.id)
+        cellZoneID.setBackgroundColor(BaseColor.WHITE)
+    }
+
+    cellZoneID.disableBorderSide(Rectangle.BOX)
+    cellZoneID.addElement(zoneID)
+
+    sticker1.addCell(cellZoneID)
 
     sticker1
   }
