@@ -219,7 +219,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("scrumdays,scrumdaysfr,srumday,scrumdayfr"); // the keyword, the hashtag to stream
+        loadTweets("devoxx,devoxxfr,tennis"); // the keyword, the hashtag to stream
         loadBestTalks();
         loadNextTalks();
     };
