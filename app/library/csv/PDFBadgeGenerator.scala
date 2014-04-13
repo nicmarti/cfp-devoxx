@@ -23,18 +23,13 @@
 
 package library.csv
 
-import java.io.{FileOutputStream, File, FileReader}
-import au.com.bytecode.opencsv.CSVReader
-import library.VCard
+import java.io.{FileOutputStream, File}
 import scala.collection.JavaConverters._
-import org.apache.commons.lang3.{StringEscapeUtils, StringUtils}
-import scala.io.{Codec, BufferedSource}
-import com.itextpdf.text.Font
-import com.itextpdf.text.BaseColor
+import scala.io.Codec
 import com.itextpdf.text._
+import scala.List
+
 import com.itextpdf.text.pdf._
-import com.itextpdf.text.pdf.qrcode.EncodeHintType
-import com.itextpdf.text.pdf.qrcode.ErrorCorrectionLevel
 
 /**
  * Utility class for Devoxx France, that help us to generate QRCode for the list of attendees
@@ -56,7 +51,22 @@ object PDFBadgeGenerator {
   def handle(fileName: String) = {
     val inputFile = new File(fileName)
     val lines = scala.io.Source.fromFile(inputFile)(Codec.UTF8).getLines().toList
-    val file = new File(inputFile.getParentFile, "output.pdf")
+
+    val badgeLines:List[BadgeLine] = lines.flatMap{line:String=>BadgeLine.parse(line)}
+
+    val badgesByID = badgeLines.drop(1).groupBy(_.id)
+
+    badgesByID.map {
+      case(groupName:String, groupOfBadges:List[BadgeLine])=>
+        createPDFFile(inputFile.getParentFile, groupName, groupOfBadges)
+    }
+
+
+
+  }
+
+  def createPDFFile(parentFolder:File, groupName:String, groupOfBadges:List[BadgeLine])={
+     val file = new File(parentFolder, groupName+".pdf")
     file.createNewFile()
 
     // step 1
@@ -91,9 +101,9 @@ object PDFBadgeGenerator {
     val gouttiere = new PdfPCell
 
 
-    lines.drop(1).foreach {
-      line: String =>
-        sticker = generateSticker(Attendee.parse(line), embeddeFont, gothamFont)
+    groupOfBadges.foreach {
+      badge: BadgeLine =>
+        sticker = generateSticker(badge, embeddeFont, gothamFont)
         cell = new PdfPCell
         cell.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
         cell.setFixedHeight(Utilities.millimetersToPoints(38.1f))
@@ -112,7 +122,7 @@ object PDFBadgeGenerator {
 
 
 
-    if ((lines.size-1) % 4 == 0) {
+    if ((groupOfBadges.size-1) % 4 == 0) {
       val bouchon = new PdfPCell
       bouchon.addElement(new Phrase("  "))
       bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
@@ -122,7 +132,7 @@ object PDFBadgeGenerator {
       largeTable.addCell(bouchon) // 2 times
     }
 
-    if ((lines.size-1) % 5 == 0) {
+    if ((groupOfBadges.size-1) % 5 == 0) {
       val bouchon = new PdfPCell
       bouchon.addElement(new Phrase("  "))
       bouchon.setMinimumHeight(Utilities.millimetersToPoints(38.1f))
@@ -138,18 +148,17 @@ object PDFBadgeGenerator {
     document.addTitle("Badges Devoxx France 2014")
 
     document.close()
-
   }
 
 
-  private def generateSticker(attendee: Attendee, embeddedFont: BaseFont, gothamFont: BaseFont): PdfPTable = {
+  private def generateSticker(badge: BadgeLine, embeddedFont: BaseFont, gothamFont: BaseFont): PdfPTable = {
     val sticker1: PdfPTable = new PdfPTable(Array[Float](1, 1, 1))
 
     sticker1.setTotalWidth(Utilities.millimetersToPoints(63.5f))
     sticker1.setLockedWidth(true)
 
     // Type de badge
-    val p4: Phrase = new Phrase(attendee.registration_type)
+    val p4: Phrase = new Phrase(badge.badgeType)
     p4.setFont(NORMAL)
 
     val cellLettr: PdfPCell = new PdfPCell
@@ -157,19 +166,19 @@ object PDFBadgeGenerator {
     cellLettr.setPaddingLeft(4f)
 
     cellLettr.setBackgroundColor(lightRed)
-    if (attendee.registration_type == "COMBI") {
+    if (badge.badgeType == "COMBI") {
       cellLettr.setBackgroundColor(lightGreen)
     }
-    if (attendee.registration_type == "UNI") {
+    if (badge.badgeType == "UNI") {
       cellLettr.setBackgroundColor(lightOrange)
     }
-    if (attendee.registration_type == "CONF") {
+    if (badge.badgeType == "CONF") {
       cellLettr.setBackgroundColor(lightBlue)
     }
-    if (attendee.registration_type == "DCAMP") {
+    if (badge.badgeType == "DCAMP") {
       cellLettr.setBackgroundColor(lightOrange)
     }
-    if (attendee.registration_type == "STUDENT") {
+    if (badge.badgeType == "STUDENT") {
       cellLettr.setBackgroundColor(lightOrange)
     }
     cellLettr.disableBorderSide(Rectangle.BOX)
@@ -179,7 +188,7 @@ object PDFBadgeGenerator {
 
     //********************
     // Lettrine
-    val pLettrine: Phrase = new Phrase(attendee.lastName.toUpperCase.take(3).toString)
+    val pLettrine: Phrase = new Phrase(badge.lastName.toUpperCase.take(3).toString)
     pLettrine.setFont(new Font(gothamFont, 11, 0, BaseColor.WHITE))
 
     val cellLett: PdfPCell = new PdfPCell
@@ -196,7 +205,7 @@ object PDFBadgeGenerator {
     //********************
 
     var img: Image = null
-    val qrcode: BarcodeQRCode = new BarcodeQRCode(attendee.lastName + "," + attendee.firstName + "," + attendee.email + "," + attendee.company + ", " + attendee.organization + ", " + attendee.position + ", " + attendee.registration_type, 9, 9, null)
+    val qrcode: BarcodeQRCode = new BarcodeQRCode(badge.getQRCodeString, 9, 9, null)
     val cellQRCode: PdfPCell = new PdfPCell
     try {
       img = qrcode.getImage
@@ -219,7 +228,7 @@ object PDFBadgeGenerator {
     //********************
 
     val fontFN: Font = new Font(embeddedFont,10)
-    val p2: Phrase = new Phrase(attendee.firstName, fontFN)
+    val p2: Phrase = new Phrase(badge.firstName, fontFN)
     val cellFirstName: PdfPCell = new PdfPCell
     cellFirstName.addElement(p2)
     cellFirstName.disableBorderSide(Rectangle.BOX)
@@ -229,7 +238,7 @@ object PDFBadgeGenerator {
 
     sticker1.addCell(cellFirstName)
 
-    val pLastName: Phrase = new Phrase(attendee.lastName.toUpperCase, fontFN)
+    val pLastName: Phrase = new Phrase(badge.lastName.toUpperCase, fontFN)
     val cellLastName: PdfPCell = new PdfPCell
     cellLastName.addElement(pLastName)
     cellLastName.disableBorderSide(Rectangle.BOX)
@@ -239,7 +248,7 @@ object PDFBadgeGenerator {
     sticker1.addCell(cellLastName)
 
     // **********
-    var phraseCompany: Phrase = new Phrase(attendee.company, new Font(embeddedFont, 12))
+    var phraseCompany: Phrase = new Phrase(badge.company, new Font(embeddedFont, 12))
 
     val cellCompany: PdfPCell = new PdfPCell
     cellCompany.addElement(phraseCompany)

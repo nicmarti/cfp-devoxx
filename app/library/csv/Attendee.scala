@@ -23,6 +23,8 @@
 
 package library.csv
 
+import au.com.bytecode.opencsv.CSVParser
+
 /**
  * Created by nicolas on 12/04/2014.
  */
@@ -51,6 +53,34 @@ object Attendee {
     val registration_type = tokens(10)
     Attendee(id, firstName, lastName, email, position, opt_in_phone, phone, company_name, organization, attendee_type, registration_type)
   }
+}
 
+case class BadgeLine(id:String,	company:String, lastName:String, firstName:String,badgeType:String,	email:String,
+                     billingType:String, sponsor:String,	note:String){
+   val getQRCodeString:String={
+    id +"," +firstName+","+lastName+","+email+","+company+","+badgeType+","+billingType
+  }
+}
 
+object BadgeLine{
+  def parse(line:String):Option[BadgeLine]={
+    try {
+      val tokens = new CSVParser('\t').parseLine(line)
+      val id = tokens(0)
+      val company = tokens(1)
+      val lastName = tokens(2)
+      val firstName = tokens(3)
+      val badgeType = tokens(4)
+      val email = tokens(5)
+      val billingType = tokens(6)
+      val sponsor = tokens(7)
+      val note = tokens(8)
+     Some(BadgeLine(id, company, lastName, firstName, badgeType, email, billingType, sponsor, note))
+    }catch {
+      case e:Exception=>
+      play.Logger.error("Unable to parse CSV line due to: ",e)
+      play.Logger.error(line)
+      None
+    }
+  }
 }
