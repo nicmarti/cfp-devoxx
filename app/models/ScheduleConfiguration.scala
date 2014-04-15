@@ -162,9 +162,10 @@ object ScheduleConfiguration {
   def loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.map(_.slots).flatten
-    //slots.filter(_.from.hourOfDay() == new DateTime().hourOfDay())
+    Option(slots.filter(_.from.hourOfDay() == new DateTime().hourOfDay()))
+
     //println(slots.filter(_.proposal.isDefined).size)
-    Option(Random.shuffle(slots.toList).take(12))
+    //Option(Random.shuffle(slots.toList).take(12))
   }
 
 }
