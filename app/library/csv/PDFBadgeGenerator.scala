@@ -37,7 +37,7 @@ import com.itextpdf.text.pdf._
  */
 object PDFBadgeGenerator {
 
-  final val NORMAL: Font = new Font(Font.FontFamily.HELVETICA, 10)
+  final val NORMAL: Font = new Font(Font.FontFamily.HELVETICA, 8)
   final val FONT_COMPANY: Font = new Font(Font.FontFamily.HELVETICA, 8)
 
   final val lightGreen: BaseColor = new BaseColor(91, 255, 18)
@@ -59,16 +59,20 @@ object PDFBadgeGenerator {
 
     val badgesByID = badgeLines.drop(1).groupBy(_.id)
 
+    println("Total "+badgeLines.size)
+
     badgesByID.map {
       case (groupName: String, groupOfBadges: List[BadgeLine]) =>
-        createPDFFile(inputFile.getParentFile, groupName, groupOfBadges)
+        createPDFFile(inputFile, groupName, groupOfBadges)
     }
 
 
   }
 
-  def createPDFFile(parentFolder: File, groupName: String, groupOfBadges: List[BadgeLine]) = {
-    val file = new File(parentFolder, groupName + ".pdf")
+  def createPDFFile(sourceFile: File, groupName: String, groupOfBadges: List[BadgeLine]) = {
+    play.Logger.info(s"Processing $groupName")
+
+    val file = new File(sourceFile.getParentFile, sourceFile.getName + ".pdf")
     file.createNewFile()
 
     // step 1
@@ -161,9 +165,7 @@ object PDFBadgeGenerator {
     cellTypeBadge.setFixedHeight(Utilities.millimetersToPoints(7.5f))
     cellTypeBadge.setPaddingLeft(4f)
 
-
-
-    badge.badgeType match {
+    badge.badgeType.toUpperCase() match {
       case "COMBI" =>
         cellTypeBadge.setBackgroundColor(lightGreen)
       case "UNIV" =>
@@ -265,25 +267,27 @@ object PDFBadgeGenerator {
     cellZoneID.setFixedHeight(Utilities.millimetersToPoints(7.5f))
     cellZoneID.setPaddingLeft(4f)
 
-    badge.id match {
+    badge.id.toUpperCase match {
       case "VIP" =>
         cellZoneID.setBackgroundColor(lightRed)
       case "PRESSE" =>
         cellZoneID.setBackgroundColor(lightRed)
       case "SPEAKER" =>
         cellZoneID.setBackgroundColor(lightRed)
+      case "GUEST" =>
+        cellZoneID.setBackgroundColor(BaseColor.CYAN)
       case "ATTENDEE" =>
         cellZoneID.setBackgroundColor(BaseColor.LIGHT_GRAY)
       case "COMBI" =>
         cellZoneID.setBackgroundColor(BaseColor.LIGHT_GRAY)
       case "DVX4K" =>
         cellZoneID.setBackgroundColor(BaseColor.YELLOW)
-      case "GUEST" =>
-        cellZoneID.setBackgroundColor(lightRed)
       case "ORGA" =>
         cellZoneID.setBackgroundColor(BaseColor.RED)
       case "VIDEO" =>
         cellZoneID.setBackgroundColor(BaseColor.RED)
+      case "FORMATION" =>
+        cellZoneID.setBackgroundColor(BaseColor.YELLOW)
       case other =>
         println("Unknown ID " + badge.id)
         cellZoneID.setBackgroundColor(BaseColor.WHITE)
