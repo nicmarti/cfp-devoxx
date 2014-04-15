@@ -288,6 +288,8 @@ object PDFBadgeGenerator {
         cellZoneID.setBackgroundColor(BaseColor.RED)
       case "FORMATION" =>
         cellZoneID.setBackgroundColor(BaseColor.YELLOW)
+      case "AMD" =>
+        cellZoneID.setBackgroundColor(BaseColor.ORANGE)
       case other =>
         println("Unknown ID " + badge.id)
         cellZoneID.setBackgroundColor(BaseColor.WHITE)

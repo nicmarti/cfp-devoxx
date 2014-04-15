@@ -133,8 +133,8 @@ object Tweetwall extends Controller {
     implicit request =>
       import scala.concurrent.duration._
 
-      val url: String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
-      //val url: String = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/most-popular"
+      //val url: String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
+      val url: String = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/most-popular"
 
       def futureIDs: Future[Option[JsValue]] = WS.url(url).get().map {
         response =>
