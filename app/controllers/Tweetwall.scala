@@ -179,7 +179,6 @@ object Tweetwall extends Controller {
     implicit request =>
       import scala.concurrent.duration._
 
-
       val nextTalks: Enumerator[Seq[Slot]] = Enumerator.generateM[Seq[Slot]] {
         play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 20 seconds)
       }

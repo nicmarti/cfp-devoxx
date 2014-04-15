@@ -192,7 +192,6 @@ $(function () {
             return speakerBox;
         });
 
-
     };
 
     function checkTime(i) {
