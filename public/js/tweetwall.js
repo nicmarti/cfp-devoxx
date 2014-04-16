@@ -29,7 +29,7 @@ $(function () {
 
         $(stream).on('message', function (e) {
             var tweet = JSON.parse(e.originalEvent.data);
-            console.log("tweet "+tweet);
+            console.log(tweet);
             if (tweet && tweet.user) {
                 createTweet(tweet);
             }
@@ -221,7 +221,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("devoxx,devoxxfr,tennis,football"); // the keyword, the hashtag to stream
+       // loadTweets("devoxx,devoxxfr,tennis,foot,football"); // the keyword, the hashtag to stream
         loadBestTalks();
         loadNextTalks();
     };

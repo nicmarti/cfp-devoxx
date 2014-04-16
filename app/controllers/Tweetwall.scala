@@ -103,41 +103,43 @@ object Tweetwall extends Controller {
 
   def watchTweets(keywords: String) = Action {
     implicit request =>
-println("watch tweets")
 
       val (tweetsOut, tweetChanel) = Concurrent.broadcast[JsValue]
-      // See Twitter parameters doc https://dev.twitter.com/docs/streaming-apis/parameters
-      WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&track=" + URLEncoder.encode(keywords, "UTF-8"))
-        .withRequestTimeout(-1) // Connected forever
-        .sign(OAuthCalculator(KEY, sessionTokenPair.get))
-        //.withHeaders("Connection" -> "keep-alive")
-        .postAndRetrieveStream("")(headers => Iteratee.foreach[Array[Byte]] {
-        ba =>
-          val msg = new String(ba, "UTF-8")
-          val tweet = Json.parse(msg)
-        println("Turn to a tweet "+tweet)
-          tweetChanel.push(tweet)
-      }).flatMap(_.run)
-
-//    WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?track=" + URLEncoder.encode(keywords, "UTF-8"))
-//    .sign(OAuthCalculator(KEY, sessionTokenPair.get))
-//    .get().map{response=>
-//      response.status match{
-//        case 200=>{
-//          val tweet = Json.parse(response.body)
-//          println("Got a tweet "+tweet)
+//      // See Twitter parameters doc https://dev.twitter.com/docs/streaming-apis/parameters
+      //WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&track=" + URLEncoder.encode(keywords, "UTF-8"))
+//      WS.url("https://stream.twitter.com/1.1/statuses/sample.json" )
+////        .withRequestTimeout(-1) // Connected forever
+////         .sign(OAuthCalculator(KEY, sessionTokenPair.get))
+////        .withHeaders("Connection" -> "keep-alive")
+//        .postAndRetrieveStream("")(headers => Iteratee.foreach[Array[Byte]] {
+//        ba =>
+//          val msg = new String(ba, "UTF-8")
+//          val tweet = Json.parse(msg)
 //          tweetChanel.push(tweet)
-//        }
-//        case 420=> {
-//          play.Logger.error("Twitter quota exceed")
-//        }
-//        case other=>{
-//          play.Logger.error("Twitter error, code "+other)
-//          play.Logger.error("Twitter error, code "+response.body)
-//        }
-//
-//      }
-//    }
+//      }).flatMap(_.run)
+
+    WS.url("https://stream.twitter.com/1.1/statuses/sample.json")
+//    WS.url(s"https://stream.twitter.com/1.0/statuses/filter.json?stall_warnings=true&track=" + URLEncoder.encode(keywords, "UTF-8"))
+//      .withRequestTimeout(-1)
+//      .withHeaders("Connection" -> "keep-alive")
+      .sign(OAuthCalculator(KEY, sessionTokenPair.get))
+    .get().map{response=>
+      response.status match{
+        case 200=>{
+          val tweet = Json.parse(response.body)
+          println("Got a tweet "+tweet)
+          tweetChanel.push(tweet)
+        }
+        case 420=> {
+          println("Twitter quota exceed")
+        }
+        case other=>{
+          println("Twitter error, code "+other)
+          println("Twitter error, code "+response.body)
+        }
+
+      }
+    }
       Ok.feed(tweetsOut &> EventSource()).as("text/event-stream")
   }
 
