@@ -29,6 +29,7 @@ $(function () {
 
         $(stream).on('message', function (e) {
             var tweet = JSON.parse(e.originalEvent.data);
+            console.log("tweet "+tweet);
             if (tweet && tweet.user) {
                 createTweet(tweet);
             }
@@ -118,6 +119,8 @@ $(function () {
     };
 
     var createBestTalkPanels = function(bestTalks){
+        $('#sessionPop').empty();
+
         _.each(bestTalks, function(talk){
 
             var photos = _.map(talk.gravatars,function(g){
@@ -218,7 +221,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("devoxx,devoxxfr"); // the keyword, the hashtag to stream
+        //loadTweets("devoxx,devoxxfr,tennis,football"); // the keyword, the hashtag to stream
         loadBestTalks();
         loadNextTalks();
     };
