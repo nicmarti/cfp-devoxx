@@ -168,7 +168,7 @@ POST          /schedulling/fr14/publish                              controllers
 GET           /schedulling/fr14/published                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
 # Tweetwall
-GET           /tweetwall                                             controllers.Tweetwall.index()
+GET           /14d890                                         controllers.Tweetwall.index()
 GET           /tweetwall/authenticate                                controllers.Tweetwall.authenticate()
 GET           /tweetwall/callback                                    controllers.Tweetwall.authenticate()
 GET           /tweetwall/stream                                      controllers.Tweetwall.watchTweets(keywords:String)

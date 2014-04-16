@@ -109,11 +109,10 @@ object Tweetwall extends Controller {
       WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&track=" + URLEncoder.encode(keywords, "UTF-8"))
         .withRequestTimeout(-1) // Connected forever
         .sign(OAuthCalculator(KEY, sessionTokenPair.get))
-        .withHeaders("Connection" -> "keep-alive")
+        //.withHeaders("Connection" -> "keep-alive")
         .postAndRetrieveStream("")(headers => Iteratee.foreach[Array[Byte]] {
         ba =>
           val msg = new String(ba, "UTF-8")
-        println("Received "+msg)
           val tweet = Json.parse(msg)
         println("Turn to a tweet "+tweet)
           tweetChanel.push(tweet)
@@ -201,7 +200,7 @@ object Tweetwall extends Controller {
                         "room" -> JsString(slot.room.name),
                         "track" -> JsString(Messages(proposal.track.label)),
                         "from" -> JsString(slot.from.toString("HH:mm")),
-                        "to" -> JsString(slot.from.toString("HH:mm"))
+                        "to" -> JsString(slot.to.toString("HH:mm"))
                       )
                     )
                   }
