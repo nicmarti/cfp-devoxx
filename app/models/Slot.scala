@@ -104,6 +104,10 @@ object Room {
     Room.MILES_DAVIS_A_TH, Room.MILES_DAVIS_B_TH, Room.MILES_DAVIS_C_TH,
     Room.SEINE_A, Room.SEINE_B, Room.SEINE_C, Room.AUDITORIUM)
 
+  val allRoomsNotRecorded = List(Room.ELLA_FITZGERALD_AB_TH, Room.LOUIS_ARMSTRONG_AB_TH, Room.LOUIS_ARMSTRONG_CD_TH,
+    Room.MILES_DAVIS_A_TH, Room.MILES_DAVIS_B_TH, Room.MILES_DAVIS_C_TH)
+
+
   val allRooms = allBigRoom ++ List(Room.ELLA_FITZGERALD, Room.MILES_DAVIS)
 
   // No E.Fitzgerald for Apres-midi des decideurs
@@ -139,6 +143,32 @@ object Room {
       case other => OTHER
     }
   }
+
+  // Small helper function that is specific to devoxxfr2014
+  def idBVRent(room:Room):String={
+    room.id match {
+      case "seine_keynote" => "K"
+      case "seine_a" => "A"
+      case "seine_b" => "B"
+      case "seine_c" => "C"
+      case "auditorium" => "AU"
+      case "el_ab" => "EL"
+      case "el_ab_th" => "EL"
+      case "el_ab_full" => "EL"
+      case "la_ab" => "LA"
+      case "la_ab_th" => "LA"
+      case "la_cd" => "LA"
+      case "la_cd_th" => "LA"
+      case "md_a" => "MD"
+      case "md_a_th" => "MD"
+      case "md_b" => "MD"
+      case "md_b_th" => "MD"
+      case "md_c" => "MD"
+      case "md_c_th" => "MD"
+      case "md_full" => "MD"
+      case other => "??"+other
+    }
+  }
 }
 
 case class SlotBreak(id: String, nameEN: String, nameFR: String, room: Room)
@@ -160,6 +190,10 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
 
   def notAllocated: Boolean = {
     break.isEmpty && proposal.isEmpty
+  }
+
+  def idForBVRent:String={
+    from.getDayOfMonth+"-"+ name.head.toUpper+"-" + Room.idBVRent(room)
   }
 
 }

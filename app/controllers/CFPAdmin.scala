@@ -560,6 +560,32 @@ object CFPAdmin extends SecureCFPController {
       Proposal.resetPreferredDay(proposalId: String)
       Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "No preferences")
   }
+
+  def allTalksForParleys()=SecuredAction(IsMemberOf("cfp")){
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val onParleys = List(ProposalType.UNI.id, ProposalType.CONF.id, ProposalType.TIA.id, ProposalType.KEY.id, ProposalType.QUICK.id)
+
+      val publishedIDs = onParleys.flatMap{ confType=>
+        ScheduleConfiguration.getPublishedSchedule(confType)
+      }
+
+      val filteredList = publishedIDs.flatMap{
+        id:String=>
+          ScheduleConfiguration.loadScheduledConfiguration(id)
+      }
+
+      val notRecorded=Room.allRoomsNotRecorded.map(_.id)
+
+      val slots = filteredList.map(_.slots)
+        .flatten
+        .filterNot(s=>notRecorded.contains(s.room.id))
+        .filter(_.proposal.isDefined)
+        .sortBy(_.from.toDate.getTime)
+
+      Ok(views.html.CFPAdmin.allTalksOnParley(slots))
+
+  }
 }
 
 

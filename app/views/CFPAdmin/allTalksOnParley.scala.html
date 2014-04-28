@@ -1,0 +1,38 @@
+@(slots: List[Slot])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("All talks on Parleys") {
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1><i class="icon-camera"></i> Recorded talks</h1>
+                    @slots.size talks (some TIA haven't been recorded and are already excluded from this list)
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-stripped">
+            <thead>
+                <th>ID DevoxxFR</th>
+                <th>ID BV Rent <br>(experimental)</th>
+                <th>Room</th>
+                <th>Contact speakers</th>
+                <th>Talk title</th>
+                <th>Speakers</th>
+            </thead>
+            <tbody>
+    @slots.map{slot =>
+            <tr>
+                <td>@slot.id</td>
+                <td>@slot.idForBVRent</td>
+                <td>@slot.room.name</td>
+                <td>@slot.proposal.map{p=>
+                    @tags.linkToProposal(p.id)
+                }</td>
+                <td>@slot.proposal.map(_.title)</td>
+                <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString(", "))</td>
+            </tr>
+    }
+            </tbody>
+    </table>
+}

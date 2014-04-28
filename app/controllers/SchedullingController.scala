@@ -123,7 +123,7 @@ object SchedullingController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleSavedFormat
 
-      val scheduledSlotsKey = ScheduleConfiguration.allScheduledConfiguration()
+      val scheduledSlotsKey = ScheduleConfiguration.allScheduledConfigurationWithLastModified()
       val json = Json.toJson(Map("scheduledConfigurations" -> Json.toJson(
         scheduledSlotsKey.map {
           case (key, dateAsDouble) =>
@@ -194,8 +194,6 @@ object SchedullingController extends SecureCFPController {
       }.getOrElse {
         BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
       }
-
-
   }
 
   def getPublishedSchedule(confType:String, day:Option[String])=Action{

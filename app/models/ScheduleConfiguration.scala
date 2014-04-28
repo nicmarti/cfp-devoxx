@@ -25,9 +25,9 @@ package models
 
 import library.Redis
 import play.api.libs.json.Json
-import org.joda.time.DateTime
 import org.apache.commons.lang3.RandomStringUtils
 import scala.util.Random
+import org.joda.time.DateTime
 
 /**
  * Slots that are scheduled.
@@ -91,7 +91,7 @@ object ScheduleConfiguration {
       tx.exec()
   }
 
-  def allScheduledConfiguration(): List[(String, Double)] = Redis.pool.withClient {
+  def allScheduledConfigurationWithLastModified(): List[(String, Double)] = Redis.pool.withClient {
     implicit client =>
       client.zrevrangeWithScores("ScheduleConfiguration", 0, -1)
   }
