@@ -163,9 +163,12 @@ object ScheduleConfiguration {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.map(_.slots).flatten
     Option(slots.sortBy(_.from.toDate.getTime).filter(_.from.isAfter(new DateTime())).take(10))
+  }
 
-    //println(slots.filter(_.proposal.isDefined).size)
-    //Option(Random.shuffle(slots.toList).take(12))
+  def loadRandomTalks() = {
+    val allAgendas = ScheduleConfiguration.loadAllConfigurations()
+    val slots = allAgendas.map(_.slots).flatten
+    Option(Random.shuffle(slots.toList).take(10))
   }
 
 }

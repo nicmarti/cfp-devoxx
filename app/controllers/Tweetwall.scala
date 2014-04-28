@@ -33,15 +33,8 @@ import play.api.libs._
 import play.api.libs.iteratee._
 import play.Play
 import java.net.URLEncoder
-import play.api.libs.oauth.OAuth
-import play.api.libs.oauth.ServiceInfo
-import play.api.libs.oauth.RequestToken
-import play.api.libs.oauth.OAuthCalculator
-import play.api.libs.oauth.ConsumerKey
 import models._
-import play.api.i18n.Messages.Message
 import play.api.i18n.Messages
-import org.joda.time.DateTime
 import play.api.libs.oauth.OAuth
 import play.api.libs.json.JsString
 import scala.Some
@@ -49,12 +42,16 @@ import play.api.libs.oauth.ServiceInfo
 import play.api.libs.oauth.RequestToken
 import play.api.libs.oauth.OAuthCalculator
 import play.api.libs.oauth.ConsumerKey
-
+import akka.util.Timeout
+import java.util.concurrent.TimeUnit
+import play.api.libs.concurrent.Akka
+import akka.actor.{ActorRef, Props, Actor}
 
 /**
  * Tweet wall, using new Twitter Stream API.
  *
- * Created by nmartignole on 03/04/2014.
+ * Original version created by Nicolas Martignole (@nmartignole) march 2014
+ * Actor support added by Mathieu Ancelin (@TrevorReznik)
  */
 object Tweetwall extends Controller {
 
@@ -62,12 +59,16 @@ object Tweetwall extends Controller {
 
   val KEY = ConsumerKey(cfg.getString("twitter.consumerKey"), cfg.getString("twitter.consumerSecret"))
 
+  val tweetActor = Akka.system(play.api.Play.current).actorOf(Props[TweetsBroadcaster])
+  implicit val timeout = Timeout(1, TimeUnit.SECONDS)
+
   val TWITTER = OAuth(ServiceInfo(
     "https://api.twitter.com/oauth/request_token",
     "https://api.twitter.com/oauth/access_token",
     "https://api.twitter.com/oauth/authorize", KEY),
     use10a = false)
 
+  // Check if we have a valid Twitter token session, else authenticate
   def index = Action {
     implicit request =>
       request.session.get("token").map {
@@ -78,6 +79,7 @@ object Tweetwall extends Controller {
       }
   }
 
+  // Twitter OAuth
   def authenticate = Action {
     implicit request =>
       request.queryString.get("oauth_verifier").flatMap(_.headOption).map {
@@ -101,46 +103,15 @@ object Tweetwall extends Controller {
           })
   }
 
-  def watchTweets(keywords: String) = Action {
+
+  // Starts to watch tweets
+  def watchTweets(keywords: String) = Action.async {
     implicit request =>
-
-      val (tweetsOut, tweetChanel) = Concurrent.broadcast[JsValue]
-//      // See Twitter parameters doc https://dev.twitter.com/docs/streaming-apis/parameters
-      //WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&track=" + URLEncoder.encode(keywords, "UTF-8"))
-//      WS.url("https://stream.twitter.com/1.1/statuses/sample.json" )
-////        .withRequestTimeout(-1) // Connected forever
-////         .sign(OAuthCalculator(KEY, sessionTokenPair.get))
-////        .withHeaders("Connection" -> "keep-alive")
-//        .postAndRetrieveStream("")(headers => Iteratee.foreach[Array[Byte]] {
-//        ba =>
-//          val msg = new String(ba, "UTF-8")
-//          val tweet = Json.parse(msg)
-//          tweetChanel.push(tweet)
-//      }).flatMap(_.run)
-
-    WS.url("https://stream.twitter.com/1.1/statuses/sample.json")
-//    WS.url(s"https://stream.twitter.com/1.0/statuses/filter.json?stall_warnings=true&track=" + URLEncoder.encode(keywords, "UTF-8"))
-//      .withRequestTimeout(-1)
-//      .withHeaders("Connection" -> "keep-alive")
-      .sign(OAuthCalculator(KEY, sessionTokenPair.get))
-    .get().map{response=>
-      response.status match{
-        case 200=>{
-          val tweet = Json.parse(response.body)
-          println("Got a tweet "+tweet)
-          tweetChanel.push(tweet)
-        }
-        case 420=> {
-          println("Twitter quota exceed")
-        }
-        case other=>{
-          println("Twitter error, code "+other)
-          println("Twitter error, code "+response.body)
-        }
-
+      import akka.pattern.ask
+      (tweetActor ? WallRequest(keywords, request)).mapTo[WallResponse].map {
+        response =>
+          Ok.feed(response.enumerator &> Enumeratee.map[Array[Byte]](Json.parse) &> EventSource()).as("text/event-stream")
       }
-    }
-      Ok.feed(tweetsOut &> EventSource()).as("text/event-stream")
   }
 
   def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
@@ -152,6 +123,7 @@ object Tweetwall extends Controller {
     }
   }
 
+  // Loads the list of best talks. This part relies on an external simple web service built by Xebia.
   def watchBestTalks() = Action {
     implicit request =>
       import scala.concurrent.duration._
@@ -198,12 +170,17 @@ object Tweetwall extends Controller {
       Ok.feed(bestProposalIDs &> jsIDstoProposal &> EventSource()).as("text/event-stream")
   }
 
+  // Loads the next talks,
   def loadNextTalks() = Action {
     implicit request =>
       import scala.concurrent.duration._
+      import play.api.libs.concurrent.Promise
 
       val nextTalks: Enumerator[Seq[Slot]] = Enumerator.generateM[Seq[Slot]] {
-        play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 20 seconds)
+        // 1) For production
+        //  play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 20 seconds)
+        // 2) For demo
+        Promise.timeout(ScheduleConfiguration.loadRandomTalks(), 20 seconds)
       }
 
       val proposalsToJSON: Enumeratee[Seq[Slot], JsValue] = Enumeratee.map {
@@ -235,7 +212,7 @@ object Tweetwall extends Controller {
                         "room" -> JsString(zeBreak.room.name),
                         "track" -> JsString(""),
                         "speakers" -> JsString(""),
-                      "from" -> JsString(slot.from.toString("HH:mm")),
+                        "from" -> JsString(slot.from.toString("HH:mm")),
                         "to" -> JsString(slot.from.toString("HH:mm"))
                       )
                     )
@@ -249,4 +226,45 @@ object Tweetwall extends Controller {
       Ok.feed(nextTalks &> proposalsToJSON &> EventSource()).as("text/event-stream")
   }
 
+}
+
+case class WallRequest(keywords: String, request: RequestHeader)
+
+case class WallResponse(enumerator: Enumerator[Array[Byte]])
+
+case class ResetConnection()
+
+class TweetsBroadcaster extends Actor {
+
+  import context.become
+
+  val (enumerator, channel) = Concurrent.broadcast[Array[Byte]]
+
+  def streamIt(keywords: String, request: RequestHeader, myself: ActorRef) {
+    WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&language=fr,en&track=" + URLEncoder.encode(keywords, "UTF-8"))
+      .withRequestTimeout(-1) // else we close the stream
+      .sign(OAuthCalculator(Tweetwall.KEY, Tweetwall.sessionTokenPair(request).get))
+      .withHeaders("Connection" -> "keep-alive") // not sure we really need this
+      .postAndRetrieveStream("")(_ => Iteratee.foreach[Array[Byte]](bytes => channel.push(bytes))).flatMap(_.run).onComplete {
+      case _ => myself ! ResetConnection()
+    }
+  }
+
+  def beforeAuth: Receive = {
+    case WallRequest(keywords, request) => {
+      val myself = self
+      sender ! WallResponse(enumerator)
+      become(afterAuth)
+      streamIt(keywords, request, myself)
+    }
+    case _ =>
+  }
+
+  def afterAuth: Receive = {
+    case WallRequest(keywords, request) => sender ! WallResponse(enumerator)
+    case ResetConnection() => become(beforeAuth)
+    case _ =>
+  }
+
+  def receive = beforeAuth
 }

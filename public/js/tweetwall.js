@@ -221,7 +221,7 @@ $(function () {
 
     var init = function () {
         startTime();
-       // loadTweets("devoxx,devoxxfr,tennis,foot,football"); // the keyword, the hashtag to stream
+        loadTweets("devoxx,devoxxfr,tennis,golf"); // the keyword, the hashtag to stream
         loadBestTalks();
         loadNextTalks();
     };
