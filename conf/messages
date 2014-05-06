@@ -10,8 +10,8 @@ index.welcome=Already registered as a speaker? Please use this form to sign-in :
 btn.login=Sign-in
 login=Sign-in
 signup=Sign-up
-signup.long=Register as a new Devoxx France speaker
-menu.blog=Website DevoxxFR
+signup.long=Register as a new Scala.IO FR speaker
+menu.blog=Website Scala.IO FR
 index.method1=Sign-in
 index.method2=Authenticate with OpenID
 index.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
@@ -20,7 +20,7 @@ bio=A short bio
 twitter=Your twitter handle
 blog=Your blog or company website
 index.signupTitle=Sign-up as a speaker
-index.signup2=Sign-up as speaker for Devoxx France and propose one or more subjects.
+index.signup2=Sign-up as speaker for Scala.IO FR and propose one or more subjects.
 index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
 index.signup.btn=Sign-up
 email.alreadyexists=This email is already registered in our database.
@@ -60,12 +60,12 @@ title.help=Think carefully and try to create a title that is descriptive enough.
 summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and on the printed program. You can use Markdown syntax.
 lang=Main language
-lang.help=75% of Devoxx France''s talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
+lang.help=75% of Scala.IO FR''s talks are in French, 25% in English, with at least one english talk per hour. Except if you speak fluent French, we recommend you to speak English.
 mainSpeaker=Main speaker
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a 3-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action.
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq/#confType" target="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href="http://www.scala.io/faq/#confType" target="new">FAQ</a>.
 
 audienceLevel=Audience level
 privateMessage=Message for the program committee, motivation for your presentation
@@ -113,7 +113,7 @@ agilite.label=Agility, DevOps
 lg_alter.label=Alternate languages
 lgaltern.label=Alternate languages
 startup.label=Startups & innovation
-future.label=Future<Devoxx>
+future.label=Future<Scala.IO>
 
 # Bug report
 Issue.report=Report an issue
@@ -122,7 +122,7 @@ btn.send=Send
 # Home page
 cfp.closed=The Call for paper is closed and will open Mon, 2nd Dec, 2014.
 appel.conf=Call for Paper
-appel.conf.dates=Devoxx France 2014, 16th to 18th of April, 2014
+appel.conf.dates=Scala.IO FR 2014, 23rd - 24th of October, 2014
 cfp.opening=CFP opening:
 cfp.opening.date=Monday, 2nd of December 2013
 cfp.closing=Reminder :
@@ -130,9 +130,9 @@ cfp.closing.date=do not forget to accept or to decline all approved proposals.
 cfp.program=Program announced :
 cfp.program.date=from Monday, 17th February, 2014
 video.title=Videos
-video.tag=Review Devoxx France 2013''s videos for free on
+video.tag=Review Scala.IO FR 2013''s videos for free on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx France 2014:
+theme.track=List of tracks for Scala.IO FR 2014:
 track.title=Title
 track.description=Description
 track.java.title=Java
@@ -149,7 +149,7 @@ track.lang.title=Alternates Languages
 track.lang.desc=Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
 track.bigdata.title=Cloud, Big Data and NoSQL
 track.bigdata.desc=Capture, curation, storage, search, sharing, transfer, analysis and visualization.
-track.future.title=Future<Devoxx>
+track.future.title=Future<Scala.IO FR>
 track.future.desc=Java in the Internet of things, robotics, domotics
 
 # confirm import
@@ -161,11 +161,11 @@ avatarUrl.defined=Your photo (recommended width 150px)
 created.title=Success!
 created.text1=We just sent you an email so that you can validate your email address.
 created.text2=Your password is generated and is displayed once you validate your email.
-created.text3=You will then be able to log-in and start to post proposals for Devoxx France.
+created.text3=You will then be able to log-in and start to post proposals for Scala.IO FR.
 
 # prepareSignup
 signup.title=Speaker''s registration
-signup.txt1=Sign up to submit a talk for Devoxx France 2014 conference:
+signup.txt1=Sign up to submit a talk for Scala.IO FR 2014 conference:
 signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated.
 
 # edit profile
@@ -321,12 +321,12 @@ admin.btn.otherReviewer=Compare with other Reviewer
 btn.showVotes=Show votes
 comment.proposal=Comments for proposal
 
-approve.title=Devoxx France, Speaker Consent Form
+approve.title=Scala.IO FR, Speaker Consent Form
 accept.chk=I accept the Terms and Conditions
-acceptTerm.pleaseRead=Please read and accept Devoxx France Terms and Conditions
+acceptTerm.pleaseRead=Please read and accept Scala.IO FR Terms and Conditions
 accept.term.checked=Please check this box if you agree with the Terms and Conditions
 
-acceptedProposals.title=List of accepted/refused proposals for Devoxx France
+acceptedProposals.title=List of accepted/refused proposals for Scala.IO FR
 ar.approved=Approved proposals
 ar.rejected=Refused proposals
 ar.noneApproved=We are very sorry to inform you that none of your proposals have been accepted.
