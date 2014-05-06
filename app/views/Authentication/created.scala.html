@@ -1,6 +1,6 @@
-@(email:String)(implicit lang:Lang)
+@(email:String)(implicit lang:Lang, req: RequestHeader)
 
-@template("Success"){
+@main("Success"){
 <div class="row">
     <div class="col-md-12">
         <h1>@Messages("created.title")</h1>

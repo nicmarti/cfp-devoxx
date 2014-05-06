@@ -184,6 +184,9 @@ object SecureCFPController {
     Webuser.findByUUID(uuid)
   }
 
+  def isLoggedIn(implicit request: RequestHeader): Boolean = {
+    findAuthenticator.isDefined
+  }
   def hasAccessToCFP(implicit request: RequestHeader): Boolean = {
     findAuthenticator.exists(uuid =>
       Webuser.hasAccessToCFP(uuid)

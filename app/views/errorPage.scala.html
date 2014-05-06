@@ -1,6 +1,6 @@
-@(error: play.api.UsefulException)
+@(error: play.api.UsefulException)(implicit req: RequestHeader)
 
-@template("500 Internal server error"){
+@main("500 Internal server error"){
 <h1>500 Internal server error</h1>
 <p>Sorry, there's a bug or something we really didn't expect...</p>
 <p>Please, <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> report a bug</a> and specify ErrorID=<strong>@error.id</strong></p>

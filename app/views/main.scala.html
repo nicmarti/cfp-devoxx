@@ -27,7 +27,7 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="/" class="navbar-brand">Devox<span class="yl">x</span> France CFP</a>
+            <a href="/" class="navbar-brand">Scala.<span class="yl">IO</span> CFP</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -36,16 +36,18 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav navbar-left">
-                <li><a href="@routes.CallForPaper.homeForSpeaker()">@Messages("nav.homeSpeaker")</a></li>
+                @if(SecureCFPController.isLoggedIn(req)){
+                    <li><a href="@routes.CallForPaper.homeForSpeaker()">@Messages("nav.homeSpeaker")</a></li>
+                }
                 @if(SecureCFPController.hasAccessToCFP(req)){
                     <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> CFPAdmin</a></li>
                 }
-                 @if(SecureCFPController.hasAccessToAdmin(req)){
+                @if(SecureCFPController.hasAccessToAdmin(req)){
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
                 }
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span>  France website</a></li>
+                <li><a href="http://www.scala.io/" target="_blank"><i class="icon-arrow-right"></i> Scala.<span class="yl">IO</span> website</a></li>
             </ul>
             @if(SecureCFPController.hasAccessToCFP(req)){
             <form id="searchForm" class="navbar-form navbar-right" role="search">
@@ -69,9 +71,11 @@
   <div class="container">
     <div>
       <hr>
-        <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
-        <small><i class="icon-bullhorn"></i> Devoxx France Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
-        <small><i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">Clever-cloud</a></small>
+        @if(SecureCFPController.isLoggedIn(req)){
+            <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
+        }
+        <small><i class="icon-bullhorn"></i> Scala.io Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
+        <small><i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#ScalaIO">Clever-cloud</a></small>
     </div>
   </div>
 </footer>

@@ -1,7 +1,7 @@
-@(myForm:Form[(models.Issue)])(implicit flash:Flash, lang:Lang)
+@(myForm:Form[(models.Issue)])(implicit flash:Flash, lang:Lang, req: RequestHeader)
 @import helper.twitterBootstrap._
 
-@template("Report an issue"){
+@main("Report an issue"){
     <div class="row">
         <div class="col-md-10">
             <div class="page-header">

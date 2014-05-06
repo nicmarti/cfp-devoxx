@@ -7,7 +7,9 @@ import org.joda.time.DateMidnight
 import play.api._
 import play.api.mvc.RequestHeader
 import mvc.Results._
+import play.api.templates.HtmlFormat
 import play.api.UnexpectedException
+import play.core.Router.Routes
 import Play.current
 import scala.concurrent.Future
 import play.api.libs.concurrent._
@@ -27,11 +29,12 @@ object Global extends GlobalSettings {
   }
 
   override def onError(request: RequestHeader, ex: Throwable) = {
+    val viewO: Option[(UsefulException) => HtmlFormat.Appendable] =Play.maybeApplication.map {
+      case app if app.mode != Mode.Prod => views.html.defaultpages.devError.f
+      case app => views.html.errorPage.f(_:UsefulException)(request)
+    }
     try {
-      Future.successful(InternalServerError(Play.maybeApplication.map {
-        case app if app.mode != Mode.Prod => views.html.defaultpages.devError.f
-        case app => views.html.errorPage.f
-      }.getOrElse(views.html.defaultpages.devError.f) {
+      Future.successful(InternalServerError(viewO.getOrElse(views.html.defaultpages.devError.f) {
         ex match {
           case e: UsefulException => e
           case NonFatal(e) => UnexpectedException(unexpected = Some(e))
@@ -49,10 +52,11 @@ object Global extends GlobalSettings {
    * 404 custom page, for Prod mode only
    */
   override def onHandlerNotFound(request: RequestHeader) = {
-    Future.successful(NotFound(Play.maybeApplication.map {
+    val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
-      case app => views.html.notFound.f
-    }.getOrElse(views.html.defaultpages.devNotFound.f)(request, Play.maybeApplication.flatMap(_.routes))))
+      case app => views.html.notFound.f(_, _)(request)
+    }
+    Future.successful(NotFound(viewO.getOrElse(views.html.defaultpages.devNotFound.f)(request, Play.maybeApplication.flatMap(_.routes))))
   }
 
   override def onStop(app: Application) = {
