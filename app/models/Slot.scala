@@ -384,7 +384,7 @@ object Slot {
       r =>
         SlotBuilder(ProposalType.BOF.id, "jeudi", new DateTime("2014-04-17T21:30:00.000+02:00"), new DateTime("2014-04-17T22:30:00.000+02:00"), r)
     }
-    (bof01 ++ bof02 ++ bof03)
+    bof01 ++ bof02 ++ bof03
   }
 
   val wednesday: List[Slot] = {
