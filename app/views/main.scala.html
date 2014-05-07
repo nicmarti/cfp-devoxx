@@ -27,7 +27,7 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="/" class="navbar-brand">Scala.<span class="yl">IO</span> CFP</a>
+            <a href="/" class="navbar-brand">@Messages("CONF.title")<span class="yl">@Messages("CONF.subtitle")</span> CFP</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -47,7 +47,7 @@
                 }
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="http://www.scala.io/" target="_blank"><i class="icon-arrow-right"></i> Scala.<span class="yl">IO</span> website</a></li>
+                <li><a href="http://www.scala.io/" target="_blank"><i class="icon-arrow-right"></i> @Messages("CONF.title")<span class="yl">@Messages("CONF.subtitle")</span> website</a></li>
             </ul>
             @if(SecureCFPController.hasAccessToCFP(req)){
             <form id="searchForm" class="navbar-form navbar-right" role="search">
@@ -74,7 +74,7 @@
         @if(SecureCFPController.isLoggedIn(req)){
             <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
         }
-        <small><i class="icon-bullhorn"></i> Scala.io Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
+        <small><i class="icon-bullhorn"></i> @Messages("CONF.title") @Messages("CONF.subtitle") Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
         <small><i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#ScalaIO">Clever-cloud</a></small>
     </div>
   </div>
