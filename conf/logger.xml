@@ -10,7 +10,7 @@
         </encoder>
     </appender>
 
-    <logger name="play" level="WARN"/>
+    <logger name="play" level="INFO"/>
     <logger name="models.Issue" level="INFO"/>
     <logger name="models.Proposal" level="INFO"/>
     <logger name="models.Review" level="DEBUG"/>
