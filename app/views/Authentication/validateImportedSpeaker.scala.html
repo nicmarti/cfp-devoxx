@@ -1,6 +1,6 @@
-@(email:String, password:String)(implicit flash:Flash, lang:Lang)
+@(email:String, password:String)(implicit flash:Flash, lang:Lang, req: RequestHeader)
 
-@template("Profil") {
+@main("Profil") {
     <div class="row">
         <div class="col-md-12 page-header">
             <h3>@Messages("profile.imported")</h3>

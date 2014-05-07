@@ -1,8 +1,8 @@
-@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang)
+@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang, req: RequestHeader)
 
 @import helper.twitterBootstrap._
 
-@template("Devoxx France 2014 - " + Messages("signup.title")) {
+@main("Devoxx France 2014 - " + Messages("signup.title")) {
 
 <div class="row">
     <div class="col-md-12 page-header">
