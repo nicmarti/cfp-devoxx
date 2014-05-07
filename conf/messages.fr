@@ -7,10 +7,10 @@ password=Code d''accès
 CallForPaper=Appel aux conférenciers
 btn.login=Continuer
 menu.register=S''inscrire
-menu.blog=Site Scala.IO FR
+menu.blog=Site DevoxxFR
 login=S''authentifier
 signup=S''inscrire
-signup.long=S''inscrire en tant qu''orateur pour Scala.IO FR
+signup.long=S''inscrire en tant qu''orateur pour Devoxx France
 
 index.method1=S''authentifier
 # For single quote, you need to double escape
@@ -19,7 +19,7 @@ index.welcome=Déjà inscrit ? Authentifiez-vous avec votre code d''accès :
 
 index.method2=Authentifiez-vous avec OpenId
 index.signupTitle=S''inscrire comme orateur
-index.signup2=Inscrivez-vous comme orateur à Scala.IO FR afin de proposer un ou plusieurs sujets :
+index.signup2=Inscrivez-vous comme orateur à Devoxx France afin de proposer un ou plusieurs sujets :
 index.signup3=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et utiliser un code d''accès :
 index.signup.btn=S''inscrire
 index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser un code d''accès. Si votre profil n''existe pas, il sera automatiquement créé.
@@ -63,7 +63,7 @@ error.pattern=Doit respecter {0}
 email.alreadyexists=Cette adresse email est déjà enregistrée dans notre base.
 forget.password.confirm=Un courrier électronique a été envoyé à l''adresse spécifiée.
 register.withopenid=Inscrivez-vous avec votre profil social
-cfp.closed=Le CFP de Scala.IO FR est fermé.
+cfp.closed=Le CFP de Devoxx France est fermé.
 avatarUrl=URL de votre photo
 
 # CFP Home page
@@ -96,10 +96,10 @@ title.help=Proposez un titre simple, clair, qui résume ce que le participant va
 summary=Résumé de votre présentation pour le participant
 summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vous pouvez utiliser la syntaxe <a href="http://daringfireball.net/projects/markdown/syntax/" target="_blank">Markdown</a>.
 lang=Langue
-lang.help=75% des présentations à Scala.IO FR doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
+lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
 mainSpeaker=Présentateur principal
-mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Scala.IO FR uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
-talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.scala.io/faq/#confType" target="new">FAQ</a> du site Scala.IO FR.
+mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx France uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
+talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/faq/#confType" target="new">FAQ</a> du site Devoxx France.
 
 
 talkType=Type de présentation
@@ -116,7 +116,7 @@ moreSpeakerLater=Vous aurez la possibilité d''ajouter un ou plusieurs speakers 
 btn.save=Sauver l''édition
 btn.home=Retour à l''accueil sans sauver
 btn.save2=Sauvegarder votre proposition
-not.saved=Vérifiez le résumé à destination du participant à Scala.IO FR, puis cliquez sur "Sauvegarder la proposition" pour continuer.
+not.saved=Vérifiez le résumé à destination du participant à Devoxx France, puis cliquez sur "Sauvegarder la proposition" pour continuer.
 validate.summary2=ou sinon utilisez
 validate.summary3=le bouton retour à la page précédente
 validate.summary4=de votre navigateur pour corriger votre texte de résumé.
@@ -146,7 +146,7 @@ msg=Votre message
 
 # Home
 appel.conf=Appel aux conférenciers
-appel.conf.dates=Call for Paper, Scala.IO FR 2014, 23 - 24 Octobre 2014
+appel.conf.dates=Call for Paper, Devoxx France 2014, 16 au 18 avril 2014
 cfp.opening=Ouverture du CFP :
 cfp.opening.date=Lundi 2 décembre 2013
 cfp.closing=Rappel :
@@ -173,7 +173,7 @@ track.lang.title=Langages alternatifs
 track.lang.desc=Groovy, Scala, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
 track.bigdata.title=Cloud, Big Data et NoSQL
 track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
-track.future.title=Future<Scala.IO>
+track.future.title=Future<Devoxx>
 track.future.desc=Java et l''internet des objets, la robotique, la domotique et l''embarqué
 
 # track labels
@@ -185,10 +185,10 @@ agilite.label=Agilité, DevOps
 lg_alter.label=Langages alternatifs
 lgaltern.label=Langages alternatifs
 startup.label=Startup & Innovation
-future.label=Future<Scala.IO>
+future.label=Future<Devoxx>
 
 # Confirm import
-confirm.import.title=Créer votre profil de présentateur Scala.IO FR
+confirm.import.title=Créer votre profil de présentateur Devoxx France
 confirm.import.save=Enregistrer et continuer
 avatarUrl.isEmpty=L''URL de votre photo est vide, nous utiliserons votre
 avatarUrl.defined=Votre photo (largeur recommandée 120px)
@@ -197,11 +197,11 @@ avatarUrl.defined=Votre photo (largeur recommandée 120px)
 created.title=Demande d''inscription enregistrée
 created.text1=Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.
 created.text2=Validez votre adresse pour terminer votre enregistrement, votre code d''accès vous sera donné lorsque vous validerez votre email.
-created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Scala.IO FR.
+created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx France.
 
 # Prepare signup
 signup.title=Inscription orateur
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Scala.IO FR 2014 :
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2014 :
 signup.txt2=Un email de validation est envoyé à l''adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
 
 # edit profile
@@ -279,7 +279,7 @@ nav.homeSpeaker=Accueil
 editWebuser.title=Votre profil
 
 cfp.isOpen=Le CFP est ouvert
-cfp.open.enter=Proposer un sujet pour Scala.IO FR
+cfp.open.enter=Proposer un sujet pour Devoxx France\
 
 
 #CFP admin
@@ -363,10 +363,10 @@ comment.proposal=Fil de discussion
 saved1=Proposition enregistrée. Pensez à soumettre le sujet en cliquant sur l''enveloppe orange !
 saved2=Proposition éditée et enregistrée.
 
-approve.title=Scala.IO FR, Termes et Conditions du Présentateur
-accept.chk=J''accepte les conditions de Scala.IO FR
-acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à Scala.IO FR :
-accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de Scala.IO FR
+approve.title=Devoxx France, Termes et Conditions du Présentateur
+accept.chk=J''accepte les conditions de Devoxx France
+acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à Devoxx France :
+accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de Devoxx France
 
 acceptedProposals.title=Liste de vos soumissions approuvées/refusées
 ar.approved=Soumissions approuvées
@@ -477,7 +477,7 @@ not.published=L''agenda pour ce type de conférence n''est pas encore publié.
 day-thu=Jeudi
 day-fri=Vendredi
 day-wed=Mercredi
-acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Scala.IO, merci !
+acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !
 
 antispam=Pour prouver que vous n''êtes pas un robot mais un humain, combien font 38+4 ?
 bugReport.sent=Votre message a été envoyé à l''équipe, merci !
