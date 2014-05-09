@@ -26,9 +26,9 @@ package models
 import play.api.libs.json.Json
 
 /**
- * Track or whatever is the name
+ * Tracks for Devoxx Belgium
  *
- * Author: nicolas
+ * Author: nicolas martignole
  * Created: 06/11/2013 01:41
  */
 case class Track(id: String, label: String)
@@ -36,16 +36,19 @@ case class Track(id: String, label: String)
 object Track {
   implicit val trackFormat = Json.format[Track]
 
-  val JAVA=Track("java", "java.label")
-  val WEB =Track("web", "web.label")
-  val MOBILE =Track("mobile", "mobile.label")
-  val CLOUD =Track("cloud", "cloud.label")
-  val AGILITE=Track("agilite", "agilite.label")
-  val LANG_ALTERNATIF=Track("lg_alter", "lgaltern.label")
   val STARTUP=Track("startup", "startup.label")
+  val SSJ =Track("ssj", "ssj.label")
+  val JAVA=Track("java", "java.label")
+  val MOBILE =Track("mobile", "mobile.label")
+  val ARCHISEC =Track("archisec", "archisec.label")
+  val METHODEVOPS=Track("methodevops", "methodevops.label")
   val FUTURE=Track("future", "future.label")
+  val LANG=Track("lang", "lang.label")
+  val CLOUD =Track("cloud", "cloud.label")
+  val WEB =Track("web", "web.label")
 
-  val all = List(JAVA, WEB, MOBILE, CLOUD, AGILITE, LANG_ALTERNATIF, STARTUP, FUTURE)
+
+  val all = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHODEVOPS, FUTURE, LANG, CLOUD, WEB)
 
   val allAsIdsAndLabels = all.map(a=>(a.id,a.label)).toSeq.sorted
 
@@ -53,14 +56,16 @@ object Track {
 
   def parse(session:String):Track={
     session match {
-      case "java" => JAVA
-      case "web"=>WEB
-      case "mobile"=>MOBILE
-      case "cloud" =>CLOUD
-      case "agilite" =>AGILITE
-      case "lg_alter"=>LANG_ALTERNATIF
       case "startup"=>STARTUP
+      case "ssj"=>SSJ
+      case "java" => JAVA
+      case "mobile"=>MOBILE
+      case "archisec" =>ARCHISEC
+      case "methodevops" =>METHODEVOPS
       case "future"=>FUTURE
+      case "lang"=>LANG
+      case "cloud" =>CLOUD
+      case "web" =>WEB
       case other =>JAVA
     }
   }

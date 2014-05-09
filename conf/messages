@@ -110,16 +110,7 @@ lab.label=Hand''s on Lab, 3h, Wednesday only
 hack.label=Hackaton (special event)
 code.label=Code Story
 
-#Track
-java.label=Java SE, Java EE
-web.label=Web, HTML5
-mobile.label=Mobile
-cloud.label=Cloud, Big Data, NoSQL
-agilite.label=Agility, DevOps
-lg_alter.label=Alternate languages
-lgaltern.label=Alternate languages
-startup.label=Startups & innovation
-future.label=Future<Devoxx>
+
 
 # Bug report
 Issue.report=Report an issue
@@ -142,22 +133,47 @@ theme.track=List of tracks for Devoxx 2014:
 
 track.title=Title
 track.description=Description
-track.java.title=Java
-track.java.desc=Java, Java SE 8, Java EE 7 and the JVM.
-track.web.title=Web, HTML5
-track.web.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps.
-track.mobile.title=Mobile
-track.mobile.desc=Android, iOS, tablet, development and tools for Mobile.
+
+# Tracks
 track.startup.title=Startup and entrepreneurship
 track.startup.desc=Lean startup, UX Design, tools and new trends in Startup.
-track.devops.title=Agilité and DevOps
-track.devops.desc=Lean, Kanban, continuous integration, deployment, network and security.
-track.lang.title=Alternates Languages
-track.lang.desc=Scala, Groovy, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
-track.bigdata.title=Cloud, Big Data and NoSQL
-track.bigdata.desc=Capture, curation, storage, search, sharing, transfer, analysis and visualization.
+startup.label=Startups & innovation
+
+track.ssj.title=Server Side Java
+track.ssj.desc=Java EE and the JVM
+ssj.label=Server Side Java
+
+track.java.title=Java SE
+track.java.desc=Java SE and the JVM.
+java.label=Java SE
+
+track.mobile.title=Mobile
+track.mobile.desc=Android, iOS, tablet, development and tools for Mobile.
+mobile.label=Mobile
+
+track.archisec.title=Architecture & Security
+track.archisec.desc=Architecture and Security
+archisec.label=Architecture & Security
+
+track.methodevops.title=Methodology & DevOps
+track.methodevops.desc=Methodology & DevOps
+methodevops.label=Methodology & DevOps
+
 track.future.title=Future<Devoxx>
 track.future.desc=Java in the Internet of things, robotics, domotics
+future.label=Future<Devoxx>
+
+track.lang.title=JVM Languages
+track.lang.desc=Scala, Groovy, Clojure, any language on the JVM.
+lang.label=JVM Languages
+
+track.cloud.title=Cloud & BigData
+track.cloud.desc=Cloud architecture, BigData.
+cloud.label=Cloud & BigData
+
+track.web.title=Web & HTML5
+track.web.desc=Web, HTML5, Javascript, frameworks, etc
+web.label=Web & HTML5
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
@@ -234,7 +250,7 @@ profile.imported=Profile imported successfully
 profile.imported.txt=Your profile has been successfully imported. You can change at any time your bio, your personal information or the address of your blog on the CFP Home.
 profile.continue=Continue
 profile.username=Your username:
-profile.password=Your password (cannot be change):
+profile.password=Your access code (cannot be change):
 profile.password.help=We do not want to store one of your password. We prefer to generate one for you. We encourage you to use the OpenID access via Github or Google.
 
 error.real=Real number value expected
@@ -295,7 +311,7 @@ admin.draft.warning=Warning
 admin.draft.warning2=This proposal state is not SUBMITTED, thus you cannot vote this talk.
 admin.draft.warning3=Current proposal state :
 
-newProposal.maxLength=Max size is 600 characters. This abstract length is restricted, in order to fit on the printed program.
+newProposal.maxLength=Max size is 1000 characters.
 preview.txt=Preview Conference guide (sample page)
 tags.renderComment.postedBy=Posted  by
 
