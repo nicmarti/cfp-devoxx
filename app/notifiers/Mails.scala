@@ -41,7 +41,7 @@ object Mails {
   def sendResetPasswordLink(email: String, resetUrl: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("You asked to reset your Devoxx France speaker's password at " + new DateTime().toString("HH:mm dd/MM"))
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
     emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
@@ -50,7 +50,7 @@ object Mails {
   def sendAccessCode(email: String, code: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Your Devoxx France speaker's access code")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
     emailer.send(
@@ -62,7 +62,7 @@ object Mails {
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Welcome to the CFP for Devoxx France ! ")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
@@ -72,7 +72,7 @@ object Mails {
   def sendValidateYourEmail(email: String, validationLink: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Devoxx France, please validate your email address now")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
     emailer.send(
@@ -84,7 +84,7 @@ object Mails {
   def sendBugReport(bugReport: Issue) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"New issue reported on CFP web site")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addCc(bugReport.reportedBy)
     emailer.addRecipient("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
@@ -97,7 +97,7 @@ object Mails {
   def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[DevoxxFr2014] Message about your presentation ${proposal.title}")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
 
     emailer.addRecipient(toWebuser.email)
 
@@ -116,8 +116,8 @@ object Mails {
 
     // For Program committee
     emailer.setSubject(s"[${proposal.title} ${proposal.id}]")
-    emailer.addFrom("program@devoxx.fr")
-    emailer.addRecipient("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
+    emailer.addRecipient("program@devoxx.com")
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString(),
@@ -128,8 +128,8 @@ object Mails {
   def sendMessageToCommitte(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[${proposal.title}] ${fromWebuser.cleanName} posted a new message")
-    emailer.addFrom("program@devoxx.fr")
-    emailer.addRecipient("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
+    emailer.addRecipient("program@devoxx.com")
     emailer.setCharset("utf-8")
 
     // Send also a copy of the message to the other speakers
@@ -148,8 +148,8 @@ object Mails {
   def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[${proposal.title}][PRIVATE] ${fromWebuser.cleanName}")
-    emailer.addFrom("program@devoxx.fr")
-    emailer.addRecipient("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
+    emailer.addRecipient("program@devoxx.com")
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString(),
@@ -165,7 +165,7 @@ object Mails {
     if (proposals.size > 1) {
       emailer.setSubject(s"Devoxx France 2014 reminder : you have ${proposals.size} proposals to submit")
     }
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(speaker.email)
 
     emailer.setCharset("utf-8")
@@ -178,7 +178,7 @@ object Mails {
   def sendProposalApproved(toWebuser: Webuser, proposal: Proposal) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"Your proposal has been approved ${proposal.title}")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -198,7 +198,7 @@ object Mails {
   def sendProposalRefused(toWebuser: Webuser, proposal: Proposal) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"Your proposal has been refused ${proposal.title}")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -218,7 +218,7 @@ object Mails {
      val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
     emailer.setSubject(s"Call for Paper Devoxx France 2014")
-    emailer.addFrom("program@devoxx.fr")
+    emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(speaker.email)
 
     emailer.setCharset("utf-8")
