@@ -2,7 +2,7 @@
 
 @import helper.twitterBootstrap._
 
-@main("Scala.IO CFP"){
+@main(Messages("CONF.title")){
             <div class="bs-docs-section clearfix">
                 <div class="row">
                     <div class="col-md-12">
@@ -39,9 +39,9 @@
 
                                 <h4><i class="icon-external-link-sign"></i> @Html(Messages("index.method2"))</h4>
                                 <p>@Html(Messages("index.txt2"))</p>
-                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to Scala.IO FR"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("CONF.title")-@Messages("CONF.subtitle")"><i class="icon-github-sign"></i>
                                     Github</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to Scala.IO FR"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("CONF.title")-@Messages("CONF.subtitle")"><i class="icon-google-plus-sign"></i>
                                         Google</a>
                                 </p>
                             </div>
@@ -56,9 +56,9 @@
                                 <p>@Html(Messages("index.signup2"))</p>
                                 <a class="btn btn-default" href="@routes.Authentication.prepareSignup()">@Messages("index.signup.btn")</a>
                                 <p>@Html(Messages("index.signup3"))</p>
-                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to Scala.IO FR"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("CONF.title")-@Messages("CONF.subtitle")"><i class="icon-github-sign"></i>
                                     Github</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to Scala.IO FR"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("CONF.title")-@Messages("CONF.subtitle")"><i class="icon-google-plus-sign"></i>
                                         Google</a>
                                 </p>
                             </div>
