@@ -405,7 +405,7 @@ object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderN
         block(request)
       }
     }.getOrElse {
-      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with Devoxx France API"))
+      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with Devoxx API"))
     }
   }
 }
