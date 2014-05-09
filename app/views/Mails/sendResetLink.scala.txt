@@ -1,16 +1,12 @@
 @(resetUrl:String)
 
-<h2>Did you forget your Devoxx France password?</h2>
+Did you forget your CFP Devoxx access code?
+-------------------------------------------
+Someone asked to reset your Devoxx access code. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.
 
-<p>Someone asked to reset your Devoxx France password. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done</p>
+Please visit this link = @Html(resetUrl)
 
-<p><a href="@resetUrl" title="Reset my password">@resetUrl</a></p>
+We don't want to store your super secret password, that might be the same one as your Google Account. We prefer to generate
+a random access code for your. We also encourage you to use one of our OpenID's providers like Github or Google+. Simpler, more secure, that just rocks!
 
-<p>Please click on the link to reset your password.</p>
-<br/>
-<br/>
-<p>Have fun!</p>
-<br/>
-<p>Devoxx France</p>
-<br/>
-<hr>
+The Devoxx team

@@ -1,28 +1,9 @@
 @(firstName:String, proposals:List[Proposal])
-(English version below)
-
-Cher @firstName
-
-Nous vous informons que vous avez @proposals.size proposition@if(proposals.size>1){s} de sujet en attente, avec le status "Draft" (Brouillon).
-Pour que le comité puisse évaluer votre proposition, n'oubliez pas de soumettre chaque proposition, sur la page principale de
-votre interface, dans le résumé de vos propositions.
-
-@proposals.map{proposal=>
- - @proposal.title  [http://cfp.devoxx.fr@routes.CallForPaper.editProposal(proposal.id)]
-}
-
-Si vous ne souhaitez plus recevoir ce message, et que vous n'avez pas d'autres propositions de sujets, vous pouvez placer
-les propositions à la poubelle, sur votre interface de gestion.
-
-Merci !
-
-L'équipe de sélection de Devoxx France
-
 ------------------------------------------------------------------
 
 Dear @firstName
 
-We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on Devoxx France CFP.
+We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on Devoxx CFP.
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.
 
 @proposals.map{proposal=>
@@ -33,6 +14,6 @@ If you don't want to receive this message, you can also move the draft proposals
 
 Thanks!
 
-The Devoxx France team
+The Devoxx team
 
 -----

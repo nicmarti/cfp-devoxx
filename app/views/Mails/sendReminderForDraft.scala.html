@@ -1,34 +1,9 @@
 @(firstName:String, proposals:List[Proposal])
-<strong>(English version below)</strong><br>
-<br>
-
-<hr>
-    <h3>Reminder : CFP closes sunday, 2nd of February</h3>
-    <h3>Rappel : le CFP ferme le dimanche 2 février</h3>
-<hr>
-
-<p>Cher(e) @firstName</p>
-<br>
-<p>Nous vous informons que vous avez @proposals.size proposition@if(proposals.size>1){s} de sujet en attente, avec le status "Draft" (Brouillon).
-Pour que le comité puisse évaluer votre proposition, n'oubliez pas de les soumettre, sur la page principale de
-votre interface, dans le résumé de vos propositions.</p>
-<br>
-@proposals.map{proposal=>
- - @proposal.title <a href="http://cfp.devoxx.fr@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
-}
-<br>
-<p>Si vous ne souhaitez plus recevoir ce message, et que vous n'avez pas d'autres propositions de sujets, vous pouvez placer
-les propositions à la poubelle, sur votre interface de gestion.</p>
-
-<p>Merci !</p>
-<br>
-L'équipe de sélection de Devoxx France<br>
-<br>
 <hr>
 <br>
 <p>Dear @firstName</p>
 <br>
-<p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on Devoxx France CFP.
+<p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on Devoxx CFP.
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.</p>
 
 @proposals.map{proposal=>
@@ -39,4 +14,4 @@ You must submit a talk for review on your private CFP section, so that the progr
 <br>
 <p>Thanks!</p>
 
-<p>The Devoxx France team</p>
+<p>The Devoxx team</p>

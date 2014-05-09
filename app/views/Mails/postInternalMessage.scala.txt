@@ -14,4 +14,4 @@ http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks
 
-The Devoxx France team.
+The Devoxx team.

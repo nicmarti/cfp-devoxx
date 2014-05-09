@@ -1,14 +1,14 @@
 @(proposal:models.Proposal)(implicit lang:Lang)
-<h3>Welcome to Devoxx France 2014</h3>
+<h3>Welcome to Devoxx 2014</h3>
 <strong>English version below</strong>
 <hr>
 <p>Bonjour,</p>
 <p>Nous avons le plaisir de vous informer que la présentation <strong>@proposal.title</strong> au format
-[<strong>@Messages(proposal.talkType.label)</strong>] a été <strong>acceptée</strong> pour Devoxx France 2014 !</p>
+[<strong>@Messages(proposal.talkType.label)</strong>] a été <strong>acceptée</strong> pour Devoxx 2014 !</p>
 <hr>
 <h3>Comment valider ou non votre participation ?</h3>
 <p>Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
-présence à Devoxx France comme présentateur.</p>
+présence à Devoxx comme présentateur.</p>
 <p><strong>Merci de valider dès maintenant en suivant ce lien dans votre navigateur :</strong></p>
 <a href="http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()</a>
 <p>Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).</p>
@@ -16,10 +16,10 @@ présence à Devoxx France comme présentateur.</p>
 <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
 <a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)">http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
-<p>L'équipe de sélection de la conférence Devoxx France</p>
+<p>L'équipe de sélection de la conférence Devoxx</p>
 <hr>
 <p>Hi,</p>
-<p>We're glad to inform you that your proposal for Devoxx France 2014 has been <strong>accepted</strong></p>
+<p>We're glad to inform you that your proposal for Devoxx 2014 has been <strong>accepted</strong></p>
 <p>Proposition title : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.label)</strong>].</p>
 <hr>
 <h3>What's next?</h3>
@@ -31,5 +31,5 @@ this presentation :</p>
 <p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests to respond quickly.</p>
 <a href="http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)">http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
-<p>The Devoxx France team</p>
+<p>The Devoxx team</p>
 
