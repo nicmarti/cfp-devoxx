@@ -56,13 +56,17 @@ object Leaderboard {
       tx.set("Leaderboard:mostReviewed:proposal", mostReviewed.map(_._1).getOrElse("??"))
       tx.set("Leaderboard:mostReviewed:score", mostReviewed.map(_._2.toString()).getOrElse("??"))
 
-      val bestReviewer = Review.bestReviewer()
-      tx.set("Leaderboard:bestReviewer:uuid", bestReviewer._1)
-      tx.set("Leaderboard:bestReviewer:score", bestReviewer._2.toString())
+      Review.bestReviewer().map {
+        bestReviewer =>
+          tx.set("Leaderboard:bestReviewer:uuid", bestReviewer._1)
+          tx.set("Leaderboard:bestReviewer:score", bestReviewer._2.toString())
+      }
 
-      val worstReviewer = Review.worstReviewer()
-      tx.set("Leaderboard:worstReviewer:uuid", worstReviewer._1)
-      tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString())
+      Review.worstReviewer().map{
+        worstReviewer =>
+          tx.set("Leaderboard:worstReviewer:uuid", worstReviewer._1)
+          tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString())
+      }
 
       val totalSubmittedByCategories = Proposal.totalSubmittedByTrack()
       totalSubmittedByCategories.map {

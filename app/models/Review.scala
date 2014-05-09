@@ -171,12 +171,12 @@ object Review {
     maybeBestProposal
   }
 
-  def bestReviewer(): (String, Int) = {
-    totalReviewedByCFPuser().sortBy(_._2).reverse.head
+  def bestReviewer(): Option[(String, Int)]  = {
+    totalReviewedByCFPuser().sortBy(_._2).reverse.headOption
   }
 
-  def worstReviewer(): (String, Int) = {
-    totalReviewedByCFPuser().filterNot(_._2<=5).sortBy(_._2).head
+  def worstReviewer(): Option[(String, Int)] = {
+    totalReviewedByCFPuser().filterNot(_._2<=5).sortBy(_._2).headOption
   }
 
   def totalReviewedByCFPuser(): List[(String, Int)] = Redis.pool.withClient {
