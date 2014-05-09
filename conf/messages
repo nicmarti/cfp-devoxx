@@ -145,39 +145,39 @@ track.startup.desc=Lean startup, UX Design, tools and new trends in Startup.
 startup.label=Startups & innovation
 
 track.ssj.title=Server Side Java
-track.ssj.desc=Java EE and the JVM
+track.ssj.desc=Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs
 ssj.label=Server Side Java
 
 track.java.title=Java SE
-track.java.desc=Java SE and the JVM.
+track.java.desc=Java Standard Edition, anything non-related to Jave EE, like the language, JDK, performance tuning, modularity, etc...
 java.label=Java SE
 
 track.mobile.title=Mobile
-track.mobile.desc=Android, iOS, tablet, development and tools for Mobile.
+track.mobile.desc=Tools frameworks and libraries for building mobile apps, both as MobileWeb or native Android and iOS app
 mobile.label=Mobile
 
 track.archisec.title=Architecture & Security
-track.archisec.desc=Architecture and Security
+track.archisec.desc=Software architecture, encryption and best practices to develop secure software
 archisec.label=Architecture & Security
 
 track.methodevops.title=Methodology & DevOps
-track.methodevops.desc=Methodology & DevOps
+track.methodevops.desc=Software development methodologies and related subjects
 methodevops.label=Methodology & DevOps
 
 track.future.title=Future<Devoxx>
-track.future.desc=Java in the Internet of things, robotics, domotics
+track.future.desc=Developing for embedded devices, the internet of things, Arduino, raspberry pi, quadcopters, robots and related
 future.label=Future<Devoxx>
 
 track.lang.title=JVM Languages
-track.lang.desc=Scala, Groovy, Clojure, any language on the JVM.
+track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
 lang.label=JVM Languages
 
 track.cloud.title=Cloud & BigData
-track.cloud.desc=Cloud architecture, BigData.
+track.cloud.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
 cloud.label=Cloud & BigData
 
 track.web.title=Web & HTML5
-track.web.desc=Web, HTML5, Javascript, frameworks, etc
+track.web.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
 web.label=Web & HTML5
 
 # confirm import
