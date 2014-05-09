@@ -41,7 +41,7 @@
                 <i class="icon-text-width"></i> : <span id="charsremain"></span> <small>@Messages("newProposal.maxLength")</small>
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
-                @helper.select(field = newProposal("lang"), options=Proposal.langs,  'class->"form-control")
+                <input type="hidden" name="lang" value="en">
 
                 @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("track"), options=Track.allAsIdsAndLabels,  'class->"form-control")
@@ -65,7 +65,6 @@
             <p><label>@Messages("title") : </label><br> @Messages("title.help")</p>
             <p><label>@Messages("summary") : </label><br> @Html(Messages("summary.help"))</p>
             <p><label>@Messages("privateMessage") : </label><br> @Messages("privateMessage.help")</p>
-            <p><label>@Messages("lang") : </label><br> @Messages("lang.help")</p>
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help"))</p>
             <p><label>@Messages("mainSpeaker") : </label><br> @Messages("mainSpeaker.help")</p>
             <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
@@ -79,7 +78,7 @@
 $(document).ready(function($){
     $('#sponsorTalkMsg' ).hide();
 
-    setformfieldsize($('#summary'), 750, 'charsremain');
+    setformfieldsize($('#summary'), 1200, 'charsremain');
     setformfieldsize($('#privateMessage'), 3500, 'charsremain2');
 
     // Selet current lang
