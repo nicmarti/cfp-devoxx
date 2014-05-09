@@ -52,7 +52,7 @@ object SchedullingController extends SecureCFPController {
         case ProposalType.BOF.id => Json.toJson(Slot.bofSlotsThursday)
         case ProposalType.TIA.id => Json.toJson(Slot.toolsInActionSlots)
         case ProposalType.LAB.id => Json.toJson(Slot.labsSlots)
-        case ProposalType.AMD.id => Json.toJson(Slot.amdThursday)
+
         case other => {
           play.Logger.warn("Unable to load a slot type ["+confType+"]")
           Json.toJson(List.empty[Slot])

@@ -73,7 +73,14 @@ otherSpeakers=Other speakers
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq/#confType" target="new">FAQ</a>.
 
-audienceLevel=Audience level
+audienceLevel=Audience level :
+audienceLevel.help=Please, indicate the required audience level for your talk\:\
+1- for all audience, beginner or novice\
+2- for intermediate, talented\
+3- experienced, proficient\
+4- expert, senior \
+
+
 privateMessage=Message for the program committee, motivation for your presentation
 privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or any other important details.
 sponsorTalk=Is this a sponsor/exhibitor presentation?
@@ -86,29 +93,27 @@ sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 helpAndTips=Help and advices
 moreSpeakerLater=You can add more speakers later, once the proposal is submitted.
 btn.home=Back to home without saving
-btn.save=Save and preview
+btn.save=Preview
 btn.save2=Confirm
-not.saved=Almost done, your proposal is not yet saved. Please review and check your summary, then click on Confirm.
+not.saved=Your proposal is not yet saved. Please review and check your summary:
 validate.summary2=or use
-validate.summary3=the back button
-validate.summary4=of your web browser and edit your summary.
+validate.summary3=Correct or complete my proposal
+validate.summary4=your proposal
 track=Track for your proposal
 summary.preview=Preview
 preview.warn=Do no forget to submit your proposal to the program committee, using the icon
 preview.warn2=in the main CFP screen.
+next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 50mn, Thursday and Friday
-conf.label=Conference, 45mn, Thursday and Friday
-uni.label=University, 3h, only Wednesday
-tia.label=Tools in Action, 30mn, Wednesday
-quick.label=Quickie, 15mn, Thursday and Friday, during lunch
-amd.label=Après-midi des Décideurs, 30mn, Thursday afternoon
-bof.label=Bird of a Feather, 1h, Thursday evening only
-other.label=Other
-lab.label=Hand''s on Lab, 3h, Wednesday only
-hack.label=Hackaton (special event)
-code.label=Code Story
+key.label=Keynote, 50mn, Wednesday, Thursday
+conf.label=Conference, 45mn, Wednesday, Thursday and Friday morning
+uni.label=University, 3h, Monday or Tuesday
+tia.label=Tools in Action, 30mn, only Monday or Tuesday
+quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+lab.label=Hands-on Labs, 3h, Monday and Tuesday
+other.label=Other event
 
 
 
@@ -127,7 +132,7 @@ cfp.closing.date=End of June
 cfp.program=Program announced :
 cfp.program.date=mid-september
 video.title=Videos
-video.tag=Review Devoxx Belgium 2014''s videos for free on
+video.tag=Review Devoxx Belgium 2013''s videos for free on
 theme.title=Tracks
 theme.track=List of tracks for Devoxx 2014:
 
@@ -311,7 +316,7 @@ admin.draft.warning=Warning
 admin.draft.warning2=This proposal state is not SUBMITTED, thus you cannot vote this talk.
 admin.draft.warning3=Current proposal state :
 
-newProposal.maxLength=Max size is 1000 characters.
+newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
 tags.renderComment.postedBy=Posted  by
 
@@ -483,3 +488,18 @@ day-wednesday=Wednesday
 
 showAgendaByRoom=Agenda by Room
 sw.proposal.whenWhere=Scheduled time and room
+
+level1.label=Open to all level of audience, beginner or novice
+level2.label=For intermediate audience
+level3.label=For expert and senior
+
+demoLevel=What type of presentation will it be?
+demoLevel1.label=Slides only
+demoLevel2.label=Slides and code
+demoLevel3.label=Code only
+
+userGroup=Share my proposal with User Group?
+userGroup.checkbox=Yes, I am also interested to present this talk to a UG
+
+btn.saveDraft=Save as draft
+btn.saveAndSend=Save and Submit to committee

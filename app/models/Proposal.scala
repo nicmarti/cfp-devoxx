@@ -26,13 +26,10 @@ object ProposalType {
   val LAB = ProposalType("lab", "lab.label")
   val QUICK = ProposalType("quick", "quick.label")
   val BOF = ProposalType("bof", "bof.label")
-  val HACK = ProposalType("hack", "hack.label")
   val KEY = ProposalType("key", "key.label")
-  val AMD = ProposalType("amd", "amd.label")
-  val CODESTORY = ProposalType("cstory", "code.label")
   val OTHER = ProposalType("other", "other.label")
 
-  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, HACK, KEY, AMD, OTHER, CODESTORY)
+  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
@@ -46,13 +43,25 @@ object ProposalType {
       case "lab" => LAB
       case "quick" => QUICK
       case "bof" => BOF
-      case "hack" => HACK
       case "key" => KEY
-      case "amd" => AMD
-      case "cstory" => CODESTORY
       case other => OTHER
     }
   }
+
+  val audienceLevels:Seq[(String,String)]={
+    List(
+      ("l1","level1.label")
+      , ("l2","level2.label")
+      , ("l3","level3.label")
+    )
+  }.toSeq
+
+  val demoLevels:Seq[(String,String)]={
+    List(
+      ("d1","demoLevel1.label")
+      , ("d2","demoLevel2.label")
+      , ("d3","demoLevel3.label"))
+  }.toSeq
 }
 
 case class ProposalState(code: String)
@@ -119,7 +128,7 @@ case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
                     talkType: ProposalType, audienceLevel: String, summary: String,
                     privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false,
-                    track: Track) {
+                    track: Track, demoLevel: String, userGroup:Boolean=false) {
 
   def allSpeakerUUIDs: List[String] = {
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
@@ -203,17 +212,19 @@ object Proposal {
   }
 
   val proposalForm = Form(mapping(
-    "id" -> optional(text),
-    "lang" -> text,
-    "title" -> nonEmptyText(maxLength = 125),
-    "secondarySpeaker" -> optional(text),
-    "otherSpeakers" -> list(text),
-    "talkType" -> nonEmptyText,
-    "audienceLevel" -> text,
-    "summary" -> nonEmptyText(maxLength = 900),
-    "privateMessage" -> nonEmptyText(maxLength = 3500),
-    "sponsorTalk" -> boolean,
-    "track" -> nonEmptyText
+    "id" -> optional(text)
+    ,    "lang" -> text
+    ,    "title" -> nonEmptyText(maxLength = 125)
+    ,     "secondarySpeaker" -> optional(text)
+    ,     "otherSpeakers" -> list(text)
+    ,     "talkType" -> nonEmptyText
+    ,     "audienceLevel" -> text
+    ,     "summary" -> nonEmptyText(maxLength = 1250)
+    ,     "privateMessage" -> nonEmptyText(maxLength = 3500)
+    ,     "sponsorTalk" -> boolean
+    ,     "track" -> nonEmptyText
+    ,     "demoLevel" -> nonEmptyText
+    ,     "userGroup" -> boolean
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = {
@@ -230,7 +241,9 @@ object Proposal {
                           summary: String,
                           privateMessage: String,
                           sponsorTalk: Boolean,
-                          track: String): Proposal = {
+                          track: String,
+                          demoLevel:String,
+                          userGroup:Boolean ): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
       "Devoxx France 2014",
@@ -245,7 +258,9 @@ object Proposal {
       privateMessage,
       ProposalState.UNKNOWN,
       sponsorTalk,
-      Track.parse(track)
+      Track.parse(track),
+      demoLevel,
+      userGroup
     )
 
   }
@@ -257,9 +272,9 @@ object Proposal {
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
-    Boolean, String)] = {
+    Boolean, String, String, Boolean)] = {
     Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, p.privateMessage,
-      p.sponsorTalk, p.track.id))
+      p.sponsorTalk, p.track.id, p.demoLevel, p.userGroup))
   }
 
   def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
@@ -415,7 +430,6 @@ object Proposal {
       case ProposalType.LAB => true
       case ProposalType.UNI => true
       case ProposalType.TIA => true
-      case ProposalType.HACK  => true
       case other => false
     }
   }
