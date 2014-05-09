@@ -6,10 +6,10 @@
 Cher(e) @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
-Nous avons le plaisir de vous annoncer qu'une proposition a été retenue pour Devoxx France 2014 !
+Nous avons le plaisir de vous annoncer qu'une proposition a été retenue pour Devoxx 2014 !
 Proposition acceptée: @listOfApprovedProposals.head.title
 Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et
-conditions de Devoxx France. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
+conditions de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
 
  http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()
 
@@ -26,7 +26,7 @@ http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedPr
 }
 
 @if(listOfApprovedProposals.size>1){
-Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour Devoxx France 2014 !
+Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour Devoxx 2014 !
 
 Propositions acceptées
 ----------------------
@@ -40,7 +40,7 @@ Une proposition n'a pas été retenue, cependant nous vous remercions pour le su
 @listOfRefusedProposals.size de vos propositions n'ont pas été retenues, mais nous tenons à vous remercier pour les sujets proposés.
 }
 Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et conditions
-de Devoxx France. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
+de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
 
 http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()
 
@@ -51,26 +51,26 @@ http://cfp.devoxx.fr@routes.CallForPaper.homeForSpeaker()
 }
 
 @if(listOfApprovedProposals.size==0){
-Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour Devoxx France 2014.
+Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour Devoxx 2014.
 Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 670 propositions de sujets
 pour 154 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s).
-Au nom de toute l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le 16 avril à Devoxx France.
+Au nom de toute l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le 16 avril à Devoxx.
 }
 
-L'équipe de sélection de la conférence Devoxx France
+L'équipe de sélection de la conférence Devoxx
 
 ------------------------------------------------------------------------------------------------------------------
 
 Dear @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
-We're glad to inform you that your proposal for Devoxx France 2014 has been approved!
+We're glad to inform you that your proposal for Devoxx 2014 has been approved!
  - @listOfApprovedProposals.head.title
 
 What's next?
 ------------
 For us to now program your talks, you must accept or decline the general terms and conditions of
-Devoxx France. You will then be able to confirm that you are still ok to present your session :
+Devoxx. You will then be able to confirm that you are still ok to present your session :
   http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()
 
 @if(listOfRefusedProposals.size==1){
@@ -86,7 +86,7 @@ http://cfp.devoxx.fr@routes.CallForPaper.showCommentForProposal(listOfApprovedPr
 }
 
 @if(listOfApprovedProposals.size>1){
-We're glad to inform you that several of your proposals have been approved for Devoxx France 2014!
+We're glad to inform you that several of your proposals have been approved for Devoxx 2014!
 
 Approved proposals:
 -------------------
@@ -100,7 +100,7 @@ One of your proposal was not approved, mainly because we preferred to select som
 @listOfRefusedProposals.size other proposals were not selected and approved, we preferred to select some of your other talks for our program.
 }
 For us to now program your talks, you must accept or decline the general terms and conditions of
-Devoxx France. You will then be able to confirm that you are still ok to present your sessions :
+Devoxx. You will then be able to confirm that you are still ok to present your sessions :
 
 http://cfp.devoxx.fr@routes.ApproveOrRefuse.showAcceptTerms()
 
@@ -111,11 +111,11 @@ http://cfp.devoxx.fr@routes.CallForPaper.homeForSpeaker()
 }
 
 @if(listOfApprovedProposals.size==0){
-We're sorry to inform you that none of your proposals has been accepted for Devoxx France 2014.
+We're sorry to inform you that none of your proposals has been accepted for Devoxx 2014.
 The program committee has received more than 670 proposals for 154 slots. As you can imagine, the selection of speakers
 was a quite uneasy task, considering that we received a lot of very interesting applications for the conference.
-We would like to thank you for your time and we look forward to see you on April, at Devoxx France.
+We would like to thank you for your time and we look forward to see you on April, at Devoxx.
 Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com
 }
 
-The Devoxx France program committee.
+The Devoxx program committee.

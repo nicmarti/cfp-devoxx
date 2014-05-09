@@ -17,4 +17,4 @@ Please, use this link to respond directly to the message :
 http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks,
-The Devoxx France Team
+The Devoxx Team
