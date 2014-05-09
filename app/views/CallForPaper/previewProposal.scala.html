@@ -1,11 +1,11 @@
-@(htmlSummary: String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(htmlSummary: String, newProposal: Form[models.Proposal], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 @import helper._
 
-@main(newProposal("id").value.map(id=>"Edit "+id+" "+newProposal("title").value.getOrElse("")).getOrElse("New proposal preview")) {
-<div class="row">
+@main(newProposal("id").value.map(id => "Edit " + id + " " + newProposal("title").value.getOrElse("")).getOrElse("New proposal preview")) {
+    <div class="row">
         <div class="col-md-12">
             @if(newProposal("id").value.isDefined) {
                 <h3>@Messages("Edit.proposal2")</h3>
@@ -15,19 +15,7 @@
             <hr>
         </div>
 
-        <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">@Messages("summary.preview")</div>
-                <div class="panel-body">
-                    <span class="label label-default">@newProposal("title").value</span><br>
-                    <span class="label label-primary">@Messages(newProposal("talkType").value.getOrElse(""))</span> <span class="label label-primary">@Messages(newProposal("track").value.getOrElse("") + ".label")</span><br>
-                    <br>
-                    <div class="proposal_prev"><small>@Html(htmlSummary)</small></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
+        <div class="col-md-23">
         @helper.form(action = routes.CallForPaper.saveProposal()) {
             <input type="hidden" name="lang" value="@newProposal("lang").value">
             <input type="hidden" name="title" value="@newProposal("title").value">
@@ -35,32 +23,47 @@
             <input type="hidden" name="otherSpeakers" value="@newProposal("otherSpeakers").value">
             <input type="hidden" name="talkType" value="@newProposal("talkType").value">
             <input type="hidden" name="audienceLevel" value="@newProposal("audienceLevel").value">
+            <input type="hidden" name="demoLevel" value="@newProposal("demoLevel").value">
             <input type="hidden" name="summary" value="@newProposal("summary").value">
             <input type="hidden" name="privateMessage" value="@newProposal("privateMessage").value">
             <input type="hidden" name="sponsorTalk" value="@newProposal("sponsorTalk").value">
             <input type="hidden" name="track" value="@newProposal("track").value">
             <input type="hidden" name="id" value="@newProposal("id").value">
 
-            <div class="alert alert-info"><i class="icon-circle-arrow-left"></i> @Messages("not.saved")</div>
-            <p><button class="btn btn-success"><i class="icon-file-text"></i> @Messages("btn.save2")</button>
-                <br/>
-                @Messages("validate.summary2") <a href="javascript:history.back()">@Messages("validate.summary3")</a> @Messages("validate.summary4")
-                }
+            <div class="alert alert-info"><i class="icon-warning-sign"></i> @Messages("not.saved")</div>
         </div>
 
-        <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">@Messages("preview.txt")</div>
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-default">
+                    <div class="panel-heading">@Messages("summary.preview")</div>
                     <div class="panel-body">
-                        <div id="preview_guide">
-                            <div class="title">@newProposal("title").value</div>
-                            <div class="speaker">
-                                   <img src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(newProposal("mainSpeaker").value.getOrElse(currentUser))?s=35" title="This is you" />
-                            </div>
-                            <div class="summary">@newProposal("summary").value</div>
-                        </div>
+                        <h3><small>Title:</small> @newProposal("title").value</h3>
+                        <h4><small>Type of presentation:</small> @Messages(newProposal("talkType").value.getOrElse(""))</h4>
+                        <h4><small>Track:</small> @Messages(newProposal("track").value.getOrElse("") + ".label")</h4>
+                        <br>
+                        <h4><small>Abstract for the Devoxx audience:</small></h4>
+                        <div class="proposal_prev">@Html(htmlSummary)</div>
+                        <h4><small>Private message for the Committe:</small></h4>
+                        <div class="proposal_prev">@Html(newProposal("privateMessage").value.getOrElse(""))</div>
+                    </div>
                 </div>
-                <div class="panel panel-default">
+            </div>
         </div>
-</div>
+
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-body">
+                    <h4>@Messages("next.action")</h4>
+                    <a href="javascript:history.back()" class="btn btn-primary"><i class="icon-arrow-left"></i> @Messages("validate.summary3")</a>
+                    <button class="btn btn-primary" name="a" value="saveDraft"><i class="icon-file-text"></i> @Messages("btn.saveDraft")</button>
+                    <button class="btn btn-success" name="a" value="saveSubmit"><i class="icon-file-text-alt"></i> @Messages("btn.saveAndSend")</button>
+
+                        }
+                </div>
+            </div>
+        </div>
+
+
+    </div>
 }

@@ -315,25 +315,6 @@ object Slot {
     c1 ++ c2 ++ c3 ++ c4 ++ c5 ++ c6
   }
 
-  val amdThursday: List[Slot] = {
-    val c1 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T13:30:00.000+02:00"), new DateTime("2014-04-17T13:55:00.000+02:00"), Room.ELLA_FITZGERALD)
-
-    val c2 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T14:10:00.000+02:00"), new DateTime("2014-04-17T14:35:00.000+02:00"), Room.ELLA_FITZGERALD)
-
-    val c3 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T14:50:00.000+02:00"), new DateTime("2014-04-17T15:15:00.000+02:00"), Room.ELLA_FITZGERALD)
-
-    val c4 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T16:05:00.000+02:00"), new DateTime("2014-04-17T16:30:00.000+02:00"), Room.ELLA_FITZGERALD)
-
-    val c5 = SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T16:45:00.000+02:00"), new DateTime("2014-04-17T17:10:00.000+02:00"), Room.ELLA_FITZGERALD)
-
-    val c6 =  SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T17:25:00.000+02:00"), new DateTime("2014-04-17T17:50.000+02:00"), Room.ELLA_FITZGERALD)
-
-    val c7 =  SlotBuilder(ProposalType.AMD.id, "jeudi", new DateTime("2014-04-17T18:00.000+02:00"), new DateTime("2014-04-17T18:30:00.000+02:00"), Room.ELLA_FITZGERALD)
-
-    List(c1, c2, c3, c4, c5, c6, c7)
-  }
-
-
   val conferenceSlotsFriday: List[Slot] = {
     val c1 = Room.allRooms.map {
       r =>
@@ -400,7 +381,6 @@ object Slot {
     val specialEvents = List(
       SlotBuilder(ProposalType.OTHER.id, "mercredi", new DateTime("2014-04-16T09:30:00.000+02:00"), new DateTime("2014-04-16T18:00:00.000+02:00"), Room.OTHER, odc)
       , SlotBuilder(ProposalType.OTHER.id, "mercredi", new DateTime("2014-04-16T09:30:00.000+02:00"), new DateTime("2014-04-16T18:00:00.000+02:00"), Room.OTHER, devoxx4Kids)
-      , SlotBuilder(ProposalType.HACK.id, "mercredi", new DateTime("2014-04-16T13:30:00.000+02:00"), new DateTime("2014-04-16T16:30:00.000+02:00"), Room.FOYER_BAS, hackerGarten)
     )
     wednesdayBreaks ++ specialEvents
   }
@@ -431,13 +411,8 @@ object Slot {
       , SlotBuilder(SlotBreak.shortBreak, "jeudi", new DateTime("2014-04-17T18:55:00.000+02:00"), new DateTime("2014-04-17T19:30:00.000+02:00"))
     )
 
-    val codeStory = Proposal.findById("ZDC-067")
 
-    val specialEvents = List(
-      SlotBuilder(ProposalType.CODESTORY.id, "jeudi", new DateTime("2014-04-17T11:00:00.000+02:00"), new DateTime("2014-04-17T18:00:00.000+02:00"), Room.DUKE_ELLINGTON, codeStory)
-    )
-
-    thursdayBreaks ++ specialEvents ++ keynoteThursday
+    thursdayBreaks ++ keynoteThursday
   }
 
   val friday: List[Slot] = {
@@ -462,12 +437,6 @@ object Slot {
       , SlotBuilder(SlotBreak.coffee, "vendredi", new DateTime("2014-04-18T16:30:00.000+02:00"), new DateTime("2014-04-18T17:00:00.000+02:00"))
     )
 
-    val mercenaires = Proposal.findById("JCB-280")
-
-    val specialEvents = List(
-      SlotBuilder(ProposalType.OTHER.id, "vendredi", new DateTime("2014-04-18T10:40:00.000+02:00"), new DateTime("2014-04-18T16:30:00.000+02:00"), Room.DUKE_ELLINGTON, mercenaires)
-    )
-
-    fridayBreaks ++ specialEvents ++ keynoteFriday
+    fridayBreaks ++ keynoteFriday
   }
 }
