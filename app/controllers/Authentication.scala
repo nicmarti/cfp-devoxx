@@ -377,7 +377,7 @@ object Authentication extends Controller {
             case (clientId, clientSecret) => {
               val url = "https://accounts.google.com/o/oauth2/token"
               val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
-              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx France CFP")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx BE CFP")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
