@@ -58,8 +58,8 @@ object Authentication extends Controller {
   }
 
   def forgetPassword = Action {
-    implicit request=>
-    Ok(views.html.Authentication.forgetPassword(emailForm))
+    implicit request =>
+      Ok(views.html.Authentication.forgetPassword(emailForm))
   }
 
   val emailForm = Form("email" -> (email verifying(nonEmpty, maxLength(50))))
@@ -70,12 +70,12 @@ object Authentication extends Controller {
         errorForm => BadRequest(views.html.Authentication.forgetPassword(errorForm)),
         validEmail => {
 
-          if(Webuser.isEmailRegistered(validEmail)){
-            Mails.sendResetPasswordLink(validEmail, routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")
-            ).absoluteURL())
+          if (Webuser.isEmailRegistered(validEmail)) {
+            val resetURL = routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8") ).absoluteURL()
+            Mails.sendResetPasswordLink( validEmail, resetURL )
             Redirect(routes.Application.index()).flashing("success" -> Messages("forget.password.confirm"))
-          }else{
-            Redirect(routes.Authentication.forgetPassword()).flashing("error"->Messages("forget.password.notfound"))
+          } else {
+            Redirect(routes.Authentication.forgetPassword()).flashing("error" -> Messages("forget.password.notfound"))
           }
         })
   }
@@ -88,7 +88,7 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           w =>
             val newPassword = Webuser.changePassword(w) // it is generated
-             Ok(views.html.Authentication.resetPassword(loginForm.fill((w.email,newPassword)), newPassword))
+            Ok(views.html.Authentication.resetPassword(loginForm.fill((w.email, newPassword)), newPassword))
         }.getOrElse {
           Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
         }
@@ -105,7 +105,7 @@ object Authentication extends Controller {
           Webuser.checkPassword(validForm._1, validForm._2) match {
             case Some(webuser) =>
               val cookie = createCookie(webuser)
-              Redirect(routes.CallForPaper.homeForSpeaker).flashing("success"->(Messages("cfp.closing")+" "+Messages("cfp.closing.date"))).withSession("uuid" -> webuser.uuid).withCookies(cookie)
+              Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> (Messages("cfp.closing") + " " + Messages("cfp.closing.date"))).withSession("uuid" -> webuser.uuid).withCookies(cookie)
 
             case None =>
               Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
@@ -168,10 +168,10 @@ object Authentication extends Controller {
               }
             }
           }.getOrElse {
-             Future.successful(InternalServerError("github.client_secret is not configured in application.conf"))
+            Future.successful(InternalServerError("github.client_secret is not configured in application.conf"))
           }
         }
-        case other =>  Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
+        case other => Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
       })
   }
 
@@ -232,52 +232,52 @@ object Authentication extends Controller {
 
       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
       val futureResult = WS.url(url).withHeaders("User-agent" -> "nicmarti devoxxfr", "Accept" -> "application/json").get()
-        futureResult.map {
-          result =>
-            result.status match {
-              case 200 => {
-                val json = Json.parse(result.body)
-                val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
-                                        name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
-                yield (email, name))
+      futureResult.map {
+        result =>
+          result.status match {
+            case 200 => {
+              val json = Json.parse(result.body)
+              val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
+                                      name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
+              yield (email, name))
 
-                resultParse.fold(missingField =>
-                  Redirect(routes.Application.home()).flashing(
-                    "error" -> (List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" "))),
-                  validFields => {
-                    validFields match {
-                      case (emailS, nameS) =>
-                        /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
-                        val bioS = json.\("bio").asOpt[String].getOrElse("")
-                        val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
-                        val company = json.\("company").asOpt[String]
-                        val blog = json.\("blog").asOpt[String]
+              resultParse.fold(missingField =>
+                Redirect(routes.Application.home()).flashing(
+                  "error" -> (List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" "))),
+                validFields => {
+                  validFields match {
+                    case (emailS, nameS) =>
+                      /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
+                      val bioS = json.\("bio").asOpt[String].getOrElse("")
+                      val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
+                      val company = json.\("company").asOpt[String]
+                      val blog = json.\("blog").asOpt[String]
 
-                        // Try to lookup the speaker
-                        Webuser.findByEmail(emailS).map {
-                          w =>
-                            val cookie = createCookie(w)
-                            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success"->(Messages("cfp.closing")+" "+Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
-                        }.getOrElse {
-                          // Create a new one but ask for confirmation
-                          val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
-                            (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
-                          } else {
-                            (nameS, nameS)
-                          }
-                          val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl)
-                          Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                      // Try to lookup the speaker
+                      Webuser.findByEmail(emailS).map {
+                        w =>
+                          val cookie = createCookie(w)
+                          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> (Messages("cfp.closing") + " " + Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
+                      }.getOrElse {
+                        // Create a new one but ask for confirmation
+                        val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
+                          (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
+                        } else {
+                          (nameS, nameS)
                         }
-                    }
-                  })
+                        val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl)
+                        Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                      }
+                  }
+                })
 
-              }
-              case other => {
-                play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                BadRequest("Unable to complete the Github User API call")
-              }
             }
-        }
+            case other => {
+              play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
+              BadRequest("Unable to complete the Github User API call")
+            }
+          }
+      }
 
   }
 
@@ -366,9 +366,9 @@ object Authentication extends Controller {
   def callbackGoogle = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-         Future.successful{
-           BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
-         }
+        Future.successful {
+          BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
+        }
       }, {
         case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
           val auth = for (clientId <- Play.current.configuration.getString("google.client_id");
@@ -416,39 +416,39 @@ object Authentication extends Controller {
           //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
           val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").get()
 
-            futureResult.map {
-              result =>
-                result.status match {
-                  case 200 => {
-                    //Ok(result.body).as("application/json")
-                    val json = Json.parse(result.body)
+          futureResult.map {
+            result =>
+              result.status match {
+                case 200 => {
+                  //Ok(result.body).as("application/json")
+                  val json = Json.parse(result.body)
 
-                    val email = json.\("email").as[String]
-                    val firstName = json.\("given_name").asOpt[String]
-                    val lastName = json.\("family_name").asOpt[String]
-                    val blog = json.\("profile").asOpt[String]
-                    val photo = json.\("picture").asOpt[String]
+                  val email = json.\("email").as[String]
+                  val firstName = json.\("given_name").asOpt[String]
+                  val lastName = json.\("family_name").asOpt[String]
+                  val blog = json.\("profile").asOpt[String]
+                  val photo = json.\("picture").asOpt[String]
 
-                    // Try to lookup the speaker
-                    Webuser.findByEmail(email).map {
-                      w =>
-                        val cookie = createCookie(w)
-                        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success"->(Messages("cfp.closing")+" "+Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
-                    }.getOrElse {
-                      val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
-                      Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
-                    }
-                  }
-                  case other => {
-                    play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                    BadRequest("Unable to complete the Github User API call")
+                  // Try to lookup the speaker
+                  Webuser.findByEmail(email).map {
+                    w =>
+                      val cookie = createCookie(w)
+                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> (Messages("cfp.closing") + " " + Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
+                  }.getOrElse {
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo)
+                    Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
                 }
-            }
+                case other => {
+                  play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
+                  BadRequest("Unable to complete the Github User API call")
+                }
+              }
+          }
       }.getOrElse {
-         Future.successful{
-           Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
-         }
+        Future.successful {
+          Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
+        }
       }
   }
 
