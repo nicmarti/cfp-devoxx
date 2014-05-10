@@ -54,18 +54,25 @@ case class SecuredRequest[A](webuser: Webuser, request: Request[A]) extends Wrap
  */
 case class RequestWithUser[A](webuser: Option[Webuser], request: Request[A]) extends WrappedRequest(request)
 
-/* Defines an Authorization for the CFP Webuser */
+/**
+ *  Defines an Authorization for the CFP Webuser
+ */
 trait Authorization {
   def isAuthorized(webuser: Webuser): Boolean
 }
 
-/* Checks if user is membef of a security group */
+/**
+ *  Checks if user is member of a security group
+ */
 case class IsMemberOf(securityGroup: String) extends Authorization {
   def isAuthorized(webuser: Webuser): Boolean = {
     Webuser.isMember(webuser.uuid, securityGroup)
   }
 }
 
+/**
+ * Check if a user belongs to one of the specified groups.
+ */
 case class IsMemberOfGroups(groups: List[String]) extends Authorization {
   def isAuthorized(webuser: Webuser): Boolean = {
     groups.exists(securityGroup => Webuser.isMember(webuser.uuid, securityGroup))
@@ -199,6 +206,5 @@ object SecureCFPController {
       Webuser.hasAccessToAdmin(uuid)
     )
   }
-
 
 }
