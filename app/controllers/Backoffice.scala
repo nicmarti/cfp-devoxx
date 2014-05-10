@@ -24,7 +24,7 @@ object Backoffice extends SecureCFPController {
   }
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent]  =>
       Ok(views.html.Backoffice.homeBackoffice())
   }
 
