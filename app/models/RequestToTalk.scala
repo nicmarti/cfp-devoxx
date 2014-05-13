@@ -36,13 +36,21 @@ import java.util.Date
  * Speaker's invitation, request to present a subject for a conference.
  * Created by nicolas martignole on 13/05/2014.
  */
-case class RequestToTalk(id: String, creatorId: String, message: String, speakerEmail: String, speakerName: String, createdOn: Long)
+case class RequestToTalk(id: String, creatorId: String, message: String, speakerEmail: String, speakerName: String, createdOn: Long){
+  def status:RequestToTalkStatus={
+    RequestToTalkStatus.findCurrentStatus(id)
+  }
+}
 
 object RequestToTalk {
   implicit val requestToTalkFormat = Json.format[RequestToTalk]
 
+  private def generateId:String={
+    "req-"+RandomStringUtils.randomNumeric(3)+"-"+RandomStringUtils.randomNumeric(3)
+  }
+
   def validateRequestToTalk(id: Option[String], creatorId: String, message: String, speakerEmail: String, speakerName: String): RequestToTalk = {
-    RequestToTalk(id.getOrElse(RandomStringUtils.randomAlphanumeric(8)), creatorId, message, speakerEmail, speakerName, new Date().getTime)
+    RequestToTalk(id.getOrElse(generateId), creatorId, message, speakerEmail, speakerName, new Date().getTime)
   }
 
   def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, String, String)] = {
