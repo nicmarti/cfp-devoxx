@@ -6,7 +6,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-<title>@title</title>
+<title>@title - @Messages("CONF.title")</title>
 <link href="@routes.Assets.at(path="/public",file="css/bootstrap.cosmo.min.css")" rel="stylesheet">
 <link href="@routes.Assets.at(path="/public",file="css/font-awesome.min.css")" rel="stylesheet">
 <link href="@routes.Assets.at(path="/public",file="css/bootswatch.min.css")" rel="stylesheet">
@@ -42,6 +42,9 @@
                 @if(SecureCFPController.hasAccessToCFP(req)){
                     <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> CFPAdmin</a></li>
                 }
+                @if(SecureCFPController.hasAccessToCFP(req)){
+                    <li><a href="@routes.Wishlist.homeWishlist()"><i class="icon-sort-by-attributes-alt"></i> Wishlist</a></li>
+                }
                 @if(SecureCFPController.hasAccessToAdmin(req)){
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
                 }
@@ -72,6 +75,7 @@
     <div>
       <hr>
         @if(SecureCFPController.isLoggedIn(req)){
+            <small>Logged as @SecureCFPController.getCurrentUser(req).map(_.cleanName)</small> -
             <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
         }
         <small><i class="icon-bullhorn"></i> @Messages("CONF.title") @Messages("CONF.subtitle") Call for Paper - developed by <a href="http://www.twitter.com/nmartignole">@@nmartignole</a></small><br>

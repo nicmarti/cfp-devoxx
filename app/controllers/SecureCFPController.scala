@@ -207,4 +207,8 @@ object SecureCFPController {
     )
   }
 
+  def getCurrentUser(implicit request:RequestHeader):Option[Webuser]={
+    findAuthenticator.flatMap(uuid => lookupWebuser(uuid))
+  }
+
 }

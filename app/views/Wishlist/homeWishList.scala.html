@@ -1,0 +1,51 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import helper.twitterBootstrap._
+
+@main("Wishlist"){
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-4">
+
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable">
+                @flash.get("success").get
+                </div>
+            }
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-ok-circle"></i> @Messages("wishlist.menu")</h3>
+                </div>
+                <div class="panel-body">
+                    <a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishlist.requestToTalk.title")</a><br>
+                    <a href="#" class="btn btn-small btn-primary">@Messages("wishlist.requests.track")</a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.recentEvents")</h3>
+                </div>
+
+                <div class="panel-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
