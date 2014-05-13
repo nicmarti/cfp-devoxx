@@ -225,10 +225,7 @@ class ZapActor extends Actor {
   }
 
   def doRequestToTalk(rtt:RequestToTalk){
-
     RequestToTalk.save(rtt)
-
-    println("TODO : Send an email")
-
+    Mails.sendInvitationForSpeaker(rtt.speakerEmail, rtt.message, rtt.id)
   }
 }

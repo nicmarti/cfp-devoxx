@@ -25,6 +25,8 @@ package controllers
 
 import models.{RequestToTalkStatus, Event, Speaker, RequestToTalk}
 import library.{NewRequestToTalk, ZapActor}
+import play.api.mvc.Action
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * Controller to handle the list of invited speakers.
@@ -48,27 +50,39 @@ object Wishlist extends SecureCFPController {
 
   def saveRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-    RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
+      RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
         hasErrors => BadRequest(views.html.Wishlist.newRequestToTalk(hasErrors)),
         successForm => {
 
           ZapActor.actor ! NewRequestToTalk(successForm)
 
-          Redirect(routes.Wishlist.homeWishlist()).flashing("success"->"Request created, email has been sent to the speaker")
+          Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Request created, email has been sent to the speaker")
         }
       )
   }
 
-  def showHistory(requestId:String)=SecuredAction(IsMemberOf("cfp")){
-    implicit request:SecuredRequest[play.api.mvc.AnyContent] =>
+  def showHistory(requestId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val changeRequestHistory = RequestToTalkStatus.history(requestId)
       Ok(views.html.Wishlist.showHistory(changeRequestHistory))
   }
 
-  def deleteRequest(requestId:String)=SecuredAction(IsMemberOf("cfp")) {
+  def deleteRequest(requestId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.delete(requestId)
-      Redirect(routes.Wishlist.homeWishlist()).flashing("success"->"Deleted request")
+      Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Deleted request")
+  }
+
+  def approveRequest(requestId: String) = Action {
+    implicit request =>
+      RequestToTalkStatus.setApproved(requestId)
+      Redirect(routes.Application.home).flashing("success" -> "Request accepted. Welcome to Devoxx 2014! Please, create a speaker account :")
+  }
+
+  def declineRequest(requestId: String) = Action {
+    implicit request =>
+      RequestToTalkStatus.setDeclined(requestId)
+      Redirect(routes.Application.home).flashing("success" -> "Sorry that you have not accepted our invitation. However, if you'd like to propose a talk, please register :")
   }
 }
 

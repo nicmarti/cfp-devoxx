@@ -191,6 +191,8 @@ GET           /cfpadmin/wishlist/home                                controllers
 GET           /cfpadmin/wishlist/new                                 controllers.Wishlist.newRequestToTalk()
 GET           /cfpadmin/wishlist/history/:requestId                  controllers.Wishlist.showHistory(requestId:String)
 GET           /cfpadmin/wishlist/delete/:requestId                   controllers.Wishlist.deleteRequest(requestId:String)
+GET           /cfpadmin/wishlist/approve/:requestId                  controllers.Wishlist.approveRequest(requestId:String)
+GET           /cfpadmin/wishlist/decline/:requestId                  controllers.Wishlist.declineRequest(requestId:String)
 POST          /cfpadmin/wishlist/save                                controllers.Wishlist.saveRequestToTalk()
 
 # Map static resources from the /public folder to the /assets URL path

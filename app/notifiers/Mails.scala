@@ -215,8 +215,8 @@ object Mails {
     )
   }
 
-  def sendResultToSpeaker(speaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])={
-     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+  def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
     emailer.setSubject(s"Call for Paper Devoxx 2014")
     emailer.addFrom("program@devoxx.com")
@@ -226,6 +226,21 @@ object Mails {
     emailer.send(
       views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString(),
       views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()
+    )
+  }
+
+  def sendInvitationForSpeaker(speakerEmail:String, message:String, requestId:String) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+
+    emailer.setSubject(s"Devoxx BE 2014 special request")
+    emailer.addFrom("program@devoxx.com")
+    emailer.addRecipient(speakerEmail)
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
+
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.sendInvitationForSpeaker( message, requestId).toString(),
+      views.html.Mails.sendInvitationForSpeaker( message, requestId).toString()
     )
   }
 
