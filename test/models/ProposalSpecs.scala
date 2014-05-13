@@ -35,12 +35,12 @@ class ProposalSpecs extends PlaySpecification {
   // Test with a remote server to check for performance issues
   val remoteRedisTestServer = Map(
     "redis.host" -> "localhost"
-    , "redis.port" -> "6363"
+    , "redis.port" -> "6364"
     //,"redis.password" -> "test_540240240230423042440230"
   )
   val appWithTestRedis = FakeApplication(additionalConfiguration = remoteRedisTestServer)
 
-  "correctly update the track when we change one proposal track to another" in new WithApplication(FakeApplication()) {
+  "correctly update the track when we change one proposal track to another" in new WithApplication(appWithTestRedis) {
 
     val newProposal = new Proposal(id="TST-000", "DV", "fr", "title","1234",
                                   None,Nil,
