@@ -231,7 +231,7 @@ object Proposal {
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = {
-    RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(3)
+    RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(4)
   }
 
   def validateNewProposal(id: Option[String],
