@@ -504,3 +504,14 @@ userGroup.checkbox=Yes, I am also interested to present this talk to a UG
 btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
 saved=Proposal saved, do not forget to SUBMIT this talk to the program committee when you are ready
+
+wishlist.title=Wishlist
+wishlist.menu=Menu
+wishlist.recentEvents=Recent events
+wishlist.requestToTalk.title=Send an invitation to talk to a speaker
+wishlist.requests.track=Track requests for speakers
+wishlist.createRequest=Create a new request
+wishlist.create=Send this request by email
+wishlistMessage=Message for speaker
+wishlistSpeakerEmail=Speaker''s email
+wishlistSpeakerName=Speaker full name

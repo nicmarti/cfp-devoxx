@@ -184,7 +184,12 @@ POST          /badges                                                controllers
 GET           /badges/test                                           controllers.Badge.test()
 
 # Parleys talks
-GET          /devoxxfr2014/talksOnParleys                            controllers.CFPAdmin.allTalksForParleys()
+GET           /devoxxfr2014/talksOnParleys                           controllers.CFPAdmin.allTalksForParleys()
+
+# Wishlist
+GET           /cfpadmin/wishlist/home                                controllers.Wishlist.homeWishlist()
+GET           /cfpadmin/wishlist/new                                 controllers.Wishlist.newRequestToTalk()
+POST          /cfpadmin/wishlist/save                                 controllers.Wishlist.saveRequestToTalk()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)
