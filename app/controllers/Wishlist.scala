@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{Event, Speaker, RequestToTalk}
+import models.{RequestToTalkStatus, Event, Speaker, RequestToTalk}
 import library.{NewRequestToTalk, ZapActor}
 
 /**
@@ -58,4 +58,18 @@ object Wishlist extends SecureCFPController {
         }
       )
   }
+
+  def showHistory(requestId:String)=SecuredAction(IsMemberOf("cfp")){
+    implicit request:SecuredRequest[play.api.mvc.AnyContent] =>
+      val changeRequestHistory = RequestToTalkStatus.history(requestId)
+      Ok(views.html.Wishlist.showHistory(changeRequestHistory))
+  }
+
+  def deleteRequest(requestId:String)=SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      RequestToTalk.delete(requestId)
+      Redirect(routes.Wishlist.homeWishlist()).flashing("success"->"Deleted request")
+  }
 }
+
+

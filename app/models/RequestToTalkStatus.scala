@@ -25,7 +25,8 @@ package models
 
 import play.api.libs.json.Json
 import library.{Dress, Redis}
-import org.joda.time.Instant
+import org.joda.time.{DateTime, Instant}
+
 
 /**
  * Status holder for Request to present a talk at the Conference.
@@ -55,25 +56,34 @@ object RequestToTalkStatus {
       case other => UNKNOWN
     }
   }
-  
+
 
   def changeStatus(requestId: String, requestToTalkStatus: RequestToTalkStatus) = Redis.pool.withClient {
     client =>
       val maybeExistingStatus = for (state <- RequestToTalkStatus.allAsCode if client.sismember("RequestsToTalk:Status:" + state, requestId)) yield state
 
+      val newStatus = requestToTalkStatus.code
+
+
+      val tx = client.multi()
       // Do the operation on the RequestToTalkStatus
-      maybeExistingStatus.filterNot(_ == requestToTalkStatus.code).foreach {
+      maybeExistingStatus.filterNot(_ == newStatus).foreach {
         stateOld: String =>
         // SMOVE is also a O(1) so it is faster than a SREM and SADD
-          client.smove("RequestsToTalk:Status:" + stateOld, "RequestsToTalk:Status:" + requestToTalkStatus.code, requestId)
+          tx.smove("RequestsToTalk:Status:" + stateOld, "RequestsToTalk:Status:" + newStatus, requestId)
       }
       if (maybeExistingStatus.isEmpty) {
         // SADD is O(N)
-        client.sadd("RequestsToTalk:Status:" + requestToTalkStatus.code, requestId)
+        tx.sadd("RequestsToTalk:Status:" + newStatus, requestId)
       }
+      // Save a timestamp
+      tx.lpush("RequestsToTalk:History:" + requestId, newStatus+"|"+new DateTime().toString("EEE dd/MM/YY HH:mm:SS"))
+      // trim to 100 last elements
+      tx.ltrim("RequestsToTalk:History:" + requestId, 0, 100)
+      tx.exec()
   }
 
-    def findCurrentStatus(requestId: String): RequestToTalkStatus = Redis.pool.withClient {
+  def findCurrentStatus(requestId: String): RequestToTalkStatus = Redis.pool.withClient {
     client =>
     // I use a for-comprehension to check each of the Set (O(1) operation)
     // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
@@ -92,27 +102,35 @@ object RequestToTalkStatus {
       })
   }
 
-    private def checkIsNotMember(client: Dress.Wrap, status: RequestToTalkStatus, requestId: String): Option[Boolean] = {
+  private def checkIsNotMember(client: Dress.Wrap, status: RequestToTalkStatus, requestId: String): Option[Boolean] = {
     client.sismember("RequestsToTalk:Status:" + status.code, requestId) match {
       case java.lang.Boolean.FALSE => Option(true)
       case other => None
     }
   }
 
-  def setContacted(requestId:String)={
+  def setContacted(requestId: String) = {
     changeStatus(requestId, RequestToTalkStatus.CONTACTED)
   }
 
-  def setApproved(requestId:String)={
+  def setApproved(requestId: String) = {
     changeStatus(requestId, RequestToTalkStatus.APPROVED)
   }
 
-  def setDeclined(requestId:String)={
+  def setDeclined(requestId: String) = {
     changeStatus(requestId, RequestToTalkStatus.DECLINED)
   }
 
-  def deleteStatus(requestId:String)={
+  def deleteStatus(requestId: String) = {
     changeStatus(requestId, RequestToTalkStatus.UNKNOWN)
+  }
+
+  def history(requestId:String):List[(String, String)]=Redis.pool.withClient{
+    client=>
+      client.lrange("RequestsToTalk:History:"+requestId, 0, 100).map{token:String=>
+        val toReturn=token.split("\\|")
+        (toReturn(0), toReturn(1))
+      }
   }
 
 }
