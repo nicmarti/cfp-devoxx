@@ -1,0 +1,18 @@
+@(message:String,requestId:String)
+
+@message
+
+-------------------------
+How to respond?
+
+If you are interested and you would like to propose a talk for Devoxx 2014 :
+
+- Yes, I'd like to propose a talk =>
+  Please visit this URL : http://cfp.devoxx.com@routes.Wishlist.approveRequest(requestId)
+
+- No, sorry, I am not available or not interested =>
+  Please, visit this URL : http://cfp.devoxx.com@routes.Wishlist.declineRequest(requestId)
+
+Thanks,
+The Devoxx team.
+
