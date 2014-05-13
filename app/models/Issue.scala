@@ -66,7 +66,7 @@ object Issue {
     val futureResult = WS.url(postUrl)
       .withAuth(username="nicolas_martignole", password="914b450980e9eb0bba11", scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
       .withHeaders(
-      ("Accept", "application/json"), ("User-Agent", "Devoxx France cfp.devoxx.fr")
+      ("Accept", "application/json"), ("User-Agent", "Devoxx cfp.devoxx.be")
     ).post(
       Map(
         "status"-> Seq("new"),

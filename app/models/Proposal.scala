@@ -249,7 +249,7 @@ object Proposal {
                           userGroup:Boolean ): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      "Devoxx France 2014",
+      "Devoxx BE 2014",
       lang,
       title,
       "no_main_speaker",
