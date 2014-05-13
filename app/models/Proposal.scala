@@ -131,7 +131,7 @@ case class Proposal(id: String, event: String, lang: String, title: String,
                     sponsorTalk: Boolean = false,
                     track: Track, demoLevel: String,
                     userGroup:Boolean=false,
-                    wishlisted:Boolean=false) {
+                    wishlisted:Option[Boolean]=None) {
 
   def allSpeakerUUIDs: List[String] = {
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
@@ -264,7 +264,7 @@ object Proposal {
       Track.parse(track),
       demoLevel,
       userGroup,
-      wishlisted = false
+      wishlisted = None
     )
 
   }
