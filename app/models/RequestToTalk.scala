@@ -53,7 +53,7 @@ object RequestToTalk {
     "id" -> optional(text)
     , "creatorId" -> nonEmptyText
     , "wishlistMessage" -> nonEmptyText(maxLength = 3500)
-    , "wishlistSpeakerEmail" -> nonEmptyText
+    , "wishlistSpeakerEmail" -> email
     , "wishlistSpeakerName" -> nonEmptyText
   )(validateRequestToTalk)(unapplyRequestToTalk))
 
@@ -62,14 +62,16 @@ object RequestToTalk {
     client =>
       val json = Json.toJson(requestToTalk).toString()
       client.hset("RequestToTalk", requestToTalk.id, json)
+      RequestToTalkStatus.setContacted(requestToTalk.id)
   }
 
   def delete(id: String) = Redis.pool.withClient {
     client =>
       client.hdel("RequestToTalk", id)
+      RequestToTalkStatus.deleteStatus(id)
   }
 
-  def load(id: String): Option[RequestToTalk] = Redis.pool.withClient {
+  def findById(id: String): Option[RequestToTalk] = Redis.pool.withClient {
     client =>
       client.hget("RequestToTalk", id).flatMap {
         json: String =>

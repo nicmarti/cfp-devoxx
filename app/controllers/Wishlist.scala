@@ -23,28 +23,39 @@
 
 package controllers
 
-import models.RequestToTalk
-
+import models.{Event, Speaker, RequestToTalk}
+import library.{NewRequestToTalk, ZapActor}
 
 /**
- * Controller to handle wishlist
- * Created by nicolas on 12/05/2014.
+ * Controller to handle the list of invited speakers.
+ * A CFP Member can create a RequestToTalk, this will send an email to the speaker.
+ * If the speaker accepts, we change the status of the RTT, and let him create an account if needed.
+ * If the speaker declines, then we set the RTT status to Declined.
+ *
+ * Created by nmartignole on 12/05/2014.
  */
-object Wishlist extends SecureCFPController{
+object Wishlist extends SecureCFPController {
 
   def homeWishlist() = SecuredAction(IsMemberOf("cfp")) {
-     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.Wishlist.homeWishlist())
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.Wishlist.homeWishList())
   }
 
-
   def newRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
-     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.Wishlist.newRequestToTalk(RequestToTalk.newRequestToTalkForm))
   }
 
-  def saveRequestToTalk()=SecuredAction(IsMemberOf("cfp")) {
-    implicit request:SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("Done")
+  def saveRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+    RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
+        hasErrors => BadRequest(views.html.Wishlist.newRequestToTalk(hasErrors)),
+        successForm => {
+
+          ZapActor.actor ! NewRequestToTalk(successForm)
+
+          Redirect(routes.Wishlist.homeWishlist()).flashing("success"->"Request created, email has been sent to the speaker")
+        }
+      )
   }
 }
