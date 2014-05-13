@@ -127,7 +127,8 @@ import com.github.rjeschke.txtmark._
 case class Proposal(id: String, event: String, lang: String, title: String,
                     mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
                     talkType: ProposalType, audienceLevel: String, summary: String,
-                    privateMessage: String, state: ProposalState, sponsorTalk: Boolean = false,
+                    privateMessage: String, state: ProposalState,
+                    sponsorTalk: Boolean = false,
                     track: Track, demoLevel: String, userGroup:Boolean=false) {
 
   def allSpeakerUUIDs: List[String] = {
