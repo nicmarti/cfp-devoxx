@@ -512,6 +512,7 @@ wishlist.requestToTalk.title=Send an invitation to talk to a speaker
 wishlist.requests.track=Track requests for speakers
 wishlist.createRequest=Create a new request
 wishlist.create=Send this request by email
+wishlist.history=History for this request
 wishlistMessage=Message for speaker
 wishlistSpeakerEmail=Speaker''s email
 wishlistSpeakerName=Speaker full name

@@ -189,7 +189,9 @@ GET           /devoxxfr2014/talksOnParleys                           controllers
 # Wishlist
 GET           /cfpadmin/wishlist/home                                controllers.Wishlist.homeWishlist()
 GET           /cfpadmin/wishlist/new                                 controllers.Wishlist.newRequestToTalk()
-POST          /cfpadmin/wishlist/save                                 controllers.Wishlist.saveRequestToTalk()
+GET           /cfpadmin/wishlist/history/:requestId                  controllers.Wishlist.showHistory(requestId:String)
+GET           /cfpadmin/wishlist/delete/:requestId                   controllers.Wishlist.deleteRequest(requestId:String)
+POST          /cfpadmin/wishlist/save                                controllers.Wishlist.saveRequestToTalk()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)

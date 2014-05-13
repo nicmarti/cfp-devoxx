@@ -1,8 +1,8 @@
-@(requests:List[models.RequestToTalk])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(history:List[(String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @import helper.twitterBootstrap._
 
-@main("Wishlist") {
+@main("Wishlist, history") {
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
@@ -12,45 +12,29 @@
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
             <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
-            @if(flash.get("error").isDefined) {
-                <div class="alert alert-danger alert-dismissable">
-                    <strong>Error :</strong>
-                    @flash.get("error").get
-                </div>
-            }
-            @if(flash.get("success").isDefined) {
-                <div class="alert alert-success alert-dismissable">
-                @flash.get("success").get
-                </div>
-            }
         </div>
 
         <div class="clearfix"></div>
-
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.recentEvents")</h3>
+                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.history")</h3>
                 </div>
 
                 <div class="panel-body">
-<a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishlist.requestToTalk.title")</a><br>
-<table id="allWishlist" class="table table-bordered table-hover table-condensed">
+<table id="historyTable" class="table table-bordered table-hover table-condensed">
     <thead>
         <tr>
-            <th>Id</th>
-            <th>Speaker name</th>
             <th>Status</th>
+            <th>Date</th>
         </tr>
     </thead>
     <tbody>
-@requests.map { request: RequestToTalk =>
+@history.map { tuple: (String,String) =>
+
     <tr>
-        <td>
-        <a href="@routes.Wishlist.showHistory(request.id)">@request.id</a>
-        </td>
-        <td>@request.speakerName</td>
-        <td>@Messages(request.status.code)</td>
+        <td>@tuple._1</td>
+        <td>@tuple._2</td>
     </tr>
 }
     </tbody>
@@ -63,15 +47,14 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
-    $('#allWishlist').dataTable({
+    $('#historyTable').dataTable({
         "aaSorting": [[ 0, "desc" ]],
         "iDisplayLength": 50,
         "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
         "bStateSave": true,
         "aoColumns": [
         { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"}
+        { "sType": "date"}
         ]
     });
 } );
