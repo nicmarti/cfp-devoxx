@@ -38,7 +38,7 @@ object Wishlist extends SecureCFPController {
 
   def homeWishlist() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.Wishlist.homeWishList())
+      Ok(views.html.Wishlist.homeWishList(RequestToTalk.allRequestsToTalk))
   }
 
   def newRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
