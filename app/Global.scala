@@ -72,7 +72,6 @@ object CronTask {
   // This can be achieved by adding the import clause 'import scala.language.postfixOps'
   import scala.language.postfixOps
 
-
   // Send an email for each Proposal with status draft
   def draftReminder() = {
     import play.api.libs.concurrent.Execution.Implicits._
@@ -102,7 +101,8 @@ object CronTask {
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllProposals())
       Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllHitViews())
-    }else{
+    }
+    if(Play.isProd){
       Akka.system.scheduler.schedule(10 hour, 1 hour, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
       Akka.system.scheduler.schedule(25 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexAllProposals())
       Akka.system.scheduler.schedule(2 minutes, 20 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews())
@@ -117,13 +117,12 @@ object CronTask {
       Akka.system.scheduler.schedule(30 minute, 10 minutes, ZapActor.actor, ComputeLeaderboard())
       Akka.system.scheduler.schedule(45 minute, 30 minutes, ZapActor.actor, ComputeVotesAndScore())
       Akka.system.scheduler.schedule(10 seconds, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
-    }else{
+    }
+    if(Play.isProd){
       Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
       Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
       Akka.system.scheduler.schedule(2 minutes, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
     }
-
-
 
   }
 
