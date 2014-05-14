@@ -36,47 +36,59 @@ import java.util.Date
  * Speaker's invitation, request to present a subject for a conference.
  * Created by nicolas martignole on 13/05/2014.
  */
-case class RequestToTalk(id: String, creatorId: String, message: String, speakerEmail: String, speakerName: String, createdOn: Long){
-  def status:RequestToTalkStatus={
+case class RequestToTalk(id: String
+                         , note: String
+                         , speakerEmail: String
+                         , speakerName: String
+                         , company: String
+                         , trackCode: String
+                         , tl: Boolean
+                         , country: String
+                         , statusCode:String
+                          ) {
+  def status: RequestToTalkStatus = {
     RequestToTalkStatus.findCurrentStatus(id)
+  }
+
+  def track: Track = {
+    Track.parse(trackCode)
   }
 }
 
 object RequestToTalk {
   implicit val requestToTalkFormat = Json.format[RequestToTalk]
 
-  private def generateId:String={
-    "req-"+RandomStringUtils.randomNumeric(3)+"-"+RandomStringUtils.randomNumeric(3)
+  private def generateId: String = {
+    "req-" + RandomStringUtils.randomNumeric(3) + "-" + RandomStringUtils.randomNumeric(3)
   }
 
-  def validateRequestToTalk(id: Option[String], creatorId: String, message: String, speakerEmail: String, speakerName: String): RequestToTalk = {
-    RequestToTalk(id.getOrElse(generateId), creatorId, message, speakerEmail, speakerName, new Date().getTime)
+  def validateRequestToTalk(id: Option[String], note: String, speakerEmail: String, speakerName: String,
+                            company: String, trackCode: String, travel: Boolean, country: String, statusCode:String): RequestToTalk = {
+    RequestToTalk(id.getOrElse(generateId), note, speakerEmail, speakerName, company, trackCode, travel, country, statusCode)
   }
 
-  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, String, String)] = {
-    Option((Option(rt.id), rt.creatorId, rt.message, rt.speakerEmail, rt.speakerName))
+  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, String, String, String, Boolean, String, String)] = {
+    Option((Option(rt.id), rt.note, rt.speakerEmail, rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode))
   }
 
   val newRequestToTalkForm = Form(mapping(
     "id" -> optional(text)
-    , "creatorId" -> nonEmptyText
-    , "wishlistMessage" -> nonEmptyText(maxLength = 3500)
-    , "wishlistSpeakerEmail" -> email
-    , "wishlistSpeakerName" -> nonEmptyText
+    , "wl_note" -> nonEmptyText(maxLength = 3500)
+    , "wl_speakerEmail" -> email
+    , "wl_speakerName" -> nonEmptyText
+    , "wl_company" -> text
+    , "wl_trackCode" -> text
+    , "wl_travel" -> boolean
+    , "wl_country" -> text
+    , "wl_statusCode" -> nonEmptyText
   )(validateRequestToTalk)(unapplyRequestToTalk))
 
 
-  def save(requestToTalk:RequestToTalk) = Redis.pool.withClient {
+  def save(authorUUID: String, requestToTalk: RequestToTalk) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(requestToTalk).toString()
       client.hset("RequestToTalk", requestToTalk.id, json)
-      RequestToTalkStatus.setContacted(requestToTalk.id)
-  }
-
-  def delete(id: String) = Redis.pool.withClient {
-    client =>
-      client.hdel("RequestToTalk", id)
-      RequestToTalkStatus.deleteStatus(id)
+      RequestToTalkStatus.changeStatus(authorUUID, requestToTalk.id, requestToTalk.statusCode)
   }
 
   def findById(id: String): Option[RequestToTalk] = Redis.pool.withClient {
@@ -93,6 +105,36 @@ object RequestToTalk {
         json: String =>
           Json.parse(json).asOpt[RequestToTalk]
       }
+  }
+
+  def speakerApproved(requestId: String) = Redis.pool.withClient {
+    implicit client =>
+      findById(requestId).map {
+        request =>
+          RequestToTalkStatus.changeStatusFromRequest(request.speakerName, requestId, RequestToTalkStatus.ACCEPTED)
+      }
+  }
+
+  def speakerDeclined(requestId: String) = Redis.pool.withClient {
+    implicit client =>
+      findById(requestId).map {
+        request =>
+          RequestToTalkStatus.changeStatusFromRequest(request.speakerName, requestId, RequestToTalkStatus.DECLINED)
+      }
+  }
+
+  def speakerDiscuss(requestId: String) = Redis.pool.withClient {
+    implicit client =>
+      findById(requestId).map {
+        request =>
+          RequestToTalkStatus.changeStatusFromRequest(request.speakerName, requestId, RequestToTalkStatus.DISCUSS)
+      }
+  }
+
+  def delete(author: String, requestId: String) = Redis.pool.withClient {
+    client =>
+      client.hdel("RequestToTalk", requestId)
+      RequestToTalkStatus.changeStatusFromRequest(author, requestId, RequestToTalkStatus.DELETED)
   }
 
 }

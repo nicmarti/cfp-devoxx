@@ -141,8 +141,8 @@ track.description=Description
 
 # Tracks
 track.startup.title=Startup and entrepreneurship
-track.startup.desc=Lean startup, UX Design, tools and new trends in Startup.
-startup.label=Startups & innovation
+track.startup.desc=Lean startup, VCs, Angels and new trends in Startups.
+startup.label=Startups
 
 track.ssj.title=Server Side Java
 track.ssj.desc=Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs
@@ -520,3 +520,5 @@ contacted=Speaker has been contacted
 approved=Speaker has accepted
 declined=Speaker has declined
 unknown=Unknown
+
+

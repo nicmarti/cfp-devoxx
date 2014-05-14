@@ -54,8 +54,8 @@ object Track {
 
   val allIDs=all.map(_.id)
 
-  def parse(session:String):Track={
-    session match {
+  def parse(id:String):Track={
+    id match {
       case "startup"=>STARTUP
       case "ssj"=>SSJ
       case "java" => JAVA
