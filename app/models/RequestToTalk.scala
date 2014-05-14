@@ -63,20 +63,20 @@ object RequestToTalk {
     "req-" + RandomStringUtils.randomNumeric(3) + "-" + RandomStringUtils.randomNumeric(3)
   }
 
-  def validateRequestToTalk(id: Option[String], note: String, message: String, speakerEmail: String, speakerName: String,
+  def validateRequestToTalk(id: Option[String], note: String, message: String, speakerEmail: Option[String], speakerName: String,
                             company: String, trackCode: String, travel: Boolean, country: String, statusCode: String): RequestToTalk = {
-    RequestToTalk(id.getOrElse(generateId), note, message, speakerEmail, speakerName, company, trackCode, travel, country, statusCode)
+    RequestToTalk(id.getOrElse(generateId), note, message, speakerEmail.getOrElse(""), speakerName, company, trackCode, travel, country, statusCode)
   }
 
-  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, String, String, String, String, Boolean, String, String)] = {
-    Option((Option(rt.id), rt.note, rt.message, rt.speakerEmail, rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode))
+  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, Option[String], String, String, String, Boolean, String, String)] = {
+    Option((Option(rt.id), rt.note, rt.message, Option(rt.speakerEmail), rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode))
   }
 
   val newRequestToTalkForm = Form(mapping(
     "id" -> optional(text)
     , "wl_note" -> text(maxLength = 3500)
     , "wl_message" ->text(maxLength = 3500)
-    , "wl_speakerEmail" -> email
+    , "wl_speakerEmail" -> optional(email)
     , "wl_speakerName" -> nonEmptyText
     , "wl_company" -> text
     , "wl_trackCode" -> text
