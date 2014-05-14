@@ -43,6 +43,7 @@ object Mails {
     emailer.setSubject("You asked to reset your Devoxx speaker's access code at " + new DateTime().toString("HH:mm dd/MM"))
     emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(email)
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
   }
@@ -52,6 +53,7 @@ object Mails {
     emailer.setSubject("Your access code for Devoxx CFP")
     emailer.addFrom("program@devoxx.com")
     emailer.addRecipient(email)
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.sendAccessCode(email, code).toString(),
@@ -73,6 +75,7 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject("Welcome to Devoxx, please validate your email address now")
     emailer.addFrom("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(email)
     emailer.setCharset("utf-8")
     emailer.send(
@@ -99,7 +102,7 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[Devoxx 2014] Message about your presentation ${proposal.title}")
     emailer.addFrom("program@devoxx.com")
-
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -119,6 +122,7 @@ object Mails {
     emailer.setSubject(s"[${proposal.title} ${proposal.id}]")
     emailer.addFrom("program@devoxx.com")
     emailer.addRecipient("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString(),
@@ -131,6 +135,7 @@ object Mails {
     emailer.setSubject(s"[${proposal.title}] ${fromWebuser.cleanName} posted a new message")
     emailer.addFrom("program@devoxx.com")
     emailer.addRecipient("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
 
     // Send also a copy of the message to the other speakers
@@ -151,6 +156,7 @@ object Mails {
     emailer.setSubject(s"[${proposal.title}][PRIVATE] ${fromWebuser.cleanName}")
     emailer.addFrom("program@devoxx.com")
     emailer.addRecipient("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.setCharset("utf-8")
     emailer.send(
       views.txt.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString(),
@@ -167,6 +173,7 @@ object Mails {
       emailer.setSubject(s"Devoxx 2014 reminder : you have ${proposals.size} proposals to submit")
     }
     emailer.addFrom("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(speaker.email)
 
     emailer.setCharset("utf-8")
@@ -180,6 +187,7 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"Your proposal has been approved ${proposal.title}")
     emailer.addFrom("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -200,6 +208,7 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"Your proposal has been refused ${proposal.title}")
     emailer.addFrom("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(toWebuser.email)
 
     // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
@@ -220,6 +229,7 @@ object Mails {
 
     emailer.setSubject(s"Call for Paper Devoxx 2014")
     emailer.addFrom("program@devoxx.com")
+    emailer.addBcc("nicolas.martignole@devoxx.fr")
     emailer.addRecipient(speaker.email)
 
     emailer.setCharset("utf-8")
@@ -243,6 +253,5 @@ object Mails {
       views.html.Mails.sendInvitationForSpeaker( message, requestId).toString()
     )
   }
-
 
 }
