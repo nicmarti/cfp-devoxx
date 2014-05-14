@@ -12,17 +12,6 @@
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
             <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
-            @if(flash.get("error").isDefined) {
-                <div class="alert alert-danger alert-dismissable">
-                    <strong>Error :</strong>
-                    @flash.get("error").get
-                </div>
-            }
-            @if(flash.get("success").isDefined) {
-                <div class="alert alert-success alert-dismissable">
-                @flash.get("success").get
-                </div>
-            }
         </div>
 
         <div class="clearfix"></div>
@@ -35,9 +24,21 @@
 
                 <div class="panel-body">
 <a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishlist.newWishlist")</a><br>
+  @if(flash.get("error").isDefined) {
+                        <div class="alert alert-danger alert-dismissable">
+                            <strong>Error :</strong>
+                            @flash.get("error").get
+                        </div>
+                    }
+                    @if(flash.get("success").isDefined) {
+                        <div class="alert alert-success alert-dismissable">
+                        @flash.get("success").get
+                        </div>
+                    }
 <table id="allWishlist" class="table table-bordered table-hover table-condensed">
     <thead>
         <tr>
+            <th>Action</th>
             <th>Last modifed</th>
             <th>Speaker name</th>
             <th>Company</th>
@@ -49,10 +50,14 @@
 @requests.map { request: RequestToTalk =>
     <tr>
         <td>
-        <a href="@routes.Wishlist.edit(request.id)">@request.id</a>
+            <a href="@routes.Wishlist.edit(request.id)" class="btn btn-small btn-primary"><i class="icon-edit"></i></a>
+            <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-small btn-danger"><i class="icon-trash"></i></a>
         </td>
+        <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, dd MMM, HH:mm"))</td>
         <td>@request.speakerName</td>
-        <td>@Messages(request.status.code)</td>
+        <td>@request.company</td>
+        <td>@Messages(request.track.label)</td>
+        <td>@Messages("wl_"+request.status.code)</td>
     </tr>
 }
     </tbody>
@@ -71,6 +76,9 @@ $(document).ready(function() {
         "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
         "bStateSave": true,
         "aoColumns": [
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"}

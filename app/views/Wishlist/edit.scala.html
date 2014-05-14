@@ -30,8 +30,8 @@
                     <h3><i class="icon-stackexchange"></i> @Messages("wishlist.editRequest")</h3>
                 </div>
                 <div class="panel-body">
-                @helper.form(action = routes.Wishlist.saveNewRequestToTalk) {
-                    @helper.inputText(newRequestToTalkForm("id"), 'class->"form-control")
+                @helper.form(action = routes.Wishlist.saveRequestToTalk) {
+                    <input type="hidden" name="id" value="@newRequestToTalkForm("id").value">
                     @helper.inputText(newRequestToTalkForm("wl_speakerName"), 'class->"form-control")
                     @helper.inputText(newRequestToTalkForm("wl_speakerEmail"), 'class->"form-control")
                     @helper.inputText(newRequestToTalkForm("wl_company"), 'class->"form-control")
@@ -41,8 +41,9 @@
                     @helper.textarea(newRequestToTalkForm("wl_note"), 'cols->60,'rows->5,  'class->"form-control")
                     @helper.textarea(newRequestToTalkForm("wl_message"), 'cols->60,'rows->8,  'class->"form-control")
                     @tags.selectI18N(field = newRequestToTalkForm("wl_statusCode"), options=RequestToTalkStatus.allAsIdsAndLabels,  'class->"form-control")
+                    <a href="@routes.Wishlist.homeWishlist()" class="btn btn-default"><i class="icon icon-arrow-left"></i> @Messages("wishlist.cancelEdit")</a>
                     <button class="btn btn-success" type="submit"><i class="icon-save"></i> @Messages("wishlist.save")</button>
-                    <button class="btn btn-success" type="submit"><i class="icon-envelope"></i> @Messages("wishlist.sendEmail")</button>
+                    <button disabled class="btn" type="submit"><i class="icon-envelope"></i> @Messages("wishlist.sendEmail")</button>
                 }
                 </div>
             </div>
@@ -53,7 +54,18 @@
                     <h3><i class="icon-stackexchange"></i> @Messages("wishlist.history")</h3>
                 </div>
                 <div class="panel-body">
-                TODO show History
+                <ul class="timeline">
+                @models.RequestToTalkStatus.history(newRequestToTalkForm("id").value.getOrElse("0")).map{rh: RequestHistory =>
+                    <li>
+                        <time class="tl_time" datetime=" @rh.date.toString("YYYY-MM-DD HH:mm")"><span> @rh.date.toString("dd/MM")</span> <span> @rh.date.toString("HH:mm")</span></time>
+                        <div class="tl_icon"></div>
+                        <div class="tl_status">
+                            <span class="tl_status_code">@Messages("wl_"+rh.statusCode)</span>
+                            <p>@tags.showSpeakerTag(rh.author)</p>
+                        </div>
+                    </li>
+                }
+                </ul>
                 </div>
             </div>
         </div>

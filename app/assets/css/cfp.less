@@ -261,3 +261,144 @@ background-position: 0% 0%;
 background-repeat: repeat;
 margin-top: 0;
 }
+
+/* Wishlist time line */
+/* See also http://tympanus.net/codrops/2013/05/02/vertical-timeline/ */
+.timeline {
+    margin: 10px 0 0 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+}
+/* The line */
+.timeline:before {
+content: '';
+position: absolute;
+top: 0;
+bottom: 0;
+width: 6px;
+background: #38cb44;
+left: 17%;
+margin-left: -10px;
+}
+.timeline > li {
+    position: relative;
+}
+
+/* The date/time */
+.timeline > li .tl_time {
+    display: block;
+    width: 25%;
+    padding-right: 100px;
+    position: absolute;
+    z-index:3;
+}
+ 
+.timeline > li .tl_time span {
+    display: block;
+    text-align: right;
+}
+ 
+.timeline > li .tl_time span:first-child {
+    font-size: 0.9em;
+    color: #333;
+}
+ 
+.timeline > li .tl_time span:last-child {
+    font-size: 1.0em;
+    color: #61b618;
+}
+ 
+.timeline > li:nth-child(odd) .tl_time span:last-child {
+    color: #61b618;
+}
+
+/* Right content */
+.timeline > li .tl_status {
+    margin: 0 0 15px 25%;
+    background: #fcfbec;
+    color: #535353;
+    padding: 1.2em;
+    font-weight: 300;
+    line-height: 1.4;
+    position: relative;
+    border-radius: 5px;
+}
+
+.timeline > li:nth-child(odd) .tl_status {
+    background: #f4f3e5;
+}
+
+.timeline > li .tl_status .tl_status_code {
+    margin-top: 0px;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+/* The triangle */
+.timeline > li .tl_status:after {
+    right: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-right-color: #38cb44;
+    border-width: 10px;
+    top: 10px;
+}
+ 
+.timeline > li:nth-child(odd) .tl_status:after {
+    border-right-color: #6fee87;
+}
+
+/* Example Media Queries */
+@media screen and (max-width: 65.375em) {
+ 
+    .timeline > li .tl_time span:last-child {
+        font-size: 1.5em;
+    }
+}
+ 
+@media screen and (max-width: 47.2em) {
+    .timeline:before {
+        display: none;
+    }
+ 
+    .timeline > li .tl_time {
+        width: 100%;
+        position: relative;
+        padding: 0 0 20px 0;
+    }
+ 
+    .timeline > li .tl_time span {
+        text-align: left;
+    }
+ 
+    .timeline > li .tl_status {
+        margin: 0 0 30px 0;
+        padding: 1em;
+        font-weight: 400;
+        font-size: 95%;
+    }
+ 
+    .timeline > li .tl_status:after {
+        right: auto;
+        left: 20px;
+        border-right-color: transparent;
+        border-bottom-color: #37cb66;
+        top: -20px;
+    }
+ 
+    .timeline > li:nth-child(odd) .tl_status:after {
+        border-right-color: transparent;
+        border-bottom-color: #6dee79;
+    }
+ 
+    .timeline > li .tl_icon {
+        position: relative;
+        float: right;
+        left: auto;
+        margin: -55px 5px 0 0px;
+    }   
+}

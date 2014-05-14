@@ -515,6 +515,7 @@ wishlist.editRequest=Edit and update a request
 wishlist.sendEmail=Send the message to the speaker
 wishlist.save=Save this request
 wishlist.history=History
+wishlist.cancelEdit=Cancel edition
 
 wl_note=Private note and internal discussion
 wl_message=Message for speaker
@@ -538,7 +539,7 @@ wl_onhold=On hold
 wl_deleted=Deleted
 wl_unknown=Unknown
 
-wishlist.newWishlist=New wishlist
+wishlist.newWishlist=Create new Wishlist
 
 contacted=Speaker has been contacted
 approved=Speaker has accepted
