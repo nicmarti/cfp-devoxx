@@ -59,6 +59,8 @@ case class RequestToTalk(id: String
 object RequestToTalk {
   implicit val requestToTalkFormat = Json.format[RequestToTalk]
 
+  val IDRegExp = "(req-\\d\\d\\d-\\d\\d\\d)".r
+
   private def generateId: String = {
     "req-" + RandomStringUtils.randomNumeric(3) + "-" + RandomStringUtils.randomNumeric(3)
   }

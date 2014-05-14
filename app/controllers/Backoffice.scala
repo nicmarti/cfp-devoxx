@@ -24,7 +24,7 @@ object Backoffice extends SecureCFPController {
   }
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent]  =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.Backoffice.homeBackoffice())
   }
 
@@ -32,11 +32,11 @@ object Backoffice extends SecureCFPController {
   def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       if (Webuser.hasAccessToCFP(uuidSpeaker)) {
-        Event.storeEvent(Event(uuidSpeaker, "", "removed user from CFP group"))
+        Event.storeEvent(Event("", uuidSpeaker, "removed user from CFP group"))
         Webuser.removeFromCFPAdmin(uuidSpeaker)
       } else {
         Webuser.addToCFPAdmin(uuidSpeaker)
-        Event.storeEvent(Event(uuidSpeaker, "", "added user to CFP group"))
+        Event.storeEvent(Event("", uuidSpeaker, "added user to CFP group"))
       }
       Redirect(routes.CFPAdmin.allWebusers())
   }
@@ -59,24 +59,24 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.allProposals(proposals))
   }
 
-  def changeProposalState(proposalId: String, state:String) = SecuredAction(IsMemberOf("admin")) {
+  def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
-      if(state==ProposalState.ACCEPTED.code){
-        Proposal.findById(proposalId).map{
-          proposal=>
+      if (state == ProposalState.ACCEPTED.code) {
+        Proposal.findById(proposalId).map {
+          proposal =>
             ApprovedProposal.approve(proposal)
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.ACCEPTED))
         }
       }
-      if(state==ProposalState.DECLINED.code){
-        Proposal.findById(proposalId).map{
-          proposal=>
+      if (state == ProposalState.DECLINED.code) {
+        Proposal.findById(proposalId).map {
+          proposal =>
             ApprovedProposal.refuse(proposal)
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.DECLINED))
         }
       }
-      Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to "+state))
+      Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
   }
 
   val formSecu = Form("secu" -> nonEmptyText())
@@ -106,7 +106,7 @@ object Backoffice extends SecureCFPController {
       ElasticSearchActor.masterActor ! DoIndexAllSpeakers()
       ElasticSearchActor.masterActor ! DoIndexAllProposals()
       ElasticSearchActor.masterActor ! DoIndexAllHitViews()
-      if(Play.current.mode==play.api.Mode.Dev){
+      if (Play.current.mode == play.api.Mode.Dev) {
         ElasticSearchActor.masterActor ! DoIndexAllReviews()
       }
       Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Elastic search actor started...")
