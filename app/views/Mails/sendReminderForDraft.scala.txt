@@ -7,7 +7,7 @@ We'd like to inform you that you have @proposals.size proposal@if(proposals.size
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.
 
 @proposals.map{proposal=>
- - @proposal.title  [http://cfp.devoxx.fr@routes.CallForPaper.editProposal(proposal.id)]
+ - @proposal.title  [http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CallForPaper.editProposal(proposal.id)]
 }
 
 If you don't want to receive this message, you can also move the draft proposals to Trash from the home section.
