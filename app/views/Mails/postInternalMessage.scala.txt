@@ -10,7 +10,7 @@ Message:
 ------------------------------------------------------------------------------
 
 Please, use this link to respond directly to the message :
-http://cfp.devoxx.fr@routes.CFPAdmin.openForReview(proposal.id)
+http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks
 

@@ -162,7 +162,7 @@ object ProgramBuilder extends SecureCFPController {
 
     event.setColorId("4")
     event.setDescription("Une très belle description d'événement")
-    event.setSource(new Event.Source().setUrl("http://cfp.devoxx.fr").setTitle("CFP de Devoxx"))
+    event.setSource(new Event.Source().setUrl("http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io").setTitle("CFP de Devoxx"))
     event.setVisibility("public")
     event.setLocation("La Seine A - Niveau principal")
 
