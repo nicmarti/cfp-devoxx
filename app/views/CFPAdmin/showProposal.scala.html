@@ -156,13 +156,13 @@
                             @for(i <- 1 to 10) {
                                 @maybeMyVote.map{review:Review=>
                                     @if(review.vote.toInt==i){
-                                        <button name="vote" value="@i" class="btn btn-lg btn-warning" accesskey="@i">@i</button>
+                                        <button name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
                                     } else {
-                                        <button name="vote" value="@i" class="btn btn-lg btn-success" accesskey="@i">@i</button>
+                                        <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
                                     }
                                 }
                                 @if(maybeMyVote.isEmpty){
-                                    <button name="vote" value="@i" class="btn btn-lg btn-success" accesskey="@i">@i</button>
+                                    <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
                                 }
                             }
                         }
