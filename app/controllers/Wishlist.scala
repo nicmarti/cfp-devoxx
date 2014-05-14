@@ -48,41 +48,59 @@ object Wishlist extends SecureCFPController {
       Ok(views.html.Wishlist.newRequestToTalk(RequestToTalk.newRequestToTalkForm))
   }
 
-  def saveRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
+  def saveNewRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
         hasErrors => BadRequest(views.html.Wishlist.newRequestToTalk(hasErrors)),
         successForm => {
 
-          ZapActor.actor ! NewRequestToTalk(successForm)
+          RequestToTalk.save(request.webuser.uuid, successForm)
 
           Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Request created, email has been sent to the speaker")
         }
       )
   }
 
-  def showHistory(requestId: String) = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val changeRequestHistory = RequestToTalkStatus.history(requestId)
-      Ok(views.html.Wishlist.showHistory(changeRequestHistory))
-  }
-
   def deleteRequest(requestId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      RequestToTalk.delete(requestId)
+      RequestToTalk.delete(request.webuser.uuid, requestId)
       Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Deleted request")
   }
 
-  def approveRequest(requestId: String) = Action {
+  def speakerApproveRequest(requestId: String) = Action {
     implicit request =>
-      RequestToTalkStatus.setApproved(requestId)
+      RequestToTalk.speakerApproved(requestId)
       Redirect(routes.Application.home).flashing("success" -> "Request accepted. Welcome to Devoxx 2014! Please, create a speaker account :")
   }
 
-  def declineRequest(requestId: String) = Action {
+  def speakerDeclineRequest(requestId: String) = Action {
     implicit request =>
-      RequestToTalkStatus.setDeclined(requestId)
+      RequestToTalk.speakerDeclined(requestId)
       Redirect(routes.Application.home).flashing("success" -> "Sorry that you have not accepted our invitation. However, if you'd like to propose a talk, please register :")
+  }
+
+  def edit(id:String)= SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      RequestToTalk.findById(id) match {
+        case None => NotFound("Sorry, this request has been deleted or was not found")
+        case Some(rtt)=> Ok(views.html.Wishlist.edit(RequestToTalk.newRequestToTalkForm.fill(rtt)))
+      }
+  }
+
+  def saveEdit(requestId:String)=SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
+        hasErrors => BadRequest(views.html.Wishlist.edit(hasErrors)),
+        successForm => {
+
+          //ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
+
+          Redirect(routes.Wishlist.homeWishlist()).flashing("success"->"Request successfully updated")
+        }
+      )
+
+
   }
 }
 
