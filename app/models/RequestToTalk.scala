@@ -38,13 +38,14 @@ import java.util.Date
  */
 case class RequestToTalk(id: String
                          , note: String
+                         , message: String
                          , speakerEmail: String
                          , speakerName: String
                          , company: String
                          , trackCode: String
                          , tl: Boolean
                          , country: String
-                         , statusCode:String
+                         , statusCode: String
                           ) {
   def status: RequestToTalkStatus = {
     RequestToTalkStatus.findCurrentStatus(id)
@@ -62,18 +63,19 @@ object RequestToTalk {
     "req-" + RandomStringUtils.randomNumeric(3) + "-" + RandomStringUtils.randomNumeric(3)
   }
 
-  def validateRequestToTalk(id: Option[String], note: String, speakerEmail: String, speakerName: String,
-                            company: String, trackCode: String, travel: Boolean, country: String, statusCode:String): RequestToTalk = {
-    RequestToTalk(id.getOrElse(generateId), note, speakerEmail, speakerName, company, trackCode, travel, country, statusCode)
+  def validateRequestToTalk(id: Option[String], note: String, message: String, speakerEmail: String, speakerName: String,
+                            company: String, trackCode: String, travel: Boolean, country: String, statusCode: String): RequestToTalk = {
+    RequestToTalk(id.getOrElse(generateId), note, message, speakerEmail, speakerName, company, trackCode, travel, country, statusCode)
   }
 
-  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, String, String, String, Boolean, String, String)] = {
-    Option((Option(rt.id), rt.note, rt.speakerEmail, rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode))
+  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, String, String, String, String, Boolean, String, String)] = {
+    Option((Option(rt.id), rt.note, rt.message, rt.speakerEmail, rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode))
   }
 
   val newRequestToTalkForm = Form(mapping(
     "id" -> optional(text)
     , "wl_note" -> nonEmptyText(maxLength = 3500)
+    , "wl_message" -> nonEmptyText(maxLength = 3500)
     , "wl_speakerEmail" -> email
     , "wl_speakerName" -> nonEmptyText
     , "wl_company" -> text

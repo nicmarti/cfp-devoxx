@@ -39,6 +39,7 @@ object RequestToTalkStatus {
   implicit val rttFormat = Json.format[RequestToTalkStatus]
 
   // (discuss, contact, contacted, approved, rejected)
+  val SUGGESTED = RequestToTalkStatus("suggested")
   val CONTACTED_US = RequestToTalkStatus("contactedUs")
   val DISCUSS = RequestToTalkStatus("discuss")
   val CONTACT_SPEAKER = RequestToTalkStatus("contactSpeaker")
@@ -49,7 +50,7 @@ object RequestToTalkStatus {
   val UNKNOWN = RequestToTalkStatus("unknown")
   val DELETED = RequestToTalkStatus("deleted")
 
-  val all = List(CONTACTED_US, DISCUSS, CONTACT_SPEAKER, CONTACTED, ACCEPTED, DECLINED, ON_HOLD, UNKNOWN, DELETED)
+  val all = List(SUGGESTED, CONTACTED_US, DISCUSS, CONTACT_SPEAKER, CONTACTED, ACCEPTED, DECLINED, ON_HOLD, UNKNOWN, DELETED)
 
     val allAsIdsAndLabels = all.map(a=>(a.code,"wl_"+a.code)).toSeq.sorted
 
@@ -57,9 +58,10 @@ object RequestToTalkStatus {
 
   def parse(state: String): RequestToTalkStatus = {
     state match {
+      case "suggested" => SUGGESTED
       case "contactedUs" => CONTACTED_US
       case "discuss" => DISCUSS
-      case "contactedSpeaker" => CONTACT_SPEAKER
+      case "contactSpeaker" => CONTACT_SPEAKER
       case "contacted" => CONTACTED
       case "accepted" => ACCEPTED
       case "declined" => DECLINED
