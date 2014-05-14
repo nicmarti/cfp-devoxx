@@ -546,4 +546,5 @@ approved=Speaker has accepted
 declined=Speaker has declined
 unknown=Unknown
 
-
+# The abstention button
+Abs=0
