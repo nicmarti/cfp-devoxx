@@ -26,6 +26,8 @@ package models
 import play.api.libs.json.Json
 import library.{Dress, Redis}
 import org.joda.time.{DateTime, Instant}
+import play.api.i18n.Messages.Message
+import play.api.i18n.Messages
 
 
 /**
@@ -87,6 +89,7 @@ object RequestToTalkStatus {
       // trim to 100 last elements
       tx.ltrim("RequestsToTalk:History:" + requestId, 0, 100)
       tx.exec()
+      Event.storeEvent(Event(requestId, authorName, s"Updated status of a wishlist item to [$statusCode]"))
 
   }
 

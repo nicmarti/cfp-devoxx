@@ -1,7 +1,10 @@
 @(objRef:String)
 
 @if(models.Proposal.ProposalIDRegExp findFirstIn(objRef) isDefined){
-<a href="@routes.CFPAdmin.openForReview(objRef)" class="btn btn-sm btn-primary">@objRef</a>
+<a href="@routes.CFPAdmin.openForReview(objRef)" class="btn btn-sm btn-primary"><i class="icon-signin"></i> @objRef</a>
+}
+@if(models.RequestToTalk.IDRegExp findFirstIn(objRef) isDefined){
+<a href="@routes.Wishlist.edit(objRef)" class="btn btn-sm btn-primary"><i class="icon-sort-by-attributes-alt"></i> @objRef</a>
 }else{
-<small>@objRef</small>
+   <!-- @objRef //-->
 }
