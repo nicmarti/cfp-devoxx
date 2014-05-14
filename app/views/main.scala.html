@@ -27,8 +27,11 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-
-        <div class="ribbon-wrapper-green"><div class="ribbon-green">BETA</div></div>
+        @if(play.api.Play.current.mode==play.api.Mode.Dev){
+            <div class="ribbon-wrapper-red"><div class="ribbon-red">DEV</div></div>
+        }else {
+            <div class="ribbon-wrapper-green"><div class="ribbon-green">BETA</div></div>
+        }
             <a href="/" class="navbar-brand">Devox<span class="yl">x</span> BE 2014 CFP</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
