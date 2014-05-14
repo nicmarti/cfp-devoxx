@@ -182,6 +182,7 @@ object Webuser {
   def addToCFPAdmin(uuid: String) = Redis.pool.withClient {
     client =>
       client.sadd("Webuser:cfp", uuid)
+      Cache.remove(s"Webuser:cfp:$uuid")
   }
 
   def removeFromCFPAdmin(uuid: String) = Redis.pool.withClient {
