@@ -45,7 +45,7 @@
                     <li><a href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-home"></i> @Messages("nav.homeSpeaker")</a></li>
                 }
                 @if(SecureCFPController.hasAccessToCFP(req)){
-                    <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> CFPAdmin</a></li>
+                    <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> Admin</a></li>
                 }
                 @if(SecureCFPController.hasAccessToCFP(req)){
                     <li><a href="@routes.Wishlist.homeWishlist()"><i class="icon-sort-by-attributes-alt"></i> Wishlist</a></li>
