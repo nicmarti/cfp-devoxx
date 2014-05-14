@@ -511,11 +511,35 @@ wishlist.recentEvents=All requests
 wishlist.requestToTalk.title=Send an invitation to talk to a speaker
 wishlist.requests.track=Track requests for speakers
 wishlist.createRequest=Create a new request
-wishlist.create=Send this request by email
-wishlist.history=History for this request
-wishlistMessage=Message for speaker
-wishlistSpeakerEmail=Speaker''s email
-wishlistSpeakerName=Speaker full name
+wishlist.editRequest=Edit and update a request
+wishlist.sendEmail=Send the message to the speaker
+wishlist.save=Save this request
+wishlist.history=History
+
+wl_note=Private note and internal discussion
+wl_message=Message for speaker
+wl_speakerEmail=Speaker''s email
+wl_speakerName=Speaker full name
+wl_country=Speaker''s country
+wl_company=Company
+wl_travel=Travel & Lodging
+wl_trackCode=Track
+wl_statusCode=Current state
+wl_travel.checkbox=Yes, include T&L
+
+wl_suggested=Suggested
+wl_contactedUs=Speaker contacted us
+wl_discuss=Discussion
+wl_contactSpeaker=Contact speaker
+wl_contacted=Contacted
+wl_accepted=Speaker accepted
+wl_declined=Speaker declined
+wl_onhold=On hold
+wl_deleted=Deleted
+wl_unknown=Unknown
+
+wishlist.newWishlist=New wishlist
+
 contacted=Speaker has been contacted
 approved=Speaker has accepted
 declined=Speaker has declined
