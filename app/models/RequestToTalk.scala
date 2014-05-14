@@ -74,8 +74,8 @@ object RequestToTalk {
 
   val newRequestToTalkForm = Form(mapping(
     "id" -> optional(text)
-    , "wl_note" -> nonEmptyText(maxLength = 3500)
-    , "wl_message" -> nonEmptyText(maxLength = 3500)
+    , "wl_note" -> text(maxLength = 3500)
+    , "wl_message" ->text(maxLength = 3500)
     , "wl_speakerEmail" -> email
     , "wl_speakerName" -> nonEmptyText
     , "wl_company" -> text

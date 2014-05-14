@@ -189,10 +189,9 @@ GET           /devoxxfr2014/talksOnParleys                           controllers
 # Wishlist
 GET           /cfpadmin/wishlist/home                                controllers.Wishlist.homeWishlist()
 GET           /cfpadmin/wishlist/new                                 controllers.Wishlist.newRequestToTalk()
-POST          /cfpadmin/wishlist/saveNew                             controllers.Wishlist.saveNewRequestToTalk()
+POST          /cfpadmin/wishlist/saveNew                             controllers.Wishlist.saveRequestToTalk()
 
 GET           /cfpadmin/wishlist/edit/:requestId                     controllers.Wishlist.edit(requestId:String)
-POST          /cfpadmin/wishlist/saveEdit                            controllers.Wishlist.saveEdit(requestId:String)
 
 GET           /cfpadmin/wishlist/delete/:requestId                   controllers.Wishlist.deleteRequest(requestId:String)
 GET           /cfpadmin/wishlist/approve/:requestId                  controllers.Wishlist.speakerApproveRequest(requestId:String)

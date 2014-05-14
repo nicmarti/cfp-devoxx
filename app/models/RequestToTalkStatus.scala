@@ -34,6 +34,8 @@ import org.joda.time.{DateTime, Instant}
  */
 case class RequestToTalkStatus(code: String)
 
+case class RequestHistory(author:String, statusCode:String, date:DateTime)
+
 object RequestToTalkStatus {
 
   implicit val rttFormat = Json.format[RequestToTalkStatus]
@@ -52,7 +54,7 @@ object RequestToTalkStatus {
 
   val all = List(SUGGESTED, CONTACTED_US, DISCUSS, CONTACT_SPEAKER, CONTACTED, ACCEPTED, DECLINED, ON_HOLD, UNKNOWN, DELETED)
 
-    val allAsIdsAndLabels = all.map(a=>(a.code,"wl_"+a.code)).toSeq.sorted
+    val allAsIdsAndLabels = all.map(a=>(a.code,"wl_"+a.code)).toSeq
 
   val allAsCode = all.map(_.code)
 
@@ -81,7 +83,7 @@ object RequestToTalkStatus {
       // Store status
       tx.hset("RequestsToTalk:ById" ,requestId, statusCode)
       // Save a timestamp
-      tx.lpush("RequestsToTalk:History:" + requestId, authorName + "|" + statusCode + "|" + new DateTime().toString("EEE dd/MM/YY HH:mm:SS"))
+      tx.lpush("RequestsToTalk:History:" + requestId, authorName + "|" + statusCode + "|" + new Instant().toString)
       // trim to 100 last elements
       tx.ltrim("RequestsToTalk:History:" + requestId, 0, 100)
       tx.exec()
@@ -96,12 +98,20 @@ object RequestToTalkStatus {
       }.getOrElse(RequestToTalkStatus.UNKNOWN)
   }
 
-  def history(requestId:String):List[(String, String, String)]=Redis.pool.withClient{
+  def history(requestId:String):List[RequestHistory]=Redis.pool.withClient{
     client=>
       client.lrange("RequestsToTalk:History:"+requestId, 0, 100).map{token:String=>
         val toReturn=token.split("\\|")
-        (toReturn(0), toReturn(1), toReturn(2))
+        RequestHistory(toReturn(0), toReturn(1), Instant.parse(toReturn(2)).toDateTime)
       }
+  }
+
+  def lastEvent(requestId:String):Option[RequestHistory]=Redis.pool.withClient{
+    client=>
+      client.lrange("RequestsToTalk:History:"+requestId, 0, 1).map{token:String=>
+        val toReturn=token.split("\\|")
+        RequestHistory(toReturn(0), toReturn(1), Instant.parse(toReturn(2)).toDateTime)
+      }.headOption
   }
 
 }
