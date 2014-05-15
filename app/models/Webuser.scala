@@ -221,7 +221,7 @@ object Webuser {
     allSpeakersAsOption.+:(DEFAULT_LABEL) // sort by name
   }
 
-  def allCFPAdmin(): List[Webuser] = Redis.pool.withClient {
+  def allCFPWebusers(): List[Webuser] = Redis.pool.withClient {
     client =>
       val uuids = client.smembers("Webuser:cfp").toList
       client.hmget("Webuser", uuids).flatMap {

@@ -5,12 +5,12 @@
     <div class="col-sm-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3><i class="icon-user-md"></i> Configure track leader</h3>
+                <h3><i class="icon-list"></i> Select another user to compare with:</h3>
             </div>
 
             <div class="panel-body">
-    @webusers.sortBy(_.firstName).map{webuser=>
-        <p>@webuser.cleanName</p>
+    @webusers.filterNot(_.uuid==SecureCFPController.getCurrentUser(req).get.uuid).sortBy(_.firstName).map{webuser=>
+        <p><a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(Some(webuser.uuid))">@webuser.cleanName</a></p>
     }
             </div>
         </div>
