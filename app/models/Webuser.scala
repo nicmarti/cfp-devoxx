@@ -120,7 +120,7 @@ object Webuser {
   }
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
-    client =>
+    implicit client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       Proposal.allMyDraftProposals(cleanWebuser.uuid).foreach {
         proposal =>
@@ -138,6 +138,8 @@ object Webuser {
       tx.srem("Webuser:cfp",cleanWebuser.uuid)
       tx.srem("Webuser:admin",cleanWebuser.uuid)
       tx.exec()
+
+      TrackLeader.deleteTrackLeader(cleanWebuser.uuid)
 
       Cache.remove(s"web:email:${cleanWebuser.email}")
       Cache.remove(s"Webuser:cfp:${cleanWebuser.uuid}")
