@@ -39,44 +39,72 @@ class WishlistSpecs extends PlaySpecification {
     , "redis.port" -> "6364"
   )
 
-  val appWithTestRedis = FakeApplication(additionalConfiguration = redisTestServer)
+  val appWithTestRedis = () => FakeApplication(additionalConfiguration = redisTestServer)
 
-  "create a RequestToTalk" in new WithApplication(appWithTestRedis) {
+    "A RequestToTalk" should {
 
-    val testId = Some(RandomStringUtils.randomAlphabetic(4))
-    RequestToTalk.findById(testId.get) must beNone
+      "be created and deleted" in new WithApplication(app = appWithTestRedis()) {
 
-    val requestToTalk = RequestToTalk.validateRequestToTalk(testId,"testeur","message", "speakerEmail", "speakerName")
+        val testId = Some(RandomStringUtils.randomAlphabetic(4))
+        RequestToTalk.findById(testId.get) must beNone
 
-    RequestToTalk.save(requestToTalk)
-    RequestToTalk.findById(testId.get) must beSome[RequestToTalk]
+        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "note", "message", Some("speakerEmail"), "speakerName", "company", "java", false, "France", RequestToTalkStatus.UNKNOWN.code)
 
-    // Delete
-    RequestToTalk.delete(testId.get)
-    RequestToTalk.findById(testId.get) must beNone
-  }
+        RequestToTalk.save("test", requestToTalk)
+        RequestToTalk.findById(testId.get) must beSome[RequestToTalk]
 
-  "a new RequestToTalk status" in new WithApplication(appWithTestRedis) {
+        // Delete
+        RequestToTalk.delete("test", testId.get)
+        RequestToTalk.findById(testId.get) must beNone
+      }
 
-    val testId = Some(RandomStringUtils.randomAlphabetic(4))
-    RequestToTalk.findById(testId.get) must beNone
+      "have a requestToTalk status" in new WithApplication(app = appWithTestRedis()) {
 
-    val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "testeur", "message", "speakerEmail", "speakerName")
-    RequestToTalk.save(requestToTalk)
-    val maybeRequest = RequestToTalkStatus.findCurrentStatus(testId.get)
+        val testId = Some(RandomStringUtils.randomAlphabetic(4))
+        RequestToTalk.findById(testId.get) must beNone
 
-    maybeRequest.code must beEqualTo(RequestToTalkStatus.CONTACTED.code)
+        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "note", "message", Some("speakerEmail"), "speakerName", "company", "java", false, "France", RequestToTalkStatus.CONTACTED.code)
+
+        RequestToTalk.save("test", requestToTalk)
+        val maybeRequest = RequestToTalkStatus.findCurrentStatus(testId.get)
+
+        maybeRequest.code must beEqualTo(RequestToTalkStatus.CONTACTED.code)
 
 
-    RequestToTalkStatus.setApproved(testId.get)
-    RequestToTalkStatus.findCurrentStatus(testId.get).code must beEqualTo(RequestToTalkStatus.APPROVED.code)
+        RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.ACCEPTED.code)
+        RequestToTalkStatus.findCurrentStatus(testId.get).code must beEqualTo(RequestToTalkStatus.ACCEPTED.code)
 
-    RequestToTalkStatus.setDeclined(testId.get)
-    RequestToTalkStatus.findCurrentStatus(testId.get).code must beEqualTo(RequestToTalkStatus.DECLINED.code)
+        RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.DECLINED.code)
+        RequestToTalkStatus.findCurrentStatus(testId.get).code must beEqualTo(RequestToTalkStatus.DECLINED.code)
 
-    RequestToTalk.delete(testId.get)
-    RequestToTalkStatus.findCurrentStatus(testId.get).code must beEqualTo(RequestToTalkStatus.UNKNOWN.code)
+        RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.UNKNOWN.code)
+        RequestToTalkStatus.findCurrentStatus(testId.get).code must beEqualTo(RequestToTalkStatus.UNKNOWN.code)
 
-  }
+      }
+
+      "returns a valid history" in new WithApplication(app = appWithTestRedis()) {
+
+        val testId = Some(RandomStringUtils.randomAlphabetic(4))
+        RequestToTalk.findById(testId.get) must beNone
+
+        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "note2", "message2", Some("speakerEmail"), "speakerName", "company", "java", false, "France", RequestToTalkStatus.CONTACTED.code)
+
+        RequestToTalk.save("test", requestToTalk)
+
+        RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.ACCEPTED.code)
+        RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.DECLINED.code)
+        RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.UNKNOWN.code)
+        RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.ACCEPTED.code)
+
+        val requestHistoryList = RequestToTalkStatus.history(testId.get)
+
+        // Assert
+        requestHistoryList must not have size(0)
+        requestHistoryList must have size 5
+        requestHistoryList.head.statusCode mustEqual RequestToTalkStatus.ACCEPTED.code
+        requestHistoryList.last.statusCode mustEqual RequestToTalkStatus.CONTACTED.code
+
+      }
+    }
 }
 

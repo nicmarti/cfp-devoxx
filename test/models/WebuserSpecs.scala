@@ -34,10 +34,12 @@ class WebuserSpecs extends PlaySpecification {
 
   val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364")
 
-  val appWithTestRedis = FakeApplication(additionalConfiguration = testRedis)
+  // To avoid Play Cache Exception during tests, check this
+  // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
+  val appWithTestRedis = () => FakeApplication(additionalConfiguration = testRedis)
 
   "Webuser" should {
-    "create and delete a user" in new WithApplication(appWithTestRedis) {
+    "create and delete a user" in new WithApplication(app = appWithTestRedis()) {
 
       val email = RandomStringUtils.randomAlphabetic(10)
       val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
@@ -58,21 +60,33 @@ class WebuserSpecs extends PlaySpecification {
       Webuser.isEmailRegistered(email) must beTrue
       Webuser.isEmailRegistered(email) must beTrue
 
-      Webuser.allSpeakers.contains(tested.get) must beTrue
-      Webuser.allSpeakers.contains(tested.get) must beTrue
-
       Webuser.delete(tested.get)
 
       Webuser.findByEmail(email) must beNone // cache should be empty
       Webuser.findByEmail(email) must beNone // and still not there
 
-      Webuser.allSpeakers.contains(tested.get) must beFalse
-      Webuser.allSpeakers.contains(tested.get) must beFalse
-
-      Webuser.isSpeaker(webuser.uuid) must beFalse
-      Webuser.isSpeaker(webuser.uuid) must beFalse
-
       Webuser.doesNotExist(webuser.uuid) must beTrue
+      Webuser.doesNotExist(webuser.uuid) must beTrue
+    }
+
+    "create and delete a use r" in new WithApplication(app = appWithTestRedis()) {
+
+      val email = RandomStringUtils.randomAlphabetic(10)
+      val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
+      Webuser.doesNotExist(webuser.uuid) must beTrue
+      Webuser.saveAndValidateWebuser(webuser)
+
+      val tested = Webuser.findByEmail(email)
+
+      tested must beSome[Webuser]
+      // Assert that the Cache behaves as expected
+      Webuser.isSpeaker(webuser.uuid) must beTrue // not cached
+      Webuser.allSpeakers.contains(tested.get) must beTrue
+
+      Webuser.delete(tested.get)
+
+      Webuser.allSpeakers.contains(tested.get) must beFalse
+      Webuser.isSpeaker(webuser.uuid) must beFalse
       Webuser.doesNotExist(webuser.uuid) must beTrue
     }
   }
