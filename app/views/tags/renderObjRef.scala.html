@@ -5,6 +5,8 @@
 }
 @if(models.RequestToTalk.IDRegExp findFirstIn(objRef) isDefined){
 <a href="@routes.Wishlist.edit(objRef)" class="btn btn-sm btn-primary"><i class="icon-sort-by-attributes-alt"></i> @objRef</a>
-}else{
-   <!-- @objRef //-->
 }
+@if(org.apache.commons.lang3.StringUtils.trimToEmpty(objRef).length==40) {
+<a href="@routes.CFPAdmin.showSpeakerAndTalks(objRef)" class="btn btn-sm btn-primary"><i class="icon-user"></i></a>
+}
+
