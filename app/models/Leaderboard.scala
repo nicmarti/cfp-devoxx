@@ -93,7 +93,7 @@ object Leaderboard {
           tx.hset("Leaderboard:totalAcceptedByType", propType.id, total.toString)
       }
 
-      val allWebusers= Webuser.allCFPAdmin().toSet
+      val allWebusers= Webuser.allCFPWebusers().toSet
       val totalApprovedSpeakers = ApprovedProposal.allApprovedSpeakerIDs().diff(allWebusers.map(_.uuid)).size
       tx.set("Leaderboard:totalApprovedSpeakers", totalApprovedSpeakers.toString)
 
@@ -103,11 +103,11 @@ object Leaderboard {
       val totalWithOneProposal = Proposal.totalWithOneProposal()
       tx.set("Leaderboard:totalWithOneProposal", totalWithOneProposal.toString)
 
-    val allCFPAdmin= Webuser.allCFPAdmin().map(w=>w.uuid).toSet
+    val allCFPWebusers= Webuser.allCFPWebusers().map(w=>w.uuid).toSet
     val allApprovedIDs= ApprovedProposal.allApprovedSpeakerIDs()
     val allRejectedIDs= ApprovedProposal.allRefusedSpeakerIDs()
 
-    val refusedSpeakers = allRejectedIDs.diff(allCFPAdmin).diff(allApprovedIDs)
+    val refusedSpeakers = allRejectedIDs.diff(allCFPWebusers).diff(allApprovedIDs)
 
 //    val allSpeakers = Speaker.allSpeakers().filter(s=>refusedSpeakers.contains(s.uuid))
 //    println("all refused speakers "+allSpeakers.filter(_.lang==Some("en")).size)

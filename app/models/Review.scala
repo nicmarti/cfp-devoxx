@@ -181,7 +181,7 @@ object Review {
 
   def totalReviewedByCFPuser(): List[(String, Int)] = Redis.pool.withClient {
     implicit client =>
-      Webuser.allCFPAdmin().map {
+      Webuser.allCFPWebusers().map {
         webuser: Webuser =>
           val uuid = webuser.uuid
           val total = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid", "Proposals:ByState:"+ProposalState.DELETED.code,  "Proposals:ByState:"+ProposalState.DRAFT.code)

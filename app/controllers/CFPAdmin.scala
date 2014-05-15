@@ -373,7 +373,7 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       maybeReviewer match {
         case None =>
-          Ok(views.html.CFPAdmin.showCFPUsers(Webuser.allCFPAdmin()))
+          Ok(views.html.CFPAdmin.selectAnotherWebuser(Webuser.allCFPWebusers()))
         case Some(otherReviewer) =>
           val diffProposalIDs = Review.diffReviewBetween(otherReviewer, uuid)
           Ok(views.html.CFPAdmin.showProposalsNotReviewedCompareTo(diffProposalIDs, otherReviewer))
@@ -473,6 +473,11 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = Webuser.allSpeakers.sortBy(_.cleanName)
       Ok(views.html.CFPAdmin.allWebusers(allSpeakers))
+  }
+
+  def allCFPWebusers()= SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.CFPAdmin.showCFPUsers( Webuser.allCFPWebusers()))
   }
 
   val editSpeakerForm = Form(
