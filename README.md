@@ -9,7 +9,7 @@ Original author: Nicolas Martignole @nmartignole
 French
 ------
 
-Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis 2.6.
+Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis 2.8.
 
 J'ai écris cette application en prenant soin de rester simple, pragmatique et productif.
 
@@ -26,8 +26,8 @@ J'ai écris cette application en prenant soin de rester simple, pragmatique et p
 
 L'installation d'un environnement de dév est simple et s'effectue en quelques étapes :
 
-- installer Play 2.2.x
-- installer Redis 2.6.16
+- installer Play 2.2.1
+- installer Redis 2.8.4
 - configurer son serveur Redis pour être "slave" de la prod
 - récupérer le code source du projet CFP Devoxx France de Bitbucket
 - lancer et commencer à contribuer
@@ -40,11 +40,11 @@ Pré-requis : Java 7 fortement conseillé pour des raisons de performances.
 - Décompressez dans un répertoire, ajouter le répertoire à votre PATH
 - Placez-vous dans un nouveau répertoire et vérifiez que Play2 est bien installé avec la commande "play"
 
-## Installation de Redis 2.6.16
+## Installation de Redis  2.8.4
 
 Pré-requis : les utilitaires make, gcc correctement installés via XCode ou brew.
 
-- Téléchargez http://download.redis.io/releases/redis-2.6.16.tar.gz
+- Téléchargez http://download.redis.io/releases/redis-2.8.4.tar.gz
 - Décompressez, et suivez les inscrutions du fichier README, pour compiler Redis
 - Effectuez un "make install" en tant que root afin d'installer Redis
 
@@ -68,7 +68,6 @@ Pour arrêter proprement le serveur, il suffit d'envoyer la commande SHUTDOWN au
 
     redis-cli -p 6363 SHUTDOWN
 
-
 Vous pouvez vous amuser avec votre serveur Redis en local avec l'utilitaire "redis-cli"
 
 Celui-ci permet d'effectuer des commandes, je vous invite à suivre le petit tutorial http://try.redis.io/ pour mieux comprendre.
@@ -88,9 +87,8 @@ Voici ce qu'il vous faut
 - un compte [Mailjet](http://www.mailjet.fr) pour l'envoi SMTP des emails transactionnels
 - un compte [Github](http://www.github.com) pour pouvoir créer une clé API pour l'authentification OpenID. Voir [https://github.com/settings/applications](cette page)
 - créer une application via votre compte Google sur [https://cloud.google.com/console#/project](https://cloud.google.com/console#/project) . Configurez une URL pour le développement, comme http://localhost:9000/ et une URL de prod comme http://cfp.devoxx.fr/
-- un serveur Redis 2.6.x protégé par un mot de passe très long
+- un serveur Redis protégé par un mot de passe très long
 - un serveur ElasticSearch
-- un compte Trello développeur
 
 Voici ce que vous devez configurer :
 
@@ -112,7 +110,11 @@ Au moment de la mise à jour de cette documentation, la partie Trello n'est pas 
 - Nicolas Martignole [@nmartignole](http://www.twitter.com/nmartignole)
 - Gabriel Kastenbaum [@lambdadevfr](http://www.twitter.com/lambdadevfr)
 
+- Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou) pour la conférence Scala.IO
+- Frédéric Camblor [@fcamblor](http://www.twitter.com/fcamblor) pour la conférence BDX.IO
+
 # Hébergement
 
 Le CFP de Devoxx France est hébergé sur la plateforme [http://www.clever-cloud.com](Clever-Cloud)
+
 
