@@ -60,17 +60,18 @@ object Webuser {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
-      Cache.remove("web:email:" + webuser.email)
-      Cache.remove("web:uuid:" + webuser.uuid)
+
+      Cache.remove("web:email:" + cleanWebuser.email)
+      Cache.remove("web:uuid:" + cleanWebuser.uuid)
 
       val tx = client.multi()
-      tx.hset("Webuser", webuser.uuid, json)
-      tx.set("Webuser:UUID:" + webuser.uuid, webuser.email)
-      tx.set("Webuser:Email:" + webuser.email, webuser.uuid)
-      tx.sadd("Webuser:" + webuser.profile, webuser.uuid)
-      tx.hdel("Webuser:New", webuser.email)
+      tx.hset("Webuser", cleanWebuser.uuid, json)
+      tx.set("Webuser:UUID:" + cleanWebuser.uuid, webuser.email)
+      tx.set("Webuser:Email:" + cleanWebuser.email, webuser.uuid)
+      tx.sadd("Webuser:" + cleanWebuser.profile, webuser.uuid)
+      tx.hdel("Webuser:New", cleanWebuser.email)
       tx.exec()
-      webuser.uuid
+      cleanWebuser.uuid
   }
 
   def isEmailRegistered(email:String):Boolean=Redis.pool.withClient{
@@ -79,12 +80,14 @@ object Webuser {
   }
 
   def findByEmail(email: String): Option[Webuser] = email match {
+    case null => None
     case "" => None
     case validEmail => {
-      Cache.getOrElse[Option[Webuser]]("web:email:" + email, 3600) {
+      val _email = validEmail.toLowerCase.trim
+      Cache.getOrElse[Option[Webuser]]("web:email:" + _email, 3600) {
         Redis.pool.withClient {
           client =>
-            client.get("Webuser:Email:" + validEmail.toLowerCase.trim).flatMap {
+            client.get("Webuser:Email:" + _email).flatMap {
               uuid: String =>
                 client.hget("Webuser", uuid).map {
                   json: String =>
@@ -118,22 +121,29 @@ object Webuser {
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
     client =>
-      Proposal.allMyDraftProposals(webuser.uuid).foreach {
+      val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
+      Proposal.allMyDraftProposals(cleanWebuser.uuid).foreach {
         proposal =>
           play.Logger.of("models.Webuser").debug(s"Deleting proposal ${proposal}")
           Proposal.destroy(proposal)
       }
 
       val tx = client.multi()
-      tx.hdel("Webuser", webuser.uuid)
-      tx.del("Webuser:UUID:" + webuser.uuid)
-      tx.del("Webuser:Email:" + webuser.email)
-      tx.srem("Webuser:" + webuser.profile, webuser.email)
-      tx.hdel("Webuser:New", webuser.email)
+      tx.hdel("Webuser", cleanWebuser.uuid)
+      tx.del("Webuser:UUID:" + cleanWebuser.uuid)
+      tx.del("Webuser:Email:" + cleanWebuser.email)
+      tx.srem("Webuser:" + cleanWebuser.profile, cleanWebuser.email)
+      tx.hdel("Webuser:New", cleanWebuser.email)
+      tx.srem("Webuser:speaker",cleanWebuser.uuid)
+      tx.srem("Webuser:cfp",cleanWebuser.uuid)
+      tx.srem("Webuser:admin",cleanWebuser.uuid)
       tx.exec()
 
-      Cache.remove("web:uuid:" + webuser.uuid)
-      Cache.remove("web:email:" + webuser.email)
+      Cache.remove(s"web:email:${cleanWebuser.email}")
+      Cache.remove(s"Webuser:cfp:${cleanWebuser.uuid}")
+      Cache.remove(s"Webuser:admin:${cleanWebuser.uuid}")
+      Cache.remove(s"Webuser:speaker:${cleanWebuser.uuid}")
+      Cache.remove(s"web:uuid:${cleanWebuser.uuid}")
   }
 
   def changePassword(webuser: Webuser): String = Redis.pool.withClient {
@@ -158,12 +168,12 @@ object Webuser {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.stringify(Json.toJson(cleanWebuser))
-      client.hset("Webuser", webuser.uuid, json)
-      Cache.remove("web:uuid:" + webuser.uuid)
-      Cache.remove("web:email:" + webuser.email)
+      client.hset("Webuser", cleanWebuser.uuid, json)
+      Cache.remove("web:uuid:" + cleanWebuser.uuid)
+      Cache.remove("web:email:" + cleanWebuser.email)
 
-      if (isSpeaker(webuser.uuid)) {
-        Speaker.updateName(webuser.uuid, webuser.firstName, webuser.lastName)
+      if (isSpeaker(cleanWebuser.uuid)) {
+        Speaker.updateName(cleanWebuser.uuid, cleanWebuser.firstName, cleanWebuser.lastName)
       }
   }
 
@@ -242,4 +252,3 @@ object Webuser {
       !client.exists("Webuser:UUID:" + uuid)
   }
 }
-
