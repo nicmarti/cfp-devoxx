@@ -3,13 +3,11 @@ package controllers
 import models._
 import play.api.data._
 import play.api.data.Forms._
-import library.{Redis, ZapActor}
+import library.Redis
 import library.search._
 import org.joda.time.Instant
 import play.api.Play
-import library.search.DoIndexSpeaker
 import library.search.DoIndexProposal
-import library.DraftReminder
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -30,37 +28,41 @@ object Backoffice extends SecureCFPController {
 
   // Add or remove the specified user from "cfp" security group
   def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-      if (Webuser.hasAccessToCFP(uuidSpeaker)) {
-        Event.storeEvent(Event("", uuidSpeaker, "removed user from CFP group"))
-        Webuser.removeFromCFPAdmin(uuidSpeaker)
-      } else {
-        Webuser.addToCFPAdmin(uuidSpeaker)
-        Event.storeEvent(Event("", uuidSpeaker, "added user to CFP group"))
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Webuser.findByUUID(uuidSpeaker).map {
+        webuser =>
+          if (Webuser.hasAccessToCFP(uuidSpeaker)) {
+            Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"removed ${webuser.cleanName} from CFP group"))
+            Webuser.removeFromCFPAdmin(uuidSpeaker)
+          } else {
+            Webuser.addToCFPAdmin(uuidSpeaker)
+            Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"added ${webuser.cleanName} to CFP group"))
+          }
+          Redirect(routes.CFPAdmin.allWebusers())
+      }.getOrElse {
+        NotFound("Webuser not found")
       }
-      Redirect(routes.CFPAdmin.allWebusers())
   }
 
   // Authenticate on CFP on behalf of specified user.
   def authenticateAs(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
   }
 
   def authenticateAndCreateTalk(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Redirect(routes.CallForPaper.newProposal).withSession("uuid" -> uuidSpeaker)
   }
 
-
   def allProposals() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val proposals = Proposal.allProposals().sortBy(_.state.code)
       Ok(views.html.Backoffice.allProposals(proposals))
   }
 
   def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
       if (state == ProposalState.ACCEPTED.code) {
         Proposal.findById(proposalId).map {
@@ -82,7 +84,7 @@ object Backoffice extends SecureCFPController {
   val formSecu = Form("secu" -> nonEmptyText())
 
   def deleteSpeaker(speakerUUIDToDelete: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       if (Webuser.isMember(speakerUUIDToDelete, "cfp") || Webuser.isMember(speakerUUIDToDelete, "admin")) {
         Redirect(routes.CFPAdmin.index()).flashing("error" -> s"We cannot delete CFP admin user...")
@@ -102,7 +104,7 @@ object Backoffice extends SecureCFPController {
   }
 
   def doIndexElasticSearch() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       ElasticSearchActor.masterActor ! DoIndexAllSpeakers()
       ElasticSearchActor.masterActor ! DoIndexAllProposals()
       ElasticSearchActor.masterActor ! DoIndexAllHitViews()
@@ -114,7 +116,7 @@ object Backoffice extends SecureCFPController {
 
   // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
   def cleanUpVotesIfUserWasDeleted = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.allProposalIDs.foreach {
         proposalID: String =>
           Review.allVotesFor(proposalID).foreach {
@@ -130,7 +132,7 @@ object Backoffice extends SecureCFPController {
   }
 
   def deleteVotesForPropal(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Review.allVotesFor(proposalId).foreach {
         case (reviewerUUID, score) => {
           play.Logger.of("application.Backoffice").info(s"Deleting vote on $proposalId by $reviewerUUID of score $score")
@@ -141,7 +143,7 @@ object Backoffice extends SecureCFPController {
   }
 
   def submittedByDate() = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       Redis.pool.withClient {
         client =>
@@ -161,5 +163,3 @@ object Backoffice extends SecureCFPController {
   }
 
 }
-
-
