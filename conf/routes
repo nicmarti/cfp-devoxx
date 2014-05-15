@@ -96,12 +96,6 @@ GET           /admin/authenticateAndCreate/:uuid                     controllers
 
 GET           /admin/elastic                                         controllers.Backoffice.doIndexElasticSearch()
 
-GET           /programbuilder                                        controllers.ProgramBuilder.index
-GET           /programbuilder/listCalendars                          controllers.ProgramBuilder.listCalendars()
-GET           /programbuilder/createCalendar                         controllers.ProgramBuilder.prepareNewCalendar()
-POST          /programbuilder/createCalendar                         controllers.ProgramBuilder.createCalendar()
-GET           /programbuilder/schedule/:confType                     controllers.ProgramBuilder.schedule(confType:String)
-GET           /programbuilder/deleteCalendars                        controllers.ProgramBuilder.deleteCalendar(calendarId:String)
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                              controllers.ApproveOrRefuse.doApprove(proposalId:String)
@@ -109,8 +103,8 @@ GET           /ar/refuse/:proposalId                                 controllers
 GET           /ar/cancelPreaccept/:proposalId                        controllers.ApproveOrRefuse.cancelApprove(proposalId:String)
 GET           /ar/cancelPrerefuse/:proposalId                        controllers.ApproveOrRefuse.cancelRefuse(proposalId:String)
 
-GET           /programbuilder/allApproved/:talkType                  controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
-GET           /acceptReject/notifyApprove/:talkType                  controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
+GET           /ar/allApproved/:talkType                              controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
+GET           /ar/notifyApprove/:talkType                            controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
 GET           /ar/showAcceptTerms                                    controllers.ApproveOrRefuse.showAcceptTerms()
 GET           /ar/accept                                             controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET           /ar/acceptOrRefuseTalks                                controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
