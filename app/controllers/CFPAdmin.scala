@@ -475,9 +475,21 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allWebusers(allSpeakers))
   }
 
+
+  import play.api.data.Form
+  import play.api.data.Forms._
+  import play.api.data.format.Formats._
+
   def allCFPWebusers()= SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.CFPAdmin.showCFPUsers( Webuser.allCFPWebusers()))
+      Ok(views.html.CFPAdmin.showCFPUsers(TrackLeader.trackIdsAndUUIDs, TrackLeader.allTrackLeaderAsSeq()))
+  }
+
+  def updateTrackLeaders()=SecuredAction(IsMemberOf("cfp")){
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      Ok("Saved")
+      //Redirect(routes.CFPAdmin.allCFPWebusers)
   }
 
   val editSpeakerForm = Form(

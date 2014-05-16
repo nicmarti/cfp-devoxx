@@ -50,9 +50,15 @@ object Track {
 
   val all = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHODEVOPS, FUTURE, LANG, CLOUD, WEB)
 
-  val allAsIdsAndLabels = all.map(a=>(a.id,a.label)).toSeq.sorted
+  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).toSeq.sorted
 
   val allIDs=all.map(_.id)
+
+  // Compute diff between two Set of Track then returns a ready-to-use list of id/label
+  def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
+    val diffSet = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHODEVOPS, FUTURE, LANG, CLOUD, WEB).toSet.diff(otherTracks)
+    diffSet.map(a=>(a.id,a.label)).toSeq.sorted
+  }
 
   def parse(id:String):Track={
     id match {

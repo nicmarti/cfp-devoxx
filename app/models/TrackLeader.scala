@@ -24,6 +24,8 @@
 package models
 
 import library.{Dress, Redis}
+import play.api.data.Form
+import play.api.data.Forms._
 
 /**
  * A track leader is the association between a user and a track.
@@ -35,6 +37,27 @@ import library.{Dress, Redis}
 case class TrackLeader(webuser:Webuser, track:Track)
 
 object TrackLeader{
+
+  def applyTrackLeader(listOfWebuserUUIDsAndAssociatedTrack:List[String]): List[TrackLeader] = {
+    listOfWebuserUUIDsAndAssociatedTrack.map{
+    webuserUUIDAndTrackId:String=>
+      val webuserUUID = webuserUUIDAndTrackId.split("\\|").head
+      val trackId = webuserUUIDAndTrackId.split("\\|").last
+      TrackLeader(Webuser.findByUUID(webuserUUID).get, Track.parse(trackId))
+    }
+
+  }
+
+  def unapplyTrackLeader(fullList: List[TrackLeader]): Option[List[String]] = {
+    val list = fullList.map(tl => tl.webuser.uuid+"|"+tl.track.id)
+    Option(list)
+  }
+
+  val trackIdsAndUUIDs=Form(
+    mapping(
+      "trackAndUUIDs"->list(text)
+    )(TrackLeader.applyTrackLeader)(TrackLeader.unapplyTrackLeader)
+  )
 
   def assign(webuser:Webuser, track:Track){
     if(Webuser.hasAccessToCFP(webuser.uuid)){
@@ -62,9 +85,34 @@ object TrackLeader{
     }
   }
 
+  def isTrackLeader(webuser:Webuser, track:Track):Boolean=Redis.pool.withClient{
+    client=>
+      client.sismember(s"TrackLeader:${webuser.uuid}", track.id)
+  }
+
   def deleteTrackLeader(webuserUUID:String)(implicit client:Dress.Wrap)={
     client.del(s"TrackLeader:$webuserUUID")
   }
+
+    /* Required for helper.options */
+
+ def allTrackLeaderAsSeq():Seq[(String,String)]={
+    val cfpUsers =  Webuser.allCFPWebusers().sortBy(_.cleanName)
+      val cfpUsersAndTracks = cfpUsers.toSeq.flatMap{
+        w:Webuser=>
+          val maybeTracks = TrackLeader.getTracks(w)
+          maybeTracks match{
+            case s if s.isEmpty => Seq((w.uuid,w.cleanName))
+            case other => {
+              other.map{t=>
+                (w.uuid+"|"+t.id, "* "+w.cleanName)
+              }.toSeq
+            }
+          }
+      }
+    Seq(("","--- Select ---"))++cfpUsersAndTracks
+  }
+
 
 
 }
