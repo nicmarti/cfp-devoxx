@@ -1,4 +1,4 @@
-@(myForm:Form[List[TrackLeader]], allTrackLeaders:Seq[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@( allTrackLeaders:Seq[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -25,13 +25,20 @@
                         <tr>
                             <td>@Messages(track.label)</td>
                             <td>
-@helper.select(field = myForm("trackAndUUIDs"), allTrackLeaders)
+                            <div class="input">
+                                <select id="@track.id" name="@track.id">
+                                        <option value="no_track_lead">--- No Track Leader ---</option>
+                                         @allTrackLeaders.map { uuidAndName =>
+                                           <option @if(TrackLeader.isTrackLeader(track.id, uuidAndName._1)){ selected } value="@uuidAndName._1"> @uuidAndName._2 </option>
+                                         }
+                                </select>
+                            </div>
                             </td>
                         </tr>
                         }
                 </tbody>
             </table>
-<button value="save" type="submit" class="btn btn-success"><i class="icon-save"></i> Save</button>
+<button value="save" type="submit" class="btn btn-success"><i class="icon-save"></i> Save the full list</button>
 }
 
             </div>
