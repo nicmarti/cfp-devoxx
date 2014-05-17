@@ -47,18 +47,20 @@ class TrackLeaderSpecs extends PlaySpecification {
       val email = RandomStringUtils.randomAlphabetic(9)
       val testWebuser = Webuser.createSpeaker(email, RandomStringUtils.randomAlphabetic(4), RandomStringUtils.randomAlphabetic(2))
       Webuser.saveAndValidateWebuser(testWebuser)
+
       Webuser.addToCFPAdmin(testWebuser.uuid)
 
       // When
-      TrackLeader.assign(testWebuser, Track.CLOUD)
+      TrackLeader.assign(Track.CLOUD.id, testWebuser.uuid)
 
       // Then the webuser is assigned to the Track
-      TrackLeader.getTracks(testWebuser) must have size 1
-      TrackLeader.getTracks(testWebuser).head must beEqualTo(Track.CLOUD)
+      TrackLeader.isTrackLeader(Track.CLOUD.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(Track.JAVA.id, testWebuser.uuid) must beFalse
+
 
       Webuser.delete(testWebuser)
       // Check that we did a cleanup
-      TrackLeader.getTracks(testWebuser) must have size 0
+      TrackLeader.isTrackLeader(Track.CLOUD.id, testWebuser.uuid) must beFalse
     }
 
     "not associate a user to a Track if the user does not belong to CFP group" in new WithApplication(app = appWithTestRedis()) {
@@ -68,11 +70,12 @@ class TrackLeaderSpecs extends PlaySpecification {
       val testWebuser = Webuser.createSpeaker(email, RandomStringUtils.randomAlphabetic(2), RandomStringUtils.randomAlphabetic(4))
       Webuser.saveAndValidateWebuser(testWebuser)
 
-      // When
-      TrackLeader.assign(testWebuser, Track.JAVA)
 
-      // Then the webuser is assigned to the Track
-      TrackLeader.getTracks(testWebuser) must have size 0
+      // When
+      TrackLeader.assign(Track.CLOUD.id, testWebuser.uuid)
+
+      // Then the webuser is NOT assigned to the Track
+      TrackLeader.isTrackLeader(Track.JAVA.id, testWebuser.uuid) must beFalse
 
       Webuser.delete(testWebuser)
     }
@@ -86,16 +89,16 @@ class TrackLeaderSpecs extends PlaySpecification {
 
       // When
       Webuser.addToCFPAdmin(testWebuser.uuid)
-      TrackLeader.assign(testWebuser, Track.JAVA)
-      TrackLeader.unassign(testWebuser, Track.JAVA)
+      TrackLeader.assign(Track.STARTUP.id, testWebuser.uuid)
+      TrackLeader.unassign(Track.STARTUP.id, testWebuser.uuid)
 
       // Then
-      TrackLeader.getTracks(testWebuser) must have size 0
+      TrackLeader.isTrackLeader(Track.STARTUP.id, testWebuser.uuid) must beFalse
 
-       Webuser.delete(testWebuser)
+      Webuser.delete(testWebuser)
     }
 
-     "unassign a non-CFP webuser from a track" in new WithApplication(app = appWithTestRedis()) {
+    "unassign a non-CFP webuser from a track" in new WithApplication(app = appWithTestRedis()) {
 
       // Given
       val email = RandomStringUtils.randomAlphabetic(9)
@@ -103,13 +106,14 @@ class TrackLeaderSpecs extends PlaySpecification {
       Webuser.saveAndValidateWebuser(testWebuser)
 
       // When
-      TrackLeader.assign(testWebuser, Track.JAVA)
-      TrackLeader.unassign(testWebuser, Track.JAVA)
+      TrackLeader.assign(Track.STARTUP.id, testWebuser.uuid)
+      TrackLeader.unassign(Track.STARTUP.id, testWebuser.uuid)
+
 
       // Then
-      TrackLeader.getTracks(testWebuser) must have size 0
+      TrackLeader.isTrackLeader(Track.STARTUP.id, testWebuser.uuid) must beFalse
 
-        Webuser.delete(testWebuser)
+      Webuser.delete(testWebuser)
     }
 
     "assigns more than one Track to a Webuser" in new WithApplication(app = appWithTestRedis()) {
@@ -121,13 +125,16 @@ class TrackLeaderSpecs extends PlaySpecification {
 
       // When
       Webuser.addToCFPAdmin(testWebuser.uuid)
-      TrackLeader.assign(testWebuser, Track.JAVA)
-      TrackLeader.assign(testWebuser, Track.STARTUP)
+      TrackLeader.assign(Track.STARTUP.id, testWebuser.uuid)
+      TrackLeader.assign(Track.JAVA.id, testWebuser.uuid)
+
 
       // Then
-      TrackLeader.getTracks(testWebuser) must have size 2
+      TrackLeader.isTrackLeader(Track.STARTUP.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(Track.SSJ.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(Track.JAVA.id, testWebuser.uuid) must beTrue
 
-       Webuser.delete(testWebuser)
+      Webuser.delete(testWebuser)
     }
 
 

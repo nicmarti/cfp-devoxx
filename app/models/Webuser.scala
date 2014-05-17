@@ -139,7 +139,7 @@ object Webuser {
       tx.srem("Webuser:admin",cleanWebuser.uuid)
       tx.exec()
 
-      TrackLeader.deleteTrackLeader(cleanWebuser.uuid)
+      TrackLeader.deleteWebuser(cleanWebuser.uuid)
 
       Cache.remove(s"web:email:${cleanWebuser.email}")
       Cache.remove(s"Webuser:cfp:${cleanWebuser.uuid}")
@@ -240,6 +240,16 @@ object Webuser {
         js: String =>
           Json.parse(js).asOpt[Webuser]
       }
+  }
+
+    /* Required for helper.options */
+ def allCFPAdminUsers():Seq[(String,String)]={
+    val cfpUsers =  Webuser.allCFPWebusers().sortBy(_.cleanName)
+      val cfpUsersAndTracks = cfpUsers.toSeq.flatMap{
+        w:Webuser=>
+          Seq((w.uuid,w.cleanName))
+      }
+    cfpUsersAndTracks
   }
 
   def getEmailFromUUID(uuid: String): Option[String] = Redis.pool.withClient {
