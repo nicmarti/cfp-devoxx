@@ -94,6 +94,7 @@ GET           /admin/deleteAllVotes                                  controllers
 GET           /admin/submittedByDate                                 controllers.Backoffice.submittedByDate()
 
 GET           /admin/bootstrapAdminUser                              controllers.Backoffice.bootstrapAdminUser(uuid:String)
+GET           /admin/clearCaches                                     controllers.Backoffice.clearCaches()
 
 # Authenticate and admin as a regular user
 GET           /admin/authenticateAs/:uuid                            controllers.Backoffice.authenticateAs(uuid:String)
