@@ -8,6 +8,7 @@ import library.search._
 import org.joda.time.Instant
 import play.api.Play
 import library.search.DoIndexProposal
+import play.api.mvc.Action
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -59,6 +60,19 @@ object Backoffice extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val proposals = Proposal.allProposals().sortBy(_.state.code)
       Ok(views.html.Backoffice.allProposals(proposals))
+  }
+
+  // This endpoint is deliberately *not* secured in order to transform a user into an admin
+  // only if there isn't any admin in the application
+  def bootstrapAdminUser(uuid: String) = Action {
+    implicit request =>
+      if(Webuser.noBackofficeAdmin()) {
+        Webuser.addToBackofficeAdmin(uuid)
+        Webuser.addToCFPAdmin(uuid)
+        Redirect(routes.Application.index())
+      } else {
+        Redirect(routes.Application.index()).flashing("error" -> "Not Authorized !")
+      }
   }
 
   def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
