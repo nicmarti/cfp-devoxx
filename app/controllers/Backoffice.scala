@@ -8,6 +8,7 @@ import library.search._
 import org.joda.time.Instant
 import play.api.Play
 import library.search.DoIndexProposal
+import play.api.cache.{EhCachePlugin, Cache}
 import play.api.mvc.Action
 
 /**
@@ -73,6 +74,12 @@ object Backoffice extends SecureCFPController {
       } else {
         Redirect(routes.Application.index()).flashing("error" -> "Not Authorized !")
       }
+  }
+
+  def clearCaches() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Play.current.plugin[EhCachePlugin].foreach(p => p.manager.clearAll);
+      Ok(views.html.Backoffice.homeBackoffice())
   }
 
   def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
