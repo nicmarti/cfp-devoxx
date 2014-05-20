@@ -48,14 +48,32 @@ object Wishlist extends SecureCFPController {
       Ok(views.html.Wishlist.newRequestToTalk(RequestToTalk.newRequestToTalkForm))
   }
 
-  def saveRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
+
+  def saveNewRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
         hasErrors => BadRequest(views.html.Wishlist.newRequestToTalk(hasErrors)),
         successForm => {
-
           RequestToTalk.save(request.webuser.uuid, successForm)
+          Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
+        }
+      )
+  }
 
+  def edit(id:String)= SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      RequestToTalk.findById(id) match {
+        case None => NotFound("Sorry, this request has been deleted or was not found")
+        case Some(rtt)=> Ok(views.html.Wishlist.edit(RequestToTalk.newRequestToTalkForm.fill(rtt)))
+      }
+  }
+
+  def saveEdit() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
+        hasErrors => BadRequest(views.html.Wishlist.edit(hasErrors)),
+        successForm => {
+          RequestToTalk.save(request.webuser.uuid, successForm)
           Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
         }
       )
@@ -79,13 +97,7 @@ object Wishlist extends SecureCFPController {
       Redirect(routes.Application.home).flashing("success" -> "Sorry that you have not accepted our invitation. However, if you'd like to propose a talk, please register :")
   }
 
-  def edit(id:String)= SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      RequestToTalk.findById(id) match {
-        case None => NotFound("Sorry, this request has been deleted or was not found")
-        case Some(rtt)=> Ok(views.html.Wishlist.edit(RequestToTalk.newRequestToTalkForm.fill(rtt)))
-      }
-  }
+
 
 }
 
