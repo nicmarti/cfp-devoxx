@@ -117,7 +117,6 @@ class TrackLeaderSpecs extends PlaySpecification {
     }
 
     "assigns more than one Track to a Webuser" in new WithApplication(app = appWithTestRedis()) {
-
       // Given
       val email = RandomStringUtils.randomAlphabetic(9)
       val testWebuser = Webuser.createSpeaker(email, RandomStringUtils.randomAlphabetic(2), RandomStringUtils.randomAlphabetic(4))
@@ -137,6 +136,100 @@ class TrackLeaderSpecs extends PlaySpecification {
       Webuser.delete(testWebuser)
     }
 
+    "correctly update all tracks" in new WithApplication(app = appWithTestRedis()) {
+      // Given
+      val email = RandomStringUtils.randomAlphabetic(9)
+      val testWebuser = Webuser.createSpeaker(email, RandomStringUtils.randomAlphabetic(2), RandomStringUtils.randomAlphabetic(4))
+      Webuser.saveAndValidateWebuser(testWebuser)
+      Webuser.addToCFPAdmin(testWebuser.uuid)
+      val mapsByTrack:Map[String,Seq[String]] = Map(Track.STARTUP.id -> List(testWebuser.uuid).toSeq)
+
+      // When
+      TrackLeader.isTrackLeader(Track.STARTUP.id, testWebuser.uuid) must beFalse
+      TrackLeader.updateAllTracks(mapsByTrack)
+
+      // Then
+      TrackLeader.isTrackLeader(Track.STARTUP.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(Track.STARTUP.id,  RandomStringUtils.randomAlphabetic(9)) must beFalse
+      TrackLeader.isTrackLeader(Track.SSJ.id, testWebuser.uuid) must beFalse
+
+      Webuser.delete(testWebuser)
+    }
+
+    "correctly assign then unassign a track" in new WithApplication(app = appWithTestRedis()) {
+      // Given
+      val email = RandomStringUtils.randomAlphabetic(9)
+      val testWebuser = Webuser.createSpeaker(email, RandomStringUtils.randomAlphabetic(2), RandomStringUtils.randomAlphabetic(4))
+      Webuser.saveAndValidateWebuser(testWebuser)
+      Webuser.addToCFPAdmin(testWebuser.uuid)
+      val mapsByTrack:Map[String,Seq[String]] = Map(Track.STARTUP.id -> List(testWebuser.uuid).toSeq)
+
+      // When
+      TrackLeader.updateAllTracks(mapsByTrack)
+
+      // Then
+      TrackLeader.isTrackLeader(Track.STARTUP.id, testWebuser.uuid) must beTrue
+
+      val mapsByTrack02:Map[String,Seq[String]] = Map(Track.STARTUP.id -> List(RandomStringUtils.randomAlphabetic(3)).toSeq)
+      TrackLeader.updateAllTracks(mapsByTrack02)
+
+      TrackLeader.isTrackLeader(Track.STARTUP.id,  testWebuser.uuid) must beFalse
+
+      Webuser.delete(testWebuser)
+    }
+
+
+     "correctly assign then unassign a track" in new WithApplication(app = appWithTestRedis()) {
+      // Given
+      val uuid01 = RandomStringUtils.randomAlphabetic(9)
+      val uuid02 = RandomStringUtils.randomAlphabetic(11)
+      val uuid03 = RandomStringUtils.randomAlphabetic(4)
+
+      Webuser.addToCFPAdmin(uuid01)
+      Webuser.addToCFPAdmin(uuid02)
+
+      val mapsByTrack:Map[String,Seq[String]] = Map(
+        Track.STARTUP.id -> List(uuid01).toSeq,
+        Track.JAVA.id -> List(uuid02).toSeq,
+        Track.ARCHISEC.id -> List(uuid01).toSeq
+      )
+
+      // When
+      TrackLeader.updateAllTracks(mapsByTrack)
+
+      // Then
+      TrackLeader.isTrackLeader(Track.STARTUP.id, uuid01) must beTrue
+      TrackLeader.isTrackLeader(Track.JAVA.id, uuid01) must beFalse
+      TrackLeader.isTrackLeader(Track.ARCHISEC.id, uuid01) must beTrue
+
+      TrackLeader.isTrackLeader(Track.STARTUP.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(Track.JAVA.id, uuid02) must beTrue
+      TrackLeader.isTrackLeader(Track.ARCHISEC.id, uuid02) must beFalse
+
+
+       val mapsByTrack2:Map[String,Seq[String]] = Map(
+        Track.STARTUP.id -> List(uuid03).toSeq,
+        Track.JAVA.id -> List(uuid03).toSeq
+      )
+      TrackLeader.updateAllTracks(mapsByTrack2)
+
+      TrackLeader.isTrackLeader(Track.STARTUP.id, uuid01) must beFalse
+      TrackLeader.isTrackLeader(Track.JAVA.id, uuid01) must beFalse
+      TrackLeader.isTrackLeader(Track.ARCHISEC.id, uuid01) must beFalse
+
+      TrackLeader.isTrackLeader(Track.STARTUP.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(Track.JAVA.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(Track.ARCHISEC.id, uuid02) must beFalse
+
+
+      TrackLeader.isTrackLeader(Track.STARTUP.id, uuid03) must beTrue
+      TrackLeader.isTrackLeader(Track.JAVA.id, uuid03) must beTrue
+      TrackLeader.isTrackLeader(Track.ARCHISEC.id, uuid03) must beFalse
+
+      Webuser.removeFromCFPAdmin(uuid01)
+      Webuser.removeFromCFPAdmin(uuid02)
+      Webuser.removeFromCFPAdmin(uuid03)
+    }
 
   }
 }

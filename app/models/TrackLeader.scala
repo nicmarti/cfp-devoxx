@@ -42,7 +42,7 @@ object TrackLeader {
     if (Webuser.hasAccessToCFP(webuserId)) {
       Redis.pool.withClient {
         client =>
-          client.sadd(s"TrackLeader:$trackId", webuserId)
+          client.hset(s"TrackLeaders", trackId, webuserId)
       }
     }
   }
@@ -50,32 +50,33 @@ object TrackLeader {
   def unassign(trackId: String, webuserId: String) {
     Redis.pool.withClient {
       client =>
-        client.srem(s"TrackLeader:$trackId", webuserId)
+        client.hdel(s"TrackLeaders", trackId)
     }
   }
 
   def isTrackLeader(trackId: String, webuserId: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember(s"TrackLeader:$trackId", webuserId)
+      client.hget(s"TrackLeaders", trackId) match {
+        case Some(w) if w == webuserId => true
+        case _ => false
+      }
   }
 
-  def deleteTrackLeader(trackId: String) = Redis.pool.withClient {
-    client =>
-      client.del(s"TrackLeader:$trackId")
-  }
-
-  def updateAllTracks(mapsByTrack: Map[String, Seq[String]]) = {
+  def updateAllTracks(mapsByTrack: Map[String, Seq[String]]) = Redis.pool.withClient{
+    client=>
+    val tx = client.multi()
+    tx.del("TrackLeaders")
     mapsByTrack.foreach {
       case (trackId, seqUUIDs) =>
-        seqUUIDs.filter(_ == "no_track_lead").foreach {
-          _ =>
-            TrackLeader.deleteTrackLeader(trackId)
-        }
-        seqUUIDs.filterNot(_ == "no_track_lead").foreach {
-          uuid: String =>
-            TrackLeader.assign(trackId, uuid)
+        Redis.pool.withClient {
+          client =>
+            seqUUIDs.filterNot(_ == "no_track_lead").foreach {
+              uuid: String =>
+                tx.hset(s"TrackLeaders", trackId, uuid)
+            }
         }
     }
+    tx.exec()
   }
 
   def deleteWebuser(webuserUUID: String) = {
