@@ -30,7 +30,7 @@
                     <h3><i class="icon-stackexchange"></i> @Messages("wishlist.createRequest")</h3>
                 </div>
                 <div class="panel-body">
-                @helper.form(action = routes.Wishlist.saveRequestToTalk) {
+                @helper.form(action = routes.Wishlist.saveNewRequestToTalk) {
                     @helper.inputText(newRequestToTalkForm("wl_speakerName"), 'class->"form-control")
                     @helper.inputText(newRequestToTalkForm("wl_speakerEmail"), 'class->"form-control")
                     @helper.inputText(newRequestToTalkForm("wl_company"), 'class->"form-control")
@@ -41,10 +41,10 @@
                     @helper.textarea(newRequestToTalkForm("wl_message"), 'cols->60,'rows->8,  'class->"form-control")
                     @tags.selectI18N(field = newRequestToTalkForm("wl_statusCode"), options=RequestToTalkStatus.allAsIdsAndLabels,  'class->"form-control")
                     <button class="btn btn-success" type="submit"><i class="icon-save"></i> @Messages("wishlist.save")</button>
-                    <button disabled class="btn" type="submit"><i class="icon-envelope"></i> @Messages("wishlist.sendEmail")</button>
                 }
                 </div>
             </div>
         </div>
     </div>
+
 }

@@ -30,20 +30,22 @@
                     <h3><i class="icon-stackexchange"></i> @Messages("wishlist.editRequest")</h3>
                 </div>
                 <div class="panel-body">
-                @helper.form(action = routes.Wishlist.saveRequestToTalk) {
+                @helper.form(action = routes.Wishlist.saveEdit) {
                     <input type="hidden" name="id" value="@newRequestToTalkForm("id").value">
                     @helper.inputText(newRequestToTalkForm("wl_speakerName"), 'class->"form-control")
-                    @helper.inputText(newRequestToTalkForm("wl_speakerEmail"), 'class->"form-control")
+
                     @helper.inputText(newRequestToTalkForm("wl_company"), 'class->"form-control")
                     @tags.selectI18N(field = newRequestToTalkForm("wl_trackCode"), options=Track.allAsIdsAndLabels,  'class->"form-control")
                     @tags.checkboxI18N(newRequestToTalkForm("wl_travel"),  'text->"wl_travel.checkbox")
                     @helper.inputText(newRequestToTalkForm("wl_country"), 'class->"form-control")
                     @helper.textarea(newRequestToTalkForm("wl_note"), 'cols->60,'rows->5,  'class->"form-control")
-                    @helper.textarea(newRequestToTalkForm("wl_message"), 'cols->60,'rows->8,  'class->"form-control")
                     @tags.selectI18N(field = newRequestToTalkForm("wl_statusCode"), options=RequestToTalkStatus.allAsIdsAndLabels,  'class->"form-control")
-                    <a href="@routes.Wishlist.homeWishlist()" class="btn btn-default"><i class="icon icon-arrow-left"></i> @Messages("wishlist.cancelEdit")</a>
                     <button class="btn btn-success" type="submit"><i class="icon-save"></i> @Messages("wishlist.save")</button>
-                    <button disabled class="btn" type="submit"><i class="icon-envelope"></i> @Messages("wishlist.sendEmail")</button>
+<hr>
+                    @helper.inputText(newRequestToTalkForm("wl_speakerEmail"), 'class->"form-control")
+                    @helper.textarea(newRequestToTalkForm("wl_message"), 'cols->60,'rows->8,  'class->"form-control")
+                    <a href="@routes.Wishlist.homeWishlist()" class="btn btn-default"><i class="icon icon-arrow-left"></i> @Messages("wishlist.cancelEdit")</a>
+                    <button id="btn-sendMail" class="btn btn-primary" type="submit" title="Set an email if you want to send an invitation"><i class="icon-envelope"></i> @Messages("wishlist.sendEmail")</button>
                 }
                 </div>
             </div>
@@ -70,4 +72,22 @@
             </div>
         </div>
     </div>
+<script type="text/javascript">
+
+$(document).ready(function($){
+    $('#wl_speakerEmail').on("keyup", checkMail);
+
+    function checkMail(){
+        if( $('#wl_speakerEmail').val().length > 0 ) {
+            $('#btn-sendMail').prop("disabled", false);
+            $('#wl_message').prop("disabled", false);
+        } else {
+            $('#btn-sendMail').prop("disabled", true);
+            $('#wl_message').prop("disabled", true);
+        }
+    }
+
+    checkMail();
+});
+</script>
 }
