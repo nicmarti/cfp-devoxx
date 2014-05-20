@@ -12,6 +12,17 @@
             </div>
 
             <div class="panel-body">
+            @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger alert-dismissable">
+            <strong>Error :</strong>
+            @flash.get("error").get
+            </div>
+            }
+            @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable">
+            @flash.get("success").get
+            </div>
+            }
 @helper.form(action = routes.CFPAdmin.updateTrackLeaders()) {
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
@@ -38,7 +49,8 @@
                         }
                 </tbody>
             </table>
-<button value="save" type="submit" class="btn btn-success"><i class="icon-save"></i> Save the full list</button>
+<button value="save" type="submit" class="btn btn-success"><i class="icon-save"></i> Save the full list</button><br>
+<a href="@routes.Backoffice.homeBackoffice()" class="btn btn-default">Go back to Backoffice</a>
 }
 
             </div>
