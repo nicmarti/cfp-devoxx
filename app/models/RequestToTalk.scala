@@ -38,7 +38,7 @@ import java.util.Date
  */
 case class RequestToTalk(id: String
                          , note: String
-                         , message: String
+                         , message: Option[String]
                          , speakerEmail: String
                          , speakerName: String
                          , company: String
@@ -65,19 +65,19 @@ object RequestToTalk {
     "req-" + RandomStringUtils.randomNumeric(3) + "-" + RandomStringUtils.randomNumeric(3)
   }
 
-  def validateRequestToTalk(id: Option[String], note: String, message: String, speakerEmail: Option[String], speakerName: String,
+  def validateRequestToTalk(id: Option[String], note: String, message: Option[String], speakerEmail: Option[String], speakerName: String,
                             company: String, trackCode: String, travel: Boolean, country: String, statusCode: String): RequestToTalk = {
     RequestToTalk(id.getOrElse(generateId), note, message, speakerEmail.getOrElse(""), speakerName, company, trackCode, travel, country, statusCode)
   }
 
-  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, String, Option[String], String, String, String, Boolean, String, String)] = {
+  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, Option[String], Option[String], String, String, String, Boolean, String, String)] = {
     Option((Option(rt.id), rt.note, rt.message, Option(rt.speakerEmail), rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode))
   }
 
   val newRequestToTalkForm = Form(mapping(
     "id" -> optional(text)
     , "wl_note" -> text(maxLength = 3500)
-    , "wl_message" ->text(maxLength = 3500)
+    , "wl_message" ->optional(text(minLength=0,maxLength = 3500))
     , "wl_speakerEmail" -> optional(email)
     , "wl_speakerName" -> nonEmptyText
     , "wl_company" -> text

@@ -71,7 +71,6 @@ object RequestToTalkStatus {
       case "declined" => DECLINED
       case "onhold" => ON_HOLD
       case "deleted" => DELETED
-      case other => UNKNOWN
     }
   }
 

@@ -74,7 +74,7 @@ case class ProcessCSVFile(fileName: String)
 
 case class ProcessCSVDir(dir: String)
 
-case class NewRequestToTalk(authorUUiD:String, rtt:RequestToTalk)
+case class NotifySpeakerRequestToTalk(authorUUiD:String, rtt:RequestToTalk)
 case class EditRequestToTalk(authorUUiD:String, rtt:RequestToTalk)
 
 // Defines an actor (no failover strategy here)
@@ -98,7 +98,7 @@ class ZapActor extends Actor {
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
     case ProcessCSVFile(fileName: String) => doProcessCSV(fileName)
     case ProcessCSVDir(dir: String) => doProcessCSVDir(dir)
-    case NewRequestToTalk(authorUUiD:String, rtt:RequestToTalk) => doRequestToTalk(authorUUiD, rtt)
+    case NotifySpeakerRequestToTalk(authorUUiD:String, rtt:RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD:String, rtt:RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
@@ -226,7 +226,7 @@ class ZapActor extends Actor {
     }
   }
 
-  def doRequestToTalk(authorUUID:String, rtt:RequestToTalk){
+  def doNotifySpeakerRequestToTalk(authorUUID:String, rtt:RequestToTalk){
     RequestToTalk.save(authorUUID, rtt)
     Mails.sendInvitationForSpeaker(rtt.speakerEmail, rtt.note, rtt.id)
   }
