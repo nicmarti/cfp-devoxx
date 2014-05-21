@@ -1,0 +1,88 @@
+@(title: String)(content: Html)(implicit lang: Lang, req: RequestHeader)
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <link rel="stylesheet" type="text/css" href="http://www.devoxx.co.uk/wp-content/cache/minify/000000/lY1BDsIwDAQ_RAg98QM-wAMqN3FppBBXXreQ35P2WC5w8mpnR-48E6pTxiwFaWVnNMATwAYfAD-IGExp7hs5P1M5dX84UWWO8io_ig1tb_oUZJuTtpveDpOoBYkMn0rIyxa2-TdvErjVk-OVtdqUysPDyFLYDbCD1dyGFz9mMqvXvQ-5WceOVJabcrxzPqDIIy3ZPg.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="http://www.devoxx.co.uk/wp-content/cache/minify/000000/M9BPy0ksKak0108uLtZPzs8pzc0rBgA.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="http://www.devoxx.co.uk/wp-content/cache/minify/000000/bc3BDcIwDIXhhVqlnFiDDSqnNU2kJI78DFW2h4oDJeJmf_4lT-6eyKxd3QK4RdIjF8x7tDB70ZV1mLoiZykdVuX3fAti8ifnYjizJFF03V47sFZlU6qhdQfEsiU-Iaz97EekjCoF8cnDxTGhjV8ZjTwcAWz4vCK_qtQX.css" media="all" />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <title>@title | Mind the Geek</title>
+        <link rel="pingback" href="http://www.devoxx.co.uk/xmlrpc.php" />
+        <link rel="shortcut icon" href="http://app-a14d8101-1e17-45eb-9f6c-18d5d404a6eb.cleverapps.io/wp-content/uploads/2014/01/devoxxuk.jpg" />
+        <link rel='stylesheet' id='google_fonts_style-css' href='http://fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700%7CRoboto+Slab%7CRaleway%3A400%2C200%2C700&#038;ver=3.9.1' type='text/css' media='all' />
+        <link rel='stylesheet' id='ert_css-css' href='http://www.devoxx.co.uk/wp-content/plugins/easy-responsive-tabs/assets/css/ert_css.php?ver=3.9.1' type='text/css' media='all' />
+
+
+            <!-- BEGIN GADWP Classic Tracking - http://deconf.com/google-analytics-dashboard-wordpress/ -->
+        <script type="text/javascript">
+        var _gaq = _gaq ||[ ] ;
+        _gaq.push ([ '_setAccount', 'UA-37106326-2' ] ) ;
+        _gaq.push ([ '_trackPageview' ] ) ;
+
+        ( function ( ) {
+        var ga = document.createElement ( 'script' ) ; ga.type = 'text/javascript' ; ga.async = true ;
+        ga.src = ( 'https:' == document.location.protocol ? 'https://ssl' : 'http://www' ) + '.google-analytics.com/ga.js' ;
+        var s = document.getElementsByTagName ( 'script' )[ 0 ] ; s.parentNode.insertBefore ( ga, s ) ;
+        } ) ( ) ;
+        </script>
+            <!-- END GADWP Classic Tracking -->
+
+        <style type="text/css">body { color : #101114 ; }.main-menu nav a { color : #ffffff ; }.main-menu { background-color : #2784b2 ; } footer { background-color : #39325a ; }</style> <style type="text/css">.recentcomments a { display : inline !important ; padding : 0 !important ; margin : 0 !important ; }</style>
+
+            <!--[if lt IE 9]>
+                <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		  <![endif]-->
+
+    </head>
+    <body class="single single-post postid-4077 single-format-standard post-template post-template-post_presentation-php siteorigin-panels">
+        <div class="main-menu">
+            <nav class="center-relative">
+                <ul id="menu-custom_menu" class="main-menu"><li><a href="http://www.devoxx.co.uk/">
+                    Home</a>
+                </li> <li><a href="http://www.devoxx.co.uk/practical/">
+                    Practical</a>
+                </li> <li><a href="http://www.devoxx.co.uk/#np-3414">
+                    Sponsors</a>
+                </li> <li><a href="http://www.devoxx.co.uk/#np-3016">
+                    Contact</a>
+                </li> <li><a href="http://www.devoxx.co.uk/schedule-2014/">
+                    Schedule</a>
+                </li> <li><a href="http://www.devoxx.co.uk/2014-devoxxians/">
+                    Devoxxians</a>
+                </li> <li><a href="https://www.eventbrite.co.uk/e/devoxx-uk-tickets-10219319259">
+                    Register</a>
+                </li> <li id="search" class="menu-item menu-item-search"><form method="get" class="menu-search-form" action="http://www.devoxx.co.uk/"><div class="container-inline"><div class="form-item form-type-textfield form-item-search-block-form"><input class="text_input" type="text" value="Search" name="s" id="s" onfocus="if ( this.value == 'Search' ) { this.value = '' ; }" onblur="if ( this.value == '' ) { this.value = 'Search' ; }" /></div> <div class="form-actions form-wrapper" id="edit-actions--3"><input type="submit" id="edit-submit--4" class="form-submit"></div></div></form></li>
+                </ul> </nav>
+        </div>
+
+        <div id="np-4077">
+
+            <div class="block center-relative">
+<!-- Begin PlayFramework template -->
+                @content
+<!-- End PlayFramework template -->
+                <div class="clear"></div>
+                <div class="clear bottom-50"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <script type="text/javascript" src="http://cdn.jquerytools.org/1.2.7/tiny/jquery.tools.min.js?ver=1.2.7"></script>
+        <script type="text/javascript" src="http://devoxx.co.uk/wp-content/plugins/arconix-shortcodes/includes/arconix-shortcodes.js?ver=1.2.0"></script>
+
+            <!-- Tracking code easily added by NK Google Analytics -->
+        <script>
+        ( function ( i, s, o, g, r, a, m ) { i[ 'GoogleAnalyticsObject' ] = r ; i[ r ] = i[ r ] || function ( ) {
+        ( i[ r ].q = i[ r ].q ||[ ] ).push ( arguments ) }, i[ r ].l = 1 * new Date ( ) ; a = s.createElement ( o ),
+        m = s.getElementsByTagName ( o )[ 0 ] ; a.async = 1 ; a.src = g ; m.parentNode.insertBefore ( a, m )
+        } ) ( window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga' ) ;
+        ga ( 'create', 'UA-37106326-2', 'devoxx.co.uk' ) ;
+        ga ( 'send', 'pageview' ) ;
+        </script>
+        <script type="text/javascript" src="http://www.devoxx.co.uk/wp-content/cache/minify/000000/dZBLDsIwDAUvRD6ABDdAbFj1BFH6StPmR-JQ5fYUiU1FuvXMyJalGKwiqlcxZTG9ClLlmYye60E20JDQI634AV-2RnbKWub-5r9SqxTKbc07WHbhJy5ZVHpG37RdKBnLCFjujG8qFIoeu8VE7CpQ2fgnP_Jze0m9G09bFEOiIVgTmsX7-xkktnvTAlD-AA.js"></script>
+        <script type="text/javascript" src="http://www.devoxx.co.uk/wp-content/cache/minify/000000/M9BPy0ksKak0188q1s8qLE0tqtQrKEoFigRk5JfkAwA.js"></script>
+        <script type="text/javascript" src="http://www.devoxx.co.uk/wp-content/cache/minify/000000/lY1LDsIwDEQvRJJWIHEc5DampErsYJtPbk8rJESX3c6bmdeFawazdg6zhgpTIrDEdLkBxYxy6P55gUTbRFArU_Qq4xbM9wdK8xUEcoa3633vj9vKjymaJZr0cAojl4JkTrDm5sui6wOCNvcVaXqiMxg0gC4rXW8GZlMTqC4K18ivXZsF7Kyvlg8.js"></script>
+        <script type='text/javascript' src='http://www.devoxx.co.uk/wp-content/plugins/easy-responsive-tabs/assets/js/ert_js.php?ver=2.2'></script>
+    </body>
+</html>            
