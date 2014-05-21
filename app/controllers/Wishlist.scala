@@ -23,10 +23,9 @@
 
 package controllers
 
-import models.{RequestToTalkStatus, Event, Speaker, RequestToTalk}
-import library.{NewRequestToTalk, ZapActor}
+import models.RequestToTalk
+import library.{NotifySpeakerRequestToTalk, EditRequestToTalk, ZapActor}
 import play.api.mvc.Action
-import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * Controller to handle the list of invited speakers.
@@ -54,8 +53,8 @@ object Wishlist extends SecureCFPController {
       RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
         hasErrors => BadRequest(views.html.Wishlist.newRequestToTalk(hasErrors)),
         successForm => {
-          RequestToTalk.save(request.webuser.uuid, successForm)
-          Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
+          ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
+          Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "New Wish list element created ")
         }
       )
   }
@@ -77,11 +76,12 @@ object Wishlist extends SecureCFPController {
           val actionType = request.body.asFormUrlEncoded.flatMap(_.get("actionBtn"))
           actionType match {
             case Some(List("save")) =>{
-              RequestToTalk.save(request.webuser.uuid, successForm)
+              ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
               Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
             }
             case Some(List("email")) =>{
-              Ok("TODO : not implemented")
+               ZapActor.actor ! NotifySpeakerRequestToTalk(request.webuser.uuid, successForm)
+               Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Speaker notified, request updated to status ["+successForm.status.code+"]"))
             }
             case other =>{
               BadRequest("Invalid request, HTTP param [actionBtn] not found or not valid. "+other)

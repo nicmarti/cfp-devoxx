@@ -32,14 +32,13 @@
                 <div class="panel-body">
                 @helper.form(action = routes.Wishlist.saveNewRequestToTalk) {
                     @helper.inputText(newRequestToTalkForm("wl_speakerName"), 'class->"form-control")
-                    @helper.inputText(newRequestToTalkForm("wl_speakerEmail"), 'class->"form-control")
                     @helper.inputText(newRequestToTalkForm("wl_company"), 'class->"form-control")
                     @tags.selectI18N(field = newRequestToTalkForm("wl_trackCode"), options=Track.allAsIdsAndLabels,  'class->"form-control")
                     @tags.checkboxI18N(newRequestToTalkForm("wl_travel"),  'text->"wl_travel.checkbox")
                     @helper.inputText(newRequestToTalkForm("wl_country"), 'class->"form-control")
                     @helper.textarea(newRequestToTalkForm("wl_note"), 'cols->60,'rows->5,  'class->"form-control")
-                    @helper.textarea(newRequestToTalkForm("wl_message"), 'cols->60,'rows->8,  'class->"form-control")
                     @tags.selectI18N(field = newRequestToTalkForm("wl_statusCode"), options=RequestToTalkStatus.allAsIdsAndLabels,  'class->"form-control")
+                    <input type="hidden" name="wl_message" value="">
                     <button class="btn btn-success" type="submit"><i class="icon-save"></i> @Messages("wishlist.save")</button>
                 }
                 </div>
