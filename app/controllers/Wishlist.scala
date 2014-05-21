@@ -73,8 +73,20 @@ object Wishlist extends SecureCFPController {
       RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
         hasErrors => BadRequest(views.html.Wishlist.edit(hasErrors)),
         successForm => {
-          RequestToTalk.save(request.webuser.uuid, successForm)
-          Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
+
+          val actionType = request.body.asFormUrlEncoded.flatMap(_.get("actionBtn"))
+          actionType match {
+            case Some(List("save")) =>{
+              RequestToTalk.save(request.webuser.uuid, successForm)
+              Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
+            }
+            case Some(List("email")) =>{
+              Ok("TODO : not implemented")
+            }
+            case other =>{
+              BadRequest("Invalid request, HTTP param [actionBtn] not found or not valid. "+other)
+            }
+          }
         }
       )
   }
