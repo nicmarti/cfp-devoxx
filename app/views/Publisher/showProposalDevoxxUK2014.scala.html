@@ -1,0 +1,63 @@
+@(proposal:Proposal,publishedConfiguration:Option[String], slot:Option[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@views.html.Publisher.devoxxuk2014(proposal.id+" "+proposal.title){
+
+    <div id="topinfo" class="full-width orange">
+        <div class="two_third">
+            <div class="single-title crete-round-font bottom-30">
+                <h3 class="single-title" style="color : #fff">@proposal.title</h3>
+                <h5 class="speakers">by @proposal.allSpeakers.map(_.cleanName).mkString(" & ")</h5>
+            </div>
+            <h5 class="schedule">
+                @if(slot.isDefined) {
+                    @slot.get.from.toString("EEEE") @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm") (@slot.map(_.room.name))
+                }
+            </h5>
+        </div>
+        <div id="trackinfo" class="one_third last"><a href="http://www.devoxx.co.uk/?s=javaee" style="text-decoration : none">
+            <div class="icon">
+                <div class="icon_@proposal.track.id"></div>
+            </div>
+            <h4 style="padding-top : 10 px ; text-align : center ; font-size : 16 px ; text-decoration : none">
+                @Messages(proposal.track.label)</h4>
+            <div class="popup"> <p>@Messages("track."+proposal.track.id+".desc")</p>
+            <span class="textballoon"></span> </div> </a>
+        </div>
+    </div>
+
+<div id="content" class="lightgray">
+                    <div class="two_third">
+                        <div class="abstract">
+<h1 style="padding-bottom : 30 px ; text-transform : uppercase ;">@proposal.title</h1>
+<p>@Html(proposal.summaryAsHtml)</p>
+            <div class="tags">
+                            <!-- <a href="http://www.devoxx.co.uk?s=batch">
+            batch</a> <a href="http://www.devoxx.co.uk?s=javaee7">
+            javaee7</a> <a href="http://www.devoxx.co.uk?s=jax-rs">
+            jax-rs</a> <a href="http://www.devoxx.co.uk?s=jms">
+            jms</a> <a href="http://www.devoxx.co.uk?s=websocket">
+            websocket</a> //-->
+                    </div>
+                    <hr>
+                    </div>
+                </div>
+        <div class="one_third last">
+            <div class="arconix-accordions arconix-accordions-vertical arconix-accordions-1">
+                @proposal.allSpeakers.map { speaker =>
+                    <div class="arconix-accordion-title accordion-accordion-1 current">
+                        <h4 class="speaker-name">@speaker.cleanName</h4>
+                    </div>
+                    <div class="arconix-accordion-content" style="display : block ;">
+                        <img width="150" height="150" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=128" class="img-centered wp-post-image" alt="@speaker.cleanName" />
+                        <div class="description"><p>@Html(speaker.bioAsHtml)</p>
+                            <br>
+                            @if(speaker.twitter.isDefined) {
+                                <a href="http://twitter.com/@speaker.twitter.get" class="btn_twitter" itemprop="nickname">@speaker.twitter.get</a>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+</div>
+}

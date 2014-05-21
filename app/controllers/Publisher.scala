@@ -27,14 +27,15 @@ import models._
 import play.api.mvc._
 import akka.util.Crypt
 import library.{LogURL, ZapActor}
-import play.api.libs.json.Json
 import play.api.cache.Cache
+import play.api.Play
 
 /**
  * Simple content publisher
  * Created by nicolas on 12/02/2014.
  */
 object Publisher extends Controller {
+
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
@@ -80,17 +81,7 @@ object Publisher extends Controller {
       Ok(views.html.Publisher.showByTalkType(proposals, talkType))
   }
 
-  def showDetailsForProposal(proposalId: String, proposalTitle: String) = Action {
-    implicit request =>
-      Proposal.findById(proposalId) match {
-        case None => NotFound("Proposal not found")
-        case Some(proposal) =>
-          val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
-          val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
-          ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
-          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot))
-      }
-  }
+
 
   def showAgendaByConfType(confType: String, slotId: String, day: Option[String]) = Action {
     implicit request =>
@@ -138,6 +129,18 @@ object Publisher extends Controller {
         case "friday" => Ok(views.html.Publisher.showFriday())
         case "vendredi" => Ok(views.html.Publisher.showFriday())
         case other => NotFound("Day not found " + day)
+      }
+  }
+
+  def showDetailsForProposal(proposalId: String, proposalTitle: String) = Action {
+    implicit request =>
+      Proposal.findById(proposalId) match {
+        case None => NotFound("Proposal not found")
+        case Some(proposal) =>
+          val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
+          val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+          ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
+          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot))
       }
   }
 }
