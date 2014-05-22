@@ -37,6 +37,7 @@ import java.io.File
 import org.apache.commons.io.FileUtils
 import scala.collection.JavaConverters._
 import org.apache.commons.io.filefilter.{SuffixFileFilter, WildcardFileFilter}
+import library.wordpress.WordpressPublisher
 
 /**
  * Akka actor that is in charge to process batch operations and long running queries
@@ -74,8 +75,11 @@ case class ProcessCSVFile(fileName: String)
 
 case class ProcessCSVDir(dir: String)
 
-case class NotifySpeakerRequestToTalk(authorUUiD:String, rtt:RequestToTalk)
-case class EditRequestToTalk(authorUUiD:String, rtt:RequestToTalk)
+case class NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
+
+case class EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
+
+
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -98,8 +102,8 @@ class ZapActor extends Actor {
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
     case ProcessCSVFile(fileName: String) => doProcessCSV(fileName)
     case ProcessCSVDir(dir: String) => doProcessCSVDir(dir)
-    case NotifySpeakerRequestToTalk(authorUUiD:String, rtt:RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
-    case EditRequestToTalk(authorUUiD:String, rtt:RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
+    case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
+    case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -211,7 +215,7 @@ class ZapActor extends Actor {
     val directory: java.io.File = new File(dir)
 
     if (directory.exists() && directory.canRead) {
-      play.Logger.info("Processing dir [" + directory.getAbsolutePath +"]")
+      play.Logger.info("Processing dir [" + directory.getAbsolutePath + "]")
       val badgesFolders = directory.listFiles(csvBadgesFolderFilter)
 
       badgesFolders.foreach {
@@ -226,12 +230,12 @@ class ZapActor extends Actor {
     }
   }
 
-  def doNotifySpeakerRequestToTalk(authorUUID:String, rtt:RequestToTalk){
+  def doNotifySpeakerRequestToTalk(authorUUID: String, rtt: RequestToTalk) {
     RequestToTalk.save(authorUUID, rtt)
     Mails.sendInvitationForSpeaker(rtt.speakerEmail, rtt.note, rtt.id)
   }
 
-   def doEditRequestToTalk(authorUUID:String, rtt:RequestToTalk){
+  def doEditRequestToTalk(authorUUID: String, rtt: RequestToTalk) {
     RequestToTalk.save(authorUUID, rtt)
   }
 }
