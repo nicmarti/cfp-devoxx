@@ -1,0 +1,11 @@
+@(proposal:Proposal,publishedConfiguration:Option[String], slot:Option[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+<?xml version="1.0"?>
+<methodCall>
+   <methodName>wp.newPost</methodName>
+   <params>
+      <param>
+         <value><i4>41</i4></value>
+         </param>
+      </params>
+</methodCall>

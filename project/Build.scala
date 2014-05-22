@@ -20,6 +20,8 @@ object ApplicationBuild extends Build {
     , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
     , "com.typesafe.play" %% "play-cache" % "2.2.0"
     ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
+    // Required for Wordpress only
+    , "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3"
   )
 
   libraryDependencies ++= Seq(
