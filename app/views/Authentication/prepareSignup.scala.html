@@ -1,4 +1,4 @@
-@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang, req: RequestHeader)
+@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang, req: RequestHeader, confDesc: ConferenceDescriptor)
 
 @import helper.twitterBootstrap._
 
@@ -10,7 +10,7 @@
     </div>
     <div class="col-md-8">
 
-        <p>@Messages("signup.txt1")</p>
+        <p>@Messages("signup.txt1", confDesc.longYearlyName)</p>
 
         @if(flash.get("error").isDefined){
             <div class="alert alert-danger">

@@ -45,7 +45,7 @@ object Mails {
   def sendResetPasswordLink(email: String, resetUrl: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val timestamp: String = new DateTime().toString("HH:mm dd/MM")
-    val subject:String = Messages("mail.reset_password_link.subject",timestamp)
+    val subject:String = Messages("mail.reset_password_link.subject",timestamp,ConferenceDescriptor.current().longName)
     emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(email)
@@ -57,7 +57,7 @@ object Mails {
 
   def sendAccessCode(email: String, code: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject:String = Messages("mail.access_code.subject")
+    val subject:String = Messages("mail.access_code.subject", ConferenceDescriptor.current().longName)
     emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(email)
@@ -71,7 +71,7 @@ object Mails {
 
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.account_created.subject")
+    val subject: String = Messages("mail.account_created.subject", ConferenceDescriptor.current().longName)
     emailer.setSubject(subject)
     emailer.addFrom(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -82,7 +82,7 @@ object Mails {
 
   def sendValidateYourEmail(email: String, validationLink: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.email_validation.subject")
+    val subject: String = Messages("mail.email_validation.subject", ConferenceDescriptor.current().longName)
     emailer.setSubject(subject)
     emailer.addFrom(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -111,7 +111,7 @@ object Mails {
 
   def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.cfp_message_to_speaker.subject",proposal.title)
+    val subject: String = Messages("mail.cfp_message_to_speaker.subject", proposal.title, ConferenceDescriptor.current().confCode)
     emailer.setSubject(subject)
     emailer.addFrom(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -182,11 +182,11 @@ object Mails {
   def sendReminderForDraft(speaker: Webuser, proposals: List[Proposal]) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     if (proposals.size == 1) {
-      val subject: String = Messages("mail.draft_single_reminder.subject")
+      val subject: String = Messages("mail.draft_single_reminder.subject", ConferenceDescriptor.current().longYearlyName)
       emailer.setSubject(subject)
     }
     if (proposals.size > 1) {
-      val subject: String = Messages("mail.draft_multiple_reminder.subject",proposals.size)
+      val subject: String = Messages("mail.draft_multiple_reminder.subject", proposals.size, ConferenceDescriptor.current().longYearlyName)
       emailer.setSubject(subject)
     }
     emailer.addFrom(from)
@@ -246,7 +246,7 @@ object Mails {
   def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
-    val subject: String = Messages("mail.speaker_cfp_results.subject")
+    val subject: String = Messages("mail.speaker_cfp_results.subject", ConferenceDescriptor.current().longYearlyName)
     emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(speaker.email)
@@ -262,7 +262,7 @@ object Mails {
   def sendInvitationForSpeaker(speakerEmail: String, message: String, requestId: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
-    emailer.setSubject(s"Devoxx BE 2014 special request")
+    emailer.setSubject(s"${ConferenceDescriptor.current().shortYearlyName} special request")
     emailer.addFrom(from)
     emailer.addRecipient(speakerEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))

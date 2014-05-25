@@ -9,7 +9,7 @@
             <div class="col-md-12">
                 <div class="page-header">
                     <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
-                        @Messages("appel.conf.dates")</small></h2>
+                    @confDesc.longYearlyName, @Messages(confDesc.confDatesI18nKey)</small></h2>
                 </div>
             </div>
             <div class="col-md-12">
@@ -39,7 +39,7 @@
 
             <div class="col-md-5">
                 <h3><i class="icon-facetime-video"></i> @Messages("video.title")</h3>
-                <p>@Messages("video.tag") <a href="http://www.parleys.com/channel/528b321de4b054cd7d2ef448" target="new">Parleys.com</a> </p>
+                <p>@Messages("video.tag", confDesc.longName+" 2013") <a href="http://www.parleys.com/channel/528b321de4b054cd7d2ef448" target="new">Parleys.com</a> </p>
             </div>
 
             <div class="clearfix">
@@ -67,7 +67,7 @@
 
             <div class="col-md-12">
                 <h3><i class="icon-book"></i> @Messages("theme.title")</h3>
-                <p>@Messages("theme.track")</p>
+                <p>@Messages("theme.track", confDesc.longYearlyName)</p>
                 <table class="table table-bordered table-striped">
                     <tbody>
                         <tr>
