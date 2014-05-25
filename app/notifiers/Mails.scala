@@ -27,7 +27,8 @@ package notifiers
 import com.typesafe.plugin._
 import play.api.Play.current
 import org.joda.time.DateTime
-import models.{Speaker, Webuser, Proposal, Issue}
+import models._
+import play.api.i18n.Messages
 
 /**
  * Sends all emails
@@ -37,13 +38,15 @@ import models.{Speaker, Webuser, Proposal, Issue}
  */
 
 object Mails {
-  lazy val from = current.configuration.getString("smtp.from").getOrElse(sys.error("smtp.from is not configured"))
-  lazy val bugReportRecipient = current.configuration.getString("smtp.bugReportRecipient").getOrElse(sys.error("smtp.bugReportRecipient is not configured"))
-  lazy val bcc = current.configuration.getString("smtp.bcc")
-
+  lazy val from = ConferenceDescriptor.current().fromEmail
+  lazy val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
+  lazy val bcc = ConferenceDescriptor.current().bccEmail
+  
   def sendResetPasswordLink(email: String, resetUrl: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("You asked to reset your Devoxx speaker's access code at " + new DateTime().toString("HH:mm dd/MM"))
+    val timestamp: String = new DateTime().toString("HH:mm dd/MM")
+    val subject:String = Messages("mail.reset_password_link.subject",timestamp)
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(email)
     // If you want to receive a copy for validation
@@ -54,7 +57,8 @@ object Mails {
 
   def sendAccessCode(email: String, code: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("Your access code for Devoxx CFP")
+    val subject:String = Messages("mail.access_code.subject")
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(email)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -67,7 +71,8 @@ object Mails {
 
   def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("Welcome to the CFP for Devoxx! ")
+    val subject: String = Messages("mail.account_created.subject")
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
     emailer.addRecipient(email)
@@ -77,7 +82,8 @@ object Mails {
 
   def sendValidateYourEmail(email: String, validationLink: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject("Welcome to Devoxx, please validate your email address now")
+    val subject: String = Messages("mail.email_validation.subject")
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
     emailer.addRecipient(email)
@@ -90,7 +96,8 @@ object Mails {
 
   def sendBugReport(bugReport: Issue) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"New issue reported on CFP Belgium web site")
+    val subject: String = Messages("mail.issue_reported.subject")
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addCc(bugReport.reportedBy)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -104,7 +111,8 @@ object Mails {
 
   def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"[Devoxx 2014] Message about your presentation ${proposal.title}")
+    val subject: String = Messages("mail.cfp_message_to_speaker.subject",proposal.title)
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
     emailer.addRecipient(toWebuser.email)
@@ -137,7 +145,8 @@ object Mails {
 
   def sendMessageToCommitte(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"[${proposal.title}] ${fromWebuser.cleanName} posted a new message")
+    val subject: String = Messages("mail.speaker_message_to_cfp.subject", proposal.title,fromWebuser.cleanName)
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -173,10 +182,12 @@ object Mails {
   def sendReminderForDraft(speaker: Webuser, proposals: List[Proposal]) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     if (proposals.size == 1) {
-      emailer.setSubject("Devoxx 2014 reminder : you have one proposal with status 'Draft'")
+      val subject: String = Messages("mail.draft_single_reminder.subject")
+      emailer.setSubject(subject)
     }
     if (proposals.size > 1) {
-      emailer.setSubject(s"Devoxx 2014 reminder : you have ${proposals.size} proposals to submit")
+      val subject: String = Messages("mail.draft_multiple_reminder.subject",proposals.size)
+      emailer.setSubject(subject)
     }
     emailer.addFrom(from)
     emailer.addRecipient(speaker.email)
@@ -191,7 +202,8 @@ object Mails {
 
   def sendProposalApproved(toWebuser: Webuser, proposal: Proposal) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"Your proposal has been approved ${proposal.title}")
+    val subject: String = Messages("mail.proposal_approved.subject",proposal.title)
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(toWebuser.email)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -212,7 +224,8 @@ object Mails {
 
   def sendProposalRefused(toWebuser: Webuser, proposal: Proposal) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"Your proposal has been refused ${proposal.title}")
+    val subject: String = Messages("mail.proposal_refused.subject",proposal.title)
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(toWebuser.email)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
@@ -233,7 +246,8 @@ object Mails {
   def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
-    emailer.setSubject(s"Call for Paper Devoxx 2014")
+    val subject: String = Messages("mail.speaker_cfp_results.subject")
+    emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(speaker.email)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
