@@ -2,6 +2,7 @@
 
 CONF.title=Devoxx 2014
 CONF.subtitle=BE
+cfp.title=CFP {0}
 login.error=Email inconnu ou code d''accès invalide
 menu.home=Accueil
 email=Adresse email

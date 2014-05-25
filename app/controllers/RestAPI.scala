@@ -35,7 +35,7 @@ import play.api.mvc.SimpleResult
  * Created by Nicolas Martignole on 25/02/2014.
  */
 
-object RestAPI extends Controller {
+object RestAPI extends Controller with ConferenceDescriptorImplicit {
 
   def index = UserAgentAction {
     implicit request =>

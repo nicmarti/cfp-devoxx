@@ -49,7 +49,7 @@ import org.apache.commons.codec.digest.DigestUtils
  * Author: nicolas
  * Created: 27/09/2013 09:59
  */
-object Authentication extends Controller {
+object Authentication extends Controller with ConferenceDescriptorImplicit {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
   def prepareSignup = Action {
