@@ -12,10 +12,8 @@ password=Code d''accès
 CallForPaper=Appel aux conférenciers
 btn.login=Continuer
 menu.register=S''inscrire
-menu.blog=Site Devoxx
 login=S''authentifier
 signup=S''inscrire
-signup.long=S''inscrire en tant qu''orateur pour Devoxx
 
 index.method1=S''authentifier
 # For single quote, you need to double escape
@@ -24,7 +22,7 @@ index.welcome=Déjà inscrit ? Authentifiez-vous avec votre code d''accès :
 
 index.method2=Authentifiez-vous avec OpenId
 index.signupTitle=S''inscrire comme orateur
-index.signup2=Inscrivez-vous comme orateur à Devoxx afin de proposer un ou plusieurs sujets \:
+index.signup2=Inscrivez-vous comme orateur à {0} afin de proposer un ou plusieurs sujets :
 index.signup3=Inscrivez-vous via l''un de vos réseaux sociaux, en quelques secondes, sans devoir valider votre email et utiliser un code d''accès :
 index.signup.btn=S''inscrire
 index.txt2=Utilisez l''un des services ci-dessous, afin de ne pas avoir à mémoriser un code d''accès. Si votre profil n''existe pas, il sera automatiquement créé.
@@ -68,7 +66,6 @@ error.pattern=Doit respecter {0}
 email.alreadyexists=Cette adresse email est déjà enregistrée dans notre base.
 forget.password.confirm=Un courrier électronique a été envoyé à l''adresse spécifiée.
 register.withopenid=Inscrivez-vous avec votre profil social
-cfp.closed=Le CFP de Devoxx Belgium est fermé.
 avatarUrl=URL de votre photo
 
 # CFP Home page
@@ -101,10 +98,10 @@ title.help=Proposez un titre simple, clair, qui résume ce que le participant va
 summary=Résumé de votre présentation pour le participant
 summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vous pouvez utiliser la syntaxe <a href="http://daringfireball.net/projects/markdown/syntax/" target="_blank">Markdown</a>.
 lang=Langue
-lang.help=75% des présentations à Devoxx Belgium doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
+lang.help=100% des présentations à {0} doivent être en Anglais,
 mainSpeaker=Présentateur principal
-mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx Belgium uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
-talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/faq/#confType" target="new">FAQ</a> du site Devoxx Belgium.
+mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à la conférence uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
+talkType.help=Chaque type de conférence est détaillé sur la page <a href\="{0}\#confType" target\="new">FAQ</a> du site.
 
 
 talkType=Type de présentation
@@ -121,7 +118,7 @@ moreSpeakerLater=Vous aurez la possibilité d''ajouter un ou plusieurs speakers 
 btn.save=Sauver l''édition
 btn.home=Retour à l''accueil sans sauver
 btn.save2=Sauvegarder votre proposition
-not.saved=Vérifiez le résumé à destination du participant à Devoxx Belgium, puis cliquez sur "Sauvegarder la proposition" pour continuer.
+not.saved=Vérifiez le résumé à destination du participant à la conférence, puis cliquez sur "Sauvegarder la proposition" pour continuer.
 validate.summary2=ou sinon utilisez
 validate.summary3=le bouton retour à la page précédente
 validate.summary4=de votre navigateur pour corriger votre texte de résumé.
@@ -151,7 +148,7 @@ msg=Votre message
 
 # Home
 appel.conf=Appel aux conférenciers
-appel.conf.dates=Call for Paper, Devoxx Belgium 2014, 10 au 14 novembre 2014
+devoxxbe2014.dates=10 au 14 novembre 2014
 cfp.opening=Ouverture du CFP :
 cfp.opening.date=Lundi 2 juin 2014
 cfp.closing=Fermeture du CFP :
@@ -159,9 +156,9 @@ cfp.closing.date=fin juin
 cfp.program=Annonce du programme :
 cfp.program.date=mi septembre
 video.title=Vidéos de l''édition 2013
-video.tag=Retrouvez les sessions de l''édition 2013 sur le site
+video.tag=Retrouvez les sessions de {0} 2013 sur le site
 theme.title=Thèmes
-theme.track=Les différentes tracks pour proposer un sujet :
+theme.track=Les différentes tracks de {0} :
 track.title=Titre
 track.description=Description
 track.java.title=Java
@@ -193,7 +190,7 @@ startup.label=Startup & Innovation
 future.label=Future<Devoxx>
 
 # Confirm import
-confirm.import.title=Créer votre profil de présentateur Devoxx Belgium
+confirm.import.title=Créer votre profil de présentateur
 confirm.import.save=Enregistrer et continuer
 avatarUrl.isEmpty=L''URL de votre photo est vide, nous utiliserons votre
 avatarUrl.defined=Votre photo (largeur recommandée 120px)
@@ -202,11 +199,11 @@ avatarUrl.defined=Votre photo (largeur recommandée 120px)
 created.title=Demande d''inscription enregistrée
 created.text1=Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.
 created.text2=Validez votre adresse pour terminer votre enregistrement, votre code d''accès vous sera donné lorsque vous validerez votre email.
-created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx Belgium.
+created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour {0}.
 
 # Prepare signup
 signup.title=Inscription orateur
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx Belgium 2014 :
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence {0} :
 signup.txt2=Un email de validation est envoyé à l''adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
 
 # edit profile
@@ -284,7 +281,7 @@ nav.homeSpeaker=Accueil
 editWebuser.title=Votre profil
 
 cfp.isOpen=Le CFP est ouvert
-cfp.open.enter=Proposer un sujet pour Devoxx Belgium
+cfp.open.enter=Proposer un sujet
 
 #CFP admin
 admin.proposals.th.title=Titre
@@ -367,12 +364,12 @@ comment.proposal=Fil de discussion
 saved1=Proposition enregistrée. Pensez à soumettre le sujet en cliquant sur l''enveloppe orange !
 saved2=Proposition éditée et enregistrée.
 
-approve.title=Devoxx Belgium, Termes et Conditions du Présentateur
-accept.chk=J''accepte les conditions de Devoxx Belgium
-acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à Devoxx Belgium :
-accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de Devoxx Belgium
+approve.title={0}, Termes et Conditions du Présentateur
+accept.chk=J''accepte les conditions de la conférence
+acceptTerm.pleaseRead=Merci de prendre le temps de lire et d''accepter les termes et conditions pour présenter à {0} :
+accept.term.checked=Merci de cocher cette case si vous acceptez les conditions de la conférence
 
-acceptedProposals.title=Liste de vos soumissions approuvées/refusées
+acceptedProposals.title=Liste de vos soumissions approuvées/refusées pour {0}
 ar.approved=Soumissions approuvées
 ar.rejected=Soumissions refusées
 ar.noneApproved=Nous avons le regret de vous informer qu''aucune de vos soumissions n''a été acceptée.
@@ -481,7 +478,7 @@ not.published=L''agenda pour ce type de conférence n''est pas encore publié.
 day-thu=Jeudi
 day-fri=Vendredi
 day-wed=Mercredi
-acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !
+acceptedTerms.msg=Vous avez accepté les Termes et Conditions de la conférence, merci !
 
 antispam=Pour prouver que vous n''êtes pas un robot mais un humain, combien font 38+4 ?
 bugReport.sent=Votre message a été envoyé à l''équipe, merci !
@@ -492,15 +489,15 @@ day-mercredi=Mercredi
 
 showAgendaByRoom=Agenda par salle
 
-mail.reset_password_link.subject=Vous avez demandé une réinitialisation de votre code d''accès speaker pour Devoxx à {0}
-mail.access_code.subject=Votre code d''accès speaker pour Devoxx
-mail.account_created.subject=Bienvenue sur le CFP de Devoxx !
-mail.email_validation.subject=Bienvenue à Devoxx, veuillez valider votre adresse email
+mail.reset_password_link.subject=Vous avez demandé une réinitialisation de votre code d''accès speaker pour {1} à {0}
+mail.access_code.subject=Votre code d''accès speaker pour {0}
+mail.account_created.subject=Bienvenue sur le CFP de {0} !
+mail.email_validation.subject=Bienvenue à {0}, veuillez valider votre adresse email
 mail.issue_reported.subject=Nouveau problème enregistré sur le site web du CFP
-mail.cfp_message_to_speaker.subject=[Devoxx 2014] Message à propos de votre présentation {0}
-mail.speaker_message_to_cfp.subject=[{0}] ${1} a posté un nouveau message
-mail.draft_single_reminder.subject=Rappel Devoxx 2014 : vous avez une proposition au statut ''Brouillon''
-mail.draft_multiple_reminder.subject=Rappel Devoxx 2014 : vous avez {0} proposition(s) à soumettre
+mail.cfp_message_to_speaker.subject=[{1}] Message à propos de votre présentation {0}
+mail.speaker_message_to_cfp.subject=[{0}] {1} a posté un nouveau message
+mail.draft_single_reminder.subject=Rappel {0} : vous avez une proposition au statut ''Brouillon''
+mail.draft_multiple_reminder.subject=Rappel {1} : vous avez {0} proposition(s) à soumettre
 mail.proposal_approved.subject=Votre proposition a été approuvée {0}
 mail.proposal_refused.subject=Votre proposition a été refusée {0}
-mail.speaker_cfp_results.subject=Appel à propositions Devoxx 2014
+mail.speaker_cfp_results.subject=Appel à propositions {0}

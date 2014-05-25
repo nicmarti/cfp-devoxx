@@ -1,4 +1,4 @@
-@(formAccept: Form[Boolean])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(formAccept: Form[Boolean])(implicit lang: Lang, flash: Flash, req: RequestHeader, confDesc: ConferenceDescriptor)
 
 @main("Accept or refuse Devoxx terms") {
 
@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1><i class="icon-bullhorn"></i> @Messages("approve.title")</h1>
+                    <h1><i class="icon-bullhorn"></i> @Messages("approve.title", confDesc.longName)</h1>
                 </div>
 
                 <div class="panel-body">
@@ -30,7 +30,7 @@
 
                         <div class="col-md-8 col-lg-offset-2">
 
-                            <p>@Messages("acceptTerm.pleaseRead")</p>
+                            <p>@Messages("acceptTerm.pleaseRead", confDesc.longName)</p>
 
                             <div class="input-group">
 

@@ -260,7 +260,7 @@ object Proposal {
                           userGroup:Boolean ): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      "Devoxx BE 2014",
+      ConferenceDescriptor.current().shortYearlyName,
       lang,
       title,
       "no_main_speaker",

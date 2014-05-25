@@ -8,7 +8,7 @@
                     <div class="col-md-12">
                         <div class="page-header">
                             <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
-                            @Messages("appel.conf.dates")</small></h2>
+                            @confDesc.longYearlyName, @Messages(confDesc.confDatesI18nKey)</small></h2>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -53,7 +53,7 @@
                                 <h3><i class="icon-user"></i> @Html(Messages("index.signupTitle"))</h3>
                             </div>
                             <div class="panel-body">
-                                <p>@Html(Messages("index.signup2"))</p>
+                                <p>@Html(Messages("index.signup2", confDesc.longName))</p>
                                 <a class="btn btn-default" href="@routes.Authentication.prepareSignup()">@Messages("index.signup.btn")</a>
                                 <p>@Html(Messages("index.signup3"))</p>
                                 <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("CONF.title")-@Messages("CONF.subtitle")"><i class="icon-github-sign"></i>

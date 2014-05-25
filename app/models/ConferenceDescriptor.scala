@@ -14,14 +14,14 @@ object ConferenceDescriptor {
       // You will need to update conf/routes files with this code if modified
       confUrlCode = "devoxxfr2014",
       shortYearlyName = "DevoxxBe 2014",
-      longYearlyName = "Devoxx Belgique 2014",
+      longYearlyName = "Devoxx Belgium 2014",
       shortName = "DevoxxBe",
-      longName = "Devoxx Belgique",
+      longName = "Devoxx Belgium",
       fromEmail = "program@devoxx.com",
       bccEmail = Option("nicolas.martignole@devoxx.fr"),
       bugReportRecipient = "nicolas.martignole@devoxx.fr",
       faqUrl = "http://www.devoxx.fr/faq/",
-      confDatesI18nKey = "devoxxfr2014.dates"
+      confDatesI18nKey = "devoxxbe2014.dates"
     )
 }
 // These are properties not i18n-ed used in various places in the app
