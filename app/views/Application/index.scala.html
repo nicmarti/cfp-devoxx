@@ -1,8 +1,8 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @import helper.twitterBootstrap._
 
-@main(Messages("CONF.title")+" Call for paper"){
+@main(Messages("cfp.title", confDesc.longName)){
 <div class="container">
     <div class="bs-docs-section clearfix">
         <div class="row">

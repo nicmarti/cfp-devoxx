@@ -4,6 +4,7 @@ CONF.title=Devoxx 2014
 CONF.subtitle=BE
 
 # -----------------
+cfp.title={0} CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
