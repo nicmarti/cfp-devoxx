@@ -39,10 +39,10 @@
                         <tr>
                             <td>@Html(Messages("bio"))</td>
                             <td>
-                            @if(StringUtils.trimToEmpty(speaker.bio).isEmpty) {
-                                <i class="icon-exclamation-sign error"></i>
-                            } else {
+                            @if(speaker.hasBio) {
                                 <i class="icon-ok alert-success"></i>
+                            } else {
+                                <i class="icon-exclamation-sign error"></i>
                             }
                             </td>
                         </tr>
@@ -50,10 +50,10 @@
                         <tr>
                             <td>@Html(Messages("url.photo"))</td>
                             <td>
-                            @if(StringUtils.trimToEmpty(speaker.avatarUrl.getOrElse("")).isEmpty) {
-                                <i class="icon-exclamation-sign error"></i>
-                            } else {
+                            @if(speaker.hasAvatar) {
                                 <i class="icon-ok alert-success"></i>
+                            } else {
+                                <i class="icon-exclamation-sign error"></i>
                             }
                             </td>
                         </tr>
@@ -61,20 +61,20 @@
                         <tr>
                             <td>@Html(Messages("blog.website"))</td>
                             <td>
-                            @if(StringUtils.trimToEmpty(speaker.blog.getOrElse("")).isEmpty) {
-                                <i class="icon-exclamation-sign error"></i>
-                            } else {
+                            @if(speaker.hasBlog) {
                                 <i class="icon-ok alert-success"></i>
+                            } else {
+                                <i class="icon-exclamation-sign error"></i>
                             }
                             </td>
                         </tr>
                         <tr>
                             <td>@Html(Messages("company"))</td>
                             <td>
-                            @if(StringUtils.trimToEmpty(speaker.company.getOrElse("")).isEmpty) {
-                                <i class="icon-exclamation-sign error"></i>
-                            } else {
+                            @if(speaker.hasCompany) {
                                 <i class="icon-ok alert-success"></i>
+                            } else {
+                                <i class="icon-exclamation-sign error"></i>
                             }
                             </td>
                         </tr>
@@ -82,10 +82,10 @@
                         <tr>
                             <td>@Html(Messages("twitter"))</td>
                             <td>
-                            @if(StringUtils.trimToEmpty(speaker.twitter.getOrElse("")).isEmpty) {
-                                <i class="icon-exclamation-sign error"></i>
-                            } else {
+                            @if(speaker.hasTwitter) {
                                 <i class="icon-ok alert-success"></i>
+                            } else {
+                                <i class="icon-exclamation-sign error"></i>
                             }
                             </td>
                         </tr>
