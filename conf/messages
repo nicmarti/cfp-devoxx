@@ -556,3 +556,17 @@ unknown=Unknown
 # The abstention button
 Abs=0
 trackAndUUIDs=
+
+mail.reset_password_link.subject=You asked to reset your Devoxx speaker''s access code at {0}
+mail.access_code.subject=Your access code for Devoxx CFP
+mail.account_created.subject=Welcome to the CFP for Devoxx !
+mail.email_validation.subject=Welcome to Devoxx, please validate your email address now
+mail.issue_reported.subject=New issue reported on CFP Belgium web site
+mail.cfp_message_to_speaker.subject=[Devoxx 2014] Message about your presentation {0}
+mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
+mail.draft_single_reminder.subject=Devoxx 2014 reminder : you have one proposal with status ''Draft''
+mail.draft_multiple_reminder.subject=Devoxx 2014 reminder : you have {0} proposals to submit 
+mail.proposal_approved.subject=Your proposal has been approved {0}
+mail.proposal_refused.subject=Your proposal has been refused {0}
+mail.speaker_cfp_results.subject=Call for Paper Devoxx 2014
+

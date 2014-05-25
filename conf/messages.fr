@@ -491,3 +491,16 @@ day-vendredi=Vendredi
 day-mercredi=Mercredi
 
 showAgendaByRoom=Agenda par salle
+
+mail.reset_password_link.subject=Vous avez demandé une réinitialisation de votre code d''accès speaker pour Devoxx à {0}
+mail.access_code.subject=Votre code d''accès speaker pour Devoxx
+mail.account_created.subject=Bienvenue sur le CFP de Devoxx !
+mail.email_validation.subject=Bienvenue à Devoxx, veuillez valider votre adresse email
+mail.issue_reported.subject=Nouveau problème enregistré sur le site web du CFP
+mail.cfp_message_to_speaker.subject=[Devoxx 2014] Message à propos de votre présentation {0}
+mail.speaker_message_to_cfp.subject=[{0}] ${1} a posté un nouveau message
+mail.draft_single_reminder.subject=Rappel Devoxx 2014 : vous avez une proposition au statut ''Brouillon''
+mail.draft_multiple_reminder.subject=Rappel Devoxx 2014 : vous avez {0} proposition(s) à soumettre
+mail.proposal_approved.subject=Votre proposition a été approuvée {0}
+mail.proposal_refused.subject=Votre proposition a été refusée {0}
+mail.speaker_cfp_results.subject=Appel à propositions Devoxx 2014
