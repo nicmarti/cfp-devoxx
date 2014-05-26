@@ -422,10 +422,11 @@ object Conference {
 
   implicit val confFormat = Json.format[Conference]
 
-  def devoxxFrance2014(implicit req: RequestHeader) = Conference("devoxxFR2014",
+  def devoxxFrance2014(implicit req: RequestHeader) = Conference(
+    ConferenceDescriptor.current().eventCode,
     "Devoxx France 2014, 16 au 18 avril 2014",
     Link(
-      routes.RestAPI.showConference("devoxxFR2014").absoluteURL().toString,
+      routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL().toString,
       routes.RestAPI.profile("conference").absoluteURL().toString,
       "See more details about Devoxx France 2014"
     ))

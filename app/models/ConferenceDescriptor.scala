@@ -1,7 +1,7 @@
 package models
 
 case class ConferenceDescriptor(
-    var confCode: String, var confUrlCode: String,
+    var eventCode: String, var confUrlCode: String,
     var shortYearlyName: String, var longYearlyName: String,
     var shortName: String, var longName: String,
     var frLangEnabled: Boolean,
@@ -12,7 +12,7 @@ case class ConferenceDescriptor(
 )
 object ConferenceDescriptor {
     def current() = ConferenceDescriptor(
-      confCode = "DevoxxBe2014",
+      eventCode = "DevoxxBe2014",
       // You will need to update conf/routes files with this code if modified
       confUrlCode = "devoxxfr2014",
       shortYearlyName = "DevoxxBe 2014",
