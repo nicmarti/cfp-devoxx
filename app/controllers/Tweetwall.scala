@@ -73,7 +73,7 @@ object Tweetwall extends Controller {
     implicit request =>
       request.session.get("token").map {
         token: String =>
-          Ok(views.html.Tweetwall.wallDevoxxFR2014())
+          Ok(views.html.Tweetwall.showWall())
       }.getOrElse {
         Redirect(routes.Tweetwall.authenticate)
       }
