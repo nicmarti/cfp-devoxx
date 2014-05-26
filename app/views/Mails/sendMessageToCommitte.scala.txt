@@ -14,7 +14,7 @@ Message:
 How to respond?
 
 Please, use this link to respond directly to the message :
-http://cfp.devoxx.be@routes.CFPAdmin.openForReview(proposal.id)
+http://@confDesc.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks,
 The Devoxx Team
