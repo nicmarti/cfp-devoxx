@@ -1,19 +1,19 @@
 @(proposal:models.Proposal)(implicit lang:Lang, confDesc: ConferenceDescriptor)
 --------------------------------------------------------------------
-  Welcome to Devoxx 2014
+  Welcome to @confDesc.longYearlyName
 --------------------------------------------------------------------
 English version below
 
 Bonjour,
 
 Nous avons le plaisir de vous informer que la présentation [@proposal.title] au format
-[@Messages(proposal.talkType.label)] a été approuvée pour Devoxx 2014 !
+[@Messages(proposal.talkType.label)] a été approuvée pour @confDesc.longYearlyName !
 
 Comment valider ou non votre participation ?
 ----------------------------------------------------------------------------------------------------------------------
 
 Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
-présence à Devoxx comme présentateur.
+présence à @confDesc.longName comme présentateur.
 
 Merci de valider dès maintenant en suivant ce lien dans votre navigateur :
 
@@ -27,13 +27,13 @@ Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour éc
 
 http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
 
-L'équipe de sélection de la conférence Devoxx
+L'équipe de sélection de la conférence @confDesc.longName
 
 ----------------------------------------------------------------------------------------------------------------------
 
  Hi,
 
- We're glad to inform you that your proposal for Devoxx 2014 has been accepted !
+ We're glad to inform you that your proposal for @confDesc.longYearlyName has been accepted !
  Proposition title : @proposal.title, of type [@Messages(proposal.talkType.label)].
 
  Important information
@@ -50,5 +50,5 @@ L'équipe de sélection de la conférence Devoxx
 
   http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
 
- The Devoxx team
+ The @confDesc.longName team
 

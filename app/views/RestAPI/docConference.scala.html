@@ -3,7 +3,7 @@
 @api("conference") {
 <div class="row">
     <div class="col-md-12">
-    <h1>Devoxx API</h1>
+    <h1>@confDesc.shortName API</h1>
     <hr>
        <h3>Documentation for "conference"</h3>
 
@@ -21,7 +21,7 @@
                 <pre>
 {
     "eventCode": "@confDesc.eventCode",
-    "label": "Devoxx France 2014, 16 au 18 avril 2014",
+    "label": "@confDesc.longYearlyName, @Messages(confDesc.confDatesI18nKey)",
     "links": [
         {
             "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/speakers",

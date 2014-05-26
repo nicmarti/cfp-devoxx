@@ -14,4 +14,4 @@ http://@confDesc.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks
 
-The Devoxx team.
+The @confDesc.longName team.

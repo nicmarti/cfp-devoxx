@@ -3,7 +3,7 @@
 @api("conferences") {
 <div class="row">
     <div class="col-md-12">
-    <h1>Devoxx API</h1>
+    <h1>@confDesc.shortName API</h1>
     <hr>
        <h3>Documentation for "conferences"</h3>
 
@@ -23,7 +23,7 @@
         {
             "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode",
             "rel": "http://@confDesc.cfpHostname/api/profile/conference",
-            "title": "See more details about Devoxx France 2014"
+            "title": "See more details about @confDesc.longName"
         }
     ]
 }

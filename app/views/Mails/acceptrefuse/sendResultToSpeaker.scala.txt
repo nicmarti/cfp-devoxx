@@ -6,10 +6,10 @@
 Cher(e) @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
-Nous avons le plaisir de vous annoncer qu'une proposition a été retenue pour Devoxx 2014 !
+Nous avons le plaisir de vous annoncer qu'une proposition a été retenue pour @confDesc.longYearlyName !
 Proposition acceptée: @listOfApprovedProposals.head.title
 Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et
-conditions de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
+conditions de @confDesc.longName. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
 
  http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
 
@@ -26,7 +26,7 @@ http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfAp
 }
 
 @if(listOfApprovedProposals.size>1){
-Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour Devoxx 2014 !
+Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour @confDesc.longYearlyName !
 
 Propositions acceptées
 ----------------------
@@ -40,7 +40,7 @@ Une proposition n'a pas été retenue, cependant nous vous remercions pour le su
 @listOfRefusedProposals.size de vos propositions n'ont pas été retenues, mais nous tenons à vous remercier pour les sujets proposés.
 }
 Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et conditions
-de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
+de @confDesc.longName. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
 
 http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
 
@@ -51,26 +51,26 @@ http://@confDesc.cfpHostname@routes.CallForPaper.homeForSpeaker()
 }
 
 @if(listOfApprovedProposals.size==0){
-Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour Devoxx 2014.
+Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour @confDesc.longYearlyName.
 Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 670 propositions de sujets
 pour 154 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s).
-Au nom de toute l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le 16 avril à Devoxx.
+Au nom de toute l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le 16 avril à @confDesc.longName.
 }
 
-L'équipe de sélection de la conférence Devoxx
+L'équipe de sélection de la conférence @confDesc.longName
 
 ------------------------------------------------------------------------------------------------------------------
 
 Dear @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){
-We're glad to inform you that your proposal for Devoxx 2014 has been approved!
+We're glad to inform you that your proposal for @confDesc.longYearlyName has been approved!
  - @listOfApprovedProposals.head.title
 
 What's next?
 ------------
 For us to now program your talks, you must accept or decline the general terms and conditions of
-Devoxx France. You will then be able to confirm that you are still ok to present your session :
+@confDesc.longName. You will then be able to confirm that you are still ok to present your session :
   http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
 
 @if(listOfRefusedProposals.size==1){
@@ -86,7 +86,7 @@ http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfAp
 }
 
 @if(listOfApprovedProposals.size>1){
-We're glad to inform you that several of your proposals have been approved for Devoxx 2014!
+We're glad to inform you that several of your proposals have been approved for @confDesc.longYearlyName!
 
 Approved proposals:
 -------------------
@@ -100,7 +100,7 @@ One of your proposal was not approved, mainly because we preferred to select som
 @listOfRefusedProposals.size other proposals were not selected and approved, we preferred to select some of your other talks for our program.
 }
 For us to now program your talks, you must accept or decline the general terms and conditions of
-Devoxx. You will then be able to confirm that you are still ok to present your sessions :
+@confDesc.longName. You will then be able to confirm that you are still ok to present your sessions :
 
 http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
 
@@ -111,11 +111,11 @@ http://@confDesc.cfpHostname@routes.CallForPaper.homeForSpeaker()
 }
 
 @if(listOfApprovedProposals.size==0){
-We're sorry to inform you that none of your proposals has been accepted for Devoxx 2014.
+We're sorry to inform you that none of your proposals has been accepted for @confDesc.longYearlyName.
 The program committee has received more than 670 proposals for 154 slots. As you can imagine, the selection of speakers
 was a quite uneasy task, considering that we received a lot of very interesting applications for the conference.
-We would like to thank you for your time and we look forward to see you on April, at Devoxx.
-Please, do not forget Devoxx UK in London, the CFP is also available at https://@confDesc.cfpHostname
+We would like to thank you for your time and we look forward to see you on April, at @confDesc.longName.
+Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com
 }
 
-The Devoxx program committee.
+The @confDesc.longName program committee.

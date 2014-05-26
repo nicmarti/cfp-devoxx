@@ -17,13 +17,13 @@ les propositions à la poubelle, sur votre interface de gestion.
 
 Merci !
 
-L'équipe de sélection de Devoxx France
+L'équipe de sélection de @confDesc.longName
 
 ------------------------------------------------------------------
 }
 Dear @firstName
 
-We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on Devoxx CFP.
+We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on @confDesc.longName CFP.
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.
 
 @proposals.map{proposal=>
@@ -34,6 +34,6 @@ If you don't want to receive this message, you can also move the draft proposals
 
 Thanks!
 
-The Devoxx team
+The @confDesc.longName team
 
 -----

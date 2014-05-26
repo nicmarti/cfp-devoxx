@@ -2,7 +2,7 @@
 
 @import helper.twitterBootstrap._
 
-@main("Devoxx 2014 - " + Messages("signup.title")) {
+@main(confDesc.longYearlyName+" - " + Messages("signup.title")) {
 
 <div class="row">
     <div class="col-md-12 page-header">
@@ -32,8 +32,8 @@
     <div class="col-md-4">
         <h3><i class="icon-external-link-sign"></i> @Html(Messages("register.withopenid"))</h3>
         <p>@Html(Messages("home.txt2"))</p>
-        <a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to Devoxx FR"><i class="icon-github-sign"></i> Github</a>
-        <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to Devoxx FR"><i class="icon-google-plus-sign"></i> Google</a>
+        <a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @confDesc.shortName"><i class="icon-github-sign"></i> Github</a>
+        <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @confDesc.shortName"><i class="icon-google-plus-sign"></i> Google</a>
     </div>
 </div>
 }
