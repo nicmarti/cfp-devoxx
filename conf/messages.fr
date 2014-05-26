@@ -100,7 +100,7 @@ summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vo
 lang=Langue
 lang.help=100% des présentations à {0} doivent être en Anglais,
 mainSpeaker=Présentateur principal
-mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à la conférence uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
+mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée {0} jours à la conférence uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
 talkType.help=Chaque type de conférence est détaillé sur la page <a href\="{0}\#confType" target\="new">FAQ</a> du site.
 
 
@@ -248,7 +248,7 @@ secondarySpeaker=Présentateur adjoint (optionnel)
 select.secondarySpeaker=Sélectionnez un speaker
 proposal.otherSpeakers=Autres présentateurs
 otherSpeakers=Autres présentateurs
-proposal.buyPass=Entrée 3 jours "speaker" inclus ?
+proposal.buyPass=Entrée {0} jours "speaker" inclus ?
 freepass=Oui
 no.freepass=Non
 speakers.updated=Liste des présentateurs mises à jour
