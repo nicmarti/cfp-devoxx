@@ -27,7 +27,8 @@ case class ConferenceDescriptor(
     var timing: ConferenceTiming,
     var bitbucketProps: BitbucketProperties,
     var hosterName: String, var hosterWebsite: String,
-    var hashTag: String
+    var hashTag: String,
+    var tracks: Seq[Track]
 )
 object ConferenceDescriptor {
     def current() = ConferenceDescriptor(
@@ -61,7 +62,20 @@ object ConferenceDescriptor {
       ),
       bitbucketProps = BitbucketProperties("bitbucket.username", "bitbucket.token", "bitbucket.issues.url"),
       hosterName = "Clever-cloud", hosterWebsite="http://www.clever-cloud.com/#DevoxxFR",
-      hashTag = "#DevoxxFR"
+      hashTag = "#DevoxxFR",
+
+      tracks = List(
+        Track("startup", "startup.label", "/assets/images/track/startup.png", "track.startup.title", "track.startup.desc"),
+        Track("ssj", "ssj.label", "http://devoxx.be/images/tracks/95ddefdd.icon_javaee.png", "track.ssj.title", "track.ssj.desc"),
+        Track("java", "java.label", "http://devoxx.be/images/tracks/aae8d181.icon_javase.png", "track.java.title", "track.java.desc"),
+        Track("mobile", "mobile.label", "http://devoxx.be/images/tracks/1d2c40dd.icon_mobile.png", "track.mobile.title", "track.mobile.desc"),
+        Track("archisec", "archisec.label", "http://devoxx.be/images/tracks/9943da91.icon_architecture.png", "track.archisec.title", "track.archisec.desc"),
+        Track("methodevops", "methodevops.label", "http://devoxx.be/images/tracks/3ec02a75.icon_methology.png", "track.methodevops.title", "track.methodevops.desc"),
+        Track("future", "future.label", "http://devoxx.be/images/tracks/a20b9b0a.icon_future.png", "track.future.title", "track.future.desc"),
+        Track("lang", "lang.label", "http://devoxx.be/images/tracks/6caef5cf.icon_alternative.png", "track.lang.title", "track.lang.desc"),
+        Track("cloud", "cloud.label", "http://devoxx.be/images/tracks/eca0b0a1.icon_cloud.png", "track.cloud.title", "track.cloud.desc"),
+        Track("web", "web.label", "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
+      )
     )
 }
 
