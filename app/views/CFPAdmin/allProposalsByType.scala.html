@@ -1,4 +1,4 @@
-@(proposals:List[Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposals:List[Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @main(confType + ", submitted proposals") {
 

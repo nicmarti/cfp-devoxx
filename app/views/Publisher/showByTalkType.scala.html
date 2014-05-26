@@ -1,4 +1,4 @@
-@(proposals:Iterable[Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposals:Iterable[Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 @views.html.Publisher.devoxxFR2014(Messages(talkType)){
 <section id="container" class="one-column">
     <div id="content" role="main">

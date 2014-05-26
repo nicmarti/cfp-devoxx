@@ -1,4 +1,4 @@
-@(proposal:Proposal,publishedConfiguration:Option[String], slot:Option[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposal:Proposal,publishedConfiguration:Option[String], slot:Option[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @views.html.Publisher.devoxxFR2014(proposal.id+" "+proposal.title){
 <section id="container" class="one-column">

@@ -37,7 +37,8 @@ import play.api.i18n.Messages
  * Created: 04/10/2013 15:56
  */
 
-object Mails {
+object Mails extends ConferenceDescriptorImplicit {
+
   lazy val from = ConferenceDescriptor.current().fromEmail
   lazy val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
   lazy val bcc = ConferenceDescriptor.current().bccEmail

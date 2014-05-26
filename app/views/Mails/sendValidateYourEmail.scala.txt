@@ -1,4 +1,4 @@
-@(validationLink:String)
+@(validationLink:String)(implicit confDesc: ConferenceDescriptor)
 
 Welcome to Devoxx!
 

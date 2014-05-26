@@ -1,4 +1,4 @@
-@(toSpeaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])(implicit lang:Lang)
+@(toSpeaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])(implicit lang:Lang, confDesc: ConferenceDescriptor)
 <small>English version below</small>
 <hr>
 Cher(e) @toSpeaker.firstName.getOrElse("speaker")

@@ -1,4 +1,4 @@
-@(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 @views.html.Publisher.devoxxFR2014(speaker.cleanName){
 <section id="container" class="one-column">
     <div id="content" role="main">
