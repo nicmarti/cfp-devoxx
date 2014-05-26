@@ -444,7 +444,7 @@ object CFPAdmin extends SecureCFPController {
                   , email=Some(s.email)
                   , website=s.blog
                   , phonenumber = None
-                  , title=Some("Speaker at "+ConferenceDescriptor.current().longYearlyName)
+                  , title=Some("Speaker at "+ConferenceDescriptor.current().naming.longYearlyName)
               )
 
 

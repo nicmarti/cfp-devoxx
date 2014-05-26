@@ -2,14 +2,14 @@
 
 @import helper.twitterBootstrap._
 
-@main(Messages("cfp.title", confDesc.longYearlyName)){
+@main(Messages("cfp.title", confDesc.naming.longYearlyName)){
 <div class="container">
     <div class="bs-docs-section clearfix">
         <div class="row">
             <div class="col-md-12">
                 <div class="page-header">
                     <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
-                    @confDesc.longYearlyName, @Messages(confDesc.confDatesI18nKey)</small></h2>
+                    @confDesc.naming.longYearlyName, @Messages(confDesc.timing.datesI18nKey)</small></h2>
                 </div>
             </div>
             <div class="col-md-12">
@@ -67,7 +67,7 @@
 
             <div class="col-md-12">
                 <h3><i class="icon-book"></i> @Messages("theme.title")</h3>
-                <p>@Messages("theme.track", confDesc.longYearlyName)</p>
+                <p>@Messages("theme.track", confDesc.naming.longYearlyName)</p>
                 <table class="table table-bordered table-striped">
                     <tbody>
                         <tr>
@@ -125,7 +125,7 @@
 
             <div class="col-md-12">
                 <h3><i class="icon-flag"></i> English?</h3>
-                <p>Devoxx France's presentations are 25% in English and 75% French.</p>
+                <p>@confDesc.naming.longName's presentations are 25% in English and 75% French.</p>
             </div>
         </div>
     </div>

@@ -1,20 +1,20 @@
 @(validationLink:String)(implicit confDesc: ConferenceDescriptor)
 
-<h2>Welcome to @confDesc.longName!</h2>
-<p>Thanks for joining @confDesc.longName CFP Web site. To validate your email address, please copy the following link to your browser address bar:</p>
+<h2>Welcome to @confDesc.naming.longName!</h2>
+<p>Thanks for joining @confDesc.naming.longName CFP Web site. To validate your email address, please copy the following link to your browser address bar:</p>
 <p><a href="@validationLink">@validationLink</a></p>
 <br/>
-<p>The @confDesc.longName Team</p>
+<p>The @confDesc.naming.longName Team</p>
 <br/>
 <hr>
 @if(confDesc.frLangEnabled) {
-<h2>Bienvenue à @confDesc.longName!</h2>
-<p>Merci de vous êtes inscrit sur le site du CFP de @confDesc.longName.
+<h2>Bienvenue à @confDesc.naming.longName!</h2>
+<p>Merci de vous être inscrit sur le site du CFP de @confDesc.naming.longName.
     Pour valider votre adresse de courrier électronique, merci d'ouvrir le lien suivant ou de le recopier
     dans la barre d'adresse de votre navigateur internet :</p>
 <p><a href="@validationLink">@validationLink</a></p>
 <br/>
-<p>L'équipe @confDesc.longName</p>
+<p>L'équipe @confDesc.naming.longName</p>
 <br/>
 <hr>
 }

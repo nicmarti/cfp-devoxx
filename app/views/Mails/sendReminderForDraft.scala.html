@@ -10,7 +10,7 @@
     votre interface, dans le résumé de vos propositions.</p>
     <br>
     @proposals.map{proposal=>
-     - @proposal.title <a href="http://@confDesc.cfpHostname@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
+     - @proposal.title <a href="http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
     }
     <br>
     <p>Si vous ne souhaitez plus recevoir ce message, et que vous n'avez pas d'autres propositions de sujets, vous pouvez placer
@@ -18,22 +18,22 @@
     
     <p>Merci !</p>
     <br>
-    L'équipe de sélection de @confDesc.longName<br>
+    L'équipe de sélection de @confDesc.naming.longName<br>
     <br>
     <hr>
     <br>
 }
 <p>Dear @firstName</p>
 <br>
-<p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on @confDesc.longName CFP.
+<p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on @confDesc.naming.longName CFP.
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.</p>
 
 @proposals.map{proposal=>
-- @proposal.title <a href="http://@confDesc.cfpHostname@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
+- @proposal.title <a href="http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
 }
 <br>
 <p>If you don't want to receive this message, you can also move the draft proposals to Trash from the home section.</p>
 <br>
 <p>Thanks!</p>
 
-<p>The @confDesc.longName team</p>
+<p>The @confDesc.naming.longName team</p>

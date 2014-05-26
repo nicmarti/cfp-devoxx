@@ -59,18 +59,18 @@ object Issue {
   }
 
   def publish(issue: Issue) = {
-    val postUrl = Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketIssuesUrlConfProp).getOrElse("Missing bitbucket issues url in config file")
+    val postUrl = Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketProps.issuesUrlConfigProperty).getOrElse("Missing bitbucket issues url in config file")
 
-    val bugReport:String = s"# AUTOMATIC Bug Report\n\n## Message posté du site "+ConferenceDescriptor.current().cfpHostname+"\n## Reporté par ${issue.reportedBy}\n Git Hash ${issue.gitHash}  Git branch: ${issue.gitBranch}\n-----------------\n${issue.msg}"
+    val bugReport:String = s"# AUTOMATIC Bug Report\n\n## Message posté du site "+ConferenceDescriptor.current().conferenceUrls.cfpHostname+"\n## Reporté par ${issue.reportedBy}\n Git Hash ${issue.gitHash}  Git branch: ${issue.gitBranch}\n-----------------\n${issue.msg}"
 
     // See Bitbucket doc https://confluence.atlassian.com/display/BITBUCKET/issues+Resource#issuesResource-POSTanewissue
     val futureResult = WS.url(postUrl)
       .withAuth(
-        username=Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketCredentialsUsernameConfProp).getOrElse("Missing bitbucket username in config file"),
-        password=Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketCredentialsTokenConfProp).getOrElse("Missing bitbucket token in config file"),
+        username=Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketProps.usernameConfigProperty).getOrElse("Missing bitbucket username in config file"),
+        password=Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketProps.tokenConfigProperty).getOrElse("Missing bitbucket token in config file"),
         scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
       .withHeaders(
-      ("Accept", "application/json"), ("User-Agent", "CFP "+ConferenceDescriptor.current().cfpHostname)
+      ("Accept", "application/json"), ("User-Agent", "CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname)
     ).post(
       Map(
         "status"-> Seq("new"),

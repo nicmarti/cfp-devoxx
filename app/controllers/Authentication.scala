@@ -232,7 +232,7 @@ object Authentication extends Controller with ConferenceDescriptorImplicit {
     implicit request =>
 
       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
-      val futureResult = WS.url(url).withHeaders("User-agent" -> ("CFP "+ConferenceDescriptor.current().cfpHostname), "Accept" -> "application/json").get()
+      val futureResult = WS.url(url).withHeaders("User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname), "Accept" -> "application/json").get()
         futureResult.map {
           result =>
             result.status match {
@@ -379,7 +379,7 @@ object Authentication extends Controller with ConferenceDescriptorImplicit {
             case (clientId, clientSecret) => {
               val url = "https://accounts.google.com/o/oauth2/token"
               val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
-              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> ("CFP "+ConferenceDescriptor.current().cfpHostname))).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname))).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
@@ -417,7 +417,7 @@ object Authentication extends Controller with ConferenceDescriptorImplicit {
           // For Google+ profile
           //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
           val futureResult = WS.url(url).withHeaders(
-              "User-agent" -> ("CFP "+ConferenceDescriptor.current().cfpHostname),
+              "User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname),
               "Accept" -> "application/json"
           ).get()
 

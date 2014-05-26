@@ -3,7 +3,7 @@
 @api("schedules") {
 <div class="row">
     <div class="col-md-12">
-    <h1>@confDesc.shortName API</h1>
+    <h1>@confDesc.naming.shortName API</h1>
     <hr>
        <h3>Documentation for "schedules"</h3>
 
@@ -21,18 +21,18 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Con
 {
     "links": [
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/schedules/wednesday/",
-            "rel": "http://@confDesc.cfpHostname/api/profile/schedule",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/wednesday/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedule",
             "title": "Schedule for Wednesday 16th April 2014"
         },
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/schedules/thursday/",
-            "rel": "http://@confDesc.cfpHostname/api/profile/schedule",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/thursday/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedule",
             "title": "Schedule for Thursday 17th April 2014"
         },
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/schedules/friday/",
-            "rel": "http://@confDesc.cfpHostname/api/profile/schedule",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/friday/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedule",
             "title": "Schedule for Friday 18th April 2014"
         }
     ]
