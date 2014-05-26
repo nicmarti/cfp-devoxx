@@ -1,6 +1,6 @@
 package models
 
-case class ConferenceDescriptor(
+class ConferenceDescriptor(
     var eventCode: String, var confUrlCode: String,
     var shortYearlyName: String, var longYearlyName: String,
     var shortName: String, var longName: String,
@@ -10,10 +10,11 @@ case class ConferenceDescriptor(
     var faqUrl: String, var registrationUrl: String, var confWebsite: String, var cfpHostname: String,
     var confDatesI18nKey: String,
     var bitbucketIssuesUrlConfProp: String, var bitbucketCredentialsUsernameConfProp: String, var bitbucketCredentialsTokenConfProp: String,
-    var hosterName: String, var hosterWebsite: String
+    var hosterName: String, var hosterWebsite: String,
+    var hashTag: String
 )
 object ConferenceDescriptor {
-    def current() = ConferenceDescriptor(
+    def current() = new ConferenceDescriptor(
       eventCode = "DevoxxBe2014",
       // You will need to update conf/routes files with this code if modified
       confUrlCode = "devoxxfr2014",
@@ -34,7 +35,8 @@ object ConferenceDescriptor {
       bitbucketIssuesUrlConfProp = "bitbucket.issues.url",
       bitbucketCredentialsUsernameConfProp = "bitbucket.username",
       bitbucketCredentialsTokenConfProp = "bitbucket.token",
-      hosterName = "Clever-cloud", hosterWebsite="http://www.clever-cloud.com/#Devoxx"
+      hosterName = "Clever-cloud", hosterWebsite="http://www.clever-cloud.com/#Devoxx",
+      hashTag = "#Devoxx"
     )
 }
 // These are properties not i18n-ed used in various places in the app
