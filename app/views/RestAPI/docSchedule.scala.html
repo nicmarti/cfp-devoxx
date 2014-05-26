@@ -3,7 +3,7 @@
 @api("schedule") {
 <div class="row">
     <div class="col-md-12">
-    <h1>@confDesc.shortName API</h1>
+    <h1>@confDesc.naming.shortName API</h1>
     <hr>
        <h3>Documentation for "schedule"</h3>
 
@@ -111,8 +111,8 @@
                 "speakers": [
                     {
                         "link": {
-                            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/speakers/70365c89d2a734da0d24d091f7ec0af77ba90701",
-                            "rel": "http://@confDesc.cfpHostname/api/profile/speaker",
+                            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers/70365c89d2a734da0d24d091f7ec0af77ba90701",
+                            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/speaker",
                             "title": "José Paumard"
                         },
                         "name": "José Paumard"

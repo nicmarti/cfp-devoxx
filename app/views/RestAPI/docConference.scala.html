@@ -3,7 +3,7 @@
 @api("conference") {
 <div class="row">
     <div class="col-md-12">
-    <h1>@confDesc.shortName API</h1>
+    <h1>@confDesc.naming.shortName API</h1>
     <hr>
        <h3>Documentation for "conference"</h3>
 
@@ -21,16 +21,16 @@
                 <pre>
 {
     "eventCode": "@confDesc.eventCode",
-    "label": "@confDesc.longYearlyName, @Messages(confDesc.confDatesI18nKey)",
+    "label": "@confDesc.naming.longYearlyName, @Messages(confDesc.timing.datesI18nKey)",
     "links": [
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/speakers",
-            "rel": "http://@confDesc.cfpHostname/api/profile/list-of-speakers",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/list-of-speakers",
             "title": "See all speakers"
         },
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/schedules/",
-            "rel": "http://@confDesc.cfpHostname/api/profile/schedules",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedules",
             "title": "See the whole agenda"
         }
     ]

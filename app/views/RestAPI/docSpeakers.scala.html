@@ -3,7 +3,7 @@
 @api("Doc doc speakers") {
 <div class="row">
     <div class="col-md-12">
-    <h1>@confDesc.shortName API</h1>
+    <h1>@confDesc.naming.shortName API</h1>
     <hr>
        <h3>Documentation for "list-of-speakers"</h3>
 
@@ -30,8 +30,8 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Confere
         "lastName": "Crepet",
         "links": [
             {
-                "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/speakers/6cbb41adbc049f923c4327ed3642f208faf4e03f",
-                "rel": "http://@confDesc.cfpHostname/api/profile/speaker",
+                "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers/6cbb41adbc049f923c4327ed3642f208faf4e03f",
+                "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/speaker",
                 "title": "Agnès Crepet"
             }
         ],
@@ -43,8 +43,8 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Confere
         "lastName": "Regnier",
         "links": [
             {
-                "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/speakers/bf8a71eed7ae0339dd4f1aca4899939fad7ad87b",
-                "rel": "http://@confDesc.cfpHostname/api/profile/speaker",
+                "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers/bf8a71eed7ae0339dd4f1aca4899939fad7ad87b",
+                "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/speaker",
                 "title": "Alain Regnier"
             }
         ],

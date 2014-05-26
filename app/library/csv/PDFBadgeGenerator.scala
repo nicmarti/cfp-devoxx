@@ -147,7 +147,7 @@ object PDFBadgeGenerator {
     document.addCreationDate()
     document.addAuthor("Nicolas MARTIGNOLE")
     document.addCreator("Play! Framework")
-    document.addTitle("Badges "+ConferenceDescriptor.current().longYearlyName)
+    document.addTitle("Badges "+ConferenceDescriptor.current().naming.longYearlyName)
 
     document.close()
   }

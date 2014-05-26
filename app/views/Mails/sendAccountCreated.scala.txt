@@ -2,16 +2,16 @@
 
 Dear @firstName
 
-Welcome to @confDesc.longName CFP (Call For Paper)
+Welcome to @confDesc.naming.longName CFP (Call For Paper)
 
-As a convenience to you, we have created an account for you on @confDesc.longName. This account will enable to you access your profile and your submissions.
-To access your @confDesc.longName speaker dashboard, please click in the link below.
+As a convenience to you, we have created an account for you on @confDesc.naming.longName. This account will enable to you access your profile and your submissions.
+To access your @confDesc.naming.longName speaker dashboard, please click in the link below.
 
-http://@confDesc.cfpHostname@routes.Application.index()
+http://@confDesc.conferenceUrls.cfpHostname@routes.Application.index()
 
 - Your username is @email
 - Your password is @tempPassword
 
 Best regards
 
-The @confDesc.longName team
+The @confDesc.naming.longName team

@@ -10,8 +10,8 @@ Message:
 ------------------------------------------------------------------------------
 
 Please, use this link to respond directly to the message :
-http://@confDesc.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
+http://@confDesc.conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks
 
-The @confDesc.longName team.
+The @confDesc.naming.longName team.

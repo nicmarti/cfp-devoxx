@@ -260,7 +260,7 @@ object Proposal {
                           userGroup:Boolean ): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      ConferenceDescriptor.current().longYearlyName,
+      ConferenceDescriptor.current().naming.longYearlyName,
       lang,
       title,
       "no_main_speaker",
