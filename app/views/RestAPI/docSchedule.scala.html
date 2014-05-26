@@ -67,7 +67,7 @@
         
         <h4>Sample:</h4>
     <code>
-    curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()</a>
+    curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"wednesday").absoluteURL()</a>
     </code>
 
     <h4>Result:</h4>

@@ -46,37 +46,37 @@
 
     <h4>See details for an event</h4>
     <code>
-        curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.currentConference.eventCode).absoluteURL()</a>
     </code>
 
     <h4>See all speakers for this event</h4>
     <code>
-        curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showSpeakers(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showSpeakers(Conference.currentConference.eventCode).absoluteURL()</a>
     </code>
 
     <h4>See details for a specific speaker</h4>
     <code>
-        curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeaker(Conference.currentConference.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.currentConference.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
     </code>
 
     <h4>See details for a talk</h4>
     <code>
-        curl -H "Accept: application/json" <a href="@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()">@routes.RestAPI.showTalk(Conference.devoxxFrance2014.eventCode, "QDI-693").absoluteURL()</a>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showTalk(Conference.currentConference.eventCode, "QDI-693").absoluteURL()">@routes.RestAPI.showTalk(Conference.currentConference.eventCode, "QDI-693").absoluteURL()</a>
     </code>
 
     <h4>See the list of Schedules</h4>
     <code>
-        curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showAllSchedules(Conference.currentConference.eventCode).absoluteURL()</a>
     </code>
 
     <h4>See the schedule for Wednesday</h4>
     <code>
-        curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.devoxxFrance2014.eventCode,"wednesday").absoluteURL()</a>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"wednesday").absoluteURL()</a>
     </code>
 
     <h4>French is also supported, use Accept-language header :</h4>
     <code>
-        curl -H "Accept: application/json" -H "Accept-language: fr-FR" <a href="@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.devoxxFrance2014.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
+        curl -H "Accept: application/json" -H "Accept-language: fr-FR" <a href="@routes.RestAPI.showSpeaker(Conference.currentConference.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()">@routes.RestAPI.showSpeaker(Conference.currentConference.eventCode, "25b6eeb75c18e3465d5cddf2be297b8863006551").absoluteURL()</a>
     </code>
     </div>
 </div>

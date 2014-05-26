@@ -13,7 +13,7 @@
 
         <h4>Sample:</h4>
     <code>
- curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+ curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.currentConference.eventCode).absoluteURL()</a>
       </code>
 
         <h4>Result:</h4>
