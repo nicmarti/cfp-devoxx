@@ -48,7 +48,7 @@
                             </tr>
                             <tr>
                                 <th>@Messages("sw.proposal.track")</th>
-                                <td>@tags.publisher.renderIconForTrack(proposal.track.id) @Messages(proposal.track.label)</td>
+                                <td>@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
                             </tr>
                             @if(proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).nonEmpty){
                              <tr>

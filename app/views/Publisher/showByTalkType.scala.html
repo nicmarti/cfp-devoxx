@@ -9,7 +9,7 @@
             <div class="entry-content">
                 <h3>@Messages("sw.talkType")</h3>
                  @proposals.groupBy(_.track).map{case(track:Track, proposalsTrack:List[Proposal])=>
-                     <h4>@tags.publisher.renderIconForTrack(track.id) @Messages(track.label)</h4>
+                     <h4>@tags.publisher.renderIconForTrack(track) @Messages(track.label)</h4>
                      <ul>
                      @proposalsTrack.sortBy(_.title).map{ proposal:Proposal=>
                         <li>

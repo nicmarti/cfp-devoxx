@@ -70,53 +70,12 @@
                 <p>@Messages("theme.track", confDesc.naming.longYearlyName)</p>
                 <table class="table table-bordered table-striped">
                     <tbody>
-                        <tr>
-                            <td>@Messages("track.java.title")
-                            </td>
-                            <td>@Messages("track.java.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                             @Messages("track.web.title")
-                            </td>
-                            <td>@Messages("track.web.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                            @Messages("track.mobile.title")
-                            </td>
-                            <td>@Messages("track.mobile.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                            @Messages("track.startup.title")</td>
-                            <td>@Messages("track.startup.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                            @Messages("track.ssj.title")</td>
-                            <td>@Messages("track.ssj.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.archisec.title")</td>
-                            <td>@Messages("track.archisec.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.lang.title")</td>
-                            <td>@Messages("track.lang.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.methodevops.title")</td>
-                            <td>@Messages("track.methodevops.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.future.title")</td>
-                            <td>@Messages("track.future.desc")</td>
-                        </tr>
-                         <tr>
-                            <td>@Messages("track.cloud.title")</td>
-                            <td>@Messages("track.cloud.desc")</td>
-                        </tr>
+                        @for(track <- confDesc.tracks) {
+                            <tr>
+                                <td>@Messages(track.i18nTitleProp)</td>
+                                <td>@Messages(track.i18nDescProp)</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
 
