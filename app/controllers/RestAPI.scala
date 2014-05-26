@@ -422,7 +422,7 @@ object Conference {
 
   implicit val confFormat = Json.format[Conference]
 
-  def devoxxFrance2014(implicit req: RequestHeader) = Conference(
+  def currentConference(implicit req: RequestHeader) = Conference(
     ConferenceDescriptor.current().eventCode,
     "Devoxx France 2014, 16 au 18 avril 2014",
     Link(
@@ -432,10 +432,10 @@ object Conference {
     ))
 
   def all(implicit req: RequestHeader) = {
-    List(devoxxFrance2014)
+    List(currentConference)
   }
 
   // Super fast, super crade, super je m'en fiche pour l'instant
-  def find(eventCode: String)(implicit req: RequestHeader): Option[Conference] = Option(devoxxFrance2014)
+  def find(eventCode: String)(implicit req: RequestHeader): Option[Conference] = Option(currentConference)
 
 }
