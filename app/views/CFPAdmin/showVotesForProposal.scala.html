@@ -1,4 +1,4 @@
-@(currentUser:String, proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewer:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(currentUser:String, proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewer:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">

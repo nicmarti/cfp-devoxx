@@ -1,4 +1,4 @@
-@(email:String, code:String)
+@(email:String, code:String)(implicit confDesc: ConferenceDescriptor)
 
 ------------------------------------------------------------------------------
                       Welcome to Devoxx CFP!

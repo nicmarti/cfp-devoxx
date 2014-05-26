@@ -1,4 +1,4 @@
-@(resetUrl:String)
+@(resetUrl:String)(implicit confDesc: ConferenceDescriptor)
 
 Did you forget your CFP Devoxx access code?
 -------------------------------------------

@@ -1,4 +1,4 @@
-@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils

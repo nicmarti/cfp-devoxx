@@ -1,4 +1,4 @@
-@(proposal:models.Proposal)(implicit lang:Lang)
+@(proposal:models.Proposal)(implicit lang:Lang, confDesc: ConferenceDescriptor)
 --------------------------------------------------------------------
   Welcome to Devoxx 2014
 --------------------------------------------------------------------

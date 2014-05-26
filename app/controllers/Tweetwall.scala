@@ -53,7 +53,7 @@ import akka.actor.{ActorRef, Props, Actor}
  * Original version created by Nicolas Martignole (@nmartignole) march 2014
  * Actor support added by Mathieu Ancelin (@TrevorReznik)
  */
-object Tweetwall extends Controller {
+object Tweetwall extends Controller with ConferenceDescriptorImplicit {
 
   val cfg = Play.application.configuration
 

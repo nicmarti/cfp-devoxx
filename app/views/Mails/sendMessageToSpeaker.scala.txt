@@ -1,4 +1,4 @@
-@(fromName:String, proposal:models.Proposal, msg:String)
+@(fromName:String, proposal:models.Proposal, msg:String)(implicit confDesc: ConferenceDescriptor)
 
 Hi,
 
