@@ -6,7 +6,8 @@ case class ConferenceDescriptor(
     var shortName: String, var longName: String,
     var fromEmail: String, var bccEmail: Option[String], var bugReportRecipient: String,
     var faqUrl: String,
-    var confDatesI18nKey: String
+    var confDatesI18nKey: String,
+    var bitbucketIssuesUrlConfProp: String, var bitbucketCredentialsUsernameConfProp: String, var bitbucketCredentialsTokenConfProp: String
 )
 object ConferenceDescriptor {
     def current() = ConferenceDescriptor(
@@ -21,7 +22,10 @@ object ConferenceDescriptor {
       bccEmail = Option("nicolas.martignole@devoxx.fr"),
       bugReportRecipient = "nicolas.martignole@devoxx.fr",
       faqUrl = "http://www.devoxx.fr/faq/",
-      confDatesI18nKey = "devoxxbe2014.dates"
+      confDatesI18nKey = "devoxxbe2014.dates",
+      bitbucketIssuesUrlConfProp = "bitbucket.issues.url",
+      bitbucketCredentialsUsernameConfProp = "bitbucket.username",
+      bitbucketCredentialsTokenConfProp = "bitbucket.token"
     )
 }
 // These are properties not i18n-ed used in various places in the app
