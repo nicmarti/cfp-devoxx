@@ -3,11 +3,11 @@
 @api("Doc docConferences") {
 <div class="row">
     <div class="col-md-12">
-    <h1>Devoxx API</h1>
+    <h1>@confDesc.shortName API</h1>
     <hr>
        <h3>Documentation for "links"</h3>
 
-        <p>The "Link" profile object is a Devoxx object that defines a relationship between 2 resources.</p>
+        <p>The "Link" profile object is a @confDesc.shortName object that defines a relationship between 2 resources.</p>
         <ul>
             <li><strong>Href</strong> is an absolute URL, that a client may follow to load this resource's content.</li>
             <li><strong>Rel</strong> is an absolute URL to a Profile definition for the target resource designed by href.</li>
@@ -22,7 +22,7 @@
         {
             "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode",
             "rel": "http://@confDesc.cfpHostname/api/profile/conference",
-            "title": "See more details about Devoxx France 2014"
+            "title": "See more details about @confDesc.longYearlyName"
         }
 }
                 </pre>

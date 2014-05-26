@@ -1,12 +1,12 @@
 @(resetUrl:String)(implicit confDesc: ConferenceDescriptor)
 
-Did you forget your CFP Devoxx access code?
+Did you forget your @confDesc.longName access code?
 -------------------------------------------
-Someone asked to reset your Devoxx access code. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.
+Someone asked to reset your @confDesc.longName access code. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.
 
 Please visit this link = @Html(resetUrl)
 
 We don't want to store your super secret password, that might be the same one as your Google Account. We prefer to generate
 a random access code for your. We also encourage you to use one of our OpenID's providers like Github or Google+. Simpler, more secure, that just rocks!
 
-The Devoxx team
+@confDesc.longName team

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>DevoxxFR REST API - @title</title>
+<title>@confDesc.shortName REST API - @title</title>
 <link href="@routes.Assets.at(path="/public",file="css/bootstrap.cosmo.min.css")" rel="stylesheet">
 <link href="@routes.Assets.at(path="/public",file="css/font-awesome.min.css")" rel="stylesheet">
 <link href="@routes.Assets.at(path="/public",file="css/bootswatch.min.css")" rel="stylesheet">
@@ -14,7 +14,7 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="/" class="navbar-brand">Devox<span class="yl">x</span> BE CFP</a>
+            <a href="/" class="navbar-brand">@confDesc.longSplittedName_whiteStart<span class="yl">@confDesc.longSplittedName_colored</span> @confDesc.longSplittedName_whiteEnd CFP</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
             </button>
@@ -25,7 +25,7 @@
                 <li><a href="@routes.RestAPI.index()">@Messages("nav.homeREST")</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span> BE website</a></li>
+                <li><a href="http://www.devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> @confDesc.longSplittedName_whiteStart<span class="yl">@confDesc.longSplittedName_colored</span> @confDesc.longSplittedName_whiteEnd website</a></li>
             </ul>
         </div>
     </div>
@@ -37,7 +37,7 @@
   <div class="container">
     <div>
       <hr>
-        <small><i class="icon-bullhorn"></i> Devoxx Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
+        <small><i class="icon-bullhorn"></i> @confDesc.longName Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
         <small><i class="icon-cloud-upload"></i> Hosted on <a href="http://www.clever-cloud.com/#DevoxxFR">Clever-cloud</a></small>
     </div>
   </div>

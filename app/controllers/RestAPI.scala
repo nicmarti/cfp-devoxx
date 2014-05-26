@@ -405,7 +405,7 @@ object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderN
         block(request)
       }
     }.getOrElse {
-      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with Devoxx API"))
+      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with "+ConferenceDescriptor.current().longName+" API"))
     }
   }
 }
@@ -424,11 +424,11 @@ object Conference {
 
   def currentConference(implicit req: RequestHeader) = Conference(
     ConferenceDescriptor.current().eventCode,
-    "Devoxx France 2014, 16 au 18 avril 2014",
+    ConferenceDescriptor.current().longYearlyName+", "+Messages(ConferenceDescriptor.current().confDatesI18nKey),
     Link(
       routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL().toString,
       routes.RestAPI.profile("conference").absoluteURL().toString,
-      "See more details about Devoxx France 2014"
+      "See more details about "+ConferenceDescriptor.current().longYearlyName
     ))
 
   def all(implicit req: RequestHeader) = {

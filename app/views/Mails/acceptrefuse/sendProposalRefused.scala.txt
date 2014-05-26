@@ -11,18 +11,18 @@ notre site plus d'informations sur la sélection.
 
 Merci pour votre proposition,
 
-L'équipe de sélection de la conférence Devoxx
+L'équipe de sélection de la conférence @confDesc.longName
 
 ----------------------------------------------------------------------------------------------------------------
 
 Hi,
 
-We're sorry to inform you that your proposal for Devoxx 2014 was refused
+We're sorry to inform you that your proposal for @confDesc.longYearlyName was refused
 Proposition title : @proposal.title, @proposal.talkType.label.
 
 We'd like to thank you sincerly, for the time and your work.
 If you like to register, we still have our early bird price, please visit http://reg.devoxx.be.
 
 Thanks for your time,
-The Devoxx team
+The @confDesc.longName team
  

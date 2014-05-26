@@ -18,14 +18,14 @@
     
     <p>Merci !</p>
     <br>
-    L'équipe de sélection de Devoxx France<br>
+    L'équipe de sélection de @confDesc.longName<br>
     <br>
     <hr>
     <br>
 }
 <p>Dear @firstName</p>
 <br>
-<p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on Devoxx CFP.
+<p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on @confDesc.longName CFP.
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.</p>
 
 @proposals.map{proposal=>
@@ -36,4 +36,4 @@ You must submit a talk for review on your private CFP section, so that the progr
 <br>
 <p>Thanks!</p>
 
-<p>The Devoxx team</p>
+<p>The @confDesc.longName team</p>

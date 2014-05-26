@@ -1,14 +1,14 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
-@api("Devoxx API") {
+@api(confDesc.shortName+" API") {
 <div class="row">
     <div class="col-md-12">
-    <h1>Devoxx API</h1>
+    <h1>@confDesc.shortName API</h1>
     <hr>
-    <h3>Welcome to Devoxx France REST API.</h3>
+    <h3>Welcome to @confDesc.longName REST API.</h3>
     <div class="panel panel-info">
         <div class="panel-heading">
-            <h4><i class="icon-info-sign"></i> API is now stable and ready for Devoxx France</h4>
+            <h4><i class="icon-info-sign"></i> API is now stable and ready for @confDesc.longName</h4>
         </div>
         <div class="panel-body">
             <p>Please, report issue with <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> our bug tracker</a></p>
