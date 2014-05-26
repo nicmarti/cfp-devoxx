@@ -7,7 +7,7 @@ case class ConferenceDescriptor(
     var frLangEnabled: Boolean,
     var longSplittedName_whiteStart: String, var longSplittedName_colored: String, var longSplittedName_whiteEnd: String,
     var fromEmail: String, var bccEmail: Option[String], var bugReportRecipient: String,
-    var faqUrl: String, var cfpHostname: String,
+    var faqUrl: String, var registrationUrl: String, var cfpHostname: String,
     var confDatesI18nKey: String,
     var bitbucketIssuesUrlConfProp: String, var bitbucketCredentialsUsernameConfProp: String, var bitbucketCredentialsTokenConfProp: String
 )
@@ -26,6 +26,7 @@ object ConferenceDescriptor {
       bccEmail = Option("nicolas.martignole@devoxx.fr"),
       bugReportRecipient = "nicolas.martignole@devoxx.fr",
       faqUrl = "http://www.devoxx.fr/faq/",
+      registrationUrl = "http://reg.devoxx.be",
       cfpHostname = "cfp.devoxx.be",
       confDatesI18nKey = "devoxxbe2014.dates",
       bitbucketIssuesUrlConfProp = "bitbucket.issues.url",
