@@ -30,6 +30,7 @@ import play.api.libs.ws.WS
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import library.GitUtils
+import play.api.Play
 
 
 /**
@@ -58,13 +59,16 @@ object Issue {
   }
 
   def publish(issue: Issue) = {
-    val postUrl = "https://bitbucket.org/api/1.0/repositories/nicolas_martignole/cfp-devoxx-fr/issues"
+    val postUrl = Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketIssuesUrlConfProp).getOrElse("Missing bitbucket issues url in config file")
 
     val bugReport:String = s"# AUTOMATIC Bug Report\n\n## Message posté du site cfp.devoxx.fr\n## Reporté par ${issue.reportedBy}\n Git Hash ${issue.gitHash}  Git branch: ${issue.gitBranch}\n-----------------\n${issue.msg}"
 
     // See Bitbucket doc https://confluence.atlassian.com/display/BITBUCKET/issues+Resource#issuesResource-POSTanewissue
     val futureResult = WS.url(postUrl)
-      .withAuth(username="nicolas_martignole", password="914b450980e9eb0bba11", scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
+      .withAuth(
+        username=Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketCredentialsUsernameConfProp).getOrElse("Missing bitbucket username in config file"),
+        password=Play.current.configuration.getString(ConferenceDescriptor.current().bitbucketCredentialsTokenConfProp).getOrElse("Missing bitbucket token in config file"),
+        scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
       .withHeaders(
       ("Accept", "application/json"), ("User-Agent", "Devoxx cfp.devoxx.be")
     ).post(
