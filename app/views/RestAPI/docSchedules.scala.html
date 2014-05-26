@@ -21,17 +21,17 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Con
 {
     "links": [
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/devoxxFR2014/schedules/wednesday/",
+            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/schedules/wednesday/",
             "rel": "http://@confDesc.cfpHostname/api/profile/schedule",
             "title": "Schedule for Wednesday 16th April 2014"
         },
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/devoxxFR2014/schedules/thursday/",
+            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/schedules/thursday/",
             "rel": "http://@confDesc.cfpHostname/api/profile/schedule",
             "title": "Schedule for Thursday 17th April 2014"
         },
         {
-            "href": "http://@confDesc.cfpHostname/api/conferences/devoxxFR2014/schedules/friday/",
+            "href": "http://@confDesc.cfpHostname/api/conferences/@confDesc.eventCode/schedules/friday/",
             "rel": "http://@confDesc.cfpHostname/api/profile/schedule",
             "title": "Schedule for Friday 18th April 2014"
         }

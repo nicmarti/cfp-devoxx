@@ -112,7 +112,7 @@ object Mails extends ConferenceDescriptorImplicit {
 
   def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.cfp_message_to_speaker.subject", proposal.title, ConferenceDescriptor.current().confCode)
+    val subject: String = Messages("mail.cfp_message_to_speaker.subject", proposal.title, ConferenceDescriptor.current().eventCode)
     emailer.setSubject(subject)
     emailer.addFrom(from)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
