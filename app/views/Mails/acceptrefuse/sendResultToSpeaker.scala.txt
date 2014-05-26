@@ -54,7 +54,7 @@ http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.homeForSpeaker()
 Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour @confDesc.naming.longYearlyName.
 Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 670 propositions de sujets
 pour 154 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s).
-Au nom de toute l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le 16 avril à @confDesc.naming.longName.
+Au nom de toute l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le @confDesc.timing.firstDayFr à @confDesc.naming.longName.
 }
 
 L'équipe de sélection de la conférence @confDesc.naming.longName
@@ -114,7 +114,7 @@ http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.homeForSpeaker()
 We're sorry to inform you that none of your proposals has been accepted for @confDesc.naming.longYearlyName.
 The program committee has received more than 670 proposals for 154 slots. As you can imagine, the selection of speakers
 was a quite uneasy task, considering that we received a lot of very interesting applications for the conference.
-We would like to thank you for your time and we look forward to see you on April, at @confDesc.naming.longName.
+We would like to thank you for your time and we look forward to see you on @confDesc.timing.firstDayEn, at @confDesc.naming.longName.
 Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com
 }
 
