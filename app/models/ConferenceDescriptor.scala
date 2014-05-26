@@ -12,7 +12,11 @@ case class ConferenceUrls(
 )
 case class ConferenceTiming(
     var datesI18nKey: String,
-    var speakersPassDuration: Integer
+    var speakersPassDuration: Integer,
+    var firstDayFr: String,
+    var firstDayEn: String,
+    var datesFr: String,
+    var datesEn: String
 )
 case class ConferenceDescriptor(
     var eventCode: String, var confUrlCode: String,
@@ -49,7 +53,11 @@ object ConferenceDescriptor {
       ),
       timing = ConferenceTiming(
         datesI18nKey = "devoxxbe2014.dates",
-        speakersPassDuration = 5
+        speakersPassDuration = 5,
+        firstDayFr = "10 novembre",
+        firstDayEn = "november 10th",
+        datesFr = "10 au 14 Novembre 2014",
+        datesEn = "10th to 14th of November, 2014"
       ),
       bitbucketProps = BitbucketProperties("bitbucket.username", "bitbucket.token", "bitbucket.issues.url"),
       hosterName = "Clever-cloud", hosterWebsite="http://www.clever-cloud.com/#DevoxxFR",
