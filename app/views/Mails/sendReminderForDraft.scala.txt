@@ -9,7 +9,7 @@ Pour que le comité puisse évaluer votre proposition, n'oubliez pas de soumettr
 votre interface, dans le résumé de vos propositions.
 
 @proposals.map{proposal=>
- - @proposal.title  [http://cfp.devoxx.fr@routes.CallForPaper.editProposal(proposal.id)]
+ - @proposal.title  [http://@confDesc.cfpHostname@routes.CallForPaper.editProposal(proposal.id)]
 }
 
 Si vous ne souhaitez plus recevoir ce message, et que vous n'avez pas d'autres propositions de sujets, vous pouvez placer
@@ -27,7 +27,7 @@ We'd like to inform you that you have @proposals.size proposal@if(proposals.size
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.
 
 @proposals.map{proposal=>
- - @proposal.title  [http://cfp.devoxx.be@routes.CallForPaper.editProposal(proposal.id)]
+ - @proposal.title  [http://@confDesc.cfpHostname@routes.CallForPaper.editProposal(proposal.id)]
 }
 
 If you don't want to receive this message, you can also move the draft proposals to Trash from the home section.

@@ -8,7 +8,7 @@ We created an access code for you (we really don't want to store any of your pas
   Your login is :  @email
   Your code is @code
 
-If you want to report an issue, please use http://cfp.devoxx.be@routes.Application.bugReport()
+If you want to report an issue, please use http://@confDesc.cfpHostname@routes.Application.bugReport()
 
 The Devoxx team
 ------------------------------------------------------------------------------

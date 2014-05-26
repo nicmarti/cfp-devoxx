@@ -7,7 +7,7 @@ Welcome to Devoxx CFP (Call For Paper)
 As a convenience to you, we have created an account for you on Devoxx. This account will enable to you access your profile and your submissions.
 To access your Devoxx speaker dashboard, please click in the link below.
 
-http://cfp.devoxx.be@routes.Application.index()
+http://@confDesc.cfpHostname@routes.Application.index()
 
 - Your username is @email
 - Your password is @tempPassword

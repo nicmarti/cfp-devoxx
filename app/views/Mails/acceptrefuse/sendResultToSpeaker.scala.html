@@ -10,7 +10,7 @@ Cher(e) @toSpeaker.firstName.getOrElse("speaker")
       conditions de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter
       ce sujet.</p>
   <br>
-  <a href="http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
 
   @if(listOfRefusedProposals.size==1){
   <P>Votre deuxième proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
@@ -20,7 +20,7 @@ Cher(e) @toSpeaker.firstName.getOrElse("speaker")
   }
   <h3>Comment poser une question ?</h3>
   <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-  <a href="http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
+  <a href="http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
 <p>Pensez à vérifier s'il est nécessaire de prendre une place ou non. Les présentations au format BOF et Quickie ne donnent pas
 droits à une entrée. Il est indispensable de prendre une place pour les Quickies. Il n'est pas nécessaire de prendre de places
 pour les BOFs.</p>
@@ -30,7 +30,7 @@ pour les BOFs.</p>
   <p>Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour Devoxx 2014 !</p>
   <h3>Propositions acceptées</h3>
   @listOfApprovedProposals.map{proposal=>
-     <p>- @proposal.title [<a href="http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]</p>
+     <p>- @proposal.title [<a href="http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]</p>
   }
   @if(listOfRefusedProposals.size==1){
   <P>Une proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
@@ -40,10 +40,10 @@ pour les BOFs.</p>
   }
   <p>Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et conditions de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.</p>
   <br>
-  <a href="http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
   <h3>Comment poser une question ?</h3>
   <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-  <a href="http://cfp.devoxx.be@routes.CallForPaper.homeForSpeaker()">http://cfp.devoxx.be@routes.CallForPaper.homeForSpeaker()</a>
+  <a href="http://@confDesc.cfpHostname@routes.CallForPaper.homeForSpeaker()">http://@confDesc.cfpHostname@routes.CallForPaper.homeForSpeaker()</a>
     <p>Pensez à vérifier s'il est nécessaire de prendre une place ou non. Les présentations au format BOF et Quickie ne donnent pas
 droits à une entrée. Il est indispensable de prendre une place pour les Quickies. Il n'est pas nécessaire de prendre de places
 pour les BOFs.</p>
@@ -73,7 +73,7 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
 <p>For us to now program your talks, you must accept or decline the general terms and conditions of
    Devoxx. You will then be able to confirm that you are still ok to present your session :</p>
 
-  <a href="http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
 @if(listOfRefusedProposals.size==1){
   <P>Your other proposal was not approved, however we thank you for this proposal.</P>
 }
@@ -82,14 +82,14 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
 }
  <h3>For any question regarding your talk</h3>
  <p>Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.</p>
- <a href="http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
+ <a href="http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
 }
 
 @if(listOfApprovedProposals.size>1){
   <p>We're glad to inform you that several of your proposals have been approved for Devoxx 2014!</p>
   <h3>Approved proposals:</h3>
   @listOfApprovedProposals.map{proposal=>
-    <p>- @proposal.title [<a href="http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">view online</a>]</p>
+    <p>- @proposal.title [<a href="http://@confDesc.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">view online</a>]</p>
   }
 @if(listOfRefusedProposals.size==1){
   <P>One of your proposal was not approved, mainly because we preferred to select some of your other talks.</P>
@@ -100,16 +100,16 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
   <p>For us to now program your talks, you must accept or decline the general terms and conditions of
       Devoxx. You will then be able to confirm that you are still ok to present your sessions :</p>
   <br>
-  <a href="http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()">http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@confDesc.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
   <h3>For any question regarding your talks</h3>
   <p>Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.</p>
-  <a href="http://cfp.devoxx.be@routes.CallForPaper.homeForSpeaker()">http://cfp.devoxx.be@routes.CallForPaper.homeForSpeaker()</a>
+  <a href="http://@confDesc.cfpHostname@routes.CallForPaper.homeForSpeaker()">http://@confDesc.cfpHostname@routes.CallForPaper.homeForSpeaker()</a>
 }
 
 @if(listOfApprovedProposals.size==0){
  <p>We're sorry to inform you that none of your proposals has been accepted for Devoxx 2014.</p>
  <p>The program committee has received more than 670 proposals for 154 available slots. As you can imagine, the selection of speakers wasn’t an easy task, considering that we received a lot of very interesting propositions for the conference. We would like to thank you for your time and we hope to see you as an attendee in April, at Devoxx.</p>
- <p>Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com</p>
+ <p>Please, do not forget Devoxx UK in London, the CFP is also available at https://@confDesc.cfpHostname</p>
 }
 <br>
 <p>The Devoxx program committee.</p>
