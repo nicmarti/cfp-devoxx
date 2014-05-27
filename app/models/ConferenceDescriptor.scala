@@ -1,5 +1,7 @@
 package models
 
+import play.api.Play
+
 case class BitbucketProperties(var usernameConfigProperty: String, var tokenConfigProperty: String, var issuesUrlConfigProperty: String)
 case class ConferenceNaming(
     var shortYearlyName: String, var longYearlyName: String,
@@ -50,7 +52,7 @@ object ConferenceDescriptor {
         faq = "http://www.devoxx.fr/faq/",
         registration = "http://reg.devoxx.be",
         confWebsite = "http://www.devoxx.be/",
-        cfpHostname = "cfp.devoxx.be"
+        cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("unknown.cfp.hostname")
       ),
       timing = ConferenceTiming(
         datesI18nKey = "devoxxbe2014.dates",
