@@ -29,7 +29,7 @@ object ProposalType {
   val KEY = ProposalType("key", "key.label")
   val OTHER = ProposalType("other", "other.label")
 
-  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
+  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY)
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 

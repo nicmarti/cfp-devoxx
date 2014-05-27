@@ -80,7 +80,7 @@
     <div>
       <hr>
         @if(SecureCFPController.isLoggedIn(req)){
-            <small>Logged as @SecureCFPController.getCurrentUser(req).map(_.cleanName)</small> -
+            <small>Logged in as @SecureCFPController.getCurrentUser(req).map(_.cleanName)</small> -
             <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
         }
         <small><i class="icon-bullhorn"></i> @Messages("CONF.title") @Messages("CONF.subtitle") Call for Paper - developed by <a href="http://www.twitter.com/nmartignole">@@nmartignole</a></small><br>
