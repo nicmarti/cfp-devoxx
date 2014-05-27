@@ -148,7 +148,7 @@ msg=Votre message
 
 # Home
 appel.conf=Appel aux conférenciers
-devoxxbe2014.dates=10 au 14 novembre 2014
+devoxxbe2014.dates=Du 10 au 14 novembre 2014
 cfp.opening=Ouverture du CFP :
 cfp.opening.date=Lundi 2 juin 2014
 cfp.closing=Fermeture du CFP :

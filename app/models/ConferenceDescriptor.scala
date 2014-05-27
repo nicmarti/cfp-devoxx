@@ -59,8 +59,8 @@ object ConferenceDescriptor {
         speakersPassDuration = 5,
         firstDayFr = "10 novembre",
         firstDayEn = "november 10th",
-        datesFr = "10 au 14 Novembre 2014",
-        datesEn = "10th to 14th of November, 2014"
+        datesFr = "du 10 au 14 Novembre 2014",
+        datesEn = "from 10th to 14th of November, 2014"
       ),
       bitbucketProps = BitbucketProperties("bitbucket.username", "bitbucket.token", "bitbucket.issues.url"),
       hosterName = "Clever-cloud", hosterWebsite="http://www.clever-cloud.com/#DevoxxFR",
