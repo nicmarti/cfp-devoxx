@@ -14,7 +14,7 @@ Message:
 How to respond?
 
 Please, use this link to respond directly to the message :
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CFPAdmin.openForReview(proposal.id)
+http://cfp.devoxx.be@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks,
 The Devoxx Team

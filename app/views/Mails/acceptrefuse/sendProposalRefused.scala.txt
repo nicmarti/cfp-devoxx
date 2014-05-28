@@ -21,7 +21,7 @@ We're sorry to inform you that your proposal for Devoxx 2014 was refused
 Proposition title : @proposal.title, @proposal.talkType.label.
 
 We'd like to thank you sincerly, for the time and your work.
-If you like to register, we still have our early bird price, please visit http://reg.devoxx.fr.
+If you like to register, we still have our early bird price, please visit http://reg.devoxx.be.
 
 Thanks for your time,
 The Devoxx team

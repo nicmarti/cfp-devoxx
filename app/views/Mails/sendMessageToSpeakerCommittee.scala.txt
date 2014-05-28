@@ -13,4 +13,4 @@ A new message was posted from @fromName to @toName regarding talk "@proposal.tit
 - This message was sent by a Program Committee member
 - Do not reply to this email
 - Review this proposal online:
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CFPAdmin.openForReview(proposal.id)
+http://cfp.devoxx.be@routes.CFPAdmin.openForReview(proposal.id)

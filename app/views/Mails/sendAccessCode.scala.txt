@@ -8,7 +8,7 @@ We created an access code for you (we really don't want to store any of your pas
   Your login is :  @email
   Your code is @code
 
-If you want to report an issue, please use http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.Application.bugReport()
+If you want to report an issue, please use http://cfp.devoxx.be@routes.Application.bugReport()
 
 The Devoxx team
 ------------------------------------------------------------------------------
