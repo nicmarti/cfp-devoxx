@@ -68,6 +68,7 @@ summary.help=Describe your proposal as it will appear on our website and mobile 
 lang=Main language
 lang.help=100% of Devoxx Belgium talks are in English
 mainSpeaker=Main speaker
+mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
@@ -87,7 +88,7 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum, Silver and Bronze+ sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to propose a proposal.
+sponsorTalk.help=Platinum, Silver and Bronze+ sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -124,7 +125,7 @@ btn.send=Send
 # Home page
 cfp.closed=The Call for paper is closed and will open Mon, 2nd Jun, 2014.
 appel.conf=Call for Paper
-appel.conf.dates=Devoxx Belgium 2014, 10th-14th November, 2014
+appel.conf.dates=Devoxx Belgium 2014, 10th-14th November
 cfp.opening=CFP opening:
 cfp.opening.date=Monday, 2nd of June, 2014
 cfp.closing=CFP Closing :
