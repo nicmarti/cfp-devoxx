@@ -11,7 +11,7 @@ Proposition acceptée: @listOfApprovedProposals.head.title
 Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et
 conditions de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
 
- http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.ApproveOrRefuse.showAcceptTerms()
+ http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()
 
 @if(listOfRefusedProposals.size==1){
 Votre deuxième proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.
@@ -22,7 +22,7 @@ Cependant, @listOfRefusedProposals.size propositions n'ont pas été retenues, m
 Comment poser une question ?
 ----------------------------
 Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)
+http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)
 }
 
 @if(listOfApprovedProposals.size>1){
@@ -31,7 +31,7 @@ Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont ét
 Propositions acceptées
 ----------------------
 @listOfApprovedProposals.map{proposal=>
-  - @proposal.title [<a href="http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]
+  - @proposal.title [<a href="http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]
 }
 @if(listOfRefusedProposals.size==1){
 Une proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.
@@ -42,12 +42,12 @@ Une proposition n'a pas été retenue, cependant nous vous remercions pour le su
 Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et conditions
 de Devoxx. Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.
 
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.ApproveOrRefuse.showAcceptTerms()
+http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()
 
 Comment poser une question ?
 ----------------------------
 Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CallForPaper.homeForSpeaker()
+http://cfp.devoxx.be@routes.CallForPaper.homeForSpeaker()
 }
 
 @if(listOfApprovedProposals.size==0){
@@ -71,7 +71,7 @@ What's next?
 ------------
 For us to now program your talks, you must accept or decline the general terms and conditions of
 Devoxx. You will then be able to confirm that you are still ok to present your session :
-  http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.ApproveOrRefuse.showAcceptTerms()
+  http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()
 
 @if(listOfRefusedProposals.size==1){
 Your other proposal was not approved, however we thank you for this proposal.
@@ -82,7 +82,7 @@ Your other proposal was not approved, however we thank you for this proposal.
 For any question regarding your talk
 ------------------------------------
 Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)
+http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)
 }
 
 @if(listOfApprovedProposals.size>1){
@@ -91,7 +91,7 @@ We're glad to inform you that several of your proposals have been approved for D
 Approved proposals:
 -------------------
 @listOfApprovedProposals.map{proposal=>
-- @proposal.title [<a href="http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">view online</a>]
+- @proposal.title [<a href="http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">view online</a>]
 }
 @if(listOfRefusedProposals.size==1){
 One of your proposal was not approved, mainly because we preferred to select some of your other talks.
@@ -102,12 +102,12 @@ One of your proposal was not approved, mainly because we preferred to select som
 For us to now program your talks, you must accept or decline the general terms and conditions of
 Devoxx. You will then be able to confirm that you are still ok to present your sessions :
 
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.ApproveOrRefuse.showAcceptTerms()
+http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()
 
 For any question regarding your talks
 -------------------------------------
 Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.
-http://app-7025f873-e3d4-4c71-b8d2-3f504d2ca2b8.cleverapps.io@routes.CallForPaper.homeForSpeaker()
+http://cfp.devoxx.be@routes.CallForPaper.homeForSpeaker()
 }
 
 @if(listOfApprovedProposals.size==0){
