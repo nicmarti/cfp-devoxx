@@ -1,6 +1,12 @@
 package models
 
 import play.api.Play
+import java.util.concurrent.Callable
+import views.html.main
+import play.templates.{Format, BaseScalaTemplate}
+import play.api.templates.{Html, HtmlFormat}
+import views.html.Application.{footerBlockDevoxx, firstRightBlockDevoxx}
+import play.api.i18n.Lang
 
 case class BitbucketProperties(var usernameConfigProperty: String, var tokenConfigProperty: String, var issuesUrlConfigProperty: String)
 case class ConferenceNaming(
@@ -20,6 +26,11 @@ case class ConferenceTiming(
     var datesFr: String,
     var datesEn: String
 )
+case class ContentBlocks (
+    var homeIndexFirstRightBlock: (Lang, ConferenceDescriptor) => HtmlFormat.Appendable,
+    var homeIndexFooterBlock: (Lang, ConferenceDescriptor) => HtmlFormat.Appendable
+)
+
 case class ConferenceDescriptor(
     var eventCode: String, var confUrlCode: String,
     var naming: ConferenceNaming,
@@ -30,7 +41,8 @@ case class ConferenceDescriptor(
     var bitbucketProps: BitbucketProperties,
     var hosterName: String, var hosterWebsite: String,
     var hashTag: String,
-    var tracks: Seq[Track]
+    var tracks: Seq[Track],
+    var contentBlocks: ContentBlocks
 )
 object ConferenceDescriptor {
     def current() = ConferenceDescriptor(
@@ -77,6 +89,10 @@ object ConferenceDescriptor {
         Track("lang", "lang.label", "http://devoxx.be/images/tracks/6caef5cf.icon_alternative.png", "track.lang.title", "track.lang.desc"),
         Track("cloud", "cloud.label", "http://devoxx.be/images/tracks/eca0b0a1.icon_cloud.png", "track.cloud.title", "track.cloud.desc"),
         Track("web", "web.label", "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
+      ),
+      contentBlocks = ContentBlocks(
+        homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => firstRightBlockDevoxx(lang, confDesc),
+        homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx(lang, confDesc)
       )
     )
 }

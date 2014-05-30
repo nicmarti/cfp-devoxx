@@ -1,7 +1,5 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
-@import helper.twitterBootstrap._
-
 @main(Messages("cfp.title", confDesc.naming.longYearlyName)){
 <div class="container">
     <div class="bs-docs-section clearfix">
@@ -38,8 +36,7 @@
             </div>
 
             <div class="col-md-5">
-                <h3><i class="icon-facetime-video"></i> @Messages("video.title")</h3>
-                <p>@Messages("video.tag", confDesc.longName+" 2013") <a href="http://www.parleys.com/channel/528b321de4b054cd7d2ef448" target="new">Parleys.com</a> </p>
+                @confDesc.contentBlocks.homeIndexFirstRightBlock(lang, confDesc)
             </div>
 
             <div class="clearfix">
@@ -83,8 +80,7 @@
 
 
             <div class="col-md-12">
-                <h3><i class="icon-flag"></i> English?</h3>
-                <p>@confDesc.naming.longName's presentations are 25% in English and 75% French.</p>
+                @confDesc.contentBlocks.homeIndexFooterBlock(lang, confDesc)
             </div>
         </div>
     </div>
