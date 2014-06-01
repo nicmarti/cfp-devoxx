@@ -5,12 +5,12 @@ import java.util.concurrent.Callable
 import views.html.main
 import play.templates.{Format, BaseScalaTemplate}
 import play.api.templates.{Html, HtmlFormat}
-import views.html.Application.{footerBlockDevoxx, firstRightBlockDevoxx}
+import views.html.Application.{devoxxEnglishProposalsHomeFooterBlock, devoxxPreviousVideosHomeRightBlock}
 import play.api.i18n.Lang
 import java.util.Date
 import org.joda.time.{LocalDate, DateTime}
 import play.api.data.Form
-import views.html.CallForPaper.{devoxxProposalHelpBlock, footerBlockDevoxxGuide}
+import views.html.CallForPaper.{devoxxProposalHelpBlock, devoxxProposalsGuideFooterBlock}
 
 case class BitbucketProperties(var usernameConfigProperty: String, var tokenConfigProperty: String, var issuesUrlConfigProperty: String)
 case class ConferenceNaming(
@@ -109,13 +109,13 @@ object ConferenceDescriptor {
         Track("web", "web.label", "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
       ),
       contentBlocks = ContentBlocks(
-        _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => firstRightBlockDevoxx()(lang, confDesc),
-        _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx()(lang, confDesc),
+        _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxPreviousVideosHomeRightBlock()(lang, confDesc),
+        _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxEnglishProposalsHomeFooterBlock()(lang, confDesc),
         _proposalHelpBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxProposalHelpBlock()(lang, confDesc),
         _previewProposalFooterBlock = (
              lang: Lang, confDesc: ConferenceDescriptor,
              htmlSummary: String, privateMessage: String,
-             newProposal: Form[models.Proposal], currentUser: String) => footerBlockDevoxxGuide(htmlSummary, privateMessage, newProposal, currentUser)(lang, confDesc),
+             newProposal: Form[models.Proposal], currentUser: String) => devoxxProposalsGuideFooterBlock(htmlSummary, privateMessage, newProposal, currentUser)(lang, confDesc),
         showSponsorProposalCheckbox = true
       )
     )
