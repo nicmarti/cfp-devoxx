@@ -10,7 +10,7 @@ import play.api.i18n.Lang
 import java.util.Date
 import org.joda.time.{LocalDate, DateTime}
 import play.api.data.Form
-import views.html.CallForPaper.footerBlockDevoxxGuide
+import views.html.CallForPaper.{devoxxProposalHelpBlock, footerBlockDevoxxGuide}
 
 case class BitbucketProperties(var usernameConfigProperty: String, var tokenConfigProperty: String, var issuesUrlConfigProperty: String)
 case class ConferenceNaming(
@@ -36,11 +36,13 @@ case class ConferenceTiming(
 case class ContentBlocks (
    _homeIndexFirstRightBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
    _homeIndexFooterBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
+   _proposalHelpBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
    _previewProposalFooterBlock: (Lang, ConferenceDescriptor, String, String, Form[models.Proposal], String) => HtmlFormat.Appendable,
    showSponsorProposalCheckbox: Boolean
 ) {
   def homeIndexFirstRightBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFirstRightBlock(lang, confDesc)
   def homeIndexFooterBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFooterBlock(lang, confDesc)
+  def proposalHelpBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _proposalHelpBlock(lang, confDesc)
   def previewProposalFooterBlock(htmlSummary: String, privateMessage: String, newProposal: Form[models.Proposal], currentUser: String)(implicit lang: Lang, confDesc: ConferenceDescriptor) = _previewProposalFooterBlock(lang, confDesc, htmlSummary, privateMessage, newProposal, currentUser)
 }
 
@@ -109,6 +111,7 @@ object ConferenceDescriptor {
       contentBlocks = ContentBlocks(
         _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => firstRightBlockDevoxx()(lang, confDesc),
         _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx()(lang, confDesc),
+        _proposalHelpBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxProposalHelpBlock()(lang, confDesc),
         _previewProposalFooterBlock = (
              lang: Lang, confDesc: ConferenceDescriptor,
              htmlSummary: String, privateMessage: String,
