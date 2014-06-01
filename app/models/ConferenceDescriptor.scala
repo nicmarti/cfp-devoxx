@@ -32,9 +32,11 @@ case class ConferenceTiming(
     var scheduleAnnouncedOn: DateTime
 )
 case class ContentBlocks (
-    var homeIndexFirstRightBlock: (Lang, ConferenceDescriptor) => HtmlFormat.Appendable,
-    var homeIndexFooterBlock: (Lang, ConferenceDescriptor) => HtmlFormat.Appendable
-)
+                           _homeIndexFirstRightBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
+                           _homeIndexFooterBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable) {
+  def homeIndexFirstRightBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFirstRightBlock(lang, confDesc)
+  def homeIndexFooterBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFooterBlock(lang, confDesc)
+}
 
 case class ConferenceDescriptor(
     var eventCode: String, var confUrlCode: String,
@@ -99,8 +101,8 @@ object ConferenceDescriptor {
         Track("web", "web.label", "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
       ),
       contentBlocks = ContentBlocks(
-        homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => firstRightBlockDevoxx(lang, confDesc),
-        homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx(lang, confDesc)
+        _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => firstRightBlockDevoxx()(lang, confDesc),
+        _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx()(lang, confDesc)
       )
     )
 
