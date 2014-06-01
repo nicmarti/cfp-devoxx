@@ -7,6 +7,8 @@ import play.templates.{Format, BaseScalaTemplate}
 import play.api.templates.{Html, HtmlFormat}
 import views.html.Application.{footerBlockDevoxx, firstRightBlockDevoxx}
 import play.api.i18n.Lang
+import java.util.Date
+import org.joda.time.{LocalDate, DateTime}
 
 case class BitbucketProperties(var usernameConfigProperty: String, var tokenConfigProperty: String, var issuesUrlConfigProperty: String)
 case class ConferenceNaming(
@@ -24,7 +26,10 @@ case class ConferenceTiming(
     var firstDayFr: String,
     var firstDayEn: String,
     var datesFr: String,
-    var datesEn: String
+    var datesEn: String,
+    var cfpOpenedOn: DateTime,
+    var cfpClosedOn: DateTime,
+    var scheduleAnnouncedOn: DateTime
 )
 case class ContentBlocks (
     var homeIndexFirstRightBlock: (Lang, ConferenceDescriptor) => HtmlFormat.Appendable,
@@ -72,7 +77,10 @@ object ConferenceDescriptor {
         firstDayFr = "10 novembre",
         firstDayEn = "november 10th",
         datesFr = "du 10 au 14 Novembre 2014",
-        datesEn = "from 10th to 14th of November, 2014"
+        datesEn = "from 10th to 14th of November, 2014",
+        cfpOpenedOn = DateTime.parse("2014-06-03T00:00:00+02:00"),
+        cfpClosedOn = DateTime.parse("2014-07-11T23:59:59+02:00"),
+        scheduleAnnouncedOn = DateTime.parse("2014-09-15T00:00:00+02:00")
       ),
       bitbucketProps = BitbucketProperties("bitbucket.username", "bitbucket.token", "bitbucket.issues.url"),
       hosterName = "Clever-cloud", hosterWebsite="http://www.clever-cloud.com/#DevoxxFR",
@@ -95,6 +103,10 @@ object ConferenceDescriptor {
         homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx(lang, confDesc)
       )
     )
+
+  val isCFPOpen: Boolean = {
+    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+  }
 }
 
 
