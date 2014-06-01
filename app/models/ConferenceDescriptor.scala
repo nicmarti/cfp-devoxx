@@ -38,7 +38,8 @@ case class ContentBlocks (
    _homeIndexFooterBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
    _proposalHelpBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
    _previewProposalFooterBlock: (Lang, ConferenceDescriptor, String, String, Form[models.Proposal], String) => HtmlFormat.Appendable,
-   showSponsorProposalCheckbox: Boolean
+   showSponsorProposalCheckbox: Boolean,
+   sponsorProposalType: ProposalType = ProposalType.UNKNOWN
 ) {
   def homeIndexFirstRightBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFirstRightBlock(lang, confDesc)
   def homeIndexFooterBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFooterBlock(lang, confDesc)
@@ -116,7 +117,8 @@ object ConferenceDescriptor {
              lang: Lang, confDesc: ConferenceDescriptor,
              htmlSummary: String, privateMessage: String,
              newProposal: Form[models.Proposal], currentUser: String) => devoxxProposalsGuideFooterBlock(htmlSummary, privateMessage, newProposal, currentUser)(lang, confDesc),
-        showSponsorProposalCheckbox = true
+        showSponsorProposalCheckbox = true,
+        sponsorProposalType = ProposalType.CONF
       )
     )
 

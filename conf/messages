@@ -74,7 +74,7 @@ lang=Main language
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
-mainSpeaker.help=You can add more speakers once the proposal is created. We offer a {0}-day pass only for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
+mainSpeaker.help=You can add more speakers once the proposal is created. We offer a {0}-day pass only for the following slots : {1}. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href\="{0}\#confType" target\="new">FAQ</a>.
@@ -113,14 +113,23 @@ next.action=Select next action:
 
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
+key.simple.label=Keynote
 conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.simple.label=Conference
 uni.label=University, 3h, Monday or Tuesday
+uni.simple.label=University
 tia.label=Tools in Action, 30mn, only Monday or Tuesday
+tia.simple.label=Tools in Action
 quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+quick.simple.label=Quickie
 bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+bof.simple.label=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.simple.label=Hand''s on Lab
 other.label=Other event
+other.simple.label=Other
 start.label=Startup Talk, 25 min, Wednesday to Thursday
+start.simple.label=Startup
 
 # Bug report
 Issue.report=Report an issue
