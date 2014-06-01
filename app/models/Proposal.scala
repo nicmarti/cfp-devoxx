@@ -16,22 +16,31 @@ import org.joda.time.{DateTime, Instant}
  * Created: 12/10/2013 15:19
  */
 
-case class ProposalType(id: String, simpleLabel: String, label: String, slotsCount: Int, givesSpeakerFreeEntrance: Boolean, freeEntranceDisplayed: Boolean)
+case class ProposalType(
+         id: String,
+         simpleLabel: String,
+         label: String,
+         slotsCount: Int,
+         givesSpeakerFreeEntrance: Boolean,
+         freeEntranceDisplayed: Boolean,
+         htmlClass: String,
+         chosablePreferredDay: Boolean = false
+)
 
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true)
-  val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true)
-  val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true)
-  val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true)
-  val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false)
-  val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false)
-  val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false)
-  val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false)
-  val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false)
+  val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true, "icon-microphone", true)
+  val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true, "icon-laptop", false)
+  val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true, "icon-legal", false)
+  val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true, "icon-beaker", false)
+  val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false, "icon-fast-forward", true)
+  val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false, "icon-group", false)
+  val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false, "icon-microphone", true)
+  val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false)
+  val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false, "icon-microphone", false)
 
-  val UNKNOWN = ProposalType("unknown", "unknown.simple.label", "unknown.label", 0, false, false)
+  val UNKNOWN = ProposalType("unknown", "unknown.simple.label", "unknown.label", 0, false, false, "icon-microphone", false)
   
   val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START)
 
@@ -44,6 +53,8 @@ object ProposalType {
   val freeEntranceProposals = all.filter(p => p.givesSpeakerFreeEntrance)
 
   val displayedFreeEntranceProposals = all.filter(p => p.freeEntranceDisplayed)
+
+  val chosablePreferredDaysProposals = all.filter(p => p.chosablePreferredDay)
 
   def parse(proposalType: String): ProposalType = {
     return all.find(p => p.id == proposalType).getOrElse(UNKNOWN)

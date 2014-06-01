@@ -203,7 +203,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            @if(proposal.talkType==ProposalType.QUICK||proposal.talkType==ProposalType.CONF||proposal.talkType==ProposalType.KEY||proposal.talkType==ProposalType.OTHER){
+            @if(ProposalType.chosablePreferredDaysProposals.contains(proposal.talkType)){
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
