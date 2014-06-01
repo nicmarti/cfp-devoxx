@@ -15,39 +15,38 @@ import org.joda.time.{DateTime, Instant}
  * Author: nicolas
  * Created: 12/10/2013 15:19
  */
-case class ProposalType(id: String, label: String)
+
+case class ProposalType(id: String, simpleLabel: String, label: String, slotsCount: Int, givesSpeakerFreeEntrance: Boolean, freeEntranceDisplayed: Boolean)
 
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val CONF = ProposalType("conf", "conf.label")
-  val UNI = ProposalType("uni", "uni.label")
-  val TIA = ProposalType("tia", "tia.label")
-  val LAB = ProposalType("lab", "lab.label")
-  val QUICK = ProposalType("quick", "quick.label")
-  val BOF = ProposalType("bof", "bof.label")
-  val KEY = ProposalType("key", "key.label")
-  val START = ProposalType("start", "start.label")
-  val OTHER = ProposalType("other", "other.label")
+  val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true)
+  val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true)
+  val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true)
+  val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true)
+  val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false)
+  val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false)
+  val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false)
+  val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false)
+  val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false)
 
+  val UNKNOWN = ProposalType("unknown", "unknown.simple.label", "unknown.label", 0, false, false)
+  
   val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START)
+
+  val totalSlotsCount = all.map(_.slotsCount).sum
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
   val allIDsOnly=allAsId.map(_._1)
 
+  val freeEntranceProposals = all.filter(p => p.givesSpeakerFreeEntrance)
+
+  val displayedFreeEntranceProposals = all.filter(p => p.freeEntranceDisplayed)
+
   def parse(proposalType: String): ProposalType = {
-    proposalType match {
-      case "conf" => CONF
-      case "uni" => UNI
-      case "tia" => TIA
-      case "lab" => LAB
-      case "quick" => QUICK
-      case "bof" => BOF
-      case "key" => KEY
-      case "start" => START
-      case other => OTHER
-    }
+    return all.find(p => p.id == proposalType).getOrElse(UNKNOWN)
   }
 
   val audienceLevels:Seq[(String,String)]={
@@ -193,7 +192,7 @@ object Proposal {
     // If it's a sponsor talk, we force it to be a conference
     // We also enforce the user id, for security reason
       val proposalWithMainSpeaker = if (proposal.sponsorTalk) {
-        proposal.copy(talkType = ProposalType.CONF, mainSpeaker = authorUUID)
+        proposal.copy(talkType = ConferenceDescriptor.current().contentBlocks.sponsorProposalType, mainSpeaker = authorUUID)
       } else {
         proposal.copy(mainSpeaker = authorUUID)
       }
@@ -436,17 +435,6 @@ object Proposal {
 
   def findDeleted(uuid: String, proposalId: String): Option[Proposal] = {
     allMyDeletedProposals(uuid).find(_.id == proposalId)
-  }
-
-  def givesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
-    proposalType match {
-      case ProposalType.CONF => true
-      case ProposalType.KEY => true
-      case ProposalType.LAB => true
-      case ProposalType.UNI => true
-      case ProposalType.TIA => true
-      case other => false
-    }
   }
 
   val proposalSpeakerForm = Form(tuple(
@@ -745,7 +733,7 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val onlyAcceptedOrApproved = loadAndParseProposals(allProposalIDs).values.toSet.filter(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED)
-      onlyAcceptedOrApproved.filter(p => Proposal.givesSpeakerFreeEntrance(p.talkType)).nonEmpty
+      onlyAcceptedOrApproved.filter(p => p.talkType.givesSpeakerFreeEntrance).nonEmpty
   }
 
   def setPreferredDay(proposalId:String, day:String)=Redis.pool.withClient{

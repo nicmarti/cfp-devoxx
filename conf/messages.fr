@@ -100,7 +100,7 @@ summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vo
 lang=Langue
 lang.help=100% des présentations à {0} doivent être en Anglais,
 mainSpeaker=Présentateur principal
-mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée {0} jours à la conférence uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
+mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée {0} jours à la conférence uniquement pour les formats de présentation suivants : {1}.
 talkType.help=Chaque type de conférence est détaillé sur la page <a href\="{0}\#confType" target\="new">FAQ</a> du site.
 
 
@@ -129,15 +129,25 @@ preview.warn2=dans le tableau de la page d''accueil.
 
 # Proposal type
 key.label=Keynote, 50mn, jeudi et vendredi matin
+key.simple.label=Keynote
 conf.label=Conference, 45mn, jeudi et vendredi
+conf.simple.label=Conference
 uni.label=University, 3h, mercredi uniquement
+uni.simple.label=University
 tia.label=Tools in Action, 30mn, mercredi uniquement
+tia.simple.label=Tools in Action
 quick.label=Quickie, 15mn, jeudi et vendredi midi
+quick.simple.label=Quickie
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
+amd.simple.label=Après-midi des Décideurs
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
+bof.simple.label=Bird of a Feather
 other.label=Autre type de présentation
+other.simple.label=Autre type de présentation
 lab.label=Hand''s on Lab, 3h, mercredi uniquement
+lab.simple.label=Hand''s on Lab
 hack.label=Hackaton (événement spécial)
+hack.simple.label=Hackaton (événement spécial)
 
 
 

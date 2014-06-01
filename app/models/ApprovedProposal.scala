@@ -31,24 +31,16 @@ import library.Redis
  */
 object ApprovedProposal {
 
-  val totalConf = 89
-  val totalUni = 16
-  val totalLabs = 10
-  val totalTia = 24
-  val totalQuickies = 28
-  val totalBOF = 25
-  val totalStartup = 20
-
   // What we did in 2013
   val getTotal: Map[String, Int] = {
     Map(
-      (ProposalType.CONF.label, totalConf)
-      , (ProposalType.UNI.label, totalUni)
-      , (ProposalType.TIA.label, totalTia)
-      , (ProposalType.LAB.label, totalLabs)
-      , (ProposalType.QUICK.label, totalQuickies)
-      , (ProposalType.BOF.label, totalBOF)
-      , (ProposalType.START.label, totalStartup)
+      ("conf.label", 89)
+      , ("uni.label", 16)
+      , ("tia.label", 24)
+      , ("lab.label", 10)
+      , ("quick.label", 28)
+      , ("bof.label", 25)
+      , ("start.label", 20)
     )
   }
 
@@ -82,22 +74,11 @@ object ApprovedProposal {
   }
 
   def remainingSlots(talkType: String): Long = {
-    talkType match {
-      case ProposalType.UNI.id =>
-        totalUni - countApproved(talkType)
-      case ProposalType.CONF.id =>
-        totalConf - countApproved(talkType)
-      case ProposalType.TIA.id =>
-        totalTia - countApproved(talkType)
-      case ProposalType.LAB.id =>
-        totalLabs - countApproved(talkType)
-      case ProposalType.BOF.id =>
-        totalBOF - countApproved(talkType)
-      case ProposalType.QUICK.id =>
-        totalQuickies - countApproved(talkType)
-      case ProposalType.START.id =>
-        totalStartup - countApproved(talkType)
-      case other => (totalUni + totalBOF + totalConf + totalLabs + totalTia + totalQuickies + totalStartup) - countApproved("all")
+    var propType = ProposalType.parse(talkType)
+    if(propType == ProposalType.UNKNOWN) {
+      ProposalType.totalSlotsCount - countApproved("all")
+    } else {
+      propType.slotsCount - countApproved(talkType)
     }
   }
 
@@ -263,7 +244,7 @@ object ApprovedProposal {
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
           for (speaker <- Speaker.findByUUID(speakerUUID)) yield {
             (speaker,
-              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p=>Proposal.givesSpeakerFreeEntrance(p.talkType))
+              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p=>p.talkType.givesSpeakerFreeEntrance)
             )
           }
       }
