@@ -33,7 +33,9 @@ case class ConferenceTiming(
 )
 case class ContentBlocks (
                            _homeIndexFirstRightBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
-                           _homeIndexFooterBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable) {
+                           _homeIndexFooterBlock: (Lang,ConferenceDescriptor) => HtmlFormat.Appendable,
+                           showSponsorProposalCheckbox: Boolean
+) {
   def homeIndexFirstRightBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFirstRightBlock(lang, confDesc)
   def homeIndexFooterBlock()(implicit lang: Lang, confDesc: ConferenceDescriptor) = _homeIndexFooterBlock(lang, confDesc)
 }
@@ -102,7 +104,8 @@ object ConferenceDescriptor {
       ),
       contentBlocks = ContentBlocks(
         _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => firstRightBlockDevoxx()(lang, confDesc),
-        _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx()(lang, confDesc)
+        _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => footerBlockDevoxx()(lang, confDesc),
+        showSponsorProposalCheckbox = true
       )
     )
 

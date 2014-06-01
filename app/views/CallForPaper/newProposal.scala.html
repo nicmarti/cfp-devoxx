@@ -49,11 +49,13 @@
 
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox")
 
-                @tags.checkboxI18N(newProposal("sponsorTalk"),  'text->"sponsorTalk.checkbox")
-                <div id="sponsorTalkMsg" class="alert alert-info">
-                    <p>@Messages("sponsorTalk.help")</p>
-                    <p>@Messages("sponsor.name.plz")</p>
-                </div>
+                @if(confDesc.contentBlocks.showSponsorProposalCheckbox) {
+                    @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
+                    <div id="sponsorTalkMsg" class="alert alert-info">
+                        <p>@Messages("sponsorTalk.help")</p>
+                        <p>@Messages("sponsor.name.plz")</p>
+                    </div>
+                }
                 <hr>
                 <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
                 <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
@@ -70,7 +72,9 @@
             }
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", confDesc.conferenceUrls.faq))</p>
             <p><label>@Messages("mainSpeaker") : </label><br> @Messages("mainSpeaker.help", confDesc.timing.speakersPassDuration)</p>
-            <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
+            @if(confDesc.contentBlocks.showSponsorProposalCheckbox) {
+                <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
+            }
         </div>
 
     </div>
