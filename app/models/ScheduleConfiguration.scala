@@ -28,6 +28,7 @@ import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 import scala.util.Random
 import org.joda.time.DateTime
+import models.ConferenceDescriptor.DevoxxSlots
 
 /**
  * Slots that are scheduled.
@@ -116,17 +117,18 @@ object ScheduleConfiguration {
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
 
+    // TODO : Variabilize week days and remove devoxx-specific stuff
     val listOfSlots = day match {
       case "wednesday" => {
-        val fullList = Slot.wednesday ++ loadSlots()
+        val fullList = DevoxxSlots.wednesday ++ loadSlots()
         fullList.filter(_.day == "mercredi")
       }
       case "thursday" => {
-        val fullList = Slot.thursday ++ loadSlots()
+        val fullList = DevoxxSlots.thursday ++ loadSlots()
         fullList.filter(_.day == "jeudi")
       }
       case "friday" => {
-        val fullList = Slot.friday ++ loadSlots()
+        val fullList = DevoxxSlots.friday ++ loadSlots()
         fullList.filter(_.day == "vendredi")
       }
       case other => Nil

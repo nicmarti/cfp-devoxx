@@ -1,14 +1,10 @@
 package models
 
 import play.api.Play
-import java.util.concurrent.Callable
-import views.html.main
-import play.templates.{Format, BaseScalaTemplate}
-import play.api.templates.{Html, HtmlFormat}
+import play.api.templates.HtmlFormat
 import views.html.Application.{devoxxEnglishProposalsHomeFooterBlock, devoxxPreviousVideosHomeRightBlock}
 import play.api.i18n.Lang
-import java.util.Date
-import org.joda.time.{LocalDate, DateTime}
+import org.joda.time.DateTime
 import play.api.data.Form
 import views.html.CallForPaper.{devoxxProposalHelpBlock, devoxxProposalsGuideFooterBlock}
 
@@ -47,6 +43,7 @@ case class ContentBlocks (
   def previewProposalFooterBlock(htmlSummary: String, privateMessage: String, newProposal: Form[models.Proposal], currentUser: String)(implicit lang: Lang, confDesc: ConferenceDescriptor) = _previewProposalFooterBlock(lang, confDesc, htmlSummary, privateMessage, newProposal, currentUser)
 }
 
+
 case class ConferenceDescriptor(
     var eventCode: String, var confUrlCode: String,
     var naming: ConferenceNaming,
@@ -58,9 +55,308 @@ case class ConferenceDescriptor(
     var hosterName: String, var hosterWebsite: String,
     var hashTag: String,
     var tracks: Seq[Track],
+    var proposalTypes: List[ProposalType],
+    var rooms: List[Room],
+    var slots: List[Slot],
     var contentBlocks: ContentBlocks
 )
+
+
 object ConferenceDescriptor {
+
+    object DevoxxProposalTypes {
+      val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true, "icon-microphone", true)
+      val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true, "icon-laptop", false)
+      val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true, "icon-legal", false)
+      val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true, "icon-beaker", false)
+      val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false, "icon-fast-forward", true)
+      val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false, "icon-group", false)
+      val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false, "icon-microphone", true)
+      val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false)
+      val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false, "icon-microphone", false)
+    }
+
+    object DevoxxRooms {
+      val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, "special")
+
+      val KEYNOTE_SEINE = Room("seine_keynote", "Seine", 980, "keynote")
+      val SEINE_A = Room("seine_a", "Seine A", 280, "theatre")
+      val SEINE_B = Room("seine_b", "Seine B", 280, "theatre")
+      val SEINE_C = Room("seine_c", "Seine C", 260, "theatre")
+      val AUDITORIUM = Room("auditorium", "Auditorium", 160, "theatre")
+      val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 290, "theatre")
+      val MILES_DAVIS = Room("md_full", "M.Davis", 220, "theatre")
+
+      val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 45, "classe")
+      val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 30, "classe")
+      val LOUIS_ARMSTRONG_CD = Room("la_cd", "Louis Armstrong CD", 30, "classe")
+      val MILES_DAVIS_A = Room("md_a", "Miles Davis A", 24, "classe")
+      val MILES_DAVIS_B = Room("md_b", "Miles Davis B", 24, "classe")
+      val MILES_DAVIS_C = Room("md_c", "Miles Davis C", 48, "classe")
+
+      val ELLA_FITZGERALD_AB_TH = Room("el_ab_th", "E.Fitzgerald AB", 80, "theatre")
+      val LOUIS_ARMSTRONG_AB_TH = Room("la_ab_th", "L.Armstrong AB", 80, "theatre")
+      val LOUIS_ARMSTRONG_CD_TH = Room("la_cd_th", "L.Armstrong CD", 80, "theatre")
+      val MILES_DAVIS_A_TH = Room("md_a_th", "M.Davis A", 50, "theatre")
+      val MILES_DAVIS_B_TH = Room("md_b_th", "M.Davis B", 50, "theatre")
+      val MILES_DAVIS_C_TH = Room("md_c_th", "M.Davis C", 80, "theatre")
+
+      val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15, "classe")
+      val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300, "classe")
+      val LABO = Room("foyer_labo", "Labo", 40, "special")
+
+      val allBigRoom = List(DevoxxRooms.SEINE_A, DevoxxRooms.SEINE_B, DevoxxRooms.SEINE_C, DevoxxRooms.AUDITORIUM)
+
+      val allRoomsLabs = List(DevoxxRooms.ELLA_FITZGERALD_AB, DevoxxRooms.LOUIS_ARMSTRONG_AB, DevoxxRooms.LOUIS_ARMSTRONG_CD,
+        DevoxxRooms.MILES_DAVIS_A, DevoxxRooms.MILES_DAVIS_B, DevoxxRooms.MILES_DAVIS_C)
+
+      val allRoomsBOFs = List(DevoxxRooms.ELLA_FITZGERALD_AB, DevoxxRooms.LOUIS_ARMSTRONG_AB, DevoxxRooms.AUDITORIUM, DevoxxRooms.LOUIS_ARMSTRONG_CD,
+        DevoxxRooms.MILES_DAVIS_A, DevoxxRooms.MILES_DAVIS_B, DevoxxRooms.MILES_DAVIS_C, DevoxxRooms.LABO)
+
+      val allRoomsTIA = List(DevoxxRooms.ELLA_FITZGERALD_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_CD_TH,
+        DevoxxRooms.MILES_DAVIS_A_TH, DevoxxRooms.MILES_DAVIS_B_TH, DevoxxRooms.MILES_DAVIS_C_TH,
+        DevoxxRooms.SEINE_A, DevoxxRooms.SEINE_B, DevoxxRooms.SEINE_C, DevoxxRooms.AUDITORIUM)
+
+      val allRoomsNotRecorded = List(DevoxxRooms.ELLA_FITZGERALD_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_CD_TH,
+        DevoxxRooms.MILES_DAVIS_A_TH, DevoxxRooms.MILES_DAVIS_B_TH, DevoxxRooms.MILES_DAVIS_C_TH)
+
+
+      val allRooms = allBigRoom ++ List(DevoxxRooms.ELLA_FITZGERALD, DevoxxRooms.MILES_DAVIS)
+
+      // No E.Fitzgerald for Apres-midi des decideurs
+      val allRoomsButAMD = List(DevoxxRooms.SEINE_A, DevoxxRooms.SEINE_B, DevoxxRooms.SEINE_C, DevoxxRooms.AUDITORIUM, DevoxxRooms.MILES_DAVIS)
+    }
+
+    object DevoxxSlotBreaks {
+      val petitDej = SlotBreak("dej", "Welcome and Breakfast", "Accueil et petit-déjeuner", DevoxxRooms.HALL_EXPO)
+      val coffee = SlotBreak("coffee", "Coffee Break", "Pause café", DevoxxRooms.HALL_EXPO)
+      val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", DevoxxRooms.HALL_EXPO)
+      val shortBreak = SlotBreak("chgt", "Break", "Pause courte", DevoxxRooms.HALL_EXPO)
+    }
+
+    object DevoxxSlots {
+      val universitySlots: List[Slot] = {
+          val u1 = DevoxxRooms.allBigRoom.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.UNI.id, "mercredi", new DateTime("2014-04-16T09:30:00.000+02:00"), new DateTime("2014-04-16T12:30:00.000+02:00"), r)
+          }
+          val u2 = DevoxxRooms.allBigRoom.map {
+            r2 =>
+              SlotBuilder(DevoxxProposalTypes.UNI.id, "mercredi", new DateTime("2014-04-16T13:30:00.000+02:00"), new DateTime("2014-04-16T16:30:00.000+02:00"), r2)
+          }
+          u1 ++ u2
+        }
+
+        val toolsInActionSlots: List[Slot] = {
+          val t1 = DevoxxRooms.allRoomsTIA.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.TIA.id, "mercredi", new DateTime("2014-04-16T17:10:00.000+02:00"), new DateTime("2014-04-16T17:40:00.000+02:00"), r)
+          }
+          val t2 = DevoxxRooms.allRoomsTIA.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.TIA.id, "mercredi", new DateTime("2014-04-16T17:50:00.000+02:00"), new DateTime("2014-04-16T18:20:00.000+02:00"), r)
+          }
+          val t3 = DevoxxRooms.allRoomsTIA.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.TIA.id, "mercredi", new DateTime("2014-04-16T18:30:00.000+02:00"), new DateTime("2014-04-16T19:00:00.000+02:00"), r)
+          }
+          t1 ++ t2 ++ t3
+        }
+
+        val labsSlots: List[Slot] = {
+          val l1 = DevoxxRooms.allRoomsLabs.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.LAB.id, "mercredi", new DateTime("2014-04-16T09:30:00.000+02:00"), new DateTime("2014-04-16T12:30:00.000+02:00"), r)
+          }
+          val l2 = DevoxxRooms.allRoomsLabs.map {
+            r2 =>
+              SlotBuilder(DevoxxProposalTypes.LAB.id, "mercredi", new DateTime("2014-04-16T13:30:00.000+02:00"), new DateTime("2014-04-16T16:30:00.000+02:00"), r2)
+          }
+          l1 ++ l2
+        }
+
+        val quickiesSlotsThursday: List[Slot] = {
+          val quickie01 = DevoxxRooms.allRoomsButAMD.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.QUICK.id, "jeudi", new DateTime("2014-04-17T12:35:00.000+02:00"), new DateTime("2014-04-17T12:50:00.000+02:00"), r)
+          }
+          val quickie02 = DevoxxRooms.allRoomsButAMD.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.QUICK.id, "jeudi", new DateTime("2014-04-17T13:00:00.000+02:00"), new DateTime("2014-04-17T13:15:00.000+02:00"), r)
+          }
+          quickie01 ++ quickie02
+        }
+
+        val quickiesSlotsFriday: List[Slot] = {
+
+          val quickie03 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.QUICK.id, "vendredi", new DateTime("2014-04-18T12:45:00.000+02:00"), new DateTime("2014-04-18T13:00:00.000+02:00"), r)
+          }
+          val quickie04 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.QUICK.id, "vendredi", new DateTime("2014-04-18T13:10:00.000+02:00"), new DateTime("2014-04-18T13:25:00.000+02:00"), r)
+          }
+          quickie03 ++ quickie04
+        }
+
+        val conferenceSlotsThursday: List[Slot] = {
+          val c1 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "jeudi", new DateTime("2014-04-17T11:30:00.000+02:00"), new DateTime("2014-04-17T12:20:00.000+02:00"), r)
+          }
+          val c2 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "jeudi", new DateTime("2014-04-17T13:25:00.000+02:00"), new DateTime("2014-04-17T14:15:00.000+02:00"), r)
+          }
+          val c3 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "jeudi", new DateTime("2014-04-17T14:30:00.000+02:00"), new DateTime("2014-04-17T15:20:00.000+02:00"), r)
+          }
+          val c4 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "jeudi", new DateTime("2014-04-17T15:35:00.000+02:00"), new DateTime("2014-04-17T16:25:00.000+02:00"), r)
+          }
+          val c5 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "jeudi", new DateTime("2014-04-17T17:00:00.000+02:00"), new DateTime("2014-04-17T17:50:00.000+02:00"), r)
+          }
+
+          val c6 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "jeudi", new DateTime("2014-04-17T18:05:00.000+02:00"), new DateTime("2014-04-17T18:55:00.000+02:00"), r)
+          }
+          c1 ++ c2 ++ c3 ++ c4 ++ c5 ++ c6
+        }
+
+        val conferenceSlotsFriday: List[Slot] = {
+          val c1 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "vendredi", new DateTime("2014-04-18T10:40:00.000+02:00"), new DateTime("2014-04-18T11:30:00.000+02:00"), r)
+          }
+          val c2 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "vendredi", new DateTime("2014-04-18T11:45:00.000+02:00"), new DateTime("2014-04-18T12:35:00.000+02:00"), r)
+          }
+
+          val c3 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "vendredi", new DateTime("2014-04-18T13:30:00.000+02:00"), new DateTime("2014-04-18T14:20:00.000+02:00"), r)
+          }
+          val c4 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "vendredi", new DateTime("2014-04-18T14:35:00.000+02:00"), new DateTime("2014-04-18T15:25:00.000+02:00"), r)
+          }
+          val c5 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "vendredi", new DateTime("2014-04-18T15:40:00.000+02:00"), new DateTime("2014-04-18T16:30:00.000+02:00"), r)
+          }
+
+          val c6 = DevoxxRooms.allRooms.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "vendredi", new DateTime("2014-04-18T17:00:00.000+02:00"), new DateTime("2014-04-18T17:50:00.000+02:00"), r)
+          }
+
+          val c7 = List(DevoxxRooms.MILES_DAVIS, DevoxxRooms.ELLA_FITZGERALD, DevoxxRooms.AUDITORIUM).map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.CONF.id, "vendredi", new DateTime("2014-04-18T18:05:00.000+02:00"), new DateTime("2014-04-18T18:55:00.000+02:00"), r)
+          }
+
+          c1 ++ c2 ++ c3 ++ c4 ++ c5 ++ c6 ++ c7
+        }
+
+        val bofSlotsThursday: List[Slot] = {
+
+          val bof01 = DevoxxRooms.allRoomsBOFs.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.BOF.id, "jeudi", new DateTime("2014-04-17T19:30:00.000+02:00"), new DateTime("2014-04-17T20:30:00.000+02:00"), r)
+          }
+          val bof02 = DevoxxRooms.allRoomsBOFs.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.BOF.id, "jeudi", new DateTime("2014-04-17T20:30:00.000+02:00"), new DateTime("2014-04-17T21:30:00.000+02:00"), r)
+          }
+          val bof03 = DevoxxRooms.allRoomsBOFs.map {
+            r =>
+              SlotBuilder(DevoxxProposalTypes.BOF.id, "jeudi", new DateTime("2014-04-17T21:30:00.000+02:00"), new DateTime("2014-04-17T22:30:00.000+02:00"), r)
+          }
+          bof01 ++ bof02 ++ bof03
+        }
+
+        val wednesday: List[Slot] = {
+          val wednesdayBreaks = List(
+            SlotBuilder(DevoxxSlotBreaks.petitDej, "mercredi", new DateTime("2014-04-16T08:00:00.000+02:00"), new DateTime("2014-04-16T09:30:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.lunch, "mercredi", new DateTime("2014-04-16T12:30:00.000+02:00"), new DateTime("2014-04-16T13:30:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.coffee, "mercredi", new DateTime("2014-04-16T16:30:00.000+02:00"), new DateTime("2014-04-16T17:10:00.000+02:00"))
+          )
+          val odc = Proposal.findById("ZYE-706")
+          val devoxx4Kids = Proposal.findById("USM-170")
+          val hackerGarten = Proposal.findById("QIY-889")
+
+          val specialEvents = List(
+            SlotBuilder(DevoxxProposalTypes.OTHER.id, "mercredi", new DateTime("2014-04-16T09:30:00.000+02:00"), new DateTime("2014-04-16T18:00:00.000+02:00"), Room.OTHER, odc)
+            , SlotBuilder(DevoxxProposalTypes.OTHER.id, "mercredi", new DateTime("2014-04-16T09:30:00.000+02:00"), new DateTime("2014-04-16T18:00:00.000+02:00"), Room.OTHER, devoxx4Kids)
+          )
+          wednesdayBreaks ++ specialEvents
+        }
+
+        val thursday: List[Slot] = {
+
+          val keynoteThursday: List[Slot] = {
+            val welcomeKeynote = Proposal.findById("DSD-030")
+            val key01 = SlotBuilder(DevoxxProposalTypes.KEY.id, "jeudi", new DateTime("2014-04-17T09:00:00.000+02:00"), new DateTime("2014-04-17T09:10:00.000+02:00"), DevoxxRooms.KEYNOTE_SEINE, welcomeKeynote)
+
+            val babinet=Proposal.findById("IIH-512")
+            val key02 = SlotBuilder(DevoxxProposalTypes.KEY.id, "jeudi", new DateTime("2014-04-17T09:10:00.000+02:00"), new DateTime("2014-04-17T09:30:00.000+02:00"), DevoxxRooms.KEYNOTE_SEINE, babinet)
+
+            val guyMamou=Proposal.findById("RCV-236")
+            val key03 = SlotBuilder(DevoxxProposalTypes.KEY.id, "jeudi", new DateTime("2014-04-17T09:40:00.000+02:00"), new DateTime("2014-04-17T10:00:00.000+02:00"), DevoxxRooms.KEYNOTE_SEINE, guyMamou)
+
+            val simplon=Proposal.findById("TAX-972")
+            val key04 = SlotBuilder(DevoxxProposalTypes.KEY.id, "jeudi", new DateTime("2014-04-17T10:10:00.000+02:00"), new DateTime("2014-04-17T10:30:00.000+02:00"), DevoxxRooms.KEYNOTE_SEINE, simplon)
+
+            List(key01, key02, key03, key04)
+          }
+
+          val thursdayBreaks = List(
+            SlotBuilder(DevoxxSlotBreaks.petitDej, "jeudi", new DateTime("2014-04-17T07:30:00.000+02:00"), new DateTime("2014-04-17T09:00:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.coffee, "jeudi", new DateTime("2014-04-17T10:45:00.000+02:00"), new DateTime("2014-04-17T11:30:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.lunch, "jeudi", new DateTime("2014-04-17T12:20:00.000+02:00"), new DateTime("2014-04-17T13:25:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.coffee, "jeudi", new DateTime("2014-04-17T16:25:00.000+02:00"), new DateTime("2014-04-17T17:00:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.shortBreak, "jeudi", new DateTime("2014-04-17T18:55:00.000+02:00"), new DateTime("2014-04-17T19:30:00.000+02:00"))
+          )
+
+
+          thursdayBreaks ++ keynoteThursday
+        }
+
+        val friday: List[Slot] = {
+
+        val keynoteFriday: List[Slot] = {
+            val geert=Proposal.findById("JEJ-167")
+            val key05 = SlotBuilder(DevoxxProposalTypes.KEY.id, "vendredi", new DateTime("2014-04-18T09:00:00.000+02:00"), new DateTime("2014-04-18T09:20:00.000+02:00"), DevoxxRooms.KEYNOTE_SEINE, geert)
+
+            val oracle=Proposal.findById("BHX-731")
+            val key06 = SlotBuilder(DevoxxProposalTypes.KEY.id, "vendredi", new DateTime("2014-04-18T09:30:00.000+02:00"), new DateTime("2014-04-18T09:50:00.000+02:00"), DevoxxRooms.KEYNOTE_SEINE, oracle)
+
+            val serge=Proposal.findById("KOC-474")
+            val key07 = SlotBuilder(DevoxxProposalTypes.KEY.id, "vendredi", new DateTime("2014-04-18T10:00:00.000+02:00"), new DateTime("2014-04-18T10:20:00.000+02:00"), DevoxxRooms.KEYNOTE_SEINE, serge)
+
+            List(key05, key06, key07)
+          }
+
+          val fridayBreaks = List(
+            SlotBuilder(DevoxxSlotBreaks.petitDej, "vendredi", new DateTime("2014-04-18T08:00:00.000+02:00"), new DateTime("2014-04-18T09:00:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.coffee, "vendredi", new DateTime("2014-04-18T10:10:00.000+02:00"), new DateTime("2014-04-18T10:40:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.lunch, "vendredi", new DateTime("2014-04-18T12:35:00.000+02:00"), new DateTime("2014-04-18T13:30:00.000+02:00"))
+            , SlotBuilder(DevoxxSlotBreaks.coffee, "vendredi", new DateTime("2014-04-18T16:30:00.000+02:00"), new DateTime("2014-04-18T17:00:00.000+02:00"))
+          )
+
+          fridayBreaks ++ keynoteFriday
+        }
+
+      val all: List[Slot] = { wednesday ++ thursday ++ friday }
+    }
+
     def current() = ConferenceDescriptor(
       eventCode = "DevoxxBe2014",
       // You will need to update conf/routes files with this code if modified
@@ -109,6 +405,42 @@ object ConferenceDescriptor {
         Track("cloud", "cloud.label", "http://devoxx.be/images/tracks/eca0b0a1.icon_cloud.png", "track.cloud.title", "track.cloud.desc"),
         Track("web", "web.label", "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
       ),
+      proposalTypes = List(
+        DevoxxProposalTypes.CONF,
+        DevoxxProposalTypes.UNI,
+        DevoxxProposalTypes.TIA,
+        DevoxxProposalTypes.LAB,
+        DevoxxProposalTypes.QUICK,
+        DevoxxProposalTypes.BOF,
+        DevoxxProposalTypes.KEY,
+        DevoxxProposalTypes.START,
+        DevoxxProposalTypes.OTHER
+      ),
+      rooms = List(
+        DevoxxRooms.KEYNOTE_SEINE,
+        DevoxxRooms.SEINE_A,
+        DevoxxRooms.SEINE_B,
+        DevoxxRooms.SEINE_C,
+        DevoxxRooms.AUDITORIUM,
+        DevoxxRooms.ELLA_FITZGERALD,
+        DevoxxRooms.ELLA_FITZGERALD_AB,
+        DevoxxRooms.ELLA_FITZGERALD_AB_TH,
+        DevoxxRooms.LOUIS_ARMSTRONG_AB,
+        DevoxxRooms.LOUIS_ARMSTRONG_AB_TH,
+        DevoxxRooms.LOUIS_ARMSTRONG_CD,
+        DevoxxRooms.LOUIS_ARMSTRONG_CD_TH,
+        DevoxxRooms.MILES_DAVIS_A,
+        DevoxxRooms.MILES_DAVIS_A_TH,
+        DevoxxRooms.MILES_DAVIS_B_TH,
+        DevoxxRooms.MILES_DAVIS_C_TH,
+
+        DevoxxRooms.MILES_DAVIS,
+        DevoxxRooms.DUKE_ELLINGTON,
+        DevoxxRooms.FOYER_BAS,
+        DevoxxRooms.LABO,
+        Room.OTHER
+      ),
+      slots = DevoxxSlots.all,
       contentBlocks = ContentBlocks(
         _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxPreviousVideosHomeRightBlock()(lang, confDesc),
         _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxEnglishProposalsHomeFooterBlock()(lang, confDesc),
@@ -118,13 +450,13 @@ object ConferenceDescriptor {
              htmlSummary: String, privateMessage: String,
              newProposal: Form[models.Proposal], currentUser: String) => devoxxProposalsGuideFooterBlock(htmlSummary, privateMessage, newProposal, currentUser)(lang, confDesc),
         showSponsorProposalCheckbox = true,
-        sponsorProposalType = ProposalType.CONF
+        sponsorProposalType = DevoxxProposalTypes.CONF
       )
     )
 
-  val isCFPOpen: Boolean = {
-    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
-  }
+    val isCFPOpen: Boolean = {
+      current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+    }
 }
 
 

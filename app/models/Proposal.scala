@@ -30,19 +30,9 @@ case class ProposalType(
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true, "icon-microphone", true)
-  val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true, "icon-laptop", false)
-  val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true, "icon-legal", false)
-  val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true, "icon-beaker", false)
-  val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false, "icon-fast-forward", true)
-  val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false, "icon-group", false)
-  val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false, "icon-microphone", true)
-  val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false)
-  val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false, "icon-microphone", false)
+  val UNKNOWN = ProposalType("unknown", "unknown.label", "unknown.label", 0, false, false, "unknown")
 
-  val UNKNOWN = ProposalType("unknown", "unknown.simple.label", "unknown.label", 0, false, false, "icon-microphone", false)
-  
-  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START)
+  val all = ConferenceDescriptor.current().proposalTypes
 
   val totalSlotsCount = all.map(_.slotsCount).sum
 

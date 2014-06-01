@@ -17,11 +17,9 @@
                 <div class="panel-body">
                     <div class="panel-body">
                         <div class="col-md-12">
-                        <a href="@routes.CFPAdmin.allProposalsByType(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
-                        <a href="@routes.CFPAdmin.allProposalsByType(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
-                        <a href="@routes.CFPAdmin.allProposalsByType(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
-                        <a href="@routes.CFPAdmin.allProposalsByType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
-                        <a href="@routes.CFPAdmin.allProposalsByType(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
+                        @for(proposalType <- confDesc.proposalTypes) {
+                            <a href="@routes.CFPAdmin.allProposalsByType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@proposalType.htmlClass"></i> @Messages(proposalType.simpleLabel)</a>
+                        }
 
                             @if(flash.get("error").isDefined) {
                                 <div class="alert alert-danger alert-dismissable">
