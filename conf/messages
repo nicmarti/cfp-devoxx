@@ -50,6 +50,10 @@ edit.profile=Edit your profile
 edit.name=Edit your name
 new.proposal=New proposal
 
+# --- Formats
+format.date=Date (''{0}'')
+format.numeric=Numeric
+format.real=Real
 
 # github login
 github.importprofile.error=Sorry, cannot import your github profile.
@@ -125,12 +129,12 @@ btn.send=Send
 # Home page
 appel.conf=Call for Paper
 devoxxbe2014.dates=From 10th to 14th of November, 2014
-cfp.opening=CFP opening:
-cfp.opening.date=Monday, 2nd of June, 2014
-cfp.closing=CFP Closing :
-cfp.closing.date=Friday, July 11th, 2014
+cfp.opening=CFP opening
+cfp.closing=CFP closing
+cfp.reminder=Reminder
+cfp.reminder.proposals=do not forget to accept or to decline all approved proposals.
 cfp.program=Program announced :
-cfp.program.date=mid-september
+cfp.program.date=from {0}
 video.title=Videos
 video.tag=Review {0}''s videos on
 theme.title=Tracks

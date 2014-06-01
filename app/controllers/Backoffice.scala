@@ -18,7 +18,7 @@ import library.search.DoIndexProposal
 object Backoffice extends SecureCFPController {
 
   val isCFPOpen: Boolean = {
-    Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(true)
+    ConferenceDescriptor.isCFPOpen
   }
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
