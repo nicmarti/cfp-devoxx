@@ -130,7 +130,7 @@ case class Proposal(id: String, event: String, lang: String, title: String,
                     privateMessage: String, state: ProposalState,
                     sponsorTalk: Boolean = false,
                     track: Track, demoLevel: String,
-                    userGroup:Boolean=false,
+                    userGroup:Boolean,
                     wishlisted:Option[Boolean]=None) {
 
   def allSpeakerUUIDs: List[String] = {
