@@ -65,7 +65,9 @@
             <p><label>@Messages("title") : </label><br> @Messages("title.help")</p>
             <p><label>@Messages("summary") : </label><br> @Html(Messages("summary.help"))</p>
             <p><label>@Messages("privateMessage") : </label><br> @Messages("privateMessage.help")</p>
-            <p><label>@Messages("lang") : </label><br> @Messages("lang.help", confDesc.longName)</p>
+            @if(confDesc.frLangEnabled) {
+                <p><label>@Messages("lang") : </label><br> @Messages("lang.help", confDesc.longName)</p>
+            }
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", confDesc.faqUrl))</p>
             <p><label>@Messages("mainSpeaker") : </label><br> @Messages("mainSpeaker.help")</p>
             <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
