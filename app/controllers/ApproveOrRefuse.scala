@@ -210,8 +210,6 @@ object ApproveOrRefuse extends SecureCFPController {
 
       val hasNoVotes = allProposalIDs.filter(p=>Review.allVotesFor(p).isEmpty)
 
-      println("hasNoVotes "+hasNoVotes)
-
       Ok("allProposalIDsSubmitted ")
   }
 

@@ -68,7 +68,8 @@ object CallForPaper extends SecureCFPController {
     "avatarUrl" -> optional(text),
     "company" -> optional(text),
     "blog" -> optional(text),
-    "firstName" -> nonEmptyText(maxLength=25)
+    "firstName" -> nonEmptyText(maxLength=25),
+    "qualifications" ->  nonEmptyText(maxLength = 750)
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def editProfile = SecuredAction {
@@ -135,8 +136,9 @@ object CallForPaper extends SecureCFPController {
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
-          val html = validProposal.summaryAsHtml // markdown to HTML
-          Ok(views.html.CallForPaper.previewProposal(html, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
+          val summary = validProposal.summaryAsHtml // markdown to HTML
+          val privateMessage = validProposal.privateMessageAsHtml // markdown to HTML
+          Ok(views.html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
         }
       )
   }

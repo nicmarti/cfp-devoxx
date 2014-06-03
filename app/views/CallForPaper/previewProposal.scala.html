@@ -1,4 +1,4 @@
-@(htmlSummary: String, newProposal: Form[models.Proposal], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -23,11 +23,12 @@
             <input type="hidden" name="otherSpeakers" value="@newProposal("otherSpeakers").value">
             <input type="hidden" name="talkType" value="@newProposal("talkType").value">
             <input type="hidden" name="audienceLevel" value="@newProposal("audienceLevel").value">
-            <input type="hidden" name="demoLevel" value="@newProposal("demoLevel").value">
             <input type="hidden" name="summary" value="@newProposal("summary").value">
             <input type="hidden" name="privateMessage" value="@newProposal("privateMessage").value">
             <input type="hidden" name="sponsorTalk" value="@newProposal("sponsorTalk").value">
+            <input type="hidden" name="userGroup" value="@newProposal("userGroup").value">
             <input type="hidden" name="track" value="@newProposal("track").value">
+            <input type="hidden" name="demoLevel" value="@newProposal("demoLevel").value">
             <input type="hidden" name="id" value="@newProposal("id").value">
 
             <div class="alert alert-info"><i class="icon-warning-sign"></i> @Messages("not.saved")</div>
@@ -45,7 +46,7 @@
                         <h4><small>Abstract for the Devoxx audience:</small></h4>
                         <div class="proposal_prev">@Html(htmlSummary)</div>
                         <h4><small>Private message for the Committe:</small></h4>
-                        <div class="proposal_prev">@Html(newProposal("privateMessage").value.getOrElse(""))</div>
+                        <div class="proposal_prev">@Html(privateMessage)</div>
                     </div>
                 </div>
             </div>

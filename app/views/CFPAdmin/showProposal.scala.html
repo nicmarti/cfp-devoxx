@@ -15,11 +15,11 @@
                                                    <th>@Messages("admin.proposals.th.title")</th>
                                                    <th>
                                                    @Messages("admin.proposals.th.track")
-<small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
                                                    </th>
 
                                                    <th>@Messages("admin.proposals.th.talkType")
-<small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
                                                    </th>
                                                    <th>@Messages("admin.proposals.th.lang")</th>
                                                </tr>
@@ -48,16 +48,22 @@
                             <tr>
                                 <th>@Messages("admin.sp.mainSpeaker")</th>
                                 <td>
+                                <div class="showSpeakerDetails">
                                 @tags.showSpeakerTag(proposal.mainSpeaker)
+                                    <span></span>
+                                </div>
                                 </td>
                             </tr>
                             @if(proposal.secondarySpeaker.isDefined) {
                                 <tr>
                                     <th>@Messages("admin.sp.secSpeaker")</th>
                                     <td>
+                                     <div class="showSecSpeakerDetails">
                                     @proposal.secondarySpeaker.map { secondarySpeaker =>
                                         @tags.showSpeakerTag(secondarySpeaker)
                                     }
+                                         <span></span>
+                                         </div>
                                     </td>
                                 </tr>
                             }
@@ -75,10 +81,7 @@
                         <tfoot>
                             <tr>
                                 <th>@Messages("admin.sp.privateMessage")</th>
-                                <td><small>
-                                @Html(proposal.privateMessageAsHtml)
-                                </small>
-                                </td>
+                                <td>@Html(proposal.privateMessageAsHtml)</td>
                             </tr>
                             @if(proposal.sponsorTalk) {
                                 <tr>
@@ -113,7 +116,7 @@
         @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
            @if(approved){
                <div class="panel-heading">
-                    <h3><i class="icon-check"></i> <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span></span> </h3>
+                    <h3><i class="icon-check"></i> <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
                 </div>
                 <div class="panel-body">
                     <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
@@ -246,4 +249,26 @@
         </div>
     </div>
 }
-</span>
+<script type="text/javascript">
+    $(document).ready(function($) {
+        $('.showSpeakerDetails')
+            .mouseenter(function() {
+                $( this ).find( "span" ).text( "Loading..." );
+                $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.mainSpeaker)' );
+            })
+            .mouseleave(function() {
+                $( this ).find( "span" ).text( "" );
+            });
+@if(proposal.secondarySpeaker.isDefined) {
+        $('.showSecSpeakerDetails')
+            .mouseenter(function() {
+                $( this ).find( "span" ).text( "Loading..." );
+                $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.secondarySpeaker.get)' );
+            })
+            .mouseleave(function() {
+                $( this ).find( "span" ).text( "" );
+            });
+    }
+}
+);
+</script>

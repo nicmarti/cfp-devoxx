@@ -47,7 +47,6 @@
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,  'class->"form-control")
 
-                <input type="hidden" name="audienceLevel" value="intermediate">
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox")
 
                 @tags.checkboxI18N(newProposal("sponsorTalk"),  'text->"sponsorTalk.checkbox")
@@ -81,7 +80,7 @@ $(document).ready(function($){
     setformfieldsize($('#summary'), 1200, 'charsremain');
     setformfieldsize($('#privateMessage'), 3500, 'charsremain2');
 
-    // Selet current lang
+    // Select current lang
     $('#lang option[value="@lang.country.toLowerCase"]').prop('selected', true);
 
     // When user tick sponsorTalk then we update the private message
@@ -103,6 +102,15 @@ $(document).ready(function($){
         $('#sponsorTalkMsg').hide();
         $('#talkType').prop('disabled', false);
     }
+
+    // Startup (specific to Devoxx BE)
+    $('#talkType' ).change(function(){
+        var talkTypeId = $(this).val();
+        if(talkTypeId=="@models.ProposalType.START.id"){
+            $('#track option[value="startup"]' ).prop('selected', true);
+        }
+    });
+
 });
 </script>
 

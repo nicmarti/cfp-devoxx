@@ -3,6 +3,7 @@ import library._
 import library.DraftReminder
 import library.search._
 import library.search.StopIndex
+import models.RequestToTalk
 import org.joda.time.DateMidnight
 import play.api._
 import play.api.mvc.RequestHeader

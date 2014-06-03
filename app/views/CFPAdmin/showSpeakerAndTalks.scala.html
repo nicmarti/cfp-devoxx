@@ -57,6 +57,9 @@
                             <td><i class="icon-adjust"></i> Bio</td><td>@Html(speaker.bioAsHtml)</td>
                         </tr>
                         <tr>
+                            <td><i class="icon-tasks"></i> @Messages("qualifications.label")</td><td>@speaker.qualifications</td>
+                        </tr>
+                        <tr>
                             <td><i class="icon-flag"></i> Lang</td><td>@speaker.lang.getOrElse("")</td>
                         </tr>
                         <tr>

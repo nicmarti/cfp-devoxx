@@ -24,33 +24,32 @@
         <div class="panel-heading">
             <h3>All speakers</h3>
             <span class="label label-info">@speakers.size users</span>
+            <span class="label label-info">@speakers.count(w => Webuser.hasAccessToCFP(w.uuid)) CFP users</span>
         </div>
         <div class="panel-body">
             @if(speakers.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>
                     <tr>
-                        <th>UUID</th>
+                        <th>Name</th>
                         <th>Email</th>
                         <th>Gravatar</th>
-                        <th>Name</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                @speakers.map{ webuser: Webuser =>
+                @speakers.sortBy(w=>Webuser.hasAccessToCFP(w.uuid)).reverse.map{ webuser: Webuser =>
                     <tr>
                         <td>
-                            <small>@webuser.uuid</small>
+                            @webuser.cleanName
                         </td>
-                        <td>
+                         <td>
                             <small>@webuser.email</small>
                         </td>
                         <td>@tags.renderGravatar(webuser.uuid)</td>
                         <td>
                             <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
-                        </td>
-                        <td>
+
                            @if(SecureCFPController.hasAccessToAdmin(req)){
                                 @if(Webuser.hasAccessToCFP(webuser.uuid)){
                                     <a class="btn btn-sm btn-danger" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)">Remove from CFP</a>

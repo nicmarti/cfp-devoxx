@@ -39,10 +39,17 @@ import org.apache.commons.lang3.StringUtils
  * Author: nicolas
  * Created: 28/09/2013 11:01
  */
-case class Speaker(uuid: String, email: String, name: Option[String], bio: String, lang: Option[String],
-                   twitter: Option[String], avatarUrl: Option[String],
-                   company: Option[String], blog: Option[String],
-                   firstName: Option[String]) {
+case class Speaker(uuid: String
+                   , email: String
+                   , name: Option[String]
+                   , bio: String
+                   , lang: Option[String]
+                   , twitter: Option[String]
+                   , avatarUrl: Option[String]
+                   , company: Option[String]
+                   , blog: Option[String]
+                   , firstName: Option[String]
+                   , qualifications:Option[String]) {
 
   def cleanName: String = {
     firstName.getOrElse("") + name.map(n => " " + n).getOrElse("")
@@ -79,12 +86,12 @@ object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String): Speaker = {
-    Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName))
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, qualifications:String): Speaker = {
+    Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications))
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms: Boolean): Speaker = {
+                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms: Boolean, qualifications:String): Speaker = {
     uuid match {
       case None =>
         val newUUID = Webuser.generateUUID(email)
@@ -93,24 +100,24 @@ object Speaker {
         } else {
           refuseTerms(newUUID)
         }
-        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
+        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications))
       case Some(validUuid) =>
         if (acceptTerms) {
           doAcceptTerms(validUuid)
         } else {
           refuseTerms(validUuid)
         }
-        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName))
+        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications))
     }
 
   }
 
-  def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String)] = {
-    Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""))
+  def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, String)] = {
+    Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"))
   }
 
-  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean)] = {
-    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), needsToAccept(s.uuid) == false)
+  def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean, String)] = {
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), needsToAccept(s.uuid) == false, s.qualifications.getOrElse("No experience"))
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -188,7 +195,6 @@ object Speaker {
       Cache.remove("allSpeakersWithAcceptedTerms")
       client.hdel("TermsAndConditions", speakerId)
   }
-
 
   def getAcceptedDate(speakerId: String): Option[DateTime] = Redis.pool.withClient {
     client =>

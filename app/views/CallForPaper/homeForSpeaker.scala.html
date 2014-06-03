@@ -89,6 +89,16 @@
                             }
                             </td>
                         </tr>
+                        <tr>
+                            <td>@Html(Messages("qualifications.label"))</td>
+                            <td>
+                            @if(StringUtils.trimToEmpty(speaker.qualifications.getOrElse("")).isEmpty) {
+                                <i class="icon-exclamation-sign error"></i>
+                            } else {
+                                <i class="icon-ok alert-success"></i>
+                            }
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 

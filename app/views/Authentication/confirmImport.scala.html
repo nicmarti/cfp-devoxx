@@ -1,4 +1,4 @@
-@(formWebuser: Form[(String, String,String,String,Option[String],Option[String],Option[String],Option[String])])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(formWebuser: Form[(String, String,String,String,Option[String],Option[String],Option[String],Option[String], String)])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.codec.digest.DigestUtils
@@ -20,6 +20,7 @@
             @helper.inputText(formWebuser("company"))
             @helper.inputText(formWebuser("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
+            @helper.textarea(formWebuser("qualifications"), 'cols -> 80, 'rows -> 3, 'placeholder -> "No experience")
 
             @if(formWebuser("email").value!=""){
                 @if(formWebuser("avatarUrl").value.isEmpty){
