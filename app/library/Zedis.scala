@@ -12,7 +12,6 @@ import redis.clients.jedis._
 import scala.Predef.String
 import scala.collection.immutable._
 import org.apache.commons.lang3.StringUtils
-import redis.clients.jedis.exceptions.JedisConnectionException
 
 trait Dress {
   implicit def delegateToJedis(d: Wrap) = d.j
@@ -49,6 +48,17 @@ trait Dress {
           play.Logger.of("library.Zedis").debug(s"hmGet $key $values")
         }
         j.hmget(key, values.toSeq: _*).asScala.toList.filterNot(_ == null)
+      }
+    }
+
+    def hmget(key: String, values2: scala.collection.mutable.Set[String]): List[String] = {
+      if (values2.isEmpty) {
+        Nil
+      } else {
+        if(play.Logger.of("library.Zedis").isDebugEnabled){
+          play.Logger.of("library.Zedis").debug(s"hmGet $key $values2")
+        }
+        j.hmget(key, values2.toSeq: _*).asScala.toList.filterNot(_ == null)
       }
     }
 
@@ -200,6 +210,13 @@ trait Dress {
         tuple: Tuple =>
           (tuple.getElement, tuple.getScore)
       }
+    }
+
+    def zrangeByScore(key:String, min:Long, max:Long):Set[String]={
+      if(play.Logger.of("library.Zedis").isDebugEnabled){
+        play.Logger.of("library.Zedis").debug(s"zrangeByScore $key $min $max")
+      }
+      j.zrangeByScore(key, min, max).asScala.toSet
     }
 
     def zrangeByScore(key:String, min:Double, max:Double):Set[String]={
