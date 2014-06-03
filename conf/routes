@@ -67,6 +67,7 @@ GET           /cfpadmin/allvotes/:confType                           controllers
 GET           /cfpadmin/recompute/allvotes                           controllers.CFPAdmin.doComputeVotesTotal()
 GET           /cfpadmin/allSponsorTalks                              controllers.CFPAdmin.allSponsorTalks
 GET           /cfpadmin/speaker/:uuidSpeaker                         controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
+GET           /cfpadmin/speakeroverview/:uuidSpeaker                 controllers.CFPAdmin.showSpeakerBioOverview(uuidSpeaker:String)
 GET           /cfpadmin/sponsorTalk/remove/:proposalId               controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
 GET           /cfpadmin/proposals/byType/:confType                   controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                     controllers.CFPAdmin.allProposalsByTrack(track:String)
@@ -186,6 +187,7 @@ GET           /devoxxfr2014/talksOnParleys                           controllers
 GET           /cfpadmin/wishlist/home                                controllers.Wishlist.homeWishlist()
 GET           /cfpadmin/wishlist/new                                 controllers.Wishlist.newRequestToTalk()
 POST          /cfpadmin/wishlist/saveNew                             controllers.Wishlist.saveNewRequestToTalk()
+GET           /cfpadmin/wishlist/initTemp                            controllers.Wishlist.initTemp()
 
 GET           /cfpadmin/wishlist/edit/:requestId                     controllers.Wishlist.edit(requestId:String)
 POST          /cfpadmin/wishlist/saveedit                            controllers.Wishlist.saveEdit()

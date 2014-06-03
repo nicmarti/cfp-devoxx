@@ -198,7 +198,7 @@ object CFPAdmin extends SecureCFPController {
       val totalAcceptedByCategories = Leaderboard.totalAcceptedByCategories()
       val totalAcceptedByType = Leaderboard.totalAcceptedByType()
 
-      val devoxx2013 = ApprovedProposal.getDevoxx2013Total
+      val devoxx2013 = ApprovedProposal.getTotal
       val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
       val totalWithTickets = Leaderboard.totalWithTickets()
       val totalWithOneProposal = Leaderboard.totalWithOneProposal()
@@ -262,7 +262,6 @@ object CFPAdmin extends SecureCFPController {
                   s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
                 }
                 case "proposals" => {
-                  println("Json result " + json)
                   val id = (source \ "id").as[String]
                   val title = (source \ "title").as[String]
                   val talkType = (source \ "talkType" \ "id").as[String]
@@ -303,6 +302,17 @@ object CFPAdmin extends SecureCFPController {
         case Some(speaker) => {
           val proposals = Proposal.allProposalsByAuthor(speaker.uuid)
           Ok(views.html.CFPAdmin.showSpeakerAndTalks(speaker, proposals, request.webuser.uuid))
+        }
+        case None => NotFound("Speaker not found")
+      }
+  }
+
+  def showSpeakerBioOverview(uuid:String)= SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      Speaker.findByUUID(uuid) match {
+        case Some(speaker) => {
+          Ok(views.html.CFPAdmin.showSpeakerBioOverview(speaker))
         }
         case None => NotFound("Speaker not found")
       }
@@ -516,7 +526,8 @@ object CFPAdmin extends SecureCFPController {
     "company2" -> optional(text),
     "blog2" -> optional(text),
     "firstName" -> text,
-    "acceptTermsConditions" -> boolean
+    "acceptTermsConditions" -> boolean,
+    "qualifications" -> nonEmptyText(maxLength = 750)
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
 

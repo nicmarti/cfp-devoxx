@@ -25,6 +25,8 @@ company=Your company
 bio=A short bio
 twitter=Your twitter handle
 blog=Your blog or company website
+qualifications=Your speaker''s qualifications
+qualifications.label=Speaker qualifications
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for Devoxx and propose one or more subjects.
 index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
@@ -115,8 +117,7 @@ quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
 bof.label=Bird of a Feather, 1h, Monday to Thursday evening
 lab.label=Hands-on Labs, 3h, Monday and Tuesday
 other.label=Other event
-
-
+start.label=Startup Talk, 25 min, Wednesday to Thursday
 
 # Bug report
 Issue.report=Report an issue
@@ -129,11 +130,11 @@ appel.conf.dates=Devoxx Belgium 2014, 10th-14th November
 cfp.opening=CFP opening:
 cfp.opening.date=Monday, 2nd of June, 2014
 cfp.closing=CFP Closing :
-cfp.closing.date=End of June
+cfp.closing.date=Friday, July 11th, 2014
 cfp.program=Program announced :
 cfp.program.date=mid-september
 video.title=Videos
-video.tag=Review Devoxx Belgium 2013''s videos for free on
+video.tag=Review Devoxx Belgium 2013''s videos on
 theme.title=Tracks
 theme.track=List of tracks for Devoxx 2014:
 
@@ -391,6 +392,7 @@ hack=Hackaton
 key=Keynote
 other=Other format
 all=All
+start=Startup presentation
 amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
@@ -515,9 +517,11 @@ wishlist.requests.track=Track requests for speakers
 wishlist.createRequest=Create a new request
 wishlist.editRequest=Edit and update a request
 wishlist.sendEmail=Send the message to the speaker
-wishlist.save=Save this request
+wishlist.save=Save and reload this page
 wishlist.history=History
-wishlist.cancelEdit=Cancel edition
+wishlist.cancelEdit=Go back to list of Requests
+wishlist.previous=Previous
+wishlist.next=Next
 
 wl_note=Private note and internal discussion
 wl_message=Message for speaker

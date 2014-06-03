@@ -27,9 +27,10 @@ object ProposalType {
   val QUICK = ProposalType("quick", "quick.label")
   val BOF = ProposalType("bof", "bof.label")
   val KEY = ProposalType("key", "key.label")
+  val START = ProposalType("start", "start.label")
   val OTHER = ProposalType("other", "other.label")
 
-  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY)
+  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START)
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
@@ -44,6 +45,7 @@ object ProposalType {
       case "quick" => QUICK
       case "bof" => BOF
       case "key" => KEY
+      case "start" => START
       case other => OTHER
     }
   }
@@ -124,13 +126,22 @@ object ProposalState {
 import com.github.rjeschke.txtmark._
 
 // A proposal
-case class Proposal(id: String, event: String, lang: String, title: String,
-                    mainSpeaker: String, secondarySpeaker: Option[String], otherSpeakers: List[String],
-                    talkType: ProposalType, audienceLevel: String, summary: String,
-                    privateMessage: String, state: ProposalState,
+case class Proposal(id: String,
+                    event: String,
+                    lang: String,
+                    title: String,
+                    mainSpeaker: String,
+                    secondarySpeaker: Option[String],
+                    otherSpeakers: List[String],
+                    talkType: ProposalType,
+                    audienceLevel: String,
+                    summary: String,
+                    privateMessage: String,
+                    state: ProposalState,
                     sponsorTalk: Boolean = false,
-                    track: Track, demoLevel: String,
-                    userGroup:Boolean=false,
+                    track: Track,
+                    demoLevel: String,
+                    userGroup:Boolean,
                     wishlisted:Option[Boolean]=None) {
 
   def allSpeakerUUIDs: List[String] = {
