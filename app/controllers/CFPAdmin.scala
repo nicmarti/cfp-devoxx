@@ -262,7 +262,6 @@ object CFPAdmin extends SecureCFPController {
                   s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
                 }
                 case "proposals" => {
-                  println("Json result " + json)
                   val id = (source \ "id").as[String]
                   val title = (source \ "title").as[String]
                   val talkType = (source \ "talkType" \ "id").as[String]

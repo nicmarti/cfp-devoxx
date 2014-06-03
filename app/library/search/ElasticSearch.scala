@@ -11,7 +11,8 @@ import java.net.URLEncoder
 import scala.concurrent.{Future, Promise}
 import play.api.Play
 import play.api.cache.Cache
-
+import com.ning.http.client.Realm
+import com.ning.http.client.Realm.AuthScheme
 /**
  * Wrapper and helper, to reuse the ElasticSearch REST API.
  *
@@ -20,10 +21,14 @@ import play.api.cache.Cache
  */
 object ElasticSearch {
 
-  val host = Play.current.configuration.getString("elasticsearch.host").getOrElse("localhost:9200")
+  val host = Play.current.configuration.getString("elasticsearch.host").getOrElse("http://localhost:9200")
+  val username=Play.current.configuration.getString("elasticsearch.username").getOrElse("")
+  val password=Play.current.configuration.getString("elasticsearch.password").getOrElse("")
 
   def index(index: String, json: String) = {
-    val futureResponse = WS.url(host + "/" + index + "?ttl=1d").put(json)
+    val futureResponse = WS.url(host + "/" + index + "?ttl=1d")
+      .withAuth(username,password, AuthScheme.BASIC)
+      .put(json)
     futureResponse.map {
       response =>
         response.status match {
@@ -35,7 +40,9 @@ object ElasticSearch {
   }
 
   def indexBulk(json:String)={
-    val futureResponse = WS.url(host + "/_bulk?ttl=1d").post(json)
+    val futureResponse = WS.url(host + "/_bulk?ttl=1d")
+      .withAuth(username,password, AuthScheme.BASIC)
+      .post(json)
     futureResponse.map {
       response =>
         response.status match {
@@ -47,7 +54,9 @@ object ElasticSearch {
   }
 
   def deleteIndex(indexName:String)={
-    val futureResponse = WS.url(host + "/" + indexName + "/").delete()
+    val futureResponse = WS.url(host + "/" + indexName + "/")
+      .withAuth(username,password, AuthScheme.BASIC)
+      .delete()
     futureResponse.map {
       response =>
         response.status match {
@@ -61,7 +70,9 @@ object ElasticSearch {
 
   def doSearch(query: String): Future[Try[String]] = {
     val serviceParams = Seq(("q", query))
-    val futureResponse = WS.url(host + "/_search").withQueryString(serviceParams: _*).get()
+    val futureResponse = WS.url(host + "/_search")
+      .withAuth(username,password, AuthScheme.BASIC)
+      .withQueryString(serviceParams: _*).get()
     futureResponse.map {
       response =>
         response.status match {
@@ -73,18 +84,21 @@ object ElasticSearch {
 
   def doSearch(index: String, query: String) = {
     val serviceParams = Seq(("q", query))
-    val futureResponse = WS.url(host + "/" + index + "/_search").withQueryString(serviceParams: _*).get()
+    val futureResponse = WS.url(host +"/" + index +"/_search")
+      .withFollowRedirects(true)
+      .withAuth(username, password, AuthScheme.BASIC)
+      .withQueryString(serviceParams: _*).get()
     futureResponse.map {
       response =>
         response.status match {
           case 200 => Success(response.body)
-          case other => Failure(new RuntimeException("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+          case other => Failure(new RuntimeException("Unable to perform search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }
 
+  // This is interesting if you want to build a cloud of Words.
   def getTag(index:String)={
-
 
     val json:String =
       """
@@ -117,7 +131,9 @@ object ElasticSearch {
         |   }
         | }
       """.stripMargin
-    val futureResponse = WS.url(host + "/" + index + "/_search?").post(json)
+    val futureResponse = WS.url(host + "/" + index + "/_search?")
+      .withAuth(username,password,AuthScheme.BASIC)
+      .post(json)
     futureResponse.map {
       response =>
         response.status match {
