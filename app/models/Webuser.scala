@@ -197,6 +197,18 @@ object Webuser {
       Cache.remove(s"Webuser:cfp:$uuid")
   }
 
+  def noBackofficeAdmin() = Redis.pool.withClient {
+    client =>
+      !client.exists("Webuser:admin")
+  }
+
+  def addToBackofficeAdmin(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.sadd("Webuser:admin", uuid)
+      // evicting cache
+      Cache.remove(s"Webuser:admin:$uuid")
+  }
+
   def removeFromCFPAdmin(uuid: String) = Redis.pool.withClient {
     client =>
       if (uuid != "b14651a3cd78ab4fd03d522ebef81cdac1d5755c") {
