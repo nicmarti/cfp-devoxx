@@ -75,10 +75,7 @@
                         <tfoot>
                             <tr>
                                 <th>@Messages("admin.sp.privateMessage")</th>
-                                <td><small>
-                                @Html(proposal.privateMessageAsHtml)
-                                </small>
-                                </td>
+                                <td>@Html(proposal.privateMessageAsHtml)</td>
                             </tr>
                             @if(proposal.sponsorTalk) {
                                 <tr>
