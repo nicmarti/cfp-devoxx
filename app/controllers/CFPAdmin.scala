@@ -515,7 +515,8 @@ object CFPAdmin extends SecureCFPController {
     "company2" -> optional(text),
     "blog2" -> optional(text),
     "firstName" -> text,
-    "acceptTermsConditions" -> boolean
+    "acceptTermsConditions" -> boolean,
+    "qualifications" -> nonEmptyText(maxLength = 750)
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
 
