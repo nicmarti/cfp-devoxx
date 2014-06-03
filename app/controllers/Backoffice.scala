@@ -29,7 +29,7 @@ object Backoffice extends SecureCFPController {
   // Add or remove the specified user from "cfp" security group
   def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Webuser.findByUUID(uuidSpeaker).map {
+      Webuser.findByUUID(uuidSpeaker).filterNot(_.uuid=="bd894205a7d579351609f8dcbde49b9ffc0fae13").map {
         webuser =>
           if (Webuser.hasAccessToCFP(uuidSpeaker)) {
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"removed ${webuser.cleanName} from CFP group"))
