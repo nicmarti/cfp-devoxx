@@ -33,6 +33,7 @@
             <i class="icon-text-width"></i> : <span id="charsremain"></span>
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
+            @helper.textarea(speakerForm("qualifications"), 'cols -> 70, 'rows -> 5)
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
     </div>
