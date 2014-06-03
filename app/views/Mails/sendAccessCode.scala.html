@@ -1,4 +1,4 @@
-@(email:String, code:String)
+@(email:String, code:String)(implicit confDesc: ConferenceDescriptor)
 
 <hr>
 <h3>Welcome to Devoxx CFP!</h3>
@@ -9,5 +9,15 @@
 <p></p>
 <p>If you want to report an issue, please use <a href="http://cfp.devoxx.be@routes.Application.bugReport()">this page on our web site</a>.</p>
 <p></p>
-<p>The Devoxx team</p>
-
+<p>The Devoxx France team</p>
+@if(confDesc.frLangEnabled){
+<hr>
+<h3>Bienvenue sur le CFP de Devoxx France</h3>
+<p>Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
+<p>Votre identifiant est <strong>@email</strong></p>
+<p>Votre code est <strong>@code</strong></p>
+<p></p>
+<p>Utilisez <a href="http://cfp.devoxx.be@routes.Application.bugReport()">cette page</a> pour nous signaler un souci ou une demande d'améliration de l'outil.</p>
+<p></p>
+<p>L'équipe Devoxx France</p>
+}
