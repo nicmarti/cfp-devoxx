@@ -31,7 +31,8 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.templates.HtmlFormat
 import java.util.Date
-  import collection.JavaConverters._
+import collection.JavaConverters._
+
 /**
  * Speaker's invitation, request to present a subject for a conference.
  * Created by nicolas martignole on 13/05/2014.
@@ -106,22 +107,22 @@ object RequestToTalk {
       }
   }
 
-  def findPreviousIdFrom(id:String):Option[String]=Redis.pool.withClient{
-    client=>
+  def findPreviousIdFrom(id: String): Option[String] = Redis.pool.withClient {
+    client =>
       val ids = client.zrange("RequestToTalk:IDs", 0, -1).asScala.toList
-      ids.takeWhile(_!=id).lastOption
+      ids.takeWhile(_ != id).lastOption
   }
 
-  def findNextIdFrom(id:String):Option[String]=Redis.pool.withClient{
-    client=>
+  def findNextIdFrom(id: String): Option[String] = Redis.pool.withClient {
+    client =>
       val ids = client.zrange("RequestToTalk:IDs", 0, -1).asScala.toList
-      ids.dropWhile(_!=id).drop(1).headOption
+      ids.dropWhile(_ != id).drop(1).headOption
   }
 
   def allRequestsToTalk: List[RequestToTalk] = Redis.pool.withClient {
     client =>
       val start = 0
-      val end= -1
+      val end = -1
       val ids = client.zrange("RequestToTalk:IDs", start, end).asScala.toList
       client.hmget("RequestToTalk", ids).flatMap {
         json =>
@@ -162,14 +163,20 @@ object RequestToTalk {
 
   def createIDs() = Redis.pool.withClient {
     client =>
-     allRequestsToTalk.foreach{
-       talk=>
-         val lastModified = RequestToTalkStatus.lastEvent(talk.id).map{rh=>
-           rh.date.getMillis
-         }.getOrElse{
-           new Date().getTime
-         }
-          client.zadd("RequestToTalk:IDs", lastModified, talk.id)
+      client.hkeys("RequestToTalk").foreach {
+        talkId =>
+
+          findById(talkId).map {
+            talk =>
+              val lastModified = RequestToTalkStatus.lastEvent(talk.id).map { rh =>
+                rh.date.getMillis
+              }.getOrElse {
+                new Date().getTime
+              }
+              client.zadd("RequestToTalk:IDs", lastModified, talk.id)
+          }
+
+
       }
   }
 
