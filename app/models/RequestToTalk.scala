@@ -31,7 +31,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.templates.HtmlFormat
 import java.util.Date
-
+  import collection.JavaConverters._
 /**
  * Speaker's invitation, request to present a subject for a conference.
  * Created by nicolas martignole on 13/05/2014.
@@ -77,7 +77,7 @@ object RequestToTalk {
   val newRequestToTalkForm = Form(mapping(
     "id" -> optional(text)
     , "wl_note" -> text(maxLength = 3500)
-    , "wl_message" ->optional(text(minLength=0,maxLength = 3500))
+    , "wl_message" -> optional(text(minLength = 0, maxLength = 3500))
     , "wl_speakerEmail" -> optional(email)
     , "wl_speakerName" -> nonEmptyText
     , "wl_company" -> text
@@ -91,7 +91,10 @@ object RequestToTalk {
   def save(authorUUID: String, requestToTalk: RequestToTalk) = Redis.pool.withClient {
     client =>
       val json = Json.toJson(requestToTalk).toString()
-      client.hset("RequestToTalk", requestToTalk.id, json)
+      val tx = client.multi()
+      tx.hset("RequestToTalk", requestToTalk.id, json)
+      tx.zadd("RequestToTalk:IDs", new Date().getTime, requestToTalk.id)
+      tx.exec()
       RequestToTalkStatus.changeStatus(authorUUID, requestToTalk.id, requestToTalk.statusCode)
   }
 
@@ -103,10 +106,25 @@ object RequestToTalk {
       }
   }
 
+  def findPreviousIdFrom(id:String):Option[String]=Redis.pool.withClient{
+    client=>
+      val ids = client.zrange("RequestToTalk:IDs", 0, -1).asScala.toList
+      ids.takeWhile(_!=id).lastOption
+  }
+
+  def findNextIdFrom(id:String):Option[String]=Redis.pool.withClient{
+    client=>
+      val ids = client.zrange("RequestToTalk:IDs", 0, -1).asScala.toList
+      ids.dropWhile(_!=id).drop(1).headOption
+  }
+
   def allRequestsToTalk: List[RequestToTalk] = Redis.pool.withClient {
     client =>
-      client.hvals("RequestToTalk").flatMap {
-        json: String =>
+      val start = 0
+      val end= -1
+      val ids = client.zrange("RequestToTalk:IDs", start, end).asScala.toList
+      client.hmget("RequestToTalk", ids).flatMap {
+        json =>
           Json.parse(json).asOpt[RequestToTalk]
       }
   }
@@ -138,7 +156,21 @@ object RequestToTalk {
   def delete(author: String, requestId: String) = Redis.pool.withClient {
     client =>
       client.hdel("RequestToTalk", requestId)
+      client.zrem("RequestToTalk:IDs", requestId)
       RequestToTalkStatus.changeStatusFromRequest(author, requestId, RequestToTalkStatus.DELETED)
+  }
+
+  def createIDs() = Redis.pool.withClient {
+    client =>
+     allRequestsToTalk.foreach{
+       talk=>
+         val lastModified = RequestToTalkStatus.lastEvent(talk.id).map{rh=>
+           rh.date.getMillis
+         }.getOrElse{
+           new Date().getTime
+         }
+          client.zadd("RequestToTalk:IDs", lastModified, talk.id)
+      }
   }
 
 }

@@ -515,9 +515,11 @@ wishlist.requests.track=Track requests for speakers
 wishlist.createRequest=Create a new request
 wishlist.editRequest=Edit and update a request
 wishlist.sendEmail=Send the message to the speaker
-wishlist.save=Save this request
+wishlist.save=Save and reload this page
 wishlist.history=History
-wishlist.cancelEdit=Cancel edition
+wishlist.cancelEdit=Go back to list of Requests
+wishlist.previous=Previous
+wishlist.next=Next
 
 wl_note=Private note and internal discussion
 wl_message=Message for speaker
