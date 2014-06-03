@@ -47,7 +47,6 @@ object Wishlist extends SecureCFPController {
       Ok(views.html.Wishlist.newRequestToTalk(RequestToTalk.newRequestToTalkForm))
   }
 
-
   def saveNewRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
@@ -77,7 +76,7 @@ object Wishlist extends SecureCFPController {
           actionType match {
             case Some(List("save")) =>{
               ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
-              Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
+              Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
             }
             case Some(List("email")) =>{
                ZapActor.actor ! NotifySpeakerRequestToTalk(request.webuser.uuid, successForm)
@@ -108,8 +107,6 @@ object Wishlist extends SecureCFPController {
       RequestToTalk.speakerDeclined(requestId)
       Redirect(routes.Application.home).flashing("success" -> "Sorry that you have not accepted our invitation. However, if you'd like to propose a talk, please register :")
   }
-
-
 
 }
 
