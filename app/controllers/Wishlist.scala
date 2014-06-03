@@ -108,6 +108,15 @@ object Wishlist extends SecureCFPController {
       Redirect(routes.Application.home).flashing("success" -> "Sorry that you have not accepted our invitation. However, if you'd like to propose a talk, please register :")
   }
 
+
+  // TODO temporaire
+  def initTemp()=SecuredAction(IsMemberOf("cfp")) {
+    implicit request=>
+      // Fonction temporaire cree juste pour le CFP de DevoxxBE
+      RequestToTalk.createIDs()
+      Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Collection updated")
+  }
+
 }
 
 

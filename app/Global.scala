@@ -27,10 +27,6 @@ object Global extends GlobalSettings {
     } else {
       play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
     }
-
-    // Temporary
-    RequestToTalk.createIDs()
-
   }
 
   override def onError(request: RequestHeader, ex: Throwable) = {
