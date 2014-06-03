@@ -115,8 +115,7 @@ quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
 bof.label=Bird of a Feather, 1h, Monday to Thursday evening
 lab.label=Hands-on Labs, 3h, Monday and Tuesday
 other.label=Other event
-
-
+start.label=Startup Talk, 25 min, Wednesday to Thursday
 
 # Bug report
 Issue.report=Report an issue
@@ -391,6 +390,7 @@ hack=Hackaton
 key=Keynote
 other=Other format
 all=All
+start=Startup presentation
 amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by

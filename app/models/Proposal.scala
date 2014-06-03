@@ -27,9 +27,10 @@ object ProposalType {
   val QUICK = ProposalType("quick", "quick.label")
   val BOF = ProposalType("bof", "bof.label")
   val KEY = ProposalType("key", "key.label")
+  val START = ProposalType("start", "start.label")
   val OTHER = ProposalType("other", "other.label")
 
-  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY)
+  val all = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START)
 
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
@@ -44,6 +45,7 @@ object ProposalType {
       case "quick" => QUICK
       case "bof" => BOF
       case "key" => KEY
+      case "start" => START
       case other => OTHER
     }
   }

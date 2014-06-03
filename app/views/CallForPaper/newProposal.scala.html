@@ -102,6 +102,15 @@ $(document).ready(function($){
         $('#sponsorTalkMsg').hide();
         $('#talkType').prop('disabled', false);
     }
+
+    // Startup (specific to Devoxx BE)
+    $('#talkType' ).change(function(){
+        var talkTypeId = $(this).val();
+        if(talkTypeId=="@models.ProposalType.START.id"){
+            $('#track option[value="startup"]' ).prop('selected', true);
+        }
+    });
+
 });
 </script>
 
