@@ -31,16 +31,16 @@ import library.Redis
  */
 object ApprovedProposal {
 
-  val totalConf = 70
-  // 30 sans apres-midi decideur + 39 vendredi
-  val totalUni = 8
-  val totalLabs = 12
-  val totalTia = 30
-  val totalQuickies = 22
-  val totalBOF = 16
+  val totalConf = 89
+  val totalUni = 16
+  val totalLabs = 10
+  val totalTia = 24
+  val totalQuickies = 28
+  val totalBOF = 25
+  val totalStartup = 20
 
   // What we did in 2013
-  val getDevoxx2013Total: Map[String, Int] = {
+  val getTotal: Map[String, Int] = {
     Map(
       (ProposalType.CONF.label, totalConf)
       , (ProposalType.UNI.label, totalUni)
@@ -48,6 +48,7 @@ object ApprovedProposal {
       , (ProposalType.LAB.label, totalLabs)
       , (ProposalType.QUICK.label, totalQuickies)
       , (ProposalType.BOF.label, totalBOF)
+      , (ProposalType.START.label, totalStartup)
     )
   }
 
@@ -94,7 +95,9 @@ object ApprovedProposal {
         totalBOF - countApproved(talkType)
       case ProposalType.QUICK.id =>
         totalQuickies - countApproved(talkType)
-      case other => (totalUni + totalBOF + totalConf + totalLabs + totalTia + totalQuickies) - countApproved("all")
+      case ProposalType.START.id =>
+        totalStartup - countApproved(talkType)
+      case other => (totalUni + totalBOF + totalConf + totalLabs + totalTia + totalQuickies + totalStartup) - countApproved("all")
     }
   }
 
