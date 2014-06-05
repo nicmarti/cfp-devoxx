@@ -35,16 +35,18 @@ import play.api.libs.functional.syntax._
  * Created by nicolas on 01/02/2014.
  */
 
-case class Room(id: String, name: String, capacity: Int, setup: String)
+case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setup: String)
 
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val OTHER = Room("other_room", "Other room", 100, "sans objet")
+  val OTHER = Room("other_room", "Other room", 100, false, "sans objet")
 
   val all = ConferenceDescriptor.current().rooms
 
   val allAsId = all.map(a => (a.id, a.name)).toSeq.sorted
+
+  val allRoomsNotRecorded = all.filter(r => !r.recorded)
 
   def parse(roomId: String): Room = {
     return all.find(r => r.id == roomId).getOrElse(OTHER)

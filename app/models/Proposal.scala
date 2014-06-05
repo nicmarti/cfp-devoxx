@@ -24,13 +24,14 @@ case class ProposalType(
          givesSpeakerFreeEntrance: Boolean,
          freeEntranceDisplayed: Boolean,
          htmlClass: String,
+         recorded: Boolean,
          chosablePreferredDay: Boolean = false
 )
 
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val UNKNOWN = ProposalType("unknown", "unknown.label", "unknown.label", 0, false, false, "unknown")
+  val UNKNOWN = ProposalType("unknown", "unknown.label", "unknown.label", 0, false, false, "unknown", false)
 
   val all = ConferenceDescriptor.current().proposalTypes
 
@@ -39,6 +40,9 @@ object ProposalType {
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
   val allIDsOnly=allAsId.map(_._1)
+
+  val recordedProposals = all.filter(p => p.recorded)
+  val notRecordedProposals = all.filter(p => !p.recorded)
 
   val freeEntranceProposals = all.filter(p => p.givesSpeakerFreeEntrance)
 

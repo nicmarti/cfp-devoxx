@@ -65,45 +65,45 @@ case class ConferenceDescriptor(
 object ConferenceDescriptor {
 
     object DevoxxProposalTypes {
-      val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true, "icon-microphone", true)
-      val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true, "icon-laptop", false)
-      val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true, "icon-legal", false)
-      val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true, "icon-beaker", false)
-      val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false, "icon-fast-forward", true)
-      val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false, "icon-group", false)
-      val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false, "icon-microphone", true)
-      val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false)
-      val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false, "icon-microphone", false)
+      val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true, "icon-microphone", true, true)
+      val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true, "icon-laptop", true, false)
+      val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true, "icon-legal", true, false)
+      val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true, "icon-beaker", false, false)
+      val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false, "icon-fast-forward", true, true)
+      val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false, "icon-group", false, false)
+      val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false, "icon-microphone", true, true)
+      val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false, false)
+      val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false, "icon-microphone", false, false)
     }
 
     object DevoxxRooms {
-      val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, "special")
+      val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, false, "special")
 
-      val KEYNOTE_SEINE = Room("seine_keynote", "Seine", 980, "keynote")
-      val SEINE_A = Room("seine_a", "Seine A", 280, "theatre")
-      val SEINE_B = Room("seine_b", "Seine B", 280, "theatre")
-      val SEINE_C = Room("seine_c", "Seine C", 260, "theatre")
-      val AUDITORIUM = Room("auditorium", "Auditorium", 160, "theatre")
-      val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 290, "theatre")
-      val MILES_DAVIS = Room("md_full", "M.Davis", 220, "theatre")
+      val KEYNOTE_SEINE = Room("seine_keynote", "Seine", 980, true, "keynote")
+      val SEINE_A = Room("seine_a", "Seine A", 280, true, "theatre")
+      val SEINE_B = Room("seine_b", "Seine B", 280, true, "theatre")
+      val SEINE_C = Room("seine_c", "Seine C", 260, true, "theatre")
+      val AUDITORIUM = Room("auditorium", "Auditorium", 160, true, "theatre")
+      val ELLA_FITZGERALD = Room("el_ab_full", "Ella Fitzgerald", 290, true, "theatre")
+      val MILES_DAVIS = Room("md_full", "M.Davis", 220, true, "theatre")
 
-      val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 45, "classe")
-      val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 30, "classe")
-      val LOUIS_ARMSTRONG_CD = Room("la_cd", "Louis Armstrong CD", 30, "classe")
-      val MILES_DAVIS_A = Room("md_a", "Miles Davis A", 24, "classe")
-      val MILES_DAVIS_B = Room("md_b", "Miles Davis B", 24, "classe")
-      val MILES_DAVIS_C = Room("md_c", "Miles Davis C", 48, "classe")
+      val ELLA_FITZGERALD_AB = Room("el_ab", "Ella Fitzgerald AB", 45, true, "classe")
+      val LOUIS_ARMSTRONG_AB = Room("la_ab", "Louis Armstrong AB", 30, true, "classe")
+      val LOUIS_ARMSTRONG_CD = Room("la_cd", "Louis Armstrong CD", 30, true, "classe")
+      val MILES_DAVIS_A = Room("md_a", "Miles Davis A", 24, true, "classe")
+      val MILES_DAVIS_B = Room("md_b", "Miles Davis B", 24, true, "classe")
+      val MILES_DAVIS_C = Room("md_c", "Miles Davis C", 48, true, "classe")
 
-      val ELLA_FITZGERALD_AB_TH = Room("el_ab_th", "E.Fitzgerald AB", 80, "theatre")
-      val LOUIS_ARMSTRONG_AB_TH = Room("la_ab_th", "L.Armstrong AB", 80, "theatre")
-      val LOUIS_ARMSTRONG_CD_TH = Room("la_cd_th", "L.Armstrong CD", 80, "theatre")
-      val MILES_DAVIS_A_TH = Room("md_a_th", "M.Davis A", 50, "theatre")
-      val MILES_DAVIS_B_TH = Room("md_b_th", "M.Davis B", 50, "theatre")
-      val MILES_DAVIS_C_TH = Room("md_c_th", "M.Davis C", 80, "theatre")
+      val ELLA_FITZGERALD_AB_TH = Room("el_ab_th", "E.Fitzgerald AB", 80, false, "theatre")
+      val LOUIS_ARMSTRONG_AB_TH = Room("la_ab_th", "L.Armstrong AB", 80, false, "theatre")
+      val LOUIS_ARMSTRONG_CD_TH = Room("la_cd_th", "L.Armstrong CD", 80, false, "theatre")
+      val MILES_DAVIS_A_TH = Room("md_a_th", "M.Davis A", 50, false, "theatre")
+      val MILES_DAVIS_B_TH = Room("md_b_th", "M.Davis B", 50, false, "theatre")
+      val MILES_DAVIS_C_TH = Room("md_c_th", "M.Davis C", 80, false, "theatre")
 
-      val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15, "classe")
-      val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300, "classe")
-      val LABO = Room("foyer_labo", "Labo", 40, "special")
+      val DUKE_ELLINGTON = Room("duke", "Duke Ellington-CodeStory", 15, false, "classe")
+      val FOYER_BAS = Room("foyer_bas", "Foyer bas", 300, false, "classe")
+      val LABO = Room("foyer_labo", "Labo", 40, false, "special")
 
       val allBigRoom = List(DevoxxRooms.SEINE_A, DevoxxRooms.SEINE_B, DevoxxRooms.SEINE_C, DevoxxRooms.AUDITORIUM)
 
@@ -116,10 +116,6 @@ object ConferenceDescriptor {
       val allRoomsTIA = List(DevoxxRooms.ELLA_FITZGERALD_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_CD_TH,
         DevoxxRooms.MILES_DAVIS_A_TH, DevoxxRooms.MILES_DAVIS_B_TH, DevoxxRooms.MILES_DAVIS_C_TH,
         DevoxxRooms.SEINE_A, DevoxxRooms.SEINE_B, DevoxxRooms.SEINE_C, DevoxxRooms.AUDITORIUM)
-
-      val allRoomsNotRecorded = List(DevoxxRooms.ELLA_FITZGERALD_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_AB_TH, DevoxxRooms.LOUIS_ARMSTRONG_CD_TH,
-        DevoxxRooms.MILES_DAVIS_A_TH, DevoxxRooms.MILES_DAVIS_B_TH, DevoxxRooms.MILES_DAVIS_C_TH)
-
 
       val allRooms = allBigRoom ++ List(DevoxxRooms.ELLA_FITZGERALD, DevoxxRooms.MILES_DAVIS)
 

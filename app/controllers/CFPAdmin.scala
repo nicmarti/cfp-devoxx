@@ -597,9 +597,7 @@ object CFPAdmin extends SecureCFPController {
   def allTalksForParleys()=SecuredAction(IsMemberOf("cfp")){
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val onParleys = List(ProposalType.UNI.id, ProposalType.CONF.id, ProposalType.TIA.id, ProposalType.KEY.id, ProposalType.QUICK.id)
-
-      val publishedIDs = onParleys.flatMap{ confType=>
+      val publishedIDs = ProposalType.recordedProposals.map(_.id).flatMap{ confType=>
         ScheduleConfiguration.getPublishedSchedule(confType)
       }
 
@@ -608,7 +606,7 @@ object CFPAdmin extends SecureCFPController {
           ScheduleConfiguration.loadScheduledConfiguration(id)
       }
 
-      val notRecorded=Room.allRoomsNotRecorded.map(_.id)
+      val notRecorded = Room.allRoomsNotRecorded.map(_.id)
 
       val slots = filteredList.map(_.slots)
         .flatten
