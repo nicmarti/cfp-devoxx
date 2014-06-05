@@ -7,6 +7,8 @@ import play.api.i18n.Lang
 import org.joda.time.DateTime
 import play.api.data.Form
 import views.html.CallForPaper.{devoxxProposalHelpBlock, devoxxProposalsGuideFooterBlock}
+import models.ConferenceDescriptor.DevoxxSlots
+import views.html.emptyContent
 
 case class BitbucketProperties(var usernameConfigProperty: String, var tokenConfigProperty: String, var issuesUrlConfigProperty: String)
 case class ConferenceNaming(
@@ -57,9 +59,14 @@ case class ConferenceDescriptor(
     var tracks: Seq[Track],
     var proposalTypes: List[ProposalType],
     var rooms: List[Room],
-    var slots: List[Slot],
     var contentBlocks: ContentBlocks
-)
+) {
+  // Slots should be lazy loaded because it needs ConferenceDescriptor instance
+  // to be generated
+  def slots : List[Slot] = {
+    DevoxxSlots.all
+  }
+}
 
 
 object ConferenceDescriptor {
@@ -363,7 +370,7 @@ object ConferenceDescriptor {
           fridayBreaks ++ keynoteFriday
         }
 
-      val all: List[Slot] = { wednesday ++ thursday ++ friday }
+      def all: List[Slot] = { wednesday ++ thursday ++ friday }
     }
 
     def current() = ConferenceDescriptor(
@@ -449,7 +456,6 @@ object ConferenceDescriptor {
         DevoxxRooms.LABO,
         Room.OTHER
       ),
-      slots = DevoxxSlots.all,
       contentBlocks = ContentBlocks(
         _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxPreviousVideosHomeRightBlock()(lang, confDesc),
         _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxEnglishProposalsHomeFooterBlock()(lang, confDesc),
@@ -463,7 +469,7 @@ object ConferenceDescriptor {
       )
     )
 
-    val isCFPOpen: Boolean = {
+    def isCFPOpen: Boolean = {
       current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
     }
 }

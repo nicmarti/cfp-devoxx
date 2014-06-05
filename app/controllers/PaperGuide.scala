@@ -118,7 +118,7 @@ object PaperGuide extends SecureCFPController {
   def exportProgramByRoomAndHours()=SecuredAction(IsMemberOf("cfp")) {
       implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-        val allScheduledConfs = for (confType <- ProposalType.all;
+        val allScheduledConfs = for (confType <- ConferenceDescriptor.current().proposalTypes;
                                   scheduleId <- ScheduleConfiguration.getPublishedSchedule(confType.id);
                                   scheduledConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId)
 
@@ -183,7 +183,7 @@ object PaperGuide extends SecureCFPController {
       implicit val context = scala.concurrent.ExecutionContext.Implicits.global
 
 
-      val allScheduledConf: List[ScheduleConfiguration] = for (confType <- ProposalType.all;
+      val allScheduledConf: List[ScheduleConfiguration] = for (confType <- ConferenceDescriptor.current().proposalTypes;
                                                                scheduleId <- ScheduleConfiguration.getPublishedSchedule(confType.id);
                                                                scheduledConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId)
       ) yield scheduledConf

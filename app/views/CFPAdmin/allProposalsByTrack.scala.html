@@ -18,7 +18,7 @@
                     <div class="panel-body">
                         <div class="col-md-12">
 
-                            @Track.all.map{track=>
+                            @confDesc.tracks.map{track=>
                                 <a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Messages(track.label)</a>
                             }
 
