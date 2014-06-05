@@ -72,8 +72,21 @@ object ConferenceDescriptor {
       val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false, "icon-fast-forward", true, true)
       val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false, "icon-group", false, false)
       val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false, "icon-microphone", true, true)
-      val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false, false)
+      val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false, false, Option(DevoxxTracks.STARTUP))
       val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false, "icon-microphone", false, false)
+    }
+
+    object DevoxxTracks {
+      val STARTUP = Track("startup", "startup.label", "/assets/images/track/startup.png", "track.startup.title", "track.startup.desc")
+      val SSJ = Track("ssj", "ssj.label", "http://devoxx.be/images/tracks/95ddefdd.icon_javaee.png", "track.ssj.title", "track.ssj.desc")
+      val JAVA = Track("java", "java.label", "http://devoxx.be/images/tracks/aae8d181.icon_javase.png", "track.java.title", "track.java.desc")
+      val MOBILE = Track("mobile", "mobile.label", "http://devoxx.be/images/tracks/1d2c40dd.icon_mobile.png", "track.mobile.title", "track.mobile.desc")
+      val ARCHISEC = Track("archisec", "archisec.label", "http://devoxx.be/images/tracks/9943da91.icon_architecture.png", "track.archisec.title", "track.archisec.desc")
+      val METHOD_DEVOPS = Track("methodevops", "methodevops.label", "http://devoxx.be/images/tracks/3ec02a75.icon_methology.png", "track.methodevops.title", "track.methodevops.desc")
+      val FUTURE = Track("future", "future.label", "http://devoxx.be/images/tracks/a20b9b0a.icon_future.png", "track.future.title", "track.future.desc")
+      val LANG = Track("lang", "lang.label", "http://devoxx.be/images/tracks/6caef5cf.icon_alternative.png", "track.lang.title", "track.lang.desc")
+      val CLOUD = Track("cloud", "cloud.label", "http://devoxx.be/images/tracks/eca0b0a1.icon_cloud.png", "track.cloud.title", "track.cloud.desc")
+      val WEB = Track("web", "web.label", "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
     }
 
     object DevoxxRooms {
@@ -390,16 +403,16 @@ object ConferenceDescriptor {
       hashTag = "#DevoxxFR",
 
       tracks = List(
-        Track("startup", "startup.label", "/assets/images/track/startup.png", "track.startup.title", "track.startup.desc"),
-        Track("ssj", "ssj.label", "http://devoxx.be/images/tracks/95ddefdd.icon_javaee.png", "track.ssj.title", "track.ssj.desc"),
-        Track("java", "java.label", "http://devoxx.be/images/tracks/aae8d181.icon_javase.png", "track.java.title", "track.java.desc"),
-        Track("mobile", "mobile.label", "http://devoxx.be/images/tracks/1d2c40dd.icon_mobile.png", "track.mobile.title", "track.mobile.desc"),
-        Track("archisec", "archisec.label", "http://devoxx.be/images/tracks/9943da91.icon_architecture.png", "track.archisec.title", "track.archisec.desc"),
-        Track("methodevops", "methodevops.label", "http://devoxx.be/images/tracks/3ec02a75.icon_methology.png", "track.methodevops.title", "track.methodevops.desc"),
-        Track("future", "future.label", "http://devoxx.be/images/tracks/a20b9b0a.icon_future.png", "track.future.title", "track.future.desc"),
-        Track("lang", "lang.label", "http://devoxx.be/images/tracks/6caef5cf.icon_alternative.png", "track.lang.title", "track.lang.desc"),
-        Track("cloud", "cloud.label", "http://devoxx.be/images/tracks/eca0b0a1.icon_cloud.png", "track.cloud.title", "track.cloud.desc"),
-        Track("web", "web.label", "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
+        DevoxxTracks.STARTUP,
+        DevoxxTracks.SSJ,
+        DevoxxTracks.JAVA,
+        DevoxxTracks.MOBILE,
+        DevoxxTracks.ARCHISEC,
+        DevoxxTracks.METHOD_DEVOPS,
+        DevoxxTracks.FUTURE,
+        DevoxxTracks.LANG,
+        DevoxxTracks.CLOUD,
+        DevoxxTracks.WEB
       ),
       proposalTypes = List(
         DevoxxProposalTypes.CONF,

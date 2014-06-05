@@ -25,7 +25,8 @@ case class ProposalType(
          freeEntranceDisplayed: Boolean,
          htmlClass: String,
          recorded: Boolean,
-         chosablePreferredDay: Boolean = false
+         chosablePreferredDay: Boolean = false,
+         impliedSelectedTrack: Option[Track] = None
 )
 
 object ProposalType {
@@ -49,6 +50,8 @@ object ProposalType {
   val displayedFreeEntranceProposals = all.filter(p => p.freeEntranceDisplayed)
 
   val chosablePreferredDaysProposals = all.filter(p => p.chosablePreferredDay)
+
+  val proposalsImplyingATrackSelection = all.filter(p => p.impliedSelectedTrack.nonEmpty)
 
   def parse(proposalType: String): ProposalType = {
     return all.find(p => p.id == proposalType).getOrElse(UNKNOWN)
