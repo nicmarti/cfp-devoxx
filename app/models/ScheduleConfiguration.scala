@@ -138,7 +138,7 @@ object ScheduleConfiguration {
   }
 
   def loadSlots(): List[Slot] = {
-    ProposalType.all.flatMap {
+    ConferenceDescriptor.current().proposalTypes.flatMap {
       t: ProposalType => loadSlotsForConfType(t.id)
     }
   }

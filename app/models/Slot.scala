@@ -42,14 +42,12 @@ object Room {
 
   val OTHER = Room("other_room", "Other room", 100, false, "sans objet")
 
-  val all = ConferenceDescriptor.current().rooms
+  val allAsId = ConferenceDescriptor.current().rooms.map(a => (a.id, a.name)).toSeq.sorted
 
-  val allAsId = all.map(a => (a.id, a.name)).toSeq.sorted
-
-  val allRoomsNotRecorded = all.filter(r => !r.recorded)
+  val allRoomsNotRecorded = ConferenceDescriptor.current().rooms.filter(r => !r.recorded)
 
   def parse(roomId: String): Room = {
-    return all.find(r => r.id == roomId).getOrElse(OTHER)
+    return ConferenceDescriptor.current().rooms.find(r => r.id == roomId).getOrElse(OTHER)
   }
 
   // Small helper function that is specific to devoxxfr2014
@@ -122,9 +120,7 @@ object SlotBuilder {
 object Slot {
   implicit val slotFormat = Json.format[Slot]
 
-  val all = ConferenceDescriptor.current().slots
-
   def byType(proposalType: ProposalType): Seq[Slot] = {
-    all.filter(s => s.name == proposalType.id)
+    ConferenceDescriptor.current().slots.filter(s => s.name == proposalType.id)
   }
 }

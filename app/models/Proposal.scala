@@ -34,27 +34,25 @@ object ProposalType {
 
   val UNKNOWN = ProposalType("unknown", "unknown.label", "unknown.label", 0, false, false, "unknown", false)
 
-  val all = ConferenceDescriptor.current().proposalTypes
+  def totalSlotsCount = ConferenceDescriptor.current().proposalTypes.map(_.slotsCount).sum
 
-  val totalSlotsCount = all.map(_.slotsCount).sum
+  def allAsId = ConferenceDescriptor.current().proposalTypes.map(a => (a.id, a.label)).toSeq.sorted
 
-  val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
+  def allIDsOnly = allAsId.map(_._1)
 
-  val allIDsOnly=allAsId.map(_._1)
+  def recordedProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.recorded)
+  def notRecordedProposals = ConferenceDescriptor.current().proposalTypes.filter(p => !p.recorded)
 
-  val recordedProposals = all.filter(p => p.recorded)
-  val notRecordedProposals = all.filter(p => !p.recorded)
+  def freeEntranceProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.givesSpeakerFreeEntrance)
 
-  val freeEntranceProposals = all.filter(p => p.givesSpeakerFreeEntrance)
+  def displayedFreeEntranceProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.freeEntranceDisplayed)
 
-  val displayedFreeEntranceProposals = all.filter(p => p.freeEntranceDisplayed)
+  def chosablePreferredDaysProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.chosablePreferredDay)
 
-  val chosablePreferredDaysProposals = all.filter(p => p.chosablePreferredDay)
-
-  val proposalsImplyingATrackSelection = all.filter(p => p.impliedSelectedTrack.nonEmpty)
+  def proposalsImplyingATrackSelection = ConferenceDescriptor.current().proposalTypes.filter(p => p.impliedSelectedTrack.nonEmpty)
 
   def parse(proposalType: String): ProposalType = {
-    return all.find(p => p.id == proposalType).getOrElse(UNKNOWN)
+    return ConferenceDescriptor.current().proposalTypes.find(p => p.id == proposalType).getOrElse(UNKNOWN)
   }
 
   val audienceLevels:Seq[(String,String)]={
@@ -580,7 +578,7 @@ object Proposal {
     client =>
       client.hget("Proposals:TrackForProposal", proposalId).flatMap {
         trackId =>
-          Track.all.find(_.id == trackId)
+          ConferenceDescriptor.current().tracks.find(_.id == trackId)
       }
   }
 

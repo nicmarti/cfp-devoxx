@@ -36,19 +36,17 @@ case class Track(id: String, label: String, imgSrc: String, i18nTitleProp: Strin
 object Track {
   implicit val trackFormat = Json.format[Track]
 
-  val all = ConferenceDescriptor.current().tracks
+  val allAsIdsAndLabels:Seq[(String,String)] = ConferenceDescriptor.current().tracks.map(a=>(a.id,a.label)).toSeq.sorted
 
-  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).toSeq.sorted
-
-  val allIDs=all.map(_.id)
+  val allIDs=ConferenceDescriptor.current().tracks.map(_.id)
 
   // Compute diff between two Set of Track then returns a ready-to-use list of id/label
   def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
-    val diffSet = all.toSet.diff(otherTracks)
+    val diffSet = ConferenceDescriptor.current().tracks.toSet.diff(otherTracks)
     diffSet.map(a=>(a.id,a.label)).toSeq.sorted
   }
   
   def parse(session:String):Track={
-    return all.find(t => t.id == session).getOrElse(Track("unknown", "unknown.label", "", "", ""))
+    return ConferenceDescriptor.current().tracks.find(t => t.id == session).getOrElse(Track("unknown", "unknown.label", "", "", ""))
   }
 }
