@@ -458,7 +458,7 @@ object ConferenceDescriptor {
       ),
       contentBlocks = ContentBlocks(
         _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxPreviousVideosHomeRightBlock()(lang, confDesc),
-        _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxEnglishProposalsHomeFooterBlock()(lang, confDesc),
+        _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => emptyContent()(),
         _proposalHelpBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxProposalHelpBlock()(lang, confDesc),
         _previewProposalFooterBlock = (
              lang: Lang, confDesc: ConferenceDescriptor,
