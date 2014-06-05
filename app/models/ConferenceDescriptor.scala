@@ -72,15 +72,33 @@ case class ConferenceDescriptor(
 object ConferenceDescriptor {
 
     object DevoxxProposalTypes {
-      val CONF = ProposalType("conf", "conf.simple.label", "conf.label", 89, true, true, "icon-microphone", true, true)
-      val UNI = ProposalType("uni", "uni.simple.label", "uni.label", 16, true, true, "icon-laptop", true, false)
-      val TIA = ProposalType("tia", "tia.simple.label", "tia.label", 24, true, true, "icon-legal", true, false)
-      val LAB = ProposalType("lab", "lab.simple.label", "lab.label", 10, true, true, "icon-beaker", false, false)
-      val QUICK = ProposalType("quick", "quick.simple.label", "quick.label", 28, false, false, "icon-fast-forward", true, true)
-      val BOF = ProposalType("bof", "bof.simple.label", "bof.label", 25, false, false, "icon-group", false, false)
-      val KEY = ProposalType("key", "key.simple.label", "key.label", 1, true, false, "icon-microphone", true, true)
-      val START = ProposalType("start", "start.simple.label", "start.label", 20, false, false, "icon-microphone", false, false, Option(DevoxxTracks.STARTUP))
-      val OTHER = ProposalType("other", "other.simple.label", "other.label", 1, false, false, "icon-microphone", false, false)
+      val CONF = ProposalType(id="conf", simpleLabel="conf.simple.label", label="conf.label",
+        slotsCount=89, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=true, htmlClass="icon-microphone",
+        recorded=true, chosablePreferredDay=true)
+      val UNI = ProposalType(id="uni", simpleLabel="uni.simple.label", label="uni.label",
+        slotsCount=16, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=true, htmlClass="icon-laptop",
+        recorded=true, chosablePreferredDay=false)
+      val TIA = ProposalType(id="tia", simpleLabel="tia.simple.label", label="tia.label",
+        slotsCount=24, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=true, htmlClass="icon-legal",
+        recorded=true, chosablePreferredDay=false)
+      val LAB = ProposalType(id="lab", simpleLabel="lab.simple.label", label="lab.label",
+        slotsCount=10, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=true, htmlClass="icon-beaker",
+        recorded=false, chosablePreferredDay=false)
+      val QUICK = ProposalType(id="quick", simpleLabel="quick.simple.label", label="quick.label",
+        slotsCount=28, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-fast-forward",
+        recorded=true, chosablePreferredDay=true)
+      val BOF = ProposalType(id="bof", simpleLabel="bof.simple.label", label="bof.label",
+        slotsCount=25, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-group",
+        recorded=false, chosablePreferredDay=false)
+      val KEY = ProposalType(id="key", simpleLabel="key.simple.label", label="key.label",
+        slotsCount=1, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=false, htmlClass="icon-microphone",
+        recorded=true, chosablePreferredDay=true)
+      val START = ProposalType(id="start", simpleLabel="start.simple.label", label="start.label",
+        slotsCount=20, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-microphone",
+        recorded=false, chosablePreferredDay=false, impliedSelectedTrack=Option(DevoxxTracks.STARTUP))
+      val OTHER = ProposalType(id="other", simpleLabel="other.simple.label", label="other.label",
+        slotsCount=1, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-microphone",
+        recorded=false, chosablePreferredDay=false)
     }
 
     object DevoxxTracks {

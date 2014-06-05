@@ -32,7 +32,9 @@ case class ProposalType(
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val UNKNOWN = ProposalType("unknown", "unknown.label", "unknown.label", 0, false, false, "unknown", false)
+  val UNKNOWN = ProposalType(id="unknown", simpleLabel="unknown.label", label="unknown.label",
+    slotsCount=0, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false,
+    htmlClass="unknown", recorded=false)
 
   def totalSlotsCount = ConferenceDescriptor.current().proposalTypes.map(_.slotsCount).sum
 
