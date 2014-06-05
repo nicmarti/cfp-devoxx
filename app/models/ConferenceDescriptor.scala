@@ -77,28 +77,28 @@ object ConferenceDescriptor {
         recorded=true, chosablePreferredDay=true)
       val UNI = ProposalType(id="uni", simpleLabel="uni.simple.label", label="uni.label",
         slotsCount=16, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=true, htmlClass="icon-laptop",
-        recorded=true, chosablePreferredDay=false)
+        recorded=true)
       val TIA = ProposalType(id="tia", simpleLabel="tia.simple.label", label="tia.label",
         slotsCount=24, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=true, htmlClass="icon-legal",
-        recorded=true, chosablePreferredDay=false)
+        recorded=true)
       val LAB = ProposalType(id="lab", simpleLabel="lab.simple.label", label="lab.label",
         slotsCount=10, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=true, htmlClass="icon-beaker",
-        recorded=false, chosablePreferredDay=false)
+        recorded=false)
       val QUICK = ProposalType(id="quick", simpleLabel="quick.simple.label", label="quick.label",
         slotsCount=28, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-fast-forward",
         recorded=true, chosablePreferredDay=true)
       val BOF = ProposalType(id="bof", simpleLabel="bof.simple.label", label="bof.label",
         slotsCount=25, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-group",
-        recorded=false, chosablePreferredDay=false)
+        recorded=false)
       val KEY = ProposalType(id="key", simpleLabel="key.simple.label", label="key.label",
         slotsCount=1, givesSpeakerFreeEntrance=true, freeEntranceDisplayed=false, htmlClass="icon-microphone",
         recorded=true, chosablePreferredDay=true)
       val START = ProposalType(id="start", simpleLabel="start.simple.label", label="start.label",
         slotsCount=20, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-microphone",
-        recorded=false, chosablePreferredDay=false, impliedSelectedTrack=Option(DevoxxTracks.STARTUP))
+        recorded=false, impliedSelectedTrack=Option(DevoxxTracks.STARTUP))
       val OTHER = ProposalType(id="other", simpleLabel="other.simple.label", label="other.label",
         slotsCount=1, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false, htmlClass="icon-microphone",
-        recorded=false, chosablePreferredDay=false)
+        recorded=false, hiddenInCombo=true)
     }
 
     object DevoxxTracks {

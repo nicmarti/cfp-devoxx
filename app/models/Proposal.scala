@@ -25,6 +25,7 @@ case class ProposalType(
          freeEntranceDisplayed: Boolean,
          htmlClass: String,
          recorded: Boolean,
+         hiddenInCombo: Boolean=false,
          chosablePreferredDay: Boolean = false,
          impliedSelectedTrack: Option[Track] = None
 )
@@ -40,6 +41,7 @@ object ProposalType {
 
   def allAsId = ConferenceDescriptor.current().proposalTypes.map(a => (a.id, a.label)).toSeq.sorted
 
+  def allForCombos = ConferenceDescriptor.current().proposalTypes.filter(!_.hiddenInCombo).map(a => (a.id, a.label)).toSeq.sorted
   def allIDsOnly = allAsId.map(_._1)
 
   def recordedProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.recorded)
