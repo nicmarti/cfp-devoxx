@@ -107,11 +107,13 @@ $(document).ready(function($){
         $('#talkType').prop('disabled', false);
     }
 
-    // Startup (specific to Devoxx BE)
     $('#talkType' ).change(function(){
         var talkTypeId = $(this).val();
-        if(talkTypeId=="@models.ProposalType.START.id"){
-            $('#track option[value="startup"]' ).prop('selected', true);
+
+        @for(proposalType <- ProposalType.proposalsImplyingATrackSelection) {
+            @Html( "if(talkTypeId==\"" + proposalType.id + "\") {" + "" )
+            @Html( "    $('#track option[value=\"" + proposalType.impliedSelectedTrack.get.id + "\"]').prop('selected', true);" + "" )
+            @Html( "}" )
         }
     });
 
