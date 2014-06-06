@@ -50,7 +50,7 @@ case class ConferenceDescriptor(
     var eventCode: String, var confUrlCode: String,
     var naming: ConferenceNaming,
     var frLangEnabled: Boolean,
-    var fromEmail: String, var bccEmail: Option[String], var bugReportRecipient: String,
+    var fromEmail: String, var comitteeEmail: String, var bccEmail: Option[String], var bugReportRecipient: String,
     var conferenceUrls: ConferenceUrls,
     var timing: ConferenceTiming,
     var bitbucketProps: BitbucketProperties,
@@ -404,6 +404,7 @@ object ConferenceDescriptor {
         longSplittedName_whiteStart="Devox", longSplittedName_colored="x", longSplittedName_whiteEnd="Belgium"
       ),
       fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.com"),
+      comitteeEmail = Play.current.configuration.getString("mail.comittee.email").getOrElse("program@devoxx.com"),
       bccEmail = Play.current.configuration.getString("mail.bcc"),
       bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
       conferenceUrls = ConferenceUrls(
