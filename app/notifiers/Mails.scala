@@ -40,6 +40,7 @@ import play.api.i18n.Messages
 object Mails extends ConferenceDescriptorImplicit {
 
   lazy val from = ConferenceDescriptor.current().fromEmail
+  lazy val comitteeEmail = ConferenceDescriptor.current().comitteeEmail
   lazy val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
   lazy val bcc = ConferenceDescriptor.current().bccEmail
   
@@ -134,7 +135,7 @@ object Mails extends ConferenceDescriptorImplicit {
     // For Program committee
     emailer.setSubject(s"[${proposal.title} ${proposal.id}]")
     emailer.addFrom(from)
-    emailer.addRecipient(from)
+    emailer.addRecipient(comitteeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
 
     emailer.setCharset("utf-8")
@@ -149,7 +150,7 @@ object Mails extends ConferenceDescriptorImplicit {
     val subject: String = Messages("mail.speaker_message_to_cfp.subject", proposal.title,fromWebuser.cleanName)
     emailer.setSubject(subject)
     emailer.addFrom(from)
-    emailer.addRecipient(from)
+    emailer.addRecipient(comitteeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
     emailer.setCharset("utf-8")
 
@@ -170,7 +171,7 @@ object Mails extends ConferenceDescriptorImplicit {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[${proposal.title}][PRIVATE] ${fromWebuser.cleanName}")
     emailer.addFrom(from)
-    emailer.addRecipient(from)
+    emailer.addRecipient(comitteeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
 
     emailer.setCharset("utf-8")
