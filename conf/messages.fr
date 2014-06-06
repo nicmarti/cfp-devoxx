@@ -166,6 +166,7 @@ cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le co
 cfp.program=Annonce du programme :
 cfp.program.date=à partir du {0}
 cfp.reminder=Rappel
+cfp.reminder.proposals=N''oubliez pas d''accepter ou décliner les propositions approuvées
 video.title=Vidéos de l''édition 2013
 video.tag=Retrouvez les sessions de {0} 2013 sur le site
 theme.title=Thèmes
@@ -394,6 +395,18 @@ ar.proposalNotFound=Proposition de sujet non trouvée
 ar.choiceRecorded=Votre choix ({1}) pour la proposition {0} a bien été enregistré.
 ar.checkMyProposals=Accepter ou décliner les soumissions approuvées par le comité.
 ar.goBackHome=Retour à l''accueil
+
+level1.label=Pour tous niveaux
+level2.label=Intermédiaire
+level3.label=Expert
+
+demoLevel=Quel est le type de présentation ?
+demoLevel1.label=Slides uniquement
+demoLevel2.label=Slides et code
+demoLevel3.label=Code uniquement
+
+userGroup=Partager ma proposition avec d''autres User Groups ?
+userGroup.checkbox=Oui, je suis interessé pour présenter ce talk à d''autres User Groups
 
 sw.proposal.title=Titre
 sw.proposal.talkType=Type de presentation
