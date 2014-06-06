@@ -1,4 +1,6 @@
 @(toSpeaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])(implicit lang:Lang, confDesc: ConferenceDescriptor)
+
+@if(confDesc.frLangEnabled) {
 ------------------------------------------------------------------------------------
  English version below
 ------------------------------------------------------------------------------------
@@ -60,7 +62,7 @@ Au nom de toute l'équipe, nous tenons à vous remercier, et nous vous donnons r
 L'équipe de sélection de la conférence @confDesc.naming.longName
 
 ------------------------------------------------------------------------------------------------------------------
-
+}
 Dear @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){

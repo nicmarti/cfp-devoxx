@@ -1,4 +1,5 @@
 @(toSpeaker:Speaker, listOfApprovedProposals:Set[Proposal], listOfRefusedProposals:Set[Proposal])(implicit lang:Lang, confDesc: ConferenceDescriptor)
+@if(confDesc.frLangEnabled) {
 <small>English version below</small>
 <hr>
 Cher(e) @toSpeaker.firstName.getOrElse("speaker")
@@ -64,6 +65,7 @@ pour les BOFs.</p>
 <p>L'équipe de sélection de la conférence @confDesc.naming.longName</p>
     <!--************************************* ------->
 <hr>
+}
 Dear @toSpeaker.firstName.getOrElse("speaker")
 
 @if(listOfApprovedProposals.size==1){

@@ -1,5 +1,6 @@
 @(proposal:models.Proposal)(implicit lang:Lang, confDesc: ConferenceDescriptor)
 
+@if(confDesc.frLangEnabled) {
 <strong>English version below</strong>
 
 <p>Bonjour,</p>
@@ -14,6 +15,7 @@
 <p>Merci pour votre proposition,</p>
 <p>L'équipe de sélection de la conférence @confDesc.naming.longName</p>
 <hr>
+}
 <p>Hi,</p>
 <p>We're sorry to inform you that your proposal for @confDesc.naming.longYearlyName was <strong>refused</strong></p>
 <p>Proposition title : <strong>@proposal.title</strong>, <strong>@proposal.talkType.label</strong>.</p>
