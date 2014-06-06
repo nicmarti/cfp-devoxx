@@ -35,7 +35,23 @@
         </div>
 
         <div class="col-md-12">
-            @confDesc.contentBlocks.previewProposalFooterBlock(htmlSummary, privateMessage, newProposal, currentUser)
+            <div class="panel">
+                <div class="panel-default">
+                    <div class="panel-heading">@Messages("summary.preview")</div>
+                    <div class="panel-body">
+                        <h3><small>@Messages("sw.proposal.title") :</small> @newProposal("title").value</h3>
+                        <h4><small>@Messages("sw.proposal.talkType") :</small> @Messages(newProposal("talkType").value.getOrElse(""))</h4>
+                        <h4><small>@Messages("sw.proposal.track") :</small> @Messages(newProposal("track").value.getOrElse("") + ".label")</h4>
+                        <br>
+                        <h4><small>@Messages("admin.proposals.th.abstract") :</small></h4>
+                        <div class="proposal_prev">@Html(htmlSummary)</div>
+                        <h4><small>@Messages("admin.sp.privateMessage") :</small></h4>
+                        <div class="proposal_prev">@Html(privateMessage)</div>
+
+                        @confDesc.contentBlocks.previewProposalFooterBlock(htmlSummary, privateMessage, newProposal, currentUser)
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-12">
