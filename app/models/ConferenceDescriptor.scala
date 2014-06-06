@@ -403,9 +403,9 @@ object ConferenceDescriptor {
         longName = "Devoxx Belgium",
         longSplittedName_whiteStart="Devox", longSplittedName_colored="x", longSplittedName_whiteEnd="Belgium"
       ),
-      fromEmail = "program@devoxx.com",
-      bccEmail = Option("nicolas.martignole@devoxx.fr"),
-      bugReportRecipient = "nicolas.martignole@devoxx.fr",
+      fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.com"),
+      bccEmail = Play.current.configuration.getString("mail.bcc"),
+      bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
       conferenceUrls = ConferenceUrls(
         faq = "http://www.devoxx.fr/faq/",
         registration = "http://reg.devoxx.be",
@@ -477,7 +477,7 @@ object ConferenceDescriptor {
       contentBlocks = ContentBlocks(
         _homeIndexFirstRightBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxPreviousVideosHomeRightBlock()(lang, confDesc),
         _homeIndexFooterBlock = (lang: Lang, confDesc: ConferenceDescriptor) => emptyContent()(),
-        _proposalHelpBlock = (lang: Lang, confDesc: ConferenceDescriptor) => devoxxProposalHelpBlock()(lang, confDesc),
+        _proposalHelpBlock = (lang: Lang, confDesc: ConferenceDescriptor) =>  devoxxProposalHelpBlock()(lang, confDesc),
         _previewProposalFooterBlock = (
              lang: Lang, confDesc: ConferenceDescriptor,
              htmlSummary: String, privateMessage: String,
