@@ -2,6 +2,7 @@
 --------------------------------------------------------------------
   Welcome to @confDesc.naming.longYearlyName
 --------------------------------------------------------------------
+@if(confDesc.frLangEnabled) {
 English version below
 
 Bonjour,
@@ -30,7 +31,7 @@ http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForPr
 L'équipe de sélection de la conférence @confDesc.naming.longName
 
 ----------------------------------------------------------------------------------------------------------------------
-
+}
  Hi,
 
  We're glad to inform you that your proposal for @confDesc.naming.longYearlyName has been accepted !
