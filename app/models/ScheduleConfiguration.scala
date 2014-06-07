@@ -28,6 +28,7 @@ import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 import scala.util.Random
 import org.joda.time.DateTime
+import models.ConferenceDescriptor.DevoxxSlots
 
 /**
  * Slots that are scheduled.
@@ -116,22 +117,30 @@ object ScheduleConfiguration {
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
 
+    // TODO : Variabilize week days and remove devoxx-specific stuff
     val listOfSlots = day match {
       case "wednesday" => {
-        Slot.wednesday ++ loadSlotsForConfType(ProposalType.UNI.id) ++ loadSlotsForConfType(ProposalType.LAB.id) ++ loadSlotsForConfType(ProposalType.TIA.id)
+        val fullList = DevoxxSlots.wednesday ++ loadSlots()
+        fullList.filter(_.day == "mercredi")
       }
       case "thursday" => {
-        val fullList = Slot.thursday ++ loadSlotsForConfType(ProposalType.QUICK.id) ++ loadSlotsForConfType(ProposalType.KEY.id) ++ loadSlotsForConfType(ProposalType.CONF.id) ++ loadSlotsForConfType(ProposalType.BOF.id)
+        val fullList = DevoxxSlots.thursday ++ loadSlots()
         fullList.filter(_.day == "jeudi")
       }
       case "friday" => {
-        val fullList = Slot.friday ++ loadSlotsForConfType(ProposalType.QUICK.id) ++ loadSlotsForConfType(ProposalType.KEY.id) ++ loadSlotsForConfType(ProposalType.CONF.id)
+        val fullList = DevoxxSlots.friday ++ loadSlots()
         fullList.filter(_.day == "vendredi")
       }
       case other => Nil
     }
 
     listOfSlots.sortBy(_.from.getMillis)
+  }
+
+  def loadSlots(): List[Slot] = {
+    ConferenceDescriptor.current().proposalTypes.flatMap {
+      t: ProposalType => loadSlotsForConfType(t.id)
+    }
   }
 
   def loadSlotsForConfType(confType: String): List[Slot] = {

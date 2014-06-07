@@ -1,4 +1,4 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @main("Backoffice") {
 <div class="row">
@@ -31,12 +31,9 @@
 
             <h4>Accept or reject notification service</h4>
             <p>This service lets you search for a talk, then send a notification to the speaker</p>
-            <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(ProposalType.UNI.id)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
-            <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(ProposalType.LAB.id)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
-            <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(ProposalType.TIA.id)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
-            <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(ProposalType.CONF.id)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
-            <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(ProposalType.BOF.id)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
-            <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(ProposalType.QUICK.id)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a>
+            @for(proposalType <- confDesc.proposalTypes) {
+                <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@proposalType.htmlClass"></i> @Messages(proposalType.simpleLabel)</a>
+            }
 
             <h4>Planner</h4>
             <a href="/assets/angular/index.html" class="btn btn-primary btn-sm"><i class="icon-adjust"></i> Angular Schedule application</a>

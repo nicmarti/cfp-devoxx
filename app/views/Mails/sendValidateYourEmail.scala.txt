@@ -1,10 +1,22 @@
-@(validationLink:String)
+@(validationLink:String)(implicit confDesc: ConferenceDescriptor)
 
-Welcome to Devoxx!
+Welcome to @confDesc.naming.longName!
 
-Thanks for joining Devoxx CFP Web site. To validate your email address, please copy the following link to your browser address bar:
+Thanks for joining @confDesc.naming.longName CFP Web site. To validate your email address, please copy the following link to your browser address bar:
 
 @validationLink
 
-The Devoxx Team
+The @confDesc.naming.longName Team
 
+@if(confDesc.frLangEnabled){
+---------------------------------------------------------------------
+
+Bienvenue à @confDesc.naming.longName!
+
+Merci de vous êtes inscrit sur le site du CFP de @confDesc.naming.longName.
+Pour valider votre adresse de courrier électronique, merci d'ouvrir le lien suivant ou de le recopier dans la barre d'adresse de votre navigateur internet :
+
+@validationLink
+
+L'équipe @confDesc.naming.longName
+}

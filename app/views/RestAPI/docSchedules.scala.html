@@ -1,9 +1,9 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @api("schedules") {
 <div class="row">
     <div class="col-md-12">
-    <h1>Devoxx API</h1>
+    <h1>@confDesc.naming.shortName API</h1>
     <hr>
        <h3>Documentation for "schedules"</h3>
 
@@ -12,7 +12,7 @@
 
         <h4>Sample:</h4>
     <code>
-curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showAllSchedules(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showAllSchedules(Conference.currentConference.eventCode).absoluteURL()</a>
     </code>
 
         <h4>Result:</h4>
@@ -21,18 +21,18 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Con
 {
     "links": [
         {
-            "href": "http://cfp.devoxx.be/api/conferences/devoxxFR2014/schedules/wednesday/",
-            "rel": "http://cfp.devoxx.be/api/profile/schedule",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/wednesday/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedule",
             "title": "Schedule for Wednesday 16th April 2014"
         },
         {
-            "href": "http://cfp.devoxx.be/api/conferences/devoxxFR2014/schedules/thursday/",
-            "rel": "http://cfp.devoxx.be/api/profile/schedule",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/thursday/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedule",
             "title": "Schedule for Thursday 17th April 2014"
         },
         {
-            "href": "http://cfp.devoxx.be/api/conferences/devoxxFR2014/schedules/friday/",
-            "rel": "http://cfp.devoxx.be/api/profile/schedule",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/friday/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedule",
             "title": "Schedule for Friday 18th April 2014"
         }
     ]
