@@ -75,6 +75,12 @@ case class Speaker(uuid: String
   }.getOrElse("fr")
 
 
+  def hasTwitter=StringUtils.trimToEmpty(twitter.getOrElse("")).nonEmpty
+  def hasBio=StringUtils.trimToEmpty(bio).nonEmpty
+  def hasCompany=StringUtils.trimToEmpty(company.getOrElse("")).nonEmpty
+  def hasAvatar=StringUtils.trimToEmpty(avatarUrl.getOrElse("")).nonEmpty
+  def hasBlog=StringUtils.trimToEmpty(blog.getOrElse("")).nonEmpty
+
   lazy val bioAsHtml: String = {
     val escapedHtml = HtmlFormat.escape(bio).body // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing

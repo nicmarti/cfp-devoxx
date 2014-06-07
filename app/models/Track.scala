@@ -31,48 +31,22 @@ import play.api.libs.json.Json
  * Author: nicolas martignole
  * Created: 06/11/2013 01:41
  */
-case class Track(id: String, label: String)
+case class Track(id: String, label: String, imgSrc: String, i18nTitleProp: String, i18nDescProp: String)
 
 object Track {
   implicit val trackFormat = Json.format[Track]
 
-  val STARTUP=Track("startup", "startup.label")
-  val SSJ =Track("ssj", "ssj.label")
-  val JAVA=Track("java", "java.label")
-  val MOBILE =Track("mobile", "mobile.label")
-  val ARCHISEC =Track("archisec", "archisec.label")
-  val METHODEVOPS=Track("methodevops", "methodevops.label")
-  val FUTURE=Track("future", "future.label")
-  val LANG=Track("lang", "lang.label")
-  val CLOUD =Track("cloud", "cloud.label")
-  val WEB =Track("web", "web.label")
+  val allAsIdsAndLabels:Seq[(String,String)] = ConferenceDescriptor.current().tracks.map(a=>(a.id,a.label)).toSeq.sorted
 
-
-  val all = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHODEVOPS, FUTURE, LANG, CLOUD, WEB)
-
-  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).toSeq.sorted
-
-  val allIDs=all.map(_.id)
+  val allIDs=ConferenceDescriptor.current().tracks.map(_.id)
 
   // Compute diff between two Set of Track then returns a ready-to-use list of id/label
   def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
-    val diffSet = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHODEVOPS, FUTURE, LANG, CLOUD, WEB).toSet.diff(otherTracks)
+    val diffSet = ConferenceDescriptor.current().tracks.toSet.diff(otherTracks)
     diffSet.map(a=>(a.id,a.label)).toSeq.sorted
   }
-
-  def parse(id:String):Track={
-    id match {
-      case "startup"=>STARTUP
-      case "ssj"=>SSJ
-      case "java" => JAVA
-      case "mobile"=>MOBILE
-      case "archisec" =>ARCHISEC
-      case "methodevops" =>METHODEVOPS
-      case "future"=>FUTURE
-      case "lang"=>LANG
-      case "cloud" =>CLOUD
-      case "web" =>WEB
-      case other =>JAVA
-    }
+  
+  def parse(session:String):Track={
+    return ConferenceDescriptor.current().tracks.find(t => t.id == session).getOrElse(Track("unknown", "unknown.label", "", "", ""))
   }
 }

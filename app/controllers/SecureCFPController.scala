@@ -35,7 +35,7 @@ import play.api.mvc.SimpleResult
 import play.api.libs.oauth.ServiceInfo
 import play.api.libs.Crypto
 import javax.crypto.IllegalBlockSizeException
-import models.Webuser
+import models.{ConferenceDescriptorImplicit, Webuser}
 
 
 /**
@@ -79,7 +79,7 @@ case class IsMemberOfGroups(groups: List[String]) extends Authorization {
   }
 }
 
-trait SecureCFPController extends Controller {
+trait SecureCFPController extends Controller with ConferenceDescriptorImplicit {
 
   /**
    * A secured action.  If there is no user in the session the request is redirected

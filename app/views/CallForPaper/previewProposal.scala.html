@@ -1,4 +1,4 @@
-@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -39,14 +39,16 @@
                 <div class="panel-default">
                     <div class="panel-heading">@Messages("summary.preview")</div>
                     <div class="panel-body">
-                        <h3><small>Title:</small> @newProposal("title").value</h3>
-                        <h4><small>Type of presentation:</small> @Messages(newProposal("talkType").value.getOrElse(""))</h4>
-                        <h4><small>Track:</small> @Messages(newProposal("track").value.getOrElse("") + ".label")</h4>
+                        <h3><small>@Messages("sw.proposal.title") :</small> @newProposal("title").value</h3>
+                        <h4><small>@Messages("sw.proposal.talkType") :</small> @Messages(newProposal("talkType").value.getOrElse(""))</h4>
+                        <h4><small>@Messages("sw.proposal.track") :</small> @Messages(newProposal("track").value.getOrElse("") + ".label")</h4>
                         <br>
-                        <h4><small>Abstract for the Devoxx audience:</small></h4>
+                        <h4><small>@Messages("admin.proposals.th.abstract") :</small></h4>
                         <div class="proposal_prev">@Html(htmlSummary)</div>
-                        <h4><small>Private message for the Committe:</small></h4>
+                        <h4><small>@Messages("admin.sp.privateMessage") :</small></h4>
                         <div class="proposal_prev">@Html(privateMessage)</div>
+
+                        @confDesc.contentBlocks.previewProposalFooterBlock(htmlSummary, privateMessage, newProposal, currentUser)
                     </div>
                 </div>
             </div>

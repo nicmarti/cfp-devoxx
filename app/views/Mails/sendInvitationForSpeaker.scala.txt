@@ -1,4 +1,4 @@
-@(message:String,requestId:String)
+@(message:String,requestId:String)(implicit confDesc: ConferenceDescriptor)
 
 --------------------------------------------------
                 Devoxx 2014
@@ -12,10 +12,10 @@ How to respond?
 If you are interested and you would like to propose a talk for Devoxx 2014 :
 
 - Yes, I'd like to propose a talk =>
-  Please visit this URL : http://cfp.devoxx.be@routes.Wishlist.speakerApproveRequest(requestId)
+  Please visit this URL : http://@confDesc.conferenceUrls.cfpHostname@routes.Wishlist.speakerApproveRequest(requestId)
 
 - No, sorry, I am not available or not interested =>
-  Please, visit this URL : http://cfp.devoxx.be@routes.Wishlist.speakerDeclineRequest(requestId)
+  Please, visit this URL : http://@confDesc.conferenceUrls.cfpHostname@routes.Wishlist.speakerDeclineRequest(requestId)
 
 Thanks,
 The Devoxx team.

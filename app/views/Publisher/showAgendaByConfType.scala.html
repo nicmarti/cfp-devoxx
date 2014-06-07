@@ -1,4 +1,4 @@
-@(schedule:ScheduleConfiguration, talkType:String, day:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(schedule:ScheduleConfiguration, talkType:String, day:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 @views.html.Publisher.devoxxFR2014(Messages("agenda-"+talkType)){
 <style type="text/css">
 <!-- Special pour agenda par conf type qui sont très larges //-->
@@ -36,7 +36,7 @@
 @slot.proposal.map{p:Proposal=>
     <a href="@routes.Publisher.showDetailsForProposal(p.id,p.title)">@p.title</a><br>
     <small>@p.allSpeakerUUIDs.flatMap(uuid=>Speaker.findByUUID(uuid).map(_.cleanShortName)).mkString(", ")</small><br>
-    @tags.publisher.renderIconForTrack(p.track.id) @Messages(p.track.label) @if(p.lang=="en"){<img src="/assets/images/en.png" alt="English"/>}
+    @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label) @if(p.lang=="en"){<img src="/assets/images/en.png" alt="English"/>}
 }
 </td>
 }
@@ -69,7 +69,7 @@
 @slot.proposal.map{p:Proposal=>
     <a href="@routes.Publisher.showDetailsForProposal(p.id,p.title)">@p.title</a><br>
     <small>@p.allSpeakerUUIDs.flatMap(uuid=>Speaker.findByUUID(uuid).map(_.cleanShortName)).mkString(", ")</small><br>
-    @tags.publisher.renderIconForTrack(p.track.id) @Messages(p.track.label)
+    @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
 }</td>
 }
 </tr>

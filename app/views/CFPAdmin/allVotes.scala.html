@@ -1,4 +1,4 @@
-@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @main("All votes") {
 
@@ -19,12 +19,9 @@
                 <div class="panel-body">
                     <div class="col-md-12">
                         <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i> All</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.UNI.id, None)" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.LAB.id, None)" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Labs</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.TIA.id, None)" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.CONF.id, None)" class="btn btn-primary btn-sm"><i class="icon-microphone"></i> Conference</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.BOF.id, None)" class="btn btn-primary btn-sm"><i class="icon-group"></i> BOF</a>
-                        <a href="@routes.CFPAdmin.allVotes(ProposalType.QUICK.id, None)" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a>
+                        @for(proposalType <- confDesc.proposalTypes) {
+                            <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@proposalType.htmlClass"></i> @Messages(proposalType.simpleLabel)</a>
+                        }
                         | <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
                         <br>
                         <i class="icon-filter"></i> Show only:

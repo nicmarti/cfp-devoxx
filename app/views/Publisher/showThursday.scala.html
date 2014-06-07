@@ -1,5 +1,9 @@
-@()(implicit lang: Lang, req:RequestHeader)
+@()(implicit lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
+@import models.ConferenceDescriptor.DevoxxProposalTypes
 @views.html.Publisher.devoxxFR2014(Messages("sw.show.thu")){
+
+@* TODO: refactor this publisher specific code to devoxx ... someday... *@
+
 <section id="container" class="one-column">
     <div id="content" role="main">
         <div id="post-5" class="post-5 page type-page status-publish hentry">
@@ -52,7 +56,7 @@
     <td>11h30 - 12h20</td>
     <td>
         <ul>
-            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
         </ul>
     </td>
     <td>
@@ -66,8 +70,8 @@
     <td>12h20 - 13h25</td>
     <td>
         <ul>
-            <li>12h35 - 12h50 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.QUICK.id,Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
-            <li>13h00 - 13h15 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.QUICK.id,Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
+            <li>12h35 - 12h50 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.QUICK.id,Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
+            <li>13h00 - 13h15 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.QUICK.id,Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-fast-forward"></i> Quickie</a></li>
         </ul>
     </td>
     <td>
@@ -79,7 +83,7 @@
     <td>13h25 - 14h15</td>
     <td>
         <ul>
-            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
         </ul>
     </td>
     <td rowspan="6">
@@ -91,7 +95,7 @@
     <td>14h30 - 15h20</td>
     <td>
         <ul>
-            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
         </ul>
     </td>
 </tr>
@@ -99,7 +103,7 @@
     <td>15h35 - 16h25</td>
     <td>
         <ul>
-            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
         </ul>
     </td>
 </tr>
@@ -116,7 +120,7 @@
     <td>17h00 - 17h50</td>
     <td>
         <ul>
-            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
         </ul>
     </td>
 </tr>
@@ -124,7 +128,7 @@
     <td>18h05 - 18h55</td>
     <td>
         <ul>
-            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
+            <li>5 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.CONF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Conferences</a></li>
         </ul>
     </td>
 </tr>
@@ -140,7 +144,7 @@
     <td>19h30 - 20h30</td>
     <td>
         <ul>
-            <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.BOF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
+            <li><a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.BOF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
         </ul>
     </td>
     <td rowspan="3">
@@ -156,7 +160,7 @@
     <td>20h30 - 21h30</td>
     <td>
         <ul>
-            <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.BOF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
+            <li><a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.BOF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
         </ul>
     </td>
 </tr>
@@ -164,7 +168,7 @@
     <td>21h30 - 22h30</td>
     <td>
         <ul>
-            <li><a href="@routes.SchedullingController.getPublishedSchedule(ProposalType.BOF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
+            <li><a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.BOF.id, Some("jeudi"))" class="btn btn-primary btn-sm"><i class="icon-group"></i> B.O.F. (Bird of a Feather)</a></li>
         </ul>
     </td>
 </tr>

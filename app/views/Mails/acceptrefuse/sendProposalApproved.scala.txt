@@ -1,23 +1,24 @@
-@(proposal:models.Proposal)(implicit lang:Lang)
+@(proposal:models.Proposal)(implicit lang:Lang, confDesc: ConferenceDescriptor)
 --------------------------------------------------------------------
-  Welcome to Devoxx 2014
+  Welcome to @confDesc.naming.longYearlyName
 --------------------------------------------------------------------
+@if(confDesc.frLangEnabled) {
 English version below
 
 Bonjour,
 
 Nous avons le plaisir de vous informer que la présentation [@proposal.title] au format
-[@Messages(proposal.talkType.label)] a été approuvée pour Devoxx 2014 !
+[@Messages(proposal.talkType.label)] a été approuvée pour @confDesc.naming.longYearlyName !
 
 Comment valider ou non votre participation ?
 ----------------------------------------------------------------------------------------------------------------------
 
 Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
-présence à Devoxx comme présentateur.
+présence à @confDesc.naming.longName comme présentateur.
 
 Merci de valider dès maintenant en suivant ce lien dans votre navigateur :
 
- http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()
+ http://@confDesc.conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
 
 Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).
 
@@ -25,15 +26,15 @@ Comment poser une question ?
 ----------------------------------------------------------------------------------------------------------------------
 Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.
 
-http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(proposal.id)
+http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
 
-L'équipe de sélection de la conférence Devoxx
+L'équipe de sélection de la conférence @confDesc.naming.longName
 
 ----------------------------------------------------------------------------------------------------------------------
-
+}
  Hi,
 
- We're glad to inform you that your proposal for Devoxx 2014 has been accepted !
+ We're glad to inform you that your proposal for @confDesc.naming.longYearlyName has been accepted !
  Proposition title : @proposal.title, of type [@Messages(proposal.talkType.label)].
 
  Important information
@@ -41,14 +42,14 @@ L'équipe de sélection de la conférence Devoxx
  You must now validate or decline the general terms and conditions, and confirm that you are still ok to do
  this presentation :
 
-  http://cfp.devoxx.be@routes.ApproveOrRefuse.showAcceptTerms()
+  http://@confDesc.conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
 
  For any question regarding your talk:
  ------------------------------------
  Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests
  to respond quickly.
 
-  http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(proposal.id)
+  http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
 
- The Devoxx team
+ The @confDesc.naming.longName team
 

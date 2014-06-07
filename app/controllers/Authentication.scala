@@ -42,6 +42,7 @@ import play.api.libs.ws._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.apache.commons.codec.digest.DigestUtils
+import library.FormatDate
 
 /**
  * Signup and Signin.
@@ -49,7 +50,7 @@ import org.apache.commons.codec.digest.DigestUtils
  * Author: nicolas
  * Created: 27/09/2013 09:59
  */
-object Authentication extends Controller {
+object Authentication extends Controller with ConferenceDescriptorImplicit {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
   def prepareSignup = Action {
@@ -105,7 +106,7 @@ object Authentication extends Controller {
           Webuser.checkPassword(validForm._1, validForm._2) match {
             case Some(webuser) =>
               val cookie = createCookie(webuser)
-              Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> (Messages("cfp.closing") + " " + Messages("cfp.closing.date"))).withSession("uuid" -> webuser.uuid).withCookies(cookie)
+              Redirect(routes.CallForPaper.homeForSpeaker).flashing(cfpClosingFlash()).withSession("uuid" -> webuser.uuid).withCookies(cookie)
 
             case None =>
               Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
@@ -232,15 +233,15 @@ object Authentication extends Controller {
     implicit request =>
 
       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
-      val futureResult = WS.url(url).withHeaders("User-agent" -> "nicmarti devoxxfr", "Accept" -> "application/json").get()
-      futureResult.map {
-        result =>
-          result.status match {
-            case 200 => {
-              val json = Json.parse(result.body)
-              val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
-                                      name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
-              yield (email, name))
+      val futureResult = WS.url(url).withHeaders("User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname), "Accept" -> "application/json").get()
+        futureResult.map {
+          result =>
+            result.status match {
+              case 200 => {
+                val json = Json.parse(result.body)
+                val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
+                                        name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
+                yield (email, name))
 
               resultParse.fold(missingField =>
                 Redirect(routes.Application.home()).flashing(
@@ -258,7 +259,7 @@ object Authentication extends Controller {
                       Webuser.findByEmail(emailS).map {
                         w =>
                           val cookie = createCookie(w)
-                          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> (Messages("cfp.closing") + " " + Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
+                          Redirect(routes.CallForPaper.homeForSpeaker()).flashing(cfpClosingFlash()).withSession("uuid" -> w.uuid).withCookies(cookie)
                       }.getOrElse {
                         // Create a new one but ask for confirmation
                         val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
@@ -379,7 +380,7 @@ object Authentication extends Controller {
             case (clientId, clientSecret) => {
               val url = "https://accounts.google.com/o/oauth2/token"
               val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
-              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> "Devoxx BE CFP")).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname))).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
@@ -416,7 +417,10 @@ object Authentication extends Controller {
 
           // For Google+ profile
           //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
-          val futureResult = WS.url(url).withHeaders("User-agent" -> "CFP www.devoxx.fr", "Accept" -> "application/json").get()
+          val futureResult = WS.url(url).withHeaders(
+              "User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname),
+              "Accept" -> "application/json"
+          ).get()
 
           futureResult.map {
             result =>
@@ -435,7 +439,7 @@ object Authentication extends Controller {
                   Webuser.findByEmail(email).map {
                     w =>
                       val cookie = createCookie(w)
-                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> (Messages("cfp.closing") + " " + Messages("cfp.closing.date"))).withSession("uuid" -> w.uuid).withCookies(cookie)
+                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing(cfpClosingFlash()).withSession("uuid" -> w.uuid).withCookies(cookie)
                   }.getOrElse {
                     val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo,"No experience")
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
@@ -456,6 +460,10 @@ object Authentication extends Controller {
 
   private def createCookie(webuser: Webuser) = {
     Cookie("cfp_rm", value = Crypto.encryptAES(webuser.uuid), maxAge = Some(588000))
+  }
+
+  private def cfpClosingFlash()(implicit req:RequestHeader) = {
+    "success" -> (Messages("cfp.closing") + " " + FormatDate.jodaFullDateFormat(conferenceDescriptor.timing.cfpClosedOn, lang))
   }
 
 }
