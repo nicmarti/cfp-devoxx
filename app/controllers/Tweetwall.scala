@@ -53,7 +53,7 @@ import akka.actor.{ActorRef, Props, Actor}
  * Original version created by Nicolas Martignole (@nmartignole) march 2014
  * Actor support added by Mathieu Ancelin (@TrevorReznik)
  */
-object Tweetwall extends Controller {
+object Tweetwall extends Controller with ConferenceDescriptorImplicit {
 
   val cfg = Play.application.configuration
 
@@ -73,7 +73,7 @@ object Tweetwall extends Controller {
     implicit request =>
       request.session.get("token").map {
         token: String =>
-          Ok(views.html.Tweetwall.wallDevoxxFR2014())
+          Ok(views.html.Tweetwall.showWall())
       }.getOrElse {
         Redirect(routes.Tweetwall.authenticate)
       }

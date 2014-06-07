@@ -1,14 +1,26 @@
-@(email:String, code:String)
+@(email:String, code:String)(implicit confDesc: ConferenceDescriptor)
 
 ------------------------------------------------------------------------------
-                      Welcome to Devoxx CFP!
+                      Welcome to @confDesc.naming.longName CFP!
 ------------------------------------------------------------------------------
 We created an access code for you (we really don't want to store any of your password here).
 
   Your login is :  @email
   Your code is @code
 
-If you want to report an issue, please use http://cfp.devoxx.be@routes.Application.bugReport()
+If you want to report an issue, please use http://@confDesc.conferenceUrls.cfpHostname@routes.Application.bugReport()
 
-The Devoxx team
+The @confDesc.naming.longName team
 ------------------------------------------------------------------------------
+@if(confDesc.frLangEnabled) {
+Bienvenue sur le CFP de @confDesc.naming.longName
+
+Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
+Votre identifiant est <strong>@email</strong></p>
+Votre code est <strong>@code</strong></p>
+
+Utilisez http://@confDesc.conferenceUrls.cfpHostname@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
+
+L'équipe @confDesc.naming.longName
+------------------------------------------------------------------------------
+}

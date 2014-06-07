@@ -4,6 +4,7 @@ CONF.title=Devoxx 2014
 CONF.subtitle=BE
 
 # -----------------
+cfp.title={0} CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -16,8 +17,6 @@ index.welcome=Already registered as a speaker? Please use this form to sign-in :
 btn.login=Sign-in
 login=Sign-in
 signup=Sign-up
-signup.long=Register as a new Devoxx speaker
-menu.blog=Website Devoxx
 index.method1=Sign-in
 index.method2=Authenticate with OpenID
 index.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
@@ -28,7 +27,7 @@ blog=Your blog or company website
 qualifications=Your speaker''s qualifications
 qualifications.label=Speaker qualifications
 index.signupTitle=Sign-up as a speaker
-index.signup2=Sign-up as speaker for Devoxx and propose one or more subjects.
+index.signup2=Sign-up as speaker for {0} and propose one or more subjects.
 index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
 index.signup.btn=Sign-up
 email.alreadyexists=This email is already registered in our database.
@@ -51,6 +50,10 @@ edit.profile=Edit your profile
 edit.name=Edit your name
 new.proposal=New proposal
 
+# --- Formats
+format.date=Date (''{0}'')
+format.numeric=Numeric
+format.real=Real
 
 # github login
 github.importprofile.error=Sorry, cannot import your github profile.
@@ -68,13 +71,13 @@ title.help=Think carefully and try to create a title that is descriptive enough.
 summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
-lang.help=100% of Devoxx Belgium talks are in English
+lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
-mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
+mainSpeaker.help=You can add more speakers once the proposal is created. We offer a {0}-day pass only for the following slots : {1}. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq/#confType" target="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href\="{0}\#confType" target\="new">FAQ</a>.
 
 audienceLevel=Audience level :
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
@@ -110,34 +113,41 @@ next.action=Select next action:
 
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
+key.simple.label=Keynote
 conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.simple.label=Conference
 uni.label=University, 3h, Monday or Tuesday
+uni.simple.label=University
 tia.label=Tools in Action, 30mn, only Monday or Tuesday
+tia.simple.label=Tools in Action
 quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+quick.simple.label=Quickie
 bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+bof.simple.label=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.simple.label=Hand''s on Lab
 other.label=Other event
+other.simple.label=Other
 start.label=Startup Talk, 25 min, Wednesday to Thursday
+start.simple.label=Startup
 
 # Bug report
 Issue.report=Report an issue
 btn.send=Send
 
 # Home page
-cfp.closed=The Call for paper is closed and will open Mon, 2nd Jun, 2014.
 appel.conf=Call for Paper
-appel.conf.dates=Devoxx Belgium 2014, 10th-14th November
-cfp.opening=CFP opening:
-cfp.opening.date=Monday, 2nd of June, 2014
-cfp.closing=CFP Closing :
-cfp.closing.date=Friday, July 11th, 2014
+devoxxbe2014.dates=From 10th to 14th of November, 2014
+cfp.opening=CFP opening
+cfp.closing=CFP closing
+cfp.reminder=Reminder
+cfp.reminder.proposals=do not forget to accept or to decline all approved proposals.
 cfp.program=Program announced :
-cfp.program.date=mid-september
+cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx Belgium 2013''s videos on
+video.tag=Review {0}''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx 2014:
-
+theme.track=List of tracks for {0} :
 track.title=Title
 track.description=Description
 
@@ -191,11 +201,11 @@ avatarUrl.defined=Your photo (recommended width 150px)
 created.title=Success!
 created.text1=We just sent you an email so that you can validate your email address.
 created.text2=Your password is generated and is displayed once you validate your email.
-created.text3=You will then be able to log-in and start to post proposals for Devoxx Belgium 2014.
+created.text3=You will then be able to log-in and start to post proposals for {0}.
 
 # prepareSignup
 signup.title=Speaker''s registration
-signup.txt1=Sign up to submit a talk for Devoxx Belgium 2014 conference:
+signup.txt1=Sign up to submit a talk for {0} conference :
 signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated.
 
 # edit profile
@@ -239,7 +249,7 @@ proposal.mainSpeaker=Main speaker
 proposal.secSpeaker=Secondary speaker
 secondarySpeaker=Secondary speaker
 proposal.otherSpeakers=Other speakers
-proposal.buyPass=3 Days Combi pass included?
+proposal.buyPass={0} Days Combi pass included?
 freepass=Yes
 no.freepass=No
 speakers.updated=Speakers''s list updated
@@ -351,12 +361,12 @@ admin.btn.otherReviewer=Compare with other Reviewer
 btn.showVotes=Show votes
 comment.proposal=Comments for proposal
 
-approve.title=Devoxx Belgium, Speaker Consent Form
+approve.title={0}, Speaker Consent Form
 accept.chk=I accept the Terms and Conditions
-acceptTerm.pleaseRead=Please read and accept Devoxx Belgium Terms and Conditions
+acceptTerm.pleaseRead=Please read and accept {0} Terms and Conditions
 accept.term.checked=Please check this box if you agree with the Terms and Conditions
 
-acceptedProposals.title=List of accepted/refused proposals for Devoxx Belgium
+acceptedProposals.title=List of accepted/refused proposals for {0}
 ar.approved=Approved proposals
 ar.rejected=Refused proposals
 ar.noneApproved=We are very sorry to inform you that none of your proposals have been accepted.
@@ -555,3 +565,16 @@ unknown=Unknown
 # The abstention button
 Abs=0
 trackAndUUIDs=
+
+mail.reset_password_link.subject=You asked to reset your {1} speaker''s access code at {0}
+mail.access_code.subject=Your {0} speaker''s access code
+mail.account_created.subject=Welcome to the CFP for {0} !
+mail.email_validation.subject=Welcome to {0}, please validate your email address now
+mail.issue_reported.subject=New issue reported on CFP web site
+mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
+mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
+mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
+mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
+mail.proposal_approved.subject=Your proposal has been approved {0}
+mail.proposal_refused.subject=Your proposal has been refused {0}
+mail.speaker_cfp_results.subject=Call for Paper {0}

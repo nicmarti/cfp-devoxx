@@ -1,4 +1,4 @@
-@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -42,18 +42,20 @@
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
                 <input type="hidden" name="lang" value="en">
-                @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allAsId,  'class->"form-control")
+                @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allForCombos,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("track"), options=Track.allAsIdsAndLabels,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,  'class->"form-control")
 
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox")
 
-                @tags.checkboxI18N(newProposal("sponsorTalk"),  'text->"sponsorTalk.checkbox")
-                <div id="sponsorTalkMsg" class="alert alert-info">
-                    <p>@Messages("sponsorTalk.help")</p>
-                    <p>@Messages("sponsor.name.plz")</p>
-                </div>
+                @if(confDesc.contentBlocks.showSponsorProposalCheckbox) {
+                    @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
+                    <div id="sponsorTalkMsg" class="alert alert-info">
+                        <p>@Messages("sponsorTalk.help")</p>
+                        <p>@Messages("sponsor.name.plz")</p>
+                    </div>
+                }
                 <hr>
                 <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
                 <button type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
@@ -62,11 +64,13 @@
 
         <div class="col-md-5">
             <h3>@Messages("helpAndTips")</h3>
-            <p><label>@Messages("title")</label><br> @Messages("title.help")</p>
-            <p><label>@Messages("summary")</label><br> @Html(Messages("summary.help"))</p>
-            <p><label>@Messages("privateMessage")</label><br> @Messages("privateMessage.help")</p>
-            <p><label>@Messages("mainSpeaker2")</label><br> @Messages("mainSpeaker.help")</p>
-            <p><label>@Messages("sponsorTalk.help.title")</label><br> @Messages("sponsorTalk.help")</p>
+            <p><label>@Messages("title") : </label><br> @Messages("title.help")</p>
+            <p><label>@Messages("summary") : </label><br> @Html(Messages("summary.help"))</p>
+            <p><label>@Messages("privateMessage") : </label><br> @Messages("privateMessage.help")</p>
+            @confDesc.contentBlocks.proposalHelpBlock()
+            @if(confDesc.contentBlocks.showSponsorProposalCheckbox) {
+                <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
+            }
         </div>
 
     </div>
@@ -103,11 +107,13 @@ $(document).ready(function($){
         $('#talkType').prop('disabled', false);
     }
 
-    // Startup (specific to Devoxx BE)
     $('#talkType' ).change(function(){
         var talkTypeId = $(this).val();
-        if(talkTypeId=="@models.ProposalType.START.id"){
-            $('#track option[value="startup"]' ).prop('selected', true);
+
+        @for(proposalType <- ProposalType.proposalsImplyingATrackSelection) {
+            @Html( "if(talkTypeId==\"" + proposalType.id + "\") {" + "" )
+            @Html( "    $('#track option[value=\"" + proposalType.impliedSelectedTrack.get.id + "\"]').prop('selected', true);" + "" )
+            @Html( "}" )
         }
     });
 

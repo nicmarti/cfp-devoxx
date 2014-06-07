@@ -24,8 +24,9 @@
 package library
 
 import org.joda.time.{Period, PeriodType, DateTime}
-import org.joda.time.format.{PeriodFormat, PeriodFormatterBuilder}
+import org.joda.time.format.{DateTimeFormat, PeriodFormat, PeriodFormatterBuilder}
 import org.ocpsoft.prettytime.PrettyTime
+import play.api.i18n.{Messages, Lang}
 
 /**
  * Small helper cause I did not want to add this code in template.
@@ -42,5 +43,9 @@ object FormatDate {
         val p:PrettyTime = new PrettyTime()
         p.format(eventDate.toDate)
     }.getOrElse("Unknown")
+  }
+
+  def jodaFullDateFormat(date: DateTime, lang: Lang): String = {
+    DateTimeFormat.fullDate().withLocale(lang.toLocale).print(date)
   }
 }

@@ -1,4 +1,4 @@
-@()
+@()(implicit request:RequestHeader, confDesc: ConferenceDescriptor)
 
 <!DOCTYPE html>
 <html>
@@ -33,13 +33,13 @@
         <div id="content">
             <div id="header">
                 <div class="title">
-                    <h1>Devoxx France</h1>
+                    <h1>@confDesc.naming.longName</h1>
                 </div>
                 <div class="time">
                     <h2>14:35</h2>
                 </div>
                 <div class="helper">
-                    <h2>#DevoxxFR</h2>
+                    <h2>@confDesc.hashTag</h2>
                 </div>
             </div>
 

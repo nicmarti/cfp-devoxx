@@ -1,10 +1,10 @@
-@()(implicit request:RequestHeader)
+@()(implicit request:RequestHeader, confDesc: ConferenceDescriptor)
 
 <!DOCTYPE html>
 
 <html>
     <head>
-        <title>DevoxxFrance Tweetwall</title>
+        <title>@confDesc.naming.shortName Tweetwall</title>
         <link rel="stylesheet" media="screen" href="/assets/css/tweetwall.css">
         <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
 
