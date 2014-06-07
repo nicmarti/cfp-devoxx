@@ -35,7 +35,7 @@ import play.api.mvc.SimpleResult
  * Created by Nicolas Martignole on 25/02/2014.
  */
 
-object RestAPI extends Controller {
+object RestAPI extends Controller with ConferenceDescriptorImplicit {
 
   def index = UserAgentAction {
     implicit request =>
@@ -405,7 +405,7 @@ object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderN
         block(request)
       }
     }.getOrElse {
-      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with Devoxx API"))
+      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with "+ConferenceDescriptor.current().naming.longName+" API"))
     }
   }
 }
@@ -422,19 +422,20 @@ object Conference {
 
   implicit val confFormat = Json.format[Conference]
 
-  def devoxxFrance2014(implicit req: RequestHeader) = Conference("devoxxFR2014",
-    "Devoxx France 2014, 16 au 18 avril 2014",
+  def currentConference(implicit req: RequestHeader) = Conference(
+    ConferenceDescriptor.current().eventCode,
+    ConferenceDescriptor.current().naming.longYearlyName+", "+Messages(ConferenceDescriptor.current().timing.datesI18nKey),
     Link(
-      routes.RestAPI.showConference("devoxxFR2014").absoluteURL().toString,
+      routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL().toString,
       routes.RestAPI.profile("conference").absoluteURL().toString,
-      "See more details about Devoxx France 2014"
+      "See more details about "+ConferenceDescriptor.current().naming.longYearlyName
     ))
 
   def all(implicit req: RequestHeader) = {
-    List(devoxxFrance2014)
+    List(currentConference)
   }
 
   // Super fast, super crade, super je m'en fiche pour l'instant
-  def find(eventCode: String)(implicit req: RequestHeader): Option[Conference] = Option(devoxxFrance2014)
+  def find(eventCode: String)(implicit req: RequestHeader): Option[Conference] = Option(currentConference)
 
 }

@@ -1,4 +1,4 @@
-@(speaker:Speaker, proposals:Map[String,Proposal], currentUser:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speaker:Speaker, proposals:Map[String,Proposal], currentUser:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @main("Speaker " + speaker.cleanName) {
 <div class="row">

@@ -1,8 +1,8 @@
-@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang, req: RequestHeader)
+@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang, req: RequestHeader, confDesc: ConferenceDescriptor)
 
 @import helper.twitterBootstrap._
 
-@main("Devoxx 2014 - " + Messages("signup.title")) {
+@main(confDesc.naming.longYearlyName+" - " + Messages("signup.title")) {
 
 <div class="row">
     <div class="col-md-12 page-header">
@@ -10,7 +10,7 @@
     </div>
     <div class="col-md-8">
 
-        <p>@Messages("signup.txt1")</p>
+        <p>@Messages("signup.txt1", confDesc.naming.longYearlyName)</p>
 
         @if(flash.get("error").isDefined){
             <div class="alert alert-danger">
@@ -32,8 +32,8 @@
     <div class="col-md-4">
         <h3><i class="icon-external-link-sign"></i> @Html(Messages("register.withopenid"))</h3>
         <p>@Html(Messages("home.txt2"))</p>
-        <a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to Devoxx FR"><i class="icon-github-sign"></i> Github</a>
-        <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to Devoxx FR"><i class="icon-google-plus-sign"></i> Google</a>
+        <a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @confDesc.naming.shortName"><i class="icon-github-sign"></i> Github</a>
+        <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @confDesc.naming.shortName"><i class="icon-google-plus-sign"></i> Google</a>
     </div>
 </div>
 }

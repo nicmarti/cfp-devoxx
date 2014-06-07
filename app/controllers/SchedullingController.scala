@@ -45,19 +45,7 @@ object SchedullingController extends SecureCFPController {
     implicit request =>
       import Slot.slotFormat
 
-      val jsSlots = confType match {
-        case ProposalType.UNI.id => Json.toJson(Slot.universitySlots)
-        case ProposalType.CONF.id => Json.toJson(Slot.conferenceSlotsThursday ++ Slot.conferenceSlotsFriday)
-        case ProposalType.QUICK.id => Json.toJson(Slot.quickiesSlotsThursday ++ Slot.quickiesSlotsFriday)
-        case ProposalType.BOF.id => Json.toJson(Slot.bofSlotsThursday)
-        case ProposalType.TIA.id => Json.toJson(Slot.toolsInActionSlots)
-        case ProposalType.LAB.id => Json.toJson(Slot.labsSlots)
-
-        case other => {
-          play.Logger.warn("Unable to load a slot type ["+confType+"]")
-          Json.toJson(List.empty[Slot])
-        }
-      }
+      val jsSlots = Json.toJson(Slot.byType(ProposalType.parse(confType)))
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 

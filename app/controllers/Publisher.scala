@@ -34,8 +34,7 @@ import play.api.Play
  * Simple content publisher
  * Created by nicolas on 12/02/2014.
  */
-object Publisher extends Controller {
-
+object Publisher extends Controller with ConferenceDescriptorImplicit {
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()

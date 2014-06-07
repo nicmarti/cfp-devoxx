@@ -1,4 +1,4 @@
-@(fromName:String, proposal:models.Proposal, msg:String)
+@(fromName:String, proposal:models.Proposal, msg:String)(implicit confDesc: ConferenceDescriptor)
 
 Hi,
 
@@ -14,10 +14,10 @@ Message:
 How to respond?
 
 Please, use this link to respond directly to the message :
-http://cfp.devoxx.be@routes.CallForPaper.showCommentForProposal(proposal.id)
+http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
 
 Do not reply to this email, please use the CFP web site.
 
 Thanks
 
-The Devoxx team.
+The @confDesc.naming.longName team.

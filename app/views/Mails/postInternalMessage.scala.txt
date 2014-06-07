@@ -1,4 +1,4 @@
-@(fromName:String, proposal:models.Proposal, msg:String)
+@(fromName:String, proposal:models.Proposal, msg:String)(implicit confDesc: ConferenceDescriptor)
 
 New comment posted by @fromName for @proposal.title
 
@@ -10,8 +10,8 @@ Message:
 ------------------------------------------------------------------------------
 
 Please, use this link to respond directly to the message :
-http://cfp.devoxx.be@routes.CFPAdmin.openForReview(proposal.id)
+http://@confDesc.conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks
 
-The Devoxx team.
+The @confDesc.naming.longName team.

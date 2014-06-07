@@ -1,4 +1,4 @@
-@(email:String)(implicit lang:Lang, req: RequestHeader)
+@(email:String)(implicit lang:Lang, req: RequestHeader, confDesc: ConferenceDescriptor)
 
 @main("Success"){
 <div class="row">
@@ -6,7 +6,7 @@
         <h1>@Messages("created.title")</h1>
         <p>@Messages("created.text1")</p>
         <p>@Messages("created.text2")</p>
-        <p>@Messages("created.text3")</p>
+        <p>@Messages("created.text3", confDesc.naming.longName)</p>
     </div>
 </div>
 }

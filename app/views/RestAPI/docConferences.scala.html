@@ -1,9 +1,9 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @api("conferences") {
 <div class="row">
     <div class="col-md-12">
-    <h1>Devoxx API</h1>
+    <h1>@confDesc.naming.shortName API</h1>
     <hr>
        <h3>Documentation for "conferences"</h3>
 
@@ -21,9 +21,9 @@
     "content": "All conferences",
     "links": [
         {
-            "href": "http://cfp.devoxx.be/api/conferences/devoxxFR2014",
-            "rel": "http://cfp.devoxx.be/api/profile/conference",
-            "title": "See more details about Devoxx France 2014"
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/conference",
+            "title": "See more details about @confDesc.naming.longName"
         }
     ]
 }

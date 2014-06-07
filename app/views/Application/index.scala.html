@@ -1,15 +1,14 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@import library.FormatDate
 
-@import helper.twitterBootstrap._
-
-@main(Messages("CONF.title")+" Call for paper"){
+@main(Messages("cfp.title", confDesc.naming.longYearlyName)){
 <div class="container">
     <div class="bs-docs-section clearfix">
         <div class="row">
             <div class="col-md-12">
                 <div class="page-header">
                     <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
-                        @Messages("appel.conf.dates")</small></h2>
+                    @confDesc.naming.longYearlyName, @Messages(confDesc.timing.datesI18nKey)</small></h2>
                 </div>
             </div>
             <div class="col-md-12">
@@ -28,18 +27,18 @@
 
             <div class="col-md-5">
                 <h3><i class="icon-calendar"></i> Agenda</h3>
-                <p><strong>@Messages("cfp.opening")</strong> @Messages("cfp.opening.date")</p>
+                <p><strong>@Messages("cfp.opening") :</strong>  @FormatDate.jodaFullDateFormat(confDesc.timing.cfpOpenedOn, lang)</p>
+                <p><strong>@Messages("cfp.closing") :</strong>  @FormatDate.jodaFullDateFormat(confDesc.timing.cfpClosedOn, lang)</p>
                 @if(controllers.Backoffice.isCFPOpen){
-                    <p><strong>@Messages("cfp.closing")</strong> <span class="label label-warning">@Messages("cfp.closing.date")</span> </p>
+                    <p><strong>@Messages("cfp.reminder") :</strong> <span class="label label-warning">@Messages("cfp.reminder.proposals")</span> </p>
                 }else{
-                    <p><strong>@Messages("cfp.closing")</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
+                    <p><strong>@Messages("cfp.reminder") :</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
                 }
-                <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date")</p>
+                <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date", FormatDate.jodaFullDateFormat(confDesc.timing.scheduleAnnouncedOn, lang))</p>
             </div>
 
             <div class="col-md-5">
-                <h3><i class="icon-facetime-video"></i> @Messages("video.title")</h3>
-                <p>@Messages("video.tag") <a href="http://www.parleys.com/channel/528b321de4b054cd7d2ef448" target="new">Parleys.com</a> </p>
+                @confDesc.contentBlocks.homeIndexFirstRightBlock()
             </div>
 
             <div class="clearfix">
@@ -67,61 +66,24 @@
 
             <div class="col-md-12">
                 <h3><i class="icon-book"></i> @Messages("theme.title")</h3>
-                <p>@Messages("theme.track")</p>
+                <p>@Messages("theme.track", confDesc.naming.longYearlyName)</p>
                 <table class="table table-bordered table-striped">
                     <tbody>
-                        <tr>
-                            <td>@Messages("track.java.title")
-                            </td>
-                            <td>@Messages("track.java.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                             @Messages("track.web.title")
-                            </td>
-                            <td>@Messages("track.web.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                            @Messages("track.mobile.title")
-                            </td>
-                            <td>@Messages("track.mobile.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                            @Messages("track.startup.title")</td>
-                            <td>@Messages("track.startup.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>
-                            @Messages("track.ssj.title")</td>
-                            <td>@Messages("track.ssj.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.archisec.title")</td>
-                            <td>@Messages("track.archisec.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.lang.title")</td>
-                            <td>@Messages("track.lang.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.methodevops.title")</td>
-                            <td>@Messages("track.methodevops.desc")</td>
-                        </tr>
-                        <tr>
-                            <td>@Messages("track.future.title")</td>
-                            <td>@Messages("track.future.desc")</td>
-                        </tr>
-                         <tr>
-                            <td>@Messages("track.cloud.title")</td>
-                            <td>@Messages("track.cloud.desc")</td>
-                        </tr>
+                        @for(track <- confDesc.tracks) {
+                            <tr>
+                                <td>@Messages(track.i18nTitleProp)</td>
+                                <td>@Messages(track.i18nDescProp)</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
 
             </div>
 
+
+            <div class="col-md-12">
+                @confDesc.contentBlocks.homeIndexFooterBlock()
+            </div>
         </div>
     </div>
 </div>

@@ -1,9 +1,9 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 
 @api("conference") {
 <div class="row">
     <div class="col-md-12">
-    <h1>Devoxx API</h1>
+    <h1>@confDesc.naming.shortName API</h1>
     <hr>
        <h3>Documentation for "conference"</h3>
 
@@ -13,24 +13,24 @@
 
         <h4>Sample:</h4>
     <code>
- curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.devoxxFrance2014.eventCode).absoluteURL()</a>
+ curl -H "Accept: application/json" <a href="@routes.RestAPI.showConference(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showConference(Conference.currentConference.eventCode).absoluteURL()</a>
       </code>
 
         <h4>Result:</h4>
             <code>
                 <pre>
 {
-    "eventCode": "devoxxFR2014",
-    "label": "Devoxx France 2014, 16 au 18 avril 2014",
+    "eventCode": "@confDesc.eventCode",
+    "label": "@confDesc.naming.longYearlyName, @Messages(confDesc.timing.datesI18nKey)",
     "links": [
         {
-            "href": "http://cfp.devoxx.be/api/conferences/devoxxFR2014/speakers",
-            "rel": "http://cfp.devoxx.be/api/profile/list-of-speakers",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/list-of-speakers",
             "title": "See all speakers"
         },
         {
-            "href": "http://cfp.devoxx.be/api/conferences/devoxxFR2014/schedules/",
-            "rel": "http://cfp.devoxx.be/api/profile/schedules",
+            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/",
+            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedules",
             "title": "See the whole agenda"
         }
     ]

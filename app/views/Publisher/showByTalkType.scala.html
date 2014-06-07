@@ -1,4 +1,4 @@
-@(proposals:Iterable[Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposals:Iterable[Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 @views.html.Publisher.devoxxFR2014(Messages(talkType)){
 <section id="container" class="one-column">
     <div id="content" role="main">
@@ -9,7 +9,7 @@
             <div class="entry-content">
                 <h3>@Messages("sw.talkType")</h3>
                  @proposals.groupBy(_.track).map{case(track:Track, proposalsTrack:List[Proposal])=>
-                     <h4>@tags.publisher.renderIconForTrack(track.id) @Messages(track.label)</h4>
+                     <h4>@tags.publisher.renderIconForTrack(track) @Messages(track.label)</h4>
                      <ul>
                      @proposalsTrack.sortBy(_.title).map{ proposal:Proposal=>
                         <li>

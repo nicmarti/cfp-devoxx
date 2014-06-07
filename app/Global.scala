@@ -4,6 +4,7 @@ import library.DraftReminder
 import library.search._
 import library.search.StopIndex
 import models.RequestToTalk
+import models.ConferenceDescriptor
 import org.joda.time.DateMidnight
 import play.api._
 import play.api.mvc.RequestHeader
@@ -32,7 +33,7 @@ object Global extends GlobalSettings {
   override def onError(request: RequestHeader, ex: Throwable) = {
     val viewO: Option[(UsefulException) => HtmlFormat.Appendable] =Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devError.f
-      case app => views.html.errorPage.f(_:UsefulException)(request)
+      case app => views.html.errorPage.f(_:UsefulException)(request, ConferenceDescriptor.current())
     }
     try {
       Future.successful(InternalServerError(viewO.getOrElse(views.html.defaultpages.devError.f) {
@@ -55,7 +56,7 @@ object Global extends GlobalSettings {
   override def onHandlerNotFound(request: RequestHeader) = {
     val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
-      case app => views.html.notFound.f(_, _)(request)
+      case app => views.html.notFound.f(_, _)(request, ConferenceDescriptor.current())
     }
     Future.successful(NotFound(viewO.getOrElse(views.html.defaultpages.devNotFound.f)(request, Play.maybeApplication.flatMap(_.routes))))
   }
