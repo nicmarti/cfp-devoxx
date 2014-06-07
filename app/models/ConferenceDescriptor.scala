@@ -23,6 +23,7 @@ case class ConferenceUrls(
 case class ConferenceTiming(
     var datesI18nKey: String,
     var speakersPassDuration: Integer,
+    var preferredDayEnabled: Boolean,
     var firstDayFr: String,
     var firstDayEn: String,
     var datesFr: String,
@@ -416,6 +417,7 @@ object ConferenceDescriptor {
       timing = ConferenceTiming(
         datesI18nKey = "devoxxbe2014.dates",
         speakersPassDuration = 5,
+        preferredDayEnabled = true,
         firstDayFr = "10 novembre",
         firstDayEn = "november 10th",
         datesFr = "du 10 au 14 Novembre 2014",

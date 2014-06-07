@@ -203,34 +203,32 @@
             </div>
         </div>
         <div class="col-md-6">
-            @* TODO: FIXME : Variabilize week days *@
-            @if(ProposalType.chosablePreferredDaysProposals.contains(proposal.talkType)){
+            @* FIXME : Better variabilize week days by replacing the preferredDayEnabled flag *@
+            @if(confDesc.timing.preferredDayEnabled) {
+                @if(ProposalType.chosablePreferredDaysProposals.contains(proposal.talkType)) {
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
                 </div>
                 <div class="panel-body">
-                    @defining(Proposal.getPreferredDay(proposal.id)){preferredDay:Option[String]=>
-                        @if(preferredDay==Some("Thu")){
-                            <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
-                        }else{
-                            <a href="@routes.CFPAdmin.setPreferredDay(proposal.id,"Thu")" class="btn btn-sm btn-default">@Messages("calendar.pref.thursday")</a>
-                        }
-                       @if(preferredDay==Some("Fri")){
-                            <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.friday")</a>
-                        }else{
-                            <a href="@routes.CFPAdmin.setPreferredDay(proposal.id,"Fri")" class="btn btn-sm btn-default">@Messages("calendar.pref.friday")</a>
-                        }
-                        @if(preferredDay.isDefined){
-                            <a href="@routes.CFPAdmin.resetPreferredDay(proposal.id)" class="btn btn-sm btn-default">@Messages("calendar.pref.reset")</a>
-                        }
+                @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
+                    @if(preferredDay == Some("Thu")) {
+                        <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
+                    } else {
+                        <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Thu")" class="btn btn-sm btn-default">@Messages("calendar.pref.thursday")</a>
                     }
-
-
-
-
+                    @if(preferredDay == Some("Fri")) {
+                        <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.friday")</a>
+                    } else {
+                        <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Fri")" class="btn btn-sm btn-default">@Messages("calendar.pref.friday")</a>
+                    }
+                    @if(preferredDay.isDefined) {
+                        <a href="@routes.CFPAdmin.resetPreferredDay(proposal.id)" class="btn btn-sm btn-default">@Messages("calendar.pref.reset")</a>
+                    }
+                }
                 </div>
             </div>
+                }
             }
             <div class="panel panel-danger">
                 <div class="panel-heading">
