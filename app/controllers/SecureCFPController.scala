@@ -26,16 +26,12 @@ package controllers
 import play.api.mvc._
 
 import play.api.i18n.Messages
-import play.api.Logger
-import play.api.libs.json.Json
-import play.api.http.HeaderNames
 import scala.concurrent.Future
 import scala.Some
 import play.api.mvc.SimpleResult
-import play.api.libs.oauth.ServiceInfo
 import play.api.libs.Crypto
 import javax.crypto.IllegalBlockSizeException
-import models.{ConferenceDescriptorImplicit, Webuser}
+import models.Webuser
 
 
 /**
@@ -79,7 +75,7 @@ case class IsMemberOfGroups(groups: List[String]) extends Authorization {
   }
 }
 
-trait SecureCFPController extends Controller with ConferenceDescriptorImplicit {
+trait SecureCFPController extends Controller {
 
   /**
    * A secured action.  If there is no user in the session the request is redirected
@@ -102,7 +98,7 @@ trait SecureCFPController extends Controller with ConferenceDescriptorImplicit {
    * A builder for secured actions
    *
    * @param authorize an Authorize object that checks if the user is authorized to invoke the action
-   * @tparam A
+   * @tparam A for action
    */
   class SecuredActionBuilder[A](authorize: Option[Authorization] = None) extends ActionBuilder[({type R[A] = SecuredRequest[A]})#R] {
 
@@ -156,10 +152,6 @@ trait SecureCFPController extends Controller with ConferenceDescriptorImplicit {
   /**
    * Get the current logged in user.  This method can be used from public actions that need to
    * access the current user if there's any
-   *
-   * @param request
-   * @tparam A
-   * @return
    */
   def currentUser[A](implicit request: RequestHeader): Option[Webuser] = {
     request match {

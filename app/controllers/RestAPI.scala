@@ -34,8 +34,7 @@ import play.api.mvc.SimpleResult
  * A real REST api for men.
  * Created by Nicolas Martignole on 25/02/2014.
  */
-
-object RestAPI extends Controller with ConferenceDescriptorImplicit {
+object RestAPI extends Controller  {
 
   def index = UserAgentAction {
     implicit request =>

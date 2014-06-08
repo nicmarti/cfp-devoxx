@@ -1,4 +1,4 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @api("schedule") {
 <div class="row">
@@ -111,8 +111,8 @@
                 "speakers": [
                     {
                         "link": {
-                            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers/70365c89d2a734da0d24d091f7ec0af77ba90701",
-                            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/speaker",
+                            "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode/speakers/70365c89d2a734da0d24d091f7ec0af77ba90701",
+                            "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/speaker",
                             "title": "José Paumard"
                         },
                         "name": "José Paumard"

@@ -1,4 +1,4 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @api("conference") {
 <div class="row">
@@ -20,17 +20,17 @@
             <code>
                 <pre>
 {
-    "eventCode": "@confDesc.eventCode",
-    "label": "@Messages("longYearlyName"), @Messages(confDesc.timing.datesI18nKey)",
+    "eventCode": "@ConferenceDescriptor.current().eventCode",
+    "label": "@Messages("longYearlyName"), @Messages(ConferenceDescriptor.current().timing.datesI18nKey)",
     "links": [
         {
-            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers",
-            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/list-of-speakers",
+            "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode/speakers",
+            "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/list-of-speakers",
             "title": "See all speakers"
         },
         {
-            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/schedules/",
-            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/schedules",
+            "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode/schedules/",
+            "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/schedules",
             "title": "See the whole agenda"
         }
     ]

@@ -1,4 +1,4 @@
-@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -49,7 +49,7 @@
 
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox")
 
-                @if(confDesc.conferenceSponsor.showSponsorProposalCheckbox) {
+                @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                     @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
                     <div id="sponsorTalkMsg" class="alert alert-info">
                         <p>@Messages("sponsorTalk.help")</p>
@@ -67,9 +67,9 @@
             <p><label>@Messages("title") : </label><br> @Messages("title.help")</p>
             <p><label>@Messages("summary") : </label><br> @Html(Messages("summary.help"))</p>
             <p><label>@Messages("privateMessage") : </label><br> @Messages("privateMessage.help")</p>
-            <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", confDesc.conferenceUrls.faq))</p>
+            <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
             <p><label>@Messages("mainSpeaker2")</label><br> @Messages("mainSpeaker.help")</p>
-            @if(confDesc.conferenceSponsor.showSponsorProposalCheckbox) {
+            @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                 <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
             }
 

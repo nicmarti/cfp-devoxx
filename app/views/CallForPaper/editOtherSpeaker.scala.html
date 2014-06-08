@@ -1,4 +1,4 @@
-@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -32,7 +32,7 @@
                     <thead>
                         <tr>
                             <td></td>
-                            <th>@Messages("proposal.buyPass", confDesc.timing.speakersPassDuration)</th>
+                            <th>@Messages("proposal.buyPass", ConferenceDescriptor.current().timing.speakersPassDuration)</th>
                         </tr>
                     </thead>
                     <tbody>

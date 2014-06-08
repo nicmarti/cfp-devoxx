@@ -27,6 +27,7 @@ import library.wordpress.{PublishToWordpress, WordpressActor}
 
 /**
  * Special Wordpress controller.
+ * Devoxx BE would like to publish to Wordpress all conferegence's guides.
  *
  * Created by nicolas on 21/05/2014.
  */
