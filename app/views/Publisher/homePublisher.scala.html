@@ -1,5 +1,5 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
-@import models.ConferenceDescriptor.DevoxxProposalTypes
+
 @views.html.Publisher.devoxxFR2014("Programme complet"){
 <section id="container" class="one-column">
     <div id="content" role="main">
@@ -45,15 +45,14 @@
                 <h2>@Messages("sw.presentations")</h2>
                 <p>@Messages("sw.faq") <a href="http://www.devoxx.fr/faq/#format">FAQ</a> </p>
                 <ul>
-                    @for(proposalType <- confDesc.proposalTypes) {
-                        <li><a href="@routes.Publisher.showByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@proposalType.htmlClass"></i> @Messages(proposalType.simpleLabel)</a></li>
+                    @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
+                        <li><a href="@routes.Publisher.showByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a></li>
                     }
                 </ul>
         </div>
 
         <div class="col-xs-4">
                 <h2>@Messages("sw.events")</h2>
-                @* TODO: Remove these devoxx-specific events listing *@
                 <ul>
                     <li><a href="http://www.devoxx.fr/soiree-meet-and-greet-2014/">Soirée Meet and Greet</a> jeudi soir à partir de 19h30. Accès gratuit, sur inscription.</li>
                 </ul>
@@ -66,8 +65,6 @@
                     <li><a href="@routes.Publisher.showByDay("fri")" class="btn btn-primary btn-sm"><i class="icon-bullhorn"></i> Les keynotes du Vendredi</a></li>
                 </ul>
         </div>
-
-
 
             </div>
         </div>

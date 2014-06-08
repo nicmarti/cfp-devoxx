@@ -74,9 +74,9 @@ object ApprovedProposal {
   }
 
   def remainingSlots(talkType: String): Long = {
-    var propType = ProposalType.parse(talkType)
-    if(propType == ProposalType.UNKNOWN) {
-      ProposalType.totalSlotsCount - countApproved("all")
+    var propType = ProposalConfiguration.parse(talkType)
+    if(propType == ProposalConfiguration.UNKNOWN) {
+      ProposalConfiguration.totalSlotsCount - countApproved("all")
     } else {
       propType.slotsCount - countApproved(talkType)
     }
@@ -244,7 +244,7 @@ object ApprovedProposal {
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
           for (speaker <- Speaker.findByUUID(speakerUUID)) yield {
             (speaker,
-              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p=>p.talkType.givesSpeakerFreeEntrance)
+              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p=> ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(p.talkType))
             )
           }
       }

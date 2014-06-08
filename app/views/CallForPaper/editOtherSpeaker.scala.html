@@ -41,7 +41,7 @@
                             @currentUser
                         </td>
                         <td>
-                        @if(proposal.talkType.givesSpeakerFreeEntrance) {
+                        @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="label label-success">@Messages("freepass")</span>
                         } else {
                             <span class="label label-warning">@Messages("no.freepass")</span>
@@ -53,7 +53,7 @@
                             @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control")
                         </td>
                         <td>
-                          @if(proposal.talkType.givesSpeakerFreeEntrance) {
+                          @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="label label-success">@Messages("freepass")</span>
                           } else {
                             <span class="label label-warning">@Messages("no.freepass")</span>

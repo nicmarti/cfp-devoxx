@@ -1,14 +1,14 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
 @import library.FormatDate
 
-@main(Messages("cfp.title", confDesc.naming.longYearlyName)){
+@main(Messages("cfp.title")){
 <div class="container">
     <div class="bs-docs-section clearfix">
         <div class="row">
             <div class="col-md-12">
                 <div class="page-header">
                     <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
-                    @confDesc.naming.longYearlyName, @Messages(confDesc.timing.datesI18nKey)</small></h2>
+                        @Messages("appel.conf.dates")</small></h2>
                 </div>
             </div>
             <div class="col-md-12">
@@ -38,7 +38,8 @@
             </div>
 
             <div class="col-md-5">
-                @confDesc.contentBlocks.homeIndexFirstRightBlock()
+                <h3><i class="icon-facetime-video"></i> @Messages("video.title")</h3>
+                <p>@Messages("video.tag") <a href="http://www.parleys.com/channel/528b321de4b054cd7d2ef448" target="new">Parleys.com</a> </p>
             </div>
 
             <div class="clearfix">
@@ -66,10 +67,10 @@
 
             <div class="col-md-12">
                 <h3><i class="icon-book"></i> @Messages("theme.title")</h3>
-                <p>@Messages("theme.track", confDesc.naming.longYearlyName)</p>
+                <p>@Messages("theme.track")</p>
                 <table class="table table-bordered table-striped">
                     <tbody>
-                        @for(track <- confDesc.tracks) {
+                        @for(track <- ConferenceDescriptor.ConferenceTracksDescription.ALL) {
                             <tr>
                                 <td>@Messages(track.i18nTitleProp)</td>
                                 <td>@Messages(track.i18nDescProp)</td>
@@ -81,9 +82,6 @@
             </div>
 
 
-            <div class="col-md-12">
-                @confDesc.contentBlocks.homeIndexFooterBlock()
-            </div>
         </div>
     </div>
 </div>

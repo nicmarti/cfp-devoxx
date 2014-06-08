@@ -405,7 +405,7 @@ object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderN
         block(request)
       }
     }.getOrElse {
-      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with "+ConferenceDescriptor.current().naming.longName+" API"))
+      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with "+ Messages("longName") +" API"))
     }
   }
 }
@@ -424,11 +424,11 @@ object Conference {
 
   def currentConference(implicit req: RequestHeader) = Conference(
     ConferenceDescriptor.current().eventCode,
-    ConferenceDescriptor.current().naming.longYearlyName+", "+Messages(ConferenceDescriptor.current().timing.datesI18nKey),
+    Messages("longYearlyName")+", "+Messages(ConferenceDescriptor.current().timing.datesI18nKey),
     Link(
       routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL().toString,
       routes.RestAPI.profile("conference").absoluteURL().toString,
-      "See more details about "+ConferenceDescriptor.current().naming.longYearlyName
+      "See more details about "+Messages("longYearlyName")
     ))
 
   def all(implicit req: RequestHeader) = {

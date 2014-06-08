@@ -444,7 +444,7 @@ object CFPAdmin extends SecureCFPController {
                   , email=Some(s.email)
                   , website=s.blog
                   , phonenumber = None
-                  , title=Some("Speaker at "+ConferenceDescriptor.current().naming.longYearlyName)
+                  , title=Some("Speaker at "+Messages("longYearlyName"))
               )
 
 
@@ -594,29 +594,6 @@ object CFPAdmin extends SecureCFPController {
       Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "No preferences")
   }
 
-  def allTalksForParleys()=SecuredAction(IsMemberOf("cfp")){
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      val publishedIDs = ProposalType.recordedProposals.map(_.id).flatMap{ confType=>
-        ScheduleConfiguration.getPublishedSchedule(confType)
-      }
-
-      val filteredList = publishedIDs.flatMap{
-        id:String=>
-          ScheduleConfiguration.loadScheduledConfiguration(id)
-      }
-
-      val notRecorded = Room.allRoomsNotRecorded.map(_.id)
-
-      val slots = filteredList.map(_.slots)
-        .flatten
-        .filterNot(s=>notRecorded.contains(s.room.id))
-        .filter(_.proposal.isDefined)
-        .sortBy(_.from.toDate.getTime)
-
-      Ok(views.html.CFPAdmin.allTalksOnParley(slots))
-
-  }
 }
 
 
