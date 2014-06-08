@@ -114,7 +114,7 @@ $(document).ready(function($){
 
         @ProposalConfiguration.getProposalsImplyingATrackSelection.map { proposalConf=>
             @Html( "if(talkTypeId==\"" + proposalConf.id + "\") {" + "" )
-            @Html( "    $('#track option[value=\"" + proposalConf.id + "\"]').prop('selected', true);" + "" )
+            @Html( "    $('#track option[value=\"" + proposalConf.impliedSelectedTrack.map(_.id).getOrElse(proposalConf.id) + "\"]').prop('selected', true);" + "" )
             @Html( "}" )
         }
     });
