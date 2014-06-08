@@ -31,6 +31,7 @@ import scala.List
 
 import com.itextpdf.text.pdf._
 import models.ConferenceDescriptor
+import play.api.i18n.Messages
 
 /**
  * Utility class for Devoxx France, that help us to generate QRCode for the list of attendees
@@ -147,7 +148,7 @@ object PDFBadgeGenerator {
     document.addCreationDate()
     document.addAuthor("Nicolas MARTIGNOLE")
     document.addCreator("Play! Framework")
-    document.addTitle("Badges "+ConferenceDescriptor.current().naming.longYearlyName)
+    document.addTitle("Badges "+Messages("longYearlyName"))
 
     document.close()
   }

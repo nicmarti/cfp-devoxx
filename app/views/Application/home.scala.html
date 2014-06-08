@@ -2,13 +2,13 @@
 
 @import helper.twitterBootstrap._
 
-@main(Messages("cfp.title", confDesc.naming.longYearlyName)){
+@main(Messages("cfp.title")){
             <div class="bs-docs-section clearfix">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="page-header">
                             <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
-                            @confDesc.naming.longYearlyName, @Messages(confDesc.timing.datesI18nKey)</small></h2>
+                            @Messages("longYearlyName"), @Messages(confDesc.timing.datesI18nKey)</small></h2>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -39,9 +39,9 @@
 
                                 <h4><i class="icon-external-link-sign"></i> @Html(Messages("index.method2"))</h4>
                                 <p>@Html(Messages("index.txt2"))</p>
-                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @confDesc.naming.shortName"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
                                     Github</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @confDesc.naming.shortName"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
                                         Google</a>
                                 </p>
                             </div>
@@ -53,12 +53,12 @@
                                 <h3><i class="icon-user"></i> @Html(Messages("index.signupTitle"))</h3>
                             </div>
                             <div class="panel-body">
-                                <p>@Html(Messages("index.signup2", confDesc.naming.longName))</p>
+                                <p>@Html(Messages("index.signup2", Messages("longName")))</p>
                                 <a class="btn btn-default" href="@routes.Authentication.prepareSignup()">@Messages("index.signup.btn")</a>
                                 <p>@Html(Messages("index.signup3"))</p>
-                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @confDesc.naming.shortName"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
                                     Github</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @confDesc.naming.shortName"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
                                         Google</a>
                                 </p>
                             </div>

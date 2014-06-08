@@ -1,4 +1,4 @@
-@(fromName:String, proposal:models.Proposal, msg:String)(implicit confDesc: ConferenceDescriptor)
+@(fromName:String, proposal:models.Proposal, msg:String)
 
 New comment posted by @fromName for @proposal.title
 
@@ -10,8 +10,8 @@ Message:
 ------------------------------------------------------------------------------
 
 Please, use this link to respond directly to the message :
-http://@confDesc.conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
+http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
 
 Thanks
 
-The @confDesc.naming.longName team.
+The @Messages("longName") team.

@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                        @confDesc.tracks.map { track =>
+                        @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
                         <tr>
                             <td>@Messages(track.label)</td>
                             <td>

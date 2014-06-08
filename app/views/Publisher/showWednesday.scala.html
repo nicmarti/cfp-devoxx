@@ -1,8 +1,6 @@
 @()(implicit lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
-@import models.ConferenceDescriptor.DevoxxProposalTypes
-@views.html.Publisher.devoxxFR2014(Messages("sw.show.wed")){
 
-@* TODO: refactor this publisher specific code to devoxx ... someday... *@
+@views.html.Publisher.devoxxFR2014(Messages("sw.show.wed")){
 
 <section id="container" class="one-column">
     <div id="content" role="main">
@@ -32,8 +30,8 @@
     <td>09h30 - 12h30</td>
     <td colspan="2">
         <ul>
-            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.UNI.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
-            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.LAB.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
+            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.UNI.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
+            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.LAB.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
         </ul>
     </td>
 </tr>
@@ -46,8 +44,8 @@
     <td>13h30 - 16h30</td>
     <td>
         <ul>
-            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.UNI.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
-            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.LAB.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
+            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.UNI.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> University</a></li>
+            <li>6 <a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.LAB.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-beaker"></i> Hand's on Labs</a></li>
         </ul>
     </td>
     <td>
@@ -66,7 +64,7 @@
     <td>17h10 - 17h40</td>
     <td>
       <ul>
-          <li><a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.TIA.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
+          <li><a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.TIA.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
       </ul>
     </td>
 </tr>
@@ -74,7 +72,7 @@
     <td>17h50 - 18h20</td>
     <td>
       <ul>
-          <li><a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.TIA.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
+          <li><a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.TIA.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
       </ul>
     </td>
 </tr>
@@ -83,7 +81,7 @@
     <td>18h30 - 19h00</td>
     <td>
       <ul>
-          <li><a href="@routes.SchedullingController.getPublishedSchedule(DevoxxProposalTypes.TIA.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
+          <li><a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.TIA.id, Some("mercredi"))" class="btn btn-primary btn-sm"><i class="icon-legal"></i> Tools-in-Action</a></li>
       </ul>
     </td>
 </tr>

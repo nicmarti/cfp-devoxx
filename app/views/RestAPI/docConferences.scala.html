@@ -3,7 +3,7 @@
 @api("conferences") {
 <div class="row">
     <div class="col-md-12">
-    <h1>@confDesc.naming.shortName API</h1>
+    <h1>Messages("shortName") API</h1>
     <hr>
        <h3>Documentation for "conferences"</h3>
 
@@ -23,7 +23,7 @@
         {
             "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode",
             "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/conference",
-            "title": "See more details about @confDesc.naming.longName"
+            "title": "See more details about @Messages("longName")"
         }
     ]
 }

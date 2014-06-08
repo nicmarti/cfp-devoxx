@@ -3,7 +3,7 @@
 @api("conference") {
 <div class="row">
     <div class="col-md-12">
-    <h1>@confDesc.naming.shortName API</h1>
+    <h1>Messages("shortName") API</h1>
     <hr>
        <h3>Documentation for "conference"</h3>
 
@@ -21,7 +21,7 @@
                 <pre>
 {
     "eventCode": "@confDesc.eventCode",
-    "label": "@confDesc.naming.longYearlyName, @Messages(confDesc.timing.datesI18nKey)",
+    "label": "@Messages("longYearlyName"), @Messages(confDesc.timing.datesI18nKey)",
     "links": [
         {
             "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode/speakers",

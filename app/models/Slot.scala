@@ -29,10 +29,11 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 /**
- * Time slots, specific of course to Devoxx France 2014.
+ * Time slots and Room are defined as static file.
  * Instead of using a database, it's way simpler to define once for all everything as scala.
  * Trust me.
- * Created by nicolas on 01/02/2014.
+ * Created by Nicolas Nartignole on 01/02/2014.
+ * Frederic Camblor added ConferenceDescriptor 07/06/2014
  */
 
 case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setup: String)
@@ -40,44 +41,20 @@ case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setu
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val OTHER = Room("other_room", "Other room", 100, false, "sans objet")
+  val OTHER = Room("other_room", "Other room", 100, recorded = false, "sans objet")
 
-  val allAsId = ConferenceDescriptor.current().rooms.map(a => (a.id, a.name)).toSeq.sorted
+  val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
 
-  val allRoomsNotRecorded = ConferenceDescriptor.current().rooms.filter(r => !r.recorded)
+  val allRoomsNotRecorded = ConferenceDescriptor.ConferenceRooms.allRooms.filter(r => !r.recorded)
 
   def parse(roomId: String): Room = {
-    return ConferenceDescriptor.current().rooms.find(r => r.id == roomId).getOrElse(OTHER)
+    ConferenceDescriptor.ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)
   }
 
-  // Small helper function that is specific to devoxxfr2014
-  def idBVRent(room:Room):String={
-    room.id match {
-      case "seine_keynote" => "K"
-      case "seine_a" => "A"
-      case "seine_b" => "B"
-      case "seine_c" => "C"
-      case "auditorium" => "AU"
-      case "el_ab" => "EL"
-      case "el_ab_th" => "EL"
-      case "el_ab_full" => "EL"
-      case "la_ab" => "LA"
-      case "la_ab_th" => "LA"
-      case "la_cd" => "LA"
-      case "la_cd_th" => "LA"
-      case "md_a" => "MD"
-      case "md_a_th" => "MD"
-      case "md_b" => "MD"
-      case "md_b_th" => "MD"
-      case "md_c" => "MD"
-      case "md_c_th" => "MD"
-      case "md_full" => "MD"
-      case other => "??"+other
-    }
-  }
 }
 
 case class SlotBreak(id: String, nameEN: String, nameFR: String, room: Room)
+
 object SlotBreak {
   implicit val slotBreakFormat = Json.format[SlotBreak]
 }
@@ -90,10 +67,6 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
 
   def notAllocated: Boolean = {
     break.isEmpty && proposal.isEmpty
-  }
-
-  def idForBVRent:String={
-    from.getDayOfMonth+"-"+ name.head.toUpper+"-" + Room.idBVRent(room)
   }
 
 }
@@ -121,6 +94,6 @@ object Slot {
   implicit val slotFormat = Json.format[Slot]
 
   def byType(proposalType: ProposalType): Seq[Slot] = {
-    ConferenceDescriptor.current().slots.filter(s => s.name == proposalType.id)
+    ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id)
   }
 }

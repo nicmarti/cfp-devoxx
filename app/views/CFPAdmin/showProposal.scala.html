@@ -205,7 +205,7 @@
         <div class="col-md-6">
             @* FIXME : Better variabilize week days by replacing the preferredDayEnabled flag *@
             @if(confDesc.timing.preferredDayEnabled) {
-                @if(ProposalType.chosablePreferredDaysProposals.contains(proposal.talkType)) {
+                @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>

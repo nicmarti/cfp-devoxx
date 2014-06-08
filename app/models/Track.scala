@@ -26,27 +26,29 @@ package models
 import play.api.libs.json.Json
 
 /**
- * Tracks for Devoxx Belgium
+ * A Track is a general topic (Java, Architecture, Security)
  *
  * Author: nicolas martignole
  * Created: 06/11/2013 01:41
  */
-case class Track(id: String, label: String, imgSrc: String, i18nTitleProp: String, i18nDescProp: String)
+case class Track(id: String, label: String)
 
 object Track {
   implicit val trackFormat = Json.format[Track]
 
-  val allAsIdsAndLabels:Seq[(String,String)] = ConferenceDescriptor.current().tracks.map(a=>(a.id,a.label)).toSeq.sorted
+  val UNKNOWN=Track("unknown", "unknown.label")
 
-  val allIDs=ConferenceDescriptor.current().tracks.map(_.id)
+  val allAsIdsAndLabels:Seq[(String,String)] = ConferenceDescriptor.ConferenceTracks.ALL.map(a=>(a.id,a.label)).toSeq.sorted
+
+  val allIDs=ConferenceDescriptor.ConferenceTracks.ALL.map(_.id)
 
   // Compute diff between two Set of Track then returns a ready-to-use list of id/label
   def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
-    val diffSet = ConferenceDescriptor.current().tracks.toSet.diff(otherTracks)
+    val diffSet = ConferenceDescriptor.ConferenceTracks.ALL.toSet.diff(otherTracks)
     diffSet.map(a=>(a.id,a.label)).toSeq.sorted
   }
   
   def parse(session:String):Track={
-    return ConferenceDescriptor.current().tracks.find(t => t.id == session).getOrElse(Track("unknown", "unknown.label", "", "", ""))
+    ConferenceDescriptor.ConferenceTracks.ALL.find(t => t.id == session).getOrElse(UNKNOWN)
   }
 }

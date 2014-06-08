@@ -31,8 +31,8 @@
 
             <h4>Accept or reject notification service</h4>
             <p>This service lets you search for a talk, then send a notification to the speaker</p>
-            @for(proposalType <- confDesc.proposalTypes) {
-                <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@proposalType.htmlClass"></i> @Messages(proposalType.simpleLabel)</a>
+            @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
+                <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
 
             <h4>Planner</h4>

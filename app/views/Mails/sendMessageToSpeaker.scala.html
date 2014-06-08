@@ -1,4 +1,4 @@
-@(fromName:String, proposal:models.Proposal, msg:String)(implicit confDesc: ConferenceDescriptor)
+@(fromName:String, proposal:models.Proposal, msg:String)
 
 <p>Hi,</p> 
 
@@ -13,9 +13,9 @@
 <hr>
 <h3>How to respond?</h3>
 <p>Do not reply to this email, please use the CFP web site. Click or open this link to respond directly to the message :</p>
-<a href="http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)">http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
+<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
 <br>
 
 <p>Thanks</p>
-<p>The @confDesc.naming.longName team.</p>
+<p>The @Messages("longName") team.</p>

@@ -1,26 +1,26 @@
-@(email:String, code:String)(implicit confDesc: ConferenceDescriptor)
+@(email:String, code:String)
 
 ------------------------------------------------------------------------------
-                      Welcome to @confDesc.naming.longName CFP!
+                      Welcome to @Messages("longName") CFP!
 ------------------------------------------------------------------------------
 We created an access code for you (we really don't want to store any of your password here).
 
   Your login is :  @email
   Your code is @code
 
-If you want to report an issue, please use http://@confDesc.conferenceUrls.cfpHostname@routes.Application.bugReport()
+If you want to report an issue, please use http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Application.bugReport()
 
-The @confDesc.naming.longName team
+The @Messages("longName") team
 ------------------------------------------------------------------------------
-@if(confDesc.frLangEnabled) {
-Bienvenue sur le CFP de @confDesc.naming.longName
+@if(ConferenceDescriptor.current().frLangEnabled) {
+Bienvenue sur le CFP de @Messages("longName")
 
 Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
 Votre identifiant est <strong>@email</strong></p>
 Votre code est <strong>@code</strong></p>
 
-Utilisez http://@confDesc.conferenceUrls.cfpHostname@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
+Utilisez http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
 
-L'équipe @confDesc.naming.longName
+L'équipe @Messages("longName")
 ------------------------------------------------------------------------------
 }

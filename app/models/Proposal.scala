@@ -8,55 +8,35 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.templates.HtmlFormat
 import org.joda.time.{DateTime, Instant}
+import play.api.i18n.Messages
 
 /**
- * Proposal
+ * Proposal is the main and maybe the most important object for a CFP.
  *
- * Author: nicolas
+ * Author: nicolas martignole
  * Created: 12/10/2013 15:19
  */
-
-case class ProposalType(
-         id: String,
-         simpleLabel: String,
-         label: String,
-         slotsCount: Int,
-         givesSpeakerFreeEntrance: Boolean,
-         freeEntranceDisplayed: Boolean,
-         htmlClass: String,
-         recorded: Boolean,
-         hiddenInCombo: Boolean=false,
-         chosablePreferredDay: Boolean = false,
-         impliedSelectedTrack: Option[Track] = None
-)
+case class ProposalType(id: String, label: String)
 
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val UNKNOWN = ProposalType(id="unknown", simpleLabel="unknown.label", label="unknown.label",
-    slotsCount=0, givesSpeakerFreeEntrance=false, freeEntranceDisplayed=false,
-    htmlClass="unknown", recorded=false)
+  val UNKNOWN = ProposalType(id="unknown", label="unknown.label")
 
-  def totalSlotsCount = ConferenceDescriptor.current().proposalTypes.map(_.slotsCount).sum
+  def allAsId = ConferenceDescriptor.ConferenceProposalTypes.ALL.map(a => (a.id, a.label)).toSeq.sorted
 
-  def allAsId = ConferenceDescriptor.current().proposalTypes.map(a => (a.id, a.label)).toSeq.sorted
+  def allForCombos = {
+    val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL
+    val onlyThoseThatShouldBeDisplayed = allProposalTypes.filter(pt=>ConferenceDescriptor.ConferenceProposalTypes.ALL.exists(pc=>pc.id==pt.id))
+    val finalFormat=onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
+    finalFormat
+  }
 
-  def allForCombos = ConferenceDescriptor.current().proposalTypes.filter(!_.hiddenInCombo).map(a => (a.id, a.label)).toSeq.sorted
   def allIDsOnly = allAsId.map(_._1)
 
-  def recordedProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.recorded)
-  def notRecordedProposals = ConferenceDescriptor.current().proposalTypes.filter(p => !p.recorded)
-
-  def freeEntranceProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.givesSpeakerFreeEntrance)
-
-  def displayedFreeEntranceProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.freeEntranceDisplayed)
-
-  def chosablePreferredDaysProposals = ConferenceDescriptor.current().proposalTypes.filter(p => p.chosablePreferredDay)
-
-  def proposalsImplyingATrackSelection = ConferenceDescriptor.current().proposalTypes.filter(p => p.impliedSelectedTrack.nonEmpty)
 
   def parse(proposalType: String): ProposalType = {
-    return ConferenceDescriptor.current().proposalTypes.find(p => p.id == proposalType).getOrElse(UNKNOWN)
+    ConferenceDescriptor.ConferenceProposalTypes.ALL.find(p => p.id == proposalType).getOrElse(UNKNOWN)
   }
 
   val audienceLevels:Seq[(String,String)]={
@@ -202,7 +182,7 @@ object Proposal {
     // If it's a sponsor talk, we force it to be a conference
     // We also enforce the user id, for security reason
       val proposalWithMainSpeaker = if (proposal.sponsorTalk) {
-        proposal.copy(talkType = ConferenceDescriptor.current().contentBlocks.sponsorProposalType, mainSpeaker = authorUUID)
+        proposal.copy(talkType = ConferenceDescriptor.current().conferenceSponsor.sponsorProposalType, mainSpeaker = authorUUID)
       } else {
         proposal.copy(mainSpeaker = authorUUID)
       }
@@ -269,7 +249,7 @@ object Proposal {
                           userGroup:Boolean ): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      ConferenceDescriptor.current().naming.longYearlyName,
+      Messages("longYearlyName"),
       lang,
       title,
       "no_main_speaker",
@@ -582,7 +562,7 @@ object Proposal {
     client =>
       client.hget("Proposals:TrackForProposal", proposalId).flatMap {
         trackId =>
-          ConferenceDescriptor.current().tracks.find(_.id == trackId)
+          ConferenceDescriptor.ConferenceTracks.ALL.find(_.id == trackId)
       }
   }
 
@@ -743,7 +723,7 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val onlyAcceptedOrApproved = loadAndParseProposals(allProposalIDs).values.toSet.filter(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED)
-      onlyAcceptedOrApproved.filter(p => p.talkType.givesSpeakerFreeEntrance).nonEmpty
+      onlyAcceptedOrApproved.filter(proposal => ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)).nonEmpty
   }
 
   def setPreferredDay(proposalId:String, day:String)=Redis.pool.withClient{
