@@ -23,7 +23,6 @@
 
 package notifiers
 
-
 import com.typesafe.plugin._
 import play.api.Play.current
 import org.joda.time.DateTime
@@ -37,7 +36,7 @@ import play.api.i18n.Messages
  * Created: 04/10/2013 15:56
  */
 
-object Mails extends ConferenceDescriptorImplicit {
+object Mails {
 
   lazy val from = ConferenceDescriptor.current().fromEmail
   lazy val comitteeEmail = ConferenceDescriptor.current().comitteeEmail

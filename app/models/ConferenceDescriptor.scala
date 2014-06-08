@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 /**
  * ConferenceDescriptor.
  * This might be the first file to look at, and to customize.
- *
+ * Idea behind this file is to try to collect all configurable parameters for a conference. *
  * @author Frederic Camblor
  */
 
@@ -178,11 +178,12 @@ object ConferenceDescriptor {
 
   object ConferenceRooms {
 
-    // TODO for Devoxx BE
-    val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, false, "special")
+    // TODO for Devoxx BE : there are 8 rooms to configure
+    val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, recorded = false, "special")
 
-    val ROOM8 = Room("room8", "Room 8", 680, true, "theatre")
-    val SMALL_LAB01 = Room("smallLab01", "Small Lab 01", 50, true, "classroom")
+    val ROOM8 = Room("room8", "Room 8", 680, recorded = true, "theatre")
+
+    val SMALL_LAB01 = Room("smallLab01", "Small Lab 01", 50, recorded = false, "classroom")
 
     val allBigRoom = List(ROOM8)
 
@@ -278,11 +279,4 @@ object ConferenceDescriptor {
     current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
   }
 
-
-}
-
-
-// These are properties not i18n-ed used in various places in the app
-trait ConferenceDescriptorImplicit {
-  implicit def conferenceDescriptor: ConferenceDescriptor = ConferenceDescriptor.current()
 }

@@ -1,4 +1,4 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @import library.FormatDate
 
 @main(Messages("cfp.title")){
@@ -27,14 +27,14 @@
 
             <div class="col-md-5">
                 <h3><i class="icon-calendar"></i> Agenda</h3>
-                <p><strong>@Messages("cfp.opening") :</strong>  @FormatDate.jodaFullDateFormat(confDesc.timing.cfpOpenedOn, lang)</p>
-                <p><strong>@Messages("cfp.closing") :</strong>  @FormatDate.jodaFullDateFormat(confDesc.timing.cfpClosedOn, lang)</p>
+                <p><strong>@Messages("cfp.opening") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpOpenedOn, lang)</p>
+                <p><strong>@Messages("cfp.closing") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpClosedOn, lang)</p>
                 @if(controllers.Backoffice.isCFPOpen){
                     <p><strong>@Messages("cfp.reminder") :</strong> <span class="label label-warning">@Messages("cfp.reminder.proposals")</span> </p>
                 }else{
                     <p><strong>@Messages("cfp.reminder") :</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
                 }
-                <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date", FormatDate.jodaFullDateFormat(confDesc.timing.scheduleAnnouncedOn, lang))</p>
+                <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date", FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.scheduleAnnouncedOn, lang))</p>
             </div>
 
             <div class="col-md-5">

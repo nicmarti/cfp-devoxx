@@ -50,7 +50,7 @@ import library.FormatDate
  * Author: nicolas
  * Created: 27/09/2013 09:59
  */
-object Authentication extends Controller with ConferenceDescriptorImplicit {
+object Authentication extends Controller  {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
   def prepareSignup = Action {
@@ -463,7 +463,7 @@ object Authentication extends Controller with ConferenceDescriptorImplicit {
   }
 
   private def cfpClosingFlash()(implicit req:RequestHeader) = {
-    "success" -> (Messages("cfp.closing") + " " + FormatDate.jodaFullDateFormat(conferenceDescriptor.timing.cfpClosedOn, lang))
+    "success" -> (Messages("cfp.closing") + " " + FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpClosedOn, lang))
   }
 
 }

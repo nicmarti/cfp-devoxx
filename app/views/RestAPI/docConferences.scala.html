@@ -1,4 +1,4 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @api("conferences") {
 <div class="row">
@@ -21,8 +21,8 @@
     "content": "All conferences",
     "links": [
         {
-            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode",
-            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/conference",
+            "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode",
+            "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/conference",
             "title": "See more details about @Messages("longName")"
         }
     ]
