@@ -255,7 +255,7 @@ object ConferenceDescriptor {
       faq = "http://www.devoxx.be/faq/",
       registration = "http://reg.devoxx.be",
       confWebsite = "http://www.devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("unknown.cfp.hostname")
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
     ),
     timing = ConferenceTiming(
       datesI18nKey = "10th-14th November",
