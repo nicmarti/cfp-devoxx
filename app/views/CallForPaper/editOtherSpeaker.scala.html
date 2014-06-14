@@ -1,4 +1,4 @@
-@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(currentUser: String, proposal:models.Proposal, speakerForm: Form[(Option[String],List[String])])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -32,7 +32,7 @@
                     <thead>
                         <tr>
                             <td></td>
-                            <th>@Messages("proposal.buyPass", confDesc.timing.speakersPassDuration)</th>
+                            <th>@Messages("proposal.buyPass", ConferenceDescriptor.current().timing.speakersPassDuration)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,7 +41,7 @@
                             @currentUser
                         </td>
                         <td>
-                        @if(proposal.talkType.givesSpeakerFreeEntrance) {
+                        @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="label label-success">@Messages("freepass")</span>
                         } else {
                             <span class="label label-warning">@Messages("no.freepass")</span>
@@ -53,7 +53,7 @@
                             @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control")
                         </td>
                         <td>
-                          @if(proposal.talkType.givesSpeakerFreeEntrance) {
+                          @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="label label-success">@Messages("freepass")</span>
                           } else {
                             <span class="label label-warning">@Messages("no.freepass")</span>

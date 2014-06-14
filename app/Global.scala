@@ -33,7 +33,7 @@ object Global extends GlobalSettings {
   override def onError(request: RequestHeader, ex: Throwable) = {
     val viewO: Option[(UsefulException) => HtmlFormat.Appendable] =Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devError.f
-      case app => views.html.errorPage.f(_:UsefulException)(request, ConferenceDescriptor.current())
+      case app => views.html.errorPage.f(_:UsefulException)(request)
     }
     try {
       Future.successful(InternalServerError(viewO.getOrElse(views.html.defaultpages.devError.f) {
@@ -56,7 +56,7 @@ object Global extends GlobalSettings {
   override def onHandlerNotFound(request: RequestHeader) = {
     val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
-      case app => views.html.notFound.f(_, _)(request, ConferenceDescriptor.current())
+      case app => views.html.notFound.f(_, _)(request)
     }
     Future.successful(NotFound(viewO.getOrElse(views.html.defaultpages.devNotFound.f)(request, Play.maybeApplication.flatMap(_.routes))))
   }

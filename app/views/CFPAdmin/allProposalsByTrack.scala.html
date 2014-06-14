@@ -1,4 +1,4 @@
-@(proposals:List[Proposal], track:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(proposals:List[Proposal], track:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main(track + ", All submitted proposals") {
 
@@ -18,10 +18,9 @@
                     <div class="panel-body">
                         <div class="col-md-12">
 
-                            @confDesc.tracks.map{track=>
+                            @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
                                 <a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Messages(track.label)</a>
                             }
-
 
                             @if(flash.get("error").isDefined) {
                                 <div class="alert alert-danger alert-dismissable">

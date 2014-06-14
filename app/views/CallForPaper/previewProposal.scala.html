@@ -1,4 +1,4 @@
-@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
@@ -47,8 +47,6 @@
                         <div class="proposal_prev">@Html(htmlSummary)</div>
                         <h4><small>@Messages("admin.sp.privateMessage") :</small></h4>
                         <div class="proposal_prev">@Html(privateMessage)</div>
-
-                        @confDesc.contentBlocks.previewProposalFooterBlock(htmlSummary, privateMessage, newProposal, currentUser)
                     </div>
                 </div>
             </div>

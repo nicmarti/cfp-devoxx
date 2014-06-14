@@ -1,37 +1,38 @@
-@(proposal:models.Proposal)(implicit lang:Lang, confDesc: ConferenceDescriptor)
-<h3>Welcome to @confDesc.naming.longYearlyName</h3>
-@if(confDesc.frLangEnabled) {
+@(proposal:models.Proposal)
+
+<h3>Welcome to @Messages("longYearlyName")</h3>
+@if(ConferenceDescriptor.current().frLangEnabled) {
 <strong>English version below</strong>
 <hr>
 <p>Bonjour,</p>
 <p>Nous avons le plaisir de vous informer que la présentation <strong>@proposal.title</strong> au format
-[<strong>@Messages(proposal.talkType.label)</strong>] a été <strong>acceptée</strong> pour @confDesc.naming.longYearlyName !</p>
+[<strong>@Messages(proposal.talkType.label)</strong>] a été <strong>acceptée</strong> pour @Messages("longYearlyName") !</p>
 <hr>
 <h3>Comment valider ou non votre participation ?</h3>
 <p>Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
-présence à @confDesc.naming.longName comme présentateur.</p>
+présence à @Messages("longName") comme présentateur.</p>
 <p><strong>Merci de valider dès maintenant en suivant ce lien dans votre navigateur :</strong></p>
-<a href="http://@confDesc.conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@confDesc.conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
+<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
 <p>Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).</p>
 <h3>Comment poser une question ?</h3>
 <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-<a href="http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)">http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
+<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
-<p>L'équipe de sélection de la conférence @confDesc.naming.longName</p>
+<p>L'équipe de sélection de la conférence @Messages("longName")</p>
 <hr>
 }
 <p>Hi,</p>
-<p>We're glad to inform you that your proposal for @confDesc.naming.longYearlyName has been <strong>accepted</strong></p>
+<p>We're glad to inform you that your proposal for @Messages("longYearlyName") has been <strong>accepted</strong></p>
 <p>Proposition title : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.label)</strong>].</p>
 <hr>
 <h3>What's next?</h3>
 <p>You must now validate or decline the general terms and conditions, and confirm that you are still ok to do
 this presentation :</p>
-<a href="http://@confDesc.conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@confDesc.conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
+<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
 
 <h3>For any question regarding your talk</h3>
 <p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests to respond quickly.</p>
-<a href="http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)">http://@confDesc.conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
+<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
-<p>The @confDesc.naming.longName team</p>
+<p>The @Messages("longName") team</p>
 

@@ -3,8 +3,17 @@
 CONF.title=Devoxx 2014
 CONF.subtitle=BE
 
+# Equivalent to ConferenceNaming
+shortYearlyName=Devoxx BE 2014
+longYearlyName=Devoxx Belgium 2014
+shortName=Devoxx BE
+longName=Devoxx BE 2014 CFP
+longSplittedName_whiteStart=Devox
+longSplittedName_colored=x
+longSplittedName_whiteEnd=BE 2014
+conference.dates=10th-14th November
 # -----------------
-cfp.title={0} CFP
+cfp.title=Devoxx BE 2014 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -74,7 +83,7 @@ lang=Main language
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
-mainSpeaker.help=You can add more speakers once the proposal is created. We offer a {0}-day pass only for the following slots : {1}. Quickie speakers need to purchase a conference pass!
+mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href\="{0}\#confType" target\="new">FAQ</a>.
@@ -113,23 +122,23 @@ next.action=Select next action:
 
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
-key.simple.label=Keynote
+key.label.simple=Keynote
 conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
-conf.simple.label=Conference
+conf.label.simple=Conference
 uni.label=University, 3h, Monday or Tuesday
-uni.simple.label=University
+uni.label.simple=University
 tia.label=Tools in Action, 30mn, only Monday or Tuesday
-tia.simple.label=Tools in Action
+tia.label.simple=Tools in Action
 quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
-quick.simple.label=Quickie
+quick.label.simple=Quickie
 bof.label=Bird of a Feather, 1h, Monday to Thursday evening
-bof.simple.label=Bird of a Feather
+bof.label.simple=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Monday and Tuesday
-lab.simple.label=Hand''s on Lab
+lab.label.simple=Hand''s on Lab
 other.label=Other event
-other.simple.label=Other
+other.label.simple=Other
 start.label=Startup Talk, 25 min, Wednesday to Thursday
-start.simple.label=Startup
+start.label.simple=Startup
 
 # Bug report
 Issue.report=Report an issue
@@ -137,19 +146,19 @@ btn.send=Send
 
 # Home page
 appel.conf=Call for Paper
-devoxxbe2014.dates=From 10th to 14th of November, 2014
 cfp.opening=CFP opening
 cfp.closing=CFP closing
 cfp.reminder=Reminder
-cfp.reminder.proposals=do not forget to accept or to decline all approved proposals.
+cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review {0}''s videos on
+video.tag=Review Devoxx BE 2013''s videos on
 theme.title=Tracks
-theme.track=List of tracks for {0} :
+theme.track=List of tracks for Devoxx Belgium 2014:
 track.title=Title
 track.description=Description
+appel.conf.dates=Devoxx Belgium 2014, 10th-14th November
 
 # Tracks
 track.startup.title=Startup and entrepreneurship

@@ -1,6 +1,6 @@
-@(proposal:models.Proposal)(implicit lang:Lang, confDesc: ConferenceDescriptor)
+@(proposal:models.Proposal)
 
-@if(confDesc.frLangEnabled) {
+@if(ConferenceDescriptor.current().frLangEnabled) {
 Bonjour,
 
 Nous avons le regret de vous informer que votre proposition @proposal.title au format @proposal.talkType.label n'a pas été acceptée.
@@ -12,18 +12,18 @@ notre site plus d'informations sur la sélection.
 
 Merci pour votre proposition,
 
-L'équipe de sélection de la conférence @confDesc.naming.longName
+L'équipe de sélection de la conférence @Messages("longName")
 
 ----------------------------------------------------------------------------------------------------------------
 }
 Hi,
 
-We're sorry to inform you that your proposal for @confDesc.naming.longYearlyName was refused
+We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused
 Proposition title : @proposal.title, @proposal.talkType.label.
 
 We'd like to thank you sincerly, for the time and your work.
-If you like to register, we still have our early bird price, please visit @confDesc.conferenceUrls.registration.
+If you like to register, we still have our early bird price, please visit @ConferenceDescriptor.current().conferenceUrls.registration.
 
 Thanks for your time,
-The @confDesc.naming.longName team
+The @Messages("longName") team
  

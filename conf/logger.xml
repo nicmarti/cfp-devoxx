@@ -17,7 +17,7 @@
     <logger name="models.Speaker" level="INFO"/>
     <logger name="models.Webuser" level="INFO"/>
     <logger name="library.ZapActor" level="INFO"/>
-    <logger name="library.Zedis" level="DEBUG"/>
+    <logger name="library.Zedis" level="INFO"/>
     <logger name="library.Zedis.client" level="INFO"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="ERROR"/>
