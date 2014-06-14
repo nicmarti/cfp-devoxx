@@ -1,4 +1,4 @@
-@(approvedProposals: List[Proposal], rejectedProposals:List[Proposal], cssrf:String)(implicit lang: Lang, flash: Flash, req: RequestHeader, confDesc: ConferenceDescriptor)
+@(approvedProposals: List[Proposal], rejectedProposals:List[Proposal], cssrf:String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Please review your approved list of talks") {
 
@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-bullhorn"></i> @Messages("acceptedProposals.title", confDesc.naming.longName)</h3>
+                    <h3><i class="icon-bullhorn"></i> @Messages("acceptedProposals.title", Messages("longName"))</h3>
                 </div>
 
                 <div class="panel-body">

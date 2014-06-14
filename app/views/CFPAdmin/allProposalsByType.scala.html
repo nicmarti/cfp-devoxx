@@ -1,4 +1,4 @@
-@(proposals:List[Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(proposals:List[Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main(confType + ", submitted proposals") {
 
@@ -17,8 +17,8 @@
                 <div class="panel-body">
                     <div class="panel-body">
                         <div class="col-md-12">
-                        @for(proposalType <- confDesc.proposalTypes) {
-                            <a href="@routes.CFPAdmin.allProposalsByType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@proposalType.htmlClass"></i> @Messages(proposalType.simpleLabel)</a>
+                        @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
+                            <a href="@routes.CFPAdmin.allProposalsByType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
                         }
 
                             @if(flash.get("error").isDefined) {

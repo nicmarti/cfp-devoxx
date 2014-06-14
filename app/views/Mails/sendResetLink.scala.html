@@ -1,16 +1,17 @@
-@(resetUrl:String)(implicit confDesc: ConferenceDescriptor)
+@(resetUrl:String)
 
-<h3>Did you forget your CFP @confDesc.naming.longName access code?</h3>
-<p>Someone asked to reset your @confDesc.naming.longName access code. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.</p>
+<h3>Did you forget your CFP @Messages("longName") access code?</h3>
+<p>Someone asked to reset your @Messages("longName") access code. If it was you, please read the instructions below. If it wasn't, you can disregard this emails and no evil will be done.</p>
 <p><a href="@Html(resetUrl)">@Html(resetUrl)</a></p>
 <p>Please visit this link to reset your access code.</p>
 <p>We don't want to store your super secret password, that might be the same one as your Google Account. We prefer to generate
 a random access code. We also encourage you to use one of our OpenID's providers like Github or Google+. Simpler, more secure, that just rocks!</p>
-<p>The @confDesc.naming.longName team</p>
-@if(confDesc.frLangEnabled) {
+<p>The @Messages("longName") team</p>
+
+@if(ConferenceDescriptor.current().frLangEnabled) {
 <hr>
-<h3>Mot de passe oublié sur le site du CFP de @confDesc.naming.longName ?</h3>
-<p>Quelqu'un a demandé à modifier le mot de passe pour le site de l'appel aux conférenciers de @confDesc.naming.longName.
+<h3>Mot de passe oublié sur le site du CFP de @Messages("longName") ?</h3>
+<p>Quelqu'un a demandé à modifier le mot de passe pour le site de l'appel aux conférenciers de @Messages("longName").
 Si ce n'était pas vous, pas de soucis, ignorez simplement ce courrier.</p>
 
 <p>Pour réinitialiser votre mot de passe, merci de visiter cette URL :</p>
@@ -18,5 +19,5 @@ Si ce n'était pas vous, pas de soucis, ignorez simplement ce courrier.</p>
 
 <p>Nous ne voulons pas stocker vos mots de passe et nous préférons les générer au hasard. Par ailleurs, nous vous encourageons à
 utiliser votre profil Github ou Google+ pour vous authentifier. Plus simple, plus moderne.</p>
-<p>L'équipe @confDesc.naming.longName</p>
+<p>L'équipe @Messages("longName")</p>
 }

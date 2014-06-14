@@ -28,11 +28,10 @@ import library._
 import play.api.i18n.Messages
 
 /**
- * Devoxx France Call For Paper main application.
+ * Call For Paper main application.
  * @author Nicolas Martignole
  */
-object Application extends Controller with ConferenceDescriptorImplicit {
-
+object Application extends Controller {
 
   def home = Action {
     implicit request =>

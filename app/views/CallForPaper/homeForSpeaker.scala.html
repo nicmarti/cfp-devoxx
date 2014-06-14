@@ -1,8 +1,8 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
-@main(Messages("cfp.title", confDesc.naming.longYearlyName)){
+@main(Messages("cfp.title")){
     <div class="row">
         <div class="col-md-4">
             <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>

@@ -1,4 +1,4 @@
-@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All votes") {
 
@@ -19,8 +19,8 @@
                 <div class="panel-body">
                     <div class="col-md-12">
                         <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i> All</a>
-                        @for(proposalType <- confDesc.proposalTypes) {
-                            <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@proposalType.htmlClass"></i> @Messages(proposalType.simpleLabel)</a>
+                        @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
+                            <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
                         }
                         | <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
                         <br>

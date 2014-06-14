@@ -1,7 +1,0 @@
-@()(implicit lang: Lang, confDesc: ConferenceDescriptor)
-
-@if(confDesc.frLangEnabled) {
-    <p><label>@Messages("lang") : </label><br> @Messages("lang.help", confDesc.naming.longName)</p>
-}
-<p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", confDesc.conferenceUrls.faq))</p>
-<p><label>@Messages("mainSpeaker") : </label><br> @Messages("mainSpeaker.help", confDesc.timing.speakersPassDuration, ProposalType.displayedFreeEntranceProposals.map(p => Messages(p.simpleLabel)).mkString(", "))</p>

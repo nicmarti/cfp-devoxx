@@ -1,6 +1,6 @@
-@(proposal:models.Proposal)(implicit lang:Lang, confDesc: ConferenceDescriptor)
+@(proposal:models.Proposal)
 
-@if(confDesc.frLangEnabled) {
+@if(ConferenceDescriptor.current().frLangEnabled) {
 <strong>English version below</strong>
 
 <p>Bonjour,</p>
@@ -13,16 +13,16 @@
     la sélection.</p>
 <p></p>
 <p>Merci pour votre proposition,</p>
-<p>L'équipe de sélection de la conférence @confDesc.naming.longName</p>
+<p>L'équipe de sélection de la conférence @Messages("longName")</p>
 <hr>
 }
 <p>Hi,</p>
-<p>We're sorry to inform you that your proposal for @confDesc.naming.longYearlyName was <strong>refused</strong></p>
+<p>We're sorry to inform you that your proposal for @Messages("longYearlyName") was <strong>refused</strong></p>
 <p>Proposition title : <strong>@proposal.title</strong>, <strong>@proposal.talkType.label</strong>.</p>
 <p>We'd like to thank you sincerly, for the time and your work.</p>
-<p>If you like to register, we still have our early bird price, please visiti <a href="@confDesc.conferenceUrls.registration">@confDesc.conferenceUrls.registration</a>.</p>
+<p>If you like to register, we still have our early bird price, please visiti <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
 <br>
 <br>
 <p>Thanks for your time,</p>
-<p>The @confDesc.naming.longName team</p>
+<p>The @Messages("longName") team</p>
 <p></p>

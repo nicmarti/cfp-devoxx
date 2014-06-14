@@ -1,13 +1,13 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader, confDesc: ConferenceDescriptor)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @api("Doc docConferences") {
 <div class="row">
     <div class="col-md-12">
-    <h1>@confDesc.naming.shortName API</h1>
+    <h1>Messages("shortName") API</h1>
     <hr>
        <h3>Documentation for "links"</h3>
 
-        <p>The "Link" profile object is a @confDesc.naming.shortName object that defines a relationship between 2 resources.</p>
+        <p>The "Link" profile object is a Messages("shortName") object that defines a relationship between 2 resources.</p>
         <ul>
             <li><strong>Href</strong> is an absolute URL, that a client may follow to load this resource's content.</li>
             <li><strong>Rel</strong> is an absolute URL to a Profile definition for the target resource designed by href.</li>
@@ -20,9 +20,9 @@
 {
     "link":
         {
-            "href": "http://@confDesc.conferenceUrls.cfpHostname/api/conferences/@confDesc.eventCode",
-            "rel": "http://@confDesc.conferenceUrls.cfpHostname/api/profile/conference",
-            "title": "See more details about @confDesc.naming.longYearlyName"
+            "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode",
+            "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/conference",
+            "title": "See more details about @Messages("longYearlyName")"
         }
 }
                 </pre>
