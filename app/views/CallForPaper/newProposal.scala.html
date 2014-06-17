@@ -41,7 +41,9 @@
                 <i class="icon-text-width"></i> : <span id="charsremain"></span> <small>@Messages("newProposal.maxLength")</small>
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
-                <input type="hidden" name="lang" value="en">
+                @if(ConferenceDescriptor.current().frLangEnabled) {
+                    @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
+                }
                 @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allForCombos,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("track"), options=Track.allAsIdsAndLabels,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,  'class->"form-control")
