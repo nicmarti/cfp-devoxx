@@ -136,7 +136,7 @@ class ZapActor extends Actor {
   }
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message fpr ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message for ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         Mails.postInternalMessage(reporterWebuser, proposal, msg)
