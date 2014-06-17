@@ -232,7 +232,6 @@ class IndexMaster extends ESActor {
         sb.append("\"totalAbstentions\": " + reviewAndVotes._3 + ", ")
         sb.append("\"average\": " + reviewAndVotes._4 + ", ")
         sb.append("\"standardDeviation\": " +reviewAndVotes._5 +", ")
-        sb.append("\"median\": " + reviewAndVotes._6 + ",")
         sb.append("\"title\": \"" + proposal.title + "\",")
         sb.append("\"track\": \"" + proposal.track.id + "\",")
         sb.append("\"lang\": \"" + proposal.lang + "\",")
