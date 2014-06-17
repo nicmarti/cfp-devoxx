@@ -1,5 +1,6 @@
 local proposals = redis.call("KEYS", "Proposals:Votes:*")
 redis.call("DEL", "Computed:Reviewer:Total")
+redis.call("DEL", "Computed:Reviewer:ReviewedOne")
 
 for i = 1, #proposals do
   redis.log(redis.LOG_DEBUG, "----------------- " .. proposals[i])
@@ -19,6 +20,7 @@ for i = 1, #proposals do
     redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
     redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
     redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
+    redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
   end
 
 redis.call("HDEL", "Computed:Median", proposals[i])

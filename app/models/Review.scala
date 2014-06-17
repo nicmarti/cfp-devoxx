@@ -265,6 +265,7 @@ object Review {
         """
           |local proposals = redis.call("KEYS", "Proposals:Votes:*")
           |redis.call("DEL", "Computed:Reviewer:Total")
+          |redis.call("DEL", "Computed:Reviewer:ReviewedOne")
           |
           |for i = 1, #proposals do
           |  redis.log(redis.LOG_DEBUG, "----------------- " .. proposals[i])
@@ -284,6 +285,7 @@ object Review {
           |    redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
           |    redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
           |    redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
+          |    redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
           |  end
           |
           |redis.call("HDEL", "Computed:Median", proposals[i])
@@ -346,13 +348,21 @@ object Review {
       }
   }
 
-  def allReviewersAndStats()=Redis.pool.withClient{
+  def allReviewersAndStats():List[(String, Int, Int)]=Redis.pool.withClient{
     client=>
-      client.hgetAll("Computed:Reviewer:Total").map{
+      val allVoted = client.hgetAll("Computed:Reviewer:Total").map{
         case(uuid:String, totalPoints:String)=>
-          val nbrOfTalksReviewed = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid","Proposals:ByState:"+ProposalState.DELETED.code, "Proposals:ByState:"+ProposalState.DRAFT.code).size
-          (uuid,totalPoints.toInt, nbrOfTalksReviewed)
-      }.toList
+          val nbrOfTalksReviewed = client.sdiff( s"Proposals:Reviewed:ByAuthor:$uuid","Proposals:ByState:"+ProposalState.DELETED.code, "Proposals:ByState:"+ProposalState.DRAFT.code).size
+          (uuid, totalPoints.toInt, nbrOfTalksReviewed)
+      }
+
+      val noReviews = client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne" )
+      val noReviewsAndNote = noReviews.map(uuid=>
+        (uuid, 0, 0)
+      )
+      allVoted.toList ++ noReviewsAndNote.toList
+
+
   }
 
   def diffReviewBetween(firstUUID:String, secondUUID:String):Set[String]=Redis.pool.withClient{

@@ -191,7 +191,7 @@ object CFPAdmin extends SecureCFPController {
       val totalNoVotes = Leaderboard.totalNoVotes()
       val maybeMostVoted = Leaderboard.mostReviewed()
       val bestReviewer = Leaderboard.bestReviewer()
-      val worstReviewer = Leaderboard.worstReviewer()
+      val lazyOnes = Leaderboard.lazyOnes()
 
       val totalSubmittedByCategories = Leaderboard.totalSubmittedByCategories()
       val totalSubmittedByType = Leaderboard.totalSubmittedByType()
@@ -208,7 +208,7 @@ object CFPAdmin extends SecureCFPController {
       Ok(
         views.html.CFPAdmin.leaderBoard(
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
-          totalNoVotes, maybeMostVoted, bestReviewer, worstReviewer,
+          totalNoVotes, maybeMostVoted, bestReviewer, lazyOnes,
           totalSubmittedByCategories, totalSubmittedByType,
           totalAcceptedByCategories, totalAcceptedByType,
           devoxx2013, totalApprovedSpeakers, totalWithTickets, totalWithOneProposal, totalRefusedSpeakers
