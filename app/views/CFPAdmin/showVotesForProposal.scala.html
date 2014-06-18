@@ -56,12 +56,12 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon-backward"></i>
+                    <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="icon-backward"></i>
                         Review or change your vote</a>
-                    <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()"><i class="icon-home"></i> Go back to home</a>
+                    <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i> Go back to home</a>
 
                 @nextToBeReviewer.map{nextProposal=>
-                    <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)"><i class="icon-forward"></i> Continue and evaluate next talk</a>
+                    <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i> Continue and evaluate next talk</a>
 
                 }.getOrElse{
                     <a class="btn btn-default" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i> There is no more talk to review</a>
