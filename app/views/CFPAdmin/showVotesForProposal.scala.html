@@ -61,7 +61,12 @@
                     <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i> Go back to home</a>
 
                 @nextToBeReviewer.map{nextProposal=>
-                    <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i> Continue and evaluate next talk</a>
+                        @if(nextProposal.track.id ==  proposal.track.id ) {
+                            <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                Continue and evaluate next talk for track @Messages(nextProposal.track.label)</a>
+                        }else{
+                            <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i> Continue and evaluate next talk</a>
+                        }
 
                 }.getOrElse{
                     <a class="btn btn-default" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i> There is no more talk to review</a>
