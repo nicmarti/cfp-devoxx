@@ -26,7 +26,7 @@ import org.apache.commons.io.FileUtils
  */
 object CFPAdmin extends SecureCFPController {
 
-  def index(page: Int, sort: Option[String], ascdesc: Option[String], track:Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+  def index(page: Int, sort: Option[String], ascdesc: Option[String], track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       val sorter = proposalSorter(sort)
@@ -34,7 +34,7 @@ object CFPAdmin extends SecureCFPController {
       val allNotReviewed = Review.allProposalsNotReviewed(uuid)
       val maybeFilteredProposals = track match {
         case None => allNotReviewed
-        case Some(trackLabel)=>allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
+        case Some(trackLabel) => allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
       }
       val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
       val twentyEvents = Event.loadEvents(20, page)
@@ -84,22 +84,28 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def showVotesForProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+  def showVotesForProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import scala.concurrent.ExecutionContext.Implicits.global
       val uuid = request.webuser.uuid
-      Proposal.findById(proposalId) match {
-        case Some(proposal) => {
-          val score = Review.currentScore(proposalId)
-          val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
-          val countVotes = Review.totalVoteFor(proposalId)
-          val allVotes = Review.allVotesFor(proposalId)
+      scala.concurrent.Future {
+        Proposal.findById(proposalId) match {
+          case Some(proposal) => {
+            val score = Review.currentScore(proposalId)
+            val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
+            val countVotes = Review.totalVoteFor(proposalId)
+            val allVotes = Review.allVotesFor(proposalId)
 
-          // The next proposal I should review
-          val nextToBeReviewed = Review.allProposalsNotReviewed(uuid).headOption
+            // The next proposal I should review
+            val allNotReviewed = Review.allProposalsNotReviewed(uuid)
+            val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
 
-          Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewed))
+            val nextToBeReviewed = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
+
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewed))
+          }
+          case None => NotFound("Proposal not found").as("text/html")
         }
-        case None => NotFound("Proposal not found").as("text/html")
       }
   }
 
@@ -312,7 +318,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def showSpeakerBioOverview(uuid:String)= SecuredAction {
+  def showSpeakerBioOverview(uuid: String) = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       Speaker.findByUUID(uuid) match {
@@ -405,7 +411,7 @@ object CFPAdmin extends SecureCFPController {
 
       val speakers1 = (accepted, onlyWithSpeakerPass) match {
         case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
-        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filter(s=>Proposal.hasOneAcceptedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filter(s => Proposal.hasOneAcceptedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
         case other => allSpeakers
       }
 
@@ -423,11 +429,11 @@ object CFPAdmin extends SecureCFPController {
           val writer = new PrintWriter(file, "Macroman")
 
           writer.println("email,firstLetter,firstName,name,lang,uuid,company,blog,hasFreePass,hasOneAccepted,isCFP,@qrcode")
-          speakers.sortBy(s=>StringUtils.stripAccents(s.name.getOrElse("a")).charAt(0).toUpper).foreach {
+          speakers.sortBy(s => StringUtils.stripAccents(s.name.getOrElse("a")).charAt(0).toUpper).foreach {
             s =>
               writer.print(s.email.toLowerCase)
               writer.print(",")
-              writer.print(s.name.map(s=>StringUtils.stripAccents(s).charAt(0).toUpper).getOrElse(""))
+              writer.print(s.name.map(s => StringUtils.stripAccents(s).charAt(0).toUpper).getOrElse(""))
               writer.print(",")
               writer.print(s.firstName.getOrElse("?"))
               writer.print(",")
@@ -437,24 +443,24 @@ object CFPAdmin extends SecureCFPController {
               writer.print(",")
               writer.print(s.uuid)
               writer.print(",")
-              writer.print(s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),32)).getOrElse(""))
+              writer.print(s.company.map(s => StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s), 32)).getOrElse(""))
               writer.print(",")
-              writer.print(s.blog.map(s=> StringEscapeUtils.escapeCsv(s)).getOrElse(""))
+              writer.print(s.blog.map(s => StringEscapeUtils.escapeCsv(s)).getOrElse(""))
               writer.print(",")
 
               val zeVCard = new VCard(
-                    firstName = s.firstName
-                  , lastName = s.name
-                  , company=s.company.map(s=> StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s),32))
-                  , email=Some(s.email)
-                  , website=s.blog
-                  , phonenumber = None
-                  , title=Some("Speaker at "+Messages("longYearlyName"))
+                firstName = s.firstName
+                , lastName = s.name
+                , company = s.company.map(s => StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s), 32))
+                , email = Some(s.email)
+                , website = s.blog
+                , phonenumber = None
+                , title = Some("Speaker at " + Messages("longYearlyName"))
               )
 
 
-              val f:java.io.File = QRCode.from(zeVCard.toString).file()
-              val tmpFile=new File("./public/speakers", StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase +"_qrcode.png"))
+              val f: java.io.File = QRCode.from(zeVCard.toString).file()
+              val tmpFile = new File("./public/speakers", StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase + "_qrcode.png"))
               f.renameTo(tmpFile)
 
               // freepass
@@ -495,20 +501,20 @@ object CFPAdmin extends SecureCFPController {
   import play.api.data.Forms._
   import play.api.data.format.Formats._
 
-  def allCFPWebusers()= SecuredAction(IsMemberOf("cfp")) {
+  def allCFPWebusers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.CFPAdmin.showCFPUsers(Webuser.allCFPAdminUsers()))
   }
 
-  def updateTrackLeaders()=SecuredAction(IsMemberOf("cfp")){
+  def updateTrackLeaders() = SecuredAction(IsMemberOf("cfp")) {
     implicit req: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      req.request.body.asFormUrlEncoded.map{
+      req.request.body.asFormUrlEncoded.map {
         mapsByTrack =>
           TrackLeader.updateAllTracks(mapsByTrack)
-        Redirect(routes.CFPAdmin.allCFPWebusers).flashing("success"->"List of track leaders updated")
-      }.getOrElse{
-            Redirect(routes.CFPAdmin.allCFPWebusers).flashing("error"->"No value received")
+          Redirect(routes.CFPAdmin.allCFPWebusers).flashing("success" -> "List of track leaders updated")
+      }.getOrElse {
+        Redirect(routes.CFPAdmin.allCFPWebusers).flashing("error" -> "No value received")
       }
   }
 
