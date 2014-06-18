@@ -26,12 +26,17 @@ import org.apache.commons.io.FileUtils
  */
 object CFPAdmin extends SecureCFPController {
 
-  def index(page: Int, sort: Option[String], ascdesc: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+  def index(page: Int, sort: Option[String], ascdesc: Option[String], track:Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       val sorter = proposalSorter(sort)
       val orderer = proposalOrder(ascdesc)
-      val allProposalsForReview = sortProposals(Review.allProposalsNotReviewed(uuid), sorter, orderer)
+      val allNotReviewed = Review.allProposalsNotReviewed(uuid)
+      val maybeFilteredProposals = track match {
+        case None => allNotReviewed
+        case Some(trackLabel)=>allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
+      }
+      val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
       val twentyEvents = Event.loadEvents(20, page)
 
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
@@ -48,7 +53,7 @@ object CFPAdmin extends SecureCFPController {
       case Some(s) => ps.sortBy(s)(orderer)
     }
 
-  def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
+  private def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
     sort match {
       case Some("title") => Some(_.title)
       case Some("mainSpeaker") => Some(_.mainSpeaker)
@@ -58,7 +63,7 @@ object CFPAdmin extends SecureCFPController {
     }
   }
 
-  def proposalOrder(ascdesc: Option[String]) = ascdesc match {
+  private def proposalOrder(ascdesc: Option[String]) = ascdesc match {
     case Some("desc") => Ordering[String].reverse
     case _ => Ordering[String]
   }
