@@ -171,24 +171,14 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.notify_proposal.subject", fromWebuser.cleanName, proposal.title)
 
-    val msg =  Messages("mail.notify_proposal.content",  proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id))
-
     emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(comitteeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
     emailer.setCharset("utf-8")
-
-    // Send also a copy of the message to the other speakers
-    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val mainSpeaker = Webuser.getEmailFromUUID(proposal.mainSpeaker)
-    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val listOfEmails = mainSpeaker ++ maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
-
     emailer.send(
-      views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString(),
-      views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()
+      views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString(),
+      views.html.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()
     )
   }
 

@@ -600,3 +600,5 @@ d1.label=Slides only
 d2.label=Slides and code
 d3.label=Code only
 d4.label=No slides & code
+
+table.pres.trash=Delete this proposal
