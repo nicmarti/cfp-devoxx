@@ -587,3 +587,12 @@ mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to su
 mail.proposal_approved.subject=Your proposal has been approved {0}
 mail.proposal_refused.subject=Your proposal has been refused {0}
 mail.speaker_cfp_results.subject=Call for Paper {0}
+
+proposal.audienceLevel=Audience level
+proposal.demoLevel=Type of presentation
+l1.label=level 1 : beginner/novice
+l2.label=Intermediate
+l3.label=Expert and senior
+d1.label=Slides only
+d2.label=Slides and code
+d3.label=Code only
