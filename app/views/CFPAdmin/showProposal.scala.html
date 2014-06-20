@@ -41,8 +41,21 @@
                                                      @Html(proposal.summaryAsHtml)
                                                    </td>
                                                </tr>
+
                                            </tbody>
                                        </table>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>@Messages("proposal.audienceLevel")</th>
+                                <td>@Messages(proposal.audienceLevel+".label")</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("proposal.demoLevel")</th>
+                                <td>@Messages(proposal.demoLevel+".label")</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
