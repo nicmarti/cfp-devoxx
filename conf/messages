@@ -520,6 +520,7 @@ demoLevel=What type of presentation will it be?
 demoLevel1.label=Slides only
 demoLevel2.label=Slides and code
 demoLevel3.label=Code only
+demoLevel4.label=No slides & code
 
 userGroup=Share my proposal with User Group?
 userGroup.checkbox=Yes, I am also interested to present this talk at other European User Groups
@@ -598,3 +599,4 @@ l3.label=Expert and senior
 d1.label=Slides only
 d2.label=Slides and code
 d3.label=Code only
+d4.label=No slides & code

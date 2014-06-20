@@ -51,7 +51,8 @@ object ProposalType {
     List(
       ("d1","demoLevel1.label")
       , ("d2","demoLevel2.label")
-      , ("d3","demoLevel3.label"))
+      , ("d3","demoLevel3.label")
+      , ("d4","demoLevel4.label"))
   }.toSeq
 }
 
