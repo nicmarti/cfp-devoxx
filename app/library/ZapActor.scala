@@ -79,6 +79,7 @@ case class NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
 
 case class EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
 
+case class NotifyProposalSubmitted(author:String, proposal:Proposal)
 
 
 // Defines an actor (no failover strategy here)
@@ -104,6 +105,7 @@ class ZapActor extends Actor {
     case ProcessCSVDir(dir: String) => doProcessCSVDir(dir)
     case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
+    case NotifyProposalSubmitted(author:String, proposal:Proposal) => doNotifyProposalSubmitted(author, proposal)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -237,5 +239,15 @@ class ZapActor extends Actor {
 
   def doEditRequestToTalk(authorUUID: String, rtt: RequestToTalk) {
     RequestToTalk.save(authorUUID, rtt)
+  }
+
+  def doNotifyProposalSubmitted(author: String, proposal: Proposal) {
+    Event.storeEvent(Event(proposal.id, author, s"Submitted a proposal ${proposal.id} ${proposal.title}"))
+    Webuser.findByUUID(author).map {
+      reporterWebuser: Webuser =>
+        Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
+    }.getOrElse {
+      play.Logger.error("User not found with uuid " + author)
+    }
   }
 }
