@@ -40,7 +40,8 @@ class ProposalSpecs extends PlaySpecification {
   )
   val appWithTestRedis = FakeApplication(additionalConfiguration = remoteRedisTestServer)
 
-  val sampleProposalType = ConferenceDescriptor.DevoxxProposalTypes
+  val sampleProposalType = ConferenceDescriptor.ConferenceProposalTypes
+
   "correctly update the track when we change one proposal track to another" in new WithApplication(appWithTestRedis) {
 
     val newProposal = new Proposal(id="TST-000", "DV", "fr", "title","1234",
