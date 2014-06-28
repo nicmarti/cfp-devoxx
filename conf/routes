@@ -76,6 +76,8 @@ GET           /cfpadmin/allWebusers                                  controllers
 GET           /cfpadmin/allSpeakers                                  controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
 GET           /cfpadmin/allCFPWebusers                               controllers.CFPAdmin.allCFPWebusers()
 POST          /cfpadmin/cfpWebusers/trackLeaders                     controllers.CFPAdmin.updateTrackLeaders()
+GET           /cfpadmin/proposals/withNoVotes                        controllers.CFPAdmin.showProposalsWithNoVotes()
+
 
 GET           /cfpadmin/setPreferredDay                              controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
 GET           /cfpadmin/resetPreferredDay                            controllers.CFPAdmin.resetPreferredDay(proposalId:String)

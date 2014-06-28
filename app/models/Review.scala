@@ -148,6 +148,11 @@ object Review {
       totalPerProposal.toList
   }
 
+  def allProposalsWithNoVotes:Map[String,Proposal]={
+    val proposalIDs = allProposalsAndReviews.filter(_._2==0).map(_._1).toSet
+    Proposal.loadAndParseProposals(proposalIDs)
+  }
+
   def countAll(): Long = {
     val totalPerProposal = allProposalsAndReviews
     totalPerProposal.map(_._2).sum // total reviewed
