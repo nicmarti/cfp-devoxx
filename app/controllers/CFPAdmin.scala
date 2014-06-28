@@ -605,6 +605,12 @@ object CFPAdmin extends SecureCFPController {
       Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "No preferences")
   }
 
+  def showProposalsWithNoVotes() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val proposals = Review.allProposalsWithNoVotes
+      Ok(views.html.CFPAdmin.showProposalsWithNoVotes(proposals))
+  }
+
 }
 
 
