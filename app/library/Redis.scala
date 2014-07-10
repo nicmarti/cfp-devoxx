@@ -19,20 +19,11 @@ object Redis {
   private lazy val host = current.configuration.getString("redis.host").getOrElse("localhost")
   private lazy val port = current.configuration.getInt("redis.port").getOrElse(6379)
   private lazy val timeout = current.configuration.getInt("redis.timeout").getOrElse(30000)
-  private lazy val redisPassword = current.configuration.getString("redis.password").getOrElse(null)
+  private lazy val redisPassword = current.configuration.getString("redis.password").orNull
 
   lazy val jedisPoolConfig = {
     var pool = new JedisPoolConfig
     pool.setMaxActive(256)
-    pool.setMinIdle(1)
-    pool.setMaxWait(10000)
-    pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_BLOCK)
-    pool
-  }
-
-  lazy val jedisPoolConfig2 = {
-    var pool = new JedisPoolConfig
-    pool.setMaxActive(64)
     pool.setMinIdle(1)
     pool.setMaxWait(10000)
     pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_BLOCK)
@@ -57,9 +48,4 @@ object Redis {
     pool
   }
 
-  // when you use a different ExcecutionContext, you have to use a different pool with Redis
-  lazy val poolForStats = {
-    val pool = new Pool(new JedisPool(jedisPoolConfig2, host, port, timeout, redisPassword))
-    pool
-  }
 }
