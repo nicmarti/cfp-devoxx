@@ -21,32 +21,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package webtests
+package models
 
-import models.ConferenceDescriptor
-import play.api.test._
-import play.api.test.Helpers._
-import play.api.libs.ws._
-import org.specs2.mutable._
-import java.util.Locale
-import play.api.libs.iteratee.Iteratee
-import play.api.libs.ws.ResponseHeaders
-import scala.concurrent.ExecutionContext.Implicits.global
-
+import play.api.test.{FakeApplication, WithApplication, PlaySpecification}
 
 /**
- * Created by nicolas on 18/06/2014.
+ * Review test for LUA.
+ * Created by nicolas martignole on 10/07/2014.
  */
-class CallForPaperTest extends Specification {
-  "an Application" should{
-    "run in a browser" in new WithBrowser() {
-      browser.goTo("/")
-      browser.$("#title").getTexts().get(0) must startWith(ConferenceDescriptor.current().hosterName)
+class ReviewSpecs extends PlaySpecification {
 
-      browser.$("a").click()
+  // Use a different Redis Database than the PROD one
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase"->1)
 
-      browser.url must equalTo("/")
-      browser.$("#title").getTexts().get(0) must equalTo("Hello Coco")
-    }
-  }
+  // To avoid Play Cache Exception during tests, check this
+  // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
+  val appWithTestRedis = () => FakeApplication(additionalConfiguration = testRedis)
+
+
+   "Review" should {
+     "compute the Average with LUA" in new WithApplication(app = appWithTestRedis()) {
+
+       Review.countAll() mustEqual(0L)
+
+     }
+   }
 }
