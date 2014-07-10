@@ -1,0 +1,18 @@
+@(fromName:String, proposalId:String, title:String, track:String, talkType:String)
+
+<p>Hi,</p> 
+
+<p>A proposal has been submitted on the CFP by @fromName.</p>
+<br>
+<p><strong>Talk title : </strong>@title</p>
+<p><strong>Track : </strong>@track</p>
+<p><strong>Format : </strong>@talkType</p>
+<hr>
+
+<p>Please, use this link to review this talk :</p>
+<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposalId)">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposalId)</a>
+<br>
+<br>
+
+<p>Thanks</p>
+<p>The @Messages("longName") team.</p>

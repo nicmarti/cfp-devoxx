@@ -25,13 +25,47 @@
         <div class="col-md-4">
             <div class="panel-body">
                 <h3>Current score</h3>
-                <p>Total score : @score</p>
-                @if(totalVotesCast>0){
-                    <p>Average score : @library.Stats.average(allVotes.map(_._2).filterNot(_==0))</p>
-                }
-                <p>Total votes cast : @totalVotesCast</p>
-                <p>Total votes : @totalVotes</p>
-                <p>Standard deviation : @library.Stats.standardDeviation(allVotes.map(_._2).filterNot(_==0))</p>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Average score</th>
+                            <td>@if(totalVotesCast>0){
+                                @library.Stats.average(allVotes.map(_._2).filterNot(_==0))
+                            } else {
+                                -
+                            }</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Total score
+                            </th>
+                            <td>@score</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Total votes cast
+                            </th>
+                            <td>@totalVotesCast</td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                Total votes
+                            </th>
+                            <td>
+                                @totalVotes
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                 Standard deviation
+                            </th>
+                            <td>
+                                 @library.Stats.standardDeviation(allVotes.map(_._2).filterNot(_==0))
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -41,10 +75,11 @@
                 @if(proposal.mainSpeaker==currentUser|| proposal.secondarySpeaker==Some(currentUser) || proposal.otherSpeakers.contains(currentUser)){
                     <em>Sorry, votes for your talk are hidden.</em>
                 }else{
+
                     <div class="media">
                       @allVotes.sortBy(_._2).map { case (author, vote) =>
                         <div class="media-body">
-                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;voted @tags.renderVote(vote.toInt)
+                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;<h5 class="media-heading">voted @tags.renderVote(vote.toInt) </h5>
                         </div>
                     }
                     </div>
@@ -56,12 +91,17 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon-backward"></i>
+                    <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="icon-backward"></i>
                         Review or change your vote</a>
-                    <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()"><i class="icon-home"></i> Go back to home</a>
+                    <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i> Go back to home</a>
 
                 @nextToBeReviewer.map{nextProposal=>
-                    <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)"><i class="icon-forward"></i> Continue and evaluate next talk</a>
+                        @if(nextProposal.track.id ==  proposal.track.id ) {
+                            <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                Continue and evaluate next talk for track @Messages(nextProposal.track.label)</a>
+                        }else{
+                            <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextProposal.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i> Continue and evaluate next talk</a>
+                        }
 
                 }.getOrElse{
                     <a class="btn btn-default" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i> There is no more talk to review</a>

@@ -54,7 +54,6 @@
                         <thead>
                             <tr>
                                 <th>Average</th>
-                                <th>Median</th>
                                 <th>Nb of votes</th>
                                 <th>Nb of abstention</th>
                                 <th>Standard Deviation</th>
@@ -76,9 +75,6 @@
                                     @defining(voteAndTotalVotes._4) { average =>
                                        @average
                                     }
-                                    </td>
-                                    <td class="number_table">
-                                        @voteAndTotalVotes._6
                                     </td>
                                     <td  class="number_table">
                                     @defining(voteAndTotalVotes._2) { totalVoters =>
@@ -154,7 +150,6 @@
     "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5,10,25, 50, 75,100, "All"]],
     "bStateSave": true,
     "aoColumns": [
-        { "sType": "numeric"},
         { "sType": "numeric"},
         { "sType": "numeric"},
         { "sType": "numeric"},

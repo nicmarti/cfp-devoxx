@@ -167,6 +167,21 @@ object Mails {
     )
   }
 
+  def sendNotifyProposalSubmitted(fromWebuser: Webuser, proposal: Proposal) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    val subject: String = Messages("mail.notify_proposal.subject", fromWebuser.cleanName, proposal.title)
+
+    emailer.setSubject(subject)
+    emailer.addFrom(from)
+    emailer.addRecipient(comitteeEmail)
+    bcc.map(bccEmail => emailer.addBcc(bccEmail))
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString(),
+      views.html.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()
+    )
+  }
+
   def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[${proposal.title}][PRIVATE] ${fromWebuser.cleanName}")

@@ -29,7 +29,7 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
-import library.{SendMessageToCommitte, ZapActor}
+import library.{NotifyProposalSubmitted, SendMessageToCommitte, ZapActor}
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.json.Json
 import library.search.ElasticSearch
@@ -277,6 +277,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) => {
           Proposal.submit(uuid, proposalId)
+          ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.submitted"))
         }
         case None => {
