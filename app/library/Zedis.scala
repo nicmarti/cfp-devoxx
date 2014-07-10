@@ -8,6 +8,7 @@ package library
  * Created: 06/03/2013 12:24
  */
 
+import play.api.Play._
 import redis.clients.jedis._
 import scala.Predef.String
 import scala.collection.immutable._
@@ -305,6 +306,8 @@ object Dress extends Dress
 
 class Pool(val underlying: JedisPool) {
 
+  private val activeRedisDatabase:Option[Int] =current.configuration.getInt("redis.activeDatabase")
+
   def withClient[T](body: Dress.Wrap => T): T = {
     val jedis: Jedis = underlying.getResource
     if(play.Logger.of("library.Zedis.client").isDebugEnabled){
@@ -312,6 +315,10 @@ class Pool(val underlying: JedisPool) {
     }
 
     try {
+      // Select the active Redis database if it was specified in the configuration
+      // Note : you should not change the activeDatabase, unless you do testing
+      activeRedisDatabase.map(jedis.select(_))
+
       body(Dress.up(jedis))
     } finally {
       underlying.returnResourceObject(jedis)
