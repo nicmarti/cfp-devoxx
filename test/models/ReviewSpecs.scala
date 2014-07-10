@@ -23,13 +23,15 @@
 
 package models
 
+import library.Redis
+import org.specs2.control.Debug
 import play.api.test.{FakeApplication, WithApplication, PlaySpecification}
 
 /**
  * Review test for LUA.
  * Created by nicolas martignole on 10/07/2014.
  */
-class ReviewSpecs extends PlaySpecification {
+class ReviewSpecs extends PlaySpecification with Debug {
 
   // Use a different Redis Database than the PROD one
   val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase"->1)
@@ -40,10 +42,75 @@ class ReviewSpecs extends PlaySpecification {
 
 
    "Review" should {
-     "compute the Average with LUA" in new WithApplication(app = appWithTestRedis()) {
+     "return one review when a user votes" in new WithApplication(app = appWithTestRedis()) {
 
-       Review.countAll() mustEqual(0L)
+       // WARN : flush the DB
+       Redis.pool.withClient{
+         client=>
+           client.flushDB()
+       }
 
+       // WHEN
+       val proposalId="TEST"
+       val reviewerUUID="TEST_UUID"
+       val vote=5
+
+       Review.voteForProposal(proposalId, reviewerUUID, vote)
+
+       // THEN
+       Review.allHistoryOfVotes(proposalId) mustNotEqual Nil
+       Review.allProposalsWithNoVotes must be_==(Map.empty[String,Proposal])
+
+     }
+
+     "should have no more Proposal with no votes" in new WithApplication(app = appWithTestRedis()) {
+       // WARN : flush the DB
+       Redis.pool.withClient{
+         client=>
+           client.flushDB()
+       }
+
+       // WHEN
+       val proposalId="TEST"
+       val reviewerUUID="TEST_UUID"
+       val vote=5
+
+       Review.voteForProposal(proposalId, reviewerUUID, vote)
+
+       // THEN
+       Review.allProposalsWithNoVotes must be_==(Map.empty[String,Proposal])
+     }
+
+     "should return one submitted Proposal with no votes" in new WithApplication(app = appWithTestRedis()) {
+       // WARN : flush the DB
+       Redis.pool.withClient{
+         client=>
+           client.flushDB()
+       }
+
+       // GIVEN
+      val proposal= Proposal(id="TEST",event="Test",lang="FR",title="Demo unit test"
+                    , mainSpeaker="123"
+                    , secondarySpeaker=None
+                    , otherSpeakers=Nil
+                    , talkType = ProposalType.UNKNOWN
+                    , audienceLevel="test"
+                    , summary="Created from test"
+                    , privateMessage="Private message"
+                    , state= ProposalState.SUBMITTED
+                    ,sponsorTalk=false
+                    ,track=Track.UNKNOWN
+                    ,demoLevel="novice"
+                    ,userGroup=false
+                    ,wishlisted=None)
+
+
+       // WHEN
+       Proposal.save("123", proposal, ProposalState.SUBMITTED)
+
+
+       // THEN
+       Review.allProposalsWithNoVotes must haveKey("TEST")
      }
    }
 }

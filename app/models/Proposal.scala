@@ -1,13 +1,14 @@
 package models
 
+import org.joda.time.Instant
 import play.api.libs.json.Json
-import library.{Benchmark, Dress, Redis}
+import library.{Dress, Redis}
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 import play.api.data._
 import play.api.data.Forms._
 import play.api.templates.HtmlFormat
-import org.joda.time.{DateTime, Instant}
+
 import play.api.i18n.Messages
 
 /**
