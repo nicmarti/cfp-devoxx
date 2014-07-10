@@ -22,6 +22,8 @@ object ApplicationBuild extends Build {
     ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
     // Required for Wordpress only
     , "org.apache.xmlrpc" % "xmlrpc-client" % "3.1.3"
+    , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
+
   )
 
   libraryDependencies ++= Seq(

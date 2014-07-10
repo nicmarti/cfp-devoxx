@@ -153,10 +153,12 @@ object Leaderboard {
            score <- client.get("Leaderboard:bestReviewer:score")) yield (uuid, score)
   }
 
-  def worstReviewer() = Redis.pool.withClient {
+  def lazyOnes():Set[(String, String)] = Redis.pool.withClient {
     implicit client =>
-      for (uuid <- client.get("Leaderboard:worstReviewer:uuid");
+     val lazyOneWithOneVote = for (uuid <- client.get("Leaderboard:worstReviewer:uuid");
            score <- client.get("Leaderboard:worstReviewer:score")) yield (uuid, score)
+     val otherThatHaveNoVotes  =  client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne" ).map(s=>(s,"0"))
+     lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes
   }
 
   def totalSubmittedByCategories() = Redis.pool.withClient {

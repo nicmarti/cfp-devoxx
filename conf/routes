@@ -51,7 +51,7 @@ GET           /bug                                                   controllers
 POST          /bug/new                                               controllers.Application.submitIssue()
 
 # CFP Admin
-GET           /cfpadmin                                              controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None)
+GET           /cfpadmin                                              controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
 GET           /cfpadmin/proposal/:proposalId                         controllers.CFPAdmin.openForReview(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/msgToSpeaker            controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/postInternal            controllers.CFPAdmin.postInternalMessage(proposalId:String)
@@ -76,6 +76,8 @@ GET           /cfpadmin/allWebusers                                  controllers
 GET           /cfpadmin/allSpeakers                                  controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
 GET           /cfpadmin/allCFPWebusers                               controllers.CFPAdmin.allCFPWebusers()
 POST          /cfpadmin/cfpWebusers/trackLeaders                     controllers.CFPAdmin.updateTrackLeaders()
+GET           /cfpadmin/proposals/withNoVotes                        controllers.CFPAdmin.showProposalsWithNoVotes()
+
 
 GET           /cfpadmin/setPreferredDay                              controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
 GET           /cfpadmin/resetPreferredDay                            controllers.CFPAdmin.resetPreferredDay(proposalId:String)

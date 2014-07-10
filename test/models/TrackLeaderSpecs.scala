@@ -35,7 +35,8 @@ class TrackLeaderSpecs extends PlaySpecification {
 
   val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364")
 
-  val sampleTrack = ConferenceDescriptor.DevoxxTracks
+  val sampleTrack = ConferenceDescriptor.ConferenceTracks
+
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
   val appWithTestRedis = () => FakeApplication(additionalConfiguration = testRedis)

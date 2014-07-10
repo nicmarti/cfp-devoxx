@@ -1,0 +1,38 @@
+@(proposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@main("Proposals with no votes"){
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-list"></i> List of proposals with no votes</h3>
+                </div>
+
+                <div class="panel-body">
+                <h2>@proposals.map(_._2).size with no votes</h2>
+
+                @defining(proposals.filter(_._2.state==ProposalState.SUBMITTED)) { submittedProps =>
+                  <h3>@submittedProps.size Proposals Submitted</h3>
+                  @submittedProps.map(_._2).groupBy(_.track).map { byTracks =>
+                    <h4>@Messages(byTracks._1.label)</h4>
+                    @byTracks._2.map{props=>
+                      <a href="@routes.CFPAdmin.openForReview(props.id)">@props.title</a>  by @props.allSpeakers.map(_.cleanShortName)<br>
+                    }
+                  }
+                }
+
+                @defining(proposals.filter(_._2.state==ProposalState.DRAFT)) { submittedProps =>
+                    <h3>@submittedProps.size Proposals with status Draft</h3>
+                    <em>A proposal with status Draft cannot be reviewed.</em>
+                    @submittedProps.map(_._2).groupBy(_.track).map { byTracks =>
+                   <h4>@Messages(byTracks._1.label)</h4>
+                    @byTracks._2.map{props=>
+                      @props.title  by @props.allSpeakers.map(_.cleanShortName)<br>
+                    }
+                  }
+                }
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

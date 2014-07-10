@@ -520,6 +520,7 @@ demoLevel=What type of presentation will it be?
 demoLevel1.label=Slides only
 demoLevel2.label=Slides and code
 demoLevel3.label=Code only
+demoLevel4.label=No slides & code
 
 userGroup=Share my proposal with User Group?
 userGroup.checkbox=Yes, I am also interested to present this talk at other European User Groups
@@ -582,8 +583,22 @@ mail.email_validation.subject=Welcome to {0}, please validate your email address
 mail.issue_reported.subject=New issue reported on CFP web site
 mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
 mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
+mail.notify_proposal.subject={0} submitted a proposal [{1}]
+mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
 mail.proposal_approved.subject=Your proposal has been approved {0}
 mail.proposal_refused.subject=Your proposal has been refused {0}
 mail.speaker_cfp_results.subject=Call for Paper {0}
+
+proposal.audienceLevel=Audience level
+proposal.demoLevel=Type of presentation
+l1.label=level 1 : beginner/novice
+l2.label=Intermediate
+l3.label=Expert and senior
+d1.label=Slides only
+d2.label=Slides and code
+d3.label=Code only
+d4.label=No slides & code
+
+table.pres.trash=Delete this proposal
