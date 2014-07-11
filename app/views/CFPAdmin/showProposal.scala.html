@@ -63,7 +63,7 @@
                                 <td>
                                 <div class="showSpeakerDetails">
                                 @tags.showSpeakerTag(proposal.mainSpeaker)
-                                    <span><a href="#" class="btn btn-btn-sm btn-primary">Show speaker's bio panel</a></span>
+                                @tags.showSpeakerBioOverview(proposal.mainSpeaker)
                                 </div>
                                 </td>
                             </tr>
@@ -71,12 +71,12 @@
                                 <tr>
                                     <th>@Messages("admin.sp.secSpeaker")</th>
                                     <td>
-                                     <div class="showSecSpeakerDetails">
-                                    @proposal.secondarySpeaker.map { secondarySpeaker =>
-                                        @tags.showSpeakerTag(secondarySpeaker)
-                                    }
-                                         <span><a href="#" class="btn btn-btn-sm btn-primary">Show speaker's bio panel</a></span>
-                                         </div>
+                                        <div class="showSecSpeakerDetails">
+                                        @proposal.secondarySpeaker.map { secondarySpeaker =>
+                                            @tags.showSpeakerTag(secondarySpeaker)
+                                        }
+                                        @tags.showSpeakerBioOverview(proposal.mainSpeaker)
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -85,7 +85,8 @@
                                     <th>@Messages("admin.sp.otherSpeaker")</th>
                                     <td>
                                     @proposal.otherSpeakers.map { sp =>
-                                       @tags.showSpeakerTag(sp) <br>
+                                       @tags.showSpeakerTag(sp)
+                                       @tags.showSpeakerBioOverview(sp)
                                     }
                                     </td>
                                 </tr>
@@ -261,20 +262,3 @@
         </div>
     </div>
 }
-<script type="text/javascript">
-    $(document).ready(function($) {
-        $('.showSpeakerDetails')
-            .mousedown(function() {
-                $( this ).find( "span" ).text( "Loading..." );
-                $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.mainSpeaker)' );
-            });
-@if(proposal.secondarySpeaker.isDefined) {
-        $('.showSecSpeakerDetails')
-            .mousedown(function() {
-                $( this ).find( "span" ).text( "Loading..." );
-                $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.secondarySpeaker.get)' );
-            });
-    }
-}
-);
-</script>
