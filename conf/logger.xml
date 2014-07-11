@@ -19,6 +19,7 @@
     <logger name="library.ZapActor" level="INFO"/>
     <logger name="library.Zedis" level="INFO"/>
     <logger name="library.Zedis.client" level="INFO"/>
+    <logger name="library.ElasticSearch" level="DEBUG"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="ERROR"/>
     <logger name="application.IndexMaster" level="INFO"/>
