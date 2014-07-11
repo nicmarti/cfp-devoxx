@@ -11,9 +11,9 @@
 @if(total>1){
     <p>@total results</p>
 
-    @if(total>10){
+    @if(total>25){
 
-@defining(new java.math.BigDecimal(total).divide(new math.BigDecimal(10)).setScale(0,BigDecimal.RoundingMode.UP)) { totalPages =>
+@defining(new java.math.BigDecimal(total).divide(new math.BigDecimal(25)).setScale(0,BigDecimal.RoundingMode.UP)) { totalPages =>
 <div class="totalPage">page <span>@page</span> sur <span>@totalPages</span></div>
 <div class="paginate">
 <ul class="pagination">
