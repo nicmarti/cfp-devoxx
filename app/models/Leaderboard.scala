@@ -73,11 +73,13 @@ object Leaderboard {
       }
 
       val totalSubmittedByTrack = Proposal.totalSubmittedByTrack()
+      tx.del("Leaderboard:totalSubmittedByTrack")
       totalSubmittedByTrack.map {
         case (track: Track, total: Int) =>
-          tx.hset("Leaderboard:totalSubmittedByTrack", track.label, total.toString)
+          tx.hset("Leaderboard:totalSubmittedByTrack", track.id, total.toString)
       }
 
+      tx.del("Leaderboard:totalSubmittedByType")
       val totalSubmittedByType = Proposal.totalSubmittedByType()
       totalSubmittedByType.toList.map {
         case (propType: ProposalType, total: Int) =>
