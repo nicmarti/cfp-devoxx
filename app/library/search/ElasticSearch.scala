@@ -97,6 +97,47 @@ object ElasticSearch {
     }
   }
 
+  def doAdvancedSearch(index:String, query:Option[String], p:Option[Int])={
+
+    val someQuery=   query.filterNot(_ == "").filterNot(_ == "*")
+    val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}"}.getOrElse("\"match_all\" : { }")
+
+     val pageUpdated:Int = p match{
+      case None => 0
+      case Some(page) if page<=0 => 0
+      case Some(other) => other-1
+    }
+
+    val json:String=
+      s"""
+        |{
+        | "from" : $pageUpdated,
+        | "size" : 25,
+        | "query" : {
+        |   $zeQuery
+        | }
+        |}
+      """.stripMargin
+
+    if(play.Logger.of("library.ElasticSearch").isDebugEnabled){
+      play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch query $json")
+    }
+
+    val futureResponse = WS.url(host +"/" + index +"/_search")
+      .withFollowRedirects(true)
+      .withRequestTimeout(4000)
+      .withAuth(username, password, AuthScheme.BASIC)
+      .post(json)
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 200 => Success(response.body)
+          case other => Failure(new RuntimeException("Unable to perform search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+  }
+
+
   // This is interesting if you want to build a cloud of Words.
   def getTag(index:String)={
 
