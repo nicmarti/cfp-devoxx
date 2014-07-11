@@ -155,7 +155,8 @@ object ConferenceDescriptor {
     val LANG = Track("lang", "lang.label")
     val CLOUD = Track("cloud", "cloud.label")
     val WEB = Track("web", "web.label")
-    val ALL = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHOD_DEVOPS, FUTURE, LANG, CLOUD, WEB)
+    val UNKNOWN = Track("unknown", "unknown track")
+    val ALL = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHOD_DEVOPS, FUTURE, LANG, CLOUD, WEB, UNKNOWN)
   }
 
   object ConferenceTracksDescription {

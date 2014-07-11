@@ -42,6 +42,8 @@ object Track {
 
   val allIDs=ConferenceDescriptor.ConferenceTracks.ALL.map(_.id)
 
+  val all = ConferenceDescriptor.ConferenceTracks.ALL
+
   // Compute diff between two Set of Track then returns a ready-to-use list of id/label
   def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
     val diffSet = ConferenceDescriptor.ConferenceTracks.ALL.toSet.diff(otherTracks)
