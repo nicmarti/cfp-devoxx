@@ -24,16 +24,13 @@
 package models
 
 import library.Redis
+import play.api.test.{WithApplication, FakeApplication, PlaySpecification}
 import org.apache.commons.lang3.RandomStringUtils
-import org.joda.time.DateTime
-import org.specs2.control.Debug
-import play.api.test.{FakeApplication, WithApplication, PlaySpecification}
-
 /**
- * Review test for LUA.
+ * Leader board tests.
  * Created by nicolas martignole on 10/07/2014.
  */
-class ReviewSpecs extends PlaySpecification with Debug {
+class LeaderboardSpecs extends PlaySpecification {
 
   // Use a different Redis Database than the PROD one
   val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
@@ -42,9 +39,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
   val appWithTestRedis = () => FakeApplication(additionalConfiguration = testRedis)
 
-
-  "Review" should {
-    "return one review when a user votes" in new WithApplication(app = appWithTestRedis()) {
+  "Leaderboard" should {
+    "return the correct total number of speakers" in new WithApplication(app = appWithTestRedis()) {
 
       // WARN : flush the DB
       Redis.pool.withClient {
@@ -53,19 +49,17 @@ class ReviewSpecs extends PlaySpecification with Debug {
       }
 
       // WHEN
-      val proposalId = "TEST"
-      val reviewerUUID = "TEST_UUID"
-      val vote = 5
+      val speaker = Speaker("uuid", "email@test.fr", Some("Nic"), "bio", None, Some("@nmartignole"), None, Some("Innoteria"), Some("http://www.touilleur-express.fr"), Some("Nicolas"), Some("Developpeur"))
+      Speaker.save(speaker)
 
-      Review.voteForProposal(proposalId, reviewerUUID, vote)
+      Leaderboard.computeStats()
 
       // THEN
-      Review.allHistoryOfVotes(proposalId) mustNotEqual Nil
-      Review.allProposalsWithNoVotes must be_==(Map.empty[String, Proposal])
-
+      Leaderboard.totalSpeakers() mustEqual 1
     }
 
-    "should have no more Proposal with no votes" in new WithApplication(app = appWithTestRedis()) {
+    "return the number of proposals" in new WithApplication(app = appWithTestRedis()) {
+
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
@@ -73,55 +67,6 @@ class ReviewSpecs extends PlaySpecification with Debug {
       }
 
       // WHEN
-      val proposalId = "TEST"
-      val reviewerUUID = "TEST_UUID"
-      val vote = 5
-
-      Review.voteForProposal(proposalId, reviewerUUID, vote)
-
-      // THEN
-      Review.allProposalsWithNoVotes must be_==(Map.empty[String, Proposal])
-    }
-
-    "should return one submitted Proposal with no votes" in new WithApplication(app = appWithTestRedis()) {
-      // WARN : flush the DB
-      Redis.pool.withClient {
-        client =>
-          client.flushDB()
-      }
-
-      // GIVEN
-      val proposal = Proposal(id = "TEST", event = "Test", lang = "FR", title = "Demo unit test"
-        , mainSpeaker = "123"
-        , secondarySpeaker = None
-        , otherSpeakers = Nil
-        , talkType = ProposalType.UNKNOWN
-        , audienceLevel = "test"
-        , summary = "Created from test"
-        , privateMessage = "Private message"
-        , state = ProposalState.SUBMITTED
-        , sponsorTalk = false
-        , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
-        , wishlisted = None)
-
-
-      // WHEN
-      Proposal.save("123", proposal, ProposalState.SUBMITTED)
-
-      // THEN
-      Review.allProposalsWithNoVotes must haveKey("TEST")
-    }
-
-    "should return the Proposal as 'without votes' if we vote then we remove vote on this proposal" in new WithApplication(app = appWithTestRedis()) {
-      // WARN : flush the DB
-      Redis.pool.withClient {
-        client =>
-          client.flushDB()
-      }
-
-      // GIVEN
       val reviewerUUID = "SUPER_VOTER"
       val proposalId= RandomStringUtils.randomAlphabetic(12)
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
@@ -141,22 +86,21 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
-      // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,0)
-      Review.removeVoteForProposal(proposalId, reviewerUUID)
+      Leaderboard.computeStats()
 
       // THEN
-      Review.allProposalsWithNoVotes must haveKey(proposalId)
+      Leaderboard.totalProposals() mustEqual 1
     }
 
-    "should not return the Proposal from the list of proposals with no votes once we voted for it" in new WithApplication(app = appWithTestRedis()) {
+     "return the number of votes" in new WithApplication(app = appWithTestRedis()) {
+
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
           client.flushDB()
       }
 
-      // GIVEN
+      // WHEN
       val reviewerUUID = "SUPER_VOTER"
       val proposalId= RandomStringUtils.randomAlphabetic(12)
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
@@ -176,23 +120,24 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
-      // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,3)
+      Review.voteForProposal(proposalId, reviewerUUID, 2)
+
+      Leaderboard.computeStats()
 
       // THEN
-      Review.allProposalsWithNoVotes must beEmpty
+      Leaderboard.totalVotes() mustEqual 1
     }
 
-    "should return the Proposal from the list of proposals with no votes, if all votes have been deleted" in new WithApplication(app = appWithTestRedis()) {
+     "updates the total number of votes when a proposal is deleted" in new WithApplication(app = appWithTestRedis()) {
+
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
           client.flushDB()
       }
 
-      // GIVEN
+      // WHEN
       val reviewerUUID = "SUPER_VOTER"
-      val reviewerUUID2 = "SUPER_VOTER02"
       val proposalId= RandomStringUtils.randomAlphabetic(12)
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = "123"
@@ -211,28 +156,37 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
-      // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,3)
-      Review.voteForProposal(proposalId,reviewerUUID2,3)
-      Review.deleteVoteForProposal(proposalId)
+      Review.voteForProposal(proposalId, reviewerUUID, 2)
+
+      Leaderboard.computeStats()
+
+      Leaderboard.totalVotes() mustEqual 1
+      Leaderboard.totalProposals() mustEqual 1
+      Leaderboard.totalWithVotes() mustEqual 1
+      Leaderboard.totalNoVotes() mustEqual 0
+
+
+      Proposal.delete("test",proposalId)
+      Leaderboard.computeStats()
 
       // THEN
-      Review.allProposalsWithNoVotes must haveKey(proposalId)
-    }
+      Leaderboard.totalVotes() mustEqual 0
+      Leaderboard.totalProposals() mustEqual 0
+      Leaderboard.totalWithVotes() mustEqual 0
+      Leaderboard.totalNoVotes() mustEqual 0
+     }
 
-    "should return one Review" in new WithApplication(app = appWithTestRedis()) {
+     "updates the total withVotes or noVotes when we vote" in new WithApplication(app = appWithTestRedis()) {
+
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
           client.flushDB()
       }
 
-      // GIVEN
-      val reviewerUUID = "SUPER_VOTER34"
-      val reviewerUUID2 = "ABSTENTION"
-
+      // WHEN
+      val reviewerUUID = "SUPER_VOTER"
       val proposalId= RandomStringUtils.randomAlphabetic(12)
-
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = "123"
         , secondarySpeaker = None
@@ -250,35 +204,47 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
-      // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,7)
-      Review.voteForProposal(proposalId,reviewerUUID2,0)
+      Leaderboard.computeStats()
+
+      Leaderboard.totalVotes() mustEqual 0
+      Leaderboard.totalProposals() mustEqual 1
+      Leaderboard.totalWithVotes() mustEqual 0
+      Leaderboard.totalNoVotes() mustEqual 1
+
+      Review.voteForProposal(proposalId, reviewerUUID, 2)
+      Leaderboard.computeStats()
+
+      Leaderboard.totalVotes() mustEqual 1
+      Leaderboard.totalProposals() mustEqual 1
+      Leaderboard.totalWithVotes() mustEqual 1
+      Leaderboard.totalNoVotes() mustEqual 0
+
+
+
+      Proposal.delete("test",proposalId)
+      Leaderboard.computeStats()
 
       // THEN
-      Review.allHistoryOfVotes(proposalId) must haveLength(2)
-      Review.currentScore(proposalId) mustEqual 7
-      Review.totalVoteFor(proposalId) mustEqual 2
-      Review.totalVoteCastFor(proposalId) mustEqual 1
-    }
+      Leaderboard.totalVotes() mustEqual 0
+      Leaderboard.totalProposals() mustEqual 0
+      Leaderboard.totalWithVotes() mustEqual 0
+      Leaderboard.totalNoVotes() mustEqual 0
+     }
 
-    "should load the LUA script and compute some Stats"  in new WithApplication(app = appWithTestRedis()) {
+
+    "returns the correct worst reviewer" in new WithApplication(app = appWithTestRedis()) {
+
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
           client.flushDB()
       }
 
-      // GIVEN
-      val reviewerUUID = "SUPER_VOTER 01"
-      val reviewerUUID2 = "SUPER_VOTER 02"
-      val reviewerUUID3 = "ABSTENTION"
-
-      val author=RandomStringUtils.randomAlphabetic(12)
-
+      // WHEN
+      val reviewerUUID = "SUPER_VOTER"
       val proposalId= RandomStringUtils.randomAlphabetic(12)
-
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
-        , mainSpeaker = author
+        , mainSpeaker = "123"
         , secondarySpeaker = None
         , otherSpeakers = Nil
         , talkType = ProposalType.UNKNOWN
@@ -292,88 +258,34 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , userGroup = false
         , wishlisted = None)
 
-      Proposal.save(author, proposal, ProposalState.SUBMITTED)
-      Review.voteForProposal(proposalId,reviewerUUID,10)
-      Review.voteForProposal(proposalId,reviewerUUID2,5)
-      Review.voteForProposal(proposalId,reviewerUUID3,0)
+      Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
-      // WHEN
-      Review.computeAndGenerateVotes()
+      val reviewer01 = Webuser(reviewerUUID, "email@test.fr","nic","test","pass","cfp")
+      Webuser.saveAndValidateWebuser(reviewer01)
+
+      Review.voteForProposal(proposalId, reviewerUUID, 5)
+
+      Leaderboard.computeStats()
 
       // THEN
-      Review.allVotes() must haveSize(1)
-
-      val (checkedProposal, scoreAndTotalVotes) = Review.allVotes().head
-
-      checkedProposal mustEqual(proposalId)
-
-      val score = scoreAndTotalVotes._1
-      val voters = scoreAndTotalVotes._2
-      val abstentions = scoreAndTotalVotes._3
-      val average = scoreAndTotalVotes._4
-      val standardDev = scoreAndTotalVotes._5
-
-      score mustEqual 15
-      average mustEqual 7.5
-      voters mustEqual 2
-      abstentions mustEqual 1
-      standardDev mustEqual 3.536
-
+      Leaderboard.bestReviewer() must beSome[(String,String)]
+      Leaderboard.bestReviewer().head._1 must beEqualTo(reviewerUUID)
+      Leaderboard.bestReviewer().head._2 must beEqualTo("1")
+      Leaderboard.lazyOnes() must haveSize(1)
     }
 
-  "should load the LUA script and not crash if a proposal has no votes"  in new WithApplication(app = appWithTestRedis()) {
+    "returns the correct best worst reviewer with more than one CFP user" in new WithApplication(app = appWithTestRedis()) {
+
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
           client.flushDB()
       }
 
-      // GIVEN
-      val author=RandomStringUtils.randomAlphabetic(12)
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
-
-      val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Proposal with no vote"
-        , mainSpeaker = author
-        , secondarySpeaker = None
-        , otherSpeakers = Nil
-        , talkType = ProposalType.UNKNOWN
-        , audienceLevel = "test"
-        , summary = "Created from test"
-        , privateMessage = "Private message"
-        , state = ProposalState.SUBMITTED
-        , sponsorTalk = false
-        , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
-        , wishlisted = None)
-
-      Proposal.save(author, proposal, ProposalState.SUBMITTED)
-
-
       // WHEN
-      Review.computeAndGenerateVotes()
-
-      // THEN
-      Review.allVotes() must haveSize(0)
-    }
-
-    "should load the LUA script and compute correctly if proposal has only ABST votes"  in new WithApplication(app = appWithTestRedis()) {
-      // WARN : flush the DB
-      Redis.pool.withClient {
-        client =>
-          client.flushDB()
-      }
-
-      // GIVEN
-      val reviewerUUID = "SUPER_VOTER 01"
-      val reviewerUUID2 = "SUPER_VOTER 02"
-
-      val author=RandomStringUtils.randomAlphabetic(12)
-
       val proposalId= RandomStringUtils.randomAlphabetic(12)
-
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
-        , mainSpeaker = author
+        , mainSpeaker = "mainSpeakerUUID"
         , secondarySpeaker = None
         , otherSpeakers = Nil
         , talkType = ProposalType.UNKNOWN
@@ -386,35 +298,106 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , demoLevel = "novice"
         , userGroup = false
         , wishlisted = None)
+      Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
-      Proposal.save(author, proposal, ProposalState.SUBMITTED)
-      // Both votes 0 for this talk
-      Review.voteForProposal(proposalId,reviewerUUID,0)
-      Review.voteForProposal(proposalId,reviewerUUID2,0)
+            val proposalId2= RandomStringUtils.randomAlphabetic(12)
+      val proposal2 = Proposal(id = proposalId2, event = "Test", lang = "FR", title = "Demo unit test 2"
+        , mainSpeaker = "mainSpeakerUUID2"
+        , secondarySpeaker = None
+        , otherSpeakers = Nil
+        , talkType = ProposalType.UNKNOWN
+        , audienceLevel = "test"
+        , summary = "Created from test"
+        , privateMessage = "Private message"
+        , state = ProposalState.SUBMITTED
+        , sponsorTalk = false
+        , track = Track.UNKNOWN
+        , demoLevel = "novice"
+        , userGroup = false
+        , wishlisted = None)
+      Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
-      // WHEN
-      Review.computeAndGenerateVotes()
+      val reviewerUUID = "SUPER_VOTER"
+      val reviewer01 = Webuser(reviewerUUID, "email1@test.fr","nic1","test1","pass1","cfp")
+      Webuser.saveAndValidateWebuser(reviewer01)
+      Review.voteForProposal(proposalId, reviewerUUID, 5)
+      Review.voteForProposal(proposalId2, reviewerUUID, 8)
+
+      val reviewerUUID2 = "SUPER_LAZY"
+      val reviewer02 = Webuser(reviewerUUID2, "email2@test.fr","nic2","test2","pass2","cfp")
+      Webuser.saveAndValidateWebuser(reviewer02)
+
+      val reviewerUUID3 = "ONE_VOTE"
+      val reviewer03= Webuser(reviewerUUID3, "email3@test.fr","nic3","test3","pass3","cfp")
+      Webuser.saveAndValidateWebuser(reviewer03)
+      Review.voteForProposal(proposalId, reviewerUUID3, 9)
+
+      Leaderboard.computeStats()
 
       // THEN
-      Review.allVotes() must haveSize(1)
+      Leaderboard.bestReviewer() must beSome[(String,String)]
+      Leaderboard.bestReviewer().head._1 must beEqualTo(reviewerUUID)
+      Leaderboard.bestReviewer().head._2 must beEqualTo("2")
 
-      val (checkedProposal, scoreAndTotalVotes) = Review.allVotes().head
+      Leaderboard.worstReviewer() must beSome[(String,String)]
+      Leaderboard.worstReviewer().head._1 must beEqualTo(reviewerUUID3)
+      Leaderboard.worstReviewer().head._2 must beEqualTo("1")
 
-      checkedProposal mustEqual(proposalId)
+      Leaderboard.lazyOnes() must haveSize(2)
+      Leaderboard.lazyOnes() must havePair((reviewerUUID2,"0"))
+      Leaderboard.lazyOnes() must havePair((reviewerUUID3,"1"))
+    }
 
-      val score = scoreAndTotalVotes._1
-      val voters = scoreAndTotalVotes._2
-      val abstentions = scoreAndTotalVotes._3
-      val average = scoreAndTotalVotes._4
-      val standardDev = scoreAndTotalVotes._5
 
-      score mustEqual 0
-      average mustEqual 0
-      voters mustEqual 0
-      abstentions mustEqual 2
-      standardDev mustEqual 0
+    "returns the correct total submitted by categories" in new WithApplication(app = appWithTestRedis()) {
 
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // WHEN
+      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
+        , mainSpeaker = "mainSpeakerUUID"
+        , secondarySpeaker = None
+        , otherSpeakers = Nil
+        , talkType = ProposalType.UNKNOWN
+        , audienceLevel = "test"
+        , summary = "Created from test"
+        , privateMessage = "Private message"
+        , state = ProposalState.SUBMITTED
+        , sponsorTalk = false
+        , track = Track.UNKNOWN
+        , demoLevel = "novice"
+        , userGroup = false
+        , wishlisted = None)
+      Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
+
+      val proposalId2= RandomStringUtils.randomAlphabetic(12)
+      val proposal2 = Proposal(id = proposalId2, event = "Test", lang = "FR", title = "Demo unit test 2"
+        , mainSpeaker = "mainSpeakerUUID2"
+        , secondarySpeaker = None
+        , otherSpeakers = Nil
+        , talkType = ProposalType.UNKNOWN
+        , audienceLevel = "test"
+        , summary = "Created from test"
+        , privateMessage = "Private message"
+        , state = ProposalState.SUBMITTED
+        , sponsorTalk = false
+        , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
+        , demoLevel = "novice"
+        , userGroup = false
+        , wishlisted = None)
+      Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
+
+      Leaderboard.computeStats()
+
+      // THEN
+      Leaderboard.totalSubmittedByTrack() must haveSize(2)
     }
 
   }
+
 }
