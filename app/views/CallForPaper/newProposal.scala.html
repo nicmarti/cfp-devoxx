@@ -47,7 +47,7 @@
                      <input type="hidden" name="lang" value="en">
                 }
                 @tags.selectI18N(field = newProposal("talkType"), options=ProposalType.allForCombos,  'class->"form-control")
-                @tags.selectI18N(field = newProposal("track"), options=Track.allAsIdsAndLabels,  'class->"form-control")
+                @tags.selectI18N(field = newProposal("track"), options=Track.allAsIdsAndLabels.filterNot(_._1==Track.UNKNOWN.id),  'class->"form-control")
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,  'class->"form-control")
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,  'class->"form-control")
 

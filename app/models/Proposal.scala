@@ -28,8 +28,7 @@ object ProposalType {
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
   def allForCombos = {
-    val allProposalTypes = all
-    val onlyThoseThatShouldBeDisplayed = allProposalTypes.filter(pt=>ConferenceDescriptor.ConferenceProposalTypes.ALL.exists(pc=>pc.id==pt.id))
+    val onlyThoseThatShouldBeDisplayed = all.filterNot(_ == UNKNOWN)
     val finalFormat=onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
     finalFormat
   }

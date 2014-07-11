@@ -38,11 +38,12 @@ object Track {
 
   val UNKNOWN=Track("unknown", "unknown.label")
 
-  val allAsIdsAndLabels:Seq[(String,String)] = ConferenceDescriptor.ConferenceTracks.ALL.map(a=>(a.id,a.label)).toSeq.sorted
+  val all = ConferenceDescriptor.ConferenceTracks.ALL
+
+  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).toSeq.sorted
 
   val allIDs=ConferenceDescriptor.ConferenceTracks.ALL.map(_.id)
 
-  val all = ConferenceDescriptor.ConferenceTracks.ALL
 
   // Compute diff between two Set of Track then returns a ready-to-use list of id/label
   def diffFrom(otherTracks:Set[Track]):Seq[(String,String)] ={
