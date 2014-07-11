@@ -59,33 +59,37 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
-                                <th>@Messages("admin.sp.mainSpeaker")</th>
+                                <th>@tags.showSpeakerTag(proposal.mainSpeaker)</th>
                                 <td>
                                 <div class="showSpeakerDetails">
-                                @tags.showSpeakerTag(proposal.mainSpeaker)
                                 @tags.showSpeakerBioOverview(proposal.mainSpeaker)
                                 </div>
                                 </td>
                             </tr>
                             @if(proposal.secondarySpeaker.isDefined) {
                                 <tr>
-                                    <th>@Messages("admin.sp.secSpeaker")</th>
+                                    <th>@proposal.secondarySpeaker.map { secondarySpeaker =>
+                                            @tags.showSpeakerTag(secondarySpeaker)
+                                        }
+                                    </th>
                                     <td>
                                         <div class="showSecSpeakerDetails">
                                         @proposal.secondarySpeaker.map { secondarySpeaker =>
-                                            @tags.showSpeakerTag(secondarySpeaker)
+                                            @tags.showSpeakerBioOverview(secondarySpeaker)
                                         }
-                                        @tags.showSpeakerBioOverview(proposal.mainSpeaker)
                                         </div>
                                     </td>
                                 </tr>
                             }
                             @if(proposal.otherSpeakers.nonEmpty) {
                                 <tr>
-                                    <th>@Messages("admin.sp.otherSpeaker")</th>
+                                    <th>
+                                    @proposal.otherSpeakers.map { sp =>
+                                        @tags.showSpeakerTag(sp)
+                                    }
+                                    </th>
                                     <td>
                                     @proposal.otherSpeakers.map { sp =>
-                                       @tags.showSpeakerTag(sp)
                                        @tags.showSpeakerBioOverview(sp)
                                     }
                                     </td>
