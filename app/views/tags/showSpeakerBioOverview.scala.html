@@ -1,6 +1,7 @@
-@(speaker:Speaker)
+@(speakerId:String)
 
 <div class="speakerOverview">
+@models.Speaker.findByUUID(speakerId).map{speaker:Speaker=>
 <h3>@speaker.cleanName @speaker.company.map{c=>
 <em>@c</em>
 }</h3>
@@ -12,5 +13,6 @@
     <p>@speaker.qualifications</p>
 }.getOrElse{
  <em>Speaker did not yet entered its speaking skills/qualifications</em>
+}
 }
 </div>

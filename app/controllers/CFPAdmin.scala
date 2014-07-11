@@ -318,17 +318,6 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def showSpeakerBioOverview(uuid: String) = SecuredAction {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      Speaker.findByUUID(uuid) match {
-        case Some(speaker) => {
-          Ok(views.html.CFPAdmin.showSpeakerBioOverview(speaker))
-        }
-        case None => NotFound("Speaker not found")
-      }
-  }
-
   def allVotes(confType: String, track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
