@@ -398,6 +398,54 @@ class LeaderboardSpecs extends PlaySpecification {
       Leaderboard.totalSubmittedByTrack() must haveSize(2)
     }
 
+    "returns the correct total submitted by type" in new WithApplication(app = appWithTestRedis()) {
+
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // WHEN
+      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
+        , mainSpeaker = "mainSpeakerUUID"
+        , secondarySpeaker = None
+        , otherSpeakers = Nil
+        , talkType = ProposalType.UNKNOWN
+        , audienceLevel = "test"
+        , summary = "Created from test"
+        , privateMessage = "Private message"
+        , state = ProposalState.SUBMITTED
+        , sponsorTalk = false
+        , track = Track.UNKNOWN
+        , demoLevel = "novice"
+        , userGroup = false
+        , wishlisted = None)
+      Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
+
+      val proposalId2= RandomStringUtils.randomAlphabetic(12)
+      val proposal2 = Proposal(id = proposalId2, event = "Test", lang = "FR", title = "Demo unit test 2"
+        , mainSpeaker = "mainSpeakerUUID2"
+        , secondarySpeaker = None
+        , otherSpeakers = Nil
+        , talkType = ProposalType.all.filterNot(_.id==ProposalType.UNKNOWN.id).head
+        , audienceLevel = "test"
+        , summary = "Created from test"
+        , privateMessage = "Private message"
+        , state = ProposalState.SUBMITTED
+        , sponsorTalk = false
+        , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
+        , demoLevel = "novice"
+        , userGroup = false
+        , wishlisted = None)
+      Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
+
+      Leaderboard.computeStats()
+
+      // THEN
+      Leaderboard.totalSubmittedByType() must haveSize(2)
+    }
   }
 
 }
