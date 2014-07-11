@@ -15,11 +15,11 @@
                                                    <th>@Messages("admin.proposals.th.title")</th>
                                                    <th>
                                                    @Messages("admin.proposals.th.track")
-                                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" alt="See all" title="See all proposals by track"><i class="icon-arrow-right"></i> </a></small>
                                                    </th>
 
                                                    <th>@Messages("admin.proposals.th.talkType")
-                                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" alt="See all" title="See all proposals by type"><i class="icon-arrow-right"></i> </a></small>
                                                    </th>
                                                    <th>@Messages("admin.proposals.th.lang")</th>
                                                </tr>
@@ -63,7 +63,7 @@
                                 <td>
                                 <div class="showSpeakerDetails">
                                 @tags.showSpeakerTag(proposal.mainSpeaker)
-                                    <span></span>
+                                    <span><a href="#" class="btn btn-btn-sm btn-primary">Show speaker's bio panel</a></span>
                                 </div>
                                 </td>
                             </tr>
@@ -75,7 +75,7 @@
                                     @proposal.secondarySpeaker.map { secondarySpeaker =>
                                         @tags.showSpeakerTag(secondarySpeaker)
                                     }
-                                         <span></span>
+                                         <span><a href="#" class="btn btn-btn-sm btn-primary">Show speaker's bio panel</a></span>
                                          </div>
                                     </td>
                                 </tr>
@@ -264,21 +264,15 @@
 <script type="text/javascript">
     $(document).ready(function($) {
         $('.showSpeakerDetails')
-            .mouseenter(function() {
+            .mousedown(function() {
                 $( this ).find( "span" ).text( "Loading..." );
                 $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.mainSpeaker)' );
-            })
-            .mouseleave(function() {
-                $( this ).find( "span" ).text( "" );
             });
 @if(proposal.secondarySpeaker.isDefined) {
         $('.showSecSpeakerDetails')
-            .mouseenter(function() {
+            .mousedown(function() {
                 $( this ).find( "span" ).text( "Loading..." );
                 $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.secondarySpeaker.get)' );
-            })
-            .mouseleave(function() {
-                $( this ).find( "span" ).text( "" );
             });
     }
 }
