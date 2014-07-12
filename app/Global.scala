@@ -3,8 +3,6 @@ import library._
 import library.DraftReminder
 import library.search._
 import library.search.StopIndex
-import models.RequestToTalk
-import models.ConferenceDescriptor
 import org.joda.time.DateMidnight
 import play.api._
 import play.api.mvc.RequestHeader
@@ -16,7 +14,6 @@ import Play.current
 import scala.concurrent.Future
 import play.api.libs.concurrent._
 import scala.concurrent.duration._
-import scala.Some
 import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
@@ -63,8 +60,7 @@ object Global extends GlobalSettings {
 
   override def onStop(app: Application) = {
     ZapActor.actor ! akka.actor.PoisonPill
-    ElasticSearchActor.masterActor ! StopIndex()
-
+    ElasticSearchActor.masterActor ! StopIndex
     super.onStop(app)
   }
 }
@@ -98,16 +94,19 @@ object CronTask {
   def elasticSearch() = {
     import Contexts.elasticSearchContext
 
+    // Configure Elastic search, flush indexes
+    ElasticSearchActor.masterActor ! DoCreateConfigureIndex
+
     // Create a cron task
     if(Play.isDev){
-      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
-      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllProposals())
-      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllHitViews())
+      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
+      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllProposals)
+      Akka.system.scheduler.schedule(1 hour, 2 hours, ElasticSearchActor.masterActor, DoIndexAllHitViews)
     }
     if(Play.isProd){
-      Akka.system.scheduler.schedule(10 hour, 1 hour, ElasticSearchActor.masterActor, DoIndexAllSpeakers())
-      Akka.system.scheduler.schedule(25 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexAllProposals())
-      Akka.system.scheduler.schedule(2 minutes, 20 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews())
+      Akka.system.scheduler.schedule(10 hour, 1 hour, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
+      Akka.system.scheduler.schedule(25 minutes, 1 hour, ElasticSearchActor.masterActor, DoIndexAllProposals)
+      Akka.system.scheduler.schedule(2 minutes, 20 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews)
     }
   }
 
