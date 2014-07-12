@@ -117,7 +117,6 @@ object ElasticSearch {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
       play.Logger.of("library.ElasticSearch").debug(s"Deleting index $indexName")
     }
-
     val futureResponse = WS.url(host + "/" + indexName + "/")
       .withAuth(username, password, AuthScheme.BASIC)
       .delete()
@@ -204,13 +203,24 @@ object ElasticSearch {
         |     "tags" : {
         |       "terms" : {
         |         "fields" : ["summary"],
-        |         "size":100
+        |         "size":100,
+        |         "exclude": ["how","what","you", "we", "can", "your", "talk", "from",
+        |         "session", "have", "use", "all", "using", "about", "like", "also",
+        |         "more", "new", "some", "has", "which", "one", "do", "i",
+        |         "when", "so", "many", "our", "make", "used", "presentation", "based", "them",
+        |         "most", "way", "see", "other", "open", "get", "real", "through", "features",
+        |         "out", "need", "well", "world", "up", "8",  "look", "been", "its", "even", "just",
+        |         "work", "want", "us", "own", "over",  "both", "write", "where", "take",
+        |         "should", "come", "show", "while", "provide","much","than",
+        |         "years","year","one","two","three","lot","any","live","still","very","each","we'll",
+        |         "several","provides", "same","those","really","next","first"
+        |         ]
         |       }
         |     }
         |  }
         |}
       """.stripMargin
-    val futureResponse = WS.url(host + "/" + index + "/_search?")
+    val futureResponse = WS.url(host + "/" + index + "/_search?search_type=count")
       .withAuth(username, password, AuthScheme.BASIC)
       .post(json)
     futureResponse.map {
