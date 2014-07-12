@@ -94,12 +94,6 @@ object CronTask {
   def elasticSearch() = {
     import Contexts.elasticSearchContext
 
-    // Create a cron task
-    if(Play.isDev){
-      Akka.system.scheduler.scheduleOnce(1 minute, ElasticSearchActor.masterActor, DoCreateConfigureIndex)
-      Akka.system.scheduler.scheduleOnce(2 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
-      Akka.system.scheduler.scheduleOnce(2 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
-    }
 
     if(Play.isProd){
       Akka.system.scheduler.scheduleOnce(10 minutes, ElasticSearchActor.masterActor, DoCreateConfigureIndex)
