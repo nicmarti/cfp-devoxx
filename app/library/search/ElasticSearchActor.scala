@@ -133,6 +133,7 @@ class IndexMaster extends ESActor {
     sb.append("\n")
 
     ElasticSearch.indexBulk(sb.toString(),"speakers")
+    ElasticSearch.refresh()
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all speakers")
   }
@@ -160,6 +161,7 @@ class IndexMaster extends ESActor {
     sb.append("\n")
 
     ElasticSearch.indexBulk(sb.toString(), "proposals")
+    ElasticSearch.refresh()
 
     play.Logger.of("application.IndexMaster").debug("Indexed all proposals")
   }
@@ -506,13 +508,10 @@ class IndexMaster extends ESActor {
       """.stripMargin
 
 
-    println("---- Proposal -----")
-    println(settingsProposalsEnglish)
-
     // TODO dirty sequential, but it must be implemented like that
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
                         res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsProposalsEnglish);
-                        res4 <- ElasticSearch.refresh()
+                        res3 <- ElasticSearch.refresh()
 
     ) yield
     {
@@ -521,7 +520,7 @@ class IndexMaster extends ESActor {
 
      val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
                                  res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsSpeakersEnglish);
-                                 res4 <- ElasticSearch.refresh()
+                                 res3 <- ElasticSearch.refresh()
 
     ) yield
     {
