@@ -101,8 +101,8 @@ GET           /admin/clearCaches                                     controllers
 GET           /admin/authenticateAs/:uuid                            controllers.Backoffice.authenticateAs(uuid:String)
 GET           /admin/authenticateAndCreate/:uuid                     controllers.Backoffice.authenticateAndCreateTalk(uuid:String)
 
-GET           /admin/elastic                                         controllers.Backoffice.doIndexElasticSearch()
-
+GET           /admin/elastic/reset                                   controllers.Backoffice.doResetAndConfigureElasticSearch()
+GET           /admin/elastic/index                                   controllers.Backoffice.doIndexElasticSearch()
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                              controllers.ApproveOrRefuse.doApprove(proposalId:String)

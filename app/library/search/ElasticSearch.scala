@@ -213,7 +213,8 @@ object ElasticSearch {
         |         "work", "want", "us", "own", "over",  "both", "write", "where", "take",
         |         "should", "come", "show", "while", "provide","much","than",
         |         "years","year","one","two","three","lot","any","live","still","very","each","we'll",
-        |         "several","provides", "same","those","really","next","first"
+        |         "several","provides", "same","those","really","next","first","give","few",
+        |         "would","now","end","does","only","my","makes"
         |         ]
         |       }
         |     }

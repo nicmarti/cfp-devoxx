@@ -135,6 +135,12 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Elastic search actor started...")
   }
 
+  def doResetAndConfigureElasticSearch() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+    ElasticSearchActor.masterActor ! DoCreateConfigureIndex
+    Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Deleted and now creating [speakers] and [proposals] indexes. Please force an indexer in one or two minuts.")
+  }
+
   // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
   def cleanUpVotesIfUserWasDeleted = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
