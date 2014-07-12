@@ -42,7 +42,10 @@ object ElasticSearch {
   def createIndexWithSettings(index: String, settings: String) = {
     println("Create index with settings")
     val url = s"$host/${index.toLowerCase}"
-    val futureResponse = WS.url(url).withRequestTimeout(6000).post(settings)
+    val futureResponse = WS.url(url)
+      .withAuth(username, password, AuthScheme.BASIC)
+      .withRequestTimeout(6000)
+      .post(settings)
     futureResponse.map {
       response =>
         response.status match {
@@ -62,7 +65,10 @@ object ElasticSearch {
   // PUT /speakers/speaker/_mapping?ignore_conflicts=true
   def createMapping(index: String, mapping: String) = {
     val url = s"$host/$index/_mapping?ignore_conflicts=true"
-    val futureResponse = WS.url(url).withRequestTimeout(6000).put(mapping)
+    val futureResponse = WS.url(url)
+      .withAuth(username, password, AuthScheme.BASIC)
+      .withRequestTimeout(6000)
+      .put(mapping)
     futureResponse.map {
       response =>
         response.status match {
@@ -76,7 +82,10 @@ object ElasticSearch {
   def refresh()={
     // http://localhost:9200/_refresh
     val url = s"$host/_refresh"
-    val futureResponse = WS.url(url).withRequestTimeout(6000).post("{}")
+    val futureResponse = WS.url(url)
+      .withRequestTimeout(6000)
+      .withAuth(username, password, AuthScheme.BASIC)
+      .post("{}")
     futureResponse.map {
       response =>
         response.status match {
@@ -158,8 +167,7 @@ object ElasticSearch {
       case Some(other) => (other - 1) * 25
     }
 
-    val json: String =
-      s"""
+    val json: String = s"""
         |{
         | "from" : $pageUpdated,
         | "size" : $pageSize,
