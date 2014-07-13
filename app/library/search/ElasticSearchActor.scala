@@ -1,5 +1,7 @@
 package library.search
 
+import java.io.{PrintWriter, FileWriter, File}
+
 import play.api.libs.json.Json
 import akka.actor._
 import play.api.libs.concurrent.Execution.Implicits._
@@ -133,7 +135,6 @@ class IndexMaster extends ESActor {
     sb.append("\n")
 
     ElasticSearch.indexBulk(sb.toString(),"speakers")
-    ElasticSearch.refresh()
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all speakers")
   }
@@ -148,43 +149,60 @@ class IndexMaster extends ESActor {
   def doIndexAllProposals() {
     play.Logger.of("application.IndexMaster").debug("Do index all proposals")
 
-    val proposals = Proposal.allAccepted() ++ Proposal.allSubmitted()
+    val allAccepted = Proposal.allAccepted()
+    val allSubmitted = Proposal.allSubmitted()
 
-    val sb = new StringBuilder
-    proposals.foreach {
-      proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
-        sb.append("\n")
-        sb.append(Json.toJson(proposal))
-        sb.append("\n")
+    // We cannot index all proposals, if the size > 1mb then Elasticsearch on clevercloud
+    // returns a 413 Entity too large
+    allAccepted.sliding(200,200).foreach{gop=>
+      indexProposalsToElasticSearch(gop)
     }
-    sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), "proposals")
+    allSubmitted.sliding(200,200).foreach{groupOfProposals=>
+      indexProposalsToElasticSearch(groupOfProposals)
+    }
+
     ElasticSearch.refresh()
 
     play.Logger.of("application.IndexMaster").debug("Indexed all proposals")
   }
 
+  private def indexProposalsToElasticSearch(proposals:List[Proposal])={
+    if(play.Logger.of("application.IndexMaster").isDebugEnabled) {
+      play.Logger.of("application.IndexMaster").debug("Indexing proposals "+proposals.size)
+    }
+    val sb = new StringBuilder
+    proposals.foreach {
+      proposal: Proposal =>
+        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("\n")
+        sb.append(Json.toJson(proposal.copy(privateMessage = ""))) // do not index the private message
+        sb.append("\n")
+    }
+    sb.append("\n")
+
+    ElasticSearch.indexBulk(sb.toString(), "proposals")
+  }
+
 
   def doIndexAllApproved() {
-    play.Logger.of("application.IndexMaster").debug("Do index all proposals")
+    play.Logger.of("application.IndexMaster").debug("Do index all approved proposals")
 
     val proposals = ApprovedProposal.allApproved()
 
     val sb = new StringBuilder
     proposals.foreach {
       proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"accepted\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"approved\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
-        sb.append(Json.toJson(proposal))
+        sb.append(Json.toJson(proposal.copy(privateMessage = "")))
         sb.append("\n")
     }
     sb.append("\n")
 
     ElasticSearch.indexBulk(sb.toString(), "proposals")
 
-    play.Logger.of("application.IndexMaster").debug("Done indexing all proposals")
+    play.Logger.of("application.IndexMaster").debug("Done indexing all approved proposals")
   }
 
   def doIndexAllReviews() {
@@ -510,8 +528,7 @@ class IndexMaster extends ESActor {
 
     // TODO dirty sequential, but it must be implemented like that
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
-                        res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsProposalsEnglish);
-                        res3 <- ElasticSearch.refresh()
+                        res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsProposalsEnglish)
 
     ) yield
     {
@@ -519,8 +536,7 @@ class IndexMaster extends ESActor {
     }
 
      val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
-                                 res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsSpeakersEnglish);
-                                 res3 <- ElasticSearch.refresh()
+                                 res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsSpeakersEnglish)
 
     ) yield
     {
