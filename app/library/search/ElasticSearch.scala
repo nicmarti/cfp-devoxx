@@ -40,20 +40,25 @@ object ElasticSearch {
   }
 
   def createIndexWithSettings(index: String, settings: String) = {
-    println("Create index with settings")
+    if(play.Logger.of("library.ElasticSearch").isDebugEnabled){
+      play.Logger.of("library.ElasticSearch")debug(s"Create index ${index} with settings ${settings}")
+    }
     val url = s"$host/${index.toLowerCase}"
     val futureResponse = WS.url(url)
       .withAuth(username, password, AuthScheme.BASIC)
-      .withRequestTimeout(6000)
       .post(settings)
     futureResponse.map {
       response =>
         response.status match {
           case 201 =>
-            println("Created index "+response.body)
+            if(play.Logger.of("library.ElasticSearch").isDebugEnabled){
+              play.Logger.of("library.ElasticSearch")debug(s"Created index ${index}")
+            }
             Success(response.body)
           case 200 =>
-            println("OK index "+response.body)
+            if(play.Logger.of("library.ElasticSearch").isDebugEnabled){
+              play.Logger.of("library.ElasticSearch")debug(s"Created index ${index}")
+            }
             Success(response.body)
           case other =>
             play.Logger.of("library.ElasticSearch").warn("Unable to create index with settings due to "+response.body)
@@ -101,7 +106,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Bulk index started to $host")
     }
 
-    val futureResponse = WS.url(s"$host/$indexName/_bulk?refresh=true")
+    val futureResponse = WS.url(s"$host/$indexName/_bulk")
       .withAuth(username, password, AuthScheme.BASIC)
       .post(json)
     futureResponse.map {
