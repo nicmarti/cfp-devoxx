@@ -15,11 +15,11 @@
                                                    <th>@Messages("admin.proposals.th.title")</th>
                                                    <th>
                                                    @Messages("admin.proposals.th.track")
-                                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" alt="See all" title="See all proposals by track"><i class="icon-arrow-right"></i> </a></small>
                                                    </th>
 
                                                    <th>@Messages("admin.proposals.th.talkType")
-                                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" class="btn btn-primary btn-sm"><i class="icon-chevron-right"></i> </a></small>
+                                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" alt="See all" title="See all proposals by type"><i class="icon-arrow-right"></i> </a></small>
                                                    </th>
                                                    <th>@Messages("admin.proposals.th.lang")</th>
                                                </tr>
@@ -59,33 +59,38 @@
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
-                                <th>@Messages("admin.sp.mainSpeaker")</th>
+                                <th>@tags.showSpeakerTag(proposal.mainSpeaker)</th>
                                 <td>
                                 <div class="showSpeakerDetails">
-                                @tags.showSpeakerTag(proposal.mainSpeaker)
-                                    <span></span>
+                                @tags.showSpeakerBioOverview(proposal.mainSpeaker)
                                 </div>
                                 </td>
                             </tr>
                             @if(proposal.secondarySpeaker.isDefined) {
                                 <tr>
-                                    <th>@Messages("admin.sp.secSpeaker")</th>
+                                    <th>@proposal.secondarySpeaker.map { secondarySpeaker =>
+                                            @tags.showSpeakerTag(secondarySpeaker)
+                                        }
+                                    </th>
                                     <td>
-                                     <div class="showSecSpeakerDetails">
-                                    @proposal.secondarySpeaker.map { secondarySpeaker =>
-                                        @tags.showSpeakerTag(secondarySpeaker)
-                                    }
-                                         <span></span>
-                                         </div>
+                                        <div class="showSecSpeakerDetails">
+                                        @proposal.secondarySpeaker.map { secondarySpeaker =>
+                                            @tags.showSpeakerBioOverview(secondarySpeaker)
+                                        }
+                                        </div>
                                     </td>
                                 </tr>
                             }
                             @if(proposal.otherSpeakers.nonEmpty) {
                                 <tr>
-                                    <th>@Messages("admin.sp.otherSpeaker")</th>
+                                    <th>
+                                    @proposal.otherSpeakers.map { sp =>
+                                        @tags.showSpeakerTag(sp)
+                                    }
+                                    </th>
                                     <td>
                                     @proposal.otherSpeakers.map { sp =>
-                                       @tags.showSpeakerTag(sp) <br>
+                                       @tags.showSpeakerBioOverview(sp)
                                     }
                                     </td>
                                 </tr>
@@ -261,26 +266,3 @@
         </div>
     </div>
 }
-<script type="text/javascript">
-    $(document).ready(function($) {
-        $('.showSpeakerDetails')
-            .mouseenter(function() {
-                $( this ).find( "span" ).text( "Loading..." );
-                $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.mainSpeaker)' );
-            })
-            .mouseleave(function() {
-                $( this ).find( "span" ).text( "" );
-            });
-@if(proposal.secondarySpeaker.isDefined) {
-        $('.showSecSpeakerDetails')
-            .mouseenter(function() {
-                $( this ).find( "span" ).text( "Loading..." );
-                $( this ).find( "span" ).load( '@routes.CFPAdmin.showSpeakerBioOverview(proposal.secondarySpeaker.get)' );
-            })
-            .mouseleave(function() {
-                $( this ).find( "span" ).text( "" );
-            });
-    }
-}
-);
-</script>

@@ -1,0 +1,87 @@
+@(req:RequestHeader, page:Int, total:Int)
+@import java.math
+
+<div class="paginator">
+@if(total==0){
+   <p>No results</p>
+}
+@if(total==1){
+   <p>One result</p>
+}
+@if(total>1){
+    <p>@total results</p>
+
+    @if(total>25){
+
+@defining(new java.math.BigDecimal(total).divide(new math.BigDecimal(25)).setScale(0,BigDecimal.RoundingMode.UP)) { totalPages =>
+<div class="totalPage">page <span>@page</span> sur <span>@totalPages</span></div>
+<div class="paginate">
+<ul class="pagination">
+    @defining(if(req.queryString.contains("p")) req.uri else if(req.queryString.isEmpty) req.uri+s"?p=$page" else req.uri+s"&p=$page" ){uriWithPage=>
+        @if(page>1){
+            <li><a class="ajaxLink" href="@uriWithPage.replaceAll(s"p=$page",s"p=${page-1}")">&laquo;</a></li>
+        } else{
+            <li class="disabled"><a href="#">&laquo;</a></li>
+        }
+
+        @if(page==1){
+            <li class="active"><span>@page <span class="sr-only">(current)</span></span></li>
+        }else{
+            @if(page-1<totalPages && totalPages>1) {
+             <li><a class="ajaxLink" href="@uriWithPage.replaceAll(s"p=$page", "p=1")">1</a></li>
+            }
+        }
+
+        @if(page>1 && page<totalPages) {
+            <li class="active"><span>@page <span class="sr-only">(current)</span></span></li>
+        }
+
+        @if(BigDecimal(page)==totalPages){
+            <li class="active"><span>@totalPages</span></li>
+        }else{
+            <li><a class="ajaxLink" href="@uriWithPage.replaceAll(s"p=$page",s"p=$totalPages")">@totalPages</a></li>
+        }
+
+        @if(page<totalPages && totalPages>1){
+            <li><a class="ajaxLink" href="@uriWithPage.replaceAll(s"p=$page",s"p=${page+1}")">&raquo;</a></li>
+        }else{
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        }
+
+    }
+</ul>
+</div>
+}
+    }
+}
+</div>
+
+@if(SecureCFPController.hasAccessToCFP(req)){
+
+<script type="text/javascript">
+$(".ajaxLink").on("click",function(e){
+    e.preventDefault();
+    var form = $("#searchForm");
+
+    var zeURL = $(this).attr('href');
+
+    $(".searchBox", form ).addClass("searching");
+    $.ajax({
+        url: zeURL,
+        type: "GET",
+        dataType: "html",
+        success: function(dataReceived, textStatus){
+            $(".searchResult", form ).html(dataReceived);
+            $(".searchResult", form ).show();
+            $(".searchBox", form ).removeClass("searching");
+        },
+        error: function(err) {
+            console.log("Error ");
+            console.log(err);
+            $(".searchBox", form ).addClass("search-error" );
+        }
+    });
+    return false;
+});
+</script>
+}

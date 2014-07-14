@@ -41,6 +41,8 @@ object ApprovedProposal {
       , ("quick.label", 28)
       , ("bof.label", 25)
       , ("start.label", 20)
+      , ("key.label", 7)
+      , ("other.label", 0)
     )
   }
 

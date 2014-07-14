@@ -102,7 +102,7 @@ $("#searchForm").on("submit",function(e){
     var form = $(this);
     $(".searchBox", form ).addClass("searching");
     $.ajax({
-        url: "/cfpadmin/search",
+        url: "/cfpadmin/advancedsearch",
         type: "GET",
         dataType: "html",
         data: $(form).serialize(),
