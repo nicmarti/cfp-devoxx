@@ -24,11 +24,11 @@ object ProposalType {
 
   val UNKNOWN = ProposalType(id="unknown", label="unknown.label")
 
-  def allAsId = ConferenceDescriptor.ConferenceProposalTypes.ALL.map(a => (a.id, a.label)).toSeq.sorted
+  val all = ConferenceDescriptor.ConferenceProposalTypes.ALL
+  val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
   def allForCombos = {
-    val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL
-    val onlyThoseThatShouldBeDisplayed = allProposalTypes.filter(pt=>ConferenceDescriptor.ConferenceProposalTypes.ALL.exists(pc=>pc.id==pt.id))
+    val onlyThoseThatShouldBeDisplayed = all.filterNot(_ == UNKNOWN)
     val finalFormat=onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
     finalFormat
   }
@@ -37,7 +37,7 @@ object ProposalType {
 
 
   def parse(proposalType: String): ProposalType = {
-    ConferenceDescriptor.ConferenceProposalTypes.ALL.find(p => p.id == proposalType).getOrElse(UNKNOWN)
+   all.find(p => p.id == proposalType).getOrElse(UNKNOWN)
   }
 
   val audienceLevels:Seq[(String,String)]={

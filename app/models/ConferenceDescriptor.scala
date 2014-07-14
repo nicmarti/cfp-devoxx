@@ -10,8 +10,6 @@ import org.joda.time.DateTime
  * @author Frederic Camblor
  */
 
-case class BitbucketProperties(usernameConfigProperty: String, tokenConfigProperty: String, issuesUrlConfigProperty: String)
-
 case class ConferenceUrls(
                            faq: String, registration: String,
                            confWebsite: String, cfpHostname: String
@@ -87,7 +85,6 @@ case class ConferenceDescriptor(eventCode: String,
                                 bugReportRecipient: String,
                                 conferenceUrls: ConferenceUrls,
                                 timing: ConferenceTiming,
-                                bitbucketProps: BitbucketProperties,
                                 hosterName: String,
                                 hosterWebsite: String,
                                 hashTag: String,
@@ -155,7 +152,8 @@ object ConferenceDescriptor {
     val LANG = Track("lang", "lang.label")
     val CLOUD = Track("cloud", "cloud.label")
     val WEB = Track("web", "web.label")
-    val ALL = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHOD_DEVOPS, FUTURE, LANG, CLOUD, WEB)
+    val UNKNOWN = Track("unknown", "unknown track")
+    val ALL = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHOD_DEVOPS, FUTURE, LANG, CLOUD, WEB, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
@@ -269,7 +267,6 @@ object ConferenceDescriptor {
       cfpClosedOn = DateTime.parse("2014-07-11T23:59:59+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2014-09-15T00:00:00+02:00")
     ),
-    bitbucketProps = BitbucketProperties("bitbucket.username", "bitbucket.token", "bitbucket.issues.url"),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
     hashTag = "#DevoxxFR",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)

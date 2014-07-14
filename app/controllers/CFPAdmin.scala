@@ -204,12 +204,12 @@ object CFPAdmin extends SecureCFPController {
       val bestReviewer = Leaderboard.bestReviewer()
       val lazyOnes = Leaderboard.lazyOnes()
 
-      val totalSubmittedByCategories = Leaderboard.totalSubmittedByCategories()
+      val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
       val totalSubmittedByType = Leaderboard.totalSubmittedByType()
       val totalAcceptedByCategories = Leaderboard.totalAcceptedByCategories()
       val totalAcceptedByType = Leaderboard.totalAcceptedByType()
 
-      val devoxx2013 = ApprovedProposal.getTotal
+      val totalSlotsToAllocate = ApprovedProposal.getTotal
       val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
       val totalWithTickets = Leaderboard.totalWithTickets()
       val totalWithOneProposal = Leaderboard.totalWithOneProposal()
@@ -220,9 +220,9 @@ object CFPAdmin extends SecureCFPController {
         views.html.CFPAdmin.leaderBoard(
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
           totalNoVotes, maybeMostVoted, bestReviewer, lazyOnes,
-          totalSubmittedByCategories, totalSubmittedByType,
+          totalSubmittedByTrack, totalSubmittedByType,
           totalAcceptedByCategories, totalAcceptedByType,
-          devoxx2013, totalApprovedSpeakers, totalWithTickets, totalWithOneProposal, totalRefusedSpeakers
+          totalSlotsToAllocate, totalApprovedSpeakers, totalWithTickets, totalWithOneProposal, totalRefusedSpeakers
         )
       )
   }
@@ -250,12 +250,12 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
   }
 
-  def search(q: String) = SecuredAction(IsMemberOf("cfp")).async {
+  def advancedSearch(q: Option[String] = None, p: Option[Int] = None)= SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-      ElasticSearch.doSearch("speakers,proposals", q).map {
+     ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
         case r if r.isSuccess => {
           val json = Json.parse(r.get)
           val total = (json \ "hits" \ "total").as[Int]
@@ -290,7 +290,7 @@ object CFPAdmin extends SecureCFPController {
               }
           }
 
-          Ok(views.html.CFPAdmin.renderSearchResult(total, results)).as("text/html")
+          Ok(views.html.CFPAdmin.renderSearchResult(total, results, q, p)).as("text/html")
         }
         case r if r.isFailure => {
           InternalServerError(r.get)
@@ -313,17 +313,6 @@ object CFPAdmin extends SecureCFPController {
         case Some(speaker) => {
           val proposals = Proposal.allProposalsByAuthor(speaker.uuid)
           Ok(views.html.CFPAdmin.showSpeakerAndTalks(speaker, proposals, request.webuser.uuid))
-        }
-        case None => NotFound("Speaker not found")
-      }
-  }
-
-  def showSpeakerBioOverview(uuid: String) = SecuredAction {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      Speaker.findByUUID(uuid) match {
-        case Some(speaker) => {
-          Ok(views.html.CFPAdmin.showSpeakerBioOverview(speaker))
         }
         case None => NotFound("Speaker not found")
       }

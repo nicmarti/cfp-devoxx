@@ -177,8 +177,10 @@ object Review {
     totalReviewedByCFPuser().sortBy(_._2).reverse.headOption
   }
 
+  // Worst reviewer is one that did review at least one talk.
+  // We don't want to return those who did not review any talk yet
   def worstReviewer(): Option[(String, Int)] = {
-    totalReviewedByCFPuser().sortBy(_._2).headOption
+    totalReviewedByCFPuser().sortBy(_._2).filterNot(_._2 == 0).headOption
   }
 
   def totalReviewedByCFPuser(): List[(String, Int)] = Redis.pool.withClient {

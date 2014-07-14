@@ -62,12 +62,11 @@ GET           /cfpadmin/leaderboard                                  controllers
 GET           /cfpadmin/leaderboard/reviewerStats                    controllers.CFPAdmin.allReviewersAndStats
 GET           /cfpadmin/leaderboard/compute                          controllers.CFPAdmin.doComputeLeaderBoard
 GET           /cfpadmin/myvotes                                      controllers.CFPAdmin.allMyVotes
-GET           /cfpadmin/search                                       controllers.CFPAdmin.search(q:String)
+GET           /cfpadmin/advancedsearch                               controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allvotes/:confType                           controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
 GET           /cfpadmin/recompute/allvotes                           controllers.CFPAdmin.doComputeVotesTotal()
 GET           /cfpadmin/allSponsorTalks                              controllers.CFPAdmin.allSponsorTalks
 GET           /cfpadmin/speaker/:uuidSpeaker                         controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
-GET           /cfpadmin/speakeroverview/:uuidSpeaker                 controllers.CFPAdmin.showSpeakerBioOverview(uuidSpeaker:String)
 GET           /cfpadmin/sponsorTalk/remove/:proposalId               controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
 GET           /cfpadmin/proposals/byType/:confType                   controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                     controllers.CFPAdmin.allProposalsByTrack(track:String)
@@ -102,8 +101,8 @@ GET           /admin/clearCaches                                     controllers
 GET           /admin/authenticateAs/:uuid                            controllers.Backoffice.authenticateAs(uuid:String)
 GET           /admin/authenticateAndCreate/:uuid                     controllers.Backoffice.authenticateAndCreateTalk(uuid:String)
 
-GET           /admin/elastic                                         controllers.Backoffice.doIndexElasticSearch()
-
+GET           /admin/elastic/reset                                   controllers.Backoffice.doResetAndConfigureElasticSearch()
+GET           /admin/elastic/index                                   controllers.Backoffice.doIndexElasticSearch()
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                              controllers.ApproveOrRefuse.doApprove(proposalId:String)

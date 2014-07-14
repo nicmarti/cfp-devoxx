@@ -1,6 +1,26 @@
-@(total:Int, results:Seq[String])
+@(total:Int, results:Seq[String], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-<p>Search result: @total founds</p>
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">Search result: @total founds</h3>
+    </div>
+</div>
+<div class="panel">
+    <div class="col-lg-1 col-lg-offset-11">
+        <a href="#" class="closeSearch"><i class="icon-remove"></i> Close</a>
+    </div>
+</div>
+
+<div class="panel">
 @results.map{result=>
     @Html(result)<br>
 }
+</div>
+@tags.renderPaginator(req, p.getOrElse(1), total)
+
+<script type="text/javascript">
+$(".closeSearch").on("click",function(e){
+    e.preventDefault();
+    $(".searchResult" ).hide();
+});
+</script>

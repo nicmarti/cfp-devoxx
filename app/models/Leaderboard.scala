@@ -33,6 +33,10 @@ object Leaderboard {
   def computeStats() = Redis.pool.withClient {
     implicit client =>
 
+      // First, stats on Proposal, cause Computed:Reviewer:ReviewedOne is used for
+      // the lazy ones
+      Review.computeAndGenerateVotes()
+
       val tx = client.multi()
       tx.del("Leaderboard:totalByCategories")
       tx.del("Leaderboard:totalByType")
@@ -68,12 +72,14 @@ object Leaderboard {
           tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString())
       }
 
-      val totalSubmittedByCategories = Proposal.totalSubmittedByTrack()
-      totalSubmittedByCategories.map {
+      val totalSubmittedByTrack = Proposal.totalSubmittedByTrack()
+      tx.del("Leaderboard:totalSubmittedByTrack")
+      totalSubmittedByTrack.map {
         case (track: Track, total: Int) =>
-          tx.hset("Leaderboard:totalSubmittedByCategories,ByCategories", track.label, total.toString)
+          tx.hset("Leaderboard:totalSubmittedByTrack", track.id, total.toString)
       }
 
+      tx.del("Leaderboard:totalSubmittedByType")
       val totalSubmittedByType = Proposal.totalSubmittedByType()
       totalSubmittedByType.toList.map {
         case (propType: ProposalType, total: Int) =>
@@ -153,17 +159,25 @@ object Leaderboard {
            score <- client.get("Leaderboard:bestReviewer:score")) yield (uuid, score)
   }
 
+  // Returns the Reviewer that did at least one review, but the fewest reviews.
+  def worstReviewer() = Redis.pool.withClient {
+    implicit client =>
+      for (uuid <- client.get("Leaderboard:worstReviewer:uuid");
+           score <- client.get("Leaderboard:worstReviewer:score")) yield (uuid, score)
+  }
+
+  // Returns the user that has the lowest reviewed number of proposals and the full list of cfp user that did not
+  // yet reviewed any talk
   def lazyOnes():Set[(String, String)] = Redis.pool.withClient {
     implicit client =>
-     val lazyOneWithOneVote = for (uuid <- client.get("Leaderboard:worstReviewer:uuid");
-           score <- client.get("Leaderboard:worstReviewer:score")) yield (uuid, score)
+     val lazyOneWithOneVote = worstReviewer()
      val otherThatHaveNoVotes  =  client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne" ).map(s=>(s,"0"))
      lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes
   }
 
-  def totalSubmittedByCategories() = Redis.pool.withClient {
+  def totalSubmittedByTrack():Map[String,Int] = Redis.pool.withClient {
     implicit client =>
-      client.hgetAll("Leaderboard:totalSubmittedByCategories").map {
+      client.hgetAll("Leaderboard:totalSubmittedByTrack").map {
         case (key: String, value: String) =>
           (key, value.toInt)
       }

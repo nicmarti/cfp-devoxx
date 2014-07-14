@@ -321,5 +321,100 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
     }
 
+  "should load the LUA script and not crash if a proposal has no votes"  in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // GIVEN
+      val author=RandomStringUtils.randomAlphabetic(12)
+      val proposalId= RandomStringUtils.randomAlphabetic(12)
+
+      val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Proposal with no vote"
+        , mainSpeaker = author
+        , secondarySpeaker = None
+        , otherSpeakers = Nil
+        , talkType = ProposalType.UNKNOWN
+        , audienceLevel = "test"
+        , summary = "Created from test"
+        , privateMessage = "Private message"
+        , state = ProposalState.SUBMITTED
+        , sponsorTalk = false
+        , track = Track.UNKNOWN
+        , demoLevel = "novice"
+        , userGroup = false
+        , wishlisted = None)
+
+      Proposal.save(author, proposal, ProposalState.SUBMITTED)
+
+
+      // WHEN
+      Review.computeAndGenerateVotes()
+
+      // THEN
+      Review.allVotes() must haveSize(0)
+    }
+
+    "should load the LUA script and compute correctly if proposal has only ABST votes"  in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // GIVEN
+      val reviewerUUID = "SUPER_VOTER 01"
+      val reviewerUUID2 = "SUPER_VOTER 02"
+
+      val author=RandomStringUtils.randomAlphabetic(12)
+
+      val proposalId= RandomStringUtils.randomAlphabetic(12)
+
+      val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
+        , mainSpeaker = author
+        , secondarySpeaker = None
+        , otherSpeakers = Nil
+        , talkType = ProposalType.UNKNOWN
+        , audienceLevel = "test"
+        , summary = "Created from test"
+        , privateMessage = "Private message"
+        , state = ProposalState.SUBMITTED
+        , sponsorTalk = false
+        , track = Track.UNKNOWN
+        , demoLevel = "novice"
+        , userGroup = false
+        , wishlisted = None)
+
+      Proposal.save(author, proposal, ProposalState.SUBMITTED)
+      // Both votes 0 for this talk
+      Review.voteForProposal(proposalId,reviewerUUID,0)
+      Review.voteForProposal(proposalId,reviewerUUID2,0)
+
+      // WHEN
+      Review.computeAndGenerateVotes()
+
+      // THEN
+      Review.allVotes() must haveSize(1)
+
+      val (checkedProposal, scoreAndTotalVotes) = Review.allVotes().head
+
+      checkedProposal mustEqual(proposalId)
+
+      val score = scoreAndTotalVotes._1
+      val voters = scoreAndTotalVotes._2
+      val abstentions = scoreAndTotalVotes._3
+      val average = scoreAndTotalVotes._4
+      val standardDev = scoreAndTotalVotes._5
+
+      score mustEqual 0
+      average mustEqual 0
+      voters mustEqual 0
+      abstentions mustEqual 2
+      standardDev mustEqual 0
+
+    }
+
   }
 }
