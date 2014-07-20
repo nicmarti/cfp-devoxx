@@ -230,7 +230,9 @@
 @if(controllers.Backoffice.isCFPOpen){
             <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
 }else{
-    <p>@Messages("cfp.isClosed.expl")</p>
+    <div class="panel panel-success">
+        <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
+    </div>
 }
 
         </div>
