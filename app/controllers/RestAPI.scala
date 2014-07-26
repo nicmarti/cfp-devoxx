@@ -109,15 +109,17 @@ object RestAPI extends Controller  {
                 Map(
                   "eventCode" -> Json.toJson(conference.eventCode),
                   "label" -> Json.toJson(conference.label),
+                  "locale" -> Json.toJson(conference.locale),
+                  "localisation" -> Json.toJson(conference.localisation),
                   "links" -> Json.toJson(List(
                     Link(
-                      routes.RestAPI.showSpeakers(conference.eventCode).absoluteURL().toString,
-                      routes.RestAPI.profile("list-of-speakers").absoluteURL().toString,
+                      routes.RestAPI.showSpeakers(conference.eventCode).absoluteURL(),
+                      routes.RestAPI.profile("list-of-speakers").absoluteURL(),
                       "See all speakers"
                     ),
                     Link(
-                      routes.RestAPI.showAllSchedules(conference.eventCode).absoluteURL().toString,
-                      routes.RestAPI.profile("schedules").absoluteURL().toString,
+                      routes.RestAPI.showAllSchedules(conference.eventCode).absoluteURL(),
+                      routes.RestAPI.profile("schedules").absoluteURL(),
                       "See the whole agenda"
                     )
                   ))
@@ -415,7 +417,7 @@ object Link {
   implicit val linkFormat = Json.format[Link]
 }
 
-case class Conference(eventCode: String, label: String, link: Link)
+case class Conference(eventCode: String, label: String, locale:List[String], localisation:String, link: Link)
 
 object Conference {
 
@@ -424,6 +426,8 @@ object Conference {
   def currentConference(implicit req: RequestHeader) = Conference(
     ConferenceDescriptor.current().eventCode,
     Messages("longYearlyName")+", "+Messages(ConferenceDescriptor.current().timing.datesI18nKey),
+    ConferenceDescriptor.current().locale,
+    ConferenceDescriptor.current().localisation,
     Link(
       routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL().toString,
       routes.RestAPI.profile("conference").absoluteURL().toString,
