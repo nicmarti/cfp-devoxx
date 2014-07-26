@@ -113,6 +113,7 @@ object ConferenceDescriptor {
     val START = ProposalType(id = "start", label = "start.label")
 
     val OTHER = ProposalType(id = "other", label = "other.label")
+
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START, OTHER)
 
   }
