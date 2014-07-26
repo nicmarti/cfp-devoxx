@@ -55,6 +55,7 @@ object RestAPI extends Controller {
         case "schedules" => Ok(views.html.RestAPI.docSchedules())
         case "schedule" => Ok(views.html.RestAPI.docSchedule())
         case "proposalType" => Ok(views.html.RestAPI.docProposalType())
+        case "track" => Ok(views.html.RestAPI.docTrack())
         case other => NotFound("Sorry, no documentation for this profile")
       }
   }
@@ -430,6 +431,38 @@ object RestAPI extends Controller {
           )
 
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("proposalType").absoluteURL().toString + ">; rel=\"profile\""))
+        }
+      }
+  }
+
+  def showTracks(eventCode: String) = UserAgentAction {
+    implicit request =>
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val allTracks = ConferenceDescriptor.ConferenceTracksDescription.ALL.map {
+        trackDesc =>
+          Json.toJson {
+            Map(
+              "id" -> Json.toJson(trackDesc.id)
+              , "imgsrc" -> Json.toJson(trackDesc.imgSrc)
+              , "title" -> Json.toJson(Messages(trackDesc.i18nTitleProp))
+              , "description" -> Json.toJson(Messages(trackDesc.i18nDescProp))
+            )
+          }
+      }
+      val etag = allTracks.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == etag => NotModified
+        case other => {
+          val jsonObject = Json.toJson(
+            Map(
+              "content" -> Json.toJson("All tracks"),
+              "tracks" -> Json.toJson(allTracks)
+            )
+          )
+
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL().toString + ">; rel=\"profile\""))
         }
       }
   }

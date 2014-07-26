@@ -1,0 +1,46 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("proposalType") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>@Messages("shortName") API</h1>
+    <hr>
+       <h3>Documentation for "track"</h3>
+
+        <P>Returns the list of Tracks</P>
+
+        <h4>Sample:</h4>
+    <code>
+ curl -H "Accept: application/json" <a href="@routes.RestAPI.showTracks(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showTracks(Conference.currentConference.eventCode).absoluteURL()</a>
+      </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+
+{
+    "content": "All tracks",
+    "tracks": [
+        {
+            "id": "startup",
+            "imgsrc": "/assets/images/track/startup.png",
+            "title": "Startup and entrepreneurship",
+            "description": "Lean startup, VCs, Angels and new trends in Startups."
+        },
+        {
+            "id": "ssj",
+            "imgsrc": "http://devoxx.be/images/tracks/95ddefdd.icon_javaee.png",
+            "title": "Server Side Java",
+            "description": "Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs"
+        }
+    ]
+}
+
+                </pre>
+
+            </code>
+        </div>
+    </div>
+</div>
+
+}
