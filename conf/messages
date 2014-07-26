@@ -34,6 +34,7 @@ bio=A short bio
 twitter=Your twitter handle
 blog=Your blog or company website
 qualifications=Your speaker''s qualifications
+qualifications2=Speaker''s qualifications
 qualifications.label=Speaker qualifications
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for {0} and propose one or more subjects.
