@@ -1,0 +1,46 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("proposalType") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>@Messages("shortName") API</h1>
+    <hr>
+       <h3>Documentation for "proposalType"</h3>
+
+        <P>Returns the different kind of conference proposed during this conference.</P>
+
+        <h4>Sample:</h4>
+    <code>
+ curl -H "Accept: application/json" <a href="@routes.RestAPI.showProposalTypes(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showProposalTypes(Conference.currentConference.eventCode).absoluteURL()</a>
+      </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+{
+    "content": "All types of proposal",
+    "proposalTypes": [
+        {
+            "id": "conf",
+            "description": "Conference, 1h, Wednesday, Thursday and Friday morning",
+            "label": "Conference"
+        },
+        {
+            "id": "uni",
+            "description": "University, 3h, Monday or Tuesday",
+            "label": "University"
+        },
+        {
+            "id": "tia",
+            "description": "Tools in Action, 30mn, only Monday or Tuesday",
+            "label": "Tools-in-Action"
+        }
+}
+                </pre>
+
+            </code>
+        </div>
+    </div>
+</div>
+
+}

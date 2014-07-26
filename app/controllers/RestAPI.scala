@@ -34,7 +34,7 @@ import play.api.mvc.SimpleResult
  * A real REST api for men.
  * Created by Nicolas Martignole on 25/02/2014.
  */
-object RestAPI extends Controller  {
+object RestAPI extends Controller {
 
   def index = UserAgentAction {
     implicit request =>
@@ -54,6 +54,7 @@ object RestAPI extends Controller  {
         case "conferences" => Ok(views.html.RestAPI.docConferences())
         case "schedules" => Ok(views.html.RestAPI.docSchedules())
         case "schedule" => Ok(views.html.RestAPI.docSchedule())
+        case "proposalType" => Ok(views.html.RestAPI.docProposalType())
         case other => NotFound("Sorry, no documentation for this profile")
       }
   }
@@ -121,6 +122,11 @@ object RestAPI extends Controller  {
                       routes.RestAPI.showAllSchedules(conference.eventCode).absoluteURL(),
                       routes.RestAPI.profile("schedules").absoluteURL(),
                       "See the whole agenda"
+                    ),
+                    Link(
+                      routes.RestAPI.showProposalTypes(conference.eventCode).absoluteURL(),
+                      routes.RestAPI.profile("proposalType").absoluteURL(),
+                      "See the different kind of conferences"
                     )
                   ))
                 )
@@ -397,6 +403,36 @@ object RestAPI extends Controller  {
 
   }
 
+  def showProposalTypes(eventCode: String) = UserAgentAction {
+    implicit request =>
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL.map {
+        proposalType =>
+          Json.toJson {
+            Map(
+              "id" -> Json.toJson(proposalType.id)
+              , "description" -> Json.toJson(Messages(proposalType.label))
+              , "label" -> Json.toJson(Messages(proposalType.id))
+            )
+          }
+      }
+      val etag = allProposalTypes.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == etag => NotModified
+        case other => {
+          val jsonObject = Json.toJson(
+            Map(
+              "content" -> Json.toJson("All types of proposal"),
+              "proposalTypes" -> Json.toJson(allProposalTypes)
+            )
+          )
+
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("proposalType").absoluteURL().toString + ">; rel=\"profile\""))
+        }
+      }
+  }
 }
 
 object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderNames {
@@ -406,7 +442,7 @@ object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderN
         block(request)
       }
     }.getOrElse {
-      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with "+ Messages("longName") +" API"))
+      Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with " + Messages("longName") + " API"))
     }
   }
 }
@@ -417,7 +453,7 @@ object Link {
   implicit val linkFormat = Json.format[Link]
 }
 
-case class Conference(eventCode: String, label: String, locale:List[String], localisation:String, link: Link)
+case class Conference(eventCode: String, label: String, locale: List[String], localisation: String, link: Link)
 
 object Conference {
 
@@ -425,13 +461,13 @@ object Conference {
 
   def currentConference(implicit req: RequestHeader) = Conference(
     ConferenceDescriptor.current().eventCode,
-    Messages("longYearlyName")+", "+Messages(ConferenceDescriptor.current().timing.datesI18nKey),
+    Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.current().timing.datesI18nKey),
     ConferenceDescriptor.current().locale,
     ConferenceDescriptor.current().localisation,
     Link(
       routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL().toString,
       routes.RestAPI.profile("conference").absoluteURL().toString,
-      "See more details about "+Messages("longYearlyName")
+      "See more details about " + Messages("longYearlyName")
     ))
 
   def all(implicit req: RequestHeader) = {

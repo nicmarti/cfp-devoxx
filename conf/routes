@@ -155,6 +155,7 @@ GET           /api/conferences/:eventCode/schedules/                 controllers
 GET           /api/conferences/:eventCode/schedules                  controllers.RestAPI.showAllSchedules(eventCode:String)
 GET           /api/conferences/:eventCode/schedules/:day/            controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
 GET           /api/conferences/:eventCode/schedules/:day             controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
+GET           /api/conferences/:eventCode/proposalTypes              controllers.RestAPI.showProposalTypes(eventCode:String)
 
 GET           /api/profile/:docName                                  controllers.RestAPI.profile(docName:String)
 
