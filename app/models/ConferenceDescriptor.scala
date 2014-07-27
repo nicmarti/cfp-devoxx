@@ -88,7 +88,10 @@ case class ConferenceDescriptor(eventCode: String,
                                 hosterName: String,
                                 hosterWebsite: String,
                                 hashTag: String,
-                                conferenceSponsor: ConferenceSponsor)
+                                conferenceSponsor: ConferenceSponsor,
+                                locale:List[String],
+                                localisation:String
+                                 )
 
 object ConferenceDescriptor {
 
@@ -110,6 +113,7 @@ object ConferenceDescriptor {
     val START = ProposalType(id = "start", label = "start.label")
 
     val OTHER = ProposalType(id = "other", label = "other.label")
+
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START, OTHER)
 
   }
@@ -267,9 +271,11 @@ object ConferenceDescriptor {
       cfpClosedOn = DateTime.parse("2014-07-11T23:59:59+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2014-09-15T00:00:00+02:00")
     ),
-    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
-    hashTag = "#DevoxxFR",
+    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxVE",
+    hashTag = "#DevoxxBE",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
+  , List("en_EN")
+  , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
   )
 
   def isCFPOpen: Boolean = {

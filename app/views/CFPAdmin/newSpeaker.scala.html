@@ -20,7 +20,17 @@
               @flash.get("success").get
           </div>
         }
-
+        @if(speakerForm.hasErrors){
+          <div class="alert alert-danger">
+              <h4>Invalid form, cannot create speaker</h4>
+              @speakerForm.errors.map { err =>
+                @err.key : @Messages(err.message)<br>
+              }
+          </div>
+        }
+        @if(speakerForm.hasGlobalErrors){
+            has global errors
+        }
         @helper.form(action = routes.CFPAdmin.saveNewSpeaker) {
             <label for="name">UUID:</label> <input type="text" readonly name="uuid" value='@speakerForm("uuid").value.getOrElse("")'>
             @helper.inputText(speakerForm("firstName"), 'size->40)
@@ -30,6 +40,7 @@
             @helper.inputText(speakerForm("company2"))
             @helper.textarea(speakerForm("bio2"), 'cols -> 70, 'rows -> 5)
             <i class="icon-text-width"></i> : <span id="charsremain"></span>
+            @helper.textarea(speakerForm("qualifications2"), 'cols -> 70, 'rows -> 3)
             @helper.inputText(speakerForm("twitter2"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog2"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
             @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "fr")
