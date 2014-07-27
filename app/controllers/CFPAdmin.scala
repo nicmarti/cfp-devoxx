@@ -527,7 +527,7 @@ object CFPAdmin extends SecureCFPController {
     "blog2" -> optional(text),
     "firstName" -> text,
     "acceptTermsConditions" -> boolean,
-    "qualifications" -> nonEmptyText(maxLength = 750)
+    "qualifications2" -> nonEmptyText(maxLength = 750)
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
 
@@ -544,7 +544,6 @@ object CFPAdmin extends SecureCFPController {
         }
         case None => Ok(views.html.CFPAdmin.newSpeaker(speakerForm))
       }
-
   }
 
   def saveNewSpeaker() = SecuredAction(IsMemberOf("cfp")) {
@@ -552,6 +551,7 @@ object CFPAdmin extends SecureCFPController {
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CFPAdmin.newSpeaker(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validSpeaker => {
+          println("saveNew Speaker "+validSpeaker)
           Option(validSpeaker.uuid) match {
             case Some(existingUUID) => {
               play.Logger.of("application.CFPAdmin").debug("Updating existing speaker " + existingUUID)
@@ -576,8 +576,6 @@ object CFPAdmin extends SecureCFPController {
               Redirect(routes.CFPAdmin.showSpeakerAndTalks(newUUID)).flashing("success" -> "Profile saved")
             }
           }
-
-
         }
       )
   }
