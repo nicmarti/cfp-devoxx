@@ -185,6 +185,8 @@ object ConferenceDescriptor {
 
     val ROOM8 = Room("room8", "Room 8", 680, recorded = true, "theatre")
 
+    // TODO add other rooms (labs, exposition hall...)
+
     val SMALL_LAB01 = Room("smallLab01", "Small Lab 01", 50, recorded = false, "classroom")
 
     val allBigRoom = List(ROOM8)
@@ -207,40 +209,58 @@ object ConferenceDescriptor {
   }
 
   object ConferenceSlots {
-    val universitySlots: List[Slot] = {
-      val u1 = ConferenceRooms.allBigRoom.map {
-        r =>
-          SlotBuilder(ConferenceProposalTypes.UNI.id, "monday", new DateTime("2014-11-10T09:30:00.000+02:00"), new DateTime("2014-11-10T12:30:00.000+02:00"), r)
+    // todo check that the datetime start and end are corrects.
+    val universitySlotsMonday: List[Slot] = {
+      // allBigRoom contains for instance 4 rooms
+      // For each room we create a Slot using a builder
+      // 2nd arg should be the day for the schedule, one of [monday,tuesday,wednesday,thursday,friday]
+      val universityMondayMorning = ConferenceRooms.allBigRoom.map {
+        room =>
+          SlotBuilder(ConferenceProposalTypes.UNI.id, "monday", new DateTime("2014-11-10T09:30:00.000+02:00"), new DateTime("2014-11-10T12:30:00.000+02:00"), room)
       }
-      val u2 = ConferenceRooms.allBigRoom.map {
+      val universityMondayAfternoon = ConferenceRooms.allBigRoom.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.UNI.id, "monday", new DateTime("2014-11-10T13:30:00.000+02:00"), new DateTime("2014-11-10T16:30:00.000+02:00"), r2)
       }
-      u1 ++ u2
+      universityMondayMorning ++ universityMondayAfternoon
     }
 
-    val toolsInActionSlots: List[Slot] = Nil
+    val universitySlotsTuesday:List[Slot]=Nil // todo
 
-    val labsSlots: List[Slot] = Nil
+    val tiaSlotsMonday: List[Slot] = Nil // todo
 
-    val quickiesSlotsThursday: List[Slot] = Nil
+    val tiaSlotsTuesday: List[Slot] = Nil // todo
 
-    val quickiesSlotsFriday: List[Slot] = Nil
+    val labsSlotsMonday: List[Slot] = Nil // todo
 
-    val conferenceSlotsThursday: List[Slot] = Nil
+    val labsSlotsTuesday: List[Slot] = Nil // todo
 
-    val conferenceSlotsFriday: List[Slot] = Nil
+    val quickiesSlotsWednesday: List[Slot] = Nil // todo
 
-    val bofSlotsThursday: List[Slot] = Nil
+    val quickiesSlotsThursday: List[Slot] = Nil // todo
 
-    val wednesday: List[Slot] = Nil
+    val conferenceSlotsWedneday: List[Slot] = Nil // todo
 
-    val thursday: List[Slot] = Nil
+    val conferenceSlotsThursday: List[Slot] = Nil // todo
 
-    val friday: List[Slot] = Nil
+    val conferenceSlotsFriday: List[Slot] = Nil // todo
+
+    val bofSlotsThursday: List[Slot] = Nil // todo
+
+    val monday: List[Slot] = { // todo
+      universitySlotsMonday // ++ tia monday ++ labs monday
+    }
+
+    val tuesday: List[Slot] = Nil // todo
+
+    val wednesday: List[Slot] = Nil // todo
+
+    val thursday: List[Slot] = Nil // todo
+
+    val friday: List[Slot] = Nil // todo
 
     def all: List[Slot] = {
-      wednesday ++ thursday ++ friday
+      monday ++ tuesday ++ wednesday ++ thursday ++ friday
     }
   }
 
