@@ -23,19 +23,40 @@
 
 package models
 
+import library.Redis
+
 
 /**
  * A request to attend or to talk for a speaker, the request has been accepted.
  * Created by nicolas martignole on 30/07/2014.
  */
 
-object Invitation{
+object Invitation {
 
-  def inviteSpeaker(speakerId:String, invitedBy:String)={
+  private val redisInvitation = "Invitations"
 
+  def inviteSpeaker(speakerId: String, invitedBy: String) = Redis.pool.withClient {
+    implicit client =>
+      client.hset(redisInvitation, speakerId, invitedBy)
   }
 
-  def isInvited(speakerId:String):Boolean={
-    false
+  def isInvited(speakerId: String): Boolean = Redis.pool.withClient {
+    implicit client =>
+      client.hexists(redisInvitation, speakerId)
+  }
+
+  def invitedBy(speakerId: String): Option[String] = Redis.pool.withClient {
+    implicit client =>
+      client.hget(redisInvitation, speakerId)
+  }
+
+  def all=Redis.pool.withClient{
+    implicit client=>
+      client.hkeys(redisInvitation)
+  }
+
+  def removeInvitation(speakerId:String)=Redis.pool.withClient {
+    implicit client =>
+      client.hdel(redisInvitation, speakerId)
   }
 }

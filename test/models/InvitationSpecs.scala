@@ -44,7 +44,7 @@ class InvitationSpecs extends PlaySpecification with Debug {
 
 
   "Invitation" should {
-    "return one invitation" in new WithApplication(app = appWithTestRedis()) {
+    "returns one invitation" in new WithApplication(app = appWithTestRedis()) {
 
       // WARN : flush the DB
       Redis.pool.withClient {
@@ -53,15 +53,85 @@ class InvitationSpecs extends PlaySpecification with Debug {
       }
 
       // WHEN
-      val proposalId = "TEST"
-      val reviewerUUID = "TEST_UUID"
-      val vote = 5
-
-      Review.voteForProposal(proposalId, reviewerUUID, vote)
+      val speakerId = "1234"
+      val invitedBy = "222"
+      Invitation.inviteSpeaker(speakerId, invitedBy)
 
       // THEN
-      Invitation.save(invitation)
-
+      Invitation.isInvited(speakerId) must beTrue
     }
+
+    "returns no invitation for a different speaker" in new WithApplication(app = appWithTestRedis()) {
+
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // WHEN
+      val speakerId = "1234"
+      val invitedBy = "222"
+      Invitation.inviteSpeaker(speakerId, invitedBy)
+
+      // THEN
+      Invitation.isInvited(invitedBy) must beFalse
+    }
+
+    "returns who invited a specific speaker" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // WHEN
+      val speakerId = "456"
+      val invitedBy = "test"
+      Invitation.inviteSpeaker(speakerId, invitedBy)
+
+      // THEN
+      Invitation.invitedBy(speakerId) must beEqualTo(Some(invitedBy))
+    }
+
+    "returns all invitations" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // WHEN
+      val speaker1 = "speaker one"
+      val speaker2 = "speaker two"
+      val invitedBy = "test"
+      Invitation.inviteSpeaker(speaker1, invitedBy)
+      Invitation.inviteSpeaker(speaker2, invitedBy)
+      Invitation.inviteSpeaker(speaker2, invitedBy)
+
+      // THEN
+      Invitation.all mustEqual Set(speaker1, speaker2)
+    }
+
+     "not returns a speakerID if the invitation has been cancelled" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // WHEN
+      val speaker1 = "speaker one"
+      val speaker2 = "speaker two"
+      val invitedBy = "test"
+      Invitation.inviteSpeaker(speaker1, invitedBy)
+      Invitation.inviteSpeaker(speaker2, invitedBy)
+
+       Invitation.removeInvitation(speaker2)
+
+      // THEN
+      Invitation.all mustEqual Set(speaker1)
+    }
+
   }
 }
