@@ -302,6 +302,7 @@ admin.btn.leaderboard=See Leaderboard
 admin.btn.myvotes=My votes
 admin.btn.sponsortalks=Sponsor''s talks
 admin.btn.speakers=All speakers
+admin.btn.speakersInvited=All invited speakers
 admin.btn.draft=All DRAFT
 admin.btn.submitted=All SUBMITTED
 admin.btn.review=Open for review
