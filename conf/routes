@@ -162,14 +162,14 @@ GET           /api/conferences/:eventCode/tracks                     controllers
 GET           /api/profile/:docName                                  controllers.RestAPI.profile(docName:String)
 
 # API for AngularJS
-GET           /schedulling/fr14/slots                                controllers.SchedullingController.slots(confType:String)
-GET           /schedulling/fr14/approvedTalks                        controllers.SchedullingController.approvedTalks(confType:String)
-GET           /schedulling/fr14/scheduledConfigurations              controllers.SchedullingController.allScheduledConfiguration()
-GET           /schedulling/fr14/loadScheduledConfiguration           controllers.SchedullingController.loadScheduledConfiguration(id:String)
-POST          /schedulling/fr14/slots                                controllers.SchedullingController.saveSlots(confType:String)
-DELETE        /schedulling/fr14/deletescheduledConfigurations        controllers.SchedullingController.deleteScheduleConfiguration(id:String)
-POST          /schedulling/fr14/publish                              controllers.SchedullingController.publishScheduleConfiguration()
-GET           /schedulling/fr14/published                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
+GET           /schedulling/slots                                controllers.SchedullingController.slots(confType:String)
+GET           /schedulling/approvedTalks                        controllers.SchedullingController.approvedTalks(confType:String)
+GET           /schedulling/scheduledConfigurations              controllers.SchedullingController.allScheduledConfiguration()
+GET           /schedulling/loadScheduledConfiguration           controllers.SchedullingController.loadScheduledConfiguration(id:String)
+POST          /schedulling/slots                                controllers.SchedullingController.saveSlots(confType:String)
+DELETE        /schedulling/deletescheduledConfigurations        controllers.SchedullingController.deleteScheduleConfiguration(id:String)
+POST          /schedulling/publish                              controllers.SchedullingController.publishScheduleConfiguration()
+GET           /schedulling/published                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
 # Tweetwall
 GET           /tweetwall                                             controllers.Tweetwall.index()

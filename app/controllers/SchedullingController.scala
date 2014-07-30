@@ -52,7 +52,8 @@ object SchedullingController extends SecureCFPController {
   def approvedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
-      val proposals =Proposal.allAcceptedByTalkType(confType)
+      // Devoxx BE
+      val proposals =ApprovedProposal.allApprovedByTalkType(confType)
 
       val proposalsWithSpeaker = proposals.map {
         p: Proposal =>
@@ -136,6 +137,7 @@ object SchedullingController extends SecureCFPController {
             slot: Slot =>
               slot.proposal match {
                 case Some(definedProposal) => {
+                  // Create a copy of the proposal, but with clean name
                   val proposalWithSpeakerNames = {
                     val mainWebuser = Speaker.findByUUID(definedProposal.mainSpeaker)
                     val secWebuser = definedProposal.secondarySpeaker.flatMap(Speaker.findByUUID(_))
@@ -143,13 +145,21 @@ object SchedullingController extends SecureCFPController {
                     val preferredDay = Proposal.getPreferredDay(definedProposal.id)
 
                     // Transform speakerUUID to Speaker name, this simplify Angular Code
-                    definedProposal.copy(
+                    val copiedProposal = definedProposal.copy(
                       mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
                       , secondarySpeaker = secWebuser.map(_.cleanName)
                       , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
                       , privateMessage = preferredDay.getOrElse("")
-
                     )
+
+                    // Check also if the proposal is still "approved" and not refused
+                    // Cause if the talk has been added to schedule, but then refused, we need
+                    // to show this as a visual HINT to the admin guy (being Stephan, Antonio or me)
+                    if(ApprovedProposal.isApproved(copiedProposal)){
+                      copiedProposal
+                    }else{
+                      copiedProposal.copy(title = "[Not Approved] "+copiedProposal.title)
+                    }
 
                   }
                   slot.copy(proposal = Option(proposalWithSpeakerNames))

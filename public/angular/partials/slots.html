@@ -45,13 +45,9 @@
         <div ng-show="slot.proposal">
             <button class="btn btn-sm btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> remove</button>
             <span class="proposalTitle">{{slot.proposal.title}}</span>
-            <span class="label label-default">{{slot.proposal.id}}</span>
-            <div class="label label-info">{{slot.proposal.lang}}</div>
-            <div class="label label-warning">{{slot.proposal.track.id}}</div>
-            <div class="label label-success">{{slot.proposal.mainSpeaker}}</div>
-            <div class="label label-success btn-sm">{{slot.proposal.secondarySpeaker}}</div>
-            <div ng-repeat="otherSpeaker in slot.proposal.otherSpeakers" class="label label-success btn-sm">
-                {{otherSpeaker}}
+
+            <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
+            <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
             </div>
         </div>
     </div>
