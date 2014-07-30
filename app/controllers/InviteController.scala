@@ -45,11 +45,8 @@ object InviteController extends SecureCFPController{
 
   def cancelInvite(speakerUUID:String)= SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Invitation.ar(speakerUUID,request.webuser.uuid)
-      Created("{\"status\":\"created\"}").as(JSON)
+      Invitation.removeInvitation(speakerUUID)
+      Ok("{\"status\":\"deleted\"}").as(JSON)
   }
-
-
-
 
 }
