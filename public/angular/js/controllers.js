@@ -49,7 +49,7 @@ mainController.controller('MainController', function MainController($rootScope, 
                 }
             });
         } else {
-            console.log("No schedule configuraiton loaded");
+            console.log("No schedule configuration loaded");
         }
     });
 
@@ -107,6 +107,8 @@ mainController.controller('MainController', function MainController($rootScope, 
         flash("Allocation for "+$routeParams.confType+" saved");
         SlotService.save({confType: $routeParams.confType}, $scope.slots);
     };
+
+    $scope.isNotAcepted=true;
 });
 
 reloadScheduleConfController.controller('ReloadScheduleConfController', function ReloadScheduleConfController($location, $rootScope, $scope, $routeParams, ReloadScheduleConf) {
