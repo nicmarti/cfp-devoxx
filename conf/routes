@@ -73,6 +73,7 @@ GET           /cfpadmin/proposals/byTrack/:track                     controllers
 GET           /cfpadmin/compareReviewer                              controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 GET           /cfpadmin/allWebusers                                  controllers.CFPAdmin.allWebusers()
 GET           /cfpadmin/allSpeakers                                  controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
+GET           /cfpadmin/allInvitedSpeakers                           controllers.InviteController.allInvitations()
 GET           /cfpadmin/allCFPWebusers                               controllers.CFPAdmin.allCFPWebusers()
 POST          /cfpadmin/cfpWebusers/trackLeaders                     controllers.CFPAdmin.updateTrackLeaders()
 GET           /cfpadmin/proposals/withNoVotes                        controllers.CFPAdmin.showProposalsWithNoVotes()
@@ -202,6 +203,10 @@ GET           /cfpadmin/wishlist/decline/:requestId                  controllers
 # Wordpress publisher
 GET           /wordpress/publish                                     controllers.WordpressController.publish(id:String, confType:String)
 
+# Invitation system
+GET         /cfpadmin/invitations        controllers.InviteController.allInvitations()
+GET        /cfpadmin/invitations/invite        controllers.InviteController.invite(speakerUUID:String)
+GET        /cfpadmin/invitations/cancel        controllers.InviteController.cancelInvite(speakerUUID)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)
