@@ -204,7 +204,8 @@ GET           /wordpress/publish                                     controllers
 
 # Invitation system
 GET         /cfpadmin/invitations        controllers.InviteController.allInvitations()
-POST        /cfpadmin/invitations        controllers.InviteController.invite()
+GET        /cfpadmin/invitations/create        controllers.InviteController.invite()
+GET        /cfpadmin/invitations/create        controllers.InviteController.invite()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)
