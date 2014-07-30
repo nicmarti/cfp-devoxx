@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
+@(speakerUUID:String)
 
-</body>
-</html>
+@if(models.Invitation.isInvited(speakerUUID)){
+    <a href="@routes.controller.InviteController.uninvite(speakerUUID)"
+}

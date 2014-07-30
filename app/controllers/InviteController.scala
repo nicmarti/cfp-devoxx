@@ -23,6 +23,8 @@
 
 package controllers
 
+import models.Invitation
+
 /**
  * A controller that is now responsible for the invitation system, introduced for Devoxx BE 2014.
  *
@@ -35,10 +37,19 @@ object InviteController extends SecureCFPController{
       Ok("TODO")
   }
 
-  def invite() = SecuredAction(IsMemberOf("cfp")) {
+  def invite(speakerUUID:String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Invitation.inviteSpeaker(speakerUUID,request.webuser.uuid)
       Created("{\"status\":\"created\"}").as(JSON)
   }
+
+  def cancelInvite(speakerUUID:String)= SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Invitation.ar(speakerUUID,request.webuser.uuid)
+      Created("{\"status\":\"created\"}").as(JSON)
+  }
+
+
 
 
 }
