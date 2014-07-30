@@ -119,6 +119,45 @@ $("#searchForm").on("submit",function(e){
     });
     return false;
 });
+
+<!-- Invitation system - see also checkInvited tags -->
+$(".ajax-cancelInvitation" ).on("click", function(e){
+    e.preventDefault();
+    var zeButton=$(this);
+    var speakerUUID=zeButton.data("speaker");
+    if(typeof speakerUUID != 'undefined'){
+
+    $.ajax({
+        url: "/cfpadmin/invitations/cancel?speakerUUID="+speakerUUID,
+        success: function(e){
+            zeButton.removeClass("btn-warning" ).addClass("btn-success" );
+            zeButton.text("Invitation cancelled");
+        }
+    });
+
+    }else{
+        console.log("Unable to retrieve speaker UUID in HTML HREF");
+    }
+});
+
+$(".ajax-invite" ).on("click",function(e){
+    var zeButton=$(this);
+    e.preventDefault();
+    var speakerUUID=zeButton.data("speaker");
+    if(typeof speakerUUID != 'undefined'){
+    $.ajax({
+        url: "/cfpadmin/invitations/invite?speakerUUID="+speakerUUID,
+        success: function(e){
+            zeButton.removeClass("btn-primary" ).addClass("btn-success");
+            zeButton.text("Invited!");
+        }
+    });
+    }else{
+        console.log("Unable to retrieve speaker UUID in HTML HREF");
+    }
+
+});
+
 </script>
 }
 </body>
