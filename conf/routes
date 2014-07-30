@@ -202,6 +202,9 @@ GET           /cfpadmin/wishlist/decline/:requestId                  controllers
 # Wordpress publisher
 GET           /wordpress/publish                                     controllers.WordpressController.publish(id:String, confType:String)
 
+# Invitation system
+GET         /cfpadmin/invitations        controllers.InviteController.allInvitations()
+POST        /cfpadmin/invitations        controllers.InviteController.invite()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)
