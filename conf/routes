@@ -200,9 +200,6 @@ GET           /cfpadmin/wishlist/delete/:requestId                   controllers
 GET           /cfpadmin/wishlist/approve/:requestId                  controllers.Wishlist.speakerApproveRequest(requestId:String)
 GET           /cfpadmin/wishlist/decline/:requestId                  controllers.Wishlist.speakerDeclineRequest(requestId:String)
 
-# Wordpress publisher
-GET           /wordpress/publish                                     controllers.WordpressController.publish(id:String, confType:String)
-
 # Invitation system
 GET         /cfpadmin/invitations        controllers.InviteController.allInvitations()
 GET        /cfpadmin/invitations/invite        controllers.InviteController.invite(speakerUUID:String)
