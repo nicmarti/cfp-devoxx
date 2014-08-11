@@ -19,7 +19,7 @@ import play.api.mvc.Action
  */
 object Backoffice extends SecureCFPController {
 
-  val isCFPOpen: Boolean = {
+  def isCFPOpen: Boolean = {
     ConferenceDescriptor.isCFPOpen
   }
 
