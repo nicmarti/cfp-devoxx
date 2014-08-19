@@ -210,11 +210,12 @@ object Proposal {
 
       tx.exec()
 
-      ApprovedProposal.changeTalkType(proposalId, proposal.talkType.id)
-
       changeTrack(authorUUID, proposal)
 
       changeProposalState(authorUUID, proposal.id, proposalState)
+
+      // Reflect any changes such as talkType or speaker to the list of accepted/refused talks.
+      ApprovedProposal.reflectProposalChanges(proposal)
   }
 
   val proposalForm = Form(mapping(

@@ -260,6 +260,96 @@ class ApprovedProposalSpecs extends PlaySpecification {
       ApprovedProposal.allAcceptedTalksForSpeaker("someOtherSpeaker").toList mustEqual List(correctProposal)
     }
 
+    "update the list of Accepted speakers when we change the mainSpeaker on a proposal" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB, but on Database = 1
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // GIVEN
+      val proposal = Proposal.validateNewProposal(None, "fr", "test proposal 2",
+        None,
+        Nil,
+        ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
+        "audience level", "summary 2", "private message 2", sponsorTalk = false,
+        ConferenceDescriptor.ConferenceTracks.JAVA.id, "beginner",
+        userGroup = true)
+
+      Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
+
+      val correctProposal = Proposal.findById(proposal.id).get // Cause we need the correct speakerId
+
+      // WHEN
+      ApprovedProposal.approve(correctProposal)
+
+      Proposal.save("newSpeaker", correctProposal, ProposalState.SUBMITTED)
+
+      // THEN
+      ApprovedProposal.allAcceptedTalksForSpeaker("speaker1").toList must be(Nil)
+      ApprovedProposal.allAcceptedTalksForSpeaker("newSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker"))
+    }
+
+     "update the list of Accepted speakers when we change the secondarySpeaker on a proposal" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB, but on Database = 1
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // GIVEN
+      val proposal = Proposal.validateNewProposal(None, "fr", "test proposal 2",
+        Some("secondarySpeaker"),
+        Nil,
+        ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
+        "audience level", "summary 2", "private message 2", sponsorTalk = false,
+        ConferenceDescriptor.ConferenceTracks.JAVA.id, "beginner",
+        userGroup = true)
+
+      Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
+
+      val correctProposal = Proposal.findById(proposal.id).get // Cause we need the correct speakerId
+
+      // WHEN
+      ApprovedProposal.approve(correctProposal)
+
+      Proposal.save("newSpeaker", correctProposal.copy(secondarySpeaker = Some("newSecSpeaker")), ProposalState.SUBMITTED)
+
+      // THEN
+      ApprovedProposal.allAcceptedTalksForSpeaker("secondarySpeaker").toList must be(Nil)
+      ApprovedProposal.allAcceptedTalksForSpeaker("newSecSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", secondarySpeaker = Some("newSecSpeaker")))
+    }
+
+     "update the list of Accepted speakers when we change the otherSpeakers on a proposal" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB, but on Database = 1
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // GIVEN
+      val proposal = Proposal.validateNewProposal(None, "fr", "test proposal 2",
+        Some("secondarySpeaker"),
+        List("firstThirdSpeaker"),
+        ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
+        "audience level", "summary 2", "private message 2", sponsorTalk = false,
+        ConferenceDescriptor.ConferenceTracks.JAVA.id, "beginner",
+        userGroup = true)
+
+      Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
+
+      val correctProposal = Proposal.findById(proposal.id).get // Cause we need the correct speakerId
+
+      // WHEN
+      ApprovedProposal.approve(correctProposal)
+
+      Proposal.save("newSpeaker", correctProposal.copy(otherSpeakers = List("newThirdSpeaker")), ProposalState.SUBMITTED)
+
+      // THEN
+      ApprovedProposal.allAcceptedTalksForSpeaker("firstThirdSpeaker").toList must be(Nil)
+      ApprovedProposal.allAcceptedTalksForSpeaker("newThirdSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", otherSpeakers = List("newThirdSpeaker")))
+    }
+
   }
 
 }
