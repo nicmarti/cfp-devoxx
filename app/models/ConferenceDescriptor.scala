@@ -30,7 +30,7 @@ case class ConferenceTiming(
 
 case class ConferenceSponsor(showSponsorProposalCheckbox: Boolean, sponsorProposalType: ProposalType = ProposalType.UNKNOWN)
 
-case class TrackDesc(id:String, imgSrc: String, i18nTitleProp: String, i18nDescProp: String)
+case class TrackDesc(id: String, imgSrc: String, i18nTitleProp: String, i18nDescProp: String)
 
 case class ProposalConfiguration(id: String, slotsCount: Int,
                                  givesSpeakerFreeEntrance: Boolean,
@@ -80,7 +80,7 @@ case class ConferenceDescriptor(eventCode: String,
                                 confUrlCode: String,
                                 frLangEnabled: Boolean,
                                 fromEmail: String,
-                                comitteeEmail: String,
+                                committeeEmail: String,
                                 bccEmail: Option[String],
                                 bugReportRecipient: String,
                                 conferenceUrls: ConferenceUrls,
@@ -89,8 +89,8 @@ case class ConferenceDescriptor(eventCode: String,
                                 hosterWebsite: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
-                                locale:List[String],
-                                localisation:String
+                                locale: List[String],
+                                localisation: String
                                  )
 
 object ConferenceDescriptor {
@@ -180,23 +180,33 @@ object ConferenceDescriptor {
 
   object ConferenceRooms {
 
-    // TODO for Devoxx BE : there are 8 rooms to configure
     val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, recorded = false, "special")
 
-    val ROOM8 = Room("room8", "Room 8", 680, recorded = true, "theatre")
+    val ROOM3 = Room("room3", "Room 3", 345, recorded = true, "theatre")
+    val ROOM4 = Room("room4", "Room 4", 364, recorded = true, "theatre")
+    val ROOM5 = Room("room5", "Room 5", 684, recorded = true, "theatre")
+    val ROOM6 = Room("room6", "Room 6", 407, recorded = true, "theatre")
+    val ROOM7 = Room("room7", "Room 7", 407, recorded = true, "theatre")
+    val ROOM8 = Room("room8", "Room 8", 745, recorded = true, "theatre")
+    val ROOM9 = Room("room9", "Room 9", 425, recorded = true, "theatre")
 
-    val SMALL_LAB01 = Room("smallLab01", "Small Lab 01", 50, recorded = false, "classroom")
+    val BOF1 = Room("bof1", "BOF 1", 70, recorded = false, "classroom")
+    val BOF2 = Room("bof2", "BOF 2", 70, recorded = false, "classroom")
 
-    val allBigRoom = List(ROOM8)
+    val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
-    val allRoomsLabs = List(SMALL_LAB01)
+    val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
-    val allRoomsBOFs = List(SMALL_LAB01)
+    val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3)
+    val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
-    val allRoomsTIA = List(ROOM8)
+    val allRoomsLabs = List(BOF1, BOF2)
+    val oneRoomLabs = List(BOF1)
 
-    val allRooms = allBigRoom
+    val allRoomsBOF = List(BOF1, BOF2)
+    val oneRoomBOF = List(BOF1)
 
+    val allRooms = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, BOF1, BOF2, HALL_EXPO)
   }
 
   object ConferenceSlotBreaks {
@@ -207,40 +217,351 @@ object ConferenceDescriptor {
   }
 
   object ConferenceSlots {
-    val universitySlots: List[Slot] = {
-      val u1 = ConferenceRooms.allBigRoom.map {
-        r =>
-          SlotBuilder(ConferenceProposalTypes.UNI.id, "monday", new DateTime("2014-11-10T09:30:00.000+02:00"), new DateTime("2014-11-10T12:30:00.000+02:00"), r)
+
+    // UNIVERSITY
+
+    val universitySlotsMonday: List[Slot] = {
+
+      val universityMondayMorning = ConferenceRooms.allRoomsUni.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.UNI.id, "monday", new DateTime("2014-11-10T09:30:00.000+01:00"), new DateTime("2014-11-10T12:30:00.000+01:00"), r1)
       }
-      val u2 = ConferenceRooms.allBigRoom.map {
+      val universityMondayAfternoon = ConferenceRooms.allRoomsUni.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.UNI.id, "monday", new DateTime("2014-11-10T13:30:00.000+02:00"), new DateTime("2014-11-10T16:30:00.000+02:00"), r2)
+          SlotBuilder(ConferenceProposalTypes.UNI.id, "monday", new DateTime("2014-11-10T13:30:00.000+01:00"), new DateTime("2014-11-10T16:30:00.000+01:00"), r2)
       }
-      u1 ++ u2
+      universityMondayMorning ++ universityMondayAfternoon
     }
 
-    val toolsInActionSlots: List[Slot] = Nil
+    val universitySlotsTuesday: List[Slot] = {
 
-    val labsSlots: List[Slot] = Nil
+      val universityTuesdayMorning = ConferenceRooms.allRoomsUni.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday", new DateTime("2014-11-11T09:30:00.000+01:00"), new DateTime("2014-11-11T12:30:00.000+01:00"), r1)
+      }
+      val universityTuesdayAfternoon = ConferenceRooms.allRoomsUni.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.UNI.id, "tuesday", new DateTime("2014-11-11T13:30:00.000+01:00"), new DateTime("2014-11-11T16:30:00.000+01:00"), r2)
+      }
+      universityTuesdayMorning ++ universityTuesdayAfternoon
+    }
 
-    val quickiesSlotsThursday: List[Slot] = Nil
+    // TOOLS IN ACTION
 
-    val quickiesSlotsFriday: List[Slot] = Nil
+    val tiaSlotsMonday: List[Slot] = {
 
-    val conferenceSlotsThursday: List[Slot] = Nil
+      val toolsMondayAfternoonSlot1 = ConferenceRooms.allRoomsTIA.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "monday", new DateTime("2014-11-10T16:45:00.000+01:00"), new DateTime("2014-11-10T17:15:00.000+01:00"), r1)
+      }
+      val toolsMondayAfternoonSlot2 = ConferenceRooms.allRoomsTIA.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "monday", new DateTime("2014-11-10T17:25:00.000+01:00"), new DateTime("2014-11-10T17:55:00.000+01:00"), r2)
+      }
+      val toolsMondayAfternoonSlot3 = ConferenceRooms.allRoomsTIA.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "monday", new DateTime("2014-11-10T18:05:00.000+01:00"), new DateTime("2014-11-10T18:35:00.000+01:00"), r3)
+      }
+      toolsMondayAfternoonSlot1 ++ toolsMondayAfternoonSlot2 ++ toolsMondayAfternoonSlot3
+    }
 
-    val conferenceSlotsFriday: List[Slot] = Nil
+    val tiaSlotsTuesday: List[Slot] = {
 
-    val bofSlotsThursday: List[Slot] = Nil
+      val toolsTuesdayAfternoonSlot1 = ConferenceRooms.allRoomsTIA.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday", new DateTime("2014-11-11T16:45:00.000+01:00"), new DateTime("2014-11-11T17:15:00.000+01:00"), r1)
+      }
+      val toolsTuesdayAfternoonSlot2 = ConferenceRooms.allRoomsTIA.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday", new DateTime("2014-11-11T17:25:00.000+01:00"), new DateTime("2014-11-11T17:55:00.000+01:00"), r2)
+      }
+      val toolsTuesdayAfternoonSlot3 = ConferenceRooms.allRoomsTIA.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday", new DateTime("2014-11-11T18:05:00.000+01:00"), new DateTime("2014-11-11T18:35:00.000+01:00"), r3)
+      }
+      toolsTuesdayAfternoonSlot1 ++ toolsTuesdayAfternoonSlot2 ++ toolsTuesdayAfternoonSlot3
+    }
 
-    val wednesday: List[Slot] = Nil
+    // HANDS ON LABS
 
-    val thursday: List[Slot] = Nil
+    val labsSlotsMonday: List[Slot] = {
 
-    val friday: List[Slot] = Nil
+      val labsMondayMorning = ConferenceRooms.allRoomsLabs.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "monday", new DateTime("2014-11-10T09:30:00.000+01:00"), new DateTime("2014-11-10T12:30:00.000+01:00"), r1)
+      }
+      val labsMondayAfternoon = ConferenceRooms.allRoomsLabs.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "monday", new DateTime("2014-11-10T13:30:00.000+01:00"), new DateTime("2014-11-10T16:30:00.000+01:00"), r2)
+      }
+      labsMondayMorning ++ labsMondayAfternoon
+    }
+
+    val labsSlotsTuesday: List[Slot] = {
+
+      val labsTuesdayMorning = ConferenceRooms.allRoomsLabs.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "tuesday", new DateTime("2014-11-11T09:30:00.000+01:00"), new DateTime("2014-11-11T12:30:00.000+01:00"), r1)
+      }
+      val labsTuesdayAfternoon = ConferenceRooms.allRoomsLabs.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "tuesday", new DateTime("2014-11-11T13:30:00.000+01:00"), new DateTime("2014-11-11T16:30:00.000+01:00"), r2)
+      }
+      labsTuesdayMorning ++ labsTuesdayAfternoon
+    }
+
+    val labsSlotsWednesday: List[Slot] = {
+
+      val labsWednesdayAfternoon = ConferenceRooms.oneRoomLabs.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "wednesday", new DateTime("2014-11-12T14:00:00.000+01:00"), new DateTime("2014-11-12T17:00:00.000+01:00"), r1)
+      }
+      labsWednesdayAfternoon
+    }
+
+    val labsSlotsThursday: List[Slot] = {
+
+      val labsThursdayAfternoon = ConferenceRooms.oneRoomLabs.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "thursday", new DateTime("2014-11-13T14:00:00.000+01:00"), new DateTime("2014-11-13T17:00:00.000+01:00"), r1)
+      }
+      labsThursdayAfternoon
+    }
+
+    // BOFS
+
+    val bofSlotsMonday: List[Slot] = {
+
+      val bofMondayEveningSlot1 = ConferenceRooms.allRoomsBOF.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "monday", new DateTime("2014-11-10T19:00:00.000+01:00"), new DateTime("2014-11-10T20:00:00.000+01:00"), r1)
+      }
+      val bofMondayEveningSlot2 = ConferenceRooms.allRoomsBOF.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "monday", new DateTime("2014-11-10T20:00:00.000+01:00"), new DateTime("2014-11-10T21:00:00.000+01:00"), r2)
+      }
+      val bofMondayEveningSlot3 = ConferenceRooms.allRoomsBOF.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "monday", new DateTime("2014-11-10T21:00:00.000+01:00"), new DateTime("2014-11-10T22:00:00.000+01:00"), r3)
+      }
+      bofMondayEveningSlot1 ++ bofMondayEveningSlot2 ++ bofMondayEveningSlot3
+    }
+
+    val bofSlotsTuesday: List[Slot] = {
+
+      val bofTuesdayEveningSlot1 = ConferenceRooms.allRoomsBOF.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "tuesday", new DateTime("2014-11-11T19:00:00.000+01:00"), new DateTime("2014-11-11T20:00:00.000+01:00"), r1)
+      }
+      val bofTuesdayEveningSlot2 = ConferenceRooms.allRoomsBOF.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "tuesday", new DateTime("2014-11-11T20:00:00.000+01:00"), new DateTime("2014-11-11T21:00:00.000+01:00"), r2)
+      }
+      val bofTuesdayEveningSlot3 = ConferenceRooms.allRoomsBOF.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "tuesday", new DateTime("2014-11-11T21:00:00.000+01:00"), new DateTime("2014-11-11T22:00:00.000+01:00"), r3)
+      }
+      bofTuesdayEveningSlot1 ++ bofTuesdayEveningSlot2 ++ bofTuesdayEveningSlot3
+    }
+
+    val bofSlotsWednesday: List[Slot] = {
+
+      val bofWednesdayEveningSlot1 = ConferenceRooms.allRoomsBOF.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday", new DateTime("2014-11-12T19:00:00.000+01:00"), new DateTime("2014-11-12T20:00:00.000+01:00"), r1)
+      }
+      val bofWednesdayEveningSlot2 = ConferenceRooms.allRoomsBOF.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday", new DateTime("2014-11-12T20:00:00.000+01:00"), new DateTime("2014-11-12T21:00:00.000+01:00"), r2)
+      }
+      val bofWednesdayEveningSlot3 = ConferenceRooms.allRoomsBOF.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "wednesday", new DateTime("2014-11-12T21:00:00.000+01:00"), new DateTime("2014-11-12T22:00:00.000+01:00"), r3)
+      }
+      bofWednesdayEveningSlot1 ++ bofWednesdayEveningSlot2 ++ bofWednesdayEveningSlot3
+    }
+
+    val bofSlotsThursday: List[Slot] = {
+
+      val bofThursdayEveningSlot1 = ConferenceRooms.allRoomsBOF.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "thursday", new DateTime("2014-11-13T19:00:00.000+01:00"), new DateTime("2014-11-13T20:00:00.000+01:00"), r1)
+      }
+      val bofThursdayEveningSlot2 = ConferenceRooms.allRoomsBOF.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "thursday", new DateTime("2014-11-13T20:00:00.000+01:00"), new DateTime("2014-11-13T21:00:00.000+01:00"), r2)
+      }
+      val bofThursdayEveningSlot3 = ConferenceRooms.allRoomsBOF.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "thursday", new DateTime("2014-11-13T21:00:00.000+01:00"), new DateTime("2014-11-13T22:00:00.000+01:00"), r3)
+      }
+      bofThursdayEveningSlot1 ++ bofThursdayEveningSlot2 ++ bofThursdayEveningSlot3
+    }
+
+    val bofSlotFriday: List[Slot] = {
+
+      val bofFridayEveningSlot1 = ConferenceRooms.oneRoomBOF.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.BOF.id, "friday", new DateTime("2014-11-14T10:45:00.000+01:00"), new DateTime("2014-11-14T11:45:00.000+01:00"), r1)
+      }
+      bofFridayEveningSlot1
+    }
+
+    // QUICKIES
+
+    val quickiesSlotsWednesday: List[Slot] = {
+
+      val quickiesWednesdayLunch1 = ConferenceRooms.allRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2014-11-12T13:10:00.000+01:00"), new DateTime("2014-11-12T13:25:00.000+01:00"), r1)
+      }
+      val quickiesWednesdayLunch2 = ConferenceRooms.allRoomsConf.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2014-11-12T13:35:00.000+01:00"), new DateTime("2014-11-12T14:50:00.000+01:00"), r2)
+      }
+      quickiesWednesdayLunch1 ++ quickiesWednesdayLunch2
+    }
+
+
+    val quickiesSlotsThursday: List[Slot] = {
+
+      val quickiesThursdayLunch1 = ConferenceRooms.allRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2014-11-13T13:10:00.000+01:00"), new DateTime("2014-11-13T13:25:00.000+01:00"), r1)
+      }
+      val quickiesThursdayLunch2 = ConferenceRooms.allRoomsConf.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2014-11-13T13:35:00.000+01:00"), new DateTime("2014-11-13T14:50:00.000+01:00"), r2)
+      }
+      quickiesThursdayLunch1 ++ quickiesThursdayLunch2
+    }
+
+    // CONFERENCE KEYNOTES
+
+    val keynoteSlotsWedneday: List[Slot] = {
+
+      val keynoteWednesdaySlot1 = ConferenceRooms.allRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T09:30:00.000+01:00"), new DateTime("2014-11-12T10:15:00.000+01:00"), r1)
+      }
+      val keynoteWednesdaySlot2 = ConferenceRooms.allRoomsUni.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:15:00.000+01:00"), new DateTime("2014-11-12T10:55:00.000+01:00"), r2)
+      }
+      val keynoteWednesdaySlot3 = ConferenceRooms.allRoomsUni.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:55:00.000+01:00"), new DateTime("2014-11-12T11:30:00.000+01:00"), r3)
+      }
+      keynoteWednesdaySlot1 ++ keynoteWednesdaySlot2 ++ keynoteWednesdaySlot3
+    }
+
+    val keynoteSlotsThursday: List[Slot] = {
+
+      val keynoteThursdaySlot1 = ConferenceRooms.allRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday", new DateTime("2014-11-13T09:40:00.000+01:00"), new DateTime("2014-11-13T10:20:00.000+01:00"), r1)
+      }
+      keynoteThursdaySlot1
+    }
+
+    // CONFERENCE SLOTS
+
+    val conferenceSlotsWedneday: List[Slot] = {
+
+      val conferenceWednesdaySlot1 = ConferenceRooms.allRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T12:00:00.000+01:00"), new DateTime("2014-11-12T13:00:00.000+01:00"), r1)
+      }
+      val conferenceWednesdaySlot2 = ConferenceRooms.allRoomsUni.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T14:00:00.000+01:00"), new DateTime("2014-11-12T15:00:00.000+01:00"), r2)
+      }
+      val conferenceWednesdaySlot3 = ConferenceRooms.allRoomsUni.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T15:10:00.000+01:00"), new DateTime("2014-11-12T16:10:00.000+01:00"), r3)
+      }
+      val conferenceWednesdaySlot4 = ConferenceRooms.allRoomsUni.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T16:40:00.000+01:00"), new DateTime("2014-11-12T17:40:00.000+01:00"), r4)
+      }
+      val conferenceWednesdaySlot5 = ConferenceRooms.allRoomsUni.map {
+        r5 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T17:50:00.000+01:00"), new DateTime("2014-11-12T18:50:00.000+01:00"), r5)
+      }
+      conferenceWednesdaySlot1 ++ conferenceWednesdaySlot2 ++ conferenceWednesdaySlot3 ++ conferenceWednesdaySlot4 ++ conferenceWednesdaySlot5
+    }
+
+    val conferenceSlotsThursday: List[Slot] = {
+
+      val conferenceThursdaySlot1 = ConferenceRooms.allRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T10:50:00.000+01:00"), new DateTime("2014-11-13T11:50:00.000+01:00"), r1)
+      }
+      val conferenceThursdaySlot2 = ConferenceRooms.allRoomsConf.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T12:00:00.000+01:00"), new DateTime("2014-11-13T13:00:00.000+01:00"), r2)
+      }
+      val conferenceThursdaySlot3 = ConferenceRooms.allRoomsUni.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T14:00:00.000+01:00"), new DateTime("2014-11-13T15:00:00.000+01:00"), r3)
+      }
+      val conferenceThursdaySlot4 = ConferenceRooms.allRoomsUni.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T15:10:00.000+01:00"), new DateTime("2014-11-13T16:10:00.000+01:00"), r4)
+      }
+      val conferenceThursdaySlot5 = ConferenceRooms.allRoomsUni.map {
+        r5 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T16:40:00.000+01:00"), new DateTime("2014-11-13T17:40:00.000+01:00"), r5)
+      }
+      val conferenceThursdaySlot6 = ConferenceRooms.allRoomsUni.map {
+        r6 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T17:50:00.000+01:00"), new DateTime("2014-11-13T18:50:00.000+01:00"), r6)
+      }
+      conferenceThursdaySlot1 ++ conferenceThursdaySlot2 ++ conferenceThursdaySlot3 ++ conferenceThursdaySlot4 ++ conferenceThursdaySlot5 ++ conferenceThursdaySlot6
+    }
+
+    val conferenceSlotsFriday: List[Slot] = {
+      val conferenceFridaySlot1 = ConferenceRooms.fridayRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2014-11-14T09:30:00.000+01:00"), new DateTime("2014-11-14T10:30:00.000+01:00"), r1)
+      }
+      val conferenceFridaySlot2 = ConferenceRooms.fridayRoomsConf.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2014-11-14T10:45:00.000+01:00"), new DateTime("2014-11-14T11:45:00.000+01:00"), r2)
+      }
+      val conferenceFridaySlot3 = ConferenceRooms.fridayRoomsConf.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2014-11-14T15:11:50.000+01:00"), new DateTime("2014-11-14T16:12:50.000+01:00"), r3)
+      }
+      conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3
+    }
+
+    // DEVOXX DAYS
+
+    val monday: List[Slot] = {
+      universitySlotsMonday ++ tiaSlotsMonday ++ labsSlotsMonday ++ bofSlotsMonday
+    }
+
+    val tuesday: List[Slot] = {
+      universitySlotsTuesday ++ tiaSlotsTuesday ++ labsSlotsTuesday ++ bofSlotsTuesday
+    }
+
+    val wednesday: List[Slot] = {
+      keynoteSlotsWedneday ++ conferenceSlotsWedneday ++ quickiesSlotsWednesday ++ bofSlotsWednesday ++ labsSlotsWednesday
+    }
+
+    val thursday: List[Slot] = {
+      keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday
+    }
+
+    val friday: List[Slot] = {
+      conferenceSlotsFriday ++ bofSlotFriday
+    }
+
+    // COMPLETE DEVOXX
 
     def all: List[Slot] = {
-      wednesday ++ thursday ++ friday
+      monday ++ tuesday ++ wednesday ++ thursday ++ friday
     }
   }
 
@@ -250,7 +571,7 @@ object ConferenceDescriptor {
     confUrlCode = "devoxxbe2014",
     frLangEnabled = false,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.com"),
-    comitteeEmail = Play.current.configuration.getString("mail.comittee.email").getOrElse("program@devoxx.com"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
@@ -274,8 +595,8 @@ object ConferenceDescriptor {
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxVE",
     hashTag = "#DevoxxBE",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
-  , List("en_EN")
-  , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , List("en_EN")
+    , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
   )
 
   def isCFPOpen: Boolean = {

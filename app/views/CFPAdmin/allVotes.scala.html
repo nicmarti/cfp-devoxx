@@ -97,6 +97,7 @@
                                     <td>@proposal.id</td>
                                     <td>
                                         @tags.renderGravatar(proposal.mainSpeaker,showName = true, showPhoto = false)
+                                        @tags.checkInvited(proposal.mainSpeaker)
                                     </td>
                                     <td>
                                         @Messages(proposal.track.label)

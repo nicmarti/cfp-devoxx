@@ -21,23 +21,42 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package library.wordpress
+package models
+
+import library.Redis
+
 
 /**
- * Model classes for Wordpress.
- * I didn't want to implement the full XMLRPC support for Wordpress, only
- * the minimal required subset.
- * Created by nicolas martignole on 22/05/2014.
+ * A request to attend or to talk for a speaker, the request has been accepted.
+ * Created by nicolas martignole on 30/07/2014.
  */
 
-case class Category(id:String, name:String, description:String)
+object Invitation {
 
-case class Tag(id:String, name:String, description:String)
+  private val redisInvitation = "Invitations"
 
-case class PostType(name:String, label:String)
+  def inviteSpeaker(speakerId: String, invitedBy: String) = Redis.pool.withClient {
+    implicit client =>
+      client.hset(redisInvitation, speakerId, invitedBy)
+  }
 
-case class Page(title:String, content:String, category:Option[Category], tags:Set[Tag]){
-  def hasTaxonomies:Boolean ={
-		this.category.isDefined || this.tags.nonEmpty
-	}
+  def isInvited(speakerId: String): Boolean = Redis.pool.withClient {
+    implicit client =>
+      client.hexists(redisInvitation, speakerId)
+  }
+
+  def invitedBy(speakerId: String): Option[String] = Redis.pool.withClient {
+    implicit client =>
+      client.hget(redisInvitation, speakerId)
+  }
+
+  def all=Redis.pool.withClient{
+    implicit client=>
+      client.hkeys(redisInvitation)
+  }
+
+  def removeInvitation(speakerId:String)=Redis.pool.withClient {
+    implicit client =>
+      client.hdel(redisInvitation, speakerId)
+  }
 }

@@ -1,0 +1,7 @@
+@(speakerUUID:String)
+
+@if(models.Invitation.isInvited(speakerUUID)){
+    <a href="#" class="btn btn-sm btn-warning ajax-cancelInvitation" data-speaker="@speakerUUID">Invited</a>
+}else{
+    <a href="#" class="btn btn-sm btn-primary ajax-invite" data-speaker="@speakerUUID">Invite</a>
+}

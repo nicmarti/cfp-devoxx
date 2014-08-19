@@ -73,6 +73,7 @@ GET           /cfpadmin/proposals/byTrack/:track                     controllers
 GET           /cfpadmin/compareReviewer                              controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 GET           /cfpadmin/allWebusers                                  controllers.CFPAdmin.allWebusers()
 GET           /cfpadmin/allSpeakers                                  controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
+GET           /cfpadmin/allInvitedSpeakers                           controllers.InviteController.allInvitations()
 GET           /cfpadmin/allCFPWebusers                               controllers.CFPAdmin.allCFPWebusers()
 POST          /cfpadmin/cfpWebusers/trackLeaders                     controllers.CFPAdmin.updateTrackLeaders()
 GET           /cfpadmin/proposals/withNoVotes                        controllers.CFPAdmin.showProposalsWithNoVotes()
@@ -161,14 +162,14 @@ GET           /api/conferences/:eventCode/tracks                     controllers
 GET           /api/profile/:docName                                  controllers.RestAPI.profile(docName:String)
 
 # API for AngularJS
-GET           /schedulling/fr14/slots                                controllers.SchedullingController.slots(confType:String)
-GET           /schedulling/fr14/approvedTalks                        controllers.SchedullingController.approvedTalks(confType:String)
-GET           /schedulling/fr14/scheduledConfigurations              controllers.SchedullingController.allScheduledConfiguration()
-GET           /schedulling/fr14/loadScheduledConfiguration           controllers.SchedullingController.loadScheduledConfiguration(id:String)
-POST          /schedulling/fr14/slots                                controllers.SchedullingController.saveSlots(confType:String)
-DELETE        /schedulling/fr14/deletescheduledConfigurations        controllers.SchedullingController.deleteScheduleConfiguration(id:String)
-POST          /schedulling/fr14/publish                              controllers.SchedullingController.publishScheduleConfiguration()
-GET           /schedulling/fr14/published                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
+GET           /schedulling/slots                                controllers.SchedullingController.slots(confType:String)
+GET           /schedulling/approvedTalks                        controllers.SchedullingController.approvedTalks(confType:String)
+GET           /schedulling/scheduledConfigurations              controllers.SchedullingController.allScheduledConfiguration()
+GET           /schedulling/loadScheduledConfiguration           controllers.SchedullingController.loadScheduledConfiguration(id:String)
+POST          /schedulling/slots                                controllers.SchedullingController.saveSlots(confType:String)
+DELETE        /schedulling/deletescheduledConfigurations        controllers.SchedullingController.deleteScheduleConfiguration(id:String)
+POST          /schedulling/publish                              controllers.SchedullingController.publishScheduleConfiguration()
+GET           /schedulling/published                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
 # Tweetwall
 GET           /tweetwall                                             controllers.Tweetwall.index()
@@ -199,9 +200,10 @@ GET           /cfpadmin/wishlist/delete/:requestId                   controllers
 GET           /cfpadmin/wishlist/approve/:requestId                  controllers.Wishlist.speakerApproveRequest(requestId:String)
 GET           /cfpadmin/wishlist/decline/:requestId                  controllers.Wishlist.speakerDeclineRequest(requestId:String)
 
-# Wordpress publisher
-GET           /wordpress/publish                                     controllers.WordpressController.publish(id:String, confType:String)
-
+# Invitation system
+GET         /cfpadmin/invitations        controllers.InviteController.allInvitations()
+GET        /cfpadmin/invitations/invite        controllers.InviteController.invite(speakerUUID:String)
+GET        /cfpadmin/invitations/cancel        controllers.InviteController.cancelInvite(speakerUUID)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                          controllers.Assets.at(path="/public", file)

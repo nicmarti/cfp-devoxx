@@ -39,7 +39,7 @@ import play.api.i18n.Messages
 object Mails {
 
   lazy val from = ConferenceDescriptor.current().fromEmail
-  lazy val comitteeEmail = ConferenceDescriptor.current().comitteeEmail
+  lazy val committeeEmail = ConferenceDescriptor.current().committeeEmail
   lazy val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
   lazy val bcc = ConferenceDescriptor.current().bccEmail
   
@@ -135,7 +135,7 @@ object Mails {
     // For Program committee
     emailer.setSubject(s"[${proposal.title} ${proposal.id}]")
     emailer.addFrom(from)
-    emailer.addRecipient(comitteeEmail)
+    emailer.addRecipient(committeeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
 
     emailer.setCharset("utf-8")
@@ -150,7 +150,7 @@ object Mails {
     val subject: String = Messages("mail.speaker_message_to_cfp.subject", proposal.title,fromWebuser.cleanName)
     emailer.setSubject(subject)
     emailer.addFrom(from)
-    emailer.addRecipient(comitteeEmail)
+    emailer.addRecipient(committeeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
     emailer.setCharset("utf-8")
 
@@ -173,7 +173,7 @@ object Mails {
 
     emailer.setSubject(subject)
     emailer.addFrom(from)
-    emailer.addRecipient(comitteeEmail)
+    emailer.addRecipient(committeeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
     emailer.setCharset("utf-8")
     emailer.send(
@@ -186,7 +186,7 @@ object Mails {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     emailer.setSubject(s"[${proposal.title}][PRIVATE] ${fromWebuser.cleanName}")
     emailer.addFrom(from)
-    emailer.addRecipient(comitteeEmail)
+    emailer.addRecipient(committeeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
 
     emailer.setCharset("utf-8")
