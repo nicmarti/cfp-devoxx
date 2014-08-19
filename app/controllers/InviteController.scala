@@ -23,19 +23,34 @@
 
 package controllers
 
-import library.wordpress.{PublishToWordpress, WordpressActor}
+import models.{Speaker, Invitation}
 
 /**
- * Special Wordpress controller.
- * Devoxx BE would like to publish to Wordpress all conferegence's guides.
+ * A controller that is now responsible for the invitation system, introduced for Devoxx BE 2014.
  *
- * Created by nicolas on 21/05/2014.
+ * Created by nicolas martignole on 30/07/2014.
  */
-object WordpressController extends SecureCFPController {
+object InviteController extends SecureCFPController{
 
-  def publish(id:String, confType:String) = SecuredAction(IsMemberOf("cfp")) {
+  def allInvitations()=SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      WordpressActor.actor ! PublishToWordpress(id, confType)
-      Ok("done")
+      val speakers = Invitation.all.flatMap{uuid=>
+        Speaker.findByUUID(uuid)
+      }
+
+      Ok(views.html.InviteController.allInvitations(speakers))
   }
+
+  def invite(speakerUUID:String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Invitation.inviteSpeaker(speakerUUID,request.webuser.uuid)
+      Created("{\"status\":\"created\"}").as(JSON)
+  }
+
+  def cancelInvite(speakerUUID:String)= SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Invitation.removeInvitation(speakerUUID)
+      Ok("{\"status\":\"deleted\"}").as(JSON)
+  }
+
 }

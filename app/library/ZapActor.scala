@@ -37,7 +37,6 @@ import java.io.File
 import org.apache.commons.io.FileUtils
 import scala.collection.JavaConverters._
 import org.apache.commons.io.filefilter.{SuffixFileFilter, WildcardFileFilter}
-import library.wordpress.WordpressPublisher
 
 /**
  * Akka actor that is in charge to process batch operations and long running queries

@@ -26,7 +26,7 @@ J'ai écris cette application en prenant soin de rester simple, pragmatique et p
 
 L'installation d'un environnement de dév est simple et s'effectue en quelques étapes :
 
-- installer Play 2.2.1
+- installer Play 2.2.3
 - installer Redis 2.8.4
 - configurer son serveur Redis pour être "slave" de la prod
 - récupérer le code source du projet CFP Devoxx France de Bitbucket
@@ -36,7 +36,7 @@ L'installation d'un environnement de dév est simple et s'effectue en quelques �
 
 Pré-requis : Java 7 fortement conseillé pour des raisons de performances.
 
-- Téléchargez Play 2.2.1 http://downloads.typesafe.com/play/2.2.0/play-2.2.0.zip
+- Téléchargez Play 2.2.3 http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip
 - Décompressez dans un répertoire, ajouter le répertoire à votre PATH
 - Placez-vous dans un nouveau répertoire et vérifiez que Play2 est bien installé avec la commande "play"
 

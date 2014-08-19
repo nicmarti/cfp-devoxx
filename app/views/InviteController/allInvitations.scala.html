@@ -1,0 +1,72 @@
+@(speakers:Set[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("All invited speakers"){
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+        </div>
+    }
+
+    <div class="col-md-12">
+        <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>All Invited Speakers</h3>
+            <span class="label label-info">@speakers.size users</span>
+        </div>
+        <div class="panel-body">
+            @if(speakers.nonEmpty){
+            <table class="table table-bordered table-strippted">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Lang</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @speakers.map{ speaker: Speaker =>
+                    <tr>
+                       <td>
+                           @speaker.cleanName
+                           @tags.checkInvited(speaker.uuid)
+                       </td>
+                        <td>
+                            @speaker.cleanLang
+                        </td>
+                        <td>
+                            @speaker.company.getOrElse("")
+                        </td>
+                        <td>
+                            <small>@speaker.email</small>
+                        </td>
+                        <td>
+                           <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
+                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
+                        </td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+            }else{
+                <P>There is no speaker.</P>
+            }
+        </div>
+        </div>
+    </div>
+</div>
+}
