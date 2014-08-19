@@ -210,6 +210,7 @@ object Proposal {
 
       tx.exec()
 
+      ApprovedProposal.changeTalkType(proposalId, proposal.talkType.id)
 
       changeTrack(authorUUID, proposal)
 
@@ -343,6 +344,11 @@ object Proposal {
   }
 
   def delete(uuid: String, proposalId: String) {
+    Proposal.findById(proposalId).map{
+      proposal=>
+        ApprovedProposal.cancelApprove(proposal)
+        ApprovedProposal.cancelRefuse(proposal)
+    }
     changeProposalState(uuid, proposalId, ProposalState.DELETED)
   }
 

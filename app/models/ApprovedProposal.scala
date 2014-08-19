@@ -31,7 +31,7 @@ import library.Redis
  */
 object ApprovedProposal {
 
-  // What we did in 2013
+  // Devoxx BE 2013
   val getTotal: Map[String, Int] = {
     Map(
       ("conf.label", 89)
@@ -49,10 +49,42 @@ object ApprovedProposal {
   def countApproved(talkType: String): Long = Redis.pool.withClient {
     client =>
       talkType match {
+        case null => 0
         case "all" =>
           client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
         case other =>
           client.scard(s"Approved:$talkType")
+      }
+  }
+
+  def countRefused(talkType: String): Long = Redis.pool.withClient {
+    client =>
+      talkType match {
+        case null => 0
+        case "all" =>
+          client.scard("Refused:conf") + client.scard("Refused:lab") + client.scard("Refused:bof") + client.scard("Refused:tia") + client.scard("Refused:uni") + client.scard("Refused:quick")
+        case other =>
+          client.scard(s"Refused:$talkType")
+      }
+  }
+
+  // Update Approved or Refused total by conference type
+  def changeTalkType(proposalId: String, newTalkType: String) = Redis.pool.withClient {
+    client =>
+      ConferenceDescriptor.ConferenceProposalTypes.ALL.foreach {
+        proposalType =>
+          if (client.sismember(s"Approved:${proposalType.id}", proposalId)) {
+            val tx = client.multi()
+            tx.srem(s"Approved:${proposalType.id}", proposalId)
+            tx.sadd(s"Approved:$newTalkType", proposalId)
+            tx.exec()
+          }
+          if (client.sismember(s"Refused:${proposalType.id}", proposalId)) {
+            val tx = client.multi()
+            tx.srem(s"Refused:${proposalType.id}", proposalId)
+            tx.sadd(s"Refused:$newTalkType", proposalId)
+            tx.exec()
+          }
       }
   }
 
@@ -62,7 +94,7 @@ object ApprovedProposal {
 
   def isApproved(proposalId: String, talkType: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember("Approved:" + talkType, proposalId)
+      client.sismember(s"Approved:$talkType", proposalId)
   }
 
 
@@ -72,12 +104,12 @@ object ApprovedProposal {
 
   def isRefused(proposalId: String, talkType: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember("Refused:" + talkType, proposalId)
+      client.sismember(s"Refused:${talkType}", proposalId)
   }
 
   def remainingSlots(talkType: String): Long = {
     var propType = ProposalConfiguration.parse(talkType)
-    if(propType == ProposalConfiguration.UNKNOWN) {
+    if (propType == ProposalConfiguration.UNKNOWN) {
       ProposalConfiguration.totalSlotsCount - countApproved("all")
     } else {
       propType.slotsCount - countApproved(talkType)
@@ -152,7 +184,7 @@ object ApprovedProposal {
       tx.exec()
   }
 
-    def allRefusedSpeakerIDs(): Set[String] = Redis.pool.withClient {
+  def allRefusedSpeakerIDs(): Set[String] = Redis.pool.withClient {
     implicit client =>
       client.keys("RefusedSpeakers:*").map {
         key =>
@@ -204,7 +236,7 @@ object ApprovedProposal {
       client.smembers("ApprovedById:")
   }
 
-  def allRefusedProposalIDs()= Redis.pool.withClient {
+  def allRefusedProposalIDs() = Redis.pool.withClient {
     implicit client =>
       client.smembers("RefusedById:")
   }
@@ -229,7 +261,9 @@ object ApprovedProposal {
 
   def allAcceptedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
     implicit client =>
-      Proposal.loadAndParseProposals(client.smembers("ApprovedSpeakers:" + speakerId)).values.filter(_.state == ProposalState.ACCEPTED)
+      val allApprovedProposals=client.smembers("ApprovedSpeakers:" + speakerId)
+      val mapOfProposals=Proposal.loadAndParseProposals(allApprovedProposals)
+      mapOfProposals.values
   }
 
   def allAcceptedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
@@ -239,15 +273,15 @@ object ApprovedProposal {
       allProposalWithVotes.values.filter(_.state == ProposalState.ACCEPTED).toList
   }
 
-  def allApprovedSpeakersWithFreePass():Set[Speaker] = Redis.pool.withClient {
+  def allApprovedSpeakersWithFreePass(): Set[Speaker] = Redis.pool.withClient {
     implicit client =>
       val allSpeakers = client.keys("ApprovedSpeakers:*").flatMap {
         key =>
           val speakerUUID = key.substring("ApprovedSpeakers:".length)
           for (speaker <- Speaker.findByUUID(speakerUUID)) yield {
             (speaker,
-              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p=> ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(p.talkType))
-            )
+              Proposal.loadAndParseProposals(client.smembers(key)).values.filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(p.talkType))
+              )
           }
       }
       val setOfSpeakers = allSpeakers.filterNot(_._2.isEmpty).map(_._1)
