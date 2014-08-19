@@ -23,7 +23,7 @@
 
 package models
 
-import library.Redis
+import library.{Dress, Redis}
 
 /**
  * Approve or reject a proposal
@@ -66,6 +66,34 @@ object ApprovedProposal {
         case other =>
           client.scard(s"Refused:$talkType")
       }
+  }
+
+  def reflectProposalChanges(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
+      changeTalkType(proposal.id, proposal.talkType.id)
+      recomputeAcceptedSpeakers()
+  }
+
+  def recomputeAcceptedSpeakers() = Redis.pool.withClient {
+    implicit client =>
+      val allSpeakerIDs=client.keys("ApprovedSpeakers:*")
+
+      val tx = client.multi()
+      allSpeakerIDs.foreach {
+        speakerId=>
+        tx.del(s"$speakerId")
+      }
+      allApproved().map {
+        proposal =>
+          tx.sadd("ApprovedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
+          proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("ApprovedSpeakers:" + secondarySpeaker, proposal.id.toString))
+          proposal.otherSpeakers.foreach {
+            otherSpeaker: String =>
+              tx.sadd("ApprovedSpeakers:" + otherSpeaker, proposal.id.toString)
+          }
+      }
+      tx.exec()
+
   }
 
   // Update Approved or Refused total by conference type
@@ -261,8 +289,8 @@ object ApprovedProposal {
 
   def allAcceptedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allApprovedProposals=client.smembers("ApprovedSpeakers:" + speakerId)
-      val mapOfProposals=Proposal.loadAndParseProposals(allApprovedProposals)
+      val allApprovedProposals = client.smembers("ApprovedSpeakers:" + speakerId)
+      val mapOfProposals = Proposal.loadAndParseProposals(allApprovedProposals)
       mapOfProposals.values
   }
 
