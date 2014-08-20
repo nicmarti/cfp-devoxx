@@ -32,8 +32,7 @@ import library.{Dress, Redis}
 object ApprovedProposal {
 
   // Devoxx BE 2013
-  val getTotal: Map[String, Int] = {
-    Map(
+  val getTotal: Map[String, Int] =  Map(
       ("conf.label", 89)
       , ("uni.label", 16)
       , ("tia.label", 24)
@@ -44,7 +43,6 @@ object ApprovedProposal {
       , ("key.label", 7)
       , ("other.label", 0)
     )
-  }
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
     client =>
