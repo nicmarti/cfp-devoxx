@@ -5,24 +5,23 @@
 
 <p>Bonjour,</p>
 <p>Nous avons le regret de vous informer que votre proposition <strong>@proposal.title</strong> au format
-<strong>@proposal.talkType.label</strong> n'a pas été acceptée.</p>
+<strong>@Messages(proposal.talkType.label)</strong> n'a pas été acceptée.</p>
 <p>Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.</p>
 <p>Si vous souhaitez vous inscrire, nous avons prolongé l'offre "early-bird" afin de vous faire
     bénéficier du prix discount.</p>
-<p>La sélection cette année a encore été difficile. Nous communiquerons sur notre site plus d'informations sur
-    la sélection.</p>
+<p>La sélection cette année a encore été difficile. Nous communiquerons sur notre site plus d'informations sur la sélection.</p>
 <p></p>
 <p>Merci pour votre proposition,</p>
 <p>L'équipe de sélection de la conférence @Messages("longName")</p>
 <hr>
 }
 <p>Hi,</p>
-<p>We're sorry to inform you that your proposal for @Messages("longYearlyName") was <strong>refused</strong></p>
-<p>Proposition title : <strong>@proposal.title</strong>, <strong>@proposal.talkType.label</strong>.</p>
-<p>We'd like to thank you sincerly, for the time and your work.</p>
-<p>If you like to register, we still have our early bird price, please visiti <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
+<p>We're sorry to inform you that your proposal for @Messages("longYearlyName") was <strong>refused</strong>,  keep in mind that we received close to 800 proposals and the available slots are very limited</p>
+<p>Proposition title : <strong>@proposal.title</strong>, <strong>@Messages(proposal.talkType.id)</strong>.</p>
+<p>We would like to thank you sincerely for your proposal.</p>
+<p>Hopefully we can still welcome you as a Devoxxian, registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
 <br>
 <br>
-<p>Thanks for your time,</p>
+<p>Kind regards,</p>
 <p>The @Messages("longName") team</p>
 <p></p>

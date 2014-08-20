@@ -92,13 +92,27 @@ object ApproveOrRefuse extends SecureCFPController {
       Ok(views.html.ApproveOrRefuse.allApprovedByTalkType(ApprovedProposal.allApprovedByTalkType(talkType), talkType))
   }
 
+  def allRefusedByTalkType(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.ApproveOrRefuse.allRefusedByTalkType(ApprovedProposal.allRefusedByTalkType(talkType), talkType))
+  }
+
   def notifyApprove(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal: Proposal =>
           ZapActor.actor ! ProposalApproved(request.webuser.uuid, proposal)
       }
-      Redirect(routes.Backoffice.homeBackoffice())
+      Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
+  }
+
+  def notifyRefused(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Proposal.findById(proposalId).map {
+        proposal: Proposal =>
+          ZapActor.actor ! ProposalRefused(request.webuser.uuid, proposal)
+      }
+      Redirect(routes.ApproveOrRefuse.allRefusedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
   }
 
   val formApprove = Form(
@@ -110,7 +124,7 @@ object ApproveOrRefuse extends SecureCFPController {
       if (Speaker.needsToAccept(request.webuser.uuid)) {
         Ok(views.html.ApproveOrRefuse.showAcceptTerms(formApprove))
       } else {
-        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success"->Messages("acceptedTerms.msg"))
+        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success" -> Messages("acceptedTerms.msg"))
       }
   }
 
@@ -160,23 +174,23 @@ object ApproveOrRefuse extends SecureCFPController {
 
                 choice match {
                   case "accept" => {
-                    if(List(ProposalState.APPROVED,ProposalState.BACKUP,ProposalState.ACCEPTED,p.state==ProposalState.DECLINED).contains(p.state)){
+                    if (List(ProposalState.APPROVED, ProposalState.BACKUP, ProposalState.ACCEPTED, p.state == ProposalState.DECLINED).contains(p.state)) {
                       Proposal.accept(request.webuser.uuid, proposalId)
                       val validMsg = "Speaker has set the status of this proposal to ACCEPTED"
                       Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
                       ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
-                    }else{
-                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:"+request.webuser.cleanName+" talk:"+p.id +" state:"+p.state.code)
+                    } else {
+                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
                     }
                   }
                   case "decline" => {
-                     if(List(ProposalState.APPROVED,ProposalState.BACKUP,ProposalState.ACCEPTED,p.state==ProposalState.DECLINED).contains(p.state)){
-                     Proposal.decline(request.webuser.uuid, proposalId)
-                     val validMsg = "Speaker has set the status of this proposal to DECLINED"
-                     Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
-                     ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
-                    }else{
-                     ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:"+request.webuser.cleanName+" talk:"+p.id +" state:"+p.state.code)
+                    if (List(ProposalState.APPROVED, ProposalState.BACKUP, ProposalState.ACCEPTED, p.state == ProposalState.DECLINED).contains(p.state)) {
+                      Proposal.decline(request.webuser.uuid, proposalId)
+                      val validMsg = "Speaker has set the status of this proposal to DECLINED"
+                      Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
+                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
+                    } else {
+                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
                     }
                   }
                   case "backup" => {
@@ -208,38 +222,38 @@ object ApproveOrRefuse extends SecureCFPController {
       val refusedIDs = ApprovedProposal.allRefusedProposalIDs()
       val allProposalIDs = Proposal.allProposalIDsNotDeleted
 
-      val hasNoVotes = allProposalIDs.filter(p=>Review.allVotesFor(p).isEmpty)
+      val hasNoVotes = allProposalIDs.filter(p => Review.allVotesFor(p).isEmpty)
 
       Ok("allProposalIDsSubmitted ")
   }
 
   //
-//  def notifySpeakers() = SecuredAction(IsMemberOf("admin")) {
-//    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-//
-//      val speakersWithProposals = Speaker.allSpeakers().filter(s => Proposal.hasOneProposal(s.uuid))
-//      speakersWithProposals.foreach {
-//        speaker =>
-//          val allApproved = Proposal.allApprovedForSpeaker(speaker.uuid).toSet
-//          val allRejected = Proposal.allRejectedForSpeaker(speaker.uuid).toSet
-//          val allBackups = Proposal.allBackupForSpeaker(speaker.uuid).toSet
-//          if (allApproved.nonEmpty || allRejected.nonEmpty) {
-//            if (allApproved.isEmpty && allBackups.nonEmpty) {
-//              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-//            } else {
-//              Event.speakerNotified(speaker, allApproved, allRejected, allBackups)
-//              Mails.sendResultToSpeaker(speaker,allApproved,allRejected)
-//            }
-//          } else {
-//            if (allBackups.isEmpty) {
-//              play.Logger.of("application.ApproveOrRefuse").error("No approved/refused for speaker " + speaker.name.get + " " + speaker.uuid)
-//            } else {
-//              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-//            }
-//          }
-//      }
-//
-//      Ok("Speakers with proposals " + speakersWithProposals.size)
-//  }
+  //  def notifySpeakers() = SecuredAction(IsMemberOf("admin")) {
+  //    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+  //
+  //      val speakersWithProposals = Speaker.allSpeakers().filter(s => Proposal.hasOneProposal(s.uuid))
+  //      speakersWithProposals.foreach {
+  //        speaker =>
+  //          val allApproved = Proposal.allApprovedForSpeaker(speaker.uuid).toSet
+  //          val allRejected = Proposal.allRejectedForSpeaker(speaker.uuid).toSet
+  //          val allBackups = Proposal.allBackupForSpeaker(speaker.uuid).toSet
+  //          if (allApproved.nonEmpty || allRejected.nonEmpty) {
+  //            if (allApproved.isEmpty && allBackups.nonEmpty) {
+  //              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
+  //            } else {
+  //              Event.speakerNotified(speaker, allApproved, allRejected, allBackups)
+  //              Mails.sendResultToSpeaker(speaker,allApproved,allRejected)
+  //            }
+  //          } else {
+  //            if (allBackups.isEmpty) {
+  //              play.Logger.of("application.ApproveOrRefuse").error("No approved/refused for speaker " + speaker.name.get + " " + speaker.uuid)
+  //            } else {
+  //              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
+  //            }
+  //          }
+  //      }
+  //
+  //      Ok("Speakers with proposals " + speakersWithProposals.size)
+  //  }
 }
 

@@ -30,10 +30,14 @@
                 <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Delete speakers and proposals ES Indexes</a><br>
                 <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Force indexation of speakers and proposals</a><br>
 
-            <h4>Accept or reject notification service</h4>
+            <h4>Accepted talks notification service</h4>
             <p>This service lets you search for a talk, then send a notification to the speaker</p>
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                 <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
+            }
+            <h4>Refused talks notification service</h4>
+            @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
+                <a href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
 
             <h4>Planner</h4>
