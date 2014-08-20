@@ -17,13 +17,15 @@ L'équipe de sélection de la conférence @Messages("longName")
 ----------------------------------------------------------------------------------------------------------------
 }
 Hi,
+We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused,  keep in mind that
+we received close to 800 proposals and the available slots are very limited.
 
-We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused
-Proposition title : @proposal.title, @proposal.talkType.label.
+Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
-We'd like to thank you sincerly, for the time and your work.
-If you like to register, we still have our early bird price, please visit @ConferenceDescriptor.current().conferenceUrls.registration.
+We would like to thank you sincerely for your proposal.
+Hopefully we can still welcome you as a Devoxxian, registration details
 
-Thanks for your time,
+@ConferenceDescriptor.current().conferenceUrls.registration
+
+Kind regards,
 The @Messages("longName") team
- 

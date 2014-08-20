@@ -112,7 +112,9 @@ GET           /ar/cancelPreaccept/:proposalId                        controllers
 GET           /ar/cancelPrerefuse/:proposalId                        controllers.ApproveOrRefuse.cancelRefuse(proposalId:String)
 
 GET           /ar/allApproved/:talkType                              controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
+GET           /ar/allRefused/:talkType                               controllers.ApproveOrRefuse.allRefusedByTalkType(talkType:String)
 GET           /ar/notifyApprove/:talkType                            controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
+GET           /ar/notifyRefuse/:talkType                             controllers.ApproveOrRefuse.notifyRefused(talkType:String, proposalId:String)
 GET           /ar/showAcceptTerms                                    controllers.ApproveOrRefuse.showAcceptTerms()
 GET           /ar/accept                                             controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET           /ar/acceptOrRefuseTalks                                controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()

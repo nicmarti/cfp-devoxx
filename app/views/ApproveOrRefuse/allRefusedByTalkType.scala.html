@@ -1,6 +1,6 @@
 @(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@main("ApproveOrRefuse - All votes") {
+@main("All refused talks") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
@@ -32,7 +32,9 @@
 
 
                 <div class="col-md-12">
-                    <h3>@allProposals.size proposals accepted</h3>
+                    <h3>@defining(allProposals.size){refusedSize=>
+                        @refusedSize proposal@if(refusedSize>1){s} refused</h3>
+                    }
                        <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
                        <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
 
@@ -42,27 +44,29 @@
                     }
 
                     <br>
+                    <small>If proposal's state = REJECTED then the speaker has been notified.</small>
 
                     <table id="allProposals" class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>
                                 <th>Proposal title</th>
                                 <th>Proposal id</th>
-                                <th>Main speaker</th>
+                                <th>All speakers</th>
                                 <th>Track</th>
+                                <th>Status</th>
                                 <th>Notify</th>
                             </tr>
                         </thead>
                         <tbody>
                             @allProposals.map { proposal =>
-                                <tr>
+                                <tr class="tr_@proposal.state.code">
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
                                     </td>
                                     <td>@proposal.id</td>
                                     <td>
                                         @tags.renderGravatar(proposal.mainSpeaker,showName = true, showPhoto = false)
-                                      @proposal.secondarySpeaker.map { sp =>
+                                    @proposal.secondarySpeaker.map { sp =>
                                         @tags.renderGravatar(sp,showName = true, showPhoto = false)
                                     }
                                     @proposal.otherSpeakers.map{ sp2=>
@@ -73,7 +77,10 @@
                                         @Messages(proposal.track.label)
                                     </td>
                                     <td>
-                                        <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="label label-success"><i class="icon-envelope"></i> Notify approved</a>
+                                        @Messages(proposal.state.code)
+                                    </td>
+                                    <td>
+                                        <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="label label-danger"><i class="icon-warning-sign"></i> Notify refused</a>
                                     </td>
                                 </tr>
                             }
