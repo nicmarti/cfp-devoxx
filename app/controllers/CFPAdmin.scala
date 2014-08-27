@@ -326,6 +326,7 @@ object CFPAdmin extends SecureCFPController {
 
       val result = reviews.toList.sortBy(_._2._1).reverse
       val allProposalIDs = result.map(_._1)
+      // TODO a proposal with no votes will not be loaded
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
 
       val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {

@@ -64,7 +64,7 @@ case class RemoveVotesForDeletedProposal()
 
 case class ProposalApproved(reporterUUID: String, proposal: Proposal)
 
-case class ProposalRejected(reporterUUID: String, proposal: Proposal)
+case class ProposalRefused(reporterUUID: String, proposal: Proposal)
 
 case class SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
 
@@ -97,7 +97,7 @@ class ZapActor extends Actor {
     case ComputeVotesAndScore() => doComputeVotesAndScore()
     case RemoveVotesForDeletedProposal() => doRemoveVotesForDeletedProposal()
     case ProposalApproved(reporterUUID, proposal) => doProposalApproved(reporterUUID, proposal)
-    case ProposalRejected(reporterUUID, proposal) => doProposalRejected(reporterUUID, proposal)
+    case ProposalRefused(reporterUUID, proposal) => doProposalRefused(reporterUUID, proposal)
     case SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) => doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
     case ProcessCSVFile(fileName: String) => doProcessCSV(fileName)
@@ -185,7 +185,7 @@ class ZapActor extends Actor {
     }
   }
 
-  def doProposalRejected(reporterUUID: String, proposal: Proposal) {
+  def doProposalRefused(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sent proposal Refused"))
