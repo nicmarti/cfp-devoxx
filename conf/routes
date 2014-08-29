@@ -127,15 +127,15 @@ GET           /show/proposals                                        controllers
 
 
 # Content Publisher
-GET           /devoxxfr2014/speakers                                 controllers.Publisher.showAllSpeakers()
-GET           /devoxxfr2014/speaker/:uuid                            controllers.Publisher.showSpeaker(uuid:String, name:String="")
-GET           /devoxxfr2014/speaker/:uuid/:name                      controllers.Publisher.showSpeaker(uuid:String, name:String)
-GET           /devoxxfr2014/talks/:talkType                          controllers.Publisher.showByTalkType(talkType:String)
-GET           /devoxxfr2014/talk/:proposalId                         controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
-GET           /devoxxfr2014/talk/:proposalId/:proposalTitle          controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
-GET           /devoxxfr2014                                          controllers.Publisher.homePublisher()
-GET           /devoxxfr2014/agenda/:confType                         controllers.Publisher.showAgendaByConfType(confType:String, slotId:String, day:Option[String])
-GET           /devoxxfr2014/byday/:day                               controllers.Publisher.showByDay(day:String)
+GET           /devoxxbe2014/speakers                                 controllers.Publisher.showAllSpeakers()
+GET           /devoxxbe2014/speaker/:uuid                            controllers.Publisher.showSpeaker(uuid:String, name:String="")
+GET           /devoxxbe2014/speaker/:uuid/:name                      controllers.Publisher.showSpeaker(uuid:String, name:String)
+GET           /devoxxbe2014/talks/:talkType                          controllers.Publisher.showByTalkType(talkType:String)
+GET           /devoxxbe2014/talk/:proposalId                         controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
+GET           /devoxxbe2014/talk/:proposalId/:proposalTitle          controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /devoxxbe2014                                          controllers.Publisher.homePublisher()
+GET           /devoxxbe2014/agenda/:confType                         controllers.Publisher.showAgendaByConfType(confType:String, slotId:String, day:Option[String])
+GET           /devoxxbe2014/byday/:day                               controllers.Publisher.showByDay(day:String)
 
 # For Paper guide
 GET           /guide/speakers                                        controllers.PaperGuide.exportSpeakers()
