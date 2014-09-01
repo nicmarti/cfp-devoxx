@@ -134,7 +134,7 @@ GET           /devoxxbe2014/talks/:talkType                          controllers
 GET           /devoxxbe2014/talk/:proposalId                         controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /devoxxbe2014/talk/:proposalId/:proposalTitle          controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET           /devoxxbe2014                                          controllers.Publisher.homePublisher()
-GET           /devoxxbe2014/agenda/:confType                         controllers.Publisher.showAgendaByConfType(confType:String, slotId:String, day:Option[String])
+GET           /devoxxbe2014/agenda/:confType                         controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:Option[String])
 GET           /devoxxbe2014/byday/:day                               controllers.Publisher.showByDay(day:String)
 
 # For Paper guide

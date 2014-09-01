@@ -10,7 +10,7 @@
                     <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
                            <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages("sw.showAllDay")</a> &gt;
                            <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all."+proposal.talkType.id)</a>  &gt;
-                           <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration.get, slot.map(_.day))">@Messages("day-"+slot.get.day)</a>
+                           <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day))">@Messages("day-"+slot.get.day)</a>
                     </small>
                 }else{
                     <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></small>

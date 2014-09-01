@@ -1,77 +1,134 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxBE2014("Programme complet"){
-<section id="container" class="one-column">
-    <div id="content" role="main">
-        <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <h1 class="entry-title">@Messages("sw.programme")</h1>
-            <div class="entry-content col-xs-12">
+@views.html.Publisher.devoxxBE2014("Schedule"){
 
-        <p>@Messages("sw.intro")</p>
-
-        <div class="col-xs-12">
-            @if(flash.get("error").isDefined){
-                <div class="alert alert-danger alert-dismissable">
-                    <strong>Error :</strong>
-                    @flash.get("error").get
-                </div>
-            }
-            @if(flash.get("success").isDefined){
-                <div class="alert alert-success alert-dismissable">
-                   <strong>@flash.get("success").get</strong>
-                </div>
-            }
-        </div>
-
-
-        <div class="col-xs-3">
-                <h2>@Messages("sw.speakers")</h2>
-                <ul>
-                    <li><a href="@routes.Publisher.showAllSpeakers()" title="Show all speakers">See all speakers</a></li>
-                </ul>
-        </div>
-
-        <div class="col-xs-3">
-            <h2>@Messages("sw.agenda")</h2>
-            <p>@Messages("sw.agenda.txt")</p>
-            <ul>
-                <li><a href="@routes.Publisher.showByDay("mon")">@Messages("sw.agenda.mon")</a></li>
-                <li><a href="@routes.Publisher.showByDay("tue")">@Messages("sw.agenda.tue")</a></li>
-                <li><a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a></li>
-                <li><a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a></li>
-                <li><a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a></li>
-            </ul>
-        </div>
-
-        <div class="col-xs-4">
-                <h2>@Messages("sw.presentations")</h2>
-                <p>@Messages("sw.faq") <a href="http://www.devoxx.be/faq/#format">FAQ</a> </p>
-                <ul>
-                    @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                        <li><a href="@routes.Publisher.showByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a></li>
-                    }
-                </ul>
-        </div>
-
-        <div class="col-xs-4">
-                <h2>@Messages("sw.events")</h2>
-                <ul>
-                    <li><a href="http://www.devoxx.be">Movie</a> special movie at Metropolis</li>
-                    <li><a href="http://www.devoxx.be">Noxx</a> the fast and furious Noxx experience</li>
-                    <li><a href="http://www.devoxx.be">Hackergarten</a> Hackergarten</li>
-                </ul>
-        </div>
-
-        <div class="col-xs-3">
-                <h2>Keynotes</h2>
-                <ul>
-                    <li><a href="@routes.Publisher.showByDay("wed")" class="btn btn-primary btn-sm"><i class="icon-bullhorn"></i> Keynotes on Wednesday</a></li>
-                    <li><a href="@routes.Publisher.showByDay("thu")" class="btn btn-primary btn-sm"><i class="icon-bullhorn"></i> Keynotes on Thursday</a></li>
-                </ul>
-        </div>
-
-            </div>
-        </div>
+<div class="large-12 columns">
+<h2>Devoxx 2014 Schedule</h2>
+</div>
+    <!-- ******************************************************************* //-->
+    <div class="large-2 columns scheduleHeader">&nbsp;</div>
+    <div class="large-2 columns scheduleHeader">Monday</div>
+    <div class="large-2 columns scheduleHeader">Tuesday</div>
+    <div class="large-2 columns scheduleHeader">Wednesday</div>
+    <div class="large-2 columns scheduleHeader">Thursday</div>
+    <div class="large-2 columns scheduleHeader">Friday</div>
+    <!-- ******************************************************************* //-->
+    <div class="large-2 columns scheduleHeader scheduleRight">University</div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("uni", "monday", "University day 1")
     </div>
-</section>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("uni", "tuesday", "University day 2")
+    </div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <!-- ******************************************************************* //-->
+    <div class="large-2 columns scheduleHeader scheduleRight">Tools-in-Action</div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("tia", "monday", "TIA day 1")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("tia", "tuesday", "TIA day 2")
+    </div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <!-- ******************************************************************* //-->
+    <div class="large-2 columns scheduleHeader scheduleRight">Hands-on Labs</div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("lab", "monday", "Lab day 1")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("lab", "tuesday", "Lab day 2")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("lab", "wednesday", "Lab day 3")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("lab", "thursday", "Lab day 4")
+    </div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+
+    <!-- ******************************************************************* //-->
+
+    <div class="large-2 columns scheduleHeader scheduleRight">BOFs</div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("bof", "monday", "BOF day 1")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("bof", "tuesday", "BOF day 2")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("bof", "wednesday", "BOF day 3")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("bof", "thursday", "BOF day 4")
+    </div>
+    <div class="large-2 columns scheduleRow">
+        &nbsp;
+    </div>
+    <!-- ******************************************************************* //-->
+
+    <div class="large-2 columns scheduleHeader scheduleRight">Quickies</div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("quick", "monday", "Quickies day 1")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("quick", "tuesday", "Quickies day 2")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("quick", "wednesday", "Quickies day 3")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("quick", "thursday", "Quickies day 4")
+    </div>
+    <div class="large-2 columns scheduleRow">
+        &nbsp;
+    </div>
+    <!-- ******************************************************************* //-->
+
+    <div class="large-2 columns scheduleHeader scheduleRight">Conferences</div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <div class="large-2 columns scheduleRow">&nbsp;</div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("conf", "wednesday", "Conference day 3")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("conf", "thursday", "Conference day 4")
+    </div>
+    <div class="large-2 columns scheduleRow">
+    @tags.publisher.renderShowDay("conf", "friday", "Conference day 4")
+    </div>
+    <!-- ******************************************************************* //-->
+
+<div class="large-6 columns">
+<h3>University</h3>
+<p>University talks are on Monday and Tuesday and are in-depth session of 2 x 75 minutes.</p>
+<p>University attendees can also attend Tools in Action, Hackergarten, BOFs and hands-on Lab sessions on Monday and Tuesday!</p>
+</div>
+
+<div class="large-6 columns">
+<h3>Tools in Action</h3>
+<p>30 minute sessions taking place after the University talks with a focus on technical tools and APIs.</p>
+</div>
+
+<div class="large-6 columns">
+    <h3>Labs</h3>
+<p>Practical hands-on sessions of 3 hours (in the BOF rooms) with maximum of 60 people per room.</p>
+</div>
+
+<div class="large-6 columns">
+    <h3>Conference</h3>
+<p>Conference talks (one hour technical presentations) start on Wednesday till Friday.</p>
+<p>Conference attendees can also attend Quickies, BOFs and hands-on Lab sessions from Wednesday til Friday.</p>
+</div>
+<div class="large-6 columns">
+    <h3>Quickies</h3>
+<p>15 minute sessions during the lunch breaks.</p>
+</div>
+<div class="large-6 columns">
+    <h3>BOFs</h3>
+<p>Informal evening sessions of 1 hour with maximum 70 people per room.</p></div>
+
 }
