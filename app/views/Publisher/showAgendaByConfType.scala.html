@@ -2,7 +2,6 @@
     @views.html.Publisher.devoxxBE2014(Messages("agenda-" + talkType)) {
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
-
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
                 <a href="@routes.Publisher.showByDay(day)">@Messages("sw.showAllDay")</a> &gt;
                 <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
@@ -28,7 +27,9 @@
                             @slot.proposal.map { p: Proposal =>
                                 <span class="track">@Messages(p.track.label)</span>
                                 <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.title)">@p.title</a></span>
-                                <span class="speaker">@p.allSpeakerUUIDs.flatMap(uuid => Speaker.findByUUID(uuid).map(_.cleanName)).mkString(", ")</span>
+                                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                    @tags.publisher.renderSpeaker(speakerUUID)
+                }</span>
 
                             }</td>
                     }
