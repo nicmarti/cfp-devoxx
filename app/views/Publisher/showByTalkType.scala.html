@@ -1,30 +1,28 @@
-@(proposals:Iterable[Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@views.html.Publisher.devoxxBE2014(Messages(talkType)){
-<section id="container" class="one-column">
-    <div id="content" role="main">
-        <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; @Messages("sw.all."+talkType)</small>
-            <h1 class="entry-title">@Messages(talkType)</h1>
-            @if(proposals.nonEmpty){
-            <div class="entry-content">
-                <h3>@Messages("sw.talkType")</h3>
-                 @proposals.groupBy(_.track).map{case(track:Track, proposalsTrack:List[Proposal])=>
-                     <h4>@tags.publisher.renderIconForTrack(track) @Messages(track.label)</h4>
-                     <ul>
-                     @proposalsTrack.sortBy(_.title).map{ proposal:Proposal=>
-                        <li>
-                            <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id,proposal.title)">@proposal.title</a></strong>
-                            <br>
-                            @proposal.allSpeakerUUIDs.map{speakerUUID=>
-                              @tags.publisher.renderSpeaker(speakerUUID)
-                            }
-                        </li>
-                     }
-                    </ul>
-                }
-            </div>
-            }
-        </div>
+@(proposals: Iterable[Proposal], talkType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@views.html.Publisher.devoxxBE2014(Messages(talkType)) {
+    <div class="large-12">
+        <h3>@Messages(talkType)</h3>
+        <p class="breadcrumb">
+            <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; @Messages("sw.all." + talkType)
+        </p>
     </div>
-</section>
+
+    @proposals.groupBy(_.track).map { case (track: Track, proposalsTrack: List[Proposal]) =>
+    <div class="large-3 medium-6 columns product-holder">
+        @tags.publisher.renderIconForTrack(track)
+    <ul>
+    @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
+        <li>
+            <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)">@proposal.title</a></strong>
+            <br>
+            @proposal.allSpeakerUUIDs.map { speakerUUID =>
+                @tags.publisher.renderSpeaker(speakerUUID)
+            }
+        </li>
+    }
+    </ul>
+    </div>
+    }
+
+
 }
