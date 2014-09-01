@@ -20,4 +20,32 @@
         padding-top:20px;
     padding-bottom:20px;
 }
+.agendaTable{
+    width: 100%;
+    border: 1px solid #ffd297;
+}
+.agendaTable th{
+    background-color: #211c1b;
+    color:white;
+}
+.agendaTable .title{
+    padding-bottom: 5px;
+    display: block;
+}
+.agendaTable .speaker{
+    font-style: italic;
+    font-weight: lighter;
+    display: block;
+}
+.agendaTable .iconTrack{
+    display: block;
+    height: 123px;
+    width:180px
+}
+.agendaTable .room{
+    max-width: 16%;
+    border: 1px solid #ffd297;
+}
+.agendaTable .track{
+    display: block;
 }

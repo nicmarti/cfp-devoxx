@@ -52,7 +52,7 @@ case class Speaker(uuid: String
                    , qualifications:Option[String]) {
 
   def cleanName: String = {
-    firstName.getOrElse("") + name.map(n => " " + n).getOrElse("")
+    firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
   }
 
   def cleanShortName: String = {
