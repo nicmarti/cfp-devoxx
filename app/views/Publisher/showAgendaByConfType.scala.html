@@ -25,7 +25,7 @@
                     @slots.sortBy(_.room.name).map { slot: Slot =>
                         <td class="room">
                             @slot.proposal.map { p: Proposal =>
-                                <span class="track">@Messages(p.track.label)</span>
+                                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
                                 <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.title)">@p.title</a></span>
                                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                     @tags.publisher.renderSpeaker(speakerUUID)
