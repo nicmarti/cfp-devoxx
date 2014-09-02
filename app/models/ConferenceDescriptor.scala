@@ -161,7 +161,7 @@ object ConferenceDescriptor {
   }
 
   object ConferenceTracksDescription {
-    val STARTUP = TrackDesc(ConferenceTracks.STARTUP.id, "/assets/devoxxbe2014/images/icon_future.png", "track.startup.title", "track.startup.desc")
+    val STARTUP = TrackDesc(ConferenceTracks.STARTUP.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.startup.title", "track.startup.desc")
     val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxbe2014/images/icon_javaee.png", "track.ssj.title", "track.ssj.desc")
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
     val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2014/images/icon_mobile.png", "track.mobile.title", "track.mobile.desc")
