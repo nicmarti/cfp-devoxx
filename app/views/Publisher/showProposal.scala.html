@@ -1,57 +1,60 @@
-@(proposal:Proposal,publishedConfiguration:Option[String], slot:Option[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@views.html.Publisher.devoxxBE2014(proposal.id+" "+proposal.title){
+@views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title) {
 
-  <div class="large-12 columns">
-      <h3>@Messages("sw.proposal.title")</h3>
+    <div class="large-12 columns">
 
-                @if(slot.isDefined && publishedConfiguration.isDefined) {
-                    <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-                           <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages("sw.showAllDay")</a> &gt;
-                           <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all."+proposal.talkType.id)</a>  &gt;
-                           <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day))">@Messages("day-"+slot.get.day)</a>
-                    </p>
-                }else{
-                   <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
+    @if(slot.isDefined && publishedConfiguration.isDefined) {
+        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+            <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages("sw.showAllDay")</a> &gt;
+            <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all." + proposal.talkType.id)</a>  &gt;
+            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day))">@Messages("day-" + slot.get.day)</a>
+        </p>
+    } else {
+        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
+    }
+    </div>
+
+    <div class="columns large-offset-1 large-11">
+        <h1>@proposal.title</h1>
+        <h3><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></h3>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="columns large-offset-1 large-6">
+        <table>
+            <tbody>
+                <tr>
+                    <td>@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
+                </tr>
+                @if(slot.isDefined) {
+                    <tr>
+                        <td>
+                            @slot.map(_.room.name) <br>
+                            @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")
+                        </td>
+                    </tr>
                 }
-</div>
 
-      <div class="large-12 columns">
-                <table>
-                    <tbody>
+                <tr>
+                    <td>@Html(proposal.summaryAsHtml)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-                        <tr>
-                            <th>@Messages("sw.proposal.talkType")</th>
-                            <td>
-                                <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a>
-                            </td>
-                        </tr>
-                        @if(slot.isDefined) {
-                            <tr>
-                                <th>@Messages("sw.proposal.whenWhere")</th>
-                                <td>
-                                    @slot.map(_.room.name)<br>
-                                    @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")
-                                </td>
-                            </tr>
-                        }
-                         <tr>
-                            <th>@Messages("sw.proposal.track")</th>
-                            <td>@Messages(proposal.track.label)</td>
-                        </tr>
-                        <tr>
-                            <th>@Messages("sw.proposal.summary")</th>
-                            <td>@Html(proposal.summaryAsHtml)</td>
-                        </tr>
-                        <tr>
-                            <th>@Messages("sw.proposal.speaker")</th>
-                            <td>
-                            @proposal.allSpeakerUUIDs.map{uuid=>
-                              @tags.publisher.renderSpeaker(uuid,true)
-                            }
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="row">
+
+            <div class="large-3 medium-3 waypoint-element columns fadeInUp animated" style="opacity:1;">
+        @proposal.allSpeakers.map { speaker =>
+                <img src="@speaker.avatarUrl" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName">
+                <a href="@routes.Publisher.showSpeaker(speaker.uuid, speaker.cleanName)">@speaker.cleanName</a>
+            <br>
+        }
             </div>
+
+    </div>
+
+
 }

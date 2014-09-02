@@ -49,3 +49,11 @@
 .agendaTable .track{
     display: block;
 }
+
+.speakerDetail{
+    max-height: 128px;
+    max-width: 128px;
+    float: left;
+    margin-right: 20px;
+    margin-top: 22px;
+}
