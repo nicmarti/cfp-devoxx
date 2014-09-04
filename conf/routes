@@ -128,8 +128,7 @@ GET           /show/proposals                                        controllers
 
 # Content Publisher
 GET           /devoxxfr2014/speakers                                 controllers.Publisher.showAllSpeakers()
-GET           /devoxxfr2014/speaker/:uuid                            controllers.Publisher.showSpeaker(uuid:String, name:String="")
-GET           /devoxxfr2014/speaker/:uuid/:name                      controllers.Publisher.showSpeaker(uuid:String, name:String)
+GET           /devoxxfr2014/speaker/:cleanName                       controllers.Publisher.showSpeakerByName(cleanName:String)
 GET           /devoxxfr2014/talks/:talkType                          controllers.Publisher.showByTalkType(talkType:String)
 GET           /devoxxfr2014/talk/:proposalId                         controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /devoxxfr2014/talk/:proposalId/:proposalTitle          controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)

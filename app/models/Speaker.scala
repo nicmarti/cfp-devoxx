@@ -59,6 +59,9 @@ case class Speaker(uuid: String
     firstName.map(_.charAt(0)).getOrElse("") + name.map(n => "." + n).getOrElse("")
   }
 
+  def urlName:String={
+    StringUtils.stripAccents(cleanName).replaceAll(" ","_").toLowerCase
+  }
 
   def cleanLang: String = lang.map {
     l =>

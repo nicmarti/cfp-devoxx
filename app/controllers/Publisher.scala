@@ -50,7 +50,7 @@ object Publisher extends Controller  {
   def showAllSpeakers = Action {
     implicit request =>
       import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 3600) {
+      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
         Speaker.allSpeakersWithAcceptedTerms()
       }
       val etag = speakers.hashCode().toString + "_2"
@@ -58,6 +58,30 @@ object Publisher extends Controller  {
       maybeETag match {
         case Some(oldEtag) if oldEtag == etag => NotModified
         case other => Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
+      }
+  }
+
+  def showSpeakerByName(name: String) = Action {
+    implicit request =>
+       import play.api.Play.current
+      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
+        Speaker.allSpeakersWithAcceptedTerms()
+      }
+      val speakerNameAndUUID = Cache.getOrElse[Map[String,String]]("allSpeakersName",600){
+        speakers.map{
+          speaker=>
+            println(speaker.urlName)
+            (speaker.urlName,speaker.uuid)
+        }.toMap
+      }
+      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id=>Speaker.findByUUID(id))
+      maybeSpeaker match {
+        case Some(speaker) => {
+          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
+          Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
+        }
+        case None => NotFound("Speaker not found")
       }
   }
 
