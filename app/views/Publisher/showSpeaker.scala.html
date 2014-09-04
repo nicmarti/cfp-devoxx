@@ -2,9 +2,13 @@
 @views.html.Publisher.devoxxBE2014(speaker.cleanName){
 <div class="columns large-offset-1 large-11">
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
-    <h1 class="entry-title">@speaker.cleanName
+    <h1 class="entry-title">
         @speaker.twitter.map{tw=>
-        <a href="http://www.twitter.com/@tw" rel="no-follow"><img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: top"></a>
+        <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
+        }
+        @speaker.cleanName
+        @speaker.twitter.map{_=>
+            <img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: top"></a>
         }
     </h1>
     @speaker.company.map{cp=>

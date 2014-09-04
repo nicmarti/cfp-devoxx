@@ -9,11 +9,11 @@
 
     @proposals.groupBy(_.track).map { case (track: Track, proposalsTrack: List[Proposal]) =>
     <div class="large-3 medium-6 columns product-holder">
-        @tags.publisher.renderIconForTrack(track)
+        @tags.publisher.renderIconForTrack(track) @Messages(track.label)
     <ul>
     @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
         <li>
-            <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)">@proposal.title</a></strong>
+            <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)" class="blackLink">@proposal.title</a></strong>
             <br>
             @proposal.allSpeakerUUIDs.map { speakerUUID =>
                 @tags.publisher.renderSpeaker(speakerUUID)
