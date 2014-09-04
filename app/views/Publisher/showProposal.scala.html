@@ -26,19 +26,19 @@
         <table>
             <tbody>
                 <tr>
-                    <td>@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
+                    <td colspan="2">@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
                 </tr>
                 @if(slot.isDefined) {
                     <tr>
                         <td>
-                            @slot.map(_.room.name) <br>
-                            @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")
+                            @slot.map(_.room.name)
                         </td>
+                        <td style="text-align: right">@slot.get.from.toString("EEE") at  @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")</td>
                     </tr>
                 }
 
                 <tr>
-                    <td>@Html(proposal.summaryAsHtml)</td>
+                    <td colspan="2">@Html(proposal.summaryAsHtml)</td>
                 </tr>
             </tbody>
         </table>
