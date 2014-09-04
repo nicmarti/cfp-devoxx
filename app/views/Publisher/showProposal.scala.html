@@ -6,7 +6,6 @@
 
     @if(slot.isDefined && publishedConfiguration.isDefined) {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages("sw.showAllDay")</a> &gt;
             <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all." + proposal.talkType.id)</a>  &gt;
             <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day))">@Messages("day-" + slot.get.day)</a>
         </p>
@@ -46,13 +45,21 @@
 
     <div class="row">
 
-            <div class="large-3 medium-3 waypoint-element columns fadeInUp animated" style="opacity:1;">
+    <div class="large-4 medium-5 columns fadeInUp animated" style="opacity : 1 ;">
+        <table>
         @proposal.allSpeakers.map { speaker =>
-                <img src="@speaker.avatarUrl" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName">
-                <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)">@speaker.cleanName</a>
-            <br>
+            <tr>
+                <th> <img src="@speaker.avatarUrl" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName">
+                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)">@speaker.cleanName</a>
+                </th>
+            </tr>
+            <tr>
+                <td>@Html(speaker.bioAsHtml)</td>
+            </tr>
         }
-            </div>
+        </table>
+
+    </div>
 
     </div>
 

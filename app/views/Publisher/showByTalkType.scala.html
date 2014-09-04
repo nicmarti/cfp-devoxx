@@ -8,7 +8,7 @@
     </div>
 
     @proposals.groupBy(_.track).map { case (track: Track, proposalsTrack: List[Proposal]) =>
-    <div class="large-3 medium-6 columns product-holder">
+    <div class="large-3 small-6 columns trackBox">
         @tags.publisher.renderIconForTrack(track) @Messages(track.label)
     <ul>
     @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
