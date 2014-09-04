@@ -13,7 +13,7 @@
                     <tr>
                     @fourSpeakers.map{speaker:Speaker=>
                         <td>
-                            <a href="@routes.Publisher.showSpeaker(speaker.uuid,speaker.cleanName)">
+                            <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)">
                             @speaker.avatarUrl.map{url=>
                                 <img src="@url" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName"><br>
                             }
