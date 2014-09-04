@@ -3,7 +3,6 @@
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
-                <a href="@routes.Publisher.showByDay(day)">@Messages("sw.showAllDay")</a> &gt;
                 <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
                 @Messages("day-" + day)</p>
         </div>
@@ -31,7 +30,11 @@
                     @tags.publisher.renderSpeaker(speakerUUID)
                 }</span>
 
-                            }</td>
+                            }
+                        @if(slot.proposal.isEmpty && slot.break.isEmpty){
+                            TBA
+                        }
+                        </td>
                     }
                 </tr>
                 }

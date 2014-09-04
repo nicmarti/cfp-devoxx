@@ -5,101 +5,90 @@
 <div class="large-12 columns">
 <h2>Devoxx 2014 Schedule</h2>
 </div>
-    <!-- ******************************************************************* //-->
-    <div class="large-2 columns scheduleHeader">&nbsp;</div>
-    <div class="large-2 columns scheduleHeader">Monday</div>
-    <div class="large-2 columns scheduleHeader">Tuesday</div>
-    <div class="large-2 columns scheduleHeader">Wednesday</div>
-    <div class="large-2 columns scheduleHeader">Thursday</div>
-    <div class="large-2 columns scheduleHeader">Friday</div>
-    <!-- ******************************************************************* //-->
-    <div class="large-2 columns scheduleHeader scheduleRight">University</div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("uni", "monday", "University day 1")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("uni", "tuesday", "University day 2")
-    </div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <!-- ******************************************************************* //-->
-    <div class="large-2 columns scheduleHeader scheduleRight">Tools-in-Action</div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("tia", "monday", "TIA day 1")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("tia", "tuesday", "TIA day 2")
-    </div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <!-- ******************************************************************* //-->
-    <div class="large-2 columns scheduleHeader scheduleRight">Hands-on Labs</div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("lab", "monday", "Lab day 1")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("lab", "tuesday", "Lab day 2")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("lab", "wednesday", "Lab day 3")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("lab", "thursday", "Lab day 4")
-    </div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
 
-    <!-- ******************************************************************* //-->
+    <table>
+        <thead>
+            <tr>
+                <th class="scheduleHeader">&nbsp;</th>
+                <th class="scheduleHeader">Monday</th>
+                <th class="scheduleHeader">Tuesday</th>
+                <th class="scheduleHeader">Wednesday</th>
+                <th class="scheduleHeader">Thursday</th>
+                <th class="scheduleHeader">Friday</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="6"  class="scheduleHeader scheduleRight">What's on</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "University Sessions")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "monday", "Tools-in-Action Sessions") </td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "tuesday", "Tools-in-Action Sessions")</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "monday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "tuesday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "monday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "tuesday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "thursday", "BOFs")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+                <!-- ******************************************************************* //-->
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "monday", "Quickies")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "tuesday", "Quickies")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "wednesday", "Quickies")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "thursday", "Quickies")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+                <!-- ******************************************************************* //-->
+            <tr>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "wednesday", "Conference Sessions")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-    <div class="large-2 columns scheduleHeader scheduleRight">BOFs</div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("bof", "monday", "BOF day 1")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("bof", "tuesday", "BOF day 2")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("bof", "wednesday", "BOF day 3")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("bof", "thursday", "BOF day 4")
-    </div>
-    <div class="large-2 columns scheduleRow">
-        &nbsp;
-    </div>
-    <!-- ******************************************************************* //-->
 
-    <div class="large-2 columns scheduleHeader scheduleRight">Quickies</div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("quick", "monday", "Quickies day 1")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("quick", "tuesday", "Quickies day 2")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("quick", "wednesday", "Quickies day 3")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("quick", "thursday", "Quickies day 4")
-    </div>
-    <div class="large-2 columns scheduleRow">
-        &nbsp;
-    </div>
-    <!-- ******************************************************************* //-->
-
-    <div class="large-2 columns scheduleHeader scheduleRight">Conferences</div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <div class="large-2 columns scheduleRow">&nbsp;</div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("conf", "wednesday", "Conference day 3")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("conf", "thursday", "Conference day 4")
-    </div>
-    <div class="large-2 columns scheduleRow">
-    @tags.publisher.renderShowDay("conf", "friday", "Conference day 5")
-    </div>
     <!-- ******************************************************************* //-->
 
 <div class="large-6 columns">
