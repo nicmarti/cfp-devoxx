@@ -1,17 +1,16 @@
 @()(implicit lang: Lang, req:RequestHeader)
 
-@views.html.Publisher.devoxxFR2014(Messages("sw.show.fri")){
+@views.html.Publisher.devoxxBE2014(Messages("sw.show.fri")){
+  <div class="large-12 columns">
+<h1 class="entry-title">@Messages("sw.show.title.fri")</h1>
 
-<section id="container" class="one-column">
-    <div id="content" role="main">
-        <div id="post-5" class="post-5 page type-page status-publish hentry">
-<small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;  <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.show.wed")</a> / <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a>  / <strong>@Messages("sw.agenda.fri")</strong></small>
-            <h1 class="entry-title">@Messages("sw.show.title.fri")</h1>
-            <div class="entry-content">
+<p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+    <a href="@routes.Publisher.showByDay("mon")">@Messages("sw.agenda.mon")</a> /
+    <a href="@routes.Publisher.showByDay("tue")">@Messages("sw.agenda.tue")</a> /
+    <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /
+    <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
+    <strong>@Messages("sw.agenda.fri")</strong>
+</p>
+</div>
 
-
-            </div>
-        </div>
-    </div>
-</section>
 }
