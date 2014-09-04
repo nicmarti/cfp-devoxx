@@ -49,7 +49,7 @@
             <div class="large-3 medium-3 waypoint-element columns fadeInUp animated" style="opacity:1;">
         @proposal.allSpeakers.map { speaker =>
                 <img src="@speaker.avatarUrl" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName">
-                <a href="@routes.Publisher.showSpeaker(speaker.uuid, speaker.cleanName)">@speaker.cleanName</a>
+                <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)">@speaker.cleanName</a>
             <br>
         }
             </div>

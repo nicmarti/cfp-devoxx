@@ -81,7 +81,7 @@ object Publisher extends Controller {
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
-        case None => NotFound("Speaker not found")
+        case None => NotFound(views.html.Publisher.speakerNotFound())
       }
   }
 
