@@ -20,12 +20,17 @@
     padding-bottom:20px;
 }
 .agendaTable{
-    width: 100%;
     border: 1px solid #ffd297;
 }
 .agendaTable th{
     background-color: #211c1b;
     color:white;
+}
+.agendaTable td.room{
+    width:14%
+}
+.agendaTable th.timeSlot{
+    width: 6%;
 }
 .agendaTable .title{
     padding-bottom: 5px;
@@ -64,5 +69,7 @@ a.speakerTwitter, a.blackLink{
     min-height: 288px;
     position: relative;
     padding: 10px;
-
+}
+table.mainSchedule{
+    width: 100%;
 }
