@@ -18,7 +18,7 @@
                 </tr>
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
-                    <th>
+                    <th class="timeSlot">
                         @time.toString("HH:mm") - @slots.head.to.toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room.name).map { slot: Slot =>
