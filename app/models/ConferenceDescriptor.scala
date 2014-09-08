@@ -417,7 +417,7 @@ object ConferenceDescriptor {
       }
       val quickiesWednesdayLunch2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2014-11-12T13:35:00.000+01:00"), new DateTime("2014-11-12T14:50:00.000+01:00"), r2)
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2014-11-12T13:35:00.000+01:00"), new DateTime("2014-11-12T13:50:00.000+01:00"), r2)
       }
       quickiesWednesdayLunch1 ++ quickiesWednesdayLunch2
     }
@@ -431,7 +431,7 @@ object ConferenceDescriptor {
       }
       val quickiesThursdayLunch2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2014-11-13T13:35:00.000+01:00"), new DateTime("2014-11-13T14:50:00.000+01:00"), r2)
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2014-11-13T13:35:00.000+01:00"), new DateTime("2014-11-13T13:50:00.000+01:00"), r2)
       }
       quickiesThursdayLunch1 ++ quickiesThursdayLunch2
     }
