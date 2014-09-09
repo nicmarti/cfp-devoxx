@@ -7,22 +7,28 @@
         </p>
     </div>
 
-    @proposals.groupBy(_.track).map { case (track: Track, proposalsTrack: List[Proposal]) =>
-    <div class="large-3 small-6 columns trackBox">
-        @tags.publisher.renderIconForTrack(track) @Messages(track.label)
-    <ul>
-    @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
-        <li>
-            <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)" class="blackLink">@proposal.title</a></strong>
-            <br>
-            @proposal.allSpeakerUUIDs.map { speakerUUID =>
-                @tags.publisher.renderSpeaker(speakerUUID)
+    @proposals.groupBy(_.track).sliding(3).map { case oneRow:Map[Track, List[Proposal]] =>
+        @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
+            <div class="large-3 columns trackBox">
+                @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+            <ul>
+            @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
+                <li>
+                    <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)" class="blackLink">@proposal.title</a></strong>
+                    <br>
+                    @proposal.allSpeakerUUIDs.map { speakerUUID =>
+                        @tags.publisher.renderSpeaker(speakerUUID)
+                    }
+                </li>
             }
-        </li>
+            </ul>
+            </div>
+        }
+        <div class="clearfix"><hr></div>
+
     }
-    </ul>
-    </div>
-    }
+
+
 
 
 }
