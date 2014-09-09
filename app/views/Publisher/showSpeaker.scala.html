@@ -38,7 +38,7 @@
                 }
 
                 @acceptedProposals.map{proposal:Proposal=>
-                        <h3><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)">@proposal.title</a></h3>
+                        <h3><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h3>
                     <table>
                         <tbody>
                             <tr>
