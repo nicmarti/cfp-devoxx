@@ -135,6 +135,11 @@ case class Proposal(id: String,
                     userGroup:Boolean,
                     wishlisted:Option[Boolean]=None) {
 
+  def escapedTitle:String=title match{
+    case null => ""
+    case t => StringUtils.stripAccents(t.replaceAll(" ","_").trim)
+  }
+
   def allSpeakerUUIDs: List[String] = {
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
   }
