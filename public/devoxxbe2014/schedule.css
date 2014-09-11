@@ -29,6 +29,12 @@
 .agendaTable td.room{
     width:14%
 }
+.agendaTable td.keynotes{
+    text-align: center;
+    background-color: #dbdbdb;
+    height: 30px;
+    line-height: 55px;
+}
 .agendaTable th.timeSlot{
     width: 6%;
 }
