@@ -1,0 +1,99 @@
+@()(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@api("Doc docConferences") {
+    <div class="row">
+        <div class="col-md-12">
+            <h1>@Messages("shortName") API</h1>
+            <hr>
+            <h3>Documentation for "room"</h3>
+
+            <p>The "Room" object gives you details about location and room capacity.</p>
+ <h4>Sample:</h4>
+    <code>
+curl -H "Accept: application/json" <a href="@routes.RestAPI.showRooms(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showRooms(Conference.currentConference.eventCode).absoluteURL()</a>
+    </code>
+
+        <h4>Result:</h4>
+            <code>
+                <pre>
+{
+    "content": "All rooms",
+    "rooms": [
+        {
+            "name": "Room 8",
+            "id": "room8",
+            "recorded": true,
+            "setup": "theatre",
+            "capacity": 745
+        },
+        {
+            "name": "Room 5",
+            "id": "room5",
+            "recorded": true,
+            "setup": "theatre",
+            "capacity": 684
+        },
+        {
+            "name": "Room 9",
+            "id": "room9",
+            "recorded": true,
+            "setup": "theatre",
+            "capacity": 425
+        },
+        {
+            "name": "Room 6",
+            "id": "room6",
+            "recorded": true,
+            "setup": "theatre",
+            "capacity": 407
+        },
+        {
+            "name": "Room 7",
+            "id": "room7",
+            "recorded": true,
+            "setup": "theatre",
+            "capacity": 407
+        },
+        {
+            "name": "Room 4",
+            "id": "room4",
+            "recorded": true,
+            "setup": "theatre",
+            "capacity": 364
+        },
+        {
+            "name": "Room 3",
+            "id": "room3",
+            "recorded": true,
+            "setup": "theatre",
+            "capacity": 345
+        },
+        {
+            "name": "BOF 1",
+            "id": "bof1",
+            "recorded": false,
+            "setup": "classroom",
+            "capacity": 70
+        },
+        {
+            "name": "BOF 2",
+            "id": "bof2",
+            "recorded": false,
+            "setup": "classroom",
+            "capacity": 70
+        },
+        {
+            "name": "Espace d'exposition",
+            "id": "hall",
+            "recorded": false,
+            "setup": "special",
+            "capacity": 1500
+        }
+    ]
+}
+               </pre>
+            </code>
+        </div>
+    </div>
+
+}
