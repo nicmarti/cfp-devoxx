@@ -1,8 +1,12 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @views.html.Publisher.devoxxBE2014(speaker.cleanName){
-<div class="columns large-offset-1 large-11">
+<section id="speaker">
+<div class="columns large-offset-1 large-8 team-member row fadeInUp animated">
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
     <h1 class="entry-title">
+         @speaker.avatarUrl.map{url=>
+            <img class="speakerDetail"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
+        }
         @speaker.twitter.map{tw=>
         <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
         }
@@ -12,11 +16,9 @@
         }
     </h1>
     @speaker.company.map{cp=>
-    <p>From @cp</p>
+    <h4>From @cp</h4>
     }
-    @speaker.avatarUrl.map{url=>
-        <img class="speakerDetail"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
-    }
+
     @Html(speaker.bioAsHtml)
 
     @speaker.blog.map{blog=>
@@ -25,8 +27,8 @@
 </div>
 
 
-    <div class="clearfix"></div>
-
+    <div class="clearfix">
+    </div>
 
     <div class="clearfix"></div>
         @if(acceptedProposals.nonEmpty){
@@ -68,5 +70,5 @@
 
             </div>
             }
-
+</section>
 }

@@ -15690,7 +15690,7 @@ select {
     line-height: 1;
     padding: 20px 0;
     padding-bottom: 25px;
-    background-image: url("../img/team-divider.png");
+    background-image: url("images/team-divider.png");
     background-position: center bottom;
     background-repeat: no-repeat;
     margin-bottom: 15px;
@@ -16409,4 +16409,16 @@ div.speakerCard .speakerURL a{
 div.speakerCard .speakerURL a:hover{
     color: #f54f36;
     text-decoration: underline;
+}
+
+#speaker .team-member h4 {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 20px;
+    line-height: 1;
+    padding-bottom: 25px;
+    background-image: url("images/team-divider.png");
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    margin-bottom: 15px;
 }
