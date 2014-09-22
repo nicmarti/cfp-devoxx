@@ -5,7 +5,7 @@
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
     <h1 class="entry-title">
          @speaker.avatarUrl.map{url=>
-            <img class="speakerDetail"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
+            <img class="speakerRound"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
         }
         @speaker.twitter.map{tw=>
         <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
