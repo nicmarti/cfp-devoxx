@@ -1,58 +1,57 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@views.html.Publisher.devoxxFR2014(speaker.cleanName){
-<section id="container" class="one-column">
-    <div id="content" role="main">
-        <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <small><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></small>
-            <h1 class="entry-title">@speaker.cleanName</h1>
-            <div class="entry-content">
-                @speaker.avatarUrl.map{url=>
-                    <img class="alignleft size-medium wp-image-44"  src="@url" width="128" height="128" alt="@speaker.cleanName" title="@speaker.cleanName"><br>
-                }
-                @Html(speaker.bioAsHtml)
-                @speaker.twitter.map{tw=>
-                    <p><img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: bottom"><a href="http://www.twitter.com/@tw" rel="no-follow">@tw</a></p>
-                }
-                @speaker.blog.map{blog=>
-                    <p><i class="icon-bullhorn"></i> Blog : <a href="@blog" rel="no-follow">@blog</a></p>
-                }
-                @speaker.company.map{cp=>
-                    <p><i class="icon-building"></i> @Messages("sw.company"): @cp</p>
-                }
+@views.html.Publisher.devoxxBE2014(speaker.cleanName){
+<section id="speaker">
+<div class="columns large-offset-1 large-8 team-member row fadeInUp animated">
+    <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
+    <h1 class="entry-title">
+         @speaker.avatarUrl.map{url=>
+            <img class="speakerDetail"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
+        }
+        @speaker.twitter.map{tw=>
+        <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
+        }
+        @speaker.cleanName
+        @speaker.twitter.map{_=>
+            <img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: top"></a>
+        }
+    </h1>
+    @speaker.company.map{cp=>
+    <h4>From @cp</h4>
+    }
 
-            </div>
-            @if(acceptedProposals.nonEmpty){
-            <div class="entry-content">
+    @Html(speaker.bioAsHtml)
+
+    @speaker.blog.map{blog=>
+        <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
+    }
+</div>
+
+
+    <div class="clearfix">
+    </div>
+
+    <div class="clearfix"></div>
+        @if(acceptedProposals.nonEmpty){
+            <div class="columns large-8 large-offset-1">
                 @if(acceptedProposals.size>1){
-                    <h3>@Messages("sw.proposals")</h3>
+                    <h2>@Messages("sw.proposals")</h2>
                 }else{
-                    <h3>@Messages("sw.proposal")</h3>
+                    <h2>@Messages("sw.proposal")</h2>
                 }
 
                 @acceptedProposals.map{proposal:Proposal=>
+                        <h3><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h3>
                     <table>
                         <tbody>
                             <tr>
-                                <th>@Messages("sw.proposal.title")</th>
-                                <td>
-                                    <h3>@proposal.title</h3>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Id</th>
-                                <td><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.title)">@proposal.id <i class="icon-arrow-right"></i> </a></td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("sw.proposal.talkType")</th>
-                                <td><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("sw.proposal.track")</th>
                                 <td>@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
                             </tr>
+                            <tr>
+                                <td><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></td>
+                            </tr>
+
                             @if(proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).nonEmpty){
                              <tr>
-                                <th>@Messages("sw.proposal.presentedWith")</th>
                                 <td>
                                     @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
                                      @tags.publisher.renderSpeaker(uuid,true)
@@ -61,12 +60,9 @@
                             </tr>
                             }
                             <tr>
-                                <th>@Messages("sw.proposal.summary")</th>
-                                <td>@Html(proposal.summaryAsHtml)</td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("sw.proposal.lang")</th>
-                                <td>@proposal.lang</td>
+                                <td>
+                                @Html(proposal.summaryAsHtml)
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -74,7 +70,5 @@
 
             </div>
             }
-        </div>
-    </div>
 </section>
 }

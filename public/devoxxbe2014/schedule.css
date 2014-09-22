@@ -1,0 +1,81 @@
+.scheduleHeader{
+    text-align: center;
+    background-color: #211c1b;
+    color:white;
+}
+.scheduleRow{
+    background-color: #f5f5f5;
+    border-color: #CED4BD;
+    border-style: solid;
+    border-width: 1px;
+
+    text-align: center;
+    vertical-align: middle;
+    padding-top:20px;
+    padding-bottom:20px;
+}
+.scheduleRight{
+    text-align: right;
+        padding-top:20px;
+    padding-bottom:20px;
+}
+.agendaTable{
+    border: 1px solid #ffd297;
+}
+.agendaTable th{
+    background-color: #211c1b;
+    color:white;
+}
+.agendaTable td.room{
+    width:14%
+}
+.agendaTable td.keynotes{
+    text-align: center;
+    background-color: #dbdbdb;
+    height: 30px;
+    line-height: 55px;
+}
+.agendaTable th.timeSlot{
+    width: 6%;
+}
+.agendaTable .title{
+    padding-bottom: 5px;
+    display: block;
+}
+.agendaTable .speaker{
+    font-style: italic;
+    font-weight: lighter;
+    display: block;
+}
+.agendaTable .iconTrack{
+    display: block;
+    height: 123px;
+    width:180px
+}
+.agendaTable .room{
+    max-width: 16%;
+    border: 1px solid #ffd297;
+}
+.agendaTable .track{
+    display: block;
+}
+
+.speakerDetail{
+    max-height: 128px;
+    max-width: 128px;
+    float: left;
+    margin-right: 20px;
+    margin-top: 22px;
+}
+a.speakerTwitter, a.blackLink{
+ color:#222222;
+    text-decoration: none;
+}
+.trackBox{
+    min-height: 288px;
+    position: relative;
+    padding: 10px;
+}
+table.mainSchedule{
+    width: 100%;
+}

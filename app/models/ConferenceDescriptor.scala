@@ -161,16 +161,16 @@ object ConferenceDescriptor {
   }
 
   object ConferenceTracksDescription {
-    val STARTUP = TrackDesc(ConferenceTracks.STARTUP.id, "/assets/images/track/startup.png", "track.startup.title", "track.startup.desc")
-    val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "http://devoxx.be/images/tracks/95ddefdd.icon_javaee.png", "track.ssj.title", "track.ssj.desc")
-    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "http://devoxx.be/images/tracks/aae8d181.icon_javase.png", "track.java.title", "track.java.desc")
-    val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "http://devoxx.be/images/tracks/1d2c40dd.icon_mobile.png", "track.mobile.title", "track.mobile.desc")
-    val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "http://devoxx.be/images/tracks/9943da91.icon_architecture.png", "track.archisec.title", "track.archisec.desc")
-    val METHOD_DEVOPS = TrackDesc(ConferenceTracks.METHOD_DEVOPS.id, "http://devoxx.be/images/tracks/3ec02a75.icon_methology.png", "track.methodevops.title", "track.methodevops.desc")
-    val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "http://devoxx.be/images/tracks/a20b9b0a.icon_future.png", "track.future.title", "track.future.desc")
-    val LANG = TrackDesc(ConferenceTracks.LANG.id, "http://devoxx.be/images/tracks/6caef5cf.icon_alternative.png", "track.lang.title", "track.lang.desc")
-    val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "http://devoxx.be/images/tracks/eca0b0a1.icon_cloud.png", "track.cloud.title", "track.cloud.desc")
-    val WEB = TrackDesc(ConferenceTracks.WEB.id, "http://devoxx.be/images/tracks/cd5c36df.icon_web.png", "track.web.title", "track.web.desc")
+    val STARTUP = TrackDesc(ConferenceTracks.STARTUP.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.startup.title", "track.startup.desc")
+    val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxbe2014/images/icon_javaee.png", "track.ssj.title", "track.ssj.desc")
+    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
+    val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2014/images/icon_mobile.png", "track.mobile.title", "track.mobile.desc")
+    val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/devoxxbe2014/images/icon_architecture.png", "track.archisec.title", "track.archisec.desc")
+    val METHOD_DEVOPS = TrackDesc(ConferenceTracks.METHOD_DEVOPS.id, "/assets/devoxxbe2014/images/icon_methodology.png", "track.methodevops.title", "track.methodevops.desc")
+    val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2014/images/icon_future.png", "track.future.title", "track.future.desc")
+    val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.lang.title", "track.lang.desc")
+    val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloud.title", "track.cloud.desc")
+    val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxbe2014/images/icon_web.png", "track.web.title", "track.web.desc")
     val ALL = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHOD_DEVOPS, FUTURE, LANG, CLOUD, WEB)
 
     def findTrackDescFor(t: Track): TrackDesc = {
@@ -417,7 +417,7 @@ object ConferenceDescriptor {
       }
       val quickiesWednesdayLunch2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2014-11-12T13:35:00.000+01:00"), new DateTime("2014-11-12T14:50:00.000+01:00"), r2)
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2014-11-12T13:35:00.000+01:00"), new DateTime("2014-11-12T13:50:00.000+01:00"), r2)
       }
       quickiesWednesdayLunch1 ++ quickiesWednesdayLunch2
     }
@@ -431,7 +431,7 @@ object ConferenceDescriptor {
       }
       val quickiesThursdayLunch2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2014-11-13T13:35:00.000+01:00"), new DateTime("2014-11-13T14:50:00.000+01:00"), r2)
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2014-11-13T13:35:00.000+01:00"), new DateTime("2014-11-13T13:50:00.000+01:00"), r2)
       }
       quickiesThursdayLunch1 ++ quickiesThursdayLunch2
     }
@@ -472,19 +472,19 @@ object ConferenceDescriptor {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T12:00:00.000+01:00"), new DateTime("2014-11-12T13:00:00.000+01:00"), r1)
       }
-      val conferenceWednesdaySlot2 = ConferenceRooms.allRoomsUni.map {
+      val conferenceWednesdaySlot2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T14:00:00.000+01:00"), new DateTime("2014-11-12T15:00:00.000+01:00"), r2)
       }
-      val conferenceWednesdaySlot3 = ConferenceRooms.allRoomsUni.map {
+      val conferenceWednesdaySlot3 = ConferenceRooms.allRoomsConf.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T15:10:00.000+01:00"), new DateTime("2014-11-12T16:10:00.000+01:00"), r3)
       }
-      val conferenceWednesdaySlot4 = ConferenceRooms.allRoomsUni.map {
+      val conferenceWednesdaySlot4 = ConferenceRooms.allRoomsConf.map {
         r4 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T16:40:00.000+01:00"), new DateTime("2014-11-12T17:40:00.000+01:00"), r4)
       }
-      val conferenceWednesdaySlot5 = ConferenceRooms.allRoomsUni.map {
+      val conferenceWednesdaySlot5 = ConferenceRooms.allRoomsConf.map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "wednesday", new DateTime("2014-11-12T17:50:00.000+01:00"), new DateTime("2014-11-12T18:50:00.000+01:00"), r5)
       }
@@ -501,19 +501,19 @@ object ConferenceDescriptor {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T12:00:00.000+01:00"), new DateTime("2014-11-13T13:00:00.000+01:00"), r2)
       }
-      val conferenceThursdaySlot3 = ConferenceRooms.allRoomsUni.map {
+      val conferenceThursdaySlot3 = ConferenceRooms.allRoomsConf.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T14:00:00.000+01:00"), new DateTime("2014-11-13T15:00:00.000+01:00"), r3)
       }
-      val conferenceThursdaySlot4 = ConferenceRooms.allRoomsUni.map {
+      val conferenceThursdaySlot4 = ConferenceRooms.allRoomsConf.map {
         r4 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T15:10:00.000+01:00"), new DateTime("2014-11-13T16:10:00.000+01:00"), r4)
       }
-      val conferenceThursdaySlot5 = ConferenceRooms.allRoomsUni.map {
+      val conferenceThursdaySlot5 = ConferenceRooms.allRoomsConf.map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T16:40:00.000+01:00"), new DateTime("2014-11-13T17:40:00.000+01:00"), r5)
       }
-      val conferenceThursdaySlot6 = ConferenceRooms.allRoomsUni.map {
+      val conferenceThursdaySlot6 = ConferenceRooms.allRoomsConf.map {
         r6 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2014-11-13T17:50:00.000+01:00"), new DateTime("2014-11-13T18:50:00.000+01:00"), r6)
       }
@@ -531,7 +531,7 @@ object ConferenceDescriptor {
       }
       val conferenceFridaySlot3 = ConferenceRooms.fridayRoomsConf.map {
         r3 =>
-          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2014-11-14T15:11:50.000+01:00"), new DateTime("2014-11-14T16:12:50.000+01:00"), r3)
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2014-11-14T11:50:00.000+01:00"), new DateTime("2014-11-14T12:50:00.000+01:00"), r3)
       }
       conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3
     }
@@ -576,7 +576,7 @@ object ConferenceDescriptor {
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
       faq = "http://www.devoxx.be/faq/",
-      registration = "http://reg.devoxx.be",
+      registration = "http://regbe.devoxx.com",
       confWebsite = "http://www.devoxx.be/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
     ),
