@@ -16377,3 +16377,36 @@ select {
 width: 30px;
 height: 30px;
 }
+
+
+div.speakerCard{
+   min-height: 64px;
+   margin-bottom: 10px;
+   margin-right: 5px;
+
+    background: #ffeedb; /* Old browsers */
+background: -moz-linear-gradient(top,  #ffeedb 0%, #e5a74b 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffeedb), color-stop(100%,#e5a74b)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #ffeedb 0%,#e5a74b 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #ffeedb 0%,#e5a74b 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #ffeedb 0%,#e5a74b 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #ffeedb 0%,#e5a74b 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffeedb', endColorstr='#e5a74b',GradientType=0 ); /* IE6-9 */
+
+
+}
+div.speakerCard .speakerPhoto{
+    height:64px;
+    width:64px;
+    vertical-align: text-top;
+}
+div.speakerCard .speakerURL a{
+    font-size: 12px;
+    color: #f54f36;
+    text-decoration: none;
+    line-height: inherit;
+}
+div.speakerCard .speakerURL a:hover{
+    color: #f54f36;
+    text-decoration: underline;
+}
