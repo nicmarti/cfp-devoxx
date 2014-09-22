@@ -10,12 +10,13 @@
         @speakers.sortBy(_.cleanName).sliding(4, 4).map { fourSpeakers: List[Speaker] =>
             @fourSpeakers.map { speaker: Speaker =>
                 <div class="large-3 columns">
-                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)">
+                    <div class="speakerCard">
+                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="speakerURL">
                         @speaker.avatarUrl.map { url =>
-                            <img src="@url" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName"> <br>
+                            <img src="@url" class="speakerPhoto" alt="@speaker.cleanName" title="@speaker.cleanName">
                         }
-                        @speaker.cleanName</a>
-
+                        <span class="name">@speaker.cleanName</span></a>
+                    </div>
                 </div>
             }
         }

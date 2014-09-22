@@ -1,7 +1,7 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @views.html.Publisher.devoxxBE2014(speaker.cleanName){
 <div class="columns large-offset-1 large-11">
-    <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
+    <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
     <h1 class="entry-title">
         @speaker.twitter.map{tw=>
         <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
