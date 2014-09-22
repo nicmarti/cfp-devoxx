@@ -1,73 +1,134 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxFR2014("Programme complet"){
-<section id="container" class="one-column">
-    <div id="content" role="main">
-        <div id="post-5" class="post-5 page type-page status-publish hentry">
-            <h1 class="entry-title">@Messages("sw.programme")</h1>
-            <div class="entry-content col-xs-12">
+@views.html.Publisher.devoxxBE2014("Schedule"){
 
-        <p>@Messages("sw.intro")</p>
+<div class="large-12 columns">
+<h2>Devoxx 2014 Schedule</h2>
+</div>
 
-        <div class="col-xs-12">
-            @if(flash.get("error").isDefined){
-                <div class="alert alert-danger alert-dismissable">
-                    <strong>Error :</strong>
-                    @flash.get("error").get
-                </div>
-            }
-            @if(flash.get("success").isDefined){
-                <div class="alert alert-success alert-dismissable">
-                   <strong>@flash.get("success").get</strong>
-                </div>
-            }
-        </div>
+    <table class="mainSchedule">
+        <thead>
+            <tr>
+                <th class="scheduleHeader">&nbsp;</th>
+                <th class="scheduleHeader">Monday</th>
+                <th class="scheduleHeader">Tuesday</th>
+                <th class="scheduleHeader">Wednesday</th>
+                <th class="scheduleHeader">Thursday</th>
+                <th class="scheduleHeader">Friday</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="7"  class="scheduleHeader scheduleRight">What's on</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "University Sessions")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "monday", "Tools-in-Action Sessions") </td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "tuesday", "Tools-in-Action Sessions")</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+               <tr>
+               <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow"><a href="http://www.devoxx.be/hackergarten#tuesday" title="Devoxx BE 2014 Hackergarten on Tuesday">Hackergarten</a></td>
+                <td class="scheduleRow"><a href="http://www.devoxx.be/hackergarten#wednesday" title="Devoxx BE 2014 Hackergarten on Wednesday">Hackergarten</a></td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "monday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "tuesday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "monday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "tuesday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "thursday", "BOFs")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+                <!-- ******************************************************************* //-->
+            <tr>
+                 <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "wednesday", "Quickies")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "thursday", "Quickies")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+                <!-- ******************************************************************* //-->
+            <tr>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "wednesday", "Conference Sessions")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
 
-        <div class="col-xs-3">
-                <h2>@Messages("sw.speakers")</h2>
-                <ul>
-                    <li><a href="@routes.Publisher.showAllSpeakers()" title="Show all speakers">Voir tous les orateurs</a></li>
-                </ul>
-        </div>
+    <!-- ******************************************************************* //-->
 
-        <div class="col-xs-3">
-            <h2>@Messages("sw.agenda")</h2>
-            <p>@Messages("sw.agenda.txt")</p>
-            <ul>
-                <li><a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a></li>
-                <li><a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a></li>
-                <li><a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a></li>
-            </ul>
-        </div>
+<div class="large-6 columns">
+<h3>University</h3>
+<p>University talks are on Monday and Tuesday and are in-depth session of 2 x 75 minutes.</p>
+<p>University attendees can also attend Tools in Action, Hackergarten, BOFs and hands-on Lab sessions on Monday and Tuesday!</p>
+</div>
 
-        <div class="col-xs-4">
-                <h2>@Messages("sw.presentations")</h2>
-                <p>@Messages("sw.faq") <a href="http://www.devoxx.fr/faq/#format">FAQ</a> </p>
-                <ul>
-                    @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                        <li><a href="@routes.Publisher.showByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a></li>
-                    }
-                </ul>
-        </div>
+<div class="large-6 columns">
+<h3>Tools in Action</h3>
+<p>30 minute sessions taking place after the University talks with a focus on technical tools and APIs.</p>
+</div>
 
-        <div class="col-xs-4">
-                <h2>@Messages("sw.events")</h2>
-                <ul>
-                    <li><a href="http://www.devoxx.fr/soiree-meet-and-greet-2014/">Soirée Meet and Greet</a> jeudi soir à partir de 19h30. Accès gratuit, sur inscription.</li>
-                </ul>
-        </div>
+<div class="large-6 columns">
+<h3>Hackergarten</h3>
+<p>Hackergartens are a great place to meet new people, have fun, and improve the lives of developers around the world
+    one patch at a time; provided you're willing to bring your laptop and get your hands dirty. Write a plugin,
+    a tutorial, a small feature, or a bug fix for a project that interests you alongside several open-source experts
+    willing to share their knowledge.</p>
+</div>
 
-        <div class="col-xs-3">
-                <h2>Keynotes</h2>
-                <ul>
-                    <li><a href="@routes.Publisher.showByDay("thu")" class="btn btn-primary btn-sm"><i class="icon-bullhorn"></i> Les keynotes du Jeudi</a></li>
-                    <li><a href="@routes.Publisher.showByDay("fri")" class="btn btn-primary btn-sm"><i class="icon-bullhorn"></i> Les keynotes du Vendredi</a></li>
-                </ul>
-        </div>
+<div class="large-6 columns">
+    <h3>Labs</h3>
+<p>Practical hands-on sessions of 3 hours (in the BOF rooms) with maximum of 60 people per room.</p>
+</div>
 
-            </div>
-        </div>
-    </div>
-</section>
+<div class="large-6 columns">
+    <h3>Conference</h3>
+<p>Conference talks (one hour technical presentations) start on Wednesday till Friday.</p>
+<p>Conference attendees can also attend Quickies, BOFs and hands-on Lab sessions from Wednesday til Friday.</p>
+</div>
+<div class="large-6 columns">
+    <h3>Quickies</h3>
+<p>15 minute sessions during the lunch breaks.</p>
+</div>
+<div class="large-6 columns">
+    <h3>BOFs</h3>
+<p>Informal evening sessions of 1 hour with maximum 70 people per room.</p></div>
+
 }

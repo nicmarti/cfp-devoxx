@@ -115,20 +115,26 @@ object ScheduleConfiguration {
   }
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
-
-    // TODO : Variabilize week days and remove devoxx-specific stuff
     val listOfSlots = day match {
+      case "monday" => {
+        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
+        fullList.filter(_.day == "monday")
+      }
+      case "tuesday" => {
+        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
+        fullList.filter(_.day == "tuesday")
+      }
       case "wednesday" => {
         val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
-        fullList.filter(_.day == "mercredi")
+        fullList.filter(_.day == "wednesday")
       }
       case "thursday" => {
         val fullList = ConferenceDescriptor.ConferenceSlots.thursday ++ loadSlots()
-        fullList.filter(_.day == "jeudi")
+        fullList.filter(_.day == "thursday")
       }
       case "friday" => {
         val fullList = ConferenceDescriptor.ConferenceSlots.friday ++ loadSlots()
-        fullList.filter(_.day == "vendredi")
+        fullList.filter(_.day == "friday")
       }
       case other => Nil
     }

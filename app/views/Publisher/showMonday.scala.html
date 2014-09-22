@@ -1,0 +1,63 @@
+@()(implicit lang: Lang, req:RequestHeader)
+
+@views.html.Publisher.devoxxBE2014(Messages("sw.show.mon")){
+  <div class="large-12 columns">
+<h1 class="entry-title">@Messages("sw.show.title.mon")</h1>
+
+<p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+    <strong>@Messages("sw.agenda.mon")</strong> /
+    <a href="@routes.Publisher.showByDay("tue")">@Messages("sw.agenda.tue")</a> /
+    <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /
+    <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
+    <a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a>
+</p>
+
+</div>
+
+<div class="columns large-12">
+
+<h3>Under construction</h3>
+
+<table>
+<tr>
+    <th>@Messages("sw.horaires")</th>
+    <th>@Messages("sw.mainEvents")</th>
+    <th>@Messages("sw.otherEvents")</th>
+</tr>
+
+<tr>
+    <td>7h30 - 09h00</td>
+    <td colspan="2">@Messages("sw.breakfast")</td>
+</tr>
+<tr>
+    <td>09h30 - 12h30</td>
+    <td colspan="2">
+        <ul>
+            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.UNI.id, Some("monday"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Universities</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>11h00 - 11h30</td>
+    <td colspan="2">
+        <i class="icon-coffee"> @Messages("sw.coffee.break")</i>
+    </td>
+</tr>
+<tr>
+    <td>13h30 - 16h30</td>
+    <td>
+        <ul>
+            <li>4 <a href="@routes.SchedullingController.getPublishedSchedule(ConferenceDescriptor.ConferenceProposalTypes.UNI.id, Some("monday"))" class="btn btn-primary btn-sm"><i class="icon-laptop"></i> Universities</a></li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td>22h30</td>
+    <td colspan="2">
+        End of day 1
+    </td>
+</tr>
+
+</table>
+</div>
+}

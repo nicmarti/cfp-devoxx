@@ -56,6 +56,7 @@ object RestAPI extends Controller {
         case "schedule" => Ok(views.html.RestAPI.docSchedule())
         case "proposalType" => Ok(views.html.RestAPI.docProposalType())
         case "track" => Ok(views.html.RestAPI.docTrack())
+        case "room" => Ok(views.html.RestAPI.docRoom())
         case other => NotFound("Sorry, no documentation for this profile")
       }
   }
@@ -306,19 +307,28 @@ object RestAPI extends Controller {
       val mapOfSchedules = Map(
         "links" -> Json.toJson(List(
           Link(
+            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL().toString,
+            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            "Schedule for Monday 10th November 2015"
+          ), Link(
+            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL().toString,
+            routes.RestAPI.profile("schedule").absoluteURL().toString,
+            "Schedule for Tuesday 11th November 2015"
+          ),
+          Link(
             routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Wednesday 16th April 2014"
+            "Schedule for Wednesday 12th November 2015"
           ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Thursday 17th April 2014"
+            "Schedule for Thursday 13th November 2015"
           ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Friday 18th April 2014"
+            "Schedule for Friday 14th November 2015"
           )
         ))
       )
@@ -463,6 +473,39 @@ object RestAPI extends Controller {
           )
 
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL().toString + ">; rel=\"profile\""))
+        }
+      }
+  }
+
+  def showRooms(eventCode: String) = UserAgentAction {
+    implicit request =>
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val allRooms = ConferenceDescriptor.ConferenceRooms.allRooms.map {
+        room =>
+          Json.toJson {
+            Map(
+              "id" -> Json.toJson(room.id)
+              , "name" -> Json.toJson(room.name)
+              , "capacity" -> Json.toJson(room.capacity)
+              , "recorded" -> Json.toJson(room.recorded)
+              , "setup" -> Json.toJson(room.setup)
+            )
+          }
+      }
+      val etag = allRooms.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == etag => NotModified
+        case other => {
+          val jsonObject = Json.toJson(
+            Map(
+              "content" -> Json.toJson("All rooms"),
+              "rooms" -> Json.toJson(allRooms)
+            )
+          )
+
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("room").absoluteURL().toString + ">; rel=\"profile\""))
         }
       }
   }
