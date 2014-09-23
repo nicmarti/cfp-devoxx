@@ -1,4 +1,4 @@
-@(slots:List[Slot])(implicit lang: Lang, req: RequestHeader)
+@(slots:List[Slot], rooms:List[Room])(implicit lang: Lang, req: RequestHeader)
 
 @views.html.Publisher.devoxxBE2014(Messages("sw.show.mon")) {
     <div class="large-12 columns">
@@ -15,40 +15,43 @@
     </div>
 
     <div class="columns large-12 woocommerce">
-
-
-
         <table class="agendaTable">
             <tr>
                 <th><i class="icon-time"></i> Room</th>
-                @slots.groupBy(_.room).keys.toList.sortBy(_.id).map { roomName: Room =>
+                @rooms.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
                 </tr>
 
-            @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
+            @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
             <tr>
                 <th class="timeSlot">
                     @time.toString("HH:mm") - @slots.head.to.toString("HH:mm")
                 </th>
-                @slots.sortBy(_.room.id).zipWithIndex.map { case (slot, index) =>
-                <td class="room">
-                    @slot.proposal.map { p: Proposal =>
-                        <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
-                        <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
-                        <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                            @tags.publisher.renderSpeaker(speakerUUID)
-                        }</span>
-
+                @rooms.map { room =>
+                    <td class="room @room.id">
+                    @subSlots.find(_.room.id == room.id).map { zeSlot: Slot =>
+                            @zeSlot.notAllocated
+                            @zeSlot.proposal.map { p: Proposal =>
+                                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
+                                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+                                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                                    @tags.publisher.renderSpeaker(speakerUUID)
+                                }</span>
+                            }
+                            @if(zeSlot.proposal.isEmpty && zeSlot.break.isEmpty) {
+                                TBA
+                            }
+                            @if(zeSlot.break.isDefined) {
+                                @zeSlot.break.get.nameEN
+                            }
                     }
-                    @if(slot.proposal.isEmpty && slot.break.isEmpty) {
-
-                    }
-                    @if(slot.break.isDefined){
-                        @slot.break.get.nameEN
-                    }
-                </td>
+                    </td>
                 }
+
+
+
+
             </tr>
             }
             <tr>
