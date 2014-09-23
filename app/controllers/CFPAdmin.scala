@@ -419,13 +419,13 @@ object CFPAdmin extends SecureCFPController {
           val writer = new PrintWriter(file, "Macroman")
 
           writer.println("email,firstName,lastName,company,hasSpeakerBadge,hasOneAccepted,isCFPMember,totalApproved,Proposal details separated by ;")
-          speakers.sortBy(s => StringUtils.stripAccents(s.name.getOrElse("a")).charAt(0).toUpper).foreach {
+          speakers.sortBy(_.email).foreach {
             s =>
               writer.print(s.email.toLowerCase)
               writer.print(",")
               writer.print(s.firstName.getOrElse("?"))
               writer.print(",")
-              writer.print(s.name.map(_.toUpperCase).getOrElse("?"))
+              writer.print(s.name.getOrElse("?"))
               writer.print(",")
               writer.print(s.company.map(c=>"\""+c.toUpperCase+"\"").getOrElse(""))
               writer.print(",")
@@ -469,8 +469,9 @@ object CFPAdmin extends SecureCFPController {
           writer.close()
 
 
+         Ok.sendFile(file, inline = false)
 
-          Ok("Generated speakers_badges.csv with qrcode <a href=/assets/speakers/speakers_badges_macroman.csv>See result</a>").as(HTML)
+
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }
