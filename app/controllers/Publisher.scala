@@ -162,8 +162,8 @@ object Publisher extends Controller {
         case d if Set("test").contains(d) => {
           val slots = models.ConferenceDescriptor.ConferenceSlots.monday
           val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
-          val proposals = ScheduleConfiguration.getPublishedScheduleByDay("monday")
-          Ok(views.html.Publisher.showOneDay(proposals, rooms))
+          val allSlots = ScheduleConfiguration.getPublishedScheduleByDay("monday")
+          Ok(views.html.Publisher.showOneDay(allSlots, rooms))
         }
         case d if Set("mon","monday","lundi").contains(d) => Ok(views.html.Publisher.showMonday())
         case d if Set("tue","tuesday","mardi").contains(d) => Ok(views.html.Publisher.showTuesday())

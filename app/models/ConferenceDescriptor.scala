@@ -192,8 +192,8 @@ object ConferenceDescriptor {
     val ROOM8 = Room("room8", "Room 8", 745, recorded = true, "theatre")
     val ROOM9 = Room("room9", "Room 9", 425, recorded = true, "theatre")
 
-    val BOF1 = Room("z_bof1", "BOF 1", 70, recorded = false, "classroom")
-    val BOF2 = Room("z_bof2", "BOF 2", 70, recorded = false, "classroom")
+    val BOF1 = Room("bof1", "BOF 1", 70, recorded = false, "classroom")
+    val BOF2 = Room("bof2", "BOF 2", 70, recorded = false, "classroom")
 
     val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
 

@@ -30,9 +30,9 @@
                 @if(slot.isDefined) {
                     <tr>
                         <td>
-                            @slot.map(_.room.name)
+                            <h4>@slot.map(_.room.name)</h4>
                         </td>
-                        <td style="text-align: right">@slot.get.from.toString("EEE") at  @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")</td>
+                        <td style="text-align: right">@slot.get.from.toString("EEEE") at  @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")</td>
                     </tr>
                 }
 

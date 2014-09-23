@@ -26,27 +26,34 @@
             @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
             <tr>
                 <th class="timeSlot">
-                    @time.toString("HH:mm") - @slots.head.to.toString("HH:mm")
+                    @time.toString("HH:mm") - @subSlots.head.to.toString("HH:mm")
                 </th>
                 @rooms.map { room =>
-                    <td class="room @room.id">
-                    @subSlots.find(_.room.id == room.id).map { zeSlot: Slot =>
-                            @zeSlot.notAllocated
-                            @zeSlot.proposal.map { p: Proposal =>
+
+                    @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
+                        @if(room.id=="a_hall"){
+                            <td class="break @room.id" colspan="@rooms.size">
+                        }
+                        @zeSlot.proposal.map { p: Proposal =>
+                            <td class="room @room.id">
                                 <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
                                 <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
                                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                                     @tags.publisher.renderSpeaker(speakerUUID)
                                 }</span>
-                            }
-                            @if(zeSlot.proposal.isEmpty && zeSlot.break.isEmpty) {
-                                TBA
-                            }
-                            @if(zeSlot.break.isDefined) {
-                                @zeSlot.break.get.nameEN
-                            }
+                            </td>
+                        }
+                        @if(zeSlot.break.isDefined) {
+                            @zeSlot.break.get.nameEN
+                            </td>
+                        }
+
                     }
-                    </td>
+                    @if(subSlots.filter(_.room.id == room.id).isEmpty){
+                       <!-- nothing -->
+                        <td></td>
+                    }
+
                 }
 
 
