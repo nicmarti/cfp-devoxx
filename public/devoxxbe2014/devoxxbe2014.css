@@ -29313,7 +29313,11 @@ div.speakerCard span.twitter {
     text-transform: uppercase;
     font-size: 20px;
     line-height: 1;
-    padding-bottom: 25px;
+
+}
+
+#speaker .divider {
+      padding-bottom: 25px;
     background-image: url("images/team-divider.png");
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -29321,13 +29325,10 @@ div.speakerCard span.twitter {
 }
 
 img.speakerRound {
-    max-height: 128px;
     max-width: 128px;
     float: left;
     margin-right: 20px;
     margin-top: 22px;
-    width: 350px;
-    height: 263px;
     border-radius: 100px;
     overflow: hidden;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
