@@ -117,11 +117,11 @@ object ScheduleConfiguration {
   def getPublishedScheduleByDay(day: String): List[Slot] = {
     val listOfSlots = day match {
       case "monday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
+        val fullList = ConferenceDescriptor.ConferenceSlots.monday ++ loadSlots()
         fullList.filter(_.day == "monday")
       }
       case "tuesday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
+        val fullList = ConferenceDescriptor.ConferenceSlots.tuesday ++ loadSlots()
         fullList.filter(_.day == "tuesday")
       }
       case "wednesday" => {
@@ -136,7 +136,9 @@ object ScheduleConfiguration {
         val fullList = ConferenceDescriptor.ConferenceSlots.friday ++ loadSlots()
         fullList.filter(_.day == "friday")
       }
-      case other => Nil
+      case other =>
+        play.Logger.of("ScheduleConfiguration").warn("Could not match "+other+" in getPublishedScheduleByDay")
+        Nil
     }
 
     listOfSlots.sortBy(_.from.getMillis)
