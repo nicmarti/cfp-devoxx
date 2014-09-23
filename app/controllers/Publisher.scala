@@ -70,7 +70,6 @@ object Publisher extends Controller {
       val speakerNameAndUUID = Cache.getOrElse[Map[String,String]]("allSpeakersName",600){
         speakers.map{
           speaker=>
-            println(speaker.urlName)
             (speaker.urlName,speaker.uuid)
         }.toMap
       }
