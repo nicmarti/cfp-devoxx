@@ -1,7 +1,7 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @views.html.Publisher.devoxxBE2014(speaker.cleanName){
 <section id="speaker">
-<div class="columns large-offset-1 large-8 team-member row fadeInUp animated">
+<div class="columns large-8 team-member row fadeInUp animated">
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
     <h1 class="entry-title">
          @speaker.avatarUrl.map{url=>
@@ -32,44 +32,26 @@
 </div>
 
 <div class="clearfix"></div>
-        @if(acceptedProposals.nonEmpty){
-            <div class="columns large-8 large-offset-1">
-                @if(acceptedProposals.size>1){
-                    <h2>@Messages("sw.proposals")</h2>
-                }else{
-                    <h2>@Messages("sw.proposal")</h2>
+
+@if(acceptedProposals.nonEmpty){
+
+
+    @acceptedProposals.map {  proposal=>
+        <div class="columns large-8 team-member row">
+              @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
+              <h4><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h4>
+              <p><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></p>
+              @if(proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).nonEmpty){
+                @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
+                     @tags.publisher.renderSpeaker(uuid,true)
                 }
+              }
+              @Html(proposal.summaryAsHtml)
+         <div class="divider"></div>
+        </div>
+      <div class="clearfix"></div>
+    }
+}
 
-                @acceptedProposals.map{proposal:Proposal=>
-                        <h3><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h3>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
-                            </tr>
-                            <tr>
-                                <td><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></td>
-                            </tr>
-
-                            @if(proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).nonEmpty){
-                             <tr>
-                                <td>
-                                    @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
-                                     @tags.publisher.renderSpeaker(uuid,true)
-                                    }
-                                </td>
-                            </tr>
-                            }
-                            <tr>
-                                <td>
-                                @Html(proposal.summaryAsHtml)
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-
-            </div>
-            }
 </section>
 }
