@@ -19,7 +19,9 @@
     <h4>From @cp</h4>
     }
 
+    <div class="speakerbio">
     @Html(speaker.bioAsHtml)
+    </div>
 
     @speaker.blog.map{blog=>
         <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
