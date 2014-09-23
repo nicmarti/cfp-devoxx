@@ -159,6 +159,7 @@ object Publisher extends Controller {
   def showByDay(day: String) = Action {
     implicit request =>
       day match {
+        case d if Set("test").contains(d) => Ok(views.html.Publisher.showOneDay(models.ConferenceDescriptor.ConferenceSlots.monday))
         case d if Set("mon","monday","lundi").contains(d) => Ok(views.html.Publisher.showMonday())
         case d if Set("tue","tuesday","mardi").contains(d) => Ok(views.html.Publisher.showTuesday())
         case d if Set("wed","wednesday","mercredi").contains(d) => Ok(views.html.Publisher.showWednesday())

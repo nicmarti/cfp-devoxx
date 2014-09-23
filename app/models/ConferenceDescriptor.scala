@@ -180,7 +180,9 @@ object ConferenceDescriptor {
 
   object ConferenceRooms {
 
-    val HALL_EXPO = Room("hall", "Espace d'exposition", 1500, recorded = false, "special")
+    // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
+    // the first column on the HTML Table
+    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, recorded = false, "special")
 
     val ROOM3 = Room("room3", "Room 3", 345, recorded = true, "theatre")
     val ROOM4 = Room("room4", "Room 4", 364, recorded = true, "theatre")
@@ -190,8 +192,8 @@ object ConferenceDescriptor {
     val ROOM8 = Room("room8", "Room 8", 745, recorded = true, "theatre")
     val ROOM9 = Room("room9", "Room 9", 425, recorded = true, "theatre")
 
-    val BOF1 = Room("bof1", "BOF 1", 70, recorded = false, "classroom")
-    val BOF2 = Room("bof2", "BOF 2", 70, recorded = false, "classroom")
+    val BOF1 = Room("z_bof1", "BOF 1", 70, recorded = false, "classroom")
+    val BOF2 = Room("z_bof2", "BOF 2", 70, recorded = false, "classroom")
 
     val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
@@ -210,10 +212,15 @@ object ConferenceDescriptor {
   }
 
   object ConferenceSlotBreaks {
-    val petitDej = SlotBreak("dej", "Welcome and Breakfast", "Accueil et petit-déjeuner", ConferenceRooms.HALL_EXPO)
+    val registration = SlotBreak("reg", "Registration, Welcome and Breakfast", "Accueil", ConferenceRooms.HALL_EXPO)
+    val petitDej = SlotBreak("dej", "Breakfast", "Accueil et petit-déjeuner", ConferenceRooms.HALL_EXPO)
     val coffee = SlotBreak("coffee", "Coffee Break", "Pause café", ConferenceRooms.HALL_EXPO)
     val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.HALL_EXPO)
     val shortBreak = SlotBreak("chgt", "Break", "Pause courte", ConferenceRooms.HALL_EXPO)
+    val exhibition = SlotBreak("exhib", "Exhibition", "Exhibition", ConferenceRooms.HALL_EXPO)
+    val meetAndGreet = SlotBreak("meet", "Meet & Greet (Exhibition)", "Exhibition", ConferenceRooms.HALL_EXPO)
+    val movie = SlotBreak("movie", "Movie", "Movie", ConferenceRooms.HALL_EXPO)
+    val noxx = SlotBreak("noxx", "Noxx party", "Soirée au Noxx", ConferenceRooms.HALL_EXPO)
   }
 
   object ConferenceSlots {
@@ -602,26 +609,59 @@ object ConferenceDescriptor {
       List(conferenceFridaySlot1Room4, conferenceFridaySlot1Room5, conferenceFridaySlot1Room8, conferenceFridaySlot1Room9a, conferenceFridaySlot1Room9b) ++ conferenceFridaySlot2 ++ conferenceFridaySlot3
     }
 
+    // Registration, coffee break, lunch etc
+    val mondayBreaks=List(
+        SlotBuilder(ConferenceSlotBreaks.registration, "monday", new DateTime("2014-11-10T08:00:00.000+01:00"), new DateTime("2014-11-10T09:30:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "monday", new DateTime("2014-11-10T12:30:00.000+01:00"), new DateTime("2014-11-10T13:30:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "monday", new DateTime("2014-11-10T16:30:00.000+01:00"), new DateTime("2014-11-10T16:45:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.shortBreak, "monday", new DateTime("2014-11-10T18:35:00.000+01:00"), new DateTime("2014-11-10T19:00:00.000+01:00"))
+    )
+    val tuesdayBreaks=List(
+        SlotBuilder(ConferenceSlotBreaks.registration, "tuesday", new DateTime("2014-11-11T08:00:00.000+01:00"), new DateTime("2014-11-11T09:30:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "tuesday", new DateTime("2014-11-11T12:30:00.000+01:00"), new DateTime("2014-11-11T13:30:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "tuesday", new DateTime("2014-11-11T16:30:00.000+01:00"), new DateTime("2014-11-11T16:45:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.exhibition, "tuesday", new DateTime("2014-11-11T18:35:00.000+01:00"), new DateTime("2014-11-11T20:00:00.000+01:00"))
+    )
+    val wednesdayBreaks=List(
+        SlotBuilder(ConferenceSlotBreaks.registration, "wednesday", new DateTime("2014-11-12T08:00:00.000+01:00"), new DateTime("2014-11-12T09:30:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday", new DateTime("2014-11-12T11:40:00.000+01:00"), new DateTime("2014-11-12T12:00:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday", new DateTime("2014-11-12T13:00:00.000+01:00"), new DateTime("2014-11-12T14:00:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday", new DateTime("2014-11-12T16:10:00.000+01:00"), new DateTime("2014-11-12T16:40:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.meetAndGreet, "wednesday", new DateTime("2014-11-12T18:30:00.000+01:00"), new DateTime("2014-11-12T20:00:00.000+01:00"))
+    )
+    val thursdayBreaks=List(
+        SlotBuilder(ConferenceSlotBreaks.petitDej, "thursday", new DateTime("2014-11-13T08:00:00.000+01:00"), new DateTime("2014-11-13T09:30:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday", new DateTime("2014-11-13T10:30:00.000+01:00"), new DateTime("2014-11-13T10:50:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday", new DateTime("2014-11-13T13:00:00.000+01:00"), new DateTime("2014-11-13T14:00:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday", new DateTime("2014-11-13T16:10:00.000+01:00"), new DateTime("2014-11-13T16:40:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.exhibition, "thursday", new DateTime("2014-11-13T18:50:00.000+01:00"), new DateTime("2014-11-13T20:00:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.movie, "thursday", new DateTime("2014-11-13T18:50:00.000+01:00"), new DateTime("2014-11-13T20:00:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.noxx, "thursday", new DateTime("2014-11-13T22:00:00.000+01:00"), new DateTime("2014-11-14T03:00:00.000+01:00"))
+    )
+     val fridayBreaks=List(
+        SlotBuilder(ConferenceSlotBreaks.petitDej, "friday", new DateTime("2014-11-14T08:30:00.000+01:00"), new DateTime("2014-11-14T09:30:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "friday", new DateTime("2014-11-14T10:30:00.000+01:00"), new DateTime("2014-11-14T10:45:00.000+01:00"))
+    )
     // DEVOXX DAYS
 
     val monday: List[Slot] = {
-      universitySlotsMonday ++ tiaSlotsMonday ++ labsSlotsMonday ++ bofSlotsMonday
+     mondayBreaks ++ universitySlotsMonday ++ tiaSlotsMonday ++ labsSlotsMonday ++ bofSlotsMonday
     }
 
     val tuesday: List[Slot] = {
-      universitySlotsTuesday ++ tiaSlotsTuesday ++ labsSlotsTuesday ++ bofSlotsTuesday
+      tuesdayBreaks ++ universitySlotsTuesday ++ tiaSlotsTuesday ++ labsSlotsTuesday ++ bofSlotsTuesday
     }
 
     val wednesday: List[Slot] = {
-      keynoteSlotsWedneday ++ conferenceSlotsWedneday ++ quickiesSlotsWednesday ++ bofSlotsWednesday ++ labsSlotsWednesday
+      wednesdayBreaks ++ keynoteSlotsWedneday ++ conferenceSlotsWedneday ++ quickiesSlotsWednesday ++ bofSlotsWednesday ++ labsSlotsWednesday
     }
 
     val thursday: List[Slot] = {
-      keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday
+      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday
     }
 
     val friday: List[Slot] = {
-      conferenceSlotsFriday ++ bofSlotFriday
+      fridayBreaks ++ conferenceSlotsFriday ++ bofSlotFriday
     }
 
     // COMPLETE DEVOXX

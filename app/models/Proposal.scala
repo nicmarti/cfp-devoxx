@@ -698,6 +698,11 @@ object Proposal {
       loadProposalsByState(author, ProposalState.APPROVED)
   }
 
+  def allAcceptedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      loadProposalsByState(author, ProposalState.ACCEPTED)
+  }
+
   def allRejectedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       loadProposalsByState(author, ProposalState.REJECTED)
