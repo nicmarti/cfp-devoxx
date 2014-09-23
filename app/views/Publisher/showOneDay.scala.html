@@ -1,11 +1,11 @@
-@(slots:List[Slot], rooms:List[Room])(implicit lang: Lang, req: RequestHeader)
+@(slots:List[Slot], rooms:List[Room], day:String)(implicit lang: Lang, req: RequestHeader)
 
-@views.html.Publisher.devoxxBE2014(Messages("sw.show.mon")) {
+@views.html.Publisher.devoxxBE2014(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
-        <h1 class="entry-title">@Messages("sw.show.title.mon")</h1>
+        <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            <strong>@Messages("sw.agenda.mon")</strong> /
+            <a href="@routes.Publisher.showByDay("mon")">@Messages("sw.agenda.mon")</a> /
             <a href="@routes.Publisher.showByDay("tue")">@Messages("sw.agenda.tue")</a> /
             <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /
             <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
