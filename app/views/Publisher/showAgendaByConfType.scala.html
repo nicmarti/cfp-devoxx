@@ -45,7 +45,7 @@
                     <th class="timeSlot">
                         @time.toString("HH:mm") - @slots.head.to.toString("HH:mm")
                     </th>
-                    @slots.sortBy(_.room.name).map { slot: Slot =>
+                    @slots.sortBy(_.room.name).zipWithIndex.map { case(slot,index) =>
                         <td class="room">
                             @slot.proposal.map { p: Proposal =>
                                 <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
@@ -55,9 +55,22 @@
                 }</span>
 
                             }
-                        @if(slot.proposal.isEmpty && slot.break.isEmpty){
+                        @if(slot.proposal.isEmpty && slot.break.isEmpty && index>0 ){
                             TBA
                         }
+                        @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toString("HH:mm")=="16:40" && slot.proposal.isEmpty ){
+                           <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
+                            slot1 :<strong>16:40 - 17:10</strong><br>
+                            slot2 :<strong>17:10 - 17:40</strong><br>
+                            <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
+                        }
+                        @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toString("HH:mm")=="17:50" && slot.proposal.isEmpty ){
+                            <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
+                            slot3 :<strong>17:50 - 18:20</strong><br>
+                            slot4 :<strong>18:20 - 18:50</strong><br>
+                            <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
+                        }
+
                         </td>
                     }
                 </tr>
