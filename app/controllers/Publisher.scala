@@ -158,21 +158,23 @@ object Publisher extends Controller {
 
   def showByDay(day: String) = Action {
     implicit request =>
+
+      def _showDay(slots: List[Slot], day: String) = {
+        val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
+        val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
+        Ok(views.html.Publisher.showOneDay(allSlots, rooms, day))
+      }
+
       day match {
-        case d if Set("test").contains(d) => {
-          val slots = models.ConferenceDescriptor.ConferenceSlots.monday
-          val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
-          val allSlots = ScheduleConfiguration.getPublishedScheduleByDay("monday")
-          Ok(views.html.Publisher.showOneDay(allSlots, rooms))
-        }
-        case d if Set("mon","monday","lundi").contains(d) => Ok(views.html.Publisher.showMonday())
-        case d if Set("tue","tuesday","mardi").contains(d) => Ok(views.html.Publisher.showTuesday())
-        case d if Set("wed","wednesday","mercredi").contains(d) => Ok(views.html.Publisher.showWednesday())
-        case d if Set("thu","thursday","jeudi").contains(d) => Ok(views.html.Publisher.showThursday())
-        case d if Set("fri","friday","vendredi").contains(d) => Ok(views.html.Publisher.showFriday())
+        case d if Set("test","mon","monday","lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.monday,"monday")
+        case d if Set("tue","tuesday","mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesday,"tuesday")
+        case d if Set("wed","wednesday","mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday,"wednesday")
+        case d if Set("thu","thursday","jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday,"thursday")
+        case d if Set("fri","friday","vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday,"friday")
         case other => NotFound("Day not found")
       }
   }
+
 
   def showDetailsForProposal(proposalId: String, proposalTitle: String) = Action {
     implicit request =>

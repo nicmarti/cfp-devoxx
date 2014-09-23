@@ -7,7 +7,9 @@
     @if(slot.isDefined && publishedConfiguration.isDefined) {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all." + proposal.talkType.id)</a>  &gt;
-            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">@Messages("day-" + slot.get.day)</a>
+            <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages(s"sw.agenda.${slot.get.day}")</a> &gt;
+            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">See all @Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) for this day</a>
+
         </p>
     } else {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>

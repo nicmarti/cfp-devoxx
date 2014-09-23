@@ -4,7 +4,7 @@
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
                 <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
-                @Messages("day-" + day)</p>
+                <a href="@routes.Publisher.showByDay(day)">@Messages("day-" + day)</a></p>
         </div>
 
         <div class="large-12 columns woocommerce">
