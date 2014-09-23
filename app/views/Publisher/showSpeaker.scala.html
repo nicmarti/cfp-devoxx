@@ -18,6 +18,8 @@
     @speaker.company.map{cp=>
     <h4>From @cp</h4>
     }
+    <div class="clearfix"></div>
+    <div class="divider"></div>
 
     <div class="speakerbio">
     @Html(speaker.bioAsHtml)
@@ -26,13 +28,10 @@
     @speaker.blog.map{blog=>
         <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
     }
+    <div class="divider"></div>
 </div>
 
-
-    <div class="clearfix">
-    </div>
-
-    <div class="clearfix"></div>
+<div class="clearfix"></div>
         @if(acceptedProposals.nonEmpty){
             <div class="columns large-8 large-offset-1">
                 @if(acceptedProposals.size>1){
