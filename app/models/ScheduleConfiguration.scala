@@ -116,26 +116,16 @@ object ScheduleConfiguration {
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
     val listOfSlots = day match {
-      case "monday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.monday ++ loadSlots()
-        fullList.filter(_.day == "monday")
-      }
-      case "tuesday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.tuesday ++ loadSlots()
-        fullList.filter(_.day == "tuesday")
-      }
-      case "wednesday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
-        fullList.filter(_.day == "wednesday")
-      }
-      case "thursday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.thursday ++ loadSlots()
-        fullList.filter(_.day == "thursday")
-      }
-      case "friday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.friday ++ loadSlots()
-        fullList.filter(_.day == "friday")
-      }
+      case "monday" =>
+         ConferenceDescriptor.ConferenceSlots.monday ++ loadSlots().filter(_.day == "monday")
+      case "tuesday" =>
+        ConferenceDescriptor.ConferenceSlots.tuesday ++ loadSlots().filter(_.day == "tuesday")
+      case "wednesday" =>
+        ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots().filter(_.day == "wednesday")
+      case "thursday" =>
+        ConferenceDescriptor.ConferenceSlots.thursday ++ loadSlots().filter(_.day=="thursday")
+      case "friday" =>
+        ConferenceDescriptor.ConferenceSlots.friday ++ loadSlots().filter(_.day=="friday")
       case other =>
         play.Logger.of("ScheduleConfiguration").warn("Could not match "+other+" in getPublishedScheduleByDay")
         Nil
