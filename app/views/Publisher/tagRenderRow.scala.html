@@ -1,0 +1,25 @@
+@(subSlots:List[Slot], room:Room, roomSize:Int)
+
+@subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
+    @zeSlot.proposal.map { p: Proposal =>
+        <td class="room @room.id @zeSlot.id">
+            <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
+            <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+            <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                @tags.publisher.renderSpeaker(speakerUUID)
+            }</span>
+        </td>
+    }
+    @if(zeSlot.break.isDefined) {
+        <td class="break @room.id" colspan="@roomSize">
+        @zeSlot.break.get.nameEN
+        </td>
+    }
+    @if(zeSlot.notAllocated) {
+        <td class="notAllocated @zeSlot.id">TBA</td>
+    }
+}
+@if(subSlots.filter(_.room.id == room.id).isEmpty) {
+    <!-- nothing -->
+    <td></td>
+}

@@ -1,4 +1,4 @@
-@(slots:List[Slot], rooms:List[Room], day:String)(implicit lang: Lang, req: RequestHeader)
+@(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader)
 
 @views.html.Publisher.devoxxBE2014(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
@@ -24,43 +24,17 @@
                 </tr>
 
             @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
-            <tr>
-                <th class="timeSlot">
-                    @time.toString("HH:mm") - @subSlots.head.to.toString("HH:mm")
-                </th>
-                @rooms.map { room =>
-
-                    @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
-                        @zeSlot.proposal.map { p: Proposal =>
-                            <td class="room @room.id @zeSlot.id">
-                                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
-                                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
-                                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                                    @tags.publisher.renderSpeaker(speakerUUID)
-                                }</span>
-                            </td>
+                    <tr >
+                        <th class="timeSlot">
+                            @subSlots.head.from.toString("HH:mm") - @subSlots.head.to.toString("HH:mm")
+                        </th>
+                        @rooms.map { room =>
+                            @tagRenderRow(subSlots,room,rooms.size)
                         }
-                        @if(zeSlot.break.isDefined) {
-                            <td class="break @room.id" colspan="@rooms.size">
-                            @zeSlot.break.get.nameEN
-                            </td>
-                        }
-                        @if(zeSlot.notAllocated){
-                            <td class="notAllocated @zeSlot.id">TBA</td>
-                        }
-                    }
-                    @if(subSlots.filter(_.room.id == room.id).isEmpty){
-                       <!-- nothing -->
-                        <td></td>
-                    }
-
-                }
-
-
-
-
-            </tr>
+                    </tr>
             }
+
+
             <tr>
                 <th><i class="icon-time"></i> Room</th>
                 @slots.groupBy(_.room).keys.toList.sortBy(_.id).map { roomName: Room =>
