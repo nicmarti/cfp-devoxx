@@ -136,6 +136,8 @@ GET           /2014                                        controllers.Publisher
 GET           /2014/agenda/:confType/:day                  controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2014/byday/:day                             controllers.Publisher.showByDay(day:String)
 
+POST          /publisher/sendMsgToSpeaker                   controllers.Publisher.sendMessageToSpeaker(proposalId:String)
+
 # For Paper guide
 GET           /guide/speakers                                      controllers.PaperGuide.exportSpeakers()
 GET           /guide/allPhotos                                     controllers.PaperGuide.downloadAllSpeakersPhotos()

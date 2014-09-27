@@ -133,7 +133,7 @@ object ConferenceDescriptor {
       recorded = false, chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       recorded = true, chosablePreferredDay = true)
-    val START = ProposalConfiguration(id = "start", slotsCount = 20, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val START = ProposalConfiguration(id = "start", slotsCount = 20, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       recorded = false, impliedSelectedTrack = Option(ConferenceTracks.STARTUP), chosablePreferredDay = false)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       recorded = false, hiddenInCombo = true, chosablePreferredDay = false)

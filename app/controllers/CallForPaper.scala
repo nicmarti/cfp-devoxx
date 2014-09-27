@@ -224,12 +224,14 @@ object CallForPaper extends SecureCFPController {
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
+          println("Existing proposal "+proposal.secondarySpeaker)
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
               Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
-
-              Proposal.save(uuid, proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2), proposal.state)
+              val newProposal = proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2)
+              println(newProposal.secondarySpeaker)
+              Proposal.save(uuid, newProposal, proposal.state)
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
             }
           )

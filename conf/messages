@@ -599,6 +599,7 @@ mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
 mail.issue_reported.subject=New issue reported on CFP web site
 mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
+mail.question_to_speaker.subject=[{1}] New question posted on Devoxx Web site about {0}
 mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
 mail.notify_proposal.subject={0} submitted a proposal [{1}]
 mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
@@ -619,3 +620,8 @@ d3.label=Code only
 d4.label=No slides & code
 
 table.pres.trash=Delete this proposal
+
+msg_pub=Send a message to the speaker
+email_pub=Your email address
+email_pub2=Please confirm your email
+
