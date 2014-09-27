@@ -363,6 +363,20 @@ object CallForPaper extends SecureCFPController {
       }
   }
 
+  def deleteOneQuestion(proposalId:String, questionId:String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
+      val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state==ProposalState.DELETED)
+      maybeProposal match {
+        case Some(proposal) => {
+         Ok("Todo not implemented")
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
+      }
+  }
+
   case class TermCount(term: String, count: Int)
 
   def cloudTags() = SecuredAction.async {

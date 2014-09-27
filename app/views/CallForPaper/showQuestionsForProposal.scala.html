@@ -49,7 +49,7 @@
                 </div>
 
                 @questions.map { question =>
-                    <div class="panel panel-default">
+                    <div id="@question.id.get" class="question panel panel-default">
                     <div class="media">
                         <img  class="pull-left" width="35" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(question.email)?s=35" alt="@question.author" align="top"/>
                         <div class="media-heading">
@@ -59,6 +59,9 @@
                         @defining(question.msg.replaceAll("script", ".script").replaceAll("\n", "<br>")) { message: String =>
                             <span class="msgSpeaker media-object">@Html(message)</span>
                         }
+                        </div>
+                        <div class="pull-right">
+                            <button data-proposalId="@question.proposalId" data-questionId="@question.id.get" class="deleteProposal btn btn-sm  btn-danger">Delete this message</button>
                         </div>
                     </div>
                 </div>
@@ -75,4 +78,28 @@
             </div>
         </div>
     </div>
+<script type="text/javascript">
+$(document).ready(function($) {
+
+    $('.deleteProposal').on("click", function(e) {
+        var zeButton=$(this);
+        e.preventDefault();
+        var questionId=zeButton.data("questionid");
+        var proposalid=zeButton.data("proposalid");
+        console.log("Deleting "+questionId+" "+proposalid);
+
+        $('#'+questionId ).fadeOut();
+
+        $.ajax({
+            url: "@routes.CallForPaper.deleteOneQuestion("","").absoluteURL(false)"+"?proposalId="+proposalid+"&questionId="+questionId,
+            success: function(e){
+                zeButton.removeClass("btn-primary" ).addClass("btn-success");
+                zeButton.text("Invited!");
+            }
+        });
+
+    });
+
+});
+</script>
 }
