@@ -145,7 +145,7 @@ object Mails {
     )
   }
 
-  def sendQuestionToSpeakers(visitorEmail:String, toWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def sendQuestionToSpeakers(visitorEmail:String, visitorName:String, toWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.question_to_speaker.subject", proposal.title, ConferenceDescriptor.current().eventCode)
     emailer.setSubject(subject)
@@ -162,8 +162,8 @@ object Mails {
 
     emailer.setCharset("utf-8")
     emailer.send(
-      views.txt.Mails.sendQuestionToSpeaker(visitorEmail, proposal, msg).toString(),
-      views.html.Mails.sendQuestionToSpeaker(visitorEmail, proposal, msg).toString()
+      views.txt.Mails.sendQuestionToSpeaker(visitorEmail, visitorName, proposal, msg).toString(),
+      views.html.Mails.sendQuestionToSpeaker(visitorEmail,visitorName, proposal, msg).toString()
     )
 
   }

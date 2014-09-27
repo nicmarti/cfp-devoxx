@@ -181,10 +181,11 @@ object Publisher extends Controller {
   val speakerMsg = Form(
     tuple(
     "msg_pub" -> nonEmptyText(maxLength = 1500),
+    "fullname" -> nonEmptyText(maxLength = 40),
     "email_pub" -> email.verifying(nonEmpty),
     "email_pub2" -> email.verifying(nonEmpty)
   ) verifying ("Email does not match the confirmation email", constraint => constraint match{
-      case (_, e1, e2) => e1 == e2
+      case (_, _, e1, e2) => e1 == e2
     })
   )
 
@@ -195,34 +196,35 @@ object Publisher extends Controller {
         case Some(proposal) =>
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+
+          val questions = Comment.allQuestions(proposal.id)
+
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
-          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg))
+          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg, questions))
       }
   }
 
   def sendMessageToSpeaker(proposalId: String) = Action {
     implicit request =>
-
       Proposal.findById(proposalId) match {
         case None => NotFound("Proposal not found")
         case Some(proposal) =>
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+          val questions = Comment.allQuestions(proposal.id)
 
           speakerMsg.bindFromRequest().fold(hasErrors =>
-            BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors)),
+            BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)),
             {
-              case (msg, email1, _) =>
-                Comment.saveQuestion(proposal.id, email1, msg)
-                ZapActor.actor ! SendQuestionToSpeaker(email1, proposal, msg)
+              case (msg, fullname, email1, _) =>
+                Comment.saveQuestion(proposal.id, email1, fullname, msg)
+                ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
                 Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
             }
           )
 
       }
-
-
   }
 
 

@@ -1,4 +1,4 @@
-@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)], questions:List[Question])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title) {
 
@@ -41,16 +41,38 @@
                 <tr>
                     <td colspan="2">@Html(proposal.summaryAsHtml)</td>
                 </tr>
+
+                @if(questions.nonEmpty) {
+                    <tr>
+                        <td colspan="2">
+                            <div class="panel-header">
+                                <h4>Questions from visitors</h4>
+                            </div>
+                            <div class="panel-body">
+                            @tags.renderQuestions(questions)
+                            </div>
+                        </td>
+                    </tr>
+                }
+
                 <tr>
                     <td colspan="2">
                 <div class="panel-body">
-                    <h4>Send your question to the speaker@if(proposal.secondarySpeaker.isDefined){s}</h4>
+                    <h4>Send a question to the speaker@if(proposal.secondarySpeaker.isDefined){s}</h4>
+
+@if(flash.get("success").isDefined){
+<div class="alert-box success">
+    <i class="icon-mail-forward"></i> Your message has been sent to the speaker. Please, revisit this page later to read speakers's answers.
+</div>
+}
+
                 @helper.form(action = routes.Publisher.sendMessageToSpeaker(proposal.id)) {
-                    @helper.textarea(speakerMsg("msg_pub"),
+                    @helper.inputText(speakerMsg("fullname"),
                         'class -> "form-control input-large",
                         'showConstraints -> false ,
-                        '_label -> "Please enter your question or your message for the speaker:",
-                        '_help -> "")
+                        '_label -> "Your name",
+                        '_help -> ""
+                    )
                     @helper.inputText(speakerMsg("email_pub"),
                         'class -> "form-control input-large",
                         'showConstraints -> false ,
@@ -63,6 +85,11 @@
                         '_label -> "Please confirm your email address",
                         '_help -> ""
                     )
+                    @helper.textarea(speakerMsg("msg_pub"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> true ,
+                        '_label -> "Please enter your question or your message for the speaker:",
+                        '_help -> "")
                     <button type="submit" class="btb btn-xs btn-primary">Send my message</button>
                 }
                 </div>

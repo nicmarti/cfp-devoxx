@@ -327,6 +327,42 @@ object CallForPaper extends SecureCFPController {
       }
   }
 
+   def showQuestionsForProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
+      maybeProposal match {
+        case Some(proposal) => {
+          Ok(views.html.CallForPaper.showQuestionsForProposal(proposal, Comment.allQuestions(proposal.id), speakerMsg))
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
+      }
+  }
+
+  def replyToQuestion(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
+      val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state==ProposalState.DELETED)
+      maybeProposal match {
+        case Some(proposal) => {
+          speakerMsg.bindFromRequest.fold(
+            hasErrors => {
+              BadRequest(views.html.CallForPaper.showQuestionsForProposal(proposal, Comment.allQuestions(proposal.id), hasErrors))
+            },
+            validMsg => {
+              Comment.saveQuestion(proposal.id, request.webuser.email, request.webuser.cleanName, validMsg)
+              Redirect(routes.CallForPaper.showQuestionsForProposal(proposalId)).flashing("success" -> "Message was sent")
+            }
+          )
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
+      }
+  }
+
   case class TermCount(term: String, count: Int)
 
   def cloudTags() = SecuredAction.async {
