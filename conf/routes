@@ -34,6 +34,8 @@ GET           /cfp/proposal/delete/:proposalId                     controllers.C
 GET           /cfp/proposal/undelete/:proposalId                   controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET           /cfp/proposal/submit/:proposalId                     controllers.CallForPaper.submitProposal(proposalId:String)
 GET           /cfp/comment/:proposalId                             controllers.CallForPaper.showCommentForProposal(proposalId:String)
+GET           /cfp/questions/:proposalId                           controllers.CallForPaper.showQuestionsForProposal(proposalId:String)
+POST          /cfp/questions/:proposalId                           controllers.CallForPaper.replyToQuestion(proposalId:String)
 POST          /cfp/comment/:proposalId                             controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
 
 # Password

@@ -9165,25 +9165,6 @@ p#mc4wp-checkbox label {
     background-image: url(http://www.devoxx.be/wp-content/uploads/2014/05/DevoxxLogo.png) !important;
 }
 
-.woocommerce-cart #top-image {
-    background-image: url(http://fakeimg.pl/1940x500/00CED1/FFF/?text=img+placeholder) !important;
-}
-
-.woocommerce-checkout #top-image {
-    background-image: url(http://fakeimg.pl/1940x500/00CED1/FFF/?text=img+placeholder) !important;
-}
-
-.tax-product_tag #top-image {
-    background-image: url(http://fakeimg.pl/1940x500/00CED1/FFF/?text=img+placeholder) !important;
-}
-
-.tax-product_cat #top-image {
-    background-image: url(http://fakeimg.pl/1940x500/00CED1/FFF/?text=img+placeholder) !important;
-}
-
-.woocommerce-account #top-image, .woocommerce.archive #top-image {
-    background-image: url(http://fakeimg.pl/1940x500/00CED1/FFF/?text=img+placeholder) !important;
-}
 
 .parallax.parallax-lines .lines-wrapper .circle:hover, #section-three .team-member .large-3 .links a, .parallax.parallax-slider-blogs .large-12:last-child > a, .parallax.parallax-slider-shop .large-12:last-child > a, .parallax.parallax-squares .square-container .square-holder:hover, .parallax.parallax-squares .square-container .square-holder:hover:before, #section-five .filter-menu ul li a, .form-section .input-wrap input[type="text"], .form-section .input-wrap input[type="email"], .parallax.parallax-new-facts .facts-container ul li .icon-holder, .shop-link-wrapp a, .js .photostack:after, #mockups-container .large-6 > a, #instafeed a, .parallax.parallax-our-services #service-description ul a, #masonry-latest-posts #masonry-wrapp .latest-entry a h1, #services-new .view-portfolio, .masonry-blog-container .large-12 .view-more, #services-new .new-services ul li:hover .img-holder, .woocommerce #content input.button:hover, .woocommerce #respond input#submit:hover, .woocommerce a.button:hover, .woocommerce button.button:hover, .woocommerce input.button:hover, .woocommerce-page #content input.button:hover, .woocommerce-page #respond input#submit:hover, .woocommerce-page a.button:hover, .woocommerce-page button.button:hover, .woocommerce-page input.button:hover, select, .widget_search input[type="search"], .widget_product_search input[type="search"], .widget-area .widget-title, .panel, .woocommerce .woocommerce-message, .woocommerce-page .woocommerce-message, .woocommerce .woocommerce-info, .woocommerce-page .woocommerce-info, #blog-posts .blog-holder .blog-main-content > a.read-more, .parallax.parallax-testimonials .testimonials-slider li {
     border-color: #f2b335;

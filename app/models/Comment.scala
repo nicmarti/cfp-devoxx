@@ -23,6 +23,7 @@
 
 package models
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.{Instant, DateTime}
 import library.Redis
 import play.api.libs.json.Json
@@ -35,16 +36,23 @@ import play.api.libs.json.Json
  */
 case class Comment(proposalId: String, uuidAuthor: String, msg: String, eventDate: Option[DateTime])
 
+case class Question(id:Option[String], proposalId: String, email: String, author:String, msg: String, eventDate: Option[DateTime])
+
 object Comment {
 
   implicit val commentFormat = Json.format[Comment]
+  implicit val questionFormat = Json.format[Question]
 
   def saveCommentForSpeaker(proposalId: String, uuidAuthor: String, msg: String) = {
     saveComment(s"Comments:ForSpeaker:$proposalId", proposalId, uuidAuthor, msg)
   }
 
-  def saveQuestion(proposalId: String, visitorEmail: String, msg: String) = {
-    saveComment(s"Comments:Questions:$proposalId", proposalId, visitorEmail, msg)
+  def saveQuestion(proposalId: String, visitorEmail: String, author:String, msg: String) = Redis.pool.withClient{
+    client=>
+    val newId=RandomStringUtils.randomAlphanumeric(10)
+    val question = Question(Option(newId), proposalId, visitorEmail, author, msg, None)
+    client.zadd(s"Questions:$proposalId", new Instant().getMillis.toDouble, Json.toJson(question).toString())
+    client.set(s"QuestionsByID:$newId",proposalId)
   }
 
   def saveInternalComment(proposalId: String, uuidAuthor: String, msg: String) = {
@@ -59,13 +67,20 @@ object Comment {
     allComments(s"Comments:Internal:$proposalId", proposalId)
   }
 
-  def allQuestions(proposalId: String): List[Comment] = {
-    allComments(s"Comments:Questions:$proposalId", proposalId)
+  def allQuestions(proposalId: String): List[Question] = Redis.pool.withClient {
+    client =>
+      val questions = client.zrevrangeWithScores(s"Questions:$proposalId", 0, -1).map {
+        case (json, dateValue) =>
+          val c = Json.parse(json).as[Question]
+          val date = new Instant(dateValue.toLong)
+          c.copy(eventDate = Option(date.toDateTime))
+      }
+      questions
   }
 
   def countComments(proposalId: String): Long = Redis.pool.withClient {
     client =>
-      client.zcard(s"Comments:ForSpeaker:${proposalId}").longValue
+      client.zcard(s"Comments:ForSpeaker:$proposalId").longValue
   }
 
   private def saveComment(redisKey: String, proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {

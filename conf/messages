@@ -371,6 +371,7 @@ new.accesscode=Your new access code is :
 admin.btn.otherReviewer=Compare with other Reviewer
 btn.showVotes=Show votes
 comment.proposal=Comments for proposal
+question.proposal=Questions about your talk
 
 approve.title={0}, Speaker Consent Form
 accept.chk=I accept the Terms and Conditions
