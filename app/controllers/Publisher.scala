@@ -24,11 +24,14 @@
 package controllers
 
 import models._
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import play.api.mvc._
 import akka.util.Crypt
-import library.{LogURL, ZapActor}
+import library.{SendQuestionToSpeaker, SendMessageToCommitte, ZapActor, LogURL}
 import play.api.cache.Cache
-import play.api.Play
+
 
 /**
  * Simple content publisher
@@ -63,17 +66,17 @@ object Publisher extends Controller {
 
   def showSpeakerByName(name: String) = Action {
     implicit request =>
-       import play.api.Play.current
+      import play.api.Play.current
       val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
         Speaker.allSpeakersWithAcceptedTerms()
       }
-      val speakerNameAndUUID = Cache.getOrElse[Map[String,String]]("allSpeakersName",600){
-        speakers.map{
-          speaker=>
-            (speaker.urlName,speaker.uuid)
+      val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
+        speakers.map {
+          speaker =>
+            (speaker.urlName, speaker.uuid)
         }.toMap
       }
-      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id=>Speaker.findByUUID(id))
+      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
       maybeSpeaker match {
         case Some(speaker) => {
           val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
@@ -103,17 +106,17 @@ object Publisher extends Controller {
       Ok(views.html.Publisher.showByTalkType(proposals, talkType))
   }
 
-  def showAgendaByConfType(confType: String, slotId: Option[String], day: String="wednesday") = Action {
+  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = "wednesday") = Action {
     implicit request =>
-      val realSlotId = slotId.orElse{
+      val realSlotId = slotId.orElse {
         ScheduleConfiguration.getPublishedSchedule(confType)
       }
-      if(realSlotId.isEmpty){
+      if (realSlotId.isEmpty) {
         NotFound(views.html.Publisher.agendaNotYetPublished())
-      }else {
+      } else {
         val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(realSlotId.get)
         maybeScheduledConfiguration match {
-            case Some(slotConfig)  if day==null => {
+          case Some(slotConfig) if day == null => {
             val updatedConf = slotConfig.copy(slots = slotConfig.slots)
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
           }
@@ -166,15 +169,24 @@ object Publisher extends Controller {
       }
 
       day match {
-        case d if Set("test","mon","monday","lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.monday,"monday")
-        case d if Set("tue","tuesday","mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesday,"tuesday")
-        case d if Set("wed","wednesday","mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday,"wednesday")
-        case d if Set("thu","thursday","jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday,"thursday")
-        case d if Set("fri","friday","vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday,"friday")
+        case d if Set("test", "mon", "monday", "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.monday, "monday")
+        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesday, "tuesday")
+        case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
+        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
+        case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday, "friday")
         case other => NotFound("Day not found")
       }
   }
 
+  val speakerMsg = Form(
+    tuple(
+    "msg_pub" -> nonEmptyText(maxLength = 1500),
+    "email_pub" -> email.verifying(nonEmpty),
+    "email_pub2" -> email.verifying(nonEmpty)
+  ) verifying ("Email does not match the confirmation email", constraint => constraint match{
+      case (_, e1, e2) => e1 == e2
+    })
+  )
 
   def showDetailsForProposal(proposalId: String, proposalTitle: String) = Action {
     implicit request =>
@@ -184,7 +196,34 @@ object Publisher extends Controller {
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
-          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot))
+
+          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg))
       }
   }
+
+  def sendMessageToSpeaker(proposalId: String) = Action {
+    implicit request =>
+
+      Proposal.findById(proposalId) match {
+        case None => NotFound("Proposal not found")
+        case Some(proposal) =>
+          val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
+          val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+
+          speakerMsg.bindFromRequest().fold(hasErrors =>
+            BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors)),
+            {
+              case (msg, email1, _) =>
+                Comment.saveQuestion(proposal.id, email1, msg)
+                ZapActor.actor ! SendQuestionToSpeaker(email1, proposal, msg)
+                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+            }
+          )
+
+      }
+
+
+  }
+
+
 }

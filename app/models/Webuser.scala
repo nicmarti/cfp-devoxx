@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.data.format.Formats._
 import library.Redis
-import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 import play.api.libs.Crypto
 import play.api.cache.Cache
 import play.api.Play.current
@@ -26,7 +26,7 @@ object Webuser {
   }
 
   def generateUUID(email:String):String={
-    Crypto.sign(email.trim().toLowerCase)
+    Crypto.sign(StringUtils.abbreviate(email.trim().toLowerCase,255))
   }
 
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {

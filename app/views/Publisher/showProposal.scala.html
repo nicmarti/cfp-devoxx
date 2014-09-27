@@ -1,4 +1,4 @@
-@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title) {
 
@@ -40,6 +40,33 @@
 
                 <tr>
                     <td colspan="2">@Html(proposal.summaryAsHtml)</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                <div class="panel-body">
+                    <h4>Send your question to the speaker@if(proposal.secondarySpeaker.isDefined){s}</h4>
+                @helper.form(action = routes.Publisher.sendMessageToSpeaker(proposal.id)) {
+                    @helper.textarea(speakerMsg("msg_pub"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> false ,
+                        '_label -> "Please enter your question or your message for the speaker:",
+                        '_help -> "")
+                    @helper.inputText(speakerMsg("email_pub"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> false ,
+                        '_label -> "Your email address (required)",
+                        '_help -> ""
+                    )
+                    @helper.inputText(speakerMsg("email_pub2"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> false ,
+                        '_label -> "Please confirm your email address",
+                        '_help -> ""
+                    )
+                    <button type="submit" class="btb btn-xs btn-primary">Send my message</button>
+                }
+                </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
