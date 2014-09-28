@@ -36,7 +36,7 @@ GET           /cfp/proposal/submit/:proposalId                     controllers.C
 GET           /cfp/comment/:proposalId                             controllers.CallForPaper.showCommentForProposal(proposalId:String)
 GET           /cfp/questions/:proposalId                           controllers.CallForPaper.showQuestionsForProposal(proposalId:String)
 POST          /cfp/questions/:proposalId                           controllers.CallForPaper.replyToQuestion(proposalId:String)
-POST          /cfp/deleteQuestions                                 controllers.CallForPaper.deleteOneQuestion(proposalId:String, questionId:String)
+POST          /cfp/deleteQuestions                                 controllers.CallForPaper.deleteOneQuestion()
 POST          /cfp/comment/:proposalId                             controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
 
 # Password

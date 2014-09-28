@@ -84,18 +84,24 @@ $(document).ready(function($) {
     $('.deleteProposal').on("click", function(e) {
         var zeButton=$(this);
         e.preventDefault();
-        var questionId=zeButton.data("questionid");
-        var proposalid=zeButton.data("proposalid");
-        console.log("Deleting "+questionId+" "+proposalid);
+        var question_id=zeButton.data("questionid");
+        var proposal_id=zeButton.data("proposalid");
 
-        $('#'+questionId ).fadeOut();
+        console.log("question_id " + question_id);
+        console.log("proposal_id " + proposal_id);
 
+        $('#'+question_id ).fadeOut();
         $.ajax({
-            url: "@routes.CallForPaper.deleteOneQuestion("","").absoluteURL(false)"+"?proposalId="+proposalid+"&questionId="+questionId,
+            url: "/cfp/deleteQuestions",
+            type: "POST",
+            data: {proposalId: proposal_id, questionId: question_id},
             success: function(e){
-                zeButton.removeClass("btn-primary" ).addClass("btn-success");
-                zeButton.text("Invited!");
-            }
+                 $('#'+question_id ).text("Deleted.").disabled( ).fadeIn();
+            },
+           error: function(xhr, ajaxOptions, thrownError){
+            alert("Could not delete the question");
+            console.log(thrownError);
+           }
         });
 
     });
