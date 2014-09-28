@@ -50,6 +50,8 @@ case class ReportIssue(issue: Issue)
 
 case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String)
 
+case class SendQuestionToSpeaker(visitorEmail: String, visitorName:String, proposal: Proposal, msg: String)
+
 case class SendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String)
 
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
@@ -90,6 +92,7 @@ class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
+    case SendQuestionToSpeaker(email, name, proposal, msg) => sendQuestionToSpeaker(email, name, proposal, msg)
     case SendMessageToCommitte(reporterUUID, proposal, msg) => sendMessageToCommitte(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
@@ -123,6 +126,13 @@ class ZapActor extends Actor {
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.title}"))
       Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg)
+    }
+  }
+
+  def sendQuestionToSpeaker(visitorEmail: String, visitorName:String, proposal: Proposal, msg: String) {
+    for (speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
+      Event.storeEvent(Event(proposal.id, Webuser.generateUUID(visitorEmail), s"A visitor posted a message to ${speaker.cleanName} about ${proposal.title}"))
+      Mails.sendQuestionToSpeakers(visitorEmail,visitorName, speaker, proposal, msg)
     }
   }
 

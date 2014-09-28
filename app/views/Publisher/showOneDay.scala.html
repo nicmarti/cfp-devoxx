@@ -1,0 +1,48 @@
+@(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader)
+
+@views.html.Publisher.devoxxBE2014(Messages(s"sw.show.$day")) {
+    <div class="large-12 columns">
+        <h1 class="entry-title">@Messages(s"day-$day")</h1>
+
+        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+            <a href="@routes.Publisher.showByDay("mon")">@Messages("sw.agenda.mon")</a> /
+            <a href="@routes.Publisher.showByDay("tue")">@Messages("sw.agenda.tue")</a> /
+            <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /
+            <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
+            <a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a>
+        </p>
+
+    </div>
+
+    <div class="columns large-12 woocommerce">
+        <table class="agendaTable">
+            <tr>
+                <th><i class="icon-time"></i> Room</th>
+                @rooms.map { roomName: Room =>
+                    <td>@roomName.name</td>
+                }
+                </tr>
+
+            @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
+                    <tr >
+                        <th class="timeSlot">
+                            @subSlots.head.from.toString("HH:mm") - @subSlots.head.to.toString("HH:mm")
+                        </th>
+                        @rooms.map { room =>
+                            @tagRenderRow(subSlots,room,rooms.size)
+                        }
+                    </tr>
+            }
+
+
+            <tr>
+                <th><i class="icon-time"></i> Room</th>
+                @slots.groupBy(_.room).keys.toList.sortBy(_.id).map { roomName: Room =>
+                    <td>@roomName.name</td>
+                }
+            </tr>
+        </table>
+
+
+    </div>
+}

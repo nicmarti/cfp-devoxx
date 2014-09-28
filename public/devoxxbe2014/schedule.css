@@ -79,3 +79,19 @@ a.speakerTwitter, a.blackLink{
 table.mainSchedule{
     width: 100%;
 }
+tr.rowHeightThree{
+    height: 100px;
+}
+td.break{
+    background-color: #fee3ca;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
+td.notAllocated{
+    text-align: center;
+    font-style: italic;
+    font-weight: bold;
+    max-width: 16%;
+    border: 1px solid #ffd297;
+}

@@ -34,6 +34,9 @@ GET           /cfp/proposal/delete/:proposalId                     controllers.C
 GET           /cfp/proposal/undelete/:proposalId                   controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET           /cfp/proposal/submit/:proposalId                     controllers.CallForPaper.submitProposal(proposalId:String)
 GET           /cfp/comment/:proposalId                             controllers.CallForPaper.showCommentForProposal(proposalId:String)
+GET           /cfp/questions/:proposalId                           controllers.CallForPaper.showQuestionsForProposal(proposalId:String)
+POST          /cfp/questions/:proposalId                           controllers.CallForPaper.replyToQuestion(proposalId:String)
+POST          /cfp/deleteQuestions                                 controllers.CallForPaper.deleteOneQuestion()
 POST          /cfp/comment/:proposalId                             controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
 
 # Password
@@ -135,6 +138,8 @@ GET           /2014/talk/:proposalId/:proposalTitle        controllers.Publisher
 GET           /2014                                        controllers.Publisher.homePublisher()
 GET           /2014/agenda/:confType/:day                  controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2014/byday/:day                             controllers.Publisher.showByDay(day:String)
+
+POST          /publisher/sendMsgToSpeaker                   controllers.Publisher.sendMessageToSpeaker(proposalId:String)
 
 # For Paper guide
 GET           /guide/speakers                                      controllers.PaperGuide.exportSpeakers()

@@ -7,17 +7,23 @@
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
         </div>
 
+    <div class="row">
         @speakers.sortBy(_.cleanName).sliding(4, 4).map { fourSpeakers: List[Speaker] =>
             @fourSpeakers.map { speaker: Speaker =>
-                <div class="large-3 columns">
-                    <div class="speakerCard">
+               <div class="large-3 medium-3 columns">
+                <div class="speakerCard">
                     <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="speakerURL">
                         @speaker.avatarUrl.map { url =>
                             <img src="@url" class="speakerPhoto" alt="@speaker.cleanName" title="@speaker.cleanName">
                         }
-                        <span class="name">@speaker.cleanName</span></a>
-                    </div>
+                        <br>
+                        <span class="name">@speaker.cleanName</span></a><br>
+                        <span class="company">@speaker.company</span><br>
+                        <span class="twitter">@speaker.twitter</span>
                 </div>
+              </div>
             }
+            <div class="clearfix"></div>
         }
-    }
+    </div>
+}

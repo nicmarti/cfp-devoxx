@@ -415,43 +415,20 @@ object CFPAdmin extends SecureCFPController {
           val dir = new File("./public/speakers")
           FileUtils.forceMkdir(dir)
 
-          val file = new File(dir, "speakers_badges_macroman.csv")
+          val file = new File(dir, "speakers_devoxxBE2014_macroman.csv")
           val writer = new PrintWriter(file, "Macroman")
 
-          writer.println("email,firstLetter,firstName,name,lang,uuid,company,blog,hasFreePass,hasOneAccepted,isCFP,@qrcode")
-          speakers.sortBy(s => StringUtils.stripAccents(s.name.getOrElse("a")).charAt(0).toUpper).foreach {
+          writer.println("email,firstName,lastName,company,hasSpeakerBadge,hasOneAccepted,isCFPMember,totalApproved,Proposal details separated by ;")
+          speakers.sortBy(_.email).foreach {
             s =>
               writer.print(s.email.toLowerCase)
               writer.print(",")
-              writer.print(s.name.map(s => StringUtils.stripAccents(s).charAt(0).toUpper).getOrElse(""))
-              writer.print(",")
               writer.print(s.firstName.getOrElse("?"))
               writer.print(",")
-              writer.print(s.name.map(_.toUpperCase).getOrElse("?"))
+              writer.print(s.name.getOrElse("?"))
               writer.print(",")
-              writer.print(s.cleanLang)
+              writer.print(s.company.map(c=>"\""+c.toUpperCase+"\"").getOrElse(""))
               writer.print(",")
-              writer.print(s.uuid)
-              writer.print(",")
-              writer.print(s.company.map(s => StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s), 32)).getOrElse(""))
-              writer.print(",")
-              writer.print(s.blog.map(s => StringEscapeUtils.escapeCsv(s)).getOrElse(""))
-              writer.print(",")
-
-              val zeVCard = new VCard(
-                firstName = s.firstName
-                , lastName = s.name
-                , company = s.company.map(s => StringUtils.abbreviate(StringEscapeUtils.escapeCsv(s), 32))
-                , email = Some(s.email)
-                , website = s.blog
-                , phonenumber = None
-                , title = Some("Speaker at " + Messages("longYearlyName"))
-              )
-
-
-              val f: java.io.File = QRCode.from(zeVCard.toString).file()
-              val tmpFile = new File("./public/speakers", StringUtils.stripAccents(s.cleanName.replaceAll(" ", "_").toLowerCase + "_qrcode.png"))
-              f.renameTo(tmpFile)
 
               // freepass
               writer.print(Proposal.hasOneProposalWithSpeakerTicket(s.uuid))
@@ -463,8 +440,28 @@ object CFPAdmin extends SecureCFPController {
               writer.print(Webuser.isMember(s.uuid, "cfp"))
               writer.print(",")
 
-              // @qrcode
-              writer.print(tmpFile.getName())
+              // number of talks
+              val allAccepted = Proposal.allAcceptedForSpeaker(s.uuid)
+
+              writer.print(allAccepted.size)
+              writer.print(",")
+
+              Proposal.allAcceptedForSpeaker(s.uuid).map{p=>
+                ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map{ slot=>
+                  writer.print(Messages(p.talkType.id))
+                  writer.print(" \"" + p.title.replaceAll(","," ") + "\"")
+                  writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
+                  writer.print(s"from ${slot.from.toString("HH:mm")} to ${slot.to.toString("HH:mm")}")
+                }.getOrElse{
+                  writer.print("\"")
+                  writer.print( p.title.replaceAll(","," "))
+                  writer.print("\"")
+                  writer.print(s" ${p.talkType.label}}] not yet scheduled")
+
+                }
+
+                writer.print(",")
+              }
 
 
               writer.println()
@@ -472,8 +469,9 @@ object CFPAdmin extends SecureCFPController {
           writer.close()
 
 
+         Ok.sendFile(file, inline = false)
 
-          Ok("Generated speakers_badges.csv with qrcode <a href=/assets/speakers/speakers_badges_macroman.csv>See result</a>").as(HTML)
+
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }

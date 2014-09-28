@@ -115,28 +115,28 @@ object ScheduleConfiguration {
   }
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
+
+    def extractSlot(allSlots:List[Slot], day:String)={
+        val configured = loadSlots().filter(_.day == day)
+         val configuredIDs=configured.map(_.id)
+         val filtered = allSlots.filterNot(s=>configuredIDs.contains(s.id))
+         configured++filtered
+    }
+
     val listOfSlots = day match {
-      case "monday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
-        fullList.filter(_.day == "monday")
-      }
-      case "tuesday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
-        fullList.filter(_.day == "tuesday")
-      }
-      case "wednesday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.wednesday ++ loadSlots()
-        fullList.filter(_.day == "wednesday")
-      }
-      case "thursday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.thursday ++ loadSlots()
-        fullList.filter(_.day == "thursday")
-      }
-      case "friday" => {
-        val fullList = ConferenceDescriptor.ConferenceSlots.friday ++ loadSlots()
-        fullList.filter(_.day == "friday")
-      }
-      case other => Nil
+      case "monday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.monday,"monday")
+      case "tuesday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.tuesday,"tuesday")
+      case "wednesday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday,"wednesday")
+      case "thursday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.thursday,"thursday")
+      case "friday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.friday,"friday")
+      case other =>
+        play.Logger.of("ScheduleConfiguration").warn("Could not match "+other+" in getPublishedScheduleByDay")
+        Nil
     }
 
     listOfSlots.sortBy(_.from.getMillis)

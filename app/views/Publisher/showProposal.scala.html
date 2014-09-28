@@ -1,4 +1,4 @@
-@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)], questions:List[Question])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title) {
 
@@ -7,7 +7,9 @@
     @if(slot.isDefined && publishedConfiguration.isDefined) {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all." + proposal.talkType.id)</a>  &gt;
-            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">@Messages("day-" + slot.get.day)</a>
+            <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages(s"sw.agenda.${slot.get.day}")</a> &gt;
+            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">See all @Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) for this day</a>
+
         </p>
     } else {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
@@ -30,14 +32,68 @@
                 @if(slot.isDefined) {
                     <tr>
                         <td>
-                            @slot.map(_.room.name)
+                            <h4>@slot.map(_.room.name)</h4>
                         </td>
-                        <td style="text-align: right">@slot.get.from.toString("EEE") at  @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")</td>
+                        <td style="text-align: right">@slot.get.from.toString("EEEE") at  @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")</td>
                     </tr>
                 }
 
                 <tr>
                     <td colspan="2">@Html(proposal.summaryAsHtml)</td>
+                </tr>
+
+                @if(questions.nonEmpty) {
+                    <tr>
+                        <td colspan="2">
+                            <div class="panel-header">
+                                <h4>Questions from visitors</h4>
+                            </div>
+                            <div class="panel-body">
+                            @tags.renderQuestions(questions)
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td colspan="2">
+                <div class="panel-body">
+                    <h4>Send a question to the speaker@if(proposal.secondarySpeaker.isDefined){s}</h4>
+
+@if(flash.get("success").isDefined){
+<div class="alert-box success">
+    <i class="icon-mail-forward"></i> Your message has been sent to the speaker. Please, revisit this page later to read speakers's answers.
+</div>
+}
+
+                @helper.form(action = routes.Publisher.sendMessageToSpeaker(proposal.id)) {
+                    @helper.inputText(speakerMsg("fullname"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> false ,
+                        '_label -> "Your name",
+                        '_help -> ""
+                    )
+                    @helper.inputText(speakerMsg("email_pub"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> false ,
+                        '_label -> "Your email address (required)",
+                        '_help -> ""
+                    )
+                    @helper.inputText(speakerMsg("email_pub2"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> false ,
+                        '_label -> "Please confirm your email address",
+                        '_help -> ""
+                    )
+                    @helper.textarea(speakerMsg("msg_pub"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> true ,
+                        '_label -> "Please enter your question or your message for the speaker:",
+                        '_help -> "")
+                    <button type="submit" class="btb btn-xs btn-primary">Send my message</button>
+                }
+                </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

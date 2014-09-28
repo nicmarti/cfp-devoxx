@@ -145,6 +145,29 @@ object Mails {
     )
   }
 
+  def sendQuestionToSpeakers(visitorEmail:String, visitorName:String, toWebuser: Webuser, proposal: Proposal, msg: String) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    val subject: String = Messages("mail.question_to_speaker.subject", proposal.title, ConferenceDescriptor.current().eventCode)
+    emailer.setSubject(subject)
+    emailer.addFrom(from)
+    bcc.map(bccEmail => emailer.addBcc(bccEmail))
+    emailer.addRecipient(toWebuser.email)
+
+    // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
+    // I am a Scala coder, please get me out of here...
+    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
+    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
+
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.sendQuestionToSpeaker(visitorEmail, visitorName, proposal, msg).toString(),
+      views.html.Mails.sendQuestionToSpeaker(visitorEmail,visitorName, proposal, msg).toString()
+    )
+
+  }
+
   def sendMessageToCommitte(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
     val subject: String = Messages("mail.speaker_message_to_cfp.subject", proposal.title,fromWebuser.cleanName)
