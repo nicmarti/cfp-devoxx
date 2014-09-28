@@ -55,6 +55,18 @@ object Comment {
     client.set(s"QuestionsByID:$newId",proposalId)
   }
 
+  def deleteQuestion(proposalId: String, questionId: String) = Redis.pool.withClient{
+    client=>
+      val questionsWithoutDates = client.zrevrangeWithScores(s"Questions:$proposalId", 0, -1).map {
+        case (json, _) =>
+          Json.parse(json).as[Question]
+      }
+      questionsWithoutDates.find(_.id==Some(questionId)).map{
+        q=>
+          client.zrem(s"Questions:$proposalId",Json.toJson(q).toString())
+      }
+  }
+
   def saveInternalComment(proposalId: String, uuidAuthor: String, msg: String) = {
     saveComment(s"Comments:Internal:$proposalId", proposalId, uuidAuthor, msg)
   }
