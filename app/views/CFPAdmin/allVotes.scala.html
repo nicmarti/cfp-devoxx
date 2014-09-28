@@ -125,6 +125,9 @@
                                         }
                                         <br>
                                         <span class="label label-@proposal.state.code">@proposal.state.code</span>
+                                        @if(refused && proposal.state.code=="accepted"){
+                                           <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-check"></i> Remove from refused list</a>
+                                        }
                                     </td>
                                 </tr>
                                 }

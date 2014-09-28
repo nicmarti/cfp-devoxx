@@ -1,4 +1,4 @@
-@(proposal: Proposal, comments: List[Comment], msgToComite: Form[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(proposal: Proposal, comments: List[Comment], msgToCommitte: Form[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 
 @import com.github.rjeschke.txtmark._
@@ -18,7 +18,6 @@
                                 <th>Title</th>
                                 <th>Track</th>
                                 <th>Type of talk</th>
-                                <th>Lang</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -30,7 +29,6 @@
                                 @Messages(proposal.track.label)
                                 </td>
                                 <td>@Messages(proposal.talkType.id)</td>
-                                <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
                             </tr>
                             <tr>
                                 <th colspan="4">
@@ -50,7 +48,7 @@
 
                 <div class="panel-body">
                 @helper.form(action = routes.CallForPaper.sendMessageToCommitte(proposal.id)) {
-                    @helper.textarea(msgToComite("msg"), 'class -> "form-control input-xs")
+                    @helper.textarea(msgToCommitte("msg"), 'class -> "form-control input-xs")
                     <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
                 }
                 </div>

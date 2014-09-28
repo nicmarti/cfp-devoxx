@@ -61,15 +61,15 @@ object CallForPaper extends SecureCFPController {
 
   val speakerForm = play.api.data.Form(mapping(
     "email" -> (email verifying nonEmpty),
-    "lastName" -> nonEmptyText(maxLength=25),
+    "lastName" -> nonEmptyText(maxLength = 25),
     "bio" -> nonEmptyText(maxLength = 750),
     "lang" -> optional(text),
     "twitter" -> optional(text),
     "avatarUrl" -> optional(text),
     "company" -> optional(text),
     "blog" -> optional(text),
-    "firstName" -> nonEmptyText(maxLength=25),
-    "qualifications" ->  nonEmptyText(maxLength = 750)
+    "firstName" -> nonEmptyText(maxLength = 25),
+    "qualifications" -> nonEmptyText(maxLength = 750)
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def editProfile = SecuredAction {
@@ -224,12 +224,14 @@ object CallForPaper extends SecureCFPController {
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
+          println("Existing proposal " + proposal.secondarySpeaker)
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
               Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
-
-              Proposal.save(uuid, proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2), proposal.state)
+              val newProposal = proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2)
+              println(newProposal.secondarySpeaker)
+              Proposal.save(uuid, newProposal, proposal.state)
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
             }
           )
@@ -305,7 +307,7 @@ object CallForPaper extends SecureCFPController {
   def sendMessageToCommitte(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state==ProposalState.DELETED)
+      val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
       maybeProposal match {
         case Some(proposal) => {
           speakerMsg.bindFromRequest.fold(
@@ -325,6 +327,66 @@ object CallForPaper extends SecureCFPController {
       }
   }
 
+  def showQuestionsForProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
+      maybeProposal match {
+        case Some(proposal) => {
+          Ok(views.html.CallForPaper.showQuestionsForProposal(proposal, Comment.allQuestions(proposal.id), speakerMsg))
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
+      }
+  }
+
+  def replyToQuestion(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
+      val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
+      maybeProposal match {
+        case Some(proposal) => {
+          speakerMsg.bindFromRequest.fold(
+            hasErrors => {
+              BadRequest(views.html.CallForPaper.showQuestionsForProposal(proposal, Comment.allQuestions(proposal.id), hasErrors))
+            },
+            validMsg => {
+              Comment.saveQuestion(proposal.id, request.webuser.email, request.webuser.cleanName, validMsg)
+              Redirect(routes.CallForPaper.showQuestionsForProposal(proposalId)).flashing("success" -> "Message was sent")
+            }
+          )
+        }
+        case None => {
+          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+        }
+      }
+  }
+
+  val deleteQuestionForm = Form(tuple("proposalId" -> nonEmptyText, "questionId" -> nonEmptyText))
+
+  def deleteOneQuestion() = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
+      deleteQuestionForm.bindFromRequest().fold(hasErrors =>
+        BadRequest("Invalid form")
+        , {
+        case (proposalId, questionId) => {
+          val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
+          maybeProposal match {
+            case Some(proposal) => {
+              Comment.deleteQuestion(proposalId, questionId)
+              Ok("Deleted")
+            }
+            case None => {
+              BadRequest("Invalid proposal")
+            }
+          }
+        }
+      }
+      )
+  }
+
   case class TermCount(term: String, count: Int)
 
   def cloudTags() = SecuredAction.async {
@@ -335,17 +397,17 @@ object CallForPaper extends SecureCFPController {
       implicit val termCountFormat = Json.reads[TermCount]
 
       Cache.getOrElse("elasticSearch", 3600) {
-          ElasticSearch.getTag("proposals/proposal").map {
-            case r if r.isSuccess => {
-              val json = Json.parse(r.get)
-              val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
-              Ok(views.html.CallForPaper.cloudTags(tags))
-            }
-            case r if r.isFailure => {
-              play.Logger.error(r.get)
-              InternalServerError
-            }
+        ElasticSearch.getTag("proposals/proposal").map {
+          case r if r.isSuccess => {
+            val json = Json.parse(r.get)
+            val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
+            Ok(views.html.CallForPaper.cloudTags(tags))
           }
+          case r if r.isFailure => {
+            play.Logger.error(r.get)
+            InternalServerError
+          }
+        }
       }
   }
 
