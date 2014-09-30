@@ -138,7 +138,7 @@ GET           /2014/talk/:proposalId/:proposalTitle        controllers.Publisher
 GET           /2014                                        controllers.Publisher.homePublisher()
 GET           /2014/agenda/:confType/:day                  controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2014/byday/:day                             controllers.Publisher.showByDay(day:String)
-
+GET           /2014/questions                              controllers.Publisher.allQuestions()
 POST          /publisher/sendMsgToSpeaker                   controllers.Publisher.sendMessageToSpeaker(proposalId:String)
 
 # For Paper guide

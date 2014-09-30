@@ -197,7 +197,7 @@ object Publisher extends Controller {
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
 
-          val questions = Comment.allQuestions(proposal.id)
+          val questions = Question.allQuestionsForProposal(proposal.id)
 
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
@@ -212,19 +212,24 @@ object Publisher extends Controller {
         case Some(proposal) =>
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
-          val questions = Comment.allQuestions(proposal.id)
+          val questions = Question.allQuestionsForProposal(proposal.id)
 
           speakerMsg.bindFromRequest().fold(hasErrors =>
             BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)),
             {
               case (msg, fullname, email1, _) =>
-                Comment.saveQuestion(proposal.id, email1, fullname, msg)
+                Question.saveQuestion(proposal.id, email1, fullname, msg)
                 ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
                 Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
             }
           )
 
       }
+  }
+
+  def allQuestions() = Action{
+    implicit request=>
+      Ok("Test "+Question.allQuestionsGroupedByProposal)
   }
 
 
