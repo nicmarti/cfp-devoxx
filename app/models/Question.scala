@@ -43,11 +43,10 @@ object Question {
   def saveQuestion(proposalId: String, visitorEmail: String, author:String, msg: String) = Redis.pool.withClient{
     client=>
     val newId=RandomStringUtils.randomAlphanumeric(10)
-    val question = Question(Option(newId), proposalId, visitorEmail, author, msg, None)
+    val question = Question(Option(newId), proposalId, visitorEmail, author, msg, Option(new DateTime()))
 
     val tx=client.multi()
     tx.hset("Questions:v2", newId, Json.toJson(question).toString())
-    tx.zadd(s"Questions:v2:$proposalId", new Instant().getMillis.toDouble, newId)
     tx.sadd(s"Questions:ById:$proposalId" , newId)
     tx.exec()
   }
@@ -56,7 +55,6 @@ object Question {
     client=>
       val tx=client.multi()
       tx.hdel("Questions:v2",questionId)
-      tx.zrem(s"Questions:v2:$proposalId",questionId)
       tx.srem(s"Questions:ById:$proposalId", questionId)
       tx.exec()
   }
