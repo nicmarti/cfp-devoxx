@@ -229,7 +229,17 @@ object Publisher extends Controller {
 
   def allQuestions() = Action{
     implicit request=>
-      Ok("Test "+Question.allQuestionsGroupedByProposal)
+
+      val questions=Question.allQuestionsGroupedByProposal()
+      val result = questions.hashCode()
+      val etag = Crypt.md5(result.toString()).toString
+      val maybeETag = request.headers.get(IF_NONE_MATCH)
+
+      maybeETag match {
+        case Some(oldEtag) if oldEtag == etag => NotModified
+        case other => Ok(views.html.Publisher.allQuestions(questions)).withHeaders(ETAG -> etag)
+      }
+
   }
 
 
