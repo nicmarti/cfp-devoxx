@@ -134,7 +134,7 @@ class IndexMaster extends ESActor {
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(),"speakers")
+    ElasticSearch.indexBulk(sb.toString(), "speakers")
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all speakers")
   }
@@ -152,13 +152,18 @@ class IndexMaster extends ESActor {
     val allAccepted = Proposal.allAccepted()
     val allSubmitted = Proposal.allSubmitted()
 
+    if(play.Logger.of("application.IndexMaster").isDebugEnabled){
+      play.Logger.of("application.IndexMaster").debug(s"Indexing ${allAccepted.size} accepted proposals")
+      play.Logger.of("application.IndexMaster").debug(s"Indexing ${allSubmitted.size} submitted proposals")
+    }
+
     // We cannot index all proposals, if the size > 1mb then Elasticsearch on clevercloud
     // returns a 413 Entity too large
-    allAccepted.sliding(200,200).foreach{gop=>
+    allAccepted.sliding(200, 200).foreach { gop =>
       indexProposalsToElasticSearch(gop)
     }
 
-    allSubmitted.sliding(200,200).foreach{groupOfProposals=>
+    allSubmitted.sliding(200, 200).foreach { groupOfProposals =>
       indexProposalsToElasticSearch(groupOfProposals)
     }
 
@@ -167,9 +172,9 @@ class IndexMaster extends ESActor {
     play.Logger.of("application.IndexMaster").debug("Indexed all proposals")
   }
 
-  private def indexProposalsToElasticSearch(proposals:List[Proposal])={
-    if(play.Logger.of("application.IndexMaster").isDebugEnabled) {
-      play.Logger.of("application.IndexMaster").debug("Indexing proposals "+proposals.size)
+  private def indexProposalsToElasticSearch(proposals: List[Proposal]) = {
+    if (play.Logger.of("application.IndexMaster").isDebugEnabled) {
+      play.Logger.of("application.IndexMaster").debug("Indexing proposals " + proposals.size)
     }
     val sb = new StringBuilder
     proposals.foreach {
@@ -213,21 +218,23 @@ class IndexMaster extends ESActor {
     val sb = new StringBuilder
     reviews.foreach {
       case (proposalId, reviewAndVotes) =>
-        val proposal = Proposal.findById(proposalId).get
-        sb.append("{\"index\":{\"_index\":\"reviews\",\"_type\":\"review\",\"_id\":\"" + proposalId + "\"}}")
-        sb.append("\n")
-        sb.append("{")
-        sb.append("\"totalVoters\": " + reviewAndVotes._2 + ", ")
-        sb.append("\"totalAbstentions\": " + reviewAndVotes._3 + ", ")
-        sb.append("\"average\": " + reviewAndVotes._4 + ", ")
-        sb.append("\"standardDeviation\": " + reviewAndVotes._5 + ", ")
-        sb.append("\"title\": \"" + proposal.title + "\",")
-        sb.append("\"track\": \"" + proposal.track.id + "\",")
-        sb.append("\"lang\": \"" + proposal.lang + "\",")
-        sb.append("\"sponsor\": \"" + proposal.sponsorTalk + "\",")
-        sb.append("\"type\": \"" + proposal.talkType.id + "\"")
-        sb.append("}\n")
-        sb.append("\n")
+        Proposal.findById(proposalId).map {
+          proposal=>
+          sb.append("{\"index\":{\"_index\":\"reviews\",\"_type\":\"review\",\"_id\":\"" + proposalId + "\"}}")
+          sb.append("\n")
+          sb.append("{")
+          sb.append("\"totalVoters\": " + reviewAndVotes._2 + ", ")
+          sb.append("\"totalAbstentions\": " + reviewAndVotes._3 + ", ")
+          sb.append("\"average\": " + reviewAndVotes._4 + ", ")
+          sb.append("\"standardDeviation\": " + reviewAndVotes._5 + ", ")
+          sb.append("\"title\": \"" + proposal.title + "\",")
+          sb.append("\"track\": \"" + proposal.track.id + "\",")
+          sb.append("\"lang\": \"" + proposal.lang + "\",")
+          sb.append("\"sponsor\": \"" + proposal.sponsorTalk + "\",")
+          sb.append("\"type\": \"" + proposal.talkType.id + "\"")
+          sb.append("}\n")
+          sb.append("\n")
+        }
     }
     sb.append("\n")
 
@@ -262,11 +269,11 @@ class IndexMaster extends ESActor {
     }
   }
 
-   def doCreateConfigureIndex()={
+  def doCreateConfigureIndex() = {
     val maybeSuccess = _createConfigureIndex()
-      maybeSuccess.map {
+    maybeSuccess.map {
       case r if r.isSuccess =>
-        play.Logger.of("library.ElasticSearch").info(s"Configured indexes on ES for speaker and proposal. Result : "+r.get)
+        play.Logger.of("library.ElasticSearch").info(s"Configured indexes on ES for speaker and proposal. Result : " + r.get)
       case r if r.isFailure =>
         play.Logger.of("library.ElasticSearch").warn(s"Error $r")
     }
@@ -414,7 +421,7 @@ class IndexMaster extends ESActor {
   }
 
   private def _createConfigureIndex(): Future[Try[String]] = {
-     // This is important for French content
+    // This is important for French content
     // Leave it, even if your CFP is in English
     def settingsFrench =
       """
@@ -530,17 +537,15 @@ class IndexMaster extends ESActor {
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
                         res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsProposalsEnglish)
 
-    ) yield
-    {
-       res2
+    ) yield {
+      res2
     }
 
-     val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
-                                 res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsSpeakersEnglish)
+    val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
+                                res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsSpeakersEnglish)
 
-    ) yield
-    {
-       res2
+    ) yield {
+      res2
     }
 
     resFinal
