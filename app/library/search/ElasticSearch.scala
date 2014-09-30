@@ -103,7 +103,7 @@ object ElasticSearch {
 
   def indexBulk(json: String, indexName:String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-      play.Logger.of("library.ElasticSearch").debug(s"Bulk index started to $host")
+      play.Logger.of("library.ElasticSearch").debug(s"Bulk index ${indexName} started to $host")
     }
 
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
@@ -114,15 +114,15 @@ object ElasticSearch {
         response.status match {
           case 201 =>
              if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-               play.Logger.of("library.ElasticSearch").debug("Bulk index created")
+               play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
              }
             Success(response.body)
           case 200 =>
             if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-               play.Logger.of("library.ElasticSearch").debug("Bulk index created")
+               play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
              }
             Success(response.body)
-          case other => Failure(new RuntimeException("Unable to bulk import, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+          case other => Failure(new RuntimeException(s"Unable to bulk import [$indexName], HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }
