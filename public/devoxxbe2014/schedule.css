@@ -95,3 +95,20 @@ td.notAllocated{
     max-width: 16%;
     border: 1px solid #ffd297;
 }
+
+button.searchBtn{
+font-size: 12px;
+color: #fff;
+text-transform: uppercase;
+padding-left: 10px;
+padding-right: 10px;
+display: inline-block;
+vertical-align: middle;
+height: 30px;
+line-height: 30px;
+background-color: #f54f36;
+margin-top: 5px;
+border: 1px solid transparent;
+-webkit-transition: all 0.3s;
+transition: all 0.3s;
+}

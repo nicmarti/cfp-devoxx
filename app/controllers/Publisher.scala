@@ -23,13 +23,15 @@
 
 package controllers
 
+import library.search.ElasticSearch
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
 import akka.util.Crypt
-import library.{SendQuestionToSpeaker, SendMessageToCommitte, ZapActor, LogURL}
+import library.{SendQuestionToSpeaker, ZapActor, LogURL}
 import play.api.cache.Cache
 
 
@@ -239,8 +241,38 @@ object Publisher extends Controller {
         case Some(oldEtag) if oldEtag == etag => NotModified
         case other => Ok(views.html.Publisher.allQuestions(questions)).withHeaders(ETAG -> etag)
       }
+  }
+
+    def search(q: Option[String] = None, p: Option[Int] = None)= Action.async {
+    implicit request=>
+
+      import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+     ElasticSearch.doAdvancedSearch("acceptedproposals", q, p).map {
+        case r if r.isSuccess => {
+          val json = Json.parse(r.get)
+          val total = (json \ "hits" \ "total").as[Int]
+          val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
+
+          val results = hitContents.map {
+            jsvalue =>
+              val index = (jsvalue \ "_index").as[String]
+              val source = (jsvalue \ "_source")
+              val id = (source \ "id").as[String]
+              val proposal = source.as[Proposal]
+              proposal
+          }
+
+          Ok(views.html.Publisher.searchResult(total, results, q, p)).as("text/html")
+        }
+        case r if r.isFailure => {
+          InternalServerError(r.get)
+        }
+      }
 
   }
+
+
 
 
 }

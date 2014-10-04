@@ -72,7 +72,7 @@ case class DoIndexSpeaker(speaker: Speaker)
 
 case object DoIndexAllSpeakers
 
-case object DoIndexAllApproved
+case object DoIndexAllAccepted
 
 case object DoIndexAllHitViews
 
@@ -98,8 +98,7 @@ class IndexMaster extends ESActor {
     case DoIndexAllSpeakers => doIndexAllSpeakers()
     case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
     case DoIndexAllProposals => doIndexAllProposals()
-    case DoIndexAllApproved => doIndexAllApproved()
-    case DoIndexAllReviews => doIndexAllReviews()
+    case DoIndexAllAccepted => doIndexAllAccepted()
     case DoIndexAllHitViews => doIndexAllHitViews()
     case StopIndex => stopIndex()
     case DoCreateConfigureIndex => doCreateConfigureIndex()
@@ -189,25 +188,24 @@ class IndexMaster extends ESActor {
     ElasticSearch.indexBulk(sb.toString(), "proposals")
   }
 
+  def doIndexAllAccepted() {
+    val proposals = Proposal.allAccepted()
 
-  def doIndexAllApproved() {
-    play.Logger.of("application.IndexMaster").debug("Do index all approved proposals")
-
-    val proposals = ApprovedProposal.allApproved()
+    play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size}")
 
     val sb = new StringBuilder
     proposals.foreach {
       proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"approved\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("{\"index\":{\"_index\":\"acceptedproposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
         sb.append(Json.toJson(proposal.copy(privateMessage = "")))
         sb.append("\n")
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), "proposals")
+    ElasticSearch.indexBulk(sb.toString(), "acceptedproposals")
 
-    play.Logger.of("application.IndexMaster").debug("Done indexing all approved proposals")
+    play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
   }
 
   def doIndexAllReviews() {
@@ -397,6 +395,7 @@ class IndexMaster extends ESActor {
             },
             "title": {
                 "type": "string",
+                "stored":"true",
                 "analyzer": "english"
             },
             "track": {
@@ -533,10 +532,16 @@ class IndexMaster extends ESActor {
       """.stripMargin
 
 
-    // TODO dirty sequential, but it must be implemented like that
+    // We use a for-comprehension on purporse so that each action is executed sequentially.
+    // res2 is executed when res1 is done
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
                         res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsProposalsEnglish)
+    ) yield {
+      res2
+    }
 
+     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals");
+                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals", settingsProposalsEnglish)
     ) yield {
       res2
     }
