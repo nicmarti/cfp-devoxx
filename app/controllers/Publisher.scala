@@ -248,7 +248,7 @@ object Publisher extends Controller {
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-     ElasticSearch.doAdvancedSearch("acceptedproposals", q, p).map {
+     ElasticSearch.doPublisherSearch(q, p).map {
         case r if r.isSuccess => {
           val json = Json.parse(r.get)
           val total = (json \ "hits" \ "total").as[Int]

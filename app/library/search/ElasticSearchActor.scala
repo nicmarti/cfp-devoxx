@@ -394,9 +394,10 @@ class IndexMaster extends ESActor {
                 }
             },
             "title": {
-                "type": "string",
                 "stored":"true",
-                "analyzer": "english"
+                "search_analyzer":"analyzer_startswith",
+                "index_analyzer":"analyzer_startswith",
+                "type":"string"
             },
             "track": {
                 "properties": {
@@ -481,7 +482,11 @@ class IndexMaster extends ESActor {
         |                    "analyzer_keyword":{
         |                       "tokenizer":"keyword",
         |                       "filter":"lowercase"
-        |                     }
+        |                     },
+        |                    "analyzer_startswith":{
+        |                      "tokenizer":"keyword",
+        |                      "filter":"lowercase"
+        |                    }
         |                },
         |                "filter": {
         |                    "english_stop": {
