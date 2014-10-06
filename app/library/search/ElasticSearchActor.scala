@@ -180,7 +180,13 @@ class IndexMaster extends ESActor {
       proposal: Proposal =>
         sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
-        sb.append(Json.toJson(proposal.copy(privateMessage = ""))) // do not index the private message
+        sb.append(Json.toJson(
+          proposal.copy(privateMessage = "",
+          mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
+          secondarySpeaker = proposal.secondarySpeaker.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName)),
+          otherSpeakers = proposal.otherSpeakers.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName))
+          )
+        )) // do not index the private message
         sb.append("\n")
     }
     sb.append("\n")
@@ -198,7 +204,12 @@ class IndexMaster extends ESActor {
       proposal: Proposal =>
         sb.append("{\"index\":{\"_index\":\"acceptedproposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
-        sb.append(Json.toJson(proposal.copy(privateMessage = "")))
+        sb.append(Json.toJson(proposal.copy(
+          privateMessage = "",
+          mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
+          secondarySpeaker = proposal.secondarySpeaker.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName)),
+          otherSpeakers = proposal.otherSpeakers.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName))
+        )))
         sb.append("\n")
     }
     sb.append("\n")
