@@ -112,3 +112,7 @@ border: 1px solid transparent;
 -webkit-transition: all 0.3s;
 transition: all 0.3s;
 }
+
+h4.speakerTitle{
+    padding-top: 15px;
+}
