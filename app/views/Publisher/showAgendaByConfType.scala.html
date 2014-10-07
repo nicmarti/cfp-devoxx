@@ -70,8 +70,18 @@
                             slot4 :<strong>18:20 - 18:50</strong><br>
                             <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
                         }
-
                         </td>
+                    }
+                    @** Special Hack to add startups talks **@
+                    @if(day.toLowerCase=="friday" && time.hourOfDay.get()==9  && talkType.toLowerCase=="conf"){
+                            <td>
+                                  <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
+                            slot5 :<strong>09:30 - 10:00</strong><br>
+                            slot6 :<strong>10:00 - 10:30</strong><br>
+                            <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
+
+                            </td>
+
                     }
                 </tr>
                 }
