@@ -206,7 +206,21 @@ object ElasticSearch {
   def doPublisherSearch(query: Option[String], p: Option[Int]) = {
     val index = "acceptedproposals"
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
-    val zeQuery = someQuery.map{q=> "\"query_string\" : { \"query\": \"" + q + "\"}"}.getOrElse("\"match_all\":{}")
+    val zeQuery = someQuery.map(_.toLowerCase).map{q=>
+     s"""
+        |"dis_max": {
+        |   "queries": [
+        |                { "match": { "title":"$q"}},
+        |                { "match": { "mainSpeaker":"$q"}},
+        |                { "match": { "secondarySpeaker":"$q"}},
+        |                { "match": { "summary":"$q"}},
+        |                { "match": { "otherSpeakers":"$q" }},
+        |                { "match": { "id":"$q"}}
+        |            ]
+        |}
+      """.stripMargin
+
+    }.getOrElse("\"match_all\":{}")
     val pageSize = 25
     val pageUpdated: Int = p match {
       case None => 0

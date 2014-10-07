@@ -195,7 +195,7 @@ class IndexMaster extends ESActor {
   }
 
   def doIndexAllAccepted() {
-    val proposals = Proposal.allAccepted()
+    val proposals = Proposal.allApproved()++Proposal.allAccepted()
 
     play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size}")
 
