@@ -536,13 +536,13 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
-//      val check=Json.parse(client.hget("Proposals",allProposalIds.head).get).validate[Proposal]
-//      check.fold(invalidJson=> {
-//        play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
-//        play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
-//        JsNull
-//        }
-//        , identity)
+      val check=Json.parse(client.hget("Proposals",allProposalIds.head).get).validate[Proposal]
+      check.fold(invalidJson=> {
+        play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
+        play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
+        JsNull
+        }
+        , identity)
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
