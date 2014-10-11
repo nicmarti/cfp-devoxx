@@ -214,5 +214,9 @@ GET           /cfpadmin/invitations                              controllers.Inv
 GET           /cfpadmin/invitations/invite                       controllers.InviteController.invite(speakerUUID:String)
 GET           /cfpadmin/invitations/cancel                       controllers.InviteController.cancelInvite(speakerUUID)
 
+# Backport for old CFP for Stephan
+GET           /bp/speakers                                       controllers.Backport.allAcceptedSpeakers()
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                      controllers.Assets.at(path="/public", file)

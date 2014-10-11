@@ -34,9 +34,13 @@ import models.{Proposal, Webuser, Speaker}
  * @author created by N.Martignole, Innoteria, on 11/10/2014.
  */
 object Backport extends SecureCFPController {
-  def allSpeakers() = SecuredAction {
+  def allAcceptedSpeakers() = SecuredAction {
     implicit request =>
-      Ok("todo")
+
+      val speakers = Speaker.allSpeakersWithAcceptedTerms().sortBy(_.cleanName)
+
+
+      Ok(views.html.Backport.sqlForSpeakers(speakers))
   }
 
 }
