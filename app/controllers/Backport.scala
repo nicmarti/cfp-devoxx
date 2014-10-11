@@ -24,7 +24,7 @@
 package controllers
 
 import controllers.CallForPaper._
-import models.{Proposal, Webuser, Speaker}
+import models._
 
 /**
  * This controller generates SQL script for the old Devoxx BE CFP.
@@ -41,6 +41,18 @@ object Backport extends SecureCFPController {
 
 
       Ok(views.html.Backport.sqlForSpeakers(speakers))
+  }
+
+  def allProposals() = SecuredAction {
+    implicit request =>
+
+      val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL
+      val allTracks =  ConferenceDescriptor.ConferenceTracks.ALL
+
+      val scheduledProposals = allProposalTypes.map(pt=>ScheduleConfiguration.getPublishedSchedule(pt.id))
+
+
+      Ok(views.html.Backport.sqlForProposals(allProposalTypes, allTracks, scheduledProposals))
   }
 
 }
