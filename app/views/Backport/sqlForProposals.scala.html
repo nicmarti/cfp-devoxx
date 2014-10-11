@@ -1,0 +1,46 @@
+@(allProposalTypes:List[ProposalType], allTracks:List[Track], proposals:List[Option[String]])
+@import org.apache.commons.lang3.StringUtils
+@import org.apache.commons.lang3.StringEscapeUtils
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Speakers</title>
+<style>
+body{
+    font-family: monospace, monospace;
+    font-weight: normal;
+    font-size: 12px;
+}
+.sql{
+    color:darkblue;
+    font-weight: bold;
+}
+.d{
+    color:darkgreen;
+    font-weight: normal;
+}
+</style>
+</head>
+<body>
+
+<span class="sql">DELETE FROM `eventtype` WHERE id>='100';<br>
+@allProposalTypes.zipWithIndex.map{case(pt:ProposalType,idx:Int)=>
+<span class="sql">insert into</span> `eventtype` <span class="sql">values</span>(
+<span class="d">'@(idx+100)'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'@pt.id'</span>,
+<span class="d">'1'</span>,
+<span class="d">'@StringEscapeUtils.escapeEcmaScript(Messages(pt.id))'</span>,
+<span class="d">'60'</span>,
+<span class="d">'@StringEscapeUtils.escapeEcmaScript(Messages(pt.label))'</span>,
+<span class="d">'#F15F15'</span>,
+<span class="d">b'0'</span>
+);<br>
+}
+<br>
+@allTracks
+<br>
+
+</body>
+</html>
