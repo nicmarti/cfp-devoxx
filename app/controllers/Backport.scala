@@ -23,6 +23,9 @@
 
 package controllers
 
+import controllers.CallForPaper._
+import models.{Proposal, Webuser, Speaker}
+
 /**
  * This controller generates SQL script for the old Devoxx BE CFP.
  * We had to use this trick as a hack, so that digital footage and mobile apps from
@@ -30,6 +33,10 @@ package controllers
  *
  * @author created by N.Martignole, Innoteria, on 11/10/2014.
  */
-object Backport {
+object Backport extends SecureCFPController {
+  def allSpeakers() = SecuredAction {
+    implicit request =>
+      Ok("todo")
+  }
 
 }
