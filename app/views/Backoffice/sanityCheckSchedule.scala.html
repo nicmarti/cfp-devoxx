@@ -47,13 +47,12 @@
 
                         <div class="panel-body">
                             @defining(Proposal.findProposalState(slot.proposal.get.id).get){currentState:ProposalState=>
-                                <p>Proposal state on the published Agenda: @Messages(slot.proposal.get.state.code)</p>
+                                <p>Proposal state on the published Agenda: <span class="alert alert-danger">@Messages(slot.proposal.get.state.code)</span></p>
                                 <p>Current state on Redis: @Messages(currentState.code)</p>
 
                                 @if(currentState.code=="accepted"){
-                                    <div class="alert alert-success">
-                                    <i class="icon-info-sign"></i>
-                                        Update @slot.id slot on AngularJS App and add/remove this talk from the Agenda - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                                    <div class="alert">
+                                    <a href="@routes.Backoffice.fixToAccepted(slot.id, slot.proposal.get.id, slot.proposal.get.talkType.id)" class="btn btn-small btn-success"><i class="icon-info-sign"></i> Set the status to 'accepted'</a>
                                     <br>
                                     @slot.proposal.get.allSpeakers.filter(s=>Speaker.needsToAccept(s.uuid)).map{s:Speaker=>
                                         @s.cleanName needs to accept "Terms&Conditions" : <a href="@routes.CFPAdmin.newOrEditSpeaker(Some(s.uuid))">Edit speaker and accept T&C</a>
