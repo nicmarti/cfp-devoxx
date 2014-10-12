@@ -1,10 +1,10 @@
-@(allProposalTypes:List[ProposalType], allTracks:List[Track], proposals:List[Option[String]])
+@(allProposalTypes:List[ProposalType], allTracks:List[Track], slots:List[Slot])
 @import org.apache.commons.lang3.StringUtils
 @import org.apache.commons.lang3.StringEscapeUtils
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Speakers</title>
+    <title>SQL Proposals</title>
 <style>
 body{
     font-family: monospace, monospace;
@@ -23,10 +23,11 @@ body{
 </head>
 <body>
 
-<span class="sql">DELETE FROM `eventtype` WHERE id>='100';<br>
-@allProposalTypes.zipWithIndex.map{case(pt:ProposalType,idx:Int)=>
+
+@allProposalTypes.map{pt:ProposalType=>
+<span class="sql">DELETE FROM `eventtype` WHERE `id`='@(pt.id.hashCode)';<br>
 <span class="sql">insert into</span> `eventtype` <span class="sql">values</span>(
-<span class="d">'@(idx+100)'</span>,
+<span class="d">'@(pt.id.hashCode)'</span>,
 <span class="d">'2014-10-11 12:00:00'</span>,
 <span class="d">'2014-10-11 12:00:00'</span>,
 <span class="d">'@pt.id'</span>,
@@ -39,8 +40,52 @@ body{
 );<br>
 }
 <br>
-@allTracks
+@allTracks.zipWithIndex.map{case(t:Track,idx:Int)=>
+<span class="sql">DELETE FROM `eventtrack` WHERE `id`='@(t.hashCode())';<br>
+<span class="sql">insert into</span> `eventtrack` <span class="sql">values</span>(
+<span class="d">'@(t.id.hashCode)'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'@t.id'</span>,
+<span class="d">'1'</span>,
+<span class="d">'@StringEscapeUtils.escapeEcmaScript(Messages(t.id))'</span>,
+<span class="d">'@StringEscapeUtils.escapeEcmaScript(Messages(t.label))'</span>,
+<span class="d">b'0'</span>
+);<br>
+}
 <br>
 
+<hr>
+<h3>@slots.filter(_.proposal.isDefined).filterNot(_.proposal.get.state.code==ProposalState.DECLINED.code).size Slots with a Proposal</h3>
+<h3>Total by state = <font color=orange>@slots.filter(_.proposal.isDefined).groupBy(_.proposal.get.state).map(f=>(f._1.code, f._2.size))</font></h3>
+    @slots.filter(_.proposal.isDefined).filterNot(_.proposal.get.state.code==ProposalState.DECLINED.code).map { slot:Slot =>
+@defining(slot.proposal.get){proposal=>
+<span class="sql">DELETE FROM `presentation` where `id`='@slot.id.hashCode' LIMIT 1;</span><br>
+<span class="sql">insert into</span> `presentation` <span class="sql">values</span>(
+<span class="d">'@slot.id.hashCode'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'@proposal.id'</span>,
+<span class="d">'1'</span>,
+<span class="d">'@Messages(proposal.audienceLevel)'</span>,
+<span class="d">null</span>,
+<span class="d">'@proposal.state.code.toUpperCase'</span>,
+<span class="d">'@StringEscapeUtils.escapeEcmaScript(proposal.summary)'</span>,
+<span class="d">'@StringEscapeUtils.escapeEcmaScript(proposal.title)'</span>,
+<span class="d">'@proposal.mainSpeaker.hashCode'</span>,
+'12',
+<span class="d">b'1'</span>,
+<span class="d">'@proposal.talkType.id.hashCode'</span>,
+<span class="d">'@proposal.track.id.hashCode'</span>,
+<span class="d">null</span>,
+<span class="d">null</span>,
+<span class="d">null</span>,
+<span class="d">null</span>,
+<span class="d">null</span>,
+<span class="d">null</span>,
+<span class="d">null</span>
+);<br>
+}
+}
 </body>
 </html>

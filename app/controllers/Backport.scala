@@ -49,10 +49,10 @@ object Backport extends SecureCFPController {
       val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL
       val allTracks =  ConferenceDescriptor.ConferenceTracks.ALL
 
-      val scheduledProposals = allProposalTypes.map(pt=>ScheduleConfiguration.getPublishedSchedule(pt.id))
+      val publishedConf = ScheduleConfiguration.getPublishedScheduleSlots
 
 
-      Ok(views.html.Backport.sqlForProposals(allProposalTypes, allTracks, scheduledProposals))
+      Ok(views.html.Backport.sqlForProposals(allProposalTypes, allTracks, publishedConf))
   }
 
 }

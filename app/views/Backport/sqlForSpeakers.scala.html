@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Speakers</title>
+    <title>SQL Speakers</title>
 <style>
 body{
     font-family: monospace, monospace;
@@ -25,15 +25,17 @@ body{
 
 <h2>@speakers.size speakers with Terms&Conditions accepted</h2>
 <p>Copy and paste to Navicat for MYSQL</p>
-<p>- User id > 10 000</p>
+<p>- User id has to be the hashCode of the new CFP. This is the only way to keep mapping and relationship for 'presentation'</p>
 <p>- The password is not valid</p>
 <p>- The UUID is a substring of the Redis one, 31 char</p>
 <p>- All fields are escaped</p>
+<p>- Email is hashed, else you get duplicate emails from the current existing list of users</p>
 <hr>
-<span class="sql">DELETE FROM `user` where `id` >= '10000' LIMIT @speakers.size ;</span><br>
+
 @speakers.zipWithIndex.map{case(s:Speaker,idx:Int)=>
+<span class="sql">DELETE FROM `user` where `id` = '@s.uuid.hashCode' LIMIT 1 ;</span><br>
 <span class="sql">insert into</span> `user` <span class="sql">values</span>(
-<span class="d">'@(idx+10000)'</span>,
+<span class="d">'@s.uuid.hashCode'</span>,
 <span class="d">'2014-10-11 12:00:00'</span>,
 <span class="d">'2014-10-11 12:00:00'</span>,
 <span class="d">'@StringUtils.substring(s.uuid,0,31)'</span>,
@@ -44,7 +46,8 @@ body{
 <span class="d">'@s.company'</span>,
 <span class="d">'BELGIUM'</span>,
 <span class="d">b'0'</span>,
-<span class="d">'@s.email',b'1'</span>,
+<span class="d">'@s.email.hashCode()'</span>,
+<span class="d">b'1'</span>,
 <span class="d">'@StringEscapeUtils.escapeEcmaScript(s.firstName.getOrElse(""))'</span>,
 <span class="d">'@StringEscapeUtils.escapeEcmaScript(s.name.getOrElse(""))'</span>,
 <span class="d">'@s.uuid'</span>,
