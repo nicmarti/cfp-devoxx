@@ -23,7 +23,6 @@
 
 package controllers
 
-import controllers.CallForPaper._
 import models._
 
 /**
@@ -34,25 +33,21 @@ import models._
  * @author created by N.Martignole, Innoteria, on 11/10/2014.
  */
 object Backport extends SecureCFPController {
+
   def allAcceptedSpeakers() = SecuredAction {
     implicit request =>
-
       val speakers = Speaker.allSpeakersWithAcceptedTerms().sortBy(_.cleanName)
-
-
       Ok(views.html.Backport.sqlForSpeakers(speakers))
   }
 
   def allProposals() = SecuredAction {
     implicit request =>
-
       val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL
-      val allTracks =  ConferenceDescriptor.ConferenceTracks.ALL
-
-      val publishedConf = ScheduleConfiguration.getPublishedScheduleSlots
-
+      val allTracks = ConferenceDescriptor.ConferenceTracks.ALL
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
 
       Ok(views.html.Backport.sqlForProposals(allProposalTypes, allTracks, publishedConf))
   }
+
 
 }

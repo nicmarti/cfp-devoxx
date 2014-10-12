@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.Backport._
 import models._
 import play.api.data._
 import play.api.data.Forms._
@@ -31,7 +32,7 @@ object Backoffice extends SecureCFPController {
   // Add or remove the specified user from "cfp" security group
   def switchCFPAdmin(uuidSpeaker: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Webuser.findByUUID(uuidSpeaker).filterNot(_.uuid=="bd894205a7d579351609f8dcbde49b9ffc0fae13").map {
+      Webuser.findByUUID(uuidSpeaker).filterNot(_.uuid == "bd894205a7d579351609f8dcbde49b9ffc0fae13").map {
         webuser =>
           if (Webuser.hasAccessToCFP(uuidSpeaker)) {
             Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"removed ${webuser.cleanName} from CFP group"))
@@ -57,17 +58,17 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.CallForPaper.newProposal).withSession("uuid" -> uuidSpeaker)
   }
 
-  def allProposals(proposalId:Option[String]) = SecuredAction(IsMemberOf("admin")) {
+  def allProposals(proposalId: Option[String]) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       proposalId match {
-        case Some(id)=>
+        case Some(id) =>
           val proposal = Proposal.findById(id)
           proposal match {
-            case None=>NotFound("Proposal not found")
-            case Some(pr)=>Ok(views.html.Backoffice.allProposals(List(pr)))
+            case None => NotFound("Proposal not found")
+            case Some(pr) => Ok(views.html.Backoffice.allProposals(List(pr)))
           }
-        case None=>
+        case None =>
           val proposals = Proposal.allProposals().sortBy(_.state.code)
           Ok(views.html.Backoffice.allProposals(proposals))
       }
@@ -79,7 +80,7 @@ object Backoffice extends SecureCFPController {
   // only if there isn't any admin in the application
   def bootstrapAdminUser(uuid: String) = Action {
     implicit request =>
-      if(Webuser.noBackofficeAdmin()) {
+      if (Webuser.noBackofficeAdmin()) {
         Webuser.addToBackofficeAdmin(uuid)
         Webuser.addToCFPAdmin(uuid)
         Redirect(routes.Application.index())
@@ -147,8 +148,8 @@ object Backoffice extends SecureCFPController {
 
   def doResetAndConfigureElasticSearch() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-    ElasticSearchActor.masterActor ! DoCreateConfigureIndex
-    Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Deleted and now creating [speakers] and [proposals] indexes. Please force an indexer in one or two minuts.")
+      ElasticSearchActor.masterActor ! DoCreateConfigureIndex
+      Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Deleted and now creating [speakers] and [proposals] indexes. Please force an indexer in one or two minuts.")
   }
 
   // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
@@ -199,25 +200,49 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def sanityCheckSchedule()=SecuredAction(IsMemberOf("admin")) {
+  def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.getPublishedScheduleSlots
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots
 
-      val declined = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state==ProposalState.DECLINED)
+      val declined = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.DECLINED)
 
-      val approved = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state==ProposalState.APPROVED)
+      val approved = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.APPROVED)
 
-      val accepted = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state==ProposalState.ACCEPTED)
+      val accepted = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
       // Speaker declined talk AFTER it has been published
-      val acceptedThenChangedToOtherState = accepted.filter{
-        slot:Slot=>
+      val acceptedThenChangedToOtherState = accepted.filter {
+        slot: Slot =>
           val proposal = slot.proposal.get
-          Proposal.findProposalState(proposal.id)!=Some(ProposalState.ACCEPTED)
+          Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined,approved,acceptedThenChangedToOtherState))
+      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState))
 
+  }
+
+  def fixToAccepted(slotId: String, proposalId: String, talkType: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val maybeUpdated=for(
+        scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType);
+        scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
+        slot <- scheduleConf.slots.find(_.id==slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id==proposalId)
+      ) yield {
+        val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
+        val updatedSlot = slot.copy(proposal = Some(updatedProposal))
+        val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id==slotId)
+        newListOfSlots
+      }
+
+      maybeUpdated.map{
+        newListOfSlots=>
+          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
+          ScheduleConfiguration.publishConf(newID, talkType)
+
+          Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success"->s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
+      }.getOrElse{
+        NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")
+      }
   }
 
 }

@@ -58,7 +58,7 @@ object ScheduleConfiguration {
   implicit val scheduleConfFormat = Json.format[ScheduleConfiguration]
   implicit val scheduleSavedFormat = Json.format[ScheduleSaved]
 
-  def persist(confType: String, slots: List[Slot], createdBy: Webuser) = Redis.pool.withClient {
+  def persist(confType: String, slots: List[Slot], createdBy: Webuser):String = Redis.pool.withClient {
     implicit client =>
       val id = confType + "-" + (RandomStringUtils.randomAlphabetic(3) + "-" + RandomStringUtils.randomNumeric(2)).toLowerCase
       val key = ScheduleSaved(id, confType, createdBy.firstName, slots.hashCode())
@@ -73,6 +73,7 @@ object ScheduleConfiguration {
       val config = ScheduleConfiguration(confType, slots, timeSlots)
       val json = Json.toJson(config).toString()
       client.hset("ScheduleConfigurationByID", id, json)
+      id
   }
 
   def delete(id: String) = Redis.pool.withClient {
@@ -112,19 +113,6 @@ object ScheduleConfiguration {
   def getPublishedSchedule(confType: String): Option[String] = Redis.pool.withClient {
     implicit client =>
       client.hget("Published:Schedule", confType)
-  }
-
-  def getPublishedScheduleSlots: List[Slot] = {
-    def extractSlot(allSlots: List[Slot], day: String) = {
-      val configured = loadSlots().filter(_.day == day)
-      val configuredIDs = configured.map(_.id)
-      val filtered = allSlots.filterNot(s => configuredIDs.contains(s.id))
-      configured ++ filtered
-    }
-
-    val listOfSlots = extractSlot(ConferenceDescriptor.ConferenceSlots.monday, "monday").++(extractSlot(ConferenceDescriptor.ConferenceSlots.tuesday, "tuesday")).++(extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")).++(extractSlot(ConferenceDescriptor.ConferenceSlots.thursday, "thursday")).++(extractSlot(ConferenceDescriptor.ConferenceSlots.friday, "friday"))
-
-    listOfSlots.sortBy(_.from.getMillis)
   }
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
@@ -183,6 +171,13 @@ object ScheduleConfiguration {
     ) yield configuration
 
     allConfs
+  }
+
+  def loadAllPublishedSlots():List[Slot]={
+    loadAllConfigurations().map{
+      sc=>
+        sc.slots
+    }.flatten.toList
   }
 
 
