@@ -333,7 +333,7 @@ object CallForPaper extends SecureCFPController {
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          Ok(views.html.CallForPaper.showQuestionsForProposal(proposal, Comment.allQuestions(proposal.id), speakerMsg))
+          Ok(views.html.CallForPaper.showQuestionsForProposal(proposal, Question.allQuestionsForProposal(proposal.id), speakerMsg))
         }
         case None => {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
@@ -349,10 +349,10 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) => {
           speakerMsg.bindFromRequest.fold(
             hasErrors => {
-              BadRequest(views.html.CallForPaper.showQuestionsForProposal(proposal, Comment.allQuestions(proposal.id), hasErrors))
+              BadRequest(views.html.CallForPaper.showQuestionsForProposal(proposal, Question.allQuestionsForProposal(proposal.id), hasErrors))
             },
             validMsg => {
-              Comment.saveQuestion(proposal.id, request.webuser.email, request.webuser.cleanName, validMsg)
+              Question.saveQuestion(proposal.id, request.webuser.email, request.webuser.cleanName, validMsg)
               Redirect(routes.CallForPaper.showQuestionsForProposal(proposalId)).flashing("success" -> "Message was sent")
             }
           )
@@ -375,7 +375,7 @@ object CallForPaper extends SecureCFPController {
           val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
           maybeProposal match {
             case Some(proposal) => {
-              Comment.deleteQuestion(proposalId, questionId)
+              Question.deleteQuestion(proposalId, questionId)
               Ok("Deleted")
             }
             case None => {

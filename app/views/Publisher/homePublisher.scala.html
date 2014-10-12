@@ -1,10 +1,18 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxBE2014("Schedule"){
+@views.html.Publisher.devoxxBE2014("Schedule",Some("Devoxx 2014 agenda")){
 
 <div class="large-12 columns">
 <h2>Devoxx 2014 Schedule</h2>
 </div>
+
+    <div class="large-3 columns">
+        <div class="input-wrap">
+            <form name="search" action="/2014/search" method="GET">
+            <label for="search">Find a talk or a speaker : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
+        </form>
+        </div>
+    </div>
 
     <table class="mainSchedule">
         <thead>
@@ -19,7 +27,7 @@
         </thead>
         <tbody>
             <tr>
-                <td rowspan="8"  class="scheduleHeader scheduleRight">What's on</td>
+                <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "University Sessions")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
                 <td class="scheduleRow">&nbsp;</td>
@@ -62,7 +70,7 @@
                 </td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
-                <!-- ******************************************************************* //-->
+            <!-- ******************************************************************* //-->
             <tr>
                  <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
@@ -71,6 +79,18 @@
                 </td>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("quick", "thursday", "Quickies")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <!-- ******************************************************************* //-->
+            <tr>
+                 <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">
+                <a href="http://www.devoxx.be/ignite-2014/">Ignite sessions</a>
+                </td>
+                <td class="scheduleRow">
+                 <a href="http://www.devoxx.be/ignite-2014/">Ignite sessions</a>
                 </td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
@@ -122,6 +142,13 @@
     <h3>Conference</h3>
 <p>Conference talks (one hour technical presentations) start on Wednesday till Friday.</p>
 <p>Conference attendees can also attend Quickies, BOFs and hands-on Lab sessions from Wednesday til Friday.</p>
+</div>
+<div class="large-6 columns">
+    <h3>Ignite</h3>
+<p>Ignite is the name for a particular type of event that is held throughout the world—organized by volunteers—at which
+    participants speak about their ideas and personal or professional passions according to a specific format.
+    The presentations are meant to “ignite” the audience on a subject, whereby awareness,
+    thought, and action are generated on the subjects presented.</p>
 </div>
 <div class="large-6 columns">
     <h3>Quickies</h3>
