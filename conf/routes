@@ -90,7 +90,7 @@ POST          /cfpadmin/saveNewSpeaker                           controllers.CFP
 
 GET           /admin                                             controllers.Backoffice.homeBackoffice()
 GET           /admin/webusers/switch                             controllers.Backoffice.switchCFPAdmin(uuid:String)
-GET           /admin/proposals/all                               controllers.Backoffice.allProposals()
+GET           /admin/proposals/all                               controllers.Backoffice.allProposals(proposalId:Option[String] ?=None)
 GET           /admin/proposals/changeState/:proposalId           controllers.Backoffice.changeProposalState(proposalId:String,state:String)
 
 POST          /admin/deleteSpeaker/:speakerUUIDToDelete          controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
@@ -107,6 +107,7 @@ GET           /admin/authenticateAndCreate/:uuid                 controllers.Bac
 
 GET           /admin/elastic/reset                               controllers.Backoffice.doResetAndConfigureElasticSearch()
 GET           /admin/elastic/index                               controllers.Backoffice.doIndexElasticSearch()
+GET           /admin/sanitycheck                                 controllers.Backoffice.sanityCheckSchedule()
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                          controllers.ApproveOrRefuse.doApprove(proposalId:String)

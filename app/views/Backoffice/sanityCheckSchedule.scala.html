@@ -1,0 +1,132 @@
+@(declined:List[Slot], approved:List[Slot], acceptedThenChangedToOtherState:List[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin sanity check") {
+
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @Html(flash.get("success").get)
+        </div>
+    }
+
+    <div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3><i class="icon-medkit"></i> Sanity check</h3>
+            <p>This screen loads all Scheduled configuration. For each configuration, it checks the current proposal state.
+               If a speaker declines a talk after it has been published, you will have to update the Schedule configuration with the AngularJS app.
+                We have to do so, since we can schedule "approved" talks and not only accepted ones.
+            </p>
+        </div>
+
+        <div class="panel-body">
+            <h3>List of talks with status "Approved"</h3>
+            @if(approved.nonEmpty) {
+                <p>You need to check and to confirm "Accepted" talks, remove "Declined" talks since the agenda has been published.
+                </p>
+                <p><strong>@approved.size</strong> slots</p>
+
+                @approved.map{slot=>
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            <h4>@slot.name @slot.id</h4>
+                            <p>@slot.proposal.get.id - @slot.proposal.get.title</p>
+                            <p>Presented by @slot.proposal.get.allSpeakers.map(_.cleanName).mkString(", ")</p>
+                        </div>
+
+                        <div class="panel-body">
+                            @defining(Proposal.findProposalState(slot.proposal.get.id).get){currentState:ProposalState=>
+                                <p>Proposal state on the published Agenda: @Messages(slot.proposal.get.state.code)</p>
+                                <p>Current state on Redis: @Messages(currentState.code)</p>
+
+                                @if(currentState.code=="accepted"){
+                                    <div class="alert alert-success">
+                                    <i class="icon-info-sign"></i>
+                                        Update @slot.id slot on AngularJS App and add/remove this talk from the Agenda - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                                    <br>
+                                    @slot.proposal.get.allSpeakers.filter(s=>Speaker.needsToAccept(s.uuid)).map{s:Speaker=>
+                                        @s.cleanName needs to accept "Terms&Conditions" : <a href="@routes.CFPAdmin.newOrEditSpeaker(Some(s.uuid))">Edit speaker and accept T&C</a>
+                                    }
+                                    </div>
+                                }
+
+                                @if(currentState.code=="declined"){
+                                    <div class="alert alert-danger">
+                                        <i class="icon-warning-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+
+            }else{
+                <p>Ok! There is no talk with status "APPROVED" currently scheduled.</p>
+            }
+
+            <h3>List of talks with status "Declined"</h3>
+            @if(declined.nonEmpty){
+                <p>You scheduled a talk with status declined</p>
+
+                <p><strong>@declined.size</strong> slot(s)</p>
+
+                @declined.map{slot=>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h4 class="panel-header"> @slot.name @slot.id</h4>
+                            <p><a href="@routes.CFPAdmin.openForReview(slot.proposal.get.id)">@slot.proposal.get.id - @slot.proposal.get.title</a></p>
+                            <p>Presented by @slot.proposal.get.allSpeakers.map(_.cleanName).mkString(", ")</p>
+                        </div>
+                        <div class="panel-body">
+                            <i class="icon-info-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                        </div>
+                    </div>
+                }
+            }else{
+             <p>Ok! No talk with status declined on the agenda.</p>
+            }
+
+            <h3>List of talks with status "Declined" after agenda publication</h3>
+            @if(acceptedThenChangedToOtherState.nonEmpty){
+                <p>The speaker declined to present a talk, after the Agenda's publication.</p>
+
+                <p><strong>@acceptedThenChangedToOtherState.size</strong> slot(s)</p>
+
+                @acceptedThenChangedToOtherState.map{slot=>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                    <h4 class="panel-header"> @slot.name @slot.id</h4>
+                    <p><a href="@routes.CFPAdmin.openForReview(slot.proposal.get.id)">@slot.proposal.get.id - @slot.proposal.get.title</a></p>
+                    <p>Presented by @slot.proposal.get.allSpeakers.map(_.cleanName).mkString(", ")</p>
+                            </div>
+                    <div class="panel-body">
+                        <div class="alert alert-info">
+                            <i class="icon-info-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                        </div>
+                    </div>
+                }
+            }else{
+
+                <div class="alert alert-success">
+                 <p>Ok ! perfect, no invalid talks.</p>
+                </div>
+
+            }
+
+        </div>
+    </div>
+    </div>
+</div>
+
+}
