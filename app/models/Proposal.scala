@@ -1,8 +1,8 @@
 package models
 
 import org.joda.time.Instant
-import play.api.libs.json.Json
-import library.{Dress, Redis}
+import play.api.libs.json.{JsNull, Json}
+import library.{ZapJson, Dress, Redis}
 import org.apache.commons.lang3.{StringUtils, RandomStringUtils}
 
 import play.api.data._
@@ -131,8 +131,8 @@ case class Proposal(id: String,
                     state: ProposalState,
                     sponsorTalk: Boolean = false,
                     track: Track,
-                    demoLevel: String,
-                    userGroup:Boolean,
+                    demoLevel: Option[String],
+                    userGroup:Option[Boolean],
                     wishlisted:Option[Boolean]=None) {
 
   def escapedTitle:String=title match{
@@ -235,8 +235,8 @@ object Proposal {
     ,     "privateMessage" -> nonEmptyText(maxLength = 3500)
     ,     "sponsorTalk" -> boolean
     ,     "track" -> nonEmptyText
-    ,     "demoLevel" -> nonEmptyText
-    ,     "userGroup" -> boolean
+    ,     "demoLevel" -> optional(text)
+    ,     "userGroup" -> optional(boolean)
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = {
@@ -254,8 +254,8 @@ object Proposal {
                           privateMessage: String,
                           sponsorTalk: Boolean,
                           track: String,
-                          demoLevel:String,
-                          userGroup:Boolean ): Proposal = {
+                          demoLevel:Option[String],
+                          userGroup:Option[Boolean] ): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
       Messages("longYearlyName"),
@@ -285,7 +285,7 @@ object Proposal {
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
-    Boolean, String, String, Boolean)] = {
+    Boolean, String, Option[String], Option[Boolean])] = {
     Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, p.privateMessage,
       p.sponsorTalk, p.track.id, p.demoLevel, p.userGroup))
   }
@@ -536,12 +536,27 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
-
+      val check=Json.parse(client.hget("Proposals",allProposalIds.head).get).validate[Proposal]
+      check.fold(invalidJson=> {
+        play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
+        play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
+        JsNull
+        }
+        , identity)
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
       }
+  }
 
+  def allApproved(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.APPROVED.code)
+
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.APPROVED))
+      }
   }
 
   def allProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {

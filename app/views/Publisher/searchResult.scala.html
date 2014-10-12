@@ -1,0 +1,40 @@
+@(total:Int, results:List[Proposal], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@views.html.Publisher.devoxxBE2014("Search result"){
+  <div class="large-12 columns">
+<h2 class="entry-title">
+@if(total==0){
+    <strong>No result</strong>
+}
+@if(total==1){
+    <strong>One result</strong>
+}
+@if(total>1){
+    <strong>@total results</strong>
+}
+</h2>
+<small><a href="@routes.Publisher.homePublisher()">Home</a></small>
+  </div>
+    <div class="large-3 columns">
+        <div class="input-wrap">
+            <form name="search" action="/2014/search" method="GET">
+            <label for="search">Find a talk or a speaker : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
+        </form>
+        </div>
+    </div>
+<div class="large-12 columns">
+<div class="panel">
+<dl>
+@results.zipWithIndex.map{ case(proposal:Proposal,idx:Int)=>
+   <dt>@proposal.title - <em>@Messages(proposal.talkType.id)/@Messages(proposal.track.label)</em></dt>
+   <dd>@proposal.mainSpeaker @proposal.secondarySpeaker.map(s=>", "+s) @proposal.otherSpeakers.map(o=> ", "+o)
+   <a href="@routes.Publisher.showDetailsForProposal(proposal.id,proposal.title)">See details</a>
+   </dd>
+}
+</dl>
+</div>
+@tags.renderPaginator(req, p.getOrElse(1), total)
+
+</div>
+
+}

@@ -23,13 +23,15 @@
 
 package controllers
 
+import library.search.ElasticSearch
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
 import akka.util.Crypt
-import library.{SendQuestionToSpeaker, SendMessageToCommitte, ZapActor, LogURL}
+import library.{SendQuestionToSpeaker, ZapActor, LogURL}
 import play.api.cache.Cache
 
 
@@ -197,7 +199,7 @@ object Publisher extends Controller {
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
 
-          val questions = Comment.allQuestions(proposal.id)
+          val questions = Question.allQuestionsForProposal(proposal.id)
 
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
@@ -212,13 +214,13 @@ object Publisher extends Controller {
         case Some(proposal) =>
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
-          val questions = Comment.allQuestions(proposal.id)
+          val questions = Question.allQuestionsForProposal(proposal.id)
 
           speakerMsg.bindFromRequest().fold(hasErrors =>
             BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)),
             {
               case (msg, fullname, email1, _) =>
-                Comment.saveQuestion(proposal.id, email1, fullname, msg)
+                Question.saveQuestion(proposal.id, email1, fullname, msg)
                 ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
                 Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
             }
@@ -226,6 +228,51 @@ object Publisher extends Controller {
 
       }
   }
+
+  def allQuestions() = Action{
+    implicit request=>
+
+      val questions=Question.allQuestionsGroupedByProposal()
+      val result = questions.hashCode()
+      val etag = Crypt.md5(result.toString()).toString
+      val maybeETag = request.headers.get(IF_NONE_MATCH)
+
+      maybeETag match {
+        case Some(oldEtag) if oldEtag == etag => NotModified
+        case other => Ok(views.html.Publisher.allQuestions(questions)).withHeaders(ETAG -> etag)
+      }
+  }
+
+    def search(q: Option[String] = None, p: Option[Int] = None)= Action.async {
+    implicit request=>
+
+      import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+     ElasticSearch.doPublisherSearch(q, p).map {
+        case r if r.isSuccess => {
+          val json = Json.parse(r.get)
+          val total = (json \ "hits" \ "total").as[Int]
+          val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
+
+          val results = hitContents.map {
+            jsvalue =>
+              val index = (jsvalue \ "_index").as[String]
+              val source = (jsvalue \ "_source")
+              val id = (source \ "id").as[String]
+              val proposal = source.as[Proposal]
+              proposal
+          }
+
+          Ok(views.html.Publisher.searchResult(total, results, q, p)).as("text/html")
+        }
+        case r if r.isFailure => {
+          InternalServerError(r.get)
+        }
+      }
+
+  }
+
+
 
 
 }

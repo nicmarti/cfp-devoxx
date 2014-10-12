@@ -1,217 +1,218 @@
 # Home page
-GET           /favicon.ico                                         controllers.Assets.at(path="/public/images", file="favicon.ico")
-GET           /                                                    controllers.Application.index
-GET           /home                                                controllers.Application.home
+GET           /favicon.ico                                       controllers.Assets.at(path="/public/images", file="favicon.ico")
+GET           /                                                  controllers.Application.index
+GET           /home                                              controllers.Application.home
 
-GET           /logout                                              controllers.Authentication.logout
-POST          /login                                               controllers.Authentication.login
+GET           /logout                                            controllers.Authentication.logout
+POST          /login                                             controllers.Authentication.login
 
-GET           /signup                                              controllers.Authentication.prepareSignup
-GET           /signup/github                                       controllers.Authentication.createFromGithub
-GET           /login/github                                        controllers.Authentication.githubLogin
-POST          /github/callback                                     controllers.Authentication.callbackGithub
-GET           /github/callback                                     controllers.Authentication.callbackGithub
+GET           /signup                                            controllers.Authentication.prepareSignup
+GET           /signup/github                                     controllers.Authentication.createFromGithub
+GET           /login/github                                      controllers.Authentication.githubLogin
+POST          /github/callback                                   controllers.Authentication.callbackGithub
+GET           /github/callback                                   controllers.Authentication.callbackGithub
 
-GET           /access_token                                        controllers.Authentication.showAccessToken
+GET           /access_token                                      controllers.Authentication.showAccessToken
 
-POST          /newspeaker                                          controllers.Authentication.saveNewSpeaker
-GET           /newspeaker/validateMail                             controllers.Authentication.validateYourEmail(t:String,a:String)
-POST          /newspeaker/validImported                            controllers.Authentication.validateImportedSpeaker
+POST          /newspeaker                                        controllers.Authentication.saveNewSpeaker
+GET           /newspeaker/validateMail                           controllers.Authentication.validateYourEmail(t:String,a:String)
+POST          /newspeaker/validImported                          controllers.Authentication.validateImportedSpeaker
 
-GET           /cfp/home                                            controllers.CallForPaper.homeForSpeaker
-GET           /cfp/profile                                         controllers.CallForPaper.editProfile
-POST          /cfp/profile                                         controllers.CallForPaper.saveProfile
+GET           /cfp/home                                          controllers.CallForPaper.homeForSpeaker
+GET           /cfp/profile                                       controllers.CallForPaper.editProfile
+POST          /cfp/profile                                       controllers.CallForPaper.saveProfile
 
 # proposal
-GET           /cfp/proposal/new                                    controllers.CallForPaper.newProposal()
-POST          /cfp/proposal/preview                                controllers.CallForPaper.previewProposal()
-POST          /cfp/proposal/save                                   controllers.CallForPaper.saveProposal()
+GET           /cfp/proposal/new                                  controllers.CallForPaper.newProposal()
+POST          /cfp/proposal/preview                              controllers.CallForPaper.previewProposal()
+POST          /cfp/proposal/save                                 controllers.CallForPaper.saveProposal()
 
-GET           /cfp/proposal/edit/:proposalId                       controllers.CallForPaper.editProposal(proposalId:String)
-GET           /cfp/proposal/edit/:proposalId/speakers              controllers.CallForPaper.editOtherSpeakers(proposalId:String)
-POST          /cfp/proposal/save/:proposalId/speakers              controllers.CallForPaper.saveOtherSpeakers(proposalId:String)
-GET           /cfp/proposal/delete/:proposalId                     controllers.CallForPaper.deleteProposal(proposalId:String)
-GET           /cfp/proposal/undelete/:proposalId                   controllers.CallForPaper.undeleteProposal(proposalId:String)
-GET           /cfp/proposal/submit/:proposalId                     controllers.CallForPaper.submitProposal(proposalId:String)
-GET           /cfp/comment/:proposalId                             controllers.CallForPaper.showCommentForProposal(proposalId:String)
-GET           /cfp/questions/:proposalId                           controllers.CallForPaper.showQuestionsForProposal(proposalId:String)
-POST          /cfp/questions/:proposalId                           controllers.CallForPaper.replyToQuestion(proposalId:String)
-POST          /cfp/deleteQuestions                                 controllers.CallForPaper.deleteOneQuestion()
-POST          /cfp/comment/:proposalId                             controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
+GET           /cfp/proposal/edit/:proposalId                     controllers.CallForPaper.editProposal(proposalId:String)
+GET           /cfp/proposal/edit/:proposalId/speakers            controllers.CallForPaper.editOtherSpeakers(proposalId:String)
+POST          /cfp/proposal/save/:proposalId/speakers            controllers.CallForPaper.saveOtherSpeakers(proposalId:String)
+GET           /cfp/proposal/delete/:proposalId                   controllers.CallForPaper.deleteProposal(proposalId:String)
+GET           /cfp/proposal/undelete/:proposalId                 controllers.CallForPaper.undeleteProposal(proposalId:String)
+GET           /cfp/proposal/submit/:proposalId                   controllers.CallForPaper.submitProposal(proposalId:String)
+GET           /cfp/comment/:proposalId                           controllers.CallForPaper.showCommentForProposal(proposalId:String)
+GET           /cfp/questions/:proposalId                         controllers.CallForPaper.showQuestionsForProposal(proposalId:String)
+POST          /cfp/questions/:proposalId                         controllers.CallForPaper.replyToQuestion(proposalId:String)
+POST          /cfp/deleteQuestions                               controllers.CallForPaper.deleteOneQuestion()
+POST          /cfp/comment/:proposalId                           controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
 
 # Password
-GET           /forget                                              controllers.Authentication.forgetPassword
-POST          /forget/validate                                     controllers.Authentication.doForgetPassword()
-GET           /resetpassword                                       controllers.Authentication.resetPassword(t:String, a:String)
+GET           /forget                                            controllers.Authentication.forgetPassword
+POST          /forget/validate                                   controllers.Authentication.doForgetPassword()
+GET           /resetpassword                                     controllers.Authentication.resetPassword(t:String, a:String)
 
 # OAuth2 google
-GET           /signup/google                                       controllers.Authentication.createFromGoogle
-GET           /login/google                                        controllers.Authentication.googleLogin
-GET           /googleoauth2callback                                controllers.Authentication.callbackGoogle
-POST          /googleoauth2callback                                controllers.Authentication.callbackGoogle
+GET           /signup/google                                     controllers.Authentication.createFromGoogle
+GET           /login/google                                      controllers.Authentication.googleLogin
+GET           /googleoauth2callback                              controllers.Authentication.callbackGoogle
+POST          /googleoauth2callback                              controllers.Authentication.callbackGoogle
 
-GET           /bug                                                 controllers.Application.bugReport
-POST          /bug/new                                             controllers.Application.submitIssue()
+GET           /bug                                               controllers.Application.bugReport
+POST          /bug/new                                           controllers.Application.submitIssue()
 
 # CFP Admin
-GET           /cfpadmin                                            controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
-GET           /cfpadmin/proposal/:proposalId                       controllers.CFPAdmin.openForReview(proposalId:String)
-POST          /cfpadmin/proposal/:proposalId/msgToSpeaker          controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
-POST          /cfpadmin/proposal/:proposalId/postInternal          controllers.CFPAdmin.postInternalMessage(proposalId:String)
-GET           /cfpadmin/proposal/:proposalId/vote                  controllers.CFPAdmin.voteForProposal(proposalId:String)
-GET           /cfpadmin/proposal/:proposalId/clearVote             controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
-GET           /cfpadmin/proposal/:proposalId/score                 controllers.CFPAdmin.showVotesForProposal(proposalId:String)
-GET           /cfpadmin/leaderboard                                controllers.CFPAdmin.leaderBoard
-GET           /cfpadmin/leaderboard/reviewerStats                  controllers.CFPAdmin.allReviewersAndStats
-GET           /cfpadmin/leaderboard/compute                        controllers.CFPAdmin.doComputeLeaderBoard
-GET           /cfpadmin/myvotes                                    controllers.CFPAdmin.allMyVotes
-GET           /cfpadmin/advancedsearch                             controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
-GET           /cfpadmin/allvotes/:confType                         controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
-GET           /cfpadmin/recompute/allvotes                         controllers.CFPAdmin.doComputeVotesTotal()
-GET           /cfpadmin/allSponsorTalks                            controllers.CFPAdmin.allSponsorTalks
-GET           /cfpadmin/speaker/:uuidSpeaker                       controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
-GET           /cfpadmin/sponsorTalk/remove/:proposalId             controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
-GET           /cfpadmin/proposals/byType/:confType                 controllers.CFPAdmin.allProposalsByType(confType:String)
-GET           /cfpadmin/proposals/byTrack/:track                   controllers.CFPAdmin.allProposalsByTrack(track:String)
-GET           /cfpadmin/compareReviewer                            controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
-GET           /cfpadmin/allWebusers                                controllers.CFPAdmin.allWebusers()
-GET           /cfpadmin/allSpeakers                                controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
-GET           /cfpadmin/allInvitedSpeakers                         controllers.InviteController.allInvitations()
-GET           /cfpadmin/allCFPWebusers                             controllers.CFPAdmin.allCFPWebusers()
-POST          /cfpadmin/cfpWebusers/trackLeaders                   controllers.CFPAdmin.updateTrackLeaders()
-GET           /cfpadmin/proposals/withNoVotes                      controllers.CFPAdmin.showProposalsWithNoVotes()
+GET           /cfpadmin                                          controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
+GET           /cfpadmin/proposal/:proposalId                     controllers.CFPAdmin.openForReview(proposalId:String)
+POST          /cfpadmin/proposal/:proposalId/msgToSpeaker        controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
+POST          /cfpadmin/proposal/:proposalId/postInternal        controllers.CFPAdmin.postInternalMessage(proposalId:String)
+GET           /cfpadmin/proposal/:proposalId/vote                controllers.CFPAdmin.voteForProposal(proposalId:String)
+GET           /cfpadmin/proposal/:proposalId/clearVote           controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
+GET           /cfpadmin/proposal/:proposalId/score               controllers.CFPAdmin.showVotesForProposal(proposalId:String)
+GET           /cfpadmin/leaderboard                              controllers.CFPAdmin.leaderBoard
+GET           /cfpadmin/leaderboard/reviewerStats                controllers.CFPAdmin.allReviewersAndStats
+GET           /cfpadmin/leaderboard/compute                      controllers.CFPAdmin.doComputeLeaderBoard
+GET           /cfpadmin/myvotes                                  controllers.CFPAdmin.allMyVotes
+GET           /cfpadmin/advancedsearch                           controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET           /cfpadmin/allvotes/:confType                       controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
+GET           /cfpadmin/recompute/allvotes                       controllers.CFPAdmin.doComputeVotesTotal()
+GET           /cfpadmin/allSponsorTalks                          controllers.CFPAdmin.allSponsorTalks
+GET           /cfpadmin/speaker/:uuidSpeaker                     controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
+GET           /cfpadmin/sponsorTalk/remove/:proposalId           controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
+GET           /cfpadmin/proposals/byType/:confType               controllers.CFPAdmin.allProposalsByType(confType:String)
+GET           /cfpadmin/proposals/byTrack/:track                 controllers.CFPAdmin.allProposalsByTrack(track:String)
+GET           /cfpadmin/compareReviewer                          controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
+GET           /cfpadmin/allWebusers                              controllers.CFPAdmin.allWebusers()
+GET           /cfpadmin/allSpeakers                              controllers.CFPAdmin.allSpeakers(export:Boolean, rejected:Boolean, accepted:Boolean, onlyWithSpeakerPass:Boolean)
+GET           /cfpadmin/allInvitedSpeakers                       controllers.InviteController.allInvitations()
+GET           /cfpadmin/allCFPWebusers                           controllers.CFPAdmin.allCFPWebusers()
+POST          /cfpadmin/cfpWebusers/trackLeaders                 controllers.CFPAdmin.updateTrackLeaders()
+GET           /cfpadmin/proposals/withNoVotes                    controllers.CFPAdmin.showProposalsWithNoVotes()
 
 
-GET           /cfpadmin/setPreferredDay                            controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
-GET           /cfpadmin/resetPreferredDay                          controllers.CFPAdmin.resetPreferredDay(proposalId:String)
+GET           /cfpadmin/setPreferredDay                          controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
+GET           /cfpadmin/resetPreferredDay                        controllers.CFPAdmin.resetPreferredDay(proposalId:String)
 
-GET           /cfpadmin/newOrEditSpeaker                           controllers.CFPAdmin.newOrEditSpeaker(speakerUUID:Option[String])
-POST          /cfpadmin/saveNewSpeaker                             controllers.CFPAdmin.saveNewSpeaker()
+GET           /cfpadmin/newOrEditSpeaker                         controllers.CFPAdmin.newOrEditSpeaker(speakerUUID:Option[String])
+POST          /cfpadmin/saveNewSpeaker                           controllers.CFPAdmin.saveNewSpeaker()
 
-GET           /admin                                               controllers.Backoffice.homeBackoffice()
-GET           /admin/webusers/switch                               controllers.Backoffice.switchCFPAdmin(uuid:String)
-GET           /admin/proposals/all                                 controllers.Backoffice.allProposals()
-GET           /admin/proposals/changeState/:proposalId             controllers.Backoffice.changeProposalState(proposalId:String,state:String)
+GET           /admin                                             controllers.Backoffice.homeBackoffice()
+GET           /admin/webusers/switch                             controllers.Backoffice.switchCFPAdmin(uuid:String)
+GET           /admin/proposals/all                               controllers.Backoffice.allProposals()
+GET           /admin/proposals/changeState/:proposalId           controllers.Backoffice.changeProposalState(proposalId:String,state:String)
 
-POST          /admin/deleteSpeaker/:speakerUUIDToDelete            controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
-GET           /admin/cleanUpVotesIfUserWasDeleted                  controllers.Backoffice.cleanUpVotesIfUserWasDeleted
-GET           /admin/deleteAllVotes                                controllers.Backoffice.deleteVotesForPropal(proposalId:String)
-GET           /admin/submittedByDate                               controllers.Backoffice.submittedByDate()
+POST          /admin/deleteSpeaker/:speakerUUIDToDelete          controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
+GET           /admin/cleanUpVotesIfUserWasDeleted                controllers.Backoffice.cleanUpVotesIfUserWasDeleted
+GET           /admin/deleteAllVotes                              controllers.Backoffice.deleteVotesForPropal(proposalId:String)
+GET           /admin/submittedByDate                             controllers.Backoffice.submittedByDate()
 
-GET           /admin/bootstrapAdminUser                            controllers.Backoffice.bootstrapAdminUser(uuid:String)
-GET           /admin/clearCaches                                   controllers.Backoffice.clearCaches()
+GET           /admin/bootstrapAdminUser                          controllers.Backoffice.bootstrapAdminUser(uuid:String)
+GET           /admin/clearCaches                                 controllers.Backoffice.clearCaches()
 
 # Authenticate and admin as a regular user
-GET           /admin/authenticateAs/:uuid                          controllers.Backoffice.authenticateAs(uuid:String)
-GET           /admin/authenticateAndCreate/:uuid                   controllers.Backoffice.authenticateAndCreateTalk(uuid:String)
+GET           /admin/authenticateAs/:uuid                        controllers.Backoffice.authenticateAs(uuid:String)
+GET           /admin/authenticateAndCreate/:uuid                 controllers.Backoffice.authenticateAndCreateTalk(uuid:String)
 
-GET           /admin/elastic/reset                                 controllers.Backoffice.doResetAndConfigureElasticSearch()
-GET           /admin/elastic/index                                 controllers.Backoffice.doIndexElasticSearch()
+GET           /admin/elastic/reset                               controllers.Backoffice.doResetAndConfigureElasticSearch()
+GET           /admin/elastic/index                               controllers.Backoffice.doIndexElasticSearch()
 
 # ApproveOrRefuse controller
-GET           /ar/preaccept/:proposalId                            controllers.ApproveOrRefuse.doApprove(proposalId:String)
-GET           /ar/refuse/:proposalId                               controllers.ApproveOrRefuse.doRefuse(proposalId:String)
-GET           /ar/cancelPreaccept/:proposalId                      controllers.ApproveOrRefuse.cancelApprove(proposalId:String)
-GET           /ar/cancelPrerefuse/:proposalId                      controllers.ApproveOrRefuse.cancelRefuse(proposalId:String)
+GET           /ar/preaccept/:proposalId                          controllers.ApproveOrRefuse.doApprove(proposalId:String)
+GET           /ar/refuse/:proposalId                             controllers.ApproveOrRefuse.doRefuse(proposalId:String)
+GET           /ar/cancelPreaccept/:proposalId                    controllers.ApproveOrRefuse.cancelApprove(proposalId:String)
+GET           /ar/cancelPrerefuse/:proposalId                    controllers.ApproveOrRefuse.cancelRefuse(proposalId:String)
 
-GET           /ar/allApproved/:talkType                            controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
-GET           /ar/allRefused/:talkType                             controllers.ApproveOrRefuse.allRefusedByTalkType(talkType:String)
-GET           /ar/notifyApprove/:talkType                          controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
-GET           /ar/notifyRefuse/:talkType                           controllers.ApproveOrRefuse.notifyRefused(talkType:String, proposalId:String)
-GET           /ar/showAcceptTerms                                  controllers.ApproveOrRefuse.showAcceptTerms()
-GET           /ar/accept                                           controllers.ApproveOrRefuse.acceptTermsAndConditions()
-GET           /ar/acceptOrRefuseTalks                              controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
-POST          /ar/acceptOrRefuseTalks                              controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
+GET           /ar/allApproved/:talkType                          controllers.ApproveOrRefuse.allApprovedByTalkType(talkType:String)
+GET           /ar/allRefused/:talkType                           controllers.ApproveOrRefuse.allRefusedByTalkType(talkType:String)
+GET           /ar/notifyApprove/:talkType                        controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
+GET           /ar/notifyRefuse/:talkType                         controllers.ApproveOrRefuse.notifyRefused(talkType:String, proposalId:String)
+GET           /ar/showAcceptTerms                                controllers.ApproveOrRefuse.showAcceptTerms()
+GET           /ar/accept                                         controllers.ApproveOrRefuse.acceptTermsAndConditions()
+GET           /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
+POST          /ar/acceptOrRefuseTalks                            controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
 
-GET           /cloudtags                                           controllers.CallForPaper.cloudTags()
+GET           /cloudtags                                         controllers.CallForPaper.cloudTags()
 
 # Special access for Alexis MP
-GET           /show/proposals                                      controllers.Sponsor.index()
+GET           /show/proposals                                    controllers.Sponsor.index()
 
 
 # Content Publisher
-GET           /2014/speakers                               controllers.Publisher.showAllSpeakers()
-GET           /2014/speaker/:cleanName                       controllers.Publisher.showSpeakerByName(cleanName:String)
-GET           /2014/talks/:talkType                        controllers.Publisher.showByTalkType(talkType:String)
-GET           /2014/talk/:proposalId                       controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
-GET           /2014/talk/:proposalId/:proposalTitle        controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
-GET           /2014                                        controllers.Publisher.homePublisher()
-GET           /2014/agenda/:confType/:day                  controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET           /2014/byday/:day                             controllers.Publisher.showByDay(day:String)
-
-POST          /publisher/sendMsgToSpeaker                   controllers.Publisher.sendMessageToSpeaker(proposalId:String)
+GET           /2014/speakers                                     controllers.Publisher.showAllSpeakers()
+GET           /2014/speaker/:cleanName                           controllers.Publisher.showSpeakerByName(cleanName:String)
+GET           /2014/talks/:talkType                              controllers.Publisher.showByTalkType(talkType:String)
+GET           /2014/talk/:proposalId                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
+GET           /2014/talk/:proposalId/:proposalTitle              controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /2014                                              controllers.Publisher.homePublisher()
+GET           /2014/agenda/:confType/:day                        controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
+GET           /2014/byday/:day                                   controllers.Publisher.showByDay(day:String)
+GET           /2014/questions                                    controllers.Publisher.allQuestions()
+GET           /2014/search                                       controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+POST          /publisher/sendMsgToSpeaker                        controllers.Publisher.sendMessageToSpeaker(proposalId:String)
 
 # For Paper guide
-GET           /guide/speakers                                      controllers.PaperGuide.exportSpeakers()
-GET           /guide/allPhotos                                     controllers.PaperGuide.downloadAllSpeakersPhotos()
-GET           /guide/exported                                      controllers.PaperGuide.exportProgram()
-GET           /guide/exportedByRoom                                controllers.PaperGuide.exportProgramByRoomAndHours()
+GET           /guide/speakers                                    controllers.PaperGuide.exportSpeakers()
+GET           /guide/allPhotos                                   controllers.PaperGuide.downloadAllSpeakersPhotos()
+GET           /guide/exported                                    controllers.PaperGuide.exportProgram()
+GET           /guide/exportedByRoom                              controllers.PaperGuide.exportProgramByRoomAndHours()
 
 # REST API
-GET           /api                                                 controllers.RestAPI.index()
-GET           /api/conferences/                                    controllers.RestAPI.redirectToConferences()
-GET           /api/conferences                                     controllers.RestAPI.showAllConferences()
-GET           /api/conferences/:eventCode                          controllers.RestAPI.showConference(eventCode:String)
-GET           /api/conferences/:eventCode/speakers/                controllers.RestAPI.redirectToSpeakers(eventCode:String)
-GET           /api/conferences/:eventCode/speakers                 controllers.RestAPI.showSpeakers(eventCode:String)
-GET           /api/conferences/:eventCode/speakers/:uuid           controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
-GET           /api/conferences/:eventCode/rooms/                   controllers.RestAPI.showRooms(eventCode:String)
-GET           /api/conferences/:eventCode/rooms                    controllers.RestAPI.showRooms(eventCode:String)
-GET           /api/conferences/:eventCode/talks/:id                controllers.RestAPI.showTalk(eventCode:String,id:String)
-GET           /api/conferences/:eventCode/talks/                   controllers.RestAPI.redirectToTalks(eventCode:String)
-GET           /api/conferences/:eventCode/talks                    controllers.RestAPI.showTalks(eventCode:String)
-GET           /api/conferences/:eventCode/schedules/               controllers.RestAPI.showAllSchedules(eventCode:String)
-GET           /api/conferences/:eventCode/schedules                controllers.RestAPI.showAllSchedules(eventCode:String)
-GET           /api/conferences/:eventCode/schedules/:day/          controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
-GET           /api/conferences/:eventCode/schedules/:day           controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
-GET           /api/conferences/:eventCode/proposalTypes            controllers.RestAPI.showProposalTypes(eventCode:String)
-GET           /api/conferences/:eventCode/tracks                   controllers.RestAPI.showTracks(eventCode:String)
+GET           /api                                               controllers.RestAPI.index()
+GET           /api/conferences/                                  controllers.RestAPI.redirectToConferences()
+GET           /api/conferences                                   controllers.RestAPI.showAllConferences()
+GET           /api/conferences/:eventCode                        controllers.RestAPI.showConference(eventCode:String)
+GET           /api/conferences/:eventCode/speakers/              controllers.RestAPI.redirectToSpeakers(eventCode:String)
+GET           /api/conferences/:eventCode/speakers               controllers.RestAPI.showSpeakers(eventCode:String)
+GET           /api/conferences/:eventCode/speakers/:uuid         controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
+GET           /api/conferences/:eventCode/rooms/                 controllers.RestAPI.showRooms(eventCode:String)
+GET           /api/conferences/:eventCode/rooms                  controllers.RestAPI.showRooms(eventCode:String)
+GET           /api/conferences/:eventCode/talks/:id              controllers.RestAPI.showTalk(eventCode:String,id:String)
+GET           /api/conferences/:eventCode/talks/                 controllers.RestAPI.redirectToTalks(eventCode:String)
+GET           /api/conferences/:eventCode/talks                  controllers.RestAPI.showTalks(eventCode:String)
+GET           /api/conferences/:eventCode/schedules/             controllers.RestAPI.showAllSchedules(eventCode:String)
+GET           /api/conferences/:eventCode/schedules              controllers.RestAPI.showAllSchedules(eventCode:String)
+GET           /api/conferences/:eventCode/schedules/:day/        controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
+GET           /api/conferences/:eventCode/schedules/:day         controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
+GET           /api/conferences/:eventCode/proposalTypes          controllers.RestAPI.showProposalTypes(eventCode:String)
+GET           /api/conferences/:eventCode/tracks                 controllers.RestAPI.showTracks(eventCode:String)
 
-GET           /api/profile/:docName                                controllers.RestAPI.profile(docName:String)
+GET           /api/profile/:docName                              controllers.RestAPI.profile(docName:String)
 
 # API for AngularJS
-GET           /schedulling/slots                                   controllers.SchedullingController.slots(confType:String)
-GET           /schedulling/approvedTalks                           controllers.SchedullingController.approvedTalks(confType:String)
-GET           /schedulling/scheduledConfigurations                 controllers.SchedullingController.allScheduledConfiguration()
-GET           /schedulling/loadScheduledConfiguration              controllers.SchedullingController.loadScheduledConfiguration(id:String)
-POST          /schedulling/slots                                   controllers.SchedullingController.saveSlots(confType:String)
-DELETE        /schedulling/deletescheduledConfigurations           controllers.SchedullingController.deleteScheduleConfiguration(id:String)
-POST          /schedulling/publish                                 controllers.SchedullingController.publishScheduleConfiguration()
-GET           /schedulling/published                               controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
+GET           /schedulling/slots                                 controllers.SchedullingController.slots(confType:String)
+GET           /schedulling/approvedTalks                         controllers.SchedullingController.approvedTalks(confType:String)
+GET           /schedulling/scheduledConfigurations               controllers.SchedullingController.allScheduledConfiguration()
+GET           /schedulling/loadScheduledConfiguration            controllers.SchedullingController.loadScheduledConfiguration(id:String)
+POST          /schedulling/slots                                 controllers.SchedullingController.saveSlots(confType:String)
+DELETE        /schedulling/deletescheduledConfigurations         controllers.SchedullingController.deleteScheduleConfiguration(id:String)
+POST          /schedulling/publish                               controllers.SchedullingController.publishScheduleConfiguration()
+GET           /schedulling/published                             controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
 # Tweetwall
-GET           /tweetwall                                           controllers.Tweetwall.index()
-GET           /tweetwall/authenticate                              controllers.Tweetwall.authenticate()
-GET           /tweetwall/callback                                  controllers.Tweetwall.authenticate()
-GET           /tweetwall/stream                                    controllers.Tweetwall.watchTweets(keywords:String)
-GET           /tweetwall/besttalks                                 controllers.Tweetwall.watchBestTalks()
-GET           /tweetwall/nexttalks                                 controllers.Tweetwall.loadNextTalks()
+GET           /tweetwall                                         controllers.Tweetwall.index()
+GET           /tweetwall/authenticate                            controllers.Tweetwall.authenticate()
+GET           /tweetwall/callback                                controllers.Tweetwall.authenticate()
+GET           /tweetwall/stream                                  controllers.Tweetwall.watchTweets(keywords:String)
+GET           /tweetwall/besttalks                               controllers.Tweetwall.watchBestTalks()
+GET           /tweetwall/nexttalks                               controllers.Tweetwall.loadNextTalks()
 
 # Temp
-GET           /schedulling/fr14/giveMeBestTalks                    controllers.SchedullingController.giveMeBestTalks()
+GET           /schedulling/fr14/giveMeBestTalks                  controllers.SchedullingController.giveMeBestTalks()
 
 # Badges
-GET           /badges                                              controllers.Badge.home()
-POST          /badges                                              controllers.Badge.uploadCSV()
-GET           /badges/test                                         controllers.Badge.test()
+GET           /badges                                            controllers.Badge.home()
+POST          /badges                                            controllers.Badge.uploadCSV()
+GET           /badges/test                                       controllers.Badge.test()
 
 # Wishlist
-GET           /cfpadmin/wishlist/home                              controllers.Wishlist.homeWishlist()
-GET           /cfpadmin/wishlist/new                               controllers.Wishlist.newRequestToTalk()
-POST          /cfpadmin/wishlist/saveNew                           controllers.Wishlist.saveNewRequestToTalk()
-GET           /cfpadmin/wishlist/initTemp                          controllers.Wishlist.initTemp()
+GET           /cfpadmin/wishlist/home                            controllers.Wishlist.homeWishlist()
+GET           /cfpadmin/wishlist/new                             controllers.Wishlist.newRequestToTalk()
+POST          /cfpadmin/wishlist/saveNew                         controllers.Wishlist.saveNewRequestToTalk()
+GET           /cfpadmin/wishlist/initTemp                        controllers.Wishlist.initTemp()
 
-GET           /cfpadmin/wishlist/edit/:requestId                   controllers.Wishlist.edit(requestId:String)
-POST          /cfpadmin/wishlist/saveedit                          controllers.Wishlist.saveEdit()
+GET           /cfpadmin/wishlist/edit/:requestId                 controllers.Wishlist.edit(requestId:String)
+POST          /cfpadmin/wishlist/saveedit                        controllers.Wishlist.saveEdit()
 
-GET           /cfpadmin/wishlist/delete/:requestId                 controllers.Wishlist.deleteRequest(requestId:String)
-GET           /cfpadmin/wishlist/approve/:requestId                controllers.Wishlist.speakerApproveRequest(requestId:String)
-GET           /cfpadmin/wishlist/decline/:requestId                controllers.Wishlist.speakerDeclineRequest(requestId:String)
+GET           /cfpadmin/wishlist/delete/:requestId               controllers.Wishlist.deleteRequest(requestId:String)
+GET           /cfpadmin/wishlist/approve/:requestId              controllers.Wishlist.speakerApproveRequest(requestId:String)
+GET           /cfpadmin/wishlist/decline/:requestId              controllers.Wishlist.speakerDeclineRequest(requestId:String)
 
 # Invitation system
-GET           /cfpadmin/invitations                                controllers.InviteController.allInvitations()
-GET           /cfpadmin/invitations/invite                         controllers.InviteController.invite(speakerUUID:String)
-GET           /cfpadmin/invitations/cancel                         controllers.InviteController.cancelInvite(speakerUUID)
+GET           /cfpadmin/invitations                              controllers.InviteController.allInvitations()
+GET           /cfpadmin/invitations/invite                       controllers.InviteController.invite(speakerUUID:String)
+GET           /cfpadmin/invitations/cancel                       controllers.InviteController.cancelInvite(speakerUUID)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                                        controllers.Assets.at(path="/public", file)
+GET           /assets/*file                                      controllers.Assets.at(path="/public", file)
