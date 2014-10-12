@@ -57,10 +57,22 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.CallForPaper.newProposal).withSession("uuid" -> uuidSpeaker)
   }
 
-  def allProposals() = SecuredAction(IsMemberOf("admin")) {
+  def allProposals(proposalId:Option[String]) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val proposals = Proposal.allProposals().sortBy(_.state.code)
-      Ok(views.html.Backoffice.allProposals(proposals))
+
+      proposalId match {
+        case Some(id)=>
+          val proposal = Proposal.findById(id)
+          proposal match {
+            case None=>NotFound("Proposal not found")
+            case Some(pr)=>Ok(views.html.Backoffice.allProposals(List(pr)))
+          }
+        case None=>
+          val proposals = Proposal.allProposals().sortBy(_.state.code)
+          Ok(views.html.Backoffice.allProposals(proposals))
+      }
+
+
   }
 
   // This endpoint is deliberately *not* secured in order to transform a user into an admin
@@ -185,6 +197,27 @@ object Backoffice extends SecureCFPController {
 
           Ok("Date, total\n" + toReturn.mkString).as("text/plain")
       }
+  }
+
+  def sanityCheckSchedule()=SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val publishedConf = ScheduleConfiguration.getPublishedScheduleSlots
+
+      val declined = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state==ProposalState.DECLINED)
+
+      val approved = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state==ProposalState.APPROVED)
+
+      val accepted = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state==ProposalState.ACCEPTED)
+
+      // Speaker declined talk AFTER it has been published
+      val acceptedThenChangedToOtherState = accepted.filter{
+        slot:Slot=>
+          val proposal = slot.proposal.get
+          Proposal.findProposalState(proposal.id)!=Some(ProposalState.ACCEPTED)
+      }
+
+      Ok(views.html.Backoffice.sanityCheckSchedule(declined,approved,acceptedThenChangedToOtherState))
+
   }
 
 }
