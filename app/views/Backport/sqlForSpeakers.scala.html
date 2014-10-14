@@ -22,19 +22,19 @@ body{
 </style>
 </head>
 <body>
-
-<h2>@speakers.size speakers with Terms&Conditions accepted</h2>
-<p>Copy and paste to Navicat for MYSQL</p>
-<p>- User id has to be the hashCode of the new CFP. This is the only way to keep mapping and relationship for 'presentation'</p>
-<p>- The password is not valid</p>
-<p>- The UUID is a substring of the Redis one, 31 char</p>
-<p>- All fields are escaped</p>
-<p>- Email is hashed, else you get duplicate emails from the current existing list of users</p>
-<hr>
-
+<h2>-- @speakers.size speakers with Terms&Conditions accepted</h2>
+<p>-- Copy and paste to Navicat for MYSQL</p>
+<p>-- - User id has to be the hashCode of the new CFP. This is the only way to keep mapping and relationship for 'presentation'</p>
+<p>-- - The password is not valid</p>
+<p>-- - The UUID is a substring of the Redis one, 31 char</p>
+<p>-- - All fields are escaped</p>
+<p>-- - Email is hashed, else you get duplicate emails from the current existing list of users</p>
+-- *********************************************************************************************************************
+<br>
+<br>
 @speakers.zipWithIndex.map{case(s:Speaker,idx:Int)=>
 <span class="sql">DELETE FROM `user` where `id` = '@s.uuid.hashCode' LIMIT 1 ;</span><br>
-<span class="sql">insert into</span> `user` <span class="sql">values</span>(
+<span class="sql">INSERT INTO</span> `user` <span class="sql">VALUES</span>(
 <span class="d">'@s.uuid.hashCode'</span>,
 <span class="d">'2014-10-11 12:00:00'</span>,
 <span class="d">'2014-10-11 12:00:00'</span>,
