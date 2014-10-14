@@ -219,7 +219,7 @@ GET           /cfpadmin/invitations/cancel                       controllers.Inv
 # Backport for old CFP for Stephan
 GET           /bp/speakers                                       controllers.Backport.allAcceptedSpeakers()
 GET           /bp/proposals                                      controllers.Backport.allProposals()
-
+GET           /bp/scheduleItems                                  controllers.Backport.allScheduleItems()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                      controllers.Assets.at(path="/public", file)

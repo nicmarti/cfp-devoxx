@@ -45,8 +45,14 @@ object Backport extends SecureCFPController {
       val allProposalTypes = ConferenceDescriptor.ConferenceProposalTypes.ALL
       val allTracks = ConferenceDescriptor.ConferenceTracks.ALL
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
-
       Ok(views.html.Backport.sqlForProposals(allProposalTypes, allTracks, publishedConf))
+  }
+
+  def allScheduleItems() = SecuredAction {
+    implicit request =>
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
+      val rooms = ConferenceDescriptor.ConferenceRooms.allRooms
+      Ok(views.html.Backport.sqlForScheduleItem(publishedConf, rooms))
   }
 
 

@@ -1,0 +1,116 @@
+@(slots:List[Slot], rooms:List[Room])
+@import org.apache.commons.lang3.StringUtils
+@import org.apache.commons.lang3.StringEscapeUtils
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SQL ScheduleItems</title>
+<style>
+body{
+    font-family: monospace, monospace;
+    font-weight: normal;
+    font-size: 12px;
+}
+.sql{
+    color:darkblue;
+    font-weight: bold;
+}
+.d{
+    color:darkgreen;
+    font-weight: normal;
+}
+</style>
+</head>
+<body>
+
+<span class="sql">insert into</span> `event` ( `eventFrom`, `timezone`, `uuid`, `name`, `version`, `cfpFrom`, `email`, `created_on`, `twitterHashtag`, `enabled`, `eventTo`, `id`, `location_id`, `cfpTo`, `presTerms`, `modified_on`, `terms`, `twitterHandle`, `key_name`, `description`) values ( '2014-11-10 16:36:53', 'Europe/Brussels', 'nic', 'Devoxx 2014', '1', '2014-08-01', 'program@@devoxx.com', '2014-10-12 16:36:25', '#DV14', b'1', '2014-11-14 16:36:58', '13', '1', '2014-08-31', 'test', '2014-10-12 16:36:28', 'test', '@@DevoxxFR', 'DV14', 'Devoxx 2014')
+<BR>
+@rooms.map{room:Room=>
+<span class="sql">DELETE FROM `room` WHERE `id`='@(room.id.hashCode)';<br>
+<span class="sql">insert into</span> `room` <span class="sql">values</span>(
+<span class="d">'@(room.id.hashCode)'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'@room.id'</span>,
+<span class="d">'1'</span>,
+<span class="d">'@room.capacity'</span>,
+<span class="d">'@room.name'</span>,
+<span class="d">'1'</span>,
+<span class="d">null</span>,
+<span class="d">b'1'</span>,
+<span class="d">b'0'</span>
+);<br>
+}
+<br>
+<br>
+@slots.map{slot: Slot =>
+<span class="sql">INSERT INTO</span> `scheduleitem` <span class="sql">VALUES</span>(
+<span class="d">'@(slot.id.hashCode)'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'2014-10-11 12:00:00'</span>,
+<span class="d">'@(slot.id.hashCode)'</span>,
+<span class="d">'1'</span>,
+<span class="d">'@slot.from.toString("yyyy-MM-dd HH:mm:ss.S")'</span>,
+<span class="d">'@slot.to.toString("yyyy-MM-dd HH:mm:ss.S")'</span>,
+@if(slot.break.isDefined){
+<span class="d">'BREAK'</span>,
+}else{
+<span class="d">'TALK'</span>,
+}
+<span class="d">'@slot.room.id.hashCode'</span>,
+<span class="d">'@slot.id'</span>,
+<span class="d">'13'</span>,
+<span class="d">'Slot @slot.id'</span>,
+@if(slot.proposal.isDefined && slot.proposal.get.sponsorTalk){
+<span class="d">b'1'</span>,
+}else{
+<span class="d">b'0'</span>,
+}
+@if(slot.proposal.isDefined && slot.proposal.get.sponsorTalk){
+<span class="d">'@slot.proposal.get.id.hashCode'</span>,
+}else{
+<span class="d">null</span>,
+}
+@if(slot.proposal.isDefined && slot.proposal.get.sponsorTalk){
+<span class="d">'@slot.proposal.get.talkType.id.hashCode'</span>,
+}else{
+<span class="d">'1'</span>,
+}
+<span class="d">b'0'</span>
+)
+ON DUPLICATE key update created_on='2014-10-11 12:00:00',
+  modified_on='2014-10-14 12:00:00',
+  version='2',
+  from_time='@slot.from.toString("yyyy-MM-dd HH:mm:ss.S")',
+  to_time='@slot.to.toString("yyyy-MM-dd HH:mm:ss.S")',
+@if(slot.break.isDefined){
+<span class="d">type='BREAK'</span>,
+}else{
+<span class="d">type='TALK'</span>,
+}
+  room_id='@slot.room.id.hashCode',
+  item_code='@slot.id',
+  event_id='13',
+  note='Slot @slot.id',
+@if(slot.proposal.isDefined && slot.proposal.get.sponsorTalk){
+<span class="d">partner_slot=b'1'</span>,
+}else{
+<span class="d">partner_slot=b'0'</span>,
+}
+@if(slot.proposal.isDefined && slot.proposal.get.sponsorTalk){
+<span class="d">presentation_id='@slot.proposal.get.id.hashCode'</span>,
+}else{
+<span class="d">presentation_id=null</span>,
+}
+@if(slot.proposal.isDefined && slot.proposal.get.sponsorTalk){
+<span class="d">event_type_id='@slot.proposal.get.talkType.id.hashCode'</span>,
+}else{
+<span class="d">event_type_id='1'</span>,
+}
+deleted=b'0'
+;<br>
+<br>
+}
+
+</body>
+</html>
