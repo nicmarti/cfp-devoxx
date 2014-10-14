@@ -52,7 +52,7 @@
                             </tr>
                             <tr>
                                 <th>@Messages("proposal.demoLevel")</th>
-                                <td>@Messages(proposal.demoLevel+".label")</td>
+                                <td>@proposal.demoLevel.map(d=> Messages(d+".label"))</td>
                             </tr>
                         </tbody>
                     </table>

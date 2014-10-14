@@ -58,7 +58,7 @@ object ScheduleConfiguration {
   implicit val scheduleConfFormat = Json.format[ScheduleConfiguration]
   implicit val scheduleSavedFormat = Json.format[ScheduleSaved]
 
-  def persist(confType: String, slots: List[Slot], createdBy: Webuser) = Redis.pool.withClient {
+  def persist(confType: String, slots: List[Slot], createdBy: Webuser):String = Redis.pool.withClient {
     implicit client =>
       val id = confType + "-" + (RandomStringUtils.randomAlphabetic(3) + "-" + RandomStringUtils.randomNumeric(2)).toLowerCase
       val key = ScheduleSaved(id, confType, createdBy.firstName, slots.hashCode())
@@ -73,6 +73,7 @@ object ScheduleConfiguration {
       val config = ScheduleConfiguration(confType, slots, timeSlots)
       val json = Json.toJson(config).toString()
       client.hset("ScheduleConfigurationByID", id, json)
+      id
   }
 
   def delete(id: String) = Redis.pool.withClient {
@@ -116,26 +117,26 @@ object ScheduleConfiguration {
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
 
-    def extractSlot(allSlots:List[Slot], day:String)={
-        val configured = loadSlots().filter(_.day == day)
-         val configuredIDs=configured.map(_.id)
-         val filtered = allSlots.filterNot(s=>configuredIDs.contains(s.id))
-         configured++filtered
+    def extractSlot(allSlots: List[Slot], day: String) = {
+      val configured = loadSlots().filter(_.day == day)
+      val configuredIDs = configured.map(_.id)
+      val filtered = allSlots.filterNot(s => configuredIDs.contains(s.id))
+      configured ++ filtered
     }
 
     val listOfSlots = day match {
       case "monday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.monday,"monday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.monday, "monday")
       case "tuesday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.tuesday,"tuesday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.tuesday, "tuesday")
       case "wednesday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday,"wednesday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
       case "thursday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.thursday,"thursday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
       case "friday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.friday,"friday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.friday, "friday")
       case other =>
-        play.Logger.of("ScheduleConfiguration").warn("Could not match "+other+" in getPublishedScheduleByDay")
+        play.Logger.of("ScheduleConfiguration").warn("Could not match " + other + " in getPublishedScheduleByDay")
         Nil
     }
 
@@ -170,6 +171,13 @@ object ScheduleConfiguration {
     ) yield configuration
 
     allConfs
+  }
+
+  def loadAllPublishedSlots():List[Slot]={
+    loadAllConfigurations().map{
+      sc=>
+        sc.slots
+    }.flatten.toList
   }
 
 

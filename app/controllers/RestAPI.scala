@@ -505,7 +505,10 @@ object RestAPI extends Controller {
             )
           )
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("room").absoluteURL().toString + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(
+            ETAG -> etag,
+            "Access-Control-Allow-Origin"->"*",
+            "Links" -> ("<" + routes.RestAPI.profile("room").absoluteURL() + ">; rel=\"profile\""))
         }
       }
   }
