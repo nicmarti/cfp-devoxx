@@ -25,7 +25,7 @@ package models
 
 import play.api.libs.json.Json
 import library.Redis
-import org.joda.time.{Instant, DateTime}
+import org.joda.time.{DateTimeZone, Instant, DateTime}
 import java.util.Date
 
 /**
@@ -50,7 +50,7 @@ object Event {
 
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
-      val jsEvent = Json.stringify(Json.toJson(event.copy(date = Some(new DateTime()))))
+      val jsEvent = Json.stringify(Json.toJson(event.copy(date = Some(new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels"))))))
       val tx = client.multi()
       val now = new Instant().getMillis
       tx.zadd("Events:V2:", now, jsEvent)
