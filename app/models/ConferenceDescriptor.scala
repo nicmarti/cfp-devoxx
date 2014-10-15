@@ -218,8 +218,10 @@ object ConferenceDescriptor {
     val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.HALL_EXPO)
     val shortBreak = SlotBreak("chgt", "Break", "Pause courte", ConferenceRooms.HALL_EXPO)
     val exhibition = SlotBreak("exhib", "Exhibition", "Exhibition", ConferenceRooms.HALL_EXPO)
-    val meetAndGreet = SlotBreak("meet", "Meet & Greet (Exhibition)", "Exhibition", ConferenceRooms.HALL_EXPO)
-    val movie = SlotBreak("movie", "Movie", "Movie", ConferenceRooms.HALL_EXPO)
+    val meetAndGreet = SlotBreak("meet", "Meet & Greet (Exhibition) - Evening Keynote 19:00-19:30", "Exhibition", ConferenceRooms.HALL_EXPO)
+    val eveningKeynote = SlotBreak("evKey", "Evening Keynote", "Keynote", ConferenceRooms.ROOM8)
+    val closingKeynote = SlotBreak("closeKey", "Closing Keynote", "Keynote", ConferenceRooms.ROOM8)
+    val movieSpecial = SlotBreak("movie", "Closing keynote 19:00-19:30 - Movie 20:00-22:00", "Movie", ConferenceRooms.HALL_EXPO)
     val noxx = SlotBreak("noxx", "Noxx party", "Soirée au Noxx", ConferenceRooms.HALL_EXPO)
   }
 
@@ -634,9 +636,7 @@ object ConferenceDescriptor {
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday", new DateTime("2014-11-13T10:30:00.000+01:00"), new DateTime("2014-11-13T10:50:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday", new DateTime("2014-11-13T13:00:00.000+01:00"), new DateTime("2014-11-13T14:00:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday", new DateTime("2014-11-13T16:10:00.000+01:00"), new DateTime("2014-11-13T16:40:00.000+01:00"))
-      , SlotBuilder(ConferenceSlotBreaks.exhibition, "thursday", new DateTime("2014-11-13T18:50:00.000+01:00"), new DateTime("2014-11-13T20:00:00.000+01:00"))
-      , SlotBuilder(ConferenceSlotBreaks.movie, "thursday", new DateTime("2014-11-13T18:50:00.000+01:00"), new DateTime("2014-11-13T20:00:00.000+01:00"))
-      , SlotBuilder(ConferenceSlotBreaks.noxx, "thursday", new DateTime("2014-11-13T22:00:00.000+01:00"), new DateTime("2014-11-14T03:00:00.000+01:00"))
+      , SlotBuilder(ConferenceSlotBreaks.movieSpecial, "thursday", new DateTime("2014-11-13T18:50:00.000+01:00"), new DateTime("2014-11-13T20:00:00.000+01:00"))
     )
      val fridayBreaks=List(
         SlotBuilder(ConferenceSlotBreaks.petitDej, "friday", new DateTime("2014-11-14T08:30:00.000+01:00"), new DateTime("2014-11-14T09:30:00.000+01:00"))
