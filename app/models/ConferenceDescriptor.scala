@@ -1,7 +1,7 @@
 package models
 
 import play.api.Play
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 
 /**
  * ConferenceDescriptor.
@@ -451,19 +451,19 @@ object ConferenceDescriptor {
 
       val keynoteWednesdaySlot1 = ConferenceRooms.allRoomsConf.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T09:30:00.000+01:00"), new DateTime("2014-11-12T10:15:00.000+01:00"), r1)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
       val keynoteWednesdaySlot2 = ConferenceRooms.allRoomsUni.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:15:00.000+01:00"), new DateTime("2014-11-12T10:55:00.000+01:00"), r2)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
       }
       val keynoteWednesdaySlot3 = ConferenceRooms.allRoomsUni.map {
         r3 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:55:00.000+01:00"), new DateTime("2014-11-12T11:35:00.000+01:00"), r3)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T11:35:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
       }
       val keynoteWednesdaySlot4 = ConferenceRooms.allRoomsUni.map {
         r4 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T19:00:00.000+01:00"), new DateTime("2014-11-12T19:30:00.000+01:00"), r4)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T19:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r4)
       }
 
       keynoteWednesdaySlot1 ++ keynoteWednesdaySlot2 ++ keynoteWednesdaySlot3 ++ keynoteWednesdaySlot4
@@ -473,11 +473,11 @@ object ConferenceDescriptor {
 
       val keynoteThursdaySlot1 = ConferenceRooms.allRoomsConf.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday", new DateTime("2014-11-13T09:40:00.000+01:00"), new DateTime("2014-11-13T10:20:00.000+01:00"), r1)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday", new DateTime("2014-11-13T09:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-13T10:20:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
       val keynoteThursdaySlot2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday", new DateTime("2014-11-13T19:00:00.000+01:00"), new DateTime("2014-11-13T19:30:00.000+01:00"), r2)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday", new DateTime("2014-11-13T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-13T19:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
       }
 
       keynoteThursdaySlot1 ++ keynoteThursdaySlot2

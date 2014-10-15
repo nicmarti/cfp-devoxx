@@ -32,7 +32,7 @@ import play.api.libs.json.JsString
 import play.api.libs.json.JsNumber
 import play.api.i18n.Messages
 import scala.util.Random
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 
 
 /**
@@ -118,7 +118,7 @@ object SchedullingController extends SecureCFPController {
           case (key, dateAsDouble) =>
             val scheduledSaved = Json.parse(key).as[ScheduleSaved]
             Map("key" -> Json.toJson(scheduledSaved),
-              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toString()))
+                "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")).toString()))
         })
       )
       )
