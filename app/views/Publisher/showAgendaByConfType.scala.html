@@ -43,7 +43,12 @@
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
                     <th class="timeSlot">
-                        @time.toString("HH:mm") - @slots.head.to.toString("HH:mm")
+                        <!--
+                        time = @time
+                        localdatetime = @time.toLocalDateTime
+
+                        -->
+                        @time.toLocalDateTime.toString("HH:mm") - @slots.head.to.toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room.name).zipWithIndex.map { case(slot,index) =>
                         <td class="room">
