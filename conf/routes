@@ -3,6 +3,8 @@ GET           /favicon.ico                                       controllers.Ass
 GET           /                                                  controllers.Application.index
 GET           /home                                              controllers.Application.home
 
+GET           /status                                            controllers.Status.index()
+
 GET           /logout                                            controllers.Authentication.logout
 POST          /login                                             controllers.Authentication.login
 
