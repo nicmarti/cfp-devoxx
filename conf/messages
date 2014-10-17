@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx 2014
-CONF.subtitle=BE
+CONF.title=Devoxx France 2015
+CONF.subtitle=FR
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx BE 2014
-longYearlyName=Devoxx Belgium 2014
+shortYearlyName=Devoxx FR 2015
+longYearlyName=Devoxx France 2015
 shortName=Devoxx BE
-longName=Devoxx BE 2014 CFP
+longName=Devoxx FR 2015 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=BE 2014
+longSplittedName_whiteEnd=FR 2015
 conference.dates=10th-14th November
 # -----------------
-cfp.title=Devoxx BE 2014 CFP
+cfp.title=Devoxx FR 2015 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -103,7 +103,7 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum, Silver and Bronze+ sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -154,53 +154,45 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx BE 2013''s videos on
+video.tag=Review Devoxx FR 2014''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx Belgium 2014:
+theme.track=List of tracks for Devoxx France 2015:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx Belgium 2014, 10th-14th November
+appel.conf.dates=Devoxx France 2015, 8th-10th April 2015
 
 # Tracks
-track.startup.title=Startup and entrepreneurship
-track.startup.desc=Lean startup, VCs, Angels and new trends in Startups.
-startup.label=Startups
+track.web.title=Web & Mobile
+track.web.desc=Web, JS, Front-end and back-end, Mobile, Android, iOS.
+web.label=Web & Mobile
 
-track.ssj.title=Server Side Java
-track.ssj.desc=Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs
-ssj.label=Server Side Java
+track.archisec.title=Architecture, Performance & Security
+track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
+archisec.label=Architecture, Performance and Security
 
-track.java.title=Java SE
-track.java.desc=Java Standard Edition, anything non-related to Jave EE, like the language, JDK, performance tuning, modularity, etc...
-java.label=Java SE
+track.methodevops.title=Agility, Methodology & Test
+track.methodevops.desc=Software development methodologies, TDD, BDD, xDD
+methodevops.label=Agiluty, Methodology & Test
 
-track.mobile.title=Mobile
-track.mobile.desc=Tools frameworks and libraries for building mobile apps, both as MobileWeb or native Android and iOS app
-mobile.label=Mobile
+track.java.title=Java
+track.java.desc=Java, tools, libraries, JVM
+java.label=Java
 
-track.archisec.title=Architecture & Security
-track.archisec.desc=Software architecture, encryption and best practices to develop secure software
-archisec.label=Architecture & Security
+track.cloud.title=Cloud & DevOps
+track.cloud.desc=Cloud computing, Platforms as a Service, DevOps
+cloud.label=Cloud & DevOps
 
-track.methodevops.title=Methodology & DevOps
-track.methodevops.desc=Software development methodologies and related subjects
-methodevops.label=Methodology & DevOps
+track.bigdata.title=Big Data & Analytics
+track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
+bigdata.label=Big Data & Analytics
 
 track.future.title=Future<Devoxx>
 track.future.desc=Developing for embedded devices, the internet of things, Arduino, raspberry pi, quadcopters, robots and related
 future.label=Future<Devoxx>
 
-track.lang.title=JVM Languages
-track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
-lang.label=JVM Languages
-
-track.cloud.title=Cloud & BigData
-track.cloud.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
-cloud.label=Cloud & BigData
-
-track.web.title=Web & HTML5
-track.web.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
-web.label=Web & HTML5
+track.lang.title=Alternate Languages
+track.lang.desc=Anything related to other languages than Java
+lang.label=Alternate Languages
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
@@ -355,8 +347,8 @@ admin.sp.accepted.txt=This talk has been accepted. Either during the final decis
 btn.abstention=Vote 0 for this talk
 remove.sponsorFlag=Remove the sponsor''s flag on this talk
 
-cfp.isClosed=The CFP is now closed
-cfp.isClosed.expl=CFP is closed. You cannot submit a new proposal anymore. However you can still edit your proposal with some restrictions.
+cfp.isClosed=The CFP is closed
+cfp.isClosed.expl=CFP is currently closed and does not accept new submission.
 cfp.closed.enter=Sign-in
 tbl.cfp.closed=CFP closed
 cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
@@ -503,11 +495,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 10th November 2014
-sw.show.title.tue=Tuesday, 11th November 2014
-sw.show.title.wed=Wednesday, 12th November 2014
-sw.show.title.thu=Thursday, 13th November 2014
-sw.show.title.fri=Friday, 14th November 2014
+sw.show.title.mon=Monday, 6th April 2015
+sw.show.title.tue=Tuesday, 7th April 2015
+sw.show.title.wed=Wednesday, 8th April 2015
+sw.show.title.thu=Thursday, 9th April 2015
+sw.show.title.fri=Friday, 10th April 2015
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
