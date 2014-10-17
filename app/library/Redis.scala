@@ -30,16 +30,14 @@ object Redis {
     pool
   }
 
-  def checkIfConnected(): Unit = {
-    play.Logger.info("=== Redis ===")
-    play.Logger.info("Checking " + host + ":" + port)
+  def checkIfConnected() = {
     checkPool(pool, host, port)
   }
 
-  def checkPool(poolCtx: Pool, _host: String, _port: Int) = {
+  def checkPool(poolCtx: Pool, _host: String, _port: Int):String = {
     poolCtx.withClient {
       implicit client =>
-        play.Logger.info("Checking\t\t" + _host + ":" + _port + "> " + client.ping())
+        client.ping()
     }
   }
 
