@@ -33,7 +33,7 @@ import org.apache.commons.lang3.RandomStringUtils
 class LeaderboardSpecs extends PlaySpecification {
 
   // Use a different Redis Database than the PROD one
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6363", "redis.activeDatabase" -> 1)
 
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
@@ -45,6 +45,7 @@ class LeaderboardSpecs extends PlaySpecification {
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
+          client.select(1)
           client.flushDB()
       }
 
@@ -81,8 +82,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -115,8 +116,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -151,8 +152,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -199,8 +200,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -255,8 +256,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -296,8 +297,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
@@ -313,8 +314,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
@@ -371,8 +372,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
@@ -388,8 +389,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
@@ -420,8 +421,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
@@ -437,8 +438,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
-        , demoLevel = Some("novice")
-        , userGroup = None
+        , demoLevel = Some("l1")
+        , userGroup = Some(false)
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
