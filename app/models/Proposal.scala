@@ -71,8 +71,8 @@ object ProposalState {
   val ACCEPTED = ProposalState("accepted")
   val DECLINED = ProposalState("declined")
   val BACKUP = ProposalState("backup")
+  val ARCHIVED = ProposalState("archived")
   val UNKNOWN = ProposalState("unknown")
-
 
   val all = List(
     DRAFT,
@@ -83,6 +83,7 @@ object ProposalState {
     ACCEPTED,
     DECLINED,
     BACKUP,
+    ARCHIVED,
     UNKNOWN
   )
 
@@ -93,6 +94,7 @@ object ProposalState {
     REJECTED,
     ACCEPTED,
     DECLINED,
+    ARCHIVED,
     BACKUP
   )
 
@@ -108,6 +110,7 @@ object ProposalState {
       case "accepted" => ACCEPTED
       case "declined" => DECLINED
       case "backup" => BACKUP
+      case "ar" => ARCHIVED
       case other => UNKNOWN
     }
   }
@@ -536,6 +539,15 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
+      if(play.Logger.of("models.Proposal").isDebugEnabled && allProposalIds.nonEmpty) {
+        val check = Json.parse(client.hget("Proposals", allProposalIds.head).get).validate[Proposal]
+        check.fold(invalidJson => {
+          play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
+          play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
+          JsNull
+        }
+          , identity)
+      }
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
