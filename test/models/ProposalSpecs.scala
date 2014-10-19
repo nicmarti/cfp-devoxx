@@ -33,13 +33,12 @@ import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
  * Created: 14/01/2014 12:17
  */
 class ProposalSpecs extends PlaySpecification {
-  // Test with a remote server to check for performance issues
-  val remoteRedisTestServer = Map(
+  val testRedis = Map(
     "redis.host" -> "localhost"
-    , "redis.port" -> "6364"
-    //,"redis.password" -> "test_540240240230423042440230"
+    , "redis.port" -> "6363"
+    , "redis.activeDatabase" -> 1
   )
-  val appWithTestRedis = FakeApplication(additionalConfiguration = remoteRedisTestServer)
+  val appWithTestRedis = FakeApplication(additionalConfiguration = testRedis)
 
   val sampleProposalType = ConferenceDescriptor.ConferenceProposalTypes
 
@@ -90,6 +89,7 @@ class ProposalSpecs extends PlaySpecification {
     totalFuture4.map(_._2).getOrElse(0) must equalTo(totalFutureDepart)
 
     Proposal.delete("1234", "TST-000")
+<<<<<<< HEAD
   }
 
   "add a 2n speaker on an existing Proposal" in new WithApplication(appWithTestRedis) {
@@ -306,5 +306,12 @@ class ProposalSpecs extends PlaySpecification {
       ApprovedProposal.allAcceptedTalksForSpeaker(otherSpeaker1).toList must be(Nil)
 
 
+=======
+
+    val Some(proposalDel) = Proposal.findById("TST-000")
+    proposalDel.id must equalTo("TST-000")
+    proposalDel.track must equalTo(Track.parse("java"))
+    proposalDel.state must equalTo(ProposalState.DELETED)
+>>>>>>> test(proposal): More tests for proposals
   }
 }
