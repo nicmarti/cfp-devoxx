@@ -111,6 +111,8 @@ GET           /admin/elastic/reset                               controllers.Bac
 GET           /admin/elastic/index                               controllers.Backoffice.doIndexElasticSearch()
 GET           /admin/sanitycheck                                 controllers.Backoffice.sanityCheckSchedule()
 GET           /admin/sanitycheck/fix                             controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String)
+GET           /admin/archiveProposals                            controllers.Backoffice.archiveAllProposals()
+
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                          controllers.ApproveOrRefuse.doApprove(proposalId:String)
