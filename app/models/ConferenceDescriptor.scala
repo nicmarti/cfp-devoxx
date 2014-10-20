@@ -37,7 +37,8 @@ case class TrackDesc(id: String, imgSrc: String, i18nTitleProp: String, i18nDesc
 case class ProposalConfiguration(id: String, slotsCount: Int,
                                  givesSpeakerFreeEntrance: Boolean,
                                  freeEntranceDisplayed: Boolean,
-                                 htmlClass: String, recorded: Boolean,
+                                 htmlClass: String,
+                                 recorded: Option[Boolean],
                                  hiddenInCombo: Boolean = false,
                                  chosablePreferredDay: Boolean = false,
                                  impliedSelectedTrack: Option[Track] = None)
@@ -45,17 +46,13 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
 object ProposalConfiguration {
 
   val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
-    htmlClass = "", recorded = false, hiddenInCombo = true, chosablePreferredDay = false)
+    htmlClass = "", recorded = None, hiddenInCombo = true, chosablePreferredDay = false)
 
   def parse(propConf: String): ProposalConfiguration = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
   }
 
   def totalSlotsCount = ConferenceDescriptor.ConferenceProposalConfigurations.ALL.map(_.slotsCount).sum
-
-  def isRecordedProposals(pt: ProposalType): Boolean = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.recorded).headOption.getOrElse(false)
-  }
 
   def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
@@ -120,21 +117,21 @@ object ConferenceDescriptor {
 
   object ConferenceProposalConfigurations {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = 89, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
-      recorded = true, chosablePreferredDay = true)
+      recorded = Some(true), chosablePreferredDay = true)
     val UNI = ProposalConfiguration(id = "uni", slotsCount = 16, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
-      recorded = true, chosablePreferredDay = true)
+      recorded = Some(true), chosablePreferredDay = true)
     val TIA = ProposalConfiguration(id = "tia", slotsCount = 24, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-legal",
-      recorded = true, chosablePreferredDay = true)
+      recorded = Some(true), chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = 10, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
-      recorded = false, chosablePreferredDay = true)
+      recorded = None, chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = 28, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
-      recorded = true, chosablePreferredDay = true)
+      recorded = Some(true), chosablePreferredDay = true)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = 25, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
-      recorded = false, chosablePreferredDay = false)
+      recorded = None, chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = true, chosablePreferredDay = true)
+      recorded = Some(true), chosablePreferredDay = true)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = false, hiddenInCombo = true, chosablePreferredDay = false)
+      recorded = None, hiddenInCombo = true, chosablePreferredDay = false)
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
@@ -158,7 +155,7 @@ object ConferenceDescriptor {
   object ConferenceTracksDescription {
     val WEB_MOBILE = TrackDesc(ConferenceTracks.WEB_MOBILE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.web.title", "track.web.desc")
     val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/devoxxbe2014/images/icon_architecture.png", "track.archisec.title", "track.archisec.desc")
-    val AGILITY_TESTS = TrackDesc(ConferenceTracks.AGILITY_TESTS.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.startup.title", "track.startup.desc")
+    val AGILITY_TESTS = TrackDesc(ConferenceTracks.AGILITY_TESTS.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.agility.title", "track.agility.desc")
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
     val CLOUDDEVOPS = TrackDesc(ConferenceTracks.CLOUDDEVOPS.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloud.title", "track.cloud.desc")
     val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxxbe2014/images/icon_mobile.png", "track.bigdata.title", "track.bigdata.desc")
@@ -175,18 +172,18 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, recorded = false, "special")
+    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, recorded = None, "special")
 
-    val ROOM3 = Room("room3", "Room 3", 345, recorded = true, "theatre")
-    val ROOM4 = Room("room4", "Room 4", 364, recorded = true, "theatre")
-    val ROOM5 = Room("room5", "Room 5", 684, recorded = true, "theatre")
-    val ROOM6 = Room("room6", "Room 6", 407, recorded = true, "theatre")
-    val ROOM7 = Room("room7", "Room 7", 407, recorded = true, "theatre")
-    val ROOM8 = Room("room8", "Room 8", 745, recorded = true, "theatre")
-    val ROOM9 = Room("room9", "Room 9", 425, recorded = true, "theatre")
+    val ROOM3 = Room("room3", "Room 3", 345, recorded = Some(true), "theatre")
+    val ROOM4 = Room("room4", "Room 4", 364, recorded = Some(true), "theatre")
+    val ROOM5 = Room("room5", "Room 5", 684, recorded = Some(true), "theatre")
+    val ROOM6 = Room("room6", "Room 6", 407, recorded = Some(true), "theatre")
+    val ROOM7 = Room("room7", "Room 7", 407, recorded = Some(true), "theatre")
+    val ROOM8 = Room("room8", "Room 8", 745, recorded = Some(true), "theatre")
+    val ROOM9 = Room("room9", "Room 9", 425, recorded = Some(true), "theatre")
 
-    val BOF1 = Room("bof1", "BOF 1", 70, recorded = false, "classroom")
-    val BOF2 = Room("bof2", "BOF 2", 70, recorded = false, "classroom")
+    val BOF1 = Room("bof1", "BOF 1", 70, recorded = None, "classroom")
+    val BOF2 = Room("bof2", "BOF 2", 70, recorded = None, "classroom")
 
     val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
@@ -683,9 +680,9 @@ object ConferenceDescriptor {
       firstDayEn = "april 8th",
       datesFr = "du 8 au 10 avril 2015",
       datesEn = "from 8th to 10th of April, 2015",
-      cfpOpenedOn = DateTime.parse("2014-12-02T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2015-01-30T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2014-02-17T00:00:00+02:00")
+      cfpOpenedOn = DateTime.parse("2014-11-17T00:00:00+01:00"),
+      cfpClosedOn = DateTime.parse("2015-01-17T23:59:59+01:00"),
+      scheduleAnnouncedOn = DateTime.parse("2014-02-13T00:00:00+01:00")
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
     hashTag = "#DevoxxFR",
