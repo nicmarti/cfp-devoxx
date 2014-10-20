@@ -170,9 +170,9 @@ track.archisec.title=Architecture, Performance & Security
 track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
 archisec.label=Architecture, Performance and Security
 
-track.methodevops.title=Agility, Methodology & Test
-track.methodevops.desc=Software development methodologies, TDD, BDD, xDD
-methodevops.label=Agiluty, Methodology & Test
+track.agility.title=Agility, Methodology & Test
+track.agility.desc=Software development methodologies, TDD, BDD, xDD
+agility.label=Agility, Methodology & Test
 
 track.java.title=Java
 track.java.desc=Java, tools, libraries, JVM
@@ -465,7 +465,7 @@ day-bof=Thursday, 19h30
 day-monday=Monday, 10th November
 day-tuesday=Tuesday, 11th November
 day-wednesday=Wednesday, 12th November
-day-thursday=Thursday, 13th November
+day-thursday=Thursday, 9th April
 day-friday=Friday, 14th November
 
 sw.all.confThursday=Conferences on Thursday
@@ -638,3 +638,9 @@ lgaltern.label=Alternate languages on the JVM
 menu.blog=Site DevoxxFR
 signup.long=Register as a speaker on Devoxx France CFP
 sw.all.hack=Hackatons
+approved=Speaker approved
+cstory=Session de live coding Code-story
+day-jeudi=Thursday
+declined=Speaker declined
+methodevops.label=Methodology & DevOps
+mobile.label=Mobile
