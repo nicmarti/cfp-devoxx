@@ -1,15 +1,13 @@
 package controllers
 
-import controllers.Backport._
-import models._
-import play.api.data._
-import play.api.data.Forms._
 import library.Redis
-import library.search._
+import library.search.{DoIndexProposal, _}
+import models._
 import org.joda.time.Instant
 import play.api.Play
-import library.search.DoIndexProposal
-import play.api.cache.{EhCachePlugin, Cache}
+import play.api.cache.EhCachePlugin
+import play.api.data.Forms._
+import play.api.data._
 import play.api.mvc.Action
 
 /**
@@ -226,26 +224,38 @@ object Backoffice extends SecureCFPController {
 
   def fixToAccepted(slotId: String, proposalId: String, talkType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val maybeUpdated=for(
+      val maybeUpdated = for (
         scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType);
         scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
-        slot <- scheduleConf.slots.find(_.id==slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id==proposalId)
+        slot <- scheduleConf.slots.find(_.id == slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId)
       ) yield {
         val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
         val updatedSlot = slot.copy(proposal = Some(updatedProposal))
-        val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id==slotId)
+        val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
         newListOfSlots
       }
 
-      maybeUpdated.map{
-        newListOfSlots=>
+      maybeUpdated.map {
+        newListOfSlots =>
           val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
           ScheduleConfiguration.publishConf(newID, talkType)
 
-          Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success"->s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
-      }.getOrElse{
+          Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
+      }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")
       }
+  }
+
+  def archiveAllProposals() = SecuredAction(IsMemberOf("admin")).async {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      import scala.concurrent.ExecutionContext.Implicits.global
+      scala.concurrent.Future {
+        val status = ArchiveProposal.doArchive()
+        Ok("Super "+status)
+      }
+
+
   }
 
 }
