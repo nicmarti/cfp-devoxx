@@ -137,8 +137,6 @@ other.label=Autre type de présentation
 lab.label=Hand''s on Lab, 3h, mercredi uniquement
 hack.label=Hackaton (événement spécial)
  
- 
- 
 # Bug report
 Issue.report=Notifier l''équipe
 btn.send=Envoyer
@@ -146,15 +144,14 @@ msg=Votre message
  
 # Home
 appel.conf=Appel aux conférenciers
-appel.conf.dates=Call for Paper, Devoxx France 2014, 16 au 18 avril 2014
-cfp.opening=Ouverture du CFP :
-cfp.opening.date=Lundi 2 décembre 2013
-cfp.closing=Rappel :
+appel.conf.dates=Call for Paper, Devoxx France 2015, 8 au 10 avril 2015
+cfp.opening=Ouverture du CFP
+cfp.closing=Fermeture du CFP
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.program=Annonce du programme :
-cfp.program.date=à partir du lundi 17 février 2014
-video.title=Vidéos de l''édition 2013
-video.tag=Retrouvez les sessions de l''édition 2013 sur le site
+cfp.program.date=à partir de la mi-février 2015
+video.title=Vidéos de l''édition 2014
+video.tag=Retrouvez les sessions de l''édition 2014 sur le site
 theme.title=Thèmes
 theme.track=Les différentes tracks pour proposer un sujet :
 track.title=Titre
@@ -181,7 +178,7 @@ java.label=Java SE, Java EE
 web.label=Web, HTML5
 mobile.label=Mobile
 cloud.label=Cloud, Big Data, NoSQL
-agilite.label=Agilité, DevOps
+agilite.label=Agilité, méthodes et tests
 lg_alter.label=Langages alternatifs
 lgaltern.label=Langages alternatifs
 startup.label=Startup & Innovation
@@ -201,7 +198,7 @@ created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos 
  
 # Prepare signup
 signup.title=Inscription orateur
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2014 :
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2015 :
 signup.txt2=Un email de validation est envoyé à l''adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
  
 # edit profile
@@ -279,8 +276,7 @@ nav.homeSpeaker=Accueil
 editWebuser.title=Votre profil
  
 cfp.isOpen=Le CFP est ouvert
-cfp.open.enter=Proposer un sujet pour Devoxx France\
- 
+cfp.open.enter=Proposer un sujet pour Devoxx France
  
 #CFP admin
 admin.proposals.th.title=Titre
@@ -449,7 +445,7 @@ confThursday=Conférences le Jeudi
 sw.otherEvents=Evénements spéciaux
 sw.allEvents=Voir tous les événements
 sw.all.key=Les Keynotes
-sw.all.cstory=Code-Story 2014
+sw.all.cstory=Code-Story 2015
 cstory=Sessions de live coding Code-Story
 sw.all.amd=Présentations de l''Après-midi des Décideurs
 sw.agenda=Agenda
@@ -460,9 +456,9 @@ sw.agenda.fri=Vendredi
 sw.show.wed=Mercredi
 sw.show.thu=Jeudi
 sw.show.fri=Vendredi
-sw.show.title.wed=Journée du Mercredi 16 avril 2014
-sw.show.title.thu=Journée du Jeudi 17 avril 2014
-sw.show.title.fri=Journée du Vendredi 18 avril 2014
+sw.show.title.wed=Journée du Mercredi 8 avril 2015
+sw.show.title.thu=Journée du Jeudi 9 avril 2015
+sw.show.title.fri=Journée du Vendredi 10 avril 2015
  
  
 sw.horaires=Horaires
@@ -502,11 +498,11 @@ btn.saveAndSend=Sauver et envoyer au comité
 btn.saveDraft=Sauver comme Draft (Brouillon)
 cfp.reminder=Rappel
 cfp.reminder.proposals=pensez à soumettre votre brouillon au comité en cliquant sur "Envoyer"
-cfp.title=Devoxx France 2014
+cfp.title=Devoxx France 2015
 conf.label.simple=Conférence
 CONF.subtitle=FR
-CONF.title=Devoxx France 2014
-conference.dates=16 au 18 avril 2014
+CONF.title=Devoxx France 2015
+conference.dates=8 au 10 avril 2015
 contacted=Speaker contacté
 d1.label=Uniquement des slides
 d2.label=Slides et un peu de code
@@ -529,11 +525,11 @@ lang.label=JVM Languages
 level1.label=Ouvert à tout niveau d''audience, débutant comme expert
 level2.label=Pour une audience intermédiaire, avec une connaissance sur le sujet
 level3.label=Pour un public d''expert ou de sénior sur ce sujet
-longName=Devoxx FR 2014 CFP
+longName=Devoxx FR 2015 CFP
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2014
+longSplittedName_whiteEnd=FR 2015
 longSplittedName_whiteStart=Devox
-longYearlyName=Devoxx France 2014
+longYearlyName=Devoxx France 2015
 mail.access_code.subject=Votre code d''accès présentateur pour {0}
 mail.account_created.subject=Bienvenue sur le CFP pour {0}
 mail.cfp_message_to_speaker.subject=[{1}] Message à propos de votre presentation {0}
@@ -551,7 +547,7 @@ qualifications.label=Qualifications du présentateur
 quick.label.simple=Quickie
 remove.sponsorFlag=Retirer le flag sponsor de cette présentation
 shortName=Devoxx FR
-shortYearlyName=Devoxx FR 2014
+shortYearlyName=Devoxx FR 2015
 ssj.label=Server Side Java
 start=Startup presentation
 start.label=
@@ -597,3 +593,21 @@ wl_trackCode=Track
 wl_travel=Transport et logement
 wl_travel.checkbox=Oui, inclure le remboursement
 wl_unknown=Inconnu
+admin.btn.speakersInvited=Tous les speakers invités
+agility.label=Agilité, méthodes et tests
+bigdata.label=Big Data & Analytics
+bof.label.simple=Bird of a Feather
+day-monday=Lundi 10 novembre
+day-thursday=Jeudi 9 avril
+day-tuesday=Mardi 7 avril
+mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
+mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
+mail.notify_proposal.content=Une nouvelle proposition a été envoyée au CFP. Titre [{0}], Track\: [{1}] et Type\: [{2}]
+mail.notify_proposal.subject={0} a soumis un sujet [{1}]
+mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
+mail.proposal_refused.subject=Votre proposition de sujet a été déclinée {0}
+mail.question_to_speaker.subject=[{1}] Nouvelle question postée à propos de {0}
+mail.reset_password_link.subject=Vous avez demandé à ré-initialiser votre code d'accès speaker pour {1}
+msg_pub=Envoyer un message au présentateur
+qualifications2=Qualifications et expériences du présentateur
+question.proposal=Questions sur votre présentation
