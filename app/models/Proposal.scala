@@ -187,7 +187,7 @@ object Proposal {
       client.sismember("Proposals:ByAuthor:" + uuid, proposalId)
   }
 
-  def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
+  def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState):String = Redis.pool.withClient {
     client =>
       // If it's a sponsor talk, we force it to be a conference
       // We also enforce the user id, for security reason
@@ -224,6 +224,8 @@ object Proposal {
 
       // Reflect any changes such as talkType or speaker to the list of accepted/refused talks.
       ApprovedProposal.reflectProposalChanges(proposal)
+
+      proposalId
   }
 
   val proposalForm = Form(mapping(
@@ -331,7 +333,7 @@ object Proposal {
         stateOld: String =>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
-          Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
+          Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk $proposalId from $stateOld to ${newState.code}"))
 
           if (newState == ProposalState.SUBMITTED) {
             client.hset("Proposal:SubmittedDate", proposalId, new Instant().getMillis.toString)
@@ -340,7 +342,7 @@ object Proposal {
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
-        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk ${proposalId} with status ${newState.code}"))
+        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk $proposalId with status ${newState.code}"))
       }
   }
 
@@ -389,9 +391,13 @@ object Proposal {
     changeProposalState(uuid, proposalId, ProposalState.DRAFT)
   }
 
+  def archive(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.ARCHIVED)
+  }
+
   private def loadProposalsByState(uuid: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:${uuid}", s"Proposals:ByState:${proposalState.code}")
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}")
       loadProposalByIDs(allProposalIds, proposalState)
   }
 
@@ -473,7 +479,8 @@ object Proposal {
         isNotDeleted <- checkIsNotMember(client, ProposalState.DELETED, proposalId).toRight(ProposalState.DELETED).right;
         isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
         isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
-        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right
+        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right;
+        isNotArchived <- checkIsNotMember(client, ProposalState.ARCHIVED, proposalId).toRight(ProposalState.ARCHIVED).right
       ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
 
       thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
@@ -570,6 +577,15 @@ object Proposal {
       loadAndParseProposals(allProposalIDs)
   }
 
+  def allDeleted(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = client.smembers("Proposals:ByState:"+ProposalState.DELETED.code)
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.DELETED))
+      }
+  }
+
   def destroy(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
@@ -587,8 +603,12 @@ object Proposal {
         otherSpeaker =>
           tx.srem("Proposals:ByAuthor:" + otherSpeaker, proposal.id)
       }
-
+      tx.hdel("Proposal:SubmittedDate",proposal.id)
       tx.hdel("Proposals", proposal.id)
+      if(proposal.id!=""){
+        tx.del(s"Events:V2:${proposal.id}")
+        tx.del(s"Events:LastUpdated:${proposal.id}")
+      }
       tx.exec()
   }
 
