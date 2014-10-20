@@ -1,22 +1,18 @@
 package controllers
 
-import models._
-import play.api.data._
-import play.api.data.Forms._
-import library._
+import java.io.{File, PrintWriter}
+
+import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import library.search.ElasticSearch
-import play.api.libs.json.Json
-import play.api.i18n.Messages
 import models.Review.ScoreAndTotalVotes
-import play.api.data.validation.Constraints._
-import library.ComputeVotesAndScore
-import library.ComputeLeaderboard
-import library.SendMessageInternal
-import library.SendMessageToSpeaker
-import play.api.libs.json.JsObject
-import org.apache.commons.lang3.{StringUtils, StringEscapeUtils}
-import java.io.{PrintWriter, File}
+import models._
 import org.apache.commons.io.FileUtils
+import org.apache.commons.lang3.StringUtils
+import play.api.data.Forms._
+import play.api.data._
+import play.api.data.validation.Constraints._
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
 
 /**
  * The backoffice controller for the CFP technical committee.
@@ -394,8 +390,6 @@ object CFPAdmin extends SecureCFPController {
   // Returns all speakers
   def allSpeakers(export: Boolean = false, rejected: Boolean = true, accepted: Boolean = true, onlyWithSpeakerPass: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      import net.glxn.qrgen._
-      import library.VCard
 
       val allSpeakers = Speaker.allSpeakers()
 
@@ -482,7 +476,6 @@ object CFPAdmin extends SecureCFPController {
 
   import play.api.data.Form
   import play.api.data.Forms._
-  import play.api.data.format.Formats._
 
   def allCFPWebusers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
