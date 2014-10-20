@@ -348,7 +348,7 @@ btn.abstention=Vote 0 for this talk
 remove.sponsorFlag=Remove the sponsor''s flag on this talk
 
 cfp.isClosed=The CFP is closed
-cfp.isClosed.expl=CFP is currently closed and does not accept new submission.
+cfp.isClosed.expl=CFP is closed and does not accept submission.
 cfp.closed.enter=Sign-in
 tbl.cfp.closed=CFP closed
 cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.

@@ -172,12 +172,22 @@ track.bigdata.title=Cloud, Big Data et NoSQL
 track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
 track.future.title=Future<Devoxx>
 track.future.desc=Java et l''internet des objets, la robotique, la domotique et l''embarqué
- 
+ track.archisec.title=Architecture, Performance & Securité
+track.archisec.desc=Architecture logicielle, performance, encryption et meilleurs pratiques pour développer un logiciel sécurisé.
+archisec.label=Architecture, Performance et Securité
+
+track.agility.title=Agilité, Méthodologie & Tests
+track.agility.desc=Méthode de développement logiciel, TDD, BDD, xDD
+agility.label=Agilité, Methodologie & Tests
+
+track.cloud.title=Cloud & DevOps
+track.cloud.desc=Cloud computing, Platforms as a Service, DevOps
+cloud.label=Cloud & DevOps
+
 # track labels
 java.label=Java SE, Java EE
 web.label=Web, HTML5
 mobile.label=Mobile
-cloud.label=Cloud, Big Data, NoSQL
 agilite.label=Agilité, méthodes et tests
 lg_alter.label=Langages alternatifs
 lgaltern.label=Langages alternatifs
@@ -340,7 +350,7 @@ admin.sp.approved.txt=Ce sujet a été Approuvé par le comité de sélection.
 btn.abstention=Voter 0 pour passer au suivant
  
 cfp.isClosed=Le CFP est fermé
-cfp.isClosed.expl=Le CFP est maintenant fermé. Cependant vous pouvez encore éditer votre proposition, avec quelques restrictions.
+cfp.isClosed.expl=Le CFP est actuellement fermé.
 cfp.closed.enter=S''authentifier
 tbl.cfp.closed=CFP fermé
 cfp.closed.restrictions=Le CFP est fermé. Vous pouvez éditer votre proposition. Cependant, merci de ne pas la modifier complètement par rapport à la version originale, sans quoi nous l''annulerons systématiquement.
@@ -486,7 +496,6 @@ showAgendaByRoom=Agenda par salle
 Abs=0
 admin.btn.tracklead=Track leader
 approved=Speaker a accepté
-archisec.label=Architecture & Securité
 audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet\:\
 \
 1- pour tout le monde, débutant comme expert\
@@ -594,7 +603,6 @@ wl_travel=Transport et logement
 wl_travel.checkbox=Oui, inclure le remboursement
 wl_unknown=Inconnu
 admin.btn.speakersInvited=Tous les speakers invités
-agility.label=Agilité, méthodes et tests
 bigdata.label=Big Data & Analytics
 bof.label.simple=Bird of a Feather
 day-monday=Lundi 10 novembre
