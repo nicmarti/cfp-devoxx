@@ -130,7 +130,7 @@ object ApprovedProposal {
 
   def isRefused(proposalId: String, talkType: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember(s"Refused:${talkType}", proposalId)
+      client.sismember(s"Refused:$talkType", proposalId)
   }
 
   def remainingSlots(talkType: String): Long = {
