@@ -7,7 +7,7 @@
         </p>
     </div>
 
-    @proposals.groupBy(_.track).sliding(3,3).map { case oneRow:Map[Track, List[Proposal]] =>
+    @proposals.groupBy(_.track).sliding(3,3).map { case oneRow =>
         @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
             <div class="large-3 columns trackBox">
                 @tags.publisher.renderIconForTrack(track) @Messages(track.label)
