@@ -25,6 +25,11 @@ package controllers
 
 import models._
 import org.joda.time.{DateTimeZone, DateTime}
+<<<<<<< HEAD
+=======
+import play.api.i18n.Messages
+import play.api.libs.json.{JsNull, Json}
+>>>>>>> bug(timezone): Fixed bug on the REST API about timezone
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.{SimpleResult, _}
