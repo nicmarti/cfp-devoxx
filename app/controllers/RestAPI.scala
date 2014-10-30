@@ -24,6 +24,7 @@
 package controllers
 
 import models._
+import org.joda.time.{DateTimeZone, DateTime}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.{SimpleResult, _}
@@ -382,15 +383,18 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+
               Map(
                 "slotId" -> Json.toJson(slot.id)
                 , "day" -> Json.toJson(slot.day)
                 , "roomId" -> Json.toJson(slot.room.id)
                 , "roomName" -> Json.toJson(slot.room.name)
-                , "fromTime" -> Json.toJson(slot.from.toString("HH:mm"))
-                , "fromTimeMillis" -> Json.toJson(slot.from.getMillis)
-                , "toTime" -> Json.toJson(slot.to.toString("HH:mm"))
-                , "toTimeMillis" -> Json.toJson(slot.to.getMillis)
+                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
                 , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
                 , "break" -> Json.toJson(slot.break)
                 , "roomSetup" -> Json.toJson(slot.room.setup)
@@ -552,15 +556,18 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+
               Map(
                 "slotId" -> Json.toJson(slot.id)
                 , "day" -> Json.toJson(slot.day)
                 , "roomId" -> Json.toJson(slot.room.id)
                 , "roomName" -> Json.toJson(slot.room.name)
-                , "fromTime" -> Json.toJson(slot.from.toString("HH:mm"))
-                , "fromTimeMillis" -> Json.toJson(slot.from.getMillis)
-                , "toTime" -> Json.toJson(slot.to.toString("HH:mm"))
-                , "toTimeMillis" -> Json.toJson(slot.to.getMillis)
+                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
                 , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
                 , "break" -> Json.toJson(slot.break)
                 , "roomSetup" -> Json.toJson(slot.room.setup)
@@ -576,8 +583,6 @@ object RestAPI extends Controller {
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL().toString + ">; rel=\"profile\""))
         }
       }
-
-
   }
 
 }
