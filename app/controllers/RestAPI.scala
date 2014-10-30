@@ -345,7 +345,7 @@ object RestAPI extends Controller {
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
-      val newEtag = finalListOfSlots.hashCode().toString
+      val newEtag = "v2_"+finalListOfSlots.hashCode().toString
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
@@ -518,7 +518,7 @@ object RestAPI extends Controller {
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
-      val newEtag = room.hashCode + finalListOfSlots.hashCode().toString
+      val newEtag = "v2-"+room.hashCode + finalListOfSlots.hashCode().toString
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
