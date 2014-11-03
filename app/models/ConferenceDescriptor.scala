@@ -199,6 +199,8 @@ object ConferenceDescriptor {
 
     val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
+    val keynoteRoom = List(ROOM8)
+
     val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3)
     val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
@@ -431,7 +433,6 @@ object ConferenceDescriptor {
       quickiesWednesdayLunch1 ++ quickiesWednesdayLunch2
     }
 
-
     val quickiesSlotsThursday: List[Slot] = {
 
       val quickiesThursdayLunch1 = ConferenceRooms.allRoomsConf.map {
@@ -449,17 +450,23 @@ object ConferenceDescriptor {
 
     val keynoteSlotsWedneday: List[Slot] = {
 
-      val keynoteWednesdaySlot1 = ConferenceRooms.allRoomsConf.map {
+      val keynoteWednesdaySlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+            new DateTime("2014-11-12T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
+            new DateTime("2014-11-12T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
-      val keynoteWednesdaySlot2 = ConferenceRooms.allRoomsUni.map {
+      val keynoteWednesdaySlot2 = ConferenceRooms.keynoteRoom.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+            new DateTime("2014-11-12T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
+            new DateTime("2014-11-12T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
       }
-      val keynoteWednesdaySlot3 = ConferenceRooms.allRoomsUni.map {
+      val keynoteWednesdaySlot3 = ConferenceRooms.keynoteRoom.map {
         r3 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T11:35:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
+            new DateTime("2014-11-12T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
+            new DateTime("2014-11-12T11:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
       }
       val keynoteWednesdaySlot4 = ConferenceRooms.allRoomsUni.map {
         r4 =>
@@ -471,13 +478,17 @@ object ConferenceDescriptor {
 
     val keynoteSlotsThursday: List[Slot] = {
 
-      val keynoteThursdaySlot1 = ConferenceRooms.allRoomsConf.map {
+      val keynoteThursdaySlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday", new DateTime("2014-11-13T09:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-13T10:20:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
+            new DateTime("2014-11-13T09:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
+            new DateTime("2014-11-13T10:20:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
       val keynoteThursdaySlot2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday", new DateTime("2014-11-13T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-13T19:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
+            new DateTime("2014-11-13T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
+            new DateTime("2014-11-13T19:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
       }
 
       keynoteThursdaySlot1 ++ keynoteThursdaySlot2
