@@ -468,7 +468,7 @@ object ConferenceDescriptor {
             new DateTime("2014-11-12T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
             new DateTime("2014-11-12T11:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
       }
-      val keynoteWednesdaySlot4 = ConferenceRooms.allRoomsUni.map {
+      val keynoteWednesdaySlot4 = ConferenceRooms.keynoteRoom.map {
         r4 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2014-11-12T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2014-11-12T19:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r4)
       }
