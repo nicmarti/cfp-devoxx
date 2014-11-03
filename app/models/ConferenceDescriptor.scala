@@ -481,10 +481,10 @@ object ConferenceDescriptor {
       val keynoteThursdaySlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
-            new DateTime("2014-11-13T09:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
-            new DateTime("2014-11-13T10:20:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
+            new DateTime("2014-11-13T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
+            new DateTime("2014-11-13T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
-      val keynoteThursdaySlot2 = ConferenceRooms.allRoomsConf.map {
+      val keynoteThursdaySlot2 = ConferenceRooms.keynoteRoom.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
             new DateTime("2014-11-13T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
