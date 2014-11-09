@@ -18,13 +18,13 @@ import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
-    if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined) {
+    if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined && Play.isTest==false) {
       CronTask.draftReminder()
       CronTask.elasticSearch()
       CronTask.doComputeStats()
       CronTask.doSetupOpsGenie()
     } else {
-      play.Logger.info("actor.cronUpdater.active is set to false, application won't compute stats")
+      play.Logger.debug("actor.cronUpdater.active is set to false, application won't compute stats")
     }
   }
 
