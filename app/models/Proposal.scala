@@ -536,13 +536,6 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
-      val check = Json.parse(client.hget("Proposals", allProposalIds.head).get).validate[Proposal]
-      check.fold(invalidJson => {
-        play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
-        play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
-        JsNull
-      }
-        , identity)
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
@@ -785,4 +778,50 @@ object Proposal {
     implicit client =>
       client.hget("PreferredDay", proposalId)
   }
+
+  def updateSecondarySpeaker(author:String, proposalId:String, oldSpeakerId:Option[String], newSpeakerId:Option[String])=Redis.pool.withClient {
+    implicit client =>
+      val tx=client.multi()
+      oldSpeakerId.map{
+        speakerId=>
+          tx.srem(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      newSpeakerId.map{
+        speakerId=>
+          tx.sadd(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      tx.exec()
+
+      // load and update proposal
+      findById(proposalId).map{
+        proposal=>
+          val updated = proposal.copy(secondarySpeaker = newSpeakerId)
+          save(author, updated, updated.state)
+      }
+  }
+
+  def updateOtherSpeakers(updatedBy:String,
+                          proposalId:String,
+                          oldOtherSpeakers:List[String],
+                          newOtherSpeakers:List[String])=Redis.pool.withClient {
+    implicit client =>
+      val tx=client.multi()
+      oldOtherSpeakers.map{
+        speakerId=>
+          tx.srem(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      newOtherSpeakers.map{
+        speakerId=>
+          tx.sadd(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      tx.exec()
+
+      // load and update proposal
+      findById(proposalId).map{
+        proposal=>
+          val updated = proposal.copy(otherSpeakers = newOtherSpeakers)
+          save(updatedBy, updated, updated.state)
+      }
+  }
+
 }
