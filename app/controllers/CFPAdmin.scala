@@ -400,13 +400,13 @@ object CFPAdmin extends SecureCFPController {
       val allSpeakers = Speaker.allSpeakers()
 
       val speakers1 = (accepted, onlyWithSpeakerPass) match {
-        case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
-        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filter(s => Proposal.hasOneAcceptedProposal(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+        case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
+        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
         case other => allSpeakers
       }
 
       val speakers = rejected match {
-        case true => allSpeakers.filter(s => Proposal.hasOnlyRejectedProposals(s.uuid)).filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+        case true => allSpeakers.filter(s => Proposal.hasOnlyRejectedProposals(s.uuid))
         case false => speakers1
       }
       export match {
@@ -415,7 +415,7 @@ object CFPAdmin extends SecureCFPController {
           val dir = new File("./public/speakers")
           FileUtils.forceMkdir(dir)
 
-          val file = new File(dir, "speakers_devoxxBE2014_macroman.csv")
+          val file = new File(dir, "speakers_devoxxBE2014_all_macroman.csv")
           val writer = new PrintWriter(file, "Macroman")
 
           writer.println("email,firstName,lastName,company,hasSpeakerBadge,hasOneAccepted,isCFPMember,totalApproved,Proposal details separated by ;")
@@ -467,15 +467,10 @@ object CFPAdmin extends SecureCFPController {
               writer.println()
           }
           writer.close()
-
-
          Ok.sendFile(file, inline = false)
-
-
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }
-
   }
 
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {

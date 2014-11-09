@@ -55,7 +55,6 @@ object CallForPaper extends SecureCFPController {
           val allProposals = Proposal.allMyProposals(uuid)
           Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allProposals))
       })
-
   }
 
 
@@ -151,7 +150,7 @@ object CallForPaper extends SecureCFPController {
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
         proposal => {
-          // If the editor is not the owner then findDraft returns None
+          // If the editor is not the owner then findProposal returns None
           Proposal.findProposal(uuid, proposal.id) match {
             case Some(existingProposal) => {
               // This is an edit operation
@@ -217,21 +216,19 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Check that the current authenticated user is the owner
-  // validate the form and then save and redirect.
+  // validate the form, save and redirect.
   def saveOtherSpeakers(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) => {
-          println("Existing proposal " + proposal.secondarySpeaker)
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
+              Proposal.updateSecondarySpeaker(uuid, proposalId, proposal.secondarySpeaker, validNewSpeakers._1)
+              Proposal.updateOtherSpeakers(uuid, proposalId, proposal.otherSpeakers, validNewSpeakers._2)
               Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
-              val newProposal = proposal.copy(secondarySpeaker = validNewSpeakers._1, otherSpeakers = validNewSpeakers._2)
-              println(newProposal.secondarySpeaker)
-              Proposal.save(uuid, newProposal, proposal.state)
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
             }
           )

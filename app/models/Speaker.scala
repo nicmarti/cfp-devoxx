@@ -92,6 +92,7 @@ case class Speaker(uuid: String
 }
 
 object Speaker {
+
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
@@ -183,6 +184,14 @@ object Speaker {
       }
   }
 
+  def asSetOfSpeakers(speakerIDs:Set[String]):List[Speaker]=Redis.pool.withClient{
+    client=>
+      client.hmget("Speaker", speakerIDs).flatMap{
+        js:String=>
+          Json.parse(js).asOpt[Speaker]
+      }
+  }
+
   def countAll(): Long = Redis.pool.withClient {
     client =>
       client.hlen("Speaker")
@@ -190,7 +199,7 @@ object Speaker {
 
   def needsToAccept(speakerId: String) = Redis.pool.withClient {
     client =>
-      client.hexists("TermsAndConditions", speakerId) == false
+      !client.hexists("TermsAndConditions", speakerId)
   }
 
   def doAcceptTerms(speakerId: String) = Redis.pool.withClient {
@@ -225,6 +234,14 @@ object Speaker {
       }
       allSpeakers
   }
+
+ def allThatDidNotAcceptedTerms():Set[String] = Redis.pool.withClient{
+   client=>
+     val allSpeakerIDs=client.keys("ApprovedSpeakers:*").map(s=>s.substring("ApprovedSpeakers:".length))
+     val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
+     allSpeakerIDs.diff(allThatAcceptedConditions)
+ }
+
 
 }
 

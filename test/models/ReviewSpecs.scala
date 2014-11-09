@@ -102,8 +102,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
 
@@ -135,8 +135,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -170,8 +170,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -205,8 +205,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -244,8 +244,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -288,8 +288,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
@@ -343,8 +343,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
@@ -383,8 +383,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
