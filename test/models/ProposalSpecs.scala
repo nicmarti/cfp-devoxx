@@ -37,7 +37,7 @@ class ProposalSpecs extends PlaySpecification {
   val remoteRedisTestServer = Map(
     "redis.host" -> "localhost"
     , "redis.port" -> "6364"
-    //,"redis.password" -> "test_540240240230423042440230"
+    , "redis.database" -> "1"
   )
   val appWithTestRedis = FakeApplication(additionalConfiguration = remoteRedisTestServer)
 

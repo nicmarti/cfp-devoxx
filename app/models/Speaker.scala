@@ -184,6 +184,11 @@ object Speaker {
       }
   }
 
+  def allSpeakersUUID():Set[String]=Redis.pool.withClient{
+    client=>
+      client.hkeys("Speaker")
+  }
+
   def asSetOfSpeakers(speakerIDs:Set[String]):List[Speaker]=Redis.pool.withClient{
     client=>
       client.hmget("Speaker", speakerIDs).flatMap{
