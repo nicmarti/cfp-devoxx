@@ -68,6 +68,17 @@ object Question {
       }
   }
 
+  def deleteAllQuestionsForProposal(proposalId:String)= Redis.pool.withClient {
+    client =>
+      val allQuestionsIDs = client.smembers(s"Questions:ById:$proposalId")
+      val tx=client.multi()
+      allQuestionsIDs.map{q=>
+        tx.hdel("Questions:v2",q)
+      }
+      tx.del(s"Questions:ById:$proposalId")
+      tx.exec()
+  }
+
   def allQuestions:List[Question]=Redis.pool.withClient{
     client=>
       client.hvals("Questions:v2").map{

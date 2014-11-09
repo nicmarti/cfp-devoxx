@@ -253,4 +253,9 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.showAllQuestions(Question.allQuestions))
   }
 
+  def deleteAllQuestions(proposalId:String)=SecuredAction(IsMemberOf("admin")){
+    implicit request=>
+      Question.deleteAllQuestionsForProposal(proposalId)
+      Redirect(routes.Backoffice.allQuestions())
+  }
 }

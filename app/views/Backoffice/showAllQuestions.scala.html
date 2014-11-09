@@ -1,4 +1,4 @@
-@(questions:List[Question])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allQuestions:List[Question])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin sanity check") {
 
@@ -15,7 +15,11 @@
         </div>
 
         <div class="panel-body">
-@questions.size
+@allQuestions.groupBy(_.proposalId).map{case(proposalId,questions)=>
+    <h5>@proposalId</h5>
+    @questions.size
+    <a href="@routes.Backoffice.deleteAllQuestions(proposalId)" class="btn btn-sm btn-danger">Delete all questions</a>
+}
         </div>
     </div>
     </div>
