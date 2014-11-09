@@ -27,29 +27,6 @@ object Global extends GlobalSettings {
       play.Logger.debug("actor.cronUpdater.active is set to false, application won't compute stats")
     }
 
-    // To fix bug #165 we need to iterate all speakers, then check all proposals and do the appropriate clean-up
-    if (Play.isProd) {
-      Redis.pool.withClient {
-        client =>
-          val tx = client.multi()
-          Speaker.allSpeakersUUID().foreach {
-            speakerUUID =>
-              // println(s"Checking $speakerUUID")
-              Proposal.allProposalsByAuthor(speakerUUID).foreach {
-                case (id, proposal) if proposal.mainSpeaker == speakerUUID =>
-                //println(s"[1] $id mainSpeaker")
-                case (id, proposal) if proposal.secondarySpeaker == Some(speakerUUID) =>
-                //println(s"[2] $id secondarySpeaker")
-                case (id, proposal) if proposal.otherSpeakers.contains(speakerUUID) =>
-                //println(s"[o] $id other")
-                case (id, proposal) =>
-                  println(s"/!\\ $speakerUUID does not belong to proposalId $id")
-                  tx.srem(s"Proposals:ByAuthor:$speakerUUID", id)
-              }
-          }
-          tx.exec()
-      }
-    }
   }
 
   override def onError(request: RequestHeader, ex: Throwable) = {

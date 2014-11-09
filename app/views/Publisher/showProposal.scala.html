@@ -1,4 +1,4 @@
-@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)], questions:List[Question])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String,String)], questions:List[Question])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
 @views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
@@ -86,6 +86,13 @@
                         '_label -> "Please confirm your email address",
                         '_help -> ""
                     )
+                    @helper.inputText(speakerMsg("captcha"),
+                        'class -> "form-control input-large",
+                        'showConstraints -> false ,
+                        '_label -> "To prove that you are not a robot, how much is 500 + 101 ?",
+                        '_help -> ""
+                    )
+
                     @helper.textarea(speakerMsg("msg_pub"),
                         'class -> "form-control input-large",
                         'showConstraints -> true ,

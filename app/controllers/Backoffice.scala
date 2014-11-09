@@ -248,4 +248,9 @@ object Backoffice extends SecureCFPController {
       }
   }
 
+  def allQuestions=SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.showAllQuestions(Question.allQuestions))
+  }
+
 }

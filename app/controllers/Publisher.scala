@@ -28,6 +28,7 @@ import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.Crypto
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
 import akka.util.Crypt
@@ -190,9 +191,10 @@ object Publisher extends Controller {
       "msg_pub" -> nonEmptyText(maxLength = 1500),
       "fullname" -> nonEmptyText(maxLength = 40),
       "email_pub" -> email.verifying(nonEmpty),
-      "email_pub2" -> email.verifying(nonEmpty)
+      "email_pub2" -> email.verifying(nonEmpty),
+      "captcha" -> nonEmptyText(maxLength = 10)
     ) verifying("Email does not match the confirmation email", constraint => constraint match {
-      case (_, _, e1, e2) => e1 == e2
+      case (_, _, e1, e2, zeCap) => e1 == e2 && zeCap == "601"
     })
   )
 
@@ -207,6 +209,8 @@ object Publisher extends Controller {
           val questions = Question.allQuestionsForProposal(proposal.id)
 
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
+
+          Crypto.generateSignedToken
 
           Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg, questions))
       }
@@ -223,10 +227,15 @@ object Publisher extends Controller {
 
           speakerMsg.bindFromRequest().fold(hasErrors =>
             BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)), {
-            case (msg, fullname, email1, _) =>
-              Question.saveQuestion(proposal.id, email1, fullname, msg)
-              ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
-              Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+            case (msg, fullname, email1, _, captcha) =>
+              if (msg.contains("Cialis") || msg.contains("Viagra") || msg.contains("Casino")) {
+                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+              } else {
+                Question.saveQuestion(proposal.id, email1, fullname, msg)
+                ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
+                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+              }
+
           }
           )
 
