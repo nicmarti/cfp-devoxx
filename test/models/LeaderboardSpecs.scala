@@ -49,7 +49,8 @@ class LeaderboardSpecs extends PlaySpecification {
       }
 
       // WHEN
-      val speaker = Speaker("uuid", "email@test.fr", Some("Nic"), "bio", None, Some("@nmartignole"), None, Some("Innoteria"), Some("http://www.touilleur-express.fr"), Some("Nicolas"), Some("Developpeur"))
+      val speaker = Speaker("uuid", "email@test.fr", Some("Nic"), "bio", None, Some("@nmartignole"), None, 
+        Some("Innoteria"), Some("http://www.touilleur-express.fr"), Some("Nicolas"), Some("Developpeur"))
       Speaker.save(speaker)
 
       Leaderboard.computeStats()
@@ -80,8 +81,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -114,8 +115,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -150,8 +151,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -198,8 +199,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -254,8 +255,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
@@ -295,8 +296,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
@@ -312,8 +313,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
@@ -370,8 +371,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
@@ -387,8 +388,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
@@ -419,8 +420,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.UNKNOWN
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
@@ -436,8 +437,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , state = ProposalState.SUBMITTED
         , sponsorTalk = false
         , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
-        , demoLevel = "novice"
-        , userGroup = false
+        , demoLevel = Some("novice")
+        , userGroup = None
         , wishlisted = None)
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 

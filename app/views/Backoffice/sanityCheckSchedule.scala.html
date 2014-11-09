@@ -1,4 +1,4 @@
-@(declined:List[Slot], approved:List[Slot], acceptedThenChangedToOtherState:List[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(declined:List[Slot], approved:List[Slot], acceptedThenChangedToOtherState:List[Slot], speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin sanity check") {
 
@@ -71,7 +71,9 @@
                 }
 
             }else{
+                <div class="alert alert-success">
                 <p>Ok! There is no talk with status "APPROVED" currently scheduled.</p>
+                </div>
             }
 
             <h3>List of talks with status "Declined"</h3>
@@ -93,7 +95,9 @@
                     </div>
                 }
             }else{
-             <p>Ok! No talk with status declined on the agenda.</p>
+                <div class="alert alert-success">
+                    <p>Ok! No talk with status declined on the agenda.</p>
+                </div>
             }
 
             <h3>List of talks with status "Declined" after agenda publication</h3>
@@ -122,7 +126,19 @@
                 </div>
 
             }
+            @if(speakers.nonEmpty){
+            <h3>Speakers that have not yet accepted Terms&Conditions</h3>
+                <p>Speaker's bio is not displayed on web site. Speaker is not listed on REST API and SQL export.</p>
+            <strong>@speakers.length speaker(s)</strong><br>
+            @speakers.map{speaker:Speaker=>
+              @speaker.cleanName <a href="mailto:@speaker.email">@speaker.email</a> <br>
 
+            }
+            }
+            @if(speakers.isEmpty){
+                <h3>Speakers ok</h3>
+                <p>All speakers accepted Terms&Conditions</p>
+            }
         </div>
     </div>
     </div>

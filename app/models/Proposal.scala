@@ -22,14 +22,14 @@ case class ProposalType(id: String, label: String)
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]
 
-  val UNKNOWN = ProposalType(id="unknown", label="unknown.label")
+  val UNKNOWN = ProposalType(id = "unknown", label = "unknown.label")
 
   val all = ConferenceDescriptor.ConferenceProposalTypes.ALL
   val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
 
   def allForCombos = {
     val onlyThoseThatShouldBeDisplayed = all.filterNot(_ == UNKNOWN)
-    val finalFormat=onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
+    val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
     finalFormat
   }
 
@@ -37,23 +37,23 @@ object ProposalType {
 
 
   def parse(proposalType: String): ProposalType = {
-   all.find(p => p.id == proposalType).getOrElse(UNKNOWN)
+    all.find(p => p.id == proposalType).getOrElse(UNKNOWN)
   }
 
-  val audienceLevels:Seq[(String,String)]={
+  val audienceLevels: Seq[(String, String)] = {
     List(
-      ("l1","level1.label")
-      , ("l2","level2.label")
-      , ("l3","level3.label")
+      ("l1", "level1.label")
+      , ("l2", "level2.label")
+      , ("l3", "level3.label")
     )
   }.toSeq
 
-  val demoLevels:Seq[(String,String)]={
+  val demoLevels: Seq[(String, String)] = {
     List(
-      ("d1","demoLevel1.label")
-      , ("d2","demoLevel2.label")
-      , ("d3","demoLevel3.label")
-      , ("d4","demoLevel4.label"))
+      ("d1", "demoLevel1.label")
+      , ("d2", "demoLevel2.label")
+      , ("d3", "demoLevel3.label")
+      , ("d4", "demoLevel4.label"))
   }.toSeq
 }
 
@@ -132,25 +132,25 @@ case class Proposal(id: String,
                     sponsorTalk: Boolean = false,
                     track: Track,
                     demoLevel: Option[String],
-                    userGroup:Option[Boolean],
-                    wishlisted:Option[Boolean]=None) {
+                    userGroup: Option[Boolean],
+                    wishlisted: Option[Boolean] = None) {
 
-  def escapedTitle:String=title match{
+  def escapedTitle: String = title match {
     case null => ""
-    case t => StringUtils.stripAccents(t.replaceAll(" ","_").trim)
+    case t => StringUtils.stripAccents(t.replaceAll(" ", "_").trim)
   }
 
   def allSpeakerUUIDs: List[String] = {
     mainSpeaker :: (secondarySpeaker.toList ++ otherSpeakers)
   }
 
-  def allSpeakers:List[Speaker]={
-    allSpeakerUUIDs.flatMap{uuid=>
+  def allSpeakers: List[Speaker] = {
+    allSpeakerUUIDs.flatMap { uuid =>
       Speaker.findByUUID(uuid)
     }
   }
 
-  def allSpeakersGravatar:List[String]={
+  def allSpeakersGravatar: List[String] = {
     allSpeakers.flatMap(_.avatarUrl)
   }
 
@@ -186,8 +186,8 @@ object Proposal {
 
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
     client =>
-    // If it's a sponsor talk, we force it to be a conference
-    // We also enforce the user id, for security reason
+      // If it's a sponsor talk, we force it to be a conference
+      // We also enforce the user id, for security reason
       val proposalWithMainSpeaker = if (proposal.sponsorTalk) {
         proposal.copy(talkType = ConferenceDescriptor.current().conferenceSponsor.sponsorProposalType, mainSpeaker = authorUUID)
       } else {
@@ -225,18 +225,18 @@ object Proposal {
 
   val proposalForm = Form(mapping(
     "id" -> optional(text)
-    ,    "lang" -> text
-    ,    "title" -> nonEmptyText(maxLength = 125)
-    ,     "secondarySpeaker" -> optional(text)
-    ,     "otherSpeakers" -> list(text)
-    ,     "talkType" -> nonEmptyText
-    ,     "audienceLevel" -> text
-    ,     "summary" -> nonEmptyText(maxLength = 1250)
-    ,     "privateMessage" -> nonEmptyText(maxLength = 3500)
-    ,     "sponsorTalk" -> boolean
-    ,     "track" -> nonEmptyText
-    ,     "demoLevel" -> optional(text)
-    ,     "userGroup" -> optional(boolean)
+    , "lang" -> text
+    , "title" -> nonEmptyText(maxLength = 125)
+    , "secondarySpeaker" -> optional(text)
+    , "otherSpeakers" -> list(text)
+    , "talkType" -> nonEmptyText
+    , "audienceLevel" -> text
+    , "summary" -> nonEmptyText(maxLength = 1250)
+    , "privateMessage" -> nonEmptyText(maxLength = 3500)
+    , "sponsorTalk" -> boolean
+    , "track" -> nonEmptyText
+    , "demoLevel" -> optional(text)
+    , "userGroup" -> optional(boolean)
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = {
@@ -254,8 +254,8 @@ object Proposal {
                           privateMessage: String,
                           sponsorTalk: Boolean,
                           track: String,
-                          demoLevel:Option[String],
-                          userGroup:Option[Boolean] ): Proposal = {
+                          demoLevel: Option[String],
+                          userGroup: Option[Boolean]): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
       Messages("longYearlyName"),
@@ -280,7 +280,7 @@ object Proposal {
 
   def isNew(id: String): Boolean = Redis.pool.withClient {
     client =>
-    // Important when we create a new proposal
+      // Important when we create a new proposal
       client.hexists("Proposals", id) == false
   }
 
@@ -301,7 +301,7 @@ object Proposal {
       // Do the operation if and only if we changed the Track
       maybeExistingTrackId.map {
         oldTrackId: String =>
-        // SMOVE is also a O(1) so it is faster than a SREM and SADD
+          // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
           client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
@@ -320,13 +320,13 @@ object Proposal {
 
   def changeProposalState(uuid: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
     client =>
-    // Same kind of operation for the proposalState
+      // Same kind of operation for the proposalState
       val maybeExistingState = for (state <- ProposalState.allAsCode if client.sismember("Proposals:ByState:" + state, proposalId)) yield state
 
       // Do the operation on the ProposalState
       maybeExistingState.filterNot(_ == newState.code).foreach {
         stateOld: String =>
-        // SMOVE is also a O(1) so it is faster than a SREM and SADD
+          // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
           Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
 
@@ -350,8 +350,8 @@ object Proposal {
   }
 
   def delete(uuid: String, proposalId: String) {
-    Proposal.findById(proposalId).map{
-      proposal=>
+    Proposal.findById(proposalId).map {
+      proposal =>
         ApprovedProposal.cancelApprove(proposal)
         ApprovedProposal.cancelRefuse(proposal)
     }
@@ -457,11 +457,11 @@ object Proposal {
 
   def findProposalState(proposalId: String): Option[ProposalState] = Redis.pool.withClient {
     client =>
-    // I use a for-comprehension to check each of the Set (O(1) operation)
-    // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
-    // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
-    // Here I do the opposite for performance reasons. NMA.
-    // This code retrieves the proposalState in less than 20-30ms.
+      // I use a for-comprehension to check each of the Set (O(1) operation)
+      // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
+      // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
+      // Here I do the opposite for performance reasons. NMA.
+      // This code retrieves the proposalState in less than 20-30ms.
       val thisProposalState = for (
         isNotSubmitted <- checkIsNotMember(client, ProposalState.SUBMITTED, proposalId).toRight(ProposalState.SUBMITTED).right;
         isNotDraft <- checkIsNotMember(client, ProposalState.DRAFT, proposalId).toRight(ProposalState.DRAFT).right;
@@ -517,7 +517,7 @@ object Proposal {
 
   def allDrafts(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIds = client.smembers("Proposals:ByState:"+ProposalState.DRAFT.code)
+      val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.DRAFT.code)
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.DRAFT))
@@ -536,13 +536,6 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
-      val check=Json.parse(client.hget("Proposals",allProposalIds.head).get).validate[Proposal]
-      check.fold(invalidJson=> {
-        play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
-        play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
-        JsNull
-        }
-        , identity)
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
@@ -734,6 +727,12 @@ object Proposal {
       loadProposalByIDs(allProposalIds, ProposalState.ACCEPTED).filter(_.talkType.id == talkType)
   }
 
+  def allAcceptedByTalkType(talkTypes: List[String]): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.smembers(s"Proposals:ByState:${ProposalState.ACCEPTED.code}")
+      loadProposalByIDs(allProposalIds, ProposalState.ACCEPTED).filter(p => talkTypes.contains(p.talkType.id))
+  }
+
   def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
@@ -760,23 +759,69 @@ object Proposal {
       onlyAcceptedOrApproved.filter(proposal => ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)).nonEmpty
   }
 
-  def setPreferredDay(proposalId:String, day:String)=Redis.pool.withClient{
-    implicit client=>
+  def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {
+    implicit client =>
       client.hset("PreferredDay", proposalId, day)
   }
 
-  def resetPreferredDay(proposalId:String)=Redis.pool.withClient{
-    implicit client=>
+  def resetPreferredDay(proposalId: String) = Redis.pool.withClient {
+    implicit client =>
       client.hdel("PreferredDay", proposalId)
   }
 
-  def hasPreferredDay(proposalId:String):Boolean=Redis.pool.withClient{
-    implicit client=>
+  def hasPreferredDay(proposalId: String): Boolean = Redis.pool.withClient {
+    implicit client =>
       client.hexists("PreferredDay", proposalId)
   }
 
-  def getPreferredDay(proposalId:String):Option[String]=Redis.pool.withClient{
-    implicit client=>
+  def getPreferredDay(proposalId: String): Option[String] = Redis.pool.withClient {
+    implicit client =>
       client.hget("PreferredDay", proposalId)
   }
+
+  def updateSecondarySpeaker(author:String, proposalId:String, oldSpeakerId:Option[String], newSpeakerId:Option[String])=Redis.pool.withClient {
+    implicit client =>
+      val tx=client.multi()
+      oldSpeakerId.map{
+        speakerId=>
+          tx.srem(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      newSpeakerId.map{
+        speakerId=>
+          tx.sadd(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      tx.exec()
+
+      // load and update proposal
+      findById(proposalId).map{
+        proposal=>
+          val updated = proposal.copy(secondarySpeaker = newSpeakerId)
+          save(author, updated, updated.state)
+      }
+  }
+
+  def updateOtherSpeakers(updatedBy:String,
+                          proposalId:String,
+                          oldOtherSpeakers:List[String],
+                          newOtherSpeakers:List[String])=Redis.pool.withClient {
+    implicit client =>
+      val tx=client.multi()
+      oldOtherSpeakers.map{
+        speakerId=>
+          tx.srem(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      newOtherSpeakers.map{
+        speakerId=>
+          tx.sadd(s"Proposals:ByAuthor:$speakerId",proposalId)
+      }
+      tx.exec()
+
+      // load and update proposal
+      findById(proposalId).map{
+        proposal=>
+          val updated = proposal.copy(otherSpeakers = newOtherSpeakers)
+          save(updatedBy, updated, updated.state)
+      }
+  }
+
 }
