@@ -194,7 +194,7 @@ object Publisher extends Controller {
       "email_pub2" -> email.verifying(nonEmpty),
       "captcha" -> nonEmptyText(maxLength = 10)
     ) verifying("Email does not match the confirmation email", constraint => constraint match {
-      case (_, _, e1, e2, zeCap) => e1 == e2 && zeCap == "601"
+      case (_, _, e1, e2, zeCap) => e1 == e2 && zeCap == "408"
     })
   )
 
