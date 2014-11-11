@@ -24,7 +24,7 @@
 package models
 
 import library.Redis
-import play.api.test.{WithApplication, FakeApplication, PlaySpecification}
+import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
 
 /**
  * Tests for archive Proposal
@@ -40,7 +40,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
   val appWithTestRedis = () => FakeApplication(additionalConfiguration = testRedis)
 
   "ArchivedProposal" should {
-    "prune a DELETED proposal that have never been submittted" in new WithApplication(app = appWithTestRedis()) {
+    "prune a DELETED proposal that have never been submitted" in new WithApplication(app = appWithTestRedis()) {
 
       // WARN : flush the DB, but on Database = 1
       Redis.pool.withClient {
@@ -93,7 +93,6 @@ class ArchivedProposalSpecs extends PlaySpecification {
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
 
       Proposal.submit(uuidTest, newProposalId)
-
       Proposal.draft(uuidTest, newProposalId)
 
       val newProposal = Proposal.findById(newProposalId).get
@@ -110,8 +109,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
       Proposal.allMyProposals(uuidTest) mustEqual Nil
     }
 
-    "set the ProposalState to archive when we decide to archive a proposal" in {
-        // WARN : flush the DB, but on Database = 1
+    "set the ProposalState to archive when we decide to archive a proposal" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB, but on Database = 1
       Redis.pool.withClient {
         client =>
           client.select(1)
@@ -120,10 +119,11 @@ class ArchivedProposalSpecs extends PlaySpecification {
 
       // GIVEN a submitted proposal
       val uuidTest = "test_user"
-      val proposal = Proposal.validateNewProposal(None, "fr", "test proposal deleted", None, Nil,
+      val proposal = Proposal.validateNewProposal(None, "fr", "test proposal submitted", None, Nil,
         ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
         "audience level", "summary", "private message", sponsorTalk = false,
-        ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"),
+        ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+        Option("beginner"),
         userGroup = None)
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
@@ -134,6 +134,40 @@ class ArchivedProposalSpecs extends PlaySpecification {
 
       // THEN
       Proposal.findProposalState(newProposalId) mustEqual Some(ProposalState.ARCHIVED)
+    }
+
+    "remove an approved Proposal from the list of Approved talk when archived" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB, but on Database = 1
+      Redis.pool.withClient {
+        client =>
+          client.select(1)
+          client.flushDB()
+      }
+
+      // GIVEN a submitted proposal
+      val uuidTest = "test_user"
+      val proposal = Proposal.validateNewProposal(None, "fr", "test proposal accepted", None, Nil,
+        ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+        "audience level", "summary", "private message", sponsorTalk = false,
+        ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+        Option("beginner"),
+        userGroup = None)
+
+      val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
+      Proposal.submit(uuidTest, newProposalId)
+      Proposal.accept(uuidTest, newProposalId)
+
+      val savedProposal = Proposal.findById(newProposalId).get
+      ApprovedProposal.approve(savedProposal)
+
+      // WHEN
+      ArchiveProposal.archive(newProposalId)
+
+      // THEN
+      ApprovedProposal.allApproved() mustEqual Set.empty[Proposal]
+      ApprovedProposal.allApprovedByTalkType(ConferenceDescriptor.ConferenceProposalTypes.CONF.id) mustEqual Nil
+      ApprovedProposal.countApproved("all") mustEqual 0
+      ApprovedProposal.allAcceptedTalksForSpeaker(uuidTest).toList mustEqual Nil
     }
 
   }

@@ -25,8 +25,6 @@ package models
 
 import library.Redis
 
-import scala.concurrent.Future
-
 /**
  * An Entity to represent archived proposal
  * @author created by N.Martignole, Innoteria, on 19/10/2014.
@@ -45,7 +43,45 @@ object ArchiveProposal {
     "ok"
   }
 
-  def archive(proposalId:String)={
+  def archive(proposalId: String) = {
+
+    val maybeProposal = Proposal.findById(proposalId)
+
+    maybeProposal.filter(ApprovedProposal.isApproved).map {
+      approvedProposal: Proposal =>
+        ApprovedProposal.cancelApprove(approvedProposal)
+        archiveApprovedProposal(approvedProposal)
+    }
+
+    maybeProposal.filter(ApprovedProposal.isRefused).map {
+      approvedProposal: Proposal =>
+        ApprovedProposal.cancelApprove(approvedProposal)
+        archiveApprovedProposal(approvedProposal)
+    }
+
+    // Finally
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
+
+  }
+
+  def archiveApprovedProposal(proposal: Proposal) = Redis.pool.withClient {
+    implicit client =>
+      val conferenceCode = ConferenceDescriptor.current().eventCode
+      val tx = client.multi()
+      tx.hset(s"Archived", proposal.id.toString, conferenceCode)
+      tx.sadd(s"ArchivedById:${conferenceCode}", proposal.id.toString)
+      tx.sadd(s"Archived:${conferenceCode}" + proposal.talkType.id, proposal.id.toString)
+      tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + proposal.mainSpeaker, proposal.id.toString)
+      proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + secondarySpeaker, proposal.id.toString))
+      proposal.otherSpeakers.foreach {
+        otherSpeaker: String =>
+          tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + otherSpeaker, proposal.id.toString)
+      }
+      tx.exec()
+  }
+
+  def isArchived(proposalId: String): Boolean = Redis.pool.withClient {
+    implicit client =>
+      client.hexists("Archived", proposalId)
   }
 }
