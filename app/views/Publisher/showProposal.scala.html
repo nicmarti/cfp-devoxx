@@ -72,9 +72,6 @@
     <p>Invalid captcha</p>
 </div>
 }
-
-                    @flash
-<hr>
                 @helper.form(action = routes.Publisher.sendMessageToSpeaker(proposal.id)) {
                     @helper.inputText(speakerMsg("fullname"),
                         'class -> "form-control input-large",
