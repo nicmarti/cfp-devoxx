@@ -1,4 +1,4 @@
-@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String,String)], questions:List[Question])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String,String)], questions:List[Question], t1:Int, t2:Int)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
 @views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
@@ -67,6 +67,14 @@
 </div>
 }
 
+@if(flash.get("error").isDefined){
+<div class="alert-box error">
+    <p>Invalid captcha</p>
+</div>
+}
+
+                    @flash
+<hr>
                 @helper.form(action = routes.Publisher.sendMessageToSpeaker(proposal.id)) {
                     @helper.inputText(speakerMsg("fullname"),
                         'class -> "form-control input-large",
@@ -86,11 +94,12 @@
                         '_label -> "Please confirm your email address",
                         '_help -> ""
                     )
+                    <p>To prove that you are not a robot, how much is @t1 + @t2 ?</p>
                     @helper.inputText(speakerMsg("captcha"),
                         'class -> "form-control input-large",
-                        'showConstraints -> false ,
-                        '_label -> "To prove that you are not a robot, how much is 200 + 208 ?",
-                        '_help -> ""
+                        'showConstraints -> false,
+                        '_label -> "",
+                    '_help -> ""
                     )
 
                     @helper.textarea(speakerMsg("msg_pub"),

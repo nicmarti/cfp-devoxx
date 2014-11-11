@@ -5,7 +5,7 @@ import play.Project._
 /**
  * Build conf file.
  * Import Scala Sedis driver for Redis.
- * @nmartignole
+ * @author : nmartignole
  */
 object ApplicationBuild extends Build {
 
@@ -13,6 +13,7 @@ object ApplicationBuild extends Build {
   val appVersion = "1.3-SNAPSHOT"
 
   val appDependencies = Seq(
+    filters, // protection against CSRF
     "redis.clients" % "jedis" % "2.1.0"
     , "com.typesafe" %% "play-plugins-mailer" % "2.1.0"
     , "org.apache.commons" % "commons-lang3" % "3.1"
@@ -25,7 +26,6 @@ object ApplicationBuild extends Build {
   )
 
   libraryDependencies ++= Seq(
-
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

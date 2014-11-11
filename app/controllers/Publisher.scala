@@ -23,18 +23,19 @@
 
 package controllers
 
+import akka.util.Crypt
 import library.search.ElasticSearch
+import play.api.libs.Crypto
+import play.api.libs.json.{JsObject, Json}
+import library.{LogURL, SendQuestionToSpeaker, ZapActor}
 import models._
+import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import play.api.libs.Crypto
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
-import akka.util.Crypt
-import library.{SendQuestionToSpeaker, ZapActor, LogURL}
-import play.api.cache.Cache
 
+import scala.util.Random
 
 /**
  * Simple content publisher
@@ -194,53 +195,87 @@ object Publisher extends Controller {
       "email_pub2" -> email.verifying(nonEmpty),
       "captcha" -> nonEmptyText(maxLength = 10)
     ) verifying("Email does not match the confirmation email", constraint => constraint match {
-      case (_, _, e1, e2, zeCap) => e1 == e2 && zeCap == "408"
+      case (_, _, e1, e2, _) =>
+        e1 == e2
     })
   )
 
-  def showDetailsForProposal(proposalId: String, proposalTitle: String) = Action {
-    implicit request =>
-      Proposal.findById(proposalId) match {
-        case None => NotFound("Proposal not found")
-        case Some(proposal) =>
-          val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
-          val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
-
-          val questions = Question.allQuestionsForProposal(proposal.id)
-
-          ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
-
-          Crypto.generateSignedToken
-
-          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg, questions))
+  private def captchaIsValid(cap: String)(implicit req: RequestHeader): Boolean = cap match {
+    case null => false
+    case "" => false
+    case someValue =>
+      try {
+        val fromSession = req.session.get("h").getOrElse("???")
+        Crypto.sign(someValue+ "some_salt") == fromSession
+      } catch {
+        case other: Throwable => false
       }
   }
 
-  def sendMessageToSpeaker(proposalId: String) = Action {
-    implicit request =>
-      Proposal.findById(proposalId) match {
-        case None => NotFound("Proposal not found")
-        case Some(proposal) =>
-          val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
-          val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
-          val questions = Question.allQuestionsForProposal(proposal.id)
 
-          speakerMsg.bindFromRequest().fold(hasErrors =>
-            BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)), {
-            case (msg, fullname, email1, _, captcha) =>
-              if (msg.contains("Cialis") || msg.contains("Viagra") || msg.contains("Casino")) {
-                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
-              } else {
-                Question.saveQuestion(proposal.id, email1, fullname, msg)
-                ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
-                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
-              }
+  def showDetailsForProposal(proposalId: String, proposalTitle: String) =
+    Action {
+      implicit request =>
+        Proposal.findById(proposalId) match {
+          case None => NotFound("Proposal not found")
+          case Some(proposal) =>
+            val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
+            val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
 
-          }
-          )
+            val questions = Question.allQuestionsForProposal(proposal.id)
 
-      }
-  }
+            ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
+
+            val t1 = Random.nextInt(100)
+            val t2 = Random.nextInt(100)
+            val total = t1 + t2
+            val obfuscated = Crypto.sign(total.toString + "some_salt")
+            Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg, questions, t1, t2)).withSession(("h", obfuscated))
+        }
+    }
+
+
+  def sendMessageToSpeaker(proposalId: String) =
+    Action {
+      implicit request =>
+        Proposal.findById(proposalId) match {
+          case None => NotFound("Proposal not found")
+          case Some(proposal) =>
+            val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
+            val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+            val questions = Question.allQuestionsForProposal(proposal.id)
+
+            speakerMsg.bindFromRequest().fold(hasErrors => {
+              val t1 = Random.nextInt(100)
+              val t2 = Random.nextInt(100)
+              val total = t1 + t2
+              val obfuscated = (total + 2456).toString.reverse
+              BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions, t1, t2)).withSession(("h", obfuscated))
+            }, {
+              case (msg, fullname, email1, _, captcha) if captchaIsValid(captcha) =>
+                if (msg.contains("Cialis") || msg.contains("Viagra") || msg.contains("Casino")) {
+                  Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+                } else {
+                  Question.saveQuestion(proposal.id, email1, fullname, msg)
+                  ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
+                  Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+                }
+              case (msg, fullname, email1, email2, _) =>
+                println("Invalid captcha")
+                val t1 = Random.nextInt(100)
+                val t2 = Random.nextInt(100)
+                val total = t1 + t2
+                val obfuscated = (total + 2456).toString.reverse
+                BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot,
+                  speakerMsg.fill(msg, fullname, email1, email2, "").withError("captcha","Invalid captcha").withGlobalError("Invalid captcha dude..."), questions, t1, t2)
+                ).withSession(("h", obfuscated))
+                .flashing("error"->"Invalid captcha please try again")
+
+            }
+            )
+        }
+    }
+
 
   def allQuestions() = Action {
     implicit request =>
