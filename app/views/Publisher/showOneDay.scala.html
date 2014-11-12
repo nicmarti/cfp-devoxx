@@ -23,10 +23,8 @@
                     <td>@roomName.name</td>
                 }
                 </tr>
-@slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { date =>
-<!-- @date //-->
-}
-            @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
+
+            @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                     <tr >
                         <th class="timeSlot">
                             @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
@@ -36,7 +34,6 @@
                         }
                     </tr>
             }
-
 
             <tr>
                 <th><i class="icon-time"></i> Room</th>
