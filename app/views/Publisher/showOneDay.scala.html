@@ -23,7 +23,9 @@
                     <td>@roomName.name</td>
                 }
                 </tr>
-
+@slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { date =>
+<!-- @date //-->
+}
             @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
                     <tr >
                         <th class="timeSlot">
