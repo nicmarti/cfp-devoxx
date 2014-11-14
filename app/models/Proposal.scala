@@ -505,7 +505,8 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.hkeys("Proposals")
       val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
-      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDDeleted)
+      val allProposalIDArchived= client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDDeleted).diff(allProposalIDArchived)
       onlyValidProposalIDs
   }
 
