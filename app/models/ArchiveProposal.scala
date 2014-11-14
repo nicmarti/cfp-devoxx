@@ -31,12 +31,20 @@ import library.Redis
  */
 
 object ArchiveProposal {
-  def pruneAllDeleted() = {
-    Proposal.allDeleted().foreach(Proposal.destroy)
+  def pruneAllDeleted(): Int = {
+    Proposal.allDeleted().foldLeft(0) {
+      (cpt: Int, proposal: Proposal) =>
+        Proposal.destroy(proposal)
+        cpt + 1
+    }
   }
 
-  def pruneAllDraft() = {
-    Proposal.allDrafts().foreach(Proposal.destroy)
+  def pruneAllDraft(): Int = {
+    Proposal.allDrafts().foldLeft(0) {
+      (cpt: Int, proposal: Proposal) =>
+        Proposal.destroy(proposal)
+        cpt + 1
+    }
   }
 
   def doArchive(): String = {
@@ -62,6 +70,17 @@ object ArchiveProposal {
     // Finally
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
 
+  }
+
+  def archiveAll(proposalTypeId:String)={
+
+    val proposalType = ConferenceDescriptor.ConferenceProposalTypes.valueOf(proposalTypeId)
+
+    val proposals = Proposal.loadAndParseProposals(Proposal.allProposalIDsNotDeleted).values.filter(_.talkType == proposalType)
+
+    proposals.foreach(proposal => archive(proposal.id))
+
+    proposals.size
   }
 
   def archiveApprovedProposal(proposal: Proposal) = Redis.pool.withClient {
