@@ -370,6 +370,169 @@ class ProposalSpecs extends PlaySpecification {
     Proposal.findProposalState("TST-DEL") must beNone
     Proposal.findProposalState("TST-001") must beSome
     Proposal.findProposalState("TST-001") must beSome
+  }
 
+  "return the list of Proposal to delete not including archived and deleted proposals" in new WithApplication(appWithTestRedis) {
+        // WARN : flush the DB, but on Database = 1
+    Redis.pool.withClient {
+      client =>
+        client.select(1)
+        client.flushDB()
+    }
+
+    val proposalId = "TST-001333"
+     val keepProposal = Proposal.validateNewProposal(Some(proposalId),
+      "fr",
+      "test proposal deleted",
+      None,
+      Nil,
+      sampleProposalType.CONF.id,
+      "audience level",
+      "summary",
+      "private message",
+      sponsorTalk = false,
+      ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+      Option("beginner"),
+      userGroup = None)
+
+    Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
+
+    // Submit the keepProposal
+    Proposal.submit("user_1234", proposalId)
+
+    // Then the Set of IDs contains one
+    Proposal.allProposalIDsNotDeleted mustEqual Set(proposalId)
+  }
+
+  "return no result when a Draft proposal has been destroyed" in new WithApplication(appWithTestRedis) {
+        // WARN : flush the DB, but on Database = 1
+    Redis.pool.withClient {
+      client =>
+        client.select(1)
+        client.flushDB()
+    }
+
+    val proposalId = "TST-001333"
+     val keepProposal = Proposal.validateNewProposal(Some(proposalId),
+      "fr",
+      "test proposal deleted",
+      None,
+      Nil,
+      sampleProposalType.CONF.id,
+      "audience level",
+      "summary",
+      "private message",
+      sponsorTalk = false,
+      ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+      Option("beginner"),
+      userGroup = None)
+
+    Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
+
+    // Archive this DRAFT Proposal
+    ArchiveProposal.pruneAllDraft()
+
+    // Then the Set of IDs contains none
+    Proposal.allProposalIDsNotDeleted mustEqual Set.empty[Proposal]
+  }
+
+  "return no result when a deleted proposal has been destroyed" in new WithApplication(appWithTestRedis) {
+        // WARN : flush the DB, but on Database = 1
+    Redis.pool.withClient {
+      client =>
+        client.select(1)
+        client.flushDB()
+    }
+
+    val proposalId = "TST-001333"
+     val keepProposal = Proposal.validateNewProposal(Some(proposalId),
+      "fr",
+      "test proposal deleted",
+      None,
+      Nil,
+      sampleProposalType.CONF.id,
+      "audience level",
+      "summary",
+      "private message",
+      sponsorTalk = false,
+      ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+      Option("beginner"),
+      userGroup = None)
+
+    Proposal.save("user_1234", keepProposal, ProposalState.DELETED)
+
+    // Archive this DRAFT Proposal
+    ArchiveProposal.pruneAllDeleted()
+
+    // Then the Set of IDs contains none
+    Proposal.allProposalIDsNotDeleted mustEqual Set.empty[Proposal]
+  }
+
+  "return a Proposal not including deleted or archived talk" in new WithApplication(appWithTestRedis) {
+        // WARN : flush the DB, but on Database = 1
+    Redis.pool.withClient {
+      client =>
+        client.select(1)
+        client.flushDB()
+    }
+
+
+    // 1-
+    val proposalIdToDelete = "DEL-001333"
+     val proposalToDelete = Proposal.validateNewProposal(Some(proposalIdToDelete),
+      "fr",
+      "test proposal deleted",
+      None,
+      Nil,
+      sampleProposalType.CONF.id,
+      "audience level",
+      "summary",
+      "private message",
+      sponsorTalk = false,
+      ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+      Option("beginner"),
+      userGroup = None)
+
+    Proposal.save("user_1234", proposalToDelete, ProposalState.DELETED)
+
+    // 2-
+    val proposalIdToArchive = "ARC-001333"
+     val archivedProposal = Proposal.validateNewProposal(Some(proposalIdToArchive),
+      "fr",
+      "test proposal archive",
+      None,
+      Nil,
+      sampleProposalType.CONF.id,
+      "audience level",
+      "summary",
+      "private message",
+      sponsorTalk = false,
+      ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+      Option("beginner"),
+      userGroup = None)
+
+    Proposal.save("user_1234", archivedProposal, ProposalState.ARCHIVED)
+
+    // 3-
+    val proposalId = "OK-001333"
+     val someProposal = Proposal.validateNewProposal(Some(proposalId),
+      "fr",
+      "some Proposal",
+      None,
+      Nil,
+      sampleProposalType.CONF.id,
+      "audience level",
+      "summary",
+      "private message",
+      sponsorTalk = false,
+      ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
+      Option("beginner"),
+      userGroup = None)
+
+    Proposal.save("user_1234", someProposal, ProposalState.SUBMITTED)
+
+
+    // Then the Set of IDs contains none
+    Proposal.allProposalIDsNotDeleted mustEqual Set(proposalId)
   }
 }

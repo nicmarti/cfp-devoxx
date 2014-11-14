@@ -113,6 +113,17 @@ object ConferenceDescriptor {
 
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
 
+    def valueOf(id:String):ProposalType = id match{
+      case "conf" => CONF
+      case "uni" => UNI
+      case "tia" => TIA
+      case "lab" => LAB
+      case "quick" => QUICK
+      case "bof" => BOF
+      case "key" => KEY
+      case "other" => OTHER
+    }
+
   }
 
   object ConferenceProposalConfigurations {
