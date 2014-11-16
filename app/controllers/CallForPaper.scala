@@ -53,7 +53,8 @@ object CallForPaper extends SecureCFPController {
       }, {
         case (speaker, webuser) =>
           val allProposals = Proposal.allMyProposals(uuid)
-          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allProposals))
+          val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
+          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allProposals, totalArchived))
       })
   }
 

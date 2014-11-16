@@ -226,6 +226,8 @@ table.pres.doDelete=Delete
 
 total.draft={0} proposals
 total.draft.sing={0} proposal
+total.archived={0} archived
+total.archived.sing={0} archived
 table.pres.speaker=Speaker
 table.pres.state=State
 table.speaker.addremove=Add/Remove speakers
