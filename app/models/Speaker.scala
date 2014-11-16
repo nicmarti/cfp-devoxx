@@ -34,9 +34,11 @@ import com.github.rjeschke.txtmark.Processor
 import org.apache.commons.lang3.StringUtils
 
 /**
- * Speaker
+ * Speaker profile, is used mainly to show details.
  *
- * Author: nicolas
+ * Webuser is the "technical" and internal web user representation.
+ *
+ * Author: nicolas martignole
  * Created: 28/09/2013 11:01
  */
 case class Speaker(uuid: String

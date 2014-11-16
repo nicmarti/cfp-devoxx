@@ -233,14 +233,14 @@ object ApprovedProposal {
 
   def allApprovedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Approved:" + talkType)
+      val allProposalIDs = client.smembers("Approved:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
 
   def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Refused:" + talkType)
+      val allProposalIDs = client.smembers("Refused:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
@@ -250,7 +250,7 @@ object ApprovedProposal {
       val allKeys = client.keys("Approved:*")
       val finalList = allKeys.map {
         key =>
-          val allProposalIDs = client.smembers(key).toList
+          val allProposalIDs = client.smembers(key).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")).toList
           val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
           allProposalWithVotes.values.toList
       }.flatten
@@ -285,7 +285,7 @@ object ApprovedProposal {
       }
   }
 
-  def allAcceptedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
+  def allApprovedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allApprovedProposals = client.smembers("ApprovedSpeakers:" + speakerId)
       val mapOfProposals = Proposal.loadAndParseProposals(allApprovedProposals)

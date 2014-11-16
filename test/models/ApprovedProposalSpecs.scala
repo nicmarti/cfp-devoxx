@@ -201,7 +201,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
       ApprovedProposal.approve(correctProposal)
 
       // THEN
-      ApprovedProposal.allAcceptedTalksForSpeaker("speaker1").toList mustEqual List(correctProposal)
+      ApprovedProposal.allApprovedTalksForSpeaker("speaker1").toList mustEqual List(correctProposal)
     }
 
     "return the secondary speaker as part of Approved speaker" in new WithApplication(app = appWithTestRedis()) {
@@ -229,7 +229,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
       ApprovedProposal.approve(correctProposal)
 
       // THEN
-      ApprovedProposal.allAcceptedTalksForSpeaker("secondarySpeaker").toList mustEqual List(correctProposal)
+      ApprovedProposal.allApprovedTalksForSpeaker("secondarySpeaker").toList mustEqual List(correctProposal)
     }
 
     "return any other speaker as part of Approved speaker" in new WithApplication(app = appWithTestRedis()) {
@@ -257,7 +257,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
       ApprovedProposal.approve(correctProposal)
 
       // THEN
-      ApprovedProposal.allAcceptedTalksForSpeaker("someOtherSpeaker").toList mustEqual List(correctProposal)
+      ApprovedProposal.allApprovedTalksForSpeaker("someOtherSpeaker").toList mustEqual List(correctProposal)
     }
 
     "update the list of Accepted speakers when we change the mainSpeaker on a proposal" in new WithApplication(app = appWithTestRedis()) {
@@ -286,8 +286,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
       Proposal.save("newSpeaker", correctProposal, ProposalState.SUBMITTED)
 
       // THEN
-      ApprovedProposal.allAcceptedTalksForSpeaker("speaker1").toList must be(Nil)
-      ApprovedProposal.allAcceptedTalksForSpeaker("newSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker"))
+      ApprovedProposal.allApprovedTalksForSpeaker("speaker1").toList must be(Nil)
+      ApprovedProposal.allApprovedTalksForSpeaker("newSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker"))
     }
 
      "update the list of Accepted speakers when we change the secondarySpeaker on a proposal" in new WithApplication(app = appWithTestRedis()) {
@@ -316,8 +316,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
       Proposal.save("newSpeaker", correctProposal.copy(secondarySpeaker = Some("newSecSpeaker")), ProposalState.SUBMITTED)
 
       // THEN
-      ApprovedProposal.allAcceptedTalksForSpeaker("secondarySpeaker").toList must be(Nil)
-      ApprovedProposal.allAcceptedTalksForSpeaker("newSecSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", secondarySpeaker = Some("newSecSpeaker")))
+      ApprovedProposal.allApprovedTalksForSpeaker("secondarySpeaker").toList must be(Nil)
+      ApprovedProposal.allApprovedTalksForSpeaker("newSecSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", secondarySpeaker = Some("newSecSpeaker")))
     }
 
      "update the list of Accepted speakers when we change the otherSpeakers on a proposal" in new WithApplication(app = appWithTestRedis()) {
@@ -346,8 +346,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
       Proposal.save("newSpeaker", correctProposal.copy(otherSpeakers = List("newThirdSpeaker")), ProposalState.SUBMITTED)
 
       // THEN
-      ApprovedProposal.allAcceptedTalksForSpeaker("firstThirdSpeaker").toList must be(Nil)
-      ApprovedProposal.allAcceptedTalksForSpeaker("newThirdSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", otherSpeakers = List("newThirdSpeaker")))
+      ApprovedProposal.allApprovedTalksForSpeaker("firstThirdSpeaker").toList must be(Nil)
+      ApprovedProposal.allApprovedTalksForSpeaker("newThirdSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", otherSpeakers = List("newThirdSpeaker")))
     }
 
   }

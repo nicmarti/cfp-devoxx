@@ -69,7 +69,7 @@ class WebuserSpecs extends PlaySpecification {
       Webuser.doesNotExist(webuser.uuid) must beTrue
     }
 
-    "create and delete a use r" in new WithApplication(app = appWithTestRedis()) {
+    "create and delete a user" in new WithApplication(app = appWithTestRedis()) {
 
       val email = RandomStringUtils.randomAlphabetic(10)
       val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
