@@ -51,35 +51,36 @@ object ArchiveProposal {
     "ok"
   }
 
-  def archive(proposalId: String) = {
+  def archive(proposal: Proposal) = {
 
-    val maybeProposal = Proposal.findById(proposalId)
+    val proposalId = proposal.id
 
-    maybeProposal.filter(ApprovedProposal.isApproved).map {
+    Some(proposal).filter(ApprovedProposal.isApproved).map {
       approvedProposal: Proposal =>
         ApprovedProposal.cancelApprove(approvedProposal)
         archiveApprovedProposal(approvedProposal)
     }
 
-    maybeProposal.filter(ApprovedProposal.isRefused).map {
+     Some(proposal).filter(ApprovedProposal.isRefused).map {
       approvedProposal: Proposal =>
         ApprovedProposal.cancelApprove(approvedProposal)
         archiveApprovedProposal(approvedProposal)
     }
 
-    // Finally
+    //Delete all comments
+    Comment.deleteAllComments(proposalId)
+
+    // Remove votes for this talk
+    Review.archiveAllVotesOnProposal(proposalId)
+
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
 
   }
 
   def archiveAll(proposalTypeId:String)={
-
     val proposalType = ConferenceDescriptor.ConferenceProposalTypes.valueOf(proposalTypeId)
-
     val proposals = Proposal.loadAndParseProposals(Proposal.allProposalIDsNotDeleted).values.filter(_.talkType == proposalType)
-
-    proposals.foreach(proposal => archive(proposal.id))
-
+    proposals.foreach(proposal => archive(proposal))
     proposals.size
   }
 

@@ -311,10 +311,10 @@ class ProposalSpecs extends PlaySpecification {
     ApprovedProposal.approve(correctProposal)
 
     // WHEN
-    ApprovedProposal.allAcceptedTalksForSpeaker(otherSpeaker1).toList.flatMap(_.secondarySpeaker) mustEqual List(otherSpeaker1)
+    ApprovedProposal.allApprovedTalksForSpeaker(otherSpeaker1).toList.flatMap(_.secondarySpeaker) mustEqual List(otherSpeaker1)
     Proposal.updateSecondarySpeaker(mainSpeaker, proposalId, Some(otherSpeaker1), None)
 
-    ApprovedProposal.allAcceptedTalksForSpeaker(otherSpeaker1).toList must be(Nil)
+    ApprovedProposal.allApprovedTalksForSpeaker(otherSpeaker1).toList must be(Nil)
 
   }
 
