@@ -1,4 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
@@ -186,6 +186,9 @@
                             @if(prop.state.code=="backup"){
                                 <span class="label label-warning">@prop.state.code</span>
                             }
+                            @if(prop.state.code=="archived"){
+                                <span class="label label-default">@prop.state.code</span>
+                            }
                             </td>
                             <td>
                             @if(prop.state==ProposalState.DRAFT){
@@ -222,7 +225,14 @@
                                     @if(myProposals.size > 1){
                                         @Messages("total.draft", myProposals.size)
                                     }
-                            </span></th>
+                            </span>
+                            @if(totalArchived>1){
+                                <span class="badge">@Messages("total.archived", totalArchived)</span>
+                            }
+                            @if(totalArchived==1){
+                                <span class="badge">@Messages("total.archived.sing", totalArchived)</span>
+                            }
+                            </th>
                         </tr>
                     </tfoot>
                 </table>

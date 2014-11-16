@@ -231,6 +231,8 @@ table.pres.doDelete=Effacer
  
 total.draft={0} propositions
 total.draft.sing={0} proposition
+total.archived.sing={0} archivé
+total.archived={0} archivés
 you.speaker=Vous
 invalid.proposal=Proposition non trouvée ou dont vous n''êtes pas le propriétaire
 not.yours=Hmmm ce n''est pas votre proposition... vous essayez de bidouiller?
