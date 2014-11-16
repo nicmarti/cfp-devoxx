@@ -192,7 +192,7 @@ object RestAPI extends Controller {
               NotModified
             }
             case other => {
-              val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+              val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
 
               val updatedTalks = acceptedProposals.map {
                 proposal: Proposal =>

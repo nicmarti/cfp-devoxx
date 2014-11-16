@@ -24,6 +24,7 @@
 package models
 
 import library.Redis
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
 
 /**
@@ -126,14 +127,15 @@ class ArchivedProposalSpecs extends PlaySpecification {
         Option("beginner"),
         userGroup = None)
 
-      val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
-      Proposal.submit(uuidTest, newProposalId)
+      val proposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
+      Proposal.submit(uuidTest, proposalId)
+      val savedProposal = Proposal.findById(proposalId).get
 
       // WHEN
-      ArchiveProposal.archive(newProposalId)
+      ArchiveProposal.archive(savedProposal)
 
       // THEN
-      Proposal.findProposalState(newProposalId) mustEqual Some(ProposalState.ARCHIVED)
+      Proposal.findProposalState(proposalId) mustEqual Some(ProposalState.ARCHIVED)
     }
 
     "remove an approved Proposal from the list of Approved talk when archived" in new WithApplication(app = appWithTestRedis()) {
@@ -161,15 +163,158 @@ class ArchivedProposalSpecs extends PlaySpecification {
       ApprovedProposal.approve(savedProposal)
 
       // WHEN
-      ArchiveProposal.archive(newProposalId)
+      ArchiveProposal.archive(savedProposal)
 
       // THEN
       ApprovedProposal.allApproved() mustEqual Set.empty[Proposal]
       ApprovedProposal.allApprovedByTalkType(ConferenceDescriptor.ConferenceProposalTypes.CONF.id) mustEqual Nil
       ApprovedProposal.countApproved("all") mustEqual 0
-      ApprovedProposal.allAcceptedTalksForSpeaker(uuidTest).toList mustEqual Nil
+      ApprovedProposal.allApprovedProposalIDs() mustEqual Set.empty
+      ApprovedProposal.allApprovedTalksForSpeaker(uuidTest).toList mustEqual Nil
     }
 
+    "move comments to attic when a talk is archived" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      flushTestDB()
+      val speakerUUID = createASpeaker()
+      val proposalId = createATestProposalAndSubmitIt(speakerUUID)
+
+      Comment.saveCommentForSpeaker(proposalId, "another_user", "hello")
+      Comment.saveInternalComment(proposalId, "another_user", "an internal message")
+      val savedProposal = Proposal.findById(proposalId).get
+
+      // WHEN
+      ArchiveProposal.archive(savedProposal)
+
+      // THEN
+      Comment.countComments(proposalId) mustEqual 0
+      Comment.countInternalComments(proposalId) mustEqual 0
+    }
+
+    "move votes to attic when a talk is archived" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      flushTestDB()
+      val speakerUUID = createASpeaker()
+      val proposalId = createATestProposalAndSubmitIt(speakerUUID)
+      val reviewerUUID = "any-reviewer"
+
+      Review.voteForProposal(proposalId, reviewerUUID, 3)
+      Review.computeAndGenerateVotes()
+      val savedProposal = Proposal.findById(proposalId).get
+
+      // WHEN
+      ArchiveProposal.archive(savedProposal)
+
+      // THEN
+      Review.allHistoryOfVotes(proposalId) mustEqual Nil
+      Review.allProposalsAndReviews mustEqual Nil
+      Review.allProposalsNotReviewed(reviewerUUID) mustEqual Nil
+      Review.allProposalsWithNoVotes mustEqual Map.empty[String, Proposal]
+      Review.allReviewersAndStats() mustEqual Nil
+      Review.allVotes() mustEqual Set.empty
+      Review.allVotesFor(proposalId) mustEqual Nil
+      Review.allVotesFromUser(reviewerUUID) mustEqual Set.empty
+      Review.bestReviewer() mustEqual None
+      Review.countAll() mustEqual 0L
+      Review.countWithNoVotes() mustEqual 0
+      Review.countWithVotes() mustEqual 0
+      Review.currentScore(proposalId) mustEqual 0
+      Review.lastVoteByUserForOneProposal(reviewerUUID, proposalId) mustEqual None
+      Review.mostReviewed() mustEqual None
+      Review.totalReviewedByCFPuser() mustEqual Nil
+      Review.totalVoteCastFor(proposalId) mustEqual 0
+      Review.totalVoteFor(proposalId) mustEqual 0
+      Review.worstReviewer() mustEqual None
+    }
+
+    "remove the proposal from the sponsor list if the talk was a sponsor one" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      flushTestDB()
+      val speakerUUID = createASpeaker()
+      val proposalId = createATestProposalAndSubmitIt(speakerUUID)
+      val reviewerUUID = "any-reviewer"
+
+      Review.voteForProposal(proposalId, reviewerUUID, 3)
+      Review.computeAndGenerateVotes()
+
+      val savedProposal = Proposal.findById(proposalId).get
+      val updated = savedProposal.copy(sponsorTalk = true)
+      Proposal.save(speakerUUID, updated, ProposalState.SUBMITTED)
+
+      val savedProposal2 = Proposal.findById(proposalId).get
+
+      // WHEN
+      ArchiveProposal.archive(savedProposal2)
+
+      // THEN
+      Proposal.allSponsorsTalk() mustEqual Nil
+    }
+
+    "update the list of accepted when a talk is archived" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      flushTestDB()
+      val speakerUUID = createASpeaker()
+      val proposalId = createATestProposalAndSubmitIt(speakerUUID)
+      val reviewerUUID = "any-reviewer"
+
+      Review.voteForProposal(proposalId, reviewerUUID, 3)
+      Review.computeAndGenerateVotes()
+      val savedProposal = Proposal.findById(proposalId).get
+
+      ApprovedProposal.approve(savedProposal)
+
+      Proposal.approve(speakerUUID, proposalId)
+
+      Proposal.accept(speakerUUID, proposalId)
+
+      // WHEN
+      ArchiveProposal.archive(savedProposal)
+
+      // THEN
+      ApprovedProposal.allAcceptedByTalkType(savedProposal.talkType.id) mustEqual Nil
+    }
+
+  }
+
+  // For testing
+  private def flushTestDB() = {
+    // WARN : flush the DB, but on Database = 1
+    Redis.pool.withClient {
+      client =>
+        client.select(1)
+        client.flushDB()
+    }
+  }
+
+  private def createATestProposalAndSubmitIt(speakerUUID: String): String = {
+    // 3-
+    val proposalId = RandomStringUtils.randomAlphabetic(8)
+    val someProposal = Proposal.validateNewProposal(
+      Some(proposalId),
+      "fr",
+      "some test Proposal",
+      None,
+      Nil,
+      ConferenceDescriptor.ConferenceProposalTypes.ALL.head.id,
+      "audience level",
+      "summary",
+      "private message",
+      sponsorTalk = false,
+      ConferenceDescriptor.ConferenceTracks.ALL.head.id,
+      Option("beginner"),
+      userGroup = None)
+
+    Proposal.save(speakerUUID, someProposal, ProposalState.DRAFT)
+    // Submit the proposal
+    Proposal.submit(speakerUUID, proposalId)
+    proposalId
+  }
+
+  private def createASpeaker(): String = {
+    val email = RandomStringUtils.randomAlphabetic(10)
+    val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
+    Webuser.saveAndValidateWebuser(webuser)
+    webuser.uuid
   }
 
 }
