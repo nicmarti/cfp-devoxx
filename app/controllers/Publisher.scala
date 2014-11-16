@@ -81,7 +81,7 @@ object Publisher extends Controller {
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
       maybeSpeaker match {
         case Some(speaker) => {
-          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
@@ -94,7 +94,7 @@ object Publisher extends Controller {
       val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
         case Some(speaker) => {
-          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", uuid, name)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }

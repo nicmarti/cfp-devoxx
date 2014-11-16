@@ -141,6 +141,11 @@ other.label.simple=Other
 start.label=Startup Talk, 25 min, Wednesday to Thursday
 start.label.simple=Startup
 
+hack.label.simple=Hackatons
+code.label.simple=Codestory
+
+amd.label.simple=Après-midi des décideurs
+
 # Bug report
 Issue.report=Report an issue
 btn.send=Send
@@ -162,25 +167,25 @@ track.description=Description
 appel.conf.dates=Devoxx France 2015, 8th-10th April 2015
 
 # Tracks
-track.web.title=Web & Mobile
-track.web.desc=Web, JS, Front-end and back-end, Mobile, Android, iOS.
-web.label=Web & Mobile
+track.webmobile.title=Web, Mobile &  UX
+track.webmobile.desc=Web, mobile, user-experience, front-end and Web architecture
+webmobile.label=Web, Mobile & UX
 
 track.archisec.title=Architecture, Performance & Security
 track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
 archisec.label=Architecture, Performance and Security
 
-track.agility.title=Agility, Methodology & Test
-track.agility.desc=Software development methodologies, TDD, BDD, xDD
-agility.label=Agility, Methodology & Test
+track.agilityTest.title=Agility, Methodology & Test
+track.agilityTest.desc=Software development methodologies, TDD, BDD, xDD
+agilityTest.label=Agility, Methodology & Test
 
-track.java.title=Java
-track.java.desc=Java, tools, libraries, JVM
-java.label=Java
+track.java.title=Java, infinite possibilities &#8734;
+track.java.desc=Everything about Java, the JVM, Java SE 8 or Java EE.
+java.label=Java, infinite possibilities &#8734;
 
-track.cloud.title=Cloud & DevOps
-track.cloud.desc=Cloud computing, Platforms as a Service, DevOps
-cloud.label=Cloud & DevOps
+track.cloudDevops.title=Cloud, DevOps and Tools
+track.cloudDevops.desc=Cloud-computing, DevOps, Paas, Iaas
+cloudDevops.label=Cloud & DevOps
 
 track.bigdata.title=Big Data & Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
@@ -191,7 +196,7 @@ track.future.desc=Developing for embedded devices, the internet of things, Ardui
 future.label=Future<Devoxx>
 
 track.lang.title=Alternate Languages
-track.lang.desc=Anything related to other languages than Java
+track.lang.desc=Groovy, Scala, Javascript, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
 lang.label=Alternate Languages
 
 # confirm import

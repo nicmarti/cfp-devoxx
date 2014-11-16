@@ -105,7 +105,7 @@ talkType.help=Chaque type de conférence est détaillé sur la page <a href="htt
 talkType=Type de présentation
 audienceLevel=Niveau de la présentation
 privateMessage=Message pour le comité de sélection
-privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation, l''ensemble des éléments qui doivent nous faire choisir votre proposition de sujet. Vous pouvez inclure l'URL vers vos diapositives si vous le souhaitez.
+privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation, l''ensemble des éléments qui doivent nous faire choisir votre proposition de sujet. Vous pouvez inclure l''URL vers vos diapositives si vous le souhaitez.
 sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
 sponsorTalk.help=Les sponsors Silver et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée. Ne cochez pas cette case si votre société est sponsor alors que vous souhaitez simplementer proposer un sujet.
 sponsorTalk.help.title=Talk sponsor
@@ -154,46 +154,42 @@ video.title=Vidéos de l''édition 2014
 video.tag=Retrouvez les sessions de l''édition 2014 sur le site
 theme.title=Thèmes
 theme.track=Les différentes tracks pour proposer un sujet :
+
 track.title=Titre
 track.description=Description
-track.java.title=Java
-track.java.desc=Tout sur Java, la JVM, Java 8 et Java EE 7.
-track.web.title=Web, HTML5
-track.web.desc=Les frameworks Web, HTML5, CSS3, JavaScript, les libraries et les outils qui vous permettent de construire des applications webs innovantes.
-track.mobile.title=Mobile
-track.mobile.desc=Le développement et les outils pour le mobile et les tablettes.
-track.startup.title=Startup et Innovation
-track.startup.desc=Lean startup, UX Design, entreprendre et lancer de nouveaux projets.
-track.devops.title=Agilité et DevOps
-track.devops.desc=Lean, Kanban, intégration continue, déploiement, réseau et sécurité.
-track.lang.title=Langages alternatifs
-track.lang.desc=Groovy, Scala, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
-track.bigdata.title=Cloud, Big Data et NoSQL
-track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
-track.future.title=Future<Devoxx>
-track.future.desc=Java et l''internet des objets, la robotique, la domotique et l''embarqué
- track.archisec.title=Architecture, Performance & Securité
-track.archisec.desc=Architecture logicielle, performance, encryption et meilleurs pratiques pour développer un logiciel sécurisé.
+
+track.webmobile.title=Web, Mobile et UX
+track.webmobile.desc=Web, mobile, user-experience, front-end et architecture Webs.
+wm.label=Web, Mobile & UX
+
+track.archisec.title=Architecture, Performance & Securité
+track.archisec.desc=Architecture, performance, encryption et meilleurs pratiques pour développer un logiciel sécurisé.
 archisec.label=Architecture, Performance et Securité
 
-track.agility.title=Agilité, Méthodologie & Tests
-track.agility.desc=Méthode de développement logiciel, TDD, BDD, xDD
-agility.label=Agilité, Methodologie & Tests
+track.agilityTest.title=Agilité, Méthodologie & Tests
+track.agilityTest.desc=Méthode de développement logiciel, TDD, BDD, xDD
+agTest.label=Agilité, Methodologie & Tests
 
-track.cloud.title=Cloud & DevOps
-track.cloud.desc=Cloud computing, Platforms as a Service, DevOps
-cloud.label=Cloud & DevOps
+track.java.title=Java, JVM, Javas SE/EE
+track.java.desc=Tout sur Java, la JVM, Java 8 et Java EE 7.
+java.label=Java, JVM, Javas SE/EE
 
-# track labels
-java.label=Java SE, Java EE
-web.label=Web, HTML5
-mobile.label=Mobile
-agilite.label=Agilité, méthodes et tests
-lg_alter.label=Langages alternatifs
-lgaltern.label=Langages alternatifs
-startup.label=Startup & Innovation
+track.cloudDevops.title=Cloud, DevOps, Outils
+track.cloudDevops.desc=Cloud-computing, DevOps, pratiques et outils
+cldops.label=Cloud, DevOps, Outils
+
+track.bigdata.title=BigData et Analytics
+track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
+bigd.label=BigData et Analytics
+
+track.future.title=Future<Devoxx>, IoT, Robotique
+track.future.desc=Java et l''internet des objets, la robotique, la domotique et l''embarqué
 future.label=Future<Devoxx>
- 
+
+track.lang.title=Langages alternatifs
+track.lang.desc=Groovy, Scala, Javascript, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
+lang.label=Langages alternatifs
+
 # Confirm import
 confirm.import.title=Créer votre profil de présentateur Devoxx France
 confirm.import.save=Enregistrer et continuer
@@ -532,7 +528,9 @@ l1.label=niveau 1 \: débutant
 l2.label=Intermédiaire
 l3.label=Expert et sénior
 lab.label.simple=Hand''s on lab
-lang.label=JVM Languages
+hack.label.simple=Hackatons
+code.label.simple=Codestory
+
 level1.label=Ouvert à tout niveau d''audience, débutant comme expert
 level2.label=Pour une audience intermédiaire, avec une connaissance sur le sujet
 level3.label=Pour un public d''expert ou de sénior sur ce sujet
@@ -544,12 +542,12 @@ longYearlyName=Devoxx France 2015
 mail.access_code.subject=Votre code d''accès présentateur pour {0}
 mail.account_created.subject=Bienvenue sur le CFP pour {0}
 mail.cfp_message_to_speaker.subject=[{1}] Message à propos de votre presentation {0}
-mail.draft_multiple_reminder.subject={1} rappel \: vous avez {0} propositions à soumettre
-mail.draft_single_reminder.subject={0} reminder \: you have one proposal with status ''Draft''
+mail.draft_multiple_reminder.subject={1} rappel : vous avez {0} propositions à soumettre
+mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mainSpeaker2=Plusieurs présentateurs ?
 methodevops.label=Methodology & DevOps
 nav.homeREST=REST API
-next.action=Sélectionnez l''action suivante \:
+next.action=Sélectionnez l''action suivante :
 other.label.simple=autre
 proposal.audienceLevel=Niveau de l''audience
 proposal.demoLevel=Type de présentation
@@ -605,7 +603,7 @@ wl_travel=Transport et logement
 wl_travel.checkbox=Oui, inclure le remboursement
 wl_unknown=Inconnu
 admin.btn.speakersInvited=Tous les speakers invités
-bigdata.label=Big Data & Analytics
+
 bof.label.simple=Bird of a Feather
 day-monday=Lundi 10 novembre
 day-thursday=Jeudi 9 avril
