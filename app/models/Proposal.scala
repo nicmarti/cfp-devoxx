@@ -87,14 +87,13 @@ object ProposalState {
     UNKNOWN
   )
 
-  val allButDeleted = List(
+  val allButDeletedAndArchived = List(
     DRAFT,
     SUBMITTED,
     APPROVED,
     REJECTED,
     ACCEPTED,
     DECLINED,
-    ARCHIVED,
     BACKUP
   )
 
@@ -428,10 +427,20 @@ object Proposal {
   }
 
   def allMyProposals(uuid: String): List[Proposal] = {
-    ProposalState.allButDeleted.flatMap {
+    ProposalState.allButDeletedAndArchived.flatMap {
       proposalState =>
         loadProposalsByState(uuid, proposalState)
     }
+  }
+
+  def allMyArchivedProposals(uuid:String):List[Proposal] = {
+    loadProposalsByState(uuid, ProposalState.ARCHIVED)
+  }
+
+  def countByProposalState(uuid: String, proposalState: ProposalState): Int = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}")
+      allProposalIds.size
   }
 
   def findProposal(uuid: String, proposalId: String): Option[Proposal] = {
