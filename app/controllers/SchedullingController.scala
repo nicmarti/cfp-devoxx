@@ -32,7 +32,7 @@ import play.api.libs.json.JsString
 import play.api.libs.json.JsNumber
 import play.api.i18n.Messages
 import scala.util.Random
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 
 
 /**
@@ -53,7 +53,7 @@ object SchedullingController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
       // Devoxx BE
-      val proposals =ApprovedProposal.allApprovedByTalkType(confType)
+      val proposals = ApprovedProposal.allApprovedByTalkType(confType)
 
       val proposalsWithSpeaker = proposals.map {
         p: Proposal =>
@@ -67,7 +67,7 @@ object SchedullingController extends SecureCFPController {
             mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
             , secondarySpeaker = secWebuser.map(_.cleanName)
             , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
-           , privateMessage=preferredDay.getOrElse("")
+            , privateMessage = preferredDay.getOrElse("")
           )
 
       }
@@ -118,7 +118,8 @@ object SchedullingController extends SecureCFPController {
           case (key, dateAsDouble) =>
             val scheduledSaved = Json.parse(key).as[ScheduleSaved]
             Map("key" -> Json.toJson(scheduledSaved),
-              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toString()))
+                "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")))
+            )
         })
       )
       )
@@ -155,10 +156,10 @@ object SchedullingController extends SecureCFPController {
                     // Check also if the proposal is still "approved" and not refused
                     // Cause if the talk has been added to schedule, but then refused, we need
                     // to show this as a visual HINT to the admin guy (being Stephan, Antonio or me)
-                    if(ApprovedProposal.isApproved(copiedProposal)){
+                    if (ApprovedProposal.isApproved(copiedProposal)) {
                       copiedProposal
-                    }else{
-                      copiedProposal.copy(title = "[Not Approved] "+copiedProposal.title)
+                    } else {
+                      copiedProposal.copy(title = "[Not Approved] " + copiedProposal.title)
                     }
 
                   }
@@ -172,21 +173,21 @@ object SchedullingController extends SecureCFPController {
       }
   }
 
-  def deleteScheduleConfiguration(id:String)=SecuredAction(IsMemberOf("admin")) {
+  def deleteScheduleConfiguration(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       ScheduleConfiguration.delete(id)
       Ok("{\"status\":\"deleted\"}").as("application/json")
   }
 
-  def publishScheduleConfiguration()=SecuredAction(IsMemberOf("admin")) {
+  def publishScheduleConfiguration() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-       request.body.asJson.map {
+      request.body.asJson.map {
         json =>
-          val id=json.\("id").as[String]
-          val confType=json.\("confType").as[String]
+          val id = json.\("id").as[String]
+          val confType = json.\("confType").as[String]
 
-          ScheduleConfiguration.publishConf(id,confType)
+          ScheduleConfiguration.publishConf(id, confType)
 
           Ok("{\"status\":\"success\"}").as("application/json")
       }.getOrElse {
@@ -194,11 +195,11 @@ object SchedullingController extends SecureCFPController {
       }
   }
 
-  def getPublishedSchedule(confType:String, day:Option[String])=Action{
-    implicit request=>
+  def getPublishedSchedule(confType: String, day: Option[String]) = Action {
+    implicit request =>
       ScheduleConfiguration.getPublishedSchedule(confType) match {
-        case Some(id)=> Redirect(routes.Publisher.showAgendaByConfType(confType, Option(id), day.getOrElse("wednesday") ))
-        case None=>Redirect(routes.Publisher.homePublisher).flashing("success"->Messages("not.published"))
+        case Some(id) => Redirect(routes.Publisher.showAgendaByConfType(confType, Option(id), day.getOrElse("wednesday")))
+        case None => Redirect(routes.Publisher.homePublisher).flashing("success" -> Messages("not.published"))
       }
   }
 

@@ -27,7 +27,7 @@ import library.Redis
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 import scala.util.Random
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 
 /**
  * Slots that are scheduled.
@@ -184,7 +184,7 @@ object ScheduleConfiguration {
   def loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.map(_.slots).flatten
-    Option(slots.sortBy(_.from.toDate.getTime).filter(_.from.isAfter(new DateTime())).take(10))
+    Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")))).sortBy(_.from.toDate.getTime).take(10))
   }
 
   def loadRandomTalks() = {

@@ -25,7 +25,7 @@ package notifiers
 
 import com.typesafe.plugin._
 import play.api.Play.current
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 import models._
 import play.api.i18n.Messages
 
@@ -45,7 +45,7 @@ object Mails {
   
   def sendResetPasswordLink(email: String, resetUrl: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val timestamp: String = new DateTime().toString("HH:mm dd/MM")
+    val timestamp: String = new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm dd/MM")
     val subject:String = Messages("mail.reset_password_link.subject",timestamp,Messages("longName"))
     emailer.setSubject(subject)
     emailer.addFrom(from)

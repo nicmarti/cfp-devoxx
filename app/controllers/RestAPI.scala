@@ -23,12 +23,13 @@
 
 package controllers
 
-import play.api.mvc._
 import models._
-import play.api.libs.json.{JsNull, Json}
+import org.joda.time.{DateTimeZone, DateTime}
 import play.api.i18n.Messages
+import play.api.libs.json.{JsNull, Json}
+import play.api.mvc.{SimpleResult, _}
+
 import scala.concurrent.Future
-import play.api.mvc.SimpleResult
 
 /**
  * A real REST api for men.
@@ -63,7 +64,6 @@ object RestAPI extends Controller {
 
   def showAllConferences() = UserAgentAction {
     implicit request =>
-      import Conference.confFormat
 
       val conferences = Conference.all
       val etag = conferences.hashCode.toString
@@ -96,7 +96,6 @@ object RestAPI extends Controller {
 
   def showConference(eventCode: String) = UserAgentAction {
     implicit request =>
-      import Conference.confFormat
 
       Conference.find(eventCode).map {
         conference: Conference =>
@@ -141,7 +140,6 @@ object RestAPI extends Controller {
 
   def showSpeakers(eventCode: String) = UserAgentAction {
     implicit request =>
-      import Speaker.speakerFormat
 
       val speakers = Speaker.allSpeakersWithAcceptedTerms().sortBy(_.cleanName)
       val etag = speakers.hashCode.toString
@@ -184,7 +182,6 @@ object RestAPI extends Controller {
 
   def showSpeaker(eventCode: String, uuid: String) = UserAgentAction {
     implicit request =>
-      import Speaker.speakerFormat
 
       Speaker.findByUUID(uuid).map {
         speaker =>
@@ -348,7 +345,7 @@ object RestAPI extends Controller {
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
-      val newEtag = finalListOfSlots.hashCode().toString
+      val newEtag = "v2_"+finalListOfSlots.hashCode().toString
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
@@ -386,15 +383,18 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+
               Map(
                 "slotId" -> Json.toJson(slot.id)
                 , "day" -> Json.toJson(slot.day)
                 , "roomId" -> Json.toJson(slot.room.id)
                 , "roomName" -> Json.toJson(slot.room.name)
-                , "fromTime" -> Json.toJson(slot.from.toString("HH:mm"))
-                , "fromTimeMillis" -> Json.toJson(slot.from.getMillis)
-                , "toTime" -> Json.toJson(slot.to.toString("HH:mm"))
-                , "toTimeMillis" -> Json.toJson(slot.to.getMillis)
+                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
                 , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
                 , "break" -> Json.toJson(slot.break)
                 , "roomSetup" -> Json.toJson(slot.room.setup)
@@ -507,11 +507,84 @@ object RestAPI extends Controller {
 
           Ok(jsonObject).as(JSON).withHeaders(
             ETAG -> etag,
-            "Access-Control-Allow-Origin"->"*",
+            "Access-Control-Allow-Origin" -> "*",
             "Links" -> ("<" + routes.RestAPI.profile("room").absoluteURL() + ">; rel=\"profile\""))
         }
       }
   }
+
+  def showScheduleForRoom(eventCode: String, room:String, day: String) = UserAgentAction {
+    implicit request =>
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
+      val newEtag = "v2-"+room.hashCode + finalListOfSlots.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == newEtag => NotModified
+        case other => {
+          val toReturn = finalListOfSlots.filter(_.room.id==room).map {
+            slot =>
+              val upProposal = slot.proposal.map {
+                proposal =>
+                  val allSpeakers = proposal.allSpeakerUUIDs.flatMap {
+                    uuid => Speaker.findByUUID(uuid)
+                  }
+                  val updatedProposal =
+                    Map(
+                      "id" -> Json.toJson(proposal.id),
+                      "title" -> Json.toJson(proposal.title),
+                      "lang" -> Json.toJson(proposal.lang),
+                      "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
+                      "summary" -> Json.toJson(proposal.summary),
+                      "track" -> Json.toJson(Messages(proposal.track.label)),
+                      "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                      "speakers" -> Json.toJson(allSpeakers.map {
+                        speaker =>
+                          Map(
+                            "link" -> Json.toJson(
+                              Link(
+                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
+                                routes.RestAPI.profile("speaker").absoluteURL().toString,
+                                speaker.cleanName
+                              )
+                            ),
+                            "name" -> Json.toJson(speaker.cleanName)
+                          )
+                      })
+                    )
+                  updatedProposal
+              }
+
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+
+              Map(
+                "slotId" -> Json.toJson(slot.id)
+                , "day" -> Json.toJson(slot.day)
+                , "roomId" -> Json.toJson(slot.room.id)
+                , "roomName" -> Json.toJson(slot.room.name)
+                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
+                , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
+                , "break" -> Json.toJson(slot.break)
+                , "roomSetup" -> Json.toJson(slot.room.setup)
+                , "roomCapacity" -> Json.toJson(slot.room.capacity)
+                , "notAllocated" -> Json.toJson(slot.notAllocated)
+              )
+          }
+          val jsonObject = Json.toJson(
+            Map(
+              "slots" -> Json.toJson(toReturn)
+            )
+          )
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL().toString + ">; rel=\"profile\""))
+        }
+      }
+  }
+
 }
 
 object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderNames {

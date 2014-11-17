@@ -210,6 +210,9 @@ object Backoffice extends SecureCFPController {
 
       val accepted = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
+      val allSpeakersIDsThatDidNotAcceptTC = Speaker.allThatDidNotAcceptedTerms()
+      val speakers = Speaker.asSetOfSpeakers(allSpeakersIDsThatDidNotAcceptTC)
+
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
         slot: Slot =>
@@ -217,7 +220,7 @@ object Backoffice extends SecureCFPController {
           Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState))
+      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, speakers))
 
   }
 

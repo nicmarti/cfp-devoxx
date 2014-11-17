@@ -24,19 +24,17 @@
 package library
 
 
-import akka.actor._
-import play.api.Play.current
-import scala.Predef._
-import models._
-import org.joda.time._
-import play.libs.Akka
-import play.api.Play
-import notifiers.Mails
-import play.api.libs.json.Json
 import java.io.File
-import org.apache.commons.io.FileUtils
-import scala.collection.JavaConverters._
+
+import akka.actor._
+import models._
+import notifiers.Mails
 import org.apache.commons.io.filefilter.{SuffixFileFilter, WildcardFileFilter}
+import play.api.libs.json.Json
+import play.api.libs.ws.WS
+import play.libs.Akka
+
+import scala.Predef._
 
 /**
  * Akka actor that is in charge to process batch operations and long running queries
@@ -50,7 +48,7 @@ case class ReportIssue(issue: Issue)
 
 case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String)
 
-case class SendQuestionToSpeaker(visitorEmail: String, visitorName:String, proposal: Proposal, msg: String)
+case class SendQuestionToSpeaker(visitorEmail: String, visitorName: String, proposal: Proposal, msg: String)
 
 case class SendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String)
 
@@ -80,8 +78,9 @@ case class NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
 
 case class EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
 
-case class NotifyProposalSubmitted(author:String, proposal:Proposal)
+case class NotifyProposalSubmitted(author: String, proposal: Proposal)
 
+case class SendHeartbeat(apiKey: String, name: String)
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -107,7 +106,8 @@ class ZapActor extends Actor {
     case ProcessCSVDir(dir: String) => doProcessCSVDir(dir)
     case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
-    case NotifyProposalSubmitted(author:String, proposal:Proposal) => doNotifyProposalSubmitted(author, proposal)
+    case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
+    case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -129,10 +129,10 @@ class ZapActor extends Actor {
     }
   }
 
-  def sendQuestionToSpeaker(visitorEmail: String, visitorName:String, proposal: Proposal, msg: String) {
+  def sendQuestionToSpeaker(visitorEmail: String, visitorName: String, proposal: Proposal, msg: String) {
     for (speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, Webuser.generateUUID(visitorEmail), s"A visitor posted a message to ${speaker.cleanName} about ${proposal.title}"))
-      Mails.sendQuestionToSpeakers(visitorEmail,visitorName, speaker, proposal, msg)
+      Mails.sendQuestionToSpeakers(visitorEmail, visitorName, speaker, proposal, msg)
     }
   }
 
@@ -257,6 +257,31 @@ class ZapActor extends Actor {
         Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
     }.getOrElse {
       play.Logger.error("User not found with uuid " + author)
+    }
+  }
+
+  def doSendHeartbeat(apikey: String, name: String): Unit = {
+    import scala.concurrent.ExecutionContext.Implicits.global
+
+    // Check if redis is up... will throw an Exception if unable to connect
+    Redis.checkIfConnected()
+
+    // Send a Heartbeat to opsgenie
+    val url = "https://api.opsgenie.com/v1/json/heartbeat/send"
+    val futureResult = WS.url(url).post(Map("apiKey" -> Seq(apikey), "name" -> Seq(name)))
+    futureResult.map {
+      result =>
+        result.status match {
+          case 200 =>
+            val json = Json.parse(result.body)
+            if(play.Logger.of("library.ZapActor").isDebugEnabled){
+              play.Logger.of("library.ZapActor").debug(s"Got an ACK from OpsGenie $json")
+            }
+
+          case other =>
+            play.Logger.error(s"Unable to read response from OpsGenie server ${result.status} ${result.statusText}")
+
+        }
     }
   }
 }
