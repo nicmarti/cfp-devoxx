@@ -1,4 +1,5 @@
 @(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader)
+@import org.joda.time.DateTimeZone
 
 @views.html.Publisher.devoxxBE2014(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
@@ -26,7 +27,7 @@
             @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
                     <tr >
                         <th class="timeSlot">
-                            @subSlots.head.from.toString("HH:mm") - @subSlots.head.to.toString("HH:mm")
+                            @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                         </th>
                         @rooms.map { room =>
                             @tagRenderRow(subSlots,room,rooms.size)

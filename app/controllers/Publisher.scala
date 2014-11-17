@@ -104,8 +104,13 @@ object Publisher extends Controller {
 
   def showByTalkType(talkType: String) = Action {
     implicit request =>
-      val proposals = Proposal.allAcceptedByTalkType(talkType)
-      Ok(views.html.Publisher.showByTalkType(proposals, talkType))
+      talkType match {
+        case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
+          Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+            ConferenceDescriptor.ConferenceProposalTypes.START.id)), talkType))
+        case other =>
+          Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
+      }
   }
 
   def showAgendaByConfType(confType: String, slotId: Option[String], day: String = "wednesday") = Action {
@@ -182,11 +187,11 @@ object Publisher extends Controller {
 
   val speakerMsg = Form(
     tuple(
-    "msg_pub" -> nonEmptyText(maxLength = 1500),
-    "fullname" -> nonEmptyText(maxLength = 40),
-    "email_pub" -> email.verifying(nonEmpty),
-    "email_pub2" -> email.verifying(nonEmpty)
-  ) verifying ("Email does not match the confirmation email", constraint => constraint match{
+      "msg_pub" -> nonEmptyText(maxLength = 1500),
+      "fullname" -> nonEmptyText(maxLength = 40),
+      "email_pub" -> email.verifying(nonEmpty),
+      "email_pub2" -> email.verifying(nonEmpty)
+    ) verifying("Email does not match the confirmation email", constraint => constraint match {
       case (_, _, e1, e2) => e1 == e2
     })
   )
@@ -217,22 +222,21 @@ object Publisher extends Controller {
           val questions = Question.allQuestionsForProposal(proposal.id)
 
           speakerMsg.bindFromRequest().fold(hasErrors =>
-            BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)),
-            {
-              case (msg, fullname, email1, _) =>
-                Question.saveQuestion(proposal.id, email1, fullname, msg)
-                ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
-                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
-            }
+            BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)), {
+            case (msg, fullname, email1, _) =>
+              Question.saveQuestion(proposal.id, email1, fullname, msg)
+              ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
+              Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+          }
           )
 
       }
   }
 
-  def allQuestions() = Action{
-    implicit request=>
+  def allQuestions() = Action {
+    implicit request =>
 
-      val questions=Question.allQuestionsGroupedByProposal()
+      val questions = Question.allQuestionsGroupedByProposal()
       val result = questions.hashCode()
       val etag = Crypt.md5(result.toString()).toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
@@ -243,12 +247,12 @@ object Publisher extends Controller {
       }
   }
 
-    def search(q: Option[String] = None, p: Option[Int] = None)= Action.async {
-    implicit request=>
+  def search(q: Option[String] = None, p: Option[Int] = None) = Action.async {
+    implicit request =>
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-     ElasticSearch.doPublisherSearch(q, p).map {
+      ElasticSearch.doPublisherSearch(q, p).map {
         case r if r.isSuccess => {
           val json = Json.parse(r.get)
           val total = (json \ "hits" \ "total").as[Int]
@@ -271,8 +275,6 @@ object Publisher extends Controller {
       }
 
   }
-
-
 
 
 }

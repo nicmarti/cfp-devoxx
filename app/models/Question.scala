@@ -24,7 +24,7 @@
 package models
 
 import org.apache.commons.lang3.RandomStringUtils
-import org.joda.time.{Instant, DateTime}
+import org.joda.time.{DateTimeZone, Instant, DateTime}
 import library.Redis
 import play.api.libs.json.Json
 
@@ -43,7 +43,7 @@ object Question {
   def saveQuestion(proposalId: String, visitorEmail: String, author:String, msg: String) = Redis.pool.withClient{
     client=>
     val newId=RandomStringUtils.randomAlphanumeric(10)
-    val question = Question(Option(newId), proposalId, visitorEmail, author, msg, Option(new DateTime()))
+    val question = Question(Option(newId), proposalId, visitorEmail, author, msg, Option(new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels"))))
 
     val tx=client.multi()
     tx.hset("Questions:v2", newId, Json.toJson(question).toString())

@@ -1,4 +1,5 @@
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)], questions:List[Question])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@import org.joda.time.DateTimeZone
 
 @views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
 
@@ -34,7 +35,7 @@
                         <td>
                             <h4>@slot.map(_.room.name)</h4>
                         </td>
-                        <td style="text-align: right">@slot.get.from.toString("EEEE") at  @slot.get.from.toString("HH:mm") - @slot.get.to.toString("HH:mm")</td>
+                        <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE") at  @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
                     </tr>
                 }
 

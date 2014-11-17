@@ -19,15 +19,15 @@
     <logger name="library.ZapActor" level="INFO"/>
     <logger name="library.Zedis" level="INFO"/>
     <logger name="library.Zedis.client" level="INFO"/>
-    <logger name="library.ElasticSearch" level="DEBUG"/>
+    <logger name="library.ElasticSearch" level="INFO"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="ERROR"/>
-    <logger name="application.IndexMaster" level="DEBUG"/>
-    <logger name="application.Reaper" level="DEBUG"/>
-    <logger name="application.Tweetwall" level="DEBUG"/>
-    <logger name="application.ApproveOrRefuse" level="DEBUG"/>
+    <logger name="application.IndexMaster" level="INFO"/>
+    <logger name="application.Reaper" level="INFO"/>
+    <logger name="application.Tweetwall" level="INFO"/>
+    <logger name="application.ApproveOrRefuse" level="INFO"/>
 
-    <logger name="net.sf.ehcache.sizeof.verboseDebugLogging" level="DEBUG"/>
+    <logger name="net.sf.ehcache.sizeof.verboseDebugLogging" level="INFO"/>
     <logger name="net.sf.ehcache" level="WARN"/>
     <logger name="org.apache.commons.pool" level="INFO"/>
 
