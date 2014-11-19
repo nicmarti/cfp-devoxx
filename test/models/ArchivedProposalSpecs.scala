@@ -132,7 +132,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       val savedProposal = Proposal.findById(proposalId).get
 
       // WHEN
-      ArchiveProposal.archive(savedProposal)
+      ArchiveProposal.archiveAll(savedProposal.talkType.id)
 
       // THEN
       Proposal.findProposalState(proposalId) mustEqual Some(ProposalState.ARCHIVED)
@@ -163,7 +163,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       ApprovedProposal.approve(savedProposal)
 
       // WHEN
-      ArchiveProposal.archive(savedProposal)
+      ArchiveProposal.archiveAll(savedProposal.talkType.id)
 
       // THEN
       ApprovedProposal.allApproved() mustEqual Set.empty[Proposal]
@@ -184,7 +184,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       val savedProposal = Proposal.findById(proposalId).get
 
       // WHEN
-      ArchiveProposal.archive(savedProposal)
+      ArchiveProposal.archiveAll(savedProposal.talkType.id)
 
       // THEN
       Comment.countComments(proposalId) mustEqual 0
@@ -203,7 +203,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       val savedProposal = Proposal.findById(proposalId).get
 
       // WHEN
-      ArchiveProposal.archive(savedProposal)
+      ArchiveProposal.archiveAll(savedProposal.talkType.id)
 
       // THEN
       Review.allHistoryOfVotes(proposalId) mustEqual Nil
@@ -244,7 +244,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       val savedProposal2 = Proposal.findById(proposalId).get
 
       // WHEN
-      ArchiveProposal.archive(savedProposal2)
+      ArchiveProposal.archiveAll(savedProposal2.talkType.id)
 
       // THEN
       Proposal.allSponsorsTalk() mustEqual Nil
@@ -268,11 +268,52 @@ class ArchivedProposalSpecs extends PlaySpecification {
       Proposal.accept(speakerUUID, proposalId)
 
       // WHEN
-      ArchiveProposal.archive(savedProposal)
+      ArchiveProposal.archiveAll(savedProposal.talkType.id)
 
       // THEN
       ApprovedProposal.allAcceptedByTalkType(savedProposal.talkType.id) mustEqual Nil
     }
+
+    "update the stats on the Leaderboard when a talk is archived" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      flushTestDB()
+      val speakerUUID = createASpeaker()
+      val proposalId = createATestProposalAndSubmitIt(speakerUUID)
+      val reviewerUUID = "any-reviewer"
+
+      Review.voteForProposal(proposalId, reviewerUUID, 3)
+      Review.computeAndGenerateVotes()
+      val savedProposal = Proposal.findById(proposalId).get
+
+      ApprovedProposal.approve(savedProposal)
+      Proposal.approve(speakerUUID, proposalId)
+      Proposal.accept(speakerUUID, proposalId)
+      Leaderboard.computeStats()
+
+      // WHEN
+      ArchiveProposal.archiveAll(savedProposal.talkType.id)
+
+      // THEN
+      Leaderboard.totalSpeakers() mustEqual 1L
+      Leaderboard.totalProposals() mustEqual 0L
+      Leaderboard.totalVotes() mustEqual 0L
+      Leaderboard.totalWithVotes() mustEqual 0L
+      Leaderboard.totalNoVotes() mustEqual 0L
+      Leaderboard.mostReviewed() mustEqual None
+      Leaderboard.bestReviewer() mustEqual None
+      Leaderboard.worstReviewer() mustEqual None
+      Leaderboard.lazyOnes() mustEqual Set.empty
+
+      Leaderboard.totalSubmittedByTrack() mustEqual Map.empty
+      Leaderboard.totalSubmittedByType() mustEqual Map.empty
+      Leaderboard.totalAcceptedByTrack() mustEqual Map.empty
+      Leaderboard.totalAcceptedByType() mustEqual Map.empty
+
+      Leaderboard.totalApprovedSpeakers() mustEqual 0L
+      Leaderboard.totalWithTickets() mustEqual 0L
+      Leaderboard.totalRefusedSpeakers() mustEqual 0L
+    }
+
 
   }
 
@@ -311,10 +352,13 @@ class ArchivedProposalSpecs extends PlaySpecification {
   }
 
   private def createASpeaker(): String = {
-    val email = RandomStringUtils.randomAlphabetic(10)
+    val email = RandomStringUtils.randomAlphabetic(10)+"@test.com"
     val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
     Webuser.saveAndValidateWebuser(webuser)
-    webuser.uuid
+    val uuid =  webuser.uuid
+    val speaker =  Speaker.createSpeaker(email, "j", "b" , None,None,None,None,None,"john","q" )
+    Speaker.save(speaker)
+    uuid
   }
 
 }

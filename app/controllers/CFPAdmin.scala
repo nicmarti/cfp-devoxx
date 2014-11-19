@@ -202,13 +202,12 @@ object CFPAdmin extends SecureCFPController {
 
       val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
       val totalSubmittedByType = Leaderboard.totalSubmittedByType()
-      val totalAcceptedByCategories = Leaderboard.totalAcceptedByCategories()
+      val totalAcceptedByTrack = Leaderboard.totalAcceptedByTrack()
       val totalAcceptedByType = Leaderboard.totalAcceptedByType()
 
       val totalSlotsToAllocate = ApprovedProposal.getTotal
       val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
       val totalWithTickets = Leaderboard.totalWithTickets()
-      val totalWithOneProposal = Leaderboard.totalWithOneProposal()
       val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
 
 
@@ -217,8 +216,9 @@ object CFPAdmin extends SecureCFPController {
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
           totalNoVotes, maybeMostVoted, bestReviewer, lazyOnes,
           totalSubmittedByTrack, totalSubmittedByType,
-          totalAcceptedByCategories, totalAcceptedByType,
-          totalSlotsToAllocate, totalApprovedSpeakers, totalWithTickets, totalWithOneProposal, totalRefusedSpeakers
+          totalAcceptedByTrack, totalAcceptedByType,
+          totalSlotsToAllocate, totalApprovedSpeakers, totalWithTickets,
+          totalRefusedSpeakers
         )
       )
   }

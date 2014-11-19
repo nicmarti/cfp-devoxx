@@ -47,24 +47,45 @@ object ArchiveProposal {
     }
   }
 
-  def doArchive(): String = {
-    "ok"
+  def archiveAll(proposalTypeId: String):Int = {
+    val proposalType = ConferenceDescriptor.ConferenceProposalTypes.valueOf(proposalTypeId)
+    val ids=Proposal.allProposalIDsNotArchived
+    val proposals = Proposal.loadAndParseProposals(ids).values
+
+    // First, check that the approval category is ok (bug #159 on old talks)
+    // Rely on the current proposal talkType
+    proposals.foreach(p=> ApprovedProposal.changeTalkType(p.id,p.talkType.id))
+
+    // Then filter and execute archive
+    val onlySameType = proposals.filter(_.talkType.id == proposalTypeId)
+    onlySameType.foreach(p2 => archive(p2))
+
+    //Leaderboard.computeStats()
+    onlySameType.size
   }
 
-  def archive(proposal: Proposal) = {
-
+  private def archive(proposal: Proposal) = {
     val proposalId = proposal.id
 
+    // Then
     Some(proposal).filter(ApprovedProposal.isApproved).map {
       approvedProposal: Proposal =>
-        ApprovedProposal.cancelApprove(approvedProposal)
         archiveApprovedProposal(approvedProposal)
+        ApprovedProposal.cancelApprove(approvedProposal)
     }
 
-     Some(proposal).filter(ApprovedProposal.isRefused).map {
+    // Some talks with an original talkType of "conf" have been updated to "hack"
+    // but the Approved list of talk was not updated, so I have to add this hack
+    // in order to be sure to cleanup the Approved:* collections
+    ApprovedProposal._loadApprovedCategoriesForTalk(proposal).map{
+      talkType:String=>
+        archiveApprovedProposal(proposal)
+        ApprovedProposal.cancelApprove(proposal)
+    }
+
+    Some(proposal).filter(ApprovedProposal.isRefused).map {
       approvedProposal: Proposal =>
-        ApprovedProposal.cancelApprove(approvedProposal)
-        archiveApprovedProposal(approvedProposal)
+        ApprovedProposal.cancelRefuse(approvedProposal)
     }
 
     //Delete all comments
@@ -74,17 +95,10 @@ object ArchiveProposal {
     Review.archiveAllVotesOnProposal(proposalId)
 
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
-
   }
 
-  def archiveAll(proposalTypeId:String)={
-    val proposalType = ConferenceDescriptor.ConferenceProposalTypes.valueOf(proposalTypeId)
-    val proposals = Proposal.loadAndParseProposals(Proposal.allProposalIDsNotDeleted).values.filter(_.talkType == proposalType)
-    proposals.foreach(proposal => archive(proposal))
-    proposals.size
-  }
 
-  def archiveApprovedProposal(proposal: Proposal) = Redis.pool.withClient {
+  private def archiveApprovedProposal(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val conferenceCode = ConferenceDescriptor.current().eventCode
       val tx = client.multi()
