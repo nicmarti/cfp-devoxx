@@ -60,7 +60,8 @@ object ArchiveProposal {
     val onlySameType = proposals.filter(_.talkType.id == proposalTypeId)
     onlySameType.foreach(p2 => archive(p2))
 
-    //Leaderboard.computeStats()
+    // TODO delete or archive all Reviews Proposals:Reviewed:ByAuthor:*
+
     onlySameType.size
   }
 
