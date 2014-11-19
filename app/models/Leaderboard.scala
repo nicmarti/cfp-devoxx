@@ -70,12 +70,18 @@ object Leaderboard {
         bestReviewer =>
           tx.set("Leaderboard:bestReviewer:uuid", bestReviewer._1)
           tx.set("Leaderboard:bestReviewer:score", bestReviewer._2.toString())
+      }.getOrElse{
+        tx.del("Leaderboard:bestReviewer:uuid")
+        tx.del("Leaderboard:bestReviewer:score")
       }
 
       Review.worstReviewer().map{
         worstReviewer =>
           tx.set("Leaderboard:worstReviewer:uuid", worstReviewer._1)
           tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString())
+      }.getOrElse{
+        tx.del("Leaderboard:worstReviewer:uuid")
+        tx.del("Leaderboard:worstReviewer:score")
       }
 
       val totalSubmittedByTrack = Proposal.totalSubmittedByTrack()
