@@ -61,7 +61,7 @@
 
                     <div class="col-md-4">
                         <h3>Top Reviewer</h3>
-                        @bestReviewer.map { br =>
+                        @bestReviewer.filter(_._2.toInt>0).map { br =>
                             @tags.renderGravatar(br._1)
                             <small>@br._2 talks reviewed.</small>
                         }
