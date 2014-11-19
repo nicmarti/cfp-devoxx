@@ -98,7 +98,8 @@ object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, qualifications:String): Speaker = {
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
+                    qualifications:String): Speaker = {
     Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications))
   }
 

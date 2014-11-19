@@ -511,7 +511,15 @@ object Proposal {
       val allProposalIDs = client.hkeys("Proposals")
       val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
       val allProposalIDArchived = client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")
-      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDDeleted).diff(allProposalIDArchived)
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDArchived).diff(allProposalIDDeleted)
+      onlyValidProposalIDs
+  }
+
+  def allProposalIDsNotArchived: Set[String] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.hkeys("Proposals")
+      val allProposalIDArchived = client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDArchived)
       onlyValidProposalIDs
   }
 
@@ -737,11 +745,6 @@ object Proposal {
   def hasOneProposal(uuid: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.exists(s"Proposals:ByAuthor:$uuid")
-  }
-
-  def totalWithOneProposal(): Int = Redis.pool.withClient {
-    implicit client =>
-      client.keys("Proposals:ByAuthor:*").size
   }
 
   def allApprovedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {

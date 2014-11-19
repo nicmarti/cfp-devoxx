@@ -102,7 +102,6 @@ class ProposalSpecs extends PlaySpecification {
     proposalDel.state must equalTo(ProposalState.DELETED)
   }
 
-
   "add a 2n speaker on an existing Proposal" in new WithApplication(appWithTestRedis) {
 
     // GIVEN
