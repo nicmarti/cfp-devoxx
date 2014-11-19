@@ -292,6 +292,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
 
       // WHEN
       ArchiveProposal.archiveAll(savedProposal.talkType.id)
+      Leaderboard.computeStats()
 
       // THEN
       Leaderboard.totalSpeakers() mustEqual 1L
