@@ -334,6 +334,7 @@ object CFPAdmin extends SecureCFPController {
       }.filterNot {
         case (proposal, _) =>
           proposal.state == ProposalState.DRAFT ||
+          proposal.state == ProposalState.ARCHIVED ||
             proposal.state == ProposalState.DELETED
       }
 
