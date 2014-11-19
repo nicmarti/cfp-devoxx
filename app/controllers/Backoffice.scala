@@ -8,6 +8,7 @@ import play.api.Play
 import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
 import play.api.data._
+import play.api.libs.json.Json
 import play.api.mvc.Action
 
 /**
@@ -222,6 +223,18 @@ object Backoffice extends SecureCFPController {
 
   }
 
+  def sanityCheckProposals() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Redis.pool.withClient{
+        client=>
+          val toReturn = client.hgetAll("Proposals").map{
+            case(proposalId,json)=>
+              (proposalId, Json.parse(json).asOpt[Proposal])
+          }.filter(_._2.isEmpty).map(_._1)
+          Ok(views.html.Backoffice.sanityCheckProposals(toReturn))
+      }
+  }
+
   def fixToAccepted(slotId: String, proposalId: String, talkType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val maybeUpdated = for (
@@ -244,18 +257,6 @@ object Backoffice extends SecureCFPController {
       }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")
       }
-  }
-
-  def archiveAllProposals() = SecuredAction(IsMemberOf("admin")).async {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      import scala.concurrent.ExecutionContext.Implicits.global
-      scala.concurrent.Future {
-        val status = ArchiveProposal.doArchive()
-        Ok("Super "+status)
-      }
-
-
   }
 
 }
