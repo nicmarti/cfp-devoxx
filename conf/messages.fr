@@ -118,13 +118,14 @@ btn.home=Retour à l''accueil sans sauver
 btn.save2=Sauvegarder votre proposition
 not.saved=Vérifiez le résumé à destination du participant à Devoxx France, puis cliquez sur "Sauvegarder la proposition" pour continuer.
 validate.summary2=ou sinon utilisez
-validate.summary3=le bouton retour à la page précédente
+validate.summary3=Retour à la page précédente
 validate.summary4=de votre navigateur pour corriger votre texte de résumé.
 track=Thème principal de la présentation
 summary.preview=Aperçu de votre présentation
 preview.warn=Votre proposition est à l''état DRAFT. N''oubliez pas de soumettre la proposition avec l''icône
 preview.warn2=dans le tableau de la page d''accueil.
- 
+presubmit.reminder=Lorsque vous êtes prêt à soumettre votre proposition, n''oubliez pas de cliquer sur l''enveloppe orange sur l''écran principal (
+
 # Proposal type
 key.label=Keynote, 50mn, jeudi et vendredi matin
 conf.label=Conference, 45mn, jeudi et vendredi
