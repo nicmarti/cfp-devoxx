@@ -213,7 +213,8 @@ object Review {
       Webuser.allCFPWebusers().map {
         webuser: Webuser =>
           val uuid = webuser.uuid
-          val total = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid", "Proposals:ByState:" + ProposalState.DELETED.code, "Proposals:ByState:" + ProposalState.DRAFT.code)
+          println(s"Proposals:Reviewed:ByAuthor:$uuid" + " Proposals:ByState:" + ProposalState.DELETED.code, " Proposals:ByState:" + ProposalState.ARCHIVED.code + " Proposals:ByState:" + ProposalState.DRAFT.code + "P roposals:ByState:" + ProposalState.DECLINED.code)
+          val total = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid", "Proposals:ByState:" + ProposalState.DELETED.code, "Proposals:ByState:" + ProposalState.ARCHIVED.code, "Proposals:ByState:" + ProposalState.DRAFT.code, "Proposals:ByState:" + ProposalState.DECLINED.code)
           (uuid, total.size)
       }
   }
@@ -300,6 +301,14 @@ object Review {
           |local proposals = redis.call("KEYS", "Proposals:Votes:*")
           |redis.call("DEL", "Computed:Reviewer:Total")
           |redis.call("DEL", "Computed:Reviewer:ReviewedOne")
+          |redis.call("DEL", "Computed:Scores")
+          |redis.call("DEL", "Computed:Voters")
+          |redis.call("DEL", "Computed:Average")
+          |redis.call("DEL", "Computed:Votes:ScoreAndCount")
+          |redis.call("DEL", "Computed:VotersAbstention")
+          |redis.call("DEL", "Computed:StandardDeviation")
+          |redis.call("DEL", "Computed:VotersAbstention")
+          |redis.call("DEL", "Computed:Median")
           |
           |for i = 1, #proposals do
           |  redis.log(redis.LOG_DEBUG, "----------------- " .. proposals[i])
