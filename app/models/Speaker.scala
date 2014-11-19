@@ -187,6 +187,14 @@ object Speaker {
       }
   }
 
+  def withOneProposal(speakers: List[Speaker])={
+    speakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
+  }
+
+  def notMemberOfCFP(speakers:List[Speaker])={
+    speakers.filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+  }
+
   def allSpeakersUUID():Set[String]=Redis.pool.withClient{
     client=>
       client.hkeys("Speaker")
