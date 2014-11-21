@@ -237,7 +237,7 @@
                     </tfoot>
                 </table>
             }
-@if(controllers.Backoffice.isCFPOpen){
+@if(ConferenceDescriptor.isCFPOpen){
             <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
 }else{
     <div class="panel panel-success">

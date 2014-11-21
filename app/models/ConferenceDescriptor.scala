@@ -717,8 +717,9 @@ object ConferenceDescriptor {
     , "Palais des Congrès, Porte Maillot, Paris"
   )
 
-  def isCFPOpen: Boolean = {
-    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+  val isCFPOpen: Boolean = {
+//    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+    true
   }
 
 }
