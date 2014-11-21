@@ -1,16 +1,20 @@
 package controllers
 
-import controllers.Backport._
-import models._
-import play.api.data._
-import play.api.data.Forms._
+import java.io._
+
 import library.Redis
-import library.search._
+import library.search.{DoIndexProposal, _}
+import models._
+import org.apache.commons.lang3.StringEscapeUtils
 import org.joda.time.Instant
 import play.api.Play
-import library.search.DoIndexProposal
-import play.api.cache.{EhCachePlugin, Cache}
+import play.api.cache.EhCachePlugin
+import play.api.data.Forms._
+import play.api.data._
+import play.api.libs.iteratee.Enumerator
 import play.api.mvc.Action
+
+import scala.concurrent.ExecutionContext
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -226,43 +230,86 @@ object Backoffice extends SecureCFPController {
 
   def fixToAccepted(slotId: String, proposalId: String, talkType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val maybeUpdated=for(
+      val maybeUpdated = for (
         scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType);
         scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
-        slot <- scheduleConf.slots.find(_.id==slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id==proposalId)
+        slot <- scheduleConf.slots.find(_.id == slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId)
       ) yield {
         val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
         val updatedSlot = slot.copy(proposal = Some(updatedProposal))
-        val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id==slotId)
+        val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
         newListOfSlots
       }
 
-      maybeUpdated.map{
-        newListOfSlots=>
+      maybeUpdated.map {
+        newListOfSlots =>
           val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
           ScheduleConfiguration.publishConf(newID, talkType)
 
-          Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success"->s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
-      }.getOrElse{
+          Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
+      }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")
       }
   }
 
-  def allQuestions=SecuredAction(IsMemberOf("admin")) {
+  def allQuestions = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       Ok(views.html.Backoffice.showAllQuestions(Question.allQuestions))
   }
 
-  def deleteAllQuestions(proposalId:String)=SecuredAction(IsMemberOf("admin")){
-    implicit request=>
+  def deleteAllQuestions(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       Question.deleteAllQuestionsForProposal(proposalId)
       Redirect(routes.Backoffice.allQuestions())
   }
 
-  def allTalksForParleys()=SecuredAction(IsMemberOf("admin")){
-    implicit request=>
+  def allTalksForParleys() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       val slots = ScheduleConfiguration.loadSlots()
-      Ok(views.html.Backoffice.allTalksForParleys(slots))
+      val file = File.createTempFile("export","csv")
+      file.deleteOnExit()
 
+      val writer = new PrintWriter(file, "MacRoman")
+      writer.println("code,title,description,mainSpeaker,secondarySpeaker,thirdSpeaker,fourthSpeaker")
+      slots.filter(_.proposal.isDefined).foreach {
+        slot: Slot =>
+          writer.print(slot.parleysId)
+          writer.print(",")
+          writer.print(StringEscapeUtils.escapeCsv(slot.proposal.map(_.title).get))
+          writer.print(",")
+          writer.print(StringEscapeUtils.escapeCsv(slot.proposal.get.summary.replaceAll("\r", "").replaceAll("\n", " ").replaceAll("\\s+", " ")))
+          writer.print(",")
+
+          Speaker.findByUUID(slot.proposal.get.mainSpeaker).map {
+            speaker: Speaker =>
+              writer.print(StringEscapeUtils.escapeCsv(speaker.cleanName))
+              writer.print(",")
+          }.getOrElse(writer.print(",,"))
+
+          slot.proposal.get.secondarySpeaker.map {
+            secSpeaker =>
+              Speaker.findByUUID(secSpeaker).map {
+                s: Speaker =>
+                  writer.print(StringEscapeUtils.escapeCsv(s.cleanName))
+                  writer.print(",")
+              }.getOrElse(writer.print(",,"))
+          }.getOrElse(writer.print(",,"))
+
+
+          slot.proposal.get.otherSpeakers.map {
+            otherSpeakerId =>
+              Speaker.findByUUID(otherSpeakerId).map {
+                s2: Speaker =>
+                  writer.print(StringEscapeUtils.escapeCsv(s2.cleanName))
+                  writer.print(",")
+              }.getOrElse(writer.print(","))
+          }
+          writer.println("")
+      }
+
+      writer.close()
+
+      Ok.sendFile(new java.io.File("./target/export.csv"), false, f => "export.csv")
   }
+
 }
