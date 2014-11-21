@@ -169,7 +169,7 @@ appel.conf.dates=Devoxx France 2015, 8th-10th April 2015
 # Tracks
 track.webmobile.title=Web, Mobile &  UX
 track.webmobile.desc=Web, mobile, user-experience, front-end and Web architecture
-webmobile.label=Web, Mobile & UX
+wm.label=Web, Mobile & UX
 
 track.archisec.title=Architecture, Performance & Security
 track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
@@ -177,7 +177,7 @@ archisec.label=Architecture, Performance and Security
 
 track.agilityTest.title=Agility, Methodology & Test
 track.agilityTest.desc=Software development methodologies, TDD, BDD, xDD
-agilityTest.label=Agility, Methodology & Test
+agTest.label=Agility, Methodology & Test
 
 track.java.title=Java, infinite possibilities
 track.java.desc=Everything about Java, the JVM, Java SE 8 or Java EE.
