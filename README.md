@@ -1,4 +1,4 @@
- Call for Paper application for Devoxx
+Call for Paper application for Devoxx
 =============
 
 cfp-devoxx-fr
@@ -9,7 +9,7 @@ Original author: Nicolas Martignole @nmartignole
 French
 ------
 
-Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis 2.8.
+Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.3. Les données sont persistées sur Redis 2.8.
 
 J'ai écris cette application en prenant soin de rester simple, pragmatique et productif.
 
@@ -87,7 +87,7 @@ Voici ce qu'il vous faut
 - un compte [Mailjet](http://www.mailjet.fr) pour l'envoi SMTP des emails transactionnels
 - un compte [Github](http://www.github.com) pour pouvoir créer une clé API pour l'authentification OpenID. Voir [https://github.com/settings/applications](cette page)
 - créer une application via votre compte Google sur [https://cloud.google.com/console#/project](https://cloud.google.com/console#/project) . Configurez une URL pour le développement, comme http://localhost:9000/ et une URL de prod comme http://cfp.devoxx.fr/
-- un serveur Redis protégé par un mot de passe très long
+- un serveur Redis protégé par un mot de passe très long. Sans quoi, n'importe qui peut se connecter et vider votre base.
 - un serveur ElasticSearch
 
 Voici ce que vous devez configurer :
@@ -103,7 +103,6 @@ Voici ce que vous devez configurer :
 - Configurez enfin le serveur Redis. Prenez soin de configurer un mot de passe très long pour votre serveur Redis
 - Configurez enfin l'adresse d'un serveur ElasticSearch
 
-Au moment de la mise à jour de cette documentation, la partie Trello n'est pas encore codée.
 
 # Contributeurs
 
@@ -113,8 +112,19 @@ Au moment de la mise à jour de cette documentation, la partie Trello n'est pas 
 - Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou) pour la conférence Scala.IO
 - Frédéric Camblor [@fcamblor](http://www.twitter.com/fcamblor) pour la conférence BDX.IO
 
+# Utilisé par 
+
+- Devoxx France
+- Devoxx Belgique
+- Devoxx UK
+- Devoxx Poland
+- BDX.io
+- Scala.io
+- BreizhCamp
+
 # Hébergement
 
 Le CFP de Devoxx France est hébergé sur la plateforme [http://www.clever-cloud.com](Clever-Cloud)
 
+J'utilise ente.io pour la partie Redis, via CleverCloud. Pour Elasticsearch, j'ai une machine dédiée chez Online.net, sur laquelle j'ai du docker avec les 4 Elasticsearch pour les 4 CFP de Devoxx.
 
