@@ -6,7 +6,7 @@ CONF.subtitle=FR
 # Equivalent to ConferenceNaming
 shortYearlyName=Devoxx FR 2015
 longYearlyName=Devoxx France 2015
-shortName=Devoxx BE
+shortName=Devoxx France
 longName=Devoxx FR 2015 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
@@ -90,7 +90,7 @@ talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href\="{0}\#confType" target\="new">FAQ</a>.
 
 audienceLevel=Audience level :
-audienceLevel.help=Please, indicate the required audience level for your talk\:\
+audienceLevel.help=Please, indicate the required audience level for your talk:\
 1- for all audience, beginner or novice\
 2- for intermediate, talented\
 3- experienced, proficient\
@@ -124,7 +124,7 @@ next.action=Select next action:
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
 key.label.simple=Keynote
-conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.label=Conference, 45mn, Wednesday, Thursday and Friday morning
 conf.label.simple=Conference
 uni.label=University, 3h, Monday or Tuesday
 uni.label.simple=University
@@ -179,9 +179,9 @@ track.agilityTest.title=Agility, Methodology & Test
 track.agilityTest.desc=Software development methodologies, TDD, BDD, xDD
 agilityTest.label=Agility, Methodology & Test
 
-track.java.title=Java, infinite possibilities &#8734;
+track.java.title=Java, infinite possibilities
 track.java.desc=Everything about Java, the JVM, Java SE 8 or Java EE.
-java.label=Java, infinite possibilities &#8734;
+java.label=Java, infinite possibilities
 
 track.cloudDevops.title=Cloud, DevOps and Tools
 track.cloudDevops.desc=Cloud-computing, DevOps, Paas, Iaas
@@ -604,7 +604,7 @@ mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
 mail.notify_proposal.subject={0} submitted a proposal [{1}]
 mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
-mail.draft_multiple_reminder.subject={1} reminder \: you have {0} proposals to submit
+mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
 mail.proposal_approved.subject=Your proposal has been approved {0}
 mail.proposal_refused.subject=Your proposal has been refused {0}
 mail.speaker_cfp_results.subject=Call for Paper {0}
@@ -631,10 +631,10 @@ cfp.closed=CFP is currently closed.
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.opening.date=Lundi 2 décembre 2013
 constraint.email=Valid email address
-constraint.max=Max value \: {0}
-constraint.maxLength=Max length\: {0}
-constraint.min=Min length \: {0}
-constraint.minLength=Min length \: {0}
+constraint.max=Max value : {0}
+constraint.maxLength=Max length: {0}
+constraint.min=Min length : {0}
+constraint.minLength=Min length : {0}
 day-mercredi=Wednesday
 day-vendredi=Friday
 error.email=Invalid email address
