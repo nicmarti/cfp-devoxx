@@ -684,7 +684,7 @@ object ConferenceDescriptor {
   }
 
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxBe2014",
+    eventCode = "DV14",
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxbe2014",
     frLangEnabled = false,

@@ -258,4 +258,11 @@ object Backoffice extends SecureCFPController {
       Question.deleteAllQuestionsForProposal(proposalId)
       Redirect(routes.Backoffice.allQuestions())
   }
+
+  def allTalksForParleys()=SecuredAction(IsMemberOf("admin")){
+    implicit request=>
+      val slots = ScheduleConfiguration.loadSlots()
+      Ok(views.html.Backoffice.allTalksForParleys(slots))
+
+  }
 }

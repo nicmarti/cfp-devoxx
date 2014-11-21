@@ -65,6 +65,10 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
     s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined}"
   }
 
+  def parleysId:String={
+    ConferenceDescriptor.current().eventCode + "_" + from.toString("dd")+"_"+room.id+"_"+from.toString("HHmm")
+  }
+
   def notAllocated: Boolean = {
     break.isEmpty && proposal.isEmpty
   }

@@ -1,0 +1,61 @@
+@(slots:List[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin - Parleys") {
+
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @Html(flash.get("success").get)
+        </div>
+    }
+
+    <div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>All Slots for a specific day</h3>
+        </div>
+
+        <div class="panel-body">
+
+            @if(slots.nonEmpty){
+                @slots.size slots
+            <table id="allProposals" class="table table-bordered table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Speakers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @slots.filter(_.proposal.isDefined).map{ slot =>
+                            <tr>
+                                <td>@slot.parleysId</td>
+                                <td>@slot.proposal.map(_.title)</td>
+                                <td>@slot.proposal.map(_.summary)</td>
+                                <td>@slot.proposal.map(p => p.allSpeakers.map(_.cleanName).mkString(", "))</td>
+                            </tr>
+                }
+                </tbody>
+            </table>
+            }else{
+                <P>There is no proposal with status draft</P>
+            }
+        </div>
+    </div>
+    </div>
+</div>
+
+}
