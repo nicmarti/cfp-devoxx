@@ -213,7 +213,6 @@ object Review {
       Webuser.allCFPWebusers().map {
         webuser: Webuser =>
           val uuid = webuser.uuid
-          println(s"Proposals:Reviewed:ByAuthor:$uuid" + " Proposals:ByState:" + ProposalState.DELETED.code, " Proposals:ByState:" + ProposalState.ARCHIVED.code + " Proposals:ByState:" + ProposalState.DRAFT.code + "P roposals:ByState:" + ProposalState.DECLINED.code)
           val total = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid", "Proposals:ByState:" + ProposalState.DELETED.code, "Proposals:ByState:" + ProposalState.ARCHIVED.code, "Proposals:ByState:" + ProposalState.DRAFT.code, "Proposals:ByState:" + ProposalState.DECLINED.code)
           (uuid, total.size)
       }
