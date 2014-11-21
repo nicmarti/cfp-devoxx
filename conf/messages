@@ -590,7 +590,7 @@ contacted=Speaker has been contacted
 unknown=Unknown
 
 # The abstention button
-Abs=0
+Abs=Abs
 trackAndUUIDs=
 
 mail.reset_password_link.subject=You asked to reset your {1} speaker''s access code at {0}
