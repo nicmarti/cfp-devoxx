@@ -163,7 +163,7 @@ object Publisher extends Controller {
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "friday"))
           }
 
-          case None => NotFound(views.html.Publisher.agendaNotYetPublished())
+          case other => NotFound(views.html.Publisher.agendaNotYetPublished())
         }
       }
   }
