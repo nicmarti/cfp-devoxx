@@ -495,7 +495,7 @@ showAgendaByRoom=Agenda par salle
 Abs=0
 admin.btn.tracklead=Track leader
 approved=Speaker a accepté
-audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet\:\
+audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet:\
 \
 1- pour tout le monde, débutant comme expert\
 2- pour des personnes ayant déjà une expérience\
@@ -525,7 +525,7 @@ demoLevel2.label=Slides et du code
 demoLevel3.label=Que du code
 demoLevel4.label=Ni slides, ni code
 key.label.simple=Plénière (Keynote)
-l1.label=niveau 1 \: débutant
+l1.label=niveau 1 : débutant
 l2.label=Intermédiaire
 l3.label=Expert et sénior
 lab.label.simple=Hand''s on lab
@@ -611,7 +611,7 @@ day-thursday=Jeudi 9 avril
 day-tuesday=Mardi 7 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
-mail.notify_proposal.content=Une nouvelle proposition a été envoyée au CFP. Titre [{0}], Track\: [{1}] et Type\: [{2}]
+mail.notify_proposal.content=Une nouvelle proposition a été envoyée au CFP. Titre [{0}], Track: [{1}] et Type: [{2}]
 mail.notify_proposal.subject={0} a soumis un sujet [{1}]
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
 mail.proposal_refused.subject=Votre proposition de sujet a été déclinée {0}
