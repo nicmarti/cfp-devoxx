@@ -19,10 +19,6 @@ import play.api.mvc.Action
  */
 object Backoffice extends SecureCFPController {
 
-  val isCFPOpen: Boolean = {
-    ConferenceDescriptor.isCFPOpen
-  }
-
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.Backoffice.homeBackoffice())
