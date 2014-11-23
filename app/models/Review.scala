@@ -304,7 +304,6 @@ object Review {
           |redis.call("DEL", "Computed:Voters")
           |redis.call("DEL", "Computed:Average")
           |redis.call("DEL", "Computed:Votes:ScoreAndCount")
-          |redis.call("DEL", "Computed:VotersAbstention")
           |redis.call("DEL", "Computed:StandardDeviation")
           |redis.call("DEL", "Computed:VotersAbstention")
           |redis.call("DEL", "Computed:Median")
