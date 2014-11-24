@@ -261,7 +261,6 @@ object Publisher extends Controller {
                   Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
                 }
               case (msg, fullname, email1, email2, _) =>
-                println("Invalid captcha")
                 val t1 = Random.nextInt(100)
                 val t2 = Random.nextInt(100)
                 val total = t1 + t2
@@ -270,7 +269,6 @@ object Publisher extends Controller {
                   speakerMsg.fill(msg, fullname, email1, email2, "").withError("captcha","Invalid captcha").withGlobalError("Invalid captcha dude..."), questions, t1, t2)
                 ).withSession(("h", obfuscated))
                 .flashing("error"->"Invalid captcha please try again")
-
             }
             )
         }
