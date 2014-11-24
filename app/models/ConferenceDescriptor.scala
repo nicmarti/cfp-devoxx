@@ -90,7 +90,8 @@ case class ConferenceDescriptor(eventCode: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[String],
-                                localisation: String
+                                localisation: String,
+                                showQuestion:Boolean
                                  )
 
 object ConferenceDescriptor {
@@ -715,10 +716,11 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List("en_EN")
     , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , showQuestion=false
   )
 
   def isCFPOpen: Boolean = {
-    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+    false
   }
 
 }

@@ -55,17 +55,18 @@
                         </td>
                     </tr>
                 }
+@if(ConferenceDescriptor.current().showQuestion) {
+    <tr>
+        <td colspan="2">
+            <div class="panel-body">
+                <h4>Send a question to the speaker@if(proposal.secondarySpeaker.isDefined) {s}</h4>
 
-                <tr>
-                    <td colspan="2">
-                <div class="panel-body">
-                    <h4>Send a question to the speaker@if(proposal.secondarySpeaker.isDefined){s}</h4>
-
-@if(flash.get("success").isDefined){
-<div class="alert-box success">
-    <i class="icon-mail-forward"></i> Your message has been sent to the speaker. Please, revisit this page later to read speakers's answers.
-</div>
-}
+                @if(flash.get("success").isDefined) {
+                    <div class="alert-box success">
+                        <i class="icon-mail-forward"></i>
+                        Your message has been sent to the speaker. Please, revisit this page later to read speakers's answers.
+                    </div>
+                }
 
 @if(flash.get("error").isDefined){
 <div class="alert-box error">
@@ -75,19 +76,19 @@
                 @helper.form(action = routes.Publisher.sendMessageToSpeaker(proposal.id)) {
                     @helper.inputText(speakerMsg("fullname"),
                         'class -> "form-control input-large",
-                        'showConstraints -> false ,
+                        'showConstraints -> false,
                         '_label -> "Your name",
                         '_help -> ""
                     )
                     @helper.inputText(speakerMsg("email_pub"),
                         'class -> "form-control input-large",
-                        'showConstraints -> false ,
+                        'showConstraints -> false,
                         '_label -> "Your email address (required)",
                         '_help -> ""
                     )
                     @helper.inputText(speakerMsg("email_pub2"),
                         'class -> "form-control input-large",
-                        'showConstraints -> false ,
+                        'showConstraints -> false,
                         '_label -> "Please confirm your email address",
                         '_help -> ""
                     )
@@ -101,14 +102,15 @@
 
                     @helper.textarea(speakerMsg("msg_pub"),
                         'class -> "form-control input-large",
-                        'showConstraints -> true ,
+                        'showConstraints -> true,
                         '_label -> "Please enter your question or your message for the speaker:",
                         '_help -> "")
                     <button type="submit" class="btb btn-xs btn-primary">Send my message</button>
                 }
-                </div>
-                    </td>
-                </tr>
+            </div>
+        </td>
+    </tr>
+}
             </tbody>
         </table>
     </div>

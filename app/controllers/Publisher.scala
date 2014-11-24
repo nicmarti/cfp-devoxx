@@ -163,7 +163,7 @@ object Publisher extends Controller {
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "friday"))
           }
 
-          case other => NotFound(views.html.Publisher.agendaNotYetPublished())
+          case None => NotFound(views.html.Publisher.agendaNotYetPublished())
         }
       }
   }
@@ -215,29 +215,28 @@ object Publisher extends Controller {
 
   def showDetailsForProposal(proposalId: String, proposalTitle: String) =
     Action {
-      implicit request =>
-        Proposal.findById(proposalId) match {
-          case None => NotFound("Proposal not found")
-          case Some(proposal) =>
-            val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
-            val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+    implicit request =>
+      Proposal.findById(proposalId) match {
+        case None => NotFound("Proposal not found")
+        case Some(proposal) =>
+          val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
+          val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
 
-            val questions = Question.allQuestionsForProposal(proposal.id)
+          val questions = Question.allQuestionsForProposal(proposal.id)
 
-            ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
+          ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
             val t1 = Random.nextInt(100)
             val t2 = Random.nextInt(100)
             val total = t1 + t2
             val obfuscated = Crypto.sign(total.toString + "some_salt")
             Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg, questions, t1, t2)).withSession(("h", obfuscated))
-        }
-    }
+      }
+  }
 
-
-  def sendMessageToSpeaker(proposalId: String) =
-    Action {
-      implicit request =>
+  def sendMessageToSpeaker(proposalId: String) = Action {
+    implicit request =>
+      if (ConferenceDescriptor.current().showQuestion) {
         Proposal.findById(proposalId) match {
           case None => NotFound("Proposal not found")
           case Some(proposal) =>
@@ -256,11 +255,12 @@ object Publisher extends Controller {
                 if (msg.contains("Cialis") || msg.contains("Viagra") || msg.contains("Casino")) {
                   Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
                 } else {
-                  Question.saveQuestion(proposal.id, email1, fullname, msg)
-                  ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
-                  Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
-                }
+                Question.saveQuestion(proposal.id, email1, fullname, msg)
+                ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
+                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+            }
               case (msg, fullname, email1, email2, _) =>
+                println("Invalid captcha")
                 val t1 = Random.nextInt(100)
                 val t2 = Random.nextInt(100)
                 val total = t1 + t2
@@ -269,11 +269,14 @@ object Publisher extends Controller {
                   speakerMsg.fill(msg, fullname, email1, email2, "").withError("captcha","Invalid captcha").withGlobalError("Invalid captcha dude..."), questions, t1, t2)
                 ).withSession(("h", obfuscated))
                 .flashing("error"->"Invalid captcha please try again")
+
             }
             )
         }
-    }
-
+      }else{
+        NotFound
+      }
+  }
 
   def allQuestions() = Action {
     implicit request =>
