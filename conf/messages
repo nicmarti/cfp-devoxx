@@ -661,3 +661,5 @@ wl.company=Company
 wl.track=Track
 wl.status=Current status
 wishlist.setPersonInCharge=Person responsible for {0}
+webmobile.label=Web, Mobile & UX
+agilityTest.label=Agility, Methodology & Tests
