@@ -89,7 +89,8 @@ case class ConferenceDescriptor(eventCode: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[String],
-                                localisation: String
+                                localisation: String,
+                                showQuestion:Boolean
                                  )
 
 object ConferenceDescriptor {
@@ -715,6 +716,7 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List("fr_FR")
     , "Palais des Congrès, Porte Maillot, Paris"
+    ,showQuestion=false
   )
 
   val isCFPOpen: Boolean = {
