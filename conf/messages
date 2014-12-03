@@ -1,19 +1,19 @@
-# -----------------
+﻿# -----------------
 # Main conference details
-CONF.title=Devoxx France 2015
-CONF.subtitle=FR
+CONF.title=Devoxx Poland 2015
+CONF.subtitle=PL
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx FR 2015
-longYearlyName=Devoxx France 2015
-shortName=Devoxx France
-longName=Devoxx FR 2015 CFP
+shortYearlyName=Devoxx PL 2015
+longYearlyName=Devoxx Poland 2015
+shortName=Devoxx PL
+longName=Devoxx PL 2015 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2015
-conference.dates=10th-14th November
+longSplittedName_whiteEnd=PL 2015
+conference.dates=22nd-24th June
 # -----------------
-cfp.title=Devoxx FR 2015 CFP
+cfp.title=Devoxx PL 2015 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -124,21 +124,21 @@ next.action=Select next action:
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
 key.label.simple=Keynote
-conf.label=Conference, 45mn, Wednesday, Thursday and Friday morning
+conf.label=Conference, 1h, Monday, Tuesday and Wednesday morning
 conf.label.simple=Conference
-uni.label=University, 3h, Monday or Tuesday
+uni.label=University, 3h, Wednesday
 uni.label.simple=University
-tia.label=Tools in Action, 30mn, only Monday or Tuesday
+tia.label=Tools in Action, 30mn, Monday, Tuesday and Wednesday
 tia.label.simple=Tools in Action
-quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+quick.label=Quickie, 15mn, Monday and Tuesday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+bof.label=Bird of a Feather, 1h, Monday, Tuesday and Wednesday evening
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.label=Hands-on Labs, 3h, Monday, Tuesday and Wednesday
 lab.label.simple=Hand''s on Lab
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Thursday
+start.label=Startup Talk, 25 min, Monday, Tuesday and Wednesday
 start.label.simple=Startup
 
 hack.label.simple=Hackatons
@@ -159,12 +159,12 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx FR 2014''s videos on
+video.tag=Review Devoxx PL 2014''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx France 2015:
+theme.track=List of tracks for Devoxx Poland 2015:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx France 2015, 8th-10th April 2015
+appel.conf.dates=Devoxx Poland 2015, 22nd-24th June 2015
 
 # Tracks
 track.webmobile.title=Web, Mobile &  UX
@@ -448,7 +448,7 @@ bio2=Speaker''s bio
 twitter2=Twitter''s handle
 company2=Company
 blog2=Web site or personnal blog
-lang2=Will speak in English or French? (en/fr)
+lang2=Will speak in English or Polish? (en/pl)
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
 sp.editName=Edit name
@@ -456,8 +456,8 @@ sw.hackatons=Hackatons
 sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
 calendar.pref=Speaker''s preferences for schedulling
-calendar.pref.thursday=Thursday
-calendar.pref.friday=Friday
+calendar.pref.monday=Monday
+calendar.pref.tuesday=Tuesday
 calendar.pref.reset=No preferences
 sw.all.other=Other kind of presentation
 acceptTermsConditions=Accept  Terms/Conditions to display this bio on the web site
@@ -469,11 +469,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 10th November
-day-tuesday=Tuesday, 11th November
-day-wednesday=Wednesday, 12th November
-day-thursday=Thursday, 9th April
-day-friday=Friday, 14th November
+day-monday=Monday, 22nd June
+day-tuesday=Tuesday, 23rd June
+day-wednesday=Wednesday, 24th June
+day-thursday=Thursday, 25th June
+day-friday=Friday, 26th June
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -502,11 +502,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 6th April 2015
-sw.show.title.tue=Tuesday, 7th April 2015
-sw.show.title.wed=Wednesday, 8th April 2015
-sw.show.title.thu=Thursday, 9th April 2015
-sw.show.title.fri=Friday, 10th April 2015
+sw.show.title.mon=Monday, 22nd June 2015
+sw.show.title.tue=Tuesday, 23rd June 2015
+sw.show.title.wed=Wednesday, 24th June 2015
+sw.show.title.thu=Thursday, 25th June 2015
+sw.show.title.fri=Friday, 26th June 2015
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
