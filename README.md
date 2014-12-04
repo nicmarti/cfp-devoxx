@@ -9,7 +9,7 @@ Original author: Nicolas Martignole @nmartignole
 French
 ------
 
-Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis 2.8.
+Le CFP de Devoxx Poland est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis 2.8.
 
 J'ai écris cette application en prenant soin de rester simple, pragmatique et productif.
 
@@ -29,7 +29,7 @@ L'installation d'un environnement de dév est simple et s'effectue en quelques �
 - installer Play 2.2.3
 - installer Redis 2.8.4
 - configurer son serveur Redis pour être "slave" de la prod
-- récupérer le code source du projet CFP Devoxx France de Bitbucket
+- récupérer le code source du projet CFP Devoxx Poland de Bitbucket
 - lancer et commencer à contribuer
 
 ## Installation de Play 2.2
@@ -86,7 +86,7 @@ Voici ce qu'il vous faut
 
 - un compte [Mailjet](http://www.mailjet.fr) pour l'envoi SMTP des emails transactionnels
 - un compte [Github](http://www.github.com) pour pouvoir créer une clé API pour l'authentification OpenID. Voir [https://github.com/settings/applications](cette page)
-- créer une application via votre compte Google sur [https://cloud.google.com/console#/project](https://cloud.google.com/console#/project) . Configurez une URL pour le développement, comme http://localhost:9000/ et une URL de prod comme http://cfp.devoxx.fr/
+- créer une application via votre compte Google sur [https://cloud.google.com/console#/project](https://cloud.google.com/console#/project) . Configurez une URL pour le développement, comme http://localhost:9000/ et une URL de prod comme http://cfp.devoxx.pl/
 - un serveur Redis protégé par un mot de passe très long
 - un serveur ElasticSearch
 
@@ -115,6 +115,6 @@ Au moment de la mise à jour de cette documentation, la partie Trello n'est pas 
 
 # Hébergement
 
-Le CFP de Devoxx France est hébergé sur la plateforme [http://www.clever-cloud.com](Clever-Cloud)
+Le CFP de Devoxx Poland est hébergé sur la plateforme [http://www.clever-cloud.com](Clever-Cloud)
 
 
