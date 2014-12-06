@@ -38,7 +38,6 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
                                  givesSpeakerFreeEntrance: Boolean,
                                  freeEntranceDisplayed: Boolean,
                                  htmlClass: String,
-                                 recorded: Option[Boolean],
                                  hiddenInCombo: Boolean = false,
                                  chosablePreferredDay: Boolean = false,
                                  impliedSelectedTrack: Option[Track] = None)
@@ -46,7 +45,7 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
 object ProposalConfiguration {
 
   val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
-    htmlClass = "", recorded = None, hiddenInCombo = true, chosablePreferredDay = false)
+    htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false)
 
   def parse(propConf: String): ProposalConfiguration = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
@@ -138,27 +137,27 @@ object ConferenceDescriptor {
 
   object ConferenceProposalConfigurations {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = 89, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
-      recorded = Some(true), chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val UNI = ProposalConfiguration(id = "uni", slotsCount = 16, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
-      recorded = Some(true), chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val TIA = ProposalConfiguration(id = "tia", slotsCount = 24, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-legal",
-      recorded = Some(true), chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = 10, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
-      recorded = None, chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = 28, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
-      recorded = Some(true), chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = 25, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
-      recorded = None, chosablePreferredDay = false)
+      chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 8, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = Some(true), chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val HACK = ProposalConfiguration(id = "hack", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = Some(true), chosablePreferredDay = false)
+      chosablePreferredDay = false)
     val CODE = ProposalConfiguration(id = "cstory", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = Some(true), chosablePreferredDay = false)
+      chosablePreferredDay = false)
     val AMD = ProposalConfiguration(id = "amd", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = None, chosablePreferredDay = false)
+      chosablePreferredDay = false)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = None, hiddenInCombo = true, chosablePreferredDay = false)
+      hiddenInCombo = true, chosablePreferredDay = false)
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, HACK, CODE, AMD, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
@@ -199,18 +198,18 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, recorded = None, "special")
+    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, "special")
 
-    val ROOM3 = Room("room3", "Room 3", 345, recorded = Some(true), "theatre")
-    val ROOM4 = Room("room4", "Room 4", 364, recorded = Some(true), "theatre")
-    val ROOM5 = Room("room5", "Room 5", 684, recorded = Some(true), "theatre")
-    val ROOM6 = Room("room6", "Room 6", 407, recorded = Some(true), "theatre")
-    val ROOM7 = Room("room7", "Room 7", 407, recorded = Some(true), "theatre")
-    val ROOM8 = Room("room8", "Room 8", 745, recorded = Some(true), "theatre")
-    val ROOM9 = Room("room9", "Room 9", 425, recorded = Some(true), "theatre")
+    val ROOM3 = Room("room3", "Room 3", 345, "theatre")
+    val ROOM4 = Room("room4", "Room 4", 364, "theatre")
+    val ROOM5 = Room("room5", "Room 5", 684, "theatre")
+    val ROOM6 = Room("room6", "Room 6", 407, "theatre")
+    val ROOM7 = Room("room7", "Room 7", 407, "theatre")
+    val ROOM8 = Room("room8", "Room 8", 745, "theatre")
+    val ROOM9 = Room("room9", "Room 9", 425, "theatre")
 
-    val BOF1 = Room("bof1", "BOF 1", 70, recorded = None, "classroom")
-    val BOF2 = Room("bof2", "BOF 2", 70, recorded = None, "classroom")
+    val BOF1 = Room("bof1", "BOF 1", 70, "classroom")
+    val BOF2 = Room("bof2", "BOF 2", 70, "classroom")
 
     val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
