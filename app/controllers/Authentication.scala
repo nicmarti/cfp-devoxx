@@ -396,7 +396,7 @@ object Authentication extends Controller  {
             }
           }.getOrElse {
             Future.successful {
-              InternalServerError("linkedin.client_secret is not configured in application.conf")
+              InternalServerError("linkedin.client_id and linkedin.client_secret are not configured in application.conf")
             }
           }
         }
