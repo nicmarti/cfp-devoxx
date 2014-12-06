@@ -6,6 +6,57 @@ cfp-devoxx-fr
 
 Original author: Nicolas Martignole @nmartignole
 
+English
+-------
+
+The CFP was originally created in 2014 for Devoxx France. Implemented with Scala, the CFP uses the Play Framework v2.2.3
+and Redis 2.8 to persist datas. The application focus on simplicity and pragmatism.
+
+## How to set-up a local and friendly developer environment ?
+
+- Install Play 2.2.3 (not the latest version with activator)
+- Install Redis 2.8.4, do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
+- Read Redis documentation and learn Redis with http://try.redis.io
+- Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf
+
+optional but recommended for better user experience:
+- Install ElasticSearch
+- Create Github App and configure OAuth
+- Create a Google App and configure OAuth
+
+## What do I need?
+
+To work on a local CFP, you don't need to configure the Github,Google or LinkedIn OAuth application. You can
+just start a local version of the CFP, and configure later those components.
+Elastic-search is not required, but you won't be able to search from the CFP Admin panel
+
+## Where do I start?
+
+First things first, you need to set-up your own conference. To do so, Frederic Camblor implemented a generic
+class that contains most (but not all) importants details. Check ConferenceDescriptor.scala. This file defines
+the configuration of your own conference.
+
+You can then also translate and check messages/messages.fr from the conf file
+
+## In term of Git, how can I push a new feature?
+
+The main development branch is dev. It's either Devoxx FR or Devoxx BE. It' an out-of-the-box ready to use
+conference. This is also where I try to collect all features from all contributors.
+
+I created a branch dev-france for current development regarding Devoxx France. I did the same for BE. Depending
+if we're in november or march, I use one or the other as my main active branch.
+
+I work with one feature per branch, then do local merge.
+
+When you want to update your local branch (for instance, dev-poland) you should :
+
+    - do a checkout of dev
+    - do a git pull --rebase on dev
+    - switch to dev-poland
+    - do a git pull --rebase from dev to dev-poland so that you keep your local updates
+
+For Pull request, see https://www.atlassian.com/git/tutorials/making-a-pull-request/
+  
 French
 ------
 
