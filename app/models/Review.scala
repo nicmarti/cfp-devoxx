@@ -286,8 +286,8 @@ object Review {
                 d =>
                   BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
               }.getOrElse(0.toDouble)
-              )
             )
+          )
       }.toSet
   }
 
