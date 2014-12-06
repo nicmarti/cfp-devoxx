@@ -349,6 +349,108 @@ object Authentication extends Controller  {
       )
   }
 
+  // See LinkedIn documentation https://developer.linkedin.com/documents/authentication
+  def linkedinLogin = Action {
+    implicit request =>
+      Play.current.configuration.getString("linkedin.client_id").map {
+        clientId: String =>
+          val redirectUri = routes.Authentication.callbackLinkedin().absoluteURL()
+          val state = new BigInteger(130, new SecureRandom()).toString(32)
+          val gitUrl = "https://www.linkedin.com/uas/oauth2/authorization?client_id=" + clientId + "&scope=r_basicprofile%20r_emailaddress&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
+          Redirect(gitUrl).withSession("state" -> state)
+      }.getOrElse {
+        InternalServerError("linkedin.client_id is not set in application.conf")
+      }
+  }
+
+  def callbackLinkedin = Action.async {
+    implicit request =>
+      oauthForm.bindFromRequest.fold(invalidForm => {
+        Future.successful {
+          BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
+        }
+      }, {
+        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
+          val auth = for (clientId <- Play.current.configuration.getString("linkedin.client_id");
+                          clientSecret <- Play.current.configuration.getString("linkedin.client_secret")) yield (clientId, clientSecret)
+          auth.map {
+            case (clientId, clientSecret) => {
+              val url = "https://www.linkedin.com/uas/oauth2/accessToken"
+              val redirect_uri = routes.Authentication.callbackLinkedin().absoluteURL()
+              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("Content-Type" -> "application/x-www-form-urlencoded"))
+                              .post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+              wsCall.map {
+                result =>
+                  result.status match {
+                    case 200 => {
+                      val b = result.body
+                      val json = Json.parse(result.body)
+                      val token = json.\("access_token").as[String]
+                      Redirect(routes.Authentication.createFromLinkedin).withSession("linkedin_token" -> token)
+                    }
+                    case _ => {
+                      Redirect(routes.Application.index()).flashing("error" -> ("error with LinkedIn OAuth2.0 : got HTTP response " + result.status + " " + result.body))
+                    }
+                  }
+              }
+            }
+          }.getOrElse {
+            Future.successful {
+              InternalServerError("linkedin.client_id and linkedin.client_secret are not configured in application.conf")
+            }
+          }
+        }
+        case other => Future.successful {
+          BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
+        }
+      })
+  }
+
+  def createFromLinkedin = Action.async {
+    implicit request =>
+      request.session.get("linkedin_token").map {
+        access_token =>
+          //for Linkedin profile
+          val url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,picture-url,summary)?format=json&oauth2_access_token=" + access_token
+
+          val futureResult = WS.url(url).withHeaders(
+            "User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname),
+            "Accept" -> "application/json"
+          ).get()
+
+          futureResult.map {
+            result =>
+              result.status match {
+                case 200 => {
+                  val json = Json.parse(result.body)
+                  val email = json.\("emailAddress").as[String]
+                  val firstName = json.\("firstName").asOpt[String]
+                  val lastName = json.\("lastName").asOpt[String]
+                  val photo = json.\("pictureUrl").asOpt[String]
+                  val summary = json.\("summary").asOpt[String]
+
+                  // Try to lookup the speaker
+                  Webuser.findByEmail(email).map {
+                    w =>
+                      val cookie = createCookie(w)
+                      Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> w.uuid).withCookies(cookie)
+                  }.getOrElse {
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo,"No experience")
+                    Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                  }
+                }
+                case other => {
+                  play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
+                  BadRequest("Unable to complete the LinkedIn User API call")
+                }
+              }
+          }
+      }.getOrElse {
+        Future.successful {
+          Redirect(routes.Application.index()).flashing("error" -> "Your LinkedIn Access token has expired, please reauthenticate")
+        }
+      }
+  }
 
   // See Google documentation https://developers.google.com/accounts/docs/OAuth2Login
   def googleLogin = Action {
@@ -397,7 +499,7 @@ object Authentication extends Controller  {
             }
           }.getOrElse {
             Future.successful {
-              InternalServerError("github.client_secret is not configured in application.conf")
+              InternalServerError("google.client_id is not configured in application.conf")
             }
           }
         }
