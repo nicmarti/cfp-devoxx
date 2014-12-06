@@ -539,7 +539,6 @@ object CFPAdmin extends SecureCFPController {
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CFPAdmin.newSpeaker(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validSpeaker => {
-          println("saveNew Speaker "+validSpeaker)
           Option(validSpeaker.uuid) match {
             case Some(existingUUID) => {
               play.Logger.of("application.CFPAdmin").debug("Updating existing speaker " + existingUUID)

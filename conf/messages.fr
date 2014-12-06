@@ -162,6 +162,7 @@ track.description=Description
 track.webmobile.title=Web, Mobile et UX
 track.webmobile.desc=Web, mobile, user-experience, front-end et architecture Webs.
 wm.label=Web, Mobile & UX
+webmobile.label=Web, Mobile & UX
 
 track.archisec.title=Architecture, Performance & Securité
 track.archisec.desc=Architecture, performance, encryption et meilleurs pratiques pour développer un logiciel sécurisé.
@@ -170,6 +171,7 @@ archisec.label=Architecture, Performance et Securité
 track.agilityTest.title=Agilité, Méthodologie & Tests
 track.agilityTest.desc=Méthode de développement logiciel, TDD, BDD, xDD
 agTest.label=Agilité, Methodologie & Tests
+agilityTest.label=Agilité, Methodologie & Tests
 
 track.java.title=Java, JVM, Javas SE/EE
 track.java.desc=Tout sur Java, la JVM, Java 8 et Java EE 7.
@@ -492,10 +494,10 @@ day-vendredi=Vendredi
 day-mercredi=Mercredi
  
 showAgendaByRoom=Agenda par salle
-Abs=0
+Abs=Abs
 admin.btn.tracklead=Track leader
 approved=Speaker a accepté
-audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet\:\
+audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet:\
 \
 1- pour tout le monde, débutant comme expert\
 2- pour des personnes ayant déjà une expérience\
@@ -525,7 +527,7 @@ demoLevel2.label=Slides et du code
 demoLevel3.label=Que du code
 demoLevel4.label=Ni slides, ni code
 key.label.simple=Plénière (Keynote)
-l1.label=niveau 1 \: débutant
+l1.label=niveau 1 : débutant
 l2.label=Intermédiaire
 l3.label=Expert et sénior
 lab.label.simple=Hand''s on lab
@@ -611,7 +613,7 @@ day-thursday=Jeudi 9 avril
 day-tuesday=Mardi 7 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
-mail.notify_proposal.content=Une nouvelle proposition a été envoyée au CFP. Titre [{0}], Track\: [{1}] et Type\: [{2}]
+mail.notify_proposal.content=Une nouvelle proposition a été envoyée au CFP. Titre [{0}], Track: [{1}] et Type: [{2}]
 mail.notify_proposal.subject={0} a soumis un sujet [{1}]
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
 mail.proposal_refused.subject=Votre proposition de sujet a été déclinée {0}
@@ -620,3 +622,12 @@ mail.reset_password_link.subject=Vous avez demandé à ré-initialiser votre cod
 msg_pub=Envoyer un message au présentateur
 qualifications2=Qualifications et expériences du présentateur
 question.proposal=Questions sur votre présentation
+
+wl.action=Action
+wl.lm=Dernière modif
+wl.sn=Nom du speaker
+wl.fb=Suivi par
+wl.company=Société
+wl.track=Track
+wl.status=Dernier status
+wishlist.setPersonInCharge=Personne en charge de "{0}"

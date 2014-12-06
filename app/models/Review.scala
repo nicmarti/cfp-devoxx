@@ -213,7 +213,6 @@ object Review {
       Webuser.allCFPWebusers().map {
         webuser: Webuser =>
           val uuid = webuser.uuid
-          println(s"Proposals:Reviewed:ByAuthor:$uuid" + " Proposals:ByState:" + ProposalState.DELETED.code, " Proposals:ByState:" + ProposalState.ARCHIVED.code + " Proposals:ByState:" + ProposalState.DRAFT.code + "P roposals:ByState:" + ProposalState.DECLINED.code)
           val total = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid", "Proposals:ByState:" + ProposalState.DELETED.code, "Proposals:ByState:" + ProposalState.ARCHIVED.code, "Proposals:ByState:" + ProposalState.DRAFT.code, "Proposals:ByState:" + ProposalState.DECLINED.code)
           (uuid, total.size)
       }
@@ -287,8 +286,8 @@ object Review {
                 d =>
                   BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
               }.getOrElse(0.toDouble)
-              )
             )
+          )
       }.toSet
   }
 
@@ -305,7 +304,6 @@ object Review {
           |redis.call("DEL", "Computed:Voters")
           |redis.call("DEL", "Computed:Average")
           |redis.call("DEL", "Computed:Votes:ScoreAndCount")
-          |redis.call("DEL", "Computed:VotersAbstention")
           |redis.call("DEL", "Computed:StandardDeviation")
           |redis.call("DEL", "Computed:VotersAbstention")
           |redis.call("DEL", "Computed:Median")
