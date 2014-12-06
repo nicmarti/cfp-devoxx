@@ -34,7 +34,7 @@ import models.ConferenceDescriptor
 import play.api.i18n.Messages
 
 /**
- * Utility class for Devoxx France, that help us to generate QRCode for the list of attendees
+ * Utility class for Devoxx Poland, that help us to generate QRCode for the list of attendees
  * Created by nicolas on 10/04/2014.
  */
 object PDFBadgeGenerator {

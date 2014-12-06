@@ -1,4 +1,4 @@
-﻿# -----------------
+# -----------------
 # Main conference details
 CONF.title=Devoxx Poland 2015
 CONF.subtitle=PL
@@ -159,7 +159,7 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx PL 2014''s videos on
+video.tag=Review 33rd Degree 2014''s videos on
 theme.title=Tracks
 theme.track=List of tracks for Devoxx Poland 2015:
 track.title=Title
@@ -643,7 +643,7 @@ hack.label=Hackaton
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
 menu.blog=Site DevoxxFR
-signup.long=Register as a speaker on Devoxx France CFP
+signup.long=Register as a speaker on Devoxx Poland CFP
 sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
