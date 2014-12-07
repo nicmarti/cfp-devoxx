@@ -147,12 +147,6 @@ GET           /2014/questions.html                                  controllers.
 GET           /2014/search                                          controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 POST          /publisher/sendMsgToSpeaker                           controllers.Publisher.sendMessageToSpeaker(proposalId:String)
 
-# For Paper guide
-GET           /guide/speakers                                       controllers.PaperGuide.exportSpeakers()
-GET           /guide/allPhotos                                      controllers.PaperGuide.downloadAllSpeakersPhotos()
-GET           /guide/exported                                       controllers.PaperGuide.exportProgram()
-GET           /guide/exportedByRoom                                 controllers.PaperGuide.exportProgramByRoomAndHours()
-
 # REST API
 GET           /api                                                  controllers.RestAPI.index()
 GET           /api/conferences/                                     controllers.RestAPI.redirectToConferences()
@@ -196,11 +190,6 @@ GET           /tweetwall/nexttalks                                  controllers.
 
 # Temp
 GET           /schedulling/fr14/giveMeBestTalks                     controllers.SchedullingController.giveMeBestTalks()
-
-# Badges
-GET           /badges                                               controllers.Badge.home()
-POST          /badges                                               controllers.Badge.uploadCSV()
-GET           /badges/test                                          controllers.Badge.test()
 
 # Wishlist
 GET           /cfpadmin/wishlist/home                               controllers.Wishlist.homeWishlist()
