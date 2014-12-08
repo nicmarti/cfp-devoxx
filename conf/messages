@@ -1,11 +1,19 @@
 # -----------------
 # Main conference details
+<<<<<<< HEAD
 CONF.title=Devoxx UK 2015
+=======
+CONF.title=Devoxx United-Kingdom  2015
+>>>>>>> conf(uk): started to update and to translate some of the labels to UK but it's not done
 CONF.subtitle=UK
 
 # Equivalent to ConferenceNaming
 shortYearlyName=Devoxx UK 2015
+<<<<<<< HEAD
 longYearlyName=Devoxx UK 2015
+=======
+longYearlyName=Devoxx United-Kingdom  2015
+>>>>>>> conf(uk): started to update and to translate some of the labels to UK but it's not done
 shortName=Devoxx UK
 longName=Devoxx UK 2015 CFP
 longSplittedName_whiteStart=Devox
@@ -160,10 +168,17 @@ cfp.program.date=from {0}
 video.title=Videos
 video.tag=Review Devoxx UK's videos on
 theme.title=Tracks
+<<<<<<< HEAD
 theme.track=List of tracks for Devoxx UK 2015:
 track.title=Title
 track.description=Description
 appel.conf.dates=Devoxx UK 2015, 17th-19th June 2015
+=======
+theme.track=List of tracks for Devoxx United-Kingdom  2015:
+track.title=Title
+track.description=Description
+appel.conf.dates=Devoxx United-Kingdom  2015, 17nd-19th June 2015
+>>>>>>> conf(uk): started to update and to translate some of the labels to UK but it's not done
 
 # Tracks
 track.webmobile.title=Web, Mobile &  UX
@@ -266,9 +281,7 @@ noOther.speaker=---- No other speaker ----
 # CFPadmin
 msgSpeaker=Your message
 
-
 # short talk
-
 
 tbl.submitted=Submitted
 profile.imported=Profile imported successfully
@@ -501,8 +514,12 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
+<<<<<<< HEAD
 sw.show.title.mon=Monday, 15th June 2015
 sw.show.title.tue=Tuesday, 16th June 2015
+=======
+
+>>>>>>> conf(uk): started to update and to translate some of the labels to UK but it's not done
 sw.show.title.wed=Wednesday, 17th June 2015
 sw.show.title.thu=Thursday, 18th June 2015
 sw.show.title.fri=Friday, 19th June 2015
@@ -640,7 +657,11 @@ hack.label=Hackaton
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
 menu.blog=Site DevoxxFR
+<<<<<<< HEAD
 signup.long=Register as a speaker on Devoxx UK CFP
+=======
+signup.long=Register as a speaker on Devoxx United-Kingdom  CFP
+>>>>>>> conf(uk): started to update and to translate some of the labels to UK but it's not done
 sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
