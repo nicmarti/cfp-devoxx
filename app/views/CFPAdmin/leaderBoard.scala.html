@@ -1,4 +1,4 @@
-@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], lazyOnes: Set[(String, String)], totalSubmittedByTrack: Map[String, Int], totalSubmittedByType: Map[String, Int], totalAcceptedByTrack: Map[String, Int], totalAcceptedByType: Map[String, Int], totalSlotsToAllocate: Map[String, Int], totalApprovedSpeakers:Long, totalWithTickets:Long, totalRefusedSpeakers:Long)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewer: Option[(String, String)], lazyOnes: Map[String, String], totalSubmittedByTrack: Map[String, Int], totalSubmittedByType: Map[String, Int], totalAcceptedByTrack: Map[String, Int], totalAcceptedByType: Map[String, Int], totalSlotsToAllocate: Map[String, Int], totalApprovedSpeakers:Long, totalWithTickets:Long, totalRefusedSpeakers:Long)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Leaderboard") {
     <div class="row">

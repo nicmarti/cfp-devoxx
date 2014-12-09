@@ -390,8 +390,11 @@ object Review {
 
   def allReviewersAndStats(): List[(String, Int, Int)] = Redis.pool.withClient {
     client =>
-      val allVoted = client.hgetAll("Computed:Reviewer:Total").map {
-        case (uuid: String, totalPoints: String) =>
+      // Remove reviewer that are not any longer part of CFP
+      val validReviewers=client.smembers("Webuser:cfp")
+
+      val allVoted = client.hgetAll("Computed:Reviewer:Total").filter(uuidAndPoints => validReviewers.contains(uuidAndPoints._1)).map {
+        case ( uuid: String,totalPoints: String) =>
           val nbrOfTalksReviewed = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid",
             "Proposals:ByState:" + ProposalState.DELETED.code,
             "Proposals:ByState:" + ProposalState.ARCHIVED.code,
