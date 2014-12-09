@@ -174,11 +174,12 @@ object Leaderboard {
 
   // Returns the user that has the lowest reviewed number of proposals and the full list of cfp user that did not
   // yet reviewed any talk
-  def lazyOnes():Set[(String, String)] = Redis.pool.withClient {
+  def lazyOnes():Map[String, String] = Redis.pool.withClient {
     implicit client =>
      val lazyOneWithOneVote = worstReviewer()
      val otherThatHaveNoVotes  =  client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne" ).map(s=>(s,"0"))
-     lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes
+     val toReturn = (lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes).toMap
+    toReturn
   }
 
   def totalSubmittedByTrack():Map[String,Int] = Redis.pool.withClient {
