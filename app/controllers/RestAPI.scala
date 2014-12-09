@@ -488,7 +488,6 @@ object RestAPI extends Controller {
               "id" -> Json.toJson(room.id)
               , "name" -> Json.toJson(room.name)
               , "capacity" -> Json.toJson(room.capacity)
-              , "recorded" -> Json.toJson(room.recorded)
               , "setup" -> Json.toJson(room.setup)
             )
           }
