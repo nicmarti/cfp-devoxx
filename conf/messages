@@ -144,7 +144,6 @@ start.label.simple=Startup
 hack.label.simple=Hackatons
 code.label.simple=Codestory
 
-amd.label.simple=AprÃ¨s-midi des dÃ©cideurs
 
 # Bug report
 Issue.report=Report an issue
@@ -448,7 +447,7 @@ bio2=Speaker''s bio
 twitter2=Twitter''s handle
 company2=Company
 blog2=Web site or personnal blog
-lang2=Will speak in English ? (en)
+
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
 sp.editName=Edit name
@@ -625,11 +624,9 @@ msg_pub=Send a message to the speaker
 email_pub=Your email address
 email_pub2=Please confirm your email
 
-agilite.label=Agilité, DevOps
-amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 cfp.closed=CFP is currently closed.
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
-cfp.opening.date=Lundi 2 décembre 2013
+cfp.opening.date=Monday 15 December 2014
 constraint.email=Valid email address
 constraint.max=Max value : {0}
 constraint.maxLength=Max length: {0}
