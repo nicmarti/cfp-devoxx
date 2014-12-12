@@ -134,7 +134,6 @@ object ConferenceDescriptor {
 
   }
 
-  // TODO : set the number of slots per proposal type when the CFP starts, so that you get accurate stats on the leaderboard
   object ConferenceProposalConfigurations {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = 89, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
@@ -178,7 +177,6 @@ object ConferenceDescriptor {
     val ALL = List(WEB_MOBILE, ARCHISEC, AGILITY_TESTS, JAVA, CLOUDDEVOPS, BIGDATA, FUTURE, LANG, UNKNOWN)
   }
 
-  // TODO check the tracks.
   object ConferenceTracksDescription {
     val WEB_MOBILE = TrackDesc(ConferenceTracks.WEB_MOBILE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webmobile.title", "track.webmobile.desc")
     val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/devoxxbe2014/images/icon_architecture.png", "track.archisec.title", "track.archisec.desc")
@@ -196,7 +194,6 @@ object ConferenceDescriptor {
   }
 
   object ConferenceRooms {
-    // TODO set your exhibition rooms here
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
@@ -407,8 +404,8 @@ object ConferenceDescriptor {
     hashTag = "#DevoxxFR",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List("en")
-    , "ICE Congress Centre, Krakow, Poland"
-    ,showQuestion=false
+    , "London"
+    , showQuestion = false
   )
 
   val isCFPOpen: Boolean = {
