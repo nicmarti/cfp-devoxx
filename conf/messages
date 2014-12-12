@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx Poland 2015
-CONF.subtitle=PL
+CONF.title=Devoxx UK 2015
+CONF.subtitle=UK
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx PL 2015
-longYearlyName=Devoxx Poland 2015
-shortName=Devoxx PL
-longName=Devoxx PL 2015 CFP
+shortYearlyName=Devoxx UK 2015
+longYearlyName=Devoxx UK 2015
+shortName=Devoxx UK
+longName=Devoxx UK 2015 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=PL 2015
-conference.dates=22nd-24th June
+longSplittedName_whiteEnd=UK 2015
+conference.dates=17th-19th June
 # -----------------
-cfp.title=Devoxx PL 2015 CFP
+cfp.title=Devoxx UK 2015 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -124,27 +124,26 @@ next.action=Select next action:
 # Proposal type
 key.label=Keynote, 20mn, Wednesday, Thursday
 key.label.simple=Keynote
-conf.label=Conference, 1h, Monday, Tuesday and Wednesday morning
+conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
 conf.label.simple=Conference
 uni.label=University, 3h, Wednesday
 uni.label.simple=University
-tia.label=Tools in Action, 30mn, Monday, Tuesday and Wednesday
+tia.label=Tools in Action, 30mn, Wednesday, Thursday and Friday
 tia.label.simple=Tools in Action
-quick.label=Quickie, 15mn, Monday and Tuesday, during lunch
+quick.label=Quickie, 15mn, Thursday and Friday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Monday, Tuesday and Wednesday evening
+bof.label=Bird of a Feather, 1h, Wednesday, Thursday and Friday evening
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Monday, Tuesday and Wednesday
+lab.label=Hands-on Labs, 3h, Wednesday, Thursday and Friday
 lab.label.simple=Hand''s on Lab
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Monday, Tuesday and Wednesday
+start.label=Startup Talk, 25 min, Wednesday, Thursday and Friday
 start.label.simple=Startup
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
 
-amd.label.simple=Après-midi des décideurs
 
 # Bug report
 Issue.report=Report an issue
@@ -159,12 +158,12 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review 33rd Degree 2014''s videos on
+video.tag=Review Devoxx UK's videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx Poland 2015:
+theme.track=List of tracks for Devoxx UK 2015:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx Poland 2015, 22nd-24th June 2015
+appel.conf.dates=Devoxx UK 2015, 17th-19th June 2015
 
 # Tracks
 track.webmobile.title=Web, Mobile &  UX
@@ -448,7 +447,7 @@ bio2=Speaker''s bio
 twitter2=Twitter''s handle
 company2=Company
 blog2=Web site or personnal blog
-lang2=Will speak in English or Polish? (en/pl)
+
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
 sp.editName=Edit name
@@ -469,11 +468,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 22nd June
-day-tuesday=Tuesday, 23rd June
-day-wednesday=Wednesday, 24th June
-day-thursday=Thursday, 25th June
-day-friday=Friday, 26th June
+day-monday=Monday, 15th June
+day-tuesday=Tuesday, 16th June
+day-wednesday=Wednesday, 17th June
+day-thursday=Thursday, 18th June
+day-friday=Friday, 19th June
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -502,11 +501,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 22nd June 2015
-sw.show.title.tue=Tuesday, 23rd June 2015
-sw.show.title.wed=Wednesday, 24th June 2015
-sw.show.title.thu=Thursday, 25th June 2015
-sw.show.title.fri=Friday, 26th June 2015
+sw.show.title.mon=Monday, 15th June 2015
+sw.show.title.tue=Tuesday, 16th June 2015
+sw.show.title.wed=Wednesday, 17th June 2015
+sw.show.title.thu=Thursday, 18th June 2015
+sw.show.title.fri=Friday, 19th June 2015
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
@@ -625,11 +624,9 @@ msg_pub=Send a message to the speaker
 email_pub=Your email address
 email_pub2=Please confirm your email
 
-agilite.label=Agilité, DevOps
-amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 cfp.closed=CFP is currently closed.
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
-cfp.opening.date=Lundi 2 décembre 2013
+cfp.opening.date=Monday 15 December 2014
 constraint.email=Valid email address
 constraint.max=Max value : {0}
 constraint.maxLength=Max length: {0}
@@ -643,7 +640,7 @@ hack.label=Hackaton
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
 menu.blog=Site DevoxxFR
-signup.long=Register as a speaker on Devoxx Poland CFP
+signup.long=Register as a speaker on Devoxx UK CFP
 sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
