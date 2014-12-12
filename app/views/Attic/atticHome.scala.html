@@ -77,7 +77,10 @@
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.STARTUP.id"/>
                         <button type="submit" class="btn btn-primary">Archive all Startups's talks</button>
                     </form>
-
+                    <form action="@routes.Attic.doArchive()" method="POST">
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.STARTUP.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all Startup's talks</button>
+                    </form>
 
                 </div>
             </div>
