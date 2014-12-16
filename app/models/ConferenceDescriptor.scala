@@ -124,7 +124,6 @@ object ConferenceDescriptor {
       case "key" => KEY
       case "hack" => HACK
       case "cstory" => CODE
-      case STARTUP.id => STARTUP
       case "other" => OTHER
     }
 
