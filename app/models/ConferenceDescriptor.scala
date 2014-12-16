@@ -107,13 +107,11 @@ object ConferenceDescriptor {
 
     val KEY = ProposalType(id = "key", label = "key.label")
 
-    val HACK = ProposalType(id = "hack", label = "hack.label")
-
     val CODE = ProposalType(id = "cstory", label = "code.label")
 
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACK, OTHER)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -122,7 +120,6 @@ object ConferenceDescriptor {
       case "quick" => QUICK
       case "bof" => BOF
       case "key" => KEY
-      case "hack" => HACK
       case "cstory" => CODE
       case "other" => OTHER
     }
@@ -142,13 +139,11 @@ object ConferenceDescriptor {
       chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 8, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
-    val HACK = ProposalConfiguration(id = "hack", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      chosablePreferredDay = false)
     val CODE = ProposalConfiguration(id = "cstory", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = true, chosablePreferredDay = false)
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACK, CODE, OTHER)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -177,7 +172,7 @@ object ConferenceDescriptor {
     val AGILITY_TESTS = TrackDesc(ConferenceTracks.AGILITY_TESTS.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.agilityTest.title", "track.agilityTest.desc")
     val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2014/images/icon_future.png", "track.future.title", "track.future.desc")
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
-    val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudDevops.title", "track.cloudDevops.desc")
+    val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigdata.title", "track.cloudBigdata.desc")
     val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.webHtml5.title", "track.webHtml5.desc")
     val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5)
 

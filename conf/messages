@@ -138,8 +138,6 @@ lab.label=Hands-on Labs, 3h, Wednesday
 lab.label.simple=Hand''s on Lab
 other.label=Other event
 other.label.simple=Other
-
-hack.label.simple=Hackatons
 code.label.simple=Codestory
 
 
@@ -161,7 +159,7 @@ theme.title=Tracks
 theme.track=List of tracks for Devoxx United-Kingdom  2015:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx United-Kingdom  2015, 17nd-19th June 2015
+appel.conf.dates=Devoxx United-Kingdom  2015, 17th-19th June 2015
 
 # Tracks
 track.serverside.title=Server Side Java
@@ -407,7 +405,6 @@ uni=University
 lab=Hand''s on Labs
 quick=Quickie
 bof=BOF (Bird of a Feather)
-hack=Hackaton
 key=Keynote
 other=Other format
 all=All
@@ -447,8 +444,6 @@ blog2=Web site or personnal blog
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
 sp.editName=Edit name
-sw.hackatons=Hackatons
-sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
 calendar.pref=Speaker''s preferences for schedulling
 calendar.pref.monday=Monday
@@ -623,7 +618,7 @@ email_pub2=Please confirm your email
 
 cfp.closed=CFP is currently closed.
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
-cfp.opening.date=Monday 15 December 2014
+cfp.opening.date=Wednesday 17 December 2014
 constraint.email=Valid email address
 constraint.max=Max value : {0}
 constraint.maxLength=Max length: {0}
@@ -633,12 +628,10 @@ day-mercredi=Wednesday
 day-vendredi=Friday
 error.email=Invalid email address
 error.invalid=Invalid value
-hack.label=Hackaton
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
 menu.blog=Site DevoxxFR
 signup.long=Register as a speaker on Devoxx United-Kingdom  CFP
-sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
 day-jeudi=Thursday
