@@ -99,8 +99,6 @@ object ConferenceDescriptor {
 
     val UNI = ProposalType(id = "uni", label = "uni.label")
 
-    val TIA = ProposalType(id = "tia", label = "tia.label")
-
     val LAB = ProposalType(id = "lab", label = "lab.label")
 
     val QUICK = ProposalType(id = "quick", label = "quick.label")
@@ -115,14 +113,11 @@ object ConferenceDescriptor {
 
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    val STARTUP = ProposalType(id = "start", label = "start.label")
-
-    val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, HACK, OTHER, STARTUP)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACK, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
       case "uni" => UNI
-      case "tia" => TIA
       case "lab" => LAB
       case "quick" => QUICK
       case "bof" => BOF
@@ -139,8 +134,6 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val UNI = ProposalConfiguration(id = "uni", slotsCount = 16, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
       chosablePreferredDay = true)
-    val TIA = ProposalConfiguration(id = "tia", slotsCount = 24, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-legal",
-      chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = 10, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = 28, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
@@ -153,11 +146,9 @@ object ConferenceDescriptor {
       chosablePreferredDay = false)
     val CODE = ProposalConfiguration(id = "cstory", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
-    val STARTUP = ProposalConfiguration(id = "start", slotsCount = 10, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      hiddenInCombo = true, chosablePreferredDay = false)    
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = true, chosablePreferredDay = false)
-    val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, HACK, CODE, OTHER, STARTUP)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACK, CODE, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -165,28 +156,30 @@ object ConferenceDescriptor {
   }
 
   object ConferenceTracks {
-    val WEB_MOBILE = Track("wm", "webmobile.label")
+    val SERVERSIDE = Track("ssj", "serverside.label")
+    val JAVASE = Track("jse", "javase.label")
+    val MOBILE = Track("wm", "mobile.label")
     val ARCHISEC = Track("archisec", "archisec.label")
     val AGILITY_TESTS = Track("agTest", "agilityTest.label")
-    val JAVA = Track("java", "java.label")
-    val CLOUDDEVOPS = Track("cldops", "cloudDevops.label")
-    val BIGDATA = Track("bigd", "bigdata.label")
     val FUTURE = Track("future", "future.label")
-    val LANG = Track("lang", "lang.label")
+    val JAVA = Track("java", "java.label")
+    val CLOUDBIGDATA = Track("cldbd", "cloudBigData.label")
+    val WEBHTML5 = Track("webHtml5", "webHtml5.label")
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(WEB_MOBILE, ARCHISEC, AGILITY_TESTS, JAVA, CLOUDDEVOPS, BIGDATA, FUTURE, LANG, UNKNOWN)
+    val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
-    val WEB_MOBILE = TrackDesc(ConferenceTracks.WEB_MOBILE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webmobile.title", "track.webmobile.desc")
+    val SERVERSIDE = TrackDesc(ConferenceTracks.SERVERSIDE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.serverside.title", "track.serverside.desc")
+    val JAVASE = TrackDesc(ConferenceTracks.JAVASE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.javase.title", "track.javase.desc")
+    val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.mobile.title", "track.mobile.desc")
     val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/devoxxbe2014/images/icon_architecture.png", "track.archisec.title", "track.archisec.desc")
     val AGILITY_TESTS = TrackDesc(ConferenceTracks.AGILITY_TESTS.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.agilityTest.title", "track.agilityTest.desc")
-    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
-    val CLOUDDEVOPS = TrackDesc(ConferenceTracks.CLOUDDEVOPS.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudDevops.title", "track.cloudDevops.desc")
-    val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxxbe2014/images/icon_mobile.png", "track.bigdata.title", "track.bigdata.desc")
     val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2014/images/icon_future.png", "track.future.title", "track.future.desc")
-    val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.lang.title", "track.lang.desc")
-    val ALL = List(WEB_MOBILE, ARCHISEC, AGILITY_TESTS, JAVA, CLOUDDEVOPS, BIGDATA, FUTURE, LANG)
+    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
+    val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudDevops.title", "track.cloudDevops.desc")
+    val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.webHtml5.title", "track.webHtml5.desc")
+    val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5)
 
     def findTrackDescFor(t: Track): TrackDesc = {
       ALL.find(_.id == t.id).head
@@ -211,8 +204,6 @@ object ConferenceDescriptor {
     val BOF2 = Room("bof2", "BOF 2", 70, "classroom")
 
     val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
-
-    val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
     val keynoteRoom = List(ROOM8)
 
@@ -243,9 +234,6 @@ object ConferenceDescriptor {
   object ConferenceSlots {
 
     // UNIVERSITY
-    // TODO create a val for each ProposalType - See Devoxx BE as a complete (and complex sample)
-
-    // TOOLS IN ACTION
     // TODO create a val for each ProposalType - See Devoxx BE as a complete (and complex sample)
 
     // HANDS ON LABS
@@ -385,7 +373,7 @@ object ConferenceDescriptor {
     conferenceUrls = ConferenceUrls(
       faq = "http://www.devoxx.uk/faq/",
       registration = "http://reg.devoxx.com",
-      confWebsite = "http://www.devoxx.uk/",
+      confWebsite = "http://www.devoxx.co.uk/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.uk")
     ),
     timing = ConferenceTiming(
@@ -396,8 +384,8 @@ object ConferenceDescriptor {
       firstDayEn = "april 8th",
       datesFr = "du 8 au 10 avril 2015",
       datesEn = "from 8th to 10th of April, 2015",
-      cfpOpenedOn = DateTime.parse("2014-11-17T00:00:00+01:00"),
-      cfpClosedOn = DateTime.parse("2015-01-17T23:59:59+01:00"),
+      cfpOpenedOn = DateTime.parse("2014-12-15T00:00:00+00:00"),
+      cfpClosedOn = DateTime.parse("2015-02-17T23:59:59+01:00"),
       scheduleAnnouncedOn = DateTime.parse("2014-02-13T00:00:00+01:00")
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",

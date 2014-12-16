@@ -84,10 +84,11 @@ lang=Main language
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
-mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
+mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Keynote. Quickie speakers need to purchase a conference pass!
+
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href\="{0}\#confType" target\="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href\="http://www.devoxx.co.uk/faq/" target\="new">FAQ</a>.
 
 audienceLevel=Audience level :
 audienceLevel.help=Please, indicate the required audience level for your talk:\
@@ -103,7 +104,8 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum and Silver sponsors can submit one Conference talk which we will accept as part of their sponsorship. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -122,24 +124,20 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Wednesday, Thursday
+key.label=Keynote, 1hr, Thursday morning & Friday afternoon
 key.label.simple=Keynote
-conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.label=Conference, 50mn, Thursday and Friday morning
 conf.label.simple=Conference
 uni.label=University, 3h, Wednesday
 uni.label.simple=University
-tia.label=Tools in Action, 30mn, Wednesday, Thursday and Friday
-tia.label.simple=Tools in Action
 quick.label=Quickie, 15mn, Thursday and Friday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Wednesday, Thursday and Friday evening
+bof.label=Bird of a Feather, 1h, Wednesday, and Thursday
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Wednesday, Thursday and Friday
+lab.label=Hands-on Labs, 3h, Wednesday
 lab.label.simple=Hand''s on Lab
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday, Thursday and Friday
-start.label.simple=Startup
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
@@ -166,37 +164,41 @@ track.description=Description
 appel.conf.dates=Devoxx United-Kingdom  2015, 17nd-19th June 2015
 
 # Tracks
-track.webmobile.title=Web, Mobile &  UX
-track.webmobile.desc=Web, mobile, user-experience, front-end and Web architecture
-wm.label=Web, Mobile & UX
+track.serverside.title=Server Side Java
+track.serverside.desc=Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs
+ssj.label=Server Side Java
 
-track.archisec.title=Architecture, Performance & Security
-track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
-archisec.label=Architecture, Performance and Security
+track.javase.title=Java SE
+track.javase.desc=Java Standard Edition, anything non-related to Jave EE, like the language, JDK, performance tuning, modularity, etc...
+jse.label=Java SE
 
-track.agilityTest.title=Agility, Methodology & Test
-track.agilityTest.desc=Software development methodologies, TDD, BDD, xDD
-agTest.label=Agility, Methodology & Test
+track.mobile.title=Mobile
+track.mobile.desc=Tools frameworks and libraries for building mobile apps, both as MobileWeb or native Android and iOS app
+m.label=Mobile
 
-track.java.title=Java, infinite possibilities
-track.java.desc=Everything about Java, the JVM, Java SE 8 or Java EE.
-java.label=Java, infinite possibilities
+track.archisec.title=Architecture & Security
+track.archisec.desc=Software architecture, encryption and best practices to develop secure software
+archisec.label=Architecture & Security
 
-track.cloudDevops.title=Cloud, DevOps and Tools
-track.cloudDevops.desc=Cloud-computing, DevOps, Paas, Iaas
-cloudDevops.label=Cloud & DevOps
-
-track.bigdata.title=Big Data & Analytics
-track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
-bigdata.label=Big Data & Analytics
+track.agilityTest.title=Methodology & Devops
+track.agilityTest.desc=Software development methodologies and related subjects
+agTest.label=Methodology & Devops
 
 track.future.title=Future<Devoxx>
 track.future.desc=Developing for embedded devices, the internet of things, Arduino, raspberry pi, quadcopters, robots and related
 future.label=Future<Devoxx>
 
-track.lang.title=Alternate Languages
-track.lang.desc=Groovy, Scala, Javascript, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
-lang.label=Alternate Languages
+track.java.title=JVM languages
+track.java.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
+java.label=JVM languages
+
+track.cloudBigdata.title=Cloud & BigData
+track.cloudBigdata.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
+cloudBigdata.label=Cloud & BigData
+
+track.webHtml5.title=Web & HTML5
+track.webHtml5.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
+webHtml5.label=Web & HTML5
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
@@ -402,7 +404,6 @@ sw.details=See details
 
 conf=Conference
 uni=University
-tia=Tools-in-Action
 lab=Hand''s on Labs
 quick=Quickie
 bof=BOF (Bird of a Feather)
@@ -410,7 +411,6 @@ hack=Hackaton
 key=Keynote
 other=Other format
 all=All
-start=Startup presentation
 amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
@@ -424,8 +424,6 @@ sw.all.conf=All Conferences
 sw.all.lab=All Hand''s on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
-sw.all.start=All Startup''s talks
-sw.all.tia=All Tools in Action
 sw.speakers=Devoxxians
 sw.intro=The agenda is published every day.
 sw.programme=Agenda
@@ -657,5 +655,5 @@ wl.company=Company
 wl.track=Track
 wl.status=Current status
 wishlist.setPersonInCharge=Person responsible for {0}
-webmobile.label=Web, Mobile & UX
+mobile.label=Mobile
 agilityTest.label=Agility, Methodology & Tests
