@@ -165,15 +165,15 @@ object ConferenceDescriptor {
   }
 
   object ConferenceTracksDescription {
-    val SERVERSIDE = TrackDesc(ConferenceTracks.SERVERSIDE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.serverside.title", "track.serverside.desc")
-    val JAVASE = TrackDesc(ConferenceTracks.JAVASE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.javase.title", "track.javase.desc")
+    val SERVERSIDE = TrackDesc(ConferenceTracks.SERVERSIDE.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.serverside.title", "track.serverside.desc")
+    val JAVASE = TrackDesc(ConferenceTracks.JAVASE.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.javase.title", "track.javase.desc")
     val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2014/images/icon_web.png", "track.mobile.title", "track.mobile.desc")
     val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/devoxxbe2014/images/icon_architecture.png", "track.archisec.title", "track.archisec.desc")
     val AGILITY_TESTS = TrackDesc(ConferenceTracks.AGILITY_TESTS.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.agilityTest.title", "track.agilityTest.desc")
     val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2014/images/icon_future.png", "track.future.title", "track.future.desc")
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
     val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigdata.title", "track.cloudBigdata.desc")
-    val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.webHtml5.title", "track.webHtml5.desc")
+    val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webHtml5.title", "track.webHtml5.desc")
     val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5)
 
     def findTrackDescFor(t: Track): TrackDesc = {
