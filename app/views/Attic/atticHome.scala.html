@@ -62,10 +62,6 @@
                         <button type="submit" class="btn btn-primary">Archive all other talks</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.HACK.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Hackergarten</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CODE.id"/>
                         <button type="submit" class="btn btn-primary">Archive all CodeStory</button>
                     </form>
