@@ -361,15 +361,15 @@ object ConferenceDescriptor {
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxuk2015",
     frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.com"),
-    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.co.uk"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      faq = "http://www.devoxx.uk/faq/",
+      faq = "http://www.devoxx.co.uk/faq/",
       registration = "http://reg.devoxx.com",
       confWebsite = "http://www.devoxx.co.uk/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.uk")
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.co.uk")
     ),
     timing = ConferenceTiming(
       datesI18nKey = "8 au 10 avril 2015",
