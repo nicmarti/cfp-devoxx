@@ -153,7 +153,7 @@ object ConferenceDescriptor {
   object ConferenceTracks {
     val SERVERSIDE = Track("ssj", "serverside.label")
     val JAVASE = Track("jse", "javase.label")
-    val MOBILE = Track("wm", "mobile.label")
+    val MOBILE = Track("m", "mobile.label")
     val ARCHISEC = Track("archisec", "archisec.label")
     val AGILITY_TESTS = Track("agTest", "agilityTest.label")
     val FUTURE = Track("future", "future.label")
