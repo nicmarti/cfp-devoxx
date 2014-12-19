@@ -190,9 +190,9 @@ track.java.title=JVM languages
 track.java.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
 java.label=JVM languages
 
-track.cloudBigdata.title=Cloud & BigData
-track.cloudBigdata.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
-cloudBigdata.label=Cloud & BigData
+track.cloudBigData.title=Cloud & BigData
+track.cloudBigData.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
+cloudBigData.label=Cloud & BigData
 
 track.webHtml5.title=Web & HTML5
 track.webHtml5.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
