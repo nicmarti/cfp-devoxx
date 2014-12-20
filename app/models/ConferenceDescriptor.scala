@@ -153,7 +153,7 @@ object ConferenceDescriptor {
   object ConferenceTracks {
     val SERVERSIDE = Track("ssj", "serverside.label")
     val JAVASE = Track("jse", "javase.label")
-    val MOBILE = Track("wm", "mobile.label")
+    val MOBILE = Track("m", "mobile.label")
     val ARCHISEC = Track("archisec", "archisec.label")
     val AGILITY_TESTS = Track("agTest", "agilityTest.label")
     val FUTURE = Track("future", "future.label")
@@ -172,7 +172,7 @@ object ConferenceDescriptor {
     val AGILITY_TESTS = TrackDesc(ConferenceTracks.AGILITY_TESTS.id, "/assets/devoxxbe2014/images/icon_startup.png", "track.agilityTest.title", "track.agilityTest.desc")
     val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2014/images/icon_future.png", "track.future.title", "track.future.desc")
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_javase.png", "track.java.title", "track.java.desc")
-    val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigdata.title", "track.cloudBigdata.desc")
+    val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigData.title", "track.cloudBigData.desc")
     val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webHtml5.title", "track.webHtml5.desc")
     val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5)
 

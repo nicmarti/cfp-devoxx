@@ -164,15 +164,15 @@ appel.conf.dates=Devoxx United-Kingdom  2015, 17th-19th June 2015
 # Tracks
 track.serverside.title=Server Side Java
 track.serverside.desc=Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs
-ssj.label=Server Side Java
+serverside.label=Server Side Java
 
 track.javase.title=Java SE
 track.javase.desc=Java Standard Edition, anything non-related to Jave EE, like the language, JDK, performance tuning, modularity, etc...
-jse.label=Java SE
+javase.label=Java SE
 
 track.mobile.title=Mobile
 track.mobile.desc=Tools frameworks and libraries for building mobile apps, both as MobileWeb or native Android and iOS app
-m.label=Mobile
+mobile.label=Mobile
 
 track.archisec.title=Architecture & Security
 track.archisec.desc=Software architecture, encryption and best practices to develop secure software
@@ -180,7 +180,7 @@ archisec.label=Architecture & Security
 
 track.agilityTest.title=Methodology & Devops
 track.agilityTest.desc=Software development methodologies and related subjects
-agTest.label=Methodology & Devops
+agilityTest.label=Methodology & Devops
 
 track.future.title=Future<Devoxx>
 track.future.desc=Developing for embedded devices, the internet of things, Arduino, raspberry pi, quadcopters, robots and related
@@ -190,9 +190,9 @@ track.java.title=JVM languages
 track.java.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
 java.label=JVM languages
 
-track.cloudBigdata.title=Cloud & BigData
-track.cloudBigdata.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
-cloudBigdata.label=Cloud & BigData
+track.cloudBigData.title=Cloud & BigData
+track.cloudBigData.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
+cloudBigData.label=Cloud & BigData
 
 track.webHtml5.title=Web & HTML5
 track.webHtml5.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
@@ -648,5 +648,3 @@ wl.company=Company
 wl.track=Track
 wl.status=Current status
 wishlist.setPersonInCharge=Person responsible for {0}
-mobile.label=Mobile
-agilityTest.label=Agility, Methodology & Tests
