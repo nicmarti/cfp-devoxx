@@ -1,6 +1,6 @@
 package controllers
 
-import library.Redis
+import library.{DraftReminder, ZapActor, Redis}
 import library.search.{DoIndexProposal, _}
 import models._
 import org.joda.time.Instant
@@ -253,6 +253,12 @@ object Backoffice extends SecureCFPController {
       }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")
       }
+  }
+
+  def sendDraftReminder=SecuredAction(IsMemberOf("admin")) {
+    implicit request=>
+      ZapActor.actor ! DraftReminder()
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success"->"Sent draft reminder to speakers")
   }
 
 }
