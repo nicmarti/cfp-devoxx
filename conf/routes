@@ -118,6 +118,8 @@ GET           /admin/sanitycheck                                    controllers.
 GET           /admin/sanitycheck/fix                                controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String)
 GET           /admin/sanitycheck/proposals                          controllers.Backoffice.sanityCheckProposals()
 
+GET           /admin/reminder/trigger                               controllers.Backoffice.sendDraftReminder()
+
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                             controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                controllers.ApproveOrRefuse.doRefuse(proposalId:String)
