@@ -125,6 +125,11 @@
                  @flash.get("success").get
                  </div>
              }
+            @if(flash.get("warning").isDefined) {
+                 <div class="alert alert-warning alert-dismissable">
+                 @flash.get("warning").get
+                 </div>
+             }
              @if(flash.get("deleted").isDefined) {
                  <div class="alert alert-warning">
                  @Messages("talk.deleted")<br>
