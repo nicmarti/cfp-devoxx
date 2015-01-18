@@ -708,7 +708,7 @@ object ConferenceDescriptor {
       datesFr = "du 8 au 10 avril 2015",
       datesEn = "from 8th to 10th of April, 2015",
       cfpOpenedOn = DateTime.parse("2014-11-17T00:00:00+01:00"),
-      cfpClosedOn = DateTime.parse("2015-01-17T23:59:59+01:00"),
+      cfpClosedOn = DateTime.parse("2015-01-19T09:00:00+01:00"),
       scheduleAnnouncedOn = DateTime.parse("2014-02-13T00:00:00+01:00")
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
