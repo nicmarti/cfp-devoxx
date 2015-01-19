@@ -721,7 +721,7 @@ object ConferenceDescriptor {
 
   val isCFPOpen: Boolean = {
 //    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
-    true
+    false
   }
 
 }
