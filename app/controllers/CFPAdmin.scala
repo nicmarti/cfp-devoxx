@@ -95,10 +95,12 @@ object CFPAdmin extends SecureCFPController {
             // The next proposal I should review
             val allNotReviewed = Review.allProposalsNotReviewed(uuid)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
+            val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
 
-            val nextToBeReviewed = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
+            val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
+            val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewed))
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack,nextToBeReviewedSameFormat))
           }
           case None => NotFound("Proposal not found").as("text/html")
         }
