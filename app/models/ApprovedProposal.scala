@@ -33,16 +33,30 @@ object ApprovedProposal {
 
   // Devoxx BE 2013
   val getTotal: Map[String, Int] =  Map(
-      ("conf.label", 89)
-      , ("uni.label", 16)
-      , ("tia.label", 24)
-      , ("lab.label", 10)
-      , ("quick.label", 28)
-      , ("bof.label", 25)
-      , ("start.label", 20)
-      , ("key.label", 7)
+    ("uni.label", 10)
+    , ("lab.label", 14+6+6)
+    ,("conf.label", 48+40+1)
+    , ("tia.label", 35)
+      , ("quick.label", 18+16)
+      , ("bof.label", 27)
+      , ("start.label", 1)
+      , ("key.label", 4+3)
       , ("other.label", 0)
     )
+
+  /*
+ 10	University
+26	Lab
+35	Tools in act.
+
+27	BOF
+
+7	Keynote
+
+88	Conférence
+
+34	Quicky
+   */
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
     client =>
