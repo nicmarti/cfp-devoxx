@@ -434,41 +434,42 @@ class IndexMaster extends ESActor {
     // This is important for French content
     // Leave it, even if your CFP is in English
     def settingsFrench =
-      """
-        |{
-        |    "settings": {
-        |        "index": {
-        |            "analysis": {
-        |                "analyzer": {
-        |                    "analyzer_keyword": {
-        |                        "tokenizer": "keyword",
-        |                        "filter": "lowercase"
-        |                    },
-        |                    "francais": {
-        |                        "type": "custom",
-        |                        "tokenizer": "standard",
-        |                        "filter": ["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
-        |                    }
-        |                },
-        |                "filter": {
-        |                    "stop_francais": {
-        |                        "type": "stop",
-        |                        "stopwords": ["_french_"]
-        |                    },
-        |                    "fr_stemmer": {
-        |                        "type": "stemmer",
-        |                        "name": "french"
-        |                    },
-        |                    "elision": {
-        |                        "type": "elision",
-        |                        "articles": ["l", "m", "t", "qu", "n", "s", "j", "d"]
-        |                    }
-        |                }
-        |            }
-        |        }
-        |    }
-        |}
+    """
+        |    {
+        |    	"settings" : {
+        |    		"index":{
+        |    			"analysis":{
+        |    				"analyzer":{
+        |              "analyzer_keyword":{
+        |                 "tokenizer":"keyword",
+        |                 "filter":"lowercase"
+        |              },
+        |    					"francais":{
+        |    						"type":"custom",
+        |    						"tokenizer":"standard",
+        |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
+        |    					}
+        |    				},
+        |    				"filter":{
+        |    					"stop_francais":{
+        |    						"type":"stop",
+        |    						"stopwords":["_french_"]
+        |    					},
+        |    					"fr_stemmer" : {
+        |    						"type" : "stemmer",
+        |    						"name" : "french"
+        |    					},
+        |    					"elision" : {
+        |    						"type" : "elision",
+        |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
+        |    					}
+        |    				}
+        |    			}
+        |    		}
+        |    	}
+        | }
       """.stripMargin
+
 
     def settingsProposalsEnglish =
       s"""
@@ -550,19 +551,19 @@ class IndexMaster extends ESActor {
     // We use a for-comprehension on purporse so that each action is executed sequentially.
     // res2 is executed when res1 is done
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
-                        res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsProposalsEnglish)
+                        res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsFrench)
     ) yield {
       res2
     }
 
      val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals");
-                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals", settingsProposalsEnglish)
+                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals", settingsFrench)
     ) yield {
       res2
     }
 
     val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
-                                res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsSpeakersEnglish)
+                                res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsFrench)
 
     ) yield {
       res2
