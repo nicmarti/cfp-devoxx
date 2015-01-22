@@ -39,7 +39,7 @@ object ElasticSearch {
     }
   }
 
-   def indexBulk(json: String, indexName:String) = {
+  def indexBulk(json: String, indexName: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
       play.Logger.of("library.ElasticSearch").debug(s"Bulk index ${indexName} started to $host")
     }
@@ -51,14 +51,14 @@ object ElasticSearch {
       response =>
         response.status match {
           case 201 =>
-             if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-               play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
-             }
+            if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
+              play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
+            }
             Success(response.body)
           case 200 =>
             if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-               play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
-             }
+              play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
+            }
             Success(response.body)
           case other => Failure(new RuntimeException(s"Unable to bulk import [$indexName], HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
@@ -66,8 +66,8 @@ object ElasticSearch {
   }
 
   def createIndexWithSettings(index: String, settings: String) = {
-    if(play.Logger.of("library.ElasticSearch").isDebugEnabled){
-      play.Logger.of("library.ElasticSearch")debug(s"Create index ${index} with settings ${settings}")
+    if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
+      play.Logger.of("library.ElasticSearch") debug (s"Create index ${index} with settings ${settings}")
     }
     val url = s"$host/${index.toLowerCase}"
     val futureResponse = WS.url(url)
@@ -77,17 +77,17 @@ object ElasticSearch {
       response =>
         response.status match {
           case 201 =>
-            if(play.Logger.of("library.ElasticSearch").isDebugEnabled){
-              play.Logger.of("library.ElasticSearch")debug(s"Created index $index")
+            if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
+              play.Logger.of("library.ElasticSearch") debug (s"Created index $index")
             }
             Success(response.body)
           case 200 =>
-            if(play.Logger.of("library.ElasticSearch").isDebugEnabled){
-              play.Logger.of("library.ElasticSearch")debug(s"Created index $index")
+            if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
+              play.Logger.of("library.ElasticSearch") debug (s"Created index $index")
             }
             Success(response.body)
           case other =>
-            play.Logger.of("library.ElasticSearch").warn("Unable to create index with settings due to "+response.body)
+            play.Logger.of("library.ElasticSearch").warn("Unable to create index with settings due to " + response.body)
             Failure(new RuntimeException("Unable to createSettings, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
@@ -110,7 +110,7 @@ object ElasticSearch {
     }
   }
 
-  def refresh()={
+  def refresh() = {
     // http://localhost:9200/_refresh
     val url = s"$host/_refresh"
     val futureResponse = WS.url(url)
@@ -126,7 +126,6 @@ object ElasticSearch {
         }
     }
   }
-
 
 
   def deleteIndex(indexName: String) = {
@@ -206,8 +205,8 @@ object ElasticSearch {
   def doPublisherSearch(query: Option[String], p: Option[Int]) = {
     val index = "acceptedproposals"
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
-    val zeQuery = someQuery.map(_.toLowerCase).map{q=>
-     s"""
+    val zeQuery = someQuery.map(_.toLowerCase).map { q =>
+      s"""
         |"dis_max": {
         |   "queries": [
         |                { "match": { "title":"$q"}},
@@ -259,7 +258,6 @@ object ElasticSearch {
   }
 
 
-
   // This is interesting if you want to build a cloud of Words.
   def getTag(index: String) = {
 
@@ -274,23 +272,38 @@ object ElasticSearch {
         |       "terms" : {
         |         "fields" : ["summary"],
         |         "size":100,
-        |         "exclude": ["how","what","you", "we", "can", "your", "talk", "from",
-        |         "session", "have", "use", "all", "using", "about", "like", "also",
-        |         "more", "new", "some", "has", "which", "one", "do", "i",
-        |         "when", "so", "many", "our", "make", "used", "presentation", "based", "them",
-        |         "most", "way", "see", "other", "open", "get", "real", "through", "features",
-        |         "out", "need", "well", "world", "up", "8",  "look", "been", "its", "even", "just",
-        |         "work", "want", "us", "own", "over",  "both", "write", "where", "take",
-        |         "should", "come", "show", "while", "provide","much","than",
-        |         "years","year","one","two","three","lot","any","live","still","very","each","we'll",
-        |         "several","provides", "same","those","really","next","first","give","few",
-        |         "would","now","end","does","only","my","makes"
-        |         ]
+        |         "exclude": ["a","on","de","et","les","la","des","pour","le","en","un","à","vous","une","est","dans","cette",
+        |        "du","que","avec","comment","nous","sur","ce","plus","qui","au","ou","il","votre","pas",
+        |        "mais","par","applications","ne","tout","présentation","faire","vos","peut","sont","you",
+        |        "si","aussi","se","son","can","ces","je","bien","être","tous","comme","we","sans","mettre",
+        |        "verrons","permet","quelques","avez","aux","y","travers","notre","entre",
+        |        "cet","ont","même","mise","soit","permettant","développeur","also",
+        |        "your", "quand", "temps", "systèmes", "data", "système","permettent",
+        |        "réel", "hands", "facile", "rencontre", "puissance", "outils","peuvent","etc",
+        |        "minutes", "why", "who", "webs", "vivre", "vite", "tour", "time","l'occasion",
+        |        "testez", "sérialisez", "suite", "side", "recommandation","d’un","qu'il",
+        |        "programming", "programmation", "pourquoi","cela","like","point","chaque","bonnes","ans","when",
+        |        "alors","lors","leur","leurs","pourtant","peu","elle","il","là","toutes",
+        |        "venez", "temps", "ses", "talk", "sa", "allons", "all", "différents",
+        |        "mieux", "have", "propose", "new", "place", "également", "fait","from",
+        |        "about", "base", "autres", "très", "ça", "what", "some", "do", "want", "using",
+        |        "s","so", "7","2", "8", "30", "them", "session", "application", "moins","moi","ainsi",
+        |        "how", "c'est", "d'un", "d'une", "souvent", "depuis", "sera", "cas",  "après", "sous", "encore",
+        |        "non", "use","n'est", "utilisateurs", "utilisant","more","plusieurs","nombreux","été","vie",
+        |        "i","look","has","grâce","différentes","take","toute","get","devient","afin","surtout","toujours",
+        |        "via","tels","avons","d'expérience",
+        |        "va","user","seront","déjà","mode","avoir","most",
+        |        "où","mon","see","which","quel","donc", "nos","d'applications", "aujourd'hui", "used", "learn",
+        |        "and","the","or","to","of","in","this",
+        |        "is", "for", "with",  "it", "will", "that",  "but",
+        |         "as",  "an", "are", "be", "by","at", "these", "quels", "not", "enfin", "c’est"
+        |        ] } }
         |       }
         |     }
         |  }
         |}
       """.stripMargin
+
     val futureResponse = WS.url(host + "/" + index + "/_search?search_type=count")
       .withAuth(username, password, AuthScheme.BASIC)
       .post(json)
@@ -304,7 +317,7 @@ object ElasticSearch {
     }
   }
 
-   def doStats(zeQuery: String, index: String, maybeUserFilter:Option[String]) = {
+  def doStats(zeQuery: String, index: String, maybeUserFilter: Option[String]) = {
     val json: String =
       s"""
         |{
@@ -392,7 +405,7 @@ object ElasticSearch {
       """.stripMargin
 
 
-    if(play.Logger.of("ElasticSearch").isDebugEnabled){
+    if (play.Logger.of("ElasticSearch").isDebugEnabled) {
       play.Logger.of("ElasticSearch").debug("Sending to ES request:")
       play.Logger.of("ElasticSearch").debug(json)
     }
