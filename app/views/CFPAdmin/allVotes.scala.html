@@ -1,9 +1,6 @@
 @(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All votes") {
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
-
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
@@ -151,9 +148,7 @@
                     </table>
 
                 </div>
-                <div class="col-lg-12">
-                   <div id="chart_div" style="min-height: 700px;"></div>
-                </div>
+              
             </div>
         </div>
     </div>
@@ -232,51 +227,5 @@
 
 } );
 </script>
-
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Talk', 'Note moyenne','Votes',{role:'annotation'}],
-@allVotes.sortBy(_._2._4).reverse.take(25).map { case (proposal, voteAndTotalVotes) =>
-    ['@proposal.id @proposal.allSpeakers.map(_.cleanShortName).mkString("/")',@voteAndTotalVotes._4,@(voteAndTotalVotes._2+voteAndTotalVotes._3), '@proposal.title'],
-}
-        ]);
-
-        var options = {
-            chart: {
-                title : 'Votes',
-                legend : { position : 'top', maxLines : 3 },
-                vAxis: {title: 'Proposal ID'},
-                hAxis:{textStyle: {
-                    fontSize:9
-                } }
-            },
-            bars: 'horizontal'
-        };
-
-        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-
-        chart.draw(data, options);
-
-        //********//
-        var dataPie = google.visualization.arrayToDataTable([
-          ['Track', 'Quantity'],
-@allVotes.map(_._1).groupBy(_.track.label).map(t=>(t._1,t._2.size)).map { case (trackName, count) =>
-          ['@Messages(trackName)',@count],
-}
-
-        ]);
-        var optionsPie = {
-          title: 'Répartition par track'
-        };
-
-        var chart2 = new google.visualization.PieChart(document.getElementById('track_pie'));
-
-        chart2.draw(dataPie, optionsPie);
-
-      }
-    </script>
 
 }
