@@ -92,7 +92,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -106,7 +106,13 @@
                     </thead>
 
                 @proposals.values.toList.sortBy(_.state.code).map{proposal:Proposal=>
-                  <tr>
+
+      @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
+           @if(approved){
+                  <tr class="label-approved">
+          }else{
+                <tr>
+           }
                       <td><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a></td>
                   @if(SecureCFPController.hasAccessToCFP(req)){
                       <td>@Review.lastVoteByUserForOneProposal(currentUser, proposal.id).map{review:Review=>
@@ -132,13 +138,22 @@
                       }
                       </td>
 
-                      <td>@tags.renderProposalState(proposal.state)</td>
+                      <td>
+                          @if(approved){
+                              <span class="label-approved">Approved</span>
+                              <em>(@tags.renderProposalState(proposal.state))</em>
+                          }else{
+                              @tags.renderProposalState(proposal.state)
+                          }
+
+                      </td>
                   }
                       <td>@Messages(proposal.talkType.id)</td>
-                      <td>@Messages(proposal.track.id)</td>
+                      <td>@Messages(proposal.track.label)</td>
 
                   </tr>
                 }
+            }
                 </table>
             </div>
         </div>
