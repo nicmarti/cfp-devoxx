@@ -137,7 +137,7 @@ object ConferenceDescriptor {
   }
 
   object ConferenceProposalConfigurations {
-    val CONF = ProposalConfiguration(id = "conf", slotsCount = 82, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
+    val CONF = ProposalConfiguration(id = "conf", slotsCount = 88, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
     val UNI = ProposalConfiguration(id = "uni", slotsCount = 10, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
       chosablePreferredDay = true)
