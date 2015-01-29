@@ -127,7 +127,7 @@ preview.warn2=dans le tableau de la page d''accueil.
 presubmit.reminder=Lorsque vous êtes prêt à soumettre votre proposition, n''oubliez pas de cliquer sur l''enveloppe orange sur l''écran principal (
 
 # Proposal type
-key.label=Keynote, 50mn, jeudi et vendredi matin
+key.label=Keynote, 20mn, jeudi et vendredi matin
 conf.label=Conference, 45mn, jeudi et vendredi
 uni.label=University, 3h, mercredi uniquement
 tia.label=Tools in Action, 30mn, mercredi uniquement
