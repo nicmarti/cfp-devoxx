@@ -632,3 +632,5 @@ wl.company=Société
 wl.track=Track
 wl.status=Dernier status
 wishlist.setPersonInCharge=Personne en charge de "{0}"
+
+proposal.approved.noVotes=Proposition approuvée - plus de votes possible
