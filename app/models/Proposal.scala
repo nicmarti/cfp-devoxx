@@ -300,13 +300,15 @@ object Proposal {
 
       // Do the operation if and only if we changed the Track
       maybeExistingTrackId.map {
-        oldTrackId: String =>
+        case oldTrackId if oldTrackId!=proposal.track.id=>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
           client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
           // And we are able to track this event
           Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
+        case oldTrackId if oldTrackId==proposal.track.id=>
+          // Same track
       }
       if (maybeExistingTrackId.isEmpty) {
         // SADD is O(N)
