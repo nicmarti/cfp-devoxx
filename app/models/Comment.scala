@@ -56,9 +56,22 @@ object Comment {
     allComments(s"Comments:Internal:$proposalId", proposalId)
   }
 
-    def countComments(proposalId: String): Long = Redis.pool.withClient {
+  def countComments(proposalId: String): Long = Redis.pool.withClient {
     client =>
       client.zcard(s"Comments:ForSpeaker:$proposalId").longValue
+  }
+
+  def countInternalComments(proposalId: String): Long = Redis.pool.withClient {
+    client =>
+      client.zcard(s"Comments:Internal:$proposalId").longValue
+  }
+
+  def deleteAllComments(proposalId:String) = Redis.pool.withClient{
+    client=>
+      val tx=client.multi()
+      tx.del(s"Comments:ForSpeaker:$proposalId")
+      tx.del(s"Comments:Internal:$proposalId")
+      tx.exec()
   }
 
   private def saveComment(redisKey: String, proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {

@@ -34,9 +34,11 @@ import com.github.rjeschke.txtmark.Processor
 import org.apache.commons.lang3.StringUtils
 
 /**
- * Speaker
+ * Speaker profile, is used mainly to show details.
  *
- * Author: nicolas
+ * Webuser is the "technical" and internal web user representation.
+ *
+ * Author: nicolas martignole
  * Created: 28/09/2013 11:01
  */
 case class Speaker(uuid: String
@@ -96,7 +98,8 @@ object Speaker {
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, qualifications:String): Speaker = {
+                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
+                    qualifications:String): Speaker = {
     Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications))
   }
 
@@ -182,6 +185,19 @@ object Speaker {
           val maybeSpeaker = Json.parse(jsString).asOpt[Speaker]
           maybeSpeaker
       }
+  }
+
+  def withOneProposal(speakers: List[Speaker])={
+    speakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
+  }
+
+  def notMemberOfCFP(speakers:List[Speaker])={
+    speakers.filterNot(s => Webuser.isMember(s.uuid, "cfp"))
+  }
+
+  def allSpeakersUUID():Set[String]=Redis.pool.withClient{
+    client=>
+      client.hkeys("Speaker")
   }
 
   def asSetOfSpeakers(speakerIDs:Set[String]):List[Speaker]=Redis.pool.withClient{

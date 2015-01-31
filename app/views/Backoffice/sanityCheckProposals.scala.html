@@ -1,0 +1,42 @@
+@(proposals:Iterable[String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin sanity check") {
+
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @Html(flash.get("success").get)
+        </div>
+    }
+
+    <div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3><i class="icon-medkit"></i> Sanity check</h3>
+            <p>Try to load all Proposals, detect any JSON parsing errors</p>
+        </div>
+
+        <div class="panel-body">
+           @proposals.map{p=>
+               Invalid proposal : @p<br>
+           }
+            @if(proposals.isEmpty){
+                <h4>No problems detected</h4>
+            }
+        </div>
+    </div>
+    </div>
+</div>
+
+}

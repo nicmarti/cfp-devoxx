@@ -46,7 +46,7 @@
                          <td>
                             <small>@webuser.email</small>
                         </td>
-                        <td>@tags.renderGravatar(webuser.uuid)</td>
+                        <td>@tags.renderGravatar(webuser.uuid, showName=true, showPhoto=false)</td>
                         <td>
                             <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
 

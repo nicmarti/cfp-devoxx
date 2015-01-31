@@ -23,16 +23,16 @@
 
 package controllers
 
+import akka.util.Crypt
 import library.search.ElasticSearch
+import library.{LogURL, SendQuestionToSpeaker, ZapActor}
 import models._
+import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
-import akka.util.Crypt
-import library.{SendQuestionToSpeaker, ZapActor, LogURL}
-import play.api.cache.Cache
 
 
 /**
@@ -81,7 +81,7 @@ object Publisher extends Controller {
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
       maybeSpeaker match {
         case Some(speaker) => {
-          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
@@ -94,7 +94,7 @@ object Publisher extends Controller {
       val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
         case Some(speaker) => {
-          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", uuid, name)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
@@ -107,7 +107,7 @@ object Publisher extends Controller {
       talkType match {
         case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
-            ConferenceDescriptor.ConferenceProposalTypes.START.id)), talkType))
+            ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), talkType))
         case other =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
       }
@@ -214,22 +214,25 @@ object Publisher extends Controller {
 
   def sendMessageToSpeaker(proposalId: String) = Action {
     implicit request =>
-      Proposal.findById(proposalId) match {
-        case None => NotFound("Proposal not found")
-        case Some(proposal) =>
-          val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
-          val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
-          val questions = Question.allQuestionsForProposal(proposal.id)
+      if (ConferenceDescriptor.current().showQuestion) {
+        Proposal.findById(proposalId) match {
+          case None => NotFound("Proposal not found")
+          case Some(proposal) =>
+            val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
+            val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+            val questions = Question.allQuestionsForProposal(proposal.id)
 
-          speakerMsg.bindFromRequest().fold(hasErrors =>
-            BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)), {
-            case (msg, fullname, email1, _) =>
-              Question.saveQuestion(proposal.id, email1, fullname, msg)
-              ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
-              Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
-          }
-          )
-
+            speakerMsg.bindFromRequest().fold(hasErrors =>
+              BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)), {
+              case (msg, fullname, email1, _) =>
+                Question.saveQuestion(proposal.id, email1, fullname, msg)
+                ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
+                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
+            }
+            )
+        }
+      }else{
+        NotFound("Fuck you stupid spammer")
       }
   }
 

@@ -1,30 +1,54 @@
 import java.util.concurrent.TimeUnit
-import library._
-import library.DraftReminder
-import library.search._
-import library.search.StopIndex
+
+import library.{DraftReminder, _}
+import library.search.{StopIndex, _}
+import models.{Proposal, Speaker}
 import org.joda.time.DateMidnight
-import play.api._
-import play.api.mvc.RequestHeader
-import mvc.Results._
-import play.api.templates.HtmlFormat
-import play.api.UnexpectedException
-import play.core.Router.Routes
-import Play.current
-import scala.concurrent.Future
+import play.api.Play.current
+import play.api.{UnexpectedException, _}
 import play.api.libs.concurrent._
+import play.api.mvc.RequestHeader
+import play.api.mvc.Results._
+import play.api.templates.HtmlFormat
+import play.core.Router.Routes
+
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
-    if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined && Play.isTest==false) {
+    if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined && Play.isTest == false) {
       CronTask.draftReminder()
       CronTask.elasticSearch()
       CronTask.doComputeStats()
       CronTask.doSetupOpsGenie()
     } else {
       play.Logger.debug("actor.cronUpdater.active is set to false, application won't compute stats")
+    }
+
+    // To fix bug #165 we need to iterate all speakers, then check all proposals and do the appropriate clean-up
+    if (Play.isProd) {
+      Redis.pool.withClient {
+        client =>
+          val tx = client.multi()
+          Speaker.allSpeakersUUID().foreach {
+            speakerUUID =>
+              // println(s"Checking $speakerUUID")
+              Proposal.allProposalsByAuthor(speakerUUID).foreach {
+                case (id, proposal) if proposal.mainSpeaker == speakerUUID =>
+                //println(s"[1] $id mainSpeaker")
+                case (id, proposal) if proposal.secondarySpeaker == Some(speakerUUID) =>
+                //println(s"[2] $id secondarySpeaker")
+                case (id, proposal) if proposal.otherSpeakers.contains(speakerUUID) =>
+                //println(s"[o] $id other")
+                case (id, proposal) =>
+                  println(s"/!\\ $speakerUUID does not belong to proposalId $id")
+                  tx.srem(s"Proposals:ByAuthor:$speakerUUID", id)
+              }
+          }
+          tx.exec()
+      }
     }
   }
 
@@ -94,7 +118,7 @@ object CronTask {
   }
 
   def elasticSearch() = {
-    import Contexts.elasticSearchContext
+    import library.Contexts.elasticSearchContext
 
     if (Play.isProd) {
       Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
@@ -109,7 +133,7 @@ object CronTask {
   }
 
   def doComputeStats() = {
-    import Contexts.statsContext
+    import library.Contexts.statsContext
 
     // Create a cron task
     if (Play.isDev) {
@@ -126,7 +150,7 @@ object CronTask {
   }
 
   def doSetupOpsGenie() = {
-    import Contexts.statsContext
+    import library.Contexts.statsContext
     for (apiKey <- Play.configuration.getString("opsgenie.apiKey");
          name <- Play.configuration.getString("opsgenie.name")) {
       // Create a cron task
