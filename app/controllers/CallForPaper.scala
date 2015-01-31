@@ -227,9 +227,32 @@ object CallForPaper extends SecureCFPController {
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
-              Proposal.updateSecondarySpeaker(uuid, proposalId, proposal.secondarySpeaker, validNewSpeakers._1)
+
+              (proposal.secondarySpeaker,validNewSpeakers._1) match {
+                case (None,Some(newSecondarySpeaker))=>
+                  val newSpeaker = Speaker.findByUUID(newSecondarySpeaker)
+                  val validMsg = s"Internal notification : Added [${newSpeaker.map(_.cleanName).get}] as a secondary speaker"
+                  ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  Event.storeEvent(Event(proposal.id, uuid, validMsg))
+                  Proposal.updateSecondarySpeaker(uuid, proposalId, None, Some(newSecondarySpeaker))
+                case (Some(oldSpeakerUUID),Some(newSecondarySpeaker)) if oldSpeakerUUID!=newSecondarySpeaker=>
+                  val oldSpeaker = Speaker.findByUUID(oldSpeakerUUID)
+                  val newSpeaker = Speaker.findByUUID(newSecondarySpeaker)
+                  val validMsg=s"Internal notification : Removed [${oldSpeaker.map(_.cleanName).get}] and added [${newSpeaker.map(_.cleanName).get}] as a secondary speaker"
+                  ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  Event.storeEvent(Event(proposal.id, uuid, validMsg))
+                  Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), Some(newSecondarySpeaker))
+                case (Some(oldSpeakerUUID), None) =>
+                  val oldSpeaker = Speaker.findByUUID(oldSpeakerUUID)
+                  val validMsg=s"Internal notification : Removed [${oldSpeaker.map(_.cleanName).get}] as a secondary speaker"
+                  ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  Event.storeEvent(Event(proposal.id, uuid, validMsg))
+                  Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), None)
+              }
+
               Proposal.updateOtherSpeakers(uuid, proposalId, proposal.otherSpeakers, validNewSpeakers._2)
-              Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+              Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list for proposal " + StringUtils.abbreviate(proposal.title, 80)))
+
               Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
             }
           )
