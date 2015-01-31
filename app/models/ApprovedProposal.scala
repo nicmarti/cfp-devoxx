@@ -31,18 +31,19 @@ import library.{Dress, Redis}
  */
 object ApprovedProposal {
 
-  // Devoxx BE 2013
-  val getTotal: Map[String, Int] =  Map(
+  val getTotal: Map[String, Int] = Map(
     ("uni.label", 10)
-    , ("lab.label", 14+6+6)
-    ,("conf.label", 48+40+1)
+    , ("lab.label", 14 + 6 + 6)
+    , ("conf.label", 48 + 40 + 1)
     , ("tia.label", 35)
-      , ("quick.label", 18+16)
-      , ("bof.label", 27)
-      , ("start.label", 1)
-      , ("key.label", 4+3)
-      , ("other.label", 0)
-    )
+    , ("quick.label", 18 + 16)
+    , ("bof.label", 27)
+    , ("start.label", 1)
+    , ("key.label", 4 + 3)
+    , ("cstory.label", 1)
+    , ("hack.label", 8)
+    , ("other.label", 5)
+  )
 
   /*
  10	University
@@ -63,7 +64,7 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
+          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") +client.scard("Approved:key")+ client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
         case other =>
           client.scard(s"Approved:$talkType")
       }
