@@ -125,7 +125,7 @@
                         @events.map { event: Event =>
                             <tr>
                                 <td class="text-center">
-                                    <small>@event.date.map(_.toString("dd/MM HH:mm"))</small>
+                                    <small>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("dd/MM HH:mm"))</small>
                                 </td>
                                 <td class="text-center">
                                 @tags.renderGravatar(event.uuid,showName = false)
