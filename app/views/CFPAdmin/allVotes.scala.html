@@ -1,6 +1,9 @@
 @(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All votes") {
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
@@ -50,9 +53,7 @@
 
                     <div class="col-lg-12">
                         <h4>By Track</h4>
-                        @allVotes.filter(_._1.talkType.id == confType).filterNot(t => ApprovedProposal.isApproved(t._1.id, t._1.talkType.id)).map(_._1).groupBy(_.track).map { case (track, listProposal) =>
-                            @Messages(track.label) = @listProposal.size <br>
-                        }
+                         <div id="track_pie" style="min-height: 300px;"></div>
                     </div>
 
                 <div class="col-md-12">
@@ -246,4 +247,25 @@
 } );
 </script>
 
+<script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+         var dataPie = google.visualization.arrayToDataTable([
+          ['Track', 'Quantity'],
+@allVotes.map(_._1).filter(_.talkType.id == confType).filter(t => ApprovedProposal.isApproved(t.id, t.talkType.id)).groupBy(_.track.label).map(t=>(t._1,t._2.size)).map { case (trackName, count) =>
+          ['@Html(Messages(trackName))',@count],
+}
+
+        ]);
+        var optionsPie = {
+          title: 'Approved by track'
+        };
+
+        var chart2 = new google.visualization.PieChart(document.getElementById('track_pie'));
+
+        chart2.draw(dataPie, optionsPie);
+
+      }
+</script>
 }
