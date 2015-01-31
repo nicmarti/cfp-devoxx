@@ -195,6 +195,7 @@ object Webuser {
     client =>
       client.sadd("Webuser:cfp", uuid)
       Cache.remove(s"Webuser:cfp:$uuid")
+      Cache.remove(s"Webuser:admin:$uuid")
   }
 
   def noBackofficeAdmin() = Redis.pool.withClient {

@@ -24,7 +24,7 @@
 package controllers
 
 import models._
-import org.joda.time.{DateTimeZone, DateTime}
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.{SimpleResult, _}
@@ -192,7 +192,7 @@ object RestAPI extends Controller {
               NotModified
             }
             case other => {
-              val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+              val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
 
               val updatedTalks = acceptedProposals.map {
                 proposal: Proposal =>
@@ -488,7 +488,6 @@ object RestAPI extends Controller {
               "id" -> Json.toJson(room.id)
               , "name" -> Json.toJson(room.name)
               , "capacity" -> Json.toJson(room.capacity)
-              , "recorded" -> Json.toJson(room.recorded)
               , "setup" -> Json.toJson(room.setup)
             )
           }

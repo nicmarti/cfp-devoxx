@@ -1,0 +1,33 @@
+@(requestId:String,speakerName:String, cfp:List[Webuser])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import helper.twitterBootstrap._
+
+@main("Wishlist") {
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.setPersonInCharge",speakerName)</h3>
+                </div>
+
+                <div class="panel-body">
+
+@cfp.sortBy(_.cleanName).map{ webuser=>
+<p>
+<a href="@routes.Wishlist.setPersonInCharge(requestId, webuser.uuid)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i></a>
+@webuser.cleanName
+</p>
+}
+                </div>
+            </div>
+        </div>
+</div>
+
+
+}

@@ -15,7 +15,7 @@
                 } else {
                     <h2>@Messages("New.proposal")</h2>
                 }
-                @if(controllers.Backoffice.isCFPOpen==false){
+                @if(ConferenceDescriptor.isCFPOpen==false){
                     <div class="alert alert-info">
                         @Messages("cfp.closed.restrictions")
                     </div>

@@ -71,8 +71,8 @@ object ProposalState {
   val ACCEPTED = ProposalState("accepted")
   val DECLINED = ProposalState("declined")
   val BACKUP = ProposalState("backup")
+  val ARCHIVED = ProposalState("archived")
   val UNKNOWN = ProposalState("unknown")
-
 
   val all = List(
     DRAFT,
@@ -83,10 +83,11 @@ object ProposalState {
     ACCEPTED,
     DECLINED,
     BACKUP,
+    ARCHIVED,
     UNKNOWN
   )
 
-  val allButDeleted = List(
+  val allButDeletedAndArchived = List(
     DRAFT,
     SUBMITTED,
     APPROVED,
@@ -108,6 +109,7 @@ object ProposalState {
       case "accepted" => ACCEPTED
       case "declined" => DECLINED
       case "backup" => BACKUP
+      case "ar" => ARCHIVED
       case other => UNKNOWN
     }
   }
@@ -184,15 +186,11 @@ object Proposal {
       client.sismember("Proposals:ByAuthor:" + uuid, proposalId)
   }
 
-  def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
+  def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState): String = Redis.pool.withClient {
     client =>
-      // If it's a sponsor talk, we force it to be a conference
-      // We also enforce the user id, for security reason
-      val proposalWithMainSpeaker = if (proposal.sponsorTalk) {
-        proposal.copy(talkType = ConferenceDescriptor.current().conferenceSponsor.sponsorProposalType, mainSpeaker = authorUUID)
-      } else {
-        proposal.copy(mainSpeaker = authorUUID)
-      }
+      // We enforce the user id, for security reason
+      // Note : for Devoxx FR 2015 we accept other format than just Conference as sponsorTalk
+      val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
 
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
@@ -221,6 +219,8 @@ object Proposal {
 
       // Reflect any changes such as talkType or speaker to the list of accepted/refused talks.
       ApprovedProposal.reflectProposalChanges(proposal)
+
+      proposalId
   }
 
   val proposalForm = Form(mapping(
@@ -328,7 +328,7 @@ object Proposal {
         stateOld: String =>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
-          Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
+          Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk $proposalId from $stateOld to ${newState.code}"))
 
           if (newState == ProposalState.SUBMITTED) {
             client.hset("Proposal:SubmittedDate", proposalId, new Instant().getMillis.toString)
@@ -337,7 +337,7 @@ object Proposal {
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
-        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk ${proposalId} with status ${newState.code}"))
+        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk $proposalId with status ${newState.code}"))
       }
   }
 
@@ -386,9 +386,13 @@ object Proposal {
     changeProposalState(uuid, proposalId, ProposalState.DRAFT)
   }
 
+  def archive(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.ARCHIVED)
+  }
+
   private def loadProposalsByState(uuid: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:${uuid}", s"Proposals:ByState:${proposalState.code}")
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}")
       loadProposalByIDs(allProposalIds, proposalState)
   }
 
@@ -419,10 +423,20 @@ object Proposal {
   }
 
   def allMyProposals(uuid: String): List[Proposal] = {
-    ProposalState.allButDeleted.flatMap {
+    ProposalState.allButDeletedAndArchived.flatMap {
       proposalState =>
         loadProposalsByState(uuid, proposalState)
     }
+  }
+
+  def allMyArchivedProposals(uuid: String): List[Proposal] = {
+    loadProposalsByState(uuid, ProposalState.ARCHIVED)
+  }
+
+  def countByProposalState(uuid: String, proposalState: ProposalState): Int = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}")
+      allProposalIds.size
   }
 
   def findProposal(uuid: String, proposalId: String): Option[Proposal] = {
@@ -470,7 +484,8 @@ object Proposal {
         isNotDeleted <- checkIsNotMember(client, ProposalState.DELETED, proposalId).toRight(ProposalState.DELETED).right;
         isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
         isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
-        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right
+        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right;
+        isNotArchived <- checkIsNotMember(client, ProposalState.ARCHIVED, proposalId).toRight(ProposalState.ARCHIVED).right
       ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
 
       thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
@@ -495,7 +510,16 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.hkeys("Proposals")
       val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
-      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDDeleted)
+      val allProposalIDArchived = client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDArchived).diff(allProposalIDDeleted)
+      onlyValidProposalIDs
+  }
+
+  def allProposalIDsNotArchived: Set[String] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.hkeys("Proposals")
+      val allProposalIDArchived = client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDArchived)
       onlyValidProposalIDs
   }
 
@@ -536,6 +560,15 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
+      if (play.Logger.of("models.Proposal").isDebugEnabled && allProposalIds.nonEmpty) {
+        val check = Json.parse(client.hget("Proposals", allProposalIds.head).get).validate[Proposal]
+        check.fold(invalidJson => {
+          play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
+          play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
+          JsNull
+        }
+          , identity)
+      }
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
@@ -558,6 +591,15 @@ object Proposal {
       loadAndParseProposals(allProposalIDs)
   }
 
+  def allDeleted(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.DELETED.code)
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.DELETED))
+      }
+  }
+
   def destroy(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
@@ -575,8 +617,12 @@ object Proposal {
         otherSpeaker =>
           tx.srem("Proposals:ByAuthor:" + otherSpeaker, proposal.id)
       }
-
+      tx.hdel("Proposal:SubmittedDate", proposal.id)
       tx.hdel("Proposals", proposal.id)
+      if (proposal.id != "") {
+        tx.del(s"Events:V2:${proposal.id}")
+        tx.del(s"Events:LastUpdated:${proposal.id}")
+      }
       tx.exec()
   }
 
@@ -646,7 +692,7 @@ object Proposal {
   }
 
   /**
-   * Returns all Proposals with sponsorTalk=true, whatever is the current status.
+   * Returns all Proposals with sponsorTalk=true, except if talk has been deleted, declined or archived
    */
   def allSponsorsTalk(): List[Proposal] = {
     val allTalks = allProposals().filter(_.sponsorTalk)
@@ -654,13 +700,18 @@ object Proposal {
       proposal =>
         val proposalState = findProposalState(proposal.id)
         proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
-    }.filterNot(_.state == ProposalState.DELETED).filterNot(_.state == ProposalState.DECLINED)
+    }.filterNot(s => s.state == ProposalState.DELETED || s.state == ProposalState.DECLINED || s.state == ProposalState.ARCHIVED)
   }
 
-  // This is a slow operation
+  /**
+   * Load all proposals except ARCHIVED
+   */
   def allProposals(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      client.hvals("Proposals").map {
+
+      val allProposalIDsExceptArchived = client.hkeys("Proposals").diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
+
+      client.hmget("Proposals", allProposalIDsExceptArchived).map {
         json =>
           val proposal = Json.parse(json).as[Proposal]
           val proposalState = findProposalState(proposal.id)
@@ -694,11 +745,6 @@ object Proposal {
   def hasOneProposal(uuid: String): Boolean = Redis.pool.withClient {
     implicit client =>
       client.exists(s"Proposals:ByAuthor:$uuid")
-  }
-
-  def totalWithOneProposal(): Int = Redis.pool.withClient {
-    implicit client =>
-      client.keys("Proposals:ByAuthor:*").size
   }
 
   def allApprovedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {
@@ -779,46 +825,46 @@ object Proposal {
       client.hget("PreferredDay", proposalId)
   }
 
-  def updateSecondarySpeaker(author:String, proposalId:String, oldSpeakerId:Option[String], newSpeakerId:Option[String])=Redis.pool.withClient {
+  def updateSecondarySpeaker(author: String, proposalId: String, oldSpeakerId: Option[String], newSpeakerId: Option[String]) = Redis.pool.withClient {
     implicit client =>
-      val tx=client.multi()
-      oldSpeakerId.map{
-        speakerId=>
-          tx.srem(s"Proposals:ByAuthor:$speakerId",proposalId)
+      val tx = client.multi()
+      oldSpeakerId.map {
+        speakerId =>
+          tx.srem(s"Proposals:ByAuthor:$speakerId", proposalId)
       }
-      newSpeakerId.map{
-        speakerId=>
-          tx.sadd(s"Proposals:ByAuthor:$speakerId",proposalId)
+      newSpeakerId.map {
+        speakerId =>
+          tx.sadd(s"Proposals:ByAuthor:$speakerId", proposalId)
       }
       tx.exec()
 
       // load and update proposal
-      findById(proposalId).map{
-        proposal=>
+      findById(proposalId).map {
+        proposal =>
           val updated = proposal.copy(secondarySpeaker = newSpeakerId)
           save(author, updated, updated.state)
       }
   }
 
-  def updateOtherSpeakers(updatedBy:String,
-                          proposalId:String,
-                          oldOtherSpeakers:List[String],
-                          newOtherSpeakers:List[String])=Redis.pool.withClient {
+  def updateOtherSpeakers(updatedBy: String,
+                          proposalId: String,
+                          oldOtherSpeakers: List[String],
+                          newOtherSpeakers: List[String]) = Redis.pool.withClient {
     implicit client =>
-      val tx=client.multi()
-      oldOtherSpeakers.map{
-        speakerId=>
-          tx.srem(s"Proposals:ByAuthor:$speakerId",proposalId)
+      val tx = client.multi()
+      oldOtherSpeakers.map {
+        speakerId =>
+          tx.srem(s"Proposals:ByAuthor:$speakerId", proposalId)
       }
-      newOtherSpeakers.map{
-        speakerId=>
-          tx.sadd(s"Proposals:ByAuthor:$speakerId",proposalId)
+      newOtherSpeakers.map {
+        speakerId =>
+          tx.sadd(s"Proposals:ByAuthor:$speakerId", proposalId)
       }
       tx.exec()
 
       // load and update proposal
-      findById(proposalId).map{
-        proposal=>
+      findById(proposalId).map {
+        proposal =>
           val updated = proposal.copy(otherSpeakers = newOtherSpeakers)
           save(updatedBy, updated, updated.state)
       }

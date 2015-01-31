@@ -123,6 +123,14 @@ object ApprovedProposal {
       client.sismember(s"Approved:$talkType", proposalId)
   }
 
+  // This is only for Attic controller, to fix an old bug on data (bug #159)
+  // The bug was that a conference is approved, but then the speaker changes the
+  // format to quickie, then the Approved:conf collection is not updated correctly
+  def _loadApprovedCategoriesForTalk(proposal:Proposal):List[String]={
+    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter { pc =>
+      isApproved(proposal.id, pc.id)
+    }.map(_.id)
+  }
 
   def isRefused(proposal: Proposal): Boolean = {
     isRefused(proposal.id, proposal.talkType.id)
@@ -177,15 +185,24 @@ object ApprovedProposal {
       val tx = client.multi()
       tx.srem("ApprovedById:", proposal.id.toString)
       tx.srem("Approved:" + proposal.talkType.id, proposal.id.toString)
+      // Buggy without a 'S'
+      tx.srem("ApprovedSpeaker:" + proposal.mainSpeaker, proposal.id.toString)
+      // Correct
       tx.srem("ApprovedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
 
       proposal.secondarySpeaker.map {
         secondarySpeaker: String =>
+          // Buggy without a 'S'
+          tx.srem("ApprovedSpeaker:" + secondarySpeaker, proposal.id.toString)
+          // Correct
           tx.srem("ApprovedSpeakers:" + secondarySpeaker, proposal.id.toString)
       }
 
       proposal.otherSpeakers.foreach {
         otherSpeaker: String =>
+          // Buggy without a 'S'
+          tx.srem("ApprovedSpeaker:" + otherSpeaker, proposal.id.toString)
+          // and the correct one
           tx.srem("ApprovedSpeakers:" + otherSpeaker, proposal.id.toString)
       }
       tx.exec()
@@ -233,14 +250,14 @@ object ApprovedProposal {
 
   def allApprovedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Approved:" + talkType)
+      val allProposalIDs = client.smembers("Approved:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
 
   def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Refused:" + talkType)
+      val allProposalIDs = client.smembers("Refused:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
@@ -250,7 +267,7 @@ object ApprovedProposal {
       val allKeys = client.keys("Approved:*")
       val finalList = allKeys.map {
         key =>
-          val allProposalIDs = client.smembers(key).toList
+          val allProposalIDs = client.smembers(key).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")).toList
           val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
           allProposalWithVotes.values.toList
       }.flatten
@@ -285,7 +302,7 @@ object ApprovedProposal {
       }
   }
 
-  def allAcceptedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
+  def allApprovedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allApprovedProposals = client.smembers("ApprovedSpeakers:" + speakerId)
       val mapOfProposals = Proposal.loadAndParseProposals(allApprovedProposals)

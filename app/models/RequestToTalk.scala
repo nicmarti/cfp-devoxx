@@ -161,22 +161,21 @@ object RequestToTalk {
       RequestToTalkStatus.changeStatusFromRequest(author, requestId, RequestToTalkStatus.DELETED)
   }
 
-  def createIDs() = Redis.pool.withClient {
+  def setPersonInCharge(requestId:String, userId:String) = Redis.pool.withClient {
     client =>
-      client.hkeys("RequestToTalk").foreach {
-        talkId =>
+      client.hset("RequestToTalk:PersonInCharge",requestId,userId)
+  }
 
-          findById(talkId).map {
-            talk =>
-              val lastModified = RequestToTalkStatus.lastEvent(talk.id).map { rh =>
-                rh.date.getMillis
-              }.getOrElse {
-                new Date().getTime
-              }
-              client.zadd("RequestToTalk:IDs", lastModified, talk.id)
-          }
+  def unsetPersonInCharge(requestId:String) = Redis.pool.withClient{
+    client=>
+      client.hdel("RequestToTalk:PersonInCharge",requestId)
+  }
 
-
+  def whoIsInChargeOf(requestId:String):Option[Webuser]=Redis.pool.withClient{
+    client=>
+      client.hget("RequestToTalk:PersonInCharge",requestId).flatMap{
+        uuid=>
+          Webuser.findByUUID(uuid)
       }
   }
 

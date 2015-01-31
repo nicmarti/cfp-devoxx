@@ -24,7 +24,8 @@
 package models
 
 import library.Redis
-import play.api.libs.json.Json
+import play.api.data.validation.ValidationError
+import play.api.libs.json.{JsPath, Json}
 import org.apache.commons.lang3.RandomStringUtils
 import scala.util.Random
 import org.joda.time.{DateTimeZone, DateTime}
@@ -99,9 +100,16 @@ object ScheduleConfiguration {
 
   def loadScheduledConfiguration(id: String): Option[ScheduleConfiguration] = Redis.pool.withClient {
     implicit client =>
-      client.hget("ScheduleConfigurationByID", id).map {
+      client.hget("ScheduleConfigurationByID", id).flatMap {
         json: String =>
-          Json.parse(json).as[ScheduleConfiguration]
+          val maybeScheduledConf = Json.parse(json).validate[ScheduleConfiguration]
+          maybeScheduledConf.fold(errors => {
+            play.Logger.of("models.ScheduledConfiguration").warn("Unable to reload a SlotConfiguration due to JSON error");
+            play.Logger.of("models.ScheduledConfiguration").warn(s"Got error : ${library.ZapJson.showError(errors)} ");
+            None
+          }
+            , someConf => Option(someConf)
+          )
       }
   }
 
