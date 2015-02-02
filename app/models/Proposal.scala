@@ -593,6 +593,13 @@ object Proposal {
       loadAndParseProposals(allProposalIDs)
   }
 
+  def allApprovedProposalsByAuthor(author:String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.sinter(s"Proposals:ByAuthor:$author","ApprovedById:")
+      println(s"allApprovedProposalsByAuthor $author ${allProposalIDs.size}")
+      loadAndParseProposals(allProposalIDs)
+  }
+
   def allDeleted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.DELETED.code)
