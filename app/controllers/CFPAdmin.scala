@@ -100,7 +100,7 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack,nextToBeReviewedSameFormat))
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
           }
           case None => NotFound("Proposal not found").as("text/html")
         }
@@ -248,12 +248,12 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
   }
 
-  def advancedSearch(q: Option[String] = None, p: Option[Int] = None)= SecuredAction(IsMemberOf("cfp")).async {
+  def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-     ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
+      ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
         case r if r.isSuccess => {
           val json = Json.parse(r.get)
           val total = (json \ "hits" \ "total").as[Int]
@@ -336,7 +336,7 @@ object CFPAdmin extends SecureCFPController {
       }.filterNot {
         case (proposal, _) =>
           proposal.state == ProposalState.DRAFT ||
-          proposal.state == ProposalState.ARCHIVED ||
+            proposal.state == ProposalState.ARCHIVED ||
             proposal.state == ProposalState.DELETED
       }
 
@@ -424,7 +424,7 @@ object CFPAdmin extends SecureCFPController {
               writer.print(",")
               writer.print(s.name.getOrElse("?"))
               writer.print(",")
-              writer.print(s.company.map(c=>"\""+c.toUpperCase+"\"").getOrElse(""))
+              writer.print(s.company.map(c => "\"" + c.toUpperCase + "\"").getOrElse(""))
               writer.print(",")
 
               // freepass
@@ -443,15 +443,15 @@ object CFPAdmin extends SecureCFPController {
               writer.print(allAccepted.size)
               writer.print(",")
 
-              Proposal.allAcceptedForSpeaker(s.uuid).map{p=>
-                ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map{ slot=>
+              Proposal.allAcceptedForSpeaker(s.uuid).map { p =>
+                ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map { slot =>
                   writer.print(Messages(p.talkType.id))
-                  writer.print(" \"" + p.title.replaceAll(","," ") + "\"")
+                  writer.print(" \"" + p.title.replaceAll(",", " ") + "\"")
                   writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
                   writer.print(s"from ${slot.from.toString("HH:mm")} to ${slot.to.toString("HH:mm")}")
-                }.getOrElse{
+                }.getOrElse {
                   writer.print("\"")
-                  writer.print( p.title.replaceAll(","," "))
+                  writer.print(p.title.replaceAll(",", " "))
                   writer.print("\"")
                   writer.print(s" ${p.talkType.label}}] not yet scheduled")
 
@@ -464,11 +464,20 @@ object CFPAdmin extends SecureCFPController {
               writer.println()
           }
           writer.close()
-         Ok.sendFile(file, inline = false)
+          Ok.sendFile(file, inline = false)
         }
         case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
       }
   }
+
+  def allApprovedSpeakers() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val allApprovedSpeakers = ApprovedProposal.allApprovedSpeakers
+
+      Ok(views.html.CFPAdmin.allApprovedSpeakers(allApprovedSpeakers.groupBy(_.company.map(_.toLowerCase.trim).getOrElse("???"))))
+  }
+
 
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
