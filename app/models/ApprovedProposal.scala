@@ -299,7 +299,7 @@ object ApprovedProposal {
       client.smembers("RefusedById:")
   }
 
-  def allApprovedSpeakers() = Redis.pool.withClient {
+  def allApprovedSpeakers():Set[Speaker] = Redis.pool.withClient {
     implicit client =>
       client.keys("ApprovedSpeakers:*").flatMap {
         key =>
