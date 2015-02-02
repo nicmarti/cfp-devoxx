@@ -1,4 +1,4 @@
-@(speakersByCompany:Map[String,Set[Speaker]])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speakersByCompany:List[(String,Set[Speaker])], proposals:List[(String,scala.collection.immutable.Set[Proposal])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Speakers") {
 <div class="row">
@@ -26,6 +26,13 @@
             <span class="label label-info">@speakersByCompany.size companies</span>
         </div>
         <div class="panel-body">
+            @proposals.map { case (company, props) =>
+            <h3>@company</h3>
+                @props.toList.sortBy(_.talkType.id).map {proposal=>
+                    @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") <br>
+                }
+            }
+
             @if(speakersByCompany.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>
@@ -38,7 +45,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @speakersByCompany.toList.sortBy(_._2.size).reverse.map{ case(company:String, speakers: Set[Speaker]) =>
+                @speakersByCompany.map{ case(company:String, speakers: Set[Speaker]) =>
                    <tr>
                        <th colspan="5">@company - @speakers.size</th>
                    </tr>
@@ -55,6 +62,9 @@
                         </td>
                         <td>
                             <small>@speaker.email</small>
+                        </td>
+                        <td>
+                            <a href="@routes.CFPAdmin.showSpeakerAndTalks(speaker.uuid)">See talks</a>
                         </td>
                         </tr>
                        }
