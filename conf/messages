@@ -36,6 +36,7 @@ blog=Your blog or company website
 qualifications=Your speaker''s qualifications
 qualifications2=Speaker''s qualifications
 qualifications.label=Speaker qualifications
+qualifications.otherproposals=Other proposals
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for {0} and propose one or more subjects.
 index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
