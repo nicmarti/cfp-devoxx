@@ -92,54 +92,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            @if(SecureCFPController.hasAccessToCFP(req)){
-                                <th>You voted</th>
-                                <th>State</th>
-                            }
-                            <th>Type</th>
-                            <th>Track</th>
-                        </tr>
-                    </thead>
-
-                @proposals.values.toList.sortBy(_.state.code).map{proposal:Proposal=>
-                  <tr>
-                      <td><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a></td>
-                  @if(SecureCFPController.hasAccessToCFP(req)){
-                      <td>@Review.lastVoteByUserForOneProposal(currentUser, proposal.id).map{review:Review=>
-                        @defining(review.vote){score=>
-                            <small>
-                           @if(score>6){
-                               <span class="label label-success">@score</span>
-                           }
-                           @if(score<4 && score>0){
-                               <span class="label label-danger">@score</span>
-                           }
-                           @if(score>=4 && score<=6){
-                               <span class="label label-warning">@score</span>
-                           }
-                           @if(score == 0) {
-                               <span class="label label-default">@score</span>
-                           }
-                           </small>
-                        }
-                        @review.date.toString("dd-MMM HH:mm")
-                      }.getOrElse{
-                          <span class="label label-default">-</span>
-                      }
-                      </td>
-
-                      <td>@tags.renderProposalState(proposal.state)</td>
-                  }
-                      <td>@Messages(proposal.talkType.id)</td>
-                      <td>@Messages(proposal.track.id)</td>
-
-                  </tr>
-                }
-                </table>
+                @tags.renderProposals(proposals, currentUser)
             </div>
         </div>
     </div>
