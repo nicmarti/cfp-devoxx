@@ -1,4 +1,4 @@
-@(speakerId:String)
+@(speakerId:String, proposals:Map[String, Proposal], currentUser:String)(implicit req:RequestHeader)
 
 @models.Speaker.findByUUID(speakerId).map{speaker:Speaker=>
 <div class="panel-group">
@@ -19,9 +19,11 @@
          }.getOrElse {
              <em>Speaker did not yet entered its speaking skills/qualifications</em>
          }
-     </div>
+         <h4>@Messages("qualifications.otherproposals")</h4>
+         @tags.renderProposals(proposals, currentUser)
 
-</div>
+     </div>
+ </div>
 </div>
 
 }
