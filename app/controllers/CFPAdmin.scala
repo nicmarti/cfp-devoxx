@@ -470,7 +470,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def allApprovedSpeakers() = SecuredAction(IsMemberOf("admin")) {
+  def allApprovedSpeakers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
         .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("Pas de société"))
