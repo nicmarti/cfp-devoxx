@@ -33,13 +33,13 @@ object ApprovedProposal {
 
   val getTotal: Map[String, Int] = Map(
     ("uni.label", 10)
-    , ("lab.label", 14 + 6 + 6)
-    , ("conf.label", 48 + 40 + 1)
+    , ("lab.label", 26)
+    , ("conf.label", 89)
     , ("tia.label", 35)
-    , ("quick.label", 18 + 16)
+    , ("quick.label", 34)
     , ("bof.label", 27)
     , ("start.label", 1)
-    , ("key.label", 4 + 3)
+    , ("key.label", 7)
     , ("cstory.label", 1)
     , ("hack.label", 8)
     , ("other.label", 5)
