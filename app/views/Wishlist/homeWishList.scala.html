@@ -42,6 +42,7 @@
             <th>@Messages("wl.sn")</th>
             <th>@Messages("wl.fb")</th>
             <th>@Messages("wl.company")</th>
+            <th>@Messages("wl.country")</th>
             <th>@Messages("wl.track")</th>
             <th>@Messages("wl.status")</th>
         </tr>
@@ -64,6 +65,7 @@
            }
         </td>
         <td>@request.company</td>
+        <td>@request.country</td>
         <td>@Messages(request.track.label)</td>
         <td>@Messages("wl_"+request.status.code)</td>
     </tr>
