@@ -30,9 +30,14 @@
             <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=false, accepted=true, onlyWithSpeakerPass=true)" class="btn btn-sm btn-success"><i class="icon-money"></i> All with a speaker ticket</a>
             <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=true, accepted=false, onlyWithSpeakerPass=false)" class="btn btn-sm btn-warning"><i class="icon-filter"></i> All with only refused proposals</a>
             <br>
-            <a href="@routes.CFPAdmin.allSpeakers(export=true,rejected=false,accepted=true, onlyWithSpeakerPass=true)" class="btn btn-sm btn-success"><i class="icon-eject"></i> Export approved speakers to CSV</a>
-            <a href="@routes.CFPAdmin.allSpeakers(export=true, rejected=false, accepted=true, onlyWithSpeakerPass=true)" class="btn btn-sm btn-success"><i class="icon-money"></i> Export to CSV all with a speaker ticket</a>
-            <a href="@routes.CFPAdmin.allSpeakers(export=true,rejected=true,accepted=false, onlyWithSpeakerPass=true)" class="btn btn-sm btn-warning"><i class="icon-eject"></i> Export refused speakers to CSV</a>
+       @if(SecureCFPController.hasAccessToAdmin(req)) {
+           <a href="@routes.CFPAdmin.allSpeakers(export = true, rejected = false, accepted = true, onlyWithSpeakerPass = true)" class="btn btn-sm btn-success"><i class="icon-eject"></i>
+               Export approved speakers to CSV</a>
+           <a href="@routes.CFPAdmin.allSpeakers(export = true, rejected = false, accepted = true, onlyWithSpeakerPass = true)" class="btn btn-sm btn-success"><i class="icon-money"></i>
+               Export to CSV all with a speaker ticket</a>
+           <a href="@routes.CFPAdmin.allSpeakers(export = true, rejected = true, accepted = false, onlyWithSpeakerPass = true)" class="btn btn-sm btn-warning"><i class="icon-eject"></i>
+               Export refused speakers to CSV</a>
+       }
             @if(speakers.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>
@@ -40,7 +45,9 @@
                         <th>Name</th>
                         <th>Lang</th>
                         <th>Company</th>
-                        <th>Email</th>
+                          @if(SecureCFPController.hasAccessToAdmin(req)) {
+                              <th>Email</th>
+                          }
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -56,9 +63,11 @@
                         <td>
                             @speaker.company.getOrElse("")
                         </td>
-                        <td>
-                            <small>@speaker.email</small>
-                        </td>
+                          @if(SecureCFPController.hasAccessToAdmin(req)) {
+                              <td>
+                                  <small>@speaker.email</small>
+                              </td>
+                          }
                         <td>
                            <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
                            <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
