@@ -648,3 +648,6 @@ wl.track=Track
 wl.status=Current status
 wishlist.setPersonInCharge=Person responsible for {0}
 wl.country=Country
+wl.keynote=Keynote
+wl_keynote=Keynote
+wl_keynote.checkbox=Yes, this could be a keynote speaker
