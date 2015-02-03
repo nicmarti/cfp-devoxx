@@ -14,6 +14,11 @@ GET           /login/github                                         controllers.
 POST          /github/callback                                      controllers.Authentication.callbackGithub
 GET           /github/callback                                      controllers.Authentication.callbackGithub
 
+GET           /signup/linkedin                                      controllers.Authentication.createFromLinkedin
+GET           /login/linkedin                                       controllers.Authentication.linkedinLogin
+POST          /authenticate/linkedin                                controllers.Authentication.callbackLinkedin
+GET           /authenticate/linkedin                                controllers.Authentication.callbackLinkedin
+
 GET           /access_token                                         controllers.Authentication.showAccessToken
 
 POST          /newspeaker                                           controllers.Authentication.saveNewSpeaker
