@@ -23,6 +23,7 @@
 
                 <div class="panel-body">
 <a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishlist.newWishlist")</a><br>
+                    <p>Total wishlisted : @requests.size</p>
   @if(flash.get("error").isDefined) {
                         <div class="alert alert-danger alert-dismissable">
                             <strong>Error :</strong>
@@ -44,6 +45,7 @@
             <th>@Messages("wl.company")</th>
             <th>@Messages("wl.country")</th>
             <th>@Messages("wl.track")</th>
+            <th>@Messages("wl.keynote")</th>
             <th>@Messages("wl.status")</th>
         </tr>
     </thead>
@@ -67,6 +69,12 @@
         <td>@request.company</td>
         <td>@request.country</td>
         <td>@Messages(request.track.label)</td>
+        <td>@if(request.keynote.isDefined && request.keynote.get){
+            Yes
+        } else{
+            No
+        }
+        </td>
         <td>@Messages("wl_"+request.status.code)</td>
     </tr>
 }
@@ -90,11 +98,13 @@ $(document).ready(function() {
     "bStateSave": true,
     "aoColumns": [
     { "sType": "string"},
+    { "sType": "date"},
     { "sType": "string"},
     { "sType": "string"},
     { "sType": "string"},
     { "sType": "string"},
     { "sType": "string"},
+    { "sType": "boolean"},
     { "sType": "string"}
     ]
     });
