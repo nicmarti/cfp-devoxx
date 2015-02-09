@@ -50,15 +50,19 @@
                                     <h3>@proposal.title</h3>
                                 </div>
                                 <div class="panel-body">
-                                    <span class="label label-info">@proposal.id</span><br>
-                                    <span class="label label-primary">@Messages(proposal.talkType.label)</span><br>
+                                    @Messages("ar.proposalId") <span class="label label-info">@proposal.id</span><br>
+                                    @Messages("ar.proposalType") <span class="label label-primary">@Messages(proposal.talkType.label)</span><br>
                                     @Messages("ar.currentStatus") <span class="label label-default">@Messages(proposal.state.code)</span>
+                                    <br>
+                                    <a href="@routes.CallForPaper.showCommentForProposal(proposal.id)" class="btn  btn-sm btn-primary" target="new"><i class="icon-question-sign"></i> @Messages("showProposal.comment.ar")</a>
+
                                 </div>
 
                                 <div class="panel-body">
-                                    <div class="btn-group">
+
                                         <p>@Messages("ar.pleaseSelect")</p>
                                         <form action="@routes.ApproveOrRefuse.doAcceptOrRefuseTalk()" method="post">
+<div class="col-md-6">
                                             @if(proposal.state==ProposalState.APPROVED) {
                                                 <button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button> <br>
                                             }
@@ -70,6 +74,8 @@
                                                 <p>However you can decline if you don't want to keep this talk as a backup.</p>
                                                 <button name="dec" value="" disabled class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button> <br>
                                             }
+</div>
+<div class="col-md-6">
                                             @if(proposal.state==ProposalState.APPROVED) {
                                                 <button name="dec" value="decline" class="btn btn-sm btn-danger"> @Messages("ar.IDecline")</button> <br>
                                             }
@@ -82,13 +88,13 @@
                                             @if(proposal.state==ProposalState.DECLINED) {
                                                 <button name="dec" value="" disabled class="btn btn-sm btn-danger"> Declined </button> <br>
                                             }
-
+</div>
 
                                             <input type="hidden" name="cssrf_t" value="@cssrf">
                                             <!-- ne vous amusez pas à passer un id different ici, car je verifie du cote serveur le proprietaire de la soumission ;-) //-->
                                             <input type="hidden" name="proposalId" value="@proposal.id">
                                         </form>
-                                  </div>
+
                                 </div>
                              </div>
                           }
