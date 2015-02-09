@@ -12,7 +12,7 @@ notre site plus d'informations sur la sélection.
 
 Merci pour votre proposition,
 
-L'équipe de sélection de la conférence @Messages("longName")
+L'équipe de sélection de la conférence @Messages("longYearlyName")
 
 ----------------------------------------------------------------------------------------------------------------
 }
@@ -28,4 +28,4 @@ Hopefully we can still welcome you as a Devoxxian, registration details
 @ConferenceDescriptor.current().conferenceUrls.registration
 
 Kind regards,
-The @Messages("longName") team
+The @Messages("longYearlyName") team
