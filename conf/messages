@@ -663,3 +663,12 @@ wl.status=Current status
 wishlist.setPersonInCharge=Person responsible for {0}
 webmobile.label=Web, Mobile & UX
 agilityTest.label=Agility, Methodology & Tests
+
+wl.country=Country
+wl.keynote=Country
+wl_keynote=Keynote
+wl_keynote.checkbox=Yes, this could be a keynote speaker
+
+showProposal.comment.ar=Ask a question about this talk to the team
+ar.proposalType=Proposal type:
+ar.proposalId=Proposal ID:

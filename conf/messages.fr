@@ -634,3 +634,12 @@ wl.status=Dernier status
 wishlist.setPersonInCharge=Personne en charge de "{0}"
 
 proposal.approved.noVotes=Proposition approuvée - plus de votes possible
+
+wl.country=Pays
+wl.keynote=Pays
+wl_keynote=Speaker keynote
+wl_keynote.checkbox=Oui, cela serait un speaker keynote
+
+showProposal.comment.ar=Poser une question à l''équipe à propos de cette présentation
+ar.proposalType=Type de présentation :
+ar.proposalId=Identifiant de la présentation :
