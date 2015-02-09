@@ -728,6 +728,19 @@ object Proposal {
       }
   }
 
+  def allDeclinedProposals(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+
+      val allDeclineds = client.smembers(s"Proposals:ByState:${ProposalState.DECLINED.code}")
+
+      client.hmget("Proposals", allDeclineds).map {
+        json =>
+          val proposal = Json.parse(json).as[Proposal]
+          proposal.copy(state = ProposalState.DECLINED)
+      }
+  }
+
+
   // This code is a bit complex. It's an optimized version that loads from Redis
   // a set of Proposal. It returns only valid proposal, successfully loaded.
   def loadAndParseProposals(proposalIDs: Set[String]): Map[String, Proposal] = Redis.pool.withClient {
