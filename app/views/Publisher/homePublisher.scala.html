@@ -1,164 +1,70 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxBE2014("Schedule",Some("Devoxx 2014 agenda")){
+@views.html.Publisher.devoxxBE2014("Schedule",Some("Devoxx FR 2015 agenda")){
 
 <div class="large-12 columns">
-<h2>Devoxx 2014 Schedule</h2>
+<h2>Devoxx France 2015</h2>
 </div>
-
     <div class="large-3 columns">
         <div class="input-wrap">
-            <form name="search" action="/2014/search" method="GET">
-            <label for="search">Find a talk or a speaker : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
+            <form name="search" action="/2015/search" method="GET">
+            <label for="search">Trouver un sujet ou un présentateur : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
         </form>
         </div>
     </div>
+    <div class="large-12 columns">
+        <h3>Programme en cours de finalisation</h3>
+        <p>L'appel aux conférenciers a fermé le 17 janvier. Les 14 membres du comité de sélection ont reçu plus de 670 sujets, pour 220 places. Le programme
+            a été validé le lundi 9 février. Les orateurs qui confirment leur présence sont automatiquement publiés sur ce site, ainsi que le résumé de leur présentation.</p>
+    </div>
 
-    <table class="mainSchedule">
-        <thead>
-            <tr>
-                <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader">Monday</th>
-                <th class="scheduleHeader">Tuesday</th>
-                <th class="scheduleHeader">Wednesday</th>
-                <th class="scheduleHeader">Thursday</th>
-                <th class="scheduleHeader">Friday</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "University Sessions")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "monday", "Tools-in-Action Sessions") </td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "tuesday", "Tools-in-Action Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-               <tr>
-               <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow"><a href="http://www.devoxx.be/hackergarten#tuesday" title="Devoxx BE 2014 Hackergarten on Tuesday">Hackergarten</a></td>
-                <td class="scheduleRow"><a href="http://www.devoxx.be/hackergarten#wednesday" title="Devoxx BE 2014 Hackergarten on Wednesday">Hackergarten</a></td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "monday", "Hands-on Labs")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "tuesday", "Hands-on Labs")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "monday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "tuesday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "thursday", "BOFs")
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                 <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("quick", "wednesday", "Quickies")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("quick", "thursday", "Quickies")
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                 <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">
-                <a href="http://www.devoxx.be/ignite-2014/">Ignite sessions</a>
-                </td>
-                <td class="scheduleRow">
-                 <a href="http://www.devoxx.be/ignite-2014/">Ignite sessions</a>
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "wednesday", "Conference Sessions")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="large-6 columns">
+        <h3>Conference</h3>
+        <p>Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 88 conférences
+            pendant 2 jours. Toutes les sessions sont filmées, ce qui vous permet de revoir plus tard les conférences.</p>
+        <p><A href="@routes.Publisher.showByTalkType("conf")">Liste des Conférences</A></p>
+    </div>
+
+    <div class="large-6 columns">
+        <h3>University</h3>
+        <p>Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes. Avec une salle en plus en 2015, Devoxx France propose 10 universités.</p>
+        <p><A href="@routes.Publisher.showByTalkType("uni")">Liste des Universités</A></p>
+
+    </div>
+
+    <div class="large-6 columns">
+        <h3>Tools in Action</h3>
+        <p>Les 35 TIA (Tools-in-Action) sont des sessions courtes de 25mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
+        <p>Pour la 4ème édition de Devoxx France, les TIA auront lieu le mercredi et le jeudi en fin de journée.</p>
+        <p><A href="@routes.Publisher.showByTalkType("tia")">Liste des Tools in Action</A></p>
+    </div>
+
+    <div class="large-6 columns">
+        <h3>Hand's on Labs</h3>
+        <p>Session pratique de 3h, dans des salles de 25 à 60 personnes. Les Labs sont des sessions pratiques le mercredi et le jeud, qui permettent
+            de découvrir ou d'approfondir un sujet. Les Labs se déroulent essentiellement le mercredi, ainsi que quelques Labs le jeudi après-midi.</p>
+        <p><A href="@routes.Publisher.showByTalkType("labs")">Liste des Hand's on Labs</A></p>
+    </div>
 
 
-    <!-- ******************************************************************* //-->
+    <div class="large-6 columns">
+        <h3>Quickies</h3>
+        <p>Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner jeudi et vendredi. C'est LE format
+            dédié aux débutants, mais aussi aux experts qui n'ont que 15mn pour vous convaincre. Le format simple et rapide permet
+            de découvrir un projet ou une idée pendant l'heure du repas. Cette année, l'équipe a sélectionné 34 Quickies.</p>
+        <p><A href="@routes.Publisher.showByTalkType("quick")">Liste des Quickies</A></p>
+    </div>
 
-<div class="large-6 columns">
-<h3>University</h3>
-<p>University talks are on Monday and Tuesday and are in-depth session of 2 x 75 minutes.</p>
-<p>University attendees can also attend Tools in Action, Hackergarten, BOFs and hands-on Lab sessions on Monday and Tuesday!</p>
-</div>
 
-<div class="large-6 columns">
-<h3>Tools in Action</h3>
-<p>30 minute sessions taking place after the University talks with a focus on technical tools and APIs.</p>
-</div>
-
-<div class="large-6 columns">
-<h3>Hackergarten</h3>
-<p>Hackergartens are a great place to meet new people, have fun, and improve the lives of developers around the world
-    one patch at a time; provided you're willing to bring your laptop and get your hands dirty. Write a plugin,
-    a tutorial, a small feature, or a bug fix for a project that interests you alongside several open-source experts
-    willing to share their knowledge.</p>
-</div>
-
-<div class="large-6 columns">
-    <h3>Labs</h3>
-<p>Practical hands-on sessions of 3 hours (in the BOF rooms) with maximum of 60 people per room.</p>
-</div>
-
-<div class="large-6 columns">
-    <h3>Conference</h3>
-<p>Conference talks (one hour technical presentations) start on Wednesday till Friday.</p>
-<p>Conference attendees can also attend Quickies, BOFs and hands-on Lab sessions from Wednesday til Friday.</p>
-</div>
-<div class="large-6 columns">
-    <h3>Ignite</h3>
-<p>Ignite is the name for a particular type of event that is held throughout the world—organized by volunteers—at which
-    participants speak about their ideas and personal or professional passions according to a specific format.
-    The presentations are meant to “ignite” the audience on a subject, whereby awareness,
-    thought, and action are generated on the subjects presented.</p>
-</div>
-<div class="large-6 columns">
-    <h3>Quickies</h3>
-<p>15 minute sessions during the lunch breaks.</p>
-</div>
 <div class="large-6 columns">
     <h3>BOFs</h3>
-<p>Informal evening sessions of 1 hour with maximum 70 people per room.</p></div>
-<div class="large-6 columns">
-    <h3>Startups</h3>
-    <p>Anything related to Lean startup, VCs, Angels and new trends in Startups.</p>
+<p>Les BOF (Bird of a feather) sont des sessions mythiques de Devoxx France, à partir de 19h30 le jeudi soir.
+C'est LE point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés.
+Passez d'une session du ParisJS pour échanger ensuite avec les membres du Paris Scala User Group, les BOFs se déroulent
+le soir de la soirée Meet-and-Greet.</p>
+
+<p><A href="@routes.Publisher.showByTalkType("bof")">Liste des B.O.Fs</A></p>
 </div>
+
+
 }
