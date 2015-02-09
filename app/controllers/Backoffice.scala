@@ -261,4 +261,13 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success"->"Sent draft reminder to speakers")
   }
 
+  def showAllDeclined()=SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      val allDeclined = Proposal.allDeclinedProposals()
+//      Proposal.decline(request.webuser.uuid, proposalId)
+      Ok(views.html.Backoffice.showAllDeclined(allDeclined))
+
+  }
+
 }
