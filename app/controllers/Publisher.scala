@@ -27,7 +27,6 @@ import akka.util.Crypt
 import library.search.ElasticSearch
 import library.{LogURL, SendQuestionToSpeaker, ZapActor}
 import models._
-import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
@@ -55,9 +54,7 @@ object Publisher extends Controller {
   def showAllSpeakers = Action {
     implicit request =>
       import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
-        Speaker.allSpeakersWithAcceptedTerms()
-      }
+      val speakers =  Speaker.allSpeakersWithAcceptedTerms()
       val etag = speakers.hashCode().toString + "_2"
       val maybeETag = request.headers.get(IF_NONE_MATCH)
       maybeETag match {
@@ -69,10 +66,8 @@ object Publisher extends Controller {
   def showSpeakerByName(name: String) = Action {
     implicit request =>
       import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
-        Speaker.allSpeakersWithAcceptedTerms()
-      }
-      val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
+      val speakers =  Speaker.allSpeakersWithAcceptedTerms()
+      val speakerNameAndUUID = {
         speakers.map {
           speaker =>
             (speaker.urlName, speaker.uuid)
