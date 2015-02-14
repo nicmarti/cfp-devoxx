@@ -496,7 +496,7 @@ day-mercredi=Mercredi
 showAgendaByRoom=Agenda par salle
 Abs=Abs
 admin.btn.tracklead=Track leader
-approved=Speaker a accepté
+approved=Talk approuvé
 audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet:\
 \
 1- pour tout le monde, débutant comme expert\
