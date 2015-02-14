@@ -1,4 +1,4 @@
-@(proposal: Proposal, speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int],  maybeMyVote:Option[Review])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int],  maybeMyVote:Option[Review], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -62,8 +62,7 @@
                                 <th>@tags.showSpeakerTag(proposal.mainSpeaker)</th>
                                 <td>
                                 <div class="showSpeakerDetails">
-                                @tags.showSpeakerBioOverview(proposal.mainSpeaker)
-                                </div>
+                                @tags.showSpeakerBioOverview(proposal.mainSpeaker, proposalsByAuths(proposal.mainSpeaker), currentUser)
                                 </td>
                             </tr>
                             @if(proposal.secondarySpeaker.isDefined) {
@@ -75,7 +74,7 @@
                                     <td>
                                         <div class="showSecSpeakerDetails">
                                         @proposal.secondarySpeaker.map { secondarySpeaker =>
-                                            @tags.showSpeakerBioOverview(secondarySpeaker)
+                                            @tags.showSpeakerBioOverview(secondarySpeaker, proposalsByAuths(secondarySpeaker), currentUser)
                                         }
                                         </div>
                                     </td>
@@ -90,7 +89,7 @@
                                     </th>
                                     <td>
                                     @proposal.otherSpeakers.map { sp =>
-                                       @tags.showSpeakerBioOverview(sp)
+                                       @tags.showSpeakerBioOverview(sp, proposalsByAuths(sp), currentUser))
                                     }
                                     </td>
                                 </tr>

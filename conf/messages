@@ -670,3 +670,10 @@ wl_keynote.checkbox=Yes, this could be a keynote speaker
 showProposal.comment.ar=Ask a question about this talk to the team
 ar.proposalType=Proposal type:
 ar.proposalId=Proposal ID:
+
+tag.proposal.title=Title
+tag.proposal.youVoted=You voted
+tag.proposal.status=Status
+tag.proposal.type=Type
+tag.proposal.track=Track
+qualifications.otherproposals=Other proposals from same speaker
