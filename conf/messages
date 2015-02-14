@@ -122,29 +122,27 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Wednesday, Thursday
+key.label=Keynote, 20mn, Thursday and Friday
 key.label.simple=Keynote
-conf.label=Conference, 45mn, Wednesday, Thursday and Friday morning
+conf.label=Conference, 45mn, Thursday and Friday
 conf.label.simple=Conference
-uni.label=University, 3h, Monday or Tuesday
+uni.label=University, 3h, Wednesday
 uni.label.simple=University
-tia.label=Tools in Action, 30mn, only Monday or Tuesday
+tia.label=Tools in Action, 30mn, Wednesday or Thursday
 tia.label.simple=Tools in Action
-quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+quick.label=Quickie, 15mn, Thursday and Friday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+bof.label=Bird of a Feather, 1h, Thursday only evening
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.label=Hands-on Labs, 3h, Wednesday
 lab.label.simple=Hand''s on Lab
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Thursday
+start.label=Startup Talk, 25 min, Wednesday to Friday
 start.label.simple=Startup
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
-
-amd.label.simple=Après-midi des décideurs
 
 # Bug report
 Issue.report=Report an issue
