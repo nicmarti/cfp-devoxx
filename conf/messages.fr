@@ -560,6 +560,7 @@ proposal.audienceLevel=Niveau de l''audience
 proposal.demoLevel=Type de présentation
 qualifications=Vos qualifications/votre expérience comme présentateur
 qualifications.label=Qualifications du présentateur
+qualifications.otherproposals=Autres propositions du speaker
 quick.label.simple=Quickie
 remove.sponsorFlag=Retirer le flag sponsor de cette présentation
 shortName=Devoxx FR
@@ -643,3 +644,9 @@ wl_keynote.checkbox=Oui, cela serait un speaker keynote
 showProposal.comment.ar=Poser une question à l''équipe à propos de cette présentation
 ar.proposalType=Type de présentation :
 ar.proposalId=Identifiant de la présentation :
+
+tag.proposal.title=Titre
+tag.proposal.youVoted=Votre vote
+tag.proposal.status=Status
+tag.proposal.type=Type
+tag.proposal.track=Track
