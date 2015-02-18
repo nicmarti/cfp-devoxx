@@ -280,7 +280,7 @@ object ConferenceDescriptor {
       }
       val keynoteWednesdaySlot4 = ConferenceRooms.keynoteRoom.map {
         r4 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2017-06-12T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), new DateTime("2015-06-12T19:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r4)
+          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday", new DateTime("2015-06-17T19:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), new DateTime("2015-06-17T19:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r4)
       }
 
       keynoteWednesdaySlot2 ++ keynoteWednesdaySlot3 ++ keynoteWednesdaySlot4
