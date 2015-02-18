@@ -227,7 +227,6 @@ object CallForPaper extends SecureCFPController {
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
-
               (proposal.secondarySpeaker,validNewSpeakers._1) match {
                 case (None,Some(newSecondarySpeaker))=>
                   val newSpeaker = Speaker.findByUUID(newSecondarySpeaker)
@@ -248,6 +247,9 @@ object CallForPaper extends SecureCFPController {
                   ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), None)
+                case (None,None) =>
+                  play.Logger.info("Test CallForPaper 251 : nada")
+                  // Nothing special
               }
 
               Proposal.updateOtherSpeakers(uuid, proposalId, proposal.otherSpeakers, validNewSpeakers._2)
