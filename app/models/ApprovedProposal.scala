@@ -24,6 +24,7 @@
 package models
 
 import library.{Dress, Redis}
+import models.ConferenceDescriptor.ConferenceProposalConfigurations
 
 /**
  * Approve or reject a proposal
@@ -31,17 +32,15 @@ import library.{Dress, Redis}
  */
 object ApprovedProposal {
 
-  // Devoxx BE 2013
+  // Devoxx UK 2015
   val getTotal: Map[String, Int] =  Map(
-      ("conf.label", 89)
-      , ("uni.label", 16)
-      , ("tia.label", 24)
-      , ("lab.label", 10)
-      , ("quick.label", 28)
-      , ("bof.label", 25)
-      , ("start.label", 20)
-      , ("key.label", 7)
-      , ("other.label", 0)
+      ("conf.label", ConferenceProposalConfigurations.CONF.slotsCount)
+      , ("uni.label", ConferenceProposalConfigurations.UNI.slotsCount)
+      , ("lab.label", ConferenceProposalConfigurations.LAB.slotsCount)
+      , ("quick.label", ConferenceProposalConfigurations.QUICK.slotsCount)
+      , ("bof.label", ConferenceProposalConfigurations.BOF.slotsCount)
+      , ("key.label", ConferenceProposalConfigurations.KEY.slotsCount)
+      , ("other.label", ConferenceProposalConfigurations.OTHER.slotsCount)
     )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
