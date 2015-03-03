@@ -247,8 +247,9 @@ object CallForPaper extends SecureCFPController {
                   ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), None)
+                case (Some(oldSpeakerUUID),Some(newSecondarySpeaker)) if oldSpeakerUUID==newSecondarySpeaker=>
+                  // We kept the 2nd speaker, maybe updated or added a 3rd speaker
                 case (None,None) =>
-                  play.Logger.info("Test CallForPaper 251 : nada")
                   // Nothing special
               }
 
