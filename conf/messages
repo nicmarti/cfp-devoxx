@@ -139,7 +139,8 @@ lab.label.simple=Hand''s on Lab
 other.label=Other event
 other.label.simple=Other
 code.label.simple=Codestory
-
+hack.label=Hackergarten
+hack.label.simple=Hackergarten
 
 # Bug report
 Issue.report=Report an issue

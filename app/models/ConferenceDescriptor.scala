@@ -1,7 +1,7 @@
 package models
 
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Play
-import org.joda.time.{DateTimeZone, DateTime}
 
 /**
  * ConferenceDescriptor.
@@ -109,6 +109,8 @@ object ConferenceDescriptor {
 
     val CODE = ProposalType(id = "cstory", label = "code.label")
 
+    val HACK = ProposalType(id = "hack", label = "hack.label")
+
     val OTHER = ProposalType(id = "other", label = "other.label")
 
     val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, OTHER)
@@ -121,21 +123,22 @@ object ConferenceDescriptor {
       case "bof" => BOF
       case "key" => KEY
       case "cstory" => CODE
+      case "hack" => HACK
       case "other" => OTHER
     }
 
   }
 
   object ConferenceProposalConfigurations {
-    val CONF = ProposalConfiguration(id = "conf", slotsCount = 52, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
+    val CONF = ProposalConfiguration(id = "conf", slotsCount = 65, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone", chosablePreferredDay = true)
+
+    val UNI = ProposalConfiguration(id = "uni", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
       chosablePreferredDay = true)
-    val UNI = ProposalConfiguration(id = "uni", slotsCount = 6, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
+    val LAB = ProposalConfiguration(id = "lab", slotsCount = 8, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
-    val LAB = ProposalConfiguration(id = "lab", slotsCount = 6, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
+    val QUICK = ProposalConfiguration(id = "quick", slotsCount = 20, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
       chosablePreferredDay = true)
-    val QUICK = ProposalConfiguration(id = "quick", slotsCount = 16, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
-      chosablePreferredDay = true)
-    val BOF = ProposalConfiguration(id = "bof", slotsCount = 8, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
+    val BOF = ProposalConfiguration(id = "bof", slotsCount = 7, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
       chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 2, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
@@ -143,7 +146,9 @@ object ConferenceDescriptor {
       chosablePreferredDay = false)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = true, chosablePreferredDay = false)
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, OTHER)
+    val HACK = ProposalConfiguration(id = "hack", slotsCount = 2, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+      hiddenInCombo = false, chosablePreferredDay = false)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACK, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -392,7 +397,7 @@ object ConferenceDescriptor {
   )
 
   val isCFPOpen: Boolean = {
-//    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+    //    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
     false
   }
 
