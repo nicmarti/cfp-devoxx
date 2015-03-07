@@ -1,23 +1,8 @@
 @(proposal:models.Proposal)
 
-@if(ConferenceDescriptor.current().frLangEnabled) {
-Bonjour,
-
-Nous avons le regret de vous informer que votre proposition @proposal.title au format @proposal.talkType.label n'a pas été acceptée.
-Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.
-
-Si vous souhaitez vous inscrire, nous avons prolongé l'offre "early-bird" afin de vous faire
-bénéficier du prix discount. La sélection cette année a encore été difficile. Nous communiquerons sur
-notre site plus d'informations sur la sélection.
-
-Merci pour votre proposition,
-
-L'équipe de sélection de la conférence @Messages("longName")
-
-----------------------------------------------------------------------------------------------------------------
-}
 Hi,
-We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused,  keep in mind that
+
+We're sorry to inform you that your proposal for Devoxx United-Kingdom 2015 was refused. Please keep in mind that we received close to 500 proposals and the available slots are very limited
 we received close to 800 proposals and the available slots are very limited.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
