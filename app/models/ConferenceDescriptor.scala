@@ -181,8 +181,8 @@ object ConferenceDescriptor {
     val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webHtml5.title", "track.webHtml5.desc")
     val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5)
 
-    def findTrackDescFor(t: Track): TrackDesc = {
-      ALL.find(_.id == t.id).head
+    def findTrackDescFor(t: Track): Option[TrackDesc] = {
+      ALL.find(_.id == t.id).headOption
     }
   }
 
