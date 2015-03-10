@@ -210,7 +210,7 @@ class TrackLeaderSpecs extends PlaySpecification {
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.MOBILE.ID, uuid03) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.MOBILE.id, uuid03) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
 
