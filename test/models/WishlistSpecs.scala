@@ -48,7 +48,13 @@ class WishlistSpecs extends PlaySpecification {
         val testId = Some(RandomStringUtils.randomAlphabetic(4))
         RequestToTalk.findById(testId.get) must beNone
 
-        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "note", Some("message"), Some("speakerEmail"), "speakerName", "company", "java", false, "France", RequestToTalkStatus.UNKNOWN.code)
+        // Parameters expected
+        //       id:, note, message, speakerEmail, speakerName,
+        //       company, trackCode, travel, country, statusCode, keynote
+                            
+        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "note", 
+        Some("message"), Some("speakerEmail"), "speakerName", "company", "java", 
+        false, "France", RequestToTalkStatus.UNKNOWN.code, None)
 
         RequestToTalk.save("test", requestToTalk)
         RequestToTalk.findById(testId.get) must beSome[RequestToTalk]
@@ -63,7 +69,9 @@ class WishlistSpecs extends PlaySpecification {
         val testId = Some(RandomStringUtils.randomAlphabetic(4))
         RequestToTalk.findById(testId.get) must beNone
 
-        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "noteStatustest", None, Some("speakerEmail"), "speakerName", "company", "java", false, "France", RequestToTalkStatus.CONTACTED.code)
+        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "noteStatustest", 
+        None, Some("speakerEmail"), "speakerName", "company", "java", false, "France", 
+        RequestToTalkStatus.CONTACTED.code, None)
         RequestToTalk.save("test", requestToTalk)
         val maybeRequest = RequestToTalkStatus.findCurrentStatus(testId.get)
 
@@ -86,7 +94,9 @@ class WishlistSpecs extends PlaySpecification {
         val testId = Some(RandomStringUtils.randomAlphabetic(4))
         RequestToTalk.findById(testId.get) must beNone
 
-        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "note2", Some("message2"), Some("speakerEmail"), "speakerName", "company", "java", false, "France", RequestToTalkStatus.CONTACTED.code)
+        val requestToTalk = RequestToTalk.validateRequestToTalk(testId, "note2", 
+        Some("message2"), Some("speakerEmail"), "speakerName", "company", "java", 
+        false, "France", RequestToTalkStatus.CONTACTED.code, None)
 
         RequestToTalk.save("test", requestToTalk)
 

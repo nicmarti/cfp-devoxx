@@ -1,7 +1,7 @@
 @(message:String,requestId:String)
 
 --------------------------------------------------
-                Devoxx 2014
+                Devoxx UK 2015
 --------------------------------------------------
 
 @message
@@ -9,7 +9,7 @@
 -------------------------
 How to respond?
 
-If you are interested and you would like to propose a talk for Devoxx 2014 :
+If you are interested and you would like to propose a talk for Devoxx UK 2015 :
 
 - Yes, I'd like to propose a talk =>
   Please visit this URL : http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Wishlist.speakerApproveRequest(requestId)

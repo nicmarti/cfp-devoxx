@@ -1,14 +1,14 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxBE2014("Schedule",Some("Devoxx 2015 agenda")){
+@views.html.Publisher.devoxxUK2015("Schedule",Some("Devoxx UK 2015 agenda")){
 
 <div class="large-12 columns">
-<h2>Devoxx 2014 Schedule</h2>
+<h2>Devoxx UK 2015 Schedule</h2>
 </div>
 
     <div class="large-3 columns">
         <div class="input-wrap">
-            <form name="search" action="/2014/search" method="GET">
+            <form name="search" action="/2015/search" method="GET">
             <label for="search">Find a talk or a speaker : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
         </form>
         </div>
@@ -18,74 +18,55 @@
         <thead>
             <tr>
                 <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader">Monday</th>
-                <th class="scheduleHeader">Tuesday</th>
                 <th class="scheduleHeader">Wednesday</th>
+                <th class="scheduleHeader">Thursday</th>
+                <th class="scheduleHeader">Friday</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "monday", "University Sessions")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "tuesday", "University Sessions")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "wednesday", "University Sessions")</td>
+                <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "monday", "Tools-in-Action Sessions") </td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "tuesday", "Tools-in-Action Sessions")</td>
+                <td class="scheduleRow"><a href="http://www.devoxx.co.uk/hackergarten#wednesday" title="Devoxx UK 2015 Hackergarten on Wednesday">Hackergarten</a></td>
                 <td class="scheduleRow">&nbsp;</td>
-            </tr>
-               <tr>
-                <td class="scheduleRow"><a href="http://www.devoxx.be/hackergarten#monday" title="Devoxx PL 2014 Hackergarten on Monday">Hackergarten</a></td>
-                <td class="scheduleRow"><a href="http://www.devoxx.be/hackergarten#tuesday" title="Devoxx PL 2014 Hackergarten on Tuesday">Hackergarten</a></td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "monday", "Hands-on Labs")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "tuesday", "Hands-on Labs")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "monday", "BOFs")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "tuesday", "BOFs")
-                </td>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("bof", "wednesday", "BOFs")
                 </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("bof", "thursday", "BOFs")
+                </td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <!-- ******************************************************************* //-->
             <tr>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("quick", "monday", "Quickies")
-                </td>
+                <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("quick", "thursday", "Quickies")
                 </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
                 <td class="scheduleRow">
-                <a href="http://www.devoxx.be/ignite-2014/">Ignite sessions</a>
+                @tags.publisher.renderShowDay("quick", "friday", "Quickies")
                 </td>
-                <td class="scheduleRow">
-                 <a href="http://www.devoxx.be/ignite-2014/">Ignite sessions</a>
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
             </tr>
                 <!-- ******************************************************************* //-->
             <tr>
+                <td class="scheduleRow">&nbsp;</td>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "monday", "Conference Sessions")
+                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
                 </td>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "tuesday", "Conference Sessions")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "wednesday", "Conference Sessions")
+                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
                 </td>
             </tr>
         </tbody>
@@ -96,13 +77,8 @@
 
 <div class="large-6 columns">
 <h3>University</h3>
-<p>University talks are on Monday and Tuesday and are in-depth session of 2 x 75 minutes.</p>
-<p>University attendees can also attend Tools in Action, Hackergarten, BOFs and hands-on Lab sessions on Monday and Tuesday!</p>
-</div>
-
-<div class="large-6 columns">
-<h3>Tools in Action</h3>
-<p>30 minute sessions taking place after the University talks with a focus on technical tools and APIs.</p>
+<p>University talks are on Wednesday and are in-depth session of 2 x 75 minutes.</p>
+<p>University attendees can also attend Hackergarten, BOFs and hands-on Lab sessions on Wednesday!</p>
 </div>
 
 <div class="large-6 columns">
@@ -120,15 +96,8 @@
 
 <div class="large-6 columns">
     <h3>Conference</h3>
-<p>Conference talks (one hour technical presentations) start on Wednesday till Friday.</p>
+<p>Conference talks (one hour technical presentations) take place on Thursday and Friday.</p>
 <p>Conference attendees can also attend Quickies, BOFs and hands-on Lab sessions from Wednesday til Friday.</p>
-</div>
-<div class="large-6 columns">
-    <h3>Ignite</h3>
-<p>Ignite is the name for a particular type of event that is held throughout the world—organized by volunteers—at which
-    participants speak about their ideas and personal or professional passions according to a specific format.
-    The presentations are meant to “ignite” the audience on a subject, whereby awareness,
-    thought, and action are generated on the subjects presented.</p>
 </div>
 <div class="large-6 columns">
     <h3>Quickies</h3>
@@ -137,8 +106,5 @@
 <div class="large-6 columns">
     <h3>BOFs</h3>
 <p>Informal evening sessions of 1 hour with maximum 70 people per room.</p></div>
-<div class="large-6 columns">
-    <h3>Startups</h3>
-    <p>Anything related to Lean startup, VCs, Angels and new trends in Startups.</p>
-</div>
+
 }

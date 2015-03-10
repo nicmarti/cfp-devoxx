@@ -516,7 +516,7 @@ object ConferenceDescriptor {
   def current() = ConferenceDescriptor(
     eventCode = "DevoxxUK2015",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxuk2015",
+    confUrlCode = "devoxxUK2015",
     frLangEnabled = false,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.co.uk"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),

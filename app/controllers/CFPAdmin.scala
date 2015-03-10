@@ -412,7 +412,7 @@ object CFPAdmin extends SecureCFPController {
           val dir = new File("./public/speakers")
           FileUtils.forceMkdir(dir)
 
-          val file = new File(dir, "speakers_devoxxBE2014_all_macroman.csv")
+          val file = new File(dir, "speakers_devoxxUK2015_all_macroman.csv")
           val writer = new PrintWriter(file, "Macroman")
 
           writer.println("email,firstName,lastName,company,hasSpeakerBadge,hasOneAccepted,isCFPMember,totalApproved,Proposal details separated by ;")

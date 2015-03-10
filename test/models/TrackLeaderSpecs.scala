@@ -206,29 +206,29 @@ class TrackLeaderSpecs extends PlaySpecification {
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beTrue
 
-      TrackLeader.isTrackLeader(sampleTrack.MmobileOBILE.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.MOBILE.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.MOBILE.ID, uuid03) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.MOBILE.id, uuid03) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
 
        val mapsByTrack2:Map[String,Seq[String]] = Map(
-        sampleTrack.MOBILE.ID -> List(uuid03).toSeq,
+        sampleTrack.MOBILE.id -> List(uuid03).toSeq,
         sampleTrack.JAVA.id -> List(uuid03).toSeq
       )
       TrackLeader.updateAllTracks(mapsByTrack2)
 
-      TrackLeader.isTrackLeader(sampleTrack.MOBILE.ID, uuid01) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.MOBILE.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.MOBILE.ID, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.MOBILE.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.MOBILE.ID, uuid03) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.MOBILE.id, uuid03) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
