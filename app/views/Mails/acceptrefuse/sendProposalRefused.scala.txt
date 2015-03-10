@@ -2,7 +2,7 @@
 
 Hi,
 
-We're sorry to inform you that your proposal for Devoxx United-Kingdom 2015 was refused. Please keep in mind that we received close to 500 proposals and the available slots are very limited
+We're sorry to inform you that your proposal for Devoxx UK 2015 was refused. Please keep in mind that we received close to 500 proposals and the available slots are very limited
 we received close to 800 proposals and the available slots are very limited.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
