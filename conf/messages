@@ -166,11 +166,11 @@ appel.conf.dates=Devoxx United-Kingdom  2015, 17th-19th June 2015
 track.serverside.title=Server Side Java
 track.serverside.desc=Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs
 serverside.label=Server Side Java
-jse.label=Server Side Java
 
 track.javase.title=Java SE
 track.javase.desc=Java Standard Edition, anything non-related to Jave EE, like the language, JDK, performance tuning, modularity, etc...
 javase.label=Java SE
+jse.label=Java SE
 
 track.mobile.title=Mobile
 track.mobile.desc=Tools frameworks and libraries for building mobile apps, both as MobileWeb or native Android and iOS app
