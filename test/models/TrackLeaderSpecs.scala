@@ -215,7 +215,7 @@ class TrackLeaderSpecs extends PlaySpecification {
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
 
        val mapsByTrack2:Map[String,Seq[String]] = Map(
-        sampleTrack.MOBILE.ID -> List(uuid03).toSeq,
+        sampleTrack.MOBILE.id -> List(uuid03).toSeq,
         sampleTrack.JAVA.id -> List(uuid03).toSeq
       )
       TrackLeader.updateAllTracks(mapsByTrack2)
