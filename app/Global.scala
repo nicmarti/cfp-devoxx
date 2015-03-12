@@ -19,7 +19,7 @@ import scala.util.control.NonFatal
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
     if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined && Play.isTest == false) {
-      CronTask.draftReminder()
+     // CronTask.draftReminder()
       CronTask.elasticSearch()
       CronTask.doComputeStats()
       CronTask.doSetupOpsGenie()
@@ -161,7 +161,6 @@ object CronTask {
         Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
       }
     }
-
 
   }
 }
