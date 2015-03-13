@@ -23,15 +23,12 @@
 
 package models
 
-import play.api.libs.json.Json
-import library.{ZapJson, Redis}
-import play.api.cache.Cache
-import play.api.Play.current
-import org.joda.time.Instant
-import org.joda.time.DateTime
-import play.api.templates.HtmlFormat
 import com.github.rjeschke.txtmark.Processor
+import library.{Redis, ZapJson}
 import org.apache.commons.lang3.StringUtils
+import org.joda.time.{DateTime, Instant}
+import play.api.libs.json.Json
+import play.api.templates.HtmlFormat
 
 /**
  * Speaker profile, is used mainly to show details.
@@ -51,7 +48,7 @@ case class Speaker(uuid: String
                    , company: Option[String]
                    , blog: Option[String]
                    , firstName: Option[String]
-                   , qualifications:Option[String]) {
+                   , qualifications: Option[String]) {
 
   def cleanName: String = {
     firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
@@ -61,8 +58,8 @@ case class Speaker(uuid: String
     firstName.map(_.charAt(0)).getOrElse("") + name.map(n => "." + n).getOrElse("")
   }
 
-  def urlName:String={
-    StringUtils.stripAccents(cleanName).replaceAll(" ","_").toLowerCase
+  def urlName: String = {
+    StringUtils.stripAccents(cleanName).replaceAll(" ", "_").toLowerCase
   }
 
   def cleanLang: String = lang.map {
@@ -80,11 +77,15 @@ case class Speaker(uuid: String
   }.getOrElse("fr")
 
 
-  def hasTwitter=StringUtils.trimToEmpty(twitter.getOrElse("")).nonEmpty
-  def hasBio=StringUtils.trimToEmpty(bio).nonEmpty
-  def hasCompany=StringUtils.trimToEmpty(company.getOrElse("")).nonEmpty
-  def hasAvatar=StringUtils.trimToEmpty(avatarUrl.getOrElse("")).nonEmpty
-  def hasBlog=StringUtils.trimToEmpty(blog.getOrElse("")).nonEmpty
+  def hasTwitter = StringUtils.trimToEmpty(twitter.getOrElse("")).nonEmpty
+
+  def hasBio = StringUtils.trimToEmpty(bio).nonEmpty
+
+  def hasCompany = StringUtils.trimToEmpty(company.getOrElse("")).nonEmpty
+
+  def hasAvatar = StringUtils.trimToEmpty(avatarUrl.getOrElse("")).nonEmpty
+
+  def hasBlog = StringUtils.trimToEmpty(blog.getOrElse("")).nonEmpty
 
   lazy val bioAsHtml: String = {
     val escapedHtml = HtmlFormat.escape(bio).body // escape HTML code and JS
@@ -99,12 +100,12 @@ object Speaker {
 
   def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
-                    qualifications:String): Speaker = {
+                    qualifications: String): Speaker = {
     Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications))
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms: Boolean, qualifications:String): Speaker = {
+                          avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, acceptTerms: Boolean, qualifications: String): Speaker = {
     uuid match {
       case None =>
         val newUUID = Webuser.generateUUID(email)
@@ -135,23 +136,17 @@ object Speaker {
 
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
-      Cache.remove("speaker:uuid:" + speaker.uuid)
-      Cache.remove("allSpeakersWithAcceptedTerms")
       val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", speaker.uuid, jsonSpeaker)
   }
 
   def update(uuid: String, speaker: Speaker) = Redis.pool.withClient {
     client =>
-      Cache.remove("speaker:uuid:" + uuid)
-      Cache.remove("allSpeakersWithAcceptedTerms")
       val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid = uuid)))
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
   def updateName(uuid: String, firstName: String, lastName: String) = {
-    Cache.remove("speaker:uuid:" + uuid)
-    Cache.remove("allSpeakersWithAcceptedTerms")
     findByUUID(uuid).map {
       speaker =>
         Speaker.update(uuid, speaker.copy(name = Option(lastName), firstName = Option(firstName)))
@@ -160,21 +155,17 @@ object Speaker {
 
   def findByUUID(uuid: String): Option[Speaker] = Redis.pool.withClient {
     client =>
-      Cache.getOrElse[Option[Speaker]]("speaker:uuid:" + uuid, 3600) {
-        client.hget("Speaker", uuid).flatMap {
-          json: String =>
-            Json.parse(json).validate[Speaker].fold(invalid => {
-              play.Logger.error("Speaker error. " + ZapJson.showError(invalid));
-              None
-            }, validSpeaker => Some(validSpeaker))
-        }
+      client.hget("Speaker", uuid).flatMap {
+        json: String =>
+          Json.parse(json).validate[Speaker].fold(invalid => {
+            play.Logger.error("Speaker error. " + ZapJson.showError(invalid));
+            None
+          }, validSpeaker => Some(validSpeaker))
       }
   }
 
   def delete(uuid: String) = Redis.pool.withClient {
     client =>
-      Cache.remove("allSpeakersWithAcceptedTerms")
-      Cache.remove("speaker:uuid:" + uuid)
       client.hdel("Speaker", uuid)
   }
 
@@ -187,23 +178,23 @@ object Speaker {
       }
   }
 
-  def withOneProposal(speakers: List[Speaker])={
+  def withOneProposal(speakers: List[Speaker]) = {
     speakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
   }
 
-  def notMemberOfCFP(speakers:List[Speaker])={
+  def notMemberOfCFP(speakers: List[Speaker]) = {
     speakers.filterNot(s => Webuser.isMember(s.uuid, "cfp"))
   }
 
-  def allSpeakersUUID():Set[String]=Redis.pool.withClient{
-    client=>
+  def allSpeakersUUID(): Set[String] = Redis.pool.withClient {
+    client =>
       client.hkeys("Speaker")
   }
 
-  def asSetOfSpeakers(speakerIDs:Set[String]):List[Speaker]=Redis.pool.withClient{
-    client=>
-      client.hmget("Speaker", speakerIDs).flatMap{
-        js:String=>
+  def asSetOfSpeakers(speakerIDs: Set[String]): List[Speaker] = Redis.pool.withClient {
+    client =>
+      client.hmget("Speaker", speakerIDs).flatMap {
+        js: String =>
           Json.parse(js).asOpt[Speaker]
       }
   }
@@ -220,13 +211,11 @@ object Speaker {
 
   def doAcceptTerms(speakerId: String) = Redis.pool.withClient {
     client =>
-      Cache.remove("allSpeakersWithAcceptedTerms")
       client.hset("TermsAndConditions", speakerId, new Instant().getMillis.toString)
   }
 
   def refuseTerms(speakerId: String) = Redis.pool.withClient {
     client =>
-      Cache.remove("allSpeakersWithAcceptedTerms")
       client.hdel("TermsAndConditions", speakerId)
   }
 
@@ -251,12 +240,12 @@ object Speaker {
       allSpeakers
   }
 
- def allThatDidNotAcceptedTerms():Set[String] = Redis.pool.withClient{
-   client=>
-     val allSpeakerIDs=client.keys("ApprovedSpeakers:*").map(s=>s.substring("ApprovedSpeakers:".length))
-     val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
-     allSpeakerIDs.diff(allThatAcceptedConditions)
- }
+  def allThatDidNotAcceptedTerms(): Set[String] = Redis.pool.withClient {
+    client =>
+      val allSpeakerIDs = client.keys("ApprovedSpeakers:*").map(s => s.substring("ApprovedSpeakers:".length))
+      val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
+      allSpeakerIDs.diff(allThatAcceptedConditions)
+  }
 
 
 }

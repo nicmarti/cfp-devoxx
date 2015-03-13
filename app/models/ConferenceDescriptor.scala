@@ -225,6 +225,10 @@ object ConferenceDescriptor {
     val PARIS_204 = Room("par204", "Paris 204", 16, "classroom")
     val PARIS_201 = Room("par201", "Paris 201", 14, "classroom")
 
+    val allRooms = List(HALL_EXPO, HALL_A, AMPHI_BLEU, MAILLOT, PARIS_241,NEUILLY_251, NEUILLY_252AB,
+    PARIS_242AB, PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
+    PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, PARIS_204, PARIS_201)
+
     val allRoomsUni = List(AMPHI_BLEU, MAILLOT, PARIS_241,NEUILLY_251, NEUILLY_252AB)
 
     val allRoomsTIA = allRoomsUni ++ List(PARIS_242A,PARIS_242B, PARIS_243, NEUILLY_253)
@@ -237,6 +241,7 @@ object ConferenceDescriptor {
     val keynoteRoom = List(AMPHI_BLEU, MAILLOT)
 
     val allRoomsConf=List(AMPHI_BLEU, MAILLOT, PARIS_242AB, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
+
 
   }
 

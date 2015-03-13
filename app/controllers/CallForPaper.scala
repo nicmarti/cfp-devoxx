@@ -54,7 +54,14 @@ object CallForPaper extends SecureCFPController {
         case (speaker, webuser) =>
           val allProposals = Proposal.allMyProposals(uuid)
           val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allProposals, totalArchived))
+          println(Proposal.countByProposalState(uuid, ProposalState.APPROVED))
+          val needsToAccept = if(Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 1 || Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) >1){
+            Speaker.needsToAccept(uuid)
+          }else{
+            false
+          }
+
+          Ok(views.html.CallForPaper.homeForSpeaker(speaker, webuser, allProposals, totalArchived, needsToAccept))
       })
   }
 
