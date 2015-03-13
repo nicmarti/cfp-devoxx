@@ -1,4 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int,needsToAccept:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
@@ -138,6 +138,12 @@
                  }
                  </div>
              }
+            @if(needsToAccept){
+              <div class="alert alert-warning">
+                 <h4><i class="icon-camera"></i> @Messages("speaker.mustAcceptTC")</h4>
+                  <p>@Messages("speaker.ar1") <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">@Messages("speaker.ar2")</a> @Messages("speaker.ar3")</p>
+                 </div>
+            }
 
             @if(myProposals.isEmpty) {
                 <div class="info">

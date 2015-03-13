@@ -650,3 +650,8 @@ tag.proposal.youVoted=Votre vote
 tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
+
+speaker.mustAcceptTC=Vous devez accepter les Termes & Conditions pour que votre bio soit publiée sur le site
+speaker.ar1=Merci de
+speaker.ar2=cliquer ici
+speaker.ar3=pour revoir puis valider les Termes et Conditions.
