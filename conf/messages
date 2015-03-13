@@ -677,3 +677,8 @@ tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
 qualifications.otherproposals=Other proposals from same speaker
+
+speaker.mustAcceptTC=You must accept Terms and Conditions
+speaker.ar1=Please click
+speaker.ar2=here
+speaker.ar3=to review and to validate Terms and Conditions.
