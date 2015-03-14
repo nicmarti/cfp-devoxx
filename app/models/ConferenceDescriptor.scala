@@ -202,7 +202,7 @@ object ConferenceDescriptor {
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special")
     val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special")
 
-    val AMPHI_BLEU = Room("b_amphi", "Apmhi Bleu", 826, "theatre")
+    val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre")
     val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre")
     val PARIS_241 = Room("d_par241", "Paris 241", 220, "theatre")
     val NEUILLY_252AB = Room("e_neu252", "Neuilly 252 AB", 380, "theatre")
