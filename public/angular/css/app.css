@@ -84,3 +84,25 @@ body {
     opacity: 1;
     max-height: 40px;
 }
+
+.camera {
+    background-color: #3bc016;
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+}
+
+.rien {
+    background-color: #ff0000;
+    width: 8px;
+    height: 8px;display: inline-block;
+}
+.son {
+    background-color: #ffcc22;
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+}
+.sponsor-true{
+    border-color: #ff0000;
+}
