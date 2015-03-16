@@ -36,12 +36,12 @@ import play.api.libs.functional.syntax._
  * Frederic Camblor added ConferenceDescriptor 07/06/2014
  */
 
-case class Room(id: String, name: String, capacity: Int, setup: String)
+case class Room(id: String, name: String, capacity: Int, setup: String, recorded:String)
 
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val OTHER = Room("other_room", "Other room", 100, "sans objet")
+  val OTHER = Room("other_room", "Other room", 100, "sans objet","")
 
   val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
 

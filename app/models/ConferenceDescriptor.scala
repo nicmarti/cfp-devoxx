@@ -199,44 +199,41 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special")
-    val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special")
+    val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special","")
+    val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special","")
 
-    val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre")
-    val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre")
-    val PARIS_241 = Room("d_par241", "Paris 241", 220, "theatre")
-    val NEUILLY_252AB = Room("e_neu252", "Neuilly 252 AB", 380, "theatre")
-    val NEUILLY_251 = Room("f_neu251", "Neuilly 251", 220, "theatre")
+    val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera")
+    val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre" , "camera")
+    val NEUILLY_251 = Room("f_neu251", "Neuilly 251", 220, "theatre", "camera")
+    val NEUILLY_252AB = Room("e_neu252", "Neuilly 252 AB", 380, "theatre", "camera")
+    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom", "rien")
+    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253", 120, "theatre","son")
 
-    val PARIS_242AB = Room("par242AB", "Paris 242-AB lab", 156, "classroom")
-    val PARIS_242AB_T = Room("par242AB", "Paris 242-AB", 280, "theatre")
-    val PARIS_242A = Room("par242A", "Paris 242A lab", 60, "classroom")
-    val PARIS_242B = Room("par242B", "Paris 242B lab", 60, "classroom")
+    val PARIS_241 = Room("d_par241", "Paris 241", 220, "theatre", "camera")
+    val PARIS_242AB_T = Room("par242AB", "Paris 242-AB", 280, "theatre", "camera")
+    val PARIS_242A = Room("par242A", "Paris 242A", 60, "classroom", "rien")
+    val PARIS_242B = Room("par242B", "Paris 242B", 60, "classroom", "rien")
+    val PARIS_242A_T = Room("par242AT", "Paris 242A", 120, "theatre", "rien")
+    val PARIS_242B_T = Room("par242BT", "Paris 242B", 120, "theatre", "rien")
 
-    val PARIS_242A_T = Room("par242AT", "Paris 242A", 120, "theatre")
-    val PARIS_242B_T = Room("par242BT", "Paris 242B", 120, "theatre")
+    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom", "rien")
+    val PARIS_243_T = Room("par243_t", "Paris 243", 120, "theatre", "son")
 
-    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom")
-    val PARIS_243_T = Room("par243_t", "Paris 243 T", 120, "theatre")
+    val PARIS_202_203 = Room("par202_203", "Paris 202-203", 32, "classroom", "rien")
+    val PARIS_221M_222M = Room("par221M-222M", "Paris 221M-222M", 32, "classroom", "rien")
+    val PARIS_224M_225M = Room("par224M-225M", "Paris 224M-225M", 26, "classroom", "rien")
 
-    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom")
-    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253 T", 120, "theatre")
-
-    val PARIS_202_203 = Room("par202_203", "Paris 202-203", 32, "classroom")
-    val PARIS_221M_222M = Room("par221M-222M", "Paris 221M-222M", 32, "classroom")
-
-    val PARIS_224M_225M = Room("par224M-225M", "Paris 224M-225M", 26, "classroom")
-
-    val PARIS_204 = Room("par204", "Paris 204", 16, "classroom")
-    val PARIS_201 = Room("par201", "Paris 201", 14, "classroom")
+    val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien")
+    val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien")
 
     val allRooms = List(HALL_EXPO, HALL_A, AMPHI_BLEU, MAILLOT, PARIS_241,NEUILLY_251, NEUILLY_252AB,
-    PARIS_242AB, PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
+    PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
     PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, PARIS_204, PARIS_201)
 
-    val allRoomsUni = List(AMPHI_BLEU, MAILLOT, PARIS_241,NEUILLY_251, NEUILLY_252AB)
+    val allRoomsUni = List(AMPHI_BLEU, MAILLOT,NEUILLY_251,NEUILLY_252AB, PARIS_241)
 
-    val allRoomsTIA = allRoomsUni ++ List(PARIS_242A_T,PARIS_242B_T, PARIS_243_T, NEUILLY_253_T)
+    val allRoomsTIAWed = allRoomsUni ++ List(PARIS_242A_T,PARIS_242B_T, PARIS_243, NEUILLY_253)
+    val allRoomsTIAThu = allRoomsUni ++ List(PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
     val allRoomsLabsWednesday = List(PARIS_242A,PARIS_242B, PARIS_243, NEUILLY_253) ++ List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M)
     val allRoomsLabThursday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M)
@@ -246,7 +243,6 @@ object ConferenceDescriptor {
     val keynoteRoom = List(AMPHI_BLEU, MAILLOT)
 
     val allRoomsConf=List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
-
 
   }
 
@@ -282,19 +278,19 @@ object ConferenceDescriptor {
     // TOOLS IN ACTION
     val tiaSlotsWednesday: List[Slot] = {
 
-      val toolsWednesdayAfternoonSlot1 = ConferenceRooms.allRoomsTIA.map {
+      val toolsWednesdayAfternoonSlot1 = ConferenceRooms.allRoomsTIAWed.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
             new DateTime("2015-04-08T17:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime("2015-04-08T17:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
       }
-      val toolsWednesdayAfternoonSlot2 = ConferenceRooms.allRoomsTIA.map {
+      val toolsWednesdayAfternoonSlot2 = ConferenceRooms.allRoomsTIAWed.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
             new DateTime("2015-04-08T17:55:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime("2015-04-08T18:25:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
       }
-      val toolsWednesdayAfternoonSlot3 = ConferenceRooms.allRoomsTIA.map {
+      val toolsWednesdayAfternoonSlot3 = ConferenceRooms.allRoomsTIAWed.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "wednesday",
             new DateTime("2015-04-08T18:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
@@ -304,7 +300,7 @@ object ConferenceDescriptor {
     }
 
     val tiaSlotsThursday: List[Slot] = {
-      val toolsThursdayAfternoonSlot1 = ConferenceRooms.allRoomsTIA.map {
+      val toolsThursdayAfternoonSlot1 = ConferenceRooms.allRoomsTIAThu.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
             new DateTime("2015-04-09T18:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
@@ -623,7 +619,7 @@ object ConferenceDescriptor {
     }
 
     val thursday: List[Slot] = {
-      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday
+      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday ++ tiaSlotsThursday
     }
 
     val friday: List[Slot] = {
