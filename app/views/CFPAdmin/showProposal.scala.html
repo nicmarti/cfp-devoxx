@@ -229,6 +229,11 @@
                 </div>
                 <div class="panel-body">
                 @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
+                    @if(preferredDay == Some("Wed")) {
+                        <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.wednesday")</a>
+                    } else {
+                        <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Wed")" class="btn btn-sm btn-default">@Messages("calendar.pref.wednesday")</a>
+                    }
                     @if(preferredDay == Some("Thu")) {
                         <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
                     } else {
