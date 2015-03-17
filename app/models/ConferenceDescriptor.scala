@@ -404,13 +404,13 @@ object ConferenceDescriptor {
     val quickiesSlotsFriday: List[Slot] = {
       val quickFriday1 = ConferenceRooms.allRoomsConf.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday",
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "friday",
             new DateTime("2015-04-10T12:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime("2015-04-10T12:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
       }
       val quickFriday2 = ConferenceRooms.allRoomsConf.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday",
+          SlotBuilder(ConferenceProposalTypes.QUICK.id, "friday",
             new DateTime("2015-04-10T12:35:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime("2015-04-10T12:55:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
       }
