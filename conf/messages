@@ -682,3 +682,10 @@ speaker.mustAcceptTC=You must accept Terms and Conditions
 speaker.ar1=Please click
 speaker.ar2=here
 speaker.ar3=to review and to validate Terms and Conditions.
+
+tagRenderRow-coffee=Coffee
+tagRenderRow-lunch=Lunch
+tagRenderRow-dej=Breakfast
+tagRenderRow-reg=Registration, welcome and Breakfast
+tagRenderRow-chgt=Short break
+tagRenderRow-meet=Soirée Meet & Greet
