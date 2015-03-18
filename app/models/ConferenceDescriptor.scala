@@ -226,6 +226,8 @@ object ConferenceDescriptor {
     val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien")
     val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien")
 
+     val ROOM_OTHER = Room("other_room", "Autres salles", 100, "classroom", "rien")
+
     val allRooms = List(HALL_EXPO, HALL_A, AMPHI_BLEU, MAILLOT, PARIS_241,NEUILLY_251, NEUILLY_252AB,
     PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
     PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, PARIS_204, PARIS_201)
