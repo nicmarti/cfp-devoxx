@@ -22,6 +22,9 @@
          <span class="label label-default">{{talk.id}}</span>
          <div class="label label-info">{{talk.lang}}</div>
          <div class="label label-warning">{{talk.track.id}}</div>
+
+        <div class="demo-{{talk.demoLevel}}">&nbsp;</div>
+
          <div class="label label-success">{{talk.mainSpeaker}}</div>
          <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
          <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
