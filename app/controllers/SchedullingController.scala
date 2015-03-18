@@ -197,10 +197,7 @@ object SchedullingController extends SecureCFPController {
 
   def getPublishedSchedule(confType: String, day: Option[String]) = Action {
     implicit request =>
-      ScheduleConfiguration.getPublishedSchedule(confType) match {
-        case Some(id) => Redirect(routes.Publisher.showAgendaByConfType(confType, Option(id), day.getOrElse("wednesday")))
-        case None => Redirect(routes.Publisher.homePublisher).flashing("success" -> Messages("not.published"))
-      }
+      Redirect(routes.Publisher.homePublisher).flashing("success" -> Messages("not.published"))
   }
 
   // Mock function that returns 3 random talks for Demo purpose only
