@@ -414,7 +414,7 @@ object ConferenceDescriptor {
 
     // What is Thursday ?
     val thursday: List[Slot] = {
-      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hackSlotThursday ++ bofSlotThursday
+        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hackSlotThursday ++ bofSlotThursday
     }
 
     // CONFERENCE SLOTS - Friday
