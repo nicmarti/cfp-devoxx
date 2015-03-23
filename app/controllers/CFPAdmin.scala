@@ -452,15 +452,16 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
 
-      val proposals:Set[(Speaker,Iterable[Proposal])] = speakers.map {
+
+      val proposals:List[(Speaker,Iterable[Proposal])] = speakers.toList.map {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
-          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==speaker.uuid)
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==Some(speaker.uuid))
+          .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
           (speaker,onIfFirstOrSecondSpeaker)
-      }
-      proposals
+      }.filter(_._2.nonEmpty)
 
-      Ok("Approved")
+       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
   }
 
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {
