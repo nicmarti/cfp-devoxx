@@ -23,21 +23,11 @@
         <div class="panel panel-default">
         <div class="panel-heading">
             <h3>All speakers</h3>
+            <h4></h4>
             <span class="label label-info">@speakers.size users</span>
         </div>
         <div class="panel-body">
-            <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=false, accepted=true, onlyWithSpeakerPass=false)" class="btn btn-sm btn-success"><i class="icon-filter"></i> All with at least one accepted/approved proposal</a>
-            <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=false, accepted=true, onlyWithSpeakerPass=true)" class="btn btn-sm btn-success"><i class="icon-money"></i> All with a speaker ticket</a>
-            <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=true, accepted=false, onlyWithSpeakerPass=false)" class="btn btn-sm btn-warning"><i class="icon-filter"></i> All with only refused proposals</a>
-            <br>
-                 @if(SecureCFPController.hasAccessToAdmin(req)) {
-                     <a href="@routes.CFPAdmin.allSpeakers(export = true, rejected = false, accepted = true, onlyWithSpeakerPass = true)" class="btn btn-sm btn-success"><i class="icon-eject"></i>
-                         Export approved speakers to CSV</a>
-                     <a href="@routes.CFPAdmin.allSpeakers(export = true, rejected = false, accepted = true, onlyWithSpeakerPass = true)" class="btn btn-sm btn-success"><i class="icon-money"></i>
-                         Export to CSV all with a speaker ticket</a>
-                     <a href="@routes.CFPAdmin.allSpeakers(export = true, rejected = true, accepted = false, onlyWithSpeakerPass = true)" class="btn btn-sm btn-warning"><i class="icon-eject"></i>
-                         Export refused speakers to CSV</a>
-                 }
+
             @if(speakers.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>
