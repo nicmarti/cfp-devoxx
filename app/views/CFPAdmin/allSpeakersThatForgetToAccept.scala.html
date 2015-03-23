@@ -1,0 +1,47 @@
+@(proposals: Set[(Speaker, Iterable[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Speakers") {
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger alert-dismissable col-md-12">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+            </div>
+        }
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All speakers</h3>
+                    <em>Talk that we approved, for which the speaker did not accept to present yet</em>
+                    <span class="label label-info">@proposals.size speakers</span>
+                </div>
+            </div>
+        </div>
+        @proposals.map{case(speaker,proposals)=>
+        <div class="col-xs-12 col-md-6 col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                           <small><a class="cfp-gravatars" href="@routes.CFPAdmin.showSpeakerAndTalks(speaker.uuid)"><img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=35" alt="@speaker.name" title="@speaker.name"/> @speaker.cleanName</a></small>
+                            <br> @tags.checkInvited(speaker.uuid)
+                </div>
+                <div class="panel-body">
+                        @proposals.map{p:Proposal=>
+                          <p><span class="label label-primary">@p.state.code</span> @p.title</p>
+                        }
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+}
