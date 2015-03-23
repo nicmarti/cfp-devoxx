@@ -1,29 +1,25 @@
 @(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-    @views.html.Publisher.devoxxFR2015(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2014 for $day"+Messages("day-" + day))) {
-        <div class="large-12 columns">
-            <h3>@Messages(talkType), @Messages("day-" + day)</h3>
-            <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
-                <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
-        </div>
-
-    <div class="columns large-12 woocommerce">
-        @schedule.slots.sortBy(_.from.getMillis).map{slot =>
-            <h4>@slot.room.name <small>@slot.from.toString("HH:mm")-@slot.to.toString("HH:mm")</small></h4>
-            @slot.proposal.map{ p: Proposal =>
-            <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
-            <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
-                <br>
-            <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                @tags.publisher.renderSpeaker(speakerUUID)
-                }</span>
-            }
-
-        }
-
-
-
+@views.html.Publisher.devoxxFR2015(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2014 for $day"+Messages("day-" + day))) {
+    <div class="large-12 columns">
+        <h3>@Messages(talkType), @Messages("day-" + day)</h3>
+        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
+            <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
     </div>
 
+    <div class="columns large-12 woocommerce">
+    @schedule.slots.sortBy(_.from.getMillis).map{slot =>
+        <h4>@slot.room.name <small>@slot.from.toString("HH:mm")-@slot.to.toString("HH:mm")</small></h4>
+        @slot.proposal.map{ p: Proposal =>
+        <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
+        <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+            <br>
+        <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+            @tags.publisher.renderSpeaker(speakerUUID)
+            }</span>
+        }
     }
+</div>
+
+}
