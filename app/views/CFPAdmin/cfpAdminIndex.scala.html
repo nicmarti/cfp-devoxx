@@ -34,7 +34,7 @@
                     <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
                     <a href="@routes.Sponsor.index()" class="btn btn-sm btn-primary"><i class="icon-list"></i> @Messages("admin.btn.sponsor")</a>
                     <a href="@routes.CFPAdmin.allVotes("all",None)" class="btn btn-sm btn-warning"><i class="icon-large"></i><i class="icon-adjust"></i> @Messages("admin.btn.allvotes")</a>
-                    <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=false, accepted=false, onlyWithSpeakerPass=false)" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
+                    <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
                     <a href="@routes.InviteController.allInvitations()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakersInvited")</a>
                     <a href="@routes.CFPAdmin.newOrEditSpeaker(None)" class="btn btn-sm btn-primary"><i class="icon-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a>
                     @if(SecureCFPController.hasAccessToAdmin(req)){
