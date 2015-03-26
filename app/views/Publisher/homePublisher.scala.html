@@ -7,15 +7,6 @@
 </div>
 
     <div class="large-3 columns">
-        <div class="dropdownMenu">
-            <select onChange="window.location.href=this.value">
-              <option value="http://cfp.devoxx.co.uk/2015/speakers.html">Speakers</option>
-              <option value="http://cfp.devoxx.co.uk/2015/talks/conf">Conference</option>
-              <option value="http://cfp.devoxx.co.uk/2015/talks/uni">University Day</option>
-              <option value="http://cfp.devoxx.co.uk/2015/talks/lab">Hands-on Labs</option>
-              <option value="http://www.devoxx.co.uk/hackergarten/">Hackergarten</option>
-            </select> 
-        </div>      
         <div class="input-wrap">
             <form name="search" action="@routes.Publisher.search()" method="GET">
             <label for="search">Find a talk or a speaker : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
