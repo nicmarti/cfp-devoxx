@@ -141,6 +141,10 @@ other.label.simple=Other
 code.label.simple=Codestory
 hack.label=Hackergarten
 hack.label.simple=Hackergarten
+hackergarten.label=Hackergarten
+hackergarten.label.simple=Hackergarten
+workshop.label=Adopt Workshop
+workshop.label.simple=Adopt Workshop
 
 # Bug report
 Issue.report=Report an issue
