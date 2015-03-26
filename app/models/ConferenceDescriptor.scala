@@ -111,9 +111,11 @@ object ConferenceDescriptor {
 
     val HACK = ProposalType(id = "hack", label = "hack.label")
 
+    val WORKSHOP = ProposalType(id = "workshop", label = "workshop.label")
+
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACK, OTHER)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACK, WORKSHOP, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -124,6 +126,7 @@ object ConferenceDescriptor {
       case "key" => KEY
       case "cstory" => CODE
       case "hack" => HACK
+      case "workshop" => WORKSHOP
       case "other" => OTHER
     }
 
@@ -148,7 +151,9 @@ object ConferenceDescriptor {
       hiddenInCombo = true, chosablePreferredDay = false)
     val HACK = ProposalConfiguration(id = "hack", slotsCount = 2, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = false, chosablePreferredDay = false)
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACK, OTHER)
+    val WORKSHOP = ProposalConfiguration(id = "workshop", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+      hiddenInCombo = false, chosablePreferredDay = false)    
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACK, WORKSHOP, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -201,6 +206,7 @@ object ConferenceDescriptor {
     val ROOM_DEF = Room("roomdef", "Room DEF", 407, "theatre")
     val AUDIT = Room("roomaud", "Auditorium", 407, "theatre")
     val ROOM_EXEC = Room("rexec", "Exec Centre", 100, "theatre")
+    val ATRIUM = Room("roomatr", "Atrium", 407, "openplan")
 
     val keynoteRoom = List(AUDIT)
 
@@ -208,6 +214,7 @@ object ConferenceDescriptor {
     val labsWed = List(ROOM_B, ROOM_C, ROOM_D, ROOM_EXEC)
     val bofWed = List(ROOM_B, ROOM_C, ROOM_EXEC)
     val hackWed = List(ROOM_A)
+    val workshopWed = List(ATRIUM)
 
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val quickieRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
@@ -215,7 +222,7 @@ object ConferenceDescriptor {
     val bofThu = List(AUDIT, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val hackThu = List(ROOM_A)
 
-    val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, ROOM_DEF, ROOM_EF, ROOM_BC, AUDIT, ROOM_EXEC)
+    val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, ROOM_DEF, ROOM_EF, ROOM_BC, AUDIT, ROOM_EXEC, ATRIUM)
   }
 
   object ConferenceSlotBreaks {
@@ -287,6 +294,39 @@ object ConferenceDescriptor {
       slot1
     }
 
+    // Workshop - Wednesday
+    val workshopSlotWednesday: List[Slot] = {
+      val workshopSlotWednesday1 = ConferenceRooms.workshopWed.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.WORKSHOP.id, "wednesday",
+            new DateTime("2015-06-17T10:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-17T11:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
+      }
+
+      val workshopSlotWednesday2 = ConferenceRooms.workshopWed.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.WORKSHOP.id, "wednesday",
+            new DateTime("2015-06-17T12:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-17T13:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r2)
+      }
+
+      val workshopSlotWednesday3 = ConferenceRooms.workshopWed.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.WORKSHOP.id, "wednesday",
+            new DateTime("2015-06-17T14:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-17T16:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r3)
+      }
+      
+      val workshopSlotWednesday4 = ConferenceRooms.workshopWed.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.WORKSHOP.id, "wednesday",
+            new DateTime("2015-06-17T16:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-17T18:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r4)
+      }
+
+      workshopSlotWednesday1 ++ workshopSlotWednesday2 ++ workshopSlotWednesday3 ++ workshopSlotWednesday4
+    }    
+
     // Registration, coffee break, lunch etc - Wednesday
     val wednesdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "wednesday",
@@ -305,7 +345,7 @@ object ConferenceDescriptor {
 
     // What is exactly a Wednesday
     val wednesday: List[Slot] = {
-      uniSlotWednesday ++ holSlotWednesday ++ hackSlotWednesday ++ bofSlotWednesday ++ wednesdayBreaks
+      uniSlotWednesday ++ holSlotWednesday ++ workshopSlotWednesday ++ hackSlotWednesday ++ bofSlotWednesday ++ wednesdayBreaks
     }
 
     // QUICKIES - Thursday
