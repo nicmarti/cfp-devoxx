@@ -11,7 +11,6 @@ longName=Devoxx FR 2015 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
 longSplittedName_whiteEnd=FR 2015
-conference.dates=10th-14th November
 # -----------------
 cfp.title=Devoxx FR 2015 CFP
 login.error=Invalid email or password
@@ -467,11 +466,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 10th November
-day-tuesday=Tuesday, 11th November
-day-wednesday=Wednesday, 12th November
+day-monday=Monday, 6th April
+day-tuesday=Tuesday, 7th April
+day-wednesday=Wednesday, 8th April
 day-thursday=Thursday, 9th April
-day-friday=Friday, 14th November
+day-friday=Friday, 10th April
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
