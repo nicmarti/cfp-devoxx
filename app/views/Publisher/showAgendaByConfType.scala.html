@@ -42,30 +42,6 @@
                     </th>
                     @slots.sortBy(_.room.name).zipWithIndex.map { case(slot,index) =>
 
-                         @if( index==0 && 
-                                      day.toLowerCase=="thursday" && 
-                                      talkType.toLowerCase=="conf" && 
-                                      time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")=="16:40" ) {
-                                <td class="room">
-                                    <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                                    slot1 :<strong>16:40 - 17:10</strong><br>
-                                    slot2 :<strong>17:10 - 17:40</strong><br>
-                                    <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
-                                </td>
-                         }
-
-                         @if( index==0 && 
-                              day.toLowerCase=="thursday" && 
-                              talkType.toLowerCase=="conf" && 
-                              time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")=="17:50" ) {
-                            <td class="room">
-                                <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                                slot3 :<strong>17:50 - 18:20</strong><br>
-                                slot4 :<strong>18:20 - 18:50</strong><br>
-                                <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
-                            </td>
-                        }
-
                         <td class="room">
                             @slot.proposal.map { p: Proposal =>
                                 <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
@@ -81,7 +57,7 @@
                             }
                         </td>
                     }
-                    
+
                 </tr>
                 }
 
