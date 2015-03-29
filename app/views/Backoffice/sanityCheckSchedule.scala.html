@@ -130,10 +130,12 @@
             <h3>Speakers that have not yet accepted Terms&Conditions</h3>
                 <p>Speaker's bio is not displayed on web site. Speaker is not listed on REST API and SQL export.</p>
             <strong>@speakers.length speaker(s)</strong><br>
-            @speakers.map{speaker:Speaker=>
-              @speaker.cleanName <a href="mailto:@speaker.email">@speaker.email</a> <br>
+            @speakers.sortBy(_.cleanName).map{speaker:Speaker=>
+              <A href="@routes.CFPAdmin.showSpeakerAndTalks(speaker.uuid)">@speaker.cleanName</A><br>
 
             }
+
+                <a href="mailto:@speakers.map(s => s.email).mkString(",")">Open and write an email for all speakers</a>
             }
             @if(speakers.isEmpty){
                 <h3>Speakers ok</h3>
