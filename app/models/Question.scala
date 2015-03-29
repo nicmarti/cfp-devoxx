@@ -43,7 +43,7 @@ object Question {
   def saveQuestion(proposalId: String, visitorEmail: String, author:String, msg: String) = Redis.pool.withClient{
     client=>
     val newId=RandomStringUtils.randomAlphanumeric(10)
-    val question = Question(Option(newId), proposalId, visitorEmail, author, msg, Option(new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels"))))
+    val question = Question(Option(newId), proposalId, visitorEmail, author, msg, Option(new DateTime().toDateTime(DateTimeZone.forID("Europe/London"))))
 
     val tx=client.multi()
     tx.hset("Questions:v2", newId, Json.toJson(question).toString())

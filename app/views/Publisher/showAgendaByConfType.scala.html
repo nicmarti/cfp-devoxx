@@ -50,11 +50,11 @@
                         localdatetime = @time.toLocalDateTime
 
                         -->
-                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toString("HH:mm")
+                        @time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") - @slots.head.to.toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room.name).zipWithIndex.map { case(slot,index) =>
 
-                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="16:40"  ){
+                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")=="16:40"  ){
                                 <td class="room">
                                     <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
                                     slot1 :<strong>16:40 - 17:10</strong><br>
@@ -62,7 +62,7 @@
                                     <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
                                 </td>
                          }
-                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="17:50"  ){
+                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")=="17:50"  ){
                             <td class="room">
                             <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
                             slot3 :<strong>17:50 - 18:20</strong><br>
@@ -87,7 +87,7 @@
                         </td>
                     }
                     @** Special Hack to add startups talks **@
-                    @if(day.toLowerCase=="friday" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).hourOfDay.get()==9  && talkType.toLowerCase=="conf"){
+                    @if(day.toLowerCase=="friday" && time.toDateTime(DateTimeZone.forID("Europe/London")).hourOfDay.get()==9  && talkType.toLowerCase=="conf"){
                         <td>
                           <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
                             slot5 :<strong>09:30 - 10:00</strong><br>
