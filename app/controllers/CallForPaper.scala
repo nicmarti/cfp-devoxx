@@ -54,9 +54,10 @@ object CallForPaper extends SecureCFPController {
         case (speaker, webuser) =>
           val allProposals = Proposal.allMyProposals(uuid)
           val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-          val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 1
-          val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 1
+          val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
+          val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
           val needsToAcceptTermAndCondition = Speaker.needsToAccept(uuid) && (hasAccepted || hasApproved)
+
 
           (needsToAcceptTermAndCondition, hasApproved, hasAccepted) match{
             case (true,_,_)=>Redirect(routes.ApproveOrRefuse.acceptTermsAndConditions())
