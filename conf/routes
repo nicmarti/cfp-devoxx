@@ -160,10 +160,7 @@ GET           /2015/search                                                      
 POST          /publisher/sendMsgToSpeaker                                       controllers.Publisher.sendMessageToSpeaker(proposalId:String)
 
 # For Paper guide
-GET           /guide/speakers                                                   controllers.PaperGuide.exportSpeakers()
-GET           /guide/allPhotos                                                  controllers.PaperGuide.downloadAllSpeakersPhotos()
 GET           /guide/exported                                                   controllers.PaperGuide.exportProgram()
-GET           /guide/exportedByRoom                                             controllers.PaperGuide.exportProgramByRoomAndHours()
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
