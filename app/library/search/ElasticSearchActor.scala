@@ -257,14 +257,14 @@ class IndexMaster extends ESActor {
 
     HitView.allStoredURL().foreach {
       url =>
-        val hits = HitView.loadHitViews(url, new DateMidnight().toDateTime(DateTimeZone.forID("Europe/Brussels")).minusDays(1).toDateTime, new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")))
+        val hits = HitView.loadHitViews(url, new DateMidnight().toDateTime(DateTimeZone.forID("Europe/London")).minusDays(1).toDateTime, new DateTime().toDateTime(DateTimeZone.forID("Europe/London")))
 
         val sb = new StringBuilder
         hits.foreach {
           hit: HitView =>
             sb.append("{\"index\":{\"_index\":\"hitviews\", \"_type\":\"hitview\",\"_id\":\"" + hit.hashCode().toString + "\", \"_timestamp\":{\"enabled\":true}}}")
             sb.append("\n")
-            val date = new DateTime(hit.date * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")).toString()
+            val date = new DateTime(hit.date * 1000).toDateTime(DateTimeZone.forID("Europe/London")).toString()
             sb.append("{\"@tags\":\"").append(hit.url).append("\",\"@messages\":\"")
             //.append(hit.objRef).append(" ")
             sb.append(hit.objName.replaceAll("[-,\\s+]", "_")).append("\",\"@timestamp\":\"").append(date).append("\"}")

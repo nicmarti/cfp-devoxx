@@ -211,7 +211,7 @@ object ConferenceDescriptor {
     val ROOM_DEF = Room("roomdef", "Room DEF", 407, "theatre")
     val AUDIT = Room("roomaud", "Auditorium", 407, "theatre")
     val ROOM_EXEC = Room("rexec", "Exec Centre", 100, "theatre")
-    val ATRIUM = Room("roomatr", "Atrium", 407, "openplan")
+    val ATRIUM = Room("roomatr", "Atrium", 100, "openplan")
 
     val keynoteRoom = List(AUDIT)
 
