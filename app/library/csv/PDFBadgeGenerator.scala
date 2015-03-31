@@ -61,13 +61,10 @@ object PDFBadgeGenerator {
 
     val badgesByID = badgeLines.drop(1).groupBy(_.id)
 
-    println("Total "+badgeLines.size)
-
     badgesByID.map {
       case (groupName: String, groupOfBadges: List[BadgeLine]) =>
         createPDFFile(inputFile, groupName, groupOfBadges)
     }
-
 
   }
 
