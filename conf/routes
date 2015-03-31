@@ -140,17 +140,20 @@ GET           /show/proposals                                       controllers.
 
 
 # Content Publisher
-GET           /2015/speakers.html                                   controllers.Publisher.showAllSpeakers()
-GET           /2015/speaker/:cleanName                              controllers.Publisher.showSpeakerByName(cleanName:String)
-GET           /2015/talks/:talkType                                 controllers.Publisher.showByTalkType(talkType:String)
-GET           /2015/talk/:proposalId                                controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
-GET           /2015/talk/:proposalId/:proposalTitle                 controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
-GET           /2015/index.html                                      controllers.Publisher.homePublisher()
-GET           /2015/agenda/:confType/:day                           controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET           /2015/byday/:day                                      controllers.Publisher.showByDay(day:String)
-GET           /2015/questions.html                                  controllers.Publisher.allQuestions()
-GET           /2015/search                                          controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
-POST          /publisher/sendMsgToSpeaker                           controllers.Publisher.sendMessageToSpeaker(proposalId:String)
+GET           /2015/speakers.html                                               controllers.Publisher.showAllSpeakers()
+GET           /2015/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
+GET           /2015/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
+GET           /2015/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
+GET           /2015/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /2015/index.html                                                  controllers.Publisher.homePublisher()
+GET           /2015/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
+GET           /2015/byday/:day                                                  controllers.Publisher.showByDay(day:String)
+GET           /2015/questions.html                                              controllers.Publisher.allQuestions()
+GET           /2015/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+POST          /publisher/sendMsgToSpeaker                                       controllers.Publisher.sendMessageToSpeaker(proposalId:String)
+
+# For Paper guide
+GET           /guide/exported                                                   controllers.PaperGuide.exportProgram()
 
 # REST API
 GET           /api                                                  controllers.RestAPI.index()

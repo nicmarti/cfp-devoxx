@@ -454,8 +454,11 @@ sp.authenticateAs=Authenticate as
 sp.editName=Edit name
 sw.faq=See our FAQ for more details about each format
 calendar.pref=Speaker''s preferences for schedulling
-calendar.pref.monday=Monday
-calendar.pref.tuesday=Tuesday
+
+calendar.pref.wednesday=Wednesday
+calendar.pref.thursday=Thursday
+calendar.pref.friday=Friday
+
 calendar.pref.reset=No preferences
 sw.all.other=Other kind of presentation
 acceptTermsConditions=Accept  Terms/Conditions to display this bio on the web site
@@ -664,3 +667,29 @@ cldbd.label=Cloud & BigData
 m.label=Mobile
 ssj.label=Server Side Java
 agTest.label=Methodology & Devops
+
+showProposal.comment.ar=Ask a question about this talk to the team
+ar.proposalType=Proposal type:
+ar.proposalId=Proposal ID:
+
+tag.proposal.title=Title
+tag.proposal.youVoted=You voted
+tag.proposal.status=Status
+tag.proposal.type=Type
+tag.proposal.track=Track
+qualifications.otherproposals=Other proposals from same speaker
+
+speaker.mustAcceptTC=You must accept Terms and Conditions
+speaker.ar1=Please click
+speaker.ar2=here
+speaker.ar3=to review and to validate Terms and Conditions.
+
+tagRenderRow-coffee=Coffee
+tagRenderRow-lunch=Lunch
+tagRenderRow-dej=Breakfast
+tagRenderRow-reg=Registration, welcome and Breakfast
+tagRenderRow-chgt=Short break
+tagRenderRow-meet=Soirée Meet & Greet
+please.check.approved=Please, review the list of approved Proposals, then select accept or decline for each Talk.
+proposal.approved.noVotes=Approved proposal - no more votes
+
