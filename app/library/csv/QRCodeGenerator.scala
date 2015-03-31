@@ -25,8 +25,7 @@ package library.csv
 
 import java.io.File
 import scala.io.Codec
-   import net.glxn.qrgen._
-import org.apache.commons.lang3.StringUtils
+import net.glxn.qrgen._
 
 /**
  * Created by nicolas on 12/04/2014.
