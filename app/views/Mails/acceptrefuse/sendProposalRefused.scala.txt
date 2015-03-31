@@ -2,15 +2,13 @@
 
 Hi,
 
-We're sorry to inform you that your proposal for Devoxx UK 2015 was refused. Please keep in mind that we received
-close to 500 proposals and the available slots are very limited.
+We're sorry to inform you that your proposal for Devoxx UK 2015 was refused. Please keep in mind that we received close to 500 proposals and the available slots are very limited.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
 We would like to thank you sincerely for your proposal.
 
-Hopefully we can still welcome you as a Devoxxian. To thank you for the time you took to submit to the call for
-papers, we offer a 15% discount on ticket prices. Please use promotion code RSP15K when booking at
+Hopefully we can still welcome you as a Devoxxian. To thank you for the time you took to submit to the call for papers, we offer a 15% discount on ticket prices. Please use promotion code RSP15K when booking at
 
 @ConferenceDescriptor.current().conferenceUrls.registration
 
