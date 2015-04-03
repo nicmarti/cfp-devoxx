@@ -1,24 +1,44 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@views.html.Publisher.devoxxFR2015("Schedule",Some("Devoxx FR 2015 agenda")){
+@views.html.Publisher.devoxxFR2015("Schedule", Some("Devoxx FR 2015 agenda")) {
 
-<div class="large-12 columns">
-<h2>Devoxx France 2015</h2>
-</div>
-    <div class="large-3 columns">
+    <div class="large-12 column">
+        <img src="/assets/images/banniere_devoxx_france_2015.png" alt="Devoxx France 2015" title="Programme">
+    </div>
+    <div class="small-12 medium-8 large-8 columns">
         <div class="input-wrap">
-            <form name="search" action="@routes.Publisher.search(None,None)" method="GET">
-            <label for="search">Trouver un sujet ou un présentateur : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
-        </form>
+            <form name="search" action="@routes.Publisher.search(None, None)" method="GET">
+                <label for="search">
+                    Trouver un sujet ou un présentateur : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
+            </form>
         </div>
     </div>
-    <div class="small-12 medium-12 large-12 column">
-        <h3>Programme en cours de finalisation</h3>
-        <p>L'appel aux conférenciers a fermé le 17 janvier. Les 14 membres du comité de sélection ont reçu plus de 670 sujets, pour 220 places. Le programme
-            a été validé le lundi 9 février. L'agenda par jour est en cours de finalisation, et sera publié au plus tard le lundi 23 mars.</p>
+    <div class="small-6 medium-6 large-6 column">
+        <h4>Horaires d'accueil</h4>
+        <ul>
+            <li><strong>Mercredi 8 avril</strong> - à partir de 8h00</li>
+            <li><strong>Jeudi 9 avril</strong> - à partir de 7h00</li>
+            <li><strong>Vendredi 10 avril</strong> - à partir de 7h30</li>
+        </ul>
+    </div>
+    <div class="small-6 medium-6 large-6 column">
+        <h4>Programme par journée</h4>
+        <ul>
+            <li><a href="/2015/byday/wednesday">Mercredi 8 avril</a>
+            <li><a href="/2015/byday/thursday">Jeudi 9 avril</a>
+            <li><a href="/2015/byday/friday">Vendredi 10 avril</a>
+        </ul>
     </div>
 
-    <div class="clearfix"></div>
+    <div class="small-12 medium-6 large-6 column">
+        <h3>Keynotes</h3>
+        <p>Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le jeudi à 9h précise.
+            A l'occasion de l'anniversaire du langage Java, notre thème de keynote est "20 ans". Venez découvrir la vision
+            de présentateurs préstigieux, qui vous emmenent dans 20 ans. Robotique, génétique, crypto-monnaie, cloud-computing,
+            nous vous proposons des keynotes techniques cette année.
+        </p>
+        <p><A href="@routes.Publisher.showByTalkType("key")">Liste des Keynotes</A></p>
+    </div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Conference</h3>
@@ -34,7 +54,7 @@
 
     </div>
 
-  <div class="clearfix"></div>
+    <div class="clearfix"></div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Tools in Action</h3>
@@ -49,7 +69,7 @@
             de découvrir ou d'approfondir un sujet. Les Labs se déroulent essentiellement le mercredi, ainsi que quelques Labs le jeudi après-midi.</p>
         <p><A href="@routes.Publisher.showByTalkType("lab")">Liste des Hands-on Labs</A></p>
     </div>
-<div class="clearfix"></div>
+    <div class="clearfix"></div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Quickies</h3>
@@ -62,7 +82,8 @@
 
     <div class="small-12 medium-6 large-6 column">
         <h3>BOF</h3>
-        <p>Les <a href="http://en.wikipedia.org/wiki/Birds_of_a_feather_%28computing%29">BOF (Bird of a feather)</a> sont des sessions mythiques de Devoxx France, à partir de 19h30 le jeudi soir.
+        <p>Les <a href="http://en.wikipedia.org/wiki/Birds_of_a_feather_%28computing%29">BOF (Bird of a feather)</a>
+            sont des sessions mythiques de Devoxx France, à partir de 19h30 le jeudi soir.
             C'est LE point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés.
             Passez d'une session du ParisJS pour échanger ensuite avec les membres du Paris Scala User Group, les BOFs se déroulent
             le soir de la soirée Meet-and-Greet.</p>
@@ -70,5 +91,5 @@
         <p><A href="@routes.Publisher.showByTalkType("bof")">Liste des B.O.Fs</A></p>
     </div>
 
-<div class="clearfix"></div>
+    <div class="clearfix"></div>
 }
