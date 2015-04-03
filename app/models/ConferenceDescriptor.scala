@@ -579,7 +579,7 @@ object ConferenceDescriptor {
 
     val thursdayBreaks = List(
      SlotBuilder(ConferenceSlotBreaks.registration, "thursday",
-        new DateTime("2015-04-09T08:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+        new DateTime("2015-04-09T07:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
         new DateTime("2015-04-09T09:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
         new DateTime("2015-04-09T10:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
