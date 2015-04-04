@@ -29,7 +29,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.{SimpleResult, _}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * A real REST api for men.
@@ -37,7 +37,7 @@ import scala.concurrent.Future
  */
 object RestAPI extends Controller {
 
-  def index = UserAgentAction {
+  def index = UserAgentActionAndAllowOrigin {
     implicit request =>
       Ok(views.html.RestAPI.index())
   }
@@ -62,7 +62,7 @@ object RestAPI extends Controller {
       }
   }
 
-  def showAllConferences() = UserAgentAction {
+  def showAllConferences() = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val conferences = Conference.all
@@ -89,12 +89,12 @@ object RestAPI extends Controller {
       }
   }
 
-  def redirectToConferences = UserAgentAction {
+  def redirectToConferences = UserAgentActionAndAllowOrigin {
     implicit request =>
       Redirect(routes.RestAPI.showAllConferences())
   }
 
-  def showConference(eventCode: String) = UserAgentAction {
+  def showConference(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       Conference.find(eventCode).map {
@@ -138,7 +138,7 @@ object RestAPI extends Controller {
       }.getOrElse(NotFound("Conference not found"))
   }
 
-  def showSpeakers(eventCode: String) = UserAgentAction {
+  def showSpeakers(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val speakers = Speaker.allSpeakersWithAcceptedTerms().sortBy(_.cleanName)
@@ -175,12 +175,12 @@ object RestAPI extends Controller {
       }
   }
 
-  def redirectToSpeakers(eventCode: String) = UserAgentAction {
+  def redirectToSpeakers(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       Redirect(routes.RestAPI.showSpeakers(eventCode))
   }
 
-  def showSpeaker(eventCode: String, uuid: String) = UserAgentAction {
+  def showSpeaker(eventCode: String, uuid: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       Speaker.findByUUID(uuid).map {
@@ -242,7 +242,7 @@ object RestAPI extends Controller {
       }.getOrElse(NotFound("Speaker not found"))
   }
 
-  def showTalk(eventCode: String, proposalId: String) = UserAgentAction {
+  def showTalk(eventCode: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       Proposal.findById(proposalId).map {
         proposal =>
@@ -287,17 +287,17 @@ object RestAPI extends Controller {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
-  def redirectToTalks(eventCode: String) = UserAgentAction {
+  def redirectToTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       Redirect(routes.RestAPI.showTalks(eventCode))
   }
 
-  def showTalks(eventCode: String) = UserAgentAction {
+  def showTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       NotImplemented("Not yet implemented")
   }
 
-  def showAllSchedules(eventCode: String) = UserAgentAction {
+  def showAllSchedules(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
@@ -340,7 +340,7 @@ object RestAPI extends Controller {
       }
   }
 
-  def showScheduleFor(eventCode: String, day: String) = UserAgentAction {
+  def showScheduleFor(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
@@ -414,7 +414,7 @@ object RestAPI extends Controller {
 
   }
 
-  def showProposalTypes(eventCode: String) = UserAgentAction {
+  def showProposalTypes(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
@@ -445,7 +445,7 @@ object RestAPI extends Controller {
       }
   }
 
-  def showTracks(eventCode: String) = UserAgentAction {
+  def showTracks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
@@ -477,7 +477,7 @@ object RestAPI extends Controller {
       }
   }
 
-  def showRooms(eventCode: String) = UserAgentAction {
+  def showRooms(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
@@ -512,7 +512,7 @@ object RestAPI extends Controller {
       }
   }
 
-  def showScheduleForRoom(eventCode: String, room:String, day: String) = UserAgentAction {
+  def showScheduleForRoom(eventCode: String, room:String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
@@ -586,11 +586,19 @@ object RestAPI extends Controller {
 
 }
 
-object UserAgentAction extends ActionBuilder[Request] with play.api.http.HeaderNames {
+object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.api.http.HeaderNames {
+  import ExecutionContext.Implicits.global
   override protected def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[SimpleResult]): Future[SimpleResult] = {
     request.headers.get(USER_AGENT).collect {
       case some => {
-        block(request)
+        block(request).map { result =>
+          request.headers.get("Origin") match {
+            case Some(o) => result.withHeaders("Access-Control-Allow-Origin" -> o,
+              "Access-Control-Expose-Headers" -> "etag,links",
+              "Access-Control-Max-Age" -> "3600")
+            case None => result.withHeaders("X-No-Access"->"no-origin")
+          }
+        }
       }
     }.getOrElse {
       Future.successful(play.api.mvc.Results.Forbidden("User-Agent is required to interact with " + Messages("longName") + " API"))
