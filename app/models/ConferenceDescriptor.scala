@@ -554,12 +554,14 @@ object ConferenceDescriptor {
             new DateTime("2015-04-10T16:35:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime("2015-04-10T17:25:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r5)
       }
+      
       // Cast codeur
-      val conferenceFridaySlot6 = List(
+      val conferenceFridaySlot6 = List(ConferenceRooms.MAILLOT,ConferenceRooms.AMPHI_BLEU).map{
+        rcc=>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
             new DateTime("2015-04-10T17:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2015-04-10T18:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), ConferenceRooms.MAILLOT)
-      )
+            new DateTime("2015-04-10T18:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), rcc)
+      }
 
       conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++ conferenceFridaySlot5 ++ conferenceFridaySlot6
     }

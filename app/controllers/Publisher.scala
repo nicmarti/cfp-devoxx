@@ -35,7 +35,7 @@ import play.api.mvc._
 
 
 /**
- * Simple content publisher
+ * Publisher is the controller responsible for the Web content of your conference Program.
  * Created by nicolas on 12/02/2014.
  */
 object Publisher extends Controller {
@@ -53,7 +53,6 @@ object Publisher extends Controller {
 
   def showAllSpeakers = Action {
     implicit request =>
-      import play.api.Play.current
       val speakers =  Speaker.allSpeakersWithAcceptedTerms()
       val etag = speakers.hashCode().toString + "_2"
       val maybeETag = request.headers.get(IF_NONE_MATCH)
@@ -65,7 +64,6 @@ object Publisher extends Controller {
 
   def showSpeakerByName(name: String) = Action {
     implicit request =>
-      import play.api.Play.current
       val speakers =  Speaker.allSpeakersWithAcceptedTerms()
       val speakerNameAndUUID = {
         speakers.map {
@@ -77,6 +75,7 @@ object Publisher extends Controller {
       maybeSpeaker match {
         case Some(speaker) => {
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
+          // Log which speaker is hot or not
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
@@ -269,8 +268,5 @@ object Publisher extends Controller {
           InternalServerError(r.get)
         }
       }
-
   }
-
-
 }

@@ -37,7 +37,8 @@ import play.api.i18n.Messages
 
 
 /**
- * Used for Printed program
+ * Used for Printed program.
+ * This simple controller exports the full list of talks to a CSV file.
  * Created by nicolas on 22/02/2014.
  */
 object PaperGuide extends SecureCFPController {
@@ -53,7 +54,7 @@ object PaperGuide extends SecureCFPController {
       ) yield scheduledConf
 
       val file = new File("./target/guide", "DEVOXX_" + allScheduledConf.hashCode() + ".csv")
-      val writer = new PrintWriter(file, "MacRoman")
+      val writer = new PrintWriter(file, "MacRoman") // !!! ENCODING !!!
       writer.println("id,name,day,from,to,roomName,proposalId,proposalTitle,proposalLang,track,speakerName,secSpeakerName,thirdSpeaker,fourthSpeaker")
 
       allScheduledConf.foreach {
