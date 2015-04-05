@@ -196,12 +196,11 @@ POST          /schedulling/publish                                              
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
 # Tweetwall
-GET           /tweetwall                                                        controllers.Tweetwall.index()
-GET           /tweetwall/authenticate                                           controllers.Tweetwall.authenticate()
-GET           /tweetwall/callback                                               controllers.Tweetwall.authenticate()
-GET           /tweetwall/stream                                                 controllers.Tweetwall.watchTweets(keywords:String)
-GET           /tweetwall/besttalks                                              controllers.Tweetwall.watchBestTalks()
-GET           /tweetwall/nexttalks                                              controllers.Tweetwall.loadNextTalks()
+GET           /tweetwall2                                                        controllers.Tweetwall.index()
+GET           /tweetwall2/authenticate                                           controllers.Tweetwall.authenticate()
+GET           /tweetwall2/callback                                               controllers.Tweetwall.authenticate()
+GET           /tweetwall2/stream                                                 controllers.Tweetwall.watchTweets(keywords:String)
+GET           /tweetwall2/nexttalks                                              controllers.Tweetwall.loadNextTalks()
 
 # Temp
 GET           /schedulling/fr14/giveMeBestTalks                                 controllers.SchedullingController.giveMeBestTalks()
