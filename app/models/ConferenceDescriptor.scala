@@ -242,7 +242,7 @@ object ConferenceDescriptor {
 
     val allRoomsBOF = List(PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T, PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M)
 
-    val keynoteRoom = List(AMPHI_BLEU, MAILLOT)
+    val keynoteRoom = List(AMPHI_BLEU)
 
     val allRoomsConf=List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
     val allRoomsQuickiesThu=allRoomsConf ++ List(PARIS_202_203)
