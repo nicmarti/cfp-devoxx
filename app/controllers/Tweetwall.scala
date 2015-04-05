@@ -103,7 +103,6 @@ object Tweetwall extends Controller  {
           })
   }
 
-
   // Starts to watch tweets
   def watchTweets(keywords: String) = Action.async {
     implicit request =>
@@ -121,53 +120,6 @@ object Tweetwall extends Controller  {
     } yield {
       RequestToken(token, secret)
     }
-  }
-
-  // Loads the list of best talks. This part relies on an external simple web service built by Xebia.
-  def watchBestTalks() = Action {
-    implicit request =>
-      import scala.concurrent.duration._
-
-      //val url: String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
-      val url: String = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/most-popular"
-
-      def futureIDs: Future[Option[JsValue]] = WS.url(url).get().map {
-        response =>
-          response.status match {
-            case 200 => Some(Json.parse(response.body))
-            case other => None
-          }
-      }
-
-      val bestProposalIDs: Enumerator[JsValue] = Enumerator.generateM[JsValue] {
-        futureIDs.flatMap(r => play.api.libs.concurrent.Promise.timeout(r, 30 seconds))
-      }
-
-      val jsIDstoProposal: Enumeratee[JsValue, JsValue] = Enumeratee.map {
-        jsValue =>
-
-          val ids = jsValue.as[List[String]]
-
-          val proposals = Proposal.loadAndParseProposals(ids.toSet).values.toSeq
-
-          val jsonObject = Json.toJson(
-            proposals.map {
-              proposal =>
-                Json.toJson(
-                  Map(
-                    "id" -> JsString(proposal.id),
-                    "title" -> JsString(proposal.title),
-                    "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
-                    "gravatars" -> Json.toJson(proposal.allSpeakersGravatar),
-                    "track" -> JsString(Messages(proposal.track.label))
-                  )
-                )
-            }
-          )
-          Json.toJson(jsonObject)
-      }
-
-      Ok.feed(bestProposalIDs &> jsIDstoProposal &> EventSource()).as("text/event-stream")
   }
 
   // Loads the next talks,
@@ -240,16 +192,6 @@ class TweetsBroadcaster extends Actor {
 
   val (enumerator, channel) = Concurrent.broadcast[Array[Byte]]
 
-  def streamIt(keywords: String, request: RequestHeader, myself: ActorRef) {
-    WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&language=fr,en&track=" + URLEncoder.encode(keywords, "UTF-8"))
-      .withRequestTimeout(-1) // else we close the stream
-      .sign(OAuthCalculator(Tweetwall.KEY, Tweetwall.sessionTokenPair(request).get))
-      .withHeaders("Connection" -> "keep-alive") // not sure we really need this
-      .postAndRetrieveStream("")(_ => Iteratee.foreach[Array[Byte]](bytes => channel.push(bytes))).flatMap(_.run).onComplete {
-      case _ => myself ! ResetConnection()
-    }
-  }
-
   def beforeAuth: Receive = {
     case WallRequest(keywords, request) => {
       val myself = self
@@ -260,11 +202,28 @@ class TweetsBroadcaster extends Actor {
     case _ =>
   }
 
+
   def afterAuth: Receive = {
     case WallRequest(keywords, request) => sender ! WallResponse(enumerator)
     case ResetConnection() => become(beforeAuth)
     case _ =>
   }
+
+  def streamIt(keywords: String, request: RequestHeader, myself: ActorRef) {
+    WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&language=fr,en&track=" + URLEncoder.encode(keywords, "UTF-8"))
+      .withRequestTimeout(-1) // else we close the stream
+      .sign(OAuthCalculator(Tweetwall.KEY, Tweetwall.sessionTokenPair(request).get))
+      .withHeaders("Connection" -> "keep-alive") // not sure we really need this
+      .postAndRetrieveStream("")(_ => Iteratee.foreach[Array[Byte]](bytes => channel.push(bytes))).flatMap(_.run).onComplete {
+      case other => {
+        println("Tweetwall : reset connection "+other)
+        myself ! ResetConnection()
+      }
+    }
+  }
+
+
+
 
   def receive = beforeAuth
 }
