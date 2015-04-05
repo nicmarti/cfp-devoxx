@@ -556,7 +556,7 @@ object ConferenceDescriptor {
       }
       
       // Cast codeur
-      val conferenceFridaySlot6 = List(ConferenceRooms.MAILLOT,ConferenceRooms.AMPHI_BLEU).map{
+      val conferenceFridaySlot6 = List(ConferenceRooms.MAILLOT).map{
         rcc=>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
             new DateTime("2015-04-10T17:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
