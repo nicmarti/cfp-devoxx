@@ -10,14 +10,14 @@
         <script src="/assets/js/jquery.min.js" type="text/javascript"></script>
         <script src="/assets/js/tweetwall.js" type="text/javascript"></script>
         <script src="/assets/angular/lib/angular/underscore-min.js" type="text/javascript"></script>
-        @helper.javascriptRouter("Router")(routes.javascript.Tweetwall.watchTweets, routes.javascript.Tweetwall.watchBestTalks, routes.javascript.Tweetwall.loadNextTalks)
+        @helper.javascriptRouter("Router")(routes.javascript.Tweetwall.watchTweets, routes.javascript.Tweetwall.loadNextTalks)
         <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900|Roboto:400,700,900&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     </head>
     <body class="tweetWall">
         <div id="content">
             <div id="header">
                 <div class="title">
-                    <h1>@Messages("longName")</h1>
+                    <h1>Devoxx France 2015</h1>
                 </div>
                 <div class="time">
                     <h2 id="wallTime">14:35</h2>
@@ -26,10 +26,7 @@
                     <h2>@ConferenceDescriptor.current().hashTag</h2>
                 </div>
                 <div class="messageBoxContainer">
-                    @*<div class="messageBox">*@
-                    @*<h4><i class="icon-warning-sign"></i> Ceci est un exemple de message. Cet espace pourra être utilisé pendant la conférence pour passer des messages.</h4>*@
-                    @*<p>Pour l'instant les sessions les plus populaires ne sont pas chargées du service Xebia. Les prochaines sessions sont tirées au hasard pour tester.</p>*@
-                    @*</div>*@
+
                 </div>
             </div>
 
@@ -50,24 +47,6 @@
                 </div>
                 <div class="next-talks-content">
                     <div id="nextTalkPanel" class="tweets">Chargement...</div>
-                </div>
-            </div>
-
-            <div class="best-talks">
-                <div class="best-talks-header">
-                    <h2>Sessions les plus populaires <small>(données proposées par Xebia)</small></h2>
-                </div>
-                <div class="best-talks-content">
-                    <ul id="sessionPop" class="tweets">
-                        <li class="new-item">
-                            <div class="bestTalk">
-                                <div class="bestTalkPhotos">
-                                </div>
-                                <div class="bestTalkTitle"> Chargement en cours...</div>
-                            </div>
-                        </li>
-
-                    </ul>
                 </div>
             </div>
 
