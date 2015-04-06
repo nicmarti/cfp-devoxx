@@ -32,9 +32,10 @@
                 </div>
             </div>
         </div>
-        @proposals.sortBy(_._1.cleanName).map{case(speaker,props)=>
-@speaker.email;@speaker.name.get;@speaker.firstName.get<br>
-        }
+<pre>
+        @proposals.sortBy(_._1.name).map{case(speaker,props)=>
+@speaker.name.get.head.toString;@speaker.name.get;@speaker.firstName.get;@speaker.company.getOrElse("");@speaker.twitter.getOrElse("") }
+</pre>
 
     </div>
 }
