@@ -130,9 +130,9 @@ object Tweetwall extends Controller  {
 
       val nextTalks: Enumerator[Seq[Slot]] = Enumerator.generateM[Seq[Slot]] {
         // 1) For production
-        //  play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 20 seconds)
+        play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 30 seconds)
         // 2) For demo
-        Promise.timeout(ScheduleConfiguration.loadRandomTalks(), 20 seconds)
+        //Promise.timeout(ScheduleConfiguration.loadRandomTalks(), 20 seconds)
       }
 
       val proposalsToJSON: Enumeratee[Seq[Slot], JsValue] = Enumeratee.map {
