@@ -150,8 +150,8 @@ object Tweetwall extends Controller  {
                         "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
                         "room" -> JsString(slot.room.name),
                         "track" -> JsString(Messages(proposal.track.label)),
-                        "from" -> JsString(slot.from.toString("HH:mm")),
-                        "to" -> JsString(slot.to.toString("HH:mm"))
+                        "from" -> JsString(slot.from.plusHours(1).toString("HH:mm")), // PUTAIN de HACK
+                        "to" -> JsString(slot.to.plusHours(1).toString("HH:mm"))// PUTAIN de HACK
                       )
                     )
                   }
@@ -164,8 +164,8 @@ object Tweetwall extends Controller  {
                         "room" -> JsString(zeBreak.room.name),
                         "track" -> JsString(""),
                         "speakers" -> JsString(""),
-                        "from" -> JsString(slot.from.toString("HH:mm")),
-                        "to" -> JsString(slot.from.toString("HH:mm"))
+                        "from" -> JsString(slot.from.plusHours(1).toString("HH:mm")), // PUTAIN DE HACK
+                        "to" -> JsString(slot.from.plusHours(1).toString("HH:mm")) // PUTAIN DE HACK
                       )
                     )
                   }
