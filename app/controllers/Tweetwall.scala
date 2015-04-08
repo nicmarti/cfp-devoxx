@@ -22,6 +22,8 @@
  */
 package controllers
 
+import org.joda.time.DateTimeZone
+
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 
@@ -150,8 +152,8 @@ object Tweetwall extends Controller  {
                         "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
                         "room" -> JsString(slot.room.name),
                         "track" -> JsString(Messages(proposal.track.label)),
-                        "from" -> JsString(slot.from.plusHours(1).toString("HH:mm")), // PUTAIN de HACK
-                        "to" -> JsString(slot.to.plusHours(1).toString("HH:mm"))// PUTAIN de HACK
+                        "from" -> JsString(slot.from.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm")),
+                        "to" -> JsString(slot.to.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm"))// PUTAIN de HACK
                       )
                     )
                   }
@@ -164,8 +166,8 @@ object Tweetwall extends Controller  {
                         "room" -> JsString(zeBreak.room.name),
                         "track" -> JsString(""),
                         "speakers" -> JsString(""),
-                        "from" -> JsString(slot.from.plusHours(1).toString("HH:mm")), // PUTAIN DE HACK
-                        "to" -> JsString(slot.from.plusHours(1).toString("HH:mm")) // PUTAIN DE HACK
+                        "from" -> JsString(slot.from.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm")),
+                        "to" -> JsString(slot.from.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm"))
                       )
                     )
                   }
@@ -216,7 +218,6 @@ class TweetsBroadcaster extends Actor {
       .withHeaders("Connection" -> "keep-alive") // not sure we really need this
       .postAndRetrieveStream("")(_ => Iteratee.foreach[Array[Byte]](bytes => channel.push(bytes))).flatMap(_.run).onComplete {
       case other => {
-        println("Tweetwall : reset connection "+other)
         myself ! ResetConnection()
       }
     }
