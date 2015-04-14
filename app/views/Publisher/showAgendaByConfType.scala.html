@@ -2,6 +2,7 @@
 @import org.joda.time.DateTimeZone
 
     @views.html.Publisher.devoxxUK2015(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx UK 2015 for $day"+Messages("day-" + day))) {
+       <!-- NEw version with Mani -->
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
