@@ -22,7 +22,7 @@
                 }
                 </tr>
 
-            @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
+            @slots.groupBy(_.from.toDateTime(DateTimeZone.forID("Europe/London"))).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
                     <tr >
                         <th class="timeSlot">
                             @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")

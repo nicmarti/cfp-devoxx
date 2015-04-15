@@ -177,8 +177,8 @@ object Publisher extends Controller {
 
       day match {
         case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
-        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday, "wednesday")
-        case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday, "wednesday")
+        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
+        case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday, "friday")
         case other => NotFound("Day not found")
       }
   }
