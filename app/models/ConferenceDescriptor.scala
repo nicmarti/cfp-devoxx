@@ -200,8 +200,13 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, "special")
 
+    // Note from Nicolas : The IDs should not be updated, else the agenda will be broken
+    val HALL_EXPO = Room("a_hall", "", 1500, "special")
+
+    // WARNING : do not change Room IDs
+
+    val AUDIT = Room("aud_room", "Auditorium", 407, "theatre")
     val ROOM_A = Room("rooma", "Room A", 345, "theatre")
     val ROOM_B = Room("roomb", "Room B", 364, "theatre")
     val ROOM_C = Room("roomc", "Room C", 684, "theatre")
@@ -209,9 +214,8 @@ object ConferenceDescriptor {
     val ROOM_EF = Room("roomef", "Room EF", 407, "theatre")
     val ROOM_BC = Room("roombc", "Room BC", 407, "theatre")
     val ROOM_DEF = Room("roomdef", "Room DEF", 407, "theatre")
-    val AUDIT = Room("roomaud", "Auditorium", 407, "theatre")
-    val ROOM_EXEC = Room("rexec", "Exec Centre", 100, "theatre")
-    val ATRIUM = Room("roomatr", "Atrium", 100, "openplan")
+    val ROOM_EXEC = Room("z_rexec", "Exec Centre", 100, "theatre")
+    val ATRIUM = Room("zz_roomatr", "Atrium", 100, "openplan")
 
     val keynoteRoom = List(AUDIT)
 
@@ -226,9 +230,10 @@ object ConferenceDescriptor {
 
     val bofThu = List(AUDIT, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val hacknightThu = List(ROOM_A)
-    val hackergartenThu = List(ATRIUM)
 
-    val hackergartenFri = List(ATRIUM)
+    // Updated with Mark on 15th of April : no more Hackergarten for the time being
+//    val hackergartenThu = List(ATRIUM)
+//    val hackergartenFri = List(ATRIUM)
 
     val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, ROOM_DEF, ROOM_EF, ROOM_BC, AUDIT, ROOM_EXEC, ATRIUM)
   }
@@ -445,31 +450,6 @@ object ConferenceDescriptor {
       slot1
     }
 
-    // Hackergarten - Thursday
-    val hackergartenSlotThursday: List[Slot] = {
-      val slot1 = ConferenceRooms.hackergartenThu.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.HACKERGARTEN.id, "thursday",
-            new DateTime("2015-06-18T12:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
-            new DateTime("2015-06-18T14:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
-      }    
-
-      val slot2 = ConferenceRooms.hackergartenThu.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.HACKERGARTEN.id, "thursday",
-            new DateTime("2015-06-18T14:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
-            new DateTime("2015-06-18T16:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r2)
-      }
-
-      val slot3 = ConferenceRooms.hackergartenThu.map {
-        r3 =>
-          SlotBuilder(ConferenceProposalTypes.HACKERGARTEN.id, "thursday",
-            new DateTime("2015-06-18T16:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
-            new DateTime("2015-06-18T18:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r3)
-      }
-      slot1 ++ slot2 ++ slot3
-    }
-
     val thursdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime("2015-06-18T10:20:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
@@ -487,7 +467,7 @@ object ConferenceDescriptor {
 
     // What is Thursday ?
     val thursday: List[Slot] = {
-        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hackergartenSlotThursday ++ hacknightSlotThursday ++ bofSlotThursday
+        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hacknightSlotThursday ++ bofSlotThursday
     }
 
     // CONFERENCE SLOTS - Friday
@@ -554,23 +534,6 @@ object ConferenceDescriptor {
       slot1 ++ slot2
     }
 
-    // Hackergarten - Friday
-    val hackergartenSlotFriday: List[Slot] = {
-      val slot1 = ConferenceRooms.hackergartenFri.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.HACKERGARTEN.id, "friday",
-            new DateTime("2015-06-19T11:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
-            new DateTime("2015-06-19T13:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
-      }    
-
-      val slot2 = ConferenceRooms.hackergartenFri.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.HACKERGARTEN.id, "friday",
-            new DateTime("2015-06-19T13:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
-            new DateTime("2015-06-19T15:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r2)
-      }    
-      slot1 ++ slot2
-    }
 
     // CLOSING KEYNOTE
     val closingKeynote = ConferenceRooms.keynoteRoom.map {
@@ -594,7 +557,7 @@ object ConferenceDescriptor {
 
 
     val friday: List[Slot] = {
-      fridayBreaks ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ hackergartenSlotFriday ++ closingKeynote
+      fridayBreaks ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ closingKeynote
     }
 
     // COMPLETE DEVOXX UK is the 3 days
