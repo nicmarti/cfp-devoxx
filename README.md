@@ -1,5 +1,9 @@
- Call for Paper application for Devoxx
+Call for Paper application for Devoxx
 =============
+
+Online document
+===============
+https://docs.google.com/document/d/1X0q0limVxdIE65pTCjpz3y5wLznn_Ra1PsortYSDTOQ/edit?usp=sharing
 
 cfp-devoxx-fr
 =============
