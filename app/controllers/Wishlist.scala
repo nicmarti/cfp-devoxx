@@ -99,7 +99,7 @@ object Wishlist extends SecureCFPController {
   def speakerApproveRequest(requestId: String) = Action {
     implicit request =>
       RequestToTalk.speakerApproved(requestId)
-      Redirect(routes.Application.home).flashing("success" -> "Request accepted. Welcome to Devoxx 2014! Please, create a speaker account :")
+      Redirect(routes.Application.home).flashing("success" -> "Request accepted. Welcome to Devoxx 2015! Please, create a speaker account :")
   }
 
   def speakerDeclineRequest(requestId: String) = Action {

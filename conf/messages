@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx 2014
+CONF.title=Devoxx 2015
 CONF.subtitle=BE
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx BE 2014
-longYearlyName=Devoxx Belgium 2014
+shortYearlyName=Devoxx BE 2015
+longYearlyName=Devoxx Belgium 2015
 shortName=Devoxx BE
-longName=Devoxx BE 2014 CFP
+longName=Devoxx BE 2015 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=BE 2014
+longSplittedName_whiteEnd=BE 2015
 conference.dates=10th-14th November
 # -----------------
-cfp.title=Devoxx BE 2014 CFP
+cfp.title=Devoxx BE 2015 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -154,12 +154,12 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx BE 2013''s videos on
+video.tag=Review Devoxx BE 2014''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx Belgium 2014:
+theme.track=List of tracks for Devoxx Belgium 2015:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx Belgium 2014, 10th-14th November
+appel.conf.dates=Devoxx Belgium 2015, 9th-13th November
 
 # Tracks
 track.startup.title=Startup and entrepreneurship
@@ -503,11 +503,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 10th November 2014
-sw.show.title.tue=Tuesday, 11th November 2014
-sw.show.title.wed=Wednesday, 12th November 2014
-sw.show.title.thu=Thursday, 13th November 2014
-sw.show.title.fri=Friday, 14th November 2014
+sw.show.title.mon=Monday, 9th November 2015
+sw.show.title.tue=Tuesday, 10th November 2015
+sw.show.title.wed=Wednesday, 11th November 2015
+sw.show.title.thu=Thursday, 12th November 2015
+sw.show.title.fri=Friday, 13th November 2015
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
