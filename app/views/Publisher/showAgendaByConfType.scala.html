@@ -1,7 +1,7 @@
 @(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-    @views.html.Publisher.devoxxBE2014(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2014 for $day"+Messages("day-" + day))) {
+    @views.html.Publisher.devoxxBE2015(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2015 for $day"+Messages("day-" + day))) {
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
@@ -25,7 +25,7 @@
                             09:30 - 11:30
                         </th>
                         <td class="keynotes" colspan="7">
-                            <a href="http://www.devoxx.be/keynotes-2014">Keynotes</a>
+                            <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
 
                         </td>
                     </tr>
@@ -36,7 +36,7 @@
                             09:30 - 10:30
                         </th>
                         <td class="keynotes" colspan="7">
-                            <a href="http://www.devoxx.be/keynotes-2014">Keynotes</a>
+                            <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
 
                         </td>
                     </tr>
@@ -56,7 +56,7 @@
 
                          @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="16:40"  ){
                                 <td class="room">
-                                    <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
+                                    <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
                                     slot1 :<strong>16:40 - 17:10</strong><br>
                                     slot2 :<strong>17:10 - 17:40</strong><br>
                                     <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
@@ -64,7 +64,7 @@
                          }
                          @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="17:50"  ){
                             <td class="room">
-                            <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
+                            <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
                             slot3 :<strong>17:50 - 18:20</strong><br>
                             slot4 :<strong>18:20 - 18:50</strong><br>
                             <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
@@ -89,7 +89,7 @@
                     @** Special Hack to add startups talks **@
                     @if(day.toLowerCase=="friday" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).hourOfDay.get()==9  && talkType.toLowerCase=="conf"){
                         <td>
-                          <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
+                          <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
                             slot5 :<strong>09:30 - 10:00</strong><br>
                             slot6 :<strong>10:00 - 10:30</strong><br>
                             <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
@@ -104,7 +104,7 @@
              19:00 - 19:30
          </th>
          <td class="keynotes" colspan="7">
-             <a href="http://www.devoxx.be/keynotes-2014">Evening Keynote</a>
+             <a href="http://www.devoxx.be/keynotes-2015">Evening Keynote</a>
 
          </td>
      </tr>
@@ -115,7 +115,7 @@
              19:00 - 19:30
          </th>
          <td class="keynotes" colspan="7">
-             <a href="http://www.devoxx.be/keynotes-2014">Closing Keynote</a>
+             <a href="http://www.devoxx.be/keynotes-2015">Closing Keynote</a>
 
          </td>
      </tr>
