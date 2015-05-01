@@ -145,6 +145,8 @@ hackergarten.label=Hackergarten
 hackergarten.label.simple=Hackergarten
 workshop.label=Adopt Workshop
 workshop.label.simple=Adopt Workshop
+ignite.label=Ignite Sessions
+ignite.label.simple=Ignite Sessions
 
 
 # Bug report
@@ -424,6 +426,7 @@ all=All
 hacknight=Hacknight
 hackergarten=Hackergarten
 workshop=Workshop
+ignite=Ignite Sessions
 amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
@@ -438,6 +441,7 @@ sw.all.lab=All Hand''s on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.workshop=All Workshops
+sw.all.ignite=All Ignite Sessions
 sw.all.hacknight=All Hack Nights
 sw.all.hackergarten=All Hackergartens
 sw.speakers=Devoxxians
