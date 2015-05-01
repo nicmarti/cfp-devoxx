@@ -115,9 +115,11 @@ object ConferenceDescriptor {
 
     val WORKSHOP = ProposalType(id = "workshop", label = "workshop.label")
 
+    val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
+
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACKNIGHT, HACKERGARTEN, WORKSHOP, OTHER)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACKNIGHT, HACKERGARTEN, WORKSHOP, IGNITE, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -130,6 +132,7 @@ object ConferenceDescriptor {
       case "hacknight" => HACKNIGHT
       case "hackergarten" => HACKERGARTEN
       case "workshop" => WORKSHOP
+      case "ignite" => IGNITE
       case "other" => OTHER
     }
 
@@ -157,9 +160,11 @@ object ConferenceDescriptor {
     val HACKERGARTEN = ProposalConfiguration(id = "hackergarten", slotsCount = 5, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = false, chosablePreferredDay = false)    
     val WORKSHOP = ProposalConfiguration(id = "workshop", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      hiddenInCombo = false, chosablePreferredDay = false)    
-    
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACKNIGHT, HACKERGARTEN, WORKSHOP, OTHER)
+      hiddenInCombo = false, chosablePreferredDay = false)
+    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+      hiddenInCombo = false, chosablePreferredDay = false)
+
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACKNIGHT, HACKERGARTEN, WORKSHOP, IGNITE, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
