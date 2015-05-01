@@ -146,6 +146,7 @@ hackergarten.label.simple=Hackergarten
 workshop.label=Adopt Workshop
 workshop.label.simple=Adopt Workshop
 
+
 # Bug report
 Issue.report=Report an issue
 btn.send=Send
@@ -203,6 +204,10 @@ cloudBigData.label=Cloud & BigData
 track.webHtml5.title=Web & HTML5
 track.webHtml5.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
 webHtml5.label=Web & HTML5
+
+track.netPolitics.title=Net Politics
+track.netPolitics.desc=Net Politics
+netPolitics.label=Net Politics
 
 unknown.label=No track
 
