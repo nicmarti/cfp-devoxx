@@ -196,7 +196,7 @@ object ConferenceDescriptor {
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.java.title", "track.java.desc")
     val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigData.title", "track.cloudBigData.desc")
     val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webHtml5.title", "track.webHtml5.desc")
-    val NETPOLITICS = TrackDesc(ConferenceTracks.NETPOLITICS.id, "/wp-content/uploads/2015/05/Net-Pol-Icon-draft-1.png", "track.netPolitics.title", "track.netPolitics.desc")
+    val NETPOLITICS = TrackDesc(ConferenceTracks.NETPOLITICS.id, "/assets/devoxxbe2014/images/icon_netpolitics.jpeg", "track.netPolitics.title", "track.netPolitics.desc")
     val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, NETPOLITICS, WEBHTML5)
 
     def findTrackDescFor(t: Track): Option[TrackDesc] = {
