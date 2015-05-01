@@ -232,12 +232,14 @@ object ConferenceDescriptor {
     val bofWed = List(ROOM_B, ROOM_C, ROOM_EXEC)
     val hacknightWed = List(ROOM_A)
     val workshopWed = List(ATRIUM)
+    val igniteWed = List(AUDIT)
 
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val quickieRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
 
     val bofThu = List(AUDIT, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val hacknightThu = List(ROOM_A)
+    val igniteThu = List(AUDIT)
 
     // Updated with Mark on 15th of April : no more Hackergarten for the time being
 //    val hackergartenThu = List(ATRIUM)
@@ -348,6 +350,17 @@ object ConferenceDescriptor {
       workshopSlotWednesday1 ++ workshopSlotWednesday2 ++ workshopSlotWednesday3 ++ workshopSlotWednesday4
     }    
 
+    // Ignite - Wednesday
+    val igniteSlotWednesday: List[Slot] = {
+      val slot1 = ConferenceRooms.igniteWed.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, "wednesday",
+            new DateTime("2015-06-17T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-17T21:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
+      }
+      slot1
+    }
+
     // Registration, coffee break, lunch etc - Wednesday
     val wednesdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "wednesday",
@@ -366,7 +379,7 @@ object ConferenceDescriptor {
 
     // What is exactly a Wednesday
     val wednesday: List[Slot] = {
-      uniSlotWednesday ++ holSlotWednesday ++ workshopSlotWednesday ++ hacknightSlotWednesday ++ bofSlotWednesday ++ wednesdayBreaks
+      uniSlotWednesday ++ holSlotWednesday ++ workshopSlotWednesday ++ hacknightSlotWednesday ++ bofSlotWednesday ++ igniteSlotWednesday ++ wednesdayBreaks
     }
 
     // QUICKIES - Thursday
@@ -458,6 +471,17 @@ object ConferenceDescriptor {
       slot1
     }
 
+    // Ignite - Thursday
+    val igniteSlotThursday: List[Slot] = {
+      val slot1 = ConferenceRooms.igniteThu.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, "thursday",
+            new DateTime("2015-06-18T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-18T21:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
+      }
+      slot1
+    }
+
     val thursdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime("2015-06-18T10:20:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
@@ -475,7 +499,7 @@ object ConferenceDescriptor {
 
     // What is Thursday ?
     val thursday: List[Slot] = {
-        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hacknightSlotThursday ++ bofSlotThursday
+        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hacknightSlotThursday ++ igniteSlotThursday ++ bofSlotThursday
     }
 
     // CONFERENCE SLOTS - Friday
