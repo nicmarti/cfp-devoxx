@@ -21,7 +21,6 @@
                     <td>@roomName.name</td>
                 }
                 </tr>
-
             @slots.groupBy(_.from.toDateTime(DateTimeZone.forID("Europe/London"))).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
                     <tr >
                         <th class="timeSlot">
