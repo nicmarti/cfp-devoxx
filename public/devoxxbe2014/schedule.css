@@ -54,12 +54,22 @@
 }
 .agendaTable .room{
     max-width: 16%;
+    vertical-align: top;
     border: 1px solid #ffd297;
 }
 .agendaTable .track{
     display: block;
 }
-
+.agendaTable .talkType{
+    display: block;
+    background-color: #1f1f1f;
+    color:white;
+    padding: 2px;
+    text-align: center;
+}
+.agendaTable .speaker{
+    font-size: 0.9em;
+}
 .speakerDetail{
     max-height: 128px;
     max-width: 128px;

@@ -145,6 +145,9 @@ hackergarten.label=Hackergarten
 hackergarten.label.simple=Hackergarten
 workshop.label=Adopt Workshop
 workshop.label.simple=Adopt Workshop
+ignite.label=Ignite Sessions
+ignite.label.simple=Ignite Sessions
+
 
 # Bug report
 Issue.report=Report an issue
@@ -203,6 +206,10 @@ cloudBigData.label=Cloud & BigData
 track.webHtml5.title=Web & HTML5
 track.webHtml5.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
 webHtml5.label=Web & HTML5
+
+track.netPolitics.title=Net Politics
+track.netPolitics.desc=Net Politics
+netPolitics.label=Net Politics
 
 unknown.label=No track
 
@@ -419,6 +426,7 @@ all=All
 hacknight=Hacknight
 hackergarten=Hackergarten
 workshop=Workshop
+ignite=Ignite Sessions
 amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
@@ -433,6 +441,7 @@ sw.all.lab=All Hand''s on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.workshop=All Workshops
+sw.all.ignite=All Ignite Sessions
 sw.all.hacknight=All Hack Nights
 sw.all.hackergarten=All Hackergartens
 sw.speakers=Devoxxians

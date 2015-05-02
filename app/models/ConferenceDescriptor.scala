@@ -115,9 +115,11 @@ object ConferenceDescriptor {
 
     val WORKSHOP = ProposalType(id = "workshop", label = "workshop.label")
 
+    val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
+
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACKNIGHT, HACKERGARTEN, WORKSHOP, OTHER)
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, HACKNIGHT, HACKERGARTEN, WORKSHOP, IGNITE, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -130,6 +132,7 @@ object ConferenceDescriptor {
       case "hacknight" => HACKNIGHT
       case "hackergarten" => HACKERGARTEN
       case "workshop" => WORKSHOP
+      case "ignite" => IGNITE
       case "other" => OTHER
     }
 
@@ -157,8 +160,11 @@ object ConferenceDescriptor {
     val HACKERGARTEN = ProposalConfiguration(id = "hackergarten", slotsCount = 5, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = false, chosablePreferredDay = false)    
     val WORKSHOP = ProposalConfiguration(id = "workshop", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      hiddenInCombo = false, chosablePreferredDay = false)    
-    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACKNIGHT, HACKERGARTEN, WORKSHOP, OTHER)
+      hiddenInCombo = false, chosablePreferredDay = false)
+    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+      hiddenInCombo = false, chosablePreferredDay = false)
+
+    val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACKNIGHT, HACKERGARTEN, WORKSHOP, IGNITE, OTHER)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -175,8 +181,9 @@ object ConferenceDescriptor {
     val JAVA = Track("java", "java.label")
     val CLOUDBIGDATA = Track("cldbd", "cloudBigData.label")
     val WEBHTML5 = Track("webHtml5", "webHtml5.label")
+    val NETPOLITICS = Track("netPolitics", "netPolitics.label")
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5, UNKNOWN)
+    val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5, NETPOLITICS, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
@@ -189,7 +196,8 @@ object ConferenceDescriptor {
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.java.title", "track.java.desc")
     val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigData.title", "track.cloudBigData.desc")
     val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webHtml5.title", "track.webHtml5.desc")
-    val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, WEBHTML5)
+    val NETPOLITICS = TrackDesc(ConferenceTracks.NETPOLITICS.id, "/assets/devoxxbe2014/images/icon_netpolitics.jpeg", "track.netPolitics.title", "track.netPolitics.desc")
+    val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, NETPOLITICS, WEBHTML5)
 
     def findTrackDescFor(t: Track): Option[TrackDesc] = {
       ALL.find(_.id == t.id).headOption
@@ -224,12 +232,14 @@ object ConferenceDescriptor {
     val bofWed = List(ROOM_B, ROOM_C, ROOM_EXEC)
     val hacknightWed = List(ROOM_A)
     val workshopWed = List(ATRIUM)
+    val igniteWed = List(AUDIT)
 
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val quickieRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
 
     val bofThu = List(AUDIT, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val hacknightThu = List(ROOM_A)
+    val igniteThu = List(AUDIT)
 
     // Updated with Mark on 15th of April : no more Hackergarten for the time being
 //    val hackergartenThu = List(ATRIUM)
@@ -340,6 +350,17 @@ object ConferenceDescriptor {
       workshopSlotWednesday1 ++ workshopSlotWednesday2 ++ workshopSlotWednesday3 ++ workshopSlotWednesday4
     }    
 
+    // Ignite - Wednesday
+    val igniteSlotWednesday: List[Slot] = {
+      val slot1 = ConferenceRooms.igniteWed.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, "wednesday",
+            new DateTime("2015-06-17T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-17T21:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
+      }
+      slot1
+    }
+
     // Registration, coffee break, lunch etc - Wednesday
     val wednesdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "wednesday",
@@ -358,7 +379,7 @@ object ConferenceDescriptor {
 
     // What is exactly a Wednesday
     val wednesday: List[Slot] = {
-      uniSlotWednesday ++ holSlotWednesday ++ workshopSlotWednesday ++ hacknightSlotWednesday ++ bofSlotWednesday ++ wednesdayBreaks
+      uniSlotWednesday ++ holSlotWednesday ++ workshopSlotWednesday ++ hacknightSlotWednesday ++ bofSlotWednesday ++ igniteSlotWednesday ++ wednesdayBreaks
     }
 
     // QUICKIES - Thursday
@@ -450,6 +471,17 @@ object ConferenceDescriptor {
       slot1
     }
 
+    // Ignite - Thursday
+    val igniteSlotThursday: List[Slot] = {
+      val slot1 = ConferenceRooms.igniteThu.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.IGNITE.id, "thursday",
+            new DateTime("2015-06-18T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
+            new DateTime("2015-06-18T21:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
+      }
+      slot1
+    }
+
     val thursdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime("2015-06-18T10:20:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
@@ -467,7 +499,7 @@ object ConferenceDescriptor {
 
     // What is Thursday ?
     val thursday: List[Slot] = {
-        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hacknightSlotThursday ++ bofSlotThursday
+        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hacknightSlotThursday ++ igniteSlotThursday ++ bofSlotThursday
     }
 
     // CONFERENCE SLOTS - Friday
