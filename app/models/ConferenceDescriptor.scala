@@ -232,14 +232,14 @@ object ConferenceDescriptor {
     val bofWed = List(ROOM_B, ROOM_C, ROOM_EXEC)
     val hacknightWed = List(ROOM_A)
     val workshopWed = List(ATRIUM)
-    val igniteWed = List(AUDIT)
+    val igniteWed = List(ATRIUM)
 
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val quickieRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
 
     val bofThu = List(AUDIT, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val hacknightThu = List(ROOM_A)
-    val igniteThu = List(AUDIT)
+    val igniteThu = List(ATRIUM)
 
     // Updated with Mark on 15th of April : no more Hackergarten for the time being
 //    val hackergartenThu = List(ATRIUM)
@@ -360,6 +360,7 @@ object ConferenceDescriptor {
       }
       slot1
     }
+
 
     // Registration, coffee break, lunch etc - Wednesday
     val wednesdayBreaks = List(
