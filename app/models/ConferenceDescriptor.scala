@@ -161,7 +161,7 @@ object ConferenceDescriptor {
       hiddenInCombo = false, chosablePreferredDay = false)    
     val WORKSHOP = ProposalConfiguration(id = "workshop", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = false, chosablePreferredDay = false)
-    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = 2, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = false, chosablePreferredDay = false)
 
     val ALL = List(CONF, UNI, LAB, QUICK, BOF, KEY, CODE, HACKNIGHT, HACKERGARTEN, WORKSHOP, IGNITE, OTHER)
@@ -196,7 +196,7 @@ object ConferenceDescriptor {
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.java.title", "track.java.desc")
     val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigData.title", "track.cloudBigData.desc")
     val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webHtml5.title", "track.webHtml5.desc")
-    val NETPOLITICS = TrackDesc(ConferenceTracks.NETPOLITICS.id, "/assets/devoxxbe2014/images/icon_netpolitics.jpeg", "track.netPolitics.title", "track.netPolitics.desc")
+    val NETPOLITICS = TrackDesc(ConferenceTracks.NETPOLITICS.id, "/assets/devoxxbe2014/images//icon_netpolitics.jpeg", "track.netPolitics.title", "track.netPolitics.desc")
     val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, NETPOLITICS, WEBHTML5)
 
     def findTrackDescFor(t: Track): Option[TrackDesc] = {
@@ -232,14 +232,14 @@ object ConferenceDescriptor {
     val bofWed = List(ROOM_B, ROOM_C, ROOM_EXEC)
     val hacknightWed = List(ROOM_A)
     val workshopWed = List(ATRIUM)
-    val igniteWed = List(AUDIT)
+    val igniteWed = List(ATRIUM)
 
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val quickieRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
 
     val bofThu = List(AUDIT, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val hacknightThu = List(ROOM_A)
-    val igniteThu = List(AUDIT)
+    val igniteThu = List(ATRIUM)
 
     // Updated with Mark on 15th of April : no more Hackergarten for the time being
 //    val hackergartenThu = List(ATRIUM)
@@ -360,6 +360,7 @@ object ConferenceDescriptor {
       }
       slot1
     }
+
 
     // Registration, coffee break, lunch etc - Wednesday
     val wednesdayBreaks = List(
