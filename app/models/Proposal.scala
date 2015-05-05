@@ -71,6 +71,7 @@ object ProposalState {
   val ACCEPTED = ProposalState("accepted")
   val DECLINED = ProposalState("declined")
   val BACKUP = ProposalState("backup")
+  val ARCHIVED = ProposalState("archived")
   val UNKNOWN = ProposalState("unknown")
 
 
@@ -83,10 +84,11 @@ object ProposalState {
     ACCEPTED,
     DECLINED,
     BACKUP,
+    ARCHIVED,
     UNKNOWN
   )
 
-  val allButDeleted = List(
+  val allButDeletedAndArchived = List(
     DRAFT,
     SUBMITTED,
     APPROVED,
@@ -108,6 +110,7 @@ object ProposalState {
       case "accepted" => ACCEPTED
       case "declined" => DECLINED
       case "backup" => BACKUP
+      case "ar" => ARCHIVED
       case other => UNKNOWN
     }
   }
@@ -386,6 +389,10 @@ object Proposal {
     changeProposalState(uuid, proposalId, ProposalState.DRAFT)
   }
 
+  def archive(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.ARCHIVED)
+  }
+
   private def loadProposalsByState(uuid: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:${uuid}", s"Proposals:ByState:${proposalState.code}")
@@ -419,10 +426,20 @@ object Proposal {
   }
 
   def allMyProposals(uuid: String): List[Proposal] = {
-    ProposalState.allButDeleted.flatMap {
+    ProposalState.allButDeletedAndArchived.flatMap {
       proposalState =>
         loadProposalsByState(uuid, proposalState)
     }
+  }
+
+  def allMyArchivedProposals(uuid: String): List[Proposal] = {
+    loadProposalsByState(uuid, ProposalState.ARCHIVED)
+  }
+
+  def countByProposalState(uuid: String, proposalState: ProposalState): Int = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}")
+      allProposalIds.size
   }
 
   def findProposal(uuid: String, proposalId: String): Option[Proposal] = {
@@ -470,7 +487,8 @@ object Proposal {
         isNotDeleted <- checkIsNotMember(client, ProposalState.DELETED, proposalId).toRight(ProposalState.DELETED).right;
         isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
         isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
-        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right
+        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right;
+        isNotArchived <- checkIsNotMember(client, ProposalState.ARCHIVED, proposalId).toRight(ProposalState.ARCHIVED).right
       ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
 
       thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
@@ -495,7 +513,16 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.hkeys("Proposals")
       val allProposalIDDeleted = client.smembers(s"Proposals:ByState:${ProposalState.DELETED.code}")
-      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDDeleted)
+      val allProposalIDArchived = client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDArchived).diff(allProposalIDDeleted)
+      onlyValidProposalIDs
+  }
+
+  def allProposalIDsNotArchived: Set[String] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.hkeys("Proposals")
+      val allProposalIDArchived = client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")
+      val onlyValidProposalIDs = allProposalIDs.diff(allProposalIDArchived)
       onlyValidProposalIDs
   }
 
@@ -558,6 +585,35 @@ object Proposal {
       loadAndParseProposals(allProposalIDs)
   }
 
+  def allApprovedProposalsByAuthor(author:String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.sinter(s"Proposals:ByAuthor:$author","ApprovedById:")
+      loadAndParseProposals(allProposalIDs)
+  }
+
+  def allApprovedAndAcceptedProposalsByAuthor(author:String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allApproved = client.sinter(s"Proposals:ByAuthor:$author","ApprovedById:")
+      loadAndParseProposals(allApproved)
+  }
+
+  def allThatForgetToAccept(author:String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allApproved = client.sinter(s"Proposals:ByAuthor:$author","ApprovedById:")
+      val onlyAcceptedNotApproved = client.sdiff("Proposals:ByState:" + ProposalState.ACCEPTED.code,"Proposals:ByState:" + ProposalState.APPROVED.code)
+      val approvedAndNotAccepted = allApproved.diff(onlyAcceptedNotApproved).diff(client.smembers("Proposals:ByState:" + ProposalState.DECLINED.code))
+      loadAndParseProposals(approvedAndNotAccepted)
+  }
+
+  def allDeleted(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.DELETED.code)
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.DELETED))
+      }
+  }
+
   def destroy(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
@@ -575,8 +631,12 @@ object Proposal {
         otherSpeaker =>
           tx.srem("Proposals:ByAuthor:" + otherSpeaker, proposal.id)
       }
-
+      tx.hdel("Proposal:SubmittedDate", proposal.id)
       tx.hdel("Proposals", proposal.id)
+      if (proposal.id != "") {
+        tx.del(s"Events:V2:${proposal.id}")
+        tx.del(s"Events:LastUpdated:${proposal.id}")
+      }
       tx.exec()
   }
 
@@ -646,7 +706,7 @@ object Proposal {
   }
 
   /**
-   * Returns all Proposals with sponsorTalk=true, whatever is the current status.
+   * Returns all Proposals with sponsorTalk=true, except if talk has been deleted, declined or archived
    */
   def allSponsorsTalk(): List[Proposal] = {
     val allTalks = allProposals().filter(_.sponsorTalk)
@@ -654,19 +714,37 @@ object Proposal {
       proposal =>
         val proposalState = findProposalState(proposal.id)
         proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
-    }.filterNot(_.state == ProposalState.DELETED).filterNot(_.state == ProposalState.DECLINED)
+    }.filterNot(s => s.state == ProposalState.DELETED || s.state == ProposalState.DECLINED || s.state == ProposalState.ARCHIVED)
   }
 
-  // This is a slow operation
+  /**
+   * Load all proposals except ARCHIVED
+   */
   def allProposals(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      client.hvals("Proposals").map {
+
+      val allProposalIDsExceptArchived = client.hkeys("Proposals").diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
+
+      client.hmget("Proposals", allProposalIDsExceptArchived).map {
         json =>
           val proposal = Json.parse(json).as[Proposal]
           val proposalState = findProposalState(proposal.id)
           proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
       }
   }
+
+  def allDeclinedProposals(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+
+      val allDeclineds = client.smembers(s"Proposals:ByState:${ProposalState.DECLINED.code}")
+
+      client.hmget("Proposals", allDeclineds).map {
+        json =>
+          val proposal = Json.parse(json).as[Proposal]
+          proposal.copy(state = ProposalState.DECLINED)
+      }
+  }
+
 
   // This code is a bit complex. It's an optimized version that loads from Redis
   // a set of Proposal. It returns only valid proposal, successfully loaded.

@@ -23,7 +23,8 @@
 
 package models
 
-import library.{Dress, Redis}
+import library.Redis
+import models.ConferenceDescriptor.ConferenceProposalConfigurations
 
 /**
  * Approve or reject a proposal
@@ -31,17 +32,15 @@ import library.{Dress, Redis}
  */
 object ApprovedProposal {
 
-  // Devoxx BE 2013
   val getTotal: Map[String, Int] =  Map(
-      ("conf.label", 89)
-      , ("uni.label", 16)
-      , ("tia.label", 24)
-      , ("lab.label", 10)
-      , ("quick.label", 28)
-      , ("bof.label", 25)
-      , ("start.label", 20)
-      , ("key.label", 7)
-      , ("other.label", 0)
+    ("conf.label", ConferenceProposalConfigurations.CONF.slotsCount)
+    , ("uni.label", ConferenceProposalConfigurations.UNI.slotsCount)
+    , ("tia.label", ConferenceProposalConfigurations.TIA.slotsCount)
+    , ("lab.label", ConferenceProposalConfigurations.LAB.slotsCount)
+    , ("quick.label", ConferenceProposalConfigurations.QUICK.slotsCount)
+    , ("bof.label", ConferenceProposalConfigurations.BOF.slotsCount)
+    , ("key.label", ConferenceProposalConfigurations.KEY.slotsCount)
+    , ("other.label", ConferenceProposalConfigurations.OTHER.slotsCount)
     )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
@@ -49,7 +48,7 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
+          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:key") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
         case other =>
           client.scard(s"Approved:$talkType")
       }
@@ -123,6 +122,14 @@ object ApprovedProposal {
       client.sismember(s"Approved:$talkType", proposalId)
   }
 
+  // This is only for Attic controller, to fix an old bug on data (bug #159)
+  // The bug was that a conference is approved, but then the speaker changes the
+  // format to quickie, then the Approved:conf collection is not updated correctly
+  def _loadApprovedCategoriesForTalk(proposal: Proposal): List[String] = {
+    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter { pc =>
+      isApproved(proposal.id, pc.id)
+    }.map(_.id)
+  }
 
   def isRefused(proposal: Proposal): Boolean = {
     isRefused(proposal.id, proposal.talkType.id)
@@ -177,15 +184,24 @@ object ApprovedProposal {
       val tx = client.multi()
       tx.srem("ApprovedById:", proposal.id.toString)
       tx.srem("Approved:" + proposal.talkType.id, proposal.id.toString)
+      // Buggy without a 'S'
+      tx.srem("ApprovedSpeaker:" + proposal.mainSpeaker, proposal.id.toString)
+      // Correct
       tx.srem("ApprovedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
 
       proposal.secondarySpeaker.map {
         secondarySpeaker: String =>
+          // Buggy without a 'S'
+          tx.srem("ApprovedSpeaker:" + secondarySpeaker, proposal.id.toString)
+          // Correct
           tx.srem("ApprovedSpeakers:" + secondarySpeaker, proposal.id.toString)
       }
 
       proposal.otherSpeakers.foreach {
         otherSpeaker: String =>
+          // Buggy without a 'S'
+          tx.srem("ApprovedSpeaker:" + otherSpeaker, proposal.id.toString)
+          // and the correct one
           tx.srem("ApprovedSpeakers:" + otherSpeaker, proposal.id.toString)
       }
       tx.exec()
@@ -233,14 +249,14 @@ object ApprovedProposal {
 
   def allApprovedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Approved:" + talkType)
+      val allProposalIDs = client.smembers("Approved:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
 
   def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Refused:" + talkType)
+      val allProposalIDs = client.smembers("Refused:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
       allProposalWithVotes.values.toList
   }
@@ -250,7 +266,7 @@ object ApprovedProposal {
       val allKeys = client.keys("Approved:*")
       val finalList = allKeys.map {
         key =>
-          val allProposalIDs = client.smembers(key).toList
+          val allProposalIDs = client.smembers(key).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")).toList
           val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
           allProposalWithVotes.values.toList
       }.flatten

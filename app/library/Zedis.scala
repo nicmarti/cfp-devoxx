@@ -4,24 +4,24 @@ package library
  * Zedis is the Jedis wrapper for ZapTravel.
  * Inspired by the great work from @pk11 Sedis wrapper but updated to offer 
  * a better support for Scala 2.10 and Jedis commands.
- * Author: nmartignole
+ * Author: Nicolas Martignole
  * Created: 06/03/2013 12:24
  */
 
+import org.apache.commons.lang3.StringUtils
 import play.api.Play._
 import redis.clients.jedis._
-import scala.Predef.String
+
 import scala.collection.immutable._
-import org.apache.commons.lang3.StringUtils
 
 trait Dress {
-  implicit def delegateToJedis(d: Wrap) = d.j
+  implicit def delegateToJedis(d: Wrap): Jedis = d.j
 
-  implicit def fromJedistoScala(j: Jedis) = up(j)
+  implicit def fromJedistoScala(j: Jedis): Dress.this.type#Wrap = up(j)
 
   class Wrap(val j: Jedis) {
 
-    import collection.JavaConverters._
+    import scala.collection.JavaConverters._
 
     def hmset(key: String, values: Map[String, String]) = {
       if(play.Logger.of("library.Zedis").isDebugEnabled){
@@ -246,6 +246,13 @@ trait Dress {
         play.Logger.of("library.Zedis").debug(s"sdiff $key1 $key2 $key3 $key4")
       }
       j.sdiff(key1, key2, key3, key4).asScala.toSet
+    }
+
+    def sdiff(key1: String, key2: String, key3: String, key4: String, key5: String): Set[String] = {
+      if (play.Logger.of("library.Zedis").isDebugEnabled) {
+        play.Logger.of("library.Zedis").debug(s"sdiff $key1 $key2 $key3 $key4 $key5")
+      }
+      j.sdiff(key1, key2, key3, key4, key5).asScala.toSet
     }
 
     def sdiffstore(newKey: String, key1: String, key2: String) = {
