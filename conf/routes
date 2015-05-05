@@ -231,9 +231,11 @@ GET           /export/parleys                                     controllers.Ba
 
 
 # Attic
-GET           /cfpadmin/attic/home                                              controllers.Attic.atticHome()
-POST          /cfpadmin/attic/pruneDraft                                        controllers.Attic.prune()
-POST          /cfpadmin/attic/doArchive                                         controllers.Attic.doArchive()
+GET           /cfpadmin/attic/home                                controllers.Attic.atticHome()
+POST          /cfpadmin/attic/pruneDraft                          controllers.Attic.prune()
+POST          /cfpadmin/attic/doArchive                           controllers.Attic.doArchive()
+GET           /cfpadmin/attic/resetEvents                      controllers.Attic.resetEvents()
+GET           /cfpadmin/attic/archiveInvitedSpeakers                      controllers.Attic.archiveInvitedSpeakers()
 
 
 # Map static resources from the /public folder to the /assets URL path

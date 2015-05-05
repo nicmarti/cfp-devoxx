@@ -65,6 +65,15 @@
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.OTHER.id"/>
                         <button type="submit" class="btn btn-primary">Archive all other talks</button>
                     </form>
+                       <form action="@routes.Attic.doArchive()" method="POST">
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.START.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all Startups talks</button>
+                    </form>
+
+                    <br>
+                    <a href="@routes.Attic.resetEvents()" class="btn btn-small btn-warning">Reset Events</a>
+                    <br>
+                    <a href="@routes.Attic.archiveInvitedSpeakers()" class="btn btn-small btn-warning">Archive the list of Invited speakers</a>
 
 
                 </div>

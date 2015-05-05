@@ -76,6 +76,23 @@ object Event {
       client.zcard("Events:V2:")
   }
 
+  def deleteAll() = Redis.pool.withClient {
+    client =>
+
+      val list1 = client.keys("Events:V2:")
+      val list2 = client.keys("Events:LastUpdated:")
+
+      val tx=client.multi()
+      list1.foreach{
+        k=>tx.del(k)
+      }
+      list2.foreach{
+        k=>tx.del(k)
+      }
+      tx.del("Events:V2:")
+      tx.exec()
+  }
+
   implicit object mostRecent extends Ordering[DateTime] {
     def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)
   }

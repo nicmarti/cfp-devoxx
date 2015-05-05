@@ -776,7 +776,21 @@ object Proposal {
 
   def totalWithOneProposal(): Int = Redis.pool.withClient {
     implicit client =>
-      client.keys("Proposals:ByAuthor:*").size
+      // List all speakers with at least one proposal
+      val speakersWithProposal = client.keys("Proposals:ByAuthor:*")
+      // Take the SET of ProposalIds not archived
+      val allProposalIDsExceptArchived = client.hkeys("Proposals").diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
+      // For each speakerProposal Redis KEY
+      val test = speakersWithProposal.take(1).filter{
+        proposalByAuthorKey=>
+          // Loads the list of proposalIDS for each speaker
+          val proposalIDs = client.smembers(proposalByAuthorKey)
+          // Do a diff so that we remove talks Archived
+          val validProposals = proposalIDs.toSet.diff(allProposalIDsExceptArchived)
+          // If we are empty then filter and drop
+          validProposals.isEmpty
+      }
+      test.size
   }
 
   def allApprovedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {

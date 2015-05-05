@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{ConferenceDescriptor, ArchiveProposal}
+import models.{Invitation, ArchiveProposal, Event}
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -78,13 +78,27 @@ object Attic extends SecureCFPController {
       proposalTypeForm.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(views.html.Attic.atticHome())),
         proposalType => {
-          Future(ArchiveProposal.archiveAll(proposalType)).map{
+          Future(ArchiveProposal.archiveAll(proposalType)).map {
             totalArchived =>
-               Redirect(routes.Attic.atticHome()).flashing(("success", s"$totalArchived archived"))
+              Redirect(routes.Attic.atticHome()).flashing(("success", s"$totalArchived archived"))
           }
         }
       )
   }
+
+  // Delete all Events (history) who did what
+  def resetEvents() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Event.deleteAll()
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"Deleted all Events"))
+  }
+
+  def archiveInvitedSpeakers()= SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Invitation.archive()
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"Deleted all Events"))
+  }
+
 
 
 }
