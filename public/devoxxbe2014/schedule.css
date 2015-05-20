@@ -19,9 +19,12 @@
         padding-top:20px;
     padding-bottom:20px;
 }
+
 .agendaTable{
     border: 1px solid #ffd297;
+    width: 125%
 }
+
 .agendaTable th{
     background-color: #211c1b;
     color:white;

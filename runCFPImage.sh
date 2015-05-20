@@ -1,0 +1,1 @@
+sudo docker run cfp-app-image:1.0 -t -i -d -p 9000:9000 -p 8888:8888

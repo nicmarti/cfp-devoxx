@@ -28,7 +28,8 @@
                         localdatetime = @time.toLocalDateTime
 
                         -->
-                        @time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
+                        @time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") -
+                        @slots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room.name).zipWithIndex.map { case(slot,index) =>
 
@@ -42,7 +43,7 @@
                                 </span>
                             }
 
-                            @if(slot.proposal.isEmpty && slot.break.isEmpty && index>0 ) {
+                            @if(slot.notAllocated && index>0 ) {
                                 TBA
                             }
                         </td>
