@@ -145,7 +145,7 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = 8, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
-    val QUICK = ProposalConfiguration(id = "quick", slotsCount = 20, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
+    val QUICK = ProposalConfiguration(id = "quick", slotsCount = 22, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
       chosablePreferredDay = true)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = 7, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
       chosablePreferredDay = false)
@@ -235,7 +235,8 @@ object ConferenceDescriptor {
     val igniteWed = List(ATRIUM)
 
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
-    val quickieRooms = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
+    val quickieThu = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC, ATRIUM)
+    val quickieFri = List(AUDIT, ROOM_A, ROOM_BC, ROOM_DEF, ROOM_EXEC)
 
     val bofThu = List(AUDIT, ROOM_BC, ROOM_DEF, ROOM_EXEC)
     val hacknightThu = List(ROOM_A)
@@ -385,17 +386,17 @@ object ConferenceDescriptor {
 
     // QUICKIES - Thursday
     val quickiesSlotsThursday: List[Slot] = {
-      val quickiesThursdayLunch1 = ConferenceRooms.quickieRooms.map {
+      val quickiesThursdayLunch1 = ConferenceRooms.quickieThu.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday",
             new DateTime("2015-06-18T12:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
             new DateTime("2015-06-18T13:05:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
       }
-      val quickiesThursdayLunch2 = ConferenceRooms.quickieRooms.map {
+      val quickiesThursdayLunch2 = ConferenceRooms.quickieThu.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday",
             new DateTime("2015-06-18T13:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
-            new DateTime("2015-06-18T13:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r2)
+            new DateTime("2015-06-18T13:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r2)
       }
       quickiesThursdayLunch1 ++ quickiesThursdayLunch2
     }
@@ -500,7 +501,8 @@ object ConferenceDescriptor {
 
     // What is Thursday ?
     val thursday: List[Slot] = {
-        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ hacknightSlotThursday ++ igniteSlotThursday ++ bofSlotThursday
+        thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++
+          hacknightSlotThursday ++ igniteSlotThursday ++ bofSlotThursday
     }
 
     // CONFERENCE SLOTS - Friday
@@ -552,13 +554,13 @@ object ConferenceDescriptor {
 
     // QUICKIES - Friday
     val quickiesSlotsFriday: List[Slot] = {
-      val slot1 = ConferenceRooms.quickieRooms.map {
+      val slot1 = ConferenceRooms.quickieFri.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "friday",
             new DateTime("2015-06-19T13:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
             new DateTime("2015-06-19T13:25:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
       }
-      val slot2 = ConferenceRooms.quickieRooms.map {
+      val slot2 = ConferenceRooms.quickieFri.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "friday",
             new DateTime("2015-06-19T13:35:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
