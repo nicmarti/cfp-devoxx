@@ -214,16 +214,16 @@ object ConferenceDescriptor {
 
     // WARNING : do not change Room IDs
 
-    val AUDIT = Room("aud_room", "Auditorium", 407, "theatre")
-    val ROOM_A = Room("rooma", "Room A", 345, "theatre")
-    val ROOM_B = Room("roomb", "Room B", 364, "theatre")
-    val ROOM_C = Room("roomc", "Room C", 684, "theatre")
-    val ROOM_D = Room("roomd", "Room D", 407, "theatre")
-    val ROOM_EF = Room("roomef", "Room EF", 407, "theatre")
-    val ROOM_BC = Room("roombc", "Room BC", 407, "theatre")
-    val ROOM_DEF = Room("roomdef", "Room DEF", 407, "theatre")
-    val ROOM_EXEC = Room("z_rexec", "Exec Centre", 100, "theatre")
-    val ATRIUM = Room("zz_roomatr", "Atrium", 100, "openplan")
+    val AUDIT = Room("aud_room", "Auditorium", 550, "theatre")
+    val ROOM_A = Room("rooma", "Room A", 220, "theatre")
+    val ROOM_B = Room("roomb", "Room B", 32, "classroom")
+    val ROOM_C = Room("roomc", "Room C", 32, "classroom")
+    val ROOM_D = Room("roomd", "Room D", 32, "classroom")
+    val ROOM_EF = Room("roomef", "Room EF", 180, "theatre")
+    val ROOM_BC = Room("roombc", "Room BC", 110, "theatre")
+    val ROOM_DEF = Room("roomdef", "Room DEF", 240, "theatre")
+    val ROOM_EXEC = Room("z_rexec", "Exec Centre", 90, "theatre")
+    val ATRIUM = Room("zz_roomatr", "Atrium", 50, "openplan")
 
     val keynoteRoom = List(AUDIT)
 
