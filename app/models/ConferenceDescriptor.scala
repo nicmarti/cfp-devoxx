@@ -143,7 +143,7 @@ object ConferenceDescriptor {
 
     val UNI = ProposalConfiguration(id = "uni", slotsCount = 4, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
       chosablePreferredDay = true)
-    val LAB = ProposalConfiguration(id = "lab", slotsCount = 8, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
+    val LAB = ProposalConfiguration(id = "lab", slotsCount = 9, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = 22, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
       chosablePreferredDay = true)
@@ -155,7 +155,7 @@ object ConferenceDescriptor {
       chosablePreferredDay = false)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = true, chosablePreferredDay = false)
-    val HACKNIGHT = ProposalConfiguration(id = "hacknight", slotsCount = 2, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val HACKNIGHT = ProposalConfiguration(id = "hacknight", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = false, chosablePreferredDay = false)
     val HACKERGARTEN = ProposalConfiguration(id = "hackergarten", slotsCount = 5, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = false, chosablePreferredDay = false)    
@@ -196,7 +196,7 @@ object ConferenceDescriptor {
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2014/images/icon_alternative.png", "track.java.title", "track.java.desc")
     val CLOUDBIGDATA = TrackDesc(ConferenceTracks.CLOUDBIGDATA.id, "/assets/devoxxbe2014/images/icon_cloud.png", "track.cloudBigData.title", "track.cloudBigData.desc")
     val WEBHTML5 = TrackDesc(ConferenceTracks.WEBHTML5.id, "/assets/devoxxbe2014/images/icon_web.png", "track.webHtml5.title", "track.webHtml5.desc")
-    val NETPOLITICS = TrackDesc(ConferenceTracks.NETPOLITICS.id, "/assets/devoxxbe2014/images//icon_netpolitics.jpeg", "track.netPolitics.title", "track.netPolitics.desc")
+    val NETPOLITICS = TrackDesc(ConferenceTracks.NETPOLITICS.id, "/assets/devoxxbe2014/images/icon_netpolitics.png", "track.netPolitics.title", "track.netPolitics.desc")
     val ALL = List(SERVERSIDE, JAVASE, MOBILE, ARCHISEC, AGILITY_TESTS, FUTURE, JAVA, CLOUDBIGDATA, NETPOLITICS, WEBHTML5)
 
     def findTrackDescFor(t: Track): Option[TrackDesc] = {
@@ -230,7 +230,7 @@ object ConferenceDescriptor {
     val uniWed = List(ROOM_A, ROOM_EF)
     val labsWed = List(ROOM_B, ROOM_C, ROOM_D, ROOM_EXEC)
     val bofWed = List(ROOM_B, ROOM_C, ROOM_EXEC)
-    val hacknightWed = List(ROOM_A)
+    val nightLabWed = List(ROOM_A)
     val workshopWed = List(ATRIUM)
     val igniteWed = List(ATRIUM)
 
@@ -308,10 +308,10 @@ object ConferenceDescriptor {
     }    
  
     // Hack Night - Wednesday
-    val hacknightSlotWednesday: List[Slot] = {
-      val slot1 = ConferenceRooms.hacknightWed.map {
+    val nightLabSlotWednesday: List[Slot] = {
+      val slot1 = ConferenceRooms.nightLabWed.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.HACKNIGHT.id, "wednesday",
+          SlotBuilder(ConferenceProposalTypes.LAB.id, "wednesday",
             new DateTime("2015-06-17T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")),
             new DateTime("2015-06-17T21:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/London")), r1)
       }
@@ -381,7 +381,8 @@ object ConferenceDescriptor {
 
     // What is exactly a Wednesday
     val wednesday: List[Slot] = {
-      uniSlotWednesday ++ holSlotWednesday ++ workshopSlotWednesday ++ hacknightSlotWednesday ++ bofSlotWednesday ++ igniteSlotWednesday ++ wednesdayBreaks
+      uniSlotWednesday ++ holSlotWednesday ++ workshopSlotWednesday ++ nightLabSlotWednesday ++ bofSlotWednesday ++
+        igniteSlotWednesday ++ wednesdayBreaks
     }
 
     // QUICKIES - Thursday
