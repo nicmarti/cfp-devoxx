@@ -36,7 +36,7 @@
 
             <tr>
                 <th><i class="icon-time"></i> Room</th>
-                @slots.groupBy(_.room).keys.toList.sortBy(_.id).map { roomName: Room =>
+                @rooms.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
             </tr>
