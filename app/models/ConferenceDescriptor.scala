@@ -279,7 +279,7 @@ object ConferenceDescriptor {
       uniSlot1 ++ uniSlot2
     }
 
-    // HANDS ON LABS - Wednesday
+    // HANDS-ON LABS - Wednesday
     val holSlotWednesday: List[Slot] = {
       val slot1 = ConferenceRooms.labsWed.map {
         r1 =>
