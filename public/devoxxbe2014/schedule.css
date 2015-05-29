@@ -22,7 +22,7 @@
 
 .agendaTable{
     border: 1px solid #ffd297;
-    width: 125%
+    width: 130%
 }
 
 .agendaTable th{
@@ -63,12 +63,16 @@
 .agendaTable .track{
     display: block;
 }
-.agendaTable .talkType{
+.agendaTable .talkType, .agendaTable .sessiontime{
     display: block;
     background-color: #1f1f1f;
     color:white;
     padding: 2px;
     text-align: center;
+}
+.agendaTable .sessiontime {
+    background-color: #c0c0c0;
+    color:black;
 }
 .agendaTable .speaker{
     font-size: 0.9em;

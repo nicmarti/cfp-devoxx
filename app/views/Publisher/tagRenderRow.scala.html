@@ -1,11 +1,18 @@
 @(subSlots:List[Slot], room:Room, roomSize:Int)
+@import org.joda.time.DateTimeZone
 
 @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
     @zeSlot.proposal.map { p: Proposal =>
         <td class="room @room.id @zeSlot.id">
             <span class="talkType">@Messages(p.talkType.label+".simple")</span>
             <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
-            <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+            <span class="title">
+                <span class="sessiontime">
+                    @zeSlot.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") -
+                    @zeSlot.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
+                </span>
+                <a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a>
+            </span>
             <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                 @tags.publisher.renderSpeaker(speakerUUID)
             }</span>
