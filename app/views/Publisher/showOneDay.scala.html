@@ -24,8 +24,8 @@
             @slots.groupBy(_.from.toDateTime(DateTimeZone.forID("Europe/London"))).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
                     <tr >
                         <th class="timeSlot">
-                            @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") -
-                            @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
+                            @subSlots.sortBy(_.from.toDate.getTime).head.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") -
+                            @subSlots.sortBy(_.to.toDate.getTime).reverse.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
                         </th>
                         @rooms.map { room =>
                             @tagRenderRow(subSlots,room,rooms.size)
@@ -33,10 +33,9 @@
                     </tr>
             }
 
-
             <tr>
                 <th><i class="icon-time"></i> Room</th>
-                @slots.groupBy(_.room).keys.toList.sortBy(_.id).map { roomName: Room =>
+                @rooms.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
             </tr>
