@@ -432,7 +432,7 @@ amd=Après-midi des Décideurs
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
 
-sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
+sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
 sw.all.uni=All Universities
@@ -441,7 +441,7 @@ sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.workshop=All Workshops
-sw.all.ignite=All Ignite Sessions
+sw.all.ignite-session=All Ignite Sessions
 sw.all.hacknight=All Hack Nights
 sw.all.hackergarten=All Hackergartens
 sw.speakers=Devoxxians
