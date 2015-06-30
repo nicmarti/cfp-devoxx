@@ -777,7 +777,7 @@ object ConferenceDescriptor {
   )
 
   def isCFPOpen: Boolean = {
-    true
+    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
   }
 
 }
