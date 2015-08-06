@@ -30,6 +30,12 @@ présence à @Messages("longName") comme présentateur.</p>
 this presentation :</p>
 <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
 
+@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
+<p>This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
+Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
+}
+
+
 <h3>For any question regarding your talk</h3>
 <p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests to respond quickly.</p>
 <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
