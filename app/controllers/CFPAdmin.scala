@@ -270,6 +270,37 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allMyVotes(result, votesByType, allProposals))
   }
 
+  def allMyVotesJson = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      val allVotes = Review.allVotesFromUser(uuid)
+      val allProposalIDs = allVotes.map(_._1)
+      val allProposals = Proposal.loadAndParseProposals(allProposalIDs)
+      val speakersById = Speaker.allSpeakers().map(speaker => (speaker.uuid, speaker)).toMap
+
+      val jsonObject = Json.toJson(
+          allVotes.toList.map{ case(proposalId, maybeVote) =>
+              val proposal:Proposal = allProposals.get(proposalId).get;
+              Map(
+                  "id" -> Json.toJson(proposal.id),
+                  "lang" -> Json.toJson(proposal.lang),
+                  "title" -> Json.toJson(proposal.title),
+                  "mainSpeaker" -> Json.toJson(speakersById.get(proposal.mainSpeaker)),
+                  "secondarySpeaker" -> Json.toJson(speakersById.get(proposal.secondarySpeaker.orNull)),
+                  "type" -> Json.toJson(proposal.talkType.id),
+                  "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+                  "summary" -> Json.toJson(proposal.summary),
+                  "privateMessage" -> Json.toJson(proposal.privateMessage),
+                  "track" -> Json.toJson(proposal.track.id),
+                  "demoLevel" -> Json.toJson(proposal.demoLevel),
+                  "liveCoding" -> Json.toJson(proposal.liveCoding),
+                  "vote" -> Json.toJson(maybeVote.get)
+              )
+          }
+      );
+      Ok(jsonObject).as(JSON);
+  }
+
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
