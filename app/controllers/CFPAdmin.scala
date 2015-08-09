@@ -265,8 +265,9 @@ object CFPAdmin extends SecureCFPController {
       val result = Review.allVotesFromUser(uuid)
       val allProposalIDs = result.map(_._1)
       val allProposals = Proposal.loadAndParseProposals(allProposalIDs)
+      val votesByType = result.groupBy(proposalVote => allProposals.get(proposalVote._1).get.talkType)
 
-      Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
+      Ok(views.html.CFPAdmin.allMyVotes(result, votesByType, allProposals))
   }
 
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {

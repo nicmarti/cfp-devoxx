@@ -1,4 +1,4 @@
-@(allVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allVotes:Set[(String,Option[Double])], votesByTypes:Map[ProposalType,Set[(String,Option[Double])]], relatedProposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -18,7 +18,7 @@
                     <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
                     @if(allVotes.nonEmpty){
                         You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
-                        @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){allScores=>
+                        @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
                             Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br>
@@ -30,40 +30,38 @@
                 </div>
                 @if(allVotes.nonEmpty){
                 <div class="col-md-12">
-                    <h3><i class="icon-bar-chart"></i> Proposals for which you voted</h3>
-                    <table class="table table-bordered proposals">
-                        <thead>
+                    @votesByTypes.map{ case(talkType, votesByType) =>
+                        <h3><i class="icon-bar-chart"></i> Proposals of type @Messages(talkType.id) for which you voted</h3>
+                        <table class="table table-bordered proposals @talkType.id">
+                            <thead>
+                                <tr>
+                                    <th>Score</th>
+                                    <th>Id</th>
+                                    <th>Title</th>
+                                    <th>Track</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        @votesByType.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map{ case(proposalId, maybeVote) =>
                             <tr>
-                                <th>Score</th>
-                                <th>Id</th>
-                                <th>Title</th>
-                                <th>Type</th>
-                                <th>Track</th>
+                            @defining(Math.round(maybeVote.get)){ score =>
+                                <td>@score</td>
+                            }
+                                <td><a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a></td>
+                            @relatedProposals.get(proposalId).map{ proposal=>
+                              <td>
+                                  <small>@proposal.title</small>
+                              </td>
+                              <td>
+                                  <small>@Messages(proposal.track.label)</small>
+                              </td>
+                            }
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            @allVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map{case(proposalId, maybeVote)=>
-                                @defining(Math.round(maybeVote.get)){score=>
-                                     <td>@score</td>
-                             }
-                            <td><a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a></td>
-                        @relatedProposals.get(proposalId).map{proposal=>
-                          <td>
-                              <small>@proposal.title</small>
-                          </td>
-                          <td>
-                              <small>@Messages(proposal.talkType.id)</small>
-                          </td>
-                          <td>
-                              <small>@Messages(proposal.track.label)</small>
-                          </td>
                         }
-                        </tr>
+                            </tbody>
+                        </table>
+                        <hr style="border:0px; clear:both; height: 5px;"/>
                     }
-                        </tbody>
-                    </table>
-
                 </div>
                 <div class="col-md-6">
                     @if(allVotes.filter(_._2.isEmpty).nonEmpty){
@@ -95,16 +93,15 @@ $(document).ready(function() {
       10: 'label-success'
     };
     $('.proposals').dataTable({
-        "aaSorting": [[ 4, "desc" ]],
+        "aaSorting": [[ 0, "desc" ]],
         "iDisplayLength" : -1,
         "aLengthMenu": [
-            [25, 50, 100, 200, -1],
-            [25, 50, 100, 200, "All"]
+            [25, 50, 100, -1],
+            [25, 50, 100, "All"]
         ],
         "bStateSave": true,
         "aoColumns": [
             { "sType": "numeric"},
-            { "sType": "string"},
             { "sType": "string"},
             { "sType": "string"},
             { "sType": "string"}
