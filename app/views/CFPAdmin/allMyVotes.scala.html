@@ -31,7 +31,7 @@
                 @if(allVotes.nonEmpty){
                 <div class="col-md-12">
                     <h3><i class="icon-bar-chart"></i> Proposals for which you voted</h3>
-                    <table id="proposals" class="table table-bordered">
+                    <table class="table table-bordered proposals">
                         <thead>
                             <tr>
                                 <th>Score</th>
@@ -81,58 +81,39 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#proposals').dataTable({
-    "aaSorting": [[ 4, "desc" ]],
-    "iDisplayLength" : -1,
-    "aLengthMenu": [
-    [25, 50, 100, 200, -1],
-    [25, 50, 100, 200, "All"]
-    ],
-    "bStateSave": true,
-    "aoColumns": [
-    { "sType": "numeric"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "string"}
-    ],
-    "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-        if ( aData[0] == "10" ) {
-            $('td:eq(0)', nRow).html( '<span class="label label-success">10</b>' );
+    var CSSCLASS_PER_VOTE = {
+      0: 'label-default',
+      1: 'label-danger',
+      2: 'label-danger',
+      3: 'label-danger',
+      4: 'label-warning',
+      5: 'label-warning',
+      6: 'label-warning',
+      7: 'label-success',
+      8: 'label-success',
+      9: 'label-success',
+      10: 'label-success'
+    };
+    $('.proposals').dataTable({
+        "aaSorting": [[ 4, "desc" ]],
+        "iDisplayLength" : -1,
+        "aLengthMenu": [
+            [25, 50, 100, 200, -1],
+            [25, 50, 100, 200, "All"]
+        ],
+        "bStateSave": true,
+        "aoColumns": [
+            { "sType": "numeric"},
+            { "sType": "string"},
+            { "sType": "string"},
+            { "sType": "string"},
+            { "sType": "string"}
+        ],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+            $('td:eq(0)', nRow).html( '<span class="label '+CSSCLASS_PER_VOTE[aData[0]]+'">'+aData[0]+'</b>' );
         }
-    if ( aData[0] == "9" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-success">9</b>' );
-    }
-    if ( aData[0] == "8" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-success">8</b>' );
-    }
-    if ( aData[0] == "7" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-success">7</b>' );
-    }
-    if ( aData[0] == "6" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-warning">6</b>' );
-    }
-    if ( aData[0] == "5" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-warning">5</b>' );
-    }
-    if ( aData[0] == "4" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-warning">4</b>' );
-    }
-    if ( aData[0] == "3" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-danger">3</b>' );
-    }
-    if ( aData[0] == "2" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-danger">2</b>' );
-    }
-    if ( aData[0] == "1" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-danger">1</b>' );
-    }
-    if ( aData[0] == "0" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-default">0</b>' );
-    }
-    }
     });
-    } );
+} );
 </script>
 
 
