@@ -40,6 +40,7 @@
                                     <th style="width: 95px">Id</th>
                                     <th>Title</th>
                                     <th style="width: 270px">Track</th>
+                                    <th style="width: 270px">Speakers</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,6 +90,9 @@ function generateProposalLineContent(proposalWithScore){
     +'    <td class="track">\n'
     +'        <small>'+proposalWithScore.trackLabel+'</small>\n'
     +'    </td>\n'
+    +'    <td class="speakers">\n'
+    +_.map(proposalWithScore.speakers, function(speaker){ return '<a href="/cfpadmin/speaker/'+speaker.uuid+'">'+speaker.firstName+' '+speaker.name+'</a>'; }).join(', ')
+    +'    </td>\n'
     +'</tr>\n';
 }
 function generateScoreCell(score, proposalId) {
@@ -131,7 +135,8 @@ window.proposalsByType = @Html(Json.stringify(Json.toJson(
                 "score" -> Json.toJson(Math.round(maybeVote.get)),
                 "openForReviewUrl" -> Json.toJson(routes.CFPAdmin.openForReview(proposalId).url),
                 "title" -> Json.toJson(proposal.get.title),
-                "trackLabel" -> Json.toJson(Messages(proposal.get.track.label))
+                "trackLabel" -> Json.toJson(Messages(proposal.get.track.label)),
+                "speakers" -> Json.toJson(proposal.get.allSpeakers)
             )
         })
     }
