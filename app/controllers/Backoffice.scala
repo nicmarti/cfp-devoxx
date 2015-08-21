@@ -1,6 +1,6 @@
 package controllers
 
-import library.Redis
+import library.{DraftReminder, ZapActor, Redis}
 import library.search.{DoIndexProposal, _}
 import models._
 import org.joda.time.Instant
@@ -197,16 +197,18 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
 
-      val declined = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.DECLINED)
+      val declined = publishedConf.filter(_.proposal.get.state == ProposalState.DECLINED)
 
-      val approved = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.APPROVED)
+      val approved = publishedConf.filter(_.proposal.get.state == ProposalState.APPROVED)
 
-      val accepted = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.ACCEPTED)
+      val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val allSpeakersIDsThatDidNotAcceptTC = Speaker.allThatDidNotAcceptedTerms()
-      val speakers = Speaker.asSetOfSpeakers(allSpeakersIDsThatDidNotAcceptTC)
+      val allSpeakersIDs = publishedConf.map(_.proposal.get.allSpeakerUUIDs).flatten.toSet
+      val onlySpeakersThatNeedsToAcceptTerms:Set[String]=allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
+      val allSpeakers = Speaker.asSetOfSpeakers(onlySpeakersThatNeedsToAcceptTerms)
+
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
@@ -215,7 +217,7 @@ object Backoffice extends SecureCFPController {
           Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, speakers))
+      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, allSpeakers))
 
   }
 
@@ -253,6 +255,21 @@ object Backoffice extends SecureCFPController {
       }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")
       }
+  }
+
+  def sendDraftReminder=SecuredAction(IsMemberOf("admin")) {
+    implicit request=>
+      ZapActor.actor ! DraftReminder()
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success"->"Sent draft reminder to speakers")
+  }
+
+  def showAllDeclined()=SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      val allDeclined = Proposal.allDeclinedProposals()
+//      Proposal.decline(request.webuser.uuid, proposalId)
+      Ok(views.html.Backoffice.showAllDeclined(allDeclined))
+
   }
 
 }

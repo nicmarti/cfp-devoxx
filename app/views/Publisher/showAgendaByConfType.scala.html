@@ -1,133 +1,25 @@
 @(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-    @views.html.Publisher.devoxxBE2014(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2014 for $day"+Messages("day-" + day))) {
-        <div class="large-12 columns">
-            <h3>@Messages(talkType), @Messages("day-" + day)</h3>
-            <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
-                <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
-                <a href="@routes.Publisher.showByDay(day)">@Messages("day-" + day)</a></p>
-        </div>
+@views.html.Publisher.devoxxFR2015(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2014 for $day"+Messages("day-" + day))) {
+    <div class="large-12 columns">
+        <h3>@Messages(talkType), @Messages("day-" + day)</h3>
+        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
+            <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
+    </div>
 
-        <div class="large-12 columns woocommerce">
-
-            <table class="agendaTable">
-                <tr>
-                    <th><i class="icon-time"></i> Room</th>
-                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sorted.map { roomName: String =>
-                        <td>@roomName</td>
-                    }
-                </tr>
-
-                @if(day.toLowerCase=="wednesday" && talkType.toLowerCase=="conf" ){
-                    <tr>
-                        <th>
-                            09:30 - 11:30
-                        </th>
-                        <td class="keynotes" colspan="7">
-                            <a href="http://www.devoxx.be/keynotes-2014">Keynotes</a>
-
-                        </td>
-                    </tr>
-                }
-                @if(day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" ){
-                    <tr>
-                        <th>
-                            09:30 - 10:30
-                        </th>
-                        <td class="keynotes" colspan="7">
-                            <a href="http://www.devoxx.be/keynotes-2014">Keynotes</a>
-
-                        </td>
-                    </tr>
-                }
-
-                @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
-                <tr>
-                    <th class="timeSlot">
-                        <!--
-                        time = @time
-                        localdatetime = @time.toLocalDateTime
-
-                        -->
-                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toString("HH:mm")
-                    </th>
-                    @slots.sortBy(_.room.name).zipWithIndex.map { case(slot,index) =>
-
-                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="16:40"  ){
-                                <td class="room">
-                                    <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                                    slot1 :<strong>16:40 - 17:10</strong><br>
-                                    slot2 :<strong>17:10 - 17:40</strong><br>
-                                    <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
-                                </td>
-                         }
-                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="17:50"  ){
-                            <td class="room">
-                            <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                            slot3 :<strong>17:50 - 18:20</strong><br>
-                            slot4 :<strong>18:20 - 18:50</strong><br>
-                            <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
-                            </td>
-                        }
-
-
-                        <td class="room">
-                            @slot.proposal.map { p: Proposal =>
-                                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
-                                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
-                                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                                    @tags.publisher.renderSpeaker(speakerUUID)
-                                }</span>
-
-                            }
-                        @if(slot.proposal.isEmpty && slot.break.isEmpty && index>0 ){
-                            TBA
-                        }
-                        </td>
-                    }
-                    @** Special Hack to add startups talks **@
-                    @if(day.toLowerCase=="friday" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).hourOfDay.get()==9  && talkType.toLowerCase=="conf"){
-                        <td>
-                          <span class="track"><img src="/assets/devoxxbe2014/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                            slot5 :<strong>09:30 - 10:00</strong><br>
-                            slot6 :<strong>10:00 - 10:30</strong><br>
-                            <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
-                        </td>
-
-                    }
-                </tr>
-                }
-@if(day.toLowerCase.startsWith("wed")) {
-     <tr>
-         <th>
-             19:00 - 19:30
-         </th>
-         <td class="keynotes" colspan="7">
-             <a href="http://www.devoxx.be/keynotes-2014">Evening Keynote</a>
-
-         </td>
-     </tr>
- }
- @if(day.toLowerCase.startsWith("thu")) {
-     <tr>
-         <th>
-             19:00 - 19:30
-         </th>
-         <td class="keynotes" colspan="7">
-             <a href="http://www.devoxx.be/keynotes-2014">Closing Keynote</a>
-
-         </td>
-     </tr>
- }
-                <tr>
-                    <th><i class="icon-time"></i> Room</th>
-                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sorted.map { roomName: String =>
-                        <td>@roomName</td>
-                    }
-                </tr>
-            </table>
-
-        </div>
-
+    <div class="columns large-12 woocommerce">
+    @schedule.slots.sortBy(_.from.getMillis).map{slot =>
+        <h4>@slot.room.name <small>@slot.from.toString("HH:mm")-@slot.to.toString("HH:mm")</small></h4>
+        @slot.proposal.map{ p: Proposal =>
+        <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
+        <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+            <br>
+        <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+            @tags.publisher.renderSpeaker(speakerUUID)
+            }</span>
+        }
     }
+</div>
+
+}

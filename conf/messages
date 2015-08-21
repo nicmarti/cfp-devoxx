@@ -11,7 +11,6 @@ longName=Devoxx FR 2015 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
 longSplittedName_whiteEnd=FR 2015
-conference.dates=10th-14th November
 # -----------------
 cfp.title=Devoxx FR 2015 CFP
 login.error=Invalid email or password
@@ -36,7 +35,6 @@ blog=Your blog or company website
 qualifications=Your speaker''s qualifications
 qualifications2=Speaker''s qualifications
 qualifications.label=Speaker qualifications
-qualifications.otherproposals=Other proposals
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for {0} and propose one or more subjects.
 index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
@@ -88,7 +86,7 @@ mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href\="{0}\#confType" target\="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href\="http://www.devoxx.fr/dvxfr15-faq-2#format" target\="new">FAQ</a>.
 
 audienceLevel=Audience level :
 audienceLevel.help=Please, indicate the required audience level for your talk:\
@@ -123,29 +121,27 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Wednesday, Thursday
+key.label=Keynote, 20mn, Thursday and Friday
 key.label.simple=Keynote
-conf.label=Conference, 45mn, Wednesday, Thursday and Friday morning
+conf.label=Conference, 45mn, Thursday and Friday
 conf.label.simple=Conference
-uni.label=University, 3h, Monday or Tuesday
+uni.label=University, 3h, Wednesday
 uni.label.simple=University
-tia.label=Tools in Action, 30mn, only Monday or Tuesday
+tia.label=Tools in Action, 30mn, Wednesday or Thursday
 tia.label.simple=Tools in Action
-quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+quick.label=Quickie, 15mn, Thursday and Friday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Monday to Thursday evening
+bof.label=Bird of a Feather, 1h, Thursday only evening
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.label=Hands-on Labs, 3h, Wednesday
 lab.label.simple=Hand''s on Lab
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Thursday
+start.label=Startup Talk, 25 min, Wednesday to Friday
 start.label.simple=Startup
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
-
-amd.label.simple=Après-midi des décideurs
 
 # Bug report
 Issue.report=Report an issue
@@ -382,9 +378,9 @@ acceptedProposals.title=List of accepted/refused proposals for {0}
 ar.approved=Approved proposals
 ar.rejected=Refused proposals
 ar.noneApproved=We are very sorry to inform you that none of your proposals have been accepted.
-ar.pleaseAccept=Please confirm for each accepted proposal, that you accept to present this talk
-ar.IAccept=I accept
-ar.IDecline=I decline
+ar.pleaseAccept=Please confirm for each accepted proposal, that you accept to present this talk. If you co-present a talk with another speaker, it''s also possible that your co-speaker has already accepted to present.
+ar.IAccept=I accept to present this talk
+ar.IDecline=I decline and I will not present this talk
 ar.IBackup=As a Backup
 ar.currentStatus=Current status
 ar.pleaseSelect=Please, select one of the action for this proposal:
@@ -457,6 +453,7 @@ sw.hackatons=Hackatons
 sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
 calendar.pref=Speaker''s preferences for schedulling
+calendar.pref.wednesday=Wednesday
 calendar.pref.thursday=Thursday
 calendar.pref.friday=Friday
 calendar.pref.reset=No preferences
@@ -470,11 +467,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 10th November
-day-tuesday=Tuesday, 11th November
-day-wednesday=Wednesday, 12th November
+day-monday=Monday, 6th April
+day-tuesday=Tuesday, 7th April
+day-wednesday=Wednesday, 8th April
 day-thursday=Thursday, 9th April
-day-friday=Friday, 14th November
+day-friday=Friday, 10th April
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -599,11 +596,11 @@ mail.access_code.subject=Your {0} speaker''s access code
 mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
 mail.issue_reported.subject=New issue reported on CFP web site
-mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
-mail.question_to_speaker.subject=[{1}] New question posted on Devoxx Web site about {0}
-mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
-mail.notify_proposal.subject={0} submitted a proposal [{1}]
-mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
+mail.cfp_message_to_speaker.subject=[{1}] {0}
+mail.question_to_speaker.subject=[{1}] {0}
+mail.speaker_message_to_cfp.subject=[{1}] {0}
+mail.notify_proposal.subject=[{1}] {0}
+mail.notify_proposal.content=[{1}] {0}
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
 mail.proposal_approved.subject=Your proposal has been approved {0}
@@ -664,3 +661,33 @@ wl.status=Current status
 wishlist.setPersonInCharge=Person responsible for {0}
 webmobile.label=Web, Mobile & UX
 agilityTest.label=Agility, Methodology & Tests
+
+wl.country=Country
+wl.keynote=Country
+wl_keynote=Keynote
+wl_keynote.checkbox=Yes, this could be a keynote speaker
+
+showProposal.comment.ar=Ask a question about this talk to the team
+ar.proposalType=Proposal type:
+ar.proposalId=Proposal ID:
+
+tag.proposal.title=Title
+tag.proposal.youVoted=You voted
+tag.proposal.status=Status
+tag.proposal.type=Type
+tag.proposal.track=Track
+qualifications.otherproposals=Other proposals from same speaker
+
+speaker.mustAcceptTC=You must accept Terms and Conditions
+speaker.ar1=Please click
+speaker.ar2=here
+speaker.ar3=to review and to validate Terms and Conditions.
+
+tagRenderRow-coffee=Coffee
+tagRenderRow-lunch=Lunch
+tagRenderRow-dej=Breakfast
+tagRenderRow-reg=Registration, welcome and Breakfast
+tagRenderRow-chgt=Short break
+tagRenderRow-meet=Soirée Meet & Greet
+please.check.approved=Please, review the list of approved Proposals, then select accept or decline for each Talk.
+proposal.approved.noVotes=Approved proposal - no more votes

@@ -1,5 +1,5 @@
 @(proposals: Iterable[Proposal], talkType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
-@views.html.Publisher.devoxxBE2014(Messages(talkType)) {
+@views.html.Publisher.devoxxFR2015(Messages(talkType)) {
     <div class="large-12">
         <h3>@Messages(talkType)</h3>
         <p class="breadcrumb">
@@ -14,7 +14,7 @@
             <ul>
             @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
                 <li>
-                    <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)" class="blackLink">@proposal.title</a></strong>
+                    <strong>@proposal.title</strong>  <a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)"> - détails </a>
                     <br>
                     @proposal.allSpeakerUUIDs.map { speakerUUID =>
                         @tags.publisher.renderSpeaker(speakerUUID)

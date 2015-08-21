@@ -1,7 +1,7 @@
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)], questions:List[Question])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxBE2014(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
+@views.html.Publisher.devoxxFR2015(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
 
     <div class="large-12 columns">
 
@@ -9,8 +9,6 @@
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all." + proposal.talkType.id)</a>  &gt;
             <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages(s"sw.agenda.${slot.get.day}")</a> &gt;
-            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">See all @Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) for this day</a>
-
         </p>
     } else {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>

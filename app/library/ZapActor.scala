@@ -280,6 +280,7 @@ class ZapActor extends Actor {
 
           case other =>
             play.Logger.error(s"Unable to read response from OpsGenie server ${result.status} ${result.statusText}")
+            play.Logger.error(s"Response body ${result.body}")
 
         }
     }

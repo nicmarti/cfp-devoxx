@@ -29,7 +29,7 @@ import play.api.mvc.{Action, Controller}
 /**
  * A simple Status controller for Redis.
  *
- * This is important to link with OPS-Genie alerts.
+ * This is important to link with OPS-Genie alerts. Used from ZapActor SendHeartbeat.
  *
  * @author created by N.Martignole, Innoteria, on 17/10/2014.
  */

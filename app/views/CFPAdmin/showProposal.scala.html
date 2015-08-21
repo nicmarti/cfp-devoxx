@@ -133,7 +133,7 @@
         @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
            @if(approved){
                <div class="panel-heading">
-                    <h3><i class="icon-check"></i> <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
+                    <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
                 </div>
                 <div class="panel-body">
                     <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
@@ -229,6 +229,11 @@
                 </div>
                 <div class="panel-body">
                 @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
+                    @if(preferredDay == Some("Wed")) {
+                        <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.wednesday")</a>
+                    } else {
+                        <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Wed")" class="btn btn-sm btn-default">@Messages("calendar.pref.wednesday")</a>
+                    }
                     @if(preferredDay == Some("Thu")) {
                         <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
                     } else {

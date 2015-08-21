@@ -29,7 +29,7 @@ $(function () {
 
         $(stream).on('message', function (e) {
             var tweet = JSON.parse(e.originalEvent.data);
-            console.log(tweet);
+            //console.log(tweet);
             if (tweet && tweet.user) {
                 createTweet(tweet);
             }
@@ -68,9 +68,6 @@ $(function () {
             '<span class="sn">' + tweet.user.screen_name +
             '</span> (<span class="un">' + tweet.user.name +
             '</span>)' +
-            '<img class="humoricon" src="http://whichlang.appspot.com/posneg?img=true&png=true&text=' +
-            encodeURIComponent(tweet.text) +
-            '">' +
             '<br>' +
             '<div class="tx">' + tweet.text + '</div>' +
             thumImages +
@@ -82,9 +79,6 @@ $(function () {
                 '<span class="sn">' + tweet.user.screen_name +
                 '</span> (<span class="un">' + tweet.user.name +
                 '</span>)' +
-                '<img class="humoricon" src="http://whichlang.appspot.com/posneg?img=true&png=true&text=' +
-                encodeURIComponent(tweet.text) +
-                '">' +
                 '<br>' +
                 '<div class="tx">' + tweet.text + '</div></li>';
         }
@@ -104,56 +98,6 @@ $(function () {
             });
 
         }
-
-    };
-
-    var loadBestTalks = function (query) {
-        var stream = new EventSource(Router.controllers.Tweetwall.watchBestTalks().url);
-
-        $(stream).on('message', function (e) {
-            var bestTalks = JSON.parse(e.originalEvent.data);
-            if (bestTalks) {
-                createBestTalkPanels(bestTalks);
-            }
-        });
-    };
-
-    var createBestTalkPanels = function(bestTalks){
-        $('#sessionPop').empty();
-
-        _.each(bestTalks, function(talk){
-
-            var photos = _.map(talk.gravatars,function(g){
-               return '<img src="' + g + '" class="bestTalkSpeakers">';
-            });
-
-            var speakerBox = '<li>' +
-                '<div class="bestTalk"> ' +
-            '<div class="bestTalkPhotos">' +
-                photos +
-            '</div>' +
-            '<div class="bestTalkTitle"> '+
-                talk.title +
-            '</div>' +
-            '<div class="bestTalkTrack">' +
-                talk.track + '<br>' + talk.speakers +
-            '</div>'+
-            '</div>' +
-            '</li>';
-
-            var zeList = $('#sessionPop');
-            var tweetBox2 = $(speakerBox).addClass('new-item');
-            zeList.prepend(tweetBox2);
-
-            if ($('#sessionPop li').length >= 4) {
-                var lastItem = $('#sessionPop li:nth-child(4)');
-                $(lastItem).remove();
-            }
-
-
-            return speakerBox;
-        });
-
 
     };
 
@@ -221,8 +165,7 @@ $(function () {
 
     var init = function () {
         startTime();
-        loadTweets("devoxx,devoxxfr,tennis,golf"); // the keyword, the hashtag to stream
-        loadBestTalks();
+        loadTweets("devoxx,devoxxfr"); // the keyword, the hashtag to stream
         loadNextTalks();
     };
 

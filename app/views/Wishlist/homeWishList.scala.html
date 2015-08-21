@@ -3,6 +3,11 @@
 @import helper.twitterBootstrap._
 
 @main("Wishlist") {
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
             <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
@@ -18,6 +23,7 @@
 
                 <div class="panel-body">
 <a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishlist.newWishlist")</a><br>
+                    <p>Total wishlisted : @requests.size</p>
   @if(flash.get("error").isDefined) {
                         <div class="alert alert-danger alert-dismissable">
                             <strong>Error :</strong>
@@ -37,7 +43,9 @@
             <th>@Messages("wl.sn")</th>
             <th>@Messages("wl.fb")</th>
             <th>@Messages("wl.company")</th>
+            <th>@Messages("wl.country")</th>
             <th>@Messages("wl.track")</th>
+            <th>@Messages("wl.keynote")</th>
             <th>@Messages("wl.status")</th>
         </tr>
     </thead>
@@ -59,7 +67,14 @@
            }
         </td>
         <td>@request.company</td>
+        <td>@request.country</td>
         <td>@Messages(request.track.label)</td>
+        <td>@if(request.keynote.isDefined && request.keynote.get){
+            Yes
+        } else{
+            No
+        }
+        </td>
         <td>@Messages("wl_"+request.status.code)</td>
     </tr>
 }
@@ -70,5 +85,30 @@
         </div>
 </div>
 
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#allWishlist').dataTable({
+    "aaSorting": [[ 2, "desc" ]],
+    "iDisplayLength" : -1,
+    "aLengthMenu": [
+    [25, 50, 100, 200, -1],
+    [25, 50, 100, 200, "All"]
+    ],
+    "bStateSave": true,
+    "aoColumns": [
+    { "sType": "string"},
+    { "sType": "date"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "boolean"},
+    { "sType": "string"}
+    ]
+    });
+    } );
+</script>
 
 }

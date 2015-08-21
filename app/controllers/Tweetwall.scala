@@ -22,6 +22,8 @@
  */
 package controllers
 
+import org.joda.time.DateTimeZone
+
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 
@@ -103,7 +105,6 @@ object Tweetwall extends Controller  {
           })
   }
 
-
   // Starts to watch tweets
   def watchTweets(keywords: String) = Action.async {
     implicit request =>
@@ -123,53 +124,6 @@ object Tweetwall extends Controller  {
     }
   }
 
-  // Loads the list of best talks. This part relies on an external simple web service built by Xebia.
-  def watchBestTalks() = Action {
-    implicit request =>
-      import scala.concurrent.duration._
-
-      //val url: String = routes.SchedullingController.giveMeBestTalks.absoluteURL()
-      val url: String = "http://kouign-amann-cloud.devoxxfr-kouign-amann.cloudbees.net/most-popular"
-
-      def futureIDs: Future[Option[JsValue]] = WS.url(url).get().map {
-        response =>
-          response.status match {
-            case 200 => Some(Json.parse(response.body))
-            case other => None
-          }
-      }
-
-      val bestProposalIDs: Enumerator[JsValue] = Enumerator.generateM[JsValue] {
-        futureIDs.flatMap(r => play.api.libs.concurrent.Promise.timeout(r, 30 seconds))
-      }
-
-      val jsIDstoProposal: Enumeratee[JsValue, JsValue] = Enumeratee.map {
-        jsValue =>
-
-          val ids = jsValue.as[List[String]]
-
-          val proposals = Proposal.loadAndParseProposals(ids.toSet).values.toSeq
-
-          val jsonObject = Json.toJson(
-            proposals.map {
-              proposal =>
-                Json.toJson(
-                  Map(
-                    "id" -> JsString(proposal.id),
-                    "title" -> JsString(proposal.title),
-                    "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
-                    "gravatars" -> Json.toJson(proposal.allSpeakersGravatar),
-                    "track" -> JsString(Messages(proposal.track.label))
-                  )
-                )
-            }
-          )
-          Json.toJson(jsonObject)
-      }
-
-      Ok.feed(bestProposalIDs &> jsIDstoProposal &> EventSource()).as("text/event-stream")
-  }
-
   // Loads the next talks,
   def loadNextTalks() = Action {
     implicit request =>
@@ -178,9 +132,9 @@ object Tweetwall extends Controller  {
 
       val nextTalks: Enumerator[Seq[Slot]] = Enumerator.generateM[Seq[Slot]] {
         // 1) For production
-        //  play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 20 seconds)
+        play.api.libs.concurrent.Promise.timeout(ScheduleConfiguration.loadNextTalks(), 30 seconds)
         // 2) For demo
-        Promise.timeout(ScheduleConfiguration.loadRandomTalks(), 20 seconds)
+        //Promise.timeout(ScheduleConfiguration.loadRandomTalks(), 20 seconds)
       }
 
       val proposalsToJSON: Enumeratee[Seq[Slot], JsValue] = Enumeratee.map {
@@ -198,8 +152,8 @@ object Tweetwall extends Controller  {
                         "speakers" -> JsString(proposal.allSpeakers.map(s => s.cleanName).mkString(", ")),
                         "room" -> JsString(slot.room.name),
                         "track" -> JsString(Messages(proposal.track.label)),
-                        "from" -> JsString(slot.from.toString("HH:mm")),
-                        "to" -> JsString(slot.to.toString("HH:mm"))
+                        "from" -> JsString(slot.from.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm")),
+                        "to" -> JsString(slot.to.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm"))// PUTAIN de HACK
                       )
                     )
                   }
@@ -212,8 +166,8 @@ object Tweetwall extends Controller  {
                         "room" -> JsString(zeBreak.room.name),
                         "track" -> JsString(""),
                         "speakers" -> JsString(""),
-                        "from" -> JsString(slot.from.toString("HH:mm")),
-                        "to" -> JsString(slot.from.toString("HH:mm"))
+                        "from" -> JsString(slot.from.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm")),
+                        "to" -> JsString(slot.from.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm"))
                       )
                     )
                   }
@@ -240,16 +194,6 @@ class TweetsBroadcaster extends Actor {
 
   val (enumerator, channel) = Concurrent.broadcast[Array[Byte]]
 
-  def streamIt(keywords: String, request: RequestHeader, myself: ActorRef) {
-    WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&language=fr,en&track=" + URLEncoder.encode(keywords, "UTF-8"))
-      .withRequestTimeout(-1) // else we close the stream
-      .sign(OAuthCalculator(Tweetwall.KEY, Tweetwall.sessionTokenPair(request).get))
-      .withHeaders("Connection" -> "keep-alive") // not sure we really need this
-      .postAndRetrieveStream("")(_ => Iteratee.foreach[Array[Byte]](bytes => channel.push(bytes))).flatMap(_.run).onComplete {
-      case _ => myself ! ResetConnection()
-    }
-  }
-
   def beforeAuth: Receive = {
     case WallRequest(keywords, request) => {
       val myself = self
@@ -260,11 +204,27 @@ class TweetsBroadcaster extends Actor {
     case _ =>
   }
 
+
   def afterAuth: Receive = {
     case WallRequest(keywords, request) => sender ! WallResponse(enumerator)
     case ResetConnection() => become(beforeAuth)
     case _ =>
   }
+
+  def streamIt(keywords: String, request: RequestHeader, myself: ActorRef) {
+    WS.url(s"https://stream.twitter.com/1.1/statuses/filter.json?stall_warnings=true&filter_level=none&language=fr,en&track=" + URLEncoder.encode(keywords, "UTF-8"))
+      .withRequestTimeout(-1) // else we close the stream
+      .sign(OAuthCalculator(Tweetwall.KEY, Tweetwall.sessionTokenPair(request).get))
+      .withHeaders("Connection" -> "keep-alive") // not sure we really need this
+      .postAndRetrieveStream("")(_ => Iteratee.foreach[Array[Byte]](bytes => channel.push(bytes))).flatMap(_.run).onComplete {
+      case other => {
+        myself ! ResetConnection()
+      }
+    }
+  }
+
+
+
 
   def receive = beforeAuth
 }
