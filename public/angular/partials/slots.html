@@ -15,13 +15,16 @@
     <input type="search" ng-model="filterTalk" placeholder="Filter Talks..." /><br>
     <small>Slots: {{approvedTalks.length}}</small>
     <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
-         class="talk"
+         class="talk sponsor-{{talk.sponsorTalk}}"
          drag="talk" dragStyle="columnDrag"
          dropStyle="columnDrop">
          <span class="proposalTitle">{{talk.title}}</span>
          <span class="label label-default">{{talk.id}}</span>
          <div class="label label-info">{{talk.lang}}</div>
          <div class="label label-warning">{{talk.track.id}}</div>
+
+        <div class="demo-{{talk.demoLevel}}">&nbsp;</div>
+
          <div class="label label-success">{{talk.mainSpeaker}}</div>
          <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
          <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
@@ -40,16 +43,22 @@
         <input type="search" ng-model="q" placeholder="Filter Slots..." />
     </div>
     <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
-        <span class="label label-default">{{slot.room.name}} ({{slot.room.capacity}}/{{slot.room.setup}})</span>
-        <small>{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
+        <span class="label label-default">{{slot.room.name}}</span> <small><div class="{{slot.room.recorded}}">&nbsp;</div> ({{slot.room.capacity}}/{{slot.room.setup}})</span>
+        {{slot.day.substring(0,3)}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</small>
         <div ng-show="slot.proposal">
             <button class="btn btn-sm btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> remove</button>
             <span class="proposalTitle">{{slot.proposal.title}}</span>
-
+             <div class="label label-success">{{slot.proposal.mainSpeaker}}</div>
+             <div class="label label-success btn-sm">{{slot.proposal.secondarySpeaker}}</div>
+             <div ng-repeat="otherSpeaker in slot.proposal.otherSpeakers" class="label label-success btn-sm">
+                 {{otherSpeaker}}
+             </div>
             <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
             <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
             </div>
         </div>
     </div>
+
+
 </div>
 

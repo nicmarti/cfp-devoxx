@@ -1,13 +1,11 @@
 @(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxBE2014(Messages(s"sw.show.$day")) {
+@views.html.Publisher.devoxxFR2015(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            <a href="@routes.Publisher.showByDay("mon")">@Messages("sw.agenda.mon")</a> /
-            <a href="@routes.Publisher.showByDay("tue")">@Messages("sw.agenda.tue")</a> /
             <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /
             <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
             <a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a>
@@ -34,7 +32,6 @@
                         }
                     </tr>
             }
-
 
             <tr>
                 <th><i class="icon-time"></i> Room</th>

@@ -133,10 +133,6 @@ object ScheduleConfiguration {
     }
 
     val listOfSlots = day match {
-      case "monday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.monday, "monday")
-      case "tuesday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.tuesday, "tuesday")
       case "wednesday" =>
         extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
       case "thursday" =>
@@ -189,10 +185,10 @@ object ScheduleConfiguration {
   }
 
 
-  def loadNextTalks() = {
+  def  loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.map(_.slots).flatten
-    Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")))).sortBy(_.from.toDate.getTime).take(10))
+    Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Paris")))).sortBy(_.from.toDate.getTime).take(10))
   }
 
   def loadRandomTalks() = {

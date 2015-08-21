@@ -36,7 +36,7 @@ import play.api.mvc._
 
 
 /**
- * Simple content publisher
+ * Publisher is the controller responsible for the Web content of your conference Program.
  * Created by nicolas on 12/02/2014.
  */
 object Publisher extends Controller {
@@ -82,6 +82,7 @@ object Publisher extends Controller {
       maybeSpeaker match {
         case Some(speaker) => {
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
+          // Log which speaker is hot or not
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
@@ -176,8 +177,6 @@ object Publisher extends Controller {
       }
 
       day match {
-        case d if Set("test", "mon", "monday", "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.monday, "monday")
-        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesday, "tuesday")
         case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
         case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
         case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday, "friday")
@@ -276,8 +275,5 @@ object Publisher extends Controller {
           InternalServerError(r.get)
         }
       }
-
   }
-
-
 }

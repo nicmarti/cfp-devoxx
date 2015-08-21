@@ -1,0 +1,41 @@
+@(proposals: List[(Speaker, Iterable[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Speakers") {
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger alert-dismissable col-md-12">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+            </div>
+        }
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All speakers with a badge</h3>
+                    <em>Primary or secondary speaker, with a speaker badge</em>
+                    <em>No Quickies or B.O.F</em>
+                    <span class="label label-info">@proposals.size speakers</span>
+                </div>
+                <div class="panel-footer">
+                     <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
+                </div>
+            </div>
+        </div>
+<pre>
+        @proposals.sortBy(_._1.name).map{case(speaker,props)=>
+@speaker.name.get.head.toString;@speaker.name.get;@speaker.firstName.get;@speaker.company.getOrElse("");@speaker.twitter.getOrElse("") }
+</pre>
+
+    </div>
+}

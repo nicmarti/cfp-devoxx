@@ -300,13 +300,15 @@ object Proposal {
 
       // Do the operation if and only if we changed the Track
       maybeExistingTrackId.map {
-        oldTrackId: String =>
+        case oldTrackId if oldTrackId!=proposal.track.id=>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
           client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
           // And we are able to track this event
           Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
+        case oldTrackId if oldTrackId==proposal.track.id=>
+          // Same track
       }
       if (maybeExistingTrackId.isEmpty) {
         // SADD is O(N)
@@ -560,15 +562,6 @@ object Proposal {
   def allAccepted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.ACCEPTED.code)
-      if (play.Logger.of("models.Proposal").isDebugEnabled && allProposalIds.nonEmpty) {
-        val check = Json.parse(client.hget("Proposals", allProposalIds.head).get).validate[Proposal]
-        check.fold(invalidJson => {
-          play.Logger.error("WARN: Unable to re-read Proposal, some stupid developer changed the JSON format ");
-          play.Logger.error(s"Got ${ZapJson.showError(invalidJson)}")
-          JsNull
-        }
-          , identity)
-      }
       client.hmget("Proposals", allProposalIds).flatMap {
         proposalJson: String =>
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.ACCEPTED))
@@ -589,6 +582,26 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$author")
       loadAndParseProposals(allProposalIDs)
+  }
+
+  def allApprovedProposalsByAuthor(author:String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.sinter(s"Proposals:ByAuthor:$author","ApprovedById:")
+      loadAndParseProposals(allProposalIDs)
+  }
+
+  def allApprovedAndAcceptedProposalsByAuthor(author:String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allApproved = client.sinter(s"Proposals:ByAuthor:$author","ApprovedById:")
+      loadAndParseProposals(allApproved)
+  }
+
+  def allThatForgetToAccept(author:String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allApproved = client.sinter(s"Proposals:ByAuthor:$author","ApprovedById:")
+      val onlyAcceptedNotApproved = client.sdiff("Proposals:ByState:" + ProposalState.ACCEPTED.code,"Proposals:ByState:" + ProposalState.APPROVED.code)
+      val approvedAndNotAccepted = allApproved.diff(onlyAcceptedNotApproved).diff(client.smembers("Proposals:ByState:" + ProposalState.DECLINED.code))
+      loadAndParseProposals(approvedAndNotAccepted)
   }
 
   def allDeleted(): List[Proposal] = Redis.pool.withClient {
@@ -719,6 +732,19 @@ object Proposal {
       }
   }
 
+  def allDeclinedProposals(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+
+      val allDeclineds = client.smembers(s"Proposals:ByState:${ProposalState.DECLINED.code}")
+
+      client.hmget("Proposals", allDeclineds).map {
+        json =>
+          val proposal = Json.parse(json).as[Proposal]
+          proposal.copy(state = ProposalState.DECLINED)
+      }
+  }
+
+
   // This code is a bit complex. It's an optimized version that loads from Redis
   // a set of Proposal. It returns only valid proposal, successfully loaded.
   def loadAndParseProposals(proposalIDs: Set[String]): Map[String, Proposal] = Redis.pool.withClient {
@@ -796,13 +822,6 @@ object Proposal {
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val proposals = loadAndParseProposals(allProposalIDs).values.toSet
       proposals.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED) == false && proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
-  }
-
-  def hasOneProposalWithSpeakerTicket(speakerUUID: String): Boolean = Redis.pool.withClient {
-    implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      val onlyAcceptedOrApproved = loadAndParseProposals(allProposalIDs).values.toSet.filter(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED)
-      onlyAcceptedOrApproved.filter(proposal => ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)).nonEmpty
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {

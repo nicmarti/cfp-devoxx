@@ -1,0 +1,87 @@
+@(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader)
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="Robots" content="index,follow" />
+<meta name="description" content="@description" />
+
+<title>@title &infin; Devoxx</title>
+<!-- Custom style for CFP by Nicolas -->
+<link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/dvfr2015.css")' type='text/css' media='all' />
+<link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/schedule.css")' type='text/css' media='all' />
+
+    <meta name="generator" content="Play Scala by Nicolas Martignole and not JHipster" />
+
+</head>
+<body class="page page-id-1769 page-template-default custom-background siteorigin-panels group-blog">
+
+<a id="simple-menu" href="#sidr">
+    <i class="fi-list"></i>
+    @title | Devoxx</a>
+
+<div id="sidr">
+    <button><i class="fi-x"></i>Close Menu</button>
+    <ul id="menu-other-pages-menu" class="menu">
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="http://www.devoxx.fr/">Home</a></li>
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Accueil</a></li>
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="http://www.devoxx.fr/sponsors-2015/">Sponsors</a></li>
+        <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://www.devoxx.fr/dvxfr15-faq-2/">FAQ</a></li>
+        <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="http://reg.devoxx.fr">Inscription</a></li>
+    </ul>
+</div>
+
+        <!-- Image Top Container -->
+    <section id="top-image" class="blog-page">
+            <!-- Header Menu -->
+        <header id="top-header">
+            <div class="row">
+                <div class="large-12 columns">
+                    <div class="logo-holder">
+                        <a href="http://www.devoxx.fr">DEVOX</a>
+                    </div>
+                    <div class="skew-wrapper"></div>
+                    <ul id="nav-menu" class="menu">
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="http://www.devoxx.fr/">www.devoxx.fr</a></li>
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Accueil Programme</a></li>
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="http://www.devoxx.fr/sponsors-2015/">Sponsors</a></li>
+        <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://www.devoxx.fr/dvxfr15-faq-2/">FAQ</a></li>
+        <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="http://reg.devoxx.fr">Inscription</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+    </section>
+
+	<!-- Blog Section -->
+	<section id="blog-posts-two">
+	    <!-- Blog Post -->
+	    <div class="row blog-post single-blog-post">
+	        <div class="large-12 large-centered columns single-page">
+	            <div class="single-content single-content-page row">
+<!-- ************** Begin generated content by Play ************************ //-->
+@content
+<!--  ************* End generated content by Play ************************** //-->
+	            </div>
+	        </div>
+	    </div>
+	</section>
+
+<!-- Footer -->
+<footer >
+    <a href="#" class="go-top"></a>
+    <div class="row">
+        <div class="large-6 columns">
+            <p>Devoxx France, Tous droits réservés (C) 2012-2015<br>Evénement organisé par Quantix SARL</p>
+        </div>
+        <div class="large-6 columns">
+<!-- place holder sponsors -->
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
+

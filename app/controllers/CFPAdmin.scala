@@ -1,12 +1,9 @@
 package controllers
 
-import java.io.{File, PrintWriter}
-
-import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import library.search.ElasticSearch
+import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review.ScoreAndTotalVotes
 import models._
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
 import play.api.data.Forms._
 import play.api.data._
@@ -80,11 +77,12 @@ object CFPAdmin extends SecureCFPController {
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
-  def allProposalByProposal(proposal:Proposal):Map[String, Map[String, models.Proposal]] ={
-    val authorIds :List[String] = proposal.mainSpeaker :: proposal.secondarySpeaker.toList ::: proposal.otherSpeakers
+
+  def allProposalByProposal(proposal: Proposal): Map[String, Map[String, models.Proposal]] = {
+    val authorIds: List[String] = proposal.mainSpeaker :: proposal.secondarySpeaker.toList ::: proposal.otherSpeakers
     authorIds.map {
-          case id => id -> Proposal.allProposalsByAuthor(id)
-        }.toMap
+      case id => id -> Proposal.allProposalsByAuthor(id)
+    }.toMap
 
   }
 
@@ -103,10 +101,12 @@ object CFPAdmin extends SecureCFPController {
             // The next proposal I should review
             val allNotReviewed = Review.allProposalsNotReviewed(uuid)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
+            val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
 
-            val nextToBeReviewed = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
+            val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
+            val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewed))
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
           }
           case None => NotFound("Proposal not found").as("text/html")
         }
@@ -257,12 +257,12 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
   }
 
-  def advancedSearch(q: Option[String] = None, p: Option[Int] = None)= SecuredAction(IsMemberOf("cfp")).async {
+  def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-     ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
+      ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
         case r if r.isSuccess => {
           val json = Json.parse(r.get)
           val total = (json \ "hits" \ "total").as[Int]
@@ -345,7 +345,7 @@ object CFPAdmin extends SecureCFPController {
       }.filterNot {
         case (proposal, _) =>
           proposal.state == ProposalState.DRAFT ||
-          proposal.state == ProposalState.ARCHIVED ||
+            proposal.state == ProposalState.ARCHIVED ||
             proposal.state == ProposalState.DELETED
       }
 
@@ -400,83 +400,80 @@ object CFPAdmin extends SecureCFPController {
   }
 
   // Returns all speakers
-  def allSpeakers(export: Boolean = false, rejected: Boolean = true, accepted: Boolean = true, onlyWithSpeakerPass: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
+
+  def allSpeakers()= SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.CFPAdmin.allSpeakersHome())
+  }
 
-      val allSpeakers = Speaker.allSpeakers()
+  def allSpeakersWithApprovedTalks() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val allSpeakers = ApprovedProposal.allApprovedSpeakers()
+      Ok(views.html.CFPAdmin.allSpeakers(allSpeakers.toList.sortBy(_.cleanName)))
+  }
 
-      val speakers1 = (accepted, onlyWithSpeakerPass) match {
-        case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
-        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
-        case other => allSpeakers
-      }
+   def allApprovedSpeakersByCompany() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+        .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("Pas de société"))
+        .toList
+        .sortBy(_._2.size)
+        .reverse
 
-      val speakers = rejected match {
-        case true => allSpeakers.filter(s => Proposal.hasOnlyRejectedProposals(s.uuid))
-        case false => speakers1
-      }
-      export match {
-        case true => {
-
-          val dir = new File("./public/speakers")
-          FileUtils.forceMkdir(dir)
-
-          val file = new File(dir, "speakers_devoxxBE2014_all_macroman.csv")
-          val writer = new PrintWriter(file, "Macroman")
-
-          writer.println("email,firstName,lastName,company,hasSpeakerBadge,hasOneAccepted,isCFPMember,totalApproved,Proposal details separated by ;")
-          speakers.sortBy(_.email).foreach {
+      val proposals = speakers.map {
+        case (company, subSpeakers) =>
+          val allProposals = subSpeakers.toList.map {
             s =>
-              writer.print(s.email.toLowerCase)
-              writer.print(",")
-              writer.print(s.firstName.getOrElse("?"))
-              writer.print(",")
-              writer.print(s.name.getOrElse("?"))
-              writer.print(",")
-              writer.print(s.company.map(c=>"\""+c.toUpperCase+"\"").getOrElse(""))
-              writer.print(",")
-
-              // freepass
-              writer.print(Proposal.hasOneProposalWithSpeakerTicket(s.uuid))
-              writer.print(",")
-
-              writer.print(Proposal.hasOneAcceptedProposal(s.uuid))
-              writer.print(",")
-
-              writer.print(Webuser.isMember(s.uuid, "cfp"))
-              writer.print(",")
-
-              // number of talks
-              val allAccepted = Proposal.allAcceptedForSpeaker(s.uuid)
-
-              writer.print(allAccepted.size)
-              writer.print(",")
-
-              Proposal.allAcceptedForSpeaker(s.uuid).map{p=>
-                ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map{ slot=>
-                  writer.print(Messages(p.talkType.id))
-                  writer.print(" \"" + p.title.replaceAll(","," ") + "\"")
-                  writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
-                  writer.print(s"from ${slot.from.toString("HH:mm")} to ${slot.to.toString("HH:mm")}")
-                }.getOrElse{
-                  writer.print("\"")
-                  writer.print( p.title.replaceAll(","," "))
-                  writer.print("\"")
-                  writer.print(s" ${p.talkType.label}}] not yet scheduled")
-
-                }
-
-                writer.print(",")
-              }
-
-
-              writer.println()
+              Proposal.allApprovedProposalsByAuthor(s.uuid).map(_._2)
           }
-          writer.close()
-         Ok.sendFile(file, inline = false)
-        }
-        case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
+
+          val setOfProposals = allProposals.flatten.toSet
+          (company, setOfProposals)
       }
+
+      Ok(views.html.CFPAdmin.allApprovedSpeakersByCompany(speakers, proposals))
+  }
+
+  // All speakers that accepted to present a talk (including BOF and Quickies)
+  def allSpeakersThatForgetToAccept() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+
+      val proposals:Set[(Speaker,Iterable[Proposal])] = speakers.map {
+        speaker =>
+          (speaker,Proposal.allThatForgetToAccept(speaker.uuid).values)
+      }.filter(_._2.nonEmpty)
+
+      Ok(views.html.CFPAdmin.allSpeakersThatForgetToAccept(proposals))
+  }
+
+  // All speakers with a speaker's badge (it does not include Quickies, BOF and 3rd, 4th speakers)
+  def allSpeakersWithAcceptedTalksAndBadge() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+      val proposals:List[(Speaker,Iterable[Proposal])] = speakers.toList.map {
+        speaker =>
+          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==Some(speaker.uuid))
+          .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+          (speaker,onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty)
+
+       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
+  }
+
+    // All speakers with a speaker's badge
+  def allSpeakersWithAcceptedTalks() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+      val proposals:List[(Speaker,Iterable[Proposal])] = speakers.toList.map {
+        speaker =>
+          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==Some(speaker.uuid))
+          (speaker,onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty)
+
+       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
   }
 
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {

@@ -99,7 +99,7 @@ lang=Langue
 lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
 mainSpeaker=Présentateur principal
 mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx France uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
-talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/faq/#confType" target="new">FAQ</a> du site Devoxx France.
+talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/dvxfr15-faq-2#format" target="new">FAQ</a> du site Devoxx France.
  
  
 talkType=Type de présentation
@@ -107,7 +107,7 @@ audienceLevel=Niveau de la présentation
 privateMessage=Message pour le comité de sélection
 privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation, l''ensemble des éléments qui doivent nous faire choisir votre proposition de sujet. Vous pouvez inclure l''URL vers vos diapositives si vous le souhaitez.
 sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
-sponsorTalk.help=Les sponsors Silver et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée. Ne cochez pas cette case si votre société est sponsor alors que vous souhaitez simplementer proposer un sujet.
+sponsorTalk.help=Les sponsors Gold et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée. Ne cochez pas cette case si votre société est sponsor alors que vous souhaitez simplementer proposer un sujet.
 sponsorTalk.help.title=Talk sponsor
 sponsor.name.plz=Merci d''indiquer le nom de votre société dans le champ "Message privé pour le comité"
 sponsorTalk.checkbox=Présentation sponsor/exposant
@@ -127,10 +127,10 @@ preview.warn2=dans le tableau de la page d''accueil.
 presubmit.reminder=Lorsque vous êtes prêt à soumettre votre proposition, n''oubliez pas de cliquer sur l''enveloppe orange sur l''écran principal (
 
 # Proposal type
-key.label=Keynote, 50mn, jeudi et vendredi matin
+key.label=Keynote, 20mn, jeudi et vendredi matin
 conf.label=Conference, 45mn, jeudi et vendredi
 uni.label=University, 3h, mercredi uniquement
-tia.label=Tools in Action, 30mn, mercredi uniquement
+tia.label=Tools in Action, 25mn, mercredi uniquement
 quick.label=Quickie, 15mn, jeudi et vendredi midi
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
@@ -379,11 +379,11 @@ acceptedProposals.title=Liste de vos soumissions approuvées/refusées
 ar.approved=Soumissions approuvées
 ar.rejected=Soumissions refusées
 ar.noneApproved=Nous avons le regret de vous informer qu''aucune de vos soumissions n''a été acceptée.
-ar.pleaseAccept=Pour chaque soumission approuvée par le comité, merci d''indiquer si vous présenterez ou non ce sujet :
-ar.IAccept=J''accepte
-ar.IDecline=Je refuse
+ar.pleaseAccept=Pour chaque soumission approuvée par le comité, merci d''indiquer si vous présenterez ou non ce sujet. Il est possible si vous présentez à plusieurs, que l''un de vos co-présentateurs ait déjà accepté le sujet.
+ar.IAccept=J''accepte de présenter ce sujet
+ar.IDecline=Je décline et je ne présenterai pas ce sujet
 ar.IBackup=Comme backup
-ar.currentStatus=Status actuel
+ar.currentStatus=Status actuel :
 ar.pleaseSelect=Merci de sélectionner un des choix pour cette soumission :
 ar.proposalNotFound=Proposition de sujet non trouvée
 ar.choiceRecorded=Votre choix ({1}) pour la proposition {0} a bien été enregistré.
@@ -440,6 +440,8 @@ sw.faq=Plus d''explications sur chaque format ? Voir notre
 calendar.pref=Préférences de plannification
 calendar.pref.thursday=Le jeudi
 calendar.pref.friday=Le vendredi
+calendar.pref.wednesday=Le mercredi
+
 calendar.pref.reset=Pas de préférences
 sw.all.other=Evénements spéciaux
 acceptTermsConditions=Accepter les Termes/Conditions pour afficher la bio sur le site
@@ -496,7 +498,7 @@ day-mercredi=Mercredi
 showAgendaByRoom=Agenda par salle
 Abs=Abs
 admin.btn.tracklead=Track leader
-approved=Speaker a accepté
+approved=Talk approuvé
 audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet:\
 \
 1- pour tout le monde, débutant comme expert\
@@ -518,9 +520,8 @@ d1.label=Uniquement des slides
 d2.label=Slides et un peu de code
 d3.label=Code seulement (live-coding)
 d4.label=Ni slides ou code
-day-friday=Vendredi
-day-wednesday=Mercredi
 declined=Speaker a décliné
+accepted=Speaker a accepté
 demoLevel=Quel type de présentation allez-vous faire ?
 demoLevel1.label=Que des slides
 demoLevel2.label=Slides et du code
@@ -544,7 +545,11 @@ longSplittedName_whiteStart=Devox
 longYearlyName=Devoxx France 2015
 mail.access_code.subject=Votre code d''accès présentateur pour {0}
 mail.account_created.subject=Bienvenue sur le CFP pour {0}
-mail.cfp_message_to_speaker.subject=[{1}] Message à propos de votre presentation {0}
+mail.cfp_message_to_speaker.subject=[{1}] {0}
+mail.question_to_speaker.subject=[{1}] {0}
+mail.speaker_message_to_cfp.subject=[{1}] {0}
+mail.notify_proposal.subject=[{1}] {0}
+mail.notify_proposal.content=[{1}] {0}
 mail.draft_multiple_reminder.subject={1} rappel : vous avez {0} propositions à soumettre
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mainSpeaker2=Plusieurs présentateurs ?
@@ -610,15 +615,13 @@ admin.btn.speakersInvited=Tous les speakers invités
 
 bof.label.simple=Bird of a Feather
 day-monday=Lundi 10 novembre
+day-wednesday=Mercredi 8 avril
 day-thursday=Jeudi 9 avril
-day-tuesday=Mardi 7 avril
+day-friday=Vendredi 10 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
-mail.notify_proposal.content=Une nouvelle proposition a été envoyée au CFP. Titre [{0}], Track: [{1}] et Type: [{2}]
-mail.notify_proposal.subject={0} a soumis un sujet [{1}]
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
 mail.proposal_refused.subject=Votre proposition de sujet a été déclinée {0}
-mail.question_to_speaker.subject=[{1}] Nouvelle question postée à propos de {0}
 mail.reset_password_link.subject=Vous avez demandé à ré-initialiser votre code d'accès speaker pour {1}
 msg_pub=Envoyer un message au présentateur
 qualifications2=Qualifications et expériences du présentateur
@@ -632,3 +635,33 @@ wl.company=Société
 wl.track=Track
 wl.status=Dernier status
 wishlist.setPersonInCharge=Personne en charge de "{0}"
+
+proposal.approved.noVotes=Proposition approuvée - plus de votes possible
+
+wl.country=Pays
+wl.keynote=Pays
+wl_keynote=Speaker keynote
+wl_keynote.checkbox=Oui, cela serait un speaker keynote
+
+showProposal.comment.ar=Poser une question à l''équipe à propos de cette présentation
+ar.proposalType=Type de présentation :
+ar.proposalId=Identifiant de la présentation :
+
+tag.proposal.title=Titre
+tag.proposal.youVoted=Votre vote
+tag.proposal.status=Status
+tag.proposal.type=Type
+tag.proposal.track=Track
+
+speaker.mustAcceptTC=Vous devez accepter les Termes & Conditions pour que votre bio soit publiée sur le site
+speaker.ar1=Merci de
+speaker.ar2=cliquer ici
+speaker.ar3=pour revoir puis valider les Termes et Conditions.
+
+tagRenderRow-coffee=Pause café
+tagRenderRow-lunch=Déjeuner
+tagRenderRow-dej=Petit-déjeuner
+tagRenderRow-reg=Accueil, enregistrement et petit-déjeuner
+tagRenderRow-chgt=Pause courte
+tagRenderRow-meet=Soirée Meet & Greet
+please.check.approved=Merci de vérifier la liste des sujets approuvés par le comité, et d''accepter ou de décliner les sujets retenus
