@@ -17,6 +17,7 @@ Original author: Nicolas Martignole [@nmartignole](http://www.twitter.com/nmarti
 - Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou) 
 - Frédéric Camblor [@fcamblor](http://www.twitter.com/fcamblor)
 - Nicolas de Loof [@ndeloof](http://www.twitter.com/ndeloof)
+- Mani Sarkar 
 
 ## License
 
