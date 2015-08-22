@@ -70,10 +70,6 @@ case class SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
 
 case class LogURL(url: String, objRef: String, objValue: String)
 
-case class ProcessCSVFile(fileName: String)
-
-case class ProcessCSVDir(dir: String)
-
 case class NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
 
 case class EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
@@ -91,7 +87,6 @@ class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
-    case SendQuestionToSpeaker(email, name, proposal, msg) => sendQuestionToSpeaker(email, name, proposal, msg)
     case SendMessageToCommitte(reporterUUID, proposal, msg) => sendMessageToCommitte(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
@@ -102,8 +97,6 @@ class ZapActor extends Actor {
     case ProposalRefused(reporterUUID, proposal) => doProposalRefused(reporterUUID, proposal)
     case SaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) => doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser)
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
-    case ProcessCSVFile(fileName: String) => doProcessCSV(fileName)
-    case ProcessCSVDir(dir: String) => doProcessCSVDir(dir)
     case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
@@ -126,13 +119,6 @@ class ZapActor extends Actor {
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.title}"))
       Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg)
-    }
-  }
-
-  def sendQuestionToSpeaker(visitorEmail: String, visitorName: String, proposal: Proposal, msg: String) {
-    for (speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, Webuser.generateUUID(visitorEmail), s"A visitor posted a message to ${speaker.cleanName} about ${proposal.title}"))
-      Mails.sendQuestionToSpeakers(visitorEmail, visitorName, speaker, proposal, msg)
     }
   }
 
@@ -210,35 +196,6 @@ class ZapActor extends Actor {
 
   def doLogURL(url: String, objRef: String, objValue: String) {
     HitView.storeLogURL(url, objRef, objValue)
-  }
-
-  def doProcessCSV(fileName: String) {
-    play.Logger.info("Processing csv file " + fileName)
-    library.csv.PDFBadgeGenerator.handle(fileName)
-    //library.csv.QRCodeGenerator.handle(fileName)
-  }
-
-  val csvBadgesFolderFilter: java.io.FilenameFilter = new WildcardFileFilter("*-badges")
-  val csvFiles: java.io.FilenameFilter = new SuffixFileFilter(".csv")
-
-  def doProcessCSVDir(dir: String) {
-
-    val directory: java.io.File = new File(dir)
-
-    if (directory.exists() && directory.canRead) {
-      play.Logger.info("Processing dir [" + directory.getAbsolutePath + "]")
-      val badgesFolders = directory.listFiles(csvBadgesFolderFilter)
-
-      badgesFolders.foreach {
-        d =>
-          d.listFiles(csvFiles).foreach {
-            csvFile: File =>
-              ZapActor.actor ! doProcessCSV(csvFile.getAbsolutePath)
-          }
-      }
-    } else {
-      play.Logger.error("Cannot read or parse directory " + dir)
-    }
   }
 
   def doNotifySpeakerRequestToTalk(authorUUID: String, rtt: RequestToTalk) {

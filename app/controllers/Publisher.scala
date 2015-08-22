@@ -203,49 +203,9 @@ object Publisher extends Controller {
           val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
           val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
 
-          val questions = Question.allQuestionsForProposal(proposal.id)
-
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
-          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg, questions))
-      }
-  }
-
-  def sendMessageToSpeaker(proposalId: String) = Action {
-    implicit request =>
-      if (ConferenceDescriptor.current().showQuestion) {
-        Proposal.findById(proposalId) match {
-          case None => NotFound("Proposal not found")
-          case Some(proposal) =>
-            val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
-            val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
-            val questions = Question.allQuestionsForProposal(proposal.id)
-
-            speakerMsg.bindFromRequest().fold(hasErrors =>
-              BadRequest(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, hasErrors, questions)), {
-              case (msg, fullname, email1, _) =>
-                Question.saveQuestion(proposal.id, email1, fullname, msg)
-                ZapActor.actor ! SendQuestionToSpeaker(email1, fullname, proposal, msg)
-                Redirect(routes.Publisher.showDetailsForProposal(proposalId, proposal.title)).flashing("success" -> "Your message has been sent")
-            }
-            )
-        }
-      }else{
-        NotFound("Fuck you stupid spammer")
-      }
-  }
-
-  def allQuestions() = Action {
-    implicit request =>
-
-      val questions = Question.allQuestionsGroupedByProposal()
-      val result = questions.hashCode()
-      val etag = Crypt.md5(result.toString()).toString
-      val maybeETag = request.headers.get(IF_NONE_MATCH)
-
-      maybeETag match {
-        case Some(oldEtag) if oldEtag == etag => NotModified
-        case other => Ok(views.html.Publisher.allQuestions(questions)).withHeaders(ETAG -> etag)
+          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg))
       }
   }
 
