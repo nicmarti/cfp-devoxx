@@ -10,7 +10,9 @@ import org.joda.time.{DateTimeZone, DateTime}
  *
  * For labels, please do customize messages and messages.fr
  *
- * @author Frederic Camblor
+ * Note from Nicolas : the first version of the CFP was much more "static" but hardly configurable.
+ *
+ * @author Frederic Camblor, BDX.IO 2014
  */
 
 case class ConferenceUrls(faq: String, registration: String,
@@ -88,12 +90,14 @@ case class ConferenceDescriptor(eventCode: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[String],
-                                localisation: String,
-                                showQuestion:Boolean
+                                localisation: String
                                  )
 
 object ConferenceDescriptor {
 
+  /**
+   * TODO configure here the kind of talks you will propose
+   */
   object ConferenceProposalTypes {
     val CONF = ProposalType(id = "conf", label = "conf.label")
 
@@ -117,7 +121,6 @@ object ConferenceDescriptor {
 
     val OTHER = ProposalType(id = "other", label = "other.label")
 
-    // No more AMD
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, HACK, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
@@ -136,6 +139,7 @@ object ConferenceDescriptor {
 
   }
 
+  // TODO Configure here the slot, with the number of slots available, if it gives a free ticket to the speaker, some CSS icons
   object ConferenceProposalConfigurations {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = 89, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
@@ -166,6 +170,7 @@ object ConferenceDescriptor {
     }
   }
 
+  // TODO Configure here your Conference's tracks.
   object ConferenceTracks {
     val WEB_MOBILE = Track("wm", "webmobile.label")
     val ARCHISEC = Track("archisec", "archisec.label")
@@ -179,6 +184,7 @@ object ConferenceDescriptor {
     val ALL = List(WEB_MOBILE, ARCHISEC, AGILITY_TESTS, JAVA, CLOUDDEVOPS, BIGDATA, FUTURE, LANG, UNKNOWN)
   }
 
+  // TODO configure the description for each Track
   object ConferenceTracksDescription {
     val WEB_MOBILE = TrackDesc(ConferenceTracks.WEB_MOBILE.id, "/assets/dvfr2015/images/icon_web.png", "track.webmobile.title", "track.webmobile.desc")
     val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/dvfr2015/images/icon_architecture.png", "track.archisec.title", "track.archisec.desc")
@@ -195,6 +201,7 @@ object ConferenceDescriptor {
     }
   }
 
+  // TODO If you want to use the Devoxx Scheduler, you can describe here the list of rooms, with capacity for seats
   object ConferenceRooms {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
@@ -249,6 +256,8 @@ object ConferenceDescriptor {
 
   }
 
+
+  // TODO if you want to use the Scheduler, you can configure the breaks
   object ConferenceSlotBreaks {
     val registration = SlotBreak("reg", "Registration, Welcome and Breakfast", "Accueil", ConferenceRooms.HALL_EXPO)
     val petitDej = SlotBreak("dej", "Breakfast", "Accueil et petit-déjeuner", ConferenceRooms.HALL_EXPO)
@@ -259,6 +268,7 @@ object ConferenceDescriptor {
     val meetAndGreet = SlotBreak("meet", "Meet & Greet", "Exhibition", ConferenceRooms.HALL_EXPO)
   }
 
+  // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
     // UNIVERSITY
@@ -631,6 +641,7 @@ object ConferenceDescriptor {
     }
   }
 
+  // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
     eventCode = "DevoxxFR2015",
     // You will need to update conf/routes files with this code if modified
@@ -656,16 +667,17 @@ object ConferenceDescriptor {
       datesEn = "from 8th to 10th of April, 2015",
       cfpOpenedOn = DateTime.parse("2015-04-17T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2015-01-19T09:00:00+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2014-02-13T00:00:00+02:00")
+      scheduleAnnouncedOn = DateTime.parse("2015-02-13T00:00:00+02:00")
     ),
+  // TODO contact Clever cloud if you want a good deal for Hosting, then leave this footer on your CFP
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
     hashTag = "#DevoxxFR",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List("fr_FR")
     , "Palais des Congrès, Porte Maillot, Paris"
-    ,showQuestion=false
   )
 
+  // TODO You can either rely on a date, cross your finger that it is correct, or just use a boolean. Your choice.
   val isCFPOpen: Boolean = {
 //    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
     false

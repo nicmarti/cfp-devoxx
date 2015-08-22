@@ -78,9 +78,9 @@ object Backoffice extends SecureCFPController {
       if (Webuser.noBackofficeAdmin()) {
         Webuser.addToBackofficeAdmin(uuid)
         Webuser.addToCFPAdmin(uuid)
-        Redirect(routes.Application.index())
+        Redirect(routes.Application.index()).flashing("success" -> "Your UUID has been configured as super-admin")
       } else {
-        Redirect(routes.Application.index()).flashing("error" -> "Not Authorized !")
+        Redirect(routes.Application.index()).flashing("error" -> "There is already an Admin user")
       }
   }
 
