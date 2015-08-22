@@ -50,7 +50,7 @@ Send a message to (@nmartignole)[http://www.twitter.com/nmartignole) if you plan
 ## How to set-up a local and friendly developer environment ?
 
 - Install Play 2.2.3 (not the latest version with activator)
-- Install Redis 2.8.4, do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
+- Install Redis 2.8.21 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
 - Read Redis documentation and learn Redis with http://try.redis.io
 - Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf
 
@@ -119,7 +119,11 @@ Use WGET and download all pages from your Publisher controller. This will save s
 
 ## Can you help me with Redis 2.8.x ?
 
-Downloading redis...tag.gz from http://download.redis.io/releases/redis-2.8.19.tar.gz
+Downloading redis...tag.gz from http://download.redis.io/releases/redis-2.8.21.tar.gz
+
+The CFP has been tested with Redis from version 2.8.4 to 2.8.19. Always check that your version is up-to-date in term
+of security [here](https://raw.githubusercontent.com/antirez/redis/2.8/00-RELEASENOTES). I plan to upgrade and to check 
+that the CFP code is OK with Redis 3.x before Devoxx France 2016.
 
 Unpack the archive
 
@@ -203,6 +207,13 @@ Just to give you an idea and some stats for my Devoxx France Redis database :
   
 The Devoxx France CFP is hosted on [Clever-Cloud](http://www.clever-cloud). Clever Cloud is a Platform as a Service. Git push and voilà, your code is deployed.
 Redis and ElasticSearch are on a dedicated server.
+
+## Why do you use Play 2.2.x and not the latest version?
+
+I recommend [Play 2.2.6](https://downloads.typesafe.com/play/2.2.6/play-2.2.6.zip). I have a strong experience with Play since
+2011 and Play 1.x. I did more than 20 presentations of Play! Framework since 2010. 
+
+I plan to evaluate the need to migrate to Play Framework 2.4. But I'm not a super-fan with this version and with what the core developers decided to do since early 2015.
   
 ## Contributing
 
