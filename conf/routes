@@ -3,6 +3,7 @@ GET           /favicon.ico                                                      
 GET           /                                                                 controllers.Application.index
 GET           /home                                                             controllers.Application.home
 
+# Used for Ops-Genie
 GET           /status                                                           controllers.Status.index()
 
 GET           /logout                                                           controllers.Authentication.logout
@@ -25,6 +26,12 @@ POST          /newspeaker                                                       
 GET           /newspeaker/validateMail                                          controllers.Authentication.validateYourEmail(t:String,a:String)
 POST          /newspeaker/validImported                                         controllers.Authentication.validateImportedSpeaker
 
+
+# Turn a user to an admin if and only if there is no other ADMIN on your system (or if you deleted all admins)
+GET           /admin/bootstrapAdminUser                                         controllers.Backoffice.bootstrapAdminUser(uuid:String)
+GET           /admin/clearCaches                                                controllers.Backoffice.clearCaches()
+
+
 GET           /cfp/home                                                         controllers.CallForPaper.homeForSpeaker
 GET           /cfp/profile                                                      controllers.CallForPaper.editProfile
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
@@ -41,9 +48,6 @@ GET           /cfp/proposal/delete/:proposalId                                  
 GET           /cfp/proposal/undelete/:proposalId                                controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET           /cfp/proposal/submit/:proposalId                                  controllers.CallForPaper.submitProposal(proposalId:String)
 GET           /cfp/comment/:proposalId                                          controllers.CallForPaper.showCommentForProposal(proposalId:String)
-GET           /cfp/questions/:proposalId                                        controllers.CallForPaper.showQuestionsForProposal(proposalId:String)
-POST          /cfp/questions/:proposalId                                        controllers.CallForPaper.replyToQuestion(proposalId:String)
-POST          /cfp/deleteQuestions                                              controllers.CallForPaper.deleteOneQuestion()
 POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
 
 # Password
@@ -111,9 +115,6 @@ GET           /admin/cleanUpVotesIfUserWasDeleted                               
 GET           /admin/deleteAllVotes                                             controllers.Backoffice.deleteVotesForPropal(proposalId:String)
 GET           /admin/submittedByDate                                            controllers.Backoffice.submittedByDate()
 
-GET           /admin/bootstrapAdminUser                                         controllers.Backoffice.bootstrapAdminUser(uuid:String)
-GET           /admin/clearCaches                                                controllers.Backoffice.clearCaches()
-
 # Authenticate and admin as a regular user
 GET           /admin/authenticateAs/:uuid                                       controllers.Backoffice.authenticateAs(uuid:String)
 GET           /admin/authenticateAndCreate/:uuid                                controllers.Backoffice.authenticateAndCreateTalk(uuid:String)
@@ -124,6 +125,7 @@ GET           /admin/sanitycheck                                                
 GET           /admin/sanitycheck/fix                                            controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String)
 GET           /admin/sanitycheck/proposals                                      controllers.Backoffice.sanityCheckProposals()
 
+# Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
 
 # ApproveOrRefuse controller
@@ -141,13 +143,15 @@ GET           /ar/accept                                                        
 GET           /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST          /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
 
+# For Fun, it works only if you have Elastic Search
 GET           /cloudtags                                                        controllers.CallForPaper.cloudTags()
 
-# Special access for Alexis MP
-GET           /show/proposals                                                   controllers.Sponsor.index()
-
-
 # Content Publisher
+# If you plan to use the CFP for your program, you can adapt the URLs below
+# Please, do not try to propose a configurable system here, as each Conference has its own URLs
+# Keep the .html in each URL if you want to save your program (with wget for instance)
+# Each year I do a backup with wget wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2014
+
 GET           /2015/speakers.html                                               controllers.Publisher.showAllSpeakers()
 GET           /2015/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
 GET           /2015/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
@@ -156,12 +160,7 @@ GET           /2015/talk/:proposalId/:proposalTitle                             
 GET           /2015/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2015/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2015/byday/:day                                                  controllers.Publisher.showByDay(day:String)
-GET           /2015/questions.html                                              controllers.Publisher.allQuestions()
 GET           /2015/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
-POST          /publisher/sendMsgToSpeaker                                       controllers.Publisher.sendMessageToSpeaker(proposalId:String)
-
-# For Paper guide
-GET           /guide/exported                                                   controllers.PaperGuide.exportProgram()
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
@@ -196,20 +195,8 @@ DELETE        /schedulling/deletescheduledConfigurations                        
 POST          /schedulling/publish                                              controllers.SchedullingController.publishScheduleConfiguration()
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
-# Tweetwall
-GET           /tweetwall2                                                        controllers.Tweetwall.index()
-GET           /tweetwall2/authenticate                                           controllers.Tweetwall.authenticate()
-GET           /tweetwall2/callback                                               controllers.Tweetwall.authenticate()
-GET           /tweetwall2/stream                                                 controllers.Tweetwall.watchTweets(keywords:String)
-GET           /tweetwall2/nexttalks                                              controllers.Tweetwall.loadNextTalks()
-
 # Temp
 GET           /schedulling/fr14/giveMeBestTalks                                 controllers.SchedullingController.giveMeBestTalks()
-
-# Badges
-GET           /badges                                                           controllers.Badge.home()
-POST          /badges                                                           controllers.Badge.uploadCSV()
-GET           /badges/test                                                      controllers.Badge.test()
 
 # Wishlist
 GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishlist()
@@ -232,16 +219,11 @@ GET           /cfpadmin/invitations                                             
 GET           /cfpadmin/invitations/invite                                      controllers.InviteController.invite(speakerUUID:String)
 GET           /cfpadmin/invitations/cancel                                      controllers.InviteController.cancelInvite(speakerUUID)
 
-# Backport for old CFP for Stephan
-GET           /bp/speakers                                                      controllers.Backport.allAcceptedSpeakers()
-GET           /bp/proposals                                                     controllers.Backport.allProposals()
-GET           /bp/scheduleItems                                                 controllers.Backport.allScheduleItems()
-
-# Attic
+# Attic - Used to archive talks from previous year. If you use it before your conference, it deletes everything...
+# Please note that I removed the following links from the ADMIN Panel cause it is really something you do onle once a year.
 GET           /cfpadmin/attic/home                                              controllers.Attic.atticHome()
 POST          /cfpadmin/attic/pruneDraft                                        controllers.Attic.prune()
 POST          /cfpadmin/attic/doArchive                                         controllers.Attic.doArchive()
-
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)

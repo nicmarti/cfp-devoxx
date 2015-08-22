@@ -28,7 +28,7 @@ import models.ConferenceDescriptor.ConferenceProposalConfigurations
 
 /**
  * Approve or reject a proposal
- * Created by nicolas on 29/01/2014.
+ * Created by Nicolas Martignole on 29/01/2014.
  */
 object ApprovedProposal {
 

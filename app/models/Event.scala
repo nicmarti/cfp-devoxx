@@ -37,7 +37,7 @@ import java.util.Date
  */
 
 /**
- *
+ * Event.
  * @param objRef is the unique ID of the object that was modified
  * @param uuid is the author, the person who did this change
  * @param msg is a description of what one did

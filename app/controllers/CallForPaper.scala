@@ -87,7 +87,7 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       Speaker.findByUUID(uuid).map {
         speaker =>
-          Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker)))
+          Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker), uuid))
       }.getOrElse(Unauthorized("User not found"))
   }
 
@@ -95,7 +95,7 @@ object CallForPaper extends SecureCFPController {
     implicit request =>
       val uuid = request.webuser.uuid
       speakerForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
+        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm, uuid)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validForm => {
           Speaker.update(uuid, validForm)
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
@@ -359,66 +359,6 @@ object CallForPaper extends SecureCFPController {
           Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
         }
       }
-  }
-
-  def showQuestionsForProposal(proposalId: String) = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findProposal(uuid, proposalId)
-      maybeProposal match {
-        case Some(proposal) => {
-          Ok(views.html.CallForPaper.showQuestionsForProposal(proposal, Question.allQuestionsForProposal(proposal.id), speakerMsg))
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
-      }
-  }
-
-  def replyToQuestion(proposalId: String) = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
-      maybeProposal match {
-        case Some(proposal) => {
-          speakerMsg.bindFromRequest.fold(
-            hasErrors => {
-              BadRequest(views.html.CallForPaper.showQuestionsForProposal(proposal, Question.allQuestionsForProposal(proposal.id), hasErrors))
-            },
-            validMsg => {
-              Question.saveQuestion(proposal.id, request.webuser.email, request.webuser.cleanName, validMsg)
-              Redirect(routes.CallForPaper.showQuestionsForProposal(proposalId)).flashing("success" -> "Message was sent")
-            }
-          )
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
-      }
-  }
-
-  val deleteQuestionForm = Form(tuple("proposalId" -> nonEmptyText, "questionId" -> nonEmptyText))
-
-  def deleteOneQuestion() = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      deleteQuestionForm.bindFromRequest().fold(hasErrors =>
-        BadRequest("Invalid form")
-        , {
-        case (proposalId, questionId) => {
-          val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
-          maybeProposal match {
-            case Some(proposal) => {
-              Question.deleteQuestion(proposalId, questionId)
-              Ok("Deleted")
-            }
-            case None => {
-              BadRequest("Invalid proposal")
-            }
-          }
-        }
-      }
-      )
   }
 
   case class TermCount(term: String, count: Int)

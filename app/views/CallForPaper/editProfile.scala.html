@@ -1,4 +1,4 @@
-@(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speakerForm: Form[Speaker], readOnlyUUID:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 
@@ -36,6 +36,8 @@
             @helper.textarea(speakerForm("qualifications"), 'cols -> 70, 'rows -> 5)
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
+    <hr>
+        <small>Your UUID: @readOnlyUUID</small>
     </div>
 </div>
 
