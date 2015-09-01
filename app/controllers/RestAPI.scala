@@ -24,6 +24,7 @@
 package controllers
 
 import models._
+import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTimeZone, DateTime}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
@@ -306,26 +307,26 @@ object RestAPI extends Controller {
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Monday 10th November 2015"
+            Messages("sw.show.title.mon")
           ), Link(
             routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Tuesday 11th November 2015"
+            Messages("sw.show.title.tue")
           ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Wednesday 12th November 2015"
+            Messages("sw.show.title.wed")
           ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Thursday 13th November 2015"
+            Messages("sw.show.title.thu")
           ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "friday").absoluteURL().toString,
             routes.RestAPI.profile("schedule").absoluteURL().toString,
-            "Schedule for Friday 14th November 2015"
+            Messages("sw.show.title.fri")
           )
         ))
       )
