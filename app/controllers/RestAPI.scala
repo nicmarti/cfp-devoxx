@@ -266,6 +266,7 @@ object RestAPI extends Controller {
                   "summary" -> Json.toJson(proposal.summary),
                   "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                   "track" -> Json.toJson(Messages(proposal.track.label)),
+                  "trackId" -> Json.toJson(Messages(proposal.track.id)),
                   "speakers" -> Json.toJson(allSpeakers.map {
                     speaker =>
                       Map(
@@ -365,6 +366,7 @@ object RestAPI extends Controller {
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
                       "track" -> Json.toJson(Messages(proposal.track.label)),
+                      "trackId" -> Json.toJson(Messages(proposal.track.id)),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                       "speakers" -> Json.toJson(allSpeakers.map {
                         speaker =>
@@ -537,6 +539,7 @@ object RestAPI extends Controller {
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
                       "track" -> Json.toJson(Messages(proposal.track.label)),
+                      "trackId" -> Json.toJson(Messages(proposal.track.id)),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                       "speakers" -> Json.toJson(allSpeakers.map {
                         speaker =>
