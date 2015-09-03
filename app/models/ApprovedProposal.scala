@@ -262,6 +262,10 @@ object ApprovedProposal {
       allProposalWithVotes.values.toList
   }
 
+  /**
+   * Approved = a proposal was selected by the program committee
+   * Accepted = the speaker accepted to present the approved talk
+   */
   def allApproved(): Set[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allKeys = client.keys("Approved:*")
