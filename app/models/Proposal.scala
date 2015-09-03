@@ -258,7 +258,9 @@ object Proposal {
                           userGroup: Option[Boolean]): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      Messages("longYearlyName"),
+      // TODO Devoxx FR 2015 and Devoxx BE 2015 used [Messages("longYearlyName" instead of ConferenceDescriptor
+      // So all proposals were created with an invalid event. It should not be a I18N but the real value
+      ConferenceDescriptor.current().eventCode,
       lang,
       title,
       "no_main_speaker",
