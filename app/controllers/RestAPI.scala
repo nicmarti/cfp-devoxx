@@ -290,12 +290,64 @@ object RestAPI extends Controller {
 
   def redirectToTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      Redirect(routes.RestAPI.showTalks(eventCode))
+      Redirect(routes.RestAPI.showApprovedTalks(eventCode))
   }
 
-  def showTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
+  def showApprovedTalks(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      NotImplemented("Not yet implemented")
+      import models.Proposal.proposalFormat
+
+      // TODO filter on the specified eventCode and not on stupidEventCode when Proposal is updated
+      // We cannot right now, as we stored the Proposal with event==Message("longYearlyName") See Proposal.scala in validateNEwProposal
+      // So I need to do a temporary filter
+      // val proposals = ApprovedProposal.allApproved().filterNot(_.event==eventCode).toList.sortBy(_.title)
+
+      val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx BE 2015 is not valid
+      val proposals = ApprovedProposal.allApproved().filter(_.event==stupidEventCode).toList.sortBy(_.title)
+
+      val etag = proposals.hashCode.toString
+
+      request.headers.get(IF_NONE_MATCH) match {
+        case Some(tag) if tag == etag => {
+          NotModified
+        }
+        case other => {
+
+          val proposalsWithSpeaker = proposals.map {
+            p: Proposal =>
+              val mainWebuser = Speaker.findByUUID(p.mainSpeaker)
+              val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID(_))
+              val oSpeakers = p.otherSpeakers.map(Speaker.findByUUID(_))
+              val preferredDay = Proposal.getPreferredDay(p.id)
+
+              // Transform speakerUUID to Speaker name, this simplify Angular Code
+              p.copy(
+                mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
+                , secondarySpeaker = secWebuser.map(_.cleanName)
+                , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
+                , privateMessage = preferredDay.getOrElse("")
+              )
+
+          }
+
+          val finalJson = Map(
+            "talks" -> Json.toJson(
+              Map(
+                "approved" -> Json.toJson(proposalsWithSpeaker.filter(_.state==ProposalState.APPROVED)),
+                "accepted" -> Json.toJson(proposalsWithSpeaker.filter(_.state==ProposalState.ACCEPTED))
+              )
+            )
+          )
+
+          val jsonObject = Json.toJson(finalJson)
+
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,
+            "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL().toString + ">; rel=\"profile\"")
+          )
+        }
+      }
+
+
   }
 
   def showAllSchedules(eventCode: String) = UserAgentActionAndAllowOrigin {
@@ -346,7 +398,7 @@ object RestAPI extends Controller {
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
-      val newEtag = "v2_"+finalListOfSlots.hashCode().toString
+      val newEtag = "v2_" + finalListOfSlots.hashCode().toString
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
@@ -514,17 +566,17 @@ object RestAPI extends Controller {
       }
   }
 
-  def showScheduleForRoom(eventCode: String, room:String, day: String) = UserAgentActionAndAllowOrigin {
+  def showScheduleForRoom(eventCode: String, room: String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val finalListOfSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
-      val newEtag = "v2-"+room.hashCode + finalListOfSlots.hashCode().toString
+      val newEtag = "v2-" + room.hashCode + finalListOfSlots.hashCode().toString
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
         case other => {
-          val toReturn = finalListOfSlots.filter(_.room.id==room).map {
+          val toReturn = finalListOfSlots.filter(_.room.id == room).map {
             slot =>
               val upProposal = slot.proposal.map {
                 proposal =>
@@ -590,7 +642,9 @@ object RestAPI extends Controller {
 }
 
 object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.api.http.HeaderNames {
+
   import ExecutionContext.Implicits.global
+
   override protected def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[SimpleResult]): Future[SimpleResult] = {
     request.headers.get(USER_AGENT).collect {
       case some => {
@@ -600,7 +654,7 @@ object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.ap
               "Access-Control-Expose-Headers" -> "etag,links",
               "Access-Control-Allow-Credentials" -> "true",
               "Access-Control-Max-Age" -> "3600")
-            case None => result.withHeaders("X-No-Access"->"no-origin")
+            case None => result.withHeaders("X-No-Access" -> "no-origin")
           }
         }
       }
@@ -628,8 +682,8 @@ object Conference {
     ConferenceDescriptor.current().locale,
     ConferenceDescriptor.current().localisation,
     Link(
-      routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL().toString,
-      routes.RestAPI.profile("conference").absoluteURL().toString,
+      routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL(),
+      routes.RestAPI.profile("conference").absoluteURL(),
       "See more details about " + Messages("longYearlyName")
     ))
 
