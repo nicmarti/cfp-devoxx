@@ -201,26 +201,29 @@ object ConferenceDescriptor {
     // the first column on the HTML Table
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, recorded = false, "special")
 
-    val ROOM3 = Room("room3", "Room 3", 345, recorded = true, "theatre")
-    val ROOM4 = Room("room4", "Room 4", 364, recorded = true, "theatre")
-    val ROOM5 = Room("room5", "Room 5", 684, recorded = true, "theatre")
-    val ROOM6 = Room("room6", "Room 6", 407, recorded = true, "theatre")
-    val ROOM7 = Room("room7", "Room 7", 407, recorded = true, "theatre")
-    val ROOM8 = Room("room8", "Room 8", 745, recorded = true, "theatre")
-    val ROOM9 = Room("room9", "Room 9", 425, recorded = true, "theatre")
+    val ROOM3 = Room("room3", "Room 3", 300, recorded = true, "theatre")
+    val ROOM4 = Room("room4", "Room 4", 347, recorded = true, "theatre")
+    val ROOM5 = Room("room5", "Room 5", 641, recorded = true, "theatre")
+    val ROOM6 = Room("room6", "Room 6", 372, recorded = true, "theatre")
+    val ROOM7 = Room("room7", "Room 7", 370, recorded = true, "theatre")
+    val ROOM8 = Room("room8", "Room 8", 696, recorded = true, "theatre")
+    val ROOM9 = Room("room9", "Room 9", 393, recorded = true, "theatre")
+    val ROOM10 = Room("room10", "Room 10", 286, recorded = true, "theatre")
 
     val BOF1 = Room("bof1", "BOF 1", 70, recorded = false, "classroom")
     val BOF2 = Room("bof2", "BOF 2", 70, recorded = false, "classroom")
 
-    val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
+    val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM10)
 
-    val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9)
+    val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM10)
 
     val keynoteRoom = List(ROOM8,ROOM4,ROOM5,ROOM9)
     val eveningKeynoteRoom = List(ROOM8)
 
-    val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3)
+    val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10)
     val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9)
+
+    val allRoomsQuick = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3)
 
     val allRoomsLabs = List(BOF1, BOF2)
     val oneRoomLabs = List(BOF1)
@@ -230,7 +233,7 @@ object ConferenceDescriptor {
 
     val igniteRoom = List(BOF1)
 
-    val allRooms = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, BOF1, BOF2, HALL_EXPO)
+    val allRooms = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10, BOF1, BOF2, HALL_EXPO)
   }
 
   object ConferenceSlotBreaks {
@@ -431,22 +434,22 @@ object ConferenceDescriptor {
 
     val bofSlotFriday: List[Slot] = {
 
-      val bofFridayEveningSlot1 = ConferenceRooms.oneRoomBOF.map {
+      val bofFridayMorningSlot1 = ConferenceRooms.oneRoomBOF.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.BOF.id, "friday", new DateTime("2015-11-13T10:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T11:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
-      bofFridayEveningSlot1
+      bofFridayMorningSlot1
     }
 
     // QUICKIES
 
     val quickiesSlotsWednesday: List[Slot] = {
 
-      val quickiesWednesdayLunch1 = ConferenceRooms.allRoomsConf.map {
+      val quickiesWednesdayLunch1 = ConferenceRooms.allRoomsQuick.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2015-11-11T13:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T13:25:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
-      val quickiesWednesdayLunch2 = ConferenceRooms.allRoomsConf.map {
+      val quickiesWednesdayLunch2 = ConferenceRooms.allRoomsQuick.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "wednesday", new DateTime("2015-11-11T13:35:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T13:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
       }
@@ -455,11 +458,11 @@ object ConferenceDescriptor {
 
     val quickiesSlotsThursday: List[Slot] = {
 
-      val quickiesThursdayLunch1 = ConferenceRooms.allRoomsConf.map {
+      val quickiesThursdayLunch1 = ConferenceRooms.allRoomsQuick.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2015-11-12T13:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T13:25:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
-      val quickiesThursdayLunch2 = ConferenceRooms.allRoomsConf.map {
+      val quickiesThursdayLunch2 = ConferenceRooms.allRoomsQuick.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday", new DateTime("2015-11-12T13:35:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T13:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
       }
