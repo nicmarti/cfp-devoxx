@@ -14,7 +14,7 @@
             <table class="agendaTable">
                 <tr>
                     <th><i class="icon-time"></i> Room</th>
-                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sorted.map { roomName: String =>
+                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sortWith((a, b) => a.substring(5).toInt < b.substring(5).toInt).map { roomName: String =>
                         <td>@roomName</td>
                     }
                 </tr>
@@ -24,7 +24,7 @@
                         <th>
                             09:30 - 11:30
                         </th>
-                        <td class="keynotes" colspan="7">
+                        <td class="keynotes" colspan="8">
                             <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
 
                         </td>
@@ -35,7 +35,7 @@
                         <th>
                             09:30 - 10:30
                         </th>
-                        <td class="keynotes" colspan="7">
+                        <td class="keynotes" colspan="8">
                             <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
 
                         </td>
@@ -52,21 +52,17 @@
                         -->
                         @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toString("HH:mm")
                     </th>
-                    @slots.sortBy(_.room.name).zipWithIndex.map { case(slot,index) =>
+                    @slots.sortWith((a, b) => a.room.name.substring(5).toInt < b.room.name.substring(5).toInt).zipWithIndex.map { case(slot,index) =>
 
                          @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="16:40"  ){
                                 <td class="room">
                                     <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                                    slot1 :<strong>16:40 - 17:10</strong><br>
-                                    slot2 :<strong>17:10 - 17:40</strong><br>
                                     <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
                                 </td>
                          }
                          @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="17:50"  ){
                             <td class="room">
                             <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                            slot3 :<strong>17:50 - 18:20</strong><br>
-                            slot4 :<strong>18:20 - 18:50</strong><br>
                             <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
                             </td>
                         }
@@ -81,7 +77,7 @@
                                 }</span>
 
                             }
-                        @if(slot.proposal.isEmpty && slot.break.isEmpty && index>0 ){
+                        @if(slot.proposal.isEmpty && slot.break.isEmpty ){
                             TBA
                         }
                         </td>
@@ -90,31 +86,18 @@
                     @if(day.toLowerCase=="friday" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).hourOfDay.get()==9  && talkType.toLowerCase=="conf"){
                         <td>
                           <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                            slot5 :<strong>09:30 - 10:00</strong><br>
-                            slot6 :<strong>10:00 - 10:30</strong><br>
                             <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
                         </td>
 
                     }
                 </tr>
                 }
-@if(day.toLowerCase.startsWith("wed")) {
-     <tr>
-         <th>
-             19:00 - 19:30
-         </th>
-         <td class="keynotes" colspan="7">
-             <a href="http://www.devoxx.be/keynotes-2015">Evening Keynote</a>
-
-         </td>
-     </tr>
- }
  @if(day.toLowerCase.startsWith("thu")) {
      <tr>
          <th>
              19:00 - 19:30
          </th>
-         <td class="keynotes" colspan="7">
+         <td class="keynotes" colspan="8">
              <a href="http://www.devoxx.be/keynotes-2015">Closing Keynote</a>
 
          </td>
@@ -122,7 +105,7 @@
  }
                 <tr>
                     <th><i class="icon-time"></i> Room</th>
-                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sorted.map { roomName: String =>
+                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sortWith((a, b) => a.substring(5).toInt < b.substring(5).toInt).map { roomName: String =>
                         <td>@roomName</td>
                     }
                 </tr>
