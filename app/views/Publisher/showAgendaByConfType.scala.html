@@ -30,17 +30,6 @@
                         </td>
                     </tr>
                 }
-                @if(day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" ){
-                    <tr>
-                        <th>
-                            09:30 - 10:30
-                        </th>
-                        <td class="keynotes" colspan="8">
-                            <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
-
-                        </td>
-                    </tr>
-                }
 
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
