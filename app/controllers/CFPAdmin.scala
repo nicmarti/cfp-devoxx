@@ -1,6 +1,7 @@
 package controllers
 
 import models._
+import org.joda.time.DateTimeZone
 import play.api.data._
 import play.api.data.Forms._
 import library._
@@ -451,7 +452,7 @@ object CFPAdmin extends SecureCFPController {
                   writer.print(Messages(p.talkType.id))
                   writer.print(" \"" + p.title.replaceAll(","," ") + "\"")
                   writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
-                  writer.print(s"from ${slot.from.toString("HH:mm")} to ${slot.to.toString("HH:mm")}")
+                  writer.print(s"from ${slot.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")} to ${slot.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")}")
                 }.getOrElse{
                   writer.print("\"")
                   writer.print( p.title.replaceAll(","," "))
