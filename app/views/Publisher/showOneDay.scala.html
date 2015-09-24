@@ -19,7 +19,7 @@
         <table class="agendaTable">
             <tr>
                 <th><i class="icon-time"></i> Room</th>
-                @rooms.map { roomName: Room =>
+                @rooms.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
                 </tr>
@@ -29,7 +29,7 @@
                         <th class="timeSlot">
                             @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                         </th>
-                        @rooms.map { room =>
+                        @rooms.sorted.map { room =>
                             @tagRenderRow(subSlots,room,rooms.size)
                         }
                     </tr>
@@ -37,7 +37,7 @@
 
             <tr>
                 <th><i class="icon-time"></i> Room</th>
-                @slots.groupBy(_.room).keys.toList.sortBy(_.id).map { roomName: Room =>
+                @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
             </tr>

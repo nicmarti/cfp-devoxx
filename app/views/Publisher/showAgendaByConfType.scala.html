@@ -14,8 +14,8 @@
             <table class="agendaTable">
                 <tr>
                     <th><i class="icon-time"></i> Room</th>
-                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sortWith((a, b) => a.substring(5).toInt < b.substring(5).toInt).map { roomName: String =>
-                        <td>@roomName</td>
+                    @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+                        <td>@room.name</td>
                     }
                 </tr>
 
@@ -41,7 +41,7 @@
                         -->
                         @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toString("HH:mm")
                     </th>
-                    @slots.sortWith((a, b) => a.room.name.substring(5).toInt < b.room.name.substring(5).toInt).zipWithIndex.map { case(slot,index) =>
+                    @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
 
                          @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="16:40"  ){
                                 <td class="room">
@@ -94,8 +94,8 @@
  }
                 <tr>
                     <th><i class="icon-time"></i> Room</th>
-                    @schedule.slots.groupBy(_.room).keys.map(_.name).toList.sortWith((a, b) => a.substring(5).toInt < b.substring(5).toInt).map { roomName: String =>
-                        <td>@roomName</td>
+                    @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+                        <td>@room.name</td>
                     }
                 </tr>
             </table>

@@ -36,7 +36,26 @@ import play.api.libs.functional.syntax._
  * Frederic Camblor added ConferenceDescriptor 07/06/2014
  */
 
-case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setup: String)
+case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setup: String) extends Ordered[Room] {
+
+  import scala.math.Ordered.orderingToOrdered
+
+  def index: Int = {
+    val regexp = "[\\D\\s]+(\\d+)".r
+    id match {
+      case regexp(x) => {
+        println(id + " with index " + x.toInt)
+        x.toInt
+      }
+      case _ => {
+        println(id)
+        0
+      }
+    }
+  }
+
+  def compare(that: Room): Int = (this.id.substring(0, 3), this.index) compare (that.id.substring(0, 3), that.index)
+}
 
 object Room {
   implicit val roomFormat = Json.format[Room]
