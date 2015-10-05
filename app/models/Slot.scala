@@ -43,14 +43,8 @@ case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setu
   def index: Int = {
     val regexp = "[\\D\\s]+(\\d+)".r
     id match {
-      case regexp(x) => {
-        println(id + " with index " + x.toInt)
-        x.toInt
-      }
-      case _ => {
-        println(id)
-        0
-      }
+      case regexp(x) => x.toInt
+      case _ => 0
     }
   }
 

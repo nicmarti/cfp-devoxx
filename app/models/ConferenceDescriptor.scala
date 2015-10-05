@@ -563,10 +563,10 @@ object ConferenceDescriptor {
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2015-11-12T16:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r5)
       } :+ SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T16:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3)
 
-      val conferenceThursdaySlot6 = ConferenceRooms.allRoomsConf.filterNot(_.id == "room3").map {
+      val conferenceThursdaySlot6 = ConferenceRooms.allRoomsConf.map {
         r6 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2015-11-12T17:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T18:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r6)
-      } :+ SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T17:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T18:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3)
+      }
 
       val toReturn = conferenceThursdaySlot0 ++ conferenceThursdaySlot1 ++ conferenceThursdaySlot2 ++ conferenceThursdaySlot3 ++ conferenceThursdaySlot4 ++ conferenceThursdaySlot5 ++ conferenceThursdaySlot6
 
@@ -576,18 +576,10 @@ object ConferenceDescriptor {
     // ROOM4, ROOM5, ROOM8, ROOM9
     val conferenceSlotsFriday: List[Slot] = {
 
-      val conferenceFridaySlot1Room4 =
-        SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2015-11-13T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM4)
-
-      val conferenceFridaySlot1Room5 =
-        SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2015-11-13T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM5)
-
-      val conferenceFridaySlot1Room8 =
-        SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2015-11-13T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM8)
-
-      val conferenceFridaySlot1Room9 =
-        SlotBuilder(ConferenceProposalTypes.START.id, "friday", new DateTime("2015-11-13T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM9)
-
+      val conferenceFridaySlot1 = ConferenceRooms.fridayRoomsConf.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2015-11-13T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
+      }
       val conferenceFridaySlot2 = ConferenceRooms.fridayRoomsConf.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2015-11-13T10:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T11:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
@@ -596,7 +588,7 @@ object ConferenceDescriptor {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday", new DateTime("2015-11-13T11:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T12:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
       }
-      List(conferenceFridaySlot1Room4, conferenceFridaySlot1Room5, conferenceFridaySlot1Room8, conferenceFridaySlot1Room9) ++ conferenceFridaySlot2 ++ conferenceFridaySlot3
+      conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3
     }
 
     // Ignite slots
