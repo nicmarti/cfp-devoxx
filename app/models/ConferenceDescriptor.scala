@@ -1,5 +1,6 @@
 package models
 
+import models.SlotBuilder
 import play.api.Play
 import org.joda.time.{DateTimeZone, DateTime}
 
@@ -561,7 +562,8 @@ object ConferenceDescriptor {
       val conferenceThursdaySlot5 = ConferenceRooms.allRoomsConf.filterNot(_.id == "room3").map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2015-11-12T16:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r5)
-      } :+ SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T16:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3)
+      } ++ List(SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T16:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3),
+                SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T17:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3))
 
       val conferenceThursdaySlot6 = ConferenceRooms.allRoomsConf.map {
         r6 =>
