@@ -1,18 +1,18 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx France 2015
+CONF.title=Devoxx France 2016
 CONF.subtitle=FR
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx FR 2015
-longYearlyName=Devoxx France 2015
+shortYearlyName=Devoxx FR 2016
+longYearlyName=Devoxx France 2016
 shortName=Devoxx France
-longName=Devoxx FR 2015 CFP
+longName=Devoxx FR 2016 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2015
+longSplittedName_whiteEnd=FR 2016
 # -----------------
-cfp.title=Devoxx FR 2015 CFP
+cfp.title=Devoxx FR 2016 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -156,12 +156,12 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx FR 2014''s videos on
+video.tag=Review Devoxx FR 2015''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx France 2015:
+theme.track=List of tracks for Devoxx France 2016:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx France 2015, 8th-10th April 2015
+appel.conf.dates=Devoxx France 2016, 20th-22th April 2016
 
 # Tracks
 track.webmobile.title=Web, Mobile &  UX
@@ -500,11 +500,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 6th April 2015
-sw.show.title.tue=Tuesday, 7th April 2015
-sw.show.title.wed=Wednesday, 8th April 2015
-sw.show.title.thu=Thursday, 9th April 2015
-sw.show.title.fri=Friday, 10th April 2015
+sw.show.title.mon=Monday, 6th April 2016
+sw.show.title.tue=Tuesday, 7th April 2016
+sw.show.title.wed=Wednesday, 8th April 2016
+sw.show.title.thu=Thursday, 9th April 2016
+sw.show.title.fri=Friday, 10th April 2016
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast

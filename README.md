@@ -27,10 +27,10 @@ Copyright (c) 2013 Association du Paris Java User Group & [Nicolas Martignole](h
 
 ## Background
 
-The CFP was originally created in 2013 for the [Devoxx France](http://www.devoxx.fr/) 2014 conférence. Devoxx France is the 2nd biggest conference for dev in France with 2500 attendees in 2015.
-The conference has top sponsors like Google, Oracle, IBM and Microsoft. The conference is organized by Nicolas Martignole, Antonio Goncalvès and Zouheir Cadi.
+The CFP was originally created in 2013 for the [Devoxx France](http://www.devoxx.fr/) 2014 edition. Devoxx France is one of the biggest conference for Developers in France with 2500 attendees in 2015.
+The conference had top sponsors like Google, Oracle, IBM and Microsoft. The conference is organized by Nicolas Martignole, Antonio Goncalvès and Zouheir Cadi.
  
-The CFP is implemented with Scala and Play Framework v2.2.3. Redis 2.8 is used for persistance. Elastic Search is integrated as a search engine and to calculate stats with Facets.
+The CFP is implemented with Scala and Play Framework v2.2.3. Redis 2.8 is used for persistence. Elastic Search is integrated as a search engine and to calculate stats with Facets.
  
 ## Which Conferences are using it?
 
@@ -192,7 +192,7 @@ I have also configured my personal computer to be a slave of all my Redis server
 	
 See redis-sample-dev.conf and redis-sample-prod.conf for 2 valid configuration files for Redis.	
 	
-Just to give you an idea and some stats for my Devoxx France Redis database :
+Just to give you an idea and some stats for our Devoxx France 2015 Redis database :
  
     - Number of Speakers : 946
     - Number of Proposals : 681 

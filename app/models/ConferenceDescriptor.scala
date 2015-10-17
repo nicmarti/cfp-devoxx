@@ -643,9 +643,9 @@ object ConferenceDescriptor {
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxFR2015",
+    eventCode = "DevoxxFR2016",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxfr2015",
+    confUrlCode = "devoxxfr2016",
     frLangEnabled = true,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.fr"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.fr"),
@@ -658,16 +658,16 @@ object ConferenceDescriptor {
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "8 au 10 avril 2015",
+      datesI18nKey = "20 au 22 avril 2016",
       speakersPassDuration = 5,
       preferredDayEnabled = true,
-      firstDayFr = "8 avril",
-      firstDayEn = "april 8th",
-      datesFr = "du 8 au 10 avril 2015",
-      datesEn = "from 8th to 10th of April, 2015",
-      cfpOpenedOn = DateTime.parse("2015-04-17T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2015-01-19T09:00:00+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2015-02-13T00:00:00+02:00")
+      firstDayFr = "20 avril",
+      firstDayEn = "april 20th",
+      datesFr = "du 20 au 22 avril 2016",
+      datesEn = "from 20th to 22th of April, 2016",
+      cfpOpenedOn = DateTime.parse("2015-11-11T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2016-01-31T09:00:00+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2016-02-25T00:00:00+02:00")
     ),
   // TODO contact Clever cloud if you want a good deal for Hosting, then leave this footer on your CFP
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
@@ -679,8 +679,8 @@ object ConferenceDescriptor {
 
   // TODO You can either rely on a date, cross your finger that it is correct, or just use a boolean. Your choice.
   val isCFPOpen: Boolean = {
-//    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
-    false
+    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+//    false
   }
 
 }
