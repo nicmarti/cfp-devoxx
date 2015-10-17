@@ -59,4 +59,9 @@ object Invitation {
     implicit client =>
       client.hdel(redisInvitation, speakerId)
   }
+
+  def deleteAll()=Redis.pool.withClient{
+    implicit client=>
+    client.del(redisInvitation)
+  }
 }

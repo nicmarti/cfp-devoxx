@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{ConferenceDescriptor, ArchiveProposal}
+import models.{Event, ArchiveProposal, Invitation}
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -35,12 +35,13 @@ import scala.concurrent.Future
  */
 object Attic extends SecureCFPController {
 
+  val opTypeForm = Form("opType" -> text)
+  val proposalTypeForm = Form("proposalType" -> text)
+
   def atticHome() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.Attic.atticHome())
   }
-
-  val opTypeForm = Form("opType" -> text)
 
   /**
    * Either destroy [draft] or [deleted] proposals, using a Future, as this code is slow and blocks
@@ -69,21 +70,43 @@ object Attic extends SecureCFPController {
       )
   }
 
-
-  val proposalTypeForm = Form("proposalType" -> text)
-
   def doArchive() = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import scala.concurrent.ExecutionContext.Implicits.global
       proposalTypeForm.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(views.html.Attic.atticHome())),
         proposalType => {
-          Future(ArchiveProposal.archiveAll(proposalType)).map{
+          Future(ArchiveProposal.archiveAll(proposalType)).map {
             totalArchived =>
-               Redirect(routes.Attic.atticHome()).flashing(("success", s"$totalArchived archived"))
+              Redirect(routes.Attic.atticHome()).flashing(("success", s"$totalArchived archived"))
           }
         }
       )
+  }
+
+  def deleteInvitedSpeakers() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Invitation.deleteAll()
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"Deleted all Invitations"))
+  }
+
+
+  /**
+   * Reset the list of notifed speakers.
+   */
+  def resetNotified() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Event.resetSpeakersNotified()
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"All Notified collections have been deleted."))
+  }
+
+  /**
+   * Flush the logs and the Events. The Events is an Audit log. See Event model for more details.
+   */
+  def resetEvents() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Event.resetEvents()
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"Events log flushed."))
   }
 
 
