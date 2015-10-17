@@ -64,13 +64,14 @@ Optional but recommended for better user experience:
 
 ## Here's what you need to configure:
 
-- Rename the application-please-customize-me.conf file to application.conf
+- Rename the run.sh.sample file to run.sh
 - Generate a string for the security of the application 
    application.secret = "a_unique_secret_long_enough"
 - As the application uses play.api.libs.Crypto#encryptAES, this secret MUST be at least 16 chars long.
 - Configure the SMTP server using the parameters Mailjet OR use the smtp.mock mode in DEV
 - Configure the Github part
 - Set the Google party for authentication OAuth2.0
+- Configure also LinkedIn
 - configure the Redis server. Make sure to set a very long password for your Redis server
 - configure the address of a server ElasticSearch
 
