@@ -474,26 +474,12 @@ object ConferenceDescriptor {
 
     val keynoteSlotsWedneday: List[Slot] = {
 
-      val keynoteWednesdaySlot1 = ConferenceRooms.keynoteRoom.map {
+      ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
             new DateTime("2015-11-11T09:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
-            new DateTime("2015-11-11T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
+            new DateTime("2015-11-11T11:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r1)
       }
-      val keynoteWednesdaySlot2 = ConferenceRooms.keynoteRoom.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
-            new DateTime("2015-11-11T10:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
-            new DateTime("2015-11-11T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r2)
-      }
-      val keynoteWednesdaySlot3 = ConferenceRooms.keynoteRoom.map {
-        r3 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "wednesday",
-            new DateTime("2015-11-11T10:55:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")),
-            new DateTime("2015-11-11T11:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
-      }
-
-      keynoteWednesdaySlot1 ++ keynoteWednesdaySlot2 ++ keynoteWednesdaySlot3
     }
 
     val keynoteSlotsThursday: List[Slot] = {
