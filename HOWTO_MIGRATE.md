@@ -31,17 +31,19 @@ You can then upload the set of HTML files to a Wordpress/static web server. The 
 
 Before performing any operation from the Admin panel, make a copy of your Redis dump file and the AOF file, just in case...
 
+Run redis-server and redis-client (see sections ... in README.md). Once they are running, SYNC them, and run SAVE or BGSAVE them. please readup and refer to this resource http://zdk.blinkenshell.org/redis-backup-and-restore/.
+
 # Create a tag on Github
 
 On the dev branch, create a tag such as `DevoxxFR_2015_Backup`, in order to be able to compare between any two years.
 
 # Start with the configuration 
 
-Update `ConferenceDescriptor.scala` and start to edit the year for the new year.
+Update `ConferenceDescriptor.scala` and start to edit the year for the new year. Check if your branch needs to be updated from another branch usually its the ```dev``` branch on bitbucket (but can also be github). Sometimes this might not be necessary as the branches might be different as changes may not be relevant.
 
 # Edit the messages
 
-Edit and replace the year with the new year, in the conf/messages.properties text file.
+Edit and replace the year with the new year, in the conf/messages.properties text file. Refer to the above section about updating your branch before doing this. 
 
 # Archive talks and reviews
 
@@ -56,11 +58,19 @@ Once completed, the program is unpublished, each speaker sees the list of talks 
 
 # Remove agenda
 
-Go to the [Angular Schedule application](/assets/angular/index.html) and delete all the schedules.
+Go to the [Angular Schedule application](/assets/angular/index.html) and delete all the schedules. Here are the steps to go through the process successfully:
+
+1) click on « Backoffice » top nav button, this redirect you to http://cfp.devoxx.[...]/admin
+2) select Angular App (the green button) - http://cfp.devoxx.[...]/assets/angular/index.html#/
+3) click « Reload a saved configuration of slots/talks »
+4) click on delete for each element
+5) repeat 3 and 4 until the list is empty
+
+You should do that AFTER the CFP web site is saved (http://cfp.devoxx..[...]/[year]/index.html) with wget (as explained above).
 
 # Reset wishlist
 
-Go to the Wishlist panel and delete all wishlist items.
+Go to the Wishlist panel and delete all wishlist items. This option might NOT apply to you, so not an issue if you dont see this option in the Admin panel or Attic or BackOffice.
 
 You're good to go!
 
