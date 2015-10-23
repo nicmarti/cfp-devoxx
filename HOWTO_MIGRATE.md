@@ -33,7 +33,25 @@ Before performing any operation from the Admin panel, make a copy of your Redis 
 
 # Create a tag on Github
 
-On the dev branch, create a tag such as `DevoxxFR_2015_Backup`, in order to be able to compare between any two years.
+On the dev branch, create a tag such as `DevoxxFR_2015_Backup`, in order to be able to compare between any two years. Here are the steps to go about:
+
+Update your branch locally or on your remote organisation via:
+```
+$ git checkout [dev-...]
+$ git pull upstream dev-[...]
+$ git push origin dev-[...]
+ ```
+Here ```upstream``` is organisor's repo, ```origin``` is your own copy (fork of the organisor's repo). 
+```
+$ git tag Devoxx[xx]_[year]_backup
+$ git push upstream dev-[...]
+$ git push origin dev-[...]
+```
+
+ Create a tag for the 
+
+
+
 
 # Start with the configuration 
 
