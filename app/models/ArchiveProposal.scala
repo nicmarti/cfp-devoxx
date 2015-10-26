@@ -27,7 +27,7 @@ import library.Redis
 
 /**
  * An Entity to represent archived proposal
- * @author created by N.Martignole, Innoteria, on 19/10/2014.
+ * @author created by Nicolas Martignole, on 19/10/2014.
  */
 
 object ArchiveProposal {

@@ -10,7 +10,6 @@
                 </div>
 
                 <div class="panel-body">
-                    <div class="panel-body">
 
                         @if(flash.get("error").isDefined) {
                             <div class="col-md-12">
@@ -22,19 +21,19 @@
                         }
                         @if(flash.get("success").isDefined) {
                             <div class="col-md-12">
-                                <div class="alert alert-success alert-dismissable">
+                                <div class="alert alert-warning alert-dismissable">
                                 @flash.get("success").get
                                 </div>
                             </div>
                         }
 
-                        <div class="col-md-12">
+
                             <h3><i class="icon-play-circle"></i> @Messages("ar.approved")</h3>
                             @if(approvedProposals.isEmpty){
                                 @Messages("ar.noneApproved")
                             }else{
-                                <div class="panel panel-success">
-                                    <div class="panel-body">
+                                <div class="panel panel-warning">
+
                                         <div class="panel-heading">
                                             <h3 class="panel-title">Important :</h3>
                                         </div>
@@ -42,7 +41,6 @@
                                             @Messages("ar.pleaseAccept")
                                         </div>
                                     </div>
-                                </div>
                             }
                           @approvedProposals.sortBy(_.title).map{proposal=>
                             <div class="panel panel-success">
@@ -50,37 +48,63 @@
                                     <h3>@proposal.title</h3>
                                 </div>
                                 <div class="panel-body">
-                                    <span class="label label-info">@proposal.id</span><br>
-                                    <span class="label label-primary">@Messages(proposal.talkType.label)</span><br>
-                                    @Messages("ar.currentStatus") <span class="label label-default">@Messages(proposal.state.code)</span>
-                                </div>
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th>@Messages("ar.proposalId")</th>
+                                                <td><span class="label label-info">@proposal.id</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>@Messages("ar.proposalType")</th>
+                                                <td><span class="label label-primary">@Messages(proposal.talkType.label)</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>@Messages("ar.currentStatus")</th>
+                                                <td><span class="label label-default">@Messages(proposal.state.code)</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <td><a href="@routes.CallForPaper.showCommentForProposal(proposal.id)" class="btn  btn-sm btn-primary" target="new"><i class="icon-question-sign"></i> @Messages("showProposal.comment.ar")</a></td>
+                                            </tr>
+                                        </tbody>
 
-                                <div class="panel-body">
-                                    <div class="btn-group">
+                                        <tfoot>
+                                            <tr>
+
+                                         @if(proposal.state==ProposalState.DECLINED) {
+                                            <td></td>
+                                            <td><button name="dec" value="" disabled class="btn btn-sm btn-danger"> Declined </button></td>
+                                         }else{
                                         <p>@Messages("ar.pleaseSelect")</p>
                                         <form action="@routes.ApproveOrRefuse.doAcceptOrRefuseTalk()" method="post">
                                             @if(proposal.state==ProposalState.APPROVED) {
-                                                <button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button> <br>
+                                               <td colspan="2"><button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button></td>
                                             }
                                             @if(proposal.state==ProposalState.ACCEPTED) {
-                                                 <button name="dec" value="" class="btn btn-sm btn-success" disabled> Accepted</button> <br>
+                                                <td colspan="1"><button name="dec" value="" class="btn btn-sm btn-success" disabled> Accepted</button></td>
                                             }
                                             @if(proposal.state==ProposalState.BACKUP){
+                                                <td>
                                                 <p>This is a <span class="label label-warning">BACKUP</span> talk. We will notify you if it is approved at a later time.</p>
                                                 <p>However you can decline if you don't want to keep this talk as a backup.</p>
-                                                <button name="dec" value="" disabled class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button> <br>
+                                                </td>
+                                                <td>
+                                                <button name="dec" value="" disabled class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button>
+                                                </td>
                                             }
                                             @if(proposal.state==ProposalState.APPROVED) {
-                                                <button name="dec" value="decline" class="btn btn-sm btn-danger"> @Messages("ar.IDecline")</button> <br>
+                                                <td colspan="2"><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button> </td>
                                             }
                                             @if(proposal.state==ProposalState.ACCEPTED) {
-                                                <button name="dec" value="decline" class="btn btn-sm btn-danger"> @Messages("ar.IDecline")</button> <br>
+                                                <td><small>Warning: this talk has been accepted. Please contact the CFP team before you decline</small><br>
+                                                <button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button> </td>
                                             }
                                             @if(proposal.state==ProposalState.BACKUP) {
-                                                <button name="dec" value="decline" class="btn btn-sm btn-danger"> @Messages("ar.IDecline")</button> <br>
+                                                <td><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button></td>
                                             }
                                             @if(proposal.state==ProposalState.DECLINED) {
-                                                <button name="dec" value="" disabled class="btn btn-sm btn-danger"> Declined </button> <br>
+                                                <td colspan="2"><button name="dec" value="" disabled class="btn btn-sm btn-danger"> Declined </button> </td>
+                                            }
                                             }
 
 
@@ -88,11 +112,12 @@
                                             <!-- ne vous amusez pas à passer un id different ici, car je verifie du cote serveur le proprietaire de la soumission ;-) //-->
                                             <input type="hidden" name="proposalId" value="@proposal.id">
                                         </form>
+                                        </tr>
+                                        </tfoot>
+                                        </table>
                                   </div>
                                 </div>
-                             </div>
                           }
-                        </div>
 
                         @if(rejectedProposals.nonEmpty){
                         <div class="col-md-12">
@@ -105,12 +130,11 @@
                                 <div class="panel-body">
                                     <span class="label label-info">@proposal.id</span><br>
                                     <span class="label label-primary">@Messages(proposal.talkType.id)</span>
-                                </div>
                             </div>
-                          }
                         </div>
                         }
                     </div>
+                        }
                 </div>
             </div>
         </div>

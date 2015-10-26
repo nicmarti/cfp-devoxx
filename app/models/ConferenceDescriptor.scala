@@ -1,13 +1,18 @@
 package models
 
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Play
-import org.joda.time.{DateTimeZone, DateTime}
 
 /**
  * ConferenceDescriptor.
  * This might be the first file to look at, and to customize.
- * Idea behind this file is to try to collect all configurable parameters for a conference. *
- * @author Frederic Camblor
+ * Idea behind this file is to try to collect all configurable parameters for a conference.
+ *
+ * For labels, please do customize messages and messages.fr
+ *
+ * Note from Nicolas : the first version of the CFP was much more "static" but hardly configurable.
+ *
+ * @author Frederic Camblor, BDX.IO 2014
  */
 
 case class ConferenceUrls(
@@ -35,7 +40,7 @@ case class TrackDesc(id: String, imgSrc: String, i18nTitleProp: String, i18nDesc
 case class ProposalConfiguration(id: String, slotsCount: Int,
                                  givesSpeakerFreeEntrance: Boolean,
                                  freeEntranceDisplayed: Boolean,
-                                 htmlClass: String, recorded: Boolean,
+                                 htmlClass: String,
                                  hiddenInCombo: Boolean = false,
                                  chosablePreferredDay: Boolean = false,
                                  impliedSelectedTrack: Option[Track] = None)
@@ -43,17 +48,13 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
 object ProposalConfiguration {
 
   val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
-    htmlClass = "", recorded = false, hiddenInCombo = true, chosablePreferredDay = false)
+    htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false)
 
   def parse(propConf: String): ProposalConfiguration = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
   }
 
   def totalSlotsCount = ConferenceDescriptor.ConferenceProposalConfigurations.ALL.map(_.slotsCount).sum
-
-  def isRecordedProposals(pt: ProposalType): Boolean = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.recorded).headOption.getOrElse(false)
-  }
 
   def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
@@ -90,12 +91,14 @@ case class ConferenceDescriptor(eventCode: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[String],
-                                localisation: String,
-                                showQuestion:Boolean
+                                localisation: String
                                  )
 
 object ConferenceDescriptor {
 
+  /**
+   * TODO configure here the kind of talks you will propose
+   */
   object ConferenceProposalTypes {
     val CONF = ProposalType(id = "conf", label = "conf.label")
 
@@ -135,25 +138,25 @@ object ConferenceDescriptor {
 
   object ConferenceProposalConfigurations {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.CONF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
-      recorded = true, chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val UNI = ProposalConfiguration(id = "uni", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.UNI.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
-      recorded = true, chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val TIA = ProposalConfiguration(id = "tia", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.TIA.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-legal",
-      recorded = true, chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
-      recorded = false, chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
-      recorded = true, chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
-      recorded = false, chosablePreferredDay = false)
+      chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = true, chosablePreferredDay = true)
+      chosablePreferredDay = true)
     val START = ProposalConfiguration(id = "start", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.START.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = false, impliedSelectedTrack = Option(ConferenceTracks.STARTUP), chosablePreferredDay = false)
+      impliedSelectedTrack = Option(ConferenceTracks.STARTUP), chosablePreferredDay = false)
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = false, chosablePreferredDay = false)
+      chosablePreferredDay = false)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      recorded = false, hiddenInCombo = true, chosablePreferredDay = false)
+      hiddenInCombo = true, chosablePreferredDay = false)
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START, IGNITE, OTHER)
 
 
@@ -177,6 +180,7 @@ object ConferenceDescriptor {
     val ALL = List(STARTUP, SSJ, JAVA, MOBILE, ARCHISEC, METHOD_DEVOPS, FUTURE, LANG, CLOUD, WEB, UNKNOWN)
   }
 
+  // TODO configure the description for each Track
   object ConferenceTracksDescription {
     val STARTUP = TrackDesc(ConferenceTracks.STARTUP.id, "/assets/devoxxbe2015/images/icon_startup.png", "track.startup.title", "track.startup.desc")
     val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxbe2015/images/icon_javaee.png", "track.ssj.title", "track.ssj.desc")
@@ -195,29 +199,30 @@ object ConferenceDescriptor {
     }
   }
 
+  // TODO If you want to use the Devoxx Scheduler, you can describe here the list of rooms, with capacity for seats
   object ConferenceRooms {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, recorded = false, "special")
+    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, "special")
 
-    val ROOM3 = Room("room3", "Room 3", 300, recorded = true, "theatre")
-    val ROOM4 = Room("room4", "Room 4", 347, recorded = true, "theatre")
-    val ROOM5 = Room("room5", "Room 5", 641, recorded = true, "theatre")
-    val ROOM6 = Room("room6", "Room 6", 372, recorded = true, "theatre")
-    val ROOM7 = Room("room7", "Room 7", 370, recorded = true, "theatre")
-    val ROOM8 = Room("room8", "Room 8", 696, recorded = true, "theatre")
-    val ROOM9 = Room("room9", "Room 9", 393, recorded = true, "theatre")
-    val ROOM10 = Room("room10", "Room 10", 286, recorded = true, "theatre")
+    val ROOM3 = Room("room3", "Room 3", 300, "theatre")
+    val ROOM4 = Room("room4", "Room 4", 347, "theatre")
+    val ROOM5 = Room("room5", "Room 5", 641, "theatre")
+    val ROOM6 = Room("room6", "Room 6", 372, "theatre")
+    val ROOM7 = Room("room7", "Room 7", 370, "theatre")
+    val ROOM8 = Room("room8", "Room 8", 696, "theatre")
+    val ROOM9 = Room("room9", "Room 9", 393, "theatre")
+    val ROOM10 = Room("room10", "Room 10", 286, "theatre")
 
-    val BOF1 = Room("bof1", "BOF 1", 70, recorded = false, "classroom")
-    val BOF2 = Room("bof2", "BOF 2", 70, recorded = false, "classroom")
+    val BOF1 = Room("bof1", "BOF 1", 70, "classroom")
+    val BOF2 = Room("bof2", "BOF 2", 70, "classroom")
 
     val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM10)
 
     val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM10)
 
-    val keynoteRoom = List(ROOM8,ROOM4,ROOM5,ROOM9)
+    val keynoteRoom = List(ROOM8, ROOM4, ROOM5, ROOM9)
     val eveningKeynoteRoom = List(ROOM8)
 
     val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10)
@@ -548,7 +553,7 @@ object ConferenceDescriptor {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "thursday", new DateTime("2015-11-12T16:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r5)
       } ++ List(SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T16:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3),
-                SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T17:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3))
+        SlotBuilder(ConferenceProposalTypes.START.id, "thursday", new DateTime("2015-11-12T17:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T17:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), ConferenceRooms.ROOM3))
 
       val conferenceThursdaySlot6 = ConferenceRooms.allRoomsConf.map {
         r6 =>
@@ -618,40 +623,40 @@ object ConferenceDescriptor {
     }
 
     // Registration, coffee break, lunch etc
-    val mondayBreaks=List(
-        SlotBuilder(ConferenceSlotBreaks.registration, "monday", new DateTime("2015-11-09T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-09T09:30:00.000+01:00"))
+    val mondayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registration, "monday", new DateTime("2015-11-09T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-09T09:30:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "monday", new DateTime("2015-11-09T12:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-09T13:30:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "monday", new DateTime("2015-11-09T16:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-09T16:45:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "monday", new DateTime("2015-11-09T18:35:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-09T19:00:00.000+01:00"))
     )
-    val tuesdayBreaks=List(
-        SlotBuilder(ConferenceSlotBreaks.registration, "tuesday", new DateTime("2015-11-10T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-10T09:30:00.000+01:00"))
+    val tuesdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registration, "tuesday", new DateTime("2015-11-10T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-10T09:30:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "tuesday", new DateTime("2015-11-10T12:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-10T13:30:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "tuesday", new DateTime("2015-11-10T16:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-10T16:45:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.exhibition, "tuesday", new DateTime("2015-11-10T18:35:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-10T20:00:00.000+01:00"))
     )
-    val wednesdayBreaks=List(
-        SlotBuilder(ConferenceSlotBreaks.registration, "wednesday", new DateTime("2015-11-11T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T09:30:00.000+01:00"))
+    val wednesdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registration, "wednesday", new DateTime("2015-11-11T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T09:30:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday", new DateTime("2015-11-11T11:40:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T12:00:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday", new DateTime("2015-11-11T13:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T14:00:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday", new DateTime("2015-11-11T16:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T16:40:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.meetAndGreet, "wednesday", new DateTime("2015-11-11T18:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-11T20:00:00.000+01:00"))
     )
-    val thursdayBreaks=List(
-        SlotBuilder(ConferenceSlotBreaks.petitDej, "thursday", new DateTime("2015-11-12T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T09:30:00.000+01:00"))
+    val thursdayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.petitDej, "thursday", new DateTime("2015-11-12T08:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T09:30:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday", new DateTime("2015-11-12T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T10:50:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday", new DateTime("2015-11-12T13:00:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T14:00:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday", new DateTime("2015-11-12T16:10:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T16:40:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.movieSpecial, "thursday", new DateTime("2015-11-12T18:50:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-12T20:00:00.000+01:00"))
     )
-     val fridayBreaks=List(
-        SlotBuilder(ConferenceSlotBreaks.petitDej, "friday", new DateTime("2015-11-13T08:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T09:30:00.000+01:00"))
+    val fridayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.petitDej, "friday", new DateTime("2015-11-13T08:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T09:30:00.000+01:00"))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday", new DateTime("2015-11-13T10:30:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2015-11-13T10:45:00.000+01:00"))
     )
     // DEVOXX DAYS
 
     val monday: List[Slot] = {
-     mondayBreaks ++ universitySlotsMonday ++ tiaSlotsMonday ++ labsSlotsMonday ++ bofSlotsMonday
+      mondayBreaks ++ universitySlotsMonday ++ tiaSlotsMonday ++ labsSlotsMonday ++ bofSlotsMonday
     }
 
     val tuesday: List[Slot] = {
@@ -709,7 +714,6 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List("en_EN")
     , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
-    , showQuestion=false
   )
 
   def isCFPOpen: Boolean = {

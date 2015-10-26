@@ -25,8 +25,6 @@ package models
 
 import org.joda.time.DateTime
 import play.api.libs.json.Json
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 /**
  * Time slots and Room are defined as static file.
@@ -36,7 +34,7 @@ import play.api.libs.functional.syntax._
  * Frederic Camblor added ConferenceDescriptor 07/06/2014
  */
 
-case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setup: String) extends Ordered[Room] {
+case class Room(id: String, name: String, capacity: Int, setup: String) extends Ordered[Room] {
 
   import scala.math.Ordered.orderingToOrdered
 
@@ -48,17 +46,15 @@ case class Room(id: String, name: String, capacity: Int, recorded: Boolean, setu
     }
   }
 
-  def compare(that: Room): Int = (this.id.substring(0, 3), this.index) compare (that.id.substring(0, 3), that.index)
+  def compare(that: Room): Int = (this.id.substring(0, 3), this.index) compare(that.id.substring(0, 3), that.index)
 }
 
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val OTHER = Room("other_room", "Other room", 100, recorded = false, "sans objet")
+  val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
   val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
-
-  val allRoomsNotRecorded = ConferenceDescriptor.ConferenceRooms.allRooms.filter(r => !r.recorded)
 
   def parse(roomId: String): Room = {
     ConferenceDescriptor.ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)
@@ -78,8 +74,8 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
     s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined}"
   }
 
-  def parleysId:String={
-    ConferenceDescriptor.current().eventCode + "_" + from.toString("dd")+"_"+room.id+"_"+from.toString("HHmm")
+  def parleysId: String = {
+    ConferenceDescriptor.current().eventCode + "_" + from.toString("dd") + "_" + room.id + "_" + from.toString("HHmm")
   }
 
   def notAllocated: Boolean = {

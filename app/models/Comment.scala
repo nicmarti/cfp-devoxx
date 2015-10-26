@@ -23,7 +23,6 @@
 
 package models
 
-import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.{Instant, DateTime}
 import library.Redis
 import play.api.libs.json.Json
@@ -32,7 +31,7 @@ import play.api.libs.json.Json
  * A comment object is attached to a Proposal.
  *
  * Author: nicolas martignole
- * Created: 13/11/2013 14:37 created at devoxx
+ * Created: 13/11/2013 14:37 created during devoxx belgium 2013
  */
 case class Comment(proposalId: String, uuidAuthor: String, msg: String, eventDate: Option[DateTime])
 

@@ -23,20 +23,19 @@
 
 package models
 
-import play.api.libs.json.Json
-import library.{ZapJson, Redis}
-import play.api.cache.Cache
-import play.api.Play.current
-import org.joda.time.Instant
-import org.joda.time.DateTime
-import play.api.templates.HtmlFormat
 import com.github.rjeschke.txtmark.Processor
+import library.{Redis, ZapJson}
 import org.apache.commons.lang3.StringUtils
+import org.joda.time.{DateTime, Instant}
+import play.api.libs.json.Json
+import play.api.templates.HtmlFormat
 
 /**
- * Speaker
+ * Speaker profile, is used mainly to show details.
  *
- * Author: nicolas
+ * Webuser is the "technical" and internal web user representation.
+ *
+ * Author: nicolas martignole
  * Created: 28/09/2013 11:01
  */
 case class Speaker(uuid: String
@@ -132,23 +131,17 @@ object Speaker {
 
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
-      Cache.remove("speaker:uuid:" + speaker.uuid)
-      Cache.remove("allSpeakersWithAcceptedTerms")
       val jsonSpeaker = Json.stringify(Json.toJson(speaker))
       client.hset("Speaker", speaker.uuid, jsonSpeaker)
   }
 
   def update(uuid: String, speaker: Speaker) = Redis.pool.withClient {
     client =>
-      Cache.remove("speaker:uuid:" + uuid)
-      Cache.remove("allSpeakersWithAcceptedTerms")
       val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid = uuid)))
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
   def updateName(uuid: String, firstName: String, lastName: String) = {
-    Cache.remove("speaker:uuid:" + uuid)
-    Cache.remove("allSpeakersWithAcceptedTerms")
     findByUUID(uuid).map {
       speaker =>
         Speaker.update(uuid, speaker.copy(name = Option(lastName), firstName = Option(firstName)))
@@ -157,7 +150,6 @@ object Speaker {
 
   def findByUUID(uuid: String): Option[Speaker] = Redis.pool.withClient {
     client =>
-      Cache.getOrElse[Option[Speaker]]("speaker:uuid:" + uuid, 3600) {
         client.hget("Speaker", uuid).flatMap {
           json: String =>
             Json.parse(json).validate[Speaker].fold(invalid => {
@@ -166,12 +158,9 @@ object Speaker {
             }, validSpeaker => Some(validSpeaker))
         }
       }
-  }
 
   def delete(uuid: String) = Redis.pool.withClient {
     client =>
-      Cache.remove("allSpeakersWithAcceptedTerms")
-      Cache.remove("speaker:uuid:" + uuid)
       client.hdel("Speaker", uuid)
   }
 
@@ -182,6 +171,14 @@ object Speaker {
           val maybeSpeaker = Json.parse(jsString).asOpt[Speaker]
           maybeSpeaker
       }
+  }
+
+  def withOneProposal(speakers: List[Speaker]) = {
+    speakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
+  }
+
+  def notMemberOfCFP(speakers: List[Speaker]) = {
+    speakers.filterNot(s => Webuser.isMember(s.uuid, "cfp"))
   }
 
   def allSpeakersUUID():Set[String]=Redis.pool.withClient{
@@ -209,13 +206,11 @@ object Speaker {
 
   def doAcceptTerms(speakerId: String) = Redis.pool.withClient {
     client =>
-      Cache.remove("allSpeakersWithAcceptedTerms")
       client.hset("TermsAndConditions", speakerId, new Instant().getMillis.toString)
   }
 
   def refuseTerms(speakerId: String) = Redis.pool.withClient {
     client =>
-      Cache.remove("allSpeakersWithAcceptedTerms")
       client.hdel("TermsAndConditions", speakerId)
   }
 
