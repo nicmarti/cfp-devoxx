@@ -148,12 +148,6 @@ GET           /2015/questions                                     controllers.Pu
 GET           /2015/search                                        controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 POST          /publisher/sendMsgToSpeaker                         controllers.Publisher.sendMessageToSpeaker(proposalId:String)
 
-# For Paper guide
-GET           /guide/speakers                                     controllers.PaperGuide.exportSpeakers()
-GET           /guide/allPhotos                                    controllers.PaperGuide.downloadAllSpeakersPhotos()
-GET           /guide/exported                                     controllers.PaperGuide.exportProgram()
-GET           /guide/exportedByRoom                               controllers.PaperGuide.exportProgramByRoomAndHours()
-
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
 GET           /api/conferences/                                                 controllers.RestAPI.redirectToConferences()
@@ -187,21 +181,8 @@ DELETE        /schedulling/deletescheduledConfigurations          controllers.Sc
 POST          /schedulling/publish                                controllers.SchedullingController.publishScheduleConfiguration()
 GET           /schedulling/published                              controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
-# Tweetwall
-GET           /tweetwall                                          controllers.Tweetwall.index()
-GET           /tweetwall/authenticate                             controllers.Tweetwall.authenticate()
-GET           /tweetwall/callback                                 controllers.Tweetwall.authenticate()
-GET           /tweetwall/stream                                   controllers.Tweetwall.watchTweets(keywords:String)
-GET           /tweetwall/besttalks                                controllers.Tweetwall.watchBestTalks()
-GET           /tweetwall/nexttalks                                controllers.Tweetwall.loadNextTalks()
-
 # Temp
 GET           /schedulling/fr14/giveMeBestTalks                   controllers.SchedullingController.giveMeBestTalks()
-
-# Badges
-GET           /badges                                             controllers.Badge.home()
-POST          /badges                                             controllers.Badge.uploadCSV()
-GET           /badges/test                                        controllers.Badge.test()
 
 # Wishlist
 GET           /cfpadmin/wishlist/home                             controllers.Wishlist.homeWishlist()
