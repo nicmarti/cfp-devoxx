@@ -228,7 +228,7 @@ object ElasticSearch {
   }
 
   // The public Elastic Search index for the Program
-  val public_index = s"acceptedproposals_${ConferenceDescriptor.current().eventCode}"
+  val public_index = s"acceptedproposals_${ConferenceDescriptor.current().eventCode}".toLowerCase
 
 
   def doPublisherSearch(query: Option[String], p: Option[Int]) = {
