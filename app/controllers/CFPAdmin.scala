@@ -79,10 +79,19 @@ object CFPAdmin extends SecureCFPController {
           val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
           val internalDiscussion = Comment.allInternalComments(proposal.id)
           val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-          Ok(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm, maybeMyVote))
+          val proposalsByAuths = allProposalByProposal(proposal)
+          Ok(views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm, maybeMyVote, uuid))
         }
         case None => NotFound("Proposal not found").as("text/html")
       }
+  }
+
+  def allProposalByProposal(proposal: Proposal): Map[String, Map[String, models.Proposal]] = {
+    val authorIds: List[String] = proposal.mainSpeaker :: proposal.secondarySpeaker.toList ::: proposal.otherSpeakers
+    authorIds.map {
+      case id => id -> Proposal.allProposalsByAuthor(id)
+    }.toMap
+
   }
 
   def showVotesForProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
@@ -100,10 +109,12 @@ object CFPAdmin extends SecureCFPController {
             // The next proposal I should review
             val allNotReviewed = Review.allProposalsNotReviewed(uuid)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
+            val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
 
-            val nextToBeReviewed = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
+            val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
+            val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewed))
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
           }
           case None => NotFound("Proposal not found").as("text/html")
         }
@@ -120,7 +131,8 @@ object CFPAdmin extends SecureCFPController {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
               val internalDiscussion = Comment.allInternalComments(proposal.id)
               val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm, maybeMyVote))
+              val proposals = allProposalByProposal(proposal)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm, maybeMyVote, uuid))
             },
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
@@ -144,7 +156,8 @@ object CFPAdmin extends SecureCFPController {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
               val internalDiscussion = Comment.allInternalComments(proposal.id)
               val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm, maybeMyVote))
+              val proposals = allProposalByProposal(proposal)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm, maybeMyVote, uuid))
             },
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
@@ -169,7 +182,8 @@ object CFPAdmin extends SecureCFPController {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
               val internalDiscussion = Comment.allInternalComments(proposal.id)
               val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors, maybeMyVote))
+              val proposals = allProposalByProposal(proposal)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors, maybeMyVote, uuid))
             },
             validVote => {
               Review.voteForProposal(proposalId, uuid, validVote)
@@ -207,13 +221,12 @@ object CFPAdmin extends SecureCFPController {
 
       val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
       val totalSubmittedByType = Leaderboard.totalSubmittedByType()
-      val totalAcceptedByCategories = Leaderboard.totalAcceptedByCategories()
+      val totalAcceptedByTrack = Leaderboard.totalAcceptedByTrack()
       val totalAcceptedByType = Leaderboard.totalAcceptedByType()
 
       val totalSlotsToAllocate = ApprovedProposal.getTotal
       val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
       val totalWithTickets = Leaderboard.totalWithTickets()
-      val totalWithOneProposal = Leaderboard.totalWithOneProposal()
       val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
 
 
@@ -222,8 +235,9 @@ object CFPAdmin extends SecureCFPController {
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
           totalNoVotes, maybeMostVoted, bestReviewer, lazyOnes,
           totalSubmittedByTrack, totalSubmittedByType,
-          totalAcceptedByCategories, totalAcceptedByType,
-          totalSlotsToAllocate, totalApprovedSpeakers, totalWithTickets, totalWithOneProposal, totalRefusedSpeakers
+          totalAcceptedByTrack, totalAcceptedByType,
+          totalSlotsToAllocate, totalApprovedSpeakers, totalWithTickets,
+          totalRefusedSpeakers
         )
       )
   }
@@ -339,6 +353,7 @@ object CFPAdmin extends SecureCFPController {
       }.filterNot {
         case (proposal, _) =>
           proposal.state == ProposalState.DRAFT ||
+            proposal.state == ProposalState.ARCHIVED ||
             proposal.state == ProposalState.DELETED
       }
 
@@ -483,7 +498,6 @@ object CFPAdmin extends SecureCFPController {
 
   import play.api.data.Form
   import play.api.data.Forms._
-  import play.api.data.format.Formats._
 
   def allCFPWebusers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -546,7 +560,6 @@ object CFPAdmin extends SecureCFPController {
       speakerForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.CFPAdmin.newSpeaker(invalidForm)).flashing("error" -> "Invalid form, please check and correct errors. "),
         validSpeaker => {
-          println("saveNew Speaker "+validSpeaker)
           Option(validSpeaker.uuid) match {
             case Some(existingUUID) => {
               play.Logger.of("application.CFPAdmin").debug("Updating existing speaker " + existingUUID)
