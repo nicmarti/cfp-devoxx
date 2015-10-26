@@ -28,11 +28,11 @@ import models.ConferenceDescriptor.ConferenceProposalConfigurations
 
 /**
  * Approve or reject a proposal
- * Created by nicolas on 29/01/2014.
+ * Created by Nicolas Martignole on 29/01/2014.
  */
 object ApprovedProposal {
 
-  val getTotal: Map[String, Int] =  Map(
+  val getTotal: Map[String, Int] = Map(
     ("conf.label", ConferenceProposalConfigurations.CONF.slotsCount)
     , ("uni.label", ConferenceProposalConfigurations.UNI.slotsCount)
     , ("tia.label", ConferenceProposalConfigurations.TIA.slotsCount)
@@ -42,7 +42,7 @@ object ApprovedProposal {
     , ("key.label", ConferenceProposalConfigurations.KEY.slotsCount)
     , ("ignite.label", ConferenceProposalConfigurations.IGNITE.slotsCount)
     , ("other.label", ConferenceProposalConfigurations.OTHER.slotsCount)
-    )
+  )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
     client =>
@@ -74,12 +74,12 @@ object ApprovedProposal {
 
   def recomputeAcceptedSpeakers() = Redis.pool.withClient {
     implicit client =>
-      val allSpeakerIDs=client.keys("ApprovedSpeakers:*")
+      val allSpeakerIDs = client.keys("ApprovedSpeakers:*")
 
       val tx = client.multi()
       allSpeakerIDs.foreach {
-        speakerId=>
-        tx.del(s"$speakerId")
+        speakerId =>
+          tx.del(s"$speakerId")
       }
       allApproved().map {
         proposal =>
@@ -288,7 +288,7 @@ object ApprovedProposal {
       client.smembers("RefusedById:")
   }
 
-  def allApprovedSpeakers() = Redis.pool.withClient {
+  def allApprovedSpeakers(): Set[Speaker] = Redis.pool.withClient {
     implicit client =>
       client.keys("ApprovedSpeakers:*").flatMap {
         key =>
@@ -306,11 +306,17 @@ object ApprovedProposal {
       }
   }
 
-  def allAcceptedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
+  // Talks approved by the program committee
+  def allApprovedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allApprovedProposals = client.smembers("ApprovedSpeakers:" + speakerId)
       val mapOfProposals = Proposal.loadAndParseProposals(allApprovedProposals)
       mapOfProposals.values
+  }
+
+  // Talks for wich speakers confirmed he will present
+  def allAcceptedTalksForSpeaker(speakerId: String): Iterable[Proposal] = {
+    allApprovedTalksForSpeaker(speakerId).filter(_.state == ProposalState.ACCEPTED).toList
   }
 
   def allAcceptedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {

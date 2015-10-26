@@ -630,3 +630,9 @@ msg_pub=Send a message to the speaker
 email_pub=Your email address
 email_pub2=Please confirm your email
 
+tag.proposal.title=Proposal title
+tag.proposal.status=Proposal status
+tag.proposal.type=Proposal type
+tag.proposal.track=Track
+tag.proposal.youVoted=Your vote
+qualifications.otherproposals=Other proposals from this speaker
