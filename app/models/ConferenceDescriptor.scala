@@ -1,6 +1,5 @@
 package models
 
-import models.SlotBuilder
 import play.api.Play
 import org.joda.time.{DateTimeZone, DateTime}
 
