@@ -167,9 +167,6 @@ GET           /2015/search                                                      
 GET           /2015/                                                            controllers.Publisher.homePublisher()
 GET           /2015                                                             controllers.Publisher.homePublisher()
 
-# Favorites
-GET           /favorites                                                        controllers.Favorites.index
-POST          /favorites                                                        controllers.Favorites.likeIt(proposalId:Long)
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
