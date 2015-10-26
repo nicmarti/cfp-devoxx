@@ -187,15 +187,11 @@ object Proposal {
       client.sismember("Proposals:ByAuthor:" + uuid, proposalId)
   }
 
-  def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState) = Redis.pool.withClient {
+  def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState): String = Redis.pool.withClient {
     client =>
-      // If it's a sponsor talk, we force it to be a conference
-      // We also enforce the user id, for security reason
-      val proposalWithMainSpeaker = if (proposal.sponsorTalk) {
-        proposal.copy(talkType = ConferenceDescriptor.current().conferenceSponsor.sponsorProposalType, mainSpeaker = authorUUID)
-      } else {
-        proposal.copy(mainSpeaker = authorUUID)
-      }
+      // We enforce the user id, for security reason
+      // Note : for Devoxx FR 2015 we accept other format than just Conference as sponsorTalk
+      val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
 
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
@@ -224,6 +220,8 @@ object Proposal {
 
       // Reflect any changes such as talkType or speaker to the list of accepted/refused talks.
       ApprovedProposal.reflectProposalChanges(proposal)
+
+      proposalId
   }
 
   val proposalForm = Form(mapping(
@@ -261,7 +259,9 @@ object Proposal {
                           userGroup: Option[Boolean]): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      Messages("longYearlyName"),
+      // TODO Devoxx FR 2015 and Devoxx BE 2015 used [Messages("longYearlyName" instead of ConferenceDescriptor
+      // So all proposals were created with an invalid event. It should not be a I18N but the real value
+      ConferenceDescriptor.current().eventCode,
       lang,
       title,
       "no_main_speaker",
@@ -303,13 +303,15 @@ object Proposal {
 
       // Do the operation if and only if we changed the Track
       maybeExistingTrackId.map {
-        oldTrackId: String =>
+        case oldTrackId if oldTrackId!=proposal.track.id=>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByTrack:" + oldTrackId, "Proposals:ByTrack:" + proposal.track.id, proposalId)
           client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
           // And we are able to track this event
           Event.storeEvent(Event(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
+        case oldTrackId if oldTrackId==proposal.track.id=>
+          // Same track
       }
       if (maybeExistingTrackId.isEmpty) {
         // SADD is O(N)
@@ -331,7 +333,7 @@ object Proposal {
         stateOld: String =>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
-          Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk ${proposalId} from ${stateOld} to ${newState.code}"))
+          Event.storeEvent(Event(proposalId, uuid, s"Changed status of talk $proposalId from $stateOld to ${newState.code}"))
 
           if (newState == ProposalState.SUBMITTED) {
             client.hset("Proposal:SubmittedDate", proposalId, new Instant().getMillis.toString)
@@ -340,7 +342,7 @@ object Proposal {
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
-        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk ${proposalId} with status ${newState.code}"))
+        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk $proposalId with status ${newState.code}"))
       }
   }
 
@@ -395,7 +397,7 @@ object Proposal {
 
   private def loadProposalsByState(uuid: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:${uuid}", s"Proposals:ByState:${proposalState.code}")
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}")
       loadProposalByIDs(allProposalIds, proposalState)
   }
 
@@ -774,25 +776,6 @@ object Proposal {
       client.exists(s"Proposals:ByAuthor:$uuid")
   }
 
-  def totalWithOneProposal(): Int = Redis.pool.withClient {
-    implicit client =>
-      // List all speakers with at least one proposal
-      val speakersWithProposal = client.keys("Proposals:ByAuthor:*")
-      // Take the SET of ProposalIds not archived
-      val allProposalIDsExceptArchived = client.hkeys("Proposals").diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
-      // For each speakerProposal Redis KEY
-      val test = speakersWithProposal.take(1).filter{
-        proposalByAuthorKey=>
-          // Loads the list of proposalIDS for each speaker
-          val proposalIDs = client.smembers(proposalByAuthorKey)
-          // Do a diff so that we remove talks Archived
-          val validProposals = proposalIDs.toSet.diff(allProposalIDsExceptArchived)
-          // If we are empty then filter and drop
-          validProposals.isEmpty
-      }
-      test.size
-  }
-
   def allApprovedForSpeaker(author: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       loadProposalsByState(author, ProposalState.APPROVED)
@@ -842,13 +825,6 @@ object Proposal {
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val proposals = loadAndParseProposals(allProposalIDs).values.toSet
       proposals.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED) == false && proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
-  }
-
-  def hasOneProposalWithSpeakerTicket(speakerUUID: String): Boolean = Redis.pool.withClient {
-    implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      val onlyAcceptedOrApproved = loadAndParseProposals(allProposalIDs).values.toSet.filter(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED)
-      onlyAcceptedOrApproved.filter(proposal => ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)).nonEmpty
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {

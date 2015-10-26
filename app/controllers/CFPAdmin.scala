@@ -1,23 +1,15 @@
 package controllers
 
-import models._
-import org.joda.time.DateTimeZone
-import play.api.data._
-import play.api.data.Forms._
-import library._
 import library.search.ElasticSearch
-import play.api.libs.json.Json
-import play.api.i18n.Messages
+import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review.ScoreAndTotalVotes
+import models._
+import org.apache.commons.lang3.StringUtils
+import play.api.data.Forms._
+import play.api.data._
 import play.api.data.validation.Constraints._
-import library.ComputeVotesAndScore
-import library.ComputeLeaderboard
-import library.SendMessageInternal
-import library.SendMessageToSpeaker
-import play.api.libs.json.JsObject
-import org.apache.commons.lang3.{StringUtils, StringEscapeUtils}
-import java.io.{PrintWriter, File}
-import org.apache.commons.io.FileUtils
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
 
 /**
  * The backoffice controller for the CFP technical committee.
@@ -408,85 +400,80 @@ object CFPAdmin extends SecureCFPController {
   }
 
   // Returns all speakers
-  def allSpeakers(export: Boolean = false, rejected: Boolean = true, accepted: Boolean = true, onlyWithSpeakerPass: Boolean = false) = SecuredAction(IsMemberOf("cfp")) {
+
+  def allSpeakers()= SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      import net.glxn.qrgen._
-      import library.VCard
-
-      val allSpeakers = Speaker.allSpeakers()
-
-      val speakers1 = (accepted, onlyWithSpeakerPass) match {
-        case (true, false) => allSpeakers.filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
-        case (_, true) => allSpeakers.filter(s => Proposal.hasOneProposalWithSpeakerTicket(s.uuid)).filter(s => Proposal.hasOneAcceptedProposal(s.uuid))
-        case other => allSpeakers
+      Ok(views.html.CFPAdmin.allSpeakersHome())
       }
 
-      val speakers = rejected match {
-        case true => allSpeakers.filter(s => Proposal.hasOnlyRejectedProposals(s.uuid))
-        case false => speakers1
+  def allSpeakersWithApprovedTalks() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val allSpeakers = ApprovedProposal.allApprovedSpeakers()
+      Ok(views.html.CFPAdmin.allSpeakers(allSpeakers.toList.sortBy(_.cleanName)))
       }
-      export match {
-        case true => {
 
-          val dir = new File("./public/speakers")
-          FileUtils.forceMkdir(dir)
+   def allApprovedSpeakersByCompany() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+        .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("Pas de société"))
+        .toList
+        .sortBy(_._2.size)
+        .reverse
 
-          val file = new File(dir, "speakers_devoxxBE2015_all_macroman.csv")
-          val writer = new PrintWriter(file, "Macroman")
-
-          writer.println("email,firstName,lastName,company,hasSpeakerBadge,hasOneAccepted,isCFPMember,totalApproved,Proposal details separated by ;")
-          speakers.sortBy(_.email).foreach {
+      val proposals = speakers.map {
+        case (company, subSpeakers) =>
+          val allProposals = subSpeakers.toList.map {
             s =>
-              writer.print(s.email.toLowerCase)
-              writer.print(",")
-              writer.print(s.firstName.getOrElse("?"))
-              writer.print(",")
-              writer.print(s.name.getOrElse("?"))
-              writer.print(",")
-              writer.print(s.company.map(c=>"\""+c.toUpperCase+"\"").getOrElse(""))
-              writer.print(",")
+              Proposal.allApprovedProposalsByAuthor(s.uuid).map(_._2)
+          }
 
-              // freepass
-              writer.print(Proposal.hasOneProposalWithSpeakerTicket(s.uuid))
-              writer.print(",")
+          val setOfProposals = allProposals.flatten.toSet
+          (company, setOfProposals)
+      }
 
-              writer.print(Proposal.hasOneAcceptedProposal(s.uuid))
-              writer.print(",")
+      Ok(views.html.CFPAdmin.allApprovedSpeakersByCompany(speakers, proposals))
+  }
 
-              writer.print(Webuser.isMember(s.uuid, "cfp"))
-              writer.print(",")
+  // All speakers that accepted to present a talk (including BOF and Quickies)
+  def allSpeakersThatForgetToAccept() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
 
-              // number of talks
-              val allAccepted = Proposal.allAcceptedForSpeaker(s.uuid)
+      val proposals:Set[(Speaker,Iterable[Proposal])] = speakers.map {
+        speaker =>
+          (speaker,Proposal.allThatForgetToAccept(speaker.uuid).values)
+      }.filter(_._2.nonEmpty)
 
-              writer.print(allAccepted.size)
-              writer.print(",")
+      Ok(views.html.CFPAdmin.allSpeakersThatForgetToAccept(proposals))
+  }
 
-              Proposal.allAcceptedForSpeaker(s.uuid).map{p=>
-                ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map{ slot=>
-                  writer.print(Messages(p.talkType.id))
-                  writer.print(" \"" + p.title.replaceAll(","," ") + "\"")
-                  writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
-                  writer.print(s"from ${slot.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")} to ${slot.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")}")
-                }.getOrElse{
-                  writer.print("\"")
-                  writer.print( p.title.replaceAll(","," "))
-                  writer.print("\"")
-                  writer.print(s" ${p.talkType.label}}] not yet scheduled")
+  // All speakers with a speaker's badge (it does not include Quickies, BOF and 3rd, 4th speakers)
+  def allSpeakersWithAcceptedTalksAndBadge() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+      val proposals:List[(Speaker,Iterable[Proposal])] = speakers.toList.map {
+        speaker =>
+          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==Some(speaker.uuid))
+          .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+          (speaker,onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty)
 
+       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
                 }
 
-                writer.print(",")
-              }
+    // All speakers with a speaker's badge
+  def allSpeakersWithAcceptedTalks() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+      val proposals:List[(Speaker,Iterable[Proposal])] = speakers.toList.map {
+        speaker =>
+          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==Some(speaker.uuid))
+          (speaker,onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty)
 
-
-              writer.println()
-          }
-          writer.close()
-         Ok.sendFile(file, inline = false)
-        }
-        case false => Ok(views.html.CFPAdmin.allSpeakers(speakers.sortBy(_.cleanName)))
-      }
+       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
   }
 
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {

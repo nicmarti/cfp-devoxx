@@ -1,9 +1,9 @@
 package controllers
 
-import java.io._
+import java.io.{File, PrintWriter}
 
-import library.Redis
 import library.search.{DoIndexProposal, _}
+import library.{DraftReminder, Redis, ZapActor}
 import models._
 import org.apache.commons.lang3.StringEscapeUtils
 import org.joda.time.Instant
@@ -11,10 +11,8 @@ import play.api.Play
 import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
 import play.api.data._
-import play.api.libs.iteratee.Enumerator
+import play.api.libs.json.Json
 import play.api.mvc.Action
-
-import scala.concurrent.ExecutionContext
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -23,10 +21,6 @@ import scala.concurrent.ExecutionContext
  * Created: 02/12/2013 21:34
  */
 object Backoffice extends SecureCFPController {
-
-  val isCFPOpen: Boolean = {
-    ConferenceDescriptor.isCFPOpen
-  }
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -87,9 +81,9 @@ object Backoffice extends SecureCFPController {
       if (Webuser.noBackofficeAdmin()) {
         Webuser.addToBackofficeAdmin(uuid)
         Webuser.addToCFPAdmin(uuid)
-        Redirect(routes.Application.index())
+        Redirect(routes.Application.index()).flashing("success" -> "Your UUID has been configured as super-admin")
       } else {
-        Redirect(routes.Application.index()).flashing("error" -> "Not Authorized !")
+        Redirect(routes.Application.index()).flashing("error" -> "There is already an Admin user")
       }
   }
 
@@ -206,16 +200,18 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
 
-      val declined = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.DECLINED)
+      val declined = publishedConf.filter(_.proposal.get.state == ProposalState.DECLINED)
 
-      val approved = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.APPROVED)
+      val approved = publishedConf.filter(_.proposal.get.state == ProposalState.APPROVED)
 
-      val accepted = publishedConf.filter(_.proposal.isDefined).filter(_.proposal.get.state == ProposalState.ACCEPTED)
+      val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val allSpeakersIDsThatDidNotAcceptTC = Speaker.allThatDidNotAcceptedTerms()
-      val speakers = Speaker.asSetOfSpeakers(allSpeakersIDsThatDidNotAcceptTC)
+      val allSpeakersIDs = publishedConf.map(_.proposal.get.allSpeakerUUIDs).flatten.toSet
+      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
+      val allSpeakers = Speaker.asSetOfSpeakers(onlySpeakersThatNeedsToAcceptTerms)
+
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
@@ -224,8 +220,20 @@ object Backoffice extends SecureCFPController {
           Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, speakers))
+      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, allSpeakers))
 
+  }
+
+  def sanityCheckProposals() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Redis.pool.withClient {
+        client =>
+          val toReturn = client.hgetAll("Proposals").map {
+            case (proposalId, json) =>
+              (proposalId, Json.parse(json).asOpt[Proposal])
+          }.filter(_._2.isEmpty).map(_._1)
+          Ok(views.html.Backoffice.sanityCheckProposals(toReturn))
+      }
   }
 
   def fixToAccepted(slotId: String, proposalId: String, talkType: String) = SecuredAction(IsMemberOf("admin")) {
@@ -235,11 +243,11 @@ object Backoffice extends SecureCFPController {
         scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
         slot <- scheduleConf.slots.find(_.id == slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId)
       ) yield {
-        val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
-        val updatedSlot = slot.copy(proposal = Some(updatedProposal))
-        val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
-        newListOfSlots
-      }
+          val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
+          val updatedSlot = slot.copy(proposal = Some(updatedProposal))
+          val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
+          newListOfSlots
+        }
 
       maybeUpdated.map {
         newListOfSlots =>
@@ -252,21 +260,25 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def allQuestions = SecuredAction(IsMemberOf("admin")) {
+  def sendDraftReminder = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      Ok(views.html.Backoffice.showAllQuestions(Question.allQuestions))
+      ZapActor.actor ! DraftReminder()
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")
   }
 
-  def deleteAllQuestions(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
+  def showAllDeclined() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      Question.deleteAllQuestionsForProposal(proposalId)
-      Redirect(routes.Backoffice.allQuestions())
+
+      val allDeclined = Proposal.allDeclinedProposals()
+      //      Proposal.decline(request.webuser.uuid, proposalId)
+      Ok(views.html.Backoffice.showAllDeclined(allDeclined))
+
   }
 
   def allTalksForParleys() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val slots = ScheduleConfiguration.loadSlots()
-      val file = File.createTempFile("export","csv")
+      val file = File.createTempFile("export", "csv")
       file.deleteOnExit()
 
       val writer = new PrintWriter(file, "MacRoman")
@@ -311,5 +323,4 @@ object Backoffice extends SecureCFPController {
 
       Ok.sendFile(new java.io.File("./target/export.csv"), false, f => "export.csv")
   }
-
 }

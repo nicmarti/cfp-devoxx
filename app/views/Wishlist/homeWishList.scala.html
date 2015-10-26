@@ -1,4 +1,4 @@
-@(requests:List[models.RequestToTalk])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(requests:List[(models.RequestToTalk,Option[Webuser])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @import helper.twitterBootstrap._
 
@@ -24,6 +24,7 @@
 
                 <div class="panel-body">
 <a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishlist.newWishlist")</a><br>
+                    <p>Total wishlisted : @requests.size</p>
   @if(flash.get("error").isDefined) {
                         <div class="alert alert-danger alert-dismissable">
                             <strong>Error :</strong>
@@ -38,16 +39,19 @@
 <table id="allWishlist" class="table table-bordered table-hover table-condensed">
     <thead>
         <tr>
-            <th>Action</th>
-            <th>Last modifed</th>
-            <th>Speaker name</th>
-            <th>Company</th>
-            <th>Track</th>
-            <th>Current status</th>
+            <th>@Messages("wl.action")</th>
+            <th>@Messages("wl.lm")</th>
+            <th>@Messages("wl.sn")</th>
+            <th>@Messages("wl.fb")</th>
+            <th>@Messages("wl.company")</th>
+            <th>@Messages("wl.country")</th>
+            <th>@Messages("wl.track")</th>
+            <th>@Messages("wl.keynote")</th>
+            <th>@Messages("wl.status")</th>
         </tr>
     </thead>
     <tbody>
-@requests.map { request: RequestToTalk =>
+@requests.map { case(request: RequestToTalk,maybePersonInCharge:Option[Webuser]) =>
     <tr>
         <td>
             <a href="@routes.Wishlist.edit(request.id)" class="btn btn-small btn-primary"><i class="icon-edit"></i></a>
@@ -55,8 +59,23 @@
         </td>
         <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, dd MMM, HH:mm"))</td>
         <td>@request.speakerName</td>
+        <td>
+           @maybePersonInCharge.map{webuser=>
+                @webuser.cleanName<br>
+                <a href="@routes.Wishlist.unsetPersonInCharge(request.id)" class="btn btn-sm btn-danger"><i class="icon-minus-sign-alt"></i></a>
+           }.getOrElse{
+               <a href="@routes.Wishlist.selectPersonInCharge(request.id, request.speakerName)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i> </a>
+           }
+        </td>
         <td>@request.company</td>
+        <td>@request.country</td>
         <td>@Messages(request.track.label)</td>
+        <td>@if(request.keynote.isDefined && request.keynote.get){
+            Yes
+        } else{
+            No
+        }
+        </td>
         <td>@Messages("wl_"+request.status.code)</td>
     </tr>
 }
@@ -71,16 +90,22 @@
 $(document).ready(function() {
 
     $('#allWishlist').dataTable({
-        "aaSorting": [[ 0, "desc" ]],
-        "iDisplayLength": 50,
-        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+    "aaSorting": [[ 2, "desc" ]],
+    "iDisplayLength" : -1,
+    "aLengthMenu": [
+    [25, 50, 100, 200, -1],
+    [25, 50, 100, 200, "All"]
+    ],
         "bStateSave": true,
         "aoColumns": [
         { "sType": "string"},
+    { "sType": "date"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "boolean"},
         { "sType": "string"}
         ]
     });

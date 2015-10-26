@@ -1,4 +1,4 @@
-@(speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speakersByCompany:List[(String,Set[Speaker])], proposals:List[(String,scala.collection.immutable.Set[Proposal])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Speakers") {
 <div class="row">
@@ -22,13 +22,18 @@
     <div class="col-md-12">
         <div class="panel panel-default">
         <div class="panel-heading">
-            <h3>All speakers</h3>
-            <h4></h4>
-            <span class="label label-info">@speakers.size users</span>
+            <h3>All speakers with one approved talk, grouped by Company</h3>
+            <span class="label label-info">@speakersByCompany.size companies</span>
         </div>
         <div class="panel-body">
+            @proposals.map { case (company, props) =>
+            <h3>@company</h3>
+                @props.toList.sortBy(_.talkType.id).map {proposal=>
+                    @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") <br>
+                }
+            }
 
-            @if(speakers.nonEmpty){
+            @if(speakersByCompany.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>
                     <tr>
@@ -40,9 +45,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                @speakers.map{ speaker: Speaker =>
-                    <tr>
-                       <td>
+                @speakersByCompany.map{ case(company:String, speakers: Set[Speaker]) =>
+                   <tr>
+                       <th colspan="5">@company - @speakers.size</th>
+                   </tr>
+                       @speakers.map{speaker=>
+                        <tr>
+                          <td>
                            @speaker.cleanName
                        </td>
                         <td>
@@ -55,16 +64,15 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                           <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
-                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
+                            <a href="@routes.CFPAdmin.showSpeakerAndTalks(speaker.uuid)">See talks</a>
                         </td>
-
-                    </tr>
+                        </tr>
+                       }
                 }
                 </tbody>
             </table>
             }else{
-                <P>There is no speaker.</P>
+                <P>There is no approved speaker.</P>
             }
         </div>
         </div>

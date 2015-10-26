@@ -60,8 +60,8 @@ object Invitation {
       client.hdel(redisInvitation, speakerId)
   }
 
-  def archive()=Redis.pool.withClient{
+  def deleteAll()=Redis.pool.withClient{
     implicit client=>
-      client.rename(redisInvitation, redisInvitation+"_archived")
+    client.del(redisInvitation)
   }
 }

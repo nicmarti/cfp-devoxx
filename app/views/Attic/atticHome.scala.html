@@ -25,6 +25,16 @@
                     <h3>Attic backoffice</h3>
                 </div>
                 <div class="panel-body">
+                    <div class="alert alert-danger alert-dismissable col-md-12">
+                        <strong>Warning :</strong>
+                        <p>You are about to archive/to delete ALL proposals from your CFP.</p>
+                        <p>Please, create a REDIS backup (with BGSAVE) and save your AOF file in a safe place BEFORE you start to click and to archive talks and reviews</p>
+                        <p>If you used the Publisher controller, you must also save all the generated HTML pages with the list of talks, speakers bios, etc. I use WGET (see README) with noclobber</p>
+                        <p>French</p>
+                        <p>Vous êtes sur le point d'archiver/d'effacer TOUTES les propositions de votre base du CFP.</p>
+                        <p>Sérieusement, faîtes un backup de votre fichier DUMP et de votre fichier AOF avant de commencer à cliquer sur l'un de ces boutons.</p>
+                    </div>
+
                     <form action="@routes.Attic.prune()" method="POST">
                         <input type="hidden" name="opType" value="deleted"/>
                         <button type="submit" class="btn btn-primary">Prune deleted proposals</button>
@@ -66,14 +76,21 @@
                         <button type="submit" class="btn btn-primary">Archive all other talks</button>
                     </form>
                        <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.START.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Startups talks</button>
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all Ignite talks</button>
                     </form>
 
-                    <br>
-                    <a href="@routes.Attic.resetEvents()" class="btn btn-small btn-warning">Reset Events</a>
-                    <br>
-                    <a href="@routes.Attic.archiveInvitedSpeakers()" class="btn btn-small btn-warning">Archive the list of Invited speakers</a>
+                    <hr>
+                    <form action="@routes.Attic.deleteInvitedSpeakers()" method="POST">
+                        <button type="submit" class="btn btn-warning">Remote status [Invited] from all speakers</button>
+                    </form>
+                    <form action="@routes.Attic.resetEvents()" method="POST">
+                        <button type="submit" class="btn btn-warning">Delete all Events and history</button> <em>Events is a log of all actions such as votes, new proposals, actions and updates performed by speakers and the team.</em>
+                    </form>
+                    <form action="@routes.Attic.resetNotified()" method="POST">
+                        <button type="submit" class="btn btn-warning">Reset the list of notified Speakers (approved and refused)</button>
+                    </form>
+
 
 
                 </div>

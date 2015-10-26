@@ -37,7 +37,7 @@ import java.util.Date
  */
 
 /**
- *
+ * Event.
  * @param objRef is the unique ID of the object that was modified
  * @param uuid is the author, the person who did this change
  * @param msg is a description of what one did
@@ -76,20 +76,14 @@ object Event {
       client.zcard("Events:V2:")
   }
 
-  def deleteAll() = Redis.pool.withClient {
+  def resetEvents() = Redis.pool.withClient{
     client =>
-
-      val list1 = client.keys("Events:V2:")
-      val list2 = client.keys("Events:LastUpdated:")
-
+      client.del("Events:V2:")
+      val allEvents = client.keys("Events:*")
       val tx=client.multi()
-      list1.foreach{
-        k=>tx.del(k)
+      allEvents.foreach{k:String=>
+        tx.del(k)
       }
-      list2.foreach{
-        k=>tx.del(k)
-      }
-      tx.del("Events:V2:")
       tx.exec()
   }
 
@@ -126,6 +120,14 @@ object Event {
       if (allApproved.isEmpty && allBackups.nonEmpty) {
         client.sadd("Notified:BackupSpeakers", speaker.uuid)
       }
+  }
+
+  def resetSpeakersNotified() = Redis.pool.withClient{
+    client=>
+      client.del("NotifiedSpeakers")
+      client.del("Notified:RefusedSpeakers")
+      client.del("Notified:ApprovedSpeakers")
+      client.del("Notified:BackupSpeakers")
   }
 
 

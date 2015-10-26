@@ -47,6 +47,7 @@ case class RequestToTalk(id: String
                          , tl: Boolean
                          , country: String
                          , statusCode: String
+                         , keynote:Option[Boolean]
                           ) {
   def status: RequestToTalkStatus = {
     RequestToTalkStatus.findCurrentStatus(id)
@@ -67,12 +68,12 @@ object RequestToTalk {
   }
 
   def validateRequestToTalk(id: Option[String], note: String, message: Option[String], speakerEmail: Option[String], speakerName: String,
-                            company: String, trackCode: String, travel: Boolean, country: String, statusCode: String): RequestToTalk = {
-    RequestToTalk(id.getOrElse(generateId), note, message, speakerEmail.getOrElse(""), speakerName, company, trackCode, travel, country, statusCode)
+                            company: String, trackCode: String, travel: Boolean, country: String, statusCode: String, keynote:Option[Boolean]): RequestToTalk = {
+    RequestToTalk(id.getOrElse(generateId), note, message, speakerEmail.getOrElse(""), speakerName, company, trackCode, travel, country, statusCode, keynote)
   }
 
-  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, Option[String], Option[String], String, String, String, Boolean, String, String)] = {
-    Option((Option(rt.id), rt.note, rt.message, Option(rt.speakerEmail), rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode))
+  def unapplyRequestToTalk(rt: RequestToTalk): Option[(Option[String], String, Option[String], Option[String], String, String, String, Boolean, String, String, Option[Boolean])] = {
+    Option((Option(rt.id), rt.note, rt.message, Option(rt.speakerEmail), rt.speakerName, rt.company, rt.trackCode, rt.tl, rt.country, rt.statusCode, rt.keynote))
   }
 
   val newRequestToTalkForm = Form(mapping(
@@ -86,6 +87,7 @@ object RequestToTalk {
     , "wl_travel" -> boolean
     , "wl_country" -> text
     , "wl_statusCode" -> nonEmptyText
+    , "wl_keynote" -> optional(boolean)
   )(validateRequestToTalk)(unapplyRequestToTalk))
 
 
@@ -161,22 +163,21 @@ object RequestToTalk {
       RequestToTalkStatus.changeStatusFromRequest(author, requestId, RequestToTalkStatus.DELETED)
   }
 
-  def createIDs() = Redis.pool.withClient {
+  def setPersonInCharge(requestId:String, userId:String) = Redis.pool.withClient {
     client =>
-      client.hkeys("RequestToTalk").foreach {
-        talkId =>
+      client.hset("RequestToTalk:PersonInCharge",requestId,userId)
+  }
 
-          findById(talkId).map {
-            talk =>
-              val lastModified = RequestToTalkStatus.lastEvent(talk.id).map { rh =>
-                rh.date.getMillis
-              }.getOrElse {
-                new Date().getTime
+  def unsetPersonInCharge(requestId:String) = Redis.pool.withClient{
+    client=>
+      client.hdel("RequestToTalk:PersonInCharge",requestId)
               }
-              client.zadd("RequestToTalk:IDs", lastModified, talk.id)
-          }
 
-
+  def whoIsInChargeOf(requestId:String):Option[Webuser]=Redis.pool.withClient{
+    client=>
+      client.hget("RequestToTalk:PersonInCharge",requestId).flatMap{
+        uuid=>
+          Webuser.findByUUID(uuid)
       }
   }
 

@@ -32,9 +32,8 @@
                     <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> @Messages("admin.btn.myvotes")</a>
                     <a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(None)" class="btn btn-sm btn-primary"><i class="icon-circle-arrow-right"></i> @Messages("admin.btn.otherReviewer")</a>
                     <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
-                    <a href="@routes.Sponsor.index()" class="btn btn-sm btn-primary"><i class="icon-list"></i> @Messages("admin.btn.sponsor")</a>
                     <a href="@routes.CFPAdmin.allVotes("all",None)" class="btn btn-sm btn-warning"><i class="icon-large"></i><i class="icon-adjust"></i> @Messages("admin.btn.allvotes")</a>
-                    <a href="@routes.CFPAdmin.allSpeakers(export=false, rejected=false, accepted=false, onlyWithSpeakerPass=false)" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
+                    <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
                     <a href="@routes.InviteController.allInvitations()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakersInvited")</a>
                     <a href="@routes.CFPAdmin.newOrEditSpeaker(None)" class="btn btn-sm btn-primary"><i class="icon-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a>
                     @if(SecureCFPController.hasAccessToAdmin(req)){
@@ -125,7 +124,7 @@
                         @events.map { event: Event =>
                             <tr>
                                 <td class="text-center">
-                                    <small>@event.date.map(_.toString("dd/MM HH:mm"))</small>
+                                    <small>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("dd/MM HH:mm"))</small>
                                 </td>
                                 <td class="text-center">
                                 @tags.renderGravatar(event.uuid,showName = false)

@@ -201,7 +201,7 @@ class IndexMaster extends ESActor {
     val sb = new StringBuilder
     proposals.foreach {
       proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"acceptedproposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("{\"index\":{\"_index\":\"" + ElasticSearch.public_index + "\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
         sb.append(Json.toJson(proposal.copy(
           privateMessage = "",
@@ -213,9 +213,9 @@ class IndexMaster extends ESActor {
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), "acceptedproposals")
+    ElasticSearch.indexBulk(sb.toString(), ElasticSearch.public_index)
 
-    play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
+    play.Logger.of("application.IndexMaster").debug(s"Done indexing all Accepted Talks to ${ElasticSearch.public_index}")
   }
 
   def doIndexAllReviews() {
@@ -555,8 +555,8 @@ class IndexMaster extends ESActor {
       res2
     }
 
-     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals");
-                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals", settingsProposalsEnglish)
+     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex(ElasticSearch.public_index);
+                        res2 <- ElasticSearch.createIndexWithSettings(ElasticSearch.public_index, settingsProposalsEnglish)
     ) yield {
       res2
     }

@@ -23,10 +23,13 @@
 
 package controllers
 
-import models.RequestToTalk
+import models.{Webuser, RequestToTalk}
 import library.{NotifySpeakerRequestToTalk, EditRequestToTalk, ZapActor}
+import play.api.data.Form
 import play.api.mvc.Action
 
+import play.api.data._
+import play.api.data.Forms._
 /**
  * Controller to handle the list of invited speakers.
  * A CFP Member can create a RequestToTalk, this will send an email to the speaker.
@@ -39,7 +42,11 @@ object Wishlist extends SecureCFPController {
 
   def homeWishlist() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.Wishlist.homeWishList(RequestToTalk.allRequestsToTalk))
+      val requestsAndPersonInCharge = RequestToTalk.allRequestsToTalk.map{
+        rt:RequestToTalk=>
+          (rt, RequestToTalk.whoIsInChargeOf(rt.id))
+      }
+      Ok(views.html.Wishlist.homeWishList(requestsAndPersonInCharge))
   }
 
   def newRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
@@ -99,7 +106,7 @@ object Wishlist extends SecureCFPController {
   def speakerApproveRequest(requestId: String) = Action {
     implicit request =>
       RequestToTalk.speakerApproved(requestId)
-      Redirect(routes.Application.home).flashing("success" -> "Request accepted. Welcome to Devoxx 2015! Please, create a speaker account :")
+      Redirect(routes.Application.home).flashing("success" -> "Request accepted. Welcome to Devoxx 2014! Please, create a speaker account :")
   }
 
   def speakerDeclineRequest(requestId: String) = Action {
@@ -108,13 +115,21 @@ object Wishlist extends SecureCFPController {
       Redirect(routes.Application.home).flashing("success" -> "Sorry that you have not accepted our invitation. However, if you'd like to propose a talk, please register :")
   }
 
+  def setPersonInCharge(requestId: String, userId:String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      RequestToTalk.setPersonInCharge(requestId, userId)
+      Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Set person in charge")
+  }
 
-  // TODO temporaire
-  def initTemp()=SecuredAction(IsMemberOf("cfp")) {
-    implicit request=>
-      // Fonction temporaire cree juste pour le CFP de DevoxxBE
-      RequestToTalk.createIDs()
-      Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Collection updated")
+  def unsetPersonInCharge(requestId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      RequestToTalk.unsetPersonInCharge(requestId)
+      Redirect(routes.Wishlist.homeWishlist()).flashing("success" -> "Success, no more person in charge for this speaker")
+  }
+
+  def selectPersonInCharge(requestId:String, speakerName:String)=SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.Wishlist.selectPersonInCharge(requestId, speakerName, Webuser.allCFPWebusers()))
   }
 
 }
