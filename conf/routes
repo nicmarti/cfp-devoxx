@@ -157,10 +157,14 @@ GET           /2015/speaker/:cleanName                                          
 GET           /2015/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
 GET           /2015/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2015/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+# Important for indexer
 GET           /2015/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2015/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2015/byday/:day                                                  controllers.Publisher.showByDay(day:String)
 GET           /2015/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+# Keep for backward compatibility (newsletter sent before we change the schema)
+GET           /2015/                                                            controllers.Publisher.homePublisher()
+GET           /2015                                                             controllers.Publisher.homePublisher()
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
