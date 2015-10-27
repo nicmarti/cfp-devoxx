@@ -1,0 +1,18 @@
+@(email:String, password:String)(implicit flash:Flash, lang:Lang, req: RequestHeader)
+
+@main("Profil") {
+    <div class="row">
+        <div class="col-md-12 page-header">
+            <h3>@Messages("visitor.profile.imported")</h3>
+        </div>
+        <div class="col-md-12">
+            <p>@Messages("visitor.profile.imported.txt")</p>
+            <p>@Messages("visitor.profile.username") <strong>@email</strong></p>
+            <p>@Messages("visitor.profile.password") <strong>@password</strong></p>
+            <p><a href="@routes.Publisher.homePublisher()" class="btn btn-default">@Messages("visitor.profile.publisher")</a> </p>
+
+            <p></p>
+            <p><small>@Messages("profile.password.help")</small></p>
+        </div>
+    </div>
+}
