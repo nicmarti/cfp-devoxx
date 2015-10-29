@@ -638,9 +638,9 @@ tag.proposal.youVoted=Your vote
 qualifications.otherproposals=Other proposals from this speaker
 
 # prepareSignupVisitor
-visitor.registration.title=Visitor's registration
-visitor.signup.txt1=Sign up to save your schedule for {0} conference :
-visitor.signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated. We won''t send you other emails.
+visitor.registration.title=Build your own agenda
+visitor.signup.txt1=Sign up to save your schedule for {0} conference. You can also register and create a profile from your Github or Google profile, we use your email address as your primary ID.
+visitor.signup.txt2=A validation email will be send to the provided email address. Your profile will be active once your email address is validated. We won''t send you other emails.
 
 # homeVisitor
 home.visitor.header=Visitor sign-in or sign-up

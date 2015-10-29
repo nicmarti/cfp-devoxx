@@ -174,9 +174,11 @@ GET           /2015                                                             
 
 # Favorites
 GET           /favorites                                                        controllers.Favorites.home
-POST          /favorites/like                                                   controllers.Favorites.likeIt(proposalId:Long)
-POST          /favorites/unlike                                                 controllers.Favorites.unlikeIt(proposalId:Long)
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
+GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
+
+# This is an AJAX callback triggered from devoxxBE2015.scala (the publisher web pages)
+POST           /favorites/likeOrUnlink                                          controllers.Favorites.likeOrUnlike()
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()

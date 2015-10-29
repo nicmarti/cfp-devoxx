@@ -1,9 +1,10 @@
-.scheduleHeader{
+.scheduleHeader {
     text-align: center;
     background-color: #211c1b;
-    color:white;
+    color: white;
 }
-.scheduleRow{
+
+.scheduleRow {
     background-color: #f5f5f5;
     border-color: #CED4BD;
     border-style: solid;
@@ -11,84 +12,102 @@
 
     text-align: center;
     vertical-align: middle;
-    padding-top:20px;
-    padding-bottom:20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
-.scheduleRight{
+
+.scheduleRight {
     text-align: right;
-        padding-top:20px;
-    padding-bottom:20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
-.agendaTable{
+
+.agendaTable {
     border: 1px solid #ffd297;
 }
-.agendaTable th{
+
+.agendaTable th {
     background-color: #211c1b;
-    color:white;
+    color: white;
 }
-.agendaTable td.room{
-    width:14%
+
+.agendaTable td.room {
+    width: 14%;
+    vertical-align: top;
 }
-.agendaTable td.keynotes{
+
+.agendaTable td.keynotes {
     text-align: center;
     background-color: #dbdbdb;
     height: 30px;
     line-height: 55px;
 }
-.agendaTable th.timeSlot{
+
+.agendaTable th.timeSlot {
     width: 6%;
 }
-.agendaTable .title{
+
+.agendaTable .title {
     padding-bottom: 5px;
     display: block;
 }
-.agendaTable .speaker{
+
+.agendaTable .speaker {
     font-style: italic;
     font-weight: lighter;
     display: block;
 }
-.agendaTable .iconTrack{
+
+.agendaTable .iconTrack {
     display: block;
     height: 123px;
-    width:180px
+    width: 180px
 }
-.agendaTable .room{
+
+.agendaTable .room {
     max-width: 16%;
     border: 1px solid #ffd297;
 }
-.agendaTable .track{
+
+.agendaTable .track {
     display: block;
 }
 
-.speakerDetail{
+.speakerDetail {
     max-height: 128px;
     max-width: 128px;
     float: left;
     margin-right: 20px;
     margin-top: 22px;
 }
-a.speakerTwitter, a.blackLink{
- color:#222222;
+
+a.speakerTwitter, a.blackLink {
+    color: #222222;
     text-decoration: none;
 }
-.trackBox{
+
+.trackBox {
     min-height: 288px;
     position: relative;
     padding: 10px;
 }
-table.mainSchedule{
+
+table.mainSchedule {
     width: 100%;
 }
-tr.rowHeightThree{
+
+tr.rowHeightThree {
     height: 100px;
 }
-td.break{
+
+td.break {
     background-color: #fee3ca;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
 }
-td.notAllocated{
+
+td.notAllocated {
     text-align: center;
     font-style: italic;
     font-weight: bold;
@@ -96,23 +115,40 @@ td.notAllocated{
     border: 1px solid #ffd297;
 }
 
-button.searchBtn{
-font-size: 12px;
-color: #fff;
-text-transform: uppercase;
-padding-left: 10px;
-padding-right: 10px;
-display: inline-block;
-vertical-align: middle;
-height: 30px;
-line-height: 30px;
-background-color: #f54f36;
-margin-top: 5px;
-border: 1px solid transparent;
--webkit-transition: all 0.3s;
-transition: all 0.3s;
+button.searchBtn {
+    font-size: 12px;
+    color: #fff;
+    text-transform: uppercase;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    height: 30px;
+    line-height: 30px;
+    background-color: #f54f36;
+    margin-top: 5px;
+    border: 1px solid transparent;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
-h4.speakerTitle{
+h4.speakerTitle {
     padding-top: 15px;
+}
+
+.cfp-fav {
+    text-align: right;
+    display: block;
+    height: 1.2em;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    color:darkred;
+}
+
+a:hover.cfp-fav {
+    color: coral;
+    height: 1.2em;
 }

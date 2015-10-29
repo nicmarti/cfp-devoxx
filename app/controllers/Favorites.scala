@@ -23,7 +23,11 @@
 
 package controllers
 
-import play.api.mvc.{Action, AnyContent, Request}
+import models.{FavoriteTalk, Proposal, ProposalState}
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.Action
 
 import scala.concurrent.Future
 
@@ -34,30 +38,50 @@ import scala.concurrent.Future
  * @author created by N.Martignole, Innoteria, on 26/10/15.
  */
 object Favorites extends UserCFPController {
-  def home() = SecuredAction{
+  def home() = SecuredAction {
     implicit request =>
 
       Ok(views.html.Favorites.homeFav())
   }
 
-  def likeIt(proposalId: Long) = SecuredAction.async {
+  val formProposal = Form("proposalId" -> nonEmptyText)
+
+  def likeOrUnlike = SecuredAction {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      formProposal.bindFromRequest().fold(hasErrors => BadRequest("Invalid proposalId"), proposalId => {
+        Proposal.findById(proposalId).filterNot(_.state == ProposalState.ARCHIVED).map {
+          proposal =>
+            if (FavoriteTalk.isFavByThisUser(proposal.id, request.webuser.uuid)) {
+              FavoriteTalk.unfavTalk(proposal.id, request.webuser.uuid)
+              Ok("{\"status\":\"unfav\"}").as(JSON)
+            } else {
+              FavoriteTalk.favTalk(proposal.id, request.webuser.uuid)
+              Ok("{\"status\":\"fav\"}").as(JSON)
+            }
+        }.getOrElse {
+          NotFound("Proposal not found")
+        }
+      })
+
+  }
+
+
+  def welcomeVisitor() = SecuredAction.async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Future.successful(
-       Ok("like it")
+        Ok(views.html.Favorites.welcomeVisitor(request.webuser))
       )
   }
 
-  def unlikeIt(proposalId: Long) = SecuredAction.async {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-       Future.successful(
-         Ok("unlike it")
-      )
-  }
+  def isFav(proposalId: String) = Action {
+    implicit request =>
+      UserCFPController.findAuthenticator.map {
+        uuid =>
+          val jsonResponse = JsObject(Seq("proposalId" -> JsString(proposalId)))
+          Ok(jsonResponse)
 
-  def welcomeVisitor()=SecuredAction.async {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-       Future.successful(
-         Ok(views.html.Favorites.welcomeVisitor(request.webuser))
-      )
+      }.getOrElse {
+        NoContent
+      }
   }
 }

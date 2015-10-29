@@ -103,11 +103,6 @@
             <p>Devoxx TM, All Rights Reserved (C) 2015<br>The Java Community BVBA (VAT BE0477.182.887)<br>
             Lijsterbessendreef 1, 8020 Oostkamp - Belgium</p>
         </div>
-        <div class="large-6 columns">
-            @*<a href="http://www.devoxx.be/sponsors-2015/" title="sponsors">*@
-                @*<img src="/assets/devoxxbe2015/images/DevoxxPlatinums-450px.png" alt="Devoxx BE 2015 Platinum">*@
-            @*</a>*@
-        </div>
     </div>
 </footer>
 
@@ -128,73 +123,31 @@
 <script type='text/javascript' src='http://www.devoxx.be/wp-content/plugins/easy-foundation-shortcodes/js/5/foundation.min.js?ver=3.9.2'></script>
 <script type='text/javascript' src='http://www.devoxx.be/wp-content/plugins/easy-foundation-shortcodes/js/script.js?ver=3.9.2'></script>
 
-<script type='text/javascript'>
-	(function($) {
-		$('form').find('br').remove();
-	})(jQuery);
-</script>
 
 	<script type="text/javascript">
 		(function($) {
-
 		    $(document).ready(function() {
-		      $('#simple-menu').sidr();
-
-		      $('#sidr button').click(function(event) {
-		        $.sidr('close', 'sidr');
+		      $('.cfp-fav').on("click",function(event) {
+		        event.preventDefault();
+		        var clickedElement = $(this);
+		        var maybePropoposalId = event.srcElement.dataset['proposalid'];
+		        console.log("Fav/unfav proposal "+maybePropoposalId);
+		        if(typeof maybePropoposalId != 'undefined'){
+		            $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
+		             function( jsonResponse ) {
+		             if(jsonResponse.status=="unfav"){
+		                $(clickedElement).text("☆");
+		             }
+		             if(jsonResponse.status=="fav"){
+		                $(clickedElement).text("★");
+		             }
+                    },"json");
+		        }else{
+		            console.log("no valid proposalId");
+		        }
 		      });
+
 		    });
-
-		    $('.tweetList').bxSlider({
-		        pager       : false,
-		        adaptiveHeight : true,
-		        infiniteLoop : false,
-		        hideControlOnEnd : true,
-		        controls: false
-		    });
-
-
-		    // Bx Post Images
-		    $('.post-images').bxSlider({
-		        pager : false,
-		        infiniteLoop : false,
-		        useCSS : false
-		    });
-
-
-
-		    var isMobile = {
-		        Android: function() {
-		            return navigator.userAgent.match(/Android/i);
-		        },
-		        BlackBerry: function() {
-		            return navigator.userAgent.match(/BlackBerry/i);
-		        },
-		        iOS: function() {
-		            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-		        },
-		        Opera: function() {
-		            return navigator.userAgent.match(/Opera Mini/i);
-		        },
-		        Windows: function() {
-		            return navigator.userAgent.match(/IEMobile/i);
-		        },
-		        any: function() {
-		            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-		        }
-		    };
-
-		    function parallaxInit() {
-		        var testMobile = isMobile.any();
-		        if (testMobile == null) {
-		            $(".parallax-twitter").parallax("50%", 0.3)
-		        }
-		    }
-
-		    $(window).bind("load", function() {
-		        parallaxInit()
-		    });
-
 		})(jQuery);
 	</script>
 </body>

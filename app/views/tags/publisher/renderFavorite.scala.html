@@ -1,0 +1,14 @@
+@(proposalId: String)(implicit req: RequestHeader)
+
+@defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
+    @maybeUuid.map { uuid:String =>
+        @if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) {
+            <a href="#" class="cfp-fav" data-proposalid="@proposalId" alt="Remove this talk from your agenda">&#9733; </a>
+        } else {
+            <a href="#" class="cfp-fav" data-proposalid="@proposalId" alt="Save this talk in your agenda">&#9734; </a>
+        }
+    }.getOrElse {
+        <a href="@routes.Authentication.prepareSignup(visitor = true)" class="cfp-fav" title="Click here to add this talk to your agenda">&#10032;</a>
+    }
+}
+
