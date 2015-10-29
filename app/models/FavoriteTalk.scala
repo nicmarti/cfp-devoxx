@@ -60,4 +60,10 @@ object FavoriteTalk {
         client.del(redis + ":ByUser:" + uuid, proposalId)
       }
   }
+
+  def allForUser(webuserId: String):Iterable[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val ids = client.smembers(redis + ":ByUser:" + webuserId)
+      Proposal.loadAndParseProposals(ids).values
+  }
 }

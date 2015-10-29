@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{FavoriteTalk, Proposal, ProposalState}
+import models.{FavoriteTalk, Proposal, ProposalState, ScheduleConfiguration}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.{JsObject, JsString}
@@ -41,7 +41,14 @@ object Favorites extends UserCFPController {
   def home() = SecuredAction {
     implicit request =>
 
-      Ok(views.html.Favorites.homeFav())
+      val proposals = FavoriteTalk.allForUser(request.webuser.uuid)
+
+      val slots = proposals.flatMap {
+        talk: Proposal =>
+          ScheduleConfiguration.findSlotForConfType(talk.talkType.id, talk.id)
+      }.toList.sortBy(_.from.getMillis)
+      val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
+      Ok(views.html.Favorites.homeFav(slots, rooms))
   }
 
   val formProposal = Form("proposalId" -> nonEmptyText)

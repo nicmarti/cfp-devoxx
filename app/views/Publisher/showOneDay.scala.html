@@ -30,7 +30,7 @@
                             @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                         </th>
                         @rooms.sorted.map { room =>
-                            @tagRenderRow(subSlots,room,rooms.size)
+                            @tags.publisher.tagRenderRow(subSlots,room,rooms.size)
                         }
                     </tr>
             }

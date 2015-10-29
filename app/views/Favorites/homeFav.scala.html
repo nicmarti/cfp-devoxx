@@ -1,27 +1,33 @@
-@()(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(timeSlots: List[Slot], rooms:List[Room])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@mainVisitor("Wishlist") {
+@import org.joda.time.DateTimeZone
 
-    <div class="row">
-        <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-star"></i> My agenda</h2>
-        </div>
+@views.html.Publisher.devoxxBE2015("My Schedule") {
+    @timeSlots.groupBy(_.to.getDayOfWeek).toList.sortBy(_._1).map { case (day, slots:List[Slot]) =>
+    <h2>Day @day</h2>
+    <div class="columns large-12 woocommerce">
+        <table class="agendaTable">
+            <tr>
+                <th><i class="icon-time"></i> Room</th>
+                @rooms.sorted.map { roomName: Room =>
+                    <td>@roomName.name</td>
+                }
+                </tr>
 
-        <div class="clearfix"></div>
+            @slots.groupBy(s => s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
+            <tr >
+                <th class="timeSlot">
+                    @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                    - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                </th>
+                @rooms.sorted.map { room =>
+                    @tags.publisher.tagRenderRow(subSlots, room, rooms.size)
+                }
+            </tr>
+            }
 
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3><i class="icon-calendar"></i> View by day</h3>
-                </div>
 
-                <div class="panel-body">
-
-
-                </div>
-            </div>
-        </div>
+    </table>
     </div>
-
-
+    }
 }

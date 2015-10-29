@@ -173,7 +173,7 @@ GET           /2015/                                                            
 GET           /2015                                                             controllers.Publisher.homePublisher()
 
 # Favorites
-GET           /favorites                                                        controllers.Favorites.home
+GET           /myagenda                                                         controllers.Favorites.home
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
 GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
 

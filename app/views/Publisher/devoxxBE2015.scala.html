@@ -45,6 +45,9 @@
     <button><i class="fi-x"></i>Close Menu</button>
     <ul id="menu-other-pages-menu" class="menu">
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite">Home</a></li>
+        @if(UserCFPController.findAuthenticator.isDefined){
+         <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
+        }
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Schedule</a></li>
         <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/sponsors-2015/">Sponsors</a></li>
         <li id="menu-item-1701" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1701"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/news/">News</a></li>
@@ -68,7 +71,7 @@
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite">Home</a></li>
                         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Schedule</a></li>
                         @if(UserCFPController.findAuthenticator.isDefined){
-                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Agenda</a></li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
                         }
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/sponsors-2015/">Sponsors</a></li>
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1701"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/news/">News</a></li>
@@ -131,11 +134,12 @@
 		(function($) {
 		    $(document).ready(function() {
 		      $('.cfp-fav').on("click",function(event) {
-		        event.preventDefault();
+
 		        var clickedElement = $(this);
 		        var maybePropoposalId = event.srcElement.dataset['proposalid'];
 		        console.log("Fav/unfav proposal "+maybePropoposalId);
 		        if(typeof maybePropoposalId != 'undefined'){
+		            event.preventDefault();
 		            $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
 		             function( jsonResponse ) {
 		             if(jsonResponse.status=="unfav"){
