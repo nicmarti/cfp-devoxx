@@ -28,7 +28,10 @@
         <table>
             <tbody>
                 <tr>
-                    <td colspan="2">@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
+                    <td colspan="2">
+                        @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
+                        @tags.publisher.renderFavorite(proposal.id)
+                    </td>
                 </tr>
                 @if(slot.isDefined) {
                     <tr>
