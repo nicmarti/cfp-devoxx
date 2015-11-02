@@ -91,4 +91,10 @@ object Favorites extends UserCFPController {
         NoContent
       }
   }
+
+  def showAllForAdmin()=SecuredAction(IsMemberOf("admin")){
+    implicit r:SecuredRequest[play.api.mvc.AnyContent]=>
+      val all=FavoriteTalk.all().toList.sortBy(_._2).reverse
+      Ok(views.html.Favorites.showAllForAdmin(all))
+  }
 }

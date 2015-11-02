@@ -61,9 +61,29 @@ object FavoriteTalk {
       }
   }
 
-  def allForUser(webuserId: String):Iterable[Proposal] = Redis.pool.withClient {
+  def allForUser(webuserId: String): Iterable[Proposal] = Redis.pool.withClient {
     implicit client =>
       val ids = client.smembers(redis + ":ByUser:" + webuserId)
       Proposal.loadAndParseProposals(ids).values
+  }
+
+  def all() = Redis.pool.withClient {
+    implicit client =>
+      val allFav: Set[String] = client.keys(redis + ":ByProp:*")
+
+      val allProposalIDs: Set[String] = allFav.map {
+        key: String =>
+          key.substring((redis + ":ByProp:").size)
+      }
+
+      allProposalIDs.map{
+        proposalId=>
+          println(proposalId)
+          val proposal = Proposal.findById(proposalId)
+          val total= client.scard(redis+":ByProp:"+proposalId)
+          (proposal,total)
+      }.filterNot(_._1.isEmpty)
+      .map(t=>(t._1.get,t._2))
+
   }
 }

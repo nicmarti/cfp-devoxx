@@ -133,6 +133,11 @@ GET           /admin/sanitycheck/proposals                                      
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
 
+# Favorites and starred talks
+GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
+
+
+
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)
@@ -178,7 +183,7 @@ GET           /newvisitor/welcome                                               
 GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
 
 # This is an AJAX callback triggered from devoxxBE2015.scala (the publisher web pages)
-POST           /favorites/likeOrUnlink                                          controllers.Favorites.likeOrUnlike()
+POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
