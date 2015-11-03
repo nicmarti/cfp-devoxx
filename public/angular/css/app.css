@@ -42,6 +42,11 @@ body {
     font-weight: bold;
     font-size: 12px;
 }
+.proposalSpeaker{
+    color: #3a0b07;
+    font-weight: bold;
+    font-size: 10px;
+}
 
 .slot.ng-hide-add, .slot.ng-hide-remove {
     transition: 0.5s linear all;

@@ -67,6 +67,11 @@ object FavoriteTalk {
       Proposal.loadAndParseProposals(ids).values
   }
 
+  def countForProposal(proposalId:String):Long=Redis.pool.withClient{
+    implicit client=>
+      client.scard(redis+":ByProp:"+proposalId)
+  }
+
   def all() = Redis.pool.withClient {
     implicit client =>
       val allFav: Set[String] = client.keys(redis + ":ByProp:*")

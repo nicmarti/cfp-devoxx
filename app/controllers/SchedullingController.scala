@@ -23,16 +23,14 @@
 
 package controllers
 
-import play.api.mvc.Action
+import library.{SaveSlots, ZapActor}
 import models._
-import play.api.libs.json.Json
-import library.ZapActor
-import library.SaveSlots
-import play.api.libs.json.JsString
-import play.api.libs.json.JsNumber
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
+import play.api.libs.json.{JsNumber, JsString, Json}
+import play.api.mvc.Action
+
 import scala.util.Random
-import org.joda.time.{DateTimeZone, DateTime}
 
 
 /**
@@ -52,19 +50,23 @@ object SchedullingController extends SecureCFPController {
   def approvedTalks(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import models.Proposal.proposalFormat
-      // Devoxx BE
       val proposals = ApprovedProposal.allApprovedByTalkType(confType)
 
       val proposalsWithSpeaker = proposals.map {
         p: Proposal =>
           val mainWebuser = Speaker.findByUUID(p.mainSpeaker)
-          val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID(_))
-          val oSpeakers = p.otherSpeakers.map(Speaker.findByUUID(_))
+          val secWebuser = p.secondarySpeaker.flatMap(Speaker.findByUUID)
+          val oSpeakers = p.otherSpeakers.map(Speaker.findByUUID)
           val preferredDay = Proposal.getPreferredDay(p.id)
+          val newTitleWithStars: String = s"[${FavoriteTalk.countForProposal(p.id)}★] ${p.title}"
 
           // Transform speakerUUID to Speaker name, this simplify Angular Code
+          // Add the number of stars to the title so that we don't break the AngularJS application before Devoxx BE 2015
+          // A better solution would be to return a new JSON Map with the proposal and the stars
+          // but this introduced too many bugs on the Angular JS app.
           p.copy(
-            mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
+            title = newTitleWithStars
+            , mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
             , secondarySpeaker = secWebuser.map(_.cleanName)
             , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
             , privateMessage = preferredDay.getOrElse("")
@@ -118,7 +120,7 @@ object SchedullingController extends SecureCFPController {
           case (key, dateAsDouble) =>
             val scheduledSaved = Json.parse(key).as[ScheduleSaved]
             Map("key" -> Json.toJson(scheduledSaved),
-                "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")))
+              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")))
             )
         })
       )
@@ -145,9 +147,13 @@ object SchedullingController extends SecureCFPController {
                     val oSpeakers = definedProposal.otherSpeakers.map(Speaker.findByUUID(_))
                     val preferredDay = Proposal.getPreferredDay(definedProposal.id)
 
+                    val newTitleWithStars: String = s"[${FavoriteTalk.countForProposal(definedProposal.id)}★] ${definedProposal.title}"
+
+
                     // Transform speakerUUID to Speaker name, this simplify Angular Code
                     val copiedProposal = definedProposal.copy(
-                      mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
+                      title = newTitleWithStars
+                      , mainSpeaker = mainWebuser.map(_.cleanName).getOrElse("")
                       , secondarySpeaker = secWebuser.map(_.cleanName)
                       , otherSpeakers = oSpeakers.flatMap(s => s.map(_.cleanName))
                       , privateMessage = preferredDay.getOrElse("")

@@ -17,7 +17,7 @@ homeController.controller('HomeController', function HomeController($rootScope, 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, ApprovedTalksService, flash) {
     // Left column, list of accepted proposal
     ApprovedTalksService.get({confType: $routeParams.confType}, function (allApproved) {
-        // If a ScheduleConfiguration was reloade, then we need to filter-out the list of ApprovedTalks
+        // If a ScheduleConfiguration was reloaded, then we need to filter-out the list of ApprovedTalks
         if (_.isUndefined($rootScope.slots) == false) {
             var onlyValidProposals = _.reject($rootScope.slots, function(slot){ return _.isUndefined(slot.proposal)} );
             var onlyIDs=  _.map(onlyValidProposals, function(slot){return slot.proposal.id; });
