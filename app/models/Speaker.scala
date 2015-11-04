@@ -76,6 +76,16 @@ case class Speaker(uuid: String
       }
   }.getOrElse("fr")
 
+  def cleanTwitter: Option[String] = twitter.map {
+    tw =>
+      val trimmed = tw.trim()
+      if (!trimmed.startsWith("@")) {
+        "@" + trimmed
+      } else {
+        trimmed
+      }
+  }
+
 
   def hasTwitter=StringUtils.trimToEmpty(twitter.getOrElse("")).nonEmpty
   def hasBio=StringUtils.trimToEmpty(bio).nonEmpty

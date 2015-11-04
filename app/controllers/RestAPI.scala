@@ -231,7 +231,7 @@ object RestAPI extends Controller {
                   "lang" -> speaker.lang.map(u => Json.toJson(u.trim())).getOrElse(Json.toJson("fr")),
                   "bio" -> Json.toJson(speaker.bio),
                   "bioAsHtml" -> Json.toJson(speaker.bioAsHtml),
-                  "twitter" -> speaker.twitter.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
+                  "twitter" -> speaker.cleanTwitter.map(Json.toJson(_)).getOrElse(JsNull),
                   "acceptedTalks" -> Json.toJson(updatedTalks)
                 )
 
