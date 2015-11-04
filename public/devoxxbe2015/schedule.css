@@ -148,9 +148,9 @@ input.cfp-fav {
 label.cfp-lab {
     display: inline-block;
     width:100%;
-    height:31px;
-    margin: 0;
-    padding: 0;
+    height:18px;
+   padding: 0;
+    margin: 4px 0 0;
     text-align: right;
     background:url('/assets/devoxxbe2015/images/beer-icons-off.png') no-repeat;
     -webkit-transition: all 0.5s ease;
@@ -161,6 +161,9 @@ label.cfp-lab {
 }
 
 input.cfp-fav:checked + label.cfp-lab {
+    height:22px;
+    margin: 4px 0 0;
+    padding: 0;
     background: url('/assets/devoxxbe2015/images/beer-icons-on.png') no-repeat;
 }
 

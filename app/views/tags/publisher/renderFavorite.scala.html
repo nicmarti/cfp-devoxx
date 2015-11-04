@@ -11,6 +11,6 @@
             <label class="cfp-lab" for="checkbox_@proposalId"></label>
         }
     }.getOrElse {
-        <a href="@routes.Authentication.prepareSignup(visitor = true)" class="cfp-fav" title="Click here to add this talk to your agenda">&#10032;</a>
+        <a href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda"><img src="@routes.Assets.at(path="/public", file="devoxxbe2015/images/beer-icons-off.png")" alt="Click here to save this talk in your agenda"></a>
     }
 }

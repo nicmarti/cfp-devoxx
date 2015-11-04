@@ -46,6 +46,7 @@ forget.password.confirm=An email was sent to the provided email address. Please 
 forget.password=Forget access code?
 avatarUrl=URL to your latest profile photo
 home.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
+register.visitor.github=Use Github OAuth, this is simpler and you won''t have to remember another password.
 format.boolean=
 
 # CFP Home page
@@ -641,7 +642,7 @@ qualifications.otherproposals=Other proposals from this speaker
 
 # prepareSignupVisitor
 visitor.registration.title=Build your own agenda
-visitor.signup.txt1=Sign up to save your schedule for {0} conference. You can also register and create a profile from your Github or Google profile, we use your email address as your primary ID.
+visitor.signup.txt1=Sign up to save your schedule for {0} conference. You can also register and create a profile from your Github profile, we use your email address as your primary ID.
 visitor.signup.txt2=A validation email will be send to the provided email address. Your profile will be active once your email address is validated. We won''t send you other emails.
 
 # homeVisitor
