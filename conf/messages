@@ -236,6 +236,8 @@ table.pres.doDelete=Delete
 
 total.draft={0} proposals
 total.draft.sing={0} proposal
+total.archived={0} archived
+total.archived.sing={0} archived
 table.pres.speaker=Speaker
 table.pres.state=State
 table.speaker.addremove=Add/Remove speakers
@@ -475,7 +477,7 @@ day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
 day-monday=Monday, 9th November
-day-tuesday=Tuesday, 10th November
+day-tuesday=Tuesday, 10th November            `
 day-wednesday=Wednesday, 11th November
 day-thursday=Thursday, 12th November
 day-friday=Friday, 13th November
@@ -655,3 +657,5 @@ visitor.welcome.title=Welcome {0}
 visitor.welcome.text1=You are now authenticated as a Devoxx visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
 visitor.welcome.publisher=Browse the conference schedule
 visitor.welcome.profile=See the list of talks you faved
+
+proposal.approved.noVotes=Approved proposal - no more votes
