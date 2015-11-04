@@ -3,12 +3,14 @@
 @defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
     @maybeUuid.map { uuid:String =>
         @if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) {
-            <a href="#" class="cfp-fav" data-proposalid="@proposalId" alt="Remove this talk from your agenda">&#9733; </a>
+
+            <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId" checked>
+            <label class="cfp-lab" for="checkbox_@proposalId"></label>
         } else {
-            <a href="#" class="cfp-fav" data-proposalid="@proposalId" alt="Save this talk in your agenda">&#9734; </a>
+            <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId">
+            <label class="cfp-lab" for="checkbox_@proposalId"></label>
         }
     }.getOrElse {
         <a href="@routes.Authentication.prepareSignup(visitor = true)" class="cfp-fav" title="Click here to add this talk to your agenda">&#10032;</a>
     }
 }
-

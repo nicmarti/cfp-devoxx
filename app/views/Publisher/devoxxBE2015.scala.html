@@ -1,7 +1,7 @@
 @(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader)
 
 <!DOCTYPE html>
-<html lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec" >
+<html lang="en-US">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -126,27 +126,31 @@
 <script type='text/javascript' src='http://www.devoxx.be/wp-content/plugins/easy-foundation-shortcodes/js/script.js?ver=3.9.2'></script>
 
 
-	<script type="text/javascript">
+    <script type="text/javascript">
 		(function($) {
 		    $(document).ready(function() {
-		      $('.cfp-fav').on("click",function(event) {
 
-		        var clickedElement = $(this);
-		        var maybePropoposalId = event.srcElement.dataset['proposalid'];
-		        console.log("Fav/unfav proposal "+maybePropoposalId);
+		      $('.cfp-fav').on("click",function(event) {
+		       var maybePropoposalId = $(this).val();
+		       var clickedElement=$(this);
+
+		        console.log("--> Sending "+maybePropoposalId);
 		        if(typeof maybePropoposalId != 'undefined'){
 		            event.preventDefault();
+		            // This works only if you are authenticated with a signed cookie and a valid play2 session
 		            $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
 		             function( jsonResponse ) {
 		             if(jsonResponse.status=="unfav"){
-		                $(clickedElement).text("☆");
+		                console.log("<-- Unfav ok");
+		               $(clickedElement).attr("checked",false);
 		             }
 		             if(jsonResponse.status=="fav"){
-		                $(clickedElement).text("★");
+		               console.log("<-- Fav ok");
+		               $(clickedElement).attr("checked",true);
 		             }
                     },"json");
 		        }else{
-		            console.log("no valid proposalId");
+		            console.log("No valid proposalId. Please help me to debug, report your web browser version and platform.");
 		        }
 		      });
 
