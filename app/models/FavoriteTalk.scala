@@ -78,12 +78,11 @@ object FavoriteTalk {
 
       val allProposalIDs: Set[String] = allFav.map {
         key: String =>
-          key.substring((redis + ":ByProp:").size)
+          key.substring((redis + ":ByProp:").length)
       }
 
       allProposalIDs.map{
         proposalId=>
-          println(proposalId)
           val proposal = Proposal.findById(proposalId)
           val total= client.scard(redis+":ByProp:"+proposalId)
           (proposal,total)

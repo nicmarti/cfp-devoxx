@@ -25,6 +25,9 @@
                     <h3>All talks faved</h3>
                 </div>
                 <div class="panel-body">
+                    <strong>New : </strong> <a href="/assets/devoxxbe2015/topfaved/index.html" class="btn btn-sm btn-primary"><i class="icon-beer"></i> Top Faved talks by visitors</a><br>
+                    <strong>New : </strong> <a href="/assets/devoxxbe2015/toptalks/index.html" class="btn btn-sm btn-primary">Top voted talks</a><br>
+
                     @all.map{case(proposal,vote)=>
 <h4>@vote @if(vote == 1){ star } else { stars }
 for @Messages(proposal.talkType.id) <strong>@proposal.title</strong> by @proposal.allSpeakers.map(s=>s.cleanName).mkString(", ")</h4>

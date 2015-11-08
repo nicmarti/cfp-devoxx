@@ -1,6 +1,8 @@
 package models
 
-import org.joda.time.{DateTime, DateTimeZone}
+import java.util.Locale
+
+import org.joda.time.{Period, DateTime, DateTimeZone}
 import play.api.Play
 
 /**
@@ -30,7 +32,8 @@ case class ConferenceTiming(
                              datesEn: String,
                              cfpOpenedOn: DateTime,
                              cfpClosedOn: DateTime,
-                             scheduleAnnouncedOn: DateTime
+                             scheduleAnnouncedOn: DateTime,
+                             days:Iterator[DateTime]
                              )
 
 case class ConferenceSponsor(showSponsorProposalCheckbox: Boolean, sponsorProposalType: ProposalType = ProposalType.UNKNOWN)
@@ -90,7 +93,7 @@ case class ConferenceDescriptor(eventCode: String,
                                 hosterWebsite: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
-                                locale: List[String],
+                                locale: List[Locale],
                                 localisation: String
                                  )
 
@@ -682,6 +685,11 @@ object ConferenceDescriptor {
     }
   }
 
+  def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime]      =Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
+
+  val fromDay = new DateTime().withYear(2015).withMonthOfYear(11).withDayOfMonth(9)
+  val toDay = new DateTime().withYear(2015).withMonthOfYear(11).withDayOfMonth(13)
+
   def current() = ConferenceDescriptor(
     eventCode = "DV15",
     // You will need to update conf/routes files with this code if modified
@@ -707,12 +715,13 @@ object ConferenceDescriptor {
       datesEn = "from 9th to 13th of November, 2015",
       cfpOpenedOn = DateTime.parse("2015-05-06T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2015-06-30T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2015-09-15T00:00:00+02:00")
+      scheduleAnnouncedOn = DateTime.parse("2015-09-15T00:00:00+02:00"),
+      days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxVE",
     hashTag = "#DevoxxBE",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
-    , List("en_EN")
+    , List(Locale.ENGLISH)
     , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
   )
 

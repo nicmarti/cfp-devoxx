@@ -275,4 +275,10 @@ object Backoffice extends SecureCFPController {
 
   }
 
+  def showAllAgendaForInge()= Action{
+    implicit request =>
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
+      Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+  }
+
 }

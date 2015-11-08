@@ -196,6 +196,7 @@ GET           /api/conferences/:eventCode/speakers/:uuid                        
 GET           /api/conferences/:eventCode/rooms/:room/:day                      controllers.RestAPI.showScheduleForRoom(eventCode: String, room:String, day: String)
 GET           /api/conferences/:eventCode/rooms/                                controllers.RestAPI.showRooms(eventCode:String)
 GET           /api/conferences/:eventCode/rooms                                 controllers.RestAPI.showRooms(eventCode:String)
+GET           /api/conferences/:eventCode/topFavedTalks                         controllers.RestAPI.topFavedTalks(eventCode:String, limit:Int ?=10)
 GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
 GET           /api/conferences/:eventCode/talks/                                controllers.RestAPI.redirectToTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks                                 controllers.RestAPI.showApprovedTalks(eventCode:String)
@@ -255,6 +256,8 @@ POST          /cfpadmin/attic/resetEvents                                       
 GET           /bp/speakers                                                      controllers.Backport.allAcceptedSpeakers()
 GET           /bp/proposals                                                     controllers.Backport.allProposals()
 GET           /bp/scheduleItems                                                 controllers.Backport.allScheduleItems()
+GET           /bp/fullAgenda                                                    controllers.Backoffice.showAllAgendaForInge()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)

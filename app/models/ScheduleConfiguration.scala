@@ -169,7 +169,7 @@ object ScheduleConfiguration {
 
   // Retrieve the time slot for a specific proposalId
   def findSlotForConfType(confType: String, proposalId: String): Option[Slot] = {
-    loadSlotsForConfType(confType).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId).headOption
+    loadSlotsForConfType(confType).filter(_.proposal.isDefined).find(_.proposal.get.id == proposalId)
   }
 
   def loadAllConfigurations() = {
@@ -182,10 +182,10 @@ object ScheduleConfiguration {
   }
 
   def loadAllPublishedSlots():List[Slot]={
-    loadAllConfigurations().map{
-      sc=>
+    loadAllConfigurations().flatMap {
+      sc =>
         sc.slots
-    }.flatten.toList
+    }.toList
   }
 
 
