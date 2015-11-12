@@ -164,36 +164,41 @@ track.description=Description
 appel.conf.dates=Devoxx France 2016, 20th-22th April 2016
 
 # Tracks
-track.webmobile.title=Web, Mobile &  UX
-track.webmobile.desc=Web, mobile, user-experience, front-end and Web architecture
-wm.label=Web, Mobile & UX
 
-track.archisec.title=Architecture, Performance & Security
+track.java.title=Java, JVM, Javas SE/EE
+track.java.desc=Everything aroung Java, the JVM, Java SE, Java EE.
+java.label=Java, JVM, Javas SE/EE
+
+track.mobile.title=Mobile & Internet of Things
+track.mobile.desc=Mobile, Java & Internet of Things
+mobile.label=Mobile, IoT
+
+track.web.title=Web, HTML5 et UX
+track.web.desc=Web, user-experience, front-end and Web architecture
+web.label=Web, HTML5 et UX
+
+track.archisec.title=Architecture, Performance & Securité
 track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
 archisec.label=Architecture, Performance and Security
 
-track.agilityTest.title=Agility, Methodology & Test
-track.agilityTest.desc=Software development methodologies, TDD, BDD, xDD
-agTest.label=Agility, Methodology & Test
+track.agile_devops.title=DevOps, Agile, Methodology & Tests
+track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
+agile_devops.label=DevOps, Agile, Methodology & Tests
 
-track.java.title=Java, infinite possibilities
-track.java.desc=Everything about Java, the JVM, Java SE 8 or Java EE.
-java.label=Java, infinite possibilities
-
-track.cloudDevops.title=Cloud, DevOps and Tools
-track.cloudDevops.desc=Cloud-computing, DevOps, Paas, Iaas
-cloudDevops.label=Cloud & DevOps
+track.cloud.title=Cloud & Scaling
+track.cloud.desc=Cloud-computing, containers, resilient architectures.
+cloud.label=Cloud & Scaling
 
 track.bigdata.title=Big Data & Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
 bigdata.label=Big Data & Analytics
 
-track.future.title=Future<Devoxx>
-track.future.desc=Developing for embedded devices, the internet of things, Arduino, raspberry pi, quadcopters, robots and related
-future.label=Future<Devoxx>
+track.future.title=Future & Robotics
+track.future.desc=Developing for the Internet of Things, Arduino, Raspberry, etc.
+future.label=Future & Robotics
 
 track.lang.title=Alternate Languages
-track.lang.desc=Groovy, Scala, Javascript, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
+track.lang.desc=Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, etc.
 lang.label=Alternate Languages
 
 # confirm import
@@ -623,8 +628,6 @@ msg_pub=Send a message to the speaker
 email_pub=Your email address
 email_pub2=Please confirm your email
 
-agilite.label=Agilité, DevOps
-amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 cfp.closed=CFP is currently closed.
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.opening.date=Lundi 2 décembre 2013
@@ -647,8 +650,6 @@ approved=Speaker approved
 cstory=Session de live coding Code-story
 day-jeudi=Thursday
 declined=Speaker declined
-methodevops.label=Methodology & DevOps
-mobile.label=Mobile
 presubmit.reminder=When you are ready, do not forget to submit your proposal from the main screen (click on
 
 wl.action=Action
