@@ -22,10 +22,10 @@
  */
 package controllers
 
-import models._
-import play.api.mvc._
 import library._
+import models._
 import play.api.i18n.Messages
+import play.api.mvc._
 
 /**
  * Call For Paper main application.
@@ -47,6 +47,11 @@ object Application extends Controller {
         case None =>
           Ok(views.html.Application.home(Authentication.loginForm)).withNewSession
       }
+  }
+
+  def homeVisitor = Action {
+    implicit request =>
+      Ok(views.html.Application.homeVisitor(Authentication.loginForm)).withNewSession
   }
 
   def index = Action {

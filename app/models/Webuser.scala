@@ -56,6 +56,10 @@ object Webuser {
     Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
   }
 
+  def createVisitor(email: String, firstName: String, lastName: String): Webuser = {
+    Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "visitor")
+  }
+
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
     Some(webuser.email, webuser.firstName, webuser.lastName)
   }
@@ -64,7 +68,7 @@ object Webuser {
     findByUUID(uuid).map(_.cleanName).getOrElse("Anonymous " + uuid)
   }
 
-  def saveNewSpeakerEmailNotValidated(webuser: Webuser) = Redis.pool.withClient {
+  def saveNewWebuserEmailNotValidated(webuser: Webuser) = Redis.pool.withClient {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
@@ -83,9 +87,6 @@ object Webuser {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
-
-      Cache.remove("web:email:" + cleanWebuser.email)
-      Cache.remove("web:uuid:" + cleanWebuser.uuid)
 
       val tx = client.multi()
       tx.hset("Webuser", cleanWebuser.uuid, json)

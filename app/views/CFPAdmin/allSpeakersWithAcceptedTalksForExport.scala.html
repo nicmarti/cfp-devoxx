@@ -1,0 +1,79 @@
+@(proposals: List[(Speaker, Iterable[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Speakers") {
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger alert-dismissable col-md-12">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+            </div>
+        }
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All speakers</h3>
+                    <em>Classified by talks, where the speaker is either primary or secondary speaker.</em>
+                    <span class="label label-info">@proposals.size speakers</span>
+                </div>
+                <div class="panel-footer">
+                     <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
+                </div>
+            </div>
+        </div>
+<table class="table table-bordered table-condensed">
+    <thead>
+        <tr>
+            <th>Last name</th>
+            <th>First name</th>
+            <th>Email</th>
+            <th>Company</th>
+            <th>Uni ?</th>
+            <th>Conf ?</th>
+            <th>Keynote ?</th>
+            <th>Lab ?</th>
+            <th>Tia ?</th>
+            <th>Ignite ?</th>
+            <th>Quickie ?</th>
+            <th>BOF ?</th>
+            <th>Startup ?</th>
+            <th>Other ?</th>
+        </tr>
+    </thead>
+    <tbody>
+
+@proposals.sortBy(_._1.name.map(_.capitalize)).map{case(speaker,props)=>
+
+    <tr>
+    <td>@speaker.name.map(_.toLowerCase.capitalize)</td>
+    <td>@speaker.firstName</td>
+    <td>@speaker.email</td>
+    <td>@speaker.company</td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.UNI) </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.CONF)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.KEY)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.LAB)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.TIA)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.IGNITE)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.QUICK)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.BOF)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.START)  </td>
+    <td> @tags.renderSpeakerPresents(props,ConferenceDescriptor.ConferenceProposalTypes.OTHER)  </td>
+    </tr>
+}
+
+    </tbody>
+</table>
+
+    </div>
+}

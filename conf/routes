@@ -2,29 +2,33 @@
 GET           /favicon.ico                                                      controllers.Assets.at(path="/public/images", file="favicon.ico")
 GET           /                                                                 controllers.Application.index
 GET           /home                                                             controllers.Application.home
+GET           /homeVisitor                                                      controllers.Application.homeVisitor
 
 # Used for Ops-Genie
 GET           /status                                                           controllers.Status.index()
 
 GET           /logout                                                           controllers.Authentication.logout
-POST          /login                                                            controllers.Authentication.login
+POST          /login                                                            controllers.Authentication.login(visitor:Boolean ?=false)
 
-GET           /signup                                                           controllers.Authentication.prepareSignup
-GET           /signup/github                                                    controllers.Authentication.createFromGithub
-GET           /login/github                                                     controllers.Authentication.githubLogin
-POST          /github/callback                                                  controllers.Authentication.callbackGithub
-GET           /github/callback                                                  controllers.Authentication.callbackGithub
+GET           /signup                                                           controllers.Authentication.prepareSignup(visitor:Boolean ?=false)
+GET           /signup/github                                                    controllers.Authentication.createFromGithub(visitor:Boolean)
+GET           /login/github                                                     controllers.Authentication.githubLogin(visitor:Boolean ?=false)
+POST          /github/callback                                                  controllers.Authentication.callbackGithub(visitor:Boolean)
+GET           /github/callback                                                  controllers.Authentication.callbackGithub(visitor:Boolean)
 
 GET           /signup/linkedin                                                  controllers.Authentication.createFromLinkedin
-GET           /login/linkedin                                                   controllers.Authentication.linkedinLogin
+GET           /login/linkedin                                                   controllers.Authentication.linkedinLogin(visitor:Boolean ?=false)
 POST          /authenticate/linkedin                                            controllers.Authentication.callbackLinkedin
 GET           /authenticate/linkedin                                            controllers.Authentication.callbackLinkedin
 
 GET           /access_token                                                     controllers.Authentication.showAccessToken
 
 POST          /newspeaker                                                       controllers.Authentication.saveNewSpeaker
-GET           /newspeaker/validateMail                                          controllers.Authentication.validateYourEmail(t:String,a:String)
+POST          /newvisitor                                                       controllers.Authentication.saveNewVisitor
+GET           /newspeaker/validateMail                                          controllers.Authentication.validateYourEmailForSpeaker(t:String,a:String)
+GET           /visitors/validateMail                                            controllers.Authentication.validateYourEmailForVisitor(t:String,a:String)
 POST          /newspeaker/validImported                                         controllers.Authentication.validateImportedSpeaker
+POST          /visitors/validImported                                           controllers.Authentication.validateImportedVisitor
 
 
 # Turn a user to an admin if and only if there is no other ADMIN on your system (or if you deleted all admins)
@@ -57,7 +61,7 @@ GET           /resetpassword                                                    
 
 # OAuth2 google
 GET           /signup/google                                                    controllers.Authentication.createFromGoogle
-GET           /login/google                                                     controllers.Authentication.googleLogin
+GET           /login/google                                                     controllers.Authentication.googleLogin(visitor:Boolean ?=false)
 GET           /googleoauth2callback                                             controllers.Authentication.callbackGoogle
 POST          /googleoauth2callback                                             controllers.Authentication.callbackGoogle
 
@@ -92,6 +96,7 @@ GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
 GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     controllers.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge()
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()
+GET           /cfpadmin/allSpeakers/acceptedTalks/export                        controllers.CFPAdmin.allSpeakersWithAcceptedTalksForExport()
 GET           /cfpadmin/allSpeakers/invited                                     controllers.InviteController.allInvitations()
 GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
 POST          /cfpadmin/cfpWebusers/trackLeaders                                controllers.CFPAdmin.updateTrackLeaders()
@@ -161,6 +166,11 @@ GET           /2016/index.html                                                  
 GET           /2016/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2016/byday/:day                                                  controllers.Publisher.showByDay(day:String)
 GET           /2016/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+# Favorites
+GET           /favorites                                                        controllers.Favorites.home
+POST          /favorites/like                                                   controllers.Favorites.likeIt(proposalId:Long)
+POST          /favorites/unlike                                                 controllers.Favorites.unlikeIt(proposalId:Long)
+GET           /newvisitor/welcome
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
@@ -227,6 +237,11 @@ POST          /cfpadmin/attic/doArchive                                         
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()
 POST          /cfpadmin/attic/resetEvents                                       controllers.Attic.resetEvents()
+
+# Backport for old CFP for Stephan
+GET           /bp/speakers                                                      controllers.Backport.allAcceptedSpeakers()
+GET           /bp/proposals                                                     controllers.Backport.allProposals()
+GET           /bp/scheduleItems                                                 controllers.Backport.allScheduleItems()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)

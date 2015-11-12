@@ -1,0 +1,31 @@
+@(webuser:Webuser)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@import helper.twitterBootstrap._
+
+@main("Welcome") {
+
+<div class="row">
+    <div class="col-md-12 page-header">
+        <h3>@Messages("newVisitor.title")</h3>
+    </div>
+    <div class="col-md-12">
+        <p>@Messages("newVisitor.help")</p>
+
+        @if(flash.get("error").isDefined){
+          <div class="alert alert-danger alert-dismissable">
+              <strong>Error :</strong>
+              @flash.get("error").get
+          </div>
+        }
+        @if(flash.get("success").isDefined){
+          <div class="alert alert-success alert-dismissable">
+              @flash.get("success").get
+          </div>
+        }
+
+
+    </div>
+</div>
+
+
+}

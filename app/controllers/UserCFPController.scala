@@ -27,55 +27,17 @@ import play.api.mvc._
 
 import play.api.i18n.Messages
 import scala.concurrent.Future
-import scala.Some
 import play.api.mvc.SimpleResult
 import play.api.libs.Crypto
 import javax.crypto.IllegalBlockSizeException
 import models.Webuser
 
-
 /**
- * A complex Secure controller, compatible with Play 2.2.x new EssentialAction.
- * I used SecureSocial as a starting point, then adapted this code to my own use-case
+ * A Secure controller that checks if a user is authenticated or not.
+ *
  * @author : nmartignole
  */
-
-/**
- * A request that adds the User for the current call
- */
-case class SecuredRequest[A](webuser: Webuser, request: Request[A]) extends WrappedRequest(request)
-
-/**
- * A request that adds the User for the current call
- */
-case class RequestWithUser[A](webuser: Option[Webuser], request: Request[A]) extends WrappedRequest(request)
-
-/**
- *  Defines an Authorization for the CFP Webuser
- */
-trait Authorization {
-  def isAuthorized(webuser: Webuser): Boolean
-}
-
-/**
- *  Checks if user is member of a security group
- */
-case class IsMemberOf(securityGroup: String) extends Authorization {
-  def isAuthorized(webuser: Webuser): Boolean = {
-    Webuser.isMember(webuser.uuid, securityGroup)
-  }
-}
-
-/**
- * Check if a user belongs to one of the specified groups.
- */
-case class IsMemberOfGroups(groups: List[String]) extends Authorization {
-  def isAuthorized(webuser: Webuser): Boolean = {
-    groups.exists(securityGroup => Webuser.isMember(webuser.uuid, securityGroup))
-  }
-}
-
-trait SecureCFPController extends Controller {
+trait UserCFPController extends Controller {
 
   /**
    * A secured action.  If there is no user in the session the request is redirected
@@ -114,14 +76,14 @@ trait SecureCFPController extends Controller {
           block(SecuredRequest(user, request))
         } else {
           Future.successful {
-            Redirect(routes.Application.home()).flashing("error" -> "Cannot access this resource, your profile does not belong to this security group")
+            Redirect(routes.Application.homeVisitor()).flashing("error" -> "Cannot access this resource, your profile does not belong to this security group")
           }
         }
       }
 
       result.getOrElse({
         val response = {
-          Redirect(routes.Application.index()).flashing("error" -> Messages("Please authenticate"))
+          Redirect(routes.Application.homeVisitor()).flashing("error" -> Messages("Please authenticate or sign-up."))
         }
         Future.successful(response)
       })
@@ -131,43 +93,9 @@ trait SecureCFPController extends Controller {
       invokeSecuredBlock(authorize, request, block)
   }
 
-
-  /**
-   * An action that adds the current user in the request if it's available.
-   */
-  object UserAwareAction extends ActionBuilder[RequestWithUser] {
-    protected def invokeBlock[A](request: Request[A],
-                                 block: (RequestWithUser[A]) => Future[SimpleResult]): Future[SimpleResult] = {
-      implicit val req = request
-      val user = for (
-        authenticator <- SecureCFPController.findAuthenticator;
-        user <- SecureCFPController.lookupWebuser(authenticator)
-      ) yield {
-        user
-      }
-      block(RequestWithUser(user, request))
-    }
-  }
-
-  /**
-   * Get the current logged in user.  This method can be used from public actions that need to
-   * access the current user if there's any
-   */
-  def currentUser[A](implicit request: RequestHeader): Option[Webuser] = {
-    request match {
-      case securedRequest: SecuredRequest[_] => Some(securedRequest.webuser)
-      case userAware: RequestWithUser[_] => userAware.webuser
-      case _ => for (
-        authenticator <- SecureCFPController.findAuthenticator;
-        webuser <- SecureCFPController.lookupWebuser(authenticator)
-      ) yield {
-        webuser
-      }
-    }
-  }
 }
 
-object SecureCFPController {
+object UserCFPController {
 
   def findAuthenticator(implicit request: RequestHeader): Option[String] = {
     try {
@@ -187,20 +115,9 @@ object SecureCFPController {
     findAuthenticator.isDefined
   }
 
-  def hasAccessToCFP(implicit request: RequestHeader): Boolean = {
-    findAuthenticator.exists(uuid =>
-      Webuser.hasAccessToCFP(uuid)
-    )
-  }
-
-  def hasAccessToAdmin(implicit request: RequestHeader): Boolean = {
-    findAuthenticator.exists(uuid =>
-      Webuser.hasAccessToAdmin(uuid)
-    )
-  }
-
   def getCurrentUser(implicit request:RequestHeader):Option[Webuser]={
     findAuthenticator.flatMap(uuid => lookupWebuser(uuid))
   }
 
 }
+

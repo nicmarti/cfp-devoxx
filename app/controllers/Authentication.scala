@@ -22,40 +22,43 @@
  */
 package controllers
 
+import java.math.BigInteger
+import java.security.SecureRandom
+
 import models._
-import play.api.mvc._
+import notifiers.Mails
+import org.apache.commons.codec.binary.Base64
+import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.lang3.StringUtils
 import play.api.Play
-import play.api.libs.Crypto
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import play.api.libs.json.Json
-import org.apache.commons.lang3.StringUtils
-import play.api.data.format.Formats._
-import notifiers.Mails
-import org.apache.commons.codec.binary.Base64
-import java.security.SecureRandom
-import java.math.BigInteger
 import play.api.i18n.Messages
-
+import play.api.libs.Crypto
+import play.api.libs.json.Json
 import play.api.libs.ws._
-import scala.concurrent.Future
+import play.api.mvc._
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.apache.commons.codec.digest.DigestUtils
-import library.FormatDate
+import scala.concurrent.Future
 
 /**
  * Signup and Signin.
  *
- * Author: nicolas
+ * Author: nicolas martignole
  * Created: 27/09/2013 09:59
  */
-object Authentication extends Controller  {
+object Authentication extends Controller {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
-  def prepareSignup = Action {
+  def prepareSignup(visitor: Boolean) = Action {
     implicit request =>
-      Ok(views.html.Authentication.prepareSignup(newWebuserForm))
+      if (visitor) {
+        Ok(views.html.Authentication.prepareSignupVisitor(newVisitorForm))
+      } else {
+        Ok(views.html.Authentication.prepareSignup(newWebuserForm))
+      }
   }
 
   def forgetPassword = Action {
@@ -72,8 +75,8 @@ object Authentication extends Controller  {
         validEmail => {
 
           if (Webuser.isEmailRegistered(validEmail)) {
-            val resetURL = routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8") ).absoluteURL()
-            Mails.sendResetPasswordLink( validEmail, resetURL )
+            val resetURL = routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL()
+            Mails.sendResetPasswordLink(validEmail, resetURL)
             Redirect(routes.Application.index()).flashing("success" -> Messages("forget.password.confirm"))
           } else {
             Redirect(routes.Authentication.forgetPassword()).flashing("error" -> Messages("forget.password.notfound"))
@@ -98,18 +101,27 @@ object Authentication extends Controller  {
       }
   }
 
-  def login = Action {
+  def login(visitor: Boolean) = Action {
     implicit request =>
       loginForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Application.home(invalidForm)),
+        invalidForm => {
+          if (visitor)
+            BadRequest(views.html.Application.homeVisitor(invalidForm))
+          else
+            BadRequest(views.html.Application.home(invalidForm))
+        },
         validForm =>
           Webuser.checkPassword(validForm._1, validForm._2) match {
+            case Some(webuser) if visitor =>
+              val cookie = createCookie(webuser)
+              Redirect(routes.Publisher.homePublisher()).withSession("uuid" -> webuser.uuid).withCookies(cookie)
             case Some(webuser) =>
               val cookie = createCookie(webuser)
-              Redirect(routes.CallForPaper.homeForSpeaker).flashing("warning"->Messages("cfp.reminder.proposals")).withSession("uuid" -> webuser.uuid).withCookies(cookie)
-
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> webuser.uuid).withCookies(cookie)
+            case None if visitor =>
+              Redirect(routes.Application.homeVisitor()).flashing("error" -> Messages("login.error"))
             case None =>
-              Redirect(routes.Application.home).flashing("error" -> Messages("login.error"))
+              Redirect(routes.Application.home()).flashing("error" -> Messages("login.error"))
           }
       )
   }
@@ -120,11 +132,11 @@ object Authentication extends Controller  {
       Redirect(routes.Application.index).discardingCookies(discardingCookie).withNewSession
   }
 
-  def githubLogin = Action {
+  def githubLogin(visitor: Boolean) = Action {
     implicit request =>
       Play.current.configuration.getString("github.client_id").map {
         clientId: String =>
-          val redirectUri = routes.Authentication.callbackGithub.absoluteURL()
+          val redirectUri = routes.Authentication.callbackGithub(visitor).absoluteURL()
           val gitUrl = "https://github.com/login/oauth/authorize?scope=user:email&client_id=" + clientId + "&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
           Redirect(gitUrl)
       }.getOrElse {
@@ -136,7 +148,7 @@ object Authentication extends Controller  {
   val oauthForm = Form(tuple("code" -> text, "state" -> text))
   val accessTokenForm = Form("access_token" -> text)
 
-  def callbackGithub = Action.async {
+  def callbackGithub(visitor: Boolean) = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
         Future.successful(BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form"))
@@ -155,7 +167,7 @@ object Authentication extends Controller  {
                       val b = result.body
                       try {
                         val accessToken = b.substring(b.indexOf("=") + 1, b.indexOf("&"))
-                        Redirect(routes.Authentication.createFromGithub()).withSession("access_token" -> accessToken)
+                        Redirect(routes.Authentication.createFromGithub(visitor)).withSession("access_token" -> accessToken)
                       } catch {
                         case e: IndexOutOfBoundsException => {
                           Redirect(routes.Application.index()).flashing("error" -> "access token not found in query string")
@@ -200,6 +212,13 @@ object Authentication extends Controller  {
       "lastName" -> nonEmptyText(maxLength = 50)
     )(Webuser.createSpeaker)(Webuser.unapplyForm))
 
+  val newVisitorForm: Form[Webuser] = Form(
+    mapping(
+      "email" -> (email verifying nonEmpty),
+      "firstName" -> nonEmptyText(maxLength = 50),
+      "lastName" -> nonEmptyText(maxLength = 50)
+    )(Webuser.createVisitor)(Webuser.unapplyForm))
+
   val webuserForm = Form(
     mapping(
       "uuid" -> ignored(""),
@@ -229,18 +248,18 @@ object Authentication extends Controller  {
     }
   )
 
-  def createFromGithub = Action.async {
+  def createFromGithub(visitor: Boolean) = Action.async {
     implicit request =>
 
       val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
-      val futureResult = WS.url(url).withHeaders("User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname), "Accept" -> "application/json").get()
-        futureResult.map {
-          result =>
-            result.status match {
-              case 200 => {
-                val json = Json.parse(result.body)
-                val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
-                                        name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
+      val futureResult = WS.url(url).withHeaders("User-agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname), "Accept" -> "application/json").get()
+      futureResult.map {
+        result =>
+          result.status match {
+            case 200 => {
+              val json = Json.parse(result.body)
+              val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
+                                      name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
                 yield (email, name))
 
               resultParse.fold(missingField =>
@@ -259,7 +278,11 @@ object Authentication extends Controller  {
                       Webuser.findByEmail(emailS).map {
                         w =>
                           val cookie = createCookie(w)
-                          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning"->Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
+                          if (visitor) {
+                            Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> w.uuid).withCookies(cookie)
+                          } else {
+                            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
+                          }
                       }.getOrElse {
                         // Create a new one but ask for confirmation
                         val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
@@ -267,8 +290,16 @@ object Authentication extends Controller  {
                         } else {
                           (nameS, nameS)
                         }
-                        val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
-                        Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+
+                        if (visitor) {
+                          val newWebuser = Webuser.createVisitor(emailS, firstName, lastName)
+                          Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
+
+                        } else {
+                          val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
+
+                          Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                        }
                       }
                   }
                 })
@@ -288,14 +319,26 @@ object Authentication extends Controller  {
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.prepareSignup(invalidForm)),
         validForm => {
-          Webuser.saveNewSpeakerEmailNotValidated(validForm)
-          Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmail(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
+          Webuser.saveNewWebuserEmailNotValidated(validForm)
+          Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForSpeaker(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
           Ok(views.html.Authentication.created(validForm.email))
         }
       )
   }
 
-  def validateYourEmail(t: String, a: String) = Action {
+  def saveNewVisitor = Action {
+    implicit request =>
+      newVisitorForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.Authentication.prepareSignupVisitor(invalidForm)),
+        validForm => {
+          Webuser.saveNewWebuserEmailNotValidated(validForm)
+          Mails.sendValidateYourEmail(validForm.email, routes.Authentication.validateYourEmailForVisitor(Crypto.sign(validForm.email.toLowerCase.trim), new String(Base64.encodeBase64(validForm.email.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL())
+          Ok(views.html.Authentication.created(validForm.email))
+        }
+      )
+  }
+
+  def validateYourEmailForSpeaker(t: String, a: String) = Action {
     implicit request =>
       val email = new String(Base64.decodeBase64(a), "UTF-8")
       if (Crypto.sign(email) == t) {
@@ -305,9 +348,28 @@ object Authentication extends Controller  {
             Webuser.saveAndValidateWebuser(webuser) // it is generated
             Speaker.save(Speaker.createSpeaker(email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience"))
             Mails.sendAccessCode(webuser.email, webuser.password)
-            Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new password is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
+            Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
           Redirect(routes.Application.index()).flashing("error" -> "Sorry, this email is not registered in your system.")
+        }
+      } else {
+        Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
+      }
+  }
+
+  def validateYourEmailForVisitor(t: String, a: String) = Action {
+    implicit request =>
+      val email = new String(Base64.decodeBase64(a), "UTF-8")
+      if (Crypto.sign(email) == t) {
+        val futureMaybeWebuser = Webuser.findNewUserByEmail(email)
+        futureMaybeWebuser.map {
+          webuser =>
+            val newUUID=Webuser.saveAndValidateWebuser(webuser) // it is generated
+            Mails.sendAccessCode(webuser.email, webuser.password)
+            val cookie = createCookie(webuser)
+            Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> newUUID).withCookies(cookie).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
+        }.getOrElse {
+          Redirect(routes.Application.index()).flashing("error" -> "Sorry, your invitation has expired.")
         }
       } else {
         Redirect(routes.Application.index()).flashing("error" -> "Sorry, we could not validate your authentication token. Are you sure that this email is registered?")
@@ -349,8 +411,23 @@ object Authentication extends Controller  {
       )
   }
 
+  def validateImportedVisitor = Action {
+    implicit request =>
+      newWebuserForm.bindFromRequest.fold(
+        invalidForm => BadRequest(views.html.Authentication.confirmImportVisitor(invalidForm)).flashing("error" -> "Please check your profile, invalid webuser."),
+        webuserForm => {
+
+          val validWebuser = Webuser.createVisitor(webuserForm.email, webuserForm.firstName, webuserForm.lastName)
+
+          Webuser.saveAndValidateWebuser(validWebuser)
+
+          Ok(views.html.Authentication.validateImportedVisitor(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
+        }
+      )
+  }
+
   // See LinkedIn documentation https://developer.linkedin.com/documents/authentication
-  def linkedinLogin = Action {
+  def linkedinLogin(visitor: Boolean) = Action {
     implicit request =>
       Play.current.configuration.getString("linkedin.client_id").map {
         clientId: String =>
@@ -378,7 +455,7 @@ object Authentication extends Controller  {
               val url = "https://www.linkedin.com/uas/oauth2/accessToken"
               val redirect_uri = routes.Authentication.callbackLinkedin().absoluteURL()
               val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("Content-Type" -> "application/x-www-form-urlencoded"))
-                              .post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+                .post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
@@ -414,7 +491,7 @@ object Authentication extends Controller  {
           val url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,picture-url,summary)?format=json&oauth2_access_token=" + access_token
 
           val futureResult = WS.url(url).withHeaders(
-            "User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname),
+            "User-agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname),
             "Accept" -> "application/json"
           ).get()
 
@@ -433,9 +510,9 @@ object Authentication extends Controller  {
                   Webuser.findByEmail(email).map {
                     w =>
                       val cookie = createCookie(w)
-                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning"->Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
+                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
                   }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo,"No experience")
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience")
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
                 }
@@ -453,7 +530,7 @@ object Authentication extends Controller  {
   }
 
   // See Google documentation https://developers.google.com/accounts/docs/OAuth2Login
-  def googleLogin = Action {
+  def googleLogin(visitor: Boolean) = Action {
     implicit request =>
       Play.current.configuration.getString("google.client_id").map {
         clientId: String =>
@@ -482,7 +559,7 @@ object Authentication extends Controller  {
             case (clientId, clientSecret) => {
               val url = "https://accounts.google.com/o/oauth2/token"
               val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
-              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname))).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname))).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
@@ -509,19 +586,18 @@ object Authentication extends Controller  {
       })
   }
 
-
   def createFromGoogle = Action.async {
     implicit request =>
       request.session.get("google_token").map {
         access_token =>
-        //for Google account
+          //for Google account
           val url = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + access_token
 
           // For Google+ profile
           //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
           val futureResult = WS.url(url).withHeaders(
-              "User-agent" -> ("CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname),
-              "Accept" -> "application/json"
+            "User-agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname),
+            "Accept" -> "application/json"
           ).get()
 
           futureResult.map {
@@ -541,9 +617,9 @@ object Authentication extends Controller  {
                   Webuser.findByEmail(email).map {
                     w =>
                       val cookie = createCookie(w)
-                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning"->Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
+                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
                   }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo,"No experience")
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo, "No experience")
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
                 }

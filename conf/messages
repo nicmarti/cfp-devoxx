@@ -204,8 +204,8 @@ avatarUrl.defined=Your photo (recommended width 150px)
 
 created.title=Success!
 created.text1=We just sent you an email so that you can validate your email address.
-created.text2=Your password is generated and is displayed once you validate your email.
-created.text3=You will then be able to log-in and start to post proposals for {0}.
+created.text2=Your access code is generated and is displayed once you validate your email.
+created.text3=You will then be able to log-in and start to use the {0} CFP web site.
 
 # prepareSignup
 signup.title=Speaker''s registration
@@ -274,7 +274,7 @@ profile.imported.txt=Your profile has been successfully imported. You can change
 profile.continue=Continue
 profile.username=Your username:
 profile.password=Your access code (cannot be change):
-profile.password.help=We do not want to store one of your password. We prefer to generate one for you. We encourage you to use the OpenID access via Github or Google.
+profile.password.help=We do not want to store one of your password. We prefer to generate an access code. We encourage you to use the OpenID access via Github or Google.
 
 error.real=Real number value expected
 constraint.required=Required
@@ -358,7 +358,7 @@ tbl.cfp.closed=CFP closed
 cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
 
 forget.password.title=Forget your access code?
-forget.password.txt=Send me an email
+forget.password.txt=Send me a new access code
 forget.password.notfound=This email is not registered
 
 new.accesscode.title=Your new access code
@@ -672,11 +672,9 @@ ar.proposalType=Proposal type:
 ar.proposalId=Proposal ID:
 
 tag.proposal.title=Title
-tag.proposal.youVoted=You voted
 tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
-qualifications.otherproposals=Other proposals from same speaker
 
 speaker.mustAcceptTC=You must accept Terms and Conditions
 speaker.ar1=Please click
@@ -691,3 +689,24 @@ tagRenderRow-chgt=Short break
 tagRenderRow-meet=Soirée Meet & Greet
 please.check.approved=Please, review the list of approved Proposals, then select accept or decline for each Talk.
 proposal.approved.noVotes=Approved proposal - no more votes
+tag.proposal.youVoted=Your vote
+qualifications.otherproposals=Other proposals from this speaker
+
+# prepareSignupVisitor
+visitor.registration.title=Visitor's registration
+visitor.signup.txt1=Sign up to save your schedule for {0} conference :
+visitor.signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated. We won''t send you other emails.
+
+# homeVisitor
+home.visitor.header=Visitor sign-in or sign-up
+home.visitor.title=Sign-in or register
+home.welcome.txt=Welcome to {0}, please authenticate or create a new visitor profile:
+visitor.signin=Sign-in
+visitor.register=Sign-up as a visitor
+visitor.index.signup2=Sign-up as a visitor and save your Schedule, vote for the best talks, and share your interests with other attendees.
+
+# welcomeVisitor
+visitor.welcome.title=Welcome {0}
+visitor.welcome.text1=You are now authenticated as a Devoxx visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
+visitor.welcome.publisher=Browse the conference schedule
+visitor.welcome.profile=See the list of talks you faved
