@@ -677,10 +677,9 @@ object ConferenceDescriptor {
     , "Palais des Congrès, Porte Maillot, Paris"
   )
 
-  // TODO You can either rely on a date, cross your finger that it is correct, or just use a boolean. Your choice.
-  val isCFPOpen: Boolean = {
-    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
-//    false
+  // It has to be a def, not a val, else it is not re-evaluated
+  def isCFPOpen: Boolean = {
+    Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
 
 }

@@ -12,11 +12,11 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 
 /**
- * The backoffice controller for the CFP technical committee.
- *
- * Author: @nmartignole
- * Created: 11/11/2013 09:09 in Thalys, heading to Devoxx2013
- */
+  * The backoffice controller for the CFP technical committee.
+  *
+  * Author: @nmartignole
+  * Created: 11/11/2013 09:09 in Thalys, heading to Devoxx2013
+  */
 object CFPAdmin extends SecureCFPController {
 
   def index(page: Int, sort: Option[String], ascdesc: Option[String], track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
