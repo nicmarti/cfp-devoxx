@@ -76,16 +76,8 @@
                         <button type="submit" class="btn btn-primary">Archive all other talks</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.HACK.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Hackergarten</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CODE.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all CodeStory</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.AMD.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Apres-midi des Decideurs</button>
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all Ignite</button>
                     </form>
 
                     <hr>

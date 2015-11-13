@@ -170,7 +170,7 @@ GET           /2016/search                                                      
 GET           /favorites                                                        controllers.Favorites.home
 POST          /favorites/like                                                   controllers.Favorites.likeIt(proposalId:Long)
 POST          /favorites/unlike                                                 controllers.Favorites.unlikeIt(proposalId:Long)
-GET           /newvisitor/welcome
+GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
@@ -237,11 +237,6 @@ POST          /cfpadmin/attic/doArchive                                         
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()
 POST          /cfpadmin/attic/resetEvents                                       controllers.Attic.resetEvents()
-
-# Backport for old CFP for Stephan
-GET           /bp/speakers                                                      controllers.Backport.allAcceptedSpeakers()
-GET           /bp/proposals                                                     controllers.Backport.allProposals()
-GET           /bp/scheduleItems                                                 controllers.Backport.allScheduleItems()
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
