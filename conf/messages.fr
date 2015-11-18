@@ -563,7 +563,7 @@ proposal.audienceLevel=Niveau de l''audience
 proposal.demoLevel=Type de présentation
 qualifications=Vos qualifications/votre expérience comme présentateur
 qualifications.label=Qualifications du présentateur
-qualifications.otherproposals=Autres propositions du speaker
+qualifications.otherproposals=Sujet(s) proposé(s) par le speaker
 quick.label.simple=Quickie
 remove.sponsorFlag=Retirer le flag sponsor de cette présentation
 shortName=Devoxx FR
@@ -667,3 +667,7 @@ tagRenderRow-reg=Accueil, enregistrement et petit-déjeuner
 tagRenderRow-chgt=Pause courte
 tagRenderRow-meet=Soirée Meet & Greet
 please.check.approved=Merci de vérifier la liste des sujets approuvés par le comité, et d''accepter ou de décliner les sujets retenus
+# renderProposals
+renderProposal.archived={0} propositions de sujets archivés de précédentes éditions.
+renderProposal.archived.single=Une proposition de sujet archivée.
+renderProposal.noTalks=Ce speaker n'a pas d''autres propositions actuellement

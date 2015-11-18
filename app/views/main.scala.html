@@ -84,7 +84,7 @@
             <small>Logged in as @SecureCFPController.getCurrentUser(req).map(_.cleanName)</small> -
             <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
         } else {
-            <li><a href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-home"></i> @Messages("login")</a></li>
+            <li><a href="@routes.Application.home()"><i class="icon-home"></i> @Messages("login")</a></li>
         }
         <small><i class="icon-bullhorn"></i> @Messages("longName") Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
         <small><i class="icon-cloud-upload"></i> Hosted on <a href="@ConferenceDescriptor.current().hosterWebsite">@ConferenceDescriptor.current().hosterName</a></small>

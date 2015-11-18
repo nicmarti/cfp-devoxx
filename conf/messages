@@ -711,3 +711,9 @@ visitor.welcome.title=Welcome {0}
 visitor.welcome.text1=You are now authenticated as a Devoxx visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
 visitor.welcome.publisher=Browse the conference schedule
 visitor.welcome.profile=See the list of talks you faved
+
+# renderProposals
+renderProposal.archived={0} proposals archived from some previous editions.
+renderProposal.archived.single=One proposal has been archived from a previous edition.
+renderProposal.noTalks=No other talks submitted or proposed
+
