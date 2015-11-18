@@ -24,6 +24,9 @@
     <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
     <a href="@routes.Backoffice.authenticateAndCreateTalk(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAndCreate")</a>
 }
+@if(SecureCFPController.hasAccessToAdmin(req)){
+    @tags.checkInvited(speaker.uuid)
+}
                 <table class="table">
                     <tbody>
                         <tr>

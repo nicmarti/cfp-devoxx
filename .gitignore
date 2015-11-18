@@ -44,4 +44,7 @@ project/plugins/project/
 
 /public/speakers/
 run.sh
+run-uk.sh
+run-fr.sh
+
 env.sh
