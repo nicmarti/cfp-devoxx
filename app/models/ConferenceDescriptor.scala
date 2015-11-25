@@ -173,7 +173,7 @@ object ConferenceDescriptor {
     val FUTURE = Track("future", "future.label")
     val LANG = Track("lang", "lang.label")
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(MOBILE, ARCHISEC, AGILE_DEVOPS, JAVA, CLOUD, BIGDATA, FUTURE, LANG, UNKNOWN)
+    val ALL = List(JAVA,MOBILE,WEB,ARCHISEC,AGILE_DEVOPS,CLOUD,BIGDATA,FUTURE,LANG,UNKNOWN)
   }
 
   // TODO configure the description for each Track
