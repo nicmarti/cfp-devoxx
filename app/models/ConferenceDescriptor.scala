@@ -164,7 +164,7 @@ object ConferenceDescriptor {
   // TODO Configure here your Conference's tracks.
   object ConferenceTracks {
     val JAVA = Track("java", "java.label")
-    val MOBILE = Track("wm", "mobile.label")
+    val MOBILE = Track("mobile", "mobile.label")
     val WEB = Track("wm", "web.label")
     val ARCHISEC = Track("archisec", "archisec.label")
     val AGILE_DEVOPS = Track("agTest", "agile_devops.label")
