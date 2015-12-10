@@ -1,0 +1,141 @@
+@(title: String)(content: Html)(implicit lang: Lang, req: RequestHeader)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+<title>@title - @Messages("CONF.title")</title>
+<link href="@routes.Assets.at(path="/public",file="css/bootstrap.cosmo.min.css")" rel="stylesheet">
+<link href="@routes.Assets.at(path="/public",file="css/font-awesome.min.css")" rel="stylesheet">
+<link href="@routes.Assets.at(path="/public",file="css/bootswatch.min.css")" rel="stylesheet">
+<link href="@routes.Assets.at(path="/public",file="css/cfp.css")" rel="stylesheet" id="theme">
+<script src="@routes.Assets.at(path="/public",file="js/jquery.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at(path="/public",file="js/bootstrap.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at(path="/public",file="js/bootswatch.js")" type="text/javascript"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="/assets/js/html5shiv.js" type="text/javascript"></script>
+<script src="/assets/js/respond.min.js" type="text/javascript"></script>
+<![endif]-->
+<meta name="generator" content="Play! 2.2 Scala"/>
+<link rel="shortcut icon" href="/favicon.ico">
+</head>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">@Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") CFP</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav navbar-left">
+                @if(SecureCFPController.isLoggedIn(req)){
+                    <li><a href="@routes.GoldenTicketController.showAllProposals()"><i class="icon-home"></i> @Messages("nav.homeSpeaker")</a></li>
+                    <li><a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()"><i class="icon-bar-chart"></i> All your votes</a></li>
+                }
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite" target="_blank"><i class="icon-arrow-right"></i> @Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") website</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ****************************************************************************** //-->
+<div class="container">
+@content
+</div>
+<footer class="footer hidden-print">
+  <div class="container">
+    <div>
+      <hr>
+        @if(SecureCFPController.isLoggedIn(req)){
+            <small>Logged in as @SecureCFPController.getCurrentUser(req).map(_.cleanName) to the CFP Golden Ticket</small> -
+            <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
+        } else {
+            <li><a href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-home"></i> @Messages("login")</a></li>
+        }
+        <small><i class="icon-bullhorn"></i> @Messages("longName") Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
+        <small><i class="icon-cloud-upload"></i> Hosted on <a href="@ConferenceDescriptor.current().hosterWebsite">@ConferenceDescriptor.current().hosterName</a></small>
+    </div>
+  </div>
+</footer>
+<!-- ****************************************************************************** //-->
+
+
+@if(SecureCFPController.hasAccessToCFP(req)){
+
+<script type="text/javascript">
+$("#searchForm").on("submit",function(e){
+    e.preventDefault();
+    var form = $(this);
+    $(".searchBox", form ).addClass("searching");
+    $.ajax({
+        url: "/cfpadmin/advancedsearch",
+        type: "GET",
+        dataType: "html",
+        data: $(form).serialize(),
+        success: function(data, textStatus){
+            $(".searchResult", form ).html(data);
+            $(".searchResult", form ).show();
+            $(".searchBox", form ).removeClass("searching");
+        },
+        error: function(err) {
+            console.log("Error ");
+            console.log(err);
+            $(".searchBox", form ).addClass("search-error" );
+        }
+    });
+    return false;
+});
+
+<!-- Invitation system - see also checkInvited tags -->
+$(".ajax-cancelInvitation" ).on("click", function(e){
+    e.preventDefault();
+    var zeButton=$(this);
+    var speakerUUID=zeButton.data("speaker");
+    if(typeof speakerUUID != 'undefined'){
+
+    $.ajax({
+        url: "/cfpadmin/invitations/cancel?speakerUUID="+speakerUUID,
+        success: function(e){
+            zeButton.removeClass("btn-warning" ).addClass("btn-success" );
+            zeButton.text("Invitation cancelled");
+        }
+    });
+
+    }else{
+        console.log("Unable to retrieve speaker UUID in HTML HREF");
+    }
+});
+
+$(".ajax-invite" ).on("click",function(e){
+    var zeButton=$(this);
+    e.preventDefault();
+    var speakerUUID=zeButton.data("speaker");
+    if(typeof speakerUUID != 'undefined'){
+    $.ajax({
+        url: "/cfpadmin/invitations/invite?speakerUUID="+speakerUUID,
+        success: function(e){
+            zeButton.removeClass("btn-primary" ).addClass("btn-success");
+            zeButton.text("Invited!");
+        }
+    });
+    }else{
+        console.log("Unable to retrieve speaker UUID in HTML HREF");
+    }
+
+});
+
+</script>
+}
+</body>
+</html>

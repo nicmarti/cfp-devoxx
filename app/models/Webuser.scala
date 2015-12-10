@@ -222,6 +222,12 @@ object Webuser {
       Cache.remove(s"Webuser:admin:$uuid")
   }
 
+  def addToGoldenTicket(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.sadd("Webuser:gticket", uuid)
+  }
+
+
   def noBackofficeAdmin() = Redis.pool.withClient {
     client =>
       !client.exists("Webuser:admin")

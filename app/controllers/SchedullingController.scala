@@ -197,26 +197,9 @@ object SchedullingController extends SecureCFPController {
 
   def getPublishedSchedule(confType: String, day: Option[String]) = Action {
     implicit request =>
-      Redirect(routes.Publisher.homePublisher).flashing("success" -> Messages("not.published"))
-  }
-
-  // Mock function that returns 3 random talks for Demo purpose only
-  def giveMeBestTalks() = Action {
-    implicit request =>
-      val maybeConf = for (slotId <- ScheduleConfiguration.getPublishedSchedule("conf");
-                           configuration <- ScheduleConfiguration.loadScheduledConfiguration(slotId)
-      ) yield configuration
-
-      maybeConf match {
-        case Some(confSlots) => {
-          val slots = Random.shuffle(confSlots.slots).take(3)
-          val toReturn = slots.flatMap {
-            slot =>
-              slot.proposal.map(_.id)
-          }
-          Ok(Json.toJson(toReturn)).as(JSON)
-        }
-        case None => NoContent
+      ScheduleConfiguration.getPublishedSchedule(confType) match {
+        case Some(id) => Redirect(routes.Publisher.showAgendaByConfType(confType, Option(id), day.getOrElse("wednesday")))
+        case None => Redirect(routes.Publisher.homePublisher).flashing("success" -> Messages("not.published"))
       }
   }
 

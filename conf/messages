@@ -102,7 +102,7 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk which we will accept as part of their sponsorship. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -279,7 +279,7 @@ profile.imported.txt=Your profile has been successfully imported. You can change
 profile.continue=Continue
 profile.username=Your username:
 profile.password=Your access code (cannot be change):
-profile.password.help=We do not want to store one of your password. We prefer to generate an access code. We encourage you to use the OpenID access via Github or Google.
+profile.password.help=We do not want to store one of your password. We prefer to generate one for you. We encourage you to use the OpenID access via Github or Google.
 
 error.real=Real number value expected
 constraint.required=Required
@@ -426,7 +426,7 @@ sw.showDetails=See details
 sw.home=Home
 sw.all.uni=All Universities
 sw.all.conf=All Conferences
-sw.all.lab=All Hand''s on labs
+sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.start=All Startup''s talks
@@ -544,9 +544,6 @@ demoLevel2.label=Slides and code
 demoLevel3.label=Code only
 demoLevel4.label=No slides & code
 
-userGroup=Share my proposal with User Group?
-userGroup.checkbox=Yes, I am also interested to present this talk at other European User Groups
-
 btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
 saved=Proposal saved, do not forget to SUBMIT this talk to the program committee when you are ready
@@ -596,16 +593,16 @@ unknown=Unknown
 Abs=Abs
 trackAndUUIDs=
 
-mail.reset_password_link.subject=You asked to reset your {1} speaker''s access code at {0}
-mail.access_code.subject=Your {0} speaker''s access code
+mail.reset_password_link.subject=You asked to reset your {1}''s access code at {0}
+mail.access_code.subject=Your {0}''s access code
 mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
 mail.issue_reported.subject=New issue reported on CFP web site
-mail.cfp_message_to_speaker.subject=[{1}] {0}
-mail.question_to_speaker.subject=[{1}] {0}
-mail.speaker_message_to_cfp.subject=[{1}] {0}
-mail.notify_proposal.subject=[{1}] {0}
-mail.notify_proposal.content=[{1}] {0}
+mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
+mail.question_to_speaker.subject=[{1}] New question posted on Devoxx Web site about {0}
+mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
+mail.notify_proposal.subject={0} submitted a proposal [{1}]
+mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
 mail.proposal_approved.subject=Your proposal has been approved {0}
@@ -677,6 +674,7 @@ tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
 
+
 speaker.mustAcceptTC=You must accept Terms and Conditions
 speaker.ar1=Please click
 speaker.ar2=here
@@ -716,4 +714,13 @@ visitor.welcome.profile=See the list of talks you faved
 renderProposal.archived={0} proposals archived from some previous editions.
 renderProposal.archived.single=One proposal has been archived from a previous edition.
 renderProposal.noTalks=No other talks submitted or proposed
+
+mail.goldenticket.subject=Golden Ticket for {0}
+error.loginRequired=Access restricted, please authenticate.
+
+userGroup=Show my proposal to Golden Ticket holder?
+userGroup.checkbox= Yes, I would like my proposal to be reviewed by Attendees with a Golden Ticket
+
+goldenTicket.help.title=Golden Ticket review
+goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
 

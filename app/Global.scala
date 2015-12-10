@@ -2,6 +2,8 @@ import java.util.concurrent.TimeUnit
 
 import library.search.{StopIndex, _}
 import library.{DraftReminder, _}
+import models.{Speaker, ConferenceDescriptor, ProposalState, Proposal}
+import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateMidnight
 import play.api.Play.current
 import play.api.libs.concurrent._
@@ -28,7 +30,26 @@ object Global extends GlobalSettings {
       }
       case _ =>
         play.Logger.info("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
+    }
 
+    // Hack for Devoxx for Golden Ticket
+    // Load all submitted talks
+    // Filter out sponsor talks and quickies
+    // update each Proposal and select "I am ok with user group"
+    val allNotReviewed = Redis.pool.withClient {
+      implicit client =>
+        val allProposalIDsForReview = client.smembers(s"Proposals:ByState:${ProposalState.SUBMITTED.code}")
+        Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
+    }.filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.QUICK || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
+      .filterNot(_.sponsorTalk)
+
+    val emails = allNotReviewed.flatMap {
+      p =>
+        Speaker.findByUUID(p.mainSpeaker).map(_.email)
+    }.toSet
+
+    emails.foreach{m:String=>
+      println(StringUtils.trimToEmpty(m))
     }
 
   }

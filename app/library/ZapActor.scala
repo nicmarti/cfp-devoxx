@@ -76,6 +76,8 @@ case class EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
 
 case class NotifyProposalSubmitted(author: String, proposal: Proposal)
 
+case class NotifyGoldenTicket(goldenTicket: GoldenTicket)
+
 case class SendHeartbeat(apiKey: String, name: String)
 
 // Defines an actor (no failover strategy here)
@@ -101,6 +103,7 @@ class ZapActor extends Actor {
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
+    case NotifyGoldenTicket(goldenTicket:GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -240,6 +243,18 @@ class ZapActor extends Actor {
             play.Logger.error(s"Response body ${result.body}")
 
         }
+    }
+  }
+
+  def doNotifyGoldenTicket(gt:GoldenTicket):Unit={
+    play.Logger.debug(s"Notify golden ticket ${gt.ticketId} ${gt.webuserUUID}")
+
+    Webuser.findByUUID(gt.webuserUUID).map {
+      invitedWebuser: Webuser =>
+         Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New golden ticket for user ${invitedWebuser.cleanName}"))
+        Mails.sendGoldenTicketEmail(invitedWebuser,gt)
+    }.getOrElse {
+      play.Logger.error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
     }
   }
 }

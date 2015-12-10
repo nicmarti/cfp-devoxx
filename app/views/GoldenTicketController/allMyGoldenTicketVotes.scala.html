@@ -1,0 +1,141 @@
+@(allVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@mainGoldenTicket("All my votes") {
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
+    <div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="icon-bar-chart"></i> Your votes</h1>
+            </div>
+
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
+                    @if(allVotes.nonEmpty){
+                        You reviewed @allVotes.filter(_._2.isDefined).size talks<br>
+                        @defining(allVotes.filter(_._2.isDefined).filterNot(_._2 == Some(0)).toList.map(_._2.get)){allScores=>
+                            You have voted for @allVotes.filter(s=> s._2.isDefined && s._2!=Some(0)).size talks<br>
+                            Your average vote is @library.Stats.average(allScores)
+                        }
+                    }else{
+                        You haven't vote for any proposal so far.
+                    }
+
+                </div>
+                @if(allVotes.nonEmpty){
+                <div class="col-md-12">
+                    <h3><i class="icon-bar-chart"></i> Proposals for which you voted</h3>
+                    <table id="proposals" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Score</th>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Track</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            @allVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map{case(proposalId, maybeVote)=>
+                                @defining(Math.round(maybeVote.get)){score=>
+                                     <td>
+                                          <button name="vote" value="" class="btn btn-sm btn-color-@score">@score</button>
+                                     </td>
+                             }
+                            <td><a href="@routes.GoldenTicketController.openForReview(proposalId)">@proposalId</a></td>
+                        @relatedProposals.get(proposalId).map{proposal=>
+                          <td>
+                              <small>@proposal.title</small>
+                          </td>
+                          <td>
+                              <small>@Messages(proposal.talkType.id)</small>
+                          </td>
+                          <td>
+                              <small>@Messages(proposal.track.label)</small>
+                          </td>
+                        }
+                        </tr>
+                    }
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="col-md-6">
+                    @if(allVotes.filter(_._2.isEmpty).nonEmpty){
+                        <h4>Proposals for wich you need to vote</h4>
+                        @allVotes.filter(_._2.isEmpty).toList.sortBy(_._1).map{case(proposalId, maybeVote)=>
+                            <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a> <br>
+                        }
+                    }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#proposals').dataTable({
+    "aaSorting": [[ 4, "desc" ]],
+    "iDisplayLength" : -1,
+    "aLengthMenu": [
+    [25, 50, 100, 200, -1],
+    [25, 50, 100, 200, "All"]
+    ],
+    "bStateSave": true,
+    "aoColumns": [
+    { "sType": "numeric"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"},
+    { "sType": "string"}
+    ],
+    "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+        if ( aData[0] == "10" ) {
+            $('td:eq(0)', nRow).html( '<span class="label label-success">10</b>' );
+        }
+    if ( aData[0] == "9" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-success">9</b>' );
+    }
+    if ( aData[0] == "8" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-success">8</b>' );
+    }
+    if ( aData[0] == "7" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-success">7</b>' );
+    }
+    if ( aData[0] == "6" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-warning">6</b>' );
+    }
+    if ( aData[0] == "5" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-warning">5</b>' );
+    }
+    if ( aData[0] == "4" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-warning">4</b>' );
+    }
+    if ( aData[0] == "3" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-danger">3</b>' );
+    }
+    if ( aData[0] == "2" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-danger">2</b>' );
+    }
+    if ( aData[0] == "1" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-danger">1</b>' );
+    }
+    if ( aData[0] == "0" ) {
+    $('td:eq(0)', nRow).html( '<span class="label label-default">0</b>' );
+    }
+    }
+    });
+    } );
+</script>
+
+
+
+}

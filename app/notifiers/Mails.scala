@@ -24,9 +24,9 @@
 package notifiers
 
 import com.typesafe.plugin._
-import play.api.Play.current
-import org.joda.time.{DateTimeZone, DateTime}
 import models._
+import org.joda.time.{DateTime, DateTimeZone}
+import play.api.Play.current
 import play.api.i18n.Messages
 
 /**
@@ -263,7 +263,7 @@ object Mails {
   def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
 
-    val subject: String = Messages("mail.speaker_cfp_results.subject", Messages("naming.longYearlyName"))
+    val subject: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
     emailer.setSubject(subject)
     emailer.addFrom(from)
     emailer.addRecipient(speaker.email)
@@ -288,6 +288,21 @@ object Mails {
     emailer.send(
       views.txt.Mails.sendInvitationForSpeaker(message, requestId).toString(),
       views.html.Mails.sendInvitationForSpeaker(message, requestId).toString()
+    )
+  }
+
+  def sendGoldenTicketEmail(invitedWebuser: Webuser, gt: GoldenTicket) = {
+    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+
+    val subject: String = Messages("mail.goldenticket.subject", Messages("shortYearlyName"))
+    emailer.setSubject(subject)
+    emailer.addFrom(from)
+    emailer.addRecipient(invitedWebuser.email)
+    bcc.map(bccEmail => emailer.addBcc(bccEmail))
+    emailer.setCharset("utf-8")
+    emailer.send(
+      views.txt.Mails.goldenticket.sendGoldenTicketEmail(invitedWebuser, gt).toString(),
+      views.html.Mails.goldenticket.sendGoldenTicketEmail(invitedWebuser, gt).toString()
     )
   }
 

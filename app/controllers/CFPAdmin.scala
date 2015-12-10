@@ -46,7 +46,7 @@ object CFPAdmin extends SecureCFPController {
       case Some(s) => ps.sortBy(s)(orderer)
     }
 
-  private def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
+  def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
     sort match {
       case Some("title") => Some(_.title)
       case Some("mainSpeaker") => Some(_.mainSpeaker)
@@ -56,7 +56,7 @@ object CFPAdmin extends SecureCFPController {
     }
   }
 
-  private def proposalOrder(ascdesc: Option[String]) = ascdesc match {
+  def proposalOrder(ascdesc: Option[String]) = ascdesc match {
     case Some("desc") => Ordering[String].reverse
     case _ => Ordering[String]
   }

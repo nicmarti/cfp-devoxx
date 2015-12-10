@@ -23,15 +23,16 @@
 
 package controllers
 
-import play.api.mvc._
-
-import play.api.i18n.Messages
-import scala.concurrent.Future
-import scala.Some
-import play.api.mvc.SimpleResult
-import play.api.libs.Crypto
 import javax.crypto.IllegalBlockSizeException
+
 import models.Webuser
+import play.api.i18n.Messages
+import play.api.libs.Crypto
+import play.api.libs.json.Json
+import play.api.mvc.{SimpleResult, _}
+import play.api.templates.Html
+
+import scala.concurrent.Future
 
 
 /**
@@ -77,6 +78,34 @@ case class IsMemberOfGroups(groups: List[String]) extends Authorization {
 
 trait SecureCFPController extends Controller {
 
+
+ protected val notAuthenticatedJson = Unauthorized(Json.toJson(Map("error" -> "Credentials required"))).as(JSON)
+  protected val notAuthorizedJson = Forbidden(Json.toJson(Map("error" -> "Not authorized"))).as(JSON)
+
+  def notAuthenticatedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
+    Future.successful {
+      render {
+        case Accepts.Json() => notAuthenticatedJson
+        case Accepts.Html() => Redirect(routes.Application.home).
+          flashing("error" -> Messages("error.loginRequired"))
+          .withNewSession
+        case _ => Unauthorized("Credentials required")
+      }
+    }
+  }
+
+   def notAuthorizedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
+    Future.successful {
+      render {
+        case Accepts.Json() => notAuthorizedJson
+        case Accepts.Html() => {
+            Redirect(routes.Application.index()).flashing("error" -> "Not Authorized")
+        }
+        case _ => Forbidden("Not authorized")
+      }
+    }
+  }
+
   /**
    * A secured action.  If there is no user in the session the request is redirected
    * to the login page
@@ -92,6 +121,11 @@ trait SecureCFPController extends Controller {
      * @param authorize an Authorize object that checks if the user is authorized to invoke the action
      */
     def apply[A](authorize: Authorization) = new SecuredActionBuilder[A](Some(authorize))
+
+    /**
+      * Creates a secured Action and redirect the user to the route if not authenticated
+      */
+    def apply[A](authorize: Authorization, routes: String) = new SecuredActionBuilder[A](Some(authorize))
   }
 
   /**
@@ -100,7 +134,7 @@ trait SecureCFPController extends Controller {
    * @param authorize an Authorize object that checks if the user is authorized to invoke the action
    * @tparam A for action
    */
-  class SecuredActionBuilder[A](authorize: Option[Authorization] = None) extends ActionBuilder[({type R[A] = SecuredRequest[A]})#R] {
+  class SecuredActionBuilder[A](authorize: Option[Authorization] = None, redirect: Option[Call] = None) extends ActionBuilder[({type R[A] = SecuredRequest[A]})#R] {
 
     def invokeSecuredBlock[A](authorize: Option[Authorization],
                               request: Request[A],
@@ -113,17 +147,12 @@ trait SecureCFPController extends Controller {
         if (authorize.isEmpty || authorize.get.isAuthorized(user)) {
           block(SecuredRequest(user, request))
         } else {
-          Future.successful {
-            Redirect(routes.Application.home()).flashing("error" -> "Cannot access this resource, your profile does not belong to this security group")
-          }
+         notAuthorizedResult(request)
         }
       }
 
       result.getOrElse({
-        val response = {
-          Redirect(routes.Application.index()).flashing("error" -> Messages("Please authenticate"))
-        }
-        Future.successful(response)
+        notAuthenticatedResult(request)
       })
     }
 

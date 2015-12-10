@@ -205,9 +205,6 @@ DELETE        /schedulling/deletescheduledConfigurations                        
 POST          /schedulling/publish                                              controllers.SchedullingController.publishScheduleConfiguration()
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
-# Temp
-GET           /schedulling/fr14/giveMeBestTalks                                 controllers.SchedullingController.giveMeBestTalks()
-
 # Wishlist
 GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishlist()
 GET           /cfpadmin/wishlist/new                                            controllers.Wishlist.newRequestToTalk()
@@ -237,6 +234,23 @@ POST          /cfpadmin/attic/doArchive                                         
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()
 POST          /cfpadmin/attic/resetEvents                                       controllers.Attic.resetEvents()
+
+# Golden ticket admin
+GET           /admin/goldenTickets                                              controllers.GoldenTicketAdminController.showAll()
+GET           /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.newGoldenTicket()
+POST          /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.saveGoldenTicket()
+POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
+
+# Golden ticket webuser side
+GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
+GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes()
+GET           /cfp/goldenticket                                                  controllers.GoldenTicketController.authenticate()
+POST          /cfp/goldenticket                                                  controllers.GoldenTicketController.doAuthenticate()
+
+GET           /cfp/goldenticket/proposals/:proposalId                            controllers.GoldenTicketController.openForReview(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/vote                       controllers.GoldenTicketController.voteForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/clearVote                  controllers.GoldenTicketController.clearVoteForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/showvotes                  controllers.GoldenTicketController.showVotesForProposal(proposalId:String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)

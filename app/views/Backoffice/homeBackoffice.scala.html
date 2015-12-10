@@ -40,6 +40,10 @@
                 <a href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
 
+            <h4><i class="icon-ticket"></i> Golden ticket </h4>
+            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-sm btn-primary">Show all Golden tickets</a>
+            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary">Create a new golden ticket</a>
+
             <h4>Planner</h4>
             <a href="/assets/angular/index.html" class="btn btn-success btn-sm"><i class="icon-adjust"></i> Angular Schedule application</a>
             <a href="@routes.Backoffice.sanityCheckSchedule()"  class="btn btn-sm btn-primary"><i class="icon-medkit"></i> Sanity check for schedule</a>
