@@ -71,7 +71,7 @@ object GoldenTicketController extends SecureCFPController {
       val sorter = CFPAdmin.proposalSorter(sort)
       val orderer = CFPAdmin.proposalOrder(ascdesc)
       val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-        .filterNot(p => p.talkType ==  p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
+        .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
         .filterNot(_.sponsorTalk)
 
       val maybeFilteredProposals = track match {
