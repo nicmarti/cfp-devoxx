@@ -139,6 +139,8 @@ other.label=Other event
 other.label.simple=Other
 start.label=Startup Talk, 25 min, Wednesday to Friday
 start.label.simple=Startup
+ignite.label=Ignite Sessions, 5 min, Wednesday to Thursday early afternoon
+ignite.label.simple=Ignite
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
