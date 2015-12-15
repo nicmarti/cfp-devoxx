@@ -7,7 +7,7 @@
          @speaker.avatarUrl.map{url=>
             <img class="speakerRound"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
         }
-        @speaker.twitter.map{tw=>
+        @speaker.cleanTwitter.map{tw=>
         <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
         }
         @speaker.cleanName
