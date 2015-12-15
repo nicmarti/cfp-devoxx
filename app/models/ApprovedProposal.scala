@@ -306,11 +306,17 @@ object ApprovedProposal {
       }
   }
 
+  // Talks approved by the program committee
   def allApprovedTalksForSpeaker(speakerId: String): Iterable[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allApprovedProposals = client.smembers("ApprovedSpeakers:" + speakerId)
       val mapOfProposals = Proposal.loadAndParseProposals(allApprovedProposals)
       mapOfProposals.values
+  }
+
+  // Talks for wich speakers confirmed he will present
+  def allAcceptedTalksForSpeaker(speakerId: String): Iterable[Proposal] = {
+    allApprovedTalksForSpeaker(speakerId).filter(_.state == ProposalState.ACCEPTED).toList
   }
 
   def allAcceptedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
