@@ -240,6 +240,7 @@ GET           /admin/goldenTickets                                              
 GET           /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.newGoldenTicket()
 POST          /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.saveGoldenTicket()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
+POST          /admin/goldenTickets/:goldenTicketId/sendEmail                                controllers.GoldenTicketAdminController.sendEmail(goldenTicketId:String)
 
 # Golden ticket webuser side
 GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)

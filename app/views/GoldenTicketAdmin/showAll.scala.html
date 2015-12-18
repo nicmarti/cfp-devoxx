@@ -45,6 +45,7 @@
                                 <th>Attendee last name</th>
                                 <th>Attendee email</th>
                                 <th>Ticket type</th>
+                                <th>Notify</th>
                                 <th>Delete</th>
                             </tr>
                         </thead>
@@ -57,6 +58,11 @@
                                     <td>@user.lastName</td>
                                     <td>@user.email</td>
                                     <td>@gd.ticketType</td>
+ <td>
+                                    <form action="@routes.GoldenTicketAdminController.sendEmail(gd.id)" method="POST">
+                                        <button type="submit" value="unactivate" class="btn btn-primary btn-small"><i class="icon-envelope"></i></button>
+                                    </form>
+                                </td>
                                 <td>
                                     <form action="@routes.GoldenTicketAdminController.unactivateGoldenTicket(gd.id)" method="POST">
                                         <button type="submit" value="unactivate" class="btn btn-warning btn-small"><i class="icon-trash"></i></button>
