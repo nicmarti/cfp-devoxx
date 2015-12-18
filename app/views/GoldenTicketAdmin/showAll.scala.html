@@ -84,11 +84,14 @@
             $(document).ready(function() {
 
                 $('#tickets').dataTable({
-                    "aaSorting": [[ 4, "desc" ]],
+                    "aaSorting": [[ 5, "desc" ]],
                     "iDisplayLength": 50,
                     "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     "bStateSave": true,
                     "aoColumns": [
+                        { "sType": "string"},
+                        { "sType": "string"},
+                        { "sType": "string"},
                         { "sType": "string"},
                         { "sType": "string"},
                         { "sType": "string"},
