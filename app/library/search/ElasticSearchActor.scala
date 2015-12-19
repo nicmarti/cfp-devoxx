@@ -579,8 +579,8 @@ class IndexMaster extends ESActor {
       res2
     }
 
-     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_fr2015");
-                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_fr2015", settingsFrench)
+     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_fr2016");
+                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_fr2016", settingsFrench)
     ) yield {
       res2
     }

@@ -226,7 +226,7 @@ object ElasticSearch {
   }
 
   def doPublisherSearch(query: Option[String], p: Option[Int]) = {
-    val index = "acceptedproposals_fr2015"
+    val index = "acceptedproposals_fr2016"
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
     val zeQuery = someQuery.map(_.toLowerCase).map { q =>
       s"""
