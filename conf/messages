@@ -170,38 +170,47 @@ appel.conf.dates=Devoxx France 2016, 20th-22th April 2016
 track.java.title=Java, JVM, Javas SE/EE
 track.java.desc=Everything aroung Java, the JVM, Java SE, Java EE.
 java.label=Java, JVM, Javas SE/EE
+java.leaderboard=Java, JVM, Javas SE/EE
 
 track.mobile.title=Mobile & Internet of Things
 track.mobile.desc=Mobile, Java & Internet of Things
 mobile.label=Mobile, IoT
+mobile.leaderboard=Mobile, IoT
 
 track.web.title=Web, HTML5 et UX
 track.web.desc=Web, user-experience, front-end and Web architecture
 web.label=Web, HTML5 et UX
+wm.leaderboard=Web, HTML5 et UX
 
 track.archisec.title=Architecture, Performance & Securité
 track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
 archisec.label=Architecture, Performance and Security
+archisec.leaderboard=Architecture, Performance and Security
 
 track.agile_devops.title=DevOps, Agile, Methodology & Tests
 track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
 agile_devops.label=DevOps, Agile, Methodology & Tests
+agTest.leaderboard=DevOps, Agile, Methodology & Tests
 
 track.cloud.title=Cloud & Scaling
 track.cloud.desc=Cloud-computing, containers, resilient architectures.
 cloud.label=Cloud & Scaling
+cldops.leaderboard=Cloud & Scaling
 
 track.bigdata.title=Big Data & Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
 bigdata.label=Big Data & Analytics
+bigd.leaderboard=Big Data & Analytics
 
 track.future.title=Future & Robotics
 track.future.desc=Developing for the Internet of Things, Arduino, Raspberry, etc.
 future.label=Future & Robotics
+future.leaderboard=Future & Robotics
 
 track.lang.title=Alternate Languages
 track.lang.desc=Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, etc.
 lang.label=Alternate Languages
+lang.leaderboard=Alternate Languages
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
