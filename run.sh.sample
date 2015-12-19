@@ -48,6 +48,9 @@ export BITBUCKET_USERNAME="TODO"
 export BITBUCKET_PASSWORD="TODO"
 export BITBUCKET_URL="https://bitbucket.org/api/1.0/repositories/TODO/TODO/issues"
 
+export OPSGENIE_API="TODO"
+export OPSGENIE_NAME="TODO"
+
 export CFP_IS_OPEN="false"
 
 echo -n "--- Configured for development ---"
