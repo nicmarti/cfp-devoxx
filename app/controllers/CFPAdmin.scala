@@ -114,7 +114,6 @@ object CFPAdmin extends SecureCFPController {
               play.Logger.info("Golden ticket not active")
             }
 
-
             Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
           }
           case None => NotFound("Proposal not found").as("text/html")
