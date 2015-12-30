@@ -83,7 +83,7 @@ object GoldenTicketController extends SecureCFPController {
       val etag = allProposalsForReview.hashCode()
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag => NotModified
+        case Some(tag) if tag == etag.toString => NotModified
         case _ => Ok(views.html.GoldenTicketController.showAllProposals(allProposalsForReview, page, sort, ascdesc)).withHeaders(ETAG -> etag.toString)
       }
 
@@ -95,11 +95,10 @@ object GoldenTicketController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
-        case Some(proposal) => {
-          // TODO
+        case Some(proposal) =>
           val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(uuid, proposalId)
           Ok(views.html.GoldenTicketController.showProposal(proposal, voteForm, maybeMyVote))
-        }
+
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
@@ -108,7 +107,7 @@ object GoldenTicketController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           voteForm.bindFromRequest.fold(
             hasErrors => {
               val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(uuid, proposalId)
@@ -119,7 +118,7 @@ object GoldenTicketController extends SecureCFPController {
               Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> "Ok, vote submitted")
             }
           )
-        }
+
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
@@ -128,10 +127,10 @@ object GoldenTicketController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           ReviewByGoldenTicket.removeVoteForProposal(proposalId, uuid)
           Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> "Removed your vote")
-        }
+
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
