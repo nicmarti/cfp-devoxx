@@ -53,6 +53,8 @@ export OPSGENIE_NAME="TODO"
 
 export CFP_IS_OPEN="false"
 
+export ACTIVATE_GOLDEN_TICKET="false"
+
 echo -n "--- Configured for development ---"
 
 play

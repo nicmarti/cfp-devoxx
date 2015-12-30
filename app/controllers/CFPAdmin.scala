@@ -5,6 +5,7 @@ import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, S
 import models.Review.ScoreAndTotalVotes
 import models._
 import org.apache.commons.lang3.StringUtils
+import play.api.Play
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
@@ -105,6 +106,14 @@ object CFPAdmin extends SecureCFPController {
 
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
+
+            // If Golden Ticket is active
+            if(Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)){
+              play.Logger.info("ACTIVATE_GOLDEN_TICKET is true")
+            }else{
+              play.Logger.info("Golden ticket not active")
+            }
+
 
             Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
           }
