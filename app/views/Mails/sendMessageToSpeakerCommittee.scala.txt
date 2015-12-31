@@ -13,4 +13,4 @@ A new message was posted from @fromName to @toName regarding talk "@proposal.tit
 - This message was sent by a Program Committee member
 - Do not reply to this email
 - Review this proposal online:
-http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposal.id)
+@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.openForReview(proposal.id)

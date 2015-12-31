@@ -15,9 +15,16 @@ import play.api.Play
   * @author Frederic Camblor, BDX.IO 2014
   */
 
-case class ConferenceUrls(faq: String, registration: String,
-                          confWebsite: String, cfpHostname: String
-                         )
+case class ConferenceUrls(faq: String, registration: String,confWebsite: String, cfpHostname: String){
+    def cfpURL:String={
+    if(Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)){
+      s"https://$cfpHostname"
+    }else{
+      s"http://$cfpHostname"
+    }
+  }
+
+}
 
 case class ConferenceTiming(
                              datesI18nKey: String,
@@ -647,7 +654,7 @@ object ConferenceDescriptor {
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
       faq = "http://www.devoxx.fr/faq/",
-      registration = "http://reg.devoxx.fr",
+      registration = "https://reg.devoxx.fr",
       confWebsite = "http://www.devoxx.fr/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
     ),

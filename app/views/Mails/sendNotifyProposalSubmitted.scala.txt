@@ -8,7 +8,7 @@ Track : @track
 Type of talk : @talkType
 
 Please, use this link to review and to vote for this talk :
-http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CFPAdmin.openForReview(proposalId)
+@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.openForReview(proposalId)
 
 Thanks,
 The @Messages("longName") Team

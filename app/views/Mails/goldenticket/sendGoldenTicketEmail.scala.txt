@@ -21,7 +21,7 @@ aussi le travail des speakers et utiliser dans l'esprit Devoxx cette nouvelle po
 
 Pour accéder à l'outil d'évaluation des sujets : 
 
-http://cfp.devoxx.fr@routes.GoldenTicketController.authenticate()
+https://cfp.devoxx.fr@routes.GoldenTicketController.authenticate()
                             
 Merci d'utiliser cette adresse email et votre code d'accès personnel, à ne pas diffuser : @webuser.password
 

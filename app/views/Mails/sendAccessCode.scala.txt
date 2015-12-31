@@ -8,7 +8,7 @@ We created an access code for you (we really don't want to store any of your pas
   Your login is :  @email
   Your code is @code
 
-If you want to report an issue, please use http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Application.bugReport()
+If you want to report an issue, please use @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.bugReport()
 
 The @Messages("longName") team
 ------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un d
 Votre identifiant est <strong>@email</strong></p>
 Votre code est <strong>@code</strong></p>
 
-Utilisez http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
+Utilisez @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
 
 L'équipe @Messages("longName")
 ------------------------------------------------------------------------------

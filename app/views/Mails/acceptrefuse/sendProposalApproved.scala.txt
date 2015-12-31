@@ -18,7 +18,7 @@ présence à @Messages("longYearlyName") comme présentateur.
 
 Merci de valider dès maintenant en suivant ce lien dans votre navigateur :
 
- http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
+ @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
 
 Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).
 
@@ -26,7 +26,7 @@ Comment poser une question ?
 ----------------------------------------------------------------------------------------------------------------------
 Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.
 
-http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
+@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
 
 L'équipe de sélection de la conférence @Messages("longYearlyName")
 
@@ -42,14 +42,14 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
  You must now validate or decline the general terms and conditions, and confirm that you are still ok to do
  this presentation :
 
-  http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
+  @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
 
  For any question regarding your talk:
  ------------------------------------
  Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests
  to respond quickly.
 
-  http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
+  @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
 
  The @Messages("longYearlyName") team
 

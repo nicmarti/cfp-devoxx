@@ -12,7 +12,7 @@ Cher(e) @toSpeaker.firstName.getOrElse("speaker")
       conditions de @Messages("longName"). Vous pourrez ensuite indiquer si vous acceptez ou non de présenter
       ce sujet.</p>
   <br>
-  <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
 
   @if(listOfRefusedProposals.size==1){
   <P>Votre deuxième proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
@@ -22,7 +22,7 @@ Cher(e) @toSpeaker.firstName.getOrElse("speaker")
   }
   <h3>Comment poser une question ?</h3>
   <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-  <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
+  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
 <p>Pensez à vérifier s'il est nécessaire de prendre une place ou non. Les présentations au format BOF et Quickie ne donnent pas
 droits à une entrée. Il est indispensable de prendre une place pour les Quickies. Il n'est pas nécessaire de prendre de places
 pour les BOFs.</p>
@@ -32,7 +32,7 @@ pour les BOFs.</p>
   <p>Nous avons le plaisir de vous annoncer que plusieurs de vos propositions ont été retenues pour @Messages("longYearlyName") !</p>
   <h3>Propositions acceptées</h3>
   @listOfApprovedProposals.map{proposal=>
-     <p>- @proposal.title [<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]</p>
+     <p>- @proposal.title [<a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">voir sur le site du cfp</a>]</p>
   }
   @if(listOfRefusedProposals.size==1){
   <P>Une proposition n'a pas été retenue, cependant nous vous remercions pour le sujet proposé.</P>
@@ -42,10 +42,10 @@ pour les BOFs.</p>
   }
   <p>Afin de pouvoir effectuer la programmation et confirmer votre venue, merci d'accepter les termes et conditions de @Messages("longName"). Vous pourrez ensuite indiquer si vous acceptez ou non de présenter ce sujet.</p>
   <br>
-  <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
   <h3>Comment poser une question ?</h3>
   <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-  <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.homeForSpeaker()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.homeForSpeaker()</a>
+  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()</a>
     <p>Pensez à vérifier s'il est nécessaire de prendre une place ou non. Les présentations au format BOF et Quickie ne donnent pas
 droits à une entrée. Il est indispensable de prendre une place pour les Quickies. Il n'est pas nécessaire de prendre de places
 pour les BOFs.</p>
@@ -53,15 +53,11 @@ pour les BOFs.</p>
 
 @if(listOfApprovedProposals.size==0){
  <p>Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour @Messages("longYearlyName").</p>
- <p>Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 670 propositions de sujets
-    pour 154 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s). Au nom de toute
+ <p>Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 790 propositions de sujets
+    pour 220 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s). Au nom de toute
     l'équipe, nous tenons à vous remercier, et nous vous donnons rendez-vous le @ConferenceDescriptor.current().timing.firstDayFr à @Messages("longName").</p>
 }
 
-<p>Toutes les entrées pour @Messages("longYearlyName") sont presque vendues. Nous avons fermé les inscriptions par précautions dimanche soir,
-    afin de vous garantir de la place. Demain mercredi les inscriptions reprendront, et nous prolongeront le tarif
-    préférentiel jusqu'au dimanche 23 février inclus. Cela dit n'attendez pas le dernier moment, nous ne pouvons vous garantir
-    qu'il restera de la place jusqu'à cette date.</p>
 <br>
 <p>L'équipe de sélection de la conférence @Messages("longName")</p>
     <!--************************************* ------->
@@ -76,7 +72,7 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
 <p>For us to now program your talks, you must accept or decline the general terms and conditions of
    @Messages("longName"). You will then be able to confirm that you are still ok to present your session :</p>
 
-  <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
 @if(listOfRefusedProposals.size==1){
   <P>Your other proposal was not approved, however we thank you for this proposal.</P>
 }
@@ -85,14 +81,14 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
 }
  <h3>For any question regarding your talk</h3>
  <p>Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.</p>
- <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
+ <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)</a>
 }
 
 @if(listOfApprovedProposals.size>1){
   <p>We're glad to inform you that several of your proposals have been approved for @Messages("longYearlyName")!</p>
   <h3>Approved proposals:</h3>
   @listOfApprovedProposals.map{proposal=>
-    <p>- @proposal.title [<a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">view online</a>]</p>
+    <p>- @proposal.title [<a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(listOfApprovedProposals.head.id)">view online</a>]</p>
   }
 @if(listOfRefusedProposals.size==1){
   <P>One of your proposal was not approved, mainly because we preferred to select some of your other talks.</P>
@@ -103,10 +99,10 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
   <p>For us to now program your talks, you must accept or decline the general terms and conditions of
       @Messages("longName"). You will then be able to confirm that you are still ok to present your sessions :</p>
   <br>
-  <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()</a>
+  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
   <h3>For any question regarding your talks</h3>
   <p>Please, do not answer this email. Instead send any comment through the web interface, and our team will do its bests to respond quickly.</p>
-  <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.homeForSpeaker()">http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.homeForSpeaker()</a>
+  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()</a>
 }
 
 @if(listOfApprovedProposals.size==0){
