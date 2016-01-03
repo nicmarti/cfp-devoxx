@@ -26,10 +26,11 @@ object Global extends GlobalSettings {
         CronTask.doComputeStats()
         CronTask.doSetupOpsGenie()
       case Some(true) if Play.isDev => {
+        CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
       }
       case _ =>
-        play.Logger.info("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
+        play.Logger.of("Global").warn("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
     }
 
   }
@@ -116,7 +117,7 @@ object CronTask {
     import library.Contexts.statsContext
     Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
     Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
-    Akka.system.scheduler.schedule(2 minutes, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
+    Akka.system.scheduler.schedule(2 minutes, 30 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
 
   }
 

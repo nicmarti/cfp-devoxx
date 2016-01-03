@@ -170,6 +170,7 @@ object Backoffice extends SecureCFPController {
         case (reviewerUUID, score) => {
           play.Logger.of("application.Backoffice").info(s"Deleting vote on $proposalId by $reviewerUUID of score $score")
           Review.deleteVoteForProposal(proposalId)
+          ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
         }
       }
       Redirect(routes.CFPAdmin.showVotesForProposal(proposalId))

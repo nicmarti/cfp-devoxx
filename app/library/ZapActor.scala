@@ -165,6 +165,7 @@ class ZapActor extends Actor {
 
   def doComputeVotesAndScore() {
     Review.computeAndGenerateVotes()
+    ReviewByGoldenTicket.computeAndGenerateVotes()
   }
 
   // Delete votes if a proposal was deleted
@@ -172,6 +173,7 @@ class ZapActor extends Actor {
     Proposal.allProposalIDsDeleted.map {
       proposalId =>
         Review.deleteVoteForProposal(proposalId)
+        ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
     }
   }
 

@@ -250,8 +250,8 @@ object CFPAdmin extends SecureCFPController {
 
   def doComputeLeaderBoard() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
       library.ZapActor.actor ! ComputeLeaderboard()
+      library.ZapActor.actor ! ComputeVotesAndScore()
       Redirect(routes.CFPAdmin.index()).flashing("success" -> Messages("leaderboard.compute"))
   }
 
