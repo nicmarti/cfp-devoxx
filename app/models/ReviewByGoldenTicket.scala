@@ -134,7 +134,7 @@ object ReviewByGoldenTicket {
 
   def allVotesFor(proposalId: String): List[ReviewerAndVote] = Redis.pool.withClient {
     implicit client =>
-      client.zrevrangeByScoreWithScores(s"ReviewGT:Votes:$proposalId", 10, 0).toList
+      client.zrevrangeByScoreWithScores(s"ReviewGT:Votes:$proposalId", 10, 0)
   }
 
   type VotesPerProposal = (String, Long)

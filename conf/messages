@@ -768,3 +768,13 @@ gtAdmin.topWorst=Last 5 by score
 gtAdmin.average=Average score given my Golden ticket is {0}
 gtAdmin.totalReviewer=Total number of Proposals reviewed by Golden Ticket : {0}
 
+svp.score=Current score
+svp.average=Average score
+svp.voteCast=Total votes cast
+svp.votes=Total votes
+svp.abst=Abstention
+svp.standardDev=Standard deviation
+svp.allVotes=All votes
+svp.noshow=Sorry, votes for your talk are hidden.
+svp.voted=voted
+svp.goldenTicket.title=Golden Ticket votes

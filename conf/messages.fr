@@ -722,3 +722,13 @@ gtAdmin.topWorst=Les 5 plus mal notés
 gtAdmin.average=Le score moyen donné par les Golden Ticket est : {0}
 gtAdmin.totalReviewer={0} propositions revues par les Golden Tickets
 
+svp.score=Score actuel
+svp.average=Note moyenne
+svp.voteCast=Nombre de personnes ayant voté
+svp.votes=Nombre total de votant
+svp.abst=Personne s''étant abstenue
+svp.standardDev=Ecart type
+svp.allVotes=Tous les votes
+svp.noshow=Désolé, les votes pour vos sujets sont masqués
+svp.voted=a voté
+svp.goldenTicket.title=Golden Ticket

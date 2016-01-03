@@ -682,4 +682,6 @@ object ConferenceDescriptor {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
 
+  def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
+
 }

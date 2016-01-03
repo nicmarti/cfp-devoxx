@@ -108,7 +108,7 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
             // If Golden Ticket is active
-            if(Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)){
+            if(ConferenceDescriptor.isGoldenTicketActive){
               play.Logger.info("ACTIVATE_GOLDEN_TICKET is true")
             }else{
               play.Logger.info("Golden ticket not active")

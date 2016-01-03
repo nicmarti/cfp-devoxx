@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> Proposal @proposal.title</h3>
+                    <h3><i class="icon-stackexchange"></i> @proposal.title</h3>
                 </div>
 
                 @if(flash.get("error").isDefined) {
@@ -22,70 +22,86 @@
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="panel-body">
-                <h3>Current score</h3>
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <th>Average score</th>
-                            <td>@if(totalVotesCast>0){
-                                @library.Stats.average(allVotes.map(_._2).filterNot(_==0))
-                            } else {
-                                -
-                            }</td>
-                        </tr>
-                        <tr>
-                            <th>
-                                Total score
-                            </th>
-                            <td>@score</td>
-                        </tr>
-                        <tr>
-                            <th>
-                                Total votes cast
-                            </th>
-                            <td>@totalVotesCast</td>
-                        </tr>
-
-                        <tr>
-                            <th>
-                                Total votes
-                            </th>
-                            <td>
-                                @totalVotes
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                 Standard deviation
-                            </th>
-                            <td>
-                                 @library.Stats.standardDeviation(allVotes.map(_._2).filterNot(_==0))
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="col-md-6 col-lg-4 col-sm-12">
+           <div class="panel panel-default">
+               <div class="panel-heading">
+                   <h3>@Messages("svp.score")</h3>
+               </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>@Messages("svp.average")</th>
+                                <td>@if(totalVotesCast>0){
+                                    @library.Stats.average(allVotes.map(_._2).filterNot(_==0))
+                                } else {
+                                    -
+                                }</td>
+                            </tr>
+                              <tr>
+                                <th>@Messages("svp.votes")</th>
+                                <td>
+                                    @totalVotes
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("svp.voteCast")</th>
+                                <td>@totalVotesCast</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("svp.abst")</th>
+                                <td>
+                                    @(totalVotes-totalVotesCast)
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("svp.standardDev")</th>
+                                <td>
+                                     @library.Stats.standardDeviation(allVotes.map(_._2).filterNot(_==0))
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-8">
-            <div class="panel-body">
-                <h3>All votes</h3>
+        <div class="col-md-6 col-lg-4 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>@Messages("svp.allVotes")</h3>
+                </div>
+                <div class="panel-body">
+
                 @if(proposal.mainSpeaker==currentUser|| proposal.secondarySpeaker==Some(currentUser) || proposal.otherSpeakers.contains(currentUser)){
-                    <em>Sorry, votes for your talk are hidden.</em>
+                    <em>@Messages("svp.noshow")</em>
                 }else{
 
                     <div class="media">
                       @allVotes.sortBy(_._2).map { case (author, vote) =>
                         <div class="media-body">
-                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;<h5 class="media-heading">voted @tags.renderVote(vote.toInt) </h5>
+                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;<h5 class="media-heading">@Messages("svp.voted") @tags.renderVote(vote.toInt) </h5>
                         </div>
                     }
                     </div>
                 }
             </div>
+            </div>
         </div>
+
+@if(ConferenceDescriptor.isGoldenTicketActive){
+    <div class="col-md4 col-lg-4 col-sm-6">
+        <div class="panel panel-default">
+             <div class="panel-heading">
+                    <h3>@Messages("svp.goldenTicket.title")</h3>
+             </div>
+            <div class="panel-body">
+                Under construction
+            </div>
+        </div>
+
+    </div>
+}
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -98,6 +114,7 @@
                 @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty){
                      <a class="btn btn-default" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i> There is no more talk to review</a>
                 }
+                    <br>
                 @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.nonEmpty){
                      @if(nextToBeReviewedSameTrack.head.track.id ==  proposal.track.id ) {
                          <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
