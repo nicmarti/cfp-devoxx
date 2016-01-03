@@ -109,12 +109,16 @@ object CFPAdmin extends SecureCFPController {
 
             // If Golden Ticket is active
             if(ConferenceDescriptor.isGoldenTicketActive){
-              play.Logger.info("ACTIVATE_GOLDEN_TICKET is true")
+
+              val allVotesGT:List[(String,Double)]=ReviewByGoldenTicket.allVotesFor(proposalId)
+              val countVotesCastGT:Option[Long]=Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
+
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, allVotesGT, countVotesCastGT))
             }else{
-              play.Logger.info("Golden ticket not active")
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, Nil, None))
             }
 
-            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
+
           }
           case None => NotFound("Proposal not found").as("text/html")
         }

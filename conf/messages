@@ -770,6 +770,8 @@ gtAdmin.totalReviewer=Total number of Proposals reviewed by Golden Ticket : {0}
 
 svp.score=Current score
 svp.average=Average score
+svp.gt.average=Average score given by {0} Golden Ticket holders
+svp.voteCast.gt=Number of Golden tickets that voted
 svp.voteCast=Total votes cast
 svp.votes=Total votes
 svp.abst=Abstention
@@ -778,3 +780,7 @@ svp.allVotes=All votes
 svp.noshow=Sorry, votes for your talk are hidden.
 svp.voted=voted
 svp.goldenTicket.title=Golden Ticket votes
+svp.gt.novotes=No vote yet from any Golden ticket
+svp.split=Diff between GT score and Comittee score
+
+gt.admin.sp.privateMessage=Private message for the program committee

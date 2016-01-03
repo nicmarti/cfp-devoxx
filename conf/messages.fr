@@ -724,7 +724,9 @@ gtAdmin.totalReviewer={0} propositions revues par les Golden Tickets
 
 svp.score=Score actuel
 svp.average=Note moyenne
+svp.gt.average=Note moyenne donnée par {0} Golden Ticket
 svp.voteCast=Nombre de personnes ayant voté
+svp.voteCast.gt=Nombre de Golden ticket ayant voté
 svp.votes=Nombre total de votant
 svp.abst=Personne s''étant abstenue
 svp.standardDev=Ecart type
@@ -732,3 +734,7 @@ svp.allVotes=Tous les votes
 svp.noshow=Désolé, les votes pour vos sujets sont masqués
 svp.voted=a voté
 svp.goldenTicket.title=Golden Ticket
+svp.gt.novotes=Aucun Golden ticket n''a voté sur ce sujet
+svp.split=Différence entre le score GT et le score du comité
+
+gt.admin.sp.privateMessage=Message personnel du speaker pour le comité

@@ -1,4 +1,4 @@
-@(currentUser:String, proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(currentUser:String, proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal], allVotesGT:List[(String,Double)],countVotesCastGT:Option[Long])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -96,7 +96,36 @@
                     <h3>@Messages("svp.goldenTicket.title")</h3>
              </div>
             <div class="panel-body">
-                Under construction
+
+                @if(countVotesCastGT.isEmpty){
+                    @Messages("svp.gt.novotes")
+                }else {
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>@Messages("svp.gt.average", countVotesCastGT.getOrElse(0))</th>
+                                <td>@if(allVotesGT.nonEmpty) {
+                                    @library.Stats.average(allVotesGT.map(_._2).filterNot(_ == 0))
+                                } else {
+                                    -
+                                }</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("svp.split")</th>
+                                <td>@BigDecimal(library.Stats.average(allVotesGT.map(_._2).filterNot(_ == 0)) - library.Stats.average(allVotes.map(_._2).filterNot(_ == 0))).setScale(2,  scala.math.BigDecimal.RoundingMode.HALF_EVEN).toDouble</td>
+                            </tr>
+                            <tr>
+                                <th>@Messages("svp.standardDev")</th>
+                                <td>
+                                @library.Stats.standardDeviation(allVotesGT.map(_._2).filterNot(_ == 0))
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+
+
+
             </div>
         </div>
 
