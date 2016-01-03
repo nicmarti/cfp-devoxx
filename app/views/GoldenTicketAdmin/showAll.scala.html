@@ -79,6 +79,11 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-6 col-sm-12 col-md-12">
+            @tickets.map { case (gd: GoldenTicket, user: Webuser) =>
+                @user.email,
+            }
+        </div>
     </div>
     <script type="text/javascript">
             $(document).ready(function() {

@@ -762,5 +762,9 @@ gt.nextTalk=Continue and evaluate next talk
 gt.nextTalkType=Continue and evaluate another {0}
 gt.nextTalkTrack=Continue and evaluate next talk for track {0}
 
-
+gtAdmin.totalGT=Total number of person with a Golden Ticket: {0}
+gtAdmin.top5=Top 5 by score
+gtAdmin.topWorst=Last 5 by score
+gtAdmin.average=Average score given my Golden ticket is {0}
+gtAdmin.totalReviewer=Total number of Proposals reviewed by Golden Ticket : {0}
 

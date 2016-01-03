@@ -715,3 +715,10 @@ gt.nomore=Vous n''avez plus de sujets à revoir pour l''instant, revenez plus ta
 gt.nextTalk=Continuer et évaluer le sujet suivant
 gt.nextTalkType=Continuer et évaluer un autre sujet du type [{0}]
 gt.nextTalkTrack=Continuer et évaluer une proposition dans la track [{0}]
+
+gtAdmin.totalGT=Nombre de personnes avec un Golden Ticket : {0}
+gtAdmin.top5=Top 5 par score
+gtAdmin.topWorst=Les 5 plus mal notés
+gtAdmin.average=Le score moyen donné par les Golden Ticket est : {0}
+gtAdmin.totalReviewer={0} propositions revues par les Golden Tickets
+

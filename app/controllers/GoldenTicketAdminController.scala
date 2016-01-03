@@ -24,7 +24,8 @@
 package controllers
 
 import library.{NotifyGoldenTicket, ZapActor}
-import models.GoldenTicket
+import models.ReviewByGoldenTicket.ScoreAndTotalVotes
+import models.{GoldenTicket, Proposal, ProposalState, ReviewByGoldenTicket}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
@@ -33,6 +34,7 @@ import play.api.data.validation.Constraints._
   * A controller for Admin, to moderate or to add Golden Ticket.
   * See also the models.GoldenTicket entity.
   * Implemented during Devoxx Maroc 2015 :-)
+  *
   * @author created by N.Martignole, Innoteria, on 16/11/2015.
   */
 object GoldenTicketAdminController extends SecureCFPController {
@@ -78,23 +80,70 @@ object GoldenTicketAdminController extends SecureCFPController {
       )
   }
 
-  def sendEmail(goldenTicketId:String)=SecuredAction(IsMemberOf("admin")){
+  def sendEmail(goldenTicketId: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      GoldenTicket.findById(goldenTicketId).map{ticket:GoldenTicket=>
+      GoldenTicket.findById(goldenTicketId).map { ticket: GoldenTicket =>
         ZapActor.actor ! NotifyGoldenTicket(ticket)
-        Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success"->"Email sent")
+        Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "Email sent")
       }.getOrElse(NotFound("Ticket not found"))
 
   }
 
-  def unactivateGoldenTicket(id:String)=SecuredAction(IsMemberOf("admin")){
-     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+  def unactivateGoldenTicket(id: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       GoldenTicket.findById(id) match {
-        case Some(goldenTicket)=>
+        case Some(goldenTicket) =>
           GoldenTicket.delete(id)
-          Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success"->"Deleted golden ticket")
-        case _ => Redirect(routes.GoldenTicketAdminController.showAll()).flashing("error"->"No golden ticket with this id")
+          Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "Deleted golden ticket")
+        case _ => Redirect(routes.GoldenTicketAdminController.showAll()).flashing("error" -> "No golden ticket with this id")
       }
   }
 
+  def showGoldenTicketVotes() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val allVotes: Set[(String, ScoreAndTotalVotes)] = ReviewByGoldenTicket.allVotes()
+      val result = allVotes.toList.sortBy(_._2._1).reverse
+
+      val allProposalIDs = result.map(_._1)
+      // please note that a proposal with no votes will not be loaded
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+
+      val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
+        case (proposalId, scoreAndVotes) =>
+          allProposalWithVotes.get(proposalId).map {
+            proposal: Proposal =>
+              (proposal, scoreAndVotes)
+          }
+      }.filterNot {
+        case (proposal, _) =>
+          proposal.state == ProposalState.DRAFT || proposal.state == ProposalState.ARCHIVED || proposal.state == ProposalState.DELETED
+      }.sortBy(_._2._4).reverse
+
+      Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals))
+  }
+
+  def showStats() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val allVotes: Set[(String, ScoreAndTotalVotes)] = ReviewByGoldenTicket.allVotes()
+      val result = allVotes.toList.sortBy(_._2._1).reverse
+
+      val allProposalIDs = result.map(_._1)
+      // please note that a proposal with no votes will not be loaded
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+
+      val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
+        case (proposalId, scoreAndVotes) =>
+          allProposalWithVotes.get(proposalId).map {
+            proposal: Proposal =>
+              (proposal, scoreAndVotes)
+          }
+      }.filterNot {
+        case (proposal, _) =>
+          proposal.state == ProposalState.DRAFT || proposal.state == ProposalState.ARCHIVED || proposal.state == ProposalState.DELETED
+      }
+
+      val totalGoldenTicket = GoldenTicket.size()
+
+      Ok(views.html.GoldenTicketAdmin.showStats(listOfProposals, totalGoldenTicket))
+  }
 }

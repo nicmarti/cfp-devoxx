@@ -226,31 +226,6 @@ object ReviewByGoldenTicket {
       }
   }
 
-  type ScoreAndTotalVotes = (Double, Int, Int, Double, Double)
-
-  def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
-    client =>
-      val allVoters = client.hgetAll("GT:Computed:Voters")
-      val allAbstentions = client.hgetAll("GT:Computed:VotersAbstention")
-      val allAverages = client.hgetAll("GT:Computed:Average")
-      val allStandardDev = client.hgetAll("GT:Computed:StandardDeviation")
-
-      client.hgetAll("GT:Computed:Scores").map {
-        case (proposalKey: String, scores: String) =>
-          val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
-          (proposalId,
-            (scores.toDouble,
-              allVoters.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAverages.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map(d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
-              allStandardDev.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map {
-                d =>
-                  BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
-              }.getOrElse(0.toDouble)
-              )
-            )
-      }.toSet
-  }
 
   // internal function that upload to Redis a LUA Script
   // The function returns the Script SHA1
@@ -378,4 +353,40 @@ object ReviewByGoldenTicket {
         "Proposals:ByState:" + ProposalState.DRAFT.code)
   }
 
+  type Score = Double
+  type TotalVoters = Int
+  type TotalAbstentions= Int
+  type AverageScore = Double
+  type StandardDev=Double
+
+  type ScoreAndTotalVotes = (Score, TotalVoters, TotalAbstentions, AverageScore, StandardDev)
+
+  def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
+    client =>
+      val allVoters = client.hgetAll("GT:Computed:Voters")
+      val allAbstentions = client.hgetAll("GT:Computed:VotersAbstention")
+      val allAverages = client.hgetAll("GT:Computed:Average")
+      val allStandardDev = client.hgetAll("GT:Computed:StandardDeviation")
+
+      client.hgetAll("GT:Computed:Scores").map {
+        case (proposalKey: String, scores: String) =>
+          val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
+          (proposalId,
+            (scores.toDouble,
+              allVoters.get(proposalKey).map(_.toInt).getOrElse(0),
+              allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0),
+              allAverages.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map(d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
+              allStandardDev.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map {
+                d =>
+                  BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
+              }.getOrElse(0.toDouble)
+              )
+            )
+      }.toSet
+  }
+
+
+  def orderByAverageScore:Ordering[(Proposal, ScoreAndTotalVotes)]={
+    Ordering.by[(Proposal, ScoreAndTotalVotes), AverageScore](_._2._4)
+  }
 }
