@@ -2,7 +2,7 @@
 
 --------------------------------------------------------
 
-  Golden Ticket #gt.id
+  Golden Ticket #@gt.id
 
 --------------------------------------------------------
 
@@ -23,8 +23,7 @@ Pour accéder à l'outil d'évaluation des sujets :
 
 https://cfp.devoxx.fr@routes.GoldenTicketController.authenticate()
                             
-Merci d'utiliser cette adresse email et votre code d'accès personnel, à ne pas diffuser : @webuser.password
-
+Merci d'utiliser votre adresse email (@webuser.email) et votre code d'accès personnel, à ne pas diffuser : @webuser.password
 
 Vous pouvez contacter Nicolas en cas de questions ou remarques par email : nicolas.martignole@@devoxx.fr
 

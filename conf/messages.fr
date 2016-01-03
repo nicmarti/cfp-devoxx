@@ -706,3 +706,12 @@ gt.youVoted=Vous avez donné une note pour {0} sujet(s)
 gt.averageVote=Votre note moyenne est {0}
 gt.noVotes=Vous n''avez pas encore commencé à revoir les sujets. Ne perdez pas de temps car cela peut prendre beaucoup de temps.
 gt.myvote.title=Propositions que vous avez évalué
+
+gt.showVotes.review=Revoir ou changer votre vote
+gt.home=Retour à l''accueil
+gt.vote.ok=Votre vote a été enregistré
+gt.youcan=Vous pouvez maintenant :
+gt.nomore=Vous n''avez plus de sujets à revoir pour l''instant, revenez plus tard lorsque d''autres speakers auront proposé des sujets.
+gt.nextTalk=Continuer et évaluer le sujet suivant
+gt.nextTalkType=Continuer et évaluer un autre sujet du type [{0}]
+gt.nextTalkTrack=Continuer et évaluer une proposition dans la track [{0}]

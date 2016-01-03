@@ -80,7 +80,6 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def sendEmail(goldenTicketId:String)=SecuredAction(IsMemberOf("admin")){
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
       GoldenTicket.findById(goldenTicketId).map{ticket:GoldenTicket=>
         ZapActor.actor ! NotifyGoldenTicket(ticket)
         Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success"->"Email sent")
@@ -92,14 +91,10 @@ object GoldenTicketAdminController extends SecureCFPController {
      implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       GoldenTicket.findById(id) match {
         case Some(goldenTicket)=>
-
           GoldenTicket.delete(id)
-
-
           Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success"->"Deleted golden ticket")
         case _ => Redirect(routes.GoldenTicketAdminController.showAll()).flashing("error"->"No golden ticket with this id")
       }
-
   }
 
 }

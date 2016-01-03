@@ -752,3 +752,15 @@ gt.youVoted=You have voted for {0} talk(s)
 gt.averageVote=Your average vote is {0}
 gt.noVotes=You haven''t vote for any proposal so far.
 gt.myvote.title=Proposals for which you voted
+
+gt.showVotes.review=Review or change your vote
+gt.home=Go back to home
+gt.vote.ok=Your vote has been recorded.
+gt.youcan=You can now:
+gt.nomore=There is no more talk to review, congratulation you did it!
+gt.nextTalk=Continue and evaluate next talk
+gt.nextTalkType=Continue and evaluate another {0}
+gt.nextTalkTrack=Continue and evaluate next talk for track {0}
+
+
+
