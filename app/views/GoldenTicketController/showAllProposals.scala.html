@@ -3,8 +3,8 @@
 @mainGoldenTicket("CFP Admin") {
 
     <div class="row">
-        <div class="col-lg-offset-4 col-md-4">
-            <h2><img src="@routes.Assets.at(path="/public",file="images/ticket_admin.jpg")" alt="Ticket"><br> CFP for Golden ticket</h2>
+        <div class="col-lg-offset-5 col-md-5">
+            <h2><img src="@routes.Assets.at(path="/public",file="images/ticket_admin.jpg")" alt="Ticket"><br> @Messages("gt.title")</h2>
         </div>
 
         <div class="clearfix"></div>
@@ -25,14 +25,13 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <p><small>Please respect the privacy of people submitting talks to Devoxx UK. By opening this account
-                        you agree not to disclose or publish publicly, including via social media, any of
-                        the information you see in the CFP tool.</small></P>
+                    <p><small>@Messages("gt.disclaimer")</small></P>
                 </div>
                 <div class="panel-body">
-                    <p>This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.</p>
-                    <p>If needed, you can also <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()">review your Votes</a> while the CFP is open.</p>
-                    <p>If you have a specific speaker you would love to see present at Devoxx UK, drop an email to mark.hazel@@devoxx.co.uk and we’ll do our best to get them there.</p>
+                    <p>@Messages("gt.intro.1")</p>
+                    <p>@Messages("gt.intro.2") <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()">@Messages("gt.reviewYourVotes")</a> @Messages("gt.intro.3")</p>
+
+                    <p>@Messages("gt.special.need")</p>
                     <br>
                     @if(allProposalsForReview.nonEmpty) {
                         <table class="table table-bordered table-striped table-hover table-condensed">
@@ -41,12 +40,12 @@
                                     <th>@tags.gticket.renderThTag("title", page, sort, ascdesc)</th>
                                     <th>@tags.gticket.renderThTag("track", page, sort, ascdesc)</th>
                                     <th>@tags.gticket.renderThTag("mainSpeaker", page, sort, ascdesc)</th>
-                                    <th>Track</th>
+                                    <th>Type</th>
                                     <th>@Messages("admin.proposals.th.action")</th>
                                 </tr>
                                 <tr>
                                     <th colspan="5">
-                                       <small>Your todo list size: @allProposalsForReview.size</small>
+                                       <small>@Messages("gt.todo") @allProposalsForReview.size</small>
                                     </th>
                                 </tr>
                             </thead>
@@ -79,7 +78,6 @@
                     } else {
                         <h4>@Messages("admin.cfp.empty")</h4>
                     }
-
                 </div>
             </div>
         </div>

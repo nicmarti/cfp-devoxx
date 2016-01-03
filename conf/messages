@@ -735,3 +735,20 @@ userGroup.checkbox= Yes, I would like my proposal to be reviewed by Attendees wi
 goldenTicket.help.title=Golden Ticket review
 goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
 
+gt.title=CFP for Golden ticket
+gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
+
+gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.
+gt.intro.2=If needed, you can also
+gt.reviewYourVotes=review your Votes
+gt.intro.3=while the CFP is open.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx FR, drop an email to program@devoxx.fr and we’ll do our best to get them there.
+gt.todo=Your todo list size:
+
+gt.yourVotes=Your votes
+gt.personnal=Your personnal leaderboard
+gt.youReviewed=You reviewed {0} talk(s)
+gt.youVoted=You have voted for {0} talk(s)
+gt.averageVote=Your average vote is {0}
+gt.noVotes=You haven''t vote for any proposal so far.
+gt.myvote.title=Proposals for which you voted

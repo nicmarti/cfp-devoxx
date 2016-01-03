@@ -80,7 +80,7 @@ object GoldenTicketController extends SecureCFPController {
       }
       val allProposalsForReview = CFPAdmin.sortProposals(maybeFilteredProposals, sorter, orderer)
 
-      val etag = allProposalsForReview.hashCode()
+      val etag = "gt_"+allProposalsForReview.hashCode()
 
       request.headers.get(IF_NONE_MATCH) match {
         case Some(tag) if tag == etag.toString => NotModified

@@ -10,26 +10,27 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon-bar-chart"></i> Your votes</h1>
+                <h1 class="panel-title"><i class="icon-bar-chart"></i> @Messages("gt.yourVotes")</h1>
             </div>
 
             <div class="panel-body">
                 <div class="col-md-12">
-                    <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
+                    <h3><i class="icon-beaker"></i> @Messages("gt.personnal")</h3>
                     @if(allVotes.nonEmpty){
-                        You reviewed @allVotes.filter(_._2.isDefined).size talks<br>
+                        @Messages("gt.youReviewed", allVotes.count(_._2.isDefined))<br>
+
                         @defining(allVotes.filter(_._2.isDefined).filterNot(_._2 == Some(0)).toList.map(_._2.get)){allScores=>
-                            You have voted for @allVotes.filter(s=> s._2.isDefined && s._2!=Some(0)).size talks<br>
-                            Your average vote is @library.Stats.average(allScores)
+                            @Messages("gt.youVoted", allVotes.count(s => s._2.isDefined && s._2 != Some(0)))<br>
+                            @Messages("gt.averageVote", library.Stats.average(allScores))
                         }
                     }else{
-                        You haven't vote for any proposal so far.
+                        @Messages("gt.noVotes")
                     }
 
                 </div>
                 @if(allVotes.nonEmpty){
                 <div class="col-md-12">
-                    <h3><i class="icon-bar-chart"></i> Proposals for which you voted</h3>
+                    <h3><i class="icon-bar-chart"></i> @Messages("gt.myvote.title")</h3>
                     <table id="proposals" class="table table-bordered">
                         <thead>
                             <tr>
