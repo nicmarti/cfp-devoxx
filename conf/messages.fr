@@ -649,7 +649,7 @@ wishlist.setPersonInCharge=Personne en charge de "{0}"
 proposal.approved.noVotes=Proposition approuvée - plus de votes possible
 
 wl.country=Pays
-wl.keynote=Pays
+wl.keynote=Keynote
 wl_keynote=Speaker keynote
 wl_keynote.checkbox=Oui, cela serait un speaker keynote
 
