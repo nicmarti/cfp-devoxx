@@ -105,7 +105,7 @@ function generateScoreCell(score, proposalId) {
 function redrawProposalsTable(talkType) {
     var $table = $('.proposals.'+talkType);
     $table.find('tbody tr').remove();
-    $table.find('tbody').append(_.map(_(window.proposalsByType[talkType]).sortBy('score').reverse().value(), function(proposalWithScore){
+    $table.find('tbody').append(_.map(_(window.proposalsByType[talkType]).sortBy('id').value(), function(proposalWithScore){
         return $(generateProposalLineContent(proposalWithScore));
     }));
 

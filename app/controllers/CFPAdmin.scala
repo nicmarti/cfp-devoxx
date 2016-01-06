@@ -293,7 +293,6 @@ object CFPAdmin extends SecureCFPController {
                   "privateMessage" -> Json.toJson(proposal.privateMessage),
                   "track" -> Json.toJson(proposal.track.id),
                   "demoLevel" -> Json.toJson(proposal.demoLevel),
-                  "liveCoding" -> Json.toJson(proposal.liveCoding),
                   "vote" -> Json.toJson(maybeVote.get)
               )
           }
@@ -442,7 +441,6 @@ object CFPAdmin extends SecureCFPController {
               "privateMessage" -> Json.toJson(proposal.privateMessage),
               "track" -> Json.toJson(proposal.track.id),
               "demoLevel" -> Json.toJson(proposal.demoLevel),
-              "liveCoding" -> Json.toJson(proposal.liveCoding),
               "userGroup" -> Json.toJson(proposal.userGroup)
             )),
             "votes" -> Json.toJson(Map(
