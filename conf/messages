@@ -672,7 +672,7 @@ webmobile.label=Web, Mobile & UX
 agilityTest.label=Agility, Methodology & Tests
 
 wl.country=Country
-wl.keynote=Country
+wl.keynote=Keynote
 wl_keynote=Keynote
 wl_keynote.checkbox=Yes, this could be a keynote speaker
 
