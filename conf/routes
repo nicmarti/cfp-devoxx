@@ -80,8 +80,10 @@ GET           /cfpadmin/leaderboard                                             
 GET           /cfpadmin/leaderboard/reviewerStats                               controllers.CFPAdmin.allReviewersAndStats
 GET           /cfpadmin/leaderboard/compute                                     controllers.CFPAdmin.doComputeLeaderBoard
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes
+GET           /cfpadmin/myvotesjson                                             controllers.CFPAdmin.allMyVotesJson
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
+GET           /cfpadmin/allvotesJson                                            controllers.CFPAdmin.allVotesJson()
 GET           /cfpadmin/recompute/allvotes                                      controllers.CFPAdmin.doComputeVotesTotal()
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks
 GET           /cfpadmin/speaker/:uuidSpeaker                                    controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
