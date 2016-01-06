@@ -135,7 +135,7 @@ quick.label=Quickie, 15mn, jeudi et vendredi midi
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
 other.label=Autre type de présentation
-lab.label=Hand''s on Lab, 3h, mercredi uniquement
+lab.label=Hands-on Lab, 3h, mercredi uniquement
 hack.label=Hackaton (événement spécial)
 ignite.label=Conférence Ignite, 5mn, jeudi et vendredi de 13h à 14h
  
@@ -276,7 +276,7 @@ noOther.speaker=---- Pas d''autre présentateur ----
 conf=Conference
 uni=University
 tia=Tools-in-Action
-lab=Hand''s on Labs
+lab=Hands-on Labs
 quick=Quickie
 bof=BOF (Bird of a Feather)
 hack=Hackaton
@@ -543,7 +543,7 @@ key.label.simple=Plénière (Keynote)
 l1.label=niveau 1 : débutant
 l2.label=Intermédiaire
 l3.label=Expert et sénior
-lab.label.simple=Hand''s on lab
+lab.label.simple=Hands-on lab
 hack.label.simple=Hackatons
 code.label.simple=Codestory
 

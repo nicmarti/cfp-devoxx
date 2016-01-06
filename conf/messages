@@ -134,7 +134,7 @@ quick.label.simple=Quickie
 bof.label=Bird of a Feather, 1h, Thursday only evening
 bof.label.simple=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Wednesday
-lab.label.simple=Hand''s on Lab
+lab.label.simple=Hands-on Lab
 other.label=Other event
 other.label.simple=Other
 start.label=Startup Talk, 25 min, Wednesday to Friday
@@ -163,7 +163,7 @@ theme.title=Tracks
 theme.track=List of tracks for Devoxx France 2016:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx France 2016, 20th-22th April 2016
+appel.conf.dates=Devoxx France 2016, 20th-22nd April 2016
 
 # Tracks
 
@@ -419,7 +419,7 @@ sw.details=See details
 conf=Conference
 uni=University
 tia=Tools-in-Action
-lab=Hand''s on Labs
+lab=Hands-on Labs
 quick=Quickie
 bof=BOF (Bird of a Feather)
 hack=Hackaton

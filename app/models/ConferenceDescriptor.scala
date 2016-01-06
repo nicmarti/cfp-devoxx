@@ -665,7 +665,7 @@ object ConferenceDescriptor {
       firstDayFr = "20 avril",
       firstDayEn = "april 20th",
       datesFr = "du 20 au 22 avril 2016",
-      datesEn = "from 20th to 22th of April, 2016",
+      datesEn = "from 20th to 22nd of April, 2016",
       cfpOpenedOn = DateTime.parse("2015-11-11T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2016-01-31T09:00:00+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2016-02-25T00:00:00+02:00")
