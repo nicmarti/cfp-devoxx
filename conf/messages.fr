@@ -749,3 +749,5 @@ callforpaper.import.profile=Votre profil de visiteur n''est pas suffisant pour a
 gt.vote.foryou=Vous ne pouvez pas voter pour une proposition où vous êtes déjà speaker. Merci aussi de ne vous ajouter pas comme Speaker après avoir voté. Effacez votre vote si vous souhaitez changer cela.
 gt.vote.submitted=Votre vote et l''heure de votre vote sont enregistrés. Vous pouvez revenir et changer librement vos votes tant que le CFP est ouvert.
 gt.nav.home=Accueil GT
+
+gt.myvotes=Propositions de type {0}

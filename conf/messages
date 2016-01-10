@@ -796,3 +796,4 @@ cfp.gt.infos=More details about Golden tickets (in French)
 callforpaper.import.profile=Speaker profile not found, please complete your profile.
 
 gt.nav.home=Home GT
+gt.myvotes=Proposals of type {0} for which you voted

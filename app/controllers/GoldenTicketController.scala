@@ -175,8 +175,9 @@ object GoldenTicketController extends SecureCFPController {
       val result = ReviewByGoldenTicket.allVotesFromUser(uuid)
       val allProposalIDs = result.map(_._1)
       val allProposals = Proposal.loadAndParseProposals(allProposalIDs)
+      val votesByType = result.groupBy(proposalVote => allProposals.get(proposalVote._1).get.talkType)
 
-      Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(result, allProposals))
+      Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(result, votesByType, allProposals))
   }
 
   private def createCookie(webuser: Webuser) = {
