@@ -47,6 +47,20 @@ object ReviewByGoldenTicket {
       tx.exec()
   }
 
+  def countVotesForAllUsers():List[(String,Long)]=Redis.pool.withClient{
+    implicit client=>
+      val allGoldenTicketUUID:Set[String] = client.smembers("Webuser:gticket")
+
+
+      val votesPerReviewers = allGoldenTicketUUID.map{
+        reviewerUUID:String=>
+          val totalVotes = client.scard(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID")
+          (reviewerUUID,totalVotes)
+      }.toList.sortBy(_._2).reverse
+
+      votesPerReviewers
+  }
+
   def removeVoteForProposal(proposalId: String, reviewerUUID: String) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
