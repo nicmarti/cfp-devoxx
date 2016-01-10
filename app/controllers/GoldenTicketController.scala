@@ -114,8 +114,13 @@ object GoldenTicketController extends SecureCFPController {
               BadRequest(views.html.GoldenTicketController.showProposal(proposal, hasErrors, maybeMyVote))
             },
             validVote => {
-              ReviewByGoldenTicket.voteForProposal(proposalId, uuid, validVote)
-              Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> "Ok, vote submitted")
+              if(Proposal.isSpeaker(proposalId,uuid)){
+                ReviewByGoldenTicket.voteForProposal(proposalId, uuid, 0)
+                Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> Messages("gt.vote.foryou"))
+              }else{
+                ReviewByGoldenTicket.voteForProposal(proposalId, uuid, validVote)
+                Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> Messages("gt.vote.submitted"))
+              }
             }
           )
 

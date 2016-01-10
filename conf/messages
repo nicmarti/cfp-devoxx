@@ -180,6 +180,7 @@ mobile.leaderboard=Mobile, IoT
 track.web.title=Web, HTML5 et UX
 track.web.desc=Web, user-experience, front-end and Web architecture
 web.label=Web, HTML5 et UX
+wm.label=Web, HTML5 et UX
 wm.leaderboard=Web, HTML5 et UX
 
 track.archisec.title=Architecture, Performance & Securité
@@ -190,11 +191,13 @@ archisec.leaderboard=Architecture, Performance and Security
 track.agile_devops.title=DevOps, Agile, Methodology & Tests
 track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
 agile_devops.label=DevOps, Agile, Methodology & Tests
+agTest.label=DevOps, Agile, Methodology & Tests
 agTest.leaderboard=DevOps, Agile, Methodology & Tests
 
 track.cloud.title=Cloud & Scaling
 track.cloud.desc=Cloud-computing, containers, resilient architectures.
 cloud.label=Cloud & Scaling
+cldops.label=Cloud & Scaling
 cldops.leaderboard=Cloud & Scaling
 
 track.bigdata.title=Big Data & Analytics
@@ -784,3 +787,12 @@ svp.gt.novotes=No vote yet from any Golden ticket
 svp.split=Diff between GT score and Comittee score
 
 gt.admin.sp.privateMessage=Private message for the program committee
+
+speaker.notfound=Speaker not found, please sign-up and create a speaker profile. A Golden ticket profile is not valid, you must create a separate profile.
+callforpaper.gt.create.profile=You have a Golden ticket profile, but not a Speaker profile. Please complete your profile to proceed.
+cfp.goldenTicket=Golden tickets
+cfp.gt.enter=Authenticate
+cfp.gt.infos=More details about Golden tickets (in French)
+callforpaper.import.profile=Speaker profile not found, please complete your profile.
+
+gt.nav.home=Home GT

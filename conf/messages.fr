@@ -286,7 +286,7 @@ amd=Après-midi des Décideurs
  
 tbl.submitted=Envoyé
 profile.imported=Profil importé
-profile.imported.txt=Votre profil a été importé avec succès. Vous pouvez modifier à tout moment votre bio, vos informations personnelles ou l'adresse de votre blog.
+profile.imported.txt=Votre profil a été importé avec succès. Vous pouvez modifier à tout moment votre bio, vos informations personnelles ou l''adresse de votre blog.
 profile.continue=Continuer
 profile.username=Votre identifiant
 profile.password=Votre code d''accès
@@ -738,3 +738,14 @@ svp.gt.novotes=Aucun Golden ticket n''a voté sur ce sujet
 svp.split=Différence entre le score GT et le score du comité
 
 gt.admin.sp.privateMessage=Message personnel du speaker pour le comité
+
+speaker.notfound=Speaker non trouvé, merci de créer un compte Speaker pour continuer. Un compte Golden ticket n''est pas suffisant.
+callforpaper.gt.create.profile=Votre profil de Golden ticket n''est pas suffisant pour accéder à la partie Speaker. Merci de compléter votre profil de présentateur pour continuer.
+cfp.goldenTicket=Golden tickets
+cfp.gt.enter=S''authentifier
+cfp.gt.infos=Plus d''informations sur les Golden Tickets
+callforpaper.import.profile=Votre profil de visiteur n''est pas suffisant pour accéder à la partie Speaker. Merci de compléter votre profil de présentateur pour continuer.
+
+gt.vote.foryou=Vous ne pouvez pas voter pour une proposition où vous êtes déjà speaker. Merci aussi de ne vous ajouter pas comme Speaker après avoir voté. Effacez votre vote si vous souhaitez changer cela.
+gt.vote.submitted=Votre vote et l''heure de votre vote sont enregistrés. Vous pouvez revenir et changer librement vos votes tant que le CFP est ouvert.
+gt.nav.home=Accueil GT

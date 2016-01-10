@@ -41,18 +41,19 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav navbar-left">
-                @if(SecureCFPController.isLoggedIn(req)){
+                @if(SecureCFPController.hasAccessToCFP(req)){
                     <li><a href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-home"></i> @Messages("nav.homeSpeaker")</a></li>
                 }
-                @if(SecureCFPController.hasAccessToCFP(req)){
-                    <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> Admin</a></li>
+                @if(SecureCFPController.hasAccessToGoldenTicket(req)){
+                    <li><a href="@routes.GoldenTicketController.showAllProposals()"><i class="icon-ticket"></i> @Messages("gt.nav.home")</a></li>
+                    <li><a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()"><i class="icon-bar-chart"></i> All your votes</a></li>
                 }
-                @if(SecureCFPController.hasAccessToCFP(req)){
+                @if(SecureCFPController.hasAccessToCFPAdmin(req)){
+                    <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> Admin</a></li>
                     <li><a href="@routes.Wishlist.homeWishlist()"><i class="icon-sort-by-attributes-alt"></i> Wishlist</a></li>
                 }
                 @if(SecureCFPController.hasAccessToAdmin(req)){
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
-                    @*<li><a href="@routes.Attic.atticHome()"><i class="icon-archive"></i> Attic</a></li>*@
                 }
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -86,7 +87,7 @@
         } else {
             <li><a href="@routes.Application.home()"><i class="icon-home"></i> @Messages("login")</a></li>
         }
-        <small><i class="icon-bullhorn"></i> @Messages("longName") Call for Paper - <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> Report a bug or an issue</a></small><br>
+        <small><i class="icon-bullhorn"></i> @Messages("longName") Call for Paper - <a href="https://github.com/nicmarti/cfp-devoxx/issues"><i class="icon-bug"></i> Report an issue</a></small><br>
         <small><i class="icon-cloud-upload"></i> Hosted on <a href="@ConferenceDescriptor.current().hosterWebsite">@ConferenceDescriptor.current().hosterName</a></small>
     </div>
   </div>

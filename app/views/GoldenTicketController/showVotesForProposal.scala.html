@@ -1,6 +1,6 @@
 @(currentUser:String, proposal: models.Proposal, nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
-@mainGoldenTicket("Votes for " + proposal.id + "/" + proposal.title) {
+@main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -30,6 +30,12 @@
                 <div class="panel-body">
 
                     <h3>@Messages("gt.vote.ok")</h3>
+
+                    @if(Proposal.isSpeaker(proposal.id,currentUser)){
+                     <div class="alert alert-info col-md-12">
+                        @Messages("gt.vote.foryou")
+                    </div>
+                    }
 
                     <p>@Messages("gt.youcan")</p>
 

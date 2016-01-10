@@ -30,37 +30,37 @@ import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
 import play.api.mvc.{SimpleResult, _}
-import play.api.templates.Html
 
 import scala.concurrent.Future
 
 
 /**
- * A complex Secure controller, compatible with Play 2.2.x new EssentialAction.
- * I used SecureSocial as a starting point, then adapted this code to my own use-case
- * @author : nmartignole
- */
+  * A complex Secure controller, compatible with Play 2.2.x new EssentialAction.
+  * I used SecureSocial as a starting point, then adapted this code to my own use-case
+  *
+  * @author : nmartignole
+  */
 
 /**
- * A request that adds the User for the current call
- */
+  * A request that adds the User for the current call
+  */
 case class SecuredRequest[A](webuser: Webuser, request: Request[A]) extends WrappedRequest(request)
 
 /**
- * A request that adds the User for the current call
- */
+  * A request that adds the User for the current call
+  */
 case class RequestWithUser[A](webuser: Option[Webuser], request: Request[A]) extends WrappedRequest(request)
 
 /**
- *  Defines an Authorization for the CFP Webuser
- */
+  * Defines an Authorization for the CFP Webuser
+  */
 trait Authorization {
   def isAuthorized(webuser: Webuser): Boolean
 }
 
 /**
- *  Checks if user is member of a security group
- */
+  * Checks if user is member of a security group
+  */
 case class IsMemberOf(securityGroup: String) extends Authorization {
   def isAuthorized(webuser: Webuser): Boolean = {
     Webuser.isMember(webuser.uuid, securityGroup)
@@ -68,8 +68,8 @@ case class IsMemberOf(securityGroup: String) extends Authorization {
 }
 
 /**
- * Check if a user belongs to one of the specified groups.
- */
+  * Check if a user belongs to one of the specified groups.
+  */
 case class IsMemberOfGroups(groups: List[String]) extends Authorization {
   def isAuthorized(webuser: Webuser): Boolean = {
     groups.exists(securityGroup => Webuser.isMember(webuser.uuid, securityGroup))
@@ -79,7 +79,7 @@ case class IsMemberOfGroups(groups: List[String]) extends Authorization {
 trait SecureCFPController extends Controller {
 
 
- protected val notAuthenticatedJson = Unauthorized(Json.toJson(Map("error" -> "Credentials required"))).as(JSON)
+  protected val notAuthenticatedJson = Unauthorized(Json.toJson(Map("error" -> "Credentials required"))).as(JSON)
   protected val notAuthorizedJson = Forbidden(Json.toJson(Map("error" -> "Not authorized"))).as(JSON)
 
   def notAuthenticatedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
@@ -94,12 +94,12 @@ trait SecureCFPController extends Controller {
     }
   }
 
-   def notAuthorizedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
+  def notAuthorizedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
     Future.successful {
       render {
         case Accepts.Json() => notAuthorizedJson
         case Accepts.Html() => {
-            Redirect(routes.Application.index()).flashing("error" -> "Not Authorized")
+          Redirect(routes.Application.index()).flashing("error" -> "Not Authorized")
         }
         case _ => Forbidden("Not authorized")
       }
@@ -107,19 +107,20 @@ trait SecureCFPController extends Controller {
   }
 
   /**
-   * A secured action.  If there is no user in the session the request is redirected
-   * to the login page
-   */
+    * A secured action.  If there is no user in the session the request is redirected
+    * to the login page
+    */
   object SecuredAction extends SecuredActionBuilder[SecuredRequest[_]] {
     /**
-     * Creates a secured action
-     */
+      * Creates a secured action
+      */
     def apply[A]() = new SecuredActionBuilder[A](None)
 
     /**
-     * Creates a secured action
-     * @param authorize an Authorize object that checks if the user is authorized to invoke the action
-     */
+      * Creates a secured action
+      *
+      * @param authorize an Authorize object that checks if the user is authorized to invoke the action
+      */
     def apply[A](authorize: Authorization) = new SecuredActionBuilder[A](Some(authorize))
 
     /**
@@ -129,11 +130,11 @@ trait SecureCFPController extends Controller {
   }
 
   /**
-   * A builder for secured actions
-   *
-   * @param authorize an Authorize object that checks if the user is authorized to invoke the action
-   * @tparam A for action
-   */
+    * A builder for secured actions
+    *
+    * @param authorize an Authorize object that checks if the user is authorized to invoke the action
+    * @tparam A for action
+    */
   class SecuredActionBuilder[A](authorize: Option[Authorization] = None, redirect: Option[Call] = None) extends ActionBuilder[({type R[A] = SecuredRequest[A]})#R] {
 
     def invokeSecuredBlock[A](authorize: Option[Authorization],
@@ -147,7 +148,7 @@ trait SecureCFPController extends Controller {
         if (authorize.isEmpty || authorize.get.isAuthorized(user)) {
           block(SecuredRequest(user, request))
         } else {
-         notAuthorizedResult(request)
+          notAuthorizedResult(request)
         }
       }
 
@@ -162,8 +163,8 @@ trait SecureCFPController extends Controller {
 
 
   /**
-   * An action that adds the current user in the request if it's available.
-   */
+    * An action that adds the current user in the request if it's available.
+    */
   object UserAwareAction extends ActionBuilder[RequestWithUser] {
     protected def invokeBlock[A](request: Request[A],
                                  block: (RequestWithUser[A]) => Future[SimpleResult]): Future[SimpleResult] = {
@@ -179,9 +180,9 @@ trait SecureCFPController extends Controller {
   }
 
   /**
-   * Get the current logged in user.  This method can be used from public actions that need to
-   * access the current user if there's any
-   */
+    * Get the current logged in user.  This method can be used from public actions that need to
+    * access the current user if there's any
+    */
   def currentUser[A](implicit request: RequestHeader): Option[Webuser] = {
     request match {
       case securedRequest: SecuredRequest[_] => Some(securedRequest.webuser)
@@ -218,6 +219,12 @@ object SecureCFPController {
 
   def hasAccessToCFP(implicit request: RequestHeader): Boolean = {
     findAuthenticator.exists(uuid =>
+      Webuser.isSpeaker(uuid)
+    )
+  }
+
+  def hasAccessToCFPAdmin(implicit request: RequestHeader): Boolean = {
+    findAuthenticator.exists(uuid =>
       Webuser.hasAccessToCFP(uuid)
     )
   }
@@ -228,7 +235,13 @@ object SecureCFPController {
     )
   }
 
-  def getCurrentUser(implicit request:RequestHeader):Option[Webuser]={
+  def hasAccessToGoldenTicket(implicit request: RequestHeader): Boolean = {
+    findAuthenticator.exists(uuid =>
+      Webuser.hasAccessToGoldenTicket(uuid)
+    )
+  }
+
+  def getCurrentUser(implicit request: RequestHeader): Option[Webuser] = {
     findAuthenticator.flatMap(uuid => lookupWebuser(uuid))
   }
 

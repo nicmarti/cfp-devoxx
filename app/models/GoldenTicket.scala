@@ -31,23 +31,31 @@ import play.api.libs.json.Json
   *
   * @author created by N.Martignole, Innoteria, on 16/11/2015.
   */
-case class GoldenTicket(id:String, ticketId: String, webuserUUID: String, ticketType: String)
+case class GoldenTicket(id: String, ticketId: String, webuserUUID: String, ticketType: String)
 
 object GoldenTicket {
   val GD_TICKET = "GoldenTicket:2016"
 
   implicit val goldenTicketFormat = Json.format[GoldenTicket]
 
-   def generateId(): String = {
+  def generateId(): String = {
     RandomStringUtils.randomAlphabetic(6).toUpperCase + "-" + RandomStringUtils.randomNumeric(5)
   }
 
   def createGoldenTicket(ticketId: String, firstName: String, lastName: String, email: String, ticketType: String): GoldenTicket = {
-    val webuser = createWebuser(email, firstName, lastName)
-    val uuid = Webuser.saveAndValidateWebuser(webuser)
+    val uuid = if (Webuser.isEmailRegistered(email)) {
+      // An existing speaker might have been created with another security key
+      // Thus the Webuser uuid will be different and we need to search by email
+      // we should call generateUUID only if the user is not in the Email collection
+      Webuser.getUUIDfromEmail(email).getOrElse(Webuser.generateUUID(email))
+    } else {
+      val webuser = createWebuser(email, firstName, lastName)
+      Webuser.saveAndValidateWebuser(webuser)
+    }
+
     Webuser.addToGoldenTicket(uuid)
-    val id=generateId()
-    GoldenTicket(id,ticketId, uuid, ticketType)
+    val id = generateId()
+    GoldenTicket(id, ticketId, uuid, ticketType)
   }
 
   def unapplyForm(gt: GoldenTicket): Option[(String, String, String, String, String)] = {
@@ -106,13 +114,13 @@ object GoldenTicket {
       client.hdel(GD_TICKET, id)
   }
 
-  def hasTicket(webuserUUID:String):Boolean=Redis.pool.withClient{
-    implicit client=>
+  def hasTicket(webuserUUID: String): Boolean = Redis.pool.withClient {
+    implicit client =>
       client.sismember(GD_TICKET + ":UniqueUser", webuserUUID)
   }
 
   private def createWebuser(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(Webuser.generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(8), "gticket")
+    Webuser(Webuser.generateUUID(email.toLowerCase.trim), email.toLowerCase.trim, firstName, lastName, RandomStringUtils.randomAlphabetic(8), "gticket")
   }
 
 }

@@ -1,6 +1,6 @@
 @(proposal: Proposal, voteForm: Form[Int], maybeMyVote: Option[ReviewByGoldenTicket])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
-@mainGoldenTicket("Golden Ticket - Show " + proposal.id) {
+@main("Golden Ticket - Show " + proposal.id) {
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -150,7 +150,7 @@
             <div class="panel-body">
                 @if(proposal.state == ProposalState.SUBMITTED) {
                     @maybeMyVote.map { review: ReviewByGoldenTicket =>
-                        <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote.toInt)
+                        <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote)
                         - @review.date.toString("EEEE d MMM YYYY HH:mm")
 
                     <a href="@routes.GoldenTicketController.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
@@ -158,6 +158,11 @@
                     }
                     <div class="btn-block">
                         @helper.form(action = routes.GoldenTicketController.voteForProposal(proposal.id)) {
+                            @if(maybeMyVote.isDefined && maybeMyVote.get.vote==0){
+                                <button name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
+                            }else{
+                                <button name="vote" value="0" class="btn btn-lg btn-default">@Messages("Abs")</button>
+                            }
                             @for( i <- 1 to 10) {
                                 @maybeMyVote.map { review: ReviewByGoldenTicket =>
                                     @if(review.vote == i) {
