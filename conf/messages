@@ -797,3 +797,9 @@ callforpaper.import.profile=Speaker profile not found, please complete your prof
 
 gt.nav.home=Home GT
 gt.myvotes=Proposals of type {0} for which you voted
+
+search.result=Search result: {0} hit(s)
+search.close=Close
+search.showOnly=Show only
+search.onlySpeakers=speakers
+search.onlyProposals=proposals

@@ -751,3 +751,9 @@ gt.vote.submitted=Votre vote et l''heure de votre vote sont enregistrés. Vous p
 gt.nav.home=Accueil GT
 
 gt.myvotes=Propositions de type {0}
+
+search.result=Nombre de résultats: {0}
+search.close=Fermer
+search.showOnly=Afficher seulement
+search.onlySpeakers=speakers
+search.onlyProposals=proposals

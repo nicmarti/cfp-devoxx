@@ -311,30 +311,28 @@ object CFPAdmin extends SecureCFPController {
           val total = (json \ "hits" \ "total").as[Int]
           val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
-          val results = hitContents.map {
+          val results = hitContents.sortBy{
+           jsvalue =>
+             val index = (jsvalue \ "_index").as[String]
+              index
+          }.map {
             jsvalue =>
               val index = (jsvalue \ "_index").as[String]
               val source = (jsvalue \ "_source")
               index match {
-                case "events" => {
-                  val objRef = (source \ "objRef").as[String]
-                  val uuid = (source \ "uuid").as[String]
-                  val msg = (source \ "msg").as[String]
-                  s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
-                }
                 case "proposals" => {
                   val id = (source \ "id").as[String]
                   val title = (source \ "title").as[String]
-                  val talkType = (source \ "talkType" \ "id").as[String]
+                  val talkType = Messages((source \ "talkType" \ "id").as[String])
                   val code = (source \ "state" \ "code").as[String]
-                  s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - $talkType"
+                  val mainSpeaker = (source \ "mainSpeaker").as[String]
+                  s"<p class='searchProposalResult'><i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - by $mainSpeaker - $talkType</p>"
                 }
                 case "speakers" => {
                   val uuid = (source \ "uuid").as[String]
                   val name = (source \ "name").as[String]
                   val firstName = (source \ "firstName").as[String]
-                  val email = (source \ "email").as[String]
-                  s"<i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a> $email"
+                  s"<p class='searchSpeakerResult'><i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a></p>"
                 }
                 case other => "Unknown format " + index
               }

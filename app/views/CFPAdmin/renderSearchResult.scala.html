@@ -2,25 +2,38 @@
 
 <div class="panel">
     <div class="panel-heading">
-        <h3 class="panel-title">Search result: @total founds</h3>
+        <h3 class="panel-title">@Messages("search.result" , total)</h3>
     </div>
 </div>
 <div class="panel">
-    <div class="col-lg-1 col-lg-offset-11">
-        <a href="#" class="closeSearch"><i class="icon-remove"></i> Close</a>
+    <div class="col-lg-4 col-lg-offset-8">
+        @Messages("search.showOnly")  <a href="#" id="onlySpeakers" class="btn btn-sm btn-success">@Messages("search.onlySpeakers")</a> <a href="#" id="onlyProposals" class="btn btn-sm btn-default">@Messages("search.onlyProposals")</a>
+        <a href="#" id="closeSearch" class="btn btn-sm btn-primary"><i class="icon-remove"></i> @Messages("search.close")</a>
     </div>
 </div>
+<div class="clearfix"></div>
 
-<div class="panel">
+<div class="panel" id="searchResult">
 @results.map{result=>
-    @Html(result)<br>
+    @Html(result)
 }
 </div>
 @tags.renderPaginator(req, p.getOrElse(1), total)
 
 <script type="text/javascript">
-$(".closeSearch").on("click",function(e){
+$("#closeSearch").on("click",function(e){
     e.preventDefault();
     $(".searchResult" ).hide();
+});
+$("#onlySpeakers").on("click",function(e){
+    e.preventDefault();
+    $("#searchResult p.searchProposalResult").hide();
+    $("#searchResult p.searchSpeakerResult").show();
+});
+$("#onlyProposals").on("click",function(e){
+    e.preventDefault();
+    $("#searchResult p.searchSpeakerResult").hide();
+    $("#searchResult p.searchProposalResult").show();
+
 });
 </script>
