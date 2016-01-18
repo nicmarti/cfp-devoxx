@@ -46,7 +46,7 @@
                     }
                     </div>
                     <div class="col-md-6">
-                    @if(allVotes.filter(_._2.isEmpty).nonEmpty) {
+                    @if(allVotes.exists(_._2.isEmpty)) {
                         <h4>Proposals for wich you need to vote</h4>
                         @allVotes.filter(_._2.isEmpty).toList.sortBy(_._1).map { case (proposalId, maybeVote) =>
                         <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId

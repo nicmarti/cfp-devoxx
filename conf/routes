@@ -245,7 +245,7 @@ POST          /admin/goldenTickets/newTicket                                    
 GET           /admin/goldenTickets/votes                                        controllers.GoldenTicketAdminController.showGoldenTicketVotes()
 GET           /admin/goldenTickets/stats                                        controllers.GoldenTicketAdminController.showStats()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
-POST          /admin/goldenTickets/:goldenTicketId/sendEmail                                controllers.GoldenTicketAdminController.sendEmail(goldenTicketId:String)
+POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    controllers.GoldenTicketAdminController.sendEmail(goldenTicketId:String)
 
 # Golden ticket webuser side
 GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
