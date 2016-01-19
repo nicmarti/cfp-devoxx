@@ -231,7 +231,7 @@ object Proposal {
     , "otherSpeakers" -> list(text)
     , "talkType" -> nonEmptyText
     , "audienceLevel" -> text
-    , "summary" -> nonEmptyText(maxLength = 1250)
+    , "summary" -> nonEmptyText(maxLength = 600)
     , "privateMessage" -> nonEmptyText(maxLength = 3500)
     , "sponsorTalk" -> boolean
     , "track" -> nonEmptyText
