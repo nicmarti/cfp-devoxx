@@ -191,8 +191,11 @@ object Webuser {
   def isMember(uuid: String, securityGroup: String): Boolean = Redis.pool.withClient {
     client =>
       client.sismember("Webuser:" + securityGroup, uuid)
-
   }
+
+    def isNotMember(uuid: String, securityGroup: String): Boolean = {
+      !isMember(uuid,securityGroup)
+    }
 
   def hasAccessToCFP(uuid: String): Boolean = isMember(uuid, "cfp")
 

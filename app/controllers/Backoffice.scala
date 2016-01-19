@@ -1,7 +1,7 @@
 package controllers
 
-import library.{DraftReminder, ZapActor, Redis}
 import library.search.{DoIndexProposal, _}
+import library.{DraftReminder, Redis, ZapActor}
 import models._
 import org.joda.time.Instant
 import play.api.Play
@@ -12,11 +12,11 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 
 /**
- * Backoffice actions, for maintenance and validation.
- *
- * Author: nicolas martignole
- * Created: 02/12/2013 21:34
- */
+  * Backoffice actions, for maintenance and validation.
+  *
+  * Author: nicolas martignole
+  * Created: 02/12/2013 21:34
+  */
 object Backoffice extends SecureCFPController {
 
   def homeBackoffice() = SecuredAction(IsMemberOf("admin")) {
@@ -45,12 +45,21 @@ object Backoffice extends SecureCFPController {
   // Authenticate on CFP on behalf of specified user.
   def authenticateAs(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
+      // Block redirect if the uuidSpeaker belongs to the ADMIN group and not you
+      if (Webuser.isMember(uuidSpeaker, "admin") && Webuser.isNotMember(request.webuser.uuid, "admin")) {
+        Unauthorized("Sorry, only admin user can become admin.")
+      } else {
+        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> uuidSpeaker)
+      }
   }
 
   def authenticateAndCreateTalk(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Redirect(routes.CallForPaper.newProposal).withSession("uuid" -> uuidSpeaker)
+      if (Webuser.isMember(uuidSpeaker, "admin") && Webuser.isNotMember(request.webuser.uuid, "admin")) {
+        Unauthorized("Sorry, only admin user can become admin.")
+      } else {
+        Redirect(routes.CallForPaper.newProposal()).withSession("uuid" -> uuidSpeaker)
+      }
   }
 
   def allProposals(proposalId: Option[String]) = SecuredAction(IsMemberOf("admin")) {
@@ -207,7 +216,7 @@ object Backoffice extends SecureCFPController {
       val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
       val allSpeakersIDs = publishedConf.map(_.proposal.get.allSpeakerUUIDs).flatten.toSet
-      val onlySpeakersThatNeedsToAcceptTerms:Set[String]=allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
+      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
       val allSpeakers = Speaker.asSetOfSpeakers(onlySpeakersThatNeedsToAcceptTerms)
 
 
@@ -224,10 +233,10 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckProposals() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Redis.pool.withClient{
-        client=>
-          val toReturn = client.hgetAll("Proposals").map{
-            case(proposalId,json)=>
+      Redis.pool.withClient {
+        client =>
+          val toReturn = client.hgetAll("Proposals").map {
+            case (proposalId, json) =>
               (proposalId, Json.parse(json).asOpt[Proposal])
           }.filter(_._2.isEmpty).map(_._1)
           Ok(views.html.Backoffice.sanityCheckProposals(toReturn))
@@ -258,17 +267,17 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def sendDraftReminder=SecuredAction(IsMemberOf("admin")) {
-    implicit request=>
+  def sendDraftReminder = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
       ZapActor.actor ! DraftReminder()
-      Redirect(routes.Backoffice.homeBackoffice()).flashing("success"->"Sent draft reminder to speakers")
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")
   }
 
-  def showAllDeclined()=SecuredAction(IsMemberOf("admin")) {
+  def showAllDeclined() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
       val allDeclined = Proposal.allDeclinedProposals()
-//      Proposal.decline(request.webuser.uuid, proposalId)
+      //      Proposal.decline(request.webuser.uuid, proposalId)
       Ok(views.html.Backoffice.showAllDeclined(allDeclined))
 
   }
