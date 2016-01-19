@@ -248,20 +248,26 @@ object CallForPaper extends SecureCFPController {
                 case (None, Some(newSecondarySpeaker)) =>
                   val newSpeaker = Speaker.findByUUID(newSecondarySpeaker)
                   val validMsg = s"Internal notification : Added [${newSpeaker.map(_.cleanName).get}] as a secondary speaker"
-                  ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  if (proposal.state != ProposalState.DRAFT) {
+                    ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  }
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, None, Some(newSecondarySpeaker))
                 case (Some(oldSpeakerUUID), Some(newSecondarySpeaker)) if oldSpeakerUUID != newSecondarySpeaker =>
                   val oldSpeaker = Speaker.findByUUID(oldSpeakerUUID)
                   val newSpeaker = Speaker.findByUUID(newSecondarySpeaker)
                   val validMsg = s"Internal notification : Removed [${oldSpeaker.map(_.cleanName).get}] and added [${newSpeaker.map(_.cleanName).get}] as a secondary speaker"
-                  ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  if (proposal.state != ProposalState.DRAFT) {
+                    ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  }
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), Some(newSecondarySpeaker))
                 case (Some(oldSpeakerUUID), None) =>
                   val oldSpeaker = Speaker.findByUUID(oldSpeakerUUID)
                   val validMsg = s"Internal notification : Removed [${oldSpeaker.map(_.cleanName).get}] as a secondary speaker"
-                  ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  if (proposal.state != ProposalState.DRAFT) {
+                    ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                  }
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), None)
                 case (Some(oldSpeakerUUID), Some(newSecondarySpeaker)) if oldSpeakerUUID == newSecondarySpeaker =>
