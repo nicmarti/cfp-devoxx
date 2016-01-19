@@ -98,7 +98,8 @@ case class ConferenceDescriptor(eventCode: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[String],
                                 localisation: String,
-                                notifyProposalSubmitted:Boolean
+                                notifyProposalSubmitted:Boolean,
+                                maxProposalSummaryCharacters:Int=1200
                                )
 
 object ConferenceDescriptor {
@@ -675,8 +676,9 @@ object ConferenceDescriptor {
     hashTag = "#DevoxxFR",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List("fr_FR")
-    , "Palais des Congrès, Porte Maillot, Paris",
-     notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    , "Palais des Congrès, Porte Maillot, Paris"
+    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
   // It has to be a def, not a val, else it is not re-evaluated
