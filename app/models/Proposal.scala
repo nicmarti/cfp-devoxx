@@ -239,8 +239,15 @@ object Proposal {
     , "userGroup" -> optional(boolean)
   )(validateNewProposal)(unapplyProposalForm))
 
-  def generateId(): String = {
-    RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(4)
+  def generateId(): String = Redis.pool.withClient{
+    implicit client=>
+      val newId = RandomStringUtils.randomAlphabetic(3).toUpperCase + "-" + RandomStringUtils.randomNumeric(4)
+      if(client.hexists("Proposals",newId)){
+        play.Logger.of("Proposal").warn(s"Proposal ID collision with $newId")
+        generateId()
+      }else{
+        newId
+      }
   }
 
   def validateNewProposal(id: Option[String],
@@ -354,11 +361,16 @@ object Proposal {
   }
 
   def delete(uuid: String, proposalId: String) {
+    Event.storeEvent(Event(proposalId, uuid, s"Deleted proposal $proposalId"))
     Proposal.findById(proposalId).map {
       proposal =>
         ApprovedProposal.cancelApprove(proposal)
         ApprovedProposal.cancelRefuse(proposal)
     }
+    // TODO delete votes for a Proposal if a speaker decided to cancel this talk
+
+
+
     changeProposalState(uuid, proposalId, ProposalState.DELETED)
   }
 
@@ -551,6 +563,25 @@ object Proposal {
           Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.DRAFT))
       }
   }
+
+  def allProposalIDsDeletedArchivedOrDraft(): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      val drafts=client.smembers("Proposals:ByState:" + ProposalState.DRAFT.code)
+      val archived = client.smembers("Proposals:ByState:" + ProposalState.ARCHIVED.code)
+      val deleted = client.smembers("Proposals:ByState:" + ProposalState.DELETED.code)
+      drafts++archived++deleted
+  }
+
+  def allArchivedIDs(): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.smembers("Proposals:ByState:" + ProposalState.ARCHIVED.code)
+  }
+
+  def allDeletedIDs(): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.smembers("Proposals:ByState:" + ProposalState.DELETED.code)
+  }
+
 
   def allSubmitted(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
@@ -752,14 +783,22 @@ object Proposal {
   def loadAndParseProposals(proposalIDs: Set[String]): Map[String, Proposal] = Redis.pool.withClient {
     implicit client =>
       val listOfProposals = proposalIDs.toList
+
+      // Updated code to use validate so that it throw an exception if the JSON parser could not load the Proposal
       val proposals = client.hmget("Proposals", listOfProposals).map {
         json: String =>
-          Json.parse(json).asOpt[Proposal].map(p => p.copy(state = findProposalState(p.id).getOrElse(p.state)))
+          val p = Json.parse(json).validate[Proposal].get
+
+          if(p.id=="PCY-0739"){
+            println("----- YOLO ---------")
+            println(p)
+            println(findProposalState(p.id))
+            println("----- YOLO ---------")
+          }
+
+          (p.id,p.copy(state = findProposalState(p.id).getOrElse(p.state)))
       }
-      // zipAll is used to merge the list of proposals with the list of parsed/loaded Proposal
-      // If a proposal was not found, the list "proposals" contains a None.
-      // We then drop the empty Proposal, so that we keep only the ones that we could load
-      listOfProposals.zipAll(proposals, "?", None).filterNot(_._2.isEmpty).map(t => (t._1, t._2.get)).toMap
+      proposals.toMap
   }
 
   def removeSponsorTalkFlag(authorUUID: String, proposalId: String) = {

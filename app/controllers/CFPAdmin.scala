@@ -5,7 +5,6 @@ import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, S
 import models.Review.ScoreAndTotalVotes
 import models._
 import org.apache.commons.lang3.StringUtils
-import play.api.Play
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
@@ -108,14 +107,14 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
             // If Golden Ticket is active
-            if(ConferenceDescriptor.isGoldenTicketActive){
+            if (ConferenceDescriptor.isGoldenTicketActive) {
 
-              val allVotesGT:List[(String,Double)]=ReviewByGoldenTicket.allVotesFor(proposalId)
-              val countVotesCastGT:Option[Long]=Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
+              val allVotesGT: List[(String, Double)] = ReviewByGoldenTicket.allVotesFor(proposalId)
+              val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
 
               Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, allVotesGT, countVotesCastGT))
-            }else{
-            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, Nil, None))
+            } else {
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, Nil, None))
             }
 
 
@@ -279,23 +278,23 @@ object CFPAdmin extends SecureCFPController {
       val speakersById = Speaker.allSpeakers().map(speaker => (speaker.uuid, speaker)).toMap
 
       val jsonObject = Json.toJson(
-          allVotes.toList.map{ case(proposalId, maybeVote) =>
-              val proposal:Proposal = allProposals.get(proposalId).get;
-              Map(
-                  "id" -> Json.toJson(proposal.id),
-                  "lang" -> Json.toJson(proposal.lang),
-                  "title" -> Json.toJson(proposal.title),
-                  "mainSpeaker" -> Json.toJson(speakersById.get(proposal.mainSpeaker)),
-                  "secondarySpeaker" -> Json.toJson(speakersById.get(proposal.secondarySpeaker.orNull)),
-                  "type" -> Json.toJson(proposal.talkType.id),
-                  "audienceLevel" -> Json.toJson(proposal.audienceLevel),
-                  "summary" -> Json.toJson(proposal.summary),
-                  "privateMessage" -> Json.toJson(proposal.privateMessage),
-                  "track" -> Json.toJson(proposal.track.id),
-                  "demoLevel" -> Json.toJson(proposal.demoLevel),
-                  "vote" -> Json.toJson(maybeVote.get)
-              )
-          }
+        allVotes.toList.map { case (proposalId, maybeVote) =>
+          val proposal: Proposal = allProposals.get(proposalId).get;
+          Map(
+            "id" -> Json.toJson(proposal.id),
+            "lang" -> Json.toJson(proposal.lang),
+            "title" -> Json.toJson(proposal.title),
+            "mainSpeaker" -> Json.toJson(speakersById.get(proposal.mainSpeaker)),
+            "secondarySpeaker" -> Json.toJson(speakersById.get(proposal.secondarySpeaker.orNull)),
+            "type" -> Json.toJson(proposal.talkType.id),
+            "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+            "summary" -> Json.toJson(proposal.summary),
+            "privateMessage" -> Json.toJson(proposal.privateMessage),
+            "track" -> Json.toJson(proposal.track.id),
+            "demoLevel" -> Json.toJson(proposal.demoLevel),
+            "vote" -> Json.toJson(maybeVote.get)
+          )
+        }
       );
       Ok(jsonObject).as(JSON);
   }
@@ -311,9 +310,9 @@ object CFPAdmin extends SecureCFPController {
           val total = (json \ "hits" \ "total").as[Int]
           val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
-          val results = hitContents.sortBy{
-           jsvalue =>
-             val index = (jsvalue \ "_index").as[String]
+          val results = hitContents.sortBy {
+            jsvalue =>
+              val index = (jsvalue \ "_index").as[String]
               index
           }.map {
             jsvalue =>
@@ -369,38 +368,33 @@ object CFPAdmin extends SecureCFPController {
   def allVotes(confType: String, track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val reviews = Review.allVotes()
+      val reviews: Map[String, ScoreAndTotalVotes] = Review.allVotes()
       val totalApproved = ApprovedProposal.countApproved(confType)
 
-      val result = reviews.toList.sortBy(_._2._1).reverse
-      val allProposalIDs = result.map(_._1)
-      // TODO a proposal with no votes will not be loaded
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+      val allProposals = Proposal.loadAndParseProposals(reviews.keySet)
 
-      val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
+      val listOfProposals = reviews.flatMap {
         case (proposalId, scoreAndVotes) =>
-          allProposalWithVotes.get(proposalId).map {
-            proposal: Proposal =>
-              (proposal, scoreAndVotes)
+          val maybeProposal = allProposals.get(proposalId)
+          maybeProposal match {
+            case None => play.Logger.of("CFPAdmin").error(s"Unable to load proposal id $proposalId")
+                         None
+            case Some(p) => Option(p,scoreAndVotes)
+
           }
-      }.filterNot {
-        case (proposal, _) =>
-          proposal.state == ProposalState.DRAFT ||
-            proposal.state == ProposalState.ARCHIVED ||
-            proposal.state == ProposalState.DELETED
       }
 
-      val listToDisplay1 = confType match {
+      val tempListToDisplay = confType match {
         case "all" => listOfProposals
         case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
       }
       val listToDisplay = track match {
-        case None => listToDisplay1
-        case Some(trackId) => listToDisplay1.filter(_._1.track.id == trackId)
+        case None => tempListToDisplay
+        case Some(trackId) => tempListToDisplay.filter(_._1.track.id == trackId)
       }
 
       val totalRemaining = ApprovedProposal.remainingSlots(confType)
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalApproved, totalRemaining, confType))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
   }
 
   def allVotesJson() = SecuredAction(IsMemberOf("cfp")) {
@@ -424,30 +418,30 @@ object CFPAdmin extends SecureCFPController {
             proposal.state == ProposalState.DELETED
       }
 
-      val speakers = Map(Speaker.allSpeakers().map { speaker => (speaker.uuid, speaker)} : _*)
+      val speakers = Map(Speaker.allSpeakers().map { speaker => (speaker.uuid, speaker) }: _*)
 
       val jsonObject = Json.toJson(listOfProposals.map { case (proposal, voteAndTotalVotes) =>
-          Map(
-            "proposal" -> Json.toJson(Map(
-              "id" -> Json.toJson(proposal.id),
-              "lang" -> Json.toJson(proposal.lang),
-              "title" -> Json.toJson(proposal.title),
-              "allSpeakers" -> Json.toJson(proposal.allSpeakers),
-              "talkType" -> Json.toJson(proposal.talkType.id),
-              "audienceLevel" -> Json.toJson(proposal.audienceLevel),
-              "summary" -> Json.toJson(proposal.summary),
-              "privateMessage" -> Json.toJson(proposal.privateMessage),
-              "track" -> Json.toJson(proposal.track.id),
-              "demoLevel" -> Json.toJson(proposal.demoLevel),
-              "userGroup" -> Json.toJson(proposal.userGroup)
-            )),
-            "votes" -> Json.toJson(Map(
-              "average" -> Json.toJson(voteAndTotalVotes._4),
-              "totalVoters" -> Json.toJson(voteAndTotalVotes._2),
-              "totalAbstentions" -> Json.toJson(voteAndTotalVotes._3),
-              "stdDeviation" -> Json.toJson(voteAndTotalVotes._5)
-            ))
-          )
+        Map(
+          "proposal" -> Json.toJson(Map(
+            "id" -> Json.toJson(proposal.id),
+            "lang" -> Json.toJson(proposal.lang),
+            "title" -> Json.toJson(proposal.title),
+            "allSpeakers" -> Json.toJson(proposal.allSpeakers),
+            "talkType" -> Json.toJson(proposal.talkType.id),
+            "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+            "summary" -> Json.toJson(proposal.summary),
+            "privateMessage" -> Json.toJson(proposal.privateMessage),
+            "track" -> Json.toJson(proposal.track.id),
+            "demoLevel" -> Json.toJson(proposal.demoLevel),
+            "userGroup" -> Json.toJson(proposal.userGroup)
+          )),
+          "votes" -> Json.toJson(Map(
+            "average" -> Json.toJson(voteAndTotalVotes._4),
+            "totalVoters" -> Json.toJson(voteAndTotalVotes._2),
+            "totalAbstentions" -> Json.toJson(voteAndTotalVotes._3),
+            "stdDeviation" -> Json.toJson(voteAndTotalVotes._5)
+          ))
+        )
       });
       Ok(jsonObject).as(JSON)
   }

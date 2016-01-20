@@ -58,6 +58,13 @@
                 <div class="col-md-12">
                     <small>All proposals with at least one vote, with state set to SUBMITTED/APPROVED/ACCEPTED/BACKUP</small>
                     <small>If you just created a proposal and it's not listed here : please add a vote.</small>
+
+
+                    @allVotes.headOption.map{ case (proposal:Proposal, votes) =>
+                        @proposal.title<br>
+                        @votes
+                    }
+
                     <table id="allProposals" class="table table-bordered table-hover table-condensed">
                         <thead>
                             <tr>

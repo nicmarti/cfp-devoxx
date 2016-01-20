@@ -93,7 +93,7 @@ object Event {
 
   def loadEventsForObjRef(objRef: String): List[Event] = Redis.pool.withClient {
     client =>
-      client.smembers(s"Events:V2:${objRef}").flatMap {
+      client.smembers(s"Events:V2:$objRef").flatMap {
         json: String =>
           Json.parse(json).asOpt[Event]
       }.toList
