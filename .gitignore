@@ -40,3 +40,4 @@ project/plugins/project/
 .scala_dependencies
 
 /public/speakers/
+run-fr.sh
