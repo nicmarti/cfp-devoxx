@@ -76,17 +76,21 @@
                         <button type="submit" class="btn btn-primary">Archive all other talks</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.HACK.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Hackergarten</button>
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all Ignite</button>
                     </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CODE.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all CodeStory</button>
+
+                    <hr>
+                    <form action="@routes.Attic.deleteInvitedSpeakers()" method="POST">
+                        <button type="submit" class="btn btn-warning">Remote status [Invited] from all speakers</button>
                     </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.AMD.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Apres-midi des Decideurs</button>
+                    <form action="@routes.Attic.resetEvents()" method="POST">
+                        <button type="submit" class="btn btn-warning">Delete all Events and history</button> <em>Events is a log of all actions such as votes, new proposals, actions and updates performed by speakers and the team.</em>
                     </form>
+                    <form action="@routes.Attic.resetNotified()" method="POST">
+                        <button type="submit" class="btn btn-warning">Reset the list of notified Speakers (approved and refused)</button>
+                    </form>
+
 
 
                 </div>

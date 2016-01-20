@@ -1,0 +1,5 @@
+@(props:Iterable[Proposal], proposalType: ProposalType)
+
+@if(props.exists(_.talkType == proposalType)){
+    yes
+}

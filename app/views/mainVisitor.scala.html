@@ -1,0 +1,71 @@
+@(title: String)(content: Html)(implicit lang: Lang, req: RequestHeader)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+<title>@title - @Messages("CONF.title")</title>
+<link href="@routes.Assets.at(path="/public",file="css/bootstrap.cosmo.min.css")" rel="stylesheet">
+<link href="@routes.Assets.at(path="/public",file="css/font-awesome.min.css")" rel="stylesheet">
+<link href="@routes.Assets.at(path="/public",file="css/bootswatch.min.css")" rel="stylesheet">
+<link href="@routes.Assets.at(path="/public",file="css/cfp.css")" rel="stylesheet" id="theme">
+<script src="@routes.Assets.at(path="/public",file="js/jquery.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at(path="/public",file="js/bootstrap.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at(path="/public",file="js/bootswatch.js")" type="text/javascript"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="/assets/js/html5shiv.js" type="text/javascript"></script>
+<script src="/assets/js/respond.min.js" type="text/javascript"></script>
+<![endif]-->
+<meta name="generator" content="Play! 2.3 Scala"/>
+<link rel="shortcut icon" href="/favicon.ico">
+</head>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">@Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") CFP</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav navbar-left">
+                @if(SecureCFPController.isLoggedIn(req)){
+                    <li><a href="@routes.Favorites.home()"><i class="icon-star"></i> My agenda</a></li>
+                    <li><a href="@routes.Publisher.homePublisher()"><i class="icon-calendar"></i> Schedule</a></li>
+                }
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite" target="_blank"><i class="icon-arrow-right"></i> @Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") website</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ****************************************************************************** //-->
+<div class="container">
+@content
+</div>
+<footer class="footer hidden-print">
+  <div class="container">
+    <div>
+      <hr>
+        @if(SecureCFPController.isLoggedIn(req)){
+            <small>Logged in as @SecureCFPController.getCurrentUser(req).map(_.cleanName)</small> -
+            <small><i class="icon-signout"></i> <a href="@routes.Authentication.logout">Logout</a> and close your session</small><br>
+        } else {
+            <li><a href="@routes.Application.homeVisitor()"><i class="icon-home"></i> @Messages("login")</a></li>
+        }
+        <small><i class="icon-bullhorn"></i> @Messages("longName") Call for Paper - <a href="https://github.com/nicmarti/cfp-devoxx/issues"><i class="icon-bug"></i> Report an issue</a></small><br>
+        <small><i class="icon-cloud-upload"></i> Hosted on <a href="@ConferenceDescriptor.current().hosterWebsite">@ConferenceDescriptor.current().hosterName</a></small>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

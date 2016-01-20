@@ -17,6 +17,7 @@ Original author: Nicolas Martignole [@nmartignole](http://www.twitter.com/nmarti
 - Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou) 
 - Frédéric Camblor [@fcamblor](http://www.twitter.com/fcamblor)
 - Nicolas de Loof [@ndeloof](http://www.twitter.com/ndeloof)
+- Mani Sarkar [theNeomatrix369](http://www.twitter.com/theNeomatrix369)
 
 ## License
 
@@ -26,10 +27,10 @@ Copyright (c) 2013 Association du Paris Java User Group & [Nicolas Martignole](h
 
 ## Background
 
-The CFP was originally created in 2013 for the [Devoxx France](http://www.devoxx.fr/) 2014 conférence. Devoxx France is the 2nd biggest conference for dev in France with 2500 attendees in 2015.
-The conference has top sponsors like Google, Oracle, IBM and Microsoft. The conference was created by Nicolas Martignole, Antonio Goncalves and Zouheir Cadi.
+The CFP was originally created in 2013 for the [Devoxx France](http://www.devoxx.fr/) 2014 edition. Devoxx France is one of the biggest conference for Developers in France with 2500 attendees in 2015.
+The conference had top sponsors like Google, Oracle, IBM and Microsoft. The conference is organized by Nicolas Martignole, Antonio Goncalvès and Zouheir Cadi.
  
-The CFO is implemented with Scala, with Play Framework v2.2.3. It uses Redis 2.8 to persist data. Elastic Search is used for better user experience.
+The CFP is implemented with Scala and Play Framework v2.2.3. Redis 2.8 is used for persistence. Elastic Search is integrated as a search engine and to calculate stats with Facets.
  
 ## Which Conferences are using it?
 
@@ -49,13 +50,13 @@ Send a message to (@nmartignole)[http://www.twitter.com/nmartignole) if you plan
 ## How to set-up a local and friendly developer environment ?
 
 - Install Play 2.2.3 (not the latest version with activator)
-- Install Redis 2.8.4, do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
+- Install Redis 2.8.21 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
 - Read Redis documentation and learn Redis with http://try.redis.io
 - Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf
 
 Optional but recommended for better user experience:
 
-- Install ElasticSearch
+- Install ElasticSearch (1.2.0 or better) This version uses Facets.
 - Create Github App and configure OAuth. See [the Github site](https://github.com/settings/applications) 
 - Create an application using your [Google account](https://cloud.google.com/console#/project). Configure a URL for development, such as http://localhost:9000/ and prod URL as http://cfp.devoxx.fr/
 - Create a LinkedIn App and configure OAuth
@@ -63,16 +64,16 @@ Optional but recommended for better user experience:
 
 ## Here's what you need to configure:
 
-- Rename the application-please-customize-me.conf file to application.conf
+- Rename the run.sh.sample file to run.sh
 - Generate a string for the security of the application 
    application.secret = "a_unique_secret_long_enough"
 - As the application uses play.api.libs.Crypto#encryptAES, this secret MUST be at least 16 chars long.
 - Configure the SMTP server using the parameters Mailjet OR use the smtp.mock mode in DEV
 - Configure the Github part
 - Set the Google party for authentication OAuth2.0
+- Configure also LinkedIn
 - configure the Redis server. Make sure to set a very long password for your Redis server
 - configure the address of a server ElasticSearch
-
 
 ## Where do I start?
 
@@ -119,8 +120,11 @@ Use WGET and download all pages from your Publisher controller. This will save s
 
 ## Can you help me with Redis 2.8.x ?
 
+Downloading redis...tag.gz from http://download.redis.io/releases/redis-2.8.21.tar.gz
 
-Downloading redis...tag.gz from http://download.redis.io/releases/redis-2.8.19.tar.gz
+The CFP has been tested with Redis from version 2.8.4 to 2.8.19. Always check that your version is up-to-date in term
+of security [here](https://raw.githubusercontent.com/antirez/redis/2.8/00-RELEASENOTES). I plan to upgrade and to check 
+that the CFP code is OK with Redis 3.x before Devoxx France 2016.
 
 Unpack the archive
 
@@ -189,7 +193,7 @@ I have also configured my personal computer to be a slave of all my Redis server
 	
 See redis-sample-dev.conf and redis-sample-prod.conf for 2 valid configuration files for Redis.	
 	
-Just to give you an idea and some stats for my Devoxx France Redis database :
+Just to give you an idea and some stats for our Devoxx France 2015 Redis database :
  
     - Number of Speakers : 946
     - Number of Proposals : 681 
@@ -202,13 +206,88 @@ Just to give you an idea and some stats for my Devoxx France Redis database :
 
 ## Where do you host your CFP for Devoxx France?
   
-For Devoxx France, we use [Clever-Cloud](http://www.clever-cloud). Clever Cloud is a Platform as a Service. Git push and voilà, your code is deployed.
+The Devoxx France CFP is hosted on [Clever-Cloud](http://www.clever-cloud). Clever Cloud is a Platform as a Service. Git push and voilà, your code is deployed.
 Redis and ElasticSearch are on a dedicated server.
-  
-## Can I contribute?
 
-Yes, you can contribute. Please, create Pull-Requests from the DEV branches. Try to create a Pull-request per feature, write clean code.
-If the proposed PR is too complex or too specific to a Conference, we will not merge it to the main source tree.
+## Why do you use Play 2.2.x and not the latest version?
+
+I recommend [Play 2.2.6](https://downloads.typesafe.com/play/2.2.6/play-2.2.6.zip). I have a strong experience with Play since
+2011 and Play 1.x. I did more than 20 presentations of Play! Framework since 2010. 
+
+I plan to evaluate the need to migrate to Play Framework 2.4. But I'm not a super-fan with this version and with what the core developers decided to do since early 2015.
+  
+## Contributing
+
+**[Pull requests](https://github.com/git-up/GitUp/pulls) are welcome but be aware that the CFP is really focus on Devoxx conferences.**
+
+The following is a list of absolute requirements for PRs (not following them would result in immediate rejection):
+- You MUST use space for indentation instead of tabs
+- The coding style MUST be followed exactly (default IDEA IntelliJ 14 settings)
+- Each commit MUST be a single change (e.g. adding a function or fixing a bug, but not both at once)
+- Each commit MAY respect the Commit log convention (see below)
+- The pull request MUST contain as few commits as needed
+- The pull request MUST NOT contain fixup or revert commits (flatten them beforehand using GitUp!)
+- The pull request MUST be rebased on latest `dev` when sent
+
+## <a name="commit"></a> Git Commit Guidelines (from AngularJS source code)
+
+We have very precise rules over how our git commit messages can be formatted.  This leads to **more readable messages** that are easy to follow when looking through the **project history**. 
+
+### Commit Message Format
+Each commit message consists of a **header**, a **body** and a **footer**.  The header has a special
+format that includes a **type**, a **scope** and a **subject**:
+
+```
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+The **header** is mandatory and the **scope** of the header is optional.
+
+Any line of the commit message cannot be longer 100 characters! This allows the message to be easier to read on GitHub as well as in various git tools.
+
+### Revert
+If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit. In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
+
+### Type
+Must be one of the following:
+
+* **feat**: A new feature
+* **fix**: A bug fix
+* **docs**: Documentation only changes
+* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing
+  semi-colons, etc)
+* **refactor**: A code change that neither fixes a bug nor adds a feature
+* **perf**: A code change that improves performance
+* **test**: Adding missing tests
+* **chore**: Changes to the build process or auxiliary tools and libraries such as documentation
+  generation
+
+### Scope
+The scope could be anything specifying place of the commit change, usually related to a Play Controller. For example `admin`,
+`api`, `publisher`, etc.
+
+### Subject
+The subject contains succinct description of the change:
+
+* use the imperative, present tense: "change" not "changed" nor "changes"
+* don't capitalize first letter
+* no dot (.) at the end
+
+### Body
+Just as in the **subject**, use the imperative, present tense: "change" not "changed" nor "changes".
+The body should include the motivation for the change and contrast this with previous behavior.
+
+### Footer
+The footer should contain any information about **Breaking Changes** and is also the place to
+reference GitHub issues that this commit **Closes**.
+
+**Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
+
+A detailed explanation can be found in the [AngularJS Git commit documentation](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit).
 
 Merci
 

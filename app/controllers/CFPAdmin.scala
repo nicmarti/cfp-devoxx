@@ -12,11 +12,11 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 
 /**
- * The backoffice controller for the CFP technical committee.
- *
- * Author: @nmartignole
- * Created: 11/11/2013 09:09 in Thalys, heading to Devoxx2013
- */
+  * The backoffice controller for the CFP technical committee.
+  *
+  * Author: @nmartignole
+  * Created: 11/11/2013 09:09 in Thalys, heading to Devoxx2013
+  */
 object CFPAdmin extends SecureCFPController {
 
   def index(page: Int, sort: Option[String], ascdesc: Option[String], track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
@@ -46,7 +46,7 @@ object CFPAdmin extends SecureCFPController {
       case Some(s) => ps.sortBy(s)(orderer)
     }
 
-  private def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
+  def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
     sort match {
       case Some("title") => Some(_.title)
       case Some("mainSpeaker") => Some(_.mainSpeaker)
@@ -56,7 +56,7 @@ object CFPAdmin extends SecureCFPController {
     }
   }
 
-  private def proposalOrder(ascdesc: Option[String]) = ascdesc match {
+  def proposalOrder(ascdesc: Option[String]) = ascdesc match {
     case Some("desc") => Ordering[String].reverse
     case _ => Ordering[String]
   }
@@ -106,7 +106,18 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
+            // If Golden Ticket is active
+            if (ConferenceDescriptor.isGoldenTicketActive) {
+
+              val allVotesGT: List[(String, Double)] = ReviewByGoldenTicket.allVotesFor(proposalId)
+              val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
+
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, allVotesGT, countVotesCastGT))
+            } else {
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, Nil, None))
+            }
+
+
           }
           case None => NotFound("Proposal not found").as("text/html")
         }
@@ -242,8 +253,8 @@ object CFPAdmin extends SecureCFPController {
 
   def doComputeLeaderBoard() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
       library.ZapActor.actor ! ComputeLeaderboard()
+      library.ZapActor.actor ! ComputeVotesAndScore()
       Redirect(routes.CFPAdmin.index()).flashing("success" -> Messages("leaderboard.compute"))
   }
 
@@ -253,8 +264,39 @@ object CFPAdmin extends SecureCFPController {
       val result = Review.allVotesFromUser(uuid)
       val allProposalIDs = result.map(_._1)
       val allProposals = Proposal.loadAndParseProposals(allProposalIDs)
+      val votesByType = result.groupBy(proposalVote => allProposals.get(proposalVote._1).get.talkType)
 
-      Ok(views.html.CFPAdmin.allMyVotes(result, allProposals))
+      Ok(views.html.CFPAdmin.allMyVotes(result, votesByType, allProposals))
+  }
+
+  def allMyVotesJson = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      val allVotes = Review.allVotesFromUser(uuid)
+      val allProposalIDs = allVotes.map(_._1)
+      val allProposals = Proposal.loadAndParseProposals(allProposalIDs)
+      val speakersById = Speaker.allSpeakers().map(speaker => (speaker.uuid, speaker)).toMap
+
+      val jsonObject = Json.toJson(
+        allVotes.toList.map { case (proposalId, maybeVote) =>
+          val proposal: Proposal = allProposals.get(proposalId).get;
+          Map(
+            "id" -> Json.toJson(proposal.id),
+            "lang" -> Json.toJson(proposal.lang),
+            "title" -> Json.toJson(proposal.title),
+            "mainSpeaker" -> Json.toJson(speakersById.get(proposal.mainSpeaker)),
+            "secondarySpeaker" -> Json.toJson(speakersById.get(proposal.secondarySpeaker.orNull)),
+            "type" -> Json.toJson(proposal.talkType.id),
+            "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+            "summary" -> Json.toJson(proposal.summary),
+            "privateMessage" -> Json.toJson(proposal.privateMessage),
+            "track" -> Json.toJson(proposal.track.id),
+            "demoLevel" -> Json.toJson(proposal.demoLevel),
+            "vote" -> Json.toJson(maybeVote.get)
+          )
+        }
+      );
+      Ok(jsonObject).as(JSON);
   }
 
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {
@@ -268,30 +310,28 @@ object CFPAdmin extends SecureCFPController {
           val total = (json \ "hits" \ "total").as[Int]
           val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
-          val results = hitContents.map {
+          val results = hitContents.sortBy {
+            jsvalue =>
+              val index = (jsvalue \ "_index").as[String]
+              index
+          }.map {
             jsvalue =>
               val index = (jsvalue \ "_index").as[String]
               val source = (jsvalue \ "_source")
               index match {
-                case "events" => {
-                  val objRef = (source \ "objRef").as[String]
-                  val uuid = (source \ "uuid").as[String]
-                  val msg = (source \ "msg").as[String]
-                  s"<i class='icon-stackexchange'></i> Event <a href='${routes.CFPAdmin.openForReview(objRef)}'>${objRef}</a> by ${uuid} ${msg}"
-                }
                 case "proposals" => {
                   val id = (source \ "id").as[String]
                   val title = (source \ "title").as[String]
-                  val talkType = (source \ "talkType" \ "id").as[String]
+                  val talkType = Messages((source \ "talkType" \ "id").as[String])
                   val code = (source \ "state" \ "code").as[String]
-                  s"<i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - $talkType"
+                  val mainSpeaker = (source \ "mainSpeaker").as[String]
+                  s"<p class='searchProposalResult'><i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - by $mainSpeaker - $talkType</p>"
                 }
                 case "speakers" => {
                   val uuid = (source \ "uuid").as[String]
                   val name = (source \ "name").as[String]
                   val firstName = (source \ "firstName").as[String]
-                  val email = (source \ "email").as[String]
-                  s"<i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a> $email"
+                  s"<p class='searchSpeakerResult'><i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a></p>"
                 }
                 case other => "Unknown format " + index
               }
@@ -328,12 +368,42 @@ object CFPAdmin extends SecureCFPController {
   def allVotes(confType: String, track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val reviews = Review.allVotes()
+      val reviews: Map[String, ScoreAndTotalVotes] = Review.allVotes()
       val totalApproved = ApprovedProposal.countApproved(confType)
+
+      val allProposals = Proposal.loadAndParseProposals(reviews.keySet)
+
+      val listOfProposals = reviews.flatMap {
+        case (proposalId, scoreAndVotes) =>
+          val maybeProposal = allProposals.get(proposalId)
+          maybeProposal match {
+            case None => play.Logger.of("CFPAdmin").error(s"Unable to load proposal id $proposalId")
+                         None
+            case Some(p) => Option(p,scoreAndVotes)
+
+          }
+      }
+
+      val tempListToDisplay = confType match {
+        case "all" => listOfProposals
+        case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
+      }
+      val listToDisplay = track match {
+        case None => tempListToDisplay
+        case Some(trackId) => tempListToDisplay.filter(_._1.track.id == trackId)
+      }
+
+      val totalRemaining = ApprovedProposal.remainingSlots(confType)
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
+  }
+
+  def allVotesJson() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val reviews = Review.allVotes()
 
       val result = reviews.toList.sortBy(_._2._1).reverse
       val allProposalIDs = result.map(_._1)
-      // TODO a proposal with no votes will not be loaded
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
 
       val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
@@ -345,21 +415,35 @@ object CFPAdmin extends SecureCFPController {
       }.filterNot {
         case (proposal, _) =>
           proposal.state == ProposalState.DRAFT ||
-            proposal.state == ProposalState.ARCHIVED ||
             proposal.state == ProposalState.DELETED
       }
 
-      val listToDisplay1 = confType match {
-        case "all" => listOfProposals
-        case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
-      }
-      val listToDisplay = track match {
-        case None => listToDisplay1
-        case Some(trackId) => listToDisplay1.filter(_._1.track.id == trackId)
-      }
+      val speakers = Map(Speaker.allSpeakers().map { speaker => (speaker.uuid, speaker) }: _*)
 
-      val totalRemaining = ApprovedProposal.remainingSlots(confType)
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay, totalApproved, totalRemaining, confType))
+      val jsonObject = Json.toJson(listOfProposals.map { case (proposal, voteAndTotalVotes) =>
+        Map(
+          "proposal" -> Json.toJson(Map(
+            "id" -> Json.toJson(proposal.id),
+            "lang" -> Json.toJson(proposal.lang),
+            "title" -> Json.toJson(proposal.title),
+            "allSpeakers" -> Json.toJson(proposal.allSpeakers),
+            "talkType" -> Json.toJson(proposal.talkType.id),
+            "audienceLevel" -> Json.toJson(proposal.audienceLevel),
+            "summary" -> Json.toJson(proposal.summary),
+            "privateMessage" -> Json.toJson(proposal.privateMessage),
+            "track" -> Json.toJson(proposal.track.id),
+            "demoLevel" -> Json.toJson(proposal.demoLevel),
+            "userGroup" -> Json.toJson(proposal.userGroup)
+          )),
+          "votes" -> Json.toJson(Map(
+            "average" -> Json.toJson(voteAndTotalVotes._4),
+            "totalVoters" -> Json.toJson(voteAndTotalVotes._2),
+            "totalAbstentions" -> Json.toJson(voteAndTotalVotes._3),
+            "stdDeviation" -> Json.toJson(voteAndTotalVotes._5)
+          ))
+        )
+      });
+      Ok(jsonObject).as(JSON)
   }
 
   def doComputeVotesTotal() = SecuredAction(IsMemberOf("cfp")) {
@@ -401,7 +485,7 @@ object CFPAdmin extends SecureCFPController {
 
   // Returns all speakers
 
-  def allSpeakers()= SecuredAction(IsMemberOf("cfp")) {
+  def allSpeakers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.CFPAdmin.allSpeakersHome())
   }
@@ -412,7 +496,7 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakers(allSpeakers.toList.sortBy(_.cleanName)))
   }
 
-   def allApprovedSpeakersByCompany() = SecuredAction(IsMemberOf("cfp")) {
+  def allApprovedSpeakersByCompany() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
         .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("Pas de société"))
@@ -439,9 +523,9 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
 
-      val proposals:Set[(Speaker,Iterable[Proposal])] = speakers.map {
+      val proposals: Set[(Speaker, Iterable[Proposal])] = speakers.map {
         speaker =>
-          (speaker,Proposal.allThatForgetToAccept(speaker.uuid).values)
+          (speaker, Proposal.allThatForgetToAccept(speaker.uuid).values)
       }.filter(_._2.nonEmpty)
 
       Ok(views.html.CFPAdmin.allSpeakersThatForgetToAccept(proposals))
@@ -451,29 +535,42 @@ object CFPAdmin extends SecureCFPController {
   def allSpeakersWithAcceptedTalksAndBadge() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
-      val proposals:List[(Speaker,Iterable[Proposal])] = speakers.toList.map {
+      val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
-          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==Some(speaker.uuid))
-          .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
-          (speaker,onIfFirstOrSecondSpeaker)
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
+            .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+          (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty)
 
-       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
+      Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
   }
 
-    // All speakers with a speaker's badge
+  // All speakers with a speaker's badge
   def allSpeakersWithAcceptedTalks() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
-      val proposals:List[(Speaker,Iterable[Proposal])] = speakers.toList.map {
+      val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
-          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p=> p.mainSpeaker==speaker.uuid || p.secondarySpeaker==Some(speaker.uuid))
-          (speaker,onIfFirstOrSecondSpeaker)
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
+          (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty)
 
-       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
+      Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
+  }
+
+  def allSpeakersWithAcceptedTalksForExport() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+      val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
+        speaker =>
+          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
+          (speaker, onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty)
+
+      Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksForExport(proposals))
   }
 
   def allWebusers() = SecuredAction(IsMemberOf("cfp")) {
@@ -564,7 +661,7 @@ object CFPAdmin extends SecureCFPController {
             }
             case None => {
               val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname"))
-              Webuser.saveNewSpeakerEmailNotValidated(webuser)
+              Webuser.saveNewWebuserEmailNotValidated(webuser)
               val newUUID = Webuser.saveAndValidateWebuser(webuser)
               Speaker.save(validSpeaker.copy(uuid = newUUID))
               Event.storeEvent(Event(validSpeaker.cleanName, request.webuser.uuid, "created a speaker [" + validSpeaker.uuid + "]"))

@@ -7,8 +7,11 @@
 
 # Ignore Play! working directory #
 # in Dev branch, we do not want to save the application.conf file cause it contains password
-conf/application.conf
 conf/application_nic.conf
+conf/application-be.conf
+conf/application-pl.conf
+conf/application-uk.conf
+conf/application-fr.conf
 db
 eclipse
 log
@@ -40,4 +43,8 @@ project/plugins/project/
 .scala_dependencies
 
 /public/speakers/
+run.sh
+run-uk.sh
 run-fr.sh
+
+env.sh

@@ -12,6 +12,18 @@
         </div>
 @helper.form(action = routes.Authentication.validateImportedSpeaker) {
     <div class="col-md-12">
+
+        @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger alert-dismissable">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable">
+            @flash.get("success").get
+            </div>
+        }
             @helper.inputText(formWebuser("email") , 'size->50, 'length->50)
             @helper.inputText(formWebuser("firstName"))
             @helper.inputText(formWebuser("lastName"))

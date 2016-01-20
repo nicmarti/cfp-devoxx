@@ -1,15 +1,16 @@
 import java.util.concurrent.TimeUnit
 
-import library.{DraftReminder, _}
 import library.search.{StopIndex, _}
-import models.{Proposal, Speaker}
+import library.{DraftReminder, _}
+import models.{Speaker, ConferenceDescriptor, ProposalState, Proposal}
+import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateMidnight
 import play.api.Play.current
-import play.api.{UnexpectedException, _}
 import play.api.libs.concurrent._
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results._
 import play.api.templates.HtmlFormat
+import play.api.{UnexpectedException, _}
 import play.core.Router.Routes
 
 import scala.concurrent.Future
@@ -18,38 +19,20 @@ import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
-    if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined && Play.isTest == false) {
-     // CronTask.draftReminder()
-      CronTask.elasticSearch()
-      CronTask.doComputeStats()
-      CronTask.doSetupOpsGenie()
-    } else {
-      play.Logger.debug("actor.cronUpdater.active is set to false, application won't compute stats")
+    Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
+      case Some(true) if Play.isProd =>
+        CronTask.draftReminder()
+        CronTask.doIndexElasticSearch()
+        CronTask.doComputeStats()
+        //CronTask.doSetupOpsGenie()
+      case Some(true) if Play.isDev => {
+        CronTask.doIndexElasticSearch()
+        CronTask.doComputeStats()
+      }
+      case _ =>
+        play.Logger.of("Global").warn("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
     }
 
-    // To fix bug #165 we need to iterate all speakers, then check all proposals and do the appropriate clean-up
-    if (Play.isProd) {
-      Redis.pool.withClient {
-        client =>
-          val tx = client.multi()
-          Speaker.allSpeakersUUID().foreach {
-            speakerUUID =>
-              // println(s"Checking $speakerUUID")
-              Proposal.allProposalsByAuthor(speakerUUID).foreach {
-                case (id, proposal) if proposal.mainSpeaker == speakerUUID =>
-                //println(s"[1] $id mainSpeaker")
-                case (id, proposal) if proposal.secondarySpeaker == Some(speakerUUID) =>
-                //println(s"[2] $id secondarySpeaker")
-                case (id, proposal) if proposal.otherSpeakers.contains(speakerUUID) =>
-                //println(s"[o] $id other")
-                case (id, proposal) =>
-                  println(s"/!\\ $speakerUUID does not belong to proposalId $id")
-                  tx.srem(s"Proposals:ByAuthor:$speakerUUID", id)
-              }
-          }
-          tx.exec()
-      }
-    }
   }
 
   override def onError(request: RequestHeader, ex: Throwable) = {
@@ -73,8 +56,8 @@ object Global extends GlobalSettings {
   }
 
   /**
-   * 404 custom page, for Prod mode only
-   */
+    * 404 custom page, for Prod mode only
+    */
   override def onHandlerNotFound(request: RequestHeader) = {
     val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
@@ -117,35 +100,24 @@ object CronTask {
     }
   }
 
-  def elasticSearch() = {
+  def doIndexElasticSearch() = {
     import library.Contexts.elasticSearchContext
 
-    if (Play.isProd) {
-      Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
-      Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
-      Akka.system.scheduler.scheduleOnce(4 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
+    Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
+    Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
+    Akka.system.scheduler.scheduleOnce(4 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
 
-      Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
-      Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
-      Akka.system.scheduler.schedule(1 hour, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
-      Akka.system.scheduler.schedule(2 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews)
-    }
+    Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
+    Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
+    Akka.system.scheduler.schedule(1 hour, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
+    Akka.system.scheduler.schedule(2 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews)
   }
 
   def doComputeStats() = {
     import library.Contexts.statsContext
-
-    // Create a cron task
-    if (Play.isDev) {
-      Akka.system.scheduler.schedule(30 minute, 10 minutes, ZapActor.actor, ComputeLeaderboard())
-      Akka.system.scheduler.schedule(45 minute, 30 minutes, ZapActor.actor, ComputeVotesAndScore())
-      Akka.system.scheduler.schedule(10 seconds, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
-    }
-    if (Play.isProd) {
-      Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
-      Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
-      Akka.system.scheduler.schedule(2 minutes, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
-    }
+    Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
+    Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
+    Akka.system.scheduler.schedule(2 minutes, 30 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
 
   }
 
@@ -153,13 +125,7 @@ object CronTask {
     import library.Contexts.statsContext
     for (apiKey <- Play.configuration.getString("opsgenie.apiKey");
          name <- Play.configuration.getString("opsgenie.name")) {
-      // Create a cron task
-      if (Play.isDev) {
-        Akka.system.scheduler.schedule(10 seconds, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
-      }
-      if (Play.isProd) {
         Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
-      }
     }
 
   }

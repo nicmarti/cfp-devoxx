@@ -1,4 +1,9 @@
 @(proposals: Map[String, Proposal], currentUser: String)(implicit req: RequestHeader)
+
+
+@defining(proposals.values.partition(_.state.code==ProposalState.ARCHIVED.code)) { case (archivedProposals, notArchived) =>
+
+    @if(notArchived.size>0){
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -7,18 +12,17 @@
                 <th>@Messages("tag.proposal.youVoted")</th>
                 <th>@Messages("tag.proposal.status")</th>
             }
-                <th>@Messages("tag.proposal.type")</th>
-                <th>@Messages("tag.proposal.track")</th>
-            </tr>
+            <th>@Messages("tag.proposal.type")</th>
+            <th>@Messages("tag.proposal.track")</th>
+        </tr>
     </thead>
 
-    @proposals.values.toList.sortBy(_.state.code).map { proposal: Proposal =>
-
+    @notArchived.toList.sortBy(_.state.code).map { proposal: Proposal =>
         @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
             @if(approved) {
                 <tr class="label-approved">
-                } else {
-                <tr>
+            } else {
+                <tr class="renderProposal_@proposal.state.code">
                 }
         <td><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a></td>
             @if(SecureCFPController.hasAccessToCFP(req)) {
@@ -60,4 +64,21 @@
         </tr>
         }
     }
+
 </table>
+    }else{
+        <p>@Messages("renderProposal.noTalks")</p>
+    }
+
+    @if(archivedProposals.size > 1) {
+        @Messages("renderProposal.archived",archivedProposals.size)
+    }
+    @if(archivedProposals.size == 1) {
+        @Messages("renderProposal.archived.single")
+    }
+
+}
+
+
+
+

@@ -19,9 +19,10 @@
          }.getOrElse {
              <em>Speaker did not yet entered its speaking skills/qualifications</em>
          }
-         <h4>@Messages("qualifications.otherproposals")</h4>
-         @tags.renderProposals(proposals, currentUser)
-
+         @if(proposals.nonEmpty) {
+             <h4>@Messages("qualifications.otherproposals")</h4>
+             @tags.renderProposals(proposals, currentUser)
+         }
      </div>
  </div>
 </div>

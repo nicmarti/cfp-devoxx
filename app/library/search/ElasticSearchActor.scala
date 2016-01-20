@@ -321,7 +321,7 @@ class IndexMaster extends ESActor {
                     },
                     "bio": {
                         "type": "string",
-                        "analyzer":"english"
+                        "analyzer":"francais"
                     },
                     "blog": {
                         "type": "string",
@@ -345,7 +345,7 @@ class IndexMaster extends ESActor {
                     },
                     "qualifications": {
                         "type": "string",
-                        "analyzer":"english"
+                        "analyzer":"francais"
                     },
                     "twitter": {
                         "type": "string",
@@ -412,7 +412,7 @@ class IndexMaster extends ESActor {
             },
             "summary": {
                 "type": "string",
-                "analyzer": "english"
+                "analyzer": "francais"
             },
             "talkType": {
                 "properties": {
@@ -467,6 +467,10 @@ class IndexMaster extends ESActor {
         |                 "tokenizer":"keyword",
         |                 "filter":"lowercase"
         |              },
+        |              "analyzer_startswith":{
+        |                      "tokenizer":"keyword",
+        |                      "filter":"lowercase"
+        |             },
         |    					"francais":{
         |    						"type":"custom",
         |    						"tokenizer":"standard",
@@ -579,8 +583,8 @@ class IndexMaster extends ESActor {
       res2
     }
 
-     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_fr2015");
-                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_fr2015", settingsFrench)
+     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_fr2016");
+                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_fr2016", settingsFrench)
     ) yield {
       res2
     }

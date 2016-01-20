@@ -76,13 +76,24 @@ object Event {
       client.zcard("Events:V2:")
   }
 
+  def resetEvents() = Redis.pool.withClient{
+    client=>
+      client.del("Events:V2:")
+      val allEvents = client.keys("Events:*")
+      val tx=client.multi()
+      allEvents.foreach{k:String=>
+        tx.del(k)
+      }
+      tx.exec()
+  }
+
   implicit object mostRecent extends Ordering[DateTime] {
     def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)
   }
 
   def loadEventsForObjRef(objRef: String): List[Event] = Redis.pool.withClient {
     client =>
-      client.smembers(s"Events:V2:${objRef}").flatMap {
+      client.smembers(s"Events:V2:$objRef").flatMap {
         json: String =>
           Json.parse(json).asOpt[Event]
       }.toList
@@ -109,6 +120,14 @@ object Event {
       if (allApproved.isEmpty && allBackups.nonEmpty) {
         client.sadd("Notified:BackupSpeakers", speaker.uuid)
       }
+  }
+
+  def resetSpeakersNotified() = Redis.pool.withClient{
+    client=>
+      client.del("NotifiedSpeakers")
+      client.del("Notified:RefusedSpeakers")
+      client.del("Notified:ApprovedSpeakers")
+      client.del("Notified:BackupSpeakers")
   }
 
 

@@ -1,18 +1,18 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx France 2015
+CONF.title=Devoxx France 2016
 CONF.subtitle=FR
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx FR 2015
-longYearlyName=Devoxx France 2015
+shortYearlyName=Devoxx FR 2016
+longYearlyName=Devoxx France 2016
 shortName=Devoxx France
-longName=Devoxx FR 2015 CFP
+longName=Devoxx FR 2016 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2015
+longSplittedName_whiteEnd=FR 2016
 # -----------------
-cfp.title=Devoxx FR 2015 CFP
+cfp.title=Devoxx FR 2016 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -86,7 +86,7 @@ mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href\="http://www.devoxx.fr/dvxfr15-faq-2#format" target\="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/dvxfr15-faq-2#format" target="new">FAQ</a>.
 
 audienceLevel=Audience level :
 audienceLevel.help=Please, indicate the required audience level for your talk:\
@@ -102,7 +102,7 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk which we will accept as part of their sponsorship. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -134,11 +134,13 @@ quick.label.simple=Quickie
 bof.label=Bird of a Feather, 1h, Thursday only evening
 bof.label.simple=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Wednesday
-lab.label.simple=Hand''s on Lab
+lab.label.simple=Hands-on Lab
 other.label=Other event
 other.label.simple=Other
 start.label=Startup Talk, 25 min, Wednesday to Friday
 start.label.simple=Startup
+ignite.label=Ignite Sessions, 5 min, Wednesday to Thursday early afternoon
+ignite.label.simple=Ignite
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
@@ -156,45 +158,62 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx FR 2014''s videos on
+video.tag=Review Devoxx FR 2015''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx France 2015:
+theme.track=List of tracks for Devoxx France 2016:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx France 2015, 8th-10th April 2015
+appel.conf.dates=Devoxx France 2016, 20th-22nd April 2016
 
 # Tracks
-track.webmobile.title=Web, Mobile &  UX
-track.webmobile.desc=Web, mobile, user-experience, front-end and Web architecture
-wm.label=Web, Mobile & UX
 
-track.archisec.title=Architecture, Performance & Security
+track.java.title=Java, JVM, Javas SE/EE
+track.java.desc=Everything aroung Java, the JVM, Java SE, Java EE.
+java.label=Java, JVM, Javas SE/EE
+java.leaderboard=Java, JVM, Javas SE/EE
+
+track.mobile.title=Mobile & Internet of Things
+track.mobile.desc=Mobile, Java & Internet of Things
+mobile.label=Mobile, IoT
+mobile.leaderboard=Mobile, IoT
+
+track.web.title=Web, HTML5 et UX
+track.web.desc=Web, user-experience, front-end and Web architecture
+web.label=Web, HTML5 et UX
+wm.label=Web, HTML5 et UX
+wm.leaderboard=Web, HTML5 et UX
+
+track.archisec.title=Architecture, Performance & Securité
 track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
 archisec.label=Architecture, Performance and Security
+archisec.leaderboard=Architecture, Performance and Security
 
-track.agilityTest.title=Agility, Methodology & Test
-track.agilityTest.desc=Software development methodologies, TDD, BDD, xDD
-agTest.label=Agility, Methodology & Test
+track.agile_devops.title=DevOps, Agile, Methodology & Tests
+track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
+agile_devops.label=DevOps, Agile, Methodology & Tests
+agTest.label=DevOps, Agile, Methodology & Tests
+agTest.leaderboard=DevOps, Agile, Methodology & Tests
 
-track.java.title=Java, infinite possibilities
-track.java.desc=Everything about Java, the JVM, Java SE 8 or Java EE.
-java.label=Java, infinite possibilities
-
-track.cloudDevops.title=Cloud, DevOps and Tools
-track.cloudDevops.desc=Cloud-computing, DevOps, Paas, Iaas
-cloudDevops.label=Cloud & DevOps
+track.cloud.title=Cloud & Scaling
+track.cloud.desc=Cloud-computing, containers, resilient architectures.
+cloud.label=Cloud & Scaling
+cldops.label=Cloud & Scaling
+cldops.leaderboard=Cloud & Scaling
 
 track.bigdata.title=Big Data & Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
 bigdata.label=Big Data & Analytics
+bigd.leaderboard=Big Data & Analytics
 
-track.future.title=Future<Devoxx>
-track.future.desc=Developing for embedded devices, the internet of things, Arduino, raspberry pi, quadcopters, robots and related
-future.label=Future<Devoxx>
+track.future.title=Future & Robotics
+track.future.desc=Developing for the Internet of Things, Arduino, Raspberry, etc.
+future.label=Future & Robotics
+future.leaderboard=Future & Robotics
 
 track.lang.title=Alternate Languages
-track.lang.desc=Groovy, Scala, Javascript, Clojure, Haskell, C#, Dart, Ceylon, Go, etc.
+track.lang.desc=Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, etc.
 lang.label=Alternate Languages
+lang.leaderboard=Alternate Languages
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
@@ -204,8 +223,8 @@ avatarUrl.defined=Your photo (recommended width 150px)
 
 created.title=Success!
 created.text1=We just sent you an email so that you can validate your email address.
-created.text2=Your password is generated and is displayed once you validate your email.
-created.text3=You will then be able to log-in and start to post proposals for {0}.
+created.text2=Your access code is generated and is displayed once you validate your email.
+created.text3=You will then be able to log-in and start to use the {0} CFP web site.
 
 # prepareSignup
 signup.title=Speaker''s registration
@@ -358,7 +377,7 @@ tbl.cfp.closed=CFP closed
 cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
 
 forget.password.title=Forget your access code?
-forget.password.txt=Send me an email
+forget.password.txt=Send me a new access code
 forget.password.notfound=This email is not registered
 
 new.accesscode.title=Your new access code
@@ -403,7 +422,7 @@ sw.details=See details
 conf=Conference
 uni=University
 tia=Tools-in-Action
-lab=Hand''s on Labs
+lab=Hands-on Labs
 quick=Quickie
 bof=BOF (Bird of a Feather)
 hack=Hackaton
@@ -421,7 +440,7 @@ sw.showDetails=See details
 sw.home=Home
 sw.all.uni=All Universities
 sw.all.conf=All Conferences
-sw.all.lab=All Hand''s on labs
+sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.start=All Startup''s talks
@@ -500,11 +519,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 6th April 2015
-sw.show.title.tue=Tuesday, 7th April 2015
-sw.show.title.wed=Wednesday, 8th April 2015
-sw.show.title.thu=Thursday, 9th April 2015
-sw.show.title.fri=Friday, 10th April 2015
+sw.show.title.mon=Monday, 6th April 2016
+sw.show.title.tue=Tuesday, 7th April 2016
+sw.show.title.wed=Wednesday, 8th April 2016
+sw.show.title.thu=Thursday, 9th April 2016
+sw.show.title.fri=Friday, 10th April 2016
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
@@ -538,9 +557,6 @@ demoLevel1.label=Slides only
 demoLevel2.label=Slides and code
 demoLevel3.label=Code only
 demoLevel4.label=No slides & code
-
-userGroup=Share my proposal with User Group?
-userGroup.checkbox=Yes, I am also interested to present this talk at other European User Groups
 
 btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
@@ -591,16 +607,16 @@ unknown=Unknown
 Abs=Abs
 trackAndUUIDs=
 
-mail.reset_password_link.subject=You asked to reset your {1} speaker''s access code at {0}
-mail.access_code.subject=Your {0} speaker''s access code
+mail.reset_password_link.subject=You asked to reset your {1}''s access code at {0}
+mail.access_code.subject=Your {0}''s access code
 mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
 mail.issue_reported.subject=New issue reported on CFP web site
-mail.cfp_message_to_speaker.subject=[{1}] {0}
-mail.question_to_speaker.subject=[{1}] {0}
-mail.speaker_message_to_cfp.subject=[{1}] {0}
-mail.notify_proposal.subject=[{1}] {0}
-mail.notify_proposal.content=[{1}] {0}
+mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
+mail.question_to_speaker.subject=[{1}] New question posted on Devoxx Web site about {0}
+mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
+mail.notify_proposal.subject={0} submitted a proposal [{1}]
+mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
 mail.draft_single_reminder.subject={0} reminder : you have one proposal with status ''Draft''
 mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to submit
 mail.proposal_approved.subject=Your proposal has been approved {0}
@@ -623,8 +639,6 @@ msg_pub=Send a message to the speaker
 email_pub=Your email address
 email_pub2=Please confirm your email
 
-agilite.label=Agilité, DevOps
-amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 cfp.closed=CFP is currently closed.
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.opening.date=Lundi 2 décembre 2013
@@ -647,8 +661,6 @@ approved=Speaker approved
 cstory=Session de live coding Code-story
 day-jeudi=Thursday
 declined=Speaker declined
-methodevops.label=Methodology & DevOps
-mobile.label=Mobile
 presubmit.reminder=When you are ready, do not forget to submit your proposal from the main screen (click on
 
 wl.action=Action
@@ -663,7 +675,7 @@ webmobile.label=Web, Mobile & UX
 agilityTest.label=Agility, Methodology & Tests
 
 wl.country=Country
-wl.keynote=Country
+wl.keynote=Keynote
 wl_keynote=Keynote
 wl_keynote.checkbox=Yes, this could be a keynote speaker
 
@@ -672,11 +684,10 @@ ar.proposalType=Proposal type:
 ar.proposalId=Proposal ID:
 
 tag.proposal.title=Title
-tag.proposal.youVoted=You voted
 tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
-qualifications.otherproposals=Other proposals from same speaker
+
 
 speaker.mustAcceptTC=You must accept Terms and Conditions
 speaker.ar1=Please click
@@ -691,3 +702,104 @@ tagRenderRow-chgt=Short break
 tagRenderRow-meet=Soirée Meet & Greet
 please.check.approved=Please, review the list of approved Proposals, then select accept or decline for each Talk.
 proposal.approved.noVotes=Approved proposal - no more votes
+tag.proposal.youVoted=Your vote
+qualifications.otherproposals=Other proposals from this speaker
+
+# prepareSignupVisitor
+visitor.registration.title=Visitor's registration
+visitor.signup.txt1=Sign up to save your schedule for {0} conference :
+visitor.signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated. We won''t send you other emails.
+
+# homeVisitor
+home.visitor.header=Visitor sign-in or sign-up
+home.visitor.title=Sign-in or register
+home.welcome.txt=Welcome to {0}, please authenticate or create a new visitor profile:
+visitor.signin=Sign-in
+visitor.register=Sign-up as a visitor
+visitor.index.signup2=Sign-up as a visitor and save your Schedule, vote for the best talks, and share your interests with other attendees.
+
+# welcomeVisitor
+visitor.welcome.title=Welcome {0}
+visitor.welcome.text1=You are now authenticated as a Devoxx visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
+visitor.welcome.publisher=Browse the conference schedule
+visitor.welcome.profile=See the list of talks you faved
+
+# renderProposals
+renderProposal.archived={0} proposals archived from some previous editions.
+renderProposal.archived.single=One proposal has been archived from a previous edition.
+renderProposal.noTalks=No other talks submitted or proposed
+
+mail.goldenticket.subject=Golden Ticket for {0}
+error.loginRequired=Access restricted, please authenticate.
+
+userGroup=Show my proposal to Golden Ticket holder?
+userGroup.checkbox= Yes, I would like my proposal to be reviewed by Attendees with a Golden Ticket
+
+goldenTicket.help.title=Golden Ticket review
+goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
+
+gt.title=CFP for Golden ticket
+gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
+
+gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.
+gt.intro.2=If needed, you can also
+gt.reviewYourVotes=review your Votes
+gt.intro.3=while the CFP is open.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx FR, drop an email to program@devoxx.fr and we’ll do our best to get them there.
+gt.todo=Your todo list size:
+
+gt.yourVotes=Your votes
+gt.personnal=Your personnal leaderboard
+gt.youReviewed=You reviewed {0} talk(s)
+gt.youVoted=You have voted for {0} talk(s)
+gt.averageVote=Your average vote is {0}
+gt.noVotes=You haven''t vote for any proposal so far.
+gt.myvote.title=Proposals for which you voted
+
+gt.showVotes.review=Review or change your vote
+gt.home=Go back to home
+gt.vote.ok=Your vote has been recorded.
+gt.youcan=You can now:
+gt.nomore=There is no more talk to review, congratulation you did it!
+gt.nextTalk=Continue and evaluate next talk
+gt.nextTalkType=Continue and evaluate another {0}
+gt.nextTalkTrack=Continue and evaluate next talk for track {0}
+
+gtAdmin.totalGT=Total number of person with a Golden Ticket: {0}
+gtAdmin.top5=Top 5 by score
+gtAdmin.topWorst=Last 5 by score
+gtAdmin.average=Average score given my Golden ticket is {0}
+gtAdmin.totalReviewer=Total number of Proposals reviewed by Golden Ticket : {0}
+
+svp.score=Current score
+svp.average=Average score
+svp.gt.average=Average score given by {0} Golden Ticket holders
+svp.voteCast.gt=Number of Golden tickets that voted
+svp.voteCast=Total votes cast
+svp.votes=Total votes
+svp.abst=Abstention
+svp.standardDev=Standard deviation
+svp.allVotes=All votes
+svp.noshow=Sorry, votes for your talk are hidden.
+svp.voted=voted
+svp.goldenTicket.title=Golden Ticket votes
+svp.gt.novotes=No vote yet from any Golden ticket
+svp.split=Diff between GT score and Comittee score
+
+gt.admin.sp.privateMessage=Private message for the program committee
+
+speaker.notfound=Speaker not found, please sign-up and create a speaker profile. A Golden ticket profile is not valid, you must create a separate profile.
+callforpaper.gt.create.profile=You have a Golden ticket profile, but not a Speaker profile. Please complete your profile to proceed.
+cfp.goldenTicket=Golden tickets
+cfp.gt.enter=Authenticate
+cfp.gt.infos=More details about Golden tickets (in French)
+callforpaper.import.profile=Speaker profile not found, please complete your profile.
+
+gt.nav.home=Home GT
+gt.myvotes=Proposals of type {0} for which you voted
+
+search.result=Search result: {0} hit(s)
+search.close=Close
+search.showOnly=Show only
+search.onlySpeakers=speakers
+search.onlyProposals=proposals

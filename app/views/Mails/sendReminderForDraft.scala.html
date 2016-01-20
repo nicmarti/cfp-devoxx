@@ -11,7 +11,7 @@
     votre interface, dans le résumé de vos propositions.</p>
     <br>
     @proposals.map{proposal=>
-     - @proposal.title <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
+     - @proposal.title <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
     }
     <br>
     <p>Si vous ne souhaitez plus recevoir ce message, et que vous n'avez pas d'autres propositions de sujets, vous pouvez placer
@@ -31,7 +31,7 @@
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.</p>
 
 @proposals.map{proposal=>
-- @proposal.title <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
+- @proposal.title <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.editProposal(proposal.id)">@proposal.id</a> <br>
 }
 <br>
 <p>If you don't want to receive this message, you can also move the draft proposals to Trash from the home section.</p>

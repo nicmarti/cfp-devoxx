@@ -1,0 +1,75 @@
+@(loginForm: Form[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import helper.twitterBootstrap._
+
+@mainVisitor(Messages("home.visitor.header")){
+            <div class="bs-docs-section clearfix">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="page-header">
+                            <h2><i class="icon-user"></i> @Messages("home.visitor.title")<br> <small>
+                            @Messages("longYearlyName"), @Messages(ConferenceDescriptor.current().timing.datesI18nKey)</small></h2>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p>@Messages("home.welcome.txt", Messages("longYearlyName"))</p>
+
+                        @if(flash.get("error").isDefined) {
+                            <div class="alert alert-danger alert-dismissable">
+                                <strong>Error :</strong>
+                                @flash.get("error").get
+                            </div>
+                        }
+                        @if(flash.get("success").isDefined) {
+                            <div class="alert alert-success alert-dismissable">
+                            @flash.get("success").get
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3><i class="icon-signin"></i> @Html(Messages("visitor.signin"))</h3>
+                            </div>
+                            <div class="panel-body">
+                                @helper.form(action = routes.Authentication.login(visitor=true)) {
+                                    @helper.inputText(loginForm("email"))
+                                    @helper.inputPassword(loginForm("password"))
+                                    <button class="btn btn-default" type="submit">@Messages("btn.login")</button>
+                                    <a href="@routes.Authentication.forgetPassword()">@Messages("forget.password")</a>
+                                }
+
+                                <h4><i class="icon-external-link-sign"></i> @Html(Messages("index.method2"))</h4>
+                                <p>@Html(Messages("index.txt2"))</p>
+                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin(visitor=true)" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
+                                    Github</a>
+                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin(visitor=true)" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
+                                        Google</a>
+                                    <a class="btn btn-default" href="@routes.Authentication.linkedinLogin(visitor=true)" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
+                                        LinkedIn</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                            <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3><i class="icon-user"></i> @Html(Messages("visitor.register"))</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p>@Html(Messages("visitor.index.signup2", Messages("longName")))</p>
+                                <a class="btn btn-default" href="@routes.Authentication.prepareSignup(visitor=true)">@Messages("index.signup.btn")</a>
+                                <p>@Html(Messages("index.signup3"))</p>
+                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin(visitor=true)" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
+                                    Github</a>
+                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin(visitor=true)" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
+                                        Google</a>
+                                    <a class="btn btn-default" href="@routes.Authentication.linkedinLogin(visitor=true)" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
+                                        LinkedIn</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+}

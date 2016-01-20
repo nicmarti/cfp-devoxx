@@ -23,6 +23,7 @@
 
 package library
 
+import org.apache.commons.lang3.StringUtils
 import redis.clients.jedis.{JedisPoolConfig, JedisPool}
 import play.api.Play.current
 import org.apache.commons.pool.impl.GenericObjectPool
@@ -45,7 +46,7 @@ object Redis {
   private lazy val host = current.configuration.getString("redis.host").getOrElse("localhost")
   private lazy val port = current.configuration.getInt("redis.port").getOrElse(6379)
   private lazy val timeout = current.configuration.getInt("redis.timeout").getOrElse(30000)
-  private lazy val redisPassword = current.configuration.getString("redis.password").orNull
+  private lazy val redisPassword:String = current.configuration.getString("redis.password").map(s=>StringUtils.trimToNull(s)).orNull
 
   lazy val jedisPoolConfig = {
     var pool = new JedisPoolConfig

@@ -45,6 +45,7 @@
             <li>toTimeMillis: end time as timestamp</li>
             <li>break: <strong>always null for a talk slot</strong></li>
             <li>talk: </li>
+            <ul>
                 <li>id: unique talk ID</li>
                 <li>talkType: Conference, University, Hands-on Labs, etc</li>
                 <li>track: Java, Web, Agilité, etc</li>
@@ -61,6 +62,7 @@
                             <li>title: Name of this link</li>
                     </ul>
                 </li>
+           </ul>ç
 
         </ul>
         
@@ -111,8 +113,8 @@
                 "speakers": [
                     {
                         "link": {
-                            "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode/speakers/70365c89d2a734da0d24d091f7ec0af77ba90701",
-                            "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/speaker",
+                            "href": "@ConferenceDescriptor.current().conferenceUrls.cfpURL/api/conferences/@ConferenceDescriptor.current().eventCode/speakers/70365c89d2a734da0d24d091f7ec0af77ba90701",
+                            "rel": "@ConferenceDescriptor.current().conferenceUrls.cfpURL/api/profile/speaker",
                             "title": "José Paumard"
                         },
                         "name": "José Paumard"

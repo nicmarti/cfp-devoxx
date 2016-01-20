@@ -1,0 +1,26 @@
+@(speakerId:String)(implicit req:RequestHeader)
+
+@models.Speaker.findByUUID(speakerId).map{speaker:Speaker=>
+<div class="panel-group">
+ <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">@speaker.cleanName</h3>
+        @speaker.company.map{c=>
+            <em>@c</em>
+        }
+    </div>
+
+     <div class="panel-body">
+         <h4>@Messages("bio2")</h4>
+         <p>@speaker.bio</p>
+         <h4>@Messages("qualifications.label")</h4>
+         @speaker.qualifications.map { q =>
+         <p>@speaker.qualifications</p>
+         }.getOrElse {
+             <em>Speaker did not yet entered its speaking skills/qualifications</em>
+         }
+     </div>
+ </div>
+</div>
+
+}

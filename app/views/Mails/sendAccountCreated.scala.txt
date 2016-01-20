@@ -7,7 +7,7 @@ Welcome to @Messages("longName") CFP (Call For Paper)
 As a convenience to you, we have created an account for you on @Messages("longName"). This account will enable to you access your profile and your submissions.
 To access your @Messages("longName") speaker dashboard, please click in the link below.
 
-http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Application.index()
+@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.index()
 
 - Your username is @email
 - Your password is @tempPassword

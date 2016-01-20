@@ -76,6 +76,16 @@ case class Speaker(uuid: String
       }
   }.getOrElse("fr")
 
+  def cleanTwitter: Option[String] = twitter.map {
+    tw =>
+      val trimmed = tw.trim()
+      if (!trimmed.startsWith("@")) {
+        "@" + trimmed
+      } else {
+        trimmed
+      }
+  }
+
 
   def hasTwitter = StringUtils.trimToEmpty(twitter.getOrElse("")).nonEmpty
 
@@ -98,10 +108,10 @@ object Speaker {
 
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
+  def createSpeaker(webuserUUID:String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
                     qualifications: String): Speaker = {
-    Speaker(Webuser.generateUUID(email), email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications))
+    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications))
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
@@ -126,8 +136,8 @@ object Speaker {
 
   }
 
-  def unapplyForm(s: Speaker): Option[(String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, String)] = {
-    Some(s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"))
+  def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, String)] = {
+    Some("xxx",s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"))
   }
 
   def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean, String)] = {
@@ -149,7 +159,7 @@ object Speaker {
   def updateName(uuid: String, firstName: String, lastName: String) = {
     findByUUID(uuid).map {
       speaker =>
-        Speaker.update(uuid, speaker.copy(name = Option(lastName), firstName = Option(firstName)))
+        Speaker.update(uuid, speaker.copy(name = Option(StringUtils.trimToNull(lastName)), firstName = Option(StringUtils.trimToNull(firstName))))
     }
   }
 
@@ -158,7 +168,7 @@ object Speaker {
       client.hget("Speaker", uuid).flatMap {
         json: String =>
           Json.parse(json).validate[Speaker].fold(invalid => {
-            play.Logger.error("Speaker error. " + ZapJson.showError(invalid));
+            play.Logger.error("Invalid json format for Speaker, unable to unmarshall " + ZapJson.showError(invalid))
             None
           }, validSpeaker => Some(validSpeaker))
       }

@@ -267,15 +267,20 @@ object Review {
 
   type ScoreAndTotalVotes = (Double, Int, Int, Double, Double)
 
-  def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
+  /**
+    * Returns allVotes but discard deleted/archived/draft proposals
+    */
+  def allVotes(): Map[String, ScoreAndTotalVotes] = Redis.pool.withClient {
     client =>
       val allVoters = client.hgetAll("Computed:Voters")
       val allAbstentions = client.hgetAll("Computed:VotersAbstention")
       val allAverages = client.hgetAll("Computed:Average")
       val allStandardDev = client.hgetAll("Computed:StandardDeviation")
 
+      val allProposalIDSToRemove = Proposal.allProposalIDsDeletedArchivedOrDraft()
+
       client.hgetAll("Computed:Scores").map {
-        case (proposalKey: String, scores: String) =>
+        case (proposalKey: String, scores: String) if !allProposalIDSToRemove.contains(proposalKey)=>
           val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
           (proposalId,
             (scores.toDouble,
@@ -288,7 +293,7 @@ object Review {
               }.getOrElse(0.toDouble)
             )
           )
-      }.toSet
+      }
   }
 
   // internal function that upload to Redis a LUA Script

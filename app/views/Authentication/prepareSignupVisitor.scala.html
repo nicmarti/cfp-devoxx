@@ -1,0 +1,38 @@
+@(formWebuser: Form[Webuser])(implicit flash:Flash, lang:Lang, req: RequestHeader)
+
+@import helper.twitterBootstrap._
+
+@mainVisitor(Messages("longYearlyName")+ " - " + Messages("signup.title")) {
+
+<div class="row">
+    <div class="col-md-12 page-header">
+        <h1><i class="icon-signin"></i> @Messages("visitor.registration.title")</h1>
+    </div>
+    <div class="col-md-8">
+
+        <p>@Messages("visitor.signup.txt1", Messages("longYearlyName"))</p>
+
+        @if(flash.get("error").isDefined){
+            <div class="alert alert-danger">
+                <strong>Error</strong>
+                @flash.get("error").get
+            </div>
+        }
+
+        @helper.form(action = routes.Authentication.saveNewVisitor) {
+            @helper.inputText(formWebuser("email"))
+            @helper.inputText(formWebuser("firstName"))
+            @helper.inputText(formWebuser("lastName"))
+
+            <p>@Messages("visitor.signup.txt2")</p>
+            <button class="btn btn-success" type="submit">@Messages("signup")</button>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <h3><i class="icon-external-link-sign"></i> @Html(Messages("register.withopenid"))</h3>
+        <p>@Html(Messages("home.txt2"))</p>
+        <a class="btn btn-default" href="@routes.Authentication.githubLogin(visitor=true)" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i> Github</a>
+    </div>
+</div>
+}
