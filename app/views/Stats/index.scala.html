@@ -1,0 +1,464 @@
+@(st: Stats)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Stats") {
+
+    <link href="@routes.Assets.at(path = "/public", file = "css/c3.min.css")" rel="stylesheet">
+    <script src="@routes.Assets.at(path = "/public", file = "js/lodash.3.10.1.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at(path = "/public", file = "js/d3.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at(path = "/public", file = "js/c3.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at(path = "/public", file = "js/d3.layout.cloud.js")" type="text/javascript"></script>
+
+
+    <div class="row stats">
+        <div class="col-lg-offset-5 col-md-5">
+            <h2>
+                <i class="icon-bar-chart"></i> @Messages("stats.title")
+            </h2>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-12">
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable">
+                @flash.get("success").get
+                </div>
+            }
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>@Messages("stats.explain")</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- In general -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.general.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="stats-box">
+                                        <div class="stats-box-value">@st.speakersCount</div>
+
+                                        <div class="stats-box-title">@Messages("stats.general.speakerscount")</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="stats-box">
+                                        <div class="stats-box-value">@st.proposalsCount</div>
+
+                                        <div class="stats-box-title">@Messages("stats.general.proposalscount")</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="stats-box">
+                                        <div class="stats-box-value">@math.round(st.avgProposalsBySpeakers)</div>
+
+                                        <div class="stats-box-title">@Messages("stats.general.proposalsbyspeaker")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Words cloud -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.trends.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="wordscloud"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- By language -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.languages.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="lang"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About words -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.words.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="stats-box">
+                                        <div class="stats-box-value">@math.round(st.avgSizeOfTitles)</div>
+
+                                        <div class="stats-box-title">@Messages("stats.words.titlechars")</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="stats-box">
+                                        <div class="stats-box-value">@math.round(st.avgSizeOfSummaries)</div>
+
+                                        <div class="stats-box-title">@Messages("stats.words.summarychars")</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="stats-box">
+                                        <div class="stats-box-value">@math.round(st.avgWordOfTitles)</div>
+
+                                        <div class="stats-box-title">@Messages("stats.words.titlewords")</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="stats-box">
+                                        <div class="stats-box-value">@math.round(st.avgWordOfSummaries)</div>
+
+                                        <div class="stats-box-title">@Messages("stats.words.summarywords")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- By talktype -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.talktypes.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="talktype"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- By audience level -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.audiencelevels.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="audienceLevel"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- By track -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.tracks.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="track"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- By demoLevel -->
+                <div class="col-md-6">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">@Messages("stats.demolevels.title")</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="demoLevel"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                    <!-- By talktype & demoLevel -->
+                <div class="col-md-12">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                @Messages("stats.talktypedemolevel.title")
+                                <br/>
+                                <small>
+                                    @Messages("stats.talktypedemolevel.explain")
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="talktypeDemoLevel"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Top 10 proposal combinations -->
+                <div class="col-md-12">
+                    <div class="panel panel-default panel-stats">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                @Messages("stats.top10combinations.title")
+                                <br/>
+                                <small>
+                                    @Messages("stats.top10combinations.explain")
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="top10combinations"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // By language
+        var pieConf = {
+            size: {
+                height: 300,
+            },
+            data: {
+                type: 'donut',
+            }
+        };
+
+        c3.generate(_.merge({}, pieConf, {
+            bindto: '#lang',
+            data: {
+                columns: [
+                    ['English', @st.countProposalsByLang("en")],
+                    ['French', @st.countProposalsByLang("fr")],
+                ],
+            },
+        }));
+
+
+        // By talktype
+        c3.generate(_.merge({}, pieConf, {
+            bindto: '#talktype',
+            data: {
+                columns: [
+                @st.countProposalsByTalkType.map { tt =>
+                    ["@Messages(tt._1)", @tt._2],
+                }
+                ],
+            },
+        }));
+
+
+        // By audience level
+        c3.generate(_.merge({}, pieConf, {
+            bindto: '#audienceLevel',
+            data: {
+                columns: [
+                @st.countProposalsByAudienceLevel.map { tt =>
+                    ["@Messages(tt._1)", @tt._2],
+                }
+                ],
+            },
+        }));
+
+
+        // By track
+        c3.generate(_.merge({}, pieConf, {
+            bindto: '#track',
+            data: {
+                columns: [
+                @st.countProposalsByTrack.map { tt =>
+                    ["@Messages(tt._1)", @tt._2],
+                }
+                ],
+            },
+        }));
+
+
+        // By demo level
+        c3.generate(_.merge({}, pieConf, {
+            bindto: '#demoLevel',
+            data: {
+                columns: [
+                @st.countProposalsByDemoLevel.map { tt =>
+                    ["@Messages(tt._1)", @tt._2],
+                }
+                ],
+            },
+        }));
+
+
+        // By track & demoLevel
+        var barVconf = {
+            bar: {
+                width: {
+                    ratio: .5,
+                },
+            },
+            data: {
+                x: 'x',
+                type: 'bar',
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                },
+            },
+            legend: {
+                inset: {
+                    x: 300
+                }
+            }
+        };
+
+
+        // By talktype & demoLevel
+        c3.generate(_.merge({}, barVconf, {
+            bindto: '#talktypeDemoLevel',
+            data: {
+                columns: [
+                    ['x',
+                    @st.countProposalsByTalkTypeAndDemoLevel(0)._2.map { byType =>
+                        "@Messages(byType._1)",
+                    }
+                    ],
+
+                    @st.countProposalsByTalkTypeAndDemoLevel.map { p =>
+                    ["@Messages(p._1)",
+                     @p._2.map { byType =>
+                        @byType._2,
+                     }
+                    ],
+                    }
+                ],
+            },
+        }));
+
+
+        // Top 10 proposal combinations
+        var barHconf = {
+            size: {
+                height: @(st.top10proposalsCombinations.size * 50),
+            },
+            bar: {
+                width: 20,
+            },
+            padding: {
+                left: 100,
+            },
+            data: {
+                x: 'x',
+                type: 'bar',
+            },
+            axis: {
+                rotated: true,
+                x: {
+                    type: 'category',
+                },
+            },
+            tooltip: {
+                grouped: false,
+            },
+            legend: {
+                show: false,
+            },
+        };
+
+        c3.generate(_.merge({}, barHconf, {
+            bindto: '#top10combinations',
+            data: {
+                columns: [
+                    ['x',
+                    @st.top10proposalsCombinations.map { cb =>
+                       "@cb._1.map(p => p._2 + "x " + Messages(p._1)).mkString(" + ")",
+                    }
+                    ],
+                    ['value',
+                    @st.top10proposalsCombinations.map { cb =>
+                        @cb._2,
+                    }
+                    ],
+                ],
+            },
+        }));
+
+
+        // Word cloud
+        var fill = d3.scale.category20();
+
+        var words = [
+        @st.topWords.map { word =>
+            {
+                text: "@word._1",
+                size: @word._2,
+            },
+        }
+        ]
+
+        var layout = d3.layout.cloud()
+            .size([500, 300])
+            .words(words)
+            .padding(5)
+            .rotate(function() { return ~~(Math.random() * 2) * 90; })
+            .font('Impact')
+            .fontSize(function(d) { return d.size; })
+            .on('end', draw);
+
+        layout.start();
+
+        function draw(words) {
+            d3
+                .select('#wordscloud').append('svg')
+                    .attr('width', layout.size()[0])
+                    .attr('height', layout.size()[1])
+                    .append('g')
+                .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
+                .selectAll('text')
+                    .data(words)
+                .enter().append('text')
+                    .style('font-size', function(d) { return d.size + 'px'; })
+                    .style('font-family', 'Impact')
+                    .style('fill', function(d, i) { return fill(i); })
+                    .attr('text-anchor', 'middle')
+                    .attr('transform', function(d) {
+                        return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
+                })
+                .text(function(d) { return d.text; });
+        }
+    </script>
+}

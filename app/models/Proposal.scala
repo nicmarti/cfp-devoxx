@@ -555,6 +555,15 @@ object Proposal {
     allProposalIDsNotDeleted.size
   }
 
+  def allProposalNotDeleted(): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = allProposalIDsNotDeleted
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalJson: String =>
+          Json.parse(proposalJson).asOpt[Proposal].map(_.copy(state = ProposalState.DRAFT))
+      }
+  }
+
   def allDrafts(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers("Proposals:ByState:" + ProposalState.DRAFT.code)

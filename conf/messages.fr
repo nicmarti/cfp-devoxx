@@ -297,7 +297,31 @@ freepass.forIdiots=L''entrée est offerte uniquement si votre présentation est 
  
 nav.homeSpeaker=Accueil
 editWebuser.title=Votre profil
- 
+
+nav.stats=Stat
+ndef.label=Non défini
+stats.title=Des statistiques !
+stats.explain=Que ce passe-t'il sur le CFP Devoxx 2016 ? Une explication avec quelques graphiques :)
+stats.general.title=En général
+stats.general.speakerscount=speakers
+stats.general.proposalscount=propositions
+stats.general.proposalsbyspeaker=propositions par speakers
+stats.trends.title=Mots tendances
+stats.languages.title=Propositions par langue
+stats.words.title=Avec des mots
+stats.words.titlechars=Caractères dans le titre
+stats.words.titlewords=Mots dans le titre
+stats.words.summarychars=Caractères dans le résumé
+stats.words.summarywords=Mots dans le résumé
+stats.talktypes.title=Type de propositions
+stats.audiencelevels.title=Difficulté de la proposition
+stats.tracks.title=Type de propositions
+stats.demolevels.title=Format des propositions
+stats.talktypedemolevel.title=Format des propositions pour chaque type
+stats.talktypedemolevel.explain=Choississez le bon format pour votre proposition !
+stats.top10combinations.title=Top 10 des combinaisons de propositions par speaker
+stats.top10combinations.explain=Quelles combinaisons les speakers proposent-ils ?
+
 cfp.isOpen=Le CFP est ouvert
 cfp.open.enter=Proposer un sujet pour Devoxx France
  

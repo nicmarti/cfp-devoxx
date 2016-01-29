@@ -304,6 +304,30 @@ freepass.forIdiots=Free pass included if, and only if, your talk is selected by 
 nav.homeSpeaker=Home
 editWebuser.title=Edit your firstname and lastname
 
+nav.stats=Stats
+ndef.label=Not defined
+stats.title=Get some stats!
+stats.explain=What is going on the Devoxx CFP 2016 ? Let's understand with charts !
+stats.general.title=In general
+stats.general.speakerscount=speakers
+stats.general.proposalscount=proposals
+stats.general.proposalsbyspeaker=proposals by speakers
+stats.trends.title=Trending words
+stats.languages.title=Proposals by language
+stats.words.title=In words
+stats.words.titlechars=Characters in title
+stats.words.titlewords=Words in title
+stats.words.summarychars=Characters in summary
+stats.words.summarywords=Words in summary
+stats.talktypes.title=Type of proposals
+stats.audiencelevels.title=Difficulty of proposals
+stats.tracks.title=Track of proposals
+stats.demolevels.title=Format of proposals
+stats.talktypedemolevel.title=Format of proposals by type
+stats.talktypedemolevel.explain=Choose the right format for your proposal!
+stats.top10combinations.title=Top 10 proposal combinations by speaker
+stats.top10combinations.explain=What are formats that a speaker proposes ?
+
 cfp.isOpen=CFP is open
 cfp.open.enter=Create your speaker''s profile or sign-in
 
