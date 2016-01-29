@@ -27,7 +27,7 @@
                         <br>
                         <i class="icon-filter"></i> Show only:
                         @Track.allIDs.map{idTrack=>
-                            <a href="@routes.CFPAdmin.allVotes(confType,Some(idTrack))" class="btn btn-default btn-sm">@idTrack - @confType</a>
+                            <a href="@routes.CFPAdmin.allVotes(confType,Some(idTrack))" class="btn btn-default btn-sm">@Messages(s"$idTrack.label")  - @confType</a>
                         }
 
                         @if(flash.get("error").isDefined) {
