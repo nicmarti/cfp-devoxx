@@ -157,6 +157,8 @@ object RestAPI extends Controller {
                 "firstName" -> speaker.firstName.map(Json.toJson(_)).getOrElse(JsNull),
                 "lastName" -> speaker.name.map(Json.toJson(_)).getOrElse(JsNull),
                 "avatarURL" -> speaker.avatarUrl.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
+                "twitter" -> speaker.twitter.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
+                "company" -> speaker.company.map(u => Json.toJson(u.trim())).getOrElse(JsNull),
                 "links" -> Json.toJson(List(
                   Link(routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL().toString,
                     routes.RestAPI.profile("speaker").absoluteURL().toString,
