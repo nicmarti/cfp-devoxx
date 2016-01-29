@@ -16,9 +16,17 @@
                             <p>@Messages("gtAdmin.average", (allVotes.map(_._2._4).sum / allVotes.length)) </p>
                         </div>
                         @allVotes.groupBy(_._1.talkType).map { case(currentProposalType,groupedProposals) =>
-                            <h3>@Messages(currentProposalType.id)</h3>
+                                 <div class="col-sm-12 col-md-12 col-lg-12">
+                                     <div class="panel">
+                                         <div class="panel-heading panel-primary">
+                                                <h4>@Messages(currentProposalType.id)</h4>
+                                         </div>
+                                     </div>
+
+                                 </div>
                                 @tags.gticketadmin.showTopProposal(groupedProposals)
                                 @tags.gticketadmin.showWorstProposal(groupedProposals)
+                            <div class="clearfix"></div>
                         }
                     </div>
                 </div>
