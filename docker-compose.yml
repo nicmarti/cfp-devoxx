@@ -1,0 +1,8 @@
+elasticsearch:
+ image: elasticsearch
+ ports:
+   - "9200:9200"
+redis:
+ image : redis:2.8.21
+ ports:
+   - "6379:6379"

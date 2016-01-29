@@ -52,7 +52,7 @@ Send a message to (@nmartignole)[http://www.twitter.com/nmartignole) if you plan
 - Install Play 2.2.3 (not the latest version with activator)
 - Install Redis 2.8.21 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
 - Read Redis documentation and learn Redis with http://try.redis.io
-- Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf
+- Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf 
 
 Optional but recommended for better user experience:
 
@@ -61,6 +61,14 @@ Optional but recommended for better user experience:
 - Create an application using your [Google account](https://cloud.google.com/console#/project). Configure a URL for development, such as http://localhost:9000/ and prod URL as http://cfp.devoxx.fr/
 - Create a LinkedIn App and configure OAuth
 - a [Mailjet](http://www.mailjet.com) account for SMTP sending transactional emails 
+
+## I'm using Docker and Docker-Machine
+
+A docker compose file is provided with Redis and Elastic Search configuration.
+
+To connect to your local Redis Cli, you can use this command line as an example :
+
+```docker run -it --link cfpdevoxx_redis_1:redis --rm redis sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'``
 
 ## Here's what you need to configure:
 
