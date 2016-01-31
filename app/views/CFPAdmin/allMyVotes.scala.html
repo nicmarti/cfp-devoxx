@@ -1,5 +1,4 @@
-@(allVotes:Set[(String,Option[Double])], votesByTypes:Map[ProposalType,Set[(String,Option[Double])]], relatedProposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@import play.api.libs.json.Json
+@(allMyVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
     <div class="row">
@@ -12,9 +11,9 @@
             <div class="panel-body">
                 <div class="col-md-12">
                     <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
-                    @if(allVotes.nonEmpty){
-                        You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
-                        @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
+                    @if(allMyVotes.nonEmpty){
+                        You have voted for @allMyVotes.filter(_._2.isDefined).size talks<br>
+                        @defining(allMyVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
                             Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br>
@@ -23,125 +22,54 @@
                         You haven't voted for any proposal so far.
                     }
 
+                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                        <a href="@routes.CFPAdmin.allMyVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
+                    }
+
                 </div>
-                @if(allVotes.nonEmpty){
-                <div class="col-md-12">
-                    @votesByTypes.map{ case(talkType, votesByType) =>
-                        <h3><i class="icon-bar-chart"></i> Proposals of type @Messages(talkType.id) for which you voted</h3>
-                        <table class="table table-bordered proposals @talkType.id" data-talk-type="@talkType.id">
+                @if(allMyVotes.nonEmpty){
+                    <div class="col-md-12">
+                        <h3><i class="icon-bar-chart"></i> Proposals of type @Messages(talkType) for which you voted</h3>
+                        <table class="table table-bordered proposals.@talkType" data-talk-type="@talkType">
                             <thead>
                                 <tr>
-                                    <th style="width: 95px">Score</th>
-                                    <th style="width: 95px">Id</th>
+                                    <th>Score</th>
+                                    <th>Id</th>
                                     <th>Title</th>
-                                    <th style="width: 270px">Track</th>
-                                    <th style="width: 270px">Speakers</th>
+                                    <th>Track</th>
+                                    <th>Speakers</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                @allMyVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map { case (proposalId, maybeVote) =>
+                                    @defining(Math.round(maybeVote.get)) { score =>
+                                        <td class="btn-color-@score btn-sm"><small>@score</small></td>
+                                    }
+                                <td><a href="@routes.CFPAdmin.openForReview(proposalId)" class="btn btn-sm btn-primary">@proposalId</a></td>
+                                    @relatedProposals.get(proposalId).map { proposal =>
+                                        <td>
+                                            <small>@proposal.title</small>
+                                        </td>
+
+                                        <td>
+                                            <small>@Messages(proposal.track.label)</small>
+                                        </td>
+                                          <td>
+                                            <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
+                                        </td>
+                                    }
+                                </tr>
+                                }
                             </tbody>
                         </table>
-                        <hr style="border:0px; clear:both; height: 5px;"/>
-                    }
-                </div>
-                <div class="col-md-6">
-                    @if(allVotes.filter(_._2.isEmpty).nonEmpty){
-                        <h4>Proposals for wich you need to vote</h4>
-                        @allVotes.filter(_._2.isEmpty).toList.sortBy(_._1).map{case(proposalId, maybeVote)=>
-                            <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a> <br>
-                        }
-                    }
-                </div>
+
+                    </div>
                 }
             </div>
         </div>
     </div>
 </div>
-
-<script src="@routes.Assets.at(path="/public",file="js/lodash.3.10.1.min.js")" type="text/javascript"></script>
-<script type="text/javascript">
-var CSSCLASS_PER_VOTE = {
-  0: 'label-default',
-  1: 'label-danger',
-  2: 'label-danger',
-  3: 'label-danger',
-  4: 'label-warning',
-  5: 'label-warning',
-  6: 'label-warning',
-  7: 'label-success',
-  8: 'label-success',
-  9: 'label-success',
-  10: 'label-success'
-};
-function generateProposalLineContent(proposalWithScore){
-    return '<tr>\n'
-    +'    <td class="score" data-score="'+proposalWithScore.score+'" data-pid="'+proposalWithScore.id+'">\n'
-    +'    '+generateScoreCell(proposalWithScore.score, proposalWithScore.id)+'\n'
-    +'    </td>\n'
-    +'    <td class="proposalId"><a href="'+proposalWithScore.openForReviewUrl+'">'+proposalWithScore.id+'</a></td>\n'
-    +'    <td class="proposalTitle">\n'
-    +'        <small>'+proposalWithScore.title+'</small>\n'
-    +'    </td>\n'
-    +'    <td class="track">\n'
-    +'        <small>'+proposalWithScore.trackLabel+'</small>\n'
-    +'    </td>\n'
-    +'    <td class="speakers">\n'
-    +_.map(proposalWithScore.speakers, function(speaker){ return '<a href="/cfpadmin/speaker/'+speaker.uuid+'">'+speaker.firstName+' '+speaker.name+'</a>'; }).join(', ')
-    +'    </td>\n'
-    +'</tr>\n';
-}
-function generateScoreCell(score, proposalId) {
-    return '<span class="inline score label '+CSSCLASS_PER_VOTE[score]+'">'+score+'</span>\n'
-        +'<div class="btn-group inline">\n'
-        +'<button data-score="'+(Number(score)+1)+'" data-id="'+proposalId+'" class="btn plus btn-xs btn-color-8" style="margin-left:3px; margin-right: 3px;">+</button>\n'
-        +'<button data-score="'+(Number(score)-1)+'" data-id="'+proposalId+'" class="btn minus btn-xs btn-color-1" style="margin-left:3px; margin-right: 3px;">-</button>\n'
-        +'</div>\n';
-}
-function redrawProposalsTable(talkType) {
-    var $table = $('.proposals.'+talkType);
-    $table.find('tbody tr').remove();
-    $table.find('tbody').append(_.map(_(window.proposalsByType[talkType]).sortBy('id').value(), function(proposalWithScore){
-        return $(generateProposalLineContent(proposalWithScore));
-    }));
-
-    $table.find('.btn.plus, .btn.minus').on('click', function(event) {
-        var $btnClicked = $(event.currentTarget);
-        var $cell = $btnClicked.parents('td');
-        var talkType = $cell.parents('table').attr('data-talk-type');
-
-        var newScore = Number($btnClicked.attr('data-score'));
-        var proposalId = $btnClicked.attr('data-id');
-        $.ajax({
-            url: '/cfpadmin/proposal/'+proposalId+'/vote?vote='+newScore,
-            cache: false
-        }).then(function(){
-            _.find(window.proposalsByType[talkType], {id:proposalId}).score = newScore;
-            redrawProposalsTable(talkType);
-        });
-    });
-}
-
-window.proposalsByType = @Html(Json.stringify(Json.toJson(
-    votesByTypes.map { case (talkType, votesByType) =>
-        (talkType.id, votesByType.map { case(proposalId, maybeVote) =>
-            val proposal = relatedProposals.get(proposalId)
-            Map(
-                "id" -> Json.toJson(proposalId),
-                "score" -> Json.toJson(Math.round(maybeVote.get)),
-                "openForReviewUrl" -> Json.toJson(routes.CFPAdmin.openForReview(proposalId).url),
-                "title" -> Json.toJson(proposal.get.title),
-                "trackLabel" -> Json.toJson(Messages(proposal.get.track.label)),
-                "speakers" -> Json.toJson(proposal.get.allSpeakers)
-            )
-        })
-    }
-)));
-
-@votesByTypes.map{ case(talkType, votesByType) =>
-  redrawProposalsTable('@talkType.id');
-}
-</script>
-
 
 
 }
