@@ -93,7 +93,7 @@ object CFPAdmin extends SecureCFPController {
       scala.concurrent.Future {
         Proposal.findById(proposalId) match {
           case Some(proposal) => {
-            val score = Review.currentScore(proposalId)
+            val currentAverageScore = Review.averageScore(proposalId)
             val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
             val countVotes = Review.totalVoteFor(proposalId)
             val allVotes = Review.allVotesFor(proposalId)
@@ -108,13 +108,13 @@ object CFPAdmin extends SecureCFPController {
 
             // If Golden Ticket is active
             if (ConferenceDescriptor.isGoldenTicketActive) {
-
-              val allVotesGT: List[(String, Double)] = ReviewByGoldenTicket.allVotesFor(proposalId)
+              val averageScoreGT = ReviewByGoldenTicket.averageScore(proposalId)
               val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
 
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, allVotesGT, countVotesCastGT))
+
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT))
             } else {
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, score, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, Nil, None))
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None))
             }
 
 

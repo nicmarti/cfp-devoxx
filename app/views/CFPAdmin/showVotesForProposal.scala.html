@@ -1,187 +1,183 @@
-@(currentUser:String, proposal: models.Proposal, score: Int, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal], allVotesGT:List[(String,Double)],countVotesCastGT:Option[Long])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(currentUser: String, proposal: models.Proposal, currentAverageScore: Double, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewedSameTrack: Option[Proposal], nextToBeReviewedSameFormat: Option[Proposal], averageScoreGT: Double, countVotesCastGT: Option[Long])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
-@main("Votes for " + proposal.id + "/" + proposal.title) {
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> @proposal.title</h3>
+    @main("Votes for " + proposal.id + "/" + proposal.title) {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><i class="icon-stackexchange"></i> @proposal.title</h3>
+                    </div>
+
+                    @if(flash.get("error").isDefined) {
+                        <div class="alert alert-danger alert-dismissable col-md-12">
+                            <strong>Error :</strong>
+                            @flash.get("error").get
+                        </div>
+                    }
+                    @if(flash.get("success").isDefined) {
+                        <div class="alert alert-success alert-dismissable col-md-12">
+                        @flash.get("success").get
+                        </div>
+                    }
                 </div>
-
-                @if(flash.get("error").isDefined) {
-                    <div class="alert alert-danger alert-dismissable col-md-12">
-                        <strong>Error :</strong>
-                        @flash.get("error").get
-                    </div>
-                }
-                @if(flash.get("success").isDefined) {
-                    <div class="alert alert-success alert-dismissable col-md-12">
-                    @flash.get("success").get
-                    </div>
-                }
             </div>
-        </div>
 
-        <div class="col-md-6 col-lg-4 col-sm-12">
-           <div class="panel panel-default">
-               <div class="panel-heading">
-                   <h3>@Messages("svp.score")</h3>
-               </div>
-                <div class="panel-body">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <th>@Messages("svp.average")</th>
-                                <td>@if(totalVotesCast>0){
-                                    @library.Stats.average(allVotes.map(_._2).filterNot(_==0))
-                                } else {
-                                    -
-                                }</td>
-                            </tr>
-                              <tr>
-                                <th>@Messages("svp.votes")</th>
-                                <td>
+            <div class="col-md-6 col-lg-4 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>@currentAverageScore <small>@Messages("svp.score")</small></h3>
+                    </div>
+                    <div class="panel-body">
+                            <div class="progress" style="height: 50px">
+                                <div class="progress-bar progress-bar-success" style="width: @Math.round(currentAverageScore*10)%">
+                                    <span> @currentAverageScore by @totalVotesCast Commitee</span>
+                                </div>
+                            </div>
+
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>@Messages("svp.votes")</th>
+                                    <td>
                                     @totalVotes
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("svp.voteCast")</th>
-                                <td>@totalVotesCast</td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("svp.abst")</th>
-                                <td>
-                                    @(totalVotes-totalVotesCast)
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("svp.standardDev")</th>
-                                <td>
-                                     @library.Stats.standardDeviation(allVotes.map(_._2).filterNot(_==0))
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </td>
+                                </tr>
+                                @if(totalVotes - totalVotesCast > 0) {
+                                    <tr>
+                                        <th>@Messages("svp.voteCast")</th>
+                                        <td>@totalVotesCast</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Messages("svp.abst")</th>
+                                        <td>
+                                        @(totalVotes - totalVotesCast)
+                                        </td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <th>@Messages("svp.standardDev")</th>
+                                    <td>
+                                    @library.Stats.standardDeviation(allVotes.map(_._2).filterNot(_ == 0))
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6 col-lg-4 col-sm-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3>@Messages("svp.allVotes")</h3>
-                </div>
-                <div class="panel-body">
+            <div class="col-md-6 col-lg-4 col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>@Messages("svp.allVotes")</h3>
+                    </div>
+                    <div class="panel-body">
 
-                @if(proposal.mainSpeaker==currentUser|| proposal.secondarySpeaker==Some(currentUser) || proposal.otherSpeakers.contains(currentUser)){
-                    <em>@Messages("svp.noshow")</em>
-                }else{
+                    @if(proposal.mainSpeaker == currentUser || proposal.secondarySpeaker == Some(currentUser) || proposal.otherSpeakers.contains(currentUser)) {
+                        <em>@Messages("svp.noshow")</em>
+                    } else {
 
-                    <div class="media">
-                      @allVotes.sortBy(_._2).map { case (author, vote) =>
+                        <div class="media">
+                        @allVotes.sortBy(_._2).map { case (author, vote) =>
                         <div class="media-body">
-                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span>&nbsp;<h5 class="media-heading">@Messages("svp.voted") @tags.renderVote(vote.toInt) </h5>
+                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span> &nbsp; <h5 class="media-heading">@Messages("svp.voted") @tags.renderVote(vote.toInt) </h5>
+                        </div>
+                        }
                         </div>
                     }
                     </div>
-                }
+                </div>
             </div>
-            </div>
+
+            @if(ConferenceDescriptor.isGoldenTicketActive) {
+                <div class="col-md4 col-lg-4 col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3>@averageScoreGT <small>@Messages("svp.goldenTicket.title")</small></h3>
+                        </div>
+                        <div class="panel-body">
+
+                        @if(countVotesCastGT.isEmpty) {
+                            @Messages("svp.gt.novotes")
+                        } else {
+
+                            <h4>@averageScoreGT <small>@Messages("svp.gt.average", countVotesCastGT.getOrElse(0))</small></h4>
+
+
+
+                            <div class="progress" style="height: 50px">
+                                <div class="progress-bar progress-bar-success" style="width: @Math.round(currentAverageScore*10)%">
+                                    <span> @currentAverageScore by @totalVotesCast Commitee</span>
+                                </div>
+                            </div>
+                            <div class="progress" style="height: 50px">
+                                <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: @Math.round(averageScoreGT * 10)%">
+                                    <span>@averageScoreGT by @countVotesCastGT.getOrElse(0) GT </span>
+                                </div>
+                            </div>
+
+
+                        }
+
+
+                        </div>
+                    </div>
+
+                </div>
+            }
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="icon-backward"></i>
+                            Review or change your vote</a>
+                        <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i>
+                            Go back to home</a>
 
-@if(ConferenceDescriptor.isGoldenTicketActive){
-    <div class="col-md4 col-lg-4 col-sm-6">
-        <div class="panel panel-default">
-             <div class="panel-heading">
-                    <h3>@Messages("svp.goldenTicket.title")</h3>
-             </div>
-            <div class="panel-body">
-
-                @if(countVotesCastGT.isEmpty){
-                    @Messages("svp.gt.novotes")
-                }else {
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <th>@Messages("svp.gt.average", countVotesCastGT.getOrElse(0))</th>
-                                <td>@if(allVotesGT.nonEmpty) {
-                                    @library.Stats.average(allVotesGT.map(_._2).filterNot(_ == 0))
-                                } else {
-                                    -
-                                }</td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("svp.split")</th>
-                                <td>@BigDecimal(library.Stats.average(allVotesGT.map(_._2).filterNot(_ == 0)) - library.Stats.average(allVotes.map(_._2).filterNot(_ == 0))).setScale(2,  scala.math.BigDecimal.RoundingMode.HALF_EVEN).toDouble</td>
-                            </tr>
-                            <tr>
-                                <th>@Messages("svp.standardDev")</th>
-                                <td>
-                                @library.Stats.standardDeviation(allVotesGT.map(_._2).filterNot(_ == 0))
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-
-
-
-            </div>
-        </div>
-
-    </div>
-}
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="icon-backward"></i>
-                        Review or change your vote</a>
-                    <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i> Go back to home</a>
-
-                @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty){
-                     <a class="btn btn-default" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i> There is no more talk to review</a>
-                }
-                    <br>
-                @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.nonEmpty){
-                     @if(nextToBeReviewedSameTrack.head.track.id ==  proposal.track.id ) {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                             Continue and evaluate next talk for track @Messages(nextToBeReviewedSameTrack.head.track.label)</a>
-                     } else {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                             Continue and evaluate next talk</a>
-                     }
-                     @if(nextToBeReviewedSameFormat.head.talkType.id ==  proposal.talkType.id ) {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
-                             Continue and evaluate another @Messages(proposal.talkType.id)</a>
-                     } else {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
-                             Continue and evaluate next talk</a>
-                     }
-                }
-                 @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.isEmpty){
-                     @if(nextToBeReviewedSameTrack.head.track.id ==  proposal.track.id ) {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                             Continue and evaluate next talk for track @Messages(nextToBeReviewedSameTrack.head.track.label)</a>
-                     } else {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                             Continue and evaluate next talk</a>
-                     }
-                }
-                 @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.nonEmpty){
-                     @if(nextToBeReviewedSameFormat.head.talkType.id ==  proposal.talkType.id ) {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
-                             Continue and evaluate another @Messages(proposal.talkType.id)</a>
-                     } else {
-                         <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
-                             Continue and evaluate next talk</a>
-                     }
-                }
+                        @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty) {
+                            <a class="btn btn-default" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i>
+                                There is no more talk to review</a>
+                        }
+                        <br>
+                        @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.nonEmpty) {
+                            @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                    Continue and evaluate next talk for track @Messages(nextToBeReviewedSameTrack.head.track.label)</a>
+                            } else {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                    Continue and evaluate next talk</a>
+                            }
+                            @if(nextToBeReviewedSameFormat.head.talkType.id == proposal.talkType.id) {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                    Continue and evaluate another @Messages(proposal.talkType.id)</a>
+                            } else {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                    Continue and evaluate next talk</a>
+                            }
+                        }
+                        @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.isEmpty) {
+                            @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                    Continue and evaluate next talk for track @Messages(nextToBeReviewedSameTrack.head.track.label)</a>
+                            } else {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                    Continue and evaluate next talk</a>
+                            }
+                        }
+                        @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.nonEmpty) {
+                            @if(nextToBeReviewedSameFormat.head.talkType.id == proposal.talkType.id) {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                    Continue and evaluate another @Messages(proposal.talkType.id)</a>
+                            } else {
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                    Continue and evaluate next talk</a>
+                            }
+                        }
 
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
