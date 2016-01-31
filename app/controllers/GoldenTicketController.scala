@@ -169,15 +169,22 @@ object GoldenTicketController extends SecureCFPController {
     }
   }
 
-  def allMyGoldenTicketVotes() = SecuredAction(IsMemberOfGroups(securityGroups)) {
+  def allMyGoldenTicketVotes(talkType: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val uuid = request.webuser.uuid
-      val result = ReviewByGoldenTicket.allVotesFromUser(uuid)
-      val allProposalIDs = result.map(_._1)
-      val allProposals = Proposal.loadAndParseProposals(allProposalIDs)
-      val votesByType = result.groupBy(proposalVote => allProposals.get(proposalVote._1).get.talkType)
 
-      Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(result, votesByType, allProposals))
+      ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
+        pType =>
+          val uuid = request.webuser.uuid
+          val allMyVotes = ReviewByGoldenTicket.allVotesFromUser(uuid)
+          val allProposalIDs = allMyVotes.map(_._1)
+          val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
+          val allProposalsIdsProposalType = allProposalsForProposalType.keySet
+          val allMyVotesForSpecificProposalType = allMyVotes.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
+
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(allMyVotesForSpecificProposalType, allProposalsForProposalType, talkType))
+      }.getOrElse {
+        BadRequest("Invalid proposal type")
+      }
   }
 
   private def createCookie(webuser: Webuser) = {

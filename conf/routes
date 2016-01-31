@@ -248,7 +248,7 @@ POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    
 
 # Golden ticket webuser side
 GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
-GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes()
+GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf")
 GET           /cfp/goldenticket                                                  controllers.GoldenTicketController.authenticate()
 POST          /cfp/goldenticket                                                  controllers.GoldenTicketController.doAuthenticate()
 
