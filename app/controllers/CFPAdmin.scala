@@ -179,7 +179,7 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           voteForm.bindFromRequest.fold(
             hasErrors => {
               val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
@@ -193,7 +193,6 @@ object CFPAdmin extends SecureCFPController {
               Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Ok, vote submitted")
             }
           )
-        }
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
