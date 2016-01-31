@@ -1,4 +1,4 @@
-@(allMyVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allMyVotes:List[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
     <div class="row">
@@ -33,7 +33,8 @@
                         <table id="tableMyVotes" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Score</th>
+                                    <th>You voted</th>
+                                    <th>Current score</th>
                                     <th>Id</th>
                                     <th>Title</th>
                                     <th>Track</th>
@@ -42,7 +43,7 @@
                             </thead>
                             <tbody>
 
-                                @allMyVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map { case (proposalId, maybeVote) =>
+                                @allMyVotes.map { case (proposalId, maybeVote) =>
                                     @defining(Math.round(maybeVote.get)) { score =>
                                         <tr>
                                             <td style="width: 82px" class="score" data-score="@score" data-pid="@proposalId">
@@ -53,6 +54,7 @@
                                             </div>
                                         </td>
 
+                                         <td>@allScoresForProposals.get(proposalId)</td>
                                     <td><a href="@routes.CFPAdmin.openForReview(proposalId)" class="btn btn-sm btn-primary">@proposalId</a></td>
                                     @relatedProposals.get(proposalId).map { proposal =>
                                         <td>

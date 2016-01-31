@@ -23,7 +23,7 @@
 
 package models
 
-import library.Redis
+import library.{Stats, Redis}
 import org.joda.time.{Instant, DateTime}
 import scala.math.BigDecimal.RoundingMode
 
@@ -152,6 +152,12 @@ object Review {
   def totalVoteCastFor(proposalId: String): Long = Redis.pool.withClient {
     implicit client =>
       client.zcount(s"Proposals:Votes:$proposalId", 1, 10)
+  }
+
+  def averageScore(proposalId:String):Double = Redis.pool.withClient{
+    client=>
+      val allScores = client.zrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 1, 10).map(_._2)
+      Stats.average(allScores)
   }
 
   type ReviewerAndVote = (String, Double)
