@@ -56,9 +56,6 @@
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
                 }
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite" target="_blank"><i class="icon-arrow-right"></i> @Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") website</a></li>
-            </ul>
             @if(SecureCFPController.hasAccessToCFP(req)){
             <form id="searchForm" class="navbar-form navbar-right" role="search">
                 <div class="form-group">
