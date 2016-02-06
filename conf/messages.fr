@@ -350,7 +350,7 @@ admin.draft.warning3=Etat actuel de cette proposition :
  
 newProposal.maxLength=Maximum 1200 caractères. Possibilité d''utiliser Markdown
 preview.txt=Aperçu de votre présentation dans le programme papier
-tags.renderComment.postedBy=Posté par
+tags.renderComment.postedBy=Posté par {0} - {1}
 admin.btn.sponsor=Voir comme un sponsor
 leaderboard.compute=Calcul des stats en cours...
  

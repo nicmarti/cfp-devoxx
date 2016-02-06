@@ -68,14 +68,12 @@ object Review {
       Event.storeEvent(Event(proposalId, reviewerUUID, s"Removed its vote on this talk"))
   }
 
-
   def archiveAllVotesOnProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
       allVotesFor(proposalId).map {
         case (reviewer, _) =>
           tx.srem(s"Proposals:Reviewed:ByAuthor:$reviewer", proposalId)
-
       }
       tx.del(s"Proposals:Reviewed:ByProposal:$proposalId")
       tx.del(s"Proposals:Votes:$proposalId") // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.

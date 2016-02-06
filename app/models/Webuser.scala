@@ -38,6 +38,8 @@ case class Webuser(uuid: String, email: String, firstName: String, lastName: Str
 object Webuser {
   implicit val webuserFormat = Json.format[Webuser]
 
+  val Internal=Webuser("internal",ConferenceDescriptor.current().fromEmail,"CFP","Program Committee",RandomStringUtils.random(64),"visitor")
+
   def gravatarHash(email: String): String = {
     val cleanEmail = email.trim().toLowerCase()
     DigestUtils.md5Hex(cleanEmail)

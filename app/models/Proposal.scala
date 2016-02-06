@@ -189,8 +189,9 @@ object Proposal {
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState): String = Redis.pool.withClient {
     client =>
       // We enforce the user id, for security reason
-      // Note : for Devoxx FR 2015 we accept other format than just Conference as sponsorTalk
       val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
+
+      resetVotesIfProposalTypeIsUpdated(proposal.id, proposal.talkType, proposalState)
 
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
@@ -928,6 +929,15 @@ object Proposal {
           val updated = proposal.copy(otherSpeakers = newOtherSpeakers)
           save(updatedBy, updated, updated.state)
       }
+  }
+
+  private def resetVotesIfProposalTypeIsUpdated(proposalId:String, talkType:ProposalType, state:ProposalState){
+    play.Logger.debug(s"Checking $proposalId $talkType $state")
+    if(ApprovedProposal.isApproved(proposalId, talkType.id)==false && state==ProposalState.DRAFT){
+      Review.archiveAllVotesOnProposal(proposalId)
+      Comment.saveInternalComment(proposalId, Webuser.Internal.uuid, s"All votes deleted for this talk, because it was changed to ${Messages(talkType.id)}")
+
+    }
   }
 
 }
