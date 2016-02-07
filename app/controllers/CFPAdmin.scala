@@ -681,6 +681,14 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.showProposalsWithNoVotes(proposals))
   }
 
+  def history(proposalId:String)=SecuredAction(IsMemberOf("cfp")){
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Proposal.findById(proposalId).map{
+        proposal:Proposal=>
+          Ok(views.html.CFPAdmin.history(proposal))
+      }.getOrElse(NotFound("Proposal not found"))
+  }
+
 }
 
 

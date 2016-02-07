@@ -145,7 +145,6 @@
                             }
                     }
                 </div>
-            </div>
         }else{
                 <div class="panel-heading">
                     <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
@@ -197,9 +196,10 @@
                     @flash.get("vote").get
                     </div>
                 }
-            </div>
-            }
+           }
         }
+            </div>
+        <div class="col-sm-12 col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3><i class="icon-tasks"></i> @Messages("admin.sp.discussion")</h3>
@@ -272,18 +272,6 @@
 
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12 col-lg-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">History</div>
-                <div class="panel-body">
-                    @Event.loadEventsForObjRef(proposal.id).sortBy(_.date.map(_.getMillis).getOrElse(0L)).map { event =>
-                     <small><strong>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("EEE dd/MM HH:mm")):</strong> @event.msg</small><br>
-                    }
-
-                </div>
-            </div>
-        </div>
     </div>
 
 }
