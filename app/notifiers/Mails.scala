@@ -184,7 +184,7 @@ object Mails {
 
   def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
     val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"[${proposal.title}][PRIVATE] ${fromWebuser.cleanName}")
+    emailer.setSubject(s"[PRIVATE][${proposal.title}]")
     emailer.addFrom(from)
     emailer.addRecipient(committeeEmail)
     bcc.map(bccEmail => emailer.addBcc(bccEmail))
