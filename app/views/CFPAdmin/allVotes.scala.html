@@ -52,12 +52,13 @@
                                 <th/>
                                 <th>Average</th>
                                 <th>GT</th>
-                                <th>Nb of votes</th>
-                                <th>Nb of abst.</th>
-                                <th>SD</th>
+                                <th>Votes</th>
+                                <th>Abst.</th>
+                                <th>StdDev</th>
                                 <th>Title</th>
                                 <th>Proposal id</th>
                                 <th>Speakers</th>
+                                <th>Type</th>
                                 <th>Track</th>
                                 <th>Lang</th>
                                 <th><i class="icon-thumbs-up"></i> / <i class="icon-thumbs-down"></i></th>
@@ -95,7 +96,7 @@
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id">@proposal.title</a>
                                     </td>
-                                    <td>@proposal.id</td>
+                                    <td><small>@proposal.id</small></td>
                                     <td>
                                         @proposal.allSpeakers.map { s: Speaker =>
                                             @if(models.Invitation.isInvited(s.uuid)){
@@ -106,7 +107,10 @@
                                         }
                                     </td>
                                     <td>
-                                        @Messages(proposal.track.label)
+                                        <small>@proposal.talkType.id</small>
+                                    </td>
+                                    <td>
+                                        <small>@Messages(proposal.track.label)</small>
                                     </td>
                                     <td>@proposal.lang</td>
                                     <td>
@@ -172,7 +176,7 @@
     "aoColumnsDef": [
         { "bSortable" : "false", "bSearchable" : "false", "aTargets": 0 },
         { "sType": "numeric", "aTargets": [1, 2, 3, 4]},
-        { "sType": "string", "aTargets": [5, 6, 7, 8, 9, 10, 11]}
+        { "sType": "string", "aTargets": [5, 6, 7, 8, 9, 10, 11,12 ]}
         ]
     });
 
