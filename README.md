@@ -1,11 +1,11 @@
 # Call for Papers application
 
-The CFP is a Call for Papers application for Conferences. 
+The CFP is a Call for Papers application for Conferences.
 
 The application allows a speaker to register with Github/Google+ or LinkedIn, then post one or more proposals for a Conference.
 
 A program committee can then vote, ask questions to speaker and finally, build an Agenda for a conference.
-The CFP offers also a REST API with the list of selected talks, speakers and the schedules. 
+The CFP offers also a REST API with the list of selected talks, speakers and the schedules.
 
 In 2015, the Devoxx France's CFP received 681 proposals for 220 slots. The 16 members of the technical committee for Devoxx FR did more than 6700 reviews in 2 months.
 
@@ -14,7 +14,7 @@ In 2015, the Devoxx France's CFP received 681 proposals for 220 slots. The 16 me
 Original author: Nicolas Martignole [@nmartignole](http://www.twitter.com/nmartignole)
 
 - Gabriel Kastenbaum [@lambdadevfr](http://www.twitter.com/lambdadevfr)
-- Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou) 
+- Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou)
 - Frédéric Camblor [@fcamblor](http://www.twitter.com/fcamblor)
 - Nicolas de Loof [@ndeloof](http://www.twitter.com/ndeloof)
 - Mani Sarkar [theNeomatrix369](http://www.twitter.com/theNeomatrix369)
@@ -29,9 +29,9 @@ Copyright (c) 2013 Association du Paris Java User Group & [Nicolas Martignole](h
 
 The CFP was originally created in 2013 for the [Devoxx France](http://www.devoxx.fr/) 2014 edition. Devoxx France is one of the biggest conference for Developers in France with 2500 attendees in 2015.
 The conference had top sponsors like Google, Oracle, IBM and Microsoft. The conference is organized by Nicolas Martignole, Antonio Goncalvès and Zouheir Cadi.
- 
+
 The CFP is implemented with Scala and Play Framework v2.2.3. Redis 2.8 is used for persistence. Elastic Search is integrated as a search engine and to calculate stats with Facets.
- 
+
 ## Which Conferences are using it?
 
 - [Devoxx France](http://www.devoxx.fr)
@@ -52,15 +52,15 @@ Send a message to (@nmartignole)[http://www.twitter.com/nmartignole) if you plan
 - Install Play 2.2.3 (not the latest version with activator)
 - Install Redis 2.8.21 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
 - Read Redis documentation and learn Redis with http://try.redis.io
-- Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf 
+- Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf
 
 Optional but recommended for better user experience:
 
 - Install ElasticSearch (1.2.0 or better) This version uses Facets.
-- Create Github App and configure OAuth. See [the Github site](https://github.com/settings/applications) 
+- Create Github App and configure OAuth. See [the Github site](https://github.com/settings/applications)
 - Create an application using your [Google account](https://cloud.google.com/console#/project). Configure a URL for development, such as http://localhost:9000/ and prod URL as http://cfp.devoxx.fr/
 - Create a LinkedIn App and configure OAuth
-- a [Mailjet](http://www.mailjet.com) account for SMTP sending transactional emails 
+- a [Mailjet](http://www.mailjet.com) account for SMTP sending transactional emails
 
 ## I'm using Docker and Docker-Machine
 
@@ -73,7 +73,7 @@ To connect to your local Redis Cli, you can use this command line as an example 
 ## Here's what you need to configure:
 
 - Rename the run.sh.sample file to run.sh
-- Generate a string for the security of the application 
+- Generate a string for the security of the application
    application.secret = "a_unique_secret_long_enough"
 - As the application uses play.api.libs.Crypto#encryptAES, this secret MUST be at least 16 chars long.
 - Configure the SMTP server using the parameters Mailjet OR use the smtp.mock mode in DEV
@@ -87,10 +87,13 @@ To connect to your local Redis Cli, you can use this command line as an example 
 
 First things first, you need to set-up your own conference. To do so, Frederic Camblor implemented a generic
 class that contains most (but not all) importants details. Check ConferenceDescriptor.scala. This file defines
-the configuration of your own conference. The Schedule/Slots is not mandatory when you start to configure your application. 
+the configuration of your own conference. The Schedule/Slots is not mandatory when you start to configure your application.
 However if you plan to use the REST API then you should also configure this part. Check for the TODO's in the file.
 
 You can then also translate and check messages/messages.fr from the conf file
+
+The all display configuration can be customize in the views/Customize/ directory.
+
 
 ## How can I create a new user?
 
@@ -101,9 +104,9 @@ To create an admin:
   - Loads and validate your user
   - Once authenticated, retrieve your UUID from the "Edit my Profile" page (/cfp/profile)
   - Load the bootstrap URL http://localhost:9000/admin/bootstrapAdminUser?uuid=[your_uuid]. Please note that if there is already an admin, this won't work.
-  
+
 You can also add an existing user to the Admin group directly from Redis console :
-   
+
 
 ## In term of Git, how can I push a new feature?
 
@@ -121,7 +124,7 @@ When you want to update your local branch (for instance, dev-poland) you should 
 
 
 ## How can I save my agenda and host it to a Wordpress ?
-  
+
 Use WGET and download all pages from your Publisher controller. This will save speakers, talks, schedule, etc.
 
 ```wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2014```
@@ -131,16 +134,16 @@ Use WGET and download all pages from your Publisher controller. This will save s
 Downloading redis...tag.gz from http://download.redis.io/releases/redis-2.8.21.tar.gz
 
 The CFP has been tested with Redis from version 2.8.4 to 2.8.19. Always check that your version is up-to-date in term
-of security [here](https://raw.githubusercontent.com/antirez/redis/2.8/00-RELEASENOTES). I plan to upgrade and to check 
+of security [here](https://raw.githubusercontent.com/antirez/redis/2.8/00-RELEASENOTES). I plan to upgrade and to check
 that the CFP code is OK with Redis 3.x before Devoxx France 2016.
 
 Unpack the archive
 
-    $ make 
+    $ make
     $ make install
 
 Create a custom redis configuration file. Be sure to set a very strong password. Redis is written in C and is mono-core.
-On my super Intel i7 it runs on one Core. Thus it's ok to have multiple Redis on differents ports. 
+On my super Intel i7 it runs on one Core. Thus it's ok to have multiple Redis on differents ports.
 
 How to run the redis server with custom config file ?
 
@@ -155,15 +158,15 @@ Once the redis-server is up and running, do the following:
 $ redis-cli -p 6366
 
 Some commands to remember:
-	
+
 	> INFO
 	> DBSIZE
     > SYNC - helps sync remote server with local server (cluster)
 	> MONITOR
 	> SMEMBERS Webuser:admin
 	> SADD Webuser:admin [sha1]
-	
-	
+
+
 Once running on a local empty Redis, you will want to have a local user with admin privileges in the application.
 
 - Create a user and activate it
@@ -172,14 +175,14 @@ Once running on a local empty Redis, you will want to have a local user with adm
 - Find the UUID of the user you want to be admin
 - The command keys Webuser:UUID* will list all known user UUIDs
 - Find which one is your soon to be admin by running get Webuser:UUID:<UUID> and the output gives you the email.
-- Add the UUID to admin and cfp groups using redis-cli (the redis CLI). 
+- Add the UUID to admin and cfp groups using redis-cli (the redis CLI).
 
-    > SADD Webuser:admin <UUID> 
+    > SADD Webuser:admin <UUID>
     > SADD Webuser:cfp <UUID>
 
 If you want to promote an existing user to admin on your PROD server, you can also use redis-cli to connect to the remote server
-Let's say you want to add John with ID=UUID_123456 to the remote PROD redis-prod.mydomain.com that is running on port 6393. The Master 
-password on this remote server is "my_super_password_for_prod". 
+Let's say you want to add John with ID=UUID_123456 to the remote PROD redis-prod.mydomain.com that is running on port 6393. The Master
+password on this remote server is "my_super_password_for_prod".
 
     nicolas@macbook :~/Dev/DevoxxFR/2014/RedisBackup> redis-cli -h redis-prod.mydomain.com -p 6393
     redis-prod.mydomain.com:6393> info
@@ -195,16 +198,16 @@ password on this remote server is "my_super_password_for_prod".
 
 
 ## Redis is an in-memory server... How can I be sure that I won't loose my data ?
-	
-First, read the Redis documentation. I use AOF and BGSAVE on my production servers. I also use Linux Dropbox client so that I can save some dump automatically. 
-I have also configured my personal computer to be a slave of all my Redis servers. This is very practical, you get a live copy of Redis on your laptop. 
-	
-See redis-sample-dev.conf and redis-sample-prod.conf for 2 valid configuration files for Redis.	
-	
+
+First, read the Redis documentation. I use AOF and BGSAVE on my production servers. I also use Linux Dropbox client so that I can save some dump automatically.
+I have also configured my personal computer to be a slave of all my Redis servers. This is very practical, you get a live copy of Redis on your laptop.
+
+See redis-sample-dev.conf and redis-sample-prod.conf for 2 valid configuration files for Redis.
+
 Just to give you an idea and some stats for our Devoxx France 2015 Redis database :
- 
+
     - Number of Speakers : 946
-    - Number of Proposals : 681 
+    - Number of Proposals : 681
     - Number of Reviews : 6704
     - Redis DB Size : 8388
     - DUMP file size : 65M
@@ -213,17 +216,17 @@ Just to give you an idea and some stats for our Devoxx France 2015 Redis databas
     - Memory used by Redis : 142 Mo
 
 ## Where do you host your CFP for Devoxx France?
-  
+
 The Devoxx France CFP is hosted on [Clever-Cloud](http://www.clever-cloud). Clever Cloud is a Platform as a Service. Git push and voilà, your code is deployed.
 Redis and ElasticSearch are on a dedicated server.
 
 ## Why do you use Play 2.2.x and not the latest version?
 
 I recommend [Play 2.2.6](https://downloads.typesafe.com/play/2.2.6/play-2.2.6.zip). I have a strong experience with Play since
-2011 and Play 1.x. I did more than 20 presentations of Play! Framework since 2010. 
+2011 and Play 1.x. I did more than 20 presentations of Play! Framework since 2010.
 
 I plan to evaluate the need to migrate to Play Framework 2.4. But I'm not a super-fan with this version and with what the core developers decided to do since early 2015.
-  
+
 ## Contributing
 
 **[Pull requests](https://github.com/git-up/GitUp/pulls) are welcome but be aware that the CFP is really focus on Devoxx conferences.**
@@ -239,7 +242,7 @@ The following is a list of absolute requirements for PRs (not following them wou
 
 ## <a name="commit"></a> Git Commit Guidelines (from AngularJS source code)
 
-We have very precise rules over how our git commit messages can be formatted.  This leads to **more readable messages** that are easy to follow when looking through the **project history**. 
+We have very precise rules over how our git commit messages can be formatted.  This leads to **more readable messages** that are easy to follow when looking through the **project history**.
 
 ### Commit Message Format
 Each commit message consists of a **header**, a **body** and a **footer**.  The header has a special
