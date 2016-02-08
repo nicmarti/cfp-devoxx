@@ -2,6 +2,7 @@ package models
 
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Play
+import com.github.nscala_time.time.Imports._
 
 /**
   * ConferenceDescriptor.
@@ -680,6 +681,12 @@ object ConferenceDescriptor {
     , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
+  
+  def isConferenceOpen() = {
+    val tim = current().timing
+    val now = DateTime.now 
+    now.isAfter(tim.cfpOpenedOn) && now.isBefore(tim.cfpClosedOn)
+  }
 
   // It has to be a def, not a val, else it is not re-evaluated
   def isCFPOpen: Boolean = {
