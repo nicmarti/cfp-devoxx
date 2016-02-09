@@ -695,7 +695,7 @@ gt.intro.1=Voici la liste complète des propositions que vous n''avez pas encore
 gt.intro.2=Si vous le souhaitez, vous pouvez aussi
 gt.reviewYourVotes=revoir et corriger vos votes
 gt.intro.3=tant que le CFP est ouvert.
-gt.special.need=Si vous pensez à un speaker spécifique que vous aimeriez voir à Devoxx France, merci d''envoyer un email à program@devoxx.fr et nous essayerons de contacter la personne.
+gt.special.need=Mise à jour du mardi 9 février : seules les Conférences peuvent désormais être évaluées. La sélection des autres formats est terminée
 gt.todo=Votre liste de sujet à revoir :
 
 
