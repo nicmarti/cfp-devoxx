@@ -91,7 +91,9 @@ object Review {
 
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
+      // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "ApprovedById:",
+        "RefusedById:", s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 

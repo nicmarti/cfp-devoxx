@@ -39,11 +39,12 @@ object ReviewByGoldenTicket {
 
   def voteForProposal(proposalId: String, reviewerUUID: String, vote: Int) = Redis.pool.withClient {
     implicit client =>
+      val secureMaxVote = Math.min(vote,10)
       val tx = client.multi()
       tx.sadd(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID", proposalId)
       tx.sadd(s"ReviewGT:Reviewed:ByProposal:$proposalId", reviewerUUID)
-      tx.zadd(s"ReviewGT:Votes:$proposalId", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
-      tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
+      tx.zadd(s"ReviewGT:Votes:$proposalId", secureMaxVote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
+      tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + secureMaxVote) // Store when this user voted for this talk
       tx.exec()
   }
 
@@ -90,7 +91,11 @@ object ReviewByGoldenTicket {
 
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID")
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
+        "ApprovedById:",
+        "RefusedById:",
+        s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID"
+      )
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
