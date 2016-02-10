@@ -175,7 +175,7 @@ object ConferenceDescriptor {
   object ConferenceTracks {
     val JAVA = Track("java", "java.label")
     val MOBILE = Track("mobile", "mobile.label")
-    val WEB = Track("wm", "web.label")
+    val WEB = Track("wm", "mw.label")
     val ARCHISEC = Track("archisec", "archisec.label")
     val AGILE_DEVOPS = Track("agTest", "agile_devops.label")
     val CLOUD = Track("cldops", "cloud.label")
