@@ -190,19 +190,19 @@ archisec.leaderboard=Architecture, Performance and Security
 
 track.agile_devops.title=DevOps, Agile, Methodology & Tests
 track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
-agile_devops.label=DevOps, Agile, Methodology & Tests
+agTest.label=DevOps, Agile, Methodology & Tests
 agTest.label=DevOps, Agile, Methodology & Tests
 agTest.leaderboard=DevOps, Agile, Methodology & Tests
 
 track.cloud.title=Cloud & Scaling
 track.cloud.desc=Cloud-computing, containers, resilient architectures.
-cloud.label=Cloud & Scaling
+cldops.label=Cloud & Scaling
 cldops.label=Cloud & Scaling
 cldops.leaderboard=Cloud & Scaling
 
 track.bigdata.title=Big Data & Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
-bigdata.label=Big Data & Analytics
+bigd.label=Big Data & Analytics
 bigd.leaderboard=Big Data & Analytics
 
 track.future.title=Future & Robotics

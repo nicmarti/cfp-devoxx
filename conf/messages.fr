@@ -182,12 +182,12 @@ archisec.leaderboard=Architecture, Performance et Securité
 
 track.agile_devops.title=DevOps, Agilité, Méthodologie & Tests
 track.agile_devops.desc=Méthodes et pratiques de développement / déploiement logiciel, TDD, BDD, xDD.
-agile_devops.label=DevOps, Agilité, Méthodologie & Tests
+agTest.label=DevOps, Agilité, Méthodologie & Tests
 agTest.leaderboard=DevOps, Agilité, Méthodologie & Tests
 
 track.cloud.title=Cloud et Scaling
 track.cloud.desc=Cloud-computing, Architectures résilientes, containeurs
-cloud.label=Cloud et Scaling
+cldops.label=Cloud et Scaling
 cldops.leaderboard=Cloud et Scaling
 
 track.bigdata.title=BigData et Analytics
