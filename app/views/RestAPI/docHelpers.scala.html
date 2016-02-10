@@ -1,0 +1,29 @@
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@api("Doc docHelpers") {
+<div class="row">
+    <div class="col-md-12">
+    <h1>@Messages("shortName") API</h1>
+    <hr>
+       <h3>Documentation for "helpers"</h3>
+
+        <p>The "helpers" resource help you to use CFP.</p>
+
+        <h4>Sample:</h4>
+            <code>
+                <pre>
+{
+    "link":
+        {
+            "href": "@ConferenceDescriptor.current().conferenceUrls.cfpURL/api/helpers/tracks/messagekeys",
+            "title": "See more details about tracks"
+        }
+}
+                </pre>
+
+            </code>
+        </div>
+    </div>
+</div>
+
+}

@@ -5,6 +5,7 @@ import play.api.Play
 import com.github.nscala_time.time.Imports._
 import com.typesafe.config.ConfigValue
 import scala.collection.JavaConversions._
+import play.api.libs.json._
 
 /**
  * ConferenceDescriptor.
@@ -199,6 +200,9 @@ object ConferenceDescriptor {
     def findTrackDescFor(t: Track): TrackDesc = {
       ALL.find(_.id == t.id).head
     }
+
+    implicit val conferenceTracksDescriptionFormat = Json.format[TrackDesc]
+
   }
 
   // TODO If you want to use the Devoxx Scheduler, you can describe here the list of rooms, with capacity for seats
