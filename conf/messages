@@ -177,9 +177,9 @@ track.mobile.desc=Mobile, Java & Internet of Things
 mobile.label=Mobile, IoT
 mobile.leaderboard=Mobile, IoT
 
-track.mw.title=Web, HTML5 et UX
-track.mw.desc=Web, user-experience, front-end and Web architecture
-mw.label=Web, HTML5 et UX
+track.wm.title=Web, HTML5 et UX
+track.wm.desc=Web, user-experience, front-end and Web architecture
+wm.label=Web, HTML5 et UX
 wm.label=Web, HTML5 et UX
 wm.leaderboard=Web, HTML5 et UX
 
