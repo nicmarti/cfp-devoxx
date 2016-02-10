@@ -177,9 +177,9 @@ track.mobile.desc=Mobile, Java & Internet of Things
 mobile.label=Mobile, IoT
 mobile.leaderboard=Mobile, IoT
 
-track.web.title=Web, HTML5 et UX
-track.web.desc=Web, user-experience, front-end and Web architecture
-web.label=Web, HTML5 et UX
+track.wm.title=Web, HTML5 et UX
+track.wm.desc=Web, user-experience, front-end and Web architecture
+wm.label=Web, HTML5 et UX
 wm.label=Web, HTML5 et UX
 wm.leaderboard=Web, HTML5 et UX
 
@@ -188,21 +188,21 @@ track.archisec.desc=Software architecture, performance, encryption and best prac
 archisec.label=Architecture, Performance and Security
 archisec.leaderboard=Architecture, Performance and Security
 
-track.agile_devops.title=DevOps, Agile, Methodology & Tests
-track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
-agile_devops.label=DevOps, Agile, Methodology & Tests
+track.agTest.title=DevOps, Agile, Methodology & Tests
+track.agTest.desc=Software development methods, TDD, BDD, xDD.
+agTest.label=DevOps, Agile, Methodology & Tests
 agTest.label=DevOps, Agile, Methodology & Tests
 agTest.leaderboard=DevOps, Agile, Methodology & Tests
 
-track.cloud.title=Cloud & Scaling
-track.cloud.desc=Cloud-computing, containers, resilient architectures.
-cloud.label=Cloud & Scaling
+track.cldops.title=Cloud & Scaling
+track.cldops.desc=Cloud-computing, containers, resilient architectures.
+cldops.label=Cloud & Scaling
 cldops.label=Cloud & Scaling
 cldops.leaderboard=Cloud & Scaling
 
-track.bigdata.title=Big Data & Analytics
-track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
-bigdata.label=Big Data & Analytics
+track.bigd.title=Big Data & Analytics
+track.bigd.desc=From real-time analysis to massive prediction and cloud storage
+bigd.label=Big Data & Analytics
 bigd.leaderboard=Big Data & Analytics
 
 track.future.title=Future & Robotics

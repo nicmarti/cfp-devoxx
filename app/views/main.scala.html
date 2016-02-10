@@ -30,9 +30,13 @@
             @if(play.api.Play.current.mode==play.api.Mode.Dev){
                 <div class="ribbon-wrapper-red"><div class="ribbon-red">DEV</div></div>
             }else {
-                <div class="ribbon-wrapper-red"><div class="ribbon-red">Closed</div></div>
+            	@if(models.ConferenceDescriptor.isConferenceOpen()){
+            		<div class="ribbon-wrapper-green"><div class="ribbon-green">Open</div></div>
+            	} else {
+                	<div class="ribbon-wrapper-red"><div class="ribbon-red">Closed</div></div>
+                }
             }
-            <a href="/" class="navbar-brand">@Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") CFP</a>
+            <a href="/" class="navbar-brand">@Customize.ConferenceBrand()</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>

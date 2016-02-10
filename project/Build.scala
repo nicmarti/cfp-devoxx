@@ -21,6 +21,7 @@ object ApplicationBuild extends Build {
     , "com.typesafe.play" %% "play-cache" % "2.2.0"
     ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
     , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
+    , "com.github.nscala-time" %% "nscala-time" % "2.4.0" // update it using joda time version : https://github.com/nscala-time/nscala-time
 
   )
 

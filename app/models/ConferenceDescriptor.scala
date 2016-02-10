@@ -1,25 +1,29 @@
 package models
 
-import org.joda.time.{DateTime, DateTimeZone}
+import org.joda.time.{ DateTime, DateTimeZone }
 import play.api.Play
+import com.github.nscala_time.time.Imports._
+import com.typesafe.config.ConfigValue
+import scala.collection.JavaConversions._
+import play.api.libs.json._
 
 /**
-  * ConferenceDescriptor.
-  * This might be the first file to look at, and to customize.
-  * Idea behind this file is to try to collect all configurable parameters for a conference.
-  *
-  * For labels, please do customize messages and messages.fr
-  *
-  * Note from Nicolas : the first version of the CFP was much more "static" but hardly configurable.
-  *
-  * @author Frederic Camblor, BDX.IO 2014
-  */
+ * ConferenceDescriptor.
+ * This might be the first file to look at, and to customize.
+ * Idea behind this file is to try to collect all configurable parameters for a conference.
+ *
+ * For labels, please do customize messages and messages.fr
+ *
+ * Note from Nicolas : the first version of the CFP was much more "static" but hardly configurable.
+ *
+ * @author Frederic Camblor, BDX.IO 2014
+ */
 
-case class ConferenceUrls(faq: String, registration: String,confWebsite: String, cfpHostname: String){
-    def cfpURL:String={
-    if(Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)){
+case class ConferenceUrls(faq: String, registration: String, confWebsite: String, cfpHostname: String) {
+  def cfpURL: String = {
+    if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
       s"https://$cfpHostname"
-    }else{
+    } else {
       s"http://$cfpHostname"
     }
   }
@@ -27,17 +31,16 @@ case class ConferenceUrls(faq: String, registration: String,confWebsite: String,
 }
 
 case class ConferenceTiming(
-                             datesI18nKey: String,
-                             speakersPassDuration: Integer,
-                             preferredDayEnabled: Boolean,
-                             firstDayFr: String,
-                             firstDayEn: String,
-                             datesFr: String,
-                             datesEn: String,
-                             cfpOpenedOn: DateTime,
-                             cfpClosedOn: DateTime,
-                             scheduleAnnouncedOn: DateTime
-                           )
+  datesI18nKey: String,
+  speakersPassDuration: Integer,
+  preferredDayEnabled: Boolean,
+  firstDayFr: String,
+  firstDayEn: String,
+  datesFr: String,
+  datesEn: String,
+  cfpOpenedOn: DateTime,
+  cfpClosedOn: DateTime,
+  scheduleAnnouncedOn: DateTime)
 
 case class ConferenceSponsor(showSponsorProposalCheckbox: Boolean, sponsorProposalType: ProposalType = ProposalType.UNKNOWN)
 
@@ -98,15 +101,14 @@ case class ConferenceDescriptor(eventCode: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[String],
                                 localisation: String,
-                                notifyProposalSubmitted:Boolean,
-                                maxProposalSummaryCharacters:Int=1200
-                               )
+                                notifyProposalSubmitted: Boolean,
+                                maxProposalSummaryCharacters: Int = 1200)
 
 object ConferenceDescriptor {
 
   /**
-    * TODO configure here the kind of talks you will propose
-    */
+   * TODO configure here the kind of talks you will propose
+   */
   object ConferenceProposalTypes {
     val CONF = ProposalType(id = "conf", label = "conf.label")
 
@@ -129,15 +131,15 @@ object ConferenceDescriptor {
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, IGNITE, OTHER)
 
     def valueOf(id: String): ProposalType = id match {
-      case "conf" => CONF
-      case "uni" => UNI
-      case "tia" => TIA
-      case "lab" => LAB
-      case "quick" => QUICK
-      case "bof" => BOF
-      case "key" => KEY
+      case "conf"   => CONF
+      case "uni"    => UNI
+      case "tia"    => TIA
+      case "lab"    => LAB
+      case "quick"  => QUICK
+      case "bof"    => BOF
+      case "key"    => KEY
       case "ignite" => IGNITE
-      case "other" => OTHER
+      case "other"  => OTHER
     }
 
   }
@@ -171,37 +173,36 @@ object ConferenceDescriptor {
   }
 
   // TODO Configure here your Conference's tracks.
+
+  def getConferenceTracksFromConfiguration = {
+    Play.current.configuration.getConfigList("cfp.tracks").map(
+      l => {
+        l.map(
+          t => (t.getString("id") :: t.getString("icon") :: Nil))
+          .collect({
+            case Some(id) :: Some(icon) :: Nil => (Track(id, id + ".label"), TrackDesc(id, icon, "track." + id + ".title", "track." + id + ".desc"))
+          }).toList
+      })
+      .getOrElse(List())
+  }
+
   object ConferenceTracks {
-    val JAVA = Track("java", "java.label")
-    val MOBILE = Track("mobile", "mobile.label")
-    val WEB = Track("wm", "web.label")
-    val ARCHISEC = Track("archisec", "archisec.label")
-    val AGILE_DEVOPS = Track("agTest", "agile_devops.label")
-    val CLOUD = Track("cldops", "cloud.label")
-    val BIGDATA = Track("bigd", "bigdata.label")
-    val FUTURE = Track("future", "future.label")
-    val LANG = Track("lang", "lang.label")
-    val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(JAVA,MOBILE,WEB,ARCHISEC,AGILE_DEVOPS,CLOUD,BIGDATA,FUTURE,LANG,UNKNOWN)
+
+    val ALL = getConferenceTracksFromConfiguration.map(_._1)
+
   }
 
   // TODO configure the description for each Track
   object ConferenceTracksDescription {
-    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/dvfr2015/images/icon_javase.png", "track.java.title", "track.java.desc")
-    val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/dvfr2015/images/icon_web.png", "track.mobile.title", "track.mobile.desc")
-    val WEB = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/dvfr2015/images/icon_web.png", "track.web.title", "track.web.desc")
-    val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/dvfr2015/images/icon_architecture.png", "track.archisec.title", "track.archisec.desc")
-    val AGILE_DEVOPS = TrackDesc(ConferenceTracks.AGILE_DEVOPS.id, "/assets/dvfr2015/images/icon_startup.png", "track.agile_devops.title", "track.agile_devops.desc")
-    val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/dvfr2015/images/icon_cloud.png", "track.cloud.title", "track.cloud.desc")
-    val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/dvfr2015/images/icon_mobile.png", "track.bigdata.title", "track.bigdata.desc")
-    val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/dvfr2015/images/icon_future.png", "track.future.title", "track.future.desc")
-    val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/dvfr2015/images/icon_alternative.png", "track.lang.title", "track.lang.desc")
 
-    val ALL = List(JAVA, MOBILE, WEB, ARCHISEC, AGILE_DEVOPS, CLOUD, BIGDATA, FUTURE, LANG)
+    val ALL = getConferenceTracksFromConfiguration.map(_._2)
 
     def findTrackDescFor(t: Track): TrackDesc = {
       ALL.find(_.id == t.id).head
     }
+
+    implicit val conferenceTracksDescriptionFormat = Json.format[TrackDesc]
+
   }
 
   // TODO If you want to use the Devoxx Scheduler, you can describe here the list of rooms, with capacity for seats
@@ -255,10 +256,9 @@ object ConferenceDescriptor {
     val keynoteRoom = List(AMPHI_BLEU)
 
     val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
-    val allRoomsQuickiesThu = allRoomsConf.filterNot(_.id==AMPHI_BLEU.id) ++ List(PARIS_202_203)
-    val allRoomsQuickiesFriday = allRoomsConf.filterNot(_.id==AMPHI_BLEU.id)
+    val allRoomsQuickiesThu = allRoomsConf.filterNot(_.id == AMPHI_BLEU.id) ++ List(PARIS_202_203)
+    val allRoomsQuickiesFriday = allRoomsConf.filterNot(_.id == AMPHI_BLEU.id)
   }
-
 
   // TODO if you want to use the Scheduler, you can configure the breaks
   object ConferenceSlotBreaks {
@@ -583,47 +583,36 @@ object ConferenceDescriptor {
     val wednesdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "wednesday",
         new DateTime("2016-04-08T08:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-08T09:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-      , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday",
+        new DateTime("2016-04-08T09:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris"))), SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday",
         new DateTime("2016-04-08T12:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-08T13:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-      , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
+        new DateTime("2016-04-08T13:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris"))), SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
         new DateTime("2016-04-08T16:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-08T17:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-    )
+        new DateTime("2016-04-08T17:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris"))))
 
     val thursdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "thursday",
         new DateTime("2016-04-09T07:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-09T09:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-      , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
+        new DateTime("2016-04-09T09:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris"))), SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
         new DateTime("2016-04-09T10:50:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-09T11:15:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-      , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
+        new DateTime("2016-04-09T11:15:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris"))), SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime("2016-04-09T12:05:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-09T13:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-      , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
+        new DateTime("2016-04-09T13:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris"))), SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime("2016-04-09T16:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-09T16:35:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-      //      , SlotBuilder(ConferenceSlotBreaks.meetAndGreet, "thursday",
-      //        new DateTime("2016-04-09T19:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-      //        new DateTime("2016-04-09T22:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
-    )
+        new DateTime("2016-04-09T16:35:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris"))) //      , SlotBuilder(ConferenceSlotBreaks.meetAndGreet, "thursday",
+        //        new DateTime("2016-04-09T19:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+        //        new DateTime("2016-04-09T22:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        )
 
     val fridayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.petitDej, "friday",
         new DateTime("2016-04-10T08:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-10T09:00:00.000+02:00"))
-      , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
+        new DateTime("2016-04-10T09:00:00.000+02:00")), SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime("2016-04-10T10:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-10T11:15:00.000+02:00"))
-      , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
+        new DateTime("2016-04-10T11:15:00.000+02:00")), SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
         new DateTime("2016-04-10T12:05:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-10T12:55:00.000+02:00"))
-      , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
+        new DateTime("2016-04-10T12:55:00.000+02:00")), SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime("2016-04-10T16:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime("2016-04-10T16:35:00.000+02:00"))
-    )
+        new DateTime("2016-04-10T16:35:00.000+02:00")))
     // DEVOXX DAYS
 
     val wednesday: List[Slot] = {
@@ -658,8 +647,7 @@ object ConferenceDescriptor {
       faq = "http://www.devoxx.fr/faq/",
       registration = "https://reg.devoxx.fr",
       confWebsite = "http://www.devoxx.fr/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
-    ),
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")),
     timing = ConferenceTiming(
       datesI18nKey = "20 au 22 avril 2016",
       speakersPassDuration = 5,
@@ -670,22 +658,24 @@ object ConferenceDescriptor {
       datesEn = "from 20th to 22nd of April, 2016",
       cfpOpenedOn = DateTime.parse("2015-11-11T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2016-01-31T09:00:00+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2016-02-25T00:00:00+02:00")
-    ),
+      scheduleAnnouncedOn = DateTime.parse("2016-02-25T00:00:00+02:00")),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
     hashTag = "#DevoxxFR",
-    conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
-    , List("fr_FR")
-    , "Palais des Congrès, Porte Maillot, Paris"
-    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF), List("fr_FR"), "Palais des Congrès, Porte Maillot, Paris", notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
-  )
+    )
+
+  def isConferenceOpen() = {
+    val tim = current().timing
+    val now = DateTime.now
+    now.isAfter(tim.cfpOpenedOn) && now.isBefore(tim.cfpClosedOn)
+  }
 
   // It has to be a def, not a val, else it is not re-evaluated
   def isCFPOpen: Boolean = {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
 
-  def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
+  def isGoldenTicketActive: Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
 }
