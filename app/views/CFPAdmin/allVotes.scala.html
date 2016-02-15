@@ -1,26 +1,17 @@
 @(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes, Double, Long)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All votes") {
-    <script type="text/javascript" charset="utf-8" language="javascript" src="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+    <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
 
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="panel-body">
-                    <div class="col-md-12">
                         <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i> All</a>
                         @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                             <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
                         }
                         | <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
                         <br>
-                        <i class="icon-filter"></i> Show only:
-                        @Track.allIDs.filterNot(d=>d==Track.UNKNOWN.id).map{idTrack=>
-                            <a href="@routes.CFPAdmin.allVotes(confType,Some(idTrack))" class="btn btn-default btn-sm">@Messages(s"$idTrack.label")  - @confType</a>
-                        }
 
                         @if(flash.get("error").isDefined) {
                             <div class="alert alert-danger alert-dismissable">
@@ -34,15 +25,18 @@
                             </div>
                         }
                         <br>
-                        @defining(allVotes.filter(_._1.state==ProposalState.DECLINED).size){declinedTotal=>
+                        @defining(allVotes.count(_._1.state == ProposalState.DECLINED)){declinedTotal=>
                         <span class="label label-success">@totalApproved approved</span> <span class="label label-declined">- @declinedTotal declined</span> <span class="label label-warning">= @(totalRemaining+declinedTotal) remaining</span>
                         }
                         <br>
-                        <span class="label label-primary">@allVotes.map(_._1).filter(_.lang=="fr").size FR</span> <span class="label label-default">@allVotes.map(_._1).filter(_.lang=="en").size EN</span>
+                        <span class="label label-primary">@allVotes.map(_._1).count(_.lang == "fr") FR</span> <span class="label label-default">@allVotes.map(_._1).count(_.lang == "en") EN</span>
 
                 </div>
 
-                <div class="col-md-12">
+        </div>
+<div class="row">
+
+ <div class="col-md-12">
                     <small>All proposals with at least one vote, with state set to SUBMITTED/APPROVED/ACCEPTED/BACKUP</small>
                     <small>If you just created a proposal and it's not listed here : please add a vote.</small>
 
@@ -94,15 +88,15 @@
                                     }
                                     </td>
                                     <td>
-                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id">@proposal.title</a>
+                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id"><small>@proposal.title</small></a>
                                     </td>
                                     <td><small>@proposal.id</small></td>
                                     <td>
                                         @proposal.allSpeakers.map { s: Speaker =>
                                             @if(models.Invitation.isInvited(s.uuid)){
-                                              <span class="label label-warning"><i class="icon-glass"></i> @s.cleanName</span>
+                                              <span class="label label-warning"><i class="icon-glass"></i> @s.cleanName <small>[@s.company.map(_.toLowerCase.capitalize)]</small></span>
                                             }else{
-                                                <span class="label label-default">@s.cleanName</span>
+                                                <span class="label label-default">@s.cleanName  <small>[@s.company.map(_.toLowerCase.capitalize)]</small></span>
                                             }
                                         }
                                     </td>
@@ -147,11 +141,8 @@
                         </tbody>
                     </table>
 
-                </div>
+ </div>
 
-        </div>
-    </div>
-</div>
 </div>
 
 <script type="text/javascript">
@@ -160,12 +151,14 @@
     $.fn.dataTableExt.oStdClasses.sStripeOdd = '';
     $.fn.dataTableExt.oStdClasses.sStripeEven = '';
 
-    $('#allProposals').dataTable({
+    $('#allProposals').DataTable({
+        "autoWidth": true,
+        "dom": 'lfirtp',
     "aaSorting": [[ 1, "desc" ]],
-    "iDisplayLength": 75,
-    "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5,10,25, 50, 75,100, "All"]],
-    "bStateSave": true,
-    "fnDrawCallback": function ( oSettings ) {
+    "pageLength": 75,
+    "lengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5,10,25, 50, 75,100, "All"]],
+    "stateSave": true,
+    "drawCallback": function ( oSettings ) {
             /* Need to redo the counters if filtered or sorted */
             if ( oSettings.bSorted || oSettings.bFiltered ) {
                 for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ ) {
