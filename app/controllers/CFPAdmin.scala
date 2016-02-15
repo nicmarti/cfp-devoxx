@@ -447,7 +447,7 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.removeSponsorTalkFlag(uuid, proposalId)
-      Redirect(routes.CFPAdmin.allSponsorTalks).flashing("success" -> s"Removed sponsor talk on $proposalId")
+      Redirect(routes.CFPAdmin.allSponsorTalks()).flashing("success" -> s"Removed sponsor talk on $proposalId")
   }
 
   def allProposalsByTrack(track: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -487,7 +487,7 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakers(allSpeakers.toList.sortBy(_.cleanName)))
   }
 
-  def allApprovedSpeakersByCompany() = SecuredAction(IsMemberOf("cfp")) {
+  def allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
         .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("Pas de société"))
@@ -497,12 +497,17 @@ object CFPAdmin extends SecureCFPController {
 
       val proposals = speakers.map {
         case (company, subSpeakers) =>
-          val allProposals = subSpeakers.toList.map {
+          val setOfProposals = subSpeakers.toList.flatMap {
             s =>
-              Proposal.allApprovedProposalsByAuthor(s.uuid).map(_._2)
+              Proposal.allApprovedProposalsByAuthor(s.uuid).values
+          }.toSet.filterNot { p: Proposal =>
+              if(showQuickiesAndBof){
+                p==null
+              }else{
+                p.talkType==ConferenceDescriptor.ConferenceProposalTypes.BOF ||
+                p.talkType==ConferenceDescriptor.ConferenceProposalTypes.QUICK
+              }
           }
-
-          val setOfProposals = allProposals.flatten.toSet
           (company, setOfProposals)
       }
 
