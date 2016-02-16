@@ -231,6 +231,11 @@ object CFPAdmin extends SecureCFPController {
       val totalWithTickets = Leaderboard.totalWithTickets()
       val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
 
+      val allApproved = ApprovedProposal.allApproved()
+
+      val allApprovedByTrack:Map[String,Int] = allApproved.groupBy(_.track.label).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
+      val allApprovedByTalkType:Map[String,Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
+
 
       Ok(
         views.html.CFPAdmin.leaderBoard(
@@ -238,8 +243,11 @@ object CFPAdmin extends SecureCFPController {
           totalNoVotes, maybeMostVoted, bestReviewer, lazyOnes,
           totalSubmittedByTrack, totalSubmittedByType,
           totalAcceptedByTrack, totalAcceptedByType,
-          totalSlotsToAllocate, totalApprovedSpeakers, totalWithTickets,
-          totalRefusedSpeakers
+          totalSlotsToAllocate,
+          totalApprovedSpeakers,
+          totalWithTickets,
+          totalRefusedSpeakers,
+          allApprovedByTrack,allApprovedByTalkType
         )
       )
   }

@@ -229,33 +229,6 @@ object ApproveOrRefuse extends SecureCFPController {
       Ok("allProposalIDsSubmitted ")
   }
 
-  //
-  //  def notifySpeakers() = SecuredAction(IsMemberOf("admin")) {
-  //    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-  //
-  //      val speakersWithProposals = Speaker.allSpeakers().filter(s => Proposal.hasOneProposal(s.uuid))
-  //      speakersWithProposals.foreach {
-  //        speaker =>
-  //          val allApproved = Proposal.allApprovedForSpeaker(speaker.uuid).toSet
-  //          val allRejected = Proposal.allRejectedForSpeaker(speaker.uuid).toSet
-  //          val allBackups = Proposal.allBackupForSpeaker(speaker.uuid).toSet
-  //          if (allApproved.nonEmpty || allRejected.nonEmpty) {
-  //            if (allApproved.isEmpty && allBackups.nonEmpty) {
-  //              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-  //            } else {
-  //              Event.speakerNotified(speaker, allApproved, allRejected, allBackups)
-  //              Mails.sendResultToSpeaker(speaker,allApproved,allRejected)
-  //            }
-  //          } else {
-  //            if (allBackups.isEmpty) {
-  //              play.Logger.of("application.ApproveOrRefuse").error("No approved/refused for speaker " + speaker.name.get + " " + speaker.uuid)
-  //            } else {
-  //              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-  //            }
-  //          }
-  //      }
-  //
-  //      Ok("Speakers with proposals " + speakersWithProposals.size)
-  //  }
+
 }
 
