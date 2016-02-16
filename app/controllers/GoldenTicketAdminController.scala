@@ -24,7 +24,6 @@
 package controllers
 
 import library.{NotifyGoldenTicket, ZapActor}
-import models.ReviewByGoldenTicket.ScoreAndTotalVotes
 import models.{GoldenTicket, Proposal, ProposalState, ReviewByGoldenTicket}
 import play.api.data.Form
 import play.api.data.Forms._
@@ -101,14 +100,14 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def showGoldenTicketVotes() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val allVotes: Set[(String, ScoreAndTotalVotes)] = ReviewByGoldenTicket.allVotes()
-      val result = allVotes.toList.sortBy(_._2._1).reverse
+      val allVotes: Set[(String, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = ReviewByGoldenTicket.allVotes()
+      val result = allVotes.toList.sortBy(_._2._1.s).reverse
 
       val allProposalIDs = result.map(_._1)
       // please note that a proposal with no votes will not be loaded
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
 
-      val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
+      val listOfProposals: List[(Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = result.flatMap {
         case (proposalId, scoreAndVotes) =>
           allProposalWithVotes.get(proposalId).map {
             proposal: Proposal =>
@@ -117,21 +116,21 @@ object GoldenTicketAdminController extends SecureCFPController {
       }.filterNot {
         case (proposal, _) =>
           proposal.state == ProposalState.DRAFT || proposal.state == ProposalState.ARCHIVED || proposal.state == ProposalState.DELETED
-      }.sortBy(_._2._4).reverse
+      }.sortBy(_._2._4.n).reverse
 
       Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals))
   }
 
   def showStats() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val allVotes: Set[(String, ScoreAndTotalVotes)] = ReviewByGoldenTicket.allVotes()
-      val result = allVotes.toList.sortBy(_._2._1).reverse
+      val allVotes: Set[(String, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = ReviewByGoldenTicket.allVotes()
+      val result = allVotes.toList.sortBy(_._2._1.s).reverse
 
       val allProposalIDs = result.map(_._1)
       // please note that a proposal with no votes will not be loaded
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
 
-      val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
+      val listOfProposals: List[(Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = result.flatMap {
         case (proposalId, scoreAndVotes) =>
           allProposalWithVotes.get(proposalId).map {
             proposal: Proposal =>

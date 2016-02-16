@@ -84,7 +84,6 @@ GET           /cfpadmin/leaderboard/compute                                     
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
-GET           /cfpadmin/allvotesJson                                            controllers.CFPAdmin.allVotesJson()
 GET           /cfpadmin/recompute/allvotes                                      controllers.CFPAdmin.doComputeVotesTotal()
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks
 GET           /cfpadmin/speaker/:uuidSpeaker                                    controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
@@ -150,6 +149,9 @@ GET           /ar/showAcceptTerms                                               
 GET           /ar/accept                                                        controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET           /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST          /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
+
+GET           /ar/prepareMassRefuse                                             controllers.ApproveOrRefuse.prepareMassRefuse(confType:String ?="conf")
+GET           /ar/doMassRefuseAndRedirect                                       controllers.ApproveOrRefuse.doRefuseAndRedirectToMass(proposalId:String, confType:String)
 
 # For Fun, it works only if you have Elastic Search
 GET           /cloudtags                                                        controllers.CallForPaper.cloudTags()

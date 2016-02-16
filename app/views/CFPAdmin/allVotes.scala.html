@@ -1,4 +1,9 @@
-@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes, Double, Long)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allVotes:List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved:Long, totalRemaining:Long, confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@import models.Review.Score
+@import models.Review.TotalVoter
+@import models.Review.TotalAbst
+@import models.Review.AverageNote
+@import models.Review.StandardDev
 
 @main("All votes") {
     <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
@@ -66,25 +71,25 @@
                                 <tr class="preselected_@approved refused_@refused">
                                     <td class="number_table"/>
                                     <td class="average_table">
-                                    @defining(voteAndTotalVotes._4) { average =>
-                                       @average
+                                    @defining(voteAndTotalVotes._4) { average:AverageNote =>
+                                       @average.n
                                     }
                                     </td>
                                     <td>
                                         <small>@gtScore by @gtVoteCast <i class="icon-user"></i></small>
                                     </td>
                                     <td  class="number_table">
-                                    @defining(voteAndTotalVotes._2) { totalVoters =>
-                                      @totalVoters
+                                    @defining(voteAndTotalVotes._2) { totalVoters:TotalVoter =>
+                                      @totalVoters.i
                                     }
                                     </td>
                                     <td  class="number_table">
-                                    @defining(voteAndTotalVotes._3) { totalAbstentions =>
-                                        @totalAbstentions
+                                    @defining(voteAndTotalVotes._3) { totalAbstentions:TotalAbst =>
+                                        @totalAbstentions.i
                                     }
                                     </td>
                                     <td  class="number_table">
-                                   @library.Stats.average(List(gtScore,voteAndTotalVotes._4))
+                                   @library.Stats.average(List(gtScore,voteAndTotalVotes._4.n))
                                     </td>
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id"><small>@proposal.title</small></a>

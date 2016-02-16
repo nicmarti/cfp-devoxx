@@ -790,18 +790,24 @@ object Proposal {
       val proposals = client.hmget("Proposals", listOfProposals).map {
         json: String =>
           val p = Json.parse(json).validate[Proposal].get
-
-          if (p.id == "PCY-0739") {
-            println("----- YOLO ---------")
-            println(p)
-            println(findProposalState(p.id))
-            println("----- YOLO ---------")
-          }
-
           (p.id, p.copy(state = findProposalState(p.id).getOrElse(p.state)))
       }
       proposals.toMap
   }
+
+  def loadAndParseProposals(proposalIDs: Set[String], confType: ProposalType): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val listOfProposals = proposalIDs.toList
+
+      // Updated code to use validate so that it throw an exception if the JSON parser could not load the Proposal
+      val proposals = client.hmget("Proposals", listOfProposals).map {
+        json: String =>
+          val p = Json.parse(json).validate[Proposal].get
+          (p.id, p.copy(state = findProposalState(p.id).getOrElse(p.state)))
+      }.filter(_._2.talkType.id == confType.id) // TODO I should create a separate collection for ProposalType and filter the Set proposalIds with this collection.
+      proposals.toMap
+  }
+
 
   def removeSponsorTalkFlag(authorUUID: String, proposalId: String) = {
     Proposal.findById(proposalId).filter(_.sponsorTalk == true).map {

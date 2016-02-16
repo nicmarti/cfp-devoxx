@@ -2,7 +2,7 @@ package controllers
 
 import library.search.ElasticSearch
 import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
-import models.Review.ScoreAndTotalVotes
+import models.Review._
 import models._
 import org.apache.commons.lang3.StringUtils
 import play.api.data.Forms._
@@ -364,7 +364,7 @@ object CFPAdmin extends SecureCFPController {
   def allVotes(confType: String, track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val reviews: Map[String, ScoreAndTotalVotes] = Review.allVotes()
+      val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Review.allVotes()
       val totalApproved = ApprovedProposal.countApproved(confType)
 
       val allProposals = Proposal.loadAndParseProposals(reviews.keySet)
@@ -394,55 +394,6 @@ object CFPAdmin extends SecureCFPController {
 
       val totalRemaining = ApprovedProposal.remainingSlots(confType)
       Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
-  }
-
-  def allVotesJson() = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      val reviews = Review.allVotes()
-
-      val result = reviews.toList.sortBy(_._2._1).reverse
-      val allProposalIDs = result.map(_._1)
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
-
-      val listOfProposals: List[(Proposal, ScoreAndTotalVotes)] = result.flatMap {
-        case (proposalId, scoreAndVotes) =>
-          allProposalWithVotes.get(proposalId).map {
-            proposal: Proposal =>
-              (proposal, scoreAndVotes)
-          }
-      }.filterNot {
-        case (proposal, _) =>
-          proposal.state == ProposalState.DRAFT ||
-            proposal.state == ProposalState.DELETED
-      }
-
-      val speakers = Map(Speaker.allSpeakers().map { speaker => (speaker.uuid, speaker) }: _*)
-
-      val jsonObject = Json.toJson(listOfProposals.map { case (proposal, voteAndTotalVotes) =>
-        Map(
-          "proposal" -> Json.toJson(Map(
-            "id" -> Json.toJson(proposal.id),
-            "lang" -> Json.toJson(proposal.lang),
-            "title" -> Json.toJson(proposal.title),
-            "allSpeakers" -> Json.toJson(proposal.allSpeakers),
-            "talkType" -> Json.toJson(proposal.talkType.id),
-            "audienceLevel" -> Json.toJson(proposal.audienceLevel),
-            "summary" -> Json.toJson(proposal.summary),
-            "privateMessage" -> Json.toJson(proposal.privateMessage),
-            "track" -> Json.toJson(proposal.track.id),
-            "demoLevel" -> Json.toJson(proposal.demoLevel),
-            "userGroup" -> Json.toJson(proposal.userGroup)
-          )),
-          "votes" -> Json.toJson(Map(
-            "average" -> Json.toJson(voteAndTotalVotes._4),
-            "totalVoters" -> Json.toJson(voteAndTotalVotes._2),
-            "totalAbstentions" -> Json.toJson(voteAndTotalVotes._3),
-            "stdDeviation" -> Json.toJson(voteAndTotalVotes._5)
-          ))
-        )
-      });
-      Ok(jsonObject).as(JSON)
   }
 
   def doComputeVotesTotal() = SecuredAction(IsMemberOf("cfp")) {
