@@ -256,8 +256,8 @@ object ConferenceDescriptor {
 
     val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
     val allRoomsConfFridayNight = allRoomsConf.filterNot(_.id==MAILLOT.id)
-    val allRoomsQuickiesThu = allRoomsConf.filterNot(_.id==AMPHI_BLEU.id) ++ List(PARIS_202_203)
-    val allRoomsQuickiesFriday = allRoomsConf.filterNot(_.id==AMPHI_BLEU.id)
+    val allRoomsQuickiesThu = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id || r.id == MAILLOT.id) ++ List(PARIS_202_203) // Retire les Ignites
+    val allRoomsQuickiesFriday = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id || r.id == MAILLOT.id)
   }
 
 
