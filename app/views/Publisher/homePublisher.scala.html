@@ -1,9 +1,9 @@
 @()(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@views.html.Publisher.devoxxFR2015("Schedule", Some("Devoxx FR 2015 agenda")) {
+@views.html.Publisher.devoxxFR2016("Schedule", Some("Devoxx FR 2015 agenda")) {
 
     <div class="large-12 column">
-        <img src="/assets/images/banniere_devoxx_france_2015.png" alt="Devoxx France 2015" title="Programme">
+       <h3>Devoxx France 2016 <small>Mercredi 20 au vendredi 22 avril 2016</small></h3>
     </div>
     <div class="small-12 medium-8 large-8 columns">
         <div class="input-wrap">
@@ -16,40 +16,38 @@
     <div class="small-6 medium-6 large-6 column">
         <h4>Horaires d'accueil</h4>
         <ul>
-            <li><strong>Mercredi 8 avril</strong> - à partir de 8h00</li>
-            <li><strong>Jeudi 9 avril</strong> - à partir de 7h00</li>
-            <li><strong>Vendredi 10 avril</strong> - à partir de 7h30</li>
+            <li><strong>Mercredi 20 avril</strong> - à partir de 8h00</li>
+            <li><strong>Jeudi 21 avril</strong> - à partir de 7h30</li>
+            <li><strong>Vendredi 22 avril</strong> - à partir de 7h30</li>
         </ul>
     </div>
-    <div class="small-6 medium-6 large-6 column">
-        <h4>Programme par journée</h4>
-        <ul>
-            <li><a href="/2015/byday/wednesday">Mercredi 8 avril</a>
-            <li><a href="/2015/byday/thursday">Jeudi 9 avril</a>
-            <li><a href="/2015/byday/friday">Vendredi 10 avril</a>
-        </ul>
-    </div>
+    @*<div class="small-6 medium-6 large-6 column">*@
+        @*<h4>Programme par journée</h4>*@
+        @*<ul>*@
+            @*<li><a href="@routes.Publisher.showByDay("wednesday")">Mercredi 20 avril</a>*@
+            @*<li><a href="@routes.Publisher.showByDay("thursday")">Jeudi 21 avril</a>*@
+            @*<li><a href="@routes.Publisher.showByDay("friday")">Vendredi 22 avril</a>*@
+        @*</ul>*@
+    @*</div>*@
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Keynotes</h3>
         <p>Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le jeudi à 9h précise.
-            A l'occasion de l'anniversaire du langage Java, notre thème de keynote est "20 ans". Venez découvrir la vision
-            de présentateurs préstigieux, qui vous emmenent dans 20 ans. Robotique, génétique, crypto-monnaie, cloud-computing,
-            nous vous proposons des keynotes techniques cette année.
+            Autour du thème "Informatique et société", quel est l'impact de notre métier sur la société ?
         </p>
         <p><A href="@routes.Publisher.showByTalkType("key")">Liste des Keynotes</A></p>
     </div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Conference</h3>
-        <p>Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 88 conférences
+        <p>Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 100 conférences
             pendant 2 jours. Toutes les sessions sont filmées, ce qui vous permet de revoir plus tard les conférences.</p>
         <p><A href="@routes.Publisher.showByTalkType("conf")">Liste des Conférences</A></p>
     </div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>University</h3>
-        <p>Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes. Avec une salle en plus en 2015, Devoxx France propose 10 universités.</p>
+        <p>Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes.</p>
         <p><A href="@routes.Publisher.showByTalkType("uni")">Liste des Universités</A></p>
 
     </div>
@@ -58,15 +56,17 @@
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Tools in Action</h3>
-        <p>Les 35 TIA (Tools-in-Action) sont des sessions courtes de 25mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
-        <p>Pour la 4ème édition de Devoxx France, les TIA auront lieu le mercredi et le jeudi en fin de journée.</p>
+        <p>Les TIA (Tools-in-Action) sont des sessions courtes de 25mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
+        <p>Pour la 5ème édition de Devoxx France, les TIA auront lieu le mercredi et le jeudi en fin de journée avec une track de TIA en plus
+        le jeudi soir.</p>
         <p><A href="@routes.Publisher.showByTalkType("tia")">Liste des Tools in Action</A></p>
     </div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Hands-on Labs</h3>
-        <p>Session pratique de 3h, dans des salles de 25 à 60 personnes. Les Labs sont des sessions pratiques le mercredi et le jeud, qui permettent
-            de découvrir ou d'approfondir un sujet. Les Labs se déroulent essentiellement le mercredi, ainsi que quelques Labs le jeudi après-midi.</p>
+        <p>Session pratique de 3h, dans des salles de 25 à 60 personnes. Les Labs sont des sessions pratiques pendant les 3 jours qui permettent
+            de découvrir ou d'approfondir un sujet. Il faut venir avec son ordinateur, les hands-on labs proposent un accès à Internet
+        via du Wifi.</p>
         <p><A href="@routes.Publisher.showByTalkType("lab")">Liste des Hands-on Labs</A></p>
     </div>
     <div class="clearfix"></div>
@@ -75,7 +75,7 @@
         <h3>Quickies</h3>
         <p>Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner jeudi et vendredi. C'est LE format
             dédié aux débutants, mais aussi aux experts qui n'ont que 15mn pour vous convaincre. Le format simple et rapide permet
-            de découvrir un projet ou une idée pendant l'heure du repas. Cette année, l'équipe a sélectionné 34 Quickies.</p>
+            de découvrir un projet ou une idée pendant l'heure du repas.</p>
         <p><A href="@routes.Publisher.showByTalkType("quick")">Liste des Quickies</A></p>
     </div>
 
@@ -83,7 +83,7 @@
     <div class="small-12 medium-6 large-6 column">
         <h3>BOF</h3>
         <p>Les <a href="http://en.wikipedia.org/wiki/Birds_of_a_feather_%28computing%29">BOF (Bird of a feather)</a>
-            sont des sessions mythiques de Devoxx France, à partir de 19h30 le jeudi soir.
+            sont des sessions mythiques de Devoxx France, à partir de 19h45 le jeudi soir.
             C'est LE point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés.
             Passez d'une session du ParisJS pour échanger ensuite avec les membres du Paris Scala User Group, les BOFs se déroulent
             le soir de la soirée Meet-and-Greet.</p>

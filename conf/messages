@@ -807,3 +807,5 @@ search.onlyProposals=proposals
 noPasswordHere=This web site does not let you configure a password, mainly because a lot of people use the same password, everywhere. Please save the generated access code or use OpenID (Github/LinkedIn/Google) access.
 cfpadmin.toreview={0} proposal(s) to review
 cfpAdmin.showWhenCreated=Submitted to the CFP on {0}
+
+publisher.showMore=See proposal details

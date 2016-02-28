@@ -761,3 +761,5 @@ search.onlyProposals=proposals
 noPasswordHere=Le site du CFP ne vous permet pas de configurer un mot de passe, et utilise un système de code d''accès, pour des raisons de sécurité. Nous vous recommandons d''utiliser un accès OpenId via votre comtpe Github/LinkedIn ou Google, lorsque cela reste possible.
 cfpadmin.toreview={0} sujet(s) à noter
 cfpAdmin.showWhenCreated=Sujet soumis par le speaker sur le CFP le {0}
+
+publisher.showMore=Voir la description
