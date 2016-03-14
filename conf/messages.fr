@@ -481,9 +481,9 @@ sw.agenda.fri=Vendredi
 sw.show.wed=Mercredi
 sw.show.thu=Jeudi
 sw.show.fri=Vendredi
-sw.show.title.wed=Journée du Mercredi 8 avril 2016
-sw.show.title.thu=Journée du Jeudi 9 avril 2016
-sw.show.title.fri=Journée du Vendredi 10 avril 2016
+sw.show.title.wed=Journée du Mercredi 20 avril 2016
+sw.show.title.thu=Journée du Jeudi 21 avril 2016
+sw.show.title.fri=Journée du Vendredi 22 avril 2016
  
  
 sw.horaires=Horaires
@@ -625,9 +625,9 @@ admin.btn.speakersInvited=Tous les speakers invités
 
 bof.label.simple=Bird of a Feather
 day-monday=Lundi 10 novembre
-day-wednesday=Mercredi 8 avril
-day-thursday=Jeudi 9 avril
-day-friday=Vendredi 10 avril
+day-wednesday=Mercredi 20 avril
+day-thursday=Jeudi 21 avril
+day-friday=Vendredi 22 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
