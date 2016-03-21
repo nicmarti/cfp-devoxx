@@ -1,6 +1,8 @@
 package models
 
-import org.joda.time.{DateTime, DateTimeZone}
+import java.util.Locale
+
+import org.joda.time.{Period, DateTime, DateTimeZone}
 import play.api.Play
 
 /**
@@ -36,7 +38,8 @@ case class ConferenceTiming(
                              datesEn: String,
                              cfpOpenedOn: DateTime,
                              cfpClosedOn: DateTime,
-                             scheduleAnnouncedOn: DateTime
+                             scheduleAnnouncedOn: DateTime,
+                             days:Iterator[DateTime]
                            )
 
 case class ConferenceSponsor(showSponsorProposalCheckbox: Boolean, sponsorProposalType: ProposalType = ProposalType.UNKNOWN)
@@ -96,7 +99,7 @@ case class ConferenceDescriptor(eventCode: String,
                                 hosterWebsite: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
-                                locale: List[String],
+                                locale: List[Locale],
                                 localisation: String,
                                 notifyProposalSubmitted:Boolean,
                                 maxProposalSummaryCharacters:Int=1200
@@ -658,6 +661,11 @@ object ConferenceDescriptor {
     }
   }
 
+  def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime]      =Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
+
+  val fromDay = new DateTime().withYear(2016).withMonthOfYear(4).withDayOfMonth(20)
+  val toDay = new DateTime().withYear(2016).withMonthOfYear(4).withDayOfMonth(22)
+
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
     eventCode = "DevoxxFR2016",
@@ -684,12 +692,13 @@ object ConferenceDescriptor {
       datesEn = "from 20th to 22nd of April, 2016",
       cfpOpenedOn = DateTime.parse("2015-11-11T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2016-01-31T09:00:00+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2016-02-25T00:00:00+02:00")
+      scheduleAnnouncedOn = DateTime.parse("2016-02-25T00:00:00+02:00"),
+      days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
     hashTag = "#DevoxxFR",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
-    , List("fr_FR")
+    ,  List(Locale.FRENCH)
     , "Palais des Congrès, Porte Maillot, Paris"
     , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)

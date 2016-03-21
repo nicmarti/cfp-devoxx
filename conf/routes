@@ -135,6 +135,11 @@ GET           /admin/sanitycheck/proposals                                      
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
 
+# Favorites and starred talks
+GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
+
+
+
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)
@@ -172,10 +177,12 @@ GET           /2016/agenda/:confType/:day                                       
 GET           /2016/byday/:day                                                  controllers.Publisher.showByDay(day:String)
 GET           /2016/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 # Favorites
-GET           /favorites                                                        controllers.Favorites.home
-POST          /favorites/like                                                   controllers.Favorites.likeIt(proposalId:Long)
-POST          /favorites/unlike                                                 controllers.Favorites.unlikeIt(proposalId:Long)
+GET           /myagenda                                                         controllers.Favorites.home
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
+GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
+
+# This is an AJAX callback triggered from devoxxBE2015.scala (the publisher web pages)
+POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
@@ -188,6 +195,7 @@ GET           /api/conferences/:eventCode/speakers/:uuid                        
 GET           /api/conferences/:eventCode/rooms/:room/:day                      controllers.RestAPI.showScheduleForRoom(eventCode: String, room:String, day: String)
 GET           /api/conferences/:eventCode/rooms/                                controllers.RestAPI.showRooms(eventCode:String)
 GET           /api/conferences/:eventCode/rooms                                 controllers.RestAPI.showRooms(eventCode:String)
+GET           /api/conferences/:eventCode/topFavedTalks                         controllers.RestAPI.topFavedTalks(eventCode:String, limit:Int ?=10)
 GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
 GET           /api/conferences/:eventCode/talks/                                controllers.RestAPI.redirectToTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks                                 controllers.RestAPI.showApprovedTalks(eventCode:String)
