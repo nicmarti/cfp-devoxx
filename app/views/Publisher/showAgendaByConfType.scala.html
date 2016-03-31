@@ -18,14 +18,26 @@
                     }
                 </tr>
 
-                @if(day.toLowerCase=="wednesday" && talkType.toLowerCase=="conf" ){
+                @if(day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" ){
                     <tr>
                         <th>
-                            09:30 - 11:30
+                            09:00 - 11:00
                         </th>
                         <td class="keynotes" colspan="8">
-                            <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
+                            Keynotes dès 9h précise<br>
+                            <em>Le programme détaillé sera publié ultérieurement. Accueil + Petit-déjeuner dès 7h30</em><br>
 
+                        </td>
+                    </tr>
+                }
+                @if(day.toLowerCase=="friday" && talkType.toLowerCase=="conf" ){
+                    <tr>
+                        <th>
+                            09:30 - 11:00
+                        </th>
+                        <td class="keynotes" colspan="8">
+                            Keynotes 9h30<br>
+                            Le programme détaillé sera publié ultérieurement.
                         </td>
                     </tr>
                 }
