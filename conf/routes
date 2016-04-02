@@ -138,8 +138,6 @@ GET           /admin/reminder/trigger                                           
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
 
-
-
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)
@@ -196,9 +194,9 @@ GET           /api/conferences/:eventCode/rooms/:room/:day                      
 GET           /api/conferences/:eventCode/rooms/                                controllers.RestAPI.showRooms(eventCode:String)
 GET           /api/conferences/:eventCode/rooms                                 controllers.RestAPI.showRooms(eventCode:String)
 GET           /api/conferences/:eventCode/topFavedTalks                         controllers.RestAPI.topFavedTalks(eventCode:String, limit:Int ?=10)
-GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
 GET           /api/conferences/:eventCode/talks/                                controllers.RestAPI.redirectToTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks                                 controllers.RestAPI.showApprovedTalks(eventCode:String)
+GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
 GET           /api/conferences/:eventCode/schedules/                            controllers.RestAPI.showAllSchedules(eventCode:String)
 GET           /api/conferences/:eventCode/schedules                             controllers.RestAPI.showAllSchedules(eventCode:String)
 GET           /api/conferences/:eventCode/schedules/:day/                       controllers.RestAPI.showScheduleFor(eventCode:String, day:String)

@@ -263,7 +263,7 @@ object ConferenceDescriptor {
     val keynoteRoom = List(AMPHI_BLEU)
 
     val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
-    val allRoomsConfFridayNight = allRoomsConf.filterNot(_.id==MAILLOT.id)
+
     val allRoomsQuickiesThu = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id || r.id == MAILLOT.id) ++ List(PARIS_202_203) // Retire les Ignites
     val allRoomsQuickiesFriday = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id || r.id == MAILLOT.id)
   }
@@ -582,7 +582,7 @@ object ConferenceDescriptor {
             new DateTime("2016-04-22T16:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime("2016-04-22T16:55:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r5)
       }
-      val conferenceFridaySlot5extra = ConferenceRooms.allRoomsConfFridayNight.map {
+      val conferenceFridaySlot5extra = ConferenceRooms.allRoomsConf.map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
             new DateTime("2016-04-22T17:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
