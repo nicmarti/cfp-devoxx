@@ -857,13 +857,13 @@ object Proposal {
   def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal => proposal.state == ProposalState.ACCEPTED)
+      client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
-      loadAndParseProposals(allProposalIDs).values.toSet.exists(proposal => proposal.state == ProposalState.REJECTED)
+      client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
   }
 
   def hasOnlyRejectedProposals(speakerUUID: String): Boolean = Redis.pool.withClient {

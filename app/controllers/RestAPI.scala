@@ -23,6 +23,7 @@
 
 package controllers
 
+import library.Benchmark
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
@@ -159,7 +160,7 @@ object RestAPI extends Controller {
   def showSpeakers(eventCode: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
-      val speakers = Speaker.allSpeakersWithAcceptedTerms().sortBy(_.cleanName)
+      val speakers = Benchmark.measure(() => Speaker.allSpeakersWithAcceptedTerms().sortBy(_.cleanName),"Speakers all")
       val etag = speakers.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
