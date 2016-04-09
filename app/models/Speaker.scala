@@ -201,7 +201,7 @@ object Speaker {
       client.hkeys("Speaker")
   }
 
-  def asSetOfSpeakers(speakerIDs: Set[String]): List[Speaker] = Redis.pool.withClient {
+  def loadSpeakersFromSpeakerIDs(speakerIDs: Set[String]): List[Speaker] = Redis.pool.withClient {
     client =>
       client.hmget("Speaker", speakerIDs).flatMap {
         js: String =>
