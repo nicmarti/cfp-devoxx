@@ -162,14 +162,11 @@ object RestAPI extends Controller {
     implicit request =>
 
       // First load published slots
-      val publishedConf = Benchmark.measure(() =>
-        ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
-        , "1. load Published Conf")
+      val publishedConf =  ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
 
       val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
 
       val etag = allSpeakersIDs.hashCode.toString
-
 
       request.headers.get(IF_NONE_MATCH) match {
         case Some(tag) if tag == etag => {
