@@ -1,5 +1,5 @@
 @(proposals: Iterable[Proposal], talkType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
-@views.html.Publisher.devoxxFR2015(Messages(talkType)) {
+@views.html.Publisher.devoxxFR2016(Messages(talkType)) {
     <div class="large-12">
         <h3>@Messages(talkType)</h3>
         <p class="breadcrumb">
@@ -10,15 +10,17 @@
     @proposals.groupBy(_.track).sliding(3,3).map { case oneRow =>
         @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
             <div class="large-3 columns trackBox">
-                @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+               <h4>@Messages(track.label)</h4>
             <ul>
             @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
                 <li>
-                    <strong>@proposal.title</strong>  <a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)"> - détails </a>
+                    <strong>@proposal.title</strong><br>
+                    <a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)"> @Messages("publisher.showMore") </a>
                     <br>
+                    <small>
                     @proposal.allSpeakerUUIDs.map { speakerUUID =>
                         @tags.publisher.renderSpeaker(speakerUUID)
-                    }
+                    }</small>
                 </li>
             }
             </ul>

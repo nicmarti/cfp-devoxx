@@ -43,7 +43,7 @@ object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val etag = Crypt.md5(result.toString()).toString
+      val etag = Crypt.md5(result.toString()+"dvx").toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
@@ -177,6 +177,8 @@ object Publisher extends Controller {
       }
 
       day match {
+        case d if Set("mon", "monday", "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "monday")
+        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "tuesday")
         case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
         case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
         case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday, "friday")

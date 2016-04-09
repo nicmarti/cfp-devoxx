@@ -21,7 +21,7 @@
     <logger name="library.Zedis.client" level="INFO"/>
     <logger name="library.ElasticSearch" level="INFO"/>
     <logger name="application" level="INFO"/>
-    <logger name="application.Benchmark" level="ERROR"/>
+    <logger name="application.Benchmark" level="DEBUG"/>
     <logger name="application.IndexMaster" level="INFO"/>
     <logger name="application.Reaper" level="INFO"/>
     <logger name="application.Tweetwall" level="INFO"/>

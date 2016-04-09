@@ -70,8 +70,13 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       val sorter = CFPAdmin.proposalSorter(sort)
       val orderer = CFPAdmin.proposalOrder(ascdesc)
-      val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-        .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
+      // TODO after CFP is closed we want to review only Conference
+//      val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
+//        .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
+//        .filterNot(_.sponsorTalk)
+
+       val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
+        .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF)
         .filterNot(_.sponsorTalk)
 
       val maybeFilteredProposals = track match {
@@ -80,7 +85,7 @@ object GoldenTicketController extends SecureCFPController {
       }
       val allProposalsForReview = CFPAdmin.sortProposals(maybeFilteredProposals, sorter, orderer)
 
-      val etag = "gt_"+allProposalsForReview.hashCode()
+      val etag = "gt2_"+allProposalsForReview.hashCode()
 
       request.headers.get(IF_NONE_MATCH) match {
         case Some(tag) if tag == etag.toString => NotModified
@@ -169,15 +174,22 @@ object GoldenTicketController extends SecureCFPController {
     }
   }
 
-  def allMyGoldenTicketVotes() = SecuredAction(IsMemberOfGroups(securityGroups)) {
+  def allMyGoldenTicketVotes(talkType: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val uuid = request.webuser.uuid
-      val result = ReviewByGoldenTicket.allVotesFromUser(uuid)
-      val allProposalIDs = result.map(_._1)
-      val allProposals = Proposal.loadAndParseProposals(allProposalIDs)
-      val votesByType = result.groupBy(proposalVote => allProposals.get(proposalVote._1).get.talkType)
 
-      Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(result, votesByType, allProposals))
+      ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
+        pType =>
+          val uuid = request.webuser.uuid
+          val allMyVotes = ReviewByGoldenTicket.allVotesFromUser(uuid)
+          val allProposalIDs = allMyVotes.map(_._1)
+          val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
+          val allProposalsIdsProposalType = allProposalsForProposalType.keySet
+          val allMyVotesForSpecificProposalType = allMyVotes.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
+
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(allMyVotesForSpecificProposalType, allProposalsForProposalType, talkType))
+      }.getOrElse {
+        BadRequest("Invalid proposal type")
+      }
   }
 
   private def createCookie(webuser: Webuser) = {

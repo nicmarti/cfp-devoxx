@@ -1,25 +1,80 @@
 @(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxFR2015(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2014 for $day"+Messages("day-" + day))) {
-    <div class="large-12 columns">
-        <h3>@Messages(talkType), @Messages("day-" + day)</h3>
-        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
-            <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
-    </div>
+    @views.html.Publisher.devoxxFR2016(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx FR 2016 for $day"+Messages("day-" + day))) {
+        <div class="large-12 columns">
+            <h3>@Messages(talkType), @Messages("day-" + day)</h3>
+            <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
+                <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
+                <a href="@routes.Publisher.showByDay(day)">@Messages("day-" + day)</a></p>
+        </div>
 
-    <div class="columns large-12 woocommerce">
-    @schedule.slots.sortBy(_.from.getMillis).map{slot =>
-        <h4>@slot.room.name <small>@slot.from.toString("HH:mm")-@slot.to.toString("HH:mm")</small></h4>
-        @slot.proposal.map{ p: Proposal =>
-        <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
-        <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
-            <br>
-        <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-            @tags.publisher.renderSpeaker(speakerUUID)
-            }</span>
-        }
+        <div class="large-12 columns woocommerce">
+            <table class="agendaTable">
+                <tr>
+                    <th><i class="icon-time"></i> Salle</th>
+                    @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+                        <td>@room.name</td>
+                    }
+                </tr>
+
+                @if(day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" ){
+                    <tr>
+                        <th>
+                            09:00 - 11:00
+                        </th>
+                        <td class="keynotes" colspan="8">
+                            Keynotes dès 9h précise<br>
+                            <em>Le programme détaillé sera publié ultérieurement. Accueil + Petit-déjeuner dès 7h30</em><br>
+
+                        </td>
+                    </tr>
+                }
+                @if(day.toLowerCase=="friday" && talkType.toLowerCase=="conf" ){
+                    <tr>
+                        <th>
+                            09:30 - 11:00
+                        </th>
+                        <td class="keynotes" colspan="8">
+                            Keynotes 9h30<br>
+                            Le programme détaillé sera publié ultérieurement.
+                        </td>
+                    </tr>
+                }
+
+                @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
+                <tr>
+                    <th class="timeSlot">
+                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                    </th>
+                    @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
+
+                        <td class="room">
+                            @slot.proposal.map { p: Proposal =>
+                                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
+                                @tags.publisher.renderFavorite(p.id)
+                                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+                                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                                    @tags.publisher.renderSpeaker(speakerUUID)
+                                }</span>
+
+
+                            }
+                        @if(slot.proposal.isEmpty && slot.break.isEmpty ){
+                            Pas encore programmé
+                        }
+                        </td>
+                    }
+                </tr>
+                }
+                <tr>
+                    <th><i class="icon-time"></i> Salle</th>
+                    @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+                        <td>@room.name</td>
+                    }
+                </tr>
+            </table>
+
+        </div>
+
     }
-</div>
-
-}

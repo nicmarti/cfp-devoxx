@@ -1,4 +1,4 @@
-@(allVotes:List[(models.Proposal,models.Review.ScoreAndTotalVotes)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allVotes:List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All votes") {
 
@@ -42,22 +42,22 @@
                                 <tr class="preselected_@approved refused_@refused">
                                       <td class="number_table"/>
                                     <td class="average_table">
-                                    @defining(voteAndTotalVotes._4) { average =>
+                                    @defining(voteAndTotalVotes._4.n) { average =>
                                        @average
                                     }
                                     </td>
                                     <td  class="number_table">
-                                    @defining(voteAndTotalVotes._2) { totalVoters =>
+                                    @defining(voteAndTotalVotes._2.i) { totalVoters =>
                                       @totalVoters
                                     }
                                     </td>
                                     <td  class="number_table">
-                                    @defining(voteAndTotalVotes._3) { totalAbstentions =>
+                                    @defining(voteAndTotalVotes._3.i) { totalAbstentions =>
                                         @totalAbstentions
                                     }
                                     </td>
                                     <td  class="number_table">
-                                    @defining(voteAndTotalVotes._5) { stdev =>
+                                    @defining(voteAndTotalVotes._5.d) { stdev =>
                                         @stdev
                                     }
                                     </td>

@@ -5,18 +5,19 @@
 
 <p>Bonjour,</p>
 <p>Nous avons le regret de vous informer que votre proposition <strong>@proposal.title</strong> au format
-<strong>@Messages(proposal.talkType.label)</strong> n'a pas été acceptée.</p>
+<strong>@Messages(proposal.talkType.id)</strong> n'a pas été acceptée.</p>
 <p>Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.</p>
-<p>Si vous souhaitez vous inscrire, nous avons prolongé l'offre "early-bird" afin de vous faire
-    bénéficier du prix discount.</p>
-<p>La sélection cette année a encore été difficile. Nous communiquerons sur notre site plus d'informations sur la sélection.</p>
+<p>Si vous souhaitez vous inscrire, nous avons prolongé l'offre "early-bird" jusq'au lundi 22 février afin de vous faire bénéficier du prix réduit sur le site
+   <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.
+    En cas de souci d'inscription, n'hésitez pas à contacter l'équipe d'organisation Devoxx France via notre site.</p>
+<p>La sélection cette année a encore été difficile avec plus de 776 sujets pour 230 slots. Nous communiquerons sur notre site plus d'informations sur la sélection d'ici à la fin du mois de février.</p>
 <p></p>
 <p>Merci pour votre proposition,</p>
 <p>L'équipe de sélection de la conférence @Messages("longYearlyName")</p>
 <hr>
 }
 <p>Hi,</p>
-<p>We're sorry to inform you that your proposal for @Messages("longYearlyName") was <strong>refused</strong>,  keep in mind that we received close to 800 proposals and the available slots are very limited</p>
+<p>We're sorry to inform you that your proposal for @Messages("longYearlyName") was <strong>refused</strong>, keep in mind that we received 776 proposals and the available slots are very limited</p>
 <p>Proposition title : <strong>@proposal.title</strong>, <strong>@Messages(proposal.talkType.id)</strong>.</p>
 <p>We would like to thank you sincerely for your proposal.</p>
 <p>Hopefully we can still welcome you as a Devoxxian, registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>

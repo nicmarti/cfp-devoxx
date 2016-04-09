@@ -23,7 +23,8 @@
 
 package models
 
-import library.Redis
+import library.{Stats, Redis}
+import models.Review._
 import org.joda.time.{Instant, DateTime}
 import scala.math.BigDecimal.RoundingMode
 
@@ -39,11 +40,12 @@ object ReviewByGoldenTicket {
 
   def voteForProposal(proposalId: String, reviewerUUID: String, vote: Int) = Redis.pool.withClient {
     implicit client =>
+      val secureMaxVote = Math.min(vote,10)
       val tx = client.multi()
       tx.sadd(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID", proposalId)
       tx.sadd(s"ReviewGT:Reviewed:ByProposal:$proposalId", reviewerUUID)
-      tx.zadd(s"ReviewGT:Votes:$proposalId", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
-      tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
+      tx.zadd(s"ReviewGT:Votes:$proposalId", secureMaxVote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
+      tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + secureMaxVote) // Store when this user voted for this talk
       tx.exec()
   }
 
@@ -90,7 +92,11 @@ object ReviewByGoldenTicket {
 
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID")
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
+        "ApprovedById:",
+        "RefusedById:",
+        s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID"
+      )
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
@@ -142,6 +148,12 @@ object ReviewByGoldenTicket {
   def totalVoteCastFor(proposalId: String): Long = Redis.pool.withClient {
     implicit client =>
       client.zcount(s"ReviewGT:Votes:$proposalId", 1, 10)
+  }
+
+  def averageScore(proposalId:String):Double = Redis.pool.withClient{
+    client=>
+      val allScores = client.zrangeByScoreWithScores(s"ReviewGT:Votes:$proposalId", 1, 10).map(_._2)
+      Stats.average(allScores)
   }
 
   type ReviewerAndVote = (String, Double)
@@ -367,15 +379,8 @@ object ReviewByGoldenTicket {
         "Proposals:ByState:" + ProposalState.DRAFT.code)
   }
 
-  type Score = Double
-  type TotalVoters = Int
-  type TotalAbstentions= Int
-  type AverageScore = Double
-  type StandardDev=Double
 
-  type ScoreAndTotalVotes = (Score, TotalVoters, TotalAbstentions, AverageScore, StandardDev)
-
-  def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
+  def allVotes(): Set[(String, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = Redis.pool.withClient {
     client =>
       val allVoters = client.hgetAll("GT:Computed:Voters")
       val allAbstentions = client.hgetAll("GT:Computed:VotersAbstention")
@@ -386,21 +391,21 @@ object ReviewByGoldenTicket {
         case (proposalKey: String, scores: String) =>
           val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
           (proposalId,
-            (scores.toDouble,
-              allVoters.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAverages.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map(d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
+            ( new Score(scores.toDouble),
+              new TotalVoter(allVoters.get(proposalKey).map(_.toInt).getOrElse(0)),
+              new TotalAbst(allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0)),
+              new AverageNote(allAverages.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map(d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble)),
               allStandardDev.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map {
                 d =>
-                  BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
-              }.getOrElse(0.toDouble)
+                 new StandardDev(BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble)
+              }.getOrElse(new StandardDev(0.toDouble))
               )
             )
       }.toSet
   }
 
 
-  def orderByAverageScore:Ordering[(Proposal, ScoreAndTotalVotes)]={
-    Ordering.by[(Proposal, ScoreAndTotalVotes), AverageScore](_._2._4)
+  def orderByAverageScore:Ordering[(Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))]={
+    Ordering.by[(Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev)), Double](_._2._4.n)
   }
 }

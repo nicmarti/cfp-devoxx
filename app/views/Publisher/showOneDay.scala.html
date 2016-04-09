@@ -1,7 +1,7 @@
 @(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxFR2015(Messages(s"sw.show.$day")) {
+@views.html.Publisher.devoxxFR2016(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
@@ -17,25 +17,25 @@
         <table class="agendaTable">
             <tr>
                 <th><i class="icon-time"></i> Room</th>
-                @rooms.map { roomName: Room =>
+                @rooms.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
                 </tr>
 
-            @slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, subSlots) =>
+            @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                     <tr >
                         <th class="timeSlot">
                             @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                         </th>
                         @rooms.map { room =>
-                            @tagRenderRow(subSlots,room,rooms.size)
+                            @tags.publisher.tagRenderRow(subSlots,room,rooms.size)
                         }
                     </tr>
             }
 
             <tr>
                 <th><i class="icon-time"></i> Room</th>
-                @slots.groupBy(_.room).keys.toList.sortBy(_.id).map { roomName: Room =>
+                @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
             </tr>

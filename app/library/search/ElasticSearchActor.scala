@@ -219,12 +219,15 @@ class IndexMaster extends ESActor {
   def doIndexAllAccepted() {
     val proposals = Proposal.allApproved()++Proposal.allAccepted()
 
-    play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size}")
+    val indexName = ApprovedProposal.elasticSearchIndex()
+    play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size} to index $indexName")
 
     val sb = new StringBuilder
     proposals.foreach {
       proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"acceptedproposals_fr2015\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("{\"index\":{\"_index\":\"")
+        sb.append(indexName)
+        sb.append("\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
         sb.append(Json.toJson(proposal.copy(
           privateMessage = "",
@@ -236,7 +239,7 @@ class IndexMaster extends ESActor {
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), "acceptedproposals_fr2015")
+    ElasticSearch.indexBulk(sb.toString(), indexName)
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
   }

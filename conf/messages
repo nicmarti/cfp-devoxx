@@ -86,7 +86,7 @@ mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/dvxfr15-faq-2#format" target="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq" target="new">FAQ</a>.
 
 audienceLevel=Audience level :
 audienceLevel.help=Please, indicate the required audience level for your talk:\
@@ -127,11 +127,11 @@ conf.label=Conference, 45mn, Thursday and Friday
 conf.label.simple=Conference
 uni.label=University, 3h, Wednesday
 uni.label.simple=University
-tia.label=Tools in Action, 30mn, Wednesday or Thursday
+tia.label=Tools in Action, 25mn, Wednesday or Thursday
 tia.label.simple=Tools in Action
 quick.label=Quickie, 15mn, Thursday and Friday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Thursday only evening
+bof.label=Bird of a Feather, 1h, Thursday evening only
 bof.label.simple=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Wednesday
 lab.label.simple=Hands-on Lab
@@ -356,7 +356,7 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
-tags.renderComment.postedBy=Posted  by
+tags.renderComment.postedBy=Posted by {0} - {1}
 
 admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
@@ -486,11 +486,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 6th April
-day-tuesday=Tuesday, 7th April
-day-wednesday=Wednesday, 8th April
-day-thursday=Thursday, 9th April
-day-friday=Friday, 10th April
+day-monday=Monday, 18th April
+day-tuesday=Tuesday, 19th April
+day-wednesday=Wednesday, 20th April
+day-thursday=Thursday, 21st April
+day-friday=Friday, 22nd April
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -519,11 +519,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 6th April 2016
-sw.show.title.tue=Tuesday, 7th April 2016
-sw.show.title.wed=Wednesday, 8th April 2016
-sw.show.title.thu=Thursday, 9th April 2016
-sw.show.title.fri=Friday, 10th April 2016
+sw.show.title.mon=Monday, 18th April 2016
+sw.show.title.tue=Tuesday, 19th April 2016
+sw.show.title.wed=Wednesday, 20th April 2016
+sw.show.title.thu=Thursday, 21st April 2016
+sw.show.title.fri=Friday, 22nd April 2016
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
@@ -803,3 +803,9 @@ search.close=Close
 search.showOnly=Show only
 search.onlySpeakers=speakers
 search.onlyProposals=proposals
+
+noPasswordHere=This web site does not let you configure a password, mainly because a lot of people use the same password, everywhere. Please save the generated access code or use OpenID (Github/LinkedIn/Google) access.
+cfpadmin.toreview={0} proposal(s) to review
+cfpAdmin.showWhenCreated=Submitted to the CFP on {0}
+
+publisher.showMore=See proposal details

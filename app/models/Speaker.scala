@@ -24,7 +24,7 @@
 package models
 
 import com.github.rjeschke.txtmark.Processor
-import library.{Redis, ZapJson}
+import library.{Benchmark, Redis, ZapJson}
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.{DateTime, Instant}
 import play.api.libs.json.Json
@@ -201,7 +201,7 @@ object Speaker {
       client.hkeys("Speaker")
   }
 
-  def asSetOfSpeakers(speakerIDs: Set[String]): List[Speaker] = Redis.pool.withClient {
+  def loadSpeakersFromSpeakerIDs(speakerIDs: Set[String]): List[Speaker] = Redis.pool.withClient {
     client =>
       client.hmget("Speaker", speakerIDs).flatMap {
         js: String =>
@@ -239,14 +239,23 @@ object Speaker {
 
   def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
     client =>
-      val speakerIDs = client.hkeys("TermsAndConditions").filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
-      val allSpeakers = client.hmget("Speaker", speakerIDs).flatMap {
+
+      val termKeys = Benchmark.measure(()=>
+        client.hkeys("TermsAndConditions")
+        ,"termKeys")
+
+      val speakerIDs = Benchmark.measure(() =>
+        termKeys.filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
+        ,"speakerIDs")
+
+      val allSpeakers = Benchmark.measure(() =>
+        client.hmget("Speaker", speakerIDs).flatMap {
         json: String =>
           Json.parse(json).validate[Speaker].fold(invalid => {
             play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
             None
           }, validSpeaker => Some(validSpeaker))
-      }
+      },"allSpeakers")
       allSpeakers
   }
 

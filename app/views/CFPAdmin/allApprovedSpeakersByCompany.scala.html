@@ -27,14 +27,14 @@
         </div>
         <div class="panel-body">
             @proposals.map { case (company, props) =>
-            <h3>@company</h3>
+            <h3>@company.capitalize @props.size talk(s)</h3>
                 @props.toList.sortBy(_.talkType.id).map {proposal=>
                     @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") <br>
                 }
             }
 
             @if(speakersByCompany.nonEmpty){
-            <table class="table table-bordered table-strippted">
+            <table class="table table-bordered table-stripped">
                 <thead>
                     <tr>
                         <th>Name</th>

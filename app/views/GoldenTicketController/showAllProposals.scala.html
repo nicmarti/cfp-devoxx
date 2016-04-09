@@ -31,7 +31,7 @@
                     <p>@Messages("gt.intro.1")</p>
                     <p>@Messages("gt.intro.2") <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()">@Messages("gt.reviewYourVotes")</a> @Messages("gt.intro.3")</p>
 
-                    <p>@Messages("gt.special.need")</p>
+                    <p><label class="label label-success"><i class="icon-lightbulb"></i> @Messages("gt.special.need")</label></p>
                     <br>
                     @if(allProposalsForReview.nonEmpty) {
                         <table class="table table-bordered table-striped table-hover table-condensed">

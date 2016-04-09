@@ -23,7 +23,7 @@
 
 package models
 
-import library.Redis
+import library.{Stats, Redis}
 import org.joda.time.{Instant, DateTime}
 import scala.math.BigDecimal.RoundingMode
 
@@ -68,14 +68,12 @@ object Review {
       Event.storeEvent(Event(proposalId, reviewerUUID, s"Removed its vote on this talk"))
   }
 
-
   def archiveAllVotesOnProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
       allVotesFor(proposalId).map {
         case (reviewer, _) =>
           tx.srem(s"Proposals:Reviewed:ByAuthor:$reviewer", proposalId)
-
       }
       tx.del(s"Proposals:Reviewed:ByProposal:$proposalId")
       tx.del(s"Proposals:Votes:$proposalId") // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
@@ -93,7 +91,9 @@ object Review {
 
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:$reviewerUUID").toSet
+      // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "ApprovedById:",
+        "RefusedById:", s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
@@ -152,6 +152,12 @@ object Review {
   def totalVoteCastFor(proposalId: String): Long = Redis.pool.withClient {
     implicit client =>
       client.zcount(s"Proposals:Votes:$proposalId", 1, 10)
+  }
+
+  def averageScore(proposalId:String):Double = Redis.pool.withClient{
+    client=>
+      val allScores = client.zrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 1, 10).map(_._2)
+      Stats.average(allScores)
   }
 
   type ReviewerAndVote = (String, Double)
@@ -265,12 +271,17 @@ object Review {
       }
   }
 
-  type ScoreAndTotalVotes = (Double, Int, Int, Double, Double)
+  class Score(val s:Double) extends AnyVal
+  class TotalVoter(val i:Int) extends AnyVal
+  class TotalAbst(val i:Int) extends AnyVal
+  class AverageNote(val n:Double) extends AnyVal
+  class StandardDev(val d:Double) extends AnyVal
+
 
   /**
     * Returns allVotes but discard deleted/archived/draft proposals
     */
-  def allVotes(): Map[String, ScoreAndTotalVotes] = Redis.pool.withClient {
+  def allVotes(): Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Redis.pool.withClient {
     client =>
       val allVoters = client.hgetAll("Computed:Voters")
       val allAbstentions = client.hgetAll("Computed:VotersAbstention")
@@ -283,14 +294,14 @@ object Review {
         case (proposalKey: String, scores: String) if !allProposalIDSToRemove.contains(proposalKey)=>
           val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
           (proposalId,
-            (scores.toDouble,
-              allVoters.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAverages.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map(d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
+            (new Score(scores.toDouble),
+              new TotalVoter(allVoters.get(proposalKey).map(_.toInt).getOrElse(0)),
+              new TotalAbst(allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0)),
+              new AverageNote(allAverages.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map(d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble)),
               allStandardDev.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map {
                 d =>
-                  BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
-              }.getOrElse(0.toDouble)
+                  new StandardDev(BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble)
+              }.getOrElse(new StandardDev(0.toDouble))
             )
           )
       }

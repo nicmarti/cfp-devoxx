@@ -1,27 +1,42 @@
-@()(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(timeSlots: List[Slot], rooms:List[Room])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@mainVisitor("Wishlist") {
+@import org.joda.time.DateTimeZone
 
-    <div class="row">
-        <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-star"></i> My agenda</h2>
-        </div>
+@views.html.Publisher.devoxxFR2016("My Schedule") {
+    @if(timeSlots.isEmpty){
 
-        <div class="clearfix"></div>
-
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3><i class="icon-calendar"></i> View by day</h3>
-                </div>
-
-                <div class="panel-body">
-
-
-                </div>
-            </div>
-        </div>
+    <div class="columns large-12 woocommerce">
+        <h1>Build your own schedule</h1>
+        <p>You don't have any schedule yet.</p>
+        <p>Browse the <a href="@routes.Publisher.showByDay("wednesday")">schedule</a> and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.</p>
+        <img src="/assets/devoxxbe2015/images/myschedule.png" alt="My schedule">
     </div>
+    }
+    @timeSlots.groupBy(_.to.getDayOfWeek).toList.sortBy(_._1).map { case (day, slots:List[Slot]) =>
+    <h2>Day @day</h2>
+    <div class="columns large-12 woocommerce">
+        <table class="agendaTable">
+            <tr>
+                <th><i class="icon-time"></i> Room</th>
+                @rooms.sorted.map { roomName: Room =>
+                    <td>@roomName.name</td>
+                }
+                </tr>
+
+            @slots.groupBy(s => s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
+            <tr >
+                <th class="timeSlot">
+                    @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                    - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                </th>
+                @rooms.sorted.map { room =>
+                    @tags.publisher.tagRenderRow(subSlots, room, rooms.size)
+                }
+            </tr>
+            }
 
 
+    </table>
+    </div>
+    }
 }

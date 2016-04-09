@@ -23,20 +23,20 @@
 
 package controllers
 
-import models._
-import play.api.i18n.Messages
+import akka.util.Crypt
 import library._
-
+import models.Review._
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
+
 import scala.concurrent.Future
-import akka.util.Crypt
-import notifiers.Mails
 
 /**
- * Sans doute le controller le plus sadique du monde qui accepte ou rejette les propositions
- * Created by nmartignole on 30/01/2014.
- */
+  * Sans doute le controller le plus sadique du monde qui accepte ou rejette les propositions
+  * Created by nmartignole on 30/01/2014.
+  */
 object ApproveOrRefuse extends SecureCFPController {
 
   def doApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
@@ -67,9 +67,10 @@ object ApproveOrRefuse extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
+          val confType: String = proposal.talkType.id
           ApprovedProposal.cancelApprove(proposal)
           Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Cancel Approved on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, None)).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, Some(confType))).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
       }.getOrElse {
         Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
       }
@@ -79,9 +80,10 @@ object ApproveOrRefuse extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
+          val confType: String = proposal.talkType.id
           ApprovedProposal.cancelRefuse(proposal)
           Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Cancel Refused on ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, None)).flashing("success" -> s"Talk ${proposal.id} has been removed from Refused list."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, Some(confType))).flashing("success" -> s"Talk ${proposal.id} has been removed from Refused list."))
       }.getOrElse {
         Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
       }
@@ -215,45 +217,50 @@ object ApproveOrRefuse extends SecureCFPController {
   }
 
 
-  def updateDraft() = SecuredAction(IsMemberOf("admin")) {
+  def prepareMassRefuse(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val approvedIDs = ApprovedProposal.allApprovedProposalIDs()
-      val refusedIDs = ApprovedProposal.allRefusedProposalIDs()
-      val allProposalIDs = Proposal.allProposalIDsNotDeleted
+      ProposalType.all.find(_.id == confType).map {
+        proposalType =>
+          val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Review.allVotes()
 
-      val hasNoVotes = allProposalIDs.filter(p => Review.allVotesFor(p).isEmpty)
+          val onlyReviewedButNotApproved:Set[String]=reviews.keySet.diff(ApprovedProposal.allApprovedProposalIDs()).diff(ApprovedProposal.allRefusedProposalIDs())
 
-      Ok("allProposalIDsSubmitted ")
+          val allProposals = Proposal.loadAndParseProposals(onlyReviewedButNotApproved, proposalType)
+
+          val listOfProposals = reviews.flatMap {
+            case (proposalId, scoreAndVotes) =>
+              val maybeProposal = allProposals.get(proposalId)
+              if (maybeProposal.isDefined) {
+                Option(maybeProposal.get, scoreAndVotes._4)
+              } else {
+                // It's ok to discard other talk than the confType requested
+                None
+              }
+          }
+
+          val sortedList = listOfProposals.toList.sortBy {
+            case (proposal, score) => score.n
+          }
+
+          Ok(views.html.ApproveOrRefuse.prepareMassRefuse(sortedList, confType))
+      }.getOrElse(NotFound("Proposal not found"))
+
   }
 
-  //
-  //  def notifySpeakers() = SecuredAction(IsMemberOf("admin")) {
-  //    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-  //
-  //      val speakersWithProposals = Speaker.allSpeakers().filter(s => Proposal.hasOneProposal(s.uuid))
-  //      speakersWithProposals.foreach {
-  //        speaker =>
-  //          val allApproved = Proposal.allApprovedForSpeaker(speaker.uuid).toSet
-  //          val allRejected = Proposal.allRejectedForSpeaker(speaker.uuid).toSet
-  //          val allBackups = Proposal.allBackupForSpeaker(speaker.uuid).toSet
-  //          if (allApproved.nonEmpty || allRejected.nonEmpty) {
-  //            if (allApproved.isEmpty && allBackups.nonEmpty) {
-  //              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-  //            } else {
-  //              Event.speakerNotified(speaker, allApproved, allRejected, allBackups)
-  //              Mails.sendResultToSpeaker(speaker,allApproved,allRejected)
-  //            }
-  //          } else {
-  //            if (allBackups.isEmpty) {
-  //              play.Logger.of("application.ApproveOrRefuse").error("No approved/refused for speaker " + speaker.name.get + " " + speaker.uuid)
-  //            } else {
-  //              play.Logger.of("application.ApproveOrRefuse").error("Speaker backup " + speaker.name.get + " " + speaker.uuid)
-  //            }
-  //          }
-  //      }
-  //
-  //      Ok("Speakers with proposals " + speakersWithProposals.size)
-  //  }
+  def doRefuseAndRedirectToMass(proposalId:String, confType:String)=SecuredAction(IsMemberOf("admin")).async{
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+       Proposal.findById(proposalId).map {
+        proposal =>
+          ApprovedProposal.refuse(proposal)
+          Event.storeEvent(Event(proposalId, request.webuser.uuid, s"Refused ${Messages(proposal.talkType.id)} [${proposal.title}] in track [${Messages(proposal.track.id)}]"))
+          Future.successful(Redirect(routes.ApproveOrRefuse.prepareMassRefuse(confType)))
+      }.getOrElse {
+        Future.successful(NotFound("Talk not found for this proposalId "+proposalId))
+      }
+
+  }
+
+
 }
 

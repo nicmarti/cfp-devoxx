@@ -23,6 +23,7 @@
 
 package library.search
 
+import models.ApprovedProposal
 import play.api.libs.ws.WS
 
 import akka.actor._
@@ -226,7 +227,7 @@ object ElasticSearch {
   }
 
   def doPublisherSearch(query: Option[String], p: Option[Int]) = {
-    val index = "acceptedproposals_fr2016"
+    val index = ApprovedProposal.elasticSearchIndex()
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
     val zeQuery = someQuery.map(_.toLowerCase).map { q =>
       s"""

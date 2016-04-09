@@ -1,0 +1,22 @@
+@(proposals:List[(Proposal,models.Review.AverageNote)],confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("Mass Refuse All votes") {
+
+<div class="row">
+
+    <div class="col-lg-12">
+        <h3>All @Messages(confType) not approved - Total @proposals.size</h3>
+
+        <p>This screen preprare the mass notification for all refused speakers. It will not change each Proposal state, but simply add the talk to the Refused list.</p>
+
+        @proposals.zipWithIndex.map{case (propsAndNote, index) =>
+            @defining(propsAndNote._1){proposal:Proposal=>
+            @index - <a href="@routes.ApproveOrRefuse.doRefuseAndRedirectToMass(proposal.id,confType)" class="btn btn-sm btn-danger">Reject</a> @propsAndNote._2.n @proposal.id @proposal.title / <small>@proposal.allSpeakers.map(s=>s.cleanName).mkString(", ")</small><br>
+            }
+        }
+    </div>
+
+</div>
+
+
+}

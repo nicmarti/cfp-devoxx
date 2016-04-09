@@ -1,0 +1,37 @@
+@(all: List[(Proposal, Long)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("All Faved talks") {
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-magnet"></i> Backoffice</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger alert-dismissable col-md-12">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+            </div>
+        }
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All talks faved</h3>
+                </div>
+                <div class="panel-body">
+                    <h4>List of talks faved by visitor on <a href="/2016/index.html">the Program page</a> </h4>
+                    @all.map{case(proposal,vote)=>
+<p>@vote @if(vote == 1){ star } else { stars }
+for @Messages(proposal.talkType.id) <strong>@proposal.title</strong> by @proposal.allSpeakers.map(s=>s.cleanName).mkString(", ")</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

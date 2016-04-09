@@ -36,7 +36,20 @@ import play.api.libs.functional.syntax._
  * Frederic Camblor added ConferenceDescriptor 07/06/2014
  */
 
-case class Room(id: String, name: String, capacity: Int, setup: String, recorded:String)
+case class Room(id: String, name: String, capacity: Int, setup: String, recorded:String) extends Ordered[Room] {
+
+  import scala.math.Ordered.orderingToOrdered
+
+  def index: Int = {
+    val regexp = "[\\D\\s]+(\\d+)".r
+    id match {
+      case regexp(x) => x.toInt
+      case _ => 0
+    }
+  }
+
+  def compare(that: Room): Int = (this.id.substring(0, 3), this.index) compare(that.id.substring(0, 3), that.index)
+}
 
 object Room {
   implicit val roomFormat = Json.format[Room]
@@ -61,6 +74,10 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
                 proposal: Option[Proposal], break: Option[SlotBreak]) {
   override def toString: String = {
     s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined}"
+  }
+
+  def parleysId: String = {
+    ConferenceDescriptor.current().eventCode + "_" + from.toString("dd") + "_" + room.id + "_" + from.toString("HHmm")
   }
 
   def notAllocated: Boolean = {

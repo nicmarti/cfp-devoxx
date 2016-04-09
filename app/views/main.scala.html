@@ -30,7 +30,7 @@
             @if(play.api.Play.current.mode==play.api.Mode.Dev){
                 <div class="ribbon-wrapper-red"><div class="ribbon-red">DEV</div></div>
             }else {
-                <div class="ribbon-wrapper-green"><div class="ribbon-green">Open</div></div>
+                <div class="ribbon-wrapper-red"><div class="ribbon-red">Closed</div></div>
             }
             <a href="/" class="navbar-brand">@Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") CFP</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
@@ -55,9 +55,6 @@
                 @if(SecureCFPController.hasAccessToAdmin(req)){
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
                 }
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite" target="_blank"><i class="icon-arrow-right"></i> @Messages("longSplittedName_whiteStart")<span class="yl">@Messages("longSplittedName_colored")</span> @Messages("longSplittedName_whiteEnd") website</a></li>
             </ul>
             @if(SecureCFPController.hasAccessToCFP(req)){
             <form id="searchForm" class="navbar-form navbar-right" role="search">

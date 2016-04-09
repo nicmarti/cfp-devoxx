@@ -99,7 +99,7 @@ lang=Langue
 lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
 mainSpeaker=Présentateur principal
 mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx France uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
-talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/dvxfr15-faq-2#format" target="new">FAQ</a> du site Devoxx France.
+talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/faq" target="new">FAQ</a> du site Devoxx France.
  
  
 talkType=Type de présentation
@@ -130,7 +130,7 @@ presubmit.reminder=Lorsque vous êtes prêt à soumettre votre proposition, n''o
 key.label=Keynote, 20mn, jeudi et vendredi matin
 conf.label=Conference, 45mn, jeudi et vendredi
 uni.label=University, 3h, mercredi uniquement
-tia.label=Tools in Action, 25mn, mercredi uniquement
+tia.label=Tools in Action, 30mn, mercredi/jeudi
 quick.label=Quickie, 15mn, jeudi et vendredi midi
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
@@ -350,7 +350,7 @@ admin.draft.warning3=Etat actuel de cette proposition :
  
 newProposal.maxLength=Maximum 1200 caractères. Possibilité d''utiliser Markdown
 preview.txt=Aperçu de votre présentation dans le programme papier
-tags.renderComment.postedBy=Posté par
+tags.renderComment.postedBy=Posté par {0} - {1}
 admin.btn.sponsor=Voir comme un sponsor
 leaderboard.compute=Calcul des stats en cours...
  
@@ -481,9 +481,9 @@ sw.agenda.fri=Vendredi
 sw.show.wed=Mercredi
 sw.show.thu=Jeudi
 sw.show.fri=Vendredi
-sw.show.title.wed=Journée du Mercredi 8 avril 2016
-sw.show.title.thu=Journée du Jeudi 9 avril 2016
-sw.show.title.fri=Journée du Vendredi 10 avril 2016
+sw.show.title.wed=Journée du Mercredi 20 avril 2016
+sw.show.title.thu=Journée du Jeudi 21 avril 2016
+sw.show.title.fri=Journée du Vendredi 22 avril 2016
  
  
 sw.horaires=Horaires
@@ -529,15 +529,15 @@ CONF.title=Devoxx France 2016
 conference.dates=20 au 22 avril 2016
 contacted=Speaker contacté
 d1.label=Uniquement des slides
-d2.label=Slides et un peu de code
+d2.label=Slides et du code
 d3.label=Code seulement (live-coding)
-d4.label=Ni slides ou code
+d4.label=Ni slides, ni code
 declined=Speaker a décliné
 accepted=Speaker a accepté
 demoLevel=Quel type de présentation allez-vous faire ?
-demoLevel1.label=Que des slides
+demoLevel1.label=Uniquement des slides
 demoLevel2.label=Slides et du code
-demoLevel3.label=Que du code
+demoLevel3.label=Code seulement (live-coding)
 demoLevel4.label=Ni slides, ni code
 key.label.simple=Plénière (Keynote)
 l1.label=niveau 1 : débutant
@@ -625,9 +625,9 @@ admin.btn.speakersInvited=Tous les speakers invités
 
 bof.label.simple=Bird of a Feather
 day-monday=Lundi 10 novembre
-day-wednesday=Mercredi 8 avril
-day-thursday=Jeudi 9 avril
-day-friday=Vendredi 10 avril
+day-wednesday=Mercredi 20 avril
+day-thursday=Jeudi 21 avril
+day-friday=Vendredi 22 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
@@ -695,7 +695,7 @@ gt.intro.1=Voici la liste complète des propositions que vous n''avez pas encore
 gt.intro.2=Si vous le souhaitez, vous pouvez aussi
 gt.reviewYourVotes=revoir et corriger vos votes
 gt.intro.3=tant que le CFP est ouvert.
-gt.special.need=Si vous pensez à un speaker spécifique que vous aimeriez voir à Devoxx France, merci d''envoyer un email à program@devoxx.fr et nous essayerons de contacter la personne.
+gt.special.need=Mise à jour du mardi 9 février : seules les Conférences peuvent désormais être évaluées. La sélection des autres formats est terminée
 gt.todo=Votre liste de sujet à revoir :
 
 
@@ -757,3 +757,9 @@ search.close=Fermer
 search.showOnly=Afficher seulement
 search.onlySpeakers=speakers
 search.onlyProposals=proposals
+
+noPasswordHere=Le site du CFP ne vous permet pas de configurer un mot de passe, et utilise un système de code d''accès, pour des raisons de sécurité. Nous vous recommandons d''utiliser un accès OpenId via votre comtpe Github/LinkedIn ou Google, lorsque cela reste possible.
+cfpadmin.toreview={0} sujet(s) à noter
+cfpAdmin.showWhenCreated=Sujet soumis par le speaker sur le CFP le {0}
+
+publisher.showMore=Voir la description
