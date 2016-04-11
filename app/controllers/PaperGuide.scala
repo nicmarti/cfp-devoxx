@@ -47,9 +47,10 @@ object PaperGuide extends SecureCFPController {
                                                                scheduledConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId)
       ) yield scheduledConf
 
-      val file = new File("./target/guide", "DEVOXX_" + allScheduledConf.hashCode() + ".csv")
+      val file = new File("./target", "DEVOXX_UTF8_" + allScheduledConf.hashCode() + ".csv")
       val writer = new PrintWriter(file, "MacRoman") // !!! ENCODING !!!
-      writer.println("id,name,day,from,to,roomName,proposalId,proposalTitle,proposalLang,track,speakerName,secSpeakerName,thirdSpeaker,fourthSpeaker")
+//      val writer = new PrintWriter(file, "UTF-8")
+      writer.println("id,name,day,from,to,roomName,proposalId,proposalTitle,proposalLang,track,firstSpeaker,secondarySpeaker,thirdSpeaker,fourthSpeaker,fifthSpeaker")
 
       allScheduledConf.foreach {
         scheduleConf: ScheduleConfiguration =>
@@ -93,53 +94,19 @@ object PaperGuide extends SecureCFPController {
                       }.getOrElse(writer.print(",,"))
                   }.getOrElse(writer.print(",,"))
 
-                  proposal.otherSpeakers.size match {
-                    case 0 => writer.print(",,,,")
-                    case 1 => {
-                      proposal.otherSpeakers.map {
-                        otherSpeakerId =>
-                          Speaker.findByUUID(otherSpeakerId).map {
-                            s2: Speaker =>
-                              writer.print(StringEscapeUtils.escapeCsv(s2.cleanName))
-                              writer.print(",")
-                          }.getOrElse(writer.print(",,"))
-                      }
-                      writer.print(",,")
-                    }
-                    case 2 => {
-                      proposal.otherSpeakers.map {
-                        otherSpeakerId =>
-                          Speaker.findByUUID(otherSpeakerId).map {
-                            s2: Speaker =>
-                              writer.print(StringEscapeUtils.escapeCsv(s2.cleanName))
-                              writer.print(",")
-                          }.getOrElse(writer.print(",,"))
-                      }
-                    }
-                    case 3 => {
-                      proposal.otherSpeakers.map {
-                        otherSpeakerId =>
-                          Speaker.findByUUID(otherSpeakerId).map {
-                            s2: Speaker =>
-                              writer.print(StringEscapeUtils.escapeCsv(s2.cleanName))
-                              writer.print(",")
-                          }.getOrElse(writer.print(",,"))
-                      }
-                    }
-                    case 4 => {
-                      proposal.otherSpeakers.map {
-                        otherSpeakerId =>
-                          Speaker.findByUUID(otherSpeakerId).map {
-                            s2: Speaker =>
-                              writer.print(StringEscapeUtils.escapeCsv(s2.cleanName))
-                              writer.print(",")
-                          }.getOrElse(writer.print(",,"))
-                      }
-                    }
+                  val otherSpeakersNames = proposal.otherSpeakers.map{
+                    id:String=>
+                      Speaker.findByUUID(id).map{s=>
+                       StringEscapeUtils.escapeCsv(s.cleanName) + ","
+                      }.getOrElse(",,")
                   }
 
+                  val paddedToSixSpeakers = otherSpeakersNames.padTo(6,",")
+
+                  paddedToSixSpeakers.foreach{token=>writer.print(token)}
+
               }.getOrElse {
-                writer.print(",,,,,,,")
+                writer.print(",,,,,,,,")
               }
               writer.println("")
 
