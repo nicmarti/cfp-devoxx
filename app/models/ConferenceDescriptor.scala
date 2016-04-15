@@ -212,6 +212,8 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
+
+    // Do not change the ID's once the program is published
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "")
     val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special", "")
 

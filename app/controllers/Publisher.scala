@@ -133,40 +133,40 @@ object Publisher extends Controller {
         maybeScheduledConfiguration match {
           case Some(slotConfig) if day == null => {
             val updatedConf = slotConfig.copy(slots = slotConfig.slots)
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "wednesday"))
           }
           case Some(slotConfig) if day == "monday" => {
             val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == "monday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 1))
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "monday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "monday"))
           }
           case Some(slotConfig) if day == "tuesday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "tuesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 2)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "tuesday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "tuesday"))
           }
           case Some(slotConfig) if day == "wednesday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "wednesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 3)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "wednesday"))
           }
           case Some(slotConfig) if day == "thursday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "thursday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 4)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "thursday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "thursday"))
           }
           case Some(slotConfig) if day == "friday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "friday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 5)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "friday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "friday"))
           }
 
           case None => NotFound(views.html.Publisher.agendaNotYetPublished())
@@ -176,9 +176,8 @@ object Publisher extends Controller {
 
   def showByDay(day: String) = Action {
     implicit request =>
-
       def _showDay(slots: List[Slot], day: String) = {
-        val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
+        val rooms = slots.groupBy(_.room).keys.toList
         val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
         Ok(views.html.Publisher.showOneDay(allSlots, rooms, day))
       }
