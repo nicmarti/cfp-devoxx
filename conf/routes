@@ -159,6 +159,9 @@ GET           /ar/doMassRefuseAndRedirect                                       
 # For Fun, it works only if you have Elastic Search
 GET           /cloudtags                                                        controllers.CallForPaper.cloudTags()
 
+# For Paper guide
+GET           /guide/exported                                                   controllers.PaperGuide.exportProgram()
+
 # Content Publisher
 # If you plan to use the CFP for your program, you can adapt the URLs below
 # Please, do not try to propose a configurable system here, as each Conference has its own URLs

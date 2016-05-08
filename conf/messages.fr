@@ -763,3 +763,4 @@ cfpadmin.toreview={0} sujet(s) à noter
 cfpAdmin.showWhenCreated=Sujet soumis par le speaker sur le CFP le {0}
 
 publisher.showMore=Voir la description
+publisher.room=Salle

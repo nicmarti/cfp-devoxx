@@ -151,7 +151,8 @@ object RestAPI extends Controller {
                   ))
                 )
               )
-              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("conference").absoluteURL().toString + ">; rel=\"profile\""))
+              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,
+                "Links" -> ("<" + routes.RestAPI.profile("conference").absoluteURL() + ">; rel=\"profile\""))
             }
           }
       }.getOrElse(NotFound("Conference not found"))

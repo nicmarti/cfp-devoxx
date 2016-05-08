@@ -809,3 +809,4 @@ cfpadmin.toreview={0} proposal(s) to review
 cfpAdmin.showWhenCreated=Submitted to the CFP on {0}
 
 publisher.showMore=See proposal details
+publisher.room=Room

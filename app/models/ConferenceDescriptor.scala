@@ -212,6 +212,8 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
+
+    // Do not change the ID's once the program is published
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "")
     val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special", "")
 
@@ -459,23 +461,17 @@ object ConferenceDescriptor {
       val keynoteThursdaySlot2 = ConferenceRooms.keynoteRoom.map {
         r2 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
-            new DateTime("2016-04-21T09:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2016-04-21T10:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
+            new DateTime("2016-04-21T09:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+            new DateTime("2016-04-21T10:05:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
       }
       val keynoteThursdaySlot3 = ConferenceRooms.keynoteRoom.map {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
-            new DateTime("2016-04-21T10:05:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2016-04-21T10:25:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r3)
-      }
-      val keynoteThursdaySlot4 = ConferenceRooms.keynoteRoom.map {
-        r4 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, "thursday",
-            new DateTime("2016-04-21T10:25:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime("2016-04-21T10:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r4)
+            new DateTime("2016-04-21T10:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+            new DateTime("2016-04-21T10:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r3)
       }
 
-      keynoteThursdayWelcome ++keynoteThursdaySlot1 ++ keynoteThursdaySlot2 ++ keynoteThursdaySlot3 ++ keynoteThursdaySlot4
+      keynoteThursdayWelcome ++keynoteThursdaySlot1 ++ keynoteThursdaySlot2 ++ keynoteThursdaySlot3
     }
 
     val keynoteSlotsFriday: List[Slot] = {

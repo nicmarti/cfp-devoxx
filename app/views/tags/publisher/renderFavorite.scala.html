@@ -3,7 +3,6 @@
 @defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
     @maybeUuid.map { uuid:String =>
         @if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) {
-
             <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId" checked>
             <label class="cfp-lab" for="checkbox_@proposalId"></label>
         } else {

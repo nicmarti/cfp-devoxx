@@ -1,0 +1,12 @@
+@(subSlots:List[Slot], slots:List[Slot], rooms:List[Room])(implicit req:RequestHeader)
+@import org.joda.time.DateTimeZone
+
+<tr>
+<th class="timeSlot">
+    @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+    - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+</th>
+@slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+    @tags.publisher.tagRenderRow(subSlots, room, rooms.size)
+}
+</tr>

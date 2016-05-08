@@ -25,7 +25,7 @@ package controllers
 
 import akka.util.Crypt
 import library.search.ElasticSearch
-import library.{LogURL, SendQuestionToSpeaker, ZapActor}
+import library.{LogURL, ZapActor}
 import models._
 import play.api.cache.Cache
 import play.api.data.Form
@@ -36,14 +36,14 @@ import play.api.mvc._
 
 
 /**
- * Publisher is the controller responsible for the Web content of your conference Program.
- * Created by nicolas on 12/02/2014.
- */
+  * Publisher is the controller responsible for the Web content of your conference Program.
+  * Created by nicolas on 12/02/2014.
+  */
 object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val etag = Crypt.md5(result.toString()+"dvx").toString
+      val etag = Crypt.md5(result.toString() + "dvx").toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
@@ -54,16 +54,23 @@ object Publisher extends Controller {
 
   def showAllSpeakers = Action {
     implicit request =>
-      import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
-        Speaker.allSpeakersWithAcceptedTerms()
+
+      // First load published slots
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      val etag = allSpeakersIDs.hashCode.toString
+
+      request.headers.get(IF_NONE_MATCH) match {
+        case Some(tag) if tag == etag =>
+          NotModified
+
+        case other =>
+          val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
+          val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
+          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
+
       }
-      val etag = speakers.hashCode().toString + "_2"
-      val maybeETag = request.headers.get(IF_NONE_MATCH)
-      maybeETag match {
-        case Some(oldEtag) if oldEtag == etag => NotModified
-        case other => Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
-      }
+
   }
 
   def showSpeakerByName(name: String) = Action {
@@ -126,40 +133,40 @@ object Publisher extends Controller {
         maybeScheduledConfiguration match {
           case Some(slotConfig) if day == null => {
             val updatedConf = slotConfig.copy(slots = slotConfig.slots)
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "wednesday"))
           }
           case Some(slotConfig) if day == "monday" => {
             val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == "monday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 1))
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "monday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "monday"))
           }
           case Some(slotConfig) if day == "tuesday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "tuesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 2)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "tuesday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "tuesday"))
           }
           case Some(slotConfig) if day == "wednesday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "wednesday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 3)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "wednesday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "wednesday"))
           }
           case Some(slotConfig) if day == "thursday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "thursday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 4)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "thursday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "thursday"))
           }
           case Some(slotConfig) if day == "friday" => {
             val updatedConf = slotConfig.copy(
               slots = slotConfig.slots.filter(_.day == "friday")
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 5)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "friday"))
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "friday"))
           }
 
           case None => NotFound(views.html.Publisher.agendaNotYetPublished())
@@ -169,9 +176,8 @@ object Publisher extends Controller {
 
   def showByDay(day: String) = Action {
     implicit request =>
-
       def _showDay(slots: List[Slot], day: String) = {
-        val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
+        val rooms = slots.groupBy(_.room).keys.toList
         val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
         Ok(views.html.Publisher.showOneDay(allSlots, rooms, day))
       }
