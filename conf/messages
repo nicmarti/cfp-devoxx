@@ -815,4 +815,5 @@ hfspk.edit.speaker=Add/remove speaker
 hfspk.rating.title=Rating
 hfspk.rating.desc=Rating given by visitors during the conference with mobile apps.
 table.pres.rating=Rating (1 to 5)
-table.pres.comment=Comments
+table.pres.comment=Comments and rating
+rating.default=No comment

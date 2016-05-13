@@ -120,4 +120,13 @@ object Rating {
   }.filter(_._2.nonEmpty).toMap
 
 
+
+  def allRatings(): List[Rating] = Redis.pool.withClient {
+    client =>
+      client.hvals("Rating:2016").map {
+        json =>
+          Json.parse(json).as[Rating]
+      }
+  }
+
 }

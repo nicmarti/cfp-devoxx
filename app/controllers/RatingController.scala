@@ -23,16 +23,16 @@
 
 package controllers
 
+import java.io.File
+
+import com.fasterxml.jackson.databind.JsonNode
 import models._
 import org.joda.time.DateTime
+import play.api.Play
 import play.api.data.Form
 import play.api.data.Forms._
-import library.{NotifyGoldenTicket, ZapActor}
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.validation.Constraints._
-
-import scala.io.Source
+import play.api.mvc.Action
+import play.libs.Json
 
 /**
   * Backoffice controller used to store rating and reviews sent by the mobile
@@ -43,9 +43,6 @@ import scala.io.Source
   */
 
 object RatingController extends SecureCFPController {
-
-  import Rating.RatingDetailFormat
-  import Rating.RatingFormat
 
   val ratingForm = Form(mapping(
     "talkId" -> nonEmptyText(maxLength = 50),
@@ -62,31 +59,92 @@ object RatingController extends SecureCFPController {
     )
   )(Rating.apply)(Rating.unapply _)
   )
+
   def homeRating() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val defaultRating=Rating(
+      val defaultRating = Rating(
         "",
         request.webuser.uuid,
         "DevoxxFR2016",
         DateTime.now().getMillis,
         List(
           RatingDetail(
-            "default",3,None
+            "default", 3, None
           )
         )
       )
       Ok(views.html.RatingController.homeRating(ratingForm.fill(defaultRating)))
   }
 
-  def acceptVoteForTalk()=SecuredAction(IsMemberOf("admin")) {
+  def acceptVoteForTalk() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-     ratingForm.bindFromRequest().fold(hasErrors=>BadRequest(views.html.RatingController.homeRating(hasErrors)),
-       validRating=>{
-         Rating.saveNewRating(validRating)
-         Ok("Top")
-       }
-     )
+      ratingForm.bindFromRequest().fold(hasErrors => BadRequest(views.html.RatingController.homeRating(hasErrors)),
+        validRating => {
+          Rating.saveNewRating(validRating)
+          Ok("Top")
+        }
+      )
+  }
+
+  def allRatings = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val ratings = Rating.allRatings()
+      Ok(views.html.RatingController.allRatings(ratings))
+  }
+
+  // Special callback that accepts a JSON content from an URL, upload and set all votes for each talk
+  // This is for backward compatibility with Jon Mort / Ratpack voting app and should be removed.
+  def postForBackup() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      import scala.collection.JavaConverters._
+
+      Play.current.configuration.getString("VOTES_URL").map {
+        url =>
+          val stream = scala.io.Source.fromURL(url).getLines().mkString
+          val json = Json.parse(stream)
+
+          val rows = json.get("rows")
+
+          val parsedRatings = rows.elements().asScala.map {
+            row: JsonNode =>
+              val doc = row.get("doc")
+              val talkId = doc.get("talkId").asText()
+              val user = doc.get("user").asText()
+              val conference = doc.get("conference").asText()
+              val timestamp = doc.get("timestamp").asLong()
+
+              val details = doc.get("details")
+              val ratindDetails = details.elements().asScala.map {
+                d =>
+                  val aspect = d.get("aspect").asText()
+                  val rating = d.get("rating").asInt()
+                  val reviewTxt = d.get("review")
+                  val review: Option[String] = if (reviewTxt == null) {
+                    None
+                  } else {
+                    Option(reviewTxt.asText())
+                  }
+                  RatingDetail(aspect, rating, review)
+              }
+
+              Rating(
+                talkId,
+                user,
+                conference,
+                timestamp,
+                ratindDetails.toList
+              )
+          }
+
+          parsedRatings.foreach {
+            rating =>
+              Rating.saveNewRating(rating)
+          }
+
+          Ok(s"Loaded from $url some json with ${parsedRatings.size}")
+      }.getOrElse(NotFound("No VOTES_URL configured"))
   }
 
 }
