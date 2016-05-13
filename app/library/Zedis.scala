@@ -11,6 +11,7 @@ package library
 import org.apache.commons.lang3.StringUtils
 import play.api.Play._
 import redis.clients.jedis._
+import redis.clients.jedis.exceptions.JedisConnectionException
 
 import scala.collection.immutable._
 

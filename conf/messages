@@ -810,3 +810,9 @@ cfpAdmin.showWhenCreated=Submitted to the CFP on {0}
 
 publisher.showMore=See proposal details
 publisher.room=Room
+
+hfspk.edit.speaker=Add/remove speaker
+hfspk.rating.title=Rating
+hfspk.rating.desc=Rating given by visitors during the conference with mobile apps.
+table.pres.rating=Rating (1 to 5)
+table.pres.comment=Comments
