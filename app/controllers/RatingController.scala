@@ -23,15 +23,11 @@
 
 package controllers
 
-import java.io.File
-
 import com.fasterxml.jackson.databind.JsonNode
 import models._
 import org.joda.time.DateTime
-import play.api.Play
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.Action
 import play.libs.Json
 
 /**
@@ -95,56 +91,57 @@ object RatingController extends SecureCFPController {
 
   // Special callback that accepts a JSON content from an URL, upload and set all votes for each talk
   // This is for backward compatibility with Jon Mort / Ratpack voting app and should be removed.
+  // You need a Clevercloud FS Bucket, then upload the JSON export "all.json" to this bucket
+  // and finally, open the /cfpadmin/postForBackup URL
   def postForBackup() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       import scala.collection.JavaConverters._
 
-      Play.current.configuration.getString("VOTES_URL").map {
-        url =>
-          val stream = scala.io.Source.fromURL(url).getLines().mkString
-          val json = Json.parse(stream)
+      val env = System.getenv().asScala
+      val zeFile = env.getOrElse("JSON_VOTES", "misc/all.json")
 
-          val rows = json.get("rows")
+      val stream = scala.io.Source.fromFile(zeFile).getLines().mkString
+      val json = Json.parse(stream)
 
-          val parsedRatings = rows.elements().asScala.map {
-            row: JsonNode =>
-              val doc = row.get("doc")
-              val talkId = doc.get("talkId").asText()
-              val user = doc.get("user").asText()
-              val conference = doc.get("conference").asText()
-              val timestamp = doc.get("timestamp").asLong()
+      val rows = json.get("rows")
 
-              val details = doc.get("details")
-              val ratindDetails = details.elements().asScala.map {
-                d =>
-                  val aspect = d.get("aspect").asText()
-                  val rating = d.get("rating").asInt()
-                  val reviewTxt = d.get("review")
-                  val review: Option[String] = if (reviewTxt == null) {
-                    None
-                  } else {
-                    Option(reviewTxt.asText())
-                  }
-                  RatingDetail(aspect, rating, review)
+      val parsedRatings = rows.elements().asScala.map {
+        row: JsonNode =>
+          val doc = row.get("doc")
+          val talkId = doc.get("talkId").asText()
+          val user = doc.get("user").asText()
+          val conference = doc.get("conference").asText()
+          val timestamp = doc.get("timestamp").asLong()
+
+          val details = doc.get("details")
+          val ratindDetails = details.elements().asScala.map {
+            d =>
+              val aspect = d.get("aspect").asText()
+              val rating = d.get("rating").asInt()
+              val reviewTxt = d.get("review")
+              val review: Option[String] = if (reviewTxt == null) {
+                None
+              } else {
+                Option(reviewTxt.asText())
               }
-
-              Rating(
-                talkId,
-                user,
-                conference,
-                timestamp,
-                ratindDetails.toList
-              )
+              RatingDetail(aspect, rating, review)
           }
 
-          parsedRatings.foreach {
-            rating =>
-              Rating.saveNewRating(rating)
-          }
+          Rating(
+            talkId,
+            user,
+            conference,
+            timestamp,
+            ratindDetails.toList
+          )
+      }
 
-          Ok(s"Loaded from $url some json with ${parsedRatings.size}")
-      }.getOrElse(NotFound("No VOTES_URL configured"))
+      parsedRatings.foreach {
+        rating =>
+          Rating.saveNewRating(rating)
+      }
+
+      Ok(s"Loaded some json with ${parsedRatings.size}")
   }
-
 }
