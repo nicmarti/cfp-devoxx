@@ -1,9 +1,8 @@
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 import library.search.{StopIndex, _}
 import library.{DraftReminder, _}
-import models.{Speaker, ConferenceDescriptor, ProposalState, Proposal}
-import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateMidnight
 import play.api.Play.current
 import play.api.libs.concurrent._
@@ -19,12 +18,22 @@ import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
+
+    println("--- Check if /2016 is mounted --- ")
+    val f1=new File("/2016/index.html")
+    val f2=new File("/misc/2016/index.html")
+    val f3=new File("2016/index.html")
+
+    println("f1 "+f1.exists()+" "+f1.getAbsolutePath)
+    println("f2 "+f2.exists()+" "+f2.getAbsolutePath)
+    println("f3 "+f3.exists()+" "+f3.getAbsolutePath)
+
     Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
       case Some(true) if Play.isProd =>
         CronTask.draftReminder()
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
-        //CronTask.doSetupOpsGenie()
+      //CronTask.doSetupOpsGenie()
       case Some(true) if Play.isDev => {
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
@@ -125,7 +134,7 @@ object CronTask {
     import library.Contexts.statsContext
     for (apiKey <- Play.configuration.getString("opsgenie.apiKey");
          name <- Play.configuration.getString("opsgenie.name")) {
-        Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
+      Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
     }
 
   }

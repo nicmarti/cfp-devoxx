@@ -120,11 +120,11 @@ When you want to update your local branch (for instance, dev-poland) you should 
     - do a git pull --rebase from dev to dev-poland so that you keep your local updates
 
 
-## How can I save my agenda and host it to a Wordpress ?
+## How can I save my agenda and host the program as static content to a Wordpress ?
   
 Use WGET and download all pages from your Publisher controller. This will save speakers, talks, schedule, etc.
 
-```wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2014```
+```wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2016/index.html```
 
 ## Can you help me with Redis 2.8.x ?
 
