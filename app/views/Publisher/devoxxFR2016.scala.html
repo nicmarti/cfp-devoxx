@@ -53,9 +53,12 @@
                     <ul id="nav-menu" class="menu">
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="http://www.devoxx.fr/">www.devoxx.fr</a></li>
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Accueil Programme</a></li>
-        @if(UserCFPController.findAuthenticator.isDefined){
-         <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
-        }
+
+@if(ConferenceDescriptor.isFavoritesSystemActive) {
+    @if(UserCFPController.findAuthenticator.isDefined) {
+        <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
+    }
+}
         <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="http://www.devoxx.fr/sponsors/2016">Sponsors</a></li>
         <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://www.devoxx.fr/faq">FAQ</a></li>
         <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="http://reg.devoxx.fr">Inscription</a></li>
@@ -91,38 +94,41 @@
         </div>
     </div>
 </footer>
-    <!-- *** Javascript for Favorite talk *** //-->
+
+@if(ConferenceDescriptor.isFavoritesSystemActive) {
+        <!-- *** Javascript for Favorite talk *** //-->
     <script type="text/javascript">
-		(function($) {
-		    $(document).ready(function() {
+            (function($) {
+                $(document).ready(function() {
 
-		      $('.cfp-fav').on("click",function(event) {
-		       var maybePropoposalId = $(this).val();
-		       var clickedElement=$(this);
+                    $('.cfp-fav').on("click",function(event) {
+                        var maybePropoposalId = $(this).val();
+                        var clickedElement=$(this);
 
-		        console.log("--> Sending "+maybePropoposalId);
-		        if(typeof maybePropoposalId != 'undefined'){
-		            event.preventDefault();
-		            // This works only if you are authenticated with a signed cookie and a valid play2 session
-		            $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
-		             function( jsonResponse ) {
-		             if(jsonResponse.status=="unfav"){
-		                console.log("<-- Unfav ok");
-		               $(clickedElement).attr("checked",false);
-		             }
-		             if(jsonResponse.status=="fav"){
-		               console.log("<-- Fav ok");
-		               $(clickedElement).attr("checked",true);
-		             }
-                    },"json");
-		        }else{
-		            console.log("No valid proposalId. Please help me to debug, report your web browser version and platform.");
-		        }
-		      });
+                        console.log("--> Sending "+maybePropoposalId);
+                        if(typeof maybePropoposalId != 'undefined'){
+                            event.preventDefault();
+                            // This works only if you are authenticated with a signed cookie and a valid play2 session
+                            $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
+                                    function( jsonResponse ) {
+                                        if(jsonResponse.status=="unfav"){
+                                            console.log("<-- Unfav ok");
+                                            $(clickedElement).attr("checked",false);
+                                        }
+                                        if(jsonResponse.status=="fav"){
+                                            console.log("<-- Fav ok");
+                                            $(clickedElement).attr("checked",true);
+                                        }
+                                    },"json");
+                        }else{
+                            console.log("No valid proposalId. Please help me to debug, report your web browser version and platform.");
+                        }
+                    });
 
-		    });
-		})(jQuery);
-	</script>
+                });
+            })(jQuery);
+    </script>
+}
 </body>
 </html>
 

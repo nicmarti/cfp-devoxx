@@ -68,9 +68,7 @@ object Publisher extends Controller {
           val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
           val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
           Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
-
       }
-
   }
 
   def showSpeakerByName(name: String) = Action {
