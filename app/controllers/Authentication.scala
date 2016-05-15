@@ -644,10 +644,12 @@ object Authentication extends Controller {
   }
 
   private def createCookie(webuser: Webuser) = {
-    Cookie("cfp_rm", value = Crypto.encryptAES(webuser.uuid), maxAge = Some(588000))
+    Cookie("cfp_rm"
+      , value = Crypto.encryptAES(webuser.uuid)
+      , maxAge = Some(588000)
+      , secure = ConferenceDescriptor.isHTTPSEnabled
+      , httpOnly = true)
   }
-
-
 }
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
