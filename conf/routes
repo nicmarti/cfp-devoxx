@@ -179,7 +179,8 @@ GET           /2017/byday/:day                                                  
 GET           /2017/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 
 # This is Devoxx FR 2016
-GET           /2016/*file                                                       controllers.Assets.at(path="/bucket/2016", file)
+# The folder is mounted from ./clevercloud/buckets.json to /bucket
+GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="bucket/2016", file)
 
 # Favorites
 GET           /myagenda                                                         controllers.Favorites.home
