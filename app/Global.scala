@@ -20,12 +20,8 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
 
     println("--- Check if /2016 is mounted --- ")
-    val f1=new File("/2016/index.html")
-    val f2=new File("/misc/2016/index.html")
-    val f3=new File("2016/index.html")
+    val f3=new File("bucket/2016/index.html")
 
-    println("f1 "+f1.exists()+" "+f1.getAbsolutePath)
-    println("f2 "+f2.exists()+" "+f2.getAbsolutePath)
     println("f3 "+f3.exists()+" "+f3.getAbsolutePath)
 
     Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
