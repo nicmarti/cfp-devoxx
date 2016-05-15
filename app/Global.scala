@@ -19,10 +19,6 @@ import scala.util.control.NonFatal
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
 
-    println("--- Check if /2016 is mounted --- ")
-    val f3=new File("bucket/2016/index.html")
-
-    println("f3 "+f3.exists()+" "+f3.getAbsolutePath)
 
     Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
       case Some(true) if Play.isProd =>

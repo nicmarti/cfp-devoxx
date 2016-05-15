@@ -76,6 +76,7 @@ object BucketContentLoader extends AssetsBuilder {
   override private[controllers] def resourceNameAt(path: String, file: String): Option[String] = {
     val decodedFile = UriEncoding.decodePath(file, "utf-8")
     val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else ("/" + name)).get
+    println(s"Debug BucketContentLoader $resourceName")
     if (new File(resourceName).isDirectory || !resourceName.startsWith("/bucket")) {
       None
     } else {
@@ -96,6 +97,14 @@ object BucketContentLoader extends AssetsBuilder {
       resourceNameAt(path, file).map { resourceName =>
 
         val resource = Play.getFile(resourceName)
+        println(s"Debug BucketContentLoader resource=$resource")
+        println(s"Debug BucketContentLoader getAbsolutePath=${resource.getAbsolutePath}")
+
+        println("--- Check if /2016 is mounted --- ")
+        val f3=new File("bucket/2016/index.html")
+
+        println("f3 "+f3.exists()+" "+f3.getAbsolutePath)
+
 
         if (resource.exists() && resource.canRead) {
 
