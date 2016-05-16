@@ -162,20 +162,24 @@ GET           /cloudtags                                                        
 # Keep the .html in each URL if you want to save your program (with wget for instance)
 # Each year I do a backup with wget wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2014
 
-GET           /2015/speakers.html                                               controllers.Publisher.showAllSpeakers()
-GET           /2015/speakers                                                    controllers.Publisher.showAllSpeakers()
-GET           /2015/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
-GET           /2015/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
-GET           /2015/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
-GET           /2015/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /2016/speakers.html                                               controllers.Publisher.showAllSpeakers()
+GET           /2016/speakers                                                    controllers.Publisher.showAllSpeakers()
+GET           /2016/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
+GET           /2016/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
+GET           /2016/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
+GET           /2016/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 # Important for indexer
-GET           /2015/index.html                                                  controllers.Publisher.homePublisher()
-GET           /2015/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET           /2015/byday/:day                                                  controllers.Publisher.showByDay(day:String)
-GET           /2015/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET           /2016/index.html                                                  controllers.Publisher.homePublisher()
+GET           /2016/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
+GET           /2016/byday/:day                                                  controllers.Publisher.showByDay(day:String)
+GET           /2016/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 # Keep for backward compatibility (newsletter sent before we change the schema)
-GET           /2015/                                                            controllers.Publisher.homePublisher()
-GET           /2015                                                             controllers.Publisher.homePublisher()
+GET           /2016/                                                            controllers.Publisher.homePublisher()
+GET           /2016                                                             controllers.Publisher.homePublisher()
+
+# This is Devoxx BE 2015
+# The folder is mounted from ./clevercloud/buckets.json to /bucket
+GET           /2015/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 
 # Favorites
 GET           /myagenda                                                         controllers.Favorites.home

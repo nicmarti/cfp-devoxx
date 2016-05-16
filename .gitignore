@@ -5,7 +5,6 @@
 
 # Ignore Play! working directory #
 # in Dev branch, we do not want to save the application.conf file cause it contains password
-conf/application.conf
 conf/application_nic.conf
 db
 eclipse
@@ -36,5 +35,9 @@ project/plugins/project/
 
 # Scala-IDE specific
 .scala_dependencies
+
+# My custom scripts to run locally with env variables
+run-fr.sh
+run-be.sh
 
 /public/speakers/

@@ -1,5 +1,6 @@
 @(proposalId: String)(implicit req: RequestHeader)
 
+@if(ConferenceDescriptor.isFavoritesSystemActive){
 @defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
     @maybeUuid.map { uuid:String =>
         @if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) {
@@ -11,6 +12,7 @@
             <label class="cfp-lab" for="checkbox_@proposalId"></label>
         }
     }.getOrElse {
-        <a href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda"><img src="@routes.Assets.at(path="/public", file="devoxxbe2015/images/beer-icons-off.png")" alt="Click here to save this talk in your agenda"></a>
+            <a href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda"><img src="@routes.Assets.at(path="/public", file="images/fav/not_fav.png")" alt="Click here to save this talk in your agenda"></a>
     }
+}
 }

@@ -17,10 +17,16 @@ import play.api.Play
  * @author Frederic Camblor, BDX.IO 2014
  */
 
-case class ConferenceUrls(
-                           faq: String, registration: String,
-                           confWebsite: String, cfpHostname: String
-                           )
+case class ConferenceUrls(faq: String, registration: String,confWebsite: String, cfpHostname: String){
+    def cfpURL:String={
+    if(Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)){
+      s"https://$cfpHostname"
+    }else{
+      s"http://$cfpHostname"
+    }
+  }
+
+}
 
 case class ConferenceTiming(
                              datesI18nKey: String,
@@ -94,7 +100,9 @@ case class ConferenceDescriptor(eventCode: String,
                                 hashTag: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[Locale],
-                                localisation: String
+                                localisation: String,
+                                notifyProposalSubmitted:Boolean,
+                                maxProposalSummaryCharacters:Int=1200
                                  )
 
 object ConferenceDescriptor {
@@ -723,10 +731,18 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
   def isCFPOpen: Boolean = {
-    current().timing.cfpOpenedOn.isBeforeNow && current().timing.cfpClosedOn.isAfterNow
+    Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
+
+  def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
+
+  def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
+
+  def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
 
 }

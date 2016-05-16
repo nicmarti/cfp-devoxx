@@ -41,7 +41,7 @@
     <button><i class="fi-x"></i>Close Menu</button>
     <ul id="menu-other-pages-menu" class="menu">
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite">Home</a></li>
-        @if(UserCFPController.findAuthenticator.isDefined){
+        @if(ConferenceDescriptor.isFavoritesSystemActive && UserCFPController.findAuthenticator.isDefined){
          <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
         }
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Schedule</a></li>
@@ -66,7 +66,7 @@
                     <ul id="nav-menu" class="menu">
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite">Home</a></li>
                         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Schedule</a></li>
-                        @if(UserCFPController.findAuthenticator.isDefined){
+                        @if(ConferenceDescriptor.isFavoritesSystemActive && UserCFPController.findAuthenticator.isDefined){
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
                         }
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/sponsors-2015/">Sponsors</a></li>
@@ -125,7 +125,7 @@
 <script type='text/javascript' src='http://www.devoxx.be/wp-content/plugins/easy-foundation-shortcodes/js/5/foundation.min.js?ver=3.9.2'></script>
 <script type='text/javascript' src='http://www.devoxx.be/wp-content/plugins/easy-foundation-shortcodes/js/script.js?ver=3.9.2'></script>
 
-
+@if(ConferenceDescriptor.isFavoritesSystemActive){
     <script type="text/javascript">
 		(function($) {
 		    $(document).ready(function() {
@@ -157,6 +157,7 @@
 		    });
 		})(jQuery);
 	</script>
+}
 </body>
 </html>
 
