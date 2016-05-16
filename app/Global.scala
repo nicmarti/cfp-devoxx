@@ -22,7 +22,6 @@ object Global extends GlobalSettings {
       CronTask.draftReminder()
       CronTask.elasticSearch()
       CronTask.doComputeStats()
-      CronTask.doSetupOpsGenie()
     } else {
       play.Logger.debug("actor.cronUpdater.active is set to false, application won't compute stats")
     }
@@ -126,19 +125,4 @@ object CronTask {
 
   }
 
-  def doSetupOpsGenie() = {
-    import library.Contexts.statsContext
-    for (apiKey <- Play.configuration.getString("opsgenie.apiKey");
-         name <- Play.configuration.getString("opsgenie.name")) {
-      // Create a cron task
-      if (Play.isDev) {
-        Akka.system.scheduler.schedule(10 seconds, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
-      }
-      if (Play.isProd) {
-        Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
-      }
-    }
-
-
-  }
 }
