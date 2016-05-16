@@ -41,6 +41,8 @@ import scala.util.control.NonFatal
 /**
   * This is a copy of Assets controller from Play 2.3, except that the resourceNameAt function will load
   * local mounted Clever-cloud bucket file system.
+  * Clever-cloud FS Bucket are mounted into your applicaiton, in /app
+  * buckets.json defines the folder name, e.g /devoxx_content. Files are available at /app/devoxx_content
   *
   * This is used to load all HTML pages from previous edition, saved as HTML pages, and serve them
   * as static assets.
@@ -76,8 +78,9 @@ object BucketContentLoader extends AssetsBuilder {
   override private[controllers] def resourceNameAt(path: String, file: String): Option[String] = {
     val decodedFile = UriEncoding.decodePath(file, "utf-8")
     val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else ("/" + name)).get
-    println(s"Debug BucketContentLoader $resourceName")
-    if (new File(resourceName).isDirectory || !resourceName.startsWith("/bucket")) {
+    // For security reason it has to be the bucket name defined in buckets.json
+    if (new File(resourceName).isDirectory || !resourceName.startsWith("/devoxx_content")) {
+      sys.error("Cannot read FS Bucket. For security reason, the folder in buckets.json MUST BE /devoxx_content")
       None
     } else {
       Some(resourceName)
@@ -96,16 +99,8 @@ object BucketContentLoader extends AssetsBuilder {
 
       resourceNameAt(path, file).map { resourceName =>
 
-        val resource = Play.getFile(resourceName)
-        println(s"Debug BucketContentLoader resource=$resource")
-        println(s"Debug BucketContentLoader getAbsolutePath=${resource.getAbsolutePath}")
-
-        println("--- Check if /2016 is mounted --- ")
-        val f3=new File("bucket/2016/index.html")
-
-        println("f3 "+f3.exists()+" "+f3.getAbsolutePath)
-
-
+        // Clever-cloud bucket FS system are mounted into /app
+        val resource = new File("/app", resourceName)
         if (resource.exists() && resource.canRead) {
 
           def maybeNotModified(file: File) = {
@@ -179,10 +174,11 @@ object BucketContentLoader extends AssetsBuilder {
 
             }
 
-          }.getOrElse(NotFound("Ta mere"))
+          }.getOrElse(NotFound)
 
         } else {
-          NotFound("Resource not found on bucket. Check that clevercloud.json loads the correct FS Bucket.")
+          NotFound("Resource not found on bucket. Check that clevercloud.json loads the correct FS Bucket, " +
+            "and that the content is available from /app")
         }
       }.getOrElse(NotFound)
   }
