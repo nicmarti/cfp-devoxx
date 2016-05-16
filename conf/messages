@@ -272,7 +272,7 @@ profile.imported.txt=Your profile has been successfully imported. You can change
 profile.continue=Continue
 profile.username=Your username:
 profile.password=Your access code (cannot be change):
-profile.password.help=We do not want to store one of your password. We prefer to generate an access code. We encourage you to use the OpenID access via Github or Google.
+profile.password.help=We do not want to store one of your password. We prefer to generate one for you. We encourage you to use the OpenID access via Github or Google.
 
 error.real=Real number value expected
 constraint.required=Required
@@ -335,7 +335,7 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
-tags.renderComment.postedBy=Posted  by
+tags.renderComment.postedBy=Posted by {0} - {1}
 
 admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
@@ -349,8 +349,8 @@ admin.sp.accepted.txt=This talk has been accepted. Either during the final decis
 btn.abstention=Vote 0 for this talk
 remove.sponsorFlag=Remove the sponsor''s flag on this talk
 
-cfp.isClosed=The CFP is now closed
-cfp.isClosed.expl=CFP is closed. You cannot submit a new proposal anymore. However you can still edit your proposal with some restrictions.
+cfp.isClosed=The CFP is closed
+cfp.isClosed.expl=CFP is closed and does not accept submission.
 cfp.closed.enter=Sign-in
 tbl.cfp.closed=CFP closed
 cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
@@ -376,9 +376,9 @@ acceptedProposals.title=List of accepted/refused proposals for {0}
 ar.approved=Approved proposals
 ar.rejected=Refused proposals
 ar.noneApproved=We are very sorry to inform you that none of your proposals have been accepted.
-ar.pleaseAccept=Please confirm for each accepted proposal, that you accept to present this talk
-ar.IAccept=I accept
-ar.IDecline=I decline
+ar.pleaseAccept=Please confirm for each accepted proposal, that you accept to present this talk. If you co-present a talk with another speaker, it''s also possible that your co-speaker has already accepted to present.
+ar.IAccept=I accept to present this talk
+ar.IDecline=I decline and I will not present this talk
 ar.IBackup=As a Backup
 ar.currentStatus=Current status
 ar.pleaseSelect=Please, select one of the action for this proposal:
@@ -401,7 +401,7 @@ sw.details=See details
 conf=Conference
 uni=University
 tia=Tools-in-Action
-lab=Hand''s on Labs
+lab=Hands-on Labs
 quick=Quickie
 bof=BOF (Bird of a Feather)
 hack=Hackaton
@@ -420,7 +420,7 @@ sw.showDetails=See details
 sw.home=Home
 sw.all.uni=All Universities
 sw.all.conf=All Conferences
-sw.all.lab=All Hand''s on labs
+sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.start=All Startup''s talks
@@ -453,6 +453,7 @@ sw.hackatons=Hackatons
 sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
 calendar.pref=Speaker''s preferences for schedulling
+calendar.pref.wednesday=Wednesday
 calendar.pref.thursday=Thursday
 calendar.pref.friday=Friday
 calendar.pref.reset=No preferences
@@ -538,9 +539,6 @@ demoLevel2.label=Slides and code
 demoLevel3.label=Code only
 demoLevel4.label=No slides & code
 
-userGroup=Share my proposal with User Group?
-userGroup.checkbox=Yes, I am also interested to present this talk at other European User Groups
-
 btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
 saved=Proposal saved, do not forget to SUBMIT this talk to the program committee when you are ready
@@ -590,8 +588,8 @@ unknown=Unknown
 Abs=0
 trackAndUUIDs=
 
-mail.reset_password_link.subject=You asked to reset your {1} speaker''s access code at {0}
-mail.access_code.subject=Your {0} speaker''s access code
+mail.reset_password_link.subject=You asked to reset your {1}''s access code at {0}
+mail.access_code.subject=Your {0}''s access code
 mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
 mail.issue_reported.subject=New issue reported on CFP web site
@@ -622,17 +620,76 @@ msg_pub=Send a message to the speaker
 email_pub=Your email address
 email_pub2=Please confirm your email
 
-tag.proposal.title=Proposal title
-tag.proposal.status=Proposal status
-tag.proposal.type=Proposal type
+cfp.closed=CFP is currently closed.
+cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
+cfp.opening.date=Lundi 2 décembre 2013
+constraint.email=Valid email address
+constraint.max=Max value : {0}
+constraint.maxLength=Max length: {0}
+constraint.min=Min length : {0}
+constraint.minLength=Min length : {0}
+day-mercredi=Wednesday
+day-vendredi=Friday
+error.email=Invalid email address
+error.invalid=Invalid value
+hack.label=Hackaton
+lg_alter.label=Alternate languages on the JVM
+lgaltern.label=Alternate languages on the JVM
+menu.blog=Site DevoxxFR
+signup.long=Register as a speaker on Devoxx France CFP
+sw.all.hack=Hackatons
+approved=Speaker approved
+cstory=Session de live coding Code-story
+day-jeudi=Thursday
+declined=Speaker declined
+presubmit.reminder=When you are ready, do not forget to submit your proposal from the main screen (click on
+
+wl.action=Action
+wl.lm=Last modified
+wl.sn=Speaker name
+wl.fb=Followed by
+wl.company=Company
+wl.track=Track
+wl.status=Current status
+wishlist.setPersonInCharge=Person responsible for {0}
+webmobile.label=Web, Mobile & UX
+agilityTest.label=Agility, Methodology & Tests
+
+wl.country=Country
+wl.keynote=Keynote
+wl_keynote=Keynote
+wl_keynote.checkbox=Yes, this could be a keynote speaker
+
+showProposal.comment.ar=Ask a question about this talk to the team
+ar.proposalType=Proposal type:
+ar.proposalId=Proposal ID:
+
+tag.proposal.title=Title
+tag.proposal.status=Status
+tag.proposal.type=Type
 tag.proposal.track=Track
+
+
+speaker.mustAcceptTC=You must accept Terms and Conditions
+speaker.ar1=Please click
+speaker.ar2=here
+speaker.ar3=to review and to validate Terms and Conditions.
+
+tagRenderRow-coffee=Coffee
+tagRenderRow-lunch=Lunch
+tagRenderRow-dej=Breakfast
+tagRenderRow-reg=Registration, welcome and Breakfast
+tagRenderRow-chgt=Short break
+tagRenderRow-meet=Soirée Meet & Greet
+please.check.approved=Please, review the list of approved Proposals, then select accept or decline for each Talk.
+proposal.approved.noVotes=Approved proposal - no more votes
 tag.proposal.youVoted=Your vote
 qualifications.otherproposals=Other proposals from this speaker
 
 # prepareSignupVisitor
-visitor.registration.title=Build your own agenda
-visitor.signup.txt1=Sign up to save your schedule for {0} conference. You can also register and create a profile from your Github profile, we use your email address as your primary ID.
-visitor.signup.txt2=A validation email will be send to the provided email address. Your profile will be active once your email address is validated. We won''t send you other emails.
+visitor.registration.title=Visitor's registration
+visitor.signup.txt1=Sign up to save your schedule for {0} conference :
+visitor.signup.txt2=A validation email will be sent to the address indicated. Your profile will be active once your email address is validated. We won''t send you other emails.
 
 # homeVisitor
 home.visitor.header=Visitor sign-in or sign-up
@@ -648,4 +705,96 @@ visitor.welcome.text1=You are now authenticated as a Devoxx visitor. You can mar
 visitor.welcome.publisher=Browse the conference schedule
 visitor.welcome.profile=See the list of talks you faved
 
-proposal.approved.noVotes=Approved proposal - no more votes
+# renderProposals
+renderProposal.archived={0} proposals archived from some previous editions.
+renderProposal.archived.single=One proposal has been archived from a previous edition.
+renderProposal.noTalks=No other talks submitted or proposed
+
+mail.goldenticket.subject=Golden Ticket for {0}
+error.loginRequired=Access restricted, please authenticate.
+
+userGroup=Show my proposal to Golden Ticket holder?
+userGroup.checkbox= Yes, I would like my proposal to be reviewed by Attendees with a Golden Ticket
+
+goldenTicket.help.title=Golden Ticket review
+goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
+
+gt.title=CFP for Golden ticket
+gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
+
+gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.
+gt.intro.2=If needed, you can also
+gt.reviewYourVotes=review your Votes
+gt.intro.3=while the CFP is open.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx FR, drop an email to program@devoxx.fr and we’ll do our best to get them there.
+gt.todo=Your todo list size:
+
+gt.yourVotes=Your votes
+gt.personnal=Your personnal leaderboard
+gt.youReviewed=You reviewed {0} talk(s)
+gt.youVoted=You have voted for {0} talk(s)
+gt.averageVote=Your average vote is {0}
+gt.noVotes=You haven''t vote for any proposal so far.
+gt.myvote.title=Proposals for which you voted
+
+gt.showVotes.review=Review or change your vote
+gt.home=Go back to home
+gt.vote.ok=Your vote has been recorded.
+gt.youcan=You can now:
+gt.nomore=There is no more talk to review, congratulation you did it!
+gt.nextTalk=Continue and evaluate next talk
+gt.nextTalkType=Continue and evaluate another {0}
+gt.nextTalkTrack=Continue and evaluate next talk for track {0}
+
+gtAdmin.totalGT=Total number of person with a Golden Ticket: {0}
+gtAdmin.top5=Top 5 by score
+gtAdmin.topWorst=Last 5 by score
+gtAdmin.average=Average score given my Golden ticket is {0}
+gtAdmin.totalReviewer=Total number of Proposals reviewed by Golden Ticket : {0}
+
+svp.score=Current score
+svp.average=Average score
+svp.gt.average=Average score given by {0} Golden Ticket holders
+svp.voteCast.gt=Number of Golden tickets that voted
+svp.voteCast=Total votes cast
+svp.votes=Total votes
+svp.abst=Abstention
+svp.standardDev=Standard deviation
+svp.allVotes=All votes
+svp.noshow=Sorry, votes for your talk are hidden.
+svp.voted=voted
+svp.goldenTicket.title=Golden Ticket votes
+svp.gt.novotes=No vote yet from any Golden ticket
+svp.split=Diff between GT score and Comittee score
+
+gt.admin.sp.privateMessage=Private message for the program committee
+
+speaker.notfound=Speaker not found, please sign-up and create a speaker profile. A Golden ticket profile is not valid, you must create a separate profile.
+callforpaper.gt.create.profile=You have a Golden ticket profile, but not a Speaker profile. Please complete your profile to proceed.
+cfp.goldenTicket=Golden tickets
+cfp.gt.enter=Authenticate
+cfp.gt.infos=More details about Golden tickets (in French)
+callforpaper.import.profile=Speaker profile not found, please complete your profile.
+
+gt.nav.home=Home GT
+gt.myvotes=Proposals of type {0} for which you voted
+
+search.result=Search result: {0} hit(s)
+search.close=Close
+search.showOnly=Show only
+search.onlySpeakers=speakers
+search.onlyProposals=proposals
+
+noPasswordHere=This web site does not let you configure a password, mainly because a lot of people use the same password, everywhere. Please save the generated access code or use OpenID (Github/LinkedIn/Google) access.
+cfpadmin.toreview={0} proposal(s) to review
+cfpAdmin.showWhenCreated=Submitted to the CFP on {0}
+
+publisher.showMore=See proposal details
+publisher.room=Room
+
+hfspk.edit.speaker=Add/remove speaker
+hfspk.rating.title=Rating
+hfspk.rating.desc=Rating given by visitors during the conference with mobile apps.
+table.pres.rating=Rating (1 to 5)
+table.pres.comment=Comments and rating
+rating.default=
