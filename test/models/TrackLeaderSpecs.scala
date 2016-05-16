@@ -194,7 +194,7 @@ class TrackLeaderSpecs extends PlaySpecification {
       val mapsByTrack:Map[String,Seq[String]] = Map(
         sampleTrack.STARTUP.id -> List(uuid01).toSeq,
         sampleTrack.JAVA.id -> List(uuid02).toSeq,
-        sampleTrack.ARCHISEC.id -> List(uuid01).toSeq
+        sampleTrack.BIGDATA.id -> List(uuid01).toSeq
       )
 
       // When
@@ -203,11 +203,11 @@ class TrackLeaderSpecs extends PlaySpecification {
       // Then
       TrackLeader.isTrackLeader(sampleTrack.STARTUP.id, uuid01) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid01) must beTrue
 
       TrackLeader.isTrackLeader(sampleTrack.STARTUP.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid02) must beFalse
 
 
        val mapsByTrack2:Map[String,Seq[String]] = Map(
@@ -218,16 +218,16 @@ class TrackLeaderSpecs extends PlaySpecification {
 
       TrackLeader.isTrackLeader(sampleTrack.STARTUP.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid01) must beFalse
 
       TrackLeader.isTrackLeader(sampleTrack.STARTUP.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid02) must beFalse
 
 
       TrackLeader.isTrackLeader(sampleTrack.STARTUP.id, uuid03) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid03) must beFalse
 
       Webuser.removeFromCFPAdmin(uuid01)
       Webuser.removeFromCFPAdmin(uuid02)

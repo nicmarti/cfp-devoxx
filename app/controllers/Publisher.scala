@@ -108,8 +108,10 @@ object Publisher extends Controller {
     implicit request =>
       talkType match {
         case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
-          Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
-            ConferenceDescriptor.ConferenceProposalTypes.START.id)), talkType))
+          Ok(
+            views.html.Publisher.showByTalkType(
+              Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), talkType)
+          )
         case other =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
       }

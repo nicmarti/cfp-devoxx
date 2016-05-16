@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx 2015
+CONF.title=Devoxx 2016
 CONF.subtitle=BE
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx BE 2015
-longYearlyName=Devoxx Belgium 2015
+shortYearlyName=Devoxx BE 2016
+longYearlyName=Devoxx Belgium 2016
 shortName=Devoxx BE
-longName=Devoxx BE 2015 CFP
+longName=Devoxx BE 2016 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=BE 2015
-conference.dates=9th-13th November
+longSplittedName_whiteEnd=BE 2016
+conference.dates=7th-11th November
 # -----------------
-cfp.title=Devoxx BE 2015 CFP
+cfp.title=Devoxx BE 2016 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -157,53 +157,42 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx BE 2014''s videos on
+video.tag=Review Devoxx BE 2015''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx Belgium 2015:
+theme.track=List of tracks for Devoxx Belgium 2016:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx Belgium 2015, 9th-13th November
+appel.conf.dates=Devoxx Belgium 2016, 7th-11th November
 
 # Tracks
-track.startup.title=Startup and entrepreneurship
-track.startup.desc=Lean startup, VCs, Angels and new trends in Startups.
-startup.label=Startups
 
-track.ssj.title=Server Side Java
-track.ssj.desc=Java Enterprise Edition, appservers, databases, MOM, batch processing and related JSRs
+method_archi.label=Methodology & Architecture
+track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
+
+java.label=Java Language
+track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
+
+cloud.label=Cloud, Containers & Infrastructure
+track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
+
 ssj.label=Server Side Java
+track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & related JSRs
 
-track.java.title=Java SE
-track.java.desc=Java Standard Edition, anything non-related to Jave EE, like the language, JDK, performance tuning, modularity, etc...
-java.label=Java SE
-
-track.mobile.title=Mobile
-track.mobile.desc=Tools frameworks and libraries for building mobile apps, both as MobileWeb or native Android and iOS app
-mobile.label=Mobile
-
-track.archisec.title=Architecture & Security
-track.archisec.desc=Software architecture, encryption and best practices to develop secure software
-archisec.label=Architecture & Security
-
-track.methodevops.title=Methodology & DevOps
-track.methodevops.desc=Software development methodologies and related subjects
-methodevops.label=Methodology & DevOps
-
-track.future.title=Future<Devoxx>
-track.future.desc=Developing for embedded devices, the internet of things, Arduino, raspberry pi, quadcopters, robots and related
-future.label=Future<Devoxx>
-
-track.lang.title=JVM Languages
+lang.label=Programming languages
 track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
-lang.label=JVM Languages
 
-track.cloud.title=Cloud & BigData
-track.cloud.desc=Cloud computing, Platforms as a Service, Big Data and NoSQL
-cloud.label=Cloud & BigData
+bigdata.label=Architecture & Security
+track.bigdata.desc=Software architecture, encryption and best practices to develop secure software
 
-track.web.title=Web & HTML5
-track.web.desc=Web frameworks, HTML5, CSS3, the next JavaScript ES6, libraries and tools that help you build the next generation of web apps
-web.label=Web & HTML5
+web.label=Modern Web
+track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
+
+future.label=Future<Devoxx>
+track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
+
+mobile.label=Mobile & Embedded
+track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
+
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
@@ -510,11 +499,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 9th November 2015
-sw.show.title.tue=Tuesday, 10th November 2015
-sw.show.title.wed=Wednesday, 11th November 2015
-sw.show.title.thu=Thursday, 12th November 2015
-sw.show.title.fri=Friday, 13th November 2015
+sw.show.title.mon=Monday, 7th November 2016
+sw.show.title.tue=Tuesday, 8th November 2016
+sw.show.title.wed=Wednesday, 9th November 2016
+sw.show.title.thu=Thursday, 10th November 2016
+sw.show.title.fri=Friday, 11th November 2016
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
