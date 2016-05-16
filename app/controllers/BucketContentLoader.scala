@@ -101,7 +101,7 @@ object BucketContentLoader extends AssetsBuilder {
       resourceNameAt(path, file).map { resourceName =>
 
         // Clever-cloud bucket FS system are mounted into /app
-        val resource = new File("/Users/nicolas/Dev/DevoxxFR/2016/agenda_2016", resourceName)
+        val resource = new File("/app", resourceName)
         if (resource.exists() && resource.canRead) {
 
           def maybeNotModified(file: File) = {
