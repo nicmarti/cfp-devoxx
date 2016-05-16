@@ -57,7 +57,7 @@
             <a href="@routes.Wishlist.edit(request.id)" class="btn btn-small btn-primary"><i class="icon-edit"></i></a>
             <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-small btn-danger"><i class="icon-trash"></i></a>
         </td>
-        <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, dd MMM, HH:mm"))</td>
+        <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, d MMM YYYY, HH:mm"))</td>
         <td>@request.speakerName</td>
         <td>
            @maybePersonInCharge.map{webuser=>
