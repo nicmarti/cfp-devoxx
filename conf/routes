@@ -180,7 +180,7 @@ GET           /2017/search                                                      
 
 # This is Devoxx FR 2016
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
-GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="bucket/2016", file)
+GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2016", file)
 
 # Favorites
 GET           /myagenda                                                         controllers.Favorites.home

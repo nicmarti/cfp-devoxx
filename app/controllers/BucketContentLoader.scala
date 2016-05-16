@@ -80,6 +80,7 @@ object BucketContentLoader extends AssetsBuilder {
     val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else ("/" + name)).get
     // For security reason it has to be the bucket name defined in buckets.json
     if (new File(resourceName).isDirectory || !resourceName.startsWith("/devoxx_content")) {
+      sys.error(s"Error with $resourceName")
       sys.error("Cannot read FS Bucket. For security reason, the folder in buckets.json MUST BE /devoxx_content")
       None
     } else {
@@ -100,7 +101,7 @@ object BucketContentLoader extends AssetsBuilder {
       resourceNameAt(path, file).map { resourceName =>
 
         // Clever-cloud bucket FS system are mounted into /app
-        val resource = new File("/app", resourceName)
+        val resource = new File("/Users/nicolas/Dev/DevoxxFR/2016/agenda_2016", resourceName)
         if (resource.exists() && resource.canRead) {
 
           def maybeNotModified(file: File) = {
@@ -177,6 +178,7 @@ object BucketContentLoader extends AssetsBuilder {
           }.getOrElse(NotFound)
 
         } else {
+          sys.error(s"BucketContentLoader 404 Not Found: ${resource.getAbsolutePath}")
           NotFound("Resource not found on bucket. Check that clevercloud.json loads the correct FS Bucket, " +
             "and that the content is available from /app")
         }
