@@ -181,8 +181,8 @@ track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & 
 lang.label=Programming languages
 track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
 
-bigdata.label=Architecture & Security
-track.bigdata.desc=Software architecture, encryption and best practices to develop secure software
+bigdata.label=Big Data
+track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 
 web.label=Modern Web
 track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
@@ -192,7 +192,6 @@ track.future.desc=Looking Forwards - Quantum computing, biological computing, cy
 
 mobile.label=Mobile & Embedded
 track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
-
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
