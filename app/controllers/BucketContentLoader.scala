@@ -102,7 +102,6 @@ object BucketContentLoader extends AssetsBuilder {
 
         // Clever-cloud bucket FS system are mounted into /app
         val resourceAsHtml = new File("/app", resourceName + ".html")
-        //val resourceAsHtml = new File("/app", resourceName + ".html")
 
         if (resourceAsHtml.exists() && resourceAsHtml.canRead) {
           MovedPermanently(routes.BucketContentLoader.at(file + ".html").url)
