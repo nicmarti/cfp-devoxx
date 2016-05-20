@@ -104,7 +104,7 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum, Silver and Bronze+ sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
