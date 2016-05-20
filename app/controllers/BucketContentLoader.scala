@@ -101,86 +101,91 @@ object BucketContentLoader extends AssetsBuilder {
       resourceNameAt(path, file).map { resourceName =>
 
         // Clever-cloud bucket FS system are mounted into /app
-        val resource = new File("/app", resourceName)
-        if (resource.exists() && resource.canRead) {
+        val resourceAsHtml = new File("/app", resourceName + ".html")
+        //val resourceAsHtml = new File("/app", resourceName + ".html")
 
-          def maybeNotModified(file: File) = {
-            // First check etag. Important, if there is an If-None-Match header, we MUST not check the
-            // If-Modified-Since header, regardless of whether If-None-Match matches or not. This is in
-            // accordance with section 14.26 of RFC2616.
-            request.headers.get(IF_NONE_MATCH) match {
-              case Some(eTags) => {
-                etagFor(file).filter(etag =>
-                  eTags.split(",").exists(_.trim == etag)
-                ).map(_ => cacheableResult(file, NotModified))
-              }
-              case None => {
-                request.headers.get(IF_MODIFIED_SINCE).flatMap(parseDate).flatMap { ifModifiedSince =>
-                  lastModifiedFor(file).flatMap(parseDate).filterNot(lastModified => lastModified.after(ifModifiedSince))
-                }.map(_ => NotModified.withHeaders(
-                  DATE -> df.print({
-                    new java.util.Date
-                  }.getTime)))
+        if (resourceAsHtml.exists() && resourceAsHtml.canRead) {
+          MovedPermanently(routes.BucketContentLoader.at(file + ".html").url)
+        }else {
+          val resource = new File("/app", resourceName)
+          if (resource.exists() && resource.canRead) {
+
+            def maybeNotModified(file: File) = {
+              // First check etag. Important, if there is an If-None-Match header, we MUST not check the
+              // If-Modified-Since header, regardless of whether If-None-Match matches or not. This is in
+              // accordance with section 14.26 of RFC2616.
+              request.headers.get(IF_NONE_MATCH) match {
+                case Some(eTags) => {
+                  etagFor(file).filter(etag =>
+                    eTags.split(",").exists(_.trim == etag)
+                  ).map(_ => cacheableResult(file, NotModified))
+                }
+                case None => {
+                  request.headers.get(IF_MODIFIED_SINCE).flatMap(parseDate).flatMap { ifModifiedSince =>
+                    lastModifiedFor(file).flatMap(parseDate).filterNot(lastModified => lastModified.after(ifModifiedSince))
+                  }.map(_ => NotModified.withHeaders(
+                    DATE -> df.print({
+                      new java.util.Date
+                    }.getTime)))
+                }
               }
             }
-          }
 
-          def cacheableResult[A <: Result](file: File, r: A) = {
-            // Add Etag if we are able to compute it
-            val taggedResponse = etagFor(file).map(etag => r.withHeaders(ETAG -> etag)).getOrElse(r)
-            val lastModifiedResponse = lastModifiedFor(file).map(lastModified => taggedResponse.withHeaders(LAST_MODIFIED -> lastModified)).getOrElse(taggedResponse)
+            def cacheableResult[A <: Result](file: File, r: A) = {
+              // Add Etag if we are able to compute it
+              val taggedResponse = etagFor(file).map(etag => r.withHeaders(ETAG -> etag)).getOrElse(r)
+              val lastModifiedResponse = lastModifiedFor(file).map(lastModified => taggedResponse.withHeaders(LAST_MODIFIED -> lastModified)).getOrElse(taggedResponse)
 
-            // Add Cache directive if configured
-            val cachedResponse = lastModifiedResponse.withHeaders(CACHE_CONTROL -> {
-              Play.configuration.getString("\"assets.cache." + resourceName + "\"").getOrElse(Play.mode match {
-                case Mode.Prod => Play.configuration.getString("assets.defaultCache").getOrElse("max-age=3600")
-                case _ => "no-cache"
+              // Add Cache directive if configured
+              val cachedResponse = lastModifiedResponse.withHeaders(CACHE_CONTROL -> {
+                Play.configuration.getString("\"assets.cache." + resourceName + "\"").getOrElse(Play.mode match {
+                  case Mode.Prod => Play.configuration.getString("assets.defaultCache").getOrElse("max-age=3600")
+                  case _ => "no-cache"
+                })
               })
-            })
-            cachedResponse
-          }
-
-          Option(resource).map {
-
-            case f if f.isDirectory => NotFound
-
-            case f => {
-
-              lazy val (length, resourceData) = {
-                val stream = new FileInputStream(f)
-                try {
-                  (stream.available, Enumerator.fromStream(stream))
-                } catch {
-                  case _: Throwable => (-1, Enumerator[Array[Byte]]())
-                }
-              }
-
-              if (length == -1) {
-                NotFound
-              } else {
-                maybeNotModified(f).getOrElse {
-                  // Prepare a streamed response
-                  val response = SimpleResult(
-                    ResponseHeader(OK, Map(
-                      CONTENT_LENGTH -> length.toString,
-                      CONTENT_TYPE -> MimeTypes.forFileName(file).map(m => m + addCharsetIfNeeded(m)).getOrElse(BINARY),
-                      DATE -> df.print({
-                        new java.util.Date
-                      }.getTime))),
-                    resourceData)
-
-                  cacheableResult(f, response)
-                }
-              }
-
+              cachedResponse
             }
 
-          }.getOrElse(NotFound)
+            Option(resource).map {
 
-        } else {
-          sys.error(s"BucketContentLoader 404 Not Found: ${resource.getAbsolutePath}")
-          NotFound("Resource not found on bucket. Check that clevercloud.json loads the correct FS Bucket, " +
-            "and that the content is available from /app")
+              case f if f.isDirectory => NotFound
+
+              case f => {
+
+                lazy val (length, resourceData) = {
+                  val stream = new FileInputStream(f)
+                  try {
+                    (stream.available, Enumerator.fromStream(stream))
+                  } catch {
+                    case _: Throwable => (-1, Enumerator[Array[Byte]]())
+                  }
+                }
+
+                if (length == -1) {
+                  NotFound
+                } else {
+                  maybeNotModified(f).getOrElse {
+                    // Prepare a streamed response
+                    val response = SimpleResult(
+                      ResponseHeader(OK, Map(
+                        CONTENT_LENGTH -> length.toString,
+                        CONTENT_TYPE -> MimeTypes.forFileName(file).map(m => m + addCharsetIfNeeded(m)).getOrElse(BINARY),
+                        DATE -> df.print({
+                          new java.util.Date
+                        }.getTime))),
+                      resourceData)
+
+                    cacheableResult(f, response)
+                  }
+                }
+
+              }
+
+            }.getOrElse(NotFound)
+
+          } else {
+            NotFound("This page does not exist anymore or was moved. Please contact us, it's related to the Program.")
+          }
         }
       }.getOrElse(NotFound)
   }
