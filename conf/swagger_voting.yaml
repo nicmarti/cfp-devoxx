@@ -7,7 +7,12 @@ info:
     
     The v1 is a copy/paste of DevoxxVote, a project created by Jon Mort, that was used during Devoxx BE 2014 and Devoxx FR 2015.
     
+    UserID is a hashCode (Int32)
+    
     Find source code of this API [on Github](https://github.com/nicmarti/cfp-devoxx)
+    
+    Tests for the backend can be found [here](https://github.com/nicmarti/cfp-devoxx/blob/dev/test/voting/TestVotingSpecs.scala)
+    
   termsOfService: All access are logged and tracked.
   contact:
     name: nicolas.martignole@devoxx.fr
@@ -37,7 +42,7 @@ paths:
         409: 
           description: This user already voted
         404:
-          description: This talkId was not found
+          description: This talkId was not found [deprecated]
 
   /v1/talk/{talkId}:
     get:
@@ -56,12 +61,18 @@ paths:
             type: array
             items:
               $ref: '#/definitions/TalkAndVote'
+        "201":
+          description: There is no vote for this talk
+        "404":
+          description: This talk ID does not exist
+         
         
           
   /v1/top/talks:
     get:
       summary:
         Retrieve the top talks as voted on. Talks are sorted by average rating.
+        Not implemented on 30th of May 2016
       
       parameters:
         - name: day
@@ -89,6 +100,8 @@ paths:
   /v1/categories:
      get:
       summary:
+        Not implemented on 30th of May 2016
+        
         Retrieve the categories that can be filtered by. day, track and talkType can all be passed to top/talks fo filter the top talks. Each of the categories can be used as a filter value.
         
         ** This method is not safe and should not be used. We recommend that you use the existing CFP REST API to retrieve (and to cache) days, tracks, proposalTypes and use IDs. **
@@ -103,7 +116,8 @@ definitions:
     type: object
     properties:
       user:
-        type: string
+        type: integer
+        format: int32
         description: A unique user id
       rating:
         type: integer
