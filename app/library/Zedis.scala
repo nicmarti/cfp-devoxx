@@ -320,6 +320,7 @@ class Pool(val underlying: JedisPool) {
     val jedis: Jedis = underlying.getResource
     if (play.Logger.of("library.Zedis.client").isDebugEnabled) {
       play.Logger.of("library.Zedis.client").debug("withClient " + jedis.hashCode())
+      play.Logger.of("library.Zedis.client").debug("redis.activeDatabase " + activeRedisDatabase)
     }
 
     try {
