@@ -28,13 +28,13 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
 
 /**
- * Tests for archive Proposal
- *
- * @author created by N.Martignole, Innoteria, on 19/08/2014.
- */
+  * Tests for archive Proposal
+  *
+  * @author created by N.Martignole, Innoteria, on 19/08/2014.
+  */
 class ArchivedProposalSpecs extends PlaySpecification {
   // Use a different Redis Database than the PROD one
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6363", "redis.activeDatabase" -> 1)
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
 
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
@@ -211,7 +211,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       Review.allProposalsNotReviewed(reviewerUUID) mustEqual Nil
       Review.allProposalsWithNoVotes mustEqual Map.empty[String, Proposal]
       Review.allReviewersAndStats() mustEqual Nil
-      Review.allVotes() mustEqual Set.empty
+      Review.allVotes() mustEqual Map.empty
       Review.allVotesFor(proposalId) mustEqual Nil
       Review.allVotesFromUser(reviewerUUID) mustEqual Set.empty
       Review.bestReviewer() mustEqual None
@@ -303,7 +303,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       Leaderboard.mostReviewed() mustEqual None
       Leaderboard.bestReviewer() mustEqual None
       Leaderboard.worstReviewer() mustEqual None
-      Leaderboard.lazyOnes() mustEqual Set.empty
+      Leaderboard.lazyOnes() mustEqual Map.empty
 
       Leaderboard.totalSubmittedByTrack() mustEqual Map.empty
       Leaderboard.totalSubmittedByType() mustEqual Map.empty
@@ -314,7 +314,6 @@ class ArchivedProposalSpecs extends PlaySpecification {
       Leaderboard.totalWithTickets() mustEqual 0L
       Leaderboard.totalRefusedSpeakers() mustEqual 0L
     }
-
 
   }
 
@@ -353,11 +352,11 @@ class ArchivedProposalSpecs extends PlaySpecification {
   }
 
   private def createASpeaker(): String = {
-    val email = RandomStringUtils.randomAlphabetic(10)+"@test.com"
+    val email = RandomStringUtils.randomAlphabetic(10) + "@test.com"
     val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
     Webuser.saveAndValidateWebuser(webuser)
-    val uuid =  webuser.uuid
-    val speaker =  Speaker.createSpeaker(email, "j", "b" , None,None,None,None,None,"john","q" )
+    val uuid = webuser.uuid
+    val speaker = Speaker.createSpeaker(uuid, email, "j", "bio", None, Some("Twitter"), None, Some("company"), Some("blog"), "john", "newbie")
     Speaker.save(speaker)
     uuid
   }
