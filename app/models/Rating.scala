@@ -23,8 +23,12 @@
 
 package models
 
+import java.time.LocalDateTime
+import java.util.Date
+
 import library.Redis
 import org.apache.commons.lang3.StringUtils
+import org.joda.time.DateTime
 import play.api.libs.json._
 
 /**
@@ -33,6 +37,8 @@ import play.api.libs.json._
   *
   * @author created by N.Martignole, Innoteria, on 08/05/2016.
   */
+case class RatingVote(talkId:String, user:String, rating: Int)
+
 case class RatingDetail(aspect: String = "default", rating: Int, review: Option[String])
 
 case class Rating(talkId: String, user: String, conference: String, timestamp: Long, details: List[RatingDetail]) {
@@ -43,8 +49,19 @@ case class Rating(talkId: String, user: String, conference: String, timestamp: L
 
 object Rating {
 
-  def apply(rating: Int, talkId: String, user: String, conference: String, timestamp: Long): Rating = {
-    Rating(talkId, user, conference, timestamp, List(RatingDetail("default", rating, None)))
+  def createNew(talkId:String, user:Int, rating: Int): Rating = {
+    val conference = ConferenceDescriptor.current().eventCode
+    val timestamp = new Date().getTime // Cause we want UTC
+    Rating(talkId, user.toString, conference, timestamp, List(RatingDetail("default", rating, None)))
+  }
+
+  def unapplyRating(r:Rating):Option[(String,Int,Int)]={
+    // TODO ici c'est mal fait dans l'ancienne API V1
+    r.details.headOption.map{
+      rt=>
+        (r.talkId, r.user.toInt, rt.rating)
+    }
+
   }
 
   implicit object RatingDetailFormat extends Format[RatingDetail] {
@@ -118,8 +135,6 @@ object Rating {
     proposal =>
       (proposal, allRatingsForSpecificTalkId(proposal.id))
   }.filter(_._2.nonEmpty).toMap
-
-
 
   def allRatings(): List[Rating] = Redis.pool.withClient {
     client =>

@@ -23,8 +23,11 @@
 
 package controllers
 
-import controllers.RatingController._
-import models.Rating
+import models.{Proposal, Rating}
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.libs.json.Json
+import play.api.mvc.Action
 
 /**
   * Mobile App voting REST API.
@@ -35,31 +38,78 @@ import models.Rating
   * @author created by N.Martignole, Innoteria, on 23/05/2016.
   */
 object MobileVotingV1 extends SecureCFPController {
+  val voteForm = Form(
+    mapping(
+      "talkId" -> nonEmptyText(maxLength = 50),
+      "user" -> number,
+      "rating" -> number(min = 1, max = 5)
+    )(Rating.createNew)(Rating.unapplyRating _)
+  )
 
-  def acceptVoteForTalk() = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      ratingForm.bindFromRequest().fold(hasErrors => BadRequest(views.html.RatingController.homeRating(hasErrors)),
+  def acceptVoteForTalk() = Action {
+    implicit request =>
+      voteForm.bindFromRequest().fold(
+        hasErrors =>
+          BadRequest(views.html.RatingController.homeRating(hasErrors)),
         validRating => {
-          Rating.saveNewRating(validRating)
-          Ok("Top")
+          Proposal.findById(validRating.talkId) match {
+            case None =>
+              NotFound("This proposal does not exist")
+            case Some(p) =>
+              Rating.saveNewRating(validRating)
+              Created(Json.toJson(validRating)).as(JSON)
+          }
+
         }
       )
   }
 
-  def allVotesForTalk(talkId: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("Todo")
+  def allVotesForTalk(talkId: String) = Action {
+    implicit request =>
+      Proposal.findById(talkId) match {
+        case None => NotFound("Talk not found")
+        case Some(proposal) =>
+          Rating.allRatingsForSpecificTalkId(proposal.id) match {
+            case Nil=>NoContent
+            case ratings=>
+
+              println("Got ratings "+ratings)
+
+              val totalVotes:List[Int] = ratings.flatMap(r=>r.details.map(_.rating))
+              // TODO The old API wants String and not JSON Number
+              val sum:Int = totalVotes.sum
+              val count:Int = totalVotes.size
+              val avg = if(count==0){ 0 } else {sum/count}
+
+              val jsonResult=Json.obj(
+                "sum" -> sum.toString,
+                "count" -> count.toString,
+                "title" -> proposal.title,
+                "summary" -> proposal.summaryAsHtml,
+                "avg" -> avg.toString,
+                "name" -> s"${proposal.id}",
+                "type" -> s"${proposal.talkType.label}",
+                "typeId" -> s"${proposal.talkType.id}",
+                "track" -> s"${proposal.track.label}",
+                "trackId" -> s"${proposal.track.id}",
+                "speakers" ->Json.arr(
+                  "Robert Munteanu"
+                )
+          )
+              Ok(jsonResult).as(JSON)
+          }
+      }
   }
 
-  def topTalks(day: Option[String], talkType: Option[String], track: Option[String]) = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("todo")
+  def topTalks(day: Option[String], talkType: Option[String], track: Option[String]) = Action {
+    implicit request =>
+      NotImplemented
   }
 
-  def categories() = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("todo")
+  def categories() = Action {
+    implicit request =>
+      NotImplemented
+
   }
 
 }
