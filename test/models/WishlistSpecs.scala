@@ -37,6 +37,7 @@ class WishlistSpecs extends PlaySpecification {
   val redisTestServer = Map(
     "redis.host" -> "localhost"
     , "redis.port" -> "6364"
+    , "redis.activeDatabase" -> 1
   )
 
   val appWithTestRedis = () => FakeApplication(additionalConfiguration = redisTestServer)
@@ -68,7 +69,6 @@ class WishlistSpecs extends PlaySpecification {
         val maybeRequest = RequestToTalkStatus.findCurrentStatus(testId.get)
 
         maybeRequest.code must beEqualTo(RequestToTalkStatus.CONTACTED.code)
-
 
         RequestToTalkStatus.changeStatus("test", testId.get, RequestToTalkStatus.ACCEPTED.code)
         RequestToTalkStatus.findCurrentStatus(testId.get).code must beEqualTo(RequestToTalkStatus.ACCEPTED.code)

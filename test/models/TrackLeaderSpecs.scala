@@ -33,7 +33,7 @@ import org.apache.commons.lang3.RandomStringUtils
  */
 class TrackLeaderSpecs extends PlaySpecification {
 
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6363", "redis.activeDatabase" -> 1)
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
 
   val sampleTrack = ConferenceDescriptor.ConferenceTracks
 
@@ -54,16 +54,16 @@ class TrackLeaderSpecs extends PlaySpecification {
       Webuser.addToCFPAdmin(testWebuser.uuid)
 
       // When
-      TrackLeader.assign(sampleTrack.WEB_MOBILE.id, testWebuser.uuid)
+      TrackLeader.assign(sampleTrack.UNKNOWN.id, testWebuser.uuid)
 
       // Then the webuser is assigned to the Track
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, testWebuser.uuid) must beFalse
 
 
       Webuser.delete(testWebuser)
       // Check that we did a cleanup
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beFalse
     }
 
     "not associate a user to a Track if the user does not belong to CFP group" in new WithApplication(app = appWithTestRedis()) {
@@ -75,7 +75,7 @@ class TrackLeaderSpecs extends PlaySpecification {
 
 
       // When
-      TrackLeader.assign(sampleTrack.WEB_MOBILE.id, testWebuser.uuid)
+      TrackLeader.assign(sampleTrack.UNKNOWN.id, testWebuser.uuid)
 
       // Then the webuser is NOT assigned to the Track
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, testWebuser.uuid) must beFalse
@@ -133,7 +133,7 @@ class TrackLeaderSpecs extends PlaySpecification {
 
       // Then
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.AGILITY_TESTS.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, testWebuser.uuid) must beTrue
 
       Webuser.delete(testWebuser)
@@ -154,7 +154,7 @@ class TrackLeaderSpecs extends PlaySpecification {
       // Then
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id,  RandomStringUtils.randomAlphabetic(9)) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.AGILITY_TESTS.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beFalse
 
       Webuser.delete(testWebuser)
     }
@@ -193,7 +193,7 @@ class TrackLeaderSpecs extends PlaySpecification {
       Webuser.addToCFPAdmin(uuid03)
 
       val mapsByTrack:Map[String,Seq[String]] = Map(
-        sampleTrack.WEB_MOBILE.id -> List(uuid01).toSeq,
+        sampleTrack.UNKNOWN.id -> List(uuid01).toSeq,
         sampleTrack.JAVA.id -> List(uuid02).toSeq,
         sampleTrack.ARCHISEC.id -> List(uuid01).toSeq
       )
@@ -202,33 +202,33 @@ class TrackLeaderSpecs extends PlaySpecification {
       TrackLeader.updateAllTracks(mapsByTrack)
 
       // Then
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, uuid01) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid01) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beTrue
 
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, uuid03) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid03) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
 
        val mapsByTrack2:Map[String,Seq[String]] = Map(
-        sampleTrack.WEB_MOBILE.id -> List(uuid03).toSeq,
+        sampleTrack.UNKNOWN.id -> List(uuid03).toSeq,
         sampleTrack.JAVA.id -> List(uuid03).toSeq
       )
       TrackLeader.updateAllTracks(mapsByTrack2)
 
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, uuid01) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.WEB_MOBILE.id, uuid03) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid03) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse

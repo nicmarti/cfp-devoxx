@@ -32,7 +32,7 @@ import org.apache.commons.lang3.RandomStringUtils
  */
 class WebuserSpecs extends PlaySpecification {
 
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364")
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
 
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
