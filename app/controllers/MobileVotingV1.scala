@@ -46,7 +46,7 @@ object MobileVotingV1 extends SecureCFPController {
     )(Rating.createNew)(Rating.unapplyRating _)
   )
 
-  def acceptVoteForTalk() = Action {
+  def acceptVoteForTalk() = UserAgentActionAndAllowOrigin {
     implicit request =>
       voteForm.bindFromRequest().fold(
         hasErrors =>
@@ -59,12 +59,11 @@ object MobileVotingV1 extends SecureCFPController {
               Rating.saveNewRating(validRating)
               Created(Json.toJson(validRating)).as(JSON)
           }
-
         }
       )
   }
 
-  def allVotesForTalk(talkId: String) = Action {
+  def allVotesForTalk(talkId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       Proposal.findById(talkId) match {
         case None => NotFound("Talk not found")
@@ -101,12 +100,12 @@ object MobileVotingV1 extends SecureCFPController {
       }
   }
 
-  def topTalks(day: Option[String], talkType: Option[String], track: Option[String]) = Action {
+  def topTalks(day: Option[String], talkType: Option[String], track: Option[String]) = UserAgentActionAndAllowOrigin {
     implicit request =>
       NotImplemented
   }
 
-  def categories() = Action {
+  def categories() = UserAgentActionAndAllowOrigin {
     implicit request =>
       NotImplemented
 
