@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 1.0.0
+  version: 1.0.1
   title: Devoxx Mobile app voting system
   description: |
     Devoxx API for mobile application, used to collect votes during conferences.
@@ -72,6 +72,7 @@ paths:
     get:
       summary:
         Retrieve the top talks as voted on. Talks are sorted by average rating.
+        
         Not implemented on 30th of May 2016
       
       parameters:
@@ -100,15 +101,16 @@ paths:
   /v1/categories:
      get:
       summary:
-        Not implemented on 30th of May 2016
-        
         Retrieve the categories that can be filtered by. day, track and talkType can all be passed to top/talks fo filter the top talks. Each of the categories can be used as a filter value.
+              
+        It does a redirect to the /categories end point on the REST API
         
-        ** This method is not safe and should not be used. We recommend that you use the existing CFP REST API to retrieve (and to cache) days, tracks, proposalTypes and use IDs. **
+        See http://cfp.devoxx.fr/api/conferences/DevoxxFR2016/tracks
         
+
       responses:
-        200:
-          description: test
+        301:
+          description: Moved Permanently
           
 
 definitions:
@@ -116,9 +118,8 @@ definitions:
     type: object
     properties:
       user:
-        type: integer
-        format: int32
-        description: A unique user id
+        type: string
+        description: A unique user id (now a String !)
       rating:
         type: integer
         format: int32
@@ -126,6 +127,28 @@ definitions:
       talkId:
         type: string
         description: The CFP ProposalID
+      details:
+        type: array
+        $ref: '#/definitions/RatingDetail'
+    required:
+      - user
+      - talkId
+  RatingDetail:
+    type: object
+    properties:
+      aspect:
+        type: string
+        description: One of [default, Content, Delivery or Other]
+      rating:
+        type: integer
+        format: int32
+        description: from 1 to 5, where 1 is terrible, and 5 is awesome
+      review: 
+        type: string
+        description: A user review, a short text sent by the User
+    required:
+      - aspect
+      - rating        
   VoteResult:
     type: object
     properties:
