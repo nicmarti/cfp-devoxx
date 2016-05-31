@@ -47,17 +47,17 @@ case class Rating(talkId: String, user: String, conference: String, timestamp: L
 
 object Rating {
 
-  def createNew(talkId: String, user: Int, rating: Int): Rating = {
+  def createNew(talkId: String, user: String, rating: Int): Rating = {
     val conference = ConferenceDescriptor.current().eventCode
     val timestamp = new Date().getTime // Cause we want UTC
-    Rating(talkId, user.toString, conference, timestamp, List(RatingDetail("default", rating, None)))
+    Rating(talkId, user, conference, timestamp, List(RatingDetail("default", rating, None)))
   }
 
-  def unapplyRating(r: Rating): Option[(String, Int, Int)] = {
+  def unapplyRating(r: Rating): Option[(String, String, Int)] = {
     // TODO ici c'est mal fait dans l'ancienne API V1
     r.details.headOption.map {
       rt =>
-        (r.talkId, r.user.toInt, rt.rating)
+        (r.talkId, r.user, rt.rating)
     }
 
   }

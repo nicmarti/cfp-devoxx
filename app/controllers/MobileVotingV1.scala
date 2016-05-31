@@ -27,7 +27,6 @@ import models.{Proposal, Rating}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
-import play.api.mvc.Action
 
 /**
   * Mobile App voting REST API.
@@ -41,7 +40,7 @@ object MobileVotingV1 extends SecureCFPController {
   val voteForm = Form(
     mapping(
       "talkId" -> nonEmptyText(maxLength = 50),
-      "user" -> number,
+      "user" -> nonEmptyText(maxLength = 50),
       "rating" -> number(min = 1, max = 5)
     )(Rating.createNew)(Rating.unapplyRating _)
   )
@@ -49,12 +48,14 @@ object MobileVotingV1 extends SecureCFPController {
   def acceptVoteForTalk() = UserAgentActionAndAllowOrigin {
     implicit request =>
       voteForm.bindFromRequest().fold(
-        hasErrors =>
-          BadRequest(views.html.RatingController.homeRating(hasErrors)),
+        hasErrors => {
+          play.Logger.of("controllers.MobileVotingV1").warn(s"Bad Request due to ${hasErrors.errorsAsJson}")
+          BadRequest(hasErrors.errorsAsJson).as(JSON)
+        },
         validRating => {
           Proposal.findById(validRating.talkId) match {
             case None =>
-              NotFound("This proposal does not exist")
+              NotFound(Json.obj("reason"->"Talk not found")).as(JSON)
             case Some(p) =>
               Rating.saveNewRating(validRating)
               Created(Json.toJson(validRating)).as(JSON)
@@ -66,13 +67,11 @@ object MobileVotingV1 extends SecureCFPController {
   def allVotesForTalk(talkId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       Proposal.findById(talkId) match {
-        case None => NotFound("Talk not found")
+        case None => NotFound(Json.obj("reason"->"Talk not found"))
         case Some(proposal) =>
           Rating.allRatingsForSpecificTalkId(proposal.id) match {
-            case Nil=>NoContent
+            case Nil=>NoContent.as(JSON)
             case ratings=>
-
-              println("Got ratings "+ratings)
 
               val totalVotes:List[Int] = ratings.flatMap(r=>r.details.map(_.rating))
               // TODO The old API wants String and not JSON Number
