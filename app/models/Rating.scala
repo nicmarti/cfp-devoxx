@@ -35,7 +35,6 @@ import play.api.libs.json._
   *
   * @author created by N.Martignole, Innoteria, on 08/05/2016.
   */
-case class RatingVote(talkId: String, user: String, rating: Int)
 
 case class RatingDetail(aspect: String = "default", rating: Int, review: Option[String])
 
@@ -47,19 +46,37 @@ case class Rating(talkId: String, user: String, conference: String, timestamp: L
 
 object Rating {
 
-  def createNew(talkId: String, user: String, rating: Int): Rating = {
-    val conference = ConferenceDescriptor.current().eventCode
-    val timestamp = new Date().getTime // Cause we want UTC
-    Rating(talkId, user, conference, timestamp, List(RatingDetail("default", rating, None)))
+  def createNew(talkId: String, user: String, rating: Option[Int], details: Seq[RatingDetail]): Rating = rating match {
+    case Some(globalRating) =>
+      val conference = ConferenceDescriptor.current().eventCode
+      val timestamp = new Date().getTime // Cause we want UTC
+      Rating(talkId, user, conference, timestamp, List(RatingDetail("default", globalRating, None)))
+    case None =>
+      val conference = ConferenceDescriptor.current().eventCode
+      val timestamp = new Date().getTime
+      Rating(talkId, user, conference, timestamp, details.toList)
   }
 
-  def unapplyRating(r: Rating): Option[(String, String, Int)] = {
-    // TODO ici c'est mal fait dans l'ancienne API V1
-    r.details.headOption.map {
-      rt =>
-        (r.talkId, r.user, rt.rating)
+  def unapplyRating(r: Rating): Option[(String, String, Option[Int], Seq[RatingDetail])] = {
+    if (r.details.size == 1) {
+      Option(
+        (
+          r.talkId,
+          r.user,
+          r.details.map(_.rating).headOption,
+          Seq.empty[RatingDetail]
+          )
+      )
+    } else {
+      Some(
+        (
+          r.talkId,
+          r.user,
+          None,
+          r.details
+          )
+      )
     }
-
   }
 
   implicit object RatingDetailFormat extends Format[RatingDetail] {

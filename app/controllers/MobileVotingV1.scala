@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{Proposal, Rating}
+import models.{Proposal, Rating, RatingDetail}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
@@ -37,12 +37,22 @@ import play.api.libs.json.Json
   * @author created by N.Martignole, Innoteria, on 23/05/2016.
   */
 object MobileVotingV1 extends SecureCFPController {
-  val voteForm = Form(
+  val voteForm: Form[Rating] = Form(
     mapping(
       "talkId" -> nonEmptyText(maxLength = 50),
       "user" -> nonEmptyText(maxLength = 50),
-      "rating" -> number(min = 1, max = 5)
-    )(Rating.createNew)(Rating.unapplyRating _)
+      "rating" -> optional(number(min = 1, max = 5)),
+      "details" -> seq(
+        mapping(
+          "aspect" -> nonEmptyText(maxLength = 50),
+          "rating" -> number(min = 1, max = 5),
+          "review" -> optional(text(maxLength = 200))
+        )(RatingDetail.apply)(RatingDetail.unapply)
+      )
+    )(Rating.createNew)(Rating.unapplyRating _) verifying("Failed form constraints!", fields => fields match {
+    case userData =>
+      userData.details.nonEmpty
+  })
   )
 
   def acceptVoteForTalk() = UserAgentActionAndAllowOrigin {
@@ -55,7 +65,7 @@ object MobileVotingV1 extends SecureCFPController {
         validRating => {
           Proposal.findById(validRating.talkId) match {
             case None =>
-              NotFound(Json.obj("reason"->"Talk not found")).as(JSON)
+              NotFound(Json.obj("reason" -> "Talk not found")).as(JSON)
             case Some(p) =>
               Rating.saveNewRating(validRating)
               Created(Json.toJson(validRating)).as(JSON)
@@ -67,19 +77,23 @@ object MobileVotingV1 extends SecureCFPController {
   def allVotesForTalk(talkId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
       Proposal.findById(talkId) match {
-        case None => NotFound(Json.obj("reason"->"Talk not found"))
+        case None => NotFound(Json.obj("reason" -> "Talk not found"))
         case Some(proposal) =>
           Rating.allRatingsForSpecificTalkId(proposal.id) match {
-            case Nil=>NoContent.as(JSON)
-            case ratings=>
+            case Nil => NoContent.as(JSON)
+            case ratings =>
 
-              val totalVotes:List[Int] = ratings.flatMap(r=>r.details.map(_.rating))
+              val totalVotes: List[Int] = ratings.flatMap(r => r.details.map(_.rating))
               // TODO The old API wants String and not JSON Number
-              val sum:Int = totalVotes.sum
-              val count:Int = totalVotes.size
-              val avg = if(count==0){ 0 } else {sum/count}
+              val sum: Int = totalVotes.sum
+              val count: Int = totalVotes.size
+              val avg = if (count == 0) {
+                0
+              } else {
+                sum / count
+              }
 
-              val jsonResult=Json.obj(
+              val jsonResult = Json.obj(
                 "sum" -> sum.toString,
                 "count" -> count.toString,
                 "title" -> proposal.title,
@@ -90,10 +104,10 @@ object MobileVotingV1 extends SecureCFPController {
                 "typeId" -> s"${proposal.talkType.id}",
                 "track" -> s"${proposal.track.label}",
                 "trackId" -> s"${proposal.track.id}",
-                "speakers" ->Json.arr(
+                "speakers" -> Json.arr(
                   "Robert Munteanu"
                 )
-          )
+              )
               Ok(jsonResult).as(JSON)
           }
       }
@@ -101,13 +115,12 @@ object MobileVotingV1 extends SecureCFPController {
 
   def topTalks(day: Option[String], talkType: Option[String], track: Option[String]) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      NotImplemented
+      NotImplemented(Json.obj("reason"->"Not yet implemented, stay tuned")).as(JSON)
   }
 
   def categories() = UserAgentActionAndAllowOrigin {
     implicit request =>
-      NotImplemented
-
+      MovedPermanently(routes.RestAPI.showTracks(Conference.currentConference.eventCode).absoluteURL())
   }
 
 }
