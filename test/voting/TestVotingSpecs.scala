@@ -20,11 +20,20 @@ class TestVotingSpecs extends PlaySpecification {
   val testRedis = Map("redis.host" -> "localhost",
     "redis.port" -> "6363",
     "redis.activeDatabase" -> 1,
-    "actor.cronUpdater.active" -> false
+    "actor.cronUpdater.active" -> false,
+    "mobile.vote.isActive" -> true
+  )
+
+  val testRedisWithClosedVotes = Map("redis.host" -> "localhost",
+    "redis.port" -> "6363",
+    "redis.activeDatabase" -> 1,
+    "actor.cronUpdater.active" -> false,
+    "mobile.vote.isActive" -> false
   )
 
 
   val appWithTestRedis = () => FakeApplication(additionalConfiguration = testRedis)
+  val appWithClosedVotes = () => FakeApplication(additionalConfiguration = testRedisWithClosedVotes)
 
   "MobileVotingV1" should {
 
@@ -369,7 +378,7 @@ class TestVotingSpecs extends PlaySpecification {
     }
 
     "do a redirect when we call categories" in new WithApplication(app = appWithTestRedis()) {
-          // WHEN
+      // WHEN
       val response = route(
         FakeRequest(GET,
           s"/api/voting/v1/categories"
@@ -377,6 +386,89 @@ class TestVotingSpecs extends PlaySpecification {
       ).get
 
       status(response) must be equalTo 301
+
+    }
+
+    "returns a 503 Service Unavailable if the vote is closed " in new WithApplication(app = appWithClosedVotes()) {
+       // GIVEN
+      emptyRedis()
+
+      val proposalId = createProposal()
+
+      val validVote = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 2,
+        "user" -> "123456-2222-aaa"
+      )
+      // WHEN
+      val response = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // THEN
+      status(response) must be equalTo 503
+    }
+
+
+    "return a 202 Accepted if we vote a 2nd time for the same talk" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      emptyRedis()
+
+      val proposalId = createProposal()
+
+      val validVote = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 1,
+        "user" -> "123456-2222-aaa"
+      )
+       val validVote2 = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 3,
+        "user" -> "123456-2222-aaa"
+      )
+        val validVote3 = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 5,
+        "user" -> "123456-2222-aaa"
+      )
+      // WHEN
+      val response = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // 201 Created
+      status(response) must be equalTo 201
+      contentType(response) must beSome.which(_ == "application/json")
+      contentAsJson(response).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":1,\"v\":null}]")
+
+      // Do a 2nd vote
+      val response2 = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote2).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // It should returns a 202
+      status(response2) must be equalTo 202
+      contentType(response2) must beSome.which(_ == "application/json")
+      contentAsJson(response2).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":3,\"v\":null}]")
+
+      // Do a 3nd vote
+      val response3 = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote3).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // It should returns a 202
+      status(response3) must be equalTo 202
+      contentType(response3) must beSome.which(_ == "application/json")
+      contentAsJson(response3) must be equals validVote3
+contentAsJson(response3).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":5,\"v\":null}]")
 
     }
 

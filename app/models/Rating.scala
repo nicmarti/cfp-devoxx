@@ -129,6 +129,14 @@ object Rating {
     )
   }
 
+  def findForUserIdAndProposalId(userId:String, talkId:String):Option[Rating]=Redis.pool.withClient{
+    client=>
+      client.hmget("Rating:2016", client.smembers("Rating:2016:ByTalkId:" + talkId)).map{
+        json:String=>
+          Json.parse(json).as[Rating]
+      }.find(rating => rating.user == userId)
+  }
+
   def saveNewRating(newRating: Rating) = Redis.pool.withClient {
     client =>
       val tx = client.multi

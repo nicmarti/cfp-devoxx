@@ -23,7 +23,10 @@
 
 package controllers
 
+import java.util.Date
+
 import models.{Proposal, Rating, RatingDetail}
+import play.api.Play
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
@@ -50,28 +53,41 @@ object MobileVotingV1 extends SecureCFPController {
         )(RatingDetail.apply)(RatingDetail.unapply)
       )
     )(Rating.createNew)(Rating.unapplyRating _) verifying("Failed form constraints!", fields => fields match {
-    case userData =>
-      userData.details.nonEmpty
-  })
+      case userData =>
+        userData.details.nonEmpty
+    })
   )
 
   def acceptVoteForTalk() = UserAgentActionAndAllowOrigin {
     implicit request =>
-      voteForm.bindFromRequest().fold(
-        hasErrors => {
-          play.Logger.of("controllers.MobileVotingV1").warn(s"Bad Request due to ${hasErrors.errorsAsJson}")
-          BadRequest(hasErrors.errorsAsJson).as(JSON)
-        },
-        validRating => {
-          Proposal.findById(validRating.talkId) match {
-            case None =>
-              NotFound(Json.obj("reason" -> "Talk not found")).as(JSON)
-            case Some(p) =>
-              Rating.saveNewRating(validRating)
-              Created(Json.toJson(validRating)).as(JSON)
-          }
-        }
-      )
+
+      Play.current.configuration.getBoolean("mobile.vote.isActive").filter(_ == true).map {
+        _ =>
+          voteForm.bindFromRequest().fold(
+            hasErrors => {
+              play.Logger.of("controllers.MobileVotingV1").warn(s"Bad Request due to ${hasErrors.errorsAsJson}")
+              BadRequest(hasErrors.errorsAsJson).as(JSON)
+            },
+            validRating => {
+              Proposal.findById(validRating.talkId) match {
+                case None =>
+                  NotFound(Json.obj("reason" -> "Talk not found")).as(JSON)
+                case Some(p) =>
+                  Rating.findForUserIdAndProposalId(validRating.user, validRating.talkId) match {
+                    case Some(existingRating)=>
+                      val updatedRating = existingRating.copy(timestamp = new Date().getTime , details = validRating.details )
+                      Rating.saveNewRating(updatedRating)
+                      Accepted(Json.toJson(updatedRating)).as(JSON)
+                    case None=>
+                      Rating.saveNewRating(validRating)
+                      Created(Json.toJson(validRating)).as(JSON)
+                  }
+              }
+            }
+          )
+      }.getOrElse {
+        ServiceUnavailable("Vote is closed for this talk, you cannot vote anymore.")
+      }
   }
 
   def allVotesForTalk(talkId: String) = UserAgentActionAndAllowOrigin {
@@ -115,7 +131,7 @@ object MobileVotingV1 extends SecureCFPController {
 
   def topTalks(day: Option[String], talkType: Option[String], track: Option[String]) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      NotImplemented(Json.obj("reason"->"Not yet implemented, stay tuned")).as(JSON)
+      NotImplemented(Json.obj("reason" -> "Not yet implemented, stay tuned")).as(JSON)
   }
 
   def categories() = UserAgentActionAndAllowOrigin {
