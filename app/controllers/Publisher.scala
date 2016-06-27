@@ -45,7 +45,7 @@ object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val etag = Crypt.md5(result.toString()).toString
+      val etag = Crypt.md5(result.toString() + "dvx").toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
@@ -56,15 +56,20 @@ object Publisher extends Controller {
 
   def showAllSpeakers = Action {
     implicit request =>
-      import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
-        Speaker.allSpeakersWithAcceptedTerms()
-      }
-      val etag = speakers.hashCode().toString + "_2"
-      val maybeETag = request.headers.get(IF_NONE_MATCH)
-      maybeETag match {
-        case Some(oldEtag) if oldEtag == etag => NotModified
-        case other => Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
+
+      // First load published slots
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      val etag = allSpeakersIDs.hashCode.toString
+
+      request.headers.get(IF_NONE_MATCH) match {
+        case Some(tag) if tag == etag =>
+          NotModified
+
+        case other =>
+          val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
+          val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
+          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
       }
   }
 
@@ -83,7 +88,8 @@ object Publisher extends Controller {
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
       maybeSpeaker match {
         case Some(speaker) => {
-          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
+          // Log which speaker is hot or not
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
@@ -96,7 +102,7 @@ object Publisher extends Controller {
       val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
         case Some(speaker) => {
-          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", uuid, name)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
         }
@@ -108,10 +114,8 @@ object Publisher extends Controller {
     implicit request =>
       talkType match {
         case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
-          Ok(
-            views.html.Publisher.showByTalkType(
-              Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), talkType)
-          )
+          Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+            ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), talkType))
         case other =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
       }
@@ -165,7 +169,7 @@ object Publisher extends Controller {
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, "friday"))
           }
 
-          case None => TemporaryRedirect("/2015/talks/" + confType)
+          case None => NotFound(views.html.Publisher.agendaNotYetPublished())
         }
       }
   }
@@ -174,7 +178,7 @@ object Publisher extends Controller {
     implicit request =>
 
       def _showDay(slots: List[Slot], day: String) = {
-        val rooms = slots.groupBy(_.room).keys.toList.sortBy(_.id)
+        val rooms = slots.groupBy(_.room).keys.toList
         val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
         Ok(views.html.Publisher.showOneDay(allSlots, rooms, day))
       }

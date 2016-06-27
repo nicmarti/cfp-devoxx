@@ -1,11 +1,8 @@
 package controllers
 
-import java.io.{File, PrintWriter}
-
 import library.search.{DoIndexProposal, _}
 import library.{DraftReminder, Redis, ZapActor}
 import models._
-import org.apache.commons.lang3.StringEscapeUtils
 import org.joda.time.Instant
 import play.api.Play
 import play.api.cache.EhCachePlugin
@@ -48,12 +45,21 @@ object Backoffice extends SecureCFPController {
   // Authenticate on CFP on behalf of specified user.
   def authenticateAs(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> uuidSpeaker)
+      // Block redirect if the uuidSpeaker belongs to the ADMIN group and not you
+      if (Webuser.isMember(uuidSpeaker, "admin") && Webuser.isNotMember(request.webuser.uuid, "admin")) {
+        Unauthorized("Sorry, only admin user can become admin.")
+      } else {
+        Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> uuidSpeaker)
+      }
   }
 
   def authenticateAndCreateTalk(uuidSpeaker: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Redirect(routes.CallForPaper.newProposal).withSession("uuid" -> uuidSpeaker)
+      if (Webuser.isMember(uuidSpeaker, "admin") && Webuser.isNotMember(request.webuser.uuid, "admin")) {
+        Unauthorized("Sorry, only admin user can become admin.")
+      } else {
+        Redirect(routes.CallForPaper.newProposal()).withSession("uuid" -> uuidSpeaker)
+      }
   }
 
   def allProposals(proposalId: Option[String]) = SecuredAction(IsMemberOf("admin")) {
@@ -173,6 +179,7 @@ object Backoffice extends SecureCFPController {
         case (reviewerUUID, score) => {
           play.Logger.of("application.Backoffice").info(s"Deleting vote on $proposalId by $reviewerUUID of score $score")
           Review.deleteVoteForProposal(proposalId)
+          ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
         }
       }
       Redirect(routes.CFPAdmin.showVotesForProposal(proposalId))
@@ -208,10 +215,9 @@ object Backoffice extends SecureCFPController {
 
       val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val allSpeakersIDs = publishedConf.map(_.proposal.get.allSpeakerUUIDs).flatten.toSet
+      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
       val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
-      val allSpeakers = Speaker.asSetOfSpeakers(onlySpeakersThatNeedsToAcceptTerms)
-
+      val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatNeedsToAcceptTerms)
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
@@ -273,12 +279,6 @@ object Backoffice extends SecureCFPController {
       //      Proposal.decline(request.webuser.uuid, proposalId)
       Ok(views.html.Backoffice.showAllDeclined(allDeclined))
 
-  }
-
-  def showAllAgendaForInge()= Action{
-    implicit request =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
-      Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
   }
 
 }
