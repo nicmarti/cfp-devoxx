@@ -1,15 +1,15 @@
+import java.io.File
 import java.util.concurrent.TimeUnit
 
-import library.{DraftReminder, _}
 import library.search.{StopIndex, _}
-import models.{Proposal, Speaker}
+import library.{DraftReminder, _}
 import org.joda.time.DateMidnight
 import play.api.Play.current
-import play.api.{UnexpectedException, _}
 import play.api.libs.concurrent._
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results._
 import play.api.templates.HtmlFormat
+import play.api.{UnexpectedException, _}
 import play.core.Router.Routes
 
 import scala.concurrent.Future
@@ -18,12 +18,18 @@ import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
-    if (Play.configuration.getBoolean("actor.cronUpdater.active").isDefined && Play.isTest == false) {
-      CronTask.draftReminder()
-      CronTask.elasticSearch()
-      CronTask.doComputeStats()
-    } else {
-      play.Logger.debug("actor.cronUpdater.active is set to false, application won't compute stats")
+    Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
+      case Some(true) if Play.isProd =>
+        CronTask.draftReminder()
+        CronTask.doIndexElasticSearch()
+        CronTask.doComputeStats()
+      //CronTask.doSetupOpsGenie()
+      case Some(true) if Play.isDev => {
+        CronTask.doIndexElasticSearch()
+        CronTask.doComputeStats()
+      }
+      case _ =>
+        play.Logger.of("Global").warn("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
     }
 
   }
@@ -49,8 +55,8 @@ object Global extends GlobalSettings {
   }
 
   /**
-   * 404 custom page, for Prod mode only
-   */
+    * 404 custom page, for Prod mode only
+    */
   override def onHandlerNotFound(request: RequestHeader) = {
     val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
@@ -93,36 +99,33 @@ object CronTask {
     }
   }
 
-  def elasticSearch() = {
+  def doIndexElasticSearch() = {
     import library.Contexts.elasticSearchContext
 
-    if (Play.isProd) {
-      Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
-      Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
-      Akka.system.scheduler.scheduleOnce(4 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
+    Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
+    Akka.system.scheduler.scheduleOnce(12 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
+    Akka.system.scheduler.scheduleOnce(4 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
 
-      Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
-      Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
-      Akka.system.scheduler.schedule(1 hour, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
-      Akka.system.scheduler.schedule(2 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews)
-    }
+    Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllProposals)
+    Akka.system.scheduler.schedule(25 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllAccepted)
+    Akka.system.scheduler.schedule(1 hour, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllSpeakers)
+    Akka.system.scheduler.schedule(2 minutes, 10 minutes, ElasticSearchActor.masterActor, DoIndexAllHitViews)
   }
 
   def doComputeStats() = {
     import library.Contexts.statsContext
-
-    // Create a cron task
-    if (Play.isDev) {
-      Akka.system.scheduler.schedule(30 minute, 10 minutes, ZapActor.actor, ComputeLeaderboard())
-      Akka.system.scheduler.schedule(45 minute, 30 minutes, ZapActor.actor, ComputeVotesAndScore())
-      Akka.system.scheduler.schedule(10 seconds, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
-    }
-    if (Play.isProd) {
-      Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
-      Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
-      Akka.system.scheduler.schedule(2 minutes, 10 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
-    }
+    Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
+    Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
+    Akka.system.scheduler.schedule(2 minutes, 30 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
 
   }
 
+  def doSetupOpsGenie() = {
+    import library.Contexts.statsContext
+    for (apiKey <- Play.configuration.getString("opsgenie.apiKey");
+         name <- Play.configuration.getString("opsgenie.name")) {
+      Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
+    }
+
+  }
 }

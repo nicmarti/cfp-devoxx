@@ -1,25 +1,25 @@
 /**
- * The MIT License (MIT)
- *
- * Copyright (c) 2013 Association du Paris Java User Group.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+  * The MIT License (MIT)
+  *
+  * Copyright (c) 2013 Association du Paris Java User Group.
+  *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy of
+  * this software and associated documentation files (the "Software"), to deal in
+  * the Software without restriction, including without limitation the rights to
+  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  * the Software, and to permit persons to whom the Software is furnished to do so,
+  * subject to the following conditions:
+  *
+  * The above copyright notice and this permission notice shall be included in all
+  * copies or substantial portions of the Software.
+  *
+  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  */
 package controllers
 
 import java.math.BigInteger
@@ -44,11 +44,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
- * Signup and Signin.
- *
- * Author: nicolas martignole
- * Created: 27/09/2013 09:59
- */
+  * Signup and Signin.
+  *
+  * Author: nicolas martignole
+  * Created: 27/09/2013 09:59
+  */
 object Authentication extends Controller {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
@@ -345,8 +345,8 @@ object Authentication extends Controller {
         val futureMaybeWebuser = Webuser.findNewUserByEmail(email)
         futureMaybeWebuser.map {
           webuser =>
-            Webuser.saveAndValidateWebuser(webuser) // it is generated
-            Speaker.save(Speaker.createSpeaker(email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience"))
+            val uuid = Webuser.saveAndValidateWebuser(webuser) // it is generated
+            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience"))
             Mails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -364,7 +364,7 @@ object Authentication extends Controller {
         val futureMaybeWebuser = Webuser.findNewUserByEmail(email)
         futureMaybeWebuser.map {
           webuser =>
-            val newUUID=Webuser.saveAndValidateWebuser(webuser) // it is generated
+            val newUUID = Webuser.saveAndValidateWebuser(webuser) // it is generated
             Mails.sendAccessCode(webuser.email, webuser.password)
             val cookie = createCookie(webuser)
             Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> newUUID).withCookies(cookie).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
@@ -391,9 +391,16 @@ object Authentication extends Controller {
           val avatarUrl = validFormData._8
           val qualifications = validFormData._9
 
-          val validWebuser = Webuser.createSpeaker(email, firstName, lastName)
-
-          Webuser.saveAndValidateWebuser(validWebuser)
+          val validWebuser = if (Webuser.isEmailRegistered(email)) {
+            // An existing webuser might have been created with a different play.secret key
+            // or from a Golden ticket/visitor profile
+            val existingUUID = Webuser.getUUIDfromEmail(email).getOrElse(Webuser.generateUUID(email))
+            Webuser.findByUUID(existingUUID).getOrElse(Webuser.createSpeaker(email, firstName, lastName))
+          } else {
+            val newWebuser = Webuser.createSpeaker(email, firstName, lastName)
+            Webuser.saveAndValidateWebuser(newWebuser)
+            newWebuser
+          }
 
           val lang = request.headers.get("Accept-Language").map {
             s =>
@@ -403,7 +410,7 @@ object Authentication extends Controller {
                 "en"
               }
           }
-          val newSpeaker = Speaker.createSpeaker(email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications)
+          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications)
           Speaker.save(newSpeaker)
 
           Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
@@ -637,10 +644,12 @@ object Authentication extends Controller {
   }
 
   private def createCookie(webuser: Webuser) = {
-    Cookie("cfp_rm", value = Crypto.encryptAES(webuser.uuid), maxAge = Some(588000))
+    Cookie("cfp_rm"
+      , value = Crypto.encryptAES(webuser.uuid)
+      , maxAge = Some(588000)
+      , secure = ConferenceDescriptor.isHTTPSEnabled
+      , httpOnly = true)
   }
-
-
 }
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)

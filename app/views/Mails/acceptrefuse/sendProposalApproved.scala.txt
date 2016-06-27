@@ -8,17 +8,17 @@ English version below
 Bonjour,
 
 Nous avons le plaisir de vous informer que la présentation [@proposal.title] au format
-[@Messages(proposal.talkType.label)] a été approuvée pour @Messages("longYearlyName") !
+[@Messages(proposal.talkType.id)] a été approuvée pour @Messages("longYearlyName") !
 
 Comment valider ou non votre participation ?
 ----------------------------------------------------------------------------------------------------------------------
 
 Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
-présence à @Messages("longName") comme présentateur.
+présence à @Messages("longYearlyName") comme présentateur.
 
 Merci de valider dès maintenant en suivant ce lien dans votre navigateur :
 
- http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
+ @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
 
 Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).
 
@@ -26,23 +26,23 @@ Comment poser une question ?
 ----------------------------------------------------------------------------------------------------------------------
 Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.
 
-http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
+@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
 
-L'équipe de sélection de la conférence @Messages("longName")
+L'équipe de sélection de la conférence @Messages("longYearlyName")
 
 ----------------------------------------------------------------------------------------------------------------------
 }
  Hi,
 
  We're glad to inform you that your proposal for @Messages("longYearlyName") has been accepted !
- Proposition title : @proposal.title, of type [@Messages(proposal.talkType.label)].
+ Proposition title : @proposal.title, of type [@Messages(proposal.talkType.id)].
 
  Important information
  ---------------------
  You must now validate or decline the general terms and conditions, and confirm that you are still ok to do
  this presentation :
 
-  http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.ApproveOrRefuse.showAcceptTerms()
+  @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
 
 @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
  This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
@@ -57,7 +57,7 @@ L'équipe de sélection de la conférence @Messages("longName")
  Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests
  to respond quickly.
 
-  http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.CallForPaper.showCommentForProposal(proposal.id)
+  @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
 
- The @Messages("longName") team
+ The @Messages("longYearlyName") team
 

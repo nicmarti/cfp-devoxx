@@ -1,0 +1,35 @@
+@(allVotes: List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))], totalGoldenTicket: Long)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+    @main("Golden ticket - Stats") {
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1><i class="icon-bar-chart"></i> Golden ticket stats</h1>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <p>@Messages("gtAdmin.totalGT", totalGoldenTicket)</p>
+                            <p>@Messages("gtAdmin.totalReviewer", allVotes.length)</p>
+                            <p>@Messages("gtAdmin.average", (allVotes.map(_._2._4.n).sum / allVotes.length)) </p>
+                        </div>
+                        @allVotes.groupBy(_._1.talkType).map { case(currentProposalType,groupedProposals) =>
+                                 <div class="col-sm-12 col-md-12 col-lg-12">
+                                     <div class="panel">
+                                         <div class="panel-heading panel-primary">
+                                                <h4>@Messages(currentProposalType.id)</h4>
+                                         </div>
+                                     </div>
+
+                                 </div>
+                                @tags.gticketadmin.showTopProposal(groupedProposals)
+                                @tags.gticketadmin.showWorstProposal(groupedProposals)
+                            <div class="clearfix"></div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }

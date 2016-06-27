@@ -1,0 +1,86 @@
+@(allProposalsForReview: List[Proposal], page:Int, sort:Option[String], ascdesc:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@main("CFP Admin") {
+
+    <div class="row">
+        <div class="col-lg-offset-5 col-md-5">
+            <h2><img src="@routes.Assets.at(path="/public",file="images/ticket_admin.jpg")" alt="Ticket"><br> @Messages("gt.title")</h2>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-12">
+
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable">
+                @flash.get("success").get
+                </div>
+            }
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p><small>@Messages("gt.disclaimer")</small></P>
+                </div>
+                <div class="panel-body">
+                    <p>@Messages("gt.intro.1")</p>
+                    <p>@Messages("gt.intro.2") <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()">@Messages("gt.reviewYourVotes")</a> @Messages("gt.intro.3")</p>
+
+                    <p><label class="label label-success"><i class="icon-lightbulb"></i> @Messages("gt.special.need")</label></p>
+                    <br>
+                    @if(allProposalsForReview.nonEmpty) {
+                        <table class="table table-bordered table-striped table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>@tags.gticket.renderThTag("title", page, sort, ascdesc)</th>
+                                    <th>@tags.gticket.renderThTag("track", page, sort, ascdesc)</th>
+                                    <th>@tags.gticket.renderThTag("mainSpeaker", page, sort, ascdesc)</th>
+                                    <th>Type</th>
+                                    <th>@Messages("admin.proposals.th.action")</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="5">
+                                       <small>@Messages("gt.todo") @allProposalsForReview.size</small>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @allProposalsForReview.map { proposal: Proposal =>
+                                <tr>
+                                    <td>
+                                        @proposal.title
+                                    </td>
+                                    <td>
+                                    @Messages(proposal.track.label)
+                                    </td>
+                                    <td>
+                                        @tags.renderGravatar(proposal.mainSpeaker)
+                                        @proposal.secondarySpeaker.map { sc =>
+                                            @tags.renderGravatar(sc)
+                                        }
+                                        @proposal.otherSpeakers.map { s =>
+                                            @tags.renderGravatar(s)
+                                        }
+                                    </td>
+                                    <td>@Messages(proposal.talkType.id)</td>
+                                    <td>
+                                        <a href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    } else {
+                        <h4>@Messages("admin.cfp.empty")</h4>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

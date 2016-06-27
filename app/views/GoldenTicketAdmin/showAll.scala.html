@@ -1,0 +1,117 @@
+@(tickets: List[(GoldenTicket, Webuser)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Admin - Golden Tickets") {
+
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger alert-dismissable col-md-12">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable col-md-12">
+            @Html(flash.get("success").get)
+            </div>
+        }
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All Golden Tickets @tickets.size</h3>
+                </div>
+
+                <div class="panel-body">
+
+                      <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary">Create a new golden ticket</a>
+
+
+                @if(tickets.nonEmpty) {
+                    <table id="tickets" class="table table-bordered table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Golden ticket ID</th>
+                                <th>External ticket id (eventbrite)</th>
+                                <th>Attendee first name</th>
+                                <th>Attendee last name</th>
+                                <th>Attendee email</th>
+                                <th>Ticket type</th>
+                                <th>Notify</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @tickets.map{case(gd:GoldenTicket, user:Webuser)=>
+                                <tr>
+                                    <td>@gd.id</td>
+                                    <td>@gd.ticketId</td>
+                                    <td>@user.firstName</td>
+                                    <td>@user.lastName</td>
+                                    <td>@user.email</td>
+                                    <td>@gd.ticketType</td>
+ <td>
+                                    <form action="@routes.GoldenTicketAdminController.sendEmail(gd.id)" method="POST">
+                                        <button type="submit" value="unactivate" class="btn btn-primary btn-small"><i class="icon-envelope"></i></button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="@routes.GoldenTicketAdminController.unactivateGoldenTicket(gd.id)" method="POST">
+                                        <button type="submit" value="unactivate" class="btn btn-warning btn-small"><i class="icon-trash"></i></button>
+                                    </form>
+                                </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                } else {
+                    <P>There is no golden ticket yet</P>
+                    <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary">Create a new Golden Ticket</a>
+                }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-sm-12 col-md-12">
+            <h3>All emails</h3>
+            @tickets.map { case (gd: GoldenTicket, user: Webuser) =>
+                @user.email,
+            }
+        </div>
+
+        <div class="col-lg-12">
+            <h3>Votes par utilisateur</h3>
+            @ReviewByGoldenTicket.countVotesForAllUsers().map { uuidAndVotes =>
+              @uuidAndVotes._2 @Webuser.findByUUID(uuidAndVotes._1).map(_.cleanName)<br>
+            }
+        </div>
+    </div>
+    <script type="text/javascript">
+            $(document).ready(function() {
+
+                $('#tickets').dataTable({
+                    "aaSorting": [[ 5, "desc" ]],
+                    "iDisplayLength": 50,
+                    "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                    "bStateSave": true,
+                    "aoColumns": [
+                        { "sType": "string"},
+                        { "sType": "string"},
+                        { "sType": "string"},
+                        { "sType": "string"},
+                        { "sType": "string"},
+                        { "sType": "string"},
+                        { "sType": "string"},
+                        { "sType": "string"}
+                    ]
+                });
+            } );
+    </script>
+}

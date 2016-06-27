@@ -40,6 +40,7 @@ import play.api.data.Forms._
  */
 object Wishlist extends SecureCFPController {
 
+
   def homeWishlist() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val requestsAndPersonInCharge = RequestToTalk.allRequestsToTalk.map{
@@ -65,11 +66,11 @@ object Wishlist extends SecureCFPController {
       )
   }
 
-  def edit(id:String)= SecuredAction(IsMemberOf("cfp")) {
+  def edit(id: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.findById(id) match {
         case None => NotFound("Sorry, this request has been deleted or was not found")
-        case Some(rtt)=> Ok(views.html.Wishlist.edit(RequestToTalk.newRequestToTalkForm.fill(rtt)))
+        case Some(rtt) => Ok(views.html.Wishlist.edit(RequestToTalk.newRequestToTalkForm.fill(rtt)))
       }
   }
 
@@ -81,16 +82,16 @@ object Wishlist extends SecureCFPController {
 
           val actionType = request.body.asFormUrlEncoded.flatMap(_.get("actionBtn"))
           actionType match {
-            case Some(List("save")) =>{
+            case Some(List("save")) => {
               ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
-              Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Request updated to status ["+successForm.status.code+"]"))
+              Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Request updated to status [" + successForm.status.code + "]"))
             }
-            case Some(List("email")) =>{
-               ZapActor.actor ! NotifySpeakerRequestToTalk(request.webuser.uuid, successForm)
-               Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Speaker notified, request updated to status ["+successForm.status.code+"]"))
+            case Some(List("email")) => {
+              ZapActor.actor ! NotifySpeakerRequestToTalk(request.webuser.uuid, successForm)
+              Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Speaker notified, request updated to status [" + successForm.status.code + "]"))
             }
-            case other =>{
-              BadRequest("Invalid request, HTTP param [actionBtn] not found or not valid. "+other)
+            case other => {
+              BadRequest("Invalid request, HTTP param [actionBtn] not found or not valid. " + other)
             }
           }
         }

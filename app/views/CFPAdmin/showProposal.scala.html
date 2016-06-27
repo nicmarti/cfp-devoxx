@@ -145,13 +145,17 @@
                             }
                     }
                 </div>
-            </div>
         }else{
                 <div class="panel-heading">
                     <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
                 </div>
                 <div class="panel-body">
-                    <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary">@Messages("btn.showVotes")</a><br>
+                    <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary">@Messages("btn.showVotes")</a>
+
+                    @Event.loadEventsForObjRef(proposal.id).find(_.msg.contains("draft to submitted")).map{event=>
+                        @Messages("cfpAdmin.showWhenCreated",event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("EEE dd/MM HH:mm")).getOrElse("???"))
+                    }
+                    <br>
                     @if(proposal.state!=ProposalState.SUBMITTED){
                         <div class="alert alert-warning">
                             <h4>@Messages("admin.draft.warning")</h4>
@@ -161,9 +165,7 @@
                     }else{
                         @maybeMyVote.map{review:Review=>
                             <i class="icon-trophy"></i> @Messages("admin.sp.voted")  @tags.renderVote(review.vote.toInt) - @review.date.toString("EEEE d MMM YYYY HH:mm")
-
                             <a href="@routes.CFPAdmin.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
-
                         }
                         <div class="btn-block">
                         @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
@@ -194,9 +196,10 @@
                     @flash.get("vote").get
                     </div>
                 }
-            </div>
-            }
+           }
         }
+            </div>
+        <div class="col-sm-12 col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3><i class="icon-tasks"></i> @Messages("admin.sp.discussion")</h3>
@@ -269,4 +272,6 @@
 
         </div>
     </div>
+    </div>
+
 }

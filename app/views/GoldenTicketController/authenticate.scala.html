@@ -1,0 +1,46 @@
+@(loginForm: Form[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import helper.twitterBootstrap._
+
+@main(Messages("cfp.title")){
+            <div class="bs-docs-section clearfix">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="page-header">
+                            <h2><img src="@routes.Assets.at(path="/public",file="images/ticket_admin.jpg")" alt="Ticket"><br> CFP for Golden ticket
+                            <small>@Messages("longYearlyName"), @Messages(ConferenceDescriptor.current().timing.datesI18nKey)</small></h2>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        @if(flash.get("error").isDefined) {
+                            <div class="alert alert-danger alert-dismissable">
+                                <strong>Error :</strong>
+                                @flash.get("error").get
+                            </div>
+                        }
+                        @if(flash.get("success").isDefined) {
+                            <div class="alert alert-success alert-dismissable">
+                            @flash.get("success").get
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3><i class="icon-signin"></i> @Html(Messages("index.method1"))</h3>
+                            </div>
+                            <div class="panel-body">
+                                @helper.form(action = routes.GoldenTicketController.doAuthenticate) {
+                                    @helper.inputText(loginForm("email"))
+                                    @helper.inputPassword(loginForm("password"))
+                                    <button class="btn btn-default" type="submit">@Messages("btn.login")</button>
+                                    <a href="@routes.Authentication.forgetPassword()">@Messages("forget.password")</a>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+}

@@ -77,7 +77,7 @@ object Event {
   }
 
   def resetEvents() = Redis.pool.withClient{
-    client =>
+    client=>
       client.del("Events:V2:")
       val allEvents = client.keys("Events:*")
       val tx=client.multi()
@@ -93,7 +93,7 @@ object Event {
 
   def loadEventsForObjRef(objRef: String): List[Event] = Redis.pool.withClient {
     client =>
-      client.smembers(s"Events:V2:${objRef}").flatMap {
+      client.smembers(s"Events:V2:$objRef").flatMap {
         json: String =>
           Json.parse(json).asOpt[Event]
       }.toList

@@ -68,7 +68,7 @@ object RequestToTalk {
   }
 
   def validateRequestToTalk(id: Option[String], note: String, message: Option[String], speakerEmail: Option[String], speakerName: String,
-                            company: String, trackCode: String, travel: Boolean, country: String, statusCode: String, keynote:Option[Boolean]): RequestToTalk = {
+                            company: String, trackCode: String, travel: Boolean, country: String, statusCode: String, keynote:Option[Boolean]=None): RequestToTalk = {
     RequestToTalk(id.getOrElse(generateId), note, message, speakerEmail.getOrElse(""), speakerName, company, trackCode, travel, country, statusCode, keynote)
   }
 
@@ -171,7 +171,7 @@ object RequestToTalk {
   def unsetPersonInCharge(requestId:String) = Redis.pool.withClient{
     client=>
       client.hdel("RequestToTalk:PersonInCharge",requestId)
-              }
+  }
 
   def whoIsInChargeOf(requestId:String):Option[Webuser]=Redis.pool.withClient{
     client=>

@@ -29,24 +29,24 @@ import org.apache.commons.io.IOUtils
 
 import scala.collection.JavaConversions._
 
-case class GitInfo(version:String, branch:String)
+case class GitInfo(version: String, branch: String)
 
 /**
  * Extracts the current Git version and store it for bug reports.
  *
  * @author Nicolas Martignole, Innoteria
  */
-object GitUtils{
-  def getGitVersion:GitInfo={
+object GitUtils {
+  def getGitVersion: GitInfo = {
     try {
       val version = execCmd("git log -1").headOption.getOrElse("Unknown").replace("commit", "").trim
-      val branch :String = execCmd("git branch").filter(s=>s.contains("*")).headOption.getOrElse("No current branch").replace("*", "").trim
+      val branch: String = execCmd("git branch").filter(s => s.contains("*")).headOption.getOrElse("No current branch").replace("*", "").trim
       GitInfo(version, branch)
     } catch {
-      case _:Exception => GitInfo("Unknown", "Unknown")
+      case _: Exception => GitInfo("Unknown", "Unknown")
     }
   }
-  
+
   private def execCmd(extractedLocalValue: java.lang.String): List[String] = {
     val process = Runtime.getRuntime.exec(extractedLocalValue, null, new File("."))
     process.waitFor()

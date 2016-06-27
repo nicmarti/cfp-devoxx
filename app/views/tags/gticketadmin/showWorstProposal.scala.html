@@ -1,0 +1,42 @@
+@(allConf: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+
+ <div class="col-sm-12 col-md-6 col-lg-6">
+                                <h4>@Messages("gtAdmin.topWorst")</h4>
+
+                                <table id="proposals" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Score</th>
+                                            <th>Voters</th>
+                                            <th>Id</th>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Track</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @allConf.sorted(ReviewByGoldenTicket.orderByAverageScore).take(5).map { case (p, stats) =>
+                                    <tr>
+                                        <td>
+                                            @stats._4.n
+                                        </td>
+                                        <td>
+                                        @stats._2.i
+                                        </td>
+                                        <td><a href="@routes.CFPAdmin.openForReview(p.id)">@p.id</a></td>
+                                        <td>
+                                            <small>@p.title</small>
+                                        </td>
+                                        <td>
+                                            <small>@Messages(p.talkType.id)</small>
+                                        </td>
+                                        <td>
+                                            <small>@Messages(p.track.label)
+                                    </small>
+                                    </td>
+                                    </tr>
+                                    </tbody>
+                                    }
+                                </table>
+                            </div>

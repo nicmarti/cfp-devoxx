@@ -1,0 +1,60 @@
+#!/bin/bash
+# copy this file to run.sh
+# make it executable
+# updat all values
+# ./run.sh will start play and SBT
+# you can then work in development mode with ~run.sh
+#
+# Do not commit run.sh on your Github repo
+# Use environment variables for production on Clever-cloud
+
+export APP_SECRET="TODO HERE_THE_SUPER_SECRET_FROM_PLAY"
+export CFP_LANG="fr,fr-FR,en,en-US"
+export CFP_HOSTNAME="cfp.devoxx.fr"
+
+export SMTP_HOST="in-v3.mailjet.com"
+export SMTP_USER="TODO"
+export SMTP_PASSWORD="TODO"
+export SMTP_MOCK="true"
+export SMTP_SSL="no"
+export SMTP_PORT="587"
+
+export MAIL_BCC="TODO@devoxx.fr"
+export MAIL_COMMITTEE="TODO@devoxx.fr"
+export MAIL_FROM="TODO@devoxx.fr"
+export MAIL_BUG_REPORT="TODO@devoxx.fr"
+
+export LINKEDIN_CLIEND_ID="TODO"
+export LINKEDIN_SECRET="TODO"
+
+export GITHUB_ID="TODO"
+export GITHUB_SECRET="TODO"
+
+export GOOGLE_ID="TODO.apps.googleusercontent.com"
+export GOOGLE_SECRET="TODO"
+
+export REDIS_HOST="TODO"
+export REDIS_PORT="6363"
+export REDIS_PASSWORD="TODO"
+
+export CRON_UPDATER="false"
+export CRON_DAYS="2"
+
+export ES_HOST="http://TODO:9200"
+export ES_USERNAME="TODO"
+export ES_PASSWORD="TODO"
+
+export BITBUCKET_USERNAME="TODO"
+export BITBUCKET_PASSWORD="TODO"
+export BITBUCKET_URL="https://bitbucket.org/api/1.0/repositories/TODO/TODO/issues"
+
+export OPSGENIE_API="TODO"
+export OPSGENIE_NAME="TODO"
+
+export CFP_IS_OPEN="false"
+
+export ACTIVATE_GOLDEN_TICKET="false"
+
+echo -n "--- Configured for development ---"
+
+play

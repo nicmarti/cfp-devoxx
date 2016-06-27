@@ -8,7 +8,6 @@
                 <div class="panel-heading">
                     <h3><i class="icon-bullhorn"></i> @Messages("acceptedProposals.title", Messages("longName"))</h3>
                 </div>
-
                 <div class="panel-body">
 
                         @if(flash.get("error").isDefined) {
@@ -40,7 +39,8 @@
                                         <div class="panel-body">
                                             @Messages("ar.pleaseAccept")
                                         </div>
-                                    </div>
+
+                                </div>
                             }
                           @approvedProposals.sortBy(_.title).map{proposal=>
                             <div class="panel panel-success">
@@ -77,6 +77,7 @@
                                          }else{
                                         <p>@Messages("ar.pleaseSelect")</p>
                                         <form action="@routes.ApproveOrRefuse.doAcceptOrRefuseTalk()" method="post">
+
                                             @if(proposal.state==ProposalState.APPROVED) {
                                                <td colspan="2"><button name="dec" value="accept" class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button></td>
                                             }
@@ -92,6 +93,7 @@
                                                 <button name="dec" value="" disabled class="btn btn-sm btn-success"> @Messages("ar.IAccept")</button>
                                                 </td>
                                             }
+
                                             @if(proposal.state==ProposalState.APPROVED) {
                                                 <td colspan="2"><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button> </td>
                                             }
@@ -105,7 +107,7 @@
                                             @if(proposal.state==ProposalState.DECLINED) {
                                                 <td colspan="2"><button name="dec" value="" disabled class="btn btn-sm btn-danger"> Declined </button> </td>
                                             }
-                                            }
+                                        }
 
 
                                             <input type="hidden" name="cssrf_t" value="@cssrf">
@@ -115,8 +117,8 @@
                                         </tr>
                                         </tfoot>
                                         </table>
-                                  </div>
                                 </div>
+                            </div>
                           }
 
                         @if(rejectedProposals.nonEmpty){
@@ -130,10 +132,10 @@
                                 <div class="panel-body">
                                     <span class="label label-info">@proposal.id</span><br>
                                     <span class="label label-primary">@Messages(proposal.talkType.id)</span>
+                                </div>
                             </div>
+                          }
                         </div>
-                        }
-                    </div>
                         }
                 </div>
             </div>

@@ -1,0 +1,56 @@
+@(formTicket: Form[GoldenTicket])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Admin - new Golden ") {
+
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        @if(flash.get("error").isDefined) {
+            <div class="alert alert-danger col-md-12">
+                <strong>Error :</strong>
+                @flash.get("error").get
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+            </div>
+        }
+        @if(formTicket.hasErrors){
+            <div class="alert alert-danger">
+                @formTicket.errors.map { error:FormError =>
+                    @error.message <br>
+                }
+            </div>
+
+        }
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>New golden ticket</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    @helper.form(action = routes.GoldenTicketAdminController.saveGoldenTicket(), 'class->"form-inline") {
+                            @helper.inputText(formTicket("ticketId"), '_label -> "EventBrite ID or Ticket id", 'size -> 40)
+                            @helper.inputText(formTicket("firstName"))
+                            @helper.inputText(formTicket("lastName"))
+                            @helper.inputText(formTicket("email"), 'size -> 30)
+                            @helper.inputText(formTicket("ticketType"), '_label -> "Ticket type (conf,combi,uni)", 'size -> 20)
+
+                            <div class="btn-block">
+                                <button type="submit" class="btn btn-success">@Messages("confirm.import.save")</button>
+                            </div>
+                        }
+
+                </div>
+                </div>
+            </div>
+        </div>
+
+}

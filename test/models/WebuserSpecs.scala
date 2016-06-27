@@ -32,7 +32,7 @@ import org.apache.commons.lang3.RandomStringUtils
  */
 class WebuserSpecs extends PlaySpecification {
 
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364")
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
 
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
@@ -69,7 +69,7 @@ class WebuserSpecs extends PlaySpecification {
       Webuser.doesNotExist(webuser.uuid) must beTrue
     }
 
-    "create and delete a use r" in new WithApplication(app = appWithTestRedis()) {
+    "create and delete a user" in new WithApplication(app = appWithTestRedis()) {
 
       val email = RandomStringUtils.randomAlphabetic(10)
       val webuser = Webuser.createSpeaker(email, "John", "UnitTest")

@@ -25,14 +25,13 @@ package models
 
 import library.Redis
 import org.apache.commons.lang3.RandomStringUtils
-import org.joda.time.DateTime
 import org.specs2.control.Debug
-import play.api.test.{FakeApplication, WithApplication, PlaySpecification}
+import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
 
 /**
- * Review test for LUA.
- * Created by nicolas martignole on 10/07/2014.
- */
+  * Review test for LUA.
+  * Created by nicolas martignole on 10/07/2014.
+  */
 class ReviewSpecs extends PlaySpecification with Debug {
 
   // Use a different Redis Database than the PROD one
@@ -123,7 +122,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       // GIVEN
       val reviewerUUID = "SUPER_VOTER"
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposalId = RandomStringUtils.randomAlphabetic(12)
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = "123"
         , secondarySpeaker = None
@@ -142,7 +141,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
       // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,0)
+      Review.voteForProposal(proposalId, reviewerUUID, 0)
       Review.removeVoteForProposal(proposalId, reviewerUUID)
 
       // THEN
@@ -158,7 +157,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       // GIVEN
       val reviewerUUID = "SUPER_VOTER"
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposalId = RandomStringUtils.randomAlphabetic(12)
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = "123"
         , secondarySpeaker = None
@@ -177,7 +176,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
       // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,3)
+      Review.voteForProposal(proposalId, reviewerUUID, 3)
 
       // THEN
       Review.allProposalsWithNoVotes must beEmpty
@@ -193,7 +192,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
       // GIVEN
       val reviewerUUID = "SUPER_VOTER"
       val reviewerUUID2 = "SUPER_VOTER02"
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposalId = RandomStringUtils.randomAlphabetic(12)
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = "123"
         , secondarySpeaker = None
@@ -212,8 +211,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
       // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,3)
-      Review.voteForProposal(proposalId,reviewerUUID2,3)
+      Review.voteForProposal(proposalId, reviewerUUID, 3)
+      Review.voteForProposal(proposalId, reviewerUUID2, 3)
       Review.deleteVoteForProposal(proposalId)
 
       // THEN
@@ -231,7 +230,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
       val reviewerUUID = "SUPER_VOTER34"
       val reviewerUUID2 = "ABSTENTION"
 
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposalId = RandomStringUtils.randomAlphabetic(12)
 
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = "123"
@@ -251,8 +250,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
       // WHEN
-      Review.voteForProposal(proposalId,reviewerUUID,7)
-      Review.voteForProposal(proposalId,reviewerUUID2,0)
+      Review.voteForProposal(proposalId, reviewerUUID, 7)
+      Review.voteForProposal(proposalId, reviewerUUID2, 0)
 
       // THEN
       Review.allHistoryOfVotes(proposalId) must haveLength(2)
@@ -261,7 +260,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
       Review.totalVoteCastFor(proposalId) mustEqual 1
     }
 
-    "should load the LUA script and compute some Stats"  in new WithApplication(app = appWithTestRedis()) {
+    "should load the LUA script and compute some Stats" in new WithApplication(app = appWithTestRedis()) {
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
@@ -273,9 +272,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
       val reviewerUUID2 = "SUPER_VOTER 02"
       val reviewerUUID3 = "ABSTENTION"
 
-      val author=RandomStringUtils.randomAlphabetic(12)
+      val author = RandomStringUtils.randomAlphabetic(12)
 
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposalId = RandomStringUtils.randomAlphabetic(12)
 
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = author
@@ -293,9 +292,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , wishlisted = None)
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
-      Review.voteForProposal(proposalId,reviewerUUID,10)
-      Review.voteForProposal(proposalId,reviewerUUID2,5)
-      Review.voteForProposal(proposalId,reviewerUUID3,0)
+      Review.voteForProposal(proposalId, reviewerUUID, 10)
+      Review.voteForProposal(proposalId, reviewerUUID2, 5)
+      Review.voteForProposal(proposalId, reviewerUUID3, 0)
 
       // WHEN
       Review.computeAndGenerateVotes()
@@ -305,23 +304,17 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       val (checkedProposal, scoreAndTotalVotes) = Review.allVotes().head
 
-      checkedProposal mustEqual(proposalId)
+      checkedProposal mustEqual proposalId
 
-      val score = scoreAndTotalVotes._1
-      val voters = scoreAndTotalVotes._2
-      val abstentions = scoreAndTotalVotes._3
-      val average = scoreAndTotalVotes._4
-      val standardDev = scoreAndTotalVotes._5
-
-      score mustEqual 15
-      average mustEqual 7.5
-      voters mustEqual 2
-      abstentions mustEqual 1
-      standardDev mustEqual 3.536
+      scoreAndTotalVotes._1.s mustEqual 15
+      scoreAndTotalVotes._2.i mustEqual 2
+      scoreAndTotalVotes._3.i mustEqual 1
+      scoreAndTotalVotes._4.n mustEqual 7.5
+      scoreAndTotalVotes._5.d mustEqual 3.536
 
     }
 
-  "should load the LUA script and not crash if a proposal has no votes"  in new WithApplication(app = appWithTestRedis()) {
+    "should load the LUA script and not crash if a proposal has no votes" in new WithApplication(app = appWithTestRedis()) {
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
@@ -329,8 +322,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
       }
 
       // GIVEN
-      val author=RandomStringUtils.randomAlphabetic(12)
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val author = RandomStringUtils.randomAlphabetic(12)
+      val proposalId = RandomStringUtils.randomAlphabetic(12)
 
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Proposal with no vote"
         , mainSpeaker = author
@@ -357,7 +350,7 @@ class ReviewSpecs extends PlaySpecification with Debug {
       Review.allVotes() must haveSize(0)
     }
 
-    "should load the LUA script and compute correctly if proposal has only ABST votes"  in new WithApplication(app = appWithTestRedis()) {
+    "should load the LUA script and compute correctly if proposal has only ABST votes" in new WithApplication(app = appWithTestRedis()) {
       // WARN : flush the DB
       Redis.pool.withClient {
         client =>
@@ -368,9 +361,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
       val reviewerUUID = "SUPER_VOTER 01"
       val reviewerUUID2 = "SUPER_VOTER 02"
 
-      val author=RandomStringUtils.randomAlphabetic(12)
+      val author = RandomStringUtils.randomAlphabetic(12)
 
-      val proposalId= RandomStringUtils.randomAlphabetic(12)
+      val proposalId = RandomStringUtils.randomAlphabetic(12)
 
       val proposal = Proposal(id = proposalId, event = "Test", lang = "FR", title = "Demo unit test"
         , mainSpeaker = author
@@ -389,8 +382,8 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
       // Both votes 0 for this talk
-      Review.voteForProposal(proposalId,reviewerUUID,0)
-      Review.voteForProposal(proposalId,reviewerUUID2,0)
+      Review.voteForProposal(proposalId, reviewerUUID, 0)
+      Review.voteForProposal(proposalId, reviewerUUID2, 0)
 
       // WHEN
       Review.computeAndGenerateVotes()
@@ -400,19 +393,13 @@ class ReviewSpecs extends PlaySpecification with Debug {
 
       val (checkedProposal, scoreAndTotalVotes) = Review.allVotes().head
 
-      checkedProposal mustEqual(proposalId)
+      checkedProposal mustEqual proposalId
 
-      val score = scoreAndTotalVotes._1
-      val voters = scoreAndTotalVotes._2
-      val abstentions = scoreAndTotalVotes._3
-      val average = scoreAndTotalVotes._4
-      val standardDev = scoreAndTotalVotes._5
-
-      score mustEqual 0
-      average mustEqual 0
-      voters mustEqual 0
-      abstentions mustEqual 2
-      standardDev mustEqual 0
+      scoreAndTotalVotes._1.s mustEqual 0
+      scoreAndTotalVotes._2.i mustEqual 0
+      scoreAndTotalVotes._3.i mustEqual 2
+      scoreAndTotalVotes._4.n mustEqual 0
+      scoreAndTotalVotes._5.d mustEqual 0
 
     }
 

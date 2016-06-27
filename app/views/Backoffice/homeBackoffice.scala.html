@@ -26,7 +26,6 @@
         </div>
         <div class="panel-body">
             <h4>ElasticSearch</h4>
-                <a href="/assets/kibana/index.html" class="btn btn-primary btn-sm"><i class="icon-bar-chart"></i> Kibana</a> -
                 <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Delete speakers and proposals ES Indexes</a><br>
                 <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Force indexation of speakers, proposals for web site</a><br>
 
@@ -39,6 +38,15 @@
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                 <a href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
+
+            <h4>Mass refuse system</h4>
+            <a href="@routes.ApproveOrRefuse.prepareMassRefuse("tia")" class="btn btn-danger btn-sm"><i class="icon-warning-sign"></i> Mass Refuse system</a>
+
+            <h4><i class="icon-ticket"></i> Golden ticket </h4>
+            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-sm btn-primary">Show all Golden tickets</a>
+            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary">Create a new golden ticket</a>
+            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-primary">All Votes</a>
+
 
             <h4>Planner</h4>
             <a href="/assets/angular/index.html" class="btn btn-success btn-sm"><i class="icon-adjust"></i> Angular Schedule application</a>

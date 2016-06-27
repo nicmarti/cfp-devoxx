@@ -32,6 +32,10 @@ import models.ConferenceDescriptor.ConferenceProposalConfigurations
  */
 object ApprovedProposal {
 
+  def elasticSearchIndex():String={
+    "proposals_"+ConferenceDescriptor.current().confUrlCode
+  }
+
   val getTotal: Map[String, Int] = Map(
     ("conf.label", ConferenceProposalConfigurations.CONF.slotsCount)
     , ("uni.label", ConferenceProposalConfigurations.UNI.slotsCount)
@@ -49,7 +53,7 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:key") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick") + client.scard("Approved:ignite")
+          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:key") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
         case other =>
           client.scard(s"Approved:$talkType")
       }
@@ -60,7 +64,7 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Refused:conf") + client.scard("Refused:lab") + client.scard("Refused:bof") + client.scard("Refused:key") + client.scard("Refused:tia") + client.scard("Refused:uni") + client.scard("Refused:quick") + client.scard("Refused:ignite")
+          client.scard("Refused:conf") + client.scard("Refused:lab") + client.scard("Refused:bof") + client.scard("Refused:tia") + client.scard("Refused:uni") + client.scard("Refused:quick")
         case other =>
           client.scard(s"Refused:$talkType")
       }

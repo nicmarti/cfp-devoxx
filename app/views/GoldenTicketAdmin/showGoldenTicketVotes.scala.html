@@ -1,0 +1,128 @@
+@(allVotes:List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("All votes") {
+
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1><i class="icon-bar-chart"></i> Golden ticket votes</h1>
+                @allVotes.size elements
+            </div>
+
+            <div class="panel-body">
+
+                <div class="col-md-12">
+                    <table id="allProposals" class="table table-bordered table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Average</th>
+                                <th>Nb of votes</th>
+                                <th>Nb of abstention</th>
+                                <th>Standard Deviation</th>
+                                <th>Proposal title</th>
+                                <th>Proposal id</th>
+                                <th>Speaker</th>
+                                <th>Track</th>
+                                <th>Type</th>
+                                <th>Lang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @allVotes.map { case (proposal, voteAndTotalVotes) =>
+                                @defining(ApprovedProposal.isRefused(proposal.id, proposal.talkType.id)){refused=>
+                                @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
+                                <tr class="preselected_@approved refused_@refused">
+                                      <td class="number_table"/>
+                                    <td class="average_table">
+                                    @defining(voteAndTotalVotes._4.n) { average =>
+                                       @average
+                                    }
+                                    </td>
+                                    <td  class="number_table">
+                                    @defining(voteAndTotalVotes._2.i) { totalVoters =>
+                                      @totalVoters
+                                    }
+                                    </td>
+                                    <td  class="number_table">
+                                    @defining(voteAndTotalVotes._3.i) { totalAbstentions =>
+                                        @totalAbstentions
+                                    }
+                                    </td>
+                                    <td  class="number_table">
+                                    @defining(voteAndTotalVotes._5.d) { stdev =>
+                                        @stdev
+                                    }
+                                    </td>
+                                    <td>
+                                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id">@proposal.title</a>
+                                    </td>
+                                    <td>@proposal.id</td>
+                                    <td>
+                                        @proposal.allSpeakers.map { s: Speaker =>
+                                            @if(models.Invitation.isInvited(s.uuid)){
+                                              <span class="label label-warning"><i class="icon-glass"></i> @s.cleanName</span>
+                                            }else{
+                                                <span class="label label-default">@s.cleanName</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @Messages(proposal.track.label)
+                                    </td>
+                                    <td>
+                                        @Messages(proposal.talkType.id)
+                                    </td>
+                                    <td>@proposal.lang</td>
+                                </tr>
+                                }
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+ $(document).ready(function() {
+
+    $.fn.dataTableExt.oStdClasses.sStripeOdd = '';
+    $.fn.dataTableExt.oStdClasses.sStripeEven = '';
+
+    $('#allProposals').dataTable({
+    "aaSorting": [[ 1, "desc" ]],
+    "iDisplayLength": 75,
+    "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5,10,25, 50, 75,100, "All"]],
+    "bStateSave": true,
+    "fnDrawCallback": function ( oSettings ) {
+            /* Need to redo the counters if filtered or sorted */
+            if ( oSettings.bSorted || oSettings.bFiltered ) {
+                for ( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ ) {
+                    $('td:eq(0)', oSettings.aoData[ oSettings.aiDisplay[i] ].nTr ).html( i+1 );
+                }
+            }
+        },
+    "aoColumnsDef": [
+        { "bSortable" : "false", "bSearchable" : "false", "aTargets": 0 },
+        { "sType": "numeric", "aTargets": [1, 2, 3, 4]},
+        { "sType": "string", "aTargets": [5, 6, 7, 8, 9, 10]}
+        ]
+    });
+
+
+} );
+</script>
+
+
+}

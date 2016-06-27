@@ -23,7 +23,7 @@
 
 package models
 
-import library.Redis
+import library.{Stats, Redis}
 import org.joda.time.{Instant, DateTime}
 import scala.math.BigDecimal.RoundingMode
 
@@ -68,14 +68,12 @@ object Review {
       Event.storeEvent(Event(proposalId, reviewerUUID, s"Removed its vote on this talk"))
   }
 
-
   def archiveAllVotesOnProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
       allVotesFor(proposalId).map {
         case (reviewer, _) =>
           tx.srem(s"Proposals:Reviewed:ByAuthor:$reviewer", proposalId)
-
       }
       tx.del(s"Proposals:Reviewed:ByProposal:$proposalId")
       tx.del(s"Proposals:Votes:$proposalId") // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
@@ -93,7 +91,9 @@ object Review {
 
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:Reviewed:ByAuthor:$reviewerUUID").toSet
+      // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "ApprovedById:",
+        "RefusedById:", s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
@@ -117,11 +117,11 @@ object Review {
   // Returns the history of votes for a proposal. If a reviewer changed its vote, we will also see it.
   def allHistoryOfVotes(proposalId: String): List[Review] = Redis.pool.withClient {
     implicit client =>
-    // for instance ZREVRANGEBYSCORE Proposals:Dates:BQX-255 +inf -inf WITHSCORES
-    //      1) "b14651a3cd78ab4fd03d522ebef81cdac1d5755c__2" //b14651a3.. = user uuid and 2 is the vote
-    //      2) "1387058296080"                               // time stamp when the person voted
-    //      3) "0867c4e2182ef84e2dfcd412e33e01a9bc98dac2__8"
-    //      4) "1386781873312"
+      // for instance ZREVRANGEBYSCORE Proposals:Dates:BQX-255 +inf -inf WITHSCORES
+      //      1) "b14651a3cd78ab4fd03d522ebef81cdac1d5755c__2" //b14651a3.. = user uuid and 2 is the vote
+      //      2) "1387058296080"                               // time stamp when the person voted
+      //      3) "0867c4e2182ef84e2dfcd412e33e01a9bc98dac2__8"
+      //      4) "1386781873312"
 
       val listOfReviewsAndVotes = client.zrevrangeByScoreWithScores(s"Proposals:Dates:$proposalId", "+inf", "-inf")
       val history: List[Review] = listOfReviewsAndVotes.flatMap {
@@ -154,6 +154,12 @@ object Review {
       client.zcount(s"Proposals:Votes:$proposalId", 1, 10)
   }
 
+  def averageScore(proposalId:String):Double = Redis.pool.withClient{
+    client=>
+      val allScores = client.zrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 1, 10).map(_._2)
+      Stats.average(allScores)
+  }
+
   type ReviewerAndVote = (String, Double)
 
   def allVotesFor(proposalId: String): List[ReviewerAndVote] = Redis.pool.withClient {
@@ -173,8 +179,8 @@ object Review {
       totalPerProposal.toList
   }
 
-  def allProposalsWithNoVotes:Map[String,Proposal]={
-    val proposalIDs = allProposalsAndReviews.filter(_._2==0).map(_._1).toSet
+  def allProposalsWithNoVotes: Map[String, Proposal] = {
+    val proposalIDs = allProposalsAndReviews.filter(_._2 == 0).map(_._1).toSet
     Proposal.loadAndParseProposals(proposalIDs)
   }
 
@@ -198,7 +204,7 @@ object Review {
     maybeBestProposal
   }
 
-  def bestReviewer(): Option[(String, Int)]  = {
+  def bestReviewer(): Option[(String, Int)] = {
     totalReviewedByCFPuser().sortBy(_._2).reverse.headOption
   }
 
@@ -220,7 +226,7 @@ object Review {
 
   def lastVoteByUserForOneProposal(reviewerUUID: String, proposalId: String): Option[Review] = Redis.pool.withClient {
     implicit client =>
-    // If I voted for this proposal - O(1) very fast access
+      // If I voted for this proposal - O(1) very fast access
       if (client.sismember(s"Proposals:Reviewed:ByAuthor:$reviewerUUID", proposalId)) {
         // Then ok, load the vote... O(log(N)+M) with N: nb of votes and M the number returned (all...)
         // this method use Redis zrevrangeByScoreWithScores so the list is already sorted
@@ -265,30 +271,40 @@ object Review {
       }
   }
 
-  type ScoreAndTotalVotes = (Double, Int, Int, Double, Double)
+  class Score(val s:Double) extends AnyVal
+  class TotalVoter(val i:Int) extends AnyVal
+  class TotalAbst(val i:Int) extends AnyVal
+  class AverageNote(val n:Double) extends AnyVal
+  class StandardDev(val d:Double) extends AnyVal
 
-  def allVotes(): Set[(String, ScoreAndTotalVotes)] = Redis.pool.withClient {
+
+  /**
+    * Returns allVotes but discard deleted/archived/draft proposals
+    */
+  def allVotes(): Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Redis.pool.withClient {
     client =>
       val allVoters = client.hgetAll("Computed:Voters")
       val allAbstentions = client.hgetAll("Computed:VotersAbstention")
       val allAverages = client.hgetAll("Computed:Average")
       val allStandardDev = client.hgetAll("Computed:StandardDeviation")
 
+      val allProposalIDSToRemove = Proposal.allProposalIDsDeletedArchivedOrDraft()
+
       client.hgetAll("Computed:Scores").map {
-        case (proposalKey: String, scores: String) =>
+        case (proposalKey: String, scores: String) if !allProposalIDSToRemove.contains(proposalKey)=>
           val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
           (proposalId,
-            (scores.toDouble,
-              allVoters.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0),
-              allAverages.get(proposalKey).filterNot(_=="nan").filterNot(_=="-nan").map(d=>BigDecimal(d.toDouble).setScale(3,RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble),
-              allStandardDev.get(proposalKey).filterNot(_=="nan").filterNot(_=="-nan").map{
-                d=>
-                  BigDecimal(d.toDouble).setScale(3,RoundingMode.HALF_EVEN).toDouble
-              }.getOrElse(0.toDouble)
+            (new Score(scores.toDouble),
+              new TotalVoter(allVoters.get(proposalKey).map(_.toInt).getOrElse(0)),
+              new TotalAbst(allAbstentions.get(proposalKey).map(_.toInt).getOrElse(0)),
+              new AverageNote(allAverages.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map(d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble).getOrElse(0.toDouble)),
+              allStandardDev.get(proposalKey).filterNot(_ == "nan").filterNot(_ == "-nan").map {
+                d =>
+                  new StandardDev(BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble)
+              }.getOrElse(new StandardDev(0.toDouble))
             )
           )
-      }.toSet
+      }
   }
 
   // internal function that upload to Redis a LUA Script
@@ -388,13 +404,13 @@ object Review {
       }
   }
 
-  def allReviewersAndStats():List[(String, Int, Int)]=Redis.pool.withClient{
-    client=>
+  def allReviewersAndStats(): List[(String, Int, Int)] = Redis.pool.withClient {
+    client =>
       // Remove reviewer that are not any longer part of CFP
       val validReviewers=client.smembers("Webuser:cfp")
 
       val allVoted = client.hgetAll("Computed:Reviewer:Total").filter(uuidAndPoints => validReviewers.contains(uuidAndPoints._1)).map {
-        case(uuid:String, totalPoints:String)=>
+        case ( uuid: String,totalPoints: String) =>
           val nbrOfTalksReviewed = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid",
             "Proposals:ByState:" + ProposalState.DELETED.code,
             "Proposals:ByState:" + ProposalState.ARCHIVED.code,
@@ -402,8 +418,8 @@ object Review {
           (uuid, totalPoints.toInt, nbrOfTalksReviewed)
       }
 
-      val noReviews = client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne" )
-      val noReviewsAndNote = noReviews.map(uuid=>
+      val noReviews = client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne")
+      val noReviewsAndNote = noReviews.map(uuid =>
         (uuid, 0, 0)
       )
       allVoted.toList ++ noReviewsAndNote.toList
@@ -411,8 +427,8 @@ object Review {
 
   }
 
-  def diffReviewBetween(firstUUID:String, secondUUID:String):Set[String]=Redis.pool.withClient{
-    client=>
+  def diffReviewBetween(firstUUID: String, secondUUID: String): Set[String] = Redis.pool.withClient {
+    client =>
       client.sdiff(s"Proposals:Reviewed:ByAuthor:$firstUUID",
         s"Proposals:Reviewed:ByAuthor:$secondUUID",
         "Proposals:ByState:" + ProposalState.DELETED.code,

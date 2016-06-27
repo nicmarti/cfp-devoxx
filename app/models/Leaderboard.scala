@@ -128,8 +128,7 @@ object Leaderboard {
     val totalRefusedSpeakers = refusedSpeakers.size
     tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
 
-
-      tx.exec()
+    tx.exec()
   }
 
   def totalSpeakers():Long = {
@@ -178,7 +177,8 @@ object Leaderboard {
   def lazyOnes():Map[String, String] = Redis.pool.withClient {
     implicit client =>
      val lazyOneWithOneVote = worstReviewer()
-     val otherThatHaveNoVotes  =  client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne" ).map(s=>(s,"0"))
+      // Take CFP members, remove admin and remove all webuser that reviewed at least one
+     val otherThatHaveNoVotes  =  client.sdiff("Webuser:cfp", "Webuser:admin", "Computed:Reviewer:ReviewedOne" ).map(s=>(s,"0"))
      val toReturn = (lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes).toMap
     toReturn
   }

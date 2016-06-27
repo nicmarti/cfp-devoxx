@@ -55,7 +55,7 @@ object Comment {
     allComments(s"Comments:Internal:$proposalId", proposalId)
   }
 
-    def countComments(proposalId: String): Long = Redis.pool.withClient {
+  def countComments(proposalId: String): Long = Redis.pool.withClient {
     client =>
       client.zcard(s"Comments:ForSpeaker:$proposalId").longValue
   }

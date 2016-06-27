@@ -1,11 +1,11 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
 @main(Messages("cfp.title")){
     <div class="row">
         <div class="col-md-4">
-            <h3><i class="icon-magic"></i> @Html(Messages("your.profile"))</h3>
+            <h3><i class="icon-magic"></i> @Messages("your.profile")</h3>
 
             <div class="panel panel-default">
                 <div class="panel-heading"><p>@speaker.cleanName</p><small>@webuser.email</small></div>
@@ -112,7 +112,7 @@
         </div>
 
         <div class="col-md-8">
-            <h3><i class="icon-tasks"></i> @Html(Messages("your.submission"))</h3>
+            <h3><i class="icon-tasks"></i> @Messages("your.submission")</h3>
 
             @if(flash.get("error").isDefined) {
                  <div class="alert alert-danger alert-dismissable">
@@ -141,7 +141,7 @@
 
             @if(myProposals.isEmpty) {
                 <div class="info">
-                @Html(Messages("no.proposal"))
+                @Messages("no.proposal")
                 </div>
             } else {
 
@@ -160,7 +160,10 @@
                     <tbody>
                     @myProposals.map { prop: Proposal =>
                         <tr>
-                            <td><a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a></td>
+                            <td>
+                                <a href="@routes.CallForPaper.editProposal(prop.id)" title="@Messages("table.pres.edit")">@StringUtils.abbreviate(prop.title,50) <span class="icon-arrow-right"></span> </a><br>
+                                <a style="padding-left:4px;padding-left:3px;" href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> @Messages("hfspk.edit.speaker")</a>
+                            </td>
                             <td>
                                 <div style="max-width:114px">
                                 @tags.renderGravatar(prop.mainSpeaker,showName = false)
@@ -173,7 +176,6 @@
                                     }
                                 }
                                 </div>
-                                <a style="padding-left:4px;padding-left:3px;" href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> </a>
                             </td>
                             <td>
                             @if(prop.state.code=="accepted" || prop.state.code=="approved"){
@@ -249,10 +251,46 @@
         <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
     </div>
 }
-
-        </div>
-
     </div>
+        @if(ratings.nonEmpty){
+            <div class="clearfix"></div>
+            <div class="col-md-12">
+               <h3><i class="icon-bar-chart"></i> @Messages("hfspk.rating.title")</h3>
+                <p>@Messages("hfspk.rating.desc")</p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Messages("table.pres.title")</th>
+                            <th>@Messages("table.pres.rating")</th>
+                            <th>@Messages("table.pres.comment")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @ratings.map { case(prop:Proposal,allRatings:List[Rating]) =>
+                        <tr>
+                            <td>
+                                @StringUtils.abbreviate(prop.title,50)</td>
+                            <td>
+                                @library.Stats.average(allRatings.flatMap(_.details.map(_.rating.toDouble)))<br>
+                                @allRatings.size votes
+                            </td>
+                            <td>
+                                @allRatings.map { r: Rating =>
+                                  @r.details.map { details =>
+                                    @details.rating @details.review.map { d =>
+                                    <strong>@details.aspect</strong> @d
+                                    }<br>
+                                  }
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+</div>
 <!-- @speaker.uuid -->
 <!-- @webuser.uuid -->
 

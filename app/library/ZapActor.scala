@@ -76,6 +76,10 @@ case class EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk)
 
 case class NotifyProposalSubmitted(author: String, proposal: Proposal)
 
+case class NotifyGoldenTicket(goldenTicket: GoldenTicket)
+
+case class SendHeartbeat(apiKey: String, name: String)
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -98,6 +102,8 @@ class ZapActor extends Actor {
     case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
+    case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
+    case NotifyGoldenTicket(goldenTicket:GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -159,6 +165,7 @@ class ZapActor extends Actor {
 
   def doComputeVotesAndScore() {
     Review.computeAndGenerateVotes()
+    ReviewByGoldenTicket.computeAndGenerateVotes()
   }
 
   // Delete votes if a proposal was deleted
@@ -166,6 +173,7 @@ class ZapActor extends Actor {
     Proposal.allProposalIDsDeleted.map {
       proposalId =>
         Review.deleteVoteForProposal(proposalId)
+        ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
     }
   }
 
@@ -214,4 +222,41 @@ class ZapActor extends Actor {
     }
   }
 
+  def doSendHeartbeat(apikey: String, name: String): Unit = {
+    import scala.concurrent.ExecutionContext.Implicits.global
+
+    // Check if redis is up... will throw an Exception if unable to connect
+    Redis.checkIfConnected()
+
+    // Send a Heartbeat to opsgenie
+    val url = "https://api.opsgenie.com/v1/json/heartbeat/send"
+    val futureResult = WS.url(url).post(Map("apiKey" -> Seq(apikey), "name" -> Seq(name)))
+    futureResult.map {
+      result =>
+        result.status match {
+          case 200 =>
+            val json = Json.parse(result.body)
+            if(play.Logger.of("library.ZapActor").isDebugEnabled){
+              play.Logger.of("library.ZapActor").debug(s"Got an ACK from OpsGenie $json")
+            }
+
+          case other =>
+            play.Logger.error(s"Unable to read response from OpsGenie server ${result.status} ${result.statusText}")
+            play.Logger.error(s"Response body ${result.body}")
+
+        }
+    }
+  }
+
+  def doNotifyGoldenTicket(gt:GoldenTicket):Unit={
+    play.Logger.debug(s"Notify golden ticket ${gt.ticketId} ${gt.webuserUUID}")
+
+    Webuser.findByUUID(gt.webuserUUID).map {
+      invitedWebuser: Webuser =>
+         Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New golden ticket for user ${invitedWebuser.cleanName}"))
+        Mails.sendGoldenTicketEmail(invitedWebuser,gt)
+    }.getOrElse {
+      play.Logger.error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
+    }
+  }
 }

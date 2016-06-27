@@ -1,34 +1,30 @@
 @(events: List[Event], allProposalsForReview: List[Proposal], totalEvents:Long, page:Int, sort:Option[String], ascdesc:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
-
     <div class="row">
-        <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-beaker"></i> CFP Admin</h2>
-        </div>
 
-        <div class="clearfix"></div>
+        <div class="col-md-12 col-sm-12 col-lg-12">
 
-        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
 
             @if(flash.get("error").isDefined) {
                 <div class="alert alert-danger alert-dismissable">
                     <strong>Error :</strong>
-                    @flash.get("error").get
+                    @flash.get("error").getOrElse("?")
                 </div>
             }
             @if(flash.get("success").isDefined) {
                 <div class="alert alert-success alert-dismissable">
-                @flash.get("success").get
+                @flash.get("success").getOrElse("?")
                 </div>
             }
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title")</h3>
                 </div>
                 <div class="panel-body">
+                    <div class="button-group">
                     <a href="@routes.CFPAdmin.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a>
+                    <a href="@routes.GoldenTicketAdminController.showStats()" class="btn btn-sm btn-success">Golden Tickets Stats</a>
                     <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> @Messages("admin.btn.myvotes")</a>
                     <a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(None)" class="btn btn-sm btn-primary"><i class="icon-circle-arrow-right"></i> @Messages("admin.btn.otherReviewer")</a>
                     <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
@@ -39,8 +35,9 @@
                     @if(SecureCFPController.hasAccessToAdmin(req)){
                         <a href="@routes.Backoffice.allProposals()" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("admin.btn.changeState")</a>
                     }
-                    <br>
-                    <br>
+                    </div>
+
+
                     @if(allProposalsForReview.nonEmpty) {
                         <table class="table table-bordered table-striped table-hover table-condensed">
                             <thead>
@@ -50,11 +47,6 @@
                                     <th>@tags.renderThTag("mainSpeaker", page, sort, ascdesc)</th>
                                     <th>@tags.renderThTag("talkType", page, sort, ascdesc)</th>
                                     <th>@Messages("admin.proposals.th.action")</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="5">
-                                       <small>Your todo list size: @allProposalsForReview.size</small>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody>

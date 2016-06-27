@@ -30,8 +30,8 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Confere
         "lastName": "Crepet",
         "links": [
             {
-                "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode/speakers/6cbb41adbc049f923c4327ed3642f208faf4e03f",
-                "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/speaker",
+                "href": "@ConferenceDescriptor.current().conferenceUrls.cfpURL/api/conferences/@ConferenceDescriptor.current().eventCode/speakers/6cbb41adbc049f923c4327ed3642f208faf4e03f",
+                "rel": "@ConferenceDescriptor.current().conferenceUrls.cfpURL/api/profile/speaker",
                 "title": "Agnès Crepet"
             }
         ],
@@ -43,8 +43,8 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showSpeakers(Confere
         "lastName": "Regnier",
         "links": [
             {
-                "href": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/conferences/@ConferenceDescriptor.current().eventCode/speakers/bf8a71eed7ae0339dd4f1aca4899939fad7ad87b",
-                "rel": "http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname/api/profile/speaker",
+                "href": "@ConferenceDescriptor.current().conferenceUrls.cfpURL/api/conferences/@ConferenceDescriptor.current().eventCode/speakers/bf8a71eed7ae0339dd4f1aca4899939fad7ad87b",
+                "rel": "@ConferenceDescriptor.current().conferenceUrls.cfpURL/api/profile/speaker",
                 "title": "Alain Regnier"
             }
         ],

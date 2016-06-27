@@ -1,0 +1,134 @@
+@(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader)
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="Robots" content="index,follow" />
+<meta name="description" content="@description" />
+
+<title>@title &infin; Devoxx</title>
+<!-- Custom style for CFP by Nicolas -->
+<link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/dvfr2015.css")' type='text/css' media='all' />
+<link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/schedule.css")' type='text/css' media='all' />
+<script type='text/javascript' src='http://www.devoxx.be/wp-includes/js/jquery/jquery.js?ver=1.11.0'></script>
+<script type='text/javascript' src='http://www.devoxx.be/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
+<script type='text/javascript' src='http://www.devoxx.be/wp-content/plugins/easy-foundation-shortcodes/js/5/vendor/custom.modernizr.js?ver=3.9.2'></script>
+<script type='text/javascript' src='http://www.devoxx.be/wp-content/themes/athletica-child/js/vendor/modernizr-2.7.1.min.js?ver=1.0'></script>
+
+<meta name="generator" content="Play Scala by Nicolas Martignole" />
+
+</head>
+<body class="page page-id-1769 page-template-default custom-background siteorigin-panels group-blog">
+
+<a id="simple-menu" href="#sidr">
+    <i class="fi-list"></i>
+    @title | Devoxx</a>
+
+<div id="sidr">
+    <button><i class="fi-x"></i>Close Menu</button>
+    <ul id="menu-other-pages-menu" class="menu">
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="http://www.devoxx.fr/">Home</a></li>
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Accueil</a></li>
+        @if(UserCFPController.findAuthenticator.isDefined){
+         <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; Mon Agenda</a></li>
+        }
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="http://www.devoxx.fr/sponsors/2016">Sponsors</a></li>
+        <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://www.devoxx.fr/faq">FAQ</a></li>
+        <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="http://reg.devoxx.fr">Inscription</a></li>
+    </ul>
+</div>
+
+        <!-- Image Top Container -->
+    <section id="top-image" class="blog-page">
+            <!-- Header Menu -->
+        <header id="top-header">
+            <div class="row">
+                <div class="large-12 columns">
+                    <div class="logo-holder">
+                        <a href="http://www.devoxx.fr">DEVOX</a>
+                    </div>
+                    <div class="skew-wrapper"></div>
+                    <ul id="nav-menu" class="menu">
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="http://www.devoxx.fr/">www.devoxx.fr</a></li>
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Accueil Programme</a></li>
+
+@if(ConferenceDescriptor.isFavoritesSystemActive) {
+    @if(UserCFPController.findAuthenticator.isDefined) {
+        <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
+    }
+}
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="http://www.devoxx.fr/sponsors/2016">Sponsors</a></li>
+        <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://www.devoxx.fr/faq">FAQ</a></li>
+        <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="http://reg.devoxx.fr">Inscription</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+    </section>
+
+	<!-- Blog Section -->
+	<section id="blog-posts-two">
+	    <!-- Blog Post -->
+	    <div class="row blog-post single-blog-post">
+	        <div class="large-12 large-centered columns single-page">
+	            <div class="single-content single-content-page row">
+<!-- ************** Begin generated content by Play ************************ //-->
+@content
+<!--  ************* End generated content by Play ************************** //-->
+	            </div>
+	        </div>
+	    </div>
+	</section>
+
+<!-- Footer -->
+<footer >
+    <a href="#" class="go-top"></a>
+    <div class="row">
+        <div class="large-6 columns">
+            <p>Devoxx France, Tous droits réservés (C) 2012-2016<br>Evénement organisé par Quantixx SARL</p>
+        </div>
+        <div class="large-6 columns">
+<!-- place holder sponsors -->
+        </div>
+    </div>
+</footer>
+
+@if(ConferenceDescriptor.isFavoritesSystemActive) {
+        <!-- *** Javascript for Favorite talk *** //-->
+    <script type="text/javascript">
+            (function($) {
+                $(document).ready(function() {
+
+                    $('.cfp-fav').on("click",function(event) {
+                        var maybePropoposalId = $(this).val();
+                        var clickedElement=$(this);
+
+                        console.log("--> Sending "+maybePropoposalId);
+                        if(typeof maybePropoposalId != 'undefined'){
+                            event.preventDefault();
+                            // This works only if you are authenticated with a signed cookie and a valid play2 session
+                            $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
+                                    function( jsonResponse ) {
+                                        if(jsonResponse.status=="unfav"){
+                                            console.log("<-- Unfav ok");
+                                            $(clickedElement).attr("checked",false);
+                                        }
+                                        if(jsonResponse.status=="fav"){
+                                            console.log("<-- Fav ok");
+                                            $(clickedElement).attr("checked",true);
+                                        }
+                                    },"json");
+                        }else{
+                            console.log("No valid proposalId. Please help me to debug, report your web browser version and platform.");
+                        }
+                    });
+
+                });
+            })(jQuery);
+    </script>
+}
+</body>
+</html>
+

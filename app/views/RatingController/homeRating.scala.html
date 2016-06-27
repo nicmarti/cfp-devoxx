@@ -1,0 +1,59 @@
+@(ratingForm:Form[Rating])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Rating") {
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-bar-chart"></i> Rating system</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Vote for a talk</h4>
+                </div>
+                <div class="panel-body">
+                    <p>Send one vote</p>
+
+    @if(ratingForm.hasErrors){
+        <div class="panel panel-warning">
+            <div class="panel-heading"><h4>Erreur de saisie</h4></div>
+            <div class="panel-body">
+            <p>Erreurs :</p>
+                @ratingForm.errors.map{err =>
+                    <strong>@Messages(err.key)</strong> : @Messages(err.message)<br>
+                }
+            </div>
+        </div>
+    }
+
+@helper.form(action = routes.RatingController.acceptVoteForTalk()) {
+  @helper.inputText(ratingForm("talkId"))
+  @helper.inputText(ratingForm("user"))
+  @helper.inputText(ratingForm("conference"))
+  @helper.inputText(ratingForm("timestamp"))
+    @helper.repeat(ratingForm("details"), min = 1) { ratingDetail =>
+        <div class="col-md-6 ticket">
+            <div class="panel panel-default @if(ratingDetail("aspect").hasErrors) { panel-warning } @if(ratingDetail("rating").hasErrors) { panel-warning } @if(ratingDetail("review").hasErrors) { panel-warning } ">
+                <div class="panel-heading">
+                    <p>Detail</p>
+                </div>
+                <div class="panel-body">
+                    @helper.inputText(ratingDetail("aspect"), '_label -> Messages("form.aspect"))
+                    @helper.inputText(ratingDetail("rating"), '_label -> Messages("form.rating"))
+                    @helper.inputText(ratingDetail("review"), '_label -> Messages("form.review"))
+                </div>
+            </div>
+        </div>
+    }
+    <p><input type="submit" value="Save"></p>
+}
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

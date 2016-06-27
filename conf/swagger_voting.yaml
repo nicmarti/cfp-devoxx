@@ -1,0 +1,200 @@
+swagger: '2.0'
+info:
+  version: 1.0.1
+  title: Devoxx Mobile app voting system
+  description: |
+    Devoxx API for mobile application, used to collect votes during conferences.
+    
+    The v1 is a copy/paste of DevoxxVote, a project created by Jon Mort, that was used during Devoxx BE 2014 and Devoxx FR 2015.
+    
+    UserID is a hashCode (Int32)
+    
+    Find source code of this API [on Github](https://github.com/nicmarti/cfp-devoxx)
+    
+    Tests for the backend can be found [here](https://github.com/nicmarti/cfp-devoxx/blob/dev/test/voting/TestVotingSpecs.scala)
+    
+  termsOfService: All access are logged and tracked.
+  contact:
+    name: nicolas.martignole@devoxx.fr
+host: cfp.devoxx.fr
+basePath: /api/voting
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/vote:
+    post:
+      parameters:
+        - name: vote
+          in: body
+          description: The vote JSON you want to post
+          schema:
+            $ref: '#/definitions/Vote'
+          required: true
+      responses:
+        201:
+          description: Vote was accepted, no body
+        403:
+          description: You cannot vote now for this talk, votes are closed
+        409: 
+          description: This user already voted
+        404:
+          description: This talkId was not found [deprecated]
+
+  /v1/talk/{talkId}:
+    get:
+      summary:
+        Retrieve details with votes about a specific talk
+      parameters:
+        - name: talkId
+          type: string
+          in: path
+          description: the talkId
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TalkAndVote'
+        "201":
+          description: There is no vote for this talk
+        "404":
+          description: This talk ID does not exist
+         
+        
+          
+  /v1/top/talks:
+    get:
+      summary:
+        Retrieve the top talks as voted on. Talks are sorted by average rating.
+        
+        Not implemented on 30th of May 2016
+      
+      parameters:
+        - name: day
+          in: query
+          type: string
+          description: The day to filter by (monday, tuesday, wednesday, thursday, friday)
+          required: false
+        - name: talkType
+          in: query
+          type: string
+          description: Proposal type (conf, uni, tia, labs, key, ignite...)
+          required: false
+        - name: track
+          in: query
+          type: string
+          description: the short code for Track (See the CFP REST API for list of Tracks)
+      responses:
+        200:
+          description: The list of talks with the average score, the number of votes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/VoteResult'
+              
+  /v1/categories:
+     get:
+      summary:
+        Retrieve the categories that can be filtered by. day, track and talkType can all be passed to top/talks fo filter the top talks. Each of the categories can be used as a filter value.
+              
+        It does a redirect to the /categories end point on the REST API
+        
+        See http://cfp.devoxx.fr/api/conferences/DevoxxFR2016/tracks
+        
+
+      responses:
+        301:
+          description: Moved Permanently
+          
+
+definitions:
+  Vote:
+    type: object
+    properties:
+      user:
+        type: string
+        description: A unique user id (now a String !)
+      rating:
+        type: integer
+        format: int32
+        description: from 1 to 5, where 1 is terrible, and 5 is awesome
+      talkId:
+        type: string
+        description: The CFP ProposalID
+      details:
+        type: array
+        $ref: '#/definitions/RatingDetail'
+    required:
+      - user
+      - talkId
+  RatingDetail:
+    type: object
+    properties:
+      aspect:
+        type: string
+        description: One of [default, Content, Delivery or Other]
+      rating:
+        type: integer
+        format: int32
+        description: from 1 to 5, where 1 is terrible, and 5 is awesome
+      review: 
+        type: string
+        description: A user review, a short text sent by the User
+    required:
+      - aspect
+      - rating        
+  VoteResult:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'The talk ID (e.g. ABC-1234)'
+      avg:
+        type: string
+        description: the average score
+      count:
+        type: string
+        description: number of votes
+      sum:
+        type: string
+        description: total score
+  TalkAndVote:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'The talk ID (e.g. ABC-1234)'
+      avg:
+        type: string
+        description: the average score
+      count:
+        type: string
+        description: number of votes
+      sum:
+        type: string
+        description: total score
+      summary:
+        type: string
+        description: The proposal summary
+      type:
+        type: string
+        description: The type of talk (Conference, Tools-in Action, Hands-on Lab...)
+      track:
+        type: string
+        description: The track name (Server side java, Mobile & Web, ...)
+      speakers: 
+        type: array
+        items:
+            type: string
+            description: an array of String, with Speaker firstname and lastname
+        
+      
+        
+        
+        

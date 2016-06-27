@@ -1,0 +1,23 @@
+@(ratings:List[Rating])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Rating") {
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-bar-chart"></i> Rating system</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Vote for a talk</h4>
+                </div>
+                <div class="panel-body">
+                    @ratings.map{r=>
+                            @r<br>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

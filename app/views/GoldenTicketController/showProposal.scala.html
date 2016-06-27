@@ -1,0 +1,193 @@
+@(proposal: Proposal, voteForm: Form[Int], maybeMyVote: Option[ReviewByGoldenTicket])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+
+@main("Golden Ticket - Show " + proposal.id) {
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-signin"></i> @Messages("admin.proposal")</h3>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-bordered table-strippted">
+                        <thead>
+                            <tr>
+                                <th>@Messages("admin.proposals.th.title")</th>
+                                <th>@Messages("admin.proposals.th.track")</th>
+                                <th>@Messages("admin.proposals.th.talkType")</th>
+                                <th>@Messages("admin.proposals.th.lang")</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@proposal.title</td>
+                                <td>@Messages(proposal.track.label)</td>
+                                <td>@Messages(proposal.talkType.id)</td>
+                                <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
+                            </tr>
+                            <tr>
+                                <th colspan="4">
+                                @Messages("admin.proposals.th.abstract")
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="proposal">
+                                @Html(proposal.summaryAsHtml)
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>@Messages("proposal.audienceLevel")</th>
+                                <th>@Messages("proposal.demoLevel")</th>
+                            </tr>
+                            <tr>
+                                <td>@Messages(proposal.audienceLevel + ".label")</td>
+                                <td>@proposal.demoLevel.map(d => Messages(d + ".label"))</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>
+                                    @tags.gticket.showSpeakerTag(proposal.mainSpeaker)
+                                </th>
+                                <td>
+                                    <div class="showSpeakerDetails">
+                                    @tags.gticket.showSpeakerBio(proposal.mainSpeaker)
+                                    </div>
+                                </td>
+                            </tr>
+                            @if(proposal.secondarySpeaker.isDefined) {
+                                <tr>
+                                    <th>@proposal.secondarySpeaker.map { secondarySpeaker =>
+                                    @tags.gticket.showSpeakerTag(proposal.mainSpeaker)
+                                    }
+                                    </th>
+                                    <td>
+                                        <div class="showSecSpeakerDetails">
+                                        @proposal.secondarySpeaker.map { secondarySpeaker =>
+                                            @tags.gticket.showSpeakerBio(secondarySpeaker)
+                                        }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            @if(proposal.otherSpeakers.nonEmpty) {
+                                <tr>
+                                    <th>
+                                    @proposal.otherSpeakers.map { sp =>
+                                        @tags.gticket.showSpeakerTag(sp)
+                                    }
+                                    </th>
+                                    <td>
+                                    @proposal.otherSpeakers.map { sp =>
+                                        @tags.gticket.showSpeakerBio(sp)
+                                    }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>@Messages("gt.admin.sp.privateMessage")</th>
+                                <td>@proposal.privateMessage</td>
+                            </tr>
+                            @if(proposal.sponsorTalk) {
+                                <tr>
+                                    <th>@Messages("admin.sp.sponsorTalk")</th>
+                                    <td><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        @if(flash.get("error").isDefined) {
+            <div class="col-md-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="col-md-12">
+                <div class="alert alert-success alert-dismissable">
+                @flash.get("success").get
+                </div>
+            </div>
+        }
+        <div class="col-md-12">
+            <div class="panel panel-default">
+            @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
+                @if(approved) {
+                    <div class="panel-heading">
+                        <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
+                    </div>
+                    <div class="panel-body">
+                        <a href="@routes.GoldenTicketController.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
+                        @helper.form(action = routes.GoldenTicketController.voteForProposal(proposal.id)) {
+                            @if(maybeMyVote.isDefined && maybeMyVote.get.vote == 0) {
+                                <button name="vote" value="0" class="btn btn-sm btn-warning">Vote 0</button>
+                            } else {
+                                <button name="vote" value="0" class="btn btn-sm btn-default">Vote 0</button>
+                            }
+                        }
+                    </div>
+                </div>
+            }else{
+            <div class="panel-heading">
+                <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
+            </div>
+            <div class="panel-body">
+                @if(proposal.state == ProposalState.SUBMITTED) {
+                    @maybeMyVote.map { review: ReviewByGoldenTicket =>
+                        <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote)
+                        - @review.date.toString("EEEE d MMM YYYY HH:mm")
+
+                    <a href="@routes.GoldenTicketController.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
+
+                    }
+                    <div class="btn-block">
+                        @helper.form(action = routes.GoldenTicketController.voteForProposal(proposal.id)) {
+                            @if(maybeMyVote.isDefined && maybeMyVote.get.vote==0){
+                                <button name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
+                            }else{
+                                <button name="vote" value="0" class="btn btn-lg btn-default">@Messages("Abs")</button>
+                            }
+                            @for( i <- 1 to 10) {
+                                @maybeMyVote.map { review: ReviewByGoldenTicket =>
+                                    @if(review.vote == i) {
+                                        <button name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
+                                    } else {
+                                        <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                    }
+                                }
+                                @if(maybeMyVote.isEmpty) {
+                                    <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                }
+                            }
+                        }
+                    }
+            </div>
+            </div>
+        @if(flash.get("vote").isDefined) {
+            <div class="alert alert-success alert-dismissable">
+            @flash.get("vote").get
+            </div>
+        }
+        </div>
+        }
+        }
+    </div>
+
+    </div>
+}

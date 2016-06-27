@@ -89,3 +89,42 @@ body {
     opacity: 1;
     max-height: 40px;
 }
+
+.camera {
+    background-color: #3bc016;
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+}
+
+.rien {
+    background-color: #ff0000;
+    width: 8px;
+    height: 8px;display: inline-block;
+}
+.son {
+    background-color: #ffcc22;
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+}
+.sponsor-true{
+    border-color: #ff0000;
+}
+
+.demo-d1{
+        background-color: #ff13cd;
+    width: 8px;
+    height: 8px;display: inline-block;
+}
+.demo-d2{
+        background-color: #6fff7e;
+    width: 8px;
+    height: 8px;display: inline-block;
+}
+.demo-d3{
+        background-color: #101729;
+    border:1px solid #f15f15;
+    width: 8px;
+    height: 8px;display: inline-block;
+}

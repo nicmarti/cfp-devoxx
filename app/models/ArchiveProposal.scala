@@ -95,9 +95,6 @@ object ArchiveProposal {
     // Remove votes for this talk
     Review.archiveAllVotesOnProposal(proposalId)
 
-    // Remove all Favorites (a talk was added to a visitor Agenda)
-    FavoriteTalk.delFav(proposalId)
-
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
   }
 

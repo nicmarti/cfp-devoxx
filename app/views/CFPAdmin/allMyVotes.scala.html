@@ -1,11 +1,6 @@
-@(allVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allMyVotes:List[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
-    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
-
     <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -16,63 +11,70 @@
             <div class="panel-body">
                 <div class="col-md-12">
                     <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
-                    @if(allVotes.nonEmpty){
-                        You have voted for @allVotes.filter(_._2.isDefined).size talks<br>
-                        @defining(allVotes.filter(_._2.isDefined).toList.map(_._2.get)){allScores=>
+                    @if(allMyVotes.nonEmpty){
+                        You have voted for @allMyVotes.filter(_._2.isDefined).size talks<br>
+                        @defining(allMyVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
                             Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br>
                         }
                     }else{
-                        You haven't vote for any proposal so far.
+                        You haven't voted for any proposal so far.
+                    }
+
+                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                        <a href="@routes.CFPAdmin.allMyVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
                     }
 
                 </div>
-                @if(allVotes.nonEmpty){
-                <div class="col-md-12">
-                    <h3><i class="icon-bar-chart"></i> Proposals for which you voted</h3>
-                    <table id="proposals" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Score</th>
-                                <th>Id</th>
-                                <th>Title</th>
-                                <th>Type</th>
-                                <th>Track</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            @allVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map{case(proposalId, maybeVote)=>
-                                @defining(Math.round(maybeVote.get)){score=>
-                                     <td>@score</td>
-                             }
-                            <td><a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a></td>
-                        @relatedProposals.get(proposalId).map{proposal=>
-                          <td>
-                              <small>@proposal.title</small>
-                          </td>
-                          <td>
-                              <small>@Messages(proposal.talkType.id)</small>
-                          </td>
-                          <td>
-                              <small>@Messages(proposal.track.label)</small>
-                          </td>
-                        }
-                        </tr>
-                    }
-                        </tbody>
-                    </table>
+                @if(allMyVotes.nonEmpty){
+                    <div class="col-md-12 col-lg-12">
+                        <h3><i class="icon-bar-chart"></i> Proposals of type @Messages(talkType) for which you voted</h3>
+                        <table id="tableMyVotes" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>You voted</th>
+                                    <th>Current score</th>
+                                    <th>Id</th>
+                                    <th>Title</th>
+                                    <th>Track</th>
+                                    <th>Speakers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                </div>
-                <div class="col-md-6">
-                    @if(allVotes.filter(_._2.isEmpty).nonEmpty){
-                        <h4>Proposals for wich you need to vote</h4>
-                        @allVotes.filter(_._2.isEmpty).toList.sortBy(_._1).map{case(proposalId, maybeVote)=>
-                            <a href="@routes.CFPAdmin.openForReview(proposalId)">@proposalId</a> <br>
-                        }
-                    }
-                </div>
+                                @allMyVotes.map { case (proposalId, maybeVote) =>
+                                    @defining(Math.round(maybeVote.get)) { score =>
+                                        <tr>
+                                            <td style="width: 82px" class="score" data-score="@score" data-pid="@proposalId">
+                                            <div class="btn-group-xs">
+                                                    <button class="btn btn-xs btn-color-@score">@score</button>
+                                                    <button data-score="@Math.min(10,score+1)" data-id="@proposalId" class="btn plus btn-xs btn-color-8">+</button>
+                                                    <button data-score="@Math.max(0,score-1)" data-id="@proposalId" class="btn minus btn-xs btn-color-1">-</button>
+                                            </div>
+                                        </td>
+
+                                         <td>@allScoresForProposals.get(proposalId)</td>
+                                    <td><a href="@routes.CFPAdmin.openForReview(proposalId)" class="btn btn-sm btn-primary">@proposalId</a></td>
+                                    @relatedProposals.get(proposalId).map { proposal =>
+                                        <td>
+                                            <small>@proposal.title</small>
+                                        </td>
+
+                                        <td>
+                                            <small>@Messages(proposal.track.label)</small>
+                                        </td>
+                                          <td>
+                                            <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
+                                        </td>
+                                    }
+                                    }
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
                 }
             </div>
         </div>
@@ -80,61 +82,42 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-    $('#proposals').dataTable({
-    "aaSorting": [[ 4, "desc" ]],
-    "iDisplayLength" : -1,
-    "aLengthMenu": [
-    [25, 50, 100, 200, -1],
-    [25, 50, 100, 200, "All"]
-    ],
-    "bStateSave": true,
-    "aoColumns": [
-    { "sType": "numeric"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "string"}
-    ],
-    "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-        if ( aData[0] == "10" ) {
-            $('td:eq(0)', nRow).html( '<span class="label label-success">10</b>' );
-        }
-    if ( aData[0] == "9" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-success">9</b>' );
+$( document ).ready(function() {
+    function generateCell(newScore, pid){
+        return '<td style="width: 82px" class="score" data-score="' + newScore + '" data-pid="' + pid +
+                '">' +
+        '<div class="btn-group btn-group-xs">' +
+                '<button class="btn btn-xs btn-color-' + newScore +
+                '">' + newScore +
+                '</button>' +
+                '<a href="@routes.CFPAdmin.allMyVotes(talkType)" class="btn btn-xs btn-primary"><i class="icon-refresh"></i></a>' +
+                '</div></td>';
+
     }
-    if ( aData[0] == "8" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-success">8</b>' );
+
+    function handleVote(){
+        $('#tableMyVotes').find('.btn.plus, .btn.minus').on('click', function(event) {
+            var $btnClicked = $(event.currentTarget);
+            var $cell = $btnClicked.parents('td');
+            var $row = $cell.parents('tr');
+            $row.addClass('myVotesRowUpdated');
+
+            var newScore = Number($btnClicked.attr('data-score'));
+            var proposalId = $btnClicked.attr('data-id');
+
+            $.ajax({
+                url: '/cfpadmin/proposal/'+proposalId+'/vote?vote='+newScore,
+                cache: false
+            }).then(function(){
+                console.log('Vote '+proposalId+' set to '+newScore);
+                $row.find('td').eq(0).after(generateCell(newScore, proposalId));
+                $cell.remove();
+            });
+        });
     }
-    if ( aData[0] == "7" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-success">7</b>' );
-    }
-    if ( aData[0] == "6" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-warning">6</b>' );
-    }
-    if ( aData[0] == "5" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-warning">5</b>' );
-    }
-    if ( aData[0] == "4" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-warning">4</b>' );
-    }
-    if ( aData[0] == "3" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-danger">3</b>' );
-    }
-    if ( aData[0] == "2" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-danger">2</b>' );
-    }
-    if ( aData[0] == "1" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-danger">1</b>' );
-    }
-    if ( aData[0] == "0" ) {
-    $('td:eq(0)', nRow).html( '<span class="label label-default">0</b>' );
-    }
-    }
-    });
-    } );
+
+    handleVote();
+});
 </script>
-
-
 
 }

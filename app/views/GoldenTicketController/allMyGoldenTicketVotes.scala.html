@@ -1,0 +1,126 @@
+@(allMyVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+
+@main("All my votes") {
+
+    <div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="icon-bar-chart"></i> @Messages("gt.yourVotes")</h1>
+            </div>
+
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <h3><i class="icon-beaker"></i> @Messages("gt.personnal")</h3>
+                    @if(allMyVotes.nonEmpty){
+                        @Messages("gt.youReviewed", allMyVotes.count(_._2.isDefined))<br>
+
+                        @defining(allMyVotes.filter(_._2.isDefined).filterNot(_._2 == Some(0)).toList.map(_._2.get)){allScores=>
+                            @Messages("gt.youVoted", allMyVotes.count(s => s._2.isDefined && s._2 != Some(0)))<br>
+                            @Messages("gt.averageVote", library.Stats.average(allScores))
+                        }
+                    }else{
+                        @Messages("gt.noVotes")
+                    }
+
+                    <br>
+                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                        <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
+                    }
+                </div>
+                @if(allMyVotes.nonEmpty){
+                    <div class="col-md-12">
+                       <h3><i class="icon-bar-chart"></i> @Messages("gt.myvotes", Messages(talkType))</h3>
+
+                        <table id="tableMyVotes" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Score</th>
+                                    <th>Id</th>
+                                    <th>Title</th>
+                                    <th>Track</th>
+                                    <th>Speakers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @allMyVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map { case (proposalId, maybeVote) =>
+                                     @defining(Math.round(maybeVote.get)){ score =>
+                                <tr>
+                                        <td style="width: 82px" class="score" data-score="@score" data-pid="@proposalId">
+                                            <Div class="btn-group btn-group-xs">
+                                                    <button class="btn btn-xs btn-color-@score">@score</button>
+                                                    <button data-score="@Math.min(10,score+1)" data-id="@proposalId" class="btn plus btn-xs btn-color-8" style="margin-left:3px; margin-right: 3px;">+</button>
+                                                    <button data-score="@Math.max(0,score-1)" data-id="@proposalId" class="btn minus btn-xs btn-color-1" style="margin-left:3px; margin-right: 3px;">-</button>
+                                                </Div>
+                                        </td>
+
+                                    <td><a href="@routes.GoldenTicketController.openForReview(proposalId)" class="btn btn-sm btn-primary">@proposalId</a></td>
+                                    @relatedProposals.get(proposalId).map { proposal =>
+                                        <td>
+                                            <small>@proposal.title</small>
+                                        </td>
+
+                                        <td>
+                                            <small>@Messages(proposal.track.label)</small>
+                                        </td>
+                                        <td>
+                                            <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
+                                        </td>
+                                    }
+                                </tr>
+                                }
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+$( document ).ready(function() {
+    function generateCell(newScore, pid){
+        return '<td style="width: 82px" class="score" data-score="' + newScore + '" data-pid="' + pid +
+                '">' +
+        '<div class="btn-group btn-group-xs">' +
+                '<button class="btn btn-xs btn-color-' + newScore +
+                '">' + newScore +
+                '</button>' +
+                '<a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType)" class="btn btn-xs btn-primary"><i class="icon-refresh"></i></a>' +
+                '</div></td>';
+
+    }
+
+    function handleVote(){
+        $('#tableMyVotes').find('.btn.plus, .btn.minus').on('click', function(event) {
+            var $btnClicked = $(event.currentTarget);
+            var $cell = $btnClicked.parents('td');
+            var $row = $cell.parents('tr');
+            $row.addClass('myVotesRowUpdated');
+
+            var newScore = Number($btnClicked.attr('data-score'));
+            var proposalId = $btnClicked.attr('data-id');
+
+            $.ajax({
+                url: '/cfp/goldenticket/proposals/'+proposalId+'/vote?vote='+newScore,
+                cache: false
+            }).then(function(){
+                console.log('Vote '+proposalId+' set to '+newScore);
+                $row.find('td').eq(0).after(generateCell(newScore, proposalId));
+                $cell.remove();
+            });
+        });
+    }
+
+    handleVote();
+});
+
+</script>
+
+}

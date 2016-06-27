@@ -486,8 +486,8 @@ display:block !important;
 
 <h3 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.5px;text-align: left;color: #606060 !important;">Interested? Not interested? Let us know:</h3>
 <ul>
-<li><a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Wishlist.speakerApproveRequest(requestId)"><strong>Yes</strong>, I'd like to propose a talk or I'd like more information regarding @Messages("shortName").</a></li>
-<li><a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname@routes.Wishlist.speakerDeclineRequest(requestId)"><strong>No</strong> sorry, I am not available or not interested.</li>
+<li><a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Wishlist.speakerApproveRequest(requestId)"><strong>Yes</strong>, I'd like to propose a talk or I'd like more information regarding @Messages("shortName").</a></li>
+<li><a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Wishlist.speakerDeclineRequest(requestId)"><strong>No</strong> sorry, I am not available or not interested.</li>
 </ul>
                         </td>
                     </tr>
@@ -532,7 +532,7 @@ display:block !important;
                             <table border="0" cellpadding="0" cellspacing="0" id="canspamBar">
                                 <tr>
                                     <td align="center" valign="top" style="color:#606060; font-family:Helvetica. Arial. sans-serif; font-size:11px; line-height:150%; padding-right:20px; padding-bottom:5px; padding-left:20px; text-align:center;">
-                                        This email was sent by <a href="http://@ConferenceDescriptor.current().conferenceUrls.cfpHostname">Devoxx CFP web site</a>.
+                                        This email was sent by <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL">Devoxx CFP web site</a>.
                                         <br />
                                             @Messages("shortYearlyName")
                                         <br />

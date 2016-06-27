@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013 Association du Paris Java User Group.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package library.search
 
 import java.io.{PrintWriter, FileWriter, File}
@@ -196,12 +219,15 @@ class IndexMaster extends ESActor {
   def doIndexAllAccepted() {
     val proposals = Proposal.allApproved()++Proposal.allAccepted()
 
-    play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size}")
+    val indexName = ApprovedProposal.elasticSearchIndex()
+    play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size} to index $indexName")
 
     val sb = new StringBuilder
     proposals.foreach {
       proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"" + ElasticSearch.public_index + "\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
+        sb.append("{\"index\":{\"_index\":\"")
+        sb.append(indexName)
+        sb.append("\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
         sb.append("\n")
         sb.append(Json.toJson(proposal.copy(
           privateMessage = "",
@@ -213,9 +239,9 @@ class IndexMaster extends ESActor {
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), ElasticSearch.public_index)
+    ElasticSearch.indexBulk(sb.toString(), indexName)
 
-    play.Logger.of("application.IndexMaster").debug(s"Done indexing all Accepted Talks to ${ElasticSearch.public_index}")
+    play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
   }
 
   def doIndexAllReviews() {
@@ -298,7 +324,7 @@ class IndexMaster extends ESActor {
                     },
                     "bio": {
                         "type": "string",
-                        "analyzer":"english"
+                        "analyzer":"francais"
                     },
                     "blog": {
                         "type": "string",
@@ -322,7 +348,7 @@ class IndexMaster extends ESActor {
                     },
                     "qualifications": {
                         "type": "string",
-                        "analyzer":"english"
+                        "analyzer":"francais"
                     },
                     "twitter": {
                         "type": "string",
@@ -389,7 +415,7 @@ class IndexMaster extends ESActor {
             },
             "summary": {
                 "type": "string",
-                "analyzer": "english"
+                "analyzer": "francais"
             },
             "talkType": {
                 "properties": {
@@ -434,41 +460,46 @@ class IndexMaster extends ESActor {
     // This is important for French content
     // Leave it, even if your CFP is in English
     def settingsFrench =
-      """
-        |{
-        |    "settings": {
-        |        "index": {
-        |            "analysis": {
-        |                "analyzer": {
-        |                    "analyzer_keyword": {
-        |                        "tokenizer": "keyword",
-        |                        "filter": "lowercase"
-        |                    },
-        |                    "francais": {
-        |                        "type": "custom",
-        |                        "tokenizer": "standard",
-        |                        "filter": ["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
-        |                    }
-        |                },
-        |                "filter": {
-        |                    "stop_francais": {
-        |                        "type": "stop",
-        |                        "stopwords": ["_french_"]
-        |                    },
-        |                    "fr_stemmer": {
-        |                        "type": "stemmer",
-        |                        "name": "french"
-        |                    },
-        |                    "elision": {
-        |                        "type": "elision",
-        |                        "articles": ["l", "m", "t", "qu", "n", "s", "j", "d"]
-        |                    }
-        |                }
-        |            }
-        |        }
-        |    }
-        |}
+    """
+        |    {
+        |    	"settings" : {
+        |    		"index":{
+        |    			"analysis":{
+        |    				"analyzer":{
+        |              "analyzer_keyword":{
+        |                 "tokenizer":"keyword",
+        |                 "filter":"lowercase"
+        |              },
+        |              "analyzer_startswith":{
+        |                      "tokenizer":"keyword",
+        |                      "filter":"lowercase"
+        |             },
+        |    					"francais":{
+        |    						"type":"custom",
+        |    						"tokenizer":"standard",
+        |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
+        |    					}
+        |    				},
+        |    				"filter":{
+        |    					"stop_francais":{
+        |    						"type":"stop",
+        |    						"stopwords":["_french_"]
+        |    					},
+        |    					"fr_stemmer" : {
+        |    						"type" : "stemmer",
+        |    						"name" : "french"
+        |    					},
+        |    					"elision" : {
+        |    						"type" : "elision",
+        |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
+        |    					}
+        |    				}
+        |    			}
+        |    		}
+        |    	}
+        | }
       """.stripMargin
+
 
     def settingsProposalsEnglish =
       s"""
@@ -550,19 +581,19 @@ class IndexMaster extends ESActor {
     // We use a for-comprehension on purporse so that each action is executed sequentially.
     // res2 is executed when res1 is done
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
-                        res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsProposalsEnglish)
+                        res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsFrench)
     ) yield {
       res2
     }
 
-     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex(ElasticSearch.public_index);
-                        res2 <- ElasticSearch.createIndexWithSettings(ElasticSearch.public_index, settingsProposalsEnglish)
+     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_fr2016");
+                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_fr2016", settingsFrench)
     ) yield {
       res2
     }
 
     val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
-                                res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsSpeakersEnglish)
+                                res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsFrench)
 
     ) yield {
       res2

@@ -1,0 +1,31 @@
+@(webuser:models.Webuser, gt:models.GoldenTicket)
+
+--------------------------------------------------------
+
+  Golden Ticket #@gt.id
+
+--------------------------------------------------------
+
+Cher(e) @webuser.firstName
+
+Félicitations !
+En achetant un Golden Ticket pour Devoxx France, vous pouvez nous aider à construire le programme de la conférence.
+Le travail de la communauté et l'esprit ouvert sont au coeur des valeurs de Devoxx. Ce Golden Ticket vous
+donne un accès privilégié à la base des soumissions de la conférence. Vous allez pouvoir lire et évaluer
+les propositions de sujets postés par les orateurs. L'appel aux conférenciers (CFP en anglais) fermera fin janvier 2016.
+Vos différents votes seront alors utilisés pour nous aider à construire le meilleur agenda pour la conférence.
+                            
+Vous êtes maintenant l'un des 64 Golden Ticket, nous comptons sur vous pour nous aider, pour respecter
+aussi le travail des speakers et utiliser dans l'esprit Devoxx cette nouvelle possibilité.
+                            
+
+Pour accéder à l'outil d'évaluation des sujets : 
+
+https://cfp.devoxx.fr@routes.GoldenTicketController.authenticate()
+                            
+Merci d'utiliser votre adresse email (@webuser.email) et votre code d'accès personnel, à ne pas diffuser : @webuser.password
+
+Vous pouvez contacter Nicolas en cas de questions ou remarques par email : nicolas.martignole@@devoxx.fr
+
+Merci à vous !
+L'équipe d'organisation de Devoxx France
