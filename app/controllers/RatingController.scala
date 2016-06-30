@@ -90,7 +90,9 @@ object RatingController extends SecureCFPController {
   def allRatings = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val ratings = Rating.allRatings()
-      Ok(views.html.RatingController.allRatings(ratings))
+      val proposalIds = ratings.map(_.talkId)
+      val proposals = Proposal.loadAndParseProposals(proposalIds.toSet)
+      Ok(views.html.RatingController.allRatings(ratings, proposals))
   }
 
   // Special callback that accepts a JSON content from an URL, upload and set all votes for each talk
