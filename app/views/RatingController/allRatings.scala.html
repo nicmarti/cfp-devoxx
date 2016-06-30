@@ -24,7 +24,9 @@
 
                                 @proposals.get(talkId).map { proposal =>
                                     <tr>
-                                        <th class="alert alert-info">@proposal.title</th>
+                                        <th class="alert alert-info">
+                                            <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
+                                        </th>
                                         <th class="alert alert-info">@Messages(proposal.talkType.id)</th>
                                     </tr>
                                     <tr>
