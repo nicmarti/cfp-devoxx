@@ -17,7 +17,7 @@ during the Call for Papers period, which runs until 6th July, 2016. Your ratings
 by the crack team we’ve assembled for the program committee to help shape the final schedule
 for the conference in November.
                             
-This privilege is only open to people buying Blind Bird tickets.
+This privilege is only open to people buying Blind Bird tickets and available until end of July!
 
 To access the ratings tool, go to http://cfp.devoxx.be@routes.GoldenTicketController.authenticate() and use
 the email address we've sent this to and your unique access code : @webuser.password
@@ -26,5 +26,6 @@ We’ve always said this is your event and now we’re really giving more power 
                             
 And, by the way, thanks for buying a blind bird ticket. It shows us you have faith that we’ll deliver another amazing event, even before you’ve seen the program. We really appreciate it, it means a lot to know the community trusts us, so cheers.
 
-Best regards,
+Happy rating,
+
 The Devoxx Team
