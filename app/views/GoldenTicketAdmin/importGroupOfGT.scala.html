@@ -1,4 +1,4 @@
-@(tickets: Array[GoldenTicketImport])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(ticketForm: Form[GoldenTicketBulkImport])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("CFP Admin - new Golden ") {
 
@@ -12,18 +12,35 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3>Please review and confirm the list of @tickets.length golden tickets<br>
+                    <h3>Please review and confirm<br>
                         <small>An email is send to each golden ticket holder</small>
                     </h3>
                 </div>
 
                 <div class="panel-body">
+                    @helper.form(routes.GoldenTicketAdminController.bulkImport(), args = 'class -> "form-inline") {
+                        @helper.repeat(ticketForm("tickets"), min = 1) { student =>
+                              <div class="form-group">
+                                    @helper.inputText(student("ticketId"), '_label -> "TicketId", 'class -> "form-control")
+                              </div>
+                            <div class="form-group">
+                                    @helper.inputText(student("email"), '_label -> "Email", 'class -> "form-control")
+  </div>
+                            <div class="form-group">
+                                    @helper.inputText(student("firstName"), '_label -> "Firstname", 'class -> "form-control")
+  </div>
+                            <div class="form-group">
+                                    @helper.inputText(student("lastName"), '_label -> "Lastname", 'class -> "form-control")
+  </div>
+                            <div class="form-group">
+                                    @helper.inputText(student("ticketType"), '_label -> "TicketType", 'class -> "form-control")
+  </div>
 
-                    <ol>
-                    @tickets.sortBy(_.lastName).map { t =>
-                        <li>@t.ticketId @t.firstName @t.lastName @t.email @t.ticketType</li>
+
+                        }
+                        <button type="submit" class="btn btn-primary">Validate</button>
                     }
-                    </ol>
+
                 </div>
             </div>
         </div>

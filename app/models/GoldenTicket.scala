@@ -145,3 +145,5 @@ object GoldenTicketImport {
       , correctTicketType)
   }
 }
+
+case class GoldenTicketBulkImport(tickets:List[GoldenTicketImport])

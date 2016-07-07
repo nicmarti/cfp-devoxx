@@ -29,6 +29,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.json.{Json, Format}
 
 /**
   * A controller for Admin, to moderate or to add Golden Ticket.
@@ -87,24 +88,34 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def importGroupOfGT() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
       request.body.asFormUrlEncoded.map {
         form =>
           form.get("bulk").map {
             maybeSomeTextContent =>
-
               maybeSomeTextContent.headOption.map {
                 textareaContent: String =>
-
                  val goldenTickets = parseGoldenTicketBulk(textareaContent)
+                  val zeForm = bulkImportGoldenTicket.fill(GoldenTicketBulkImport(goldenTickets))
 
-                  Ok(views.html.GoldenTicketAdmin.importGroupOfGT(goldenTickets))
-
+                  Ok(views.html.GoldenTicketAdmin.importGroupOfGT(zeForm))
               }.getOrElse(BadRequest("Invalid bulk content"))
           }.getOrElse(BadRequest("Input bulk not found, bug in HTML Form"))
       }.getOrElse(BadRequest("Invalid form"))
-
   }
+
+  val bulkImportGoldenTicket: Form[GoldenTicketBulkImport] = Form(
+    mapping(
+      "tickets" -> list(
+        mapping(
+          "ticketId" -> nonEmptyText(maxLength = 20),
+          "firstName" -> text(maxLength = 30),
+          "lastName" -> text(maxLength = 50),
+          "email" -> email,
+          "ticketType" -> text(maxLength = 30)
+        )(GoldenTicketImport.apply)(GoldenTicketImport.unapply)
+      )
+    )(GoldenTicketBulkImport.apply)(GoldenTicketBulkImport.unapply)
+  )
 
   def bulkImport() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -179,8 +190,8 @@ object GoldenTicketAdminController extends SecureCFPController {
   }
 
   // Very very bad code I wrote in the train before France-Germany soccer
-  private def parseGoldenTicketBulk(textAreaContent: String): Array[GoldenTicketImport] = {
-    textAreaContent.split("\n").flatMap {
+  private def parseGoldenTicketBulk(textAreaContent: String): List[GoldenTicketImport] = {
+    textAreaContent.split("\n").toList.flatMap {
       oneLine =>
         val tokens = oneLine.split(",")
         if (tokens.size == 5) {
