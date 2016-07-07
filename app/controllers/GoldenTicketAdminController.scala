@@ -29,7 +29,6 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import play.api.libs.json.{Json, Format}
 
 /**
   * A controller for Admin, to moderate or to add Golden Ticket.
@@ -94,7 +93,7 @@ object GoldenTicketAdminController extends SecureCFPController {
             maybeSomeTextContent =>
               maybeSomeTextContent.headOption.map {
                 textareaContent: String =>
-                 val goldenTickets = parseGoldenTicketBulk(textareaContent)
+                  val goldenTickets = parseGoldenTicketBulk(textareaContent)
                   val zeForm = bulkImportGoldenTicket.fill(GoldenTicketBulkImport(goldenTickets))
 
                   Ok(views.html.GoldenTicketAdmin.importGroupOfGT(zeForm))
@@ -119,7 +118,18 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def bulkImport() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.GoldenTicketAdmin.newGroupOfGoldenTicket())
+      bulkImportGoldenTicket.bindFromRequest().fold(
+        hasErrors =>
+          BadRequest(views.html.GoldenTicketAdmin.importGroupOfGT(hasErrors)),
+        validForm => {
+          validForm.tickets.foreach {
+            ticket =>
+              val gt = GoldenTicket.importTicket(ticket)
+              ZapActor.actor ! NotifyGoldenTicket(gt)
+          }
+          Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> s"Successfully created ${validForm.tickets.length} golden tickets")
+        }
+      )
   }
 
   def sendEmail(goldenTicketId: String) = SecuredAction(IsMemberOf("admin")) {
@@ -196,12 +206,12 @@ object GoldenTicketAdminController extends SecureCFPController {
         val tokens = oneLine.split(",")
         if (tokens.size == 5) {
           val maybeEmail = tokens(3)
-          if(maybeEmail.contains("@")) {
+          if (maybeEmail.contains("@")) {
             Some(GoldenTicketImport.buildFrom(tokens(0), tokens(1), tokens(2), maybeEmail, tokens(4)))
-          }else{
+          } else {
             None
           }
-          } else {
+        } else {
           None
         }
     }
