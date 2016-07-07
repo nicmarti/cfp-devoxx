@@ -195,7 +195,7 @@ track.mobile.desc=Tools, frameworks & libraries for building native mobile apps,
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
-confirm.import.save=Save
+confirm.import.save=Save and send an email
 avatarUrl.isEmpty=URL to your picture is empty, so we will try to use your
 avatarUrl.defined=Your photo (recommended width 150px)
 

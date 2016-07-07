@@ -256,7 +256,9 @@ POST          /cfpadmin/attic/resetEvents                                       
 # Golden ticket admin
 GET           /admin/goldenTickets                                              controllers.GoldenTicketAdminController.showAll()
 GET           /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.newGoldenTicket()
+GET           /admin/goldenTickets/newGroupOfTicket                             controllers.GoldenTicketAdminController.newGroupOfGoldenTicket()
 POST          /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.saveGoldenTicket()
+POST          /admin/goldenTickets/newTicket/importGroupOfGT                    controllers.GoldenTicketAdminController.importGroupOfGT()
 GET           /admin/goldenTickets/votes                                        controllers.GoldenTicketAdminController.showGoldenTicketVotes()
 GET           /admin/goldenTickets/stats                                        controllers.GoldenTicketAdminController.showStats()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)

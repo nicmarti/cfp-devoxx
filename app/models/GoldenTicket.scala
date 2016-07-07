@@ -24,7 +24,7 @@
 package models
 
 import library.Redis
-import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import play.api.libs.json.Json
 
 /**
@@ -32,6 +32,7 @@ import play.api.libs.json.Json
   * @author created by N.Martignole, Innoteria, on 16/11/2015.
   */
 case class GoldenTicket(id: String, ticketId: String, webuserUUID: String, ticketType: String)
+
 
 object GoldenTicket {
   val GD_TICKET = "GoldenTicket:2016"
@@ -123,4 +124,24 @@ object GoldenTicket {
     Webuser(Webuser.generateUUID(email.toLowerCase.trim), email.toLowerCase.trim, firstName, lastName, RandomStringUtils.randomAlphabetic(8), "gticket")
   }
 
+}
+
+// Used for bulk import only
+case class GoldenTicketImport(ticketId: String, firstName: String, lastName: String, email: String, ticketType: String)
+
+object GoldenTicketImport {
+  private val ticketTypes = Set("conf", "combi", "uni")
+
+  def buildFrom(ticketId: String, firstName: String, lastName: String, email: String, ticketType: String): GoldenTicketImport = {
+    assert(StringUtils.trimToNull(ticketId) != null, s"ticketId cannot be null for $lastName $firstName")
+    assert(StringUtils.trimToNull(email) != null, s"Email cannot be null for $lastName $firstName")
+    val correctTicketType = ticketTypes.find(_ == StringUtils.trimToEmpty(ticketType)).getOrElse("conf")
+
+    GoldenTicketImport(
+      StringUtils.trimToEmpty(ticketId)
+      , StringUtils.trimToEmpty(firstName)
+      , StringUtils.trimToEmpty(lastName)
+      , StringUtils.trimToEmpty(email.toLowerCase())
+      , correctTicketType)
+  }
 }

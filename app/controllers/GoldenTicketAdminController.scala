@@ -24,7 +24,8 @@
 package controllers
 
 import library.{NotifyGoldenTicket, ZapActor}
-import models.{GoldenTicket, Proposal, ProposalState, ReviewByGoldenTicket}
+import models._
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
@@ -56,7 +57,7 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def newGoldenTicket() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.GoldenTicketAdmin.newGoldenTicket(goldenTicketForm))
+      Ok(views.html.GoldenTicketAdmin.newGoldenTicket(goldenTicketForm.fill(GoldenTicket.createGoldenTicket(RandomStringUtils.randomNumeric(16), "", "", "", "combi"))))
   }
 
   def saveGoldenTicket() = SecuredAction(IsMemberOf("admin")) {
@@ -77,6 +78,37 @@ object GoldenTicketAdminController extends SecureCFPController {
 
         }
       )
+  }
+
+  def newGroupOfGoldenTicket() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.GoldenTicketAdmin.newGroupOfGoldenTicket())
+  }
+
+  def importGroupOfGT() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      request.body.asFormUrlEncoded.map {
+        form =>
+          form.get("bulk").map {
+            maybeSomeTextContent =>
+
+              maybeSomeTextContent.headOption.map {
+                textareaContent: String =>
+
+                 val goldenTickets = parseGoldenTicketBulk(textareaContent)
+
+                  Ok(views.html.GoldenTicketAdmin.importGroupOfGT(goldenTickets))
+
+              }.getOrElse(BadRequest("Invalid bulk content"))
+          }.getOrElse(BadRequest("Input bulk not found, bug in HTML Form"))
+      }.getOrElse(BadRequest("Invalid form"))
+
+  }
+
+  def bulkImport() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.GoldenTicketAdmin.newGroupOfGoldenTicket())
   }
 
   def sendEmail(goldenTicketId: String) = SecuredAction(IsMemberOf("admin")) {
@@ -144,5 +176,23 @@ object GoldenTicketAdminController extends SecureCFPController {
       val totalGoldenTicket = GoldenTicket.size()
 
       Ok(views.html.GoldenTicketAdmin.showStats(listOfProposals, totalGoldenTicket))
+  }
+
+  // Very very bad code I wrote in the train before France-Germany soccer
+  private def parseGoldenTicketBulk(textAreaContent: String): Array[GoldenTicketImport] = {
+    textAreaContent.split("\n").flatMap {
+      oneLine =>
+        val tokens = oneLine.split(",")
+        if (tokens.size == 5) {
+          val maybeEmail = tokens(3)
+          if(maybeEmail.contains("@")) {
+            Some(GoldenTicketImport.buildFrom(tokens(0), tokens(1), tokens(2), maybeEmail, tokens(4)))
+          }else{
+            None
+          }
+          } else {
+          None
+        }
+    }
   }
 }

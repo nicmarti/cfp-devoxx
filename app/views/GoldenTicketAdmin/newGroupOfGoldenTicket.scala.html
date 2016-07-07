@@ -1,0 +1,39 @@
+@()(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Admin - new Golden ") {
+
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Create a group of golden ticket</h3>
+                </div>
+
+                <p><strong>Experimental !</strong> </p>
+                <p>Copy/paste in this text area a <strong>comma</strong>
+                    delimited bloc text to automatically create Golden Ticket.</p>
+                <p>A confirmation screen is shown for validation on the next screen.</p>
+
+                <div class="panel-body">
+                    <form action="@routes.GoldenTicketAdminController.importGroupOfGT()" method="post" enctype="application/x-www-form-urlencoded" accept-charset="UTF-8">
+                        <p><small>Format is <em>ticketId,firstname,lastname,email,conf|combi|uni</em></small></p>
+                        <label>Copy/paste =>
+<textarea rows="15" cols="60" id="bulk" name="bulk">
+12345,nicolas,martignole,nicolas@@demo.fr,combi
+56789,pierre,de test,pierre@@test.fr,conf
+ABCDE,john,doe,john@@doe.fr,uni
+</textarea></label>
+                        <p>                    <input type="submit" value="Import and validate" class="btn btn-primary"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

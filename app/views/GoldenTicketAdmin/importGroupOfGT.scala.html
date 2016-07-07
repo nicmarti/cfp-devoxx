@@ -1,0 +1,32 @@
+@(tickets: Array[GoldenTicketImport])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Admin - new Golden ") {
+
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Please review and confirm the list of @tickets.length golden tickets<br>
+                        <small>An email is send to each golden ticket holder</small>
+                    </h3>
+                </div>
+
+                <div class="panel-body">
+
+                    <ol>
+                    @tickets.sortBy(_.lastName).map { t =>
+                        <li>@t.ticketId @t.firstName @t.lastName @t.email @t.ticketType</li>
+                    }
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
