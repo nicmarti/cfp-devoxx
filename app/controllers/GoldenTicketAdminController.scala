@@ -23,7 +23,7 @@
 
 package controllers
 
-import library.{NotifyGoldenTicket, ZapActor}
+import library.{ComputeVotesAndScore, NotifyGoldenTicket, ZapActor}
 import models._
 import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.Form
@@ -153,6 +153,9 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def showGoldenTicketVotes() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      // Trigger an update
+      ZapActor.actor ! ComputeVotesAndScore()
+
       val allVotes: Set[(String, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = ReviewByGoldenTicket.allVotes()
       val result = allVotes.toList.sortBy(_._2._1.s).reverse
 

@@ -110,8 +110,6 @@ object CFPAdmin extends SecureCFPController {
             if (ConferenceDescriptor.isGoldenTicketActive) {
               val averageScoreGT = ReviewByGoldenTicket.averageScore(proposalId)
               val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
-
-
               Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT))
             } else {
               Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None))

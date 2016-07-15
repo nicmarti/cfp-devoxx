@@ -23,7 +23,7 @@
 
 package models
 
-import library.{Stats, Redis}
+import library.{ComputeVotesAndScore, ZapActor, Stats, Redis}
 import models.Review._
 import org.joda.time.{Instant, DateTime}
 import scala.math.BigDecimal.RoundingMode
@@ -47,6 +47,8 @@ object ReviewByGoldenTicket {
       tx.zadd(s"ReviewGT:Votes:$proposalId", secureMaxVote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + secureMaxVote) // Store when this user voted for this talk
       tx.exec()
+
+      ZapActor.actor ! ComputeVotesAndScore()
   }
 
   def countVotesForAllUsers():List[(String,Long)]=Redis.pool.withClient{
