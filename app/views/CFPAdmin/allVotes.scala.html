@@ -15,7 +15,12 @@
                         @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                             <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
                         }
-                        | <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a>
+                        <br>
+                        @for(track <- ConferenceDescriptor.ConferenceTracks.ALL){
+                            <small><a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Messages(track.label)</a></small>
+                        }
+                        <br>
+                        <a href="@routes.CFPAdmin.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i> Recompute total and votes</a> -
                         <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany(false)" class="btn btn-danger btn-sm"><i class="icon-double-angle-down"></i> All talks by company</a>
                         <br>
 
@@ -51,10 +56,10 @@
                             <tr>
                                 <th/>
                                 <th>Average</th>
-                                <th>GT</th>
+                                <th>G.T</th>
                                 <th>Votes</th>
                                 <th>Abst.</th>
-                                <th>Note GT et comité</th>
+                                <th>GT & Committee</th>
                                 <th>Title</th>
                                 <th>Proposal id</th>
                                 <th>Speakers</th>
