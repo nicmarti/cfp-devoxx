@@ -2,7 +2,7 @@
 
 Hi,
 
-You received a new message from a visitor (@fromName) regarding your talk "@proposal.title".
+You received a new message from a visitor (@fromName) regarding your talk "@proposal.title" (<strong>@Messages(proposal.talkType.id)</strong>).
 
 Message:
 ------------------------------------------------------------------------------
