@@ -35,8 +35,8 @@
                     <h3>@defining(allProposals.size){refusedSize=>
                         @refusedSize proposal@if(refusedSize>1){s} refused</h3>
                     }
-                       <span class="label label-primary">@allProposals.filter(_.lang=="fr").size FR</span>
-                       <span class="label label-default">@allProposals.filter(_.lang=="en").size EN</span>
+                       <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
+                       <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
 
 
                     @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
