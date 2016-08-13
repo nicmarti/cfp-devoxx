@@ -712,14 +712,14 @@ object ConferenceDescriptor {
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxbe2016",
     frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.com"),
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      faq = "http://www.devoxx.be/faq/",
+      faq = "https://devoxx.be/faq/",
       registration = "http://reg.devoxx.be",
-      confWebsite = "http://www.devoxx.be/",
+      confWebsite = "https://devoxx.be/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
     ),
     timing = ConferenceTiming(
@@ -735,8 +735,45 @@ object ConferenceDescriptor {
       scheduleAnnouncedOn = DateTime.parse("2016-09-15T00:00:00+02:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
-    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxVE",
-    hashTag = "#DevoxxBE",
+    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
+    hashTag = "#Devoxx",
+    conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
+    , List(Locale.ENGLISH)
+    , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    , 1200 // French developers tends to be a bit verbose... we need extra space :-)
+  )
+
+  def conference2015() = ConferenceDescriptor(
+    eventCode = "DV15",
+    // You will need to update conf/routes files with this code if modified
+    confUrlCode = "devoxxbe2015",
+    frLangEnabled = false,
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
+    bccEmail = Play.current.configuration.getString("mail.bcc"),
+    bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
+    conferenceUrls = ConferenceUrls(
+      faq = "https://devoxx.be/faq/",
+      registration = "http://reg.devoxx.be",
+      confWebsite = "https://devoxx.be/",
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
+    ),
+    timing = ConferenceTiming(
+      datesI18nKey = "9th-13th November",
+      speakersPassDuration = 5,
+      preferredDayEnabled = true,
+      firstDayFr = "9 novembre",
+      firstDayEn = "november 9th",
+      datesFr = "du 9 au 13 Novembre 2015",
+      datesEn = "from 9th to 13th of November, 2015",
+      cfpOpenedOn = DateTime.parse("2015-05-23T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2015-07-06T23:59:59+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2015-09-15T00:00:00+02:00"),
+      days=dateRange(fromDay,toDay,new Period().withDays(1))
+    ),
+    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
+    hashTag = "#Devoxx",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"

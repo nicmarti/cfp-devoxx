@@ -792,8 +792,19 @@ object Conference {
       "See more details about " + Messages("longYearlyName")
     ))
 
+  def conference2015(implicit req: RequestHeader) = Conference(
+    ConferenceDescriptor.conference2015().eventCode,
+    Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.conference2015().timing.datesI18nKey),
+    ConferenceDescriptor.conference2015().locale.map(_.toString),
+    ConferenceDescriptor.conference2015().localisation,
+    Link(
+      routes.RestAPI.showConference(ConferenceDescriptor.conference2015().eventCode).absoluteURL(),
+      routes.RestAPI.profile("conference").absoluteURL(),
+      "See more details about " + Messages("longYearlyName")
+    ))
+
   def all(implicit req: RequestHeader) = {
-    List(currentConference)
+    List(currentConference, conference2015)
   }
 
   // Super fast, super crade, super je m'en fiche pour l'instant

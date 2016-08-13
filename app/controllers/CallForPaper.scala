@@ -151,7 +151,7 @@ object CallForPaper extends SecureCFPController {
           }
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
@@ -201,11 +201,11 @@ object CallForPaper extends SecureCFPController {
                 // This is a "create new" operation
                 Proposal.save(uuid, proposal, ProposalState.DRAFT)
                 Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
-                Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
                 Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
-                Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
               }
             }
           }
@@ -235,7 +235,7 @@ object CallForPaper extends SecureCFPController {
           }
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
@@ -286,12 +286,12 @@ object CallForPaper extends SecureCFPController {
               Proposal.updateOtherSpeakers(uuid, proposalId, proposal.otherSpeakers, validNewSpeakers._2)
               Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list for proposal " + StringUtils.abbreviate(proposal.title, 80)))
 
-              Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("speakers.updated"))
             }
           )
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
@@ -303,10 +303,10 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) => {
           Proposal.delete(uuid, proposalId)
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("deleted" -> proposalId)
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("deleted" -> proposalId)
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
@@ -318,10 +318,10 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) => {
           Proposal.draft(uuid, proposalId)
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.draft"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.draft"))
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
@@ -334,13 +334,13 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) => {
           Proposal.submit(uuid, proposalId)
           if(ConferenceDescriptor.current().notifyProposalSubmitted) {
-            // This generates too mmany emails for France and is useless
+            // This generates too many emails for France and is useless
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
           }
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.submitted"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
@@ -356,7 +356,7 @@ object CallForPaper extends SecureCFPController {
           Ok(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), speakerMsg))
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
@@ -379,7 +379,7 @@ object CallForPaper extends SecureCFPController {
           )
         }
         case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
         }
       }
   }
