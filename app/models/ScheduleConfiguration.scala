@@ -24,8 +24,7 @@
 package models
 
 import library.Redis
-import play.api.data.validation.ValidationError
-import play.api.libs.json.{JsPath, Json}
+import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 import scala.util.Random
 import org.joda.time.{DateTimeZone, DateTime}
@@ -41,11 +40,11 @@ case class TimeSlot(start: DateTime, end: DateTime) {
   }
 
   override def equals(obj: scala.Any): Boolean = {
-    if (obj.isInstanceOf[TimeSlot]) {
-      val d2 = obj.asInstanceOf[TimeSlot]
-      d2.start.equals(this.start) && d2.end.equals(this.end)
-    } else {
-      false
+    obj match {
+      case d2: TimeSlot =>
+        d2.start.equals(this.start) && d2.end.equals(this.end)
+      case _ =>
+        false
     }
   }
 }
@@ -104,8 +103,8 @@ object ScheduleConfiguration {
         json: String =>
           val maybeScheduledConf = Json.parse(json).validate[ScheduleConfiguration]
           maybeScheduledConf.fold(errors => {
-            play.Logger.of("models.ScheduledConfiguration").warn("Unable to reload a SlotConfiguration due to JSON error");
-            play.Logger.of("models.ScheduledConfiguration").warn(s"Got error : ${library.ZapJson.showError(errors)} ");
+            play.Logger.of("models.ScheduledConfiguration").warn("Unable to reload a SlotConfiguration due to JSON error")
+            play.Logger.of("models.ScheduledConfiguration").warn(s"Got error : ${library.ZapJson.showError(errors)} ")
             None
           }
             , someConf => Option(someConf)
@@ -184,17 +183,15 @@ object ScheduleConfiguration {
     }.toList
   }
 
-
   def  loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
-    val slots = allAgendas.map(_.slots).flatten
+    val slots = allAgendas.flatMap(_.slots)
     Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Paris")))).sortBy(_.from.toDate.getTime).take(10))
   }
 
   def loadRandomTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
-    val slots = allAgendas.map(_.slots).flatten
+    val slots = allAgendas.flatMap(_.slots)
     Option(Random.shuffle(slots.toList).take(10))
   }
-
 }

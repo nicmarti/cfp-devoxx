@@ -24,11 +24,8 @@
 package models
 
 import play.api.libs.json.Json
-import library.{Dress, Redis}
+import library.Redis
 import org.joda.time.{DateTime, Instant}
-import play.api.i18n.Messages.Message
-import play.api.i18n.Messages
-
 
 /**
  * Status holder for Request to present a talk at the Conference.
@@ -56,7 +53,7 @@ object RequestToTalkStatus {
 
   val all = List(SUGGESTED, CONTACTED_US, DISCUSS, CONTACT_SPEAKER, CONTACTED, ACCEPTED, DECLINED, ON_HOLD, UNKNOWN, DELETED)
 
-    val allAsIdsAndLabels = all.map(a=>(a.code,"wl_"+a.code)).toSeq
+  val allAsIdsAndLabels = all.map(a => (a.code, "wl_" + a.code))
 
   val allAsCode = all.map(_.code)
 

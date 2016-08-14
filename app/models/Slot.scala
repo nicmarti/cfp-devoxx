@@ -25,8 +25,6 @@ package models
 
 import org.joda.time.DateTime
 import play.api.libs.json.Json
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 /**
   * Time slots and Room are defined as static file.
@@ -56,7 +54,7 @@ object Room {
 
   val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
-  val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
+  val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).sorted
 
   def parse(roomId: String): Room = {
     ConferenceDescriptor.ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)

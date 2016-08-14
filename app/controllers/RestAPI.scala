@@ -157,7 +157,7 @@ object RestAPI extends Controller {
     implicit request =>
 
       // First load published slots
-      val publishedConf =  ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
 
       val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
 
@@ -168,7 +168,7 @@ object RestAPI extends Controller {
           NotModified
 
         case other =>
-          val onlySpeakersThatAcceptedTerms: Set[String] =allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
+          val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
           val speakers = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
 
           val updatedSpeakers = speakers.sortBy(_.name).map {
@@ -207,10 +207,10 @@ object RestAPI extends Controller {
 
       findByUUID(uuid).map {
         speaker =>
-          val etag = speaker.hashCode.toString
+          val eTag = speaker.hashCode.toString
 
           request.headers.get(IF_NONE_MATCH) match {
-            case Some(tag) if tag == etag =>
+            case Some(tag) if tag == eTag =>
               NotModified
 
             case other =>
@@ -256,7 +256,7 @@ object RestAPI extends Controller {
                 )
 
               val jsonObject = Json.toJson(updatedSpeaker)
-              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("speaker").absoluteURL() + ">; rel=\"profile\""))
+              Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("speaker").absoluteURL() + ">; rel=\"profile\""))
           }
       }.getOrElse(NotFound("Speaker not found"))
   }
@@ -265,10 +265,10 @@ object RestAPI extends Controller {
     implicit request =>
       Proposal.findById(proposalId).map {
         proposal =>
-          val etag = proposal.hashCode.toString
+          val eTag = proposal.hashCode.toString
 
           request.headers.get(IF_NONE_MATCH) match {
-            case Some(tag) if tag == etag =>
+            case Some(tag) if tag == eTag =>
               NotModified
 
             case other =>
@@ -299,7 +299,7 @@ object RestAPI extends Controller {
                   })
                 )
               val jsonObject = Json.toJson(updatedProposal)
-              Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag)
+              Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
           }
       }.getOrElse(NotFound("Proposal not found"))
   }
@@ -319,12 +319,12 @@ object RestAPI extends Controller {
       // val proposals = ApprovedProposal.allApproved().filterNot(_.event==eventCode).toList.sortBy(_.title)
 
       val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx BE 2015 is not valid
-    val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
+      val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
 
-      val etag = proposals.hashCode.toString
+      val eTag = proposals.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag =>
+        case Some(tag) if tag == eTag =>
           NotModified
 
         case other =>
@@ -355,7 +355,7 @@ object RestAPI extends Controller {
 
           val jsonObject = Json.toJson(finalJson)
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
             "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL() + ">; rel=\"profile\"")
           )
       }
@@ -367,15 +367,15 @@ object RestAPI extends Controller {
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val mapOfSchedules = Map(
         "links" -> Json.toJson(List(
-          //          Link(
-          //            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL().toString,
-          //            routes.RestAPI.profile("schedule").absoluteURL().toString,
-          //            Messages("sw.show.title.mon")
-          //          ), Link(
-          //            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL().toString,
-          //            routes.RestAPI.profile("schedule").absoluteURL().toString,
-          //            Messages("sw.show.title.tue")
-          //          ),
+          Link(
+            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL(),
+            routes.RestAPI.profile("schedule").absoluteURL(),
+            Messages("sw.show.title.mon")
+          ), Link(
+            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL(),
+            routes.RestAPI.profile("schedule").absoluteURL(),
+            Messages("sw.show.title.tue")
+          ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL(),
             routes.RestAPI.profile("schedule").absoluteURL(),
@@ -487,10 +487,10 @@ object RestAPI extends Controller {
             )
           }
       }
-      val etag = allProposalTypes.hashCode().toString
+      val eTag = allProposalTypes.hashCode().toString
 
       ifNoneMatch match {
-        case Some(someEtag) if someEtag == etag => NotModified
+        case Some(someEtag) if someEtag == eTag => NotModified
         case other =>
           val jsonObject = Json.toJson(
             Map(
@@ -499,7 +499,7 @@ object RestAPI extends Controller {
             )
           )
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("proposalType").absoluteURL() + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("proposalType").absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -518,10 +518,10 @@ object RestAPI extends Controller {
             )
           }
       }
-      val etag = allTracks.hashCode().toString
+      val eTag = allTracks.hashCode().toString
 
       ifNoneMatch match {
-        case Some(someEtag) if someEtag == etag => NotModified
+        case Some(someEtag) if someEtag == eTag => NotModified
         case other =>
           val jsonObject = Json.toJson(
             Map(
@@ -530,7 +530,7 @@ object RestAPI extends Controller {
             )
           )
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL() + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("track").absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -549,10 +549,10 @@ object RestAPI extends Controller {
             )
           }
       }
-      val etag = allRooms.hashCode().toString
+      val eTag = allRooms.hashCode().toString
 
       ifNoneMatch match {
-        case Some(someEtag) if someEtag == etag => NotModified
+        case Some(someEtag) if someEtag == eTag => NotModified
         case other =>
           val jsonObject = Json.toJson(
             Map(
@@ -562,7 +562,7 @@ object RestAPI extends Controller {
           )
 
           Ok(jsonObject).as(JSON).withHeaders(
-            ETAG -> etag,
+            ETAG -> eTag,
             "Access-Control-Allow-Origin" -> "*",
             "Links" -> ("<" + routes.RestAPI.profile("room").absoluteURL() + ">; rel=\"profile\""))
       }
@@ -749,6 +749,10 @@ object Conference {
 
   implicit val confFormat = Json.format[Conference]
 
+  def all(implicit req: RequestHeader) = {
+    List(currentConference, conference2015)
+  }
+
   def currentConference(implicit req: RequestHeader) = Conference(
     ConferenceDescriptor.current().eventCode,
     Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.current().timing.datesI18nKey),
@@ -770,10 +774,6 @@ object Conference {
       routes.RestAPI.profile("conference").absoluteURL(),
       "See more details about " + Messages("longYearlyName")
     ))
-
-  def all(implicit req: RequestHeader) = {
-    List(currentConference, conference2015)
-  }
 
   // Super fast, super crade, super je m'en fiche pour l'instant
   def find(eventCode: String)(implicit req: RequestHeader): Option[Conference] = Option(currentConference)

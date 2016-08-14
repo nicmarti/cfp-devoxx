@@ -108,6 +108,4 @@ object Attic extends SecureCFPController {
       Event.resetEvents()
       Redirect(routes.Attic.atticHome()).flashing(("success", s"Events log flushed."))
   }
-
-
 }

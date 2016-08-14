@@ -101,7 +101,7 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def notifyApprove(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Proposal.findById(proposalId).map {
+      Proposal.findById(proposalId).foreach {
         proposal: Proposal =>
           ZapActor.actor ! ProposalApproved(request.webuser.uuid, proposal)
       }
@@ -110,7 +110,7 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def notifyRefused(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Proposal.findById(proposalId).map {
+      Proposal.findById(proposalId).foreach {
         proposal: Proposal =>
           ZapActor.actor ! ProposalRefused(request.webuser.uuid, proposal)
       }
@@ -170,12 +170,14 @@ object ApproveOrRefuse extends SecureCFPController {
             val proposalId = validForm._1
             val choice = validForm._2
             val maybeProposal = Proposal.findById(proposalId)
-            maybeProposal match {
-              case None => Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error" -> Messages("ar.proposalNotFound"))
-              case Some(p) if Proposal.isSpeaker(proposalId, request.webuser.uuid) => {
 
+            maybeProposal match {
+
+              case None => Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error" -> Messages("ar.proposalNotFound"))
+
+              case Some(p) if Proposal.isSpeaker(proposalId, request.webuser.uuid) =>
                 choice match {
-                  case "accept" => {
+                  case "accept" =>
                     if (List(ProposalState.APPROVED, ProposalState.BACKUP, ProposalState.ACCEPTED, p.state == ProposalState.DECLINED).contains(p.state)) {
                       Proposal.accept(request.webuser.uuid, proposalId)
                       val validMsg = "Speaker has set the status of this proposal to ACCEPTED"
@@ -184,8 +186,7 @@ object ApproveOrRefuse extends SecureCFPController {
                     } else {
                       ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
                     }
-                  }
-                  case "decline" => {
+                  case "decline" =>
                     if (List(ProposalState.APPROVED, ProposalState.BACKUP, ProposalState.ACCEPTED, p.state == ProposalState.DECLINED).contains(p.state)) {
                       Proposal.decline(request.webuser.uuid, proposalId)
                       val validMsg = "Speaker has set the status of this proposal to DECLINED"
@@ -194,23 +195,17 @@ object ApproveOrRefuse extends SecureCFPController {
                     } else {
                       ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
                     }
-                  }
-                  case "backup" => {
+                  case "backup" =>
                     val validMsg = "Speaker has set the status of this proposal to BACKUP"
                     Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
                     ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
                     Proposal.backup(request.webuser.uuid, proposalId)
-                  }
                   case other => play.Logger.error("Invalid choice for ApproveOrRefuse doAcceptOrRefuseTalk for proposalId " + proposalId + " choice=" + choice)
                 }
 
-
                 Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success" -> Messages("ar.choiceRecorded", proposalId, choice))
-              }
               case other => Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error" -> "Hmmm not a good idea to try to update someone else proposal... this event has been logged.")
             }
-
-
           }
         }
       )
@@ -258,9 +253,5 @@ object ApproveOrRefuse extends SecureCFPController {
       }.getOrElse {
         Future.successful(NotFound("Talk not found for this proposalId "+proposalId))
       }
-
   }
-
-
 }
-

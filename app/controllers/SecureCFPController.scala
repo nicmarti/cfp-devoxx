@@ -33,7 +33,6 @@ import play.api.mvc.{SimpleResult, _}
 
 import scala.concurrent.Future
 
-
 /**
   * A complex Secure controller, compatible with Play 2.2.x new EssentialAction.
   * I used SecureSocial as a starting point, then adapted this code to my own use-case
@@ -86,7 +85,7 @@ trait SecureCFPController extends Controller {
     Future.successful {
       render {
         case Accepts.Json() => notAuthenticatedJson
-        case Accepts.Html() => Redirect(routes.Application.home).
+        case Accepts.Html() => Redirect(routes.Application.home()).
           flashing("error" -> Messages("error.loginRequired"))
           .withNewSession
         case _ => Unauthorized("Credentials required")
@@ -98,9 +97,8 @@ trait SecureCFPController extends Controller {
     Future.successful {
       render {
         case Accepts.Json() => notAuthorizedJson
-        case Accepts.Html() => {
+        case Accepts.Html() =>
           Redirect(routes.Application.index()).flashing("error" -> "Not Authorized")
-        }
         case _ => Forbidden("Not authorized")
       }
     }

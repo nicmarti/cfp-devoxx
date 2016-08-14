@@ -26,10 +26,8 @@ package models
 import play.api.libs.json.Json
 import library.Redis
 import org.apache.commons.lang3.RandomStringUtils
-import org.joda.time.DateTime
 import play.api.data._
 import play.api.data.Forms._
-import play.api.templates.HtmlFormat
 import java.util.Date
 import collection.JavaConverters._
 

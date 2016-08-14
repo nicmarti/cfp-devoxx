@@ -87,10 +87,9 @@ object Issue {
             response.status match {
               case 200 => play.Logger.of("models.Issue").info("Success: new issue posted")
               case 201 => play.Logger.of("models.Issue").info("Created: new issue created")
-              case other => {
+              case other =>
                 play.Logger.of("models.Issue").warn("Bitbucket responded " + other)
                 play.Logger.of("models.Issue").warn(response.body)
-              }
             }
 
         }

@@ -23,11 +23,11 @@ object ProposalType {
   val UNKNOWN = ProposalType(id = "unknown", label = "unknown.label")
 
   val all = ConferenceDescriptor.ConferenceProposalTypes.ALL
-  val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
+  val allAsId = all.map(a => (a.id, a.label)).sorted
 
   def allForCombos = {
     val onlyThoseThatShouldBeDisplayed = all.filterNot(_ == UNKNOWN)
-    val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
+    val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).sorted
     finalFormat
   }
 
@@ -44,7 +44,7 @@ object ProposalType {
       , ("l2", "level2.label")
       , ("l3", "level3.label")
     )
-  }.toSeq
+  }
 
   val demoLevels: Seq[(String, String)] = {
     List(
@@ -52,7 +52,7 @@ object ProposalType {
       , ("d2", "demoLevel2.label")
       , ("d3", "demoLevel3.label")
       , ("d4", "demoLevel4.label"))
-  }.toSeq
+  }
 }
 
 case class ProposalState(code: String)
@@ -189,11 +189,9 @@ object Proposal {
       // We enforce the user id, for security reason
       val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
 
-      findById(proposal.id).map {
-        oldProposal =>
-          resetVotesIfProposalTypeIsUpdated(proposal.id, proposal.talkType, oldProposal.talkType, proposalState)
+      findById(proposal.id).foreach {
+        oldProposal => resetVotesIfProposalTypeIsUpdated(proposal.id, proposal.talkType, oldProposal.talkType, proposalState)
       }
-
 
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
@@ -293,7 +291,7 @@ object Proposal {
   def isNew(id: String): Boolean = Redis.pool.withClient {
     client =>
       // Important when we create a new proposal
-      client.hexists("Proposals", id) == false
+      !client.hexists("Proposals", id)
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
@@ -856,13 +854,11 @@ object Proposal {
 
   def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
   }
 
@@ -870,7 +866,9 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val proposals = loadAndParseProposals(allProposalIDs).values.toSet
-      proposals.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED) == false && proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
+      !proposals.exists(proposal => proposal.state == ProposalState.APPROVED ||
+                                    proposal.state == ProposalState.ACCEPTED) &&
+                                    proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {
@@ -941,13 +939,11 @@ object Proposal {
   private def resetVotesIfProposalTypeIsUpdated(proposalId: String, talkType: ProposalType, oldTalkType: ProposalType, state: ProposalState) {
     if (oldTalkType.id != talkType.id) {
       if (state == ProposalState.DRAFT) {
-        if (ApprovedProposal.isApproved(proposalId, talkType.id) == false) {
+        if (!ApprovedProposal.isApproved(proposalId, talkType.id)) {
           Review.archiveAllVotesOnProposal(proposalId)
           Comment.saveInternalComment(proposalId, Webuser.Internal.uuid, s"All votes deleted for this talk, because it was changed from [${Messages(oldTalkType.id)}] to [${Messages(talkType.id)}]")
         }
       }
     }
-
   }
-
 }
