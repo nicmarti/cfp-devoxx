@@ -172,7 +172,8 @@ object Publisher extends Controller {
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, friday))
 
-          case None => NotFound(views.html.Publisher.agendaNotYetPublished())
+          case None => Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
+            // NotFound(views.html.Publisher.agendaNotYetPublished())
         }
       }
   }
