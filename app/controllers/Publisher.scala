@@ -43,12 +43,12 @@ object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val etag = Crypt.md5(result.toString() + "dvx").toString
+      val eTag = Crypt.md5(result.toString() + "dvx").toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
-        case Some(oldEtag) if oldEtag == etag => NotModified
-        case other => Ok(result).withHeaders(ETAG -> etag)
+        case Some(oldEtag) if oldEtag == eTag => NotModified
+        case other => Ok(result).withHeaders(ETAG -> eTag)
       }
   }
 
@@ -57,16 +57,16 @@ object Publisher extends Controller {
       // First load published slots
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
       val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-      val etag = allSpeakersIDs.hashCode.toString
+      val eTag = allSpeakersIDs.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag =>
+        case Some(tag) if tag == eTag =>
           NotModified
 
         case other =>
           val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
           val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
-          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
+          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
       }
   }
 

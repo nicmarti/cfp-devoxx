@@ -8,7 +8,7 @@
 <meta name="Robots" content="index,follow" />
 <meta name="description" content="@description" />
 <title>@title &infin; Devoxx</title>
-<link rel='stylesheet'  href='/assets/devoxxbe2015/devoxxbe2015.css' type='text/css' media='all' />
+<link rel='stylesheet'  href='/assets/devoxxbe2015/devoxxbe2016.css' type='text/css' media='all' />
 <link rel='stylesheet'  href='/assets/devoxxbe2015/schedule.css' type='text/css' media='all' />
 <script type='text/javascript' src='http://www.devoxx.be/wp-includes/js/jquery/jquery.js?ver=1.11.0'></script>
 <script type='text/javascript' src='http://www.devoxx.be/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
@@ -45,9 +45,7 @@
          <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
         }
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Schedule</a></li>
-        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/sponsors-2015/">Sponsors</a></li>
-        <li id="menu-item-1701" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1701"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/news/">News</a></li>
-        <li id="menu-item-1703" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1703"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/hotels/">Hotels</a></li>
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/sponsors-2016/">Sponsors</a></li>
         <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="@ConferenceDescriptor.current().conferenceUrls.faq">FAQ</a></li>
         <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="@ConferenceDescriptor.current().conferenceUrls.registration">Register</a></li>
     </ul>
@@ -67,11 +65,9 @@
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite">Home</a></li>
                         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Schedule</a></li>
                         @if(ConferenceDescriptor.isFavoritesSystemActive && UserCFPController.findAuthenticator.isDefined){
-                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of your favourite talks">&#9733; My Schedule</a></li>
                         }
-                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/sponsors-2015/">Sponsors</a></li>
-                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1701"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/news/">News</a></li>
-                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1703"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/hotels/">Hotels</a></li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/sponsors-2016/">Sponsors</a></li>
                         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="@ConferenceDescriptor.current().conferenceUrls.faq">FAQ</a></li>
                         <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="@ConferenceDescriptor.current().conferenceUrls.registration">Register</a></li>
                     </ul>
@@ -102,8 +98,9 @@
     <a href="#" class="go-top"></a>
     <div class="row">
         <div class="large-6 columns">
-            <p>Devoxx TM, All Rights Reserved (C) 2015<br>The Java Community BVBA (VAT BE0477.182.887)<br>
-            Lijsterbessendreef 1, 8020 Oostkamp - Belgium</p>
+            <p>Devoxx TM, All Rights Reserved (C) 2015<br>
+               The Java Community BVBA (VAT BE0477.182.887)<br>
+               Lijsterbessendreef 1, 8020 Oostkamp - Belgium</p>
         </div>
     </div>
 </footer>
@@ -160,4 +157,3 @@
 }
 </body>
 </html>
-

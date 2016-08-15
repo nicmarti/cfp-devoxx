@@ -22,8 +22,8 @@
  */
 
 (function(){
-    var TOP_TALKS_URL = 'https://api-voting.devoxx.com/DV15/top/talks?limit=10';
-    var CATEGORIES_URL = 'https://api-voting.devoxx.com/DV15/categories';
+    var TOP_TALKS_URL = 'https://api-voting.devoxx.com/DV16/top/talks?limit=10';
+    var CATEGORIES_URL = 'https://api-voting.devoxx.com/DV16/categories';
 
     var TopTalks = React.createClass({displayName: "TopTalks",
         getInitialState: function(){
@@ -204,7 +204,7 @@
     _.forEach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'], function(dow){
         createTopTalksTable(
             'devoxx-top-talks' + dow,
-            '2015 ' + capitalizeFirstLetter(dow) + "'s",
+            '2016 ' + capitalizeFirstLetter(dow) + "'s",
             TOP_TALKS_URL + "&day=" + dow
         );
     });
@@ -219,7 +219,7 @@
             _.forEach(_.sortBy(data.tracks), function(track, idx){
                 createTopTalksTable(
                     'devoxx-top-talks-track-' + idx,
-                    "2015 '" + track + "'",
+                    "2016 '" + track + "'",
                     TOP_TALKS_URL + "&track=" + encodeURIComponent(track)
                 );
             });
@@ -228,7 +228,7 @@
             _.forEach(_.sortBy(data.talkTypes), function(type, idx){
                 createTopTalksTable(
                     'devoxx-top-talks-type-' + idx,
-                    "2015 '" + type + "'",
+                    "2016 '" + type + "'",
                     TOP_TALKS_URL + "&talkType=" + encodeURIComponent(type)
                 );
             });
