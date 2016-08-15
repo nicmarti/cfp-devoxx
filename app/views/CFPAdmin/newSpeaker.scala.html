@@ -1,9 +1,5 @@
 @(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
-
-@import helper.twitterBootstrap._
-
 @main("Create a new speaker") {
-
 <div class="row">
     <div class="col-md-12 page-header">
         <h3>@Messages("newSpeaker.title")</h3>
@@ -56,5 +52,4 @@ $(document).ready(function($){
     setformfieldsize($('#bio'), 750, 'charsremain');
 });
 </script>
-
 }

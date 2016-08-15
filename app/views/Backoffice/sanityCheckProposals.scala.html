@@ -21,22 +21,21 @@
     }
 
     <div class="col-md-12">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3><i class="icon-medkit"></i> Sanity check</h3>
-            <p>Try to load all Proposals, detect any JSON parsing errors</p>
-        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3><i class="icon-medkit"></i> Sanity check</h3>
+                <p>Try to load all Proposals, detect any JSON parsing errors</p>
+            </div>
 
-        <div class="panel-body">
-           @proposals.map{p=>
-               Invalid proposal : @p<br>
-           }
-            @if(proposals.isEmpty){
-                <h4>No problems detected</h4>
-            }
+            <div class="panel-body">
+                @proposals.foreach{p=>
+                   Invalid proposal : @p<br>
+                }
+                @if(proposals.isEmpty){
+                    <h4>No problems detected</h4>
+                }
+            </div>
         </div>
-    </div>
     </div>
 </div>
-
 }

@@ -25,15 +25,12 @@
                     @error.message <br>
                 }
             </div>
-
         }
-
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3>New golden ticket</h3>
                 </div>
-
                 <div class="panel-body">
 
                     @helper.form(action = routes.GoldenTicketAdminController.saveGoldenTicket(), 'class->"form-inline") {
@@ -47,10 +44,8 @@
                                 <button type="submit" class="btn btn-success">@Messages("confirm.import.save")</button>
                             </div>
                         }
-
                 </div>
                 </div>
             </div>
         </div>
-
 }

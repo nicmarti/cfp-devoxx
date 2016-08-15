@@ -77,7 +77,6 @@ case class IsMemberOfGroups(groups: List[String]) extends Authorization {
 
 trait SecureCFPController extends Controller {
 
-
   protected val notAuthenticatedJson = Unauthorized(Json.toJson(Map("error" -> "Credentials required"))).as(JSON)
   protected val notAuthorizedJson = Forbidden(Json.toJson(Map("error" -> "Not authorized"))).as(JSON)
 
@@ -133,11 +132,11 @@ trait SecureCFPController extends Controller {
     * @param authorize an Authorize object that checks if the user is authorized to invoke the action
     * @tparam A for action
     */
-  class SecuredActionBuilder[A](authorize: Option[Authorization] = None, redirect: Option[Call] = None) extends ActionBuilder[({type R[A] = SecuredRequest[A]})#R] {
+  class SecuredActionBuilder[A](authorize: Option[Authorization] = None, redirect: Option[Call] = None) extends ActionBuilder[({type R[C] = SecuredRequest[C]})#R] {
 
-    def invokeSecuredBlock[A](authorize: Option[Authorization],
-                              request: Request[A],
-                              block: SecuredRequest[A] => Future[SimpleResult]): Future[SimpleResult] = {
+    def invokeSecuredBlock[B](authorize: Option[Authorization],
+                              request: Request[B],
+                              block: SecuredRequest[B] => Future[SimpleResult]): Future[SimpleResult] = {
       implicit val req = request
       val result = for (
         authenticator <- SecureCFPController.findAuthenticator;
@@ -155,10 +154,9 @@ trait SecureCFPController extends Controller {
       })
     }
 
-    def invokeBlock[A](request: Request[A], block: SecuredRequest[A] => Future[SimpleResult]) =
+    def invokeBlock[B](request: Request[B], block: SecuredRequest[B] => Future[SimpleResult]): Future[SimpleResult] =
       invokeSecuredBlock(authorize, request, block)
   }
-
 
   /**
     * An action that adds the current user in the request if it's available.

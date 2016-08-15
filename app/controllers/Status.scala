@@ -39,5 +39,4 @@ object Status extends Controller {
     implicit request =>
       Ok(s"Redis PING ${Redis.checkIfConnected()}")
   }
-
 }

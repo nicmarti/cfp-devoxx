@@ -2,10 +2,10 @@
 
 @import helper.twitterBootstrap._
 
-@main("Wishlist"){
+@main("WishList"){
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
+            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishList.title")</h2>
         </div>
 
         <div class="clearfix"></div>
@@ -27,10 +27,10 @@
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.createRequest")</h3>
+                    <h3><i class="icon-stackexchange"></i> @Messages("wishList.createRequest")</h3>
                 </div>
                 <div class="panel-body">
-                @helper.form(action = routes.Wishlist.saveNewRequestToTalk) {
+                @helper.form(action = routes.WishList.saveNewRequestToTalk) {
                     @helper.inputText(newRequestToTalkForm("wl_speakerName"), 'class->"form-control")
                     @helper.inputText(newRequestToTalkForm("wl_company"), 'class->"form-control")
                     @tags.checkboxI18N(newRequestToTalkForm("wl_keynote"),  'text->"wl_keynote.checkbox")
@@ -41,11 +41,10 @@
                     @tags.selectI18N(field = newRequestToTalkForm("wl_statusCode"), options=RequestToTalkStatus.allAsIdsAndLabels,  'class->"form-control")
 
                     <input type="hidden" name="wl_message" value="">
-                    <button class="btn btn-success" type="submit"><i class="icon-save"></i> @Messages("wishlist.save")</button>
+                    <button class="btn btn-success" type="submit"><i class="icon-save"></i> @Messages("wishList.save")</button>
                 }
                 </div>
             </div>
         </div>
     </div>
-
 }

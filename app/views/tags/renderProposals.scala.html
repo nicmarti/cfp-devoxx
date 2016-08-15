@@ -3,7 +3,7 @@
 
 @defining(proposals.values.partition(_.state.code==ProposalState.ARCHIVED.code)) { case (archivedProposals, notArchived) =>
 
-    @if(notArchived.size>0){
+    @if(notArchived.nonEmpty){
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -56,7 +56,6 @@
                 } else {
                     @tags.renderProposalState(proposal.state)
                 }
-
                 </td>
             }
         <td>@Messages(proposal.talkType.id)</td>
@@ -64,7 +63,6 @@
         </tr>
         }
     }
-
 </table>
     }else{
         <p>@Messages("renderProposal.noTalks")</p>
@@ -76,9 +74,4 @@
     @if(archivedProposals.size == 1) {
         @Messages("renderProposal.archived.single")
     }
-
 }
-
-
-
-

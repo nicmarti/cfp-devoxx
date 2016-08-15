@@ -300,10 +300,9 @@ object Authentication extends Controller {
                 })
 
             }
-            case other => {
+            case other =>
               play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
               BadRequest("Unable to complete the Github User API call")
-            }
           }
       }
 
@@ -449,36 +448,32 @@ object Authentication extends Controller {
           BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
         }
       }, {
-        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
+        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) =>
           val auth = for (clientId <- Play.current.configuration.getString("linkedin.client_id");
                           clientSecret <- Play.current.configuration.getString("linkedin.client_secret")) yield (clientId, clientSecret)
           auth.map {
-            case (clientId, clientSecret) => {
+            case (clientId, clientSecret) =>
               val url = "https://www.linkedin.com/uas/oauth2/accessToken"
               val redirect_uri = routes.Authentication.callbackLinkedin().absoluteURL()
-              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("Content-Type" -> "application/x-www-form-urlencoded"))
+              val wsCall = WS.url(url).withHeaders("Accept" -> "application/json", "Content-Type" -> "application/x-www-form-urlencoded")
                 .post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
-                    case 200 => {
+                    case 200 =>
                       val b = result.body
                       val json = Json.parse(result.body)
                       val token = json.\("access_token").as[String]
-                      Redirect(routes.Authentication.createFromLinkedin).withSession("linkedin_token" -> token)
-                    }
-                    case _ => {
+                      Redirect(routes.Authentication.createFromLinkedin()).withSession("linkedin_token" -> token)
+                    case _ =>
                       Redirect(routes.Application.index()).flashing("error" -> ("error with LinkedIn OAuth2.0 : got HTTP response " + result.status + " " + result.body))
-                    }
                   }
               }
-            }
           }.getOrElse {
             Future.successful {
               InternalServerError("linkedin.client_id and linkedin.client_secret are not configured in application.conf")
             }
           }
-        }
         case other => Future.successful {
           BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
         }
@@ -500,7 +495,7 @@ object Authentication extends Controller {
           futureResult.map {
             result =>
               result.status match {
-                case 200 => {
+                case 200 =>
                   val json = Json.parse(result.body)
                   val email = json.\("emailAddress").as[String]
                   val firstName = json.\("firstName").asOpt[String]
@@ -517,11 +512,10 @@ object Authentication extends Controller {
                     val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience")
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
-                }
-                case other => {
+
+                case other =>
                   play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
                   BadRequest("Unable to complete the LinkedIn User API call")
-                }
               }
           }
       }.getOrElse {
@@ -554,11 +548,11 @@ object Authentication extends Controller {
           BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
         }
       }, {
-        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
+        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) =>
           val auth = for (clientId <- Play.current.configuration.getString("google.client_id");
                           clientSecret <- Play.current.configuration.getString("google.client_secret")) yield (clientId, clientSecret)
           auth.map {
-            case (clientId, clientSecret) => {
+            case (clientId, clientSecret) =>
               val url = "https://accounts.google.com/o/oauth2/token"
               val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
               val wsCall = WS.url(url).withHeaders("Accept" -> "application/json", "User-Agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname)).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
@@ -573,16 +567,12 @@ object Authentication extends Controller {
                       Redirect(routes.Application.index()).flashing("error" -> ("error with Google OAuth2.0 : got HTTP response " + result.status + " " + result.body))
                   }
               }
-            }
           }.getOrElse {
             Future.successful {
               InternalServerError("google.client_id is not configured in application.conf")
             }
           }
-        }
-        case other => Future.successful {
-          BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
-        }
+        case other => Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
       })
   }
 

@@ -1,5 +1,4 @@
 @(uuid: String, showName:Boolean = true, showPhoto:Boolean = Some(true))
-
 @models.Speaker.findByUUID(uuid).map { speaker =>
     @models.Webuser.findByUUID(uuid).map { webuser =>
         @if(speaker.avatarUrl.isEmpty) {

@@ -113,7 +113,6 @@ object ProposalState {
   }
 }
 
-
 import com.github.rjeschke.txtmark._
 
 // A proposal

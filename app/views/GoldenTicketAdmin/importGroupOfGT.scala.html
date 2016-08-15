@@ -7,8 +7,6 @@
             <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
         </div>
         <div class="clearfix"></div>
-
-
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -16,34 +14,29 @@
                         <small>An email is send to each golden ticket holder</small>
                     </h3>
                 </div>
-
                 <div class="panel-body">
                     @helper.form(routes.GoldenTicketAdminController.bulkImport(), args = 'class -> "form-inline") {
                         @helper.repeat(ticketForm("tickets"), min = 1) { student =>
-                              <div class="form-group">
-                                    @helper.inputText(student("ticketId"), '_label -> "TicketId", 'class -> "form-control")
-                              </div>
                             <div class="form-group">
-                                    @helper.inputText(student("email"), '_label -> "Email", 'class -> "form-control")
-  </div>
+                                @helper.inputText(student("ticketId"), '_label -> "TicketId", 'class -> "form-control")
+                            </div>
                             <div class="form-group">
-                                    @helper.inputText(student("firstName"), '_label -> "Firstname", 'class -> "form-control")
-  </div>
+                                @helper.inputText(student("email"), '_label -> "Email", 'class -> "form-control")
+                            </div>
                             <div class="form-group">
-                                    @helper.inputText(student("lastName"), '_label -> "Lastname", 'class -> "form-control")
-  </div>
+                                @helper.inputText(student("firstName"), '_label -> "Firstname", 'class -> "form-control")
+                            </div>
                             <div class="form-group">
-                                    @helper.inputText(student("ticketType"), '_label -> "TicketType", 'class -> "form-control")
-  </div>
-
-
+                                @helper.inputText(student("lastName"), '_label -> "Lastname", 'class -> "form-control")
+                            </div>
+                            <div class="form-group">
+                                @helper.inputText(student("ticketType"), '_label -> "TicketType", 'class -> "form-control")
+                            </div>
                         }
                         <button type="submit" class="btn btn-primary">Validate</button>
                     }
-
                 </div>
             </div>
         </div>
     </div>
-
 }

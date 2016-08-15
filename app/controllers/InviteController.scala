@@ -52,5 +52,4 @@ object InviteController extends SecureCFPController{
       Invitation.removeInvitation(speakerUUID)
       Ok("{\"status\":\"deleted\"}").as(JSON)
   }
-
 }

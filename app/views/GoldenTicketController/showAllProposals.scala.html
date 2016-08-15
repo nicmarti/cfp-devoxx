@@ -1,7 +1,6 @@
 @(allProposalsForReview: List[Proposal], page:Int, sort:Option[String], ascdesc:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
-
     <div class="row">
         <div class="col-lg-offset-5 col-md-5">
             <h2><img src="@routes.Assets.at(path="/public",file="images/ticket_admin.jpg")" alt="Ticket"><br> @Messages("gt.title")</h2>
@@ -81,6 +80,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 }

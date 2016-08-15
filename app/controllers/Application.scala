@@ -36,14 +36,13 @@ object Application extends Controller {
   def home = Action {
     implicit request =>
       session.get("uuid") match {
-        case Some(validUUID) => {
+        case Some(validUUID) =>
           Webuser.findByUUID(validUUID) match {
             case Some(webuser) =>
-              Redirect(routes.CallForPaper.homeForSpeaker).withSession("uuid" -> validUUID)
+              Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> validUUID)
             case None =>
               Ok(views.html.Application.home(Authentication.loginForm)).withNewSession.flashing("error" -> "Could not authenticate you automatically")
           }
-        }
         case None =>
           Ok(views.html.Application.home(Authentication.loginForm)).withNewSession
       }
@@ -71,8 +70,7 @@ object Application extends Controller {
         validBugReport => {
           notifiers.Mails.sendBugReport(validBugReport)
           ZapActor.actor ! ReportIssue(validBugReport)
-          Redirect(routes.Application.index).flashing("success" -> Messages("bugReport.sent"))
+          Redirect(routes.Application.index()).flashing("success" -> Messages("bugReport.sent"))
         })
   }
-
 }

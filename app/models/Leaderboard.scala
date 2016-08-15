@@ -42,23 +42,23 @@ object Leaderboard {
       tx.del("Leaderboard:totalByType")
 
       val totalSpeakers = Speaker.countAll()
-      tx.set("Leaderboard:totalSpeakers", totalSpeakers.toString())
+      tx.set("Leaderboard:totalSpeakers", totalSpeakers.toString)
 
       val totalProposals = Proposal.countAll()
-      tx.set("Leaderboard:totalProposals", totalProposals.toString())
+      tx.set("Leaderboard:totalProposals", totalProposals.toString)
 
       val totalVotes = Review.countAll()
-      tx.set("Leaderboard:totalVotes", totalVotes.toString())
+      tx.set("Leaderboard:totalVotes", totalVotes.toString)
 
       val totalWithVotes = Review.countWithVotes()
-      tx.set("Leaderboard:totalWithVotes", totalWithVotes.toString())
+      tx.set("Leaderboard:totalWithVotes", totalWithVotes.toString)
 
       val totalNoVotes = Review.countWithNoVotes()
-      tx.set("Leaderboard:totalNoVotes", totalNoVotes.toString())
+      tx.set("Leaderboard:totalNoVotes", totalNoVotes.toString)
 
       val mostReviewed = Review.mostReviewed()
       mostReviewed.map{
-        mr=>
+        mr =>
         tx.set("Leaderboard:mostReviewed:proposal", mr._1)
         tx.set("Leaderboard:mostReviewed:score", mr._2.toString)
       }.getOrElse{
@@ -69,7 +69,7 @@ object Leaderboard {
       Review.bestReviewer().map {
         bestReviewer =>
           tx.set("Leaderboard:bestReviewer:uuid", bestReviewer._1)
-          tx.set("Leaderboard:bestReviewer:score", bestReviewer._2.toString())
+          tx.set("Leaderboard:bestReviewer:score", bestReviewer._2.toString)
       }.getOrElse{
         tx.del("Leaderboard:bestReviewer:uuid")
         tx.del("Leaderboard:bestReviewer:score")
@@ -78,7 +78,7 @@ object Leaderboard {
       Review.worstReviewer().map{
         worstReviewer =>
           tx.set("Leaderboard:worstReviewer:uuid", worstReviewer._1)
-          tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString())
+          tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString)
       }.getOrElse{
         tx.del("Leaderboard:worstReviewer:uuid")
         tx.del("Leaderboard:worstReviewer:score")

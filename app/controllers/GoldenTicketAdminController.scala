@@ -45,9 +45,8 @@ object GoldenTicketAdminController extends SecureCFPController {
     "lastName" -> nonEmptyText(maxLength = 50),
     "email" -> (email verifying nonEmpty),
     "ticketType" -> nonEmptyText(maxLength = 50)
-  )(GoldenTicket.createGoldenTicket)(GoldenTicket.unapplyForm _)
+  )(GoldenTicket.createGoldenTicket)(GoldenTicket.unapplyForm)
   )
-
 
   def showAll() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>

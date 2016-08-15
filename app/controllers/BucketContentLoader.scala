@@ -77,7 +77,7 @@ object BucketContentLoader extends AssetsBuilder {
     */
   override private[controllers] def resourceNameAt(path: String, file: String): Option[String] = {
     val decodedFile = UriEncoding.decodePath(file, "utf-8")
-    val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else ("/" + name)).get
+    val resourceName = Option(path + "/" + decodedFile).map(name => if (name.startsWith("/")) name else "/" + name).get
     // For security reason it has to be the bucket name defined in buckets.json
     if (new File(resourceName).isDirectory || !resourceName.startsWith("/devoxx_content")) {
       sys.error(s"Error with $resourceName")
@@ -105,7 +105,7 @@ object BucketContentLoader extends AssetsBuilder {
 
         if (resourceAsHtml.exists() && resourceAsHtml.canRead) {
           MovedPermanently(routes.BucketContentLoader.at(file + ".html").url)
-        }else {
+        } else {
           val resource = new File("/app", resourceName)
           if (resource.exists() && resource.canRead) {
 
@@ -114,19 +114,18 @@ object BucketContentLoader extends AssetsBuilder {
               // If-Modified-Since header, regardless of whether If-None-Match matches or not. This is in
               // accordance with section 14.26 of RFC2616.
               request.headers.get(IF_NONE_MATCH) match {
-                case Some(eTags) => {
+                case Some(eTags) =>
                   etagFor(file).filter(etag =>
                     eTags.split(",").exists(_.trim == etag)
                   ).map(_ => cacheableResult(file, NotModified))
-                }
-                case None => {
+
+                case None =>
                   request.headers.get(IF_MODIFIED_SINCE).flatMap(parseDate).flatMap { ifModifiedSince =>
                     lastModifiedFor(file).flatMap(parseDate).filterNot(lastModified => lastModified.after(ifModifiedSince))
                   }.map(_ => NotModified.withHeaders(
                     DATE -> df.print({
                       new java.util.Date
                     }.getTime)))
-                }
               }
             }
 
@@ -149,8 +148,7 @@ object BucketContentLoader extends AssetsBuilder {
 
               case f if f.isDirectory => NotFound
 
-              case f => {
-
+              case f =>
                 lazy val (length, resourceData) = {
                   val stream = new FileInputStream(f)
                   try {
@@ -178,8 +176,6 @@ object BucketContentLoader extends AssetsBuilder {
                   }
                 }
 
-              }
-
             }.getOrElse(NotFound)
 
           } else {
@@ -191,7 +187,7 @@ object BucketContentLoader extends AssetsBuilder {
 
   // -- LastModified handling
 
-  private val lastModifieds = (new java.util.concurrent.ConcurrentHashMap[String, String]()).asScala
+  private val lastModifieds = new java.util.concurrent.ConcurrentHashMap[String, String]().asScala
 
   private def lastModifiedFor(file: File): Option[String] = {
     def formatLastModified(lastModified: Long): String = df.print(lastModified)
@@ -215,7 +211,7 @@ object BucketContentLoader extends AssetsBuilder {
     else setAndReturnLastModified(file)
   }
 
-  private val etags = (new java.util.concurrent.ConcurrentHashMap[String, String]()).asScala
+  private val etags = new java.util.concurrent.ConcurrentHashMap[String, String]().asScala
 
   private def etagFor(file: File): Option[String] = {
     etags.get(file.getCanonicalPath).filter(_ => Play.isProd).orElse {

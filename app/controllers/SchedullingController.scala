@@ -30,9 +30,6 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsNumber, JsString, Json}
 import play.api.mvc.Action
 
-import scala.util.Random
-
-
 /**
  * Schedulling Controller.
  * Plannification et création des agendas par type de conférence.
@@ -94,10 +91,9 @@ object SchedullingController extends SecureCFPController {
           val saveSlotsWithSpeakerUUIDs = newSlots.map {
             slot: Slot =>
               slot.proposal match {
-                case Some(proposal) => {
+                case Some(proposal) =>
                   // Transform back speaker name to speaker UUID when we store the slots
                   slot.copy(proposal = Proposal.findById(proposal.id))
-                }
                 case other => slot
               }
           }
@@ -135,16 +131,16 @@ object SchedullingController extends SecureCFPController {
       val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(id)
       maybeScheduledConfiguration match {
         case None => NotFound
-        case Some(config) => {
+        case Some(config) =>
           val configWithSpeakerNames = config.slots.map {
             slot: Slot =>
               slot.proposal match {
-                case Some(definedProposal) => {
+                case Some(definedProposal) =>
                   // Create a copy of the proposal, but with clean name
                   val proposalWithSpeakerNames = {
                     val mainWebuser = Speaker.findByUUID(definedProposal.mainSpeaker)
-                    val secWebuser = definedProposal.secondarySpeaker.flatMap(Speaker.findByUUID(_))
-                    val oSpeakers = definedProposal.otherSpeakers.map(Speaker.findByUUID(_))
+                    val secWebuser = definedProposal.secondarySpeaker.flatMap(Speaker.findByUUID)
+                    val oSpeakers = definedProposal.otherSpeakers.map(Speaker.findByUUID)
                     val preferredDay = Proposal.getPreferredDay(definedProposal.id)
 
                     val newTitleWithStars: String = s"[${FavoriteTalk.countForProposal(definedProposal.id)}★] ${definedProposal.title}"
@@ -170,12 +166,10 @@ object SchedullingController extends SecureCFPController {
 
                   }
                   slot.copy(proposal = Option(proposalWithSpeakerNames))
-                }
                 case None => slot
               }
           }
           Ok(Json.toJson(config.copy(slots = configWithSpeakerNames))).as(JSON)
-        }
       }
   }
 
@@ -205,9 +199,7 @@ object SchedullingController extends SecureCFPController {
     implicit request =>
       ScheduleConfiguration.getPublishedSchedule(confType) match {
         case Some(id) => Redirect(routes.Publisher.showAgendaByConfType(confType, Option(id), day.getOrElse("wednesday")))
-        case None => Redirect(routes.Publisher.homePublisher).flashing("success" -> Messages("not.published"))
+        case None => Redirect(routes.Publisher.homePublisher()).flashing("success" -> Messages("not.published"))
       }
   }
-
-
 }

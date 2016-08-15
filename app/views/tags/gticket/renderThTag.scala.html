@@ -1,5 +1,4 @@
 @(label:String, page:Int, sort:Option[String], ascdesc:Option[String])(implicit lang:Lang)
-
 @if(sort==Some(label)) {
     @if(ascdesc==Some("desc")){
         <a href="@routes.GoldenTicketController.showAllProposals(page, Some(label), Some("asc"))"><i class="icon-arrow-up"></i> @Messages("admin.proposals.th."+ label)</a>

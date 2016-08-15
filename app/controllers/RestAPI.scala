@@ -65,10 +65,10 @@ object RestAPI extends Controller {
     implicit request =>
 
       val conferences = Conference.all
-      val etag = conferences.hashCode.toString
+      val eTag = conferences.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag =>
+        case Some(tag) if tag == eTag =>
           NotModified
 
         case other =>
@@ -83,7 +83,7 @@ object RestAPI extends Controller {
               }
             )
           )
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag, "Links" -> ("<" + routes.RestAPI.profile("conferences").absoluteURL() + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("conferences").absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -161,10 +161,10 @@ object RestAPI extends Controller {
 
       val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
 
-      val etag = allSpeakersIDs.hashCode.toString
+      val eTag = allSpeakersIDs.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag =>
+        case Some(tag) if tag == eTag =>
           NotModified
 
         case other =>
@@ -191,7 +191,7 @@ object RestAPI extends Controller {
 
           val jsonObject = Json.toJson(updatedSpeakers)
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
             "Links" -> ("<" + routes.RestAPI.profile("list-of-speakers").absoluteURL() + ">; rel=\"profile\"")
           )
       }

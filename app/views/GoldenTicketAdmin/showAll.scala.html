@@ -23,18 +23,13 @@
             @Html(flash.get("success").get)
             </div>
         }
-
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3>All Golden Tickets @tickets.size</h3>
                 </div>
-
                 <div class="panel-body">
-
                       <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary">Create a new golden ticket</a>
-
-
                 @if(tickets.nonEmpty) {
                     <table id="tickets" class="table table-bordered table-hover table-condensed">
                         <thead>
@@ -58,16 +53,16 @@
                                     <td>@user.lastName</td>
                                     <td>@user.email</td>
                                     <td>@gd.ticketType</td>
- <td>
-                                    <form action="@routes.GoldenTicketAdminController.sendEmail(gd.id)" method="POST">
-                                        <button type="submit" value="unactivate" class="btn btn-primary btn-small"><i class="icon-envelope"></i></button>
-                                    </form>
-                                </td>
-                                <td>
-                                    <form action="@routes.GoldenTicketAdminController.unactivateGoldenTicket(gd.id)" method="POST">
-                                        <button type="submit" value="unactivate" class="btn btn-warning btn-small"><i class="icon-trash"></i></button>
-                                    </form>
-                                </td>
+                                    <td>
+                                        <form action="@routes.GoldenTicketAdminController.sendEmail(gd.id)" method="POST">
+                                            <button type="submit" value="unactivate" class="btn btn-primary btn-small"><i class="icon-envelope"></i></button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="@routes.GoldenTicketAdminController.unactivateGoldenTicket(gd.id)" method="POST">
+                                            <button type="submit" value="unactivate" class="btn btn-warning btn-small"><i class="icon-trash"></i></button>
+                                        </form>
+                                    </td>
                                 </tr>
                             }
                         </tbody>

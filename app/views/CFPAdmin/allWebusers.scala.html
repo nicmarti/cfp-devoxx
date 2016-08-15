@@ -18,7 +18,6 @@
             @flash.get("success").get
         </div>
     }
-
     <div class="col-md-12">
         <div class="panel panel-default">
         <div class="panel-heading">
@@ -49,7 +48,6 @@
                         <td>@tags.renderGravatar(webuser.uuid, showName=true, showPhoto=false)</td>
                         <td>
                             <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
-
                            @if(SecureCFPController.hasAccessToAdmin(req)){
                                 @if(Webuser.hasAccessToCFP(webuser.uuid)){
                                     <a class="btn btn-sm btn-danger" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)">Remove from CFP</a>
@@ -63,7 +61,7 @@
                 </tbody>
             </table>
             }else{
-                <P>There is no webuser</P>
+                <P>There is no web user</P>
             }
         </div>
         </div>

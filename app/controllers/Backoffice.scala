@@ -95,7 +95,7 @@ object Backoffice extends SecureCFPController {
 
   def clearCaches() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Play.current.plugin[EhCachePlugin].foreach(p => p.manager.clearAll);
+      Play.current.plugin[EhCachePlugin].foreach(p => p.manager.clearAll())
       Ok(views.html.Backoffice.homeBackoffice())
   }
 
@@ -103,14 +103,14 @@ object Backoffice extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
       if (state == ProposalState.ACCEPTED.code) {
-        Proposal.findById(proposalId).map {
+        Proposal.findById(proposalId).foreach {
           proposal =>
             ApprovedProposal.approve(proposal)
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.ACCEPTED))
         }
       }
       if (state == ProposalState.DECLINED.code) {
-        Proposal.findById(proposalId).map {
+        Proposal.findById(proposalId).foreach {
           proposal =>
             ApprovedProposal.refuse(proposal)
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.DECLINED))
@@ -147,13 +147,13 @@ object Backoffice extends SecureCFPController {
       ElasticSearchActor.masterActor ! DoIndexAllProposals
       ElasticSearchActor.masterActor ! DoIndexAllAccepted
       ElasticSearchActor.masterActor ! DoIndexAllHitViews
-      Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Elastic search actor started...")
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Elastic search actor started...")
   }
 
   def doResetAndConfigureElasticSearch() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       ElasticSearchActor.masterActor ! DoCreateConfigureIndex
-      Redirect(routes.Backoffice.homeBackoffice).flashing("success" -> "Deleted and now creating [speakers] and [proposals] indexes. Please force an indexer in one or two minuts.")
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Deleted and now creating [speakers] and [proposals] indexes. Please force an indexer in one or two minuts.")
   }
 
   // If a user is not a member of cfp security group anymore, then we need to delete all its votes.
@@ -162,12 +162,11 @@ object Backoffice extends SecureCFPController {
       Proposal.allProposalIDs.foreach {
         proposalID: String =>
           Review.allVotesFor(proposalID).foreach {
-            case (reviewerUUID, _) => {
+            case (reviewerUUID, _) =>
               if (Webuser.doesNotExist(reviewerUUID)) {
                 play.Logger.of("application.Backoffice").debug(s"Deleting vote on $proposalID for user $reviewerUUID")
                 Review.removeVoteForProposal(proposalID, reviewerUUID)
               }
-            }
           }
       }
       Ok("Done")
@@ -176,11 +175,10 @@ object Backoffice extends SecureCFPController {
   def deleteVotesForPropal(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Review.allVotesFor(proposalId).foreach {
-        case (reviewerUUID, score) => {
+        case (reviewerUUID, score) =>
           play.Logger.of("application.Backoffice").info(s"Deleting vote on $proposalId by $reviewerUUID of score $score")
           Review.deleteVoteForProposal(proposalId)
           ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
-        }
       }
       Redirect(routes.CFPAdmin.showVotesForProposal(proposalId))
   }
@@ -237,7 +235,7 @@ object Backoffice extends SecureCFPController {
           val toReturn = client.hgetAll("Proposals").map {
             case (proposalId, json) =>
               (proposalId, Json.parse(json).asOpt[Proposal])
-          }.filter(_._2.isEmpty).map(_._1)
+          }.filter(_._2.isEmpty).keys
           Ok(views.html.Backoffice.sanityCheckProposals(toReturn))
       }
   }
@@ -280,5 +278,4 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.showAllDeclined(allDeclined))
 
   }
-
 }

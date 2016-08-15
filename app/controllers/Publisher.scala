@@ -39,6 +39,7 @@ import play.api.mvc._
  * Created by nicolas on 12/02/2014.
  */
 object Publisher extends Controller {
+
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
@@ -53,7 +54,6 @@ object Publisher extends Controller {
 
   def showAllSpeakers = Action {
     implicit request =>
-
       // First load published slots
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
       val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet

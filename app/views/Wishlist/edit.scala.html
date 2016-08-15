@@ -2,10 +2,10 @@
 
 @import helper.twitterBootstrap._
 
-@main("Wishlist"){
+@main("WishList"){
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
+            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishList.title")</h2>
         </div>
 
         <div class="clearfix"></div>
@@ -27,10 +27,10 @@
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.editRequest")</h3>
+                    <h3><i class="icon-stackexchange"></i> @Messages("wishList.editRequest")</h3>
                 </div>
                 <div class="panel-body">
-                @helper.form(action = routes.Wishlist.saveEdit) {
+                @helper.form(action = routes.WishList.saveEdit) {
                     <input type="hidden" name="id" value="@newRequestToTalkForm("id").value">
                     @helper.inputText(newRequestToTalkForm("wl_speakerName"), 'class->"form-control")
 
@@ -41,24 +41,24 @@
                     @tags.checkboxI18N(newRequestToTalkForm("wl_keynote"),  'text->"wl_keynote.checkbox")
                     @helper.textarea(newRequestToTalkForm("wl_note"), 'cols->60,'rows->5,  'class->"form-control")
                     @tags.selectI18N(field = newRequestToTalkForm("wl_statusCode"), options=RequestToTalkStatus.allAsIdsAndLabels,  'class->"form-control")
-                    <a href="@routes.Wishlist.homeWishlist()" class="btn btn-default"><i class="icon icon-reorder"></i> @Messages("wishlist.cancelEdit")</a>
-                    <button class="btn btn-success" type="submit" name="actionBtn" value="save"><i class="icon-save"></i> @Messages("wishlist.save")</button>
+                    <a href="@routes.WishList.homeWishList()" class="btn btn-default"><i class="icon icon-reorder"></i> @Messages("wishList.cancelEdit")</a>
+                    <button class="btn btn-success" type="submit" name="actionBtn" value="save"><i class="icon-save"></i> @Messages("wishList.save")</button>
 
                     @models.RequestToTalk.findPreviousIdFrom(newRequestToTalkForm("id").value.getOrElse("?")).map{previousId=>
-                        <a class="btn btn-sm btn-primary" href="@routes.Wishlist.edit(previousId)"><i class="icon-backward"></i> Previous</a>
+                        <a class="btn btn-sm btn-primary" href="@routes.WishList.edit(previousId)"><i class="icon-backward"></i> Previous</a>
                     }.getOrElse{
                         <a class="btn btn-sm btn-default" disabled href="#"><i class="icon-backward"></i> Previous</a>
                     }
                   @models.RequestToTalk.findNextIdFrom(newRequestToTalkForm("id").value.getOrElse("?")).map{nextId=>
-                        <a class="btn btn-sm btn-primary" href="@routes.Wishlist.edit(nextId)"><i class="icon-forward"></i> Next</a>
+                        <a class="btn btn-sm btn-primary" href="@routes.WishList.edit(nextId)"><i class="icon-forward"></i> Next</a>
                     }.getOrElse{
                         <a class="btn btn-sm btn-default" disabled href="#"><i class="icon-forward"></i> Next</a>
                     }
 <hr>
                     @helper.inputText(newRequestToTalkForm("wl_speakerEmail"), 'class->"form-control")
                     @helper.textarea(newRequestToTalkForm("wl_message"), 'cols->60,'rows->8,  'class->"form-control")
-                    <a href="@routes.Wishlist.homeWishlist()" class="btn btn-default"><i class="icon icon-reorder"></i> @Messages("wishlist.cancelEdit")</a>
-                    <button id="btn-sendMail" class="btn btn-primary" name="actionBtn" type="submit" value="email" title="Set an email if you want to send an invitation"><i class="icon-envelope"></i> @Messages("wishlist.sendEmail")</button>
+                    <a href="@routes.WishList.homeWishList()" class="btn btn-default"><i class="icon icon-reorder"></i> @Messages("wishList.cancelEdit")</a>
+                    <button id="btn-sendMail" class="btn btn-primary" name="actionBtn" type="submit" value="email" title="Set an email if you want to send an invitation"><i class="icon-envelope"></i> @Messages("wishList.sendEmail")</button>
                 }
                 </div>
             </div>
@@ -66,7 +66,7 @@
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.history")</h3>
+                    <h3><i class="icon-stackexchange"></i> @Messages("wishList.history")</h3>
                 </div>
                 <div class="panel-body">
                 <ul class="timeline">

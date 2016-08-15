@@ -1,10 +1,7 @@
 @(request:play.api.mvc.RequestHeader, router:Option[play.core.Router.Routes])(implicit req:play.api.mvc.RequestHeader)
-
 @main("404 Not found"){
 <h1>404 Not Found</h1>
-
 <p id="detail">For request '@request'</p>
-
 <p><img src="/assets/images/us.png"/> Please, <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> report a bug</a> if you think this is not expected.</p>
 <p><img src="/assets/images/fr.png"/> Merci de soumettre <a href="@routes.Application.bugReport()"><i class="icon-bug"></i> un bug</a> si vous pensez que cette erreur n'est pas attendue.</p>
 }
