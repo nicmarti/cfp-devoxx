@@ -49,26 +49,20 @@
             </tbody>
         </table>
     </div>
-
     <div class="row">
-
-    <div class="large-4 medium-5 columns fadeInUp animated" style="opacity : 1 ;">
-        <table>
-        @proposal.allSpeakers.map { speaker =>
-            <tr>
-                <th> <img src="@speaker.avatarUrl" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName">
-                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)">@speaker.cleanName</a>
-                </th>
-            </tr>
-            <tr>
-                <td>@Html(speaker.bioAsHtml)</td>
-            </tr>
-        }
-        </table>
-
+        <div class="large-4 medium-5 columns fadeInUp animated" style="opacity : 1 ;">
+            <table>
+            @proposal.allSpeakers.map { speaker =>
+                <tr>
+                    <th> <img src="@speaker.avatarUrl" width="64" height="64" alt="@speaker.cleanName" title="@speaker.cleanName">
+                        <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)">@speaker.cleanName</a>
+                    </th>
+                </tr>
+                <tr>
+                    <td>@Html(speaker.bioAsHtml)</td>
+                </tr>
+            }
+            </table>
+        </div>
     </div>
-
-    </div>
-
-
 }

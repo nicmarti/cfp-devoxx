@@ -21,8 +21,7 @@
             @zeSlot.break.get.nameEN
             </td>
         }
-
     }
-    @if(subSlots.filter(_.room.id == room.id).isEmpty) {
+    @if(!subSlots.exists(_.room.id == room.id)) {
         <td>&nbsp;</td>
     }

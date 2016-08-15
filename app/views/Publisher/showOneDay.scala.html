@@ -22,19 +22,17 @@
                 @rooms.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
-                </tr>
-
+            </tr>
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
-                    <tr >
-                        <th class="timeSlot">
-                            @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
-                        </th>
-                        @rooms.sorted.map { room =>
-                            @tags.publisher.tagRenderRow(subSlots,room,rooms.size)
-                        }
-                    </tr>
+                <tr >
+                    <th class="timeSlot">
+                        @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                    </th>
+                    @rooms.sorted.map { room =>
+                        @tags.publisher.tagRenderRow(subSlots,room,rooms.size)
+                    }
+                </tr>
             }
-
             <tr>
                 <th><i class="icon-time"></i> Room</th>
                 @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>
@@ -42,7 +40,5 @@
                 }
             </tr>
         </table>
-
-
     </div>
 }

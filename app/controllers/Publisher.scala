@@ -78,8 +78,7 @@ object Publisher extends Controller {
       }
       val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
         speakers.map {
-          speaker =>
-            (speaker.urlName, speaker.uuid)
+          speaker => (speaker.urlName, speaker.uuid)
         }.toMap
       }
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
