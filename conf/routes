@@ -170,7 +170,7 @@ GET           /2016/speaker/:cleanName                                          
 GET           /2016/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
 GET           /2016/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2016/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
-GET           /2016/index.html                                                  controllers.Publisher.homePublisher()
+GET           /2016/                                                            controllers.Publisher.homePublisher()
 GET           /2016/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2016/byday/:day                                                  controllers.Publisher.showByDay(day:String)
 GET           /2016/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
