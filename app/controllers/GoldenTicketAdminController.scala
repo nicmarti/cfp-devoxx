@@ -74,7 +74,6 @@ object GoldenTicketAdminController extends SecureCFPController {
             ZapActor.actor ! NotifyGoldenTicket(validTicket)
             Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "New ticket created for ")
           }
-
         }
       )
   }

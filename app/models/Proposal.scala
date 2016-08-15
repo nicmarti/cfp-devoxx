@@ -284,7 +284,6 @@ object Proposal {
       userGroup,
       wishlisted = None
     )
-
   }
 
   def isNew(id: String): Boolean = Redis.pool.withClient {

@@ -33,5 +33,3 @@ object ApplicationBuild extends Build {
     scalacOptions ++= Seq("-Xmax-classfile-name", "100") // add "-feature" to the Seq to have more details
   )
 }
-
-

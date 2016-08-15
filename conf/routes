@@ -138,8 +138,6 @@ GET           /admin/reminder/trigger                                           
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
 
-
-
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)

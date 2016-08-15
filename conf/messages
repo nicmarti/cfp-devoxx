@@ -567,18 +567,18 @@ wl_trackCode=Track
 wl_statusCode=Current state
 wl_travel.checkbox=Yes, include T&L
 
-wl_suggested=Suggested
-wl_contactedUs=Speaker contacted us
-wl_discuss=Discussion
-wl_contactSpeaker=Contact speaker
-wl_contacted=Contacted
-wl_accepted=Speaker accepted
-wl_declined=Speaker declined
-wl_onhold=On hold
-wl_deleted=Deleted
-wl_unknown=Unknown
+# wl_suggested=Suggested
+# wl_contactedUs=Speaker contacted us
+# wl_discuss=Discussion
+# wl_contactSpeaker=Contact speaker
+# wl_contacted=Contacted
+# wl_accepted=Speaker accepted
+# wl_declined=Speaker declined
+# wl_onhold=On hold
+# wl_deleted=Deleted
+# wl_unknown=Unknown
 
-wishlist.newWishlist=Create new Wishlist
+wishList.newWishList=Create new Wishlist
 
 contacted=Speaker has been contacted
 unknown=Unknown
@@ -650,7 +650,7 @@ wl.fb=Followed by
 wl.company=Company
 wl.track=Track
 wl.status=Current status
-wishlist.setPersonInCharge=Person responsible for {0}
+wishList.setPersonInCharge=Person responsible for {0}
 webmobile.label=Web, Mobile & UX
 agilityTest.label=Agility, Methodology & Tests
 
