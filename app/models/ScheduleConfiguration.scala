@@ -178,12 +178,11 @@ object ScheduleConfiguration {
 
   def loadAllPublishedSlots():List[Slot]={
     loadAllConfigurations().flatMap {
-      sc =>
-        sc.slots
-    }.toList
+      sc => sc.slots
+    }
   }
 
-  def  loadNextTalks() = {
+  def loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots)
     Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Paris")))).sortBy(_.from.toDate.getTime).take(10))
@@ -192,6 +191,6 @@ object ScheduleConfiguration {
   def loadRandomTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots)
-    Option(Random.shuffle(slots.toList).take(10))
+    Option(Random.shuffle(slots).take(10))
   }
 }

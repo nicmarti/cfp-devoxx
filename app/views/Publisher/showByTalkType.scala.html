@@ -5,6 +5,7 @@
         <p class="breadcrumb">
             <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; @Messages("sw.all." + talkType)
         </p>
+        <h4>Important Note : Schedule not yet available & many sessions still pending!</h4>
     </div>
 
     @proposals.groupBy(_.track).sliding(3,3).map { case oneRow =>
