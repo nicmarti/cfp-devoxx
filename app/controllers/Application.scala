@@ -26,6 +26,7 @@ import library._
 import models._
 import play.api.i18n.Messages
 import play.api.mvc._
+import views._
 
 /**
  * Call For Paper main application.
@@ -41,32 +42,32 @@ object Application extends Controller {
             case Some(webuser) =>
               Redirect(routes.CallForPaper.homeForSpeaker()).withSession("uuid" -> validUUID)
             case None =>
-              Ok(views.html.Application.home(Authentication.loginForm)).withNewSession.flashing("error" -> "Could not authenticate you automatically")
+              Ok(html.Application.home(Authentication.loginForm)).withNewSession.flashing("error" -> "Could not authenticate you automatically")
           }
         case None =>
-          Ok(views.html.Application.home(Authentication.loginForm)).withNewSession
+          Ok(html.Application.home(Authentication.loginForm)).withNewSession
       }
   }
 
   def homeVisitor = Action {
     implicit request =>
-      Ok(views.html.Application.homeVisitor(Authentication.loginForm)).withNewSession
+      Ok(html.Application.homeVisitor(Authentication.loginForm)).withNewSession
   }
 
   def index = Action {
     implicit request =>
-      Ok(views.html.Application.index())
+      Ok(html.Application.index())
   }
 
   def bugReport = Action {
     implicit request =>
-      Ok(views.html.Application.bugReport(Issue.bugReportForm))
+      Ok(html.Application.bugReport(Issue.bugReportForm))
   }
 
   def submitIssue() = Action {
     implicit request =>
       Issue.bugReportForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.Application.bugReport(invalidForm)),
+        invalidForm => BadRequest(html.Application.bugReport(invalidForm)),
         validBugReport => {
           notifiers.Mails.sendBugReport(validBugReport)
           ZapActor.actor ! ReportIssue(validBugReport)
