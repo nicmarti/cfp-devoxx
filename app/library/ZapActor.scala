@@ -23,9 +23,6 @@
 
 package library
 
-
-import java.io.File
-
 import akka.actor._
 import models._
 import notifiers.Mails

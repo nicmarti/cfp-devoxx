@@ -5,7 +5,8 @@
     <p>The agenda has not yet been published, but you can see the accepted talks below.</p>
     <br/>
     @if(confType.nonEmpty) {
-        @routes.Publisher.showByTalkType(confType)
+        @views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType)
     }
+    <!-- @confType -->
 </div>
 }
