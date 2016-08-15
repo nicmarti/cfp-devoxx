@@ -466,11 +466,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 9th November
-day-tuesday=Tuesday, 10th November            `
-day-wednesday=Wednesday, 11th November
-day-thursday=Thursday, 12th November
-day-friday=Friday, 13th November
+day-monday=Monday, 7th November
+day-tuesday=Tuesday, 8th November            `
+day-wednesday=Wednesday, 9th November
+day-thursday=Thursday, 10th November
+day-friday=Friday, 11th November
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
