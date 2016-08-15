@@ -48,7 +48,7 @@
                 }
                 @if(SecureCFPController.hasAccessToCFPAdmin(req)){
                     <li><a href="@routes.CFPAdmin.index()"><i class="icon-beaker"></i> Admin</a></li>
-                    <li><a href="@routes.WishList.homeWishList()"><i class="icon-sort-by-attributes-alt"></i> Wishlist</a></li>
+                    <li><a href="@routes.Wishlist.homeWishList()"><i class="icon-sort-by-attributes-alt"></i> Wishlist</a></li>
                 }
                 @if(SecureCFPController.hasAccessToAdmin(req)){
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>

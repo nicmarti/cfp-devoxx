@@ -17,7 +17,7 @@
 
 @cfp.sortBy(_.cleanName).map{ webuser=>
 <p>
-<a href="@routes.WishList.setPersonInCharge(requestId, webuser.uuid)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i></a>
+<a href="@routes.Wishlist.setPersonInCharge(requestId, webuser.uuid)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i></a>
 @webuser.cleanName
 </p>
 }

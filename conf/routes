@@ -222,20 +222,20 @@ POST          /schedulling/publish                                              
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
 # WishList
-GET           /cfpadmin/wishList/home                                           controllers.WishList.homeWishList()
-GET           /cfpadmin/wishList/new                                            controllers.WishList.newRequestToTalk()
-POST          /cfpadmin/wishList/saveNew                                        controllers.WishList.saveNewRequestToTalk()
+GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishList()
+GET           /cfpadmin/wishlist/new                                            controllers.Wishlist.newRequestToTalk()
+POST          /cfpadmin/wishlist/saveNew                                        controllers.Wishlist.saveNewRequestToTalk()
 
-GET           /cfpadmin/wishList/edit/:requestId                                controllers.WishList.edit(requestId:String)
-POST          /cfpadmin/wishList/saveedit                                       controllers.WishList.saveEdit()
+GET           /cfpadmin/wishlist/edit/:requestId                                controllers.Wishlist.edit(requestId:String)
+POST          /cfpadmin/wishlist/saveedit                                       controllers.Wishlist.saveEdit()
 
-GET           /cfpadmin/wishList/delete/:requestId                              controllers.WishList.deleteRequest(requestId:String)
-GET           /cfpadmin/wishList/approve/:requestId                             controllers.WishList.speakerApproveRequest(requestId:String)
-GET           /cfpadmin/wishList/decline/:requestId                             controllers.WishList.speakerDeclineRequest(requestId:String)
+GET           /cfpadmin/wishlist/delete/:requestId                              controllers.Wishlist.deleteRequest(requestId:String)
+GET           /cfpadmin/wishlist/approve/:requestId                             controllers.Wishlist.speakerApproveRequest(requestId:String)
+GET           /cfpadmin/wishlist/decline/:requestId                             controllers.Wishlist.speakerDeclineRequest(requestId:String)
 
-GET           /cfpadmin/wishList/speaker/setPersonInCharge/:requestId           controllers.WishList.setPersonInCharge(requestId:String, userId:String)
-GET           /cfpadmin/wishList/speaker/unsetPersonInCharge/:requestId         controllers.WishList.unsetPersonInCharge(requestId:String)
-GET           /cfpadmin/wishList/speaker/selectPersonInCharge/:requestId        controllers.WishList.selectPersonInCharge(requestId:String, speakerName:String)
+GET           /cfpadmin/wishlist/speaker/setPersonInCharge/:requestId           controllers.Wishlist.setPersonInCharge(requestId:String, userId:String)
+GET           /cfpadmin/wishlist/speaker/unsetPersonInCharge/:requestId         controllers.Wishlist.unsetPersonInCharge(requestId:String)
+GET           /cfpadmin/wishlist/speaker/selectPersonInCharge/:requestId        controllers.Wishlist.selectPersonInCharge(requestId:String, speakerName:String)
 
 # Invitation system
 GET           /cfpadmin/invitations                                             controllers.InviteController.allInvitations()

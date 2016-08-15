@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="panel-body">
-<a href="@routes.WishList.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishList.newWishList")</a><br>
+<a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishList.newWishList")</a><br>
                     <p>Total wishListed : @requests.size</p>
   @if(flash.get("error").isDefined) {
                         <div class="alert alert-danger alert-dismissable">
@@ -51,17 +51,17 @@
 @requests.map { case(request: RequestToTalk,maybePersonInCharge:Option[Webuser]) =>
     <tr>
         <td>
-            <a href="@routes.WishList.edit(request.id)" class="btn btn-small btn-primary"><i class="icon-edit"></i></a>
-            <a href="@routes.WishList.deleteRequest(request.id)" class="btn btn-small btn-danger"><i class="icon-trash"></i></a>
+            <a href="@routes.Wishlist.edit(request.id)" class="btn btn-small btn-primary"><i class="icon-edit"></i></a>
+            <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-small btn-danger"><i class="icon-trash"></i></a>
         </td>
         <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, d MMM YYYY, HH:mm"))</td>
         <td>@request.speakerName</td>
         <td>
            @maybePersonInCharge.map{webuser=>
                 @webuser.cleanName<br>
-                <a href="@routes.WishList.unsetPersonInCharge(request.id)" class="btn btn-sm btn-danger"><i class="icon-minus-sign-alt"></i></a>
+                <a href="@routes.Wishlist.unsetPersonInCharge(request.id)" class="btn btn-sm btn-danger"><i class="icon-minus-sign-alt"></i></a>
            }.getOrElse{
-               <a href="@routes.WishList.selectPersonInCharge(request.id, request.speakerName)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i> </a>
+               <a href="@routes.Wishlist.selectPersonInCharge(request.id, request.speakerName)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i> </a>
            }
         </td>
         <td>@request.company</td>

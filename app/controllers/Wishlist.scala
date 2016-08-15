@@ -36,7 +36,7 @@ import views.html
  *
  * Created by nmartignole on 12/05/2014.
  */
-object WishList extends SecureCFPController {
+object Wishlist extends SecureCFPController {
 
   def homeWishList() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -44,21 +44,21 @@ object WishList extends SecureCFPController {
         rt:RequestToTalk=>
           (rt, RequestToTalk.whoIsInChargeOf(rt.id))
       }
-      Ok(html.WishList.homeWishList(requestsAndPersonInCharge))
+      Ok(html.Wishlist.homeWishList(requestsAndPersonInCharge))
   }
 
   def newRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(html.WishList.newRequestToTalk(RequestToTalk.newRequestToTalkForm))
+      Ok(html.Wishlist.newRequestToTalk(RequestToTalk.newRequestToTalkForm))
   }
 
   def saveNewRequestToTalk() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
-        hasErrors => BadRequest(html.WishList.newRequestToTalk(hasErrors)),
+        hasErrors => BadRequest(html.Wishlist.newRequestToTalk(hasErrors)),
         successForm => {
           ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
-          Redirect(routes.WishList.homeWishList()).flashing("success" -> "New Wish list element created ")
+          Redirect(routes.Wishlist.homeWishList()).flashing("success" -> "New Wish list element created ")
         }
       )
   }
@@ -67,29 +67,28 @@ object WishList extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.findById(id) match {
         case None => NotFound("Sorry, this request has been deleted or was not found")
-        case Some(rtt) => Ok(html.WishList.edit(RequestToTalk.newRequestToTalkForm.fill(rtt)))
+        case Some(rtt) => Ok(html.Wishlist.edit(RequestToTalk.newRequestToTalkForm.fill(rtt)))
       }
   }
 
   def saveEdit() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.newRequestToTalkForm.bindFromRequest().fold(
-        hasErrors => BadRequest(html.WishList.edit(hasErrors)),
+        hasErrors => BadRequest(html.Wishlist.edit(hasErrors)),
         successForm => {
 
           val actionType = request.body.asFormUrlEncoded.flatMap(_.get("actionBtn"))
           actionType match {
             case Some(List("save")) =>
               ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
-              Redirect(routes.WishList.edit(successForm.id)).flashing("success" -> ("Request updated to status [" + successForm.status.code + "]"))
+              Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Request updated to status [" + successForm.status.code + "]"))
 
             case Some(List("email")) =>
               ZapActor.actor ! NotifySpeakerRequestToTalk(request.webuser.uuid, successForm)
-              Redirect(routes.WishList.edit(successForm.id)).flashing("success" -> ("Speaker notified, request updated to status [" + successForm.status.code + "]"))
+              Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Speaker notified, request updated to status [" + successForm.status.code + "]"))
 
             case other =>
               BadRequest("Invalid request, HTTP param [actionBtn] not found or not valid. " + other)
-
           }
         }
       )
@@ -98,7 +97,7 @@ object WishList extends SecureCFPController {
   def deleteRequest(requestId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.delete(request.webuser.uuid, requestId)
-      Redirect(routes.WishList.homeWishList()).flashing("success" -> "Request deleted")
+      Redirect(routes.Wishlist.homeWishList()).flashing("success" -> "Request deleted")
   }
 
   def speakerApproveRequest(requestId: String) = Action {
@@ -116,17 +115,17 @@ object WishList extends SecureCFPController {
   def setPersonInCharge(requestId: String, userId:String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.setPersonInCharge(requestId, userId)
-      Redirect(routes.WishList.homeWishList()).flashing("success" -> "Set person in charge")
+      Redirect(routes.Wishlist.homeWishList()).flashing("success" -> "Set person in charge")
   }
 
   def unsetPersonInCharge(requestId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.unsetPersonInCharge(requestId)
-      Redirect(routes.WishList.homeWishList()).flashing("success" -> "Success, no more person in charge for this speaker")
+      Redirect(routes.Wishlist.homeWishList()).flashing("success" -> "Success, no more person in charge for this speaker")
   }
 
   def selectPersonInCharge(requestId:String, speakerName:String)=SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(html.WishList.selectPersonInCharge(requestId, speakerName, Webuser.allCFPWebusers()))
+      Ok(html.Wishlist.selectPersonInCharge(requestId, speakerName, Webuser.allCFPWebusers()))
   }
 }
