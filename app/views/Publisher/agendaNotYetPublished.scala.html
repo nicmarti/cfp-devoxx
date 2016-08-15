@@ -1,12 +1,8 @@
-@(confType: String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
 @views.html.Publisher.devoxxBE2016("Schedule"){
 <div class="large-12 columns">
     <h2>Agenda not yet available</h2>
-    <p>The agenda has not yet been published, but you can see the accepted talks below.</p>
-    <br/>
-    @if(confType.nonEmpty) {
-        @views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType)
-    }
-    <!-- @confType -->
+    <p>The agenda is not yet ready.</p>
 </div>
 }

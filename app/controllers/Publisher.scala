@@ -130,7 +130,8 @@ object Publisher extends Controller {
         ScheduleConfiguration.getPublishedSchedule(confType)
       }
       if (realSlotId.isEmpty) {
-        NotFound(views.html.Publisher.agendaNotYetPublished(confType))
+        // Show the accepted talks instead
+        Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
       } else {
         val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(realSlotId.get)
         maybeScheduledConfiguration match {
@@ -171,7 +172,7 @@ object Publisher extends Controller {
             )
             Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, friday))
 
-          case None => NotFound(views.html.Publisher.agendaNotYetPublished(""))
+          case None => NotFound(views.html.Publisher.agendaNotYetPublished())
         }
       }
   }
