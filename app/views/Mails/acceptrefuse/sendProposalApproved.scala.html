@@ -24,7 +24,7 @@
 <h3>Welcome to @Messages("longYearlyName")</h3>
 <p>Hi,</p>
 <p>We're glad to inform you that your proposal for @Messages("longYearlyName") has been <strong>accepted</strong></p>
-<p>Proposition title : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
+<p>Proposal <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
 <hr>
 <h3>What's next?</h3>
 <p>You must now validate or decline the general terms and conditions, and confirm that you are still available to do this presentation :</p>
@@ -33,6 +33,9 @@
 @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
     <p>This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
     Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
+} else {
+    <p>As a confirmed speaker you'll receive a discount code for a full weel speaker pass a couple of weeks before the event takes place.</p>
+    <p>You'll also receive an invite for the exclusive speakers reception on Tuesday evening.</p>
 }
 
 <h3>For any question regarding your talk</h3>
