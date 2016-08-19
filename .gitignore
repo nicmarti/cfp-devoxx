@@ -53,3 +53,7 @@ run-fr.sh
 
 env.sh
 run-be.sh
+/conf/redis-devoxxlocal.conf
+/conf/dump.rdb
+/conf/application.conf.local
+/run-local.sh

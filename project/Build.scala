@@ -22,7 +22,7 @@ object ApplicationBuild extends Build {
     , "com.typesafe.play" %% "play-cache" % "2.2.0"
     ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
     , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
-
+    , "com.amazonaws" % "aws-java-sdk" % "1.0.002"
   )
 
   libraryDependencies ++= Seq(
