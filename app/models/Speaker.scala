@@ -86,7 +86,6 @@ case class Speaker(uuid: String
       }
   }
 
-
   def hasTwitter = StringUtils.trimToEmpty(twitter.getOrElse("")).nonEmpty
 
   def hasBio = StringUtils.trimToEmpty(bio).nonEmpty

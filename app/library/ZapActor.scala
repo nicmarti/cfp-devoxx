@@ -23,7 +23,10 @@
 
 package library
 
+import java.util
+
 import akka.actor._
+import com.amazonaws.{ClientConfiguration, Protocol}
 import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
 import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model._
@@ -263,19 +266,28 @@ class ZapActor extends Actor {
     }
   }
 
+  /**
+    * Push mobile schedule notification via AWS SNS.
+    *
+    * @param confType the event type that has been modified
+    */
   def doNotifyMobileApps(confType:String):Unit={
 
     play.Logger.debug("Notify mobile apps of a schedule change")
 
     val awsKey: Option[String] = Play.current.configuration.getString("aws.key")
     val awsSecret: Option[String] = Play.current.configuration.getString("aws.secret")
+    val awsRegion: Option[String] = Play.current.configuration.getString("aws.region")
 
-    if (awsKey.isDefined && awsSecret.isDefined) {
+    if (awsKey.isDefined && awsSecret.isDefined && awsRegion.isDefined) {
 
       val credentials: AWSCredentials with Object = new BasicAWSCredentials(awsKey.get, awsSecret.get)
 
-      val snsClient: AmazonSNSClient = new AmazonSNSClient(credentials)
-      snsClient.setEndpoint("sns.eu-west-1.amazonaws.com")
+      val configClient: ClientConfiguration = new ClientConfiguration()
+      configClient.setProtocol(Protocol.HTTP)
+
+      val snsClient: AmazonSNSClient = new AmazonSNSClient(credentials, configClient)
+      snsClient.setEndpoint(awsRegion.get)
 
       //create a new SNS topic
       val createTopicRequest: CreateTopicRequest = new CreateTopicRequest("cfp_schedule_updates")
@@ -284,7 +296,23 @@ class ZapActor extends Actor {
       play.Logger.debug(createTopicResult.getTopicArn)
 
       //publish to an SNS topic
-      val publishRequest: PublishRequest = new PublishRequest(createTopicResult.getTopicArn, confType)
+      val publishRequest: PublishRequest = new PublishRequest()
+
+      publishRequest.setMessage("{\"default\": \"test-message\", \"GCM\": \"{ \\\"data\\\": { \\\"message\\\": \\\""+ confType +"\\\" } }\", \"ADM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"WNS\" : \"" + confType + "\"}")
+
+      /*
+      val messageAttributeValue: MessageAttributeValue = new MessageAttributeValue()
+      messageAttributeValue.setStringValue("wns/raw")
+      messageAttributeValue.setDataType("String")
+
+      val attributeValueMap: util.HashMap[String, MessageAttributeValue] = new util.HashMap[String, MessageAttributeValue]()
+      attributeValueMap.put("AWS.SNS.MOBILE.WNS.Type", messageAttributeValue)
+
+      publishRequest.setMessageAttributes(attributeValueMap)
+      publishRequest.setMessageStructure("json")
+      publishRequest.setTargetArn(createTopicResult.getTopicArn)
+      */
+
       val publish: PublishResult = snsClient.publish(publishRequest)
 
       play.Logger.debug(publish.getMessageId)

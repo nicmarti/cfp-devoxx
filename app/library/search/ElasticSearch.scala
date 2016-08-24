@@ -26,8 +26,6 @@ package library.search
 import models.ApprovedProposal
 import play.api.libs.ws.WS
 
-import akka.actor._
-import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.util.{Try, Failure, Success}
 import scala.concurrent.Future
@@ -65,7 +63,7 @@ object ElasticSearch {
 
   def indexBulk(json: String, indexName: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-      play.Logger.of("library.ElasticSearch").debug(s"Bulk index ${indexName} started to $host")
+      play.Logger.of("library.ElasticSearch").debug(s"Bulk index $indexName started to $host")
     }
 
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
@@ -91,7 +89,7 @@ object ElasticSearch {
 
   def createIndexWithSettings(index: String, settings: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-      play.Logger.of("library.ElasticSearch") debug (s"Create index ${index} with settings ${settings}")
+      play.Logger.of("library.ElasticSearch") debug s"Create index $index with settings $settings"
     }
     val url = s"$host/${index.toLowerCase}"
     val futureResponse = WS.url(url)
@@ -102,12 +100,12 @@ object ElasticSearch {
         response.status match {
           case 201 =>
             if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-              play.Logger.of("library.ElasticSearch") debug (s"Created index $index")
+              play.Logger.of("library.ElasticSearch") debug s"Created index $index"
             }
             Success(response.body)
           case 200 =>
             if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-              play.Logger.of("library.ElasticSearch") debug (s"Created index $index")
+              play.Logger.of("library.ElasticSearch") debug s"Created index $index"
             }
             Success(response.body)
           case other =>
@@ -281,7 +279,6 @@ object ElasticSearch {
     }
   }
 
-
   // This is interesting if you want to build a cloud of Words.
   def getTag(index: String) = {
 
@@ -428,7 +425,6 @@ object ElasticSearch {
         | }
       """.stripMargin
 
-
     if (play.Logger.of("ElasticSearch").isDebugEnabled) {
       play.Logger.of("ElasticSearch").debug("Sending to ES request:")
       play.Logger.of("ElasticSearch").debug(json)
@@ -444,4 +440,3 @@ object ElasticSearch {
     }
   }
 }
-

@@ -36,7 +36,6 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Lang</th>
                         <th>Company</th>
                         <th>Email</th>
                         <th>Action</th>
@@ -52,9 +51,6 @@
                           <td>
                            @speaker.cleanName
                        </td>
-                        <td>
-                            @speaker.cleanLang
-                        </td>
                         <td>
                             @speaker.company.getOrElse("")
                         </td>

@@ -103,20 +103,19 @@ object Webuser {
   def findByEmail(email: String): Option[Webuser] = email match {
     case null => None
     case "" => None
-    case validEmail => {
+    case validEmail =>
       val _email = validEmail.toLowerCase.trim
-        Redis.pool.withClient {
-          client =>
-            client.get("Webuser:Email:" + _email).flatMap {
-              uuid: String =>
-                client.hget("Webuser", uuid).map {
-                  json: String =>
-                    Json.parse(json).as[Webuser]
-                }
-            }
-        }
+      Redis.pool.withClient {
+        client =>
+          client.get("Webuser:Email:" + _email).flatMap {
+            uuid: String =>
+              client.hget("Webuser", uuid).map {
+                json: String =>
+                  Json.parse(json).as[Webuser]
+              }
+          }
       }
-    }
+  }
 
   def getUUIDfromEmail(email: String): Option[String] = Redis.pool.withClient {
     client =>
@@ -146,7 +145,7 @@ object Webuser {
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       Proposal.allMyDraftProposals(cleanWebuser.uuid).foreach {
         proposal =>
-          play.Logger.of("models.Webuser").debug(s"Deleting proposal ${proposal}")
+          play.Logger.of("models.Webuser").debug(s"Deleting proposal $proposal")
           Proposal.destroy(proposal)
       }
 
@@ -271,7 +270,7 @@ object Webuser {
     /* Required for helper.options */
  def allCFPAdminUsers():Seq[(String,String)]={
     val cfpUsers =  Webuser.allCFPWebusers().sortBy(_.cleanName)
-      val cfpUsersAndTracks = cfpUsers.toSeq.flatMap{
+      val cfpUsersAndTracks = cfpUsers.flatMap{
         w:Webuser=>
           Seq((w.uuid,w.cleanName))
       }

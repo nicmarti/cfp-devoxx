@@ -135,4 +135,5 @@ mobile.vote.isActive=${ACTIVATE_VOTE}
 
 # AWS Credentials
 aws.key=${AWS_KEY}
-aws.secret={AWS_SECRET}
+aws.secret=${AWS_SECRET}
+aws.region=${AWS_REGION}
