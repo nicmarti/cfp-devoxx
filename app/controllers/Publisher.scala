@@ -54,9 +54,10 @@ object Publisher extends Controller {
 
   def showAllSpeakers = Action {
     implicit request =>
-      // First load published slots
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      // Show all speakers from accepted proposals instead of scheduled!
+      val accepted: List[Proposal] = Proposal.allAccepted()
+      val allSpeakersIDs = accepted.flatMap(_.allSpeakerUUIDs).toSet
+
       val eTag = allSpeakersIDs.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
