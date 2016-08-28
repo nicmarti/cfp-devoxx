@@ -300,7 +300,6 @@ class ZapActor extends Actor {
 
       publishRequest.setMessage("{\"default\": \"test-message\", \"GCM\": \"{ \\\"data\\\": { \\\"message\\\": \\\""+ confType +"\\\" } }\", \"ADM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"WNS\" : \"" + confType + "\"}")
 
-      /*
       val messageAttributeValue: MessageAttributeValue = new MessageAttributeValue()
       messageAttributeValue.setStringValue("wns/raw")
       messageAttributeValue.setDataType("String")
@@ -311,7 +310,6 @@ class ZapActor extends Actor {
       publishRequest.setMessageAttributes(attributeValueMap)
       publishRequest.setMessageStructure("json")
       publishRequest.setTargetArn(createTopicResult.getTopicArn)
-      */
 
       val publish: PublishResult = snsClient.publish(publishRequest)
 

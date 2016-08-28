@@ -113,9 +113,9 @@ Au moment de la mise à jour de cette documentation, la partie Trello n'est pas 
 
 - Nicolas Martignole [@nmartignole](http://www.twitter.com/nmartignole)
 - Gabriel Kastenbaum [@lambdadevfr](http://www.twitter.com/lambdadevfr)
-
 - Jean Helou [@jeanhelou](http://www.twitter.com/jeanhelou) pour la conférence Scala.IO
 - Frédéric Camblor [@fcamblor](http://www.twitter.com/fcamblor) pour la conférence BDX.IO
+- Stephan Janssen [@stephan007](https://www.twitter.com/stephan007) Mobile push notifications and IDEA scala warnings cleanup
 
 # Hébergement
 
