@@ -37,18 +37,11 @@
                         <!--
                         time = @time
                         localdatetime = @time.toLocalDateTime
-
+                        to = @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                         -->
-                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toString("HH:mm")
+                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
-
-                         @if(index==0 && day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" && time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")=="16:40"  ){
-                                <td class="room">
-                                    <span class="track"><img src="/assets/devoxxbe2015/images/icon_startup.png" class="publisher-icon" alt="startup" title="Startup and entrepreneurship">Startups</span>
-                                    <a href="@routes.Publisher.showAgendaByConfType("start",None,day)">See separate agenda</a>
-                                </td>
-                         }
 
                         <td class="room">
                             @slot.proposal.map { p: Proposal =>
