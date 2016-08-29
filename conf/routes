@@ -203,7 +203,7 @@ GET           /api/conferences/:eventCode/talks                                 
 GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
 GET           /api/conferences/:eventCode/schedules/                            controllers.RestAPI.showAllSchedules(eventCode:String)
 GET           /api/conferences/:eventCode/schedules/:day/                       controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
-GET           /api/conferences/:eventCode/schedules/type/:confType/             controllers.RestAPI.showScheduleForConfType(eventCode:String, confType:String)
+GET           /api/conferences/:eventCode/scheduleTypes/:confType               controllers.RestAPI.showScheduleForConfType(eventCode:String, confType:String)
 GET           /api/conferences/:eventCode/proposalTypes                         controllers.RestAPI.showProposalTypes(eventCode:String)
 GET           /api/conferences/:eventCode/tracks                                controllers.RestAPI.showTracks(eventCode:String)
 
