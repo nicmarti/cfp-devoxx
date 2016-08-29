@@ -322,7 +322,7 @@ object ConferenceDescriptor {
       }
       val toolsMondayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
         r4 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id, "monday", new DateTime("2016-11-07T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2016-11-07T19:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "monday", new DateTime("2016-11-07T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2016-11-07T19:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r4)
       }
       toolsMondayAfternoonSlot1 ++ toolsMondayAfternoonSlot2 ++ toolsMondayAfternoonSlot3 ++ toolsMondayAfternoonSlot4
     }
@@ -343,7 +343,7 @@ object ConferenceDescriptor {
       }
       val toolsTuesdayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
         r4 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday", new DateTime("2016-11-08T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2016-11-08T19:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r3)
+          SlotBuilder(ConferenceProposalTypes.TIA.id, "tuesday", new DateTime("2016-11-08T18:45:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), new DateTime("2016-11-08T19:15:00.000+01:00").toDateTime(DateTimeZone.forID("Europe/Brussels")), r4)
       }
       toolsTuesdayAfternoonSlot1 ++ toolsTuesdayAfternoonSlot2 ++ toolsTuesdayAfternoonSlot3 ++ toolsTuesdayAfternoonSlot4
     }
