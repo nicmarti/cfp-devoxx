@@ -23,14 +23,12 @@
 
 package models
 
-import java.time.DayOfWeek
-
 import library.Redis
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 
 import scala.util.Random
-import org.joda.time.{DateTime, DateTimeZone, MonthDay}
+import org.joda.time.{DateTime, DateTimeZone}
 
 /**
  * Slots that are scheduled.
