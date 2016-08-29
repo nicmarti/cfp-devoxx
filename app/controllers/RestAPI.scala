@@ -403,6 +403,76 @@ object RestAPI extends Controller {
       }
   }
 
+  def showScheduleForConfType(eventCode: String, confType: String) = UserAgentActionAndAllowOrigin {
+    implicit request =>
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val finalListOfSlots = ScheduleConfiguration.loadSlotsForConfType(confType)
+      val newEtag = finalListOfSlots.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == newEtag => NotModified
+        case other =>
+          val toReturn = finalListOfSlots.map {
+            slot =>
+              val upProposal = slot.proposal.map {
+                proposal =>
+                  val allSpeakers = proposal.allSpeakerUUIDs.flatMap(uuid => findByUUID(uuid))
+                  val updatedProposal =
+                    Map(
+                      "id" -> Json.toJson(proposal.id),
+                      "title" -> Json.toJson(proposal.title),
+                      "lang" -> Json.toJson(proposal.lang),
+                      "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
+                      "summary" -> Json.toJson(proposal.summary),
+                      "track" -> Json.toJson(Messages(proposal.track.label)),
+                      "trackId" -> Json.toJson(proposal.track.id),
+                      "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
+                      "speakers" -> Json.toJson(allSpeakers.map {
+                        speaker =>
+                          Map(
+                            "link" -> Json.toJson(
+                              Link(
+                                routes.RestAPI.showSpeaker(eventCode, speaker.uuid).absoluteURL(),
+                                routes.RestAPI.profile("speaker").absoluteURL(),
+                                speaker.cleanName
+                              )
+                            ),
+                            "name" -> Json.toJson(speaker.cleanName)
+                          )
+                      })
+                    )
+                  updatedProposal
+              }
+
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+
+              Map(
+                "slotId" -> Json.toJson(slot.id)
+                , "day" -> Json.toJson(slot.day)
+                , "roomId" -> Json.toJson(slot.room.id)
+                , "roomName" -> Json.toJson(slot.room.name)
+                , "fromTime" -> Json.toJson(fromDate.toString("HH:mm"))
+                , "fromTimeMillis" -> Json.toJson(fromDate.getMillis)
+                , "toTime" -> Json.toJson(slotToDate.toString("HH:mm"))
+                , "toTimeMillis" -> Json.toJson(slotToDate.getMillis)
+                , "talk" -> upProposal.map(Json.toJson(_)).getOrElse(JsNull)
+                , "break" -> Json.toJson(slot.break)
+                , "roomSetup" -> Json.toJson(slot.room.setup)
+                , "roomCapacity" -> Json.toJson(slot.room.capacity)
+                , "notAllocated" -> Json.toJson(slot.notAllocated)
+              )
+          }
+          val jsonObject = Json.toJson(
+            Map(
+              "slots" -> Json.toJson(toReturn)
+            )
+          )
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedule").absoluteURL() + ">; rel=\"profile\""))
+      }
+  }
+
   def showScheduleFor(eventCode: String, day: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 

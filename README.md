@@ -80,6 +80,9 @@ Celui-ci permet d'effectuer des commandes, je vous invite à suivre le petit tut
 
 Le projet est hébergé sur [Bitbucket](https://bitbucket.org/nicolas_martignole/cfp-devoxx-fr)
 
+# Dependency Tree
+[![Dependencies](https://app.updateimpact.com/badge/766661207762538496/cfp-devoxx.svg?config=compile)](https://app.updateimpact.com/latest/766661207762538496/cfp-devoxx)
+
 # Installer sa propre version du CFP
 
 Imaginons que vous êtes Breton et que vous souhaitiez installer ce CFP pour votre conférence :-)

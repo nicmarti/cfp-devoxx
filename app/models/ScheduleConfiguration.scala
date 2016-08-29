@@ -113,13 +113,11 @@ object ScheduleConfiguration {
   }
 
   def publishConf(id: String, confType: String) = Redis.pool.withClient {
-    implicit client =>
-      client.hset("Published:Schedule", confType, id)
+    implicit client => client.hset("Published:Schedule", confType, id)
   }
 
   def getPublishedSchedule(confType: String): Option[String] = Redis.pool.withClient {
-    implicit client =>
-      client.hget("Published:Schedule", confType)
+    implicit client => client.hget("Published:Schedule", confType)
   }
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
@@ -156,8 +154,7 @@ object ScheduleConfiguration {
     getPublishedSchedule(confType).flatMap {
       id: String =>
         loadScheduledConfiguration(id).map {
-          scheduledConf =>
-            scheduledConf.slots
+          scheduledConf => scheduledConf.slots
         }
     }.getOrElse(List.empty[Slot])
   }
