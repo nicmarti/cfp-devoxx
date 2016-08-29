@@ -31,7 +31,7 @@ import play.api.libs.json.{JsNumber, JsString, Json}
 import play.api.mvc.Action
 
 /**
- * Schedulling Controller.
+ * Scheduling Controller.
  * Plannification et création des agendas par type de conférence.
  * Created by nicolas martignole on 07/02/2014.
  */

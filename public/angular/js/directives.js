@@ -4,11 +4,11 @@ cfpApp.directive("drag", ["$rootScope", function($rootScope) {
     element.addClass(dragStyle);
     evt.dataTransfer.setData("id", evt.target.id);
     evt.dataTransfer.effectAllowed = 'move';
-  };
+  }
 
   function dragEnd(evt, element, dragStyle) {
     element.removeClass(dragStyle);
-  };
+  }
 
   return {
     restrict: 'A',
@@ -32,17 +32,17 @@ cfpApp.directive("drop", ['$rootScope', function($rootScope) {
   function dragEnter(evt, element, dropStyle) {
     evt.preventDefault();
     element.addClass(dropStyle);
-  };
+  }
   function dragLeave(evt, element, dropStyle) {
     element.removeClass(dropStyle);
-  };
+  }
   function dragOver(evt) {
     evt.preventDefault();
-  };
+  }
   function drop(evt, element, dropStyle) {
     evt.preventDefault();
     element.removeClass(dropStyle);
-  };
+  }
 
   return {
     restrict: 'A',

@@ -254,15 +254,22 @@ object ApprovedProposal {
 
   def allApprovedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Approved:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+
+      val allProposalIDs = client.smembers("Approved:" + talkType)
+        .diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
+        .diff(client.smembers(s"Proposals:ByState:${ProposalState.DECLINED.code}"))
+
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs)
       allProposalWithVotes.values.toList
   }
 
   def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers("Refused:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+
+      val allProposalIDs = client.smembers("Refused:" + talkType)
+        .diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
+
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs)
       allProposalWithVotes.values.toList
   }
 
@@ -326,7 +333,7 @@ object ApprovedProposal {
   def allAcceptedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.smembers("Approved:" + talkType)
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs)
       allProposalWithVotes.values.filter(_.state == ProposalState.ACCEPTED).toList
   }
 

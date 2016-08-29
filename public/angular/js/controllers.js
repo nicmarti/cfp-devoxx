@@ -15,17 +15,17 @@ homeController.controller('HomeController', function HomeController($rootScope, 
 });
 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, ApprovedTalksService, flash) {
+
     // Left column, list of accepted proposal
     ApprovedTalksService.get({confType: $routeParams.confType}, function (allApproved) {
         // If a ScheduleConfiguration was reloaded, then we need to filter-out the list of ApprovedTalks
         if (_.isUndefined($rootScope.slots) == false) {
             var onlyValidProposals = _.reject($rootScope.slots, function(slot){ return _.isUndefined(slot.proposal)} );
-            var onlyIDs=  _.map(onlyValidProposals, function(slot){return slot.proposal.id; });
+            var onlyIDs= _.map(onlyValidProposals, function(slot){return slot.proposal.id; });
 
-            var filteredTalks = _.reject(allApproved["approvedTalks"].talks, function(talk){
-                return _.contains(onlyIDs,talk.id);
+            $scope.approvedTalks=_.reject(allApproved["approvedTalks"].talks, function (talk) {
+                return _.contains(onlyIDs, talk.id);
             });
-            $scope.approvedTalks=filteredTalks;
         } else {
             console.log("No schedule configuration loaded");
             $scope.approvedTalks =  allApproved["approvedTalks"].talks ;
@@ -52,7 +52,6 @@ mainController.controller('MainController', function MainController($rootScope, 
             console.log("No schedule configuration loaded");
         }
     });
-
 
     $rootScope.$on('dropEvent', function (evt, dragged, dropped) {
 
@@ -126,13 +125,13 @@ reloadScheduleConfController.controller('ReloadScheduleConfController', function
 });
 
 deleteSlotController.controller('DeleteSlotController', function DeleteSlotController($routeParams,$location, DeleteScheduledConfiguration,flash ){
-    DeleteScheduledConfiguration.delete({id: $routeParams.id}, function (jsonObj){
+    DeleteScheduledConfiguration.delete({id: $routeParams.id}, function () {
         flash("Deleted configuration");
     });
 });
 
 publishController.controller('PublishController', function PublishController($routeParams,$location, PublishScheduledConfiguration, flash ){
-    PublishScheduledConfiguration.save({id: $routeParams.id, confType: $routeParams.confType}, function (jsonObj){
+    PublishScheduledConfiguration.save({id: $routeParams.id, confType: $routeParams.confType}, function (){
         flash("Configuration published");
     });
 });
