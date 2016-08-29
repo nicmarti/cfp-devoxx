@@ -25,7 +25,7 @@
                             09:30 - 11:30
                         </th>
                         <td class="keynotes" colspan="8">
-                            <a href="http://www.devoxx.be/keynotes-2015">Keynotes</a>
+                            <a href="https://devoxx.be/keynotes-2016">Keynotes</a>
 
                         </td>
                     </tr>
@@ -68,25 +68,32 @@
                     }
                 </tr>
                 }
- @if(day.toLowerCase.startsWith("thu")) {
-     <tr>
-         <th>
-             19:00 - 19:30
-         </th>
-         <td class="keynotes" colspan="8">
-             <a href="http://www.devoxx.be/keynotes-2015">Closing Keynote</a>
-
-         </td>
-     </tr>
- }
                 <tr>
                     <th><i class="icon-time"></i> Room</th>
                     @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
                         <td>@room.name</td>
                     }
                 </tr>
+ @if(day.toLowerCase.startsWith("thu")) {
+     <tr>
+         <th>
+             19:00 - 19:50
+         </th>
+         <td class="keynotes" colspan="8">
+             <a href="https://devoxx.be/keynotes-2016">Closing Keynote (Room 5)</a>
+
+         </td>
+     </tr>
+     <tr>
+         <th>
+             20:00 - 22:00
+         </th>
+         <td class="keynotes" colspan="8">
+             Devoxx Movie (Room 8)
+         </td>
+     </tr>
+ }
             </table>
 
         </div>
-
     }
