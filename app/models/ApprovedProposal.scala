@@ -255,9 +255,11 @@ object ApprovedProposal {
   def allApprovedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
 
+      // Include Approved talks but exclude Archived, Declined and Rejected sessions
       val allProposalIDs = client.smembers("Approved:" + talkType)
         .diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
         .diff(client.smembers(s"Proposals:ByState:${ProposalState.DECLINED.code}"))
+        .diff(client.smembers(s"Proposals:ByState:${ProposalState.REJECTED.code}"))
 
       val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs)
       allProposalWithVotes.values.toList
