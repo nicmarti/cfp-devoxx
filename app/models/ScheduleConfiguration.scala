@@ -23,11 +23,14 @@
 
 package models
 
+import java.time.DayOfWeek
+
 import library.Redis
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
+
 import scala.util.Random
-import org.joda.time.{DateTimeZone, DateTime}
+import org.joda.time.{DateTime, DateTimeZone, MonthDay}
 
 /**
  * Slots that are scheduled.
@@ -130,12 +133,16 @@ object ScheduleConfiguration {
     }
 
     val listOfSlots = day match {
+      case "monday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.mondaySchedule, "monday")
+      case "tuesday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.tuesdaySchedule, "tuesday")
       case "wednesday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
       case "thursday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
       case "friday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.friday, "friday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
       case other =>
         play.Logger.of("ScheduleConfiguration").warn("Could not match " + other + " in getPublishedScheduleByDay")
         Nil
