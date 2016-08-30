@@ -1,8 +1,7 @@
 <div class="col-lg-12">
     <h3>All slots</h3>
     <button class="btn btn-success" ng-click="saveAllocation()">Save allocation</button>
-    <flash-messages>
-    </flash-messages>
+    <flash-messages/>
     <p>Note : Please, use full-screen for best experience. Slots are also filtered by preferred day.</p>
 </div>
 
@@ -13,25 +12,25 @@
 <div class="col-lg-3 panel_talks">
     <input type="search" ng-model="filterTalk" placeholder="Filter Talks..."/><br>
     <small>Slots: {{approvedTalks.length}}</small>
-    <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
-         class="talk"
-         drag="talk" dragStyle="columnDrag"
-         dropStyle="columnDrop">
-        <span class="proposalTitle">{{talk.title}}</span>
-        <span class="label label-default">{{talk.id}}</span>
 
-        <div class="label label-info">{{talk.lang}}</div>
-        <div class="label label-warning">{{talk.track.id}}</div>
-        <div class="label label-success">{{talk.mainSpeaker}}</div>
-        <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
-        <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
-            {{otherSpeaker}}
-        </div>
-        <div class="label label-danger" ng-show="talk.privateMessage">
-            {{talk.privateMessage}}
-        </div>
+            <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
+                 class="{{talk.state.code}}"
+                 drag="talk" dragStyle="columnDrag"
+                 dropStyle="columnDrop">
+                <span class="proposalTitle">{{talk.title}}</span>
+                <span class="label label-default">{{talk.id}}</span>
 
-    </div>
+                <div class="label label-warning">{{talk.track.id}}</div>
+                <div class="label label-success">{{talk.mainSpeaker}}</div>
+                <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
+                <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
+                    {{otherSpeaker}}
+                </div>
+                <div class="label label-danger" ng-show="talk.privateMessage">
+                    {{talk.privateMessage}}
+                </div>
+            </div>
+        </div>
 </div>
 
 <div class="col-lg-9 panel_slots">
@@ -48,8 +47,7 @@
             <span class="proposalTitle">{{slot.proposal.title}}</span>
             <div class="proposalSpeaker">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}}</div>
             <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
-                <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved
-                </div>
+                <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
             </div>
         </div>
     </div>

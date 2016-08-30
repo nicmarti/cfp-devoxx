@@ -11,7 +11,16 @@ body {
     border: 1px solid #eeeeee;
 }
 
-.talk {
+.approved {
+    display: block;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: red;
+    border-radius: 3px;
+    box-shadow: 2px 2px #bbb;
+}
+.accepted {
     display: block;
     border: 2px solid black;
     padding: 5px;
