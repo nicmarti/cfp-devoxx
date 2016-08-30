@@ -38,7 +38,7 @@
 <div id="sidr">
     <button><i class="fi-x"></i>Close Menu</button>
     <ul id="menu-other-pages-menu" class="menu">
-        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite/index.html">Home</a></li>
+        <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="@ConferenceDescriptor.current().conferenceUrls.confWebsite">Home</a></li>
         @if(ConferenceDescriptor.isFavoritesSystemActive && UserCFPController.findAuthenticator.isDefined){
          <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
         }
