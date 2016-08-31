@@ -34,6 +34,7 @@
 .agendaTable td.room {
     width: 14%;
     vertical-align: top;
+    position: relative;
 }
 
 .agendaTable td.keynotes {
@@ -136,6 +137,7 @@ h4.speakerTitle {
     padding-top: 15px;
 }
 
+
 a:hover.cfp-fav {
     color: coral;
     height: 1.2em;
@@ -146,12 +148,11 @@ input.cfp-fav {
 }
 
 label.cfp-lab {
-    display: inline-block;
-    width:100%;
-    height:18px;
-   padding: 0;
-    margin: 4px 0 0;
-    text-align: right;
+    position: absolute;
+    bottom: 3px;
+    right: 1px;
+    width: 20px;
+    height: 20px;
     background:url('/assets/devoxxbe2016/images/beer-icons-off.png') no-repeat;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;

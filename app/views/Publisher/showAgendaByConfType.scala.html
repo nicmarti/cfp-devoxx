@@ -45,14 +45,14 @@
 
                         <td class="room">
                             @slot.proposal.map { p: Proposal =>
-                                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)</span>
-                                @tags.publisher.renderFavorite(p.id)
+                                <span class="track">
+                                    @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
+                                </span>
                                 <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
                                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                                     @tags.publisher.renderSpeaker(speakerUUID)
                                 }</span>
-
-
+                                @tags.publisher.renderFavorite(p.id)
                             }
                         @if(slot.proposal.isEmpty && slot.break.isEmpty ){
                             TBA
