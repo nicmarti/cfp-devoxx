@@ -434,31 +434,6 @@ object ConferenceDescriptor {
       labsTuesdayMorning ++ labsTuesdayAfternoon
     }
 
-    val labsSlotsWednesday: List[Slot] = {
-
-      val labsWednesdayAfternoon = ConferenceRooms.oneRoomLabs.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.LAB.id,
-                      WEDNESDAY,
-                      new DateTime("2016-11-09T14:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
-                      new DateTime("2016-11-09T17:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
-      }
-      labsWednesdayAfternoon
-    }
-
-
-    val labsSlotsThursday: List[Slot] = {
-
-      val labsThursdayAfternoon = ConferenceRooms.oneRoomLabs.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.LAB.id,
-                      THURSDAY,
-                      new DateTime("2016-11-10T14:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
-                      new DateTime("2016-11-10T17:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
-      }
-      labsThursdayAfternoon
-    }
-
     // BOFS
 
     val bofSlotsMonday: List[Slot] = {
@@ -825,11 +800,11 @@ object ConferenceDescriptor {
     }
 
     val wednesdaySchedule: List[Slot] = {
-      wednesdayBreaks ++ keynoteSlotsWednesday ++ conferenceSlotsWednesday ++ quickiesSlotsWednesday ++ bofSlotsWednesday ++ labsSlotsWednesday
+      wednesdayBreaks ++ keynoteSlotsWednesday ++ conferenceSlotsWednesday ++ quickiesSlotsWednesday ++ bofSlotsWednesday
     }
 
     val thursdaySchedule: List[Slot] = {
-      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday ++  igniteSlotsThursday
+      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++  igniteSlotsThursday
     }
 
     val fridaySchedule: List[Slot] = {
