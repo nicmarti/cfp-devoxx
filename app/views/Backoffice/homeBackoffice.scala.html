@@ -25,9 +25,6 @@
             <h3>Home backoffice</h3>
         </div>
         <div class="panel-body">
-            <h4>ElasticSearch</h4>
-                <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Delete speakers and proposals ES Indexes</a><br>
-                <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Force indexation of speakers, proposals for web site</a><br>
 
             <h4>Accepted talks notification service</h4>
             <p>This service lets you search for a talk, then send a notification to the speaker</p>
@@ -42,11 +39,11 @@
             <h4>Mass refuse system</h4>
             <a href="@routes.ApproveOrRefuse.prepareMassRefuse("tia")" class="btn btn-danger btn-sm"><i class="icon-warning-sign"></i> Mass Refuse system</a>
 
-            <h4><i class="icon-ticket"></i> Golden ticket </h4>
-            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-sm btn-primary">Show all Golden tickets</a>
-            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary">Create a new golden ticket</a>
-            <a href="@routes.GoldenTicketAdminController.newGroupOfGoldenTicket()" class="btn btn-sm btn-primary">Import/create a group of Golden Tickets</a>
-            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-success">All Golden ticket Votes</a>
+            <h4><i class="icon-ticket"></i> Golden Tickets</h4>
+            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Golden Tickets</a>
+            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> Create a Golden Ticket</a>
+            <a href="@routes.GoldenTicketAdminController.newGroupOfGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-cloud-download"></i> Import/create Golden Tickets</a>
+            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-success"><i class="icon-star"></i> Golden Ticket Votes</a>
 
 
             <h4>Planner</h4>
@@ -60,6 +57,11 @@
 
             <h4>Cron</h4>
             <a href="@routes.Backoffice.sendDraftReminder()" class="btn btn-sm btn-primary"><i class="icon-refresh"></i> Send a reminder to speakers for DRAFT</a>
+
+            <h4>ElasticSearch</h4>
+            <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-warning btn-sm"><i class="icon-remove"></i> Delete Index</a>
+            <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Re-index</a><br>
+
         </div>
         </div>
     </div>
