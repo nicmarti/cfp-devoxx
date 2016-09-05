@@ -30,15 +30,14 @@
                 <tr>
                     <td colspan="2">
                         @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
-                        @tags.publisher.renderFavorite(proposal.id)
                     </td>
                 </tr>
                 @if(slot.isDefined) {
                     <tr>
                         <td>
-                            <h4>@slot.map(_.room.name)</h4>
+                            <h4 style="padding-top:10px;">@slot.map(_.room.name)</h4>
                         </td>
-                        <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE") at  @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
+                        <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE") from @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") til @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
                     </tr>
                 }
 

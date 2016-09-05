@@ -15380,7 +15380,7 @@ table tr td {
 }
 
 table tr.even, table tr.alt, table tr:nth-of-type(even) {
-    background: #f9f9f9;
+    background: #f7f4f4;
 }
 
 table thead tr th,
