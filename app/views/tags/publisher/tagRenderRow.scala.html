@@ -1,7 +1,7 @@
 @(subSlots: List[Slot], room: Room, roomSize: Int)(implicit req:RequestHeader)
 
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
-        @if(zeSlot.notAllocated && zeSlot.from.getHourOfDay<12) {
+        @if(zeSlot.notAllocated && zeSlot.from.getHourOfDay<11) {
             <td>Keynote overflow</td>
         }
         @if(zeSlot.notAllocated && zeSlot.from.getHourOfDay>=12) {
