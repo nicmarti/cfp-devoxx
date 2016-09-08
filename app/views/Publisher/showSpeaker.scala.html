@@ -8,7 +8,7 @@
             <img class="speakerRound"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
         }
         @speaker.cleanTwitter.map{tw=>
-        <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
+        <a href="https://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
         }
         @speaker.cleanName
         @speaker.twitter.map{_=>
@@ -23,7 +23,11 @@
     </div>
 
     @speaker.blog.map{blog=>
-        <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
+            @if(blog.startsWith("http://")) {
+                <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
+            } else {
+                <p>Blog: <a href="http://@blog" rel="no-follow">@blog</a></p>
+            }
     }
 </div>
 
