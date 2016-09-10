@@ -21,7 +21,6 @@
                                                    <th>@Messages("admin.proposals.th.talkType")
                                                     <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" alt="See all" title="See all proposals by type"><i class="icon-arrow-right"></i> </a></small>
                                                    </th>
-                                                   <th>@Messages("admin.proposals.th.lang")</th>
                                                </tr>
                                            </thead>
                                            <tbody>
@@ -29,7 +28,6 @@
                                                    <td>@proposal.title</td>
                                                    <td>@Messages(proposal.track.label)</td>
                                                    <td>@Messages(proposal.talkType.id)</td>
-                                                   <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
                                                </tr>
                                                <tr>
                                                    <th colspan="4">
@@ -61,8 +59,8 @@
                             <tr>
                                 <th>@tags.showSpeakerTag(proposal.mainSpeaker)</th>
                                 <td>
-                                <div class="showSpeakerDetails">
-                                @tags.showSpeakerBioOverview(proposal.mainSpeaker, proposalsByAuths(proposal.mainSpeaker), currentUser)
+                                    <div class="showSpeakerDetails">
+                                    @tags.showSpeakerBioOverview(proposal.mainSpeaker, proposalsByAuths(proposal.mainSpeaker), currentUser)
                                 </td>
                             </tr>
                             @if(proposal.secondarySpeaker.isDefined) {
@@ -207,14 +205,14 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="panel panel-default">
+            <div class="panel panel-danger">
                 <div class="panel-heading">
                     <h4><i class="icon-comments-alt"></i>  @Messages("admin.sp.committee_speaker")</h4>
                 </div>
                 <div class="panel-body">
                 @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
                     @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
-                    <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
+                    <button type="submit" class="btb btn-xs btn-danger">@Messages("admin.btn.sendMessage")</button>
                 }
                 </div>
                 <div class="panel-body">
@@ -227,7 +225,7 @@
             @if(ConferenceDescriptor.current().timing.preferredDayEnabled) {
                 @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
             <div class="panel panel-default">
-                <div class="panel-heading">
+                <div class="panel-default">
                     <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
                 </div>
                 <div class="panel-body">
@@ -255,7 +253,7 @@
             </div>
                 }
             }
-            <div class="panel panel-danger">
+            <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
                 </div>

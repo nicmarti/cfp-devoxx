@@ -311,7 +311,7 @@ next.page=Next page
 
 admin.proposal=Proposal
 admin.proposals.th.lang=Lang
-admin.proposals.th.abstract=Proposal text
+admin.proposals.th.abstract=Abstract
 admin.sp.mainSpeaker=Main speaker
 admin.sp.secSpeaker=Secondary speaker
 admin.sp.otherSpeaker=Other speaker(s)
@@ -321,9 +321,9 @@ admin.sp.sponsorTalk.label=This is a sponsor talk
 admin.sp.evaluate=Evaluate this proposal
 admin.sp.voted=You voted
 admin.sp.discussion=Discussion
-admin.sp.committee_speaker=Between speaker and committee
+admin.sp.committee_speaker=Between Committee & Speaker
 admin.btn.sendMessage=Post your message
-admin.sp.internal=Private internal discussions
+admin.sp.internal=Private discussions
 admin.sp.deleteMyVote=Delete my vote
 admin.btn.allvotes=All votes
 
