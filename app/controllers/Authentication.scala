@@ -251,7 +251,7 @@ object Authentication extends Controller {
       futureResult.map {
         result =>
           result.status match {
-            case 200 => {
+            case 200 =>
               val json = Json.parse(result.body)
               val resultParse = for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
                                      name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
@@ -298,8 +298,6 @@ object Authentication extends Controller {
                       }
                   }
                 })
-
-            }
             case other =>
               play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
               BadRequest("Unable to complete the Github User API call")
@@ -634,4 +632,3 @@ object Authentication extends Controller {
 }
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
-

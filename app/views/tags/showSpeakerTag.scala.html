@@ -1,6 +1,21 @@
-@(uuid:String)
+@(uuid:String,company:String)
 
 @models.Speaker.findByUUID(uuid).map{speaker:Speaker=>
-<small><a class="cfp-gravatars" href="@routes.CFPAdmin.showSpeakerAndTalks(uuid)"><img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=35" alt="@speaker.name" title="@speaker.name"/> @speaker.cleanName</a></small>
-@tags.checkInvited(uuid)
+        <table>
+            <tr>
+                <td>
+                    <img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=80" alt="@speaker.name" title="@speaker.cleanName"/>
+                </td>
+                <td>
+                    <h3>
+                        <a class="cfp-gravatars" href="@routes.CFPAdmin.showSpeakerAndTalks(uuid)">
+                            @speaker.cleanName
+                        </a>
+                    </h3>
+                    @if(!company.isEmpty) {
+                        @company
+                    }
+                </td>
+            </tr>
+        </table>
 }.getOrElse("Speaker not found")

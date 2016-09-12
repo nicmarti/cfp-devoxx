@@ -72,7 +72,7 @@ POST          /bug/new                                                          
 # CFP Admin
 GET           /cfpadmin                                                         controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
 GET           /cfpadmin/proposal/:proposalId                                    controllers.CFPAdmin.openForReview(proposalId:String)
-GET           /cfpadmin/proposal/:proposalId/history                             controllers.CFPAdmin.history(proposalId:String)
+GET           /cfpadmin/proposal/:proposalId/history                            controllers.CFPAdmin.history(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/msgToSpeaker                       controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/postInternal                       controllers.CFPAdmin.postInternalMessage(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/vote                               controllers.CFPAdmin.voteForProposal(proposalId:String)

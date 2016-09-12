@@ -15,7 +15,7 @@
                 } else {
                     <h2>@Messages("New.proposal")</h2>
                 }
-                @if(ConferenceDescriptor.isCFPOpen==false){
+                @if(!ConferenceDescriptor.isCFPOpen){
                     <div class="alert alert-info">
                         @Messages("cfp.closed.restrictions")
                     </div>
@@ -87,7 +87,10 @@
 
 <script type="text/javascript">
 $(document).ready(function($){
-    $('#sponsorTalkMsg' ).hide();
+    var $sponsorTalkMsg = $('#sponsorTalkMsg');
+    var $talkType = $('#talkType');
+
+    $sponsorTalkMsg.hide();
 
     setformfieldsize($('#summary'), @models.ConferenceDescriptor.current().maxProposalSummaryCharacters, 'charsremain');
     setformfieldsize($('#privateMessage'), 3500, 'charsremain2');
@@ -98,24 +101,24 @@ $(document).ready(function($){
     // When user tick sponsorTalk then we update the private message
     $('#sponsorTalk').on("click", function() {
         if (this.checked) {
-            $('#sponsorTalkMsg').show();
+            $sponsorTalkMsg.show();
             $('#talkType option[value="conf"]' ).prop('selected', true);
         }
         else {
-            $('#sponsorTalkMsg').hide();
-            $('#talkType').prop('disabled', false);
+            $sponsorTalkMsg.hide();
+            $talkType.prop('disabled', false);
         }
     });
 
-    if($('#sponsorTalk').is(':checked') ){
-        $('#sponsorTalkMsg').show();
+    if ($sponsorTalkMsg.is(':checked') ){
+        $sponsorTalkMsg.show();
         $('#talkType option[value="conf"]' ).prop('selected', true);
-    }else{
-        $('#sponsorTalkMsg').hide();
-        $('#talkType').prop('disabled', false);
+    } else {
+        $sponsorTalkMsg.hide();
+        $talkType.prop('disabled', false);
     }
 
-    $('#talkType' ).change(function(){
+    $talkType.change(function(){
         var talkTypeId = $(this).val();
 
         @ProposalConfiguration.getProposalsImplyingATrackSelection.map { proposalConf=>
@@ -127,6 +130,4 @@ $(document).ready(function($){
 
 });
 </script>
-
-
 }

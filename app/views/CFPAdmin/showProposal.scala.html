@@ -1,4 +1,4 @@
-@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int],  maybeMyVote:Option[Review], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -7,106 +7,105 @@
                 <div class="panel-heading">
                     <h3><i class="icon-signin"></i> @Messages("admin.proposal")</h3>
                 </div>
-
                 <div class="panel-body">
                     <table class="table table-bordered table-stripped">
-                                           <thead>
-                                               <tr>
-                                                   <th>@Messages("admin.proposals.th.title")</th>
-                                                   <th>
-                                                   @Messages("admin.proposals.th.track")
-                                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" alt="See all" title="See all proposals by track"><i class="icon-arrow-right"></i> </a></small>
-                                                   </th>
+                        <thead>
+                            <tr>
+                                <th class="proposalTitle">@Messages("admin.proposals.th.title")</th>
+                                <th>
+                                    @Messages("admin.proposals.th.track")
+                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" title="See all proposals by track"><i class="icon-arrow-right"></i> </a></small>
+                                </th>
 
-                                                   <th>@Messages("admin.proposals.th.talkType")
-                                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" alt="See all" title="See all proposals by type"><i class="icon-arrow-right"></i> </a></small>
-                                                   </th>
-                                               </tr>
-                                           </thead>
-                                           <tbody>
-                                               <tr>
-                                                   <td>@proposal.title</td>
-                                                   <td>@Messages(proposal.track.label)</td>
-                                                   <td>@Messages(proposal.talkType.id)</td>
-                                               </tr>
-                                               <tr>
-                                                   <th colspan="4">
-                                                   @Messages("admin.proposals.th.abstract")
-                                                   </th>
-                                               </tr>
-                                               <tr>
-                                                   <td colspan="4" class="proposal">
-                                                     @Html(proposal.summaryAsHtml)
-                                                   </td>
-                                               </tr>
-
-                                           </tbody>
-                                       </table>
-                    <table class="table table-bordered">
+                                <th>@Messages("admin.proposals.th.talkType")
+                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" title="See all proposals by type"><i class="icon-arrow-right"></i> </a></small>
+                                </th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
+                                <td>@proposal.title</td>
+                                <td>@Messages(proposal.track.label)</td>
+                                <td>@Messages(proposal.talkType.id)</td>
+                            </tr>
+                            <tr>
+                                <th colspan="4">
+                                @Messages("admin.proposals.th.abstract")
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="proposal">
+                                @Html(proposal.summaryAsHtml)
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>@Messages("proposal.audienceLevel")</th>
-                                <td>@Messages(proposal.audienceLevel+".label")</td>
+                                <td colspan="2">@Messages(proposal.audienceLevel + ".label")</td>
                             </tr>
                             <tr>
                                 <th>@Messages("proposal.demoLevel")</th>
-                                <td>@proposal.demoLevel.map(d=> Messages(d+".label"))</td>
+                                <td colspan="2">@proposal.demoLevel.map(d => Messages(d + ".label"))</td>
                             </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-bordered speakerTable">
-                        <tbody>
-                            <tr>
-                                <th>@tags.showSpeakerTag(proposal.mainSpeaker)</th>
-                                <td>
-                                    <div class="showSpeakerDetails">
-                                    @tags.showSpeakerBioOverview(proposal.mainSpeaker, proposalsByAuths(proposal.mainSpeaker), currentUser)
-                                </td>
-                            </tr>
-                            @if(proposal.secondarySpeaker.isDefined) {
-                                <tr>
-                                    <th>@proposal.secondarySpeaker.map { secondarySpeaker =>
-                                            @tags.showSpeakerTag(secondarySpeaker)
-                                        }
-                                    </th>
-                                    <td>
-                                        <div class="showSecSpeakerDetails">
-                                        @proposal.secondarySpeaker.map { secondarySpeaker =>
-                                            @tags.showSpeakerBioOverview(secondarySpeaker, proposalsByAuths(secondarySpeaker), currentUser)
-                                        }
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                            @if(proposal.otherSpeakers.nonEmpty) {
-                                <tr>
-                                    <th>
-                                    @proposal.otherSpeakers.map { sp =>
-                                        @tags.showSpeakerTag(sp)
-                                    }
-                                    </th>
-                                    <td>
-                                    @proposal.otherSpeakers.map { sp =>
-                                       @tags.showSpeakerBioOverview(sp, proposalsByAuths(sp), currentUser))
-                                    }
-                                    </td>
-                                </tr>
-                            }
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>@Messages("admin.sp.privateMessage")</th>
-                                <td>@Html(proposal.privateMessageAsHtml)</td>
+                                <td colspan="2">@Html(proposal.privateMessageAsHtml)</td>
                             </tr>
                             @if(proposal.sponsorTalk) {
                                 <tr>
                                     <th>@Messages("admin.sp.sponsorTalk")</th>
-                                    <td><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
+                                    <td colspan="2"><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
                                 </tr>
                             }
                         </tfoot>
                     </table>
-
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-user"></i>
+                        @if(proposal.secondarySpeaker.isDefined) {
+                            @Messages("admin.sp.speakers")
+                        } else {
+                            @Messages("admin.sp.speaker")
+                        }
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="showSpeakerDetails">
+                                        @tags.showSpeakerBioOverview(proposal.mainSpeaker, proposalsByAuths(proposal.mainSpeaker), currentUser)
+                                    </div>
+                                </td>
+                            </tr>
+                            @if(proposal.secondarySpeaker.isDefined) {
+                            <tr>
+                                <td colspan="4">
+                                    <div class="showSecSpeakerDetails">
+                                    @proposal.secondarySpeaker.map { secondarySpeaker =>
+                                        @tags.showSpeakerBioOverview(secondarySpeaker, proposalsByAuths(secondarySpeaker), currentUser)
+                                    }
+                                    </div>
+                                </td>
+                            </tr>
+                            }
+                            @if(proposal.otherSpeakers.nonEmpty) {
+                            <tr>
+                                <td colspan="4">
+                                @proposal.otherSpeakers.map { sp =>
+                                    @tags.showSpeakerBioOverview(sp, proposalsByAuths(sp), currentUser))
+                                }
+                                </td>
+                            </tr>
+                            }
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -128,148 +127,148 @@
         }
         <div class="col-md-12">
             <div class="panel panel-default">
-        @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)){approved=>
-           @if(approved){
-               <div class="panel-heading">
-                    <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
-                </div>
-                <div class="panel-body">
-                    <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
-                    @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
-                            @if(maybeMyVote.isDefined && maybeMyVote.get.vote==0){
+            @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
+                @if(approved) {
+                    <div class="panel-heading">
+                        <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
+                    </div>
+                    <div class="panel-body">
+                        <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
+                        @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
+                            @if(maybeMyVote.isDefined && maybeMyVote.get.vote == 0) {
                                 <button name="vote" value="0" class="btn btn-sm btn-warning">Vote 0</button>
-                            }else{
+                            } else {
                                 <button name="vote" value="0" class="btn btn-sm btn-default">Vote 0</button>
                             }
-                    }
-                </div>
-        }else{
-                <div class="panel-heading">
-                    <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
-                </div>
-                <div class="panel-body">
-                    <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary">@Messages("btn.showVotes")</a>
-
-                    @Event.loadEventsForObjRef(proposal.id).find(_.msg.contains("draft to submitted")).map{event=>
-                        @Messages("cfpAdmin.showWhenCreated",event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("EEE dd/MM HH:mm")).getOrElse("???"))
-                    }
-                    <br>
-                    @if(proposal.state!=ProposalState.SUBMITTED){
-                        <div class="alert alert-warning">
-                            <h4>@Messages("admin.draft.warning")</h4>
-                            <p>@Messages("admin.draft.warning2")</p>
-                            <p>@Messages("admin.draft.warning3") @proposal.state.code</p>
-                        </div>
-                    }else{
-                        @maybeMyVote.map{review:Review=>
-                            <i class="icon-trophy"></i> @Messages("admin.sp.voted")  @tags.renderVote(review.vote.toInt) - @review.date.toString("EEEE d MMM YYYY HH:mm")
-                            <a href="@routes.CFPAdmin.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
                         }
-                        <div class="btn-block">
-                        @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
-                            @if(maybeMyVote.isDefined && maybeMyVote.get.vote==0){
-                                <button name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
-                            }else{
-                                <button name="vote" value="0" class="btn btn-lg btn-default">@Messages("Abs")</button>
-                            }
+                    </div>
+                } else {
+                    <div class="panel-heading">
+                        <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
+                    </div>
+                    <div class="panel-body">
+                        <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary">@Messages("btn.showVotes")</a>
 
-                            @for(i <- 1 to 10) {
-                                @maybeMyVote.map{review:Review=>
-                                    @if(review.vote.toInt==i){
-                                        <button name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
+                        @Event.loadEventsForObjRef(proposal.id).find(_.msg.contains("draft to submitted")).map { event =>
+                            @Messages("cfpAdmin.showWhenCreated", event.date.map(s => s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("EEE dd/MM HH:mm")).getOrElse("???"))
+                        }
+                        <br>
+                        @if(proposal.state != ProposalState.SUBMITTED) {
+                            <div class="alert alert-warning">
+                                <h4>@Messages("admin.draft.warning")</h4>
+                                <p>@Messages("admin.draft.warning2")</p>
+                                <p>@Messages("admin.draft.warning3") @proposal.state.code</p>
+                            </div>
+                        } else {
+                            @maybeMyVote.map { review: Review =>
+                                <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote.toInt)
+                                - @review.date.toString("EEEE d MMM YYYY HH:mm")
+                            <a href="@routes.CFPAdmin.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
+                            }
+                            <div class="btn-block">
+                                @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
+                                    @if(maybeMyVote.isDefined && maybeMyVote.get.vote == 0) {
+                                        <button name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
                                     } else {
-                                        <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                        <button name="vote" value="0" class="btn btn-lg btn-default">@Messages("Abs")</button>
+                                    }
+                                    @for(i <- 1 to 10) {
+                                        @maybeMyVote.map { review: Review =>
+                                            @if(review.vote == i) {
+                                                <button name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
+                                            } else {
+                                                <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                            }
+                                        }
+                                        @if(maybeMyVote.isEmpty) {
+                                            <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                        }
                                     }
                                 }
-                                @if(maybeMyVote.isEmpty){
-                                    <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
-                                }
                             }
-                        }
-                    }
                     </div>
-                </div>
-                @if(flash.get("vote").isDefined) {
-                    <div class="alert alert-success alert-dismissable">
-                    @flash.get("vote").get
                     </div>
-                }
-           }
-        }
-            </div>
-        <div class="col-sm-12 col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3><i class="icon-tasks"></i> @Messages("admin.sp.discussion")</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    <h4><i class="icon-comments-alt"></i>  @Messages("admin.sp.committee_speaker")</h4>
-                </div>
-                <div class="panel-body">
-                @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
-                    @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
-                    <button type="submit" class="btb btn-xs btn-danger">@Messages("admin.btn.sendMessage")</button>
-                }
-                </div>
-                <div class="panel-body">
-                @tags.renderComments(speakerComments)
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            @* FIXME : Better variabilize week days by replacing the preferredDayEnabled flag *@
-            @if(ConferenceDescriptor.current().timing.preferredDayEnabled) {
-                @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
-            <div class="panel panel-default">
-                <div class="panel-default">
-                    <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
-                </div>
-                <div class="panel-body">
-                @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
-                    @if(preferredDay == Some("Wed")) {
-                        <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.wednesday")</a>
-                    } else {
-                        <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Wed")" class="btn btn-sm btn-default">@Messages("calendar.pref.wednesday")</a>
+                    @if(flash.get("vote").isDefined) {
+                        <div class="alert alert-success alert-dismissable">
+                        @flash.get("vote").get
+                        </div>
                     }
-                    @if(preferredDay == Some("Thu")) {
-                        <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
-                    } else {
-                        <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Thu")" class="btn btn-sm btn-default">@Messages("calendar.pref.thursday")</a>
-                    }
-                    @if(preferredDay == Some("Fri")) {
-                        <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.friday")</a>
-                    } else {
-                        <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Fri")" class="btn btn-sm btn-default">@Messages("calendar.pref.friday")</a>
-                    }
-                    @if(preferredDay.isDefined) {
-                        <a href="@routes.CFPAdmin.resetPreferredDay(proposal.id)" class="btn btn-sm btn-default">@Messages("calendar.pref.reset")</a>
-                    }
-                }
-                </div>
-            </div>
                 }
             }
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
-                </div>
-                <div class="panel-body">
-                @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id)) {
-                    @helper.textarea(msgInternalForm("msg"), 'class -> "form-control input-xs")
-                    <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
-                }
-                </div>
-                <div class="panel-body">
-                @tags.renderComments(internalComments)
+            </div>
+            <div class="col-sm-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><i class="icon-tasks"></i> @Messages("admin.sp.discussion")</h3>
+                    </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h4><i class="icon-comments-alt"></i> @Messages("admin.sp.committee_speaker")</h4>
+                    </div>
+                    <div class="panel-body">
+                    @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
+                        @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
+                        <button type="submit" class="btb btn-xs btn-danger">@Messages("admin.btn.sendMessage")</button>
+                    }
+                    </div>
+                    <div class="panel-body">
+                    @tags.renderComments(speakerComments)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                @* FIXME : Better variabilize week days by replacing the preferredDayEnabled flag *@
+                @if(ConferenceDescriptor.current().timing.preferredDayEnabled) {
+                    @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
+                        <div class="panel panel-default">
+                            <div class="panel-default">
+                                <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
+                            </div>
+                            <div class="panel-body">
+                            @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
+                                @if(preferredDay == Some("Wed")) {
+                                    <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.wednesday")</a>
+                                } else {
+                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Wed")" class="btn btn-sm btn-default">@Messages("calendar.pref.wednesday")</a>
+                                }
+                                @if(preferredDay == Some("Thu")) {
+                                    <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
+                                } else {
+                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Thu")" class="btn btn-sm btn-default">@Messages("calendar.pref.thursday")</a>
+                                }
+                                @if(preferredDay == Some("Fri")) {
+                                    <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.friday")</a>
+                                } else {
+                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Fri")" class="btn btn-sm btn-default">@Messages("calendar.pref.friday")</a>
+                                }
+                                @if(preferredDay.isDefined) {
+                                    <a href="@routes.CFPAdmin.resetPreferredDay(proposal.id)" class="btn btn-sm btn-default">@Messages("calendar.pref.reset")</a>
+                                }
+                            }
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
+                    </div>
+                    <div class="panel-body">
+                    @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id)) {
+                        @helper.textarea(msgInternalForm("msg"), 'class -> "form-control input-xs")
+                        <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
+                    }
+                    </div>
+                    <div class="panel-body">
+                    @tags.renderComments(internalComments)
+                    </div>
+                </div>
 
+            </div>
         </div>
-    </div>
     </div>
 
 }
