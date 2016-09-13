@@ -1,8 +1,11 @@
 package controllers
 
+import java.io.{File, PrintWriter}
+
 import library.search.{DoIndexProposal, _}
 import library.{DraftReminder, Redis, ZapActor}
 import models._
+import org.apache.commons.lang3.StringEscapeUtils
 import org.joda.time.Instant
 import play.api.Play
 import play.api.cache.EhCachePlugin
@@ -277,5 +280,11 @@ object Backoffice extends SecureCFPController {
       //      Proposal.decline(request.webuser.uuid, proposalId)
       Ok(views.html.Backoffice.showAllDeclined(allDeclined))
 
+  }
+
+  def showAllAgendaForInge = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
+      Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
   }
 }
