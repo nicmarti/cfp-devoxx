@@ -10,7 +10,6 @@
         </div>
         <div class="panel-body">
             @tags.checkInvited(speaker.uuid)
-             <h4>@Messages("bio2")</h4>
              <p>@speaker.bio</p>
              <h4>@Messages("qualifications.label")</h4>
              @speaker.qualifications.map { q =>

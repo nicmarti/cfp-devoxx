@@ -38,13 +38,17 @@
                                 @Html(proposal.summaryAsHtml)
                                 </td>
                             </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered table-stripped">
+                        <tbody>
                             <tr>
-                                <th>@Messages("proposal.audienceLevel")</th>
-                                <td colspan="2">@Messages(proposal.audienceLevel + ".label")</td>
+                                <th colspan="1">@Messages("proposal.audienceLevel")</th>
+                                <td colspan="3">@Messages(proposal.audienceLevel + ".label")</td>
                             </tr>
                             <tr>
-                                <th>@Messages("proposal.demoLevel")</th>
-                                <td colspan="2">@proposal.demoLevel.map(d => Messages(d + ".label"))</td>
+                                <th colspan="1">@Messages("proposal.demoLevel")</th>
+                                <td colspan="3">@proposal.demoLevel.map(d => Messages(d + ".label"))</td>
                             </tr>
                         </tbody>
                         <tfoot>
