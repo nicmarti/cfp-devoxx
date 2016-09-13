@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/app:rw
     ports:
-      - 9000
+      - "9000:9000"
     links:
       - elasticsearch
       - redis
