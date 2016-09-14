@@ -1,6 +1,6 @@
 package controllers
 
-import java.io.{File, PrintWriter}
+import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 
 import library.search.ElasticSearch
 import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
@@ -8,6 +8,7 @@ import models.Review._
 import models._
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
+import org.joda.time.DateTimeZone
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
@@ -448,9 +449,9 @@ object CFPAdmin extends SecureCFPController {
       FileUtils.forceMkdir(dir)
 
       val file = new File(dir, "speakersDevoxxBE2016.csv")
-      val writer = new PrintWriter(file, "Macroman")
 
-      writer.println("email,firstName,lastName,company,hasSpeakerBadge,hasOneAccepted,isCFPMember,totalApproved,Proposal details separated by ;")
+      val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"), true)
+
       allSpeakers.sortBy(_.email).foreach {
         s =>
 
@@ -460,35 +461,17 @@ object CFPAdmin extends SecureCFPController {
 
             writer.print(s.email.toLowerCase)
             writer.print(",")
-            writer.print(s.firstName.getOrElse("?"))
+            writer.print(s.firstName.getOrElse("?").capitalize)
             writer.print(",")
-            writer.print(s.name.getOrElse("?"))
-            writer.print(",")
-            writer.print(s.company.map(c => "\"" + c.toUpperCase + "\"").getOrElse(""))
+            writer.print(s.name.getOrElse("?").capitalize)
             writer.print(",")
 
-            // freepass
-            writer.print("na"); // Proposal.hasOneProposalWithSpeakerTicket(s.uuid))
-            writer.print(",")
-
-            writer.print(Proposal.hasOneAcceptedProposal(s.uuid))
-            writer.print(",")
-
-            writer.print(Webuser.isMember(s.uuid, "cfp"))
-            writer.print(",")
-
-            // number of talks
-            val allAccepted = Proposal.allAcceptedForSpeaker(s.uuid)
-
-            writer.print(allAccepted.size)
-            writer.print(",")
-
-            Proposal.allAcceptedForSpeaker(s.uuid).map { p =>
+            Proposal.allAcceptedForSpeaker(s.uuid).foreach { p =>
               ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map { slot =>
                 writer.print(Messages(p.talkType.id))
-                writer.print(" \"" + p.title.replaceAll(",", " ") + "\"")
+                writer.print(": \"" + p.title.replaceAll(",", " ") + "\"")
                 writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
-                writer.print(s"from ${slot.from.toString("HH:mm")} to ${slot.to.toString("HH:mm")}")
+                writer.print(s"from ${slot.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")} to ${slot.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")}")
               }.getOrElse {
                 writer.print("\"")
                 writer.print(p.title.replaceAll(",", " "))
@@ -499,7 +482,6 @@ object CFPAdmin extends SecureCFPController {
 
               writer.print(",")
             }
-
 
             writer.println()
           }

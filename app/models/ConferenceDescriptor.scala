@@ -570,11 +570,40 @@ object ConferenceDescriptor {
 
     val keynoteSlotsWednesday: List[Slot] = {
 
-      ConferenceRooms.keynoteRoom.map {
+      val keynoteSlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, WEDNESDAY,
             new DateTime("2016-11-09T09:30:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
-            new DateTime("2016-11-09T11:30:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
+            new DateTime("2016-11-09T10:15:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
+      }
+      val keynoteSlot2 = ConferenceRooms.keynoteRoom.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, WEDNESDAY,
+            new DateTime("2016-11-09T10:15:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime("2016-11-09T10:35:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r2)
+      }
+      val keynoteSlot3 = ConferenceRooms.keynoteRoom.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, WEDNESDAY,
+            new DateTime("2016-11-09T10:40:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime("2016-11-09T11:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r3)
+      }
+      val keynoteSlot4 = ConferenceRooms.keynoteRoom.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, WEDNESDAY,
+            new DateTime("2016-11-09T11:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime("2016-11-09T11:20:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r4)
+      }
+      keynoteSlot1 ++ keynoteSlot2 ++ keynoteSlot3 ++ keynoteSlot4
+    }
+
+    val keynoteSlotsThursday: List[Slot] = {
+
+      ConferenceRooms.keynoteRoom.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+            new DateTime("2016-11-09T19:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime("2016-11-09T19:45:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
       }
     }
 
@@ -782,7 +811,7 @@ object ConferenceDescriptor {
     }
 
     val thursdaySchedule: List[Slot] = {
-      thursdayBreaks ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++  igniteSlotsThursday
+      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++  igniteSlotsThursday
     }
 
     val fridaySchedule: List[Slot] = {
