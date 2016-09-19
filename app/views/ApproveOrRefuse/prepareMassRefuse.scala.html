@@ -7,7 +7,7 @@
     <div class="col-lg-12">
         <h3>All @Messages(confType) not approved - Total @proposals.size</h3>
 
-        <p>This screen preprare the mass notification for all refused speakers. It will not change each Proposal state, but simply add the talk to the Refused list.</p>
+        <p>This screen prepare the mass notification for all refused speakers. It will not change each Proposal state, but simply add the talk to the Refused list.</p>
 
         @proposals.zipWithIndex.map{case (propsAndNote, index) =>
             @defining(propsAndNote._1){proposal:Proposal=>

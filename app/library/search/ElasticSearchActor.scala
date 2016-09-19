@@ -292,7 +292,6 @@ class IndexMaster extends ESActor {
             sb.append("\n")
             val date = new DateTime(hit.date * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")).toString()
             sb.append("{\"@tags\":\"").append(hit.url).append("\",\"@messages\":\"")
-            //.append(hit.objRef).append(" ")
             sb.append(hit.objName.replaceAll("[-,\\s+]", "_")).append("\",\"@timestamp\":\"").append(date).append("\"}")
             sb.append("\n")
         }
@@ -500,7 +499,6 @@ class IndexMaster extends ESActor {
         | }
       """.stripMargin
 
-
     def settingsProposalsEnglish =
       s"""
         |{
@@ -578,7 +576,7 @@ class IndexMaster extends ESActor {
       """.stripMargin
 
 
-    // We use a for-comprehension on purporse so that each action is executed sequentially.
+    // We use a for-comprehension on purpose so that each action is executed sequentially.
     // res2 is executed when res1 is done
     val resFinal = for (res1 <- ElasticSearch.deleteIndex("proposals");
                         res2 <- ElasticSearch.createIndexWithSettings("proposals", settingsFrench)
@@ -586,23 +584,20 @@ class IndexMaster extends ESActor {
       res2
     }
 
-     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_fr2016");
-                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_fr2016", settingsFrench)
+    val resFinal2 = for (res1 <- ElasticSearch.deleteIndex("acceptedproposals_be2016");
+                        res2 <- ElasticSearch.createIndexWithSettings("acceptedproposals_be2016", settingsFrench)
     ) yield {
       res2
     }
 
     val resFinalSpeakers = for (res1 <- ElasticSearch.deleteIndex("speakers");
                                 res2 <- ElasticSearch.createIndexWithSettings("speakers", settingsFrench)
-
     ) yield {
       res2
     }
 
     resFinal
   }
-
-
 }
 
 // Actor that is in charge of Indexing content
@@ -626,6 +621,6 @@ class Reaper extends ESActor {
       case r if r.isSuccess =>
         play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")
       case r if r.isFailure =>
-        play.Logger.of("application.Reaper").warn(s"Could not index speaker ${obj} due to ${r}")
+        play.Logger.of("application.Reaper").warn(s"Could not index speaker $obj due to $r")
     }
 }

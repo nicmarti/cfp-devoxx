@@ -1,7 +1,7 @@
 @(email:String, code:String)
 
 <hr>
-<h3>Welcome to @Messages("longName") CFP!</h3>
+<h3>Welcome to @Messages("longName")</h3>
 <hr>
 <p>We created an access code for you (we really don't want to store any of your password here)</p>
 <p>Your login is <strong>@email</strong></p>
@@ -11,13 +11,13 @@
 <p></p>
 <p>The @Messages("longName") team</p>
 @if(ConferenceDescriptor.current().frLangEnabled) {
-<hr>
-<h3>Bienvenue sur le CFP de @Messages("longName")</h3>
-<p>Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
-<p>Votre identifiant est <strong>@email</strong></p>
-<p>Votre code est <strong>@code</strong></p>
-<p></p>
-<p>Utilisez <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.bugReport()">cette page</a> pour nous signaler un souci ou une demande d'améliration de l'outil.</p>
-<p></p>
-<p>L'équipe @Messages("longName")</p>
+    <hr>
+    <h3>Bienvenue sur le CFP de @Messages("longName")</h3>
+    <p>Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
+    <p>Votre identifiant est <strong>@email</strong></p>
+    <p>Votre code est <strong>@code</strong></p>
+    <p></p>
+    <p>Utilisez <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.bugReport()">cette page</a> pour nous signaler un souci ou une demande d'améliration de l'outil.</p>
+    <p></p>
+    <p>L'équipe @Messages("longName")</p>
 }

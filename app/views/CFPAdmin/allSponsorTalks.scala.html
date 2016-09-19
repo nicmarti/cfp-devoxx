@@ -1,5 +1,4 @@
 @(proposals: List[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-
 @main("All sponsors's talks") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
@@ -8,14 +7,13 @@
     <div class="clearfix"></div>
 
     <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title"><i class="icon-bar-chart"></i> Proposals from Sponsor or Exhibitor</h1>
-                    @proposals.size talks
-                </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="icon-bar-chart"></i> Proposals from Sponsor or Exhibitor</h1>
+                @proposals.size talks
             </div>
         </div>
-
+    </div>
     @proposals.map { proposal =>
             <div class="col-md-12">
                 <div class="panel panel-default">

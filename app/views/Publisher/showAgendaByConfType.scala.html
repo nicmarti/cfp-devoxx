@@ -1,64 +1,98 @@
-@(slots: List[Slot], talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
-    @import org.joda.time.DateTimeZone
+@(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@import org.joda.time.DateTimeZone
 
-    @views.html.Publisher.devoxxFR2016(Messages("agenda-" + talkType), Some(s"Agenda for Devoxx FR 2016 for $day" + Messages("day-" + day))) {
+    @views.html.Publisher.devoxxBE2016(Messages("agenda-" + talkType),Some(s"Agenda for Devoxx 2016 for $day"+Messages("day-" + day))) {
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
                 <a href="@routes.Publisher.showByTalkType(talkType)">@Messages("sw.all." + talkType)</a>  &gt;
                 <a href="@routes.Publisher.showByDay(day)">@Messages("day-" + day)</a></p>
+            @if(talkType!="bof" && talkType!="lab" && talkType!="ignite") {
+                <h5>Help Us With The Schedule</h5>
+                <p>Please mark your favorite talks by clicking on the beer icons.  This feedback will be used to reschedule popular talks in bigger rooms, but in the same timeslot!<br>
+                A <a href="/myagenda">'My Schedule'</a> is also created on the fly listing your favorite talks.</p>
+            }
         </div>
 
         <div class="large-12 columns woocommerce">
+
             <table class="agendaTable">
                 <tr>
-                    <th><i class="icon-time"></i> @Messages("publisher.room")</th>
-                    @slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+                    <th><i class="icon-time"></i> Room</th>
+                    @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
                         <td>@room.name</td>
                     }
                 </tr>
 
-                @if(day.toLowerCase == "thursday" && talkType.toLowerCase == "conf") {
+                @if(day.toLowerCase=="wednesday" && talkType.toLowerCase=="conf" ){
                     <tr>
                         <th>
-                            09:00 - 11:00
+                            09:30 - 11:30
                         </th>
                         <td class="keynotes" colspan="8">
-                            Keynotes dès 9h précise<br>
-                            <em>Accueil + Petit-déjeuner dès 7h30</em><br>
-                        </td>
-                    </tr>
-                }
-                @if(day.toLowerCase == "friday" && talkType.toLowerCase == "conf") {
-                    <tr>
-                        <th>
-                            09:30 - 11:00
-                        </th>
-                        <td class="keynotes" colspan="8">
-                            Keynotes 9h30<br>
+                            <a href="https://devoxx.be/keynotes-2016">Keynotes</a>
+
                         </td>
                     </tr>
                 }
 
-                @slots.groupBy(_.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
+                @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
                     <th class="timeSlot">
-                        @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
-                        - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        <!--
+                        time = @time
+                        localdatetime = @time.toLocalDateTime
+                        to = @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        -->
+                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                     </th>
-                    @subSlots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
-                        @tags.publisher.tagRenderRow(subSlots, room, 17)
+                    @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
+
+                        <td class="room">
+                            @slot.proposal.map { p: Proposal =>
+                                <span class="track">
+                                    @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
+                                </span>
+                                <br>
+                                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+                                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                                    @tags.publisher.renderSpeaker(speakerUUID)
+                                }</span>
+                                @tags.publisher.renderFavorite(p.id)
+                            }
+                        @if(slot.proposal.isEmpty && slot.break.isEmpty ){
+                            TBA
+                        }
+                        </td>
                     }
                 </tr>
                 }
                 <tr>
-                    <th><i class="icon-time"></i> @Messages("publisher.room")</th>
-                    @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>
-                        <td>@roomName.name</td>
+                    <th><i class="icon-time"></i> Room</th>
+                    @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+                        <td>@room.name</td>
                     }
                 </tr>
+ @if(day.toLowerCase.startsWith("thu")) {
+     <tr>
+         <th>
+             19:00 - 19:50
+         </th>
+         <td class="keynotes" colspan="8">
+             <a href="https://devoxx.be/keynotes-2016">Closing Keynote (Room 5)</a>
+
+         </td>
+     </tr>
+     <tr>
+         <th>
+             20:00 - 22:00
+         </th>
+         <td class="keynotes" colspan="8">
+             Devoxx Movie (Room 8)
+         </td>
+     </tr>
+ }
             </table>
 
         </div>
-
     }

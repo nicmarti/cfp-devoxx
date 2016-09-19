@@ -90,6 +90,7 @@ object Attic extends SecureCFPController {
       Redirect(routes.Attic.atticHome()).flashing(("success", s"Deleted all Invitations"))
   }
 
+
   /**
    * Reset the list of notifed speakers.
    */
@@ -107,6 +108,4 @@ object Attic extends SecureCFPController {
       Event.resetEvents()
       Redirect(routes.Attic.atticHome()).flashing(("success", s"Events log flushed."))
   }
-
-
 }

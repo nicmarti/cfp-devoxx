@@ -24,11 +24,11 @@
 package models
 
 import library.Redis
-import play.api.data.validation.ValidationError
-import play.api.libs.json.{JsPath, Json}
+import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
+
 import scala.util.Random
-import org.joda.time.{DateTimeZone, DateTime}
+import org.joda.time.{DateTime, DateTimeZone}
 
 /**
  * Slots that are scheduled.
@@ -41,11 +41,11 @@ case class TimeSlot(start: DateTime, end: DateTime) {
   }
 
   override def equals(obj: scala.Any): Boolean = {
-    if (obj.isInstanceOf[TimeSlot]) {
-      val d2 = obj.asInstanceOf[TimeSlot]
-      d2.start.equals(this.start) && d2.end.equals(this.end)
-    } else {
-      false
+    obj match {
+      case d2: TimeSlot =>
+        d2.start.equals(this.start) && d2.end.equals(this.end)
+      case _ =>
+        false
     }
   }
 }
@@ -104,8 +104,8 @@ object ScheduleConfiguration {
         json: String =>
           val maybeScheduledConf = Json.parse(json).validate[ScheduleConfiguration]
           maybeScheduledConf.fold(errors => {
-            play.Logger.of("models.ScheduledConfiguration").warn("Unable to reload a SlotConfiguration due to JSON error");
-            play.Logger.of("models.ScheduledConfiguration").warn(s"Got error : ${library.ZapJson.showError(errors)} ");
+            play.Logger.of("models.ScheduledConfiguration").warn("Unable to reload a SlotConfiguration due to JSON error")
+            play.Logger.of("models.ScheduledConfiguration").warn(s"Got error : ${library.ZapJson.showError(errors)} ")
             None
           }
             , someConf => Option(someConf)
@@ -114,13 +114,11 @@ object ScheduleConfiguration {
   }
 
   def publishConf(id: String, confType: String) = Redis.pool.withClient {
-    implicit client =>
-      client.hset("Published:Schedule", confType, id)
+    implicit client => client.hset("Published:Schedule", confType, id)
   }
 
   def getPublishedSchedule(confType: String): Option[String] = Redis.pool.withClient {
-    implicit client =>
-      client.hget("Published:Schedule", confType)
+    implicit client => client.hget("Published:Schedule", confType)
   }
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {
@@ -133,12 +131,16 @@ object ScheduleConfiguration {
     }
 
     val listOfSlots = day match {
+      case "monday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.mondaySchedule, "monday")
+      case "tuesday" =>
+        extractSlot(ConferenceDescriptor.ConferenceSlots.tuesdaySchedule, "tuesday")
       case "wednesday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
       case "thursday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
       case "friday" =>
-        extractSlot(ConferenceDescriptor.ConferenceSlots.friday, "friday")
+        extractSlot(ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
       case other =>
         play.Logger.of("ScheduleConfiguration").warn("Could not match " + other + " in getPublishedScheduleByDay")
         Nil
@@ -157,15 +159,14 @@ object ScheduleConfiguration {
     getPublishedSchedule(confType).flatMap {
       id: String =>
         loadScheduledConfiguration(id).map {
-          scheduledConf =>
-            scheduledConf.slots
+          scheduledConf => scheduledConf.slots
         }
     }.getOrElse(List.empty[Slot])
   }
 
   // Retrieve the time slot for a specific proposalId
   def findSlotForConfType(confType: String, proposalId: String): Option[Slot] = {
-    loadSlotsForConfType(confType).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId).headOption
+    loadSlotsForConfType(confType).filter(_.proposal.isDefined).find(_.proposal.get.id == proposalId)
   }
 
   def loadAllConfigurations() = {
@@ -178,23 +179,20 @@ object ScheduleConfiguration {
   }
 
   def loadAllPublishedSlots():List[Slot]={
-    loadAllConfigurations().map{
-      sc=>
-        sc.slots
-    }.flatten.toList
+    loadAllConfigurations().flatMap {
+      sc => sc.slots
+    }
   }
 
-
-  def  loadNextTalks() = {
+  def loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
-    val slots = allAgendas.map(_.slots).flatten
+    val slots = allAgendas.flatMap(_.slots)
     Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Paris")))).sortBy(_.from.toDate.getTime).take(10))
   }
 
   def loadRandomTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
-    val slots = allAgendas.map(_.slots).flatten
-    Option(Random.shuffle(slots.toList).take(10))
+    val slots = allAgendas.flatMap(_.slots)
+    Option(Random.shuffle(slots).take(10))
   }
-
 }

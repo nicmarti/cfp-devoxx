@@ -86,7 +86,6 @@ case class Speaker(uuid: String
       }
   }
 
-
   def hasTwitter = StringUtils.trimToEmpty(twitter.getOrElse("")).nonEmpty
 
   def hasBio = StringUtils.trimToEmpty(bio).nonEmpty
@@ -141,7 +140,7 @@ object Speaker {
   }
 
   def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean, String)] = {
-    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), needsToAccept(s.uuid) == false, s.qualifications.getOrElse("No experience"))
+    Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), !needsToAccept(s.uuid), s.qualifications.getOrElse("No experience"))
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -265,7 +264,4 @@ object Speaker {
       val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
       allSpeakerIDs.diff(allThatAcceptedConditions)
   }
-
-
 }
-

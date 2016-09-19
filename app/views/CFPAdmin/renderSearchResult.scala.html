@@ -1,5 +1,4 @@
 @(total:Int, results:Seq[String], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-
 <div class="panel">
     <div class="panel-heading">
         <h3 class="panel-title">@Messages("search.result" , total)</h3>
@@ -27,13 +26,14 @@ $("#closeSearch").on("click",function(e){
 });
 $("#onlySpeakers").on("click",function(e){
     e.preventDefault();
-    $("#searchResult p.searchProposalResult").hide();
-    $("#searchResult p.searchSpeakerResult").show();
+    var searchResult = $("#searchResult");
+    searchResult.find("p.searchProposalResult").hide();
+    searchResult.find("p.searchSpeakerResult").show();
 });
 $("#onlyProposals").on("click",function(e){
     e.preventDefault();
-    $("#searchResult p.searchSpeakerResult").hide();
-    $("#searchResult p.searchProposalResult").show();
-
+    var searchResult = $("#searchResult");
+    searchResult.find("p.searchSpeakerResult").hide();
+    searchResult.find("p.searchProposalResult").show();
 });
 </script>

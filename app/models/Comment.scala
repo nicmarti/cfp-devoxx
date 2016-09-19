@@ -56,18 +56,16 @@ object Comment {
   }
 
   def countComments(proposalId: String): Long = Redis.pool.withClient {
-    client =>
-      client.zcard(s"Comments:ForSpeaker:$proposalId").longValue
+    client => client.zcard(s"Comments:ForSpeaker:$proposalId").longValue
   }
 
   def countInternalComments(proposalId: String): Long = Redis.pool.withClient {
-    client =>
-      client.zcard(s"Comments:Internal:$proposalId").longValue
+    client => client.zcard(s"Comments:Internal:$proposalId").longValue
   }
 
   def deleteAllComments(proposalId:String) = Redis.pool.withClient{
-    client=>
-      val tx=client.multi()
+    client =>
+      val tx = client.multi()
       tx.del(s"Comments:ForSpeaker:$proposalId")
       tx.del(s"Comments:Internal:$proposalId")
       tx.exec()
@@ -89,6 +87,4 @@ object Comment {
       }
       comments
   }
-
-
 }

@@ -23,16 +23,12 @@
 
 package controllers
 
-import java.io.File
-
 import com.fasterxml.jackson.databind.JsonNode
 import models._
 import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.Action
 import play.libs.Json
-import play.utils.UriEncoding
 
 /**
   * Backoffice controller used to store rating and reviews sent by the mobile
@@ -55,9 +51,9 @@ object RatingController extends SecureCFPController {
         "rating" -> number(min = 0, max = 5),
         "review" -> optional(text)
 
-      )(RatingDetail.apply)(RatingDetail.unapply _)
+      )(RatingDetail.apply)(RatingDetail.unapply)
     )
-  )(Rating.apply)(Rating.unapply _)
+  )(Rating.apply)(Rating.unapply)
   )
 
   def homeRating() = SecuredAction(IsMemberOf("admin")) {

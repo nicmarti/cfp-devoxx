@@ -86,7 +86,7 @@
                         <h3>Submitted by Track</h3>
                             @defining(totalSubmittedByTrack.map(_._2).max){maxValue=>
                             @totalSubmittedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track+".leaderboard") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
+                                <span class="label label-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -95,8 +95,7 @@
                             }
                             }
                     </div>
-                        }
-
+                    }
                     @if(totalSubmittedByType.nonEmpty){
                     <div class="col-md-6">
                         <h3>Submitted by Type</h3>
@@ -126,7 +125,6 @@
                         </table>
                     </div>
                     }
-
                     @if(allApprovedByTrack.nonEmpty) {
                         <div class="col-md-6">
                         <h3>Approved by Track (total @allApprovedByTrack.size)</h3>
@@ -153,8 +151,6 @@
                             }
                         </div>
                     }
-
-
                     @if(totalAcceptedByTrack.nonEmpty){
                         <div class="clearfix"></div>
                      <div class="col-md-6">
@@ -171,7 +167,6 @@
                             }
                     </div>
                     }
-
                     @if(totalAcceptedByType.nonEmpty){
                     <div class="col-md-6">
                         <h3>Accepted by Type</h3>

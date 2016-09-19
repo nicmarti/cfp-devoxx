@@ -24,10 +24,10 @@ GET           /authenticate/linkedin                                            
 GET           /access_token                                                     controllers.Authentication.showAccessToken
 
 POST          /newspeaker                                                       controllers.Authentication.saveNewSpeaker
-POST          /newvisitor                                                       controllers.Authentication.saveNewVisitor
 GET           /newspeaker/validateMail                                          controllers.Authentication.validateYourEmailForSpeaker(t:String,a:String)
-GET           /visitors/validateMail                                            controllers.Authentication.validateYourEmailForVisitor(t:String,a:String)
 POST          /newspeaker/validImported                                         controllers.Authentication.validateImportedSpeaker
+POST          /newvisitor                                                       controllers.Authentication.saveNewVisitor
+GET           /visitors/validateMail                                            controllers.Authentication.validateYourEmailForVisitor(t:String,a:String)
 POST          /visitors/validImported                                           controllers.Authentication.validateImportedVisitor
 
 
@@ -72,27 +72,35 @@ POST          /bug/new                                                          
 # CFP Admin
 GET           /cfpadmin                                                         controllers.CFPAdmin.index(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
 GET           /cfpadmin/proposal/:proposalId                                    controllers.CFPAdmin.openForReview(proposalId:String)
-GET           /cfpadmin/proposal/:proposalId/history                             controllers.CFPAdmin.history(proposalId:String)
+GET           /cfpadmin/proposal/:proposalId/history                            controllers.CFPAdmin.history(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/msgToSpeaker                       controllers.CFPAdmin.sendMessageToSpeaker(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/postInternal                       controllers.CFPAdmin.postInternalMessage(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/vote                               controllers.CFPAdmin.voteForProposal(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/clearVote                          controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/score                              controllers.CFPAdmin.showVotesForProposal(proposalId:String)
+GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
+GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
+GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
+
 GET           /cfpadmin/leaderboard                                             controllers.CFPAdmin.leaderBoard
 GET           /cfpadmin/leaderboard/reviewerStats                               controllers.CFPAdmin.allReviewersAndStats
 GET           /cfpadmin/leaderboard/compute                                     controllers.CFPAdmin.doComputeLeaderBoard
+
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
-GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
 GET           /cfpadmin/recompute/allvotes                                      controllers.CFPAdmin.doComputeVotesTotal()
+GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks
 GET           /cfpadmin/speaker/:uuidSpeaker                                    controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
 GET           /cfpadmin/sponsorTalk/remove/:proposalId                          controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
-GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
-GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET           /cfpadmin/compareReviewer                                         controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
+
 GET           /cfpadmin/allWebusers                                             controllers.CFPAdmin.allWebusers()
+POST          /cfpadmin/cfpWebusers/trackLeaders                                controllers.CFPAdmin.updateTrackLeaders()
+GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
+
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
+GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
@@ -100,10 +108,6 @@ GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()
 GET           /cfpadmin/allSpeakers/acceptedTalks/export                        controllers.CFPAdmin.allSpeakersWithAcceptedTalksForExport()
 GET           /cfpadmin/allSpeakers/invited                                     controllers.InviteController.allInvitations()
-GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
-POST          /cfpadmin/cfpWebusers/trackLeaders                                controllers.CFPAdmin.updateTrackLeaders()
-GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
-
 
 GET           /cfpadmin/setPreferredDay                                         controllers.CFPAdmin.setPreferredDay(proposalId:String, day:String)
 GET           /cfpadmin/resetPreferredDay                                       controllers.CFPAdmin.resetPreferredDay(proposalId:String)
@@ -159,35 +163,32 @@ GET           /ar/doMassRefuseAndRedirect                                       
 # For Fun, it works only if you have Elastic Search
 GET           /cloudtags                                                        controllers.CallForPaper.cloudTags()
 
-# For Paper guide
-GET           /guide/exported                                                   controllers.PaperGuide.exportProgram()
-
 # Content Publisher
 # If you plan to use the CFP for your program, you can adapt the URLs below
 # Please, do not try to propose a configurable system here, as each Conference has its own URLs
 # Keep the .html in each URL if you want to save your program (with wget for instance)
 # Each year I do a backup with wget wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2014
 
-GET           /2017/speakers.html                                               controllers.Publisher.showAllSpeakers()
-GET           /2017/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
-GET           /2017/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
-GET           /2017/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
-GET           /2017/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
-GET           /2017/index.html                                                  controllers.Publisher.homePublisher()
-GET           /2017/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET           /2017/byday/:day                                                  controllers.Publisher.showByDay(day:String)
-GET           /2017/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET           /2016/speakers.html                                               controllers.Publisher.showAllSpeakers()
+GET           /2016/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
+GET           /2016/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
+GET           /2016/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
+GET           /2016/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /2016/index.html                                                  controllers.Publisher.homePublisher()
+GET           /2016/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
+GET           /2016/byday/:day                                                  controllers.Publisher.showByDay(day:String)
+GET           /2016/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 
-# This is Devoxx FR 2016
+# This is Devoxx BE 2015
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
-GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2016", file)
+GET           /2015/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 
 # Favorites
 GET           /myagenda                                                         controllers.Favorites.home
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
 GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
 
-# This is an AJAX callback triggered from devoxxBE2015.scala (the publisher web pages)
+# This is an AJAX callback triggered from devoxxBE2016.scala (the publisher web pages)
 POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
 
 # REST API
@@ -200,15 +201,13 @@ GET           /api/conferences/:eventCode/speakers                              
 GET           /api/conferences/:eventCode/speakers/:uuid                        controllers.RestAPI.showSpeaker(eventCode:String,uuid:String)
 GET           /api/conferences/:eventCode/rooms/:room/:day                      controllers.RestAPI.showScheduleForRoom(eventCode: String, room:String, day: String)
 GET           /api/conferences/:eventCode/rooms/                                controllers.RestAPI.showRooms(eventCode:String)
-GET           /api/conferences/:eventCode/rooms                                 controllers.RestAPI.showRooms(eventCode:String)
 GET           /api/conferences/:eventCode/topFavedTalks                         controllers.RestAPI.topFavedTalks(eventCode:String, limit:Int ?=10)
 GET           /api/conferences/:eventCode/talks/                                controllers.RestAPI.redirectToTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks                                 controllers.RestAPI.showApprovedTalks(eventCode:String)
 GET           /api/conferences/:eventCode/talks/:id                             controllers.RestAPI.showTalk(eventCode:String,id:String)
 GET           /api/conferences/:eventCode/schedules/                            controllers.RestAPI.showAllSchedules(eventCode:String)
-GET           /api/conferences/:eventCode/schedules                             controllers.RestAPI.showAllSchedules(eventCode:String)
 GET           /api/conferences/:eventCode/schedules/:day/                       controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
-GET           /api/conferences/:eventCode/schedules/:day                        controllers.RestAPI.showScheduleFor(eventCode:String, day:String)
+GET           /api/conferences/:eventCode/scheduleTypes/:confType               controllers.RestAPI.showScheduleForConfType(eventCode:String, confType:String)
 GET           /api/conferences/:eventCode/proposalTypes                         controllers.RestAPI.showProposalTypes(eventCode:String)
 GET           /api/conferences/:eventCode/tracks                                controllers.RestAPI.showTracks(eventCode:String)
 
@@ -224,8 +223,8 @@ DELETE        /schedulling/deletescheduledConfigurations                        
 POST          /schedulling/publish                                              controllers.SchedullingController.publishScheduleConfiguration()
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
 
-# Wishlist
-GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishlist()
+# WishList
+GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishList()
 GET           /cfpadmin/wishlist/new                                            controllers.Wishlist.newRequestToTalk()
 POST          /cfpadmin/wishlist/saveNew                                        controllers.Wishlist.saveNewRequestToTalk()
 
@@ -257,7 +256,10 @@ POST          /cfpadmin/attic/resetEvents                                       
 # Golden ticket admin
 GET           /admin/goldenTickets                                              controllers.GoldenTicketAdminController.showAll()
 GET           /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.newGoldenTicket()
+GET           /admin/goldenTickets/newGroupOfTicket                             controllers.GoldenTicketAdminController.newGroupOfGoldenTicket()
 POST          /admin/goldenTickets/newTicket                                    controllers.GoldenTicketAdminController.saveGoldenTicket()
+POST          /admin/goldenTickets/newTicket/importGroupOfGT                    controllers.GoldenTicketAdminController.importGroupOfGT()
+POST          /admin/goldenTickets/newTicket/bulkImport                         controllers.GoldenTicketAdminController.bulkImport()
 GET           /admin/goldenTickets/votes                                        controllers.GoldenTicketAdminController.showGoldenTicketVotes()
 GET           /admin/goldenTickets/stats                                        controllers.GoldenTicketAdminController.showStats()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
@@ -288,3 +290,5 @@ GET           /api/voting/v1/categories                                         
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
+
+GET           /bp/fullAgenda                                                    controllers.Backoffice.showAllAgendaForInge()

@@ -33,7 +33,7 @@ import org.apache.commons.lang3.RandomStringUtils
  */
 class TrackLeaderSpecs extends PlaySpecification {
 
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364")
 
   val sampleTrack = ConferenceDescriptor.ConferenceTracks
 
@@ -54,16 +54,16 @@ class TrackLeaderSpecs extends PlaySpecification {
       Webuser.addToCFPAdmin(testWebuser.uuid)
 
       // When
-      TrackLeader.assign(sampleTrack.UNKNOWN.id, testWebuser.uuid)
+      TrackLeader.assign(sampleTrack.CLOUD.id, testWebuser.uuid)
 
       // Then the webuser is assigned to the Track
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, testWebuser.uuid) must beFalse
 
 
       Webuser.delete(testWebuser)
       // Check that we did a cleanup
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beFalse
     }
 
     "not associate a user to a Track if the user does not belong to CFP group" in new WithApplication(app = appWithTestRedis()) {
@@ -75,7 +75,7 @@ class TrackLeaderSpecs extends PlaySpecification {
 
 
       // When
-      TrackLeader.assign(sampleTrack.UNKNOWN.id, testWebuser.uuid)
+      TrackLeader.assign(sampleTrack.CLOUD.id, testWebuser.uuid)
 
       // Then the webuser is NOT assigned to the Track
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, testWebuser.uuid) must beFalse
@@ -92,11 +92,11 @@ class TrackLeaderSpecs extends PlaySpecification {
 
       // When
       Webuser.addToCFPAdmin(testWebuser.uuid)
-      TrackLeader.assign(sampleTrack.ARCHISEC.id, testWebuser.uuid)
-      TrackLeader.unassign(sampleTrack.ARCHISEC.id, testWebuser.uuid)
+      TrackLeader.assign(sampleTrack.CLOUD.id, testWebuser.uuid)
+      TrackLeader.unassign(sampleTrack.CLOUD.id, testWebuser.uuid)
 
       // Then
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beFalse
 
       Webuser.delete(testWebuser)
     }
@@ -109,12 +109,12 @@ class TrackLeaderSpecs extends PlaySpecification {
       Webuser.saveAndValidateWebuser(testWebuser)
 
       // When
-      TrackLeader.assign(sampleTrack.ARCHISEC.id, testWebuser.uuid)
-      TrackLeader.unassign(sampleTrack.ARCHISEC.id, testWebuser.uuid)
+      TrackLeader.assign(sampleTrack.CLOUD.id, testWebuser.uuid)
+      TrackLeader.unassign(sampleTrack.CLOUD.id, testWebuser.uuid)
 
 
       // Then
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beFalse
 
       Webuser.delete(testWebuser)
     }
@@ -127,13 +127,13 @@ class TrackLeaderSpecs extends PlaySpecification {
 
       // When
       Webuser.addToCFPAdmin(testWebuser.uuid)
-      TrackLeader.assign(sampleTrack.ARCHISEC.id, testWebuser.uuid)
+      TrackLeader.assign(sampleTrack.CLOUD.id, testWebuser.uuid)
       TrackLeader.assign(sampleTrack.JAVA.id, testWebuser.uuid)
 
 
       // Then
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.SSJ.id, testWebuser.uuid) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, testWebuser.uuid) must beTrue
 
       Webuser.delete(testWebuser)
@@ -145,16 +145,16 @@ class TrackLeaderSpecs extends PlaySpecification {
       val testWebuser = Webuser.createSpeaker(email, RandomStringUtils.randomAlphabetic(2), RandomStringUtils.randomAlphabetic(4))
       Webuser.saveAndValidateWebuser(testWebuser)
       Webuser.addToCFPAdmin(testWebuser.uuid)
-      val mapsByTrack:Map[String,Seq[String]] = Map(sampleTrack.ARCHISEC.id -> List(testWebuser.uuid).toSeq)
+      val mapsByTrack:Map[String,Seq[String]] = Map(sampleTrack.CLOUD.id -> List(testWebuser.uuid))
 
       // When
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beFalse
       TrackLeader.updateAllTracks(mapsByTrack)
 
       // Then
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id,  RandomStringUtils.randomAlphabetic(9)) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id,  RandomStringUtils.randomAlphabetic(9)) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.SSJ.id, testWebuser.uuid) must beFalse
 
       Webuser.delete(testWebuser)
     }
@@ -165,78 +165,71 @@ class TrackLeaderSpecs extends PlaySpecification {
       val testWebuser = Webuser.createSpeaker(email, RandomStringUtils.randomAlphabetic(2), RandomStringUtils.randomAlphabetic(4))
       Webuser.saveAndValidateWebuser(testWebuser)
       Webuser.addToCFPAdmin(testWebuser.uuid)
-      val mapsByTrack:Map[String,Seq[String]] = Map(sampleTrack.ARCHISEC.id -> List(testWebuser.uuid).toSeq)
+      val mapsByTrack:Map[String,Seq[String]] = Map(sampleTrack.CLOUD.id -> List(testWebuser.uuid))
 
       // When
       TrackLeader.updateAllTracks(mapsByTrack)
 
       // Then
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, testWebuser.uuid) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beTrue
 
-      val mapsByTrack02:Map[String,Seq[String]] = Map(sampleTrack.ARCHISEC.id -> List(RandomStringUtils.randomAlphabetic(3)).toSeq)
+      val mapsByTrack02:Map[String,Seq[String]] = Map(sampleTrack.CLOUD.id -> List(RandomStringUtils.randomAlphabetic(3)))
       TrackLeader.updateAllTracks(mapsByTrack02)
 
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id,  testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id,  testWebuser.uuid) must beFalse
 
       Webuser.delete(testWebuser)
     }
-
 
      "correctly assign then unassign a track" in new WithApplication(app = appWithTestRedis()) {
       // Given
       val uuid01 = RandomStringUtils.randomAlphabetic(9)
       val uuid02 = RandomStringUtils.randomAlphabetic(11)
-      val uuid03 = RandomStringUtils.randomAlphabetic(10)
+      val uuid03 = RandomStringUtils.randomAlphabetic(4)
 
       Webuser.addToCFPAdmin(uuid01)
       Webuser.addToCFPAdmin(uuid02)
-      Webuser.addToCFPAdmin(uuid03)
 
       val mapsByTrack:Map[String,Seq[String]] = Map(
-        sampleTrack.UNKNOWN.id -> List(uuid01).toSeq,
-        sampleTrack.JAVA.id -> List(uuid02).toSeq,
-        sampleTrack.ARCHISEC.id -> List(uuid01).toSeq
+        sampleTrack.CLOUD.id -> List(uuid01),
+        sampleTrack.JAVA.id -> List(uuid02),
+        sampleTrack.BIGDATA.id -> List(uuid01)
       )
 
       // When
       TrackLeader.updateAllTracks(mapsByTrack)
 
       // Then
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid01) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, uuid01) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beTrue
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid01) must beTrue
 
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
-
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid03) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid02) must beFalse
 
        val mapsByTrack2:Map[String,Seq[String]] = Map(
-        sampleTrack.UNKNOWN.id -> List(uuid03).toSeq,
-        sampleTrack.JAVA.id -> List(uuid03).toSeq
+        sampleTrack.CLOUD.id -> List(uuid03),
+        sampleTrack.JAVA.id -> List(uuid03)
       )
       TrackLeader.updateAllTracks(mapsByTrack2)
 
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid01) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, uuid01) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid01) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid01) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, uuid02) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid02) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid02) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid02) must beFalse
 
-      TrackLeader.isTrackLeader(sampleTrack.UNKNOWN.id, uuid03) must beTrue
+
+      TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, uuid03) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, uuid03) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid01) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.ARCHISEC.id, uuid03) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.BIGDATA.id, uuid03) must beFalse
 
       Webuser.removeFromCFPAdmin(uuid01)
       Webuser.removeFromCFPAdmin(uuid02)
       Webuser.removeFromCFPAdmin(uuid03)
     }
-
   }
 }

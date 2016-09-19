@@ -1,8 +1,5 @@
 @(proposal: Proposal, comments: List[Comment], msgToCommitte: Form[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
-
-@import com.github.rjeschke.txtmark._
-
 @main("Comments for proposal " + proposal.id) {
     <div class="row">
         <div class="col-md-12">

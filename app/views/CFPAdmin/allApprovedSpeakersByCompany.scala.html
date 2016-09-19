@@ -6,7 +6,6 @@
         <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
-
     @if(flash.get("error").isDefined){
         <div class="alert alert-danger alert-dismissable col-md-12">
             <strong>Error :</strong>
@@ -18,7 +17,6 @@
             @flash.get("success").get
         </div>
     }
-
     <div class="col-md-12">
         <div class="panel panel-default">
         <div class="panel-heading">
@@ -26,7 +24,7 @@
             <span class="label label-info">@speakersByCompany.size companies</span>
         </div>
         <div class="panel-body">
-            @proposals.map { case (company, props) =>
+            @proposals.foreach {case (company, props) =>
             <h3>@company.capitalize @props.size talk(s)</h3>
                 @props.toList.sortBy(_.talkType.id).map {proposal=>
                     @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") <br>
@@ -38,7 +36,6 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Lang</th>
                         <th>Company</th>
                         <th>Email</th>
                         <th>Action</th>
@@ -54,9 +51,6 @@
                           <td>
                            @speaker.cleanName
                        </td>
-                        <td>
-                            @speaker.cleanLang
-                        </td>
                         <td>
                             @speaker.company.getOrElse("")
                         </td>

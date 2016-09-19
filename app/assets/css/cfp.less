@@ -84,9 +84,10 @@ dd.info {
 }
 
 .search-box {
-  font-size: 11px;
+  font-size: 12px;
   padding: 1px 10px;
-  height: 25px;
+  height: 40px;
+  margin-top: 1px;
 }
 
 .searchResult {
@@ -276,9 +277,7 @@ progress:after {
   height: 20px;
   line-height: normal;
   vertical-align: baseline;
-  background-image: none;
-  background-position: 0% 0%;
-  background-repeat: repeat;
+  background: none repeat 0 0;
   margin-top: 0;
 }
 
@@ -352,7 +351,7 @@ progress:after {
 }
 
 .timeline > li .tl_status .tl_status_code {
-  margin-top: 0px;
+  margin-top: 0;
   padding: 0 0 10px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
@@ -360,14 +359,13 @@ progress:after {
 /* The triangle */
 .timeline > li .tl_status:after {
   right: 100%;
-  border: solid transparent;
   content: " ";
   height: 0;
   width: 0;
   position: absolute;
   pointer-events: none;
+  border: 10px solid transparent;
   border-right-color: #38cb44;
-  border-width: 10px;
   top: 10px;
 }
 
@@ -422,7 +420,7 @@ progress:after {
     position: relative;
     float: right;
     left: auto;
-    margin: -55px 5px 0 0px;
+    margin: -55px 5px 0 0;
   }
 }
 
@@ -438,9 +436,8 @@ progress:after {
 .ribbon-green {
    z-index: 15;
   font: bold 15px Sans-Serif;
-  color: #333;
   text-align: center;
-  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px 0px;
+  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -457,9 +454,9 @@ progress:after {
   background-image: -ms-linear-gradient(top, #BFDC7A, #8EBF45);
   background-image: -o-linear-gradient(top, #BFDC7A, #8EBF45);
   color: #6a6340;
-  -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
 .ribbon-green:before, .ribbon-green:after {
@@ -492,9 +489,8 @@ progress:after {
 .ribbon-red {
   z-index: 15;
   font: bold 15px Sans-Serif;
-  color: #333;
   text-align: center;
-  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px 0px;
+  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -511,9 +507,9 @@ progress:after {
   background-image: -ms-linear-gradient(top, #dc947a, #bf5757);
   background-image: -o-linear-gradient(top, #dc947a, #bf5757);
   color: #6a2b2f;
-  -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
 .ribbon-red:before, .ribbon-red:after {
@@ -692,4 +688,7 @@ table.speakerTable tfoot tr td{
   white-space: pre-wrap;
   font-size: 0.9em;
   color: @lightgrey
+}
+th.proposalTitle {
+  width: 55%;
 }

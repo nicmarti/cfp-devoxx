@@ -23,11 +23,11 @@ object ProposalType {
   val UNKNOWN = ProposalType(id = "unknown", label = "unknown.label")
 
   val all = ConferenceDescriptor.ConferenceProposalTypes.ALL
-  val allAsId = all.map(a => (a.id, a.label)).toSeq.sorted
+  val allAsId = all.map(a => (a.id, a.label)).sorted
 
   def allForCombos = {
     val onlyThoseThatShouldBeDisplayed = all.filterNot(_ == UNKNOWN)
-    val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).toSeq.sorted
+    val finalFormat = onlyThoseThatShouldBeDisplayed.map(a => (a.id, a.label)).sorted
     finalFormat
   }
 
@@ -44,7 +44,7 @@ object ProposalType {
       , ("l2", "level2.label")
       , ("l3", "level3.label")
     )
-  }.toSeq
+  }
 
   val demoLevels: Seq[(String, String)] = {
     List(
@@ -52,7 +52,7 @@ object ProposalType {
       , ("d2", "demoLevel2.label")
       , ("d3", "demoLevel3.label")
       , ("d4", "demoLevel4.label"))
-  }.toSeq
+  }
 }
 
 case class ProposalState(code: String)
@@ -113,7 +113,6 @@ object ProposalState {
   }
 }
 
-
 import com.github.rjeschke.txtmark._
 
 // A proposal
@@ -133,7 +132,8 @@ case class Proposal(id: String,
                     track: Track,
                     demoLevel: Option[String],
                     userGroup: Option[Boolean],
-                    wishlisted: Option[Boolean] = None) {
+                    wishlisted: Option[Boolean] = None,
+                    youTubeLink: Option[String]) {
 
   def escapedTitle: String = title match {
     case null => ""
@@ -189,11 +189,9 @@ object Proposal {
       // We enforce the user id, for security reason
       val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
 
-      findById(proposal.id).map {
-        oldProposal =>
-          resetVotesIfProposalTypeIsUpdated(proposal.id, proposal.talkType, oldProposal.talkType, proposalState)
+      findById(proposal.id).foreach {
+        oldProposal => resetVotesIfProposalTypeIsUpdated(proposal.id, proposal.talkType, oldProposal.talkType, proposalState)
       }
-
 
       val json = Json.toJson(proposalWithMainSpeaker).toString()
 
@@ -240,6 +238,7 @@ object Proposal {
     , "track" -> nonEmptyText
     , "demoLevel" -> optional(text)
     , "userGroup" -> optional(boolean)
+    , "youTubeLink" -> optional(text)
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = Redis.pool.withClient {
@@ -265,11 +264,10 @@ object Proposal {
                           sponsorTalk: Boolean,
                           track: String,
                           demoLevel: Option[String],
-                          userGroup: Option[Boolean]): Proposal = {
+                          userGroup: Option[Boolean],
+                          youTubeLink: Option[String]): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
-      // TODO Devoxx FR 2015 and Devoxx BE 2015 used [Messages("longYearlyName" instead of ConferenceDescriptor
-      // So all proposals were created with an invalid event. It should not be a I18N but the real value
       ConferenceDescriptor.current().eventCode,
       lang,
       title,
@@ -285,21 +283,21 @@ object Proposal {
       Track.parse(track),
       demoLevel,
       userGroup,
-      wishlisted = None
+      wishlisted = None,
+      youTubeLink
     )
-
   }
 
   def isNew(id: String): Boolean = Redis.pool.withClient {
     client =>
       // Important when we create a new proposal
-      client.hexists("Proposals", id) == false
+      !client.hexists("Proposals", id)
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
-    Boolean, String, Option[String], Option[Boolean])] = {
+    Boolean, String, Option[String], Option[Boolean], Option[String])] = {
     Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, p.privateMessage,
-      p.sponsorTalk, p.track.id, p.demoLevel, p.userGroup))
+      p.sponsorTalk, p.track.id, p.demoLevel, p.userGroup, p.youTubeLink))
   }
 
   def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
@@ -856,13 +854,11 @@ object Proposal {
 
   def hasOneAcceptedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.ACCEPTED.code}").nonEmpty
   }
 
   def hasOneRejectedProposal(speakerUUID: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       client.sunion(s"Proposals:ByAuthor:$speakerUUID",s"Proposals:ByState:${ProposalState.REJECTED.code}").nonEmpty
   }
 
@@ -870,27 +866,25 @@ object Proposal {
     implicit client =>
       val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$speakerUUID")
       val proposals = loadAndParseProposals(allProposalIDs).values.toSet
-      proposals.exists(proposal => proposal.state == ProposalState.APPROVED || proposal.state == ProposalState.ACCEPTED) == false && proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
+      !proposals.exists(proposal => proposal.state == ProposalState.APPROVED ||
+                                    proposal.state == ProposalState.ACCEPTED) &&
+                                    proposals.exists(proposal => proposal.state == ProposalState.REJECTED)
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {
-    implicit client =>
-      client.hset("PreferredDay", proposalId, day)
+    implicit client => client.hset("PreferredDay", proposalId, day)
   }
 
   def resetPreferredDay(proposalId: String) = Redis.pool.withClient {
-    implicit client =>
-      client.hdel("PreferredDay", proposalId)
+    implicit client => client.hdel("PreferredDay", proposalId)
   }
 
   def hasPreferredDay(proposalId: String): Boolean = Redis.pool.withClient {
-    implicit client =>
-      client.hexists("PreferredDay", proposalId)
+    implicit client => client.hexists("PreferredDay", proposalId)
   }
 
   def getPreferredDay(proposalId: String): Option[String] = Redis.pool.withClient {
-    implicit client =>
-      client.hget("PreferredDay", proposalId)
+    implicit client => client.hget("PreferredDay", proposalId)
   }
 
   def updateSecondarySpeaker(author: String, proposalId: String, oldSpeakerId: Option[String], newSpeakerId: Option[String]) = Redis.pool.withClient {
@@ -941,13 +935,11 @@ object Proposal {
   private def resetVotesIfProposalTypeIsUpdated(proposalId: String, talkType: ProposalType, oldTalkType: ProposalType, state: ProposalState) {
     if (oldTalkType.id != talkType.id) {
       if (state == ProposalState.DRAFT) {
-        if (ApprovedProposal.isApproved(proposalId, talkType.id) == false) {
+        if (!ApprovedProposal.isApproved(proposalId, talkType.id)) {
           Review.archiveAllVotesOnProposal(proposalId)
           Comment.saveInternalComment(proposalId, Webuser.Internal.uuid, s"All votes deleted for this talk, because it was changed from [${Messages(oldTalkType.id)}] to [${Messages(talkType.id)}]")
         }
       }
     }
-
   }
-
 }

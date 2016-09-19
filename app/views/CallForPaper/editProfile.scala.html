@@ -1,9 +1,5 @@
 @(speakerForm: Form[Speaker], readOnlyUUID:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
-
-@import helper.twitterBootstrap._
-
 @main("Edit your profile") {
-
 <div class="row">
     <div class="col-md-12 page-header">
         <h3>@Messages("editProfile.title")</h3>
@@ -47,5 +43,4 @@ $(document).ready(function($){
     setformfieldsize($('#bio'), 750, 'charsremain');
 });
 </script>
-
 }

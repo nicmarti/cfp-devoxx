@@ -27,14 +27,16 @@ import org.joda.time.DateTime
 import play.api.libs.json.Json
 
 /**
- * Time slots and Room are defined as static file.
- * Instead of using a database, it's way simpler to define once for all everything as scala.
- * Trust me.
- * Created by Nicolas Nartignole on 01/02/2014.
- * Frederic Camblor added ConferenceDescriptor 07/06/2014
- */
+  * Time slots and Room are defined as static file.
+  * Instead of using a database, it's way simpler to define once for all everything as scala.
+  * Trust me.
+  * Created by Nicolas Nartignole on 01/02/2014.
+  * Frederic Camblor added ConferenceDescriptor 07/06/2014
+  */
 
-case class Room(id: String, name: String, capacity: Int, setup: String, recorded:String) extends Ordered[Room] {
+case class Room(id: String, name: String, capacity: Int, setup: String) extends Ordered[Room] {
+
+  import scala.math.Ordered.orderingToOrdered
 
   def index: Int = {
     val regexp = "[\\D\\s]+(\\d+)".r
@@ -44,56 +46,19 @@ case class Room(id: String, name: String, capacity: Int, setup: String, recorded
     }
   }
 
-  def compare(that: Room): Int = {
-    // TODO a virer apres Devoxx FR 2016
-    // Hack for Devoxx France => I cannot change the Room IDs so I fix the order in an IndexedSeq here
-    if(Room.fixedOrderForRoom.indexOf(this.id) < Room.fixedOrderForRoom.indexOf(that.id)){
-      return -1
-    }
-if(Room.fixedOrderForRoom.indexOf(this.id) > Room.fixedOrderForRoom.indexOf(that.id)){
-      return 1
-    }
-    return 0
-  }
+  def compare(that: Room): Int = (this.id.substring(0, 3), this.index) compare(that.id.substring(0, 3), that.index)
 }
 
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val OTHER = Room("other_room", "Other room", 100, "sans objet","")
+  val OTHER = Room("other_room", "Other room", 100, "sans objet")
 
-  val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
+  val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).sorted
 
   def parse(roomId: String): Room = {
     ConferenceDescriptor.ConferenceRooms.allRooms.find(r => r.id == roomId).getOrElse(OTHER)
   }
-
-  // TODO à virer apres Devoxx FR 2016
-  val fixedOrderForRoom = IndexedSeq("a_hall",
-    "b_amphi",
-    "c_maillot",
-    "d_par241",
-    "f_neu251",
-    "e_neu252",
-    "par242AB",
-    "par242A",
-    "par242AT",
-    "par242B",
-    "par242BT",
-    "par243",
-    "neu253",
-    "neu253_t",
-    "par243_t",
-    "par201",
-    "par202_203",
-    "par204",
-    "par221M-222M",
-    "par224M-225M",
-    "neu_232_232",
-    "neu_234_235",
-    "neu_212_213",
-    "x_hall_a"
-  )
 
 }
 

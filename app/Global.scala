@@ -1,4 +1,3 @@
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 import library.search.{StopIndex, _}
@@ -11,6 +10,7 @@ import play.api.mvc.Results._
 import play.api.templates.HtmlFormat
 import play.api.{UnexpectedException, _}
 import play.core.Router.Routes
+import views.html.errorPage
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -24,20 +24,18 @@ object Global extends GlobalSettings {
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
       //CronTask.doSetupOpsGenie()
-      case Some(true) if Play.isDev => {
+      case Some(true) if Play.isDev =>
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
-      }
       case _ =>
         play.Logger.of("Global").warn("actor.cronUpdated.active is not active => no ElasticSearch or Stats updates")
     }
-
   }
 
   override def onError(request: RequestHeader, ex: Throwable) = {
     val viewO: Option[(UsefulException) => HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devError.f
-      case app => views.html.errorPage.f(_: UsefulException)(request)
+      case app => errorPage.apply(_: UsefulException)(request)
     }
     try {
       Future.successful(InternalServerError(viewO.getOrElse(views.html.defaultpages.devError.f) {
@@ -47,10 +45,9 @@ object Global extends GlobalSettings {
         }
       }))
     } catch {
-      case e: Throwable => {
+      case e: Throwable =>
         Logger.error("Error while rendering default error page", e)
         Future.successful(InternalServerError)
-      }
     }
   }
 
@@ -60,7 +57,7 @@ object Global extends GlobalSettings {
   override def onHandlerNotFound(request: RequestHeader) = {
     val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
-      case app => views.html.notFound.f(_, _)(request)
+      case app => views.html.notFound.apply(_, _)(request)
     }
     Future.successful(NotFound(viewO.getOrElse(views.html.defaultpages.devNotFound.f)(request, Play.maybeApplication.flatMap(_.routes))))
   }
@@ -84,7 +81,7 @@ object CronTask {
 
     val draftTime = Play.configuration.getInt("actor.draftReminder.days")
     draftTime match {
-      case Some(everyX) => {
+      case Some(everyX) =>
         // Compute delay between now and 8:00 in the morning
         // This is a trick to avoid to send a message when we restart the server
         val tomorrow = DateMidnight.now().plusDays(1)
@@ -92,10 +89,8 @@ object CronTask {
         val initialDelay = Duration.create(interval.getEndMillis - interval.getStartMillis, TimeUnit.MILLISECONDS)
         play.Logger.debug("CronTask : check for Draft proposals every " + everyX + " days and send an email in " + initialDelay.toHours + " hours")
         Akka.system.scheduler.schedule(initialDelay, everyX days, ZapActor.actor, DraftReminder())
-      }
-      case _ => {
+      case _ =>
         play.Logger.debug("CronTask : do not send reminder for draft")
-      }
     }
   }
 
@@ -126,6 +121,5 @@ object CronTask {
          name <- Play.configuration.getString("opsgenie.name")) {
       Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
     }
-
   }
 }

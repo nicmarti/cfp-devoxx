@@ -1,9 +1,5 @@
 @(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
-@import helper.twitterBootstrap._
-@import org.apache.commons.lang3.StringUtils
-@import helper._
-
 @main(newProposal("id").value.map(id => "Edit " + id + " " + newProposal("title").value.getOrElse("")).getOrElse("New proposal preview")) {
     <div class="row">
         <div class="col-md-12">
@@ -14,7 +10,6 @@
             }
             <hr>
         </div>
-
         <div class="col-md-23">
         @helper.form(action = routes.CallForPaper.saveProposal()) {
             <input type="hidden" name="lang" value="@newProposal("lang").value">
@@ -30,7 +25,6 @@
             <input type="hidden" name="track" value="@newProposal("track").value">
             <input type="hidden" name="demoLevel" value="@newProposal("demoLevel").value">
             <input type="hidden" name="id" value="@newProposal("id").value">
-
             <div class="alert alert-info"><i class="icon-warning-sign"></i> @Messages("not.saved")</div>
         </div>
 
@@ -59,16 +53,11 @@
                     <h4>@Messages("next.action")</h4>
                     <a href="javascript:history.back()" class="btn btn-primary"><i class="icon-arrow-left"></i> @Messages("validate.summary3")</a>
                     <button class="btn btn-primary" name="a" value="saveDraft"><i class="icon-file-text"></i> @Messages("btn.saveDraft")</button>
-
-
 <p>@Messages("presubmit.reminder") <a href="#" class="btn btn-sm btn-warning" title="@Messages("table.pres.submit")"><i class="icon-envelope"></i>&nbsp;<i class="icon-arrow-right"></i></a>)</p>
-
                         }
                 </div>
             </div>
             </div>
         </div>
-
-
     </div>
 }

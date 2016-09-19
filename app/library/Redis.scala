@@ -49,7 +49,7 @@ object Redis {
   private lazy val redisPassword:String = current.configuration.getString("redis.password").map(s=>StringUtils.trimToNull(s)).orNull
 
   lazy val jedisPoolConfig = {
-    var pool = new JedisPoolConfig
+    val pool = new JedisPoolConfig
     pool.setMaxActive(256)
     pool.setMinIdle(1)
     pool.setMaxWait(10000)
@@ -72,5 +72,4 @@ object Redis {
     val pool = new Pool(new JedisPool(jedisPoolConfig, host, port, timeout, redisPassword))
     pool
   }
-
 }

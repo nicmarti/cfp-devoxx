@@ -18,7 +18,6 @@
             @flash.get("success").get
             </div>
         }
-
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -37,6 +36,5 @@
         @speakersAndProposals.sortBy(_._1.name.map(_.capitalize)).map{case(speaker,props)=>
 "@speaker.name.get.head.toString","@speaker.name.map(_.toUpperCase)","@speaker.firstName.get","@speaker.email.trim","@speaker.company.getOrElse("")","@speaker.cleanTwitter.map(_.drop(1))" }
 </pre>
-
     </div>
 }

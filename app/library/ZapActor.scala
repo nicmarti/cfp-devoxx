@@ -23,13 +23,16 @@
 
 package library
 
-
-import java.io.File
+import java.util
 
 import akka.actor._
+import com.amazonaws.{ClientConfiguration, Protocol}
+import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
+import com.amazonaws.services.sns.AmazonSNSClient
+import com.amazonaws.services.sns.model._
 import models._
 import notifiers.Mails
-import org.apache.commons.io.filefilter.{SuffixFileFilter, WildcardFileFilter}
+import play.api.Play
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
@@ -197,6 +200,9 @@ class ZapActor extends Actor {
 
   def doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) {
     ScheduleConfiguration.persist(confType, slots, createdBy)
+
+    // Notify the mobile apps via AWS SNS that a schedule has been updated
+    doNotifyMobileApps(confType)
   }
 
   def doLogURL(url: String, objRef: String, objValue: String) {
@@ -257,6 +263,59 @@ class ZapActor extends Actor {
         Mails.sendGoldenTicketEmail(invitedWebuser,gt)
     }.getOrElse {
       play.Logger.error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
+    }
+  }
+
+  /**
+    * Push mobile schedule notification via AWS SNS.
+    *
+    * @param confType the event type that has been modified
+    */
+  def doNotifyMobileApps(confType:String):Unit={
+
+    play.Logger.debug("Notify mobile apps of a schedule change")
+
+    val awsKey: Option[String] = Play.current.configuration.getString("aws.key")
+    val awsSecret: Option[String] = Play.current.configuration.getString("aws.secret")
+    val awsRegion: Option[String] = Play.current.configuration.getString("aws.region")
+
+    if (awsKey.isDefined && awsSecret.isDefined && awsRegion.isDefined) {
+
+      val credentials: AWSCredentials with Object = new BasicAWSCredentials(awsKey.get, awsSecret.get)
+
+      val configClient: ClientConfiguration = new ClientConfiguration()
+      configClient.setProtocol(Protocol.HTTP)
+
+      val snsClient: AmazonSNSClient = new AmazonSNSClient(credentials, configClient)
+      snsClient.setEndpoint(awsRegion.get)
+
+      //create a new SNS topic
+      val createTopicRequest: CreateTopicRequest = new CreateTopicRequest("cfp_schedule_updates")
+      val createTopicResult: CreateTopicResult = snsClient.createTopic(createTopicRequest)
+
+      play.Logger.debug(createTopicResult.getTopicArn)
+
+      //publish to an SNS topic
+      val publishRequest: PublishRequest = new PublishRequest()
+
+      publishRequest.setMessage("{\"default\": \"test-message\", \"GCM\": \"{ \\\"data\\\": { \\\"message\\\": \\\""+ confType +"\\\" } }\", \"ADM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"WNS\" : \"" + confType + "\"}")
+
+      val messageAttributeValue: MessageAttributeValue = new MessageAttributeValue()
+      messageAttributeValue.setStringValue("wns/raw")
+      messageAttributeValue.setDataType("String")
+
+      val attributeValueMap: util.HashMap[String, MessageAttributeValue] = new util.HashMap[String, MessageAttributeValue]()
+      attributeValueMap.put("AWS.SNS.MOBILE.WNS.Type", messageAttributeValue)
+
+      publishRequest.setMessageAttributes(attributeValueMap)
+      publishRequest.setMessageStructure("json")
+      publishRequest.setTargetArn(createTopicResult.getTopicArn)
+
+      val publish: PublishResult = snsClient.publish(publishRequest)
+
+      play.Logger.debug(publish.getMessageId)
+    } else {
+      play.Logger.error("AWS key and secret not configured")
     }
   }
 }

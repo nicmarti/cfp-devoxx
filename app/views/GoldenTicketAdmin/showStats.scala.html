@@ -13,7 +13,7 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <p>@Messages("gtAdmin.totalGT", totalGoldenTicket)</p>
                             <p>@Messages("gtAdmin.totalReviewer", allVotes.length)</p>
-                            <p>@Messages("gtAdmin.average", (allVotes.map(_._2._4.n).sum / allVotes.length)) </p>
+                            <p>@Messages("gtAdmin.average", allVotes.map(_._2._4.n).sum / allVotes.length) </p>
                         </div>
                         @allVotes.groupBy(_._1.talkType).map { case(currentProposalType,groupedProposals) =>
                                  <div class="col-sm-12 col-md-12 col-lg-12">

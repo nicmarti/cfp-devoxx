@@ -11,7 +11,16 @@ body {
     border: 1px solid #eeeeee;
 }
 
-.talk {
+.approved {
+    display: block;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: red;
+    border-radius: 3px;
+    box-shadow: 2px 2px #bbb;
+}
+.accepted {
     display: block;
     border: 2px solid black;
     padding: 5px;
@@ -41,6 +50,11 @@ body {
     color: #3a0b07;
     font-weight: bold;
     font-size: 12px;
+}
+.proposalSpeaker{
+    color: #3a0b07;
+    font-weight: bold;
+    font-size: 10px;
 }
 
 .slot.ng-hide-add, .slot.ng-hide-remove {
@@ -122,4 +136,14 @@ body {
     border:1px solid #f15f15;
     width: 8px;
     height: 8px;display: inline-block;
+}
+.btn-remove {
+    position: absolute;
+    left: 93%;
+    top: 3px;
+    width: 21px;
+    height: 17px;
+    padding: 1px 5px;
+    font-size: 10px;
+    line-height: 0.5;
 }

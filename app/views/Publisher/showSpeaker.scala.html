@@ -1,5 +1,5 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@views.html.Publisher.devoxxFR2016(speaker.cleanName,Some(s"${speaker.cleanName} at Devoxx 2014")){
+@views.html.Publisher.devoxxBE2016(speaker.cleanName,Some(s"${speaker.cleanName} at Devoxx 2016")){
 <section id="speaker">
 <div class="columns large-12 team-member row fadeInUp animated">
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
@@ -8,7 +8,7 @@
             <img class="speakerRound"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
         }
         @speaker.cleanTwitter.map{tw=>
-        <a href="http://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
+        <a href="https://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
         }
         @speaker.cleanName
         @speaker.twitter.map{_=>
@@ -23,7 +23,11 @@
     </div>
 
     @speaker.blog.map{blog=>
-        <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
+            @if(blog.startsWith("http://")) {
+                <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
+            } else {
+                <p>Blog: <a href="http://@blog" rel="no-follow">@blog</a></p>
+            }
     }
 </div>
 
@@ -36,9 +40,9 @@
               @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
               <h4 class="speakerTitle"><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h4>
               <p><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></p>
-              @if(proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).nonEmpty){
+              @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)){
                 @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
-                     @tags.publisher.renderSpeaker(uuid,true)
+                     @tags.publisher.renderSpeaker(uuid,renderPhoto = true)
                 }
               }
               @Html(proposal.summaryAsHtml)
@@ -47,6 +51,5 @@
 <div class="clearfix"></div>
     }
 }
-
 </section>
 }

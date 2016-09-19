@@ -1,0 +1,67 @@
+@(slots:List[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin - all declined") {
+
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+
+<div class="row">
+
+    <div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>All published Slots with a talk</h3>
+        </div>
+
+        <div class="panel-body">
+
+    <table id="allProposals" class="table table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>Slod ID</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Room</th>
+                <th>Title</th>
+                <th>Speaker(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @slots.map { slot: Slot =>
+              <tr>
+                  <td>@slot.id</td>
+                  <td>@slot.from.toString("yyyy-MM-dd HH:mm:ss.S")</td>
+                  <td>@slot.to.toString("yyyy-MM-dd HH:mm:ss.S")</td>
+                  <td>@slot.room.name</td>
+                  <td>@slot.proposal.map(_.title)</td>
+                  <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
+
+              </tr>
+            }
+        </tbody>
+    </table>
+</div>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('#allProposals').dataTable({
+        "aaSorting": [[ 2, "asc" ]],
+        "iDisplayLength": 50,
+        "aLengthMenu": [[5, 25, 50, -1], [5,  25, 50, "All"]],
+        "bStateSave": true,
+        "aoColumns": [
+        { "sType": "string"},
+        { "sType": "date"},
+        { "sType": "date"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"}
+        ]
+    });
+} );
+</script>
+}

@@ -1,11 +1,11 @@
 @(email:String, code:String)
 
 ------------------------------------------------------------------------------
-                      Welcome to @Messages("longName") CFP!
+                      Welcome to @Messages("longName") !
 ------------------------------------------------------------------------------
 We created an access code for you (we really don't want to store any of your password here).
 
-  Your login is :  @email
+  Your login is : @email
   Your code is @code
 
 If you want to report an issue, please use @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.bugReport()
@@ -13,14 +13,14 @@ If you want to report an issue, please use @ConferenceDescriptor.current().confe
 The @Messages("longName") team
 ------------------------------------------------------------------------------
 @if(ConferenceDescriptor.current().frLangEnabled) {
-Bienvenue sur le CFP de @Messages("longName")
+    Bienvenue sur le CFP de @Messages("longName")
 
-Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
-Votre identifiant est <strong>@email</strong></p>
-Votre code est <strong>@code</strong></p>
+    Nous avons créé un code d'accès pour vous (nous ne voulons pas stocker l'un de vos de mots de passe chez nous).</p>
+    Votre identifiant est <strong>@email</strong></p>
+    Votre code est <strong>@code</strong></p>
 
-Utilisez @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
+    Utilisez @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Application.bugReport() pour nous signaler un souci ou une demande d'améliration de l'outil.
 
-L'équipe @Messages("longName")
-------------------------------------------------------------------------------
+    L'équipe @Messages("longName")
+    ------------------------------------------------------------------------------
 }

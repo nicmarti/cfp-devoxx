@@ -1,18 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx France 2016
-CONF.subtitle=FR
+CONF.title=Devoxx 2016
+CONF.subtitle=BE
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx FR 2016
-longYearlyName=Devoxx France 2016
-shortName=Devoxx France
-longName=Devoxx FR 2016 CFP
+shortYearlyName=Devoxx BE 2016
+longYearlyName=Devoxx Belgium 2016
+shortName=Devoxx BE
+longName=Devoxx BE 2016 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2016
+longSplittedName_whiteEnd=BE 2016
+conference.dates=7th-11th November
 # -----------------
-cfp.title=Devoxx FR 2016 CFP
+cfp.title=Devoxx BE 2016 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -34,7 +35,7 @@ twitter=Your twitter handle
 blog=Your blog or company website
 qualifications=Your speaker''s qualifications
 qualifications2=Speaker''s qualifications
-qualifications.label=Speaker qualifications
+qualifications.label=Qualifications
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for {0} and propose one or more subjects.
 index.signup3=Sign-up with one of your social profile in 5 seconds. No password needed.
@@ -45,6 +46,7 @@ forget.password.confirm=An email was sent to the provided email address. Please 
 forget.password=Forget access code?
 avatarUrl=URL to your latest profile photo
 home.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
+register.visitor.github=Use Github OAuth, this is simpler and you won''t have to remember another password.
 format.boolean=
 
 # CFP Home page
@@ -86,10 +88,10 @@ mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="http://www.devoxx.fr/faq" target="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">FAQ</a>.
 
 audienceLevel=Audience level :
-audienceLevel.help=Please, indicate the required audience level for your talk:\
+audienceLevel.help=Please, indicate the required audience level for your talk\:\
 1- for all audience, beginner or novice\
 2- for intermediate, talented\
 3- experienced, proficient\
@@ -102,7 +104,7 @@ sponsorTalk=Is this a sponsor presentation?
 
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk which we will accept as part of their sponsorship. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -121,29 +123,26 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Thursday and Friday
+key.label=Keynote, 20mn, Wednesday, Thursday
 key.label.simple=Keynote
-conf.label=Conference, 45mn, Thursday and Friday
+conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
 conf.label.simple=Conference
-uni.label=University, 3h, Wednesday
+uni.label=University, 3h, Monday or Tuesday
 uni.label.simple=University
-tia.label=Tools in Action, 25mn, Wednesday or Thursday
+tia.label=Tools in Action, 30mn, only Monday or Tuesday
 tia.label.simple=Tools in Action
-quick.label=Quickie, 15mn, Thursday and Friday, during lunch
+quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Thursday evening only
+bof.label=Bird of a Feather, 1h, Monday to Thursday evening
 bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Wednesday
-lab.label.simple=Hands-on Lab
+lab.label=Hands-on Labs, 3h, Monday and Tuesday
+lab.label.simple=Hand''s on Lab
+ignite.label=Ignite Sessions, 5mn, Wednesday or Thursday early afternoon
+ignite.label.simple=Ignite Sessions
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Friday
+start.label=Startup Talk, 25 min, Wednesday to Thursday
 start.label.simple=Startup
-ignite.label=Ignite Sessions, 5 min, Wednesday to Thursday early afternoon
-ignite.label.simple=Ignite
-
-hack.label.simple=Hackatons
-code.label.simple=Codestory
 
 # Bug report
 Issue.report=Report an issue
@@ -158,66 +157,45 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx FR 2015''s videos on
+video.tag=Review Devoxx BE 2015''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx France 2016:
+theme.track=List of tracks for Devoxx Belgium 2016:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx France 2016, 20th-22nd April 2016
+appel.conf.dates=Devoxx Belgium 2016, 7th-11th November
 
 # Tracks
 
-track.java.title=Java, JVM, Javas SE/EE
-track.java.desc=Everything aroung Java, the JVM, Java SE, Java EE.
-java.label=Java, JVM, Javas SE/EE
-java.leaderboard=Java, JVM, Javas SE/EE
+method_archi.label=Methodology & Architecture
+track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
 
-track.mobile.title=Mobile & Internet of Things
-track.mobile.desc=Mobile, Java & Internet of Things
-mobile.label=Mobile, IoT
-mobile.leaderboard=Mobile, IoT
+java.label=Java Language
+track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
 
-track.web.title=Web, HTML5 et UX
-track.web.desc=Web, user-experience, front-end and Web architecture
-web.label=Web, HTML5 et UX
-wm.label=Web, HTML5 et UX
-wm.leaderboard=Web, HTML5 et UX
+cloud.label=Cloud, Containers & Infrastructure
+track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
 
-track.archisec.title=Architecture, Performance & Securité
-track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
-archisec.label=Architecture, Performance and Security
-archisec.leaderboard=Architecture, Performance and Security
+ssj.label=Server Side Java
+track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & related JSRs
 
-track.agile_devops.title=DevOps, Agile, Methodology & Tests
-track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
-agile_devops.label=DevOps, Agile, Methodology & Tests
-agTest.label=DevOps, Agile, Methodology & Tests
-agTest.leaderboard=DevOps, Agile, Methodology & Tests
+lang.label=Programming languages
+track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
 
-track.cloud.title=Cloud & Scaling
-track.cloud.desc=Cloud-computing, containers, resilient architectures.
-cloud.label=Cloud & Scaling
-cldops.label=Cloud & Scaling
-cldops.leaderboard=Cloud & Scaling
+bigdata.label=Big Data
+track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 
-track.bigdata.title=Big Data & Analytics
-track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
-bigdata.label=Big Data & Analytics
-bigd.leaderboard=Big Data & Analytics
+web.label=Modern Web
+track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
 
-track.future.title=Future & Robotics
-track.future.desc=Developing for the Internet of Things, Arduino, Raspberry, etc.
-future.label=Future & Robotics
-future.leaderboard=Future & Robotics
+future.label=Future<Devoxx>
+track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
 
-track.lang.title=Alternate Languages
-track.lang.desc=Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, etc.
-lang.label=Alternate Languages
-lang.leaderboard=Alternate Languages
+mobile.label=Mobile & Embedded
+track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
-confirm.import.save=Save
+confirm.import.save=Save and send an email
 avatarUrl.isEmpty=URL to your picture is empty, so we will try to use your
 avatarUrl.defined=Your photo (recommended width 150px)
 
@@ -333,7 +311,9 @@ next.page=Next page
 
 admin.proposal=Proposal
 admin.proposals.th.lang=Lang
-admin.proposals.th.abstract=Proposal text
+admin.proposals.th.abstract=Abstract
+admin.sp.speaker=Speaker
+admin.sp.speakers=Speakers
 admin.sp.mainSpeaker=Main speaker
 admin.sp.secSpeaker=Secondary speaker
 admin.sp.otherSpeaker=Other speaker(s)
@@ -343,9 +323,9 @@ admin.sp.sponsorTalk.label=This is a sponsor talk
 admin.sp.evaluate=Evaluate this proposal
 admin.sp.voted=You voted
 admin.sp.discussion=Discussion
-admin.sp.committee_speaker=Between speaker and committee
+admin.sp.committee_speaker=Between Committee & Speaker
 admin.btn.sendMessage=Post your message
-admin.sp.internal=Private internal discussions
+admin.sp.internal=Private discussions
 admin.sp.deleteMyVote=Delete my vote
 admin.btn.allvotes=All votes
 
@@ -356,7 +336,7 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
-tags.renderComment.postedBy=Posted by {0} - {1}
+tags.renderComment.postedBy=Posted  by
 
 admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
@@ -430,6 +410,7 @@ key=Keynote
 other=Other format
 all=All
 start=Startup presentation
+ignite=Ignite Sessions
 amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
@@ -444,6 +425,7 @@ sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.start=All Startup''s talks
+sw.all.ignite=All Ignite Sessions
 sw.all.tia=All Tools in Action
 sw.speakers=Devoxxians
 sw.intro=The agenda is published every day.
@@ -455,15 +437,15 @@ sw.proposal.presentedWith=Presented also by
 admin.btn.webuser=Administer CFP users
 editSpeakerName=Edit Speaker name
 admin.btn.createNewspeaker=Create a new speaker
-admin.btn.tracklead=Track leader
+admin.btn.tracklead=Track leaders
 
 newSpeaker.title=Create a new speaker
 avatarUrl2=URL of speaker''s photo
 name=Full name
-bio2=Speaker''s bio
+bio2=BIO
 twitter2=Twitter''s handle
 company2=Company
-blog2=Web site or personnal blog
+blog2=Web site or personal blog
 lang2=Will speak in English or French? (en/fr)
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
@@ -486,11 +468,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 18th April
-day-tuesday=Tuesday, 19th April
-day-wednesday=Wednesday, 20th April
-day-thursday=Thursday, 21st April
-day-friday=Friday, 22nd April
+day-monday=Monday, 7th November
+day-tuesday=Tuesday, 8th November
+day-wednesday=Wednesday, 9th November
+day-thursday=Thursday, 10th November
+day-friday=Friday, 11th November
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -519,11 +501,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 18th April 2016
-sw.show.title.tue=Tuesday, 19th April 2016
-sw.show.title.wed=Wednesday, 20th April 2016
-sw.show.title.thu=Thursday, 21st April 2016
-sw.show.title.fri=Friday, 22nd April 2016
+sw.show.title.mon=Monday, 7th November 2016
+sw.show.title.tue=Tuesday, 8th November 2016
+sw.show.title.wed=Wednesday, 9th November 2016
+sw.show.title.thu=Thursday, 10th November 2016
+sw.show.title.fri=Friday, 11th November 2016
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
@@ -562,19 +544,19 @@ btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
 saved=Proposal saved, do not forget to SUBMIT this talk to the program committee when you are ready
 
-wishlist.title=Wishlist
-wishlist.menu=Menu
-wishlist.recentEvents=All requests
-wishlist.requestToTalk.title=Send an invitation to talk to a speaker
-wishlist.requests.track=Track requests for speakers
-wishlist.createRequest=Create a new request
-wishlist.editRequest=Edit and update a request
-wishlist.sendEmail=Send the message to the speaker
-wishlist.save=Save and reload this page
-wishlist.history=History
-wishlist.cancelEdit=Go back to list of Requests
-wishlist.previous=Previous
-wishlist.next=Next
+wishList.title=WishList
+wishList.menu=Menu
+wishList.recentEvents=All requests
+wishList.requestToTalk.title=Send an invitation to talk to a speaker
+wishList.requests.track=Track requests for speakers
+wishList.createRequest=Create a new request
+wishList.editRequest=Edit and update a request
+wishList.sendEmail=Send the message to the speaker
+wishList.save=Save and reload this page
+wishList.history=History
+wishList.cancelEdit=Go back to list of Requests
+wishList.previous=Previous
+wishList.next=Next
 
 wl_note=Private note and internal discussion
 wl_message=Message for speaker
@@ -587,24 +569,24 @@ wl_trackCode=Track
 wl_statusCode=Current state
 wl_travel.checkbox=Yes, include T&L
 
-wl_suggested=Suggested
-wl_contactedUs=Speaker contacted us
-wl_discuss=Discussion
-wl_contactSpeaker=Contact speaker
-wl_contacted=Contacted
-wl_accepted=Speaker accepted
-wl_declined=Speaker declined
-wl_onhold=On hold
-wl_deleted=Deleted
-wl_unknown=Unknown
+# wl_suggested=Suggested
+# wl_contactedUs=Speaker contacted us
+# wl_discuss=Discussion
+# wl_contactSpeaker=Contact speaker
+# wl_contacted=Contacted
+# wl_accepted=Speaker accepted
+# wl_declined=Speaker declined
+# wl_onhold=On hold
+# wl_deleted=Deleted
+# wl_unknown=Unknown
 
-wishlist.newWishlist=Create new Wishlist
+wishList.newWishList=Create new Wishlist
 
 contacted=Speaker has been contacted
 unknown=Unknown
 
 # The abstention button
-Abs=Abs
+Abs=0
 trackAndUUIDs=
 
 mail.reset_password_link.subject=You asked to reset your {1}''s access code at {0}
@@ -670,7 +652,7 @@ wl.fb=Followed by
 wl.company=Company
 wl.track=Track
 wl.status=Current status
-wishlist.setPersonInCharge=Person responsible for {0}
+wishList.setPersonInCharge=Person responsible for {0}
 webmobile.label=Web, Mobile & UX
 agilityTest.label=Agility, Methodology & Tests
 
@@ -703,7 +685,7 @@ tagRenderRow-meet=Soirée Meet & Greet
 please.check.approved=Please, review the list of approved Proposals, then select accept or decline for each Talk.
 proposal.approved.noVotes=Approved proposal - no more votes
 tag.proposal.youVoted=Your vote
-qualifications.otherproposals=Other proposals from this speaker
+qualifications.otherproposals=Other proposals from speaker
 
 # prepareSignupVisitor
 visitor.registration.title=Visitor's registration
@@ -745,7 +727,7 @@ gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, b
 gt.intro.2=If needed, you can also
 gt.reviewYourVotes=review your Votes
 gt.intro.3=while the CFP is open.
-gt.special.need=If you have a specific speaker you would love to see present at Devoxx FR, drop an email to program@devoxx.fr and we’ll do our best to get them there.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx BE, drop an email to program@devoxx.be and we’ll do our best to get them there.
 gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes
@@ -816,4 +798,4 @@ hfspk.rating.title=Rating
 hfspk.rating.desc=Rating given by visitors during the conference with mobile apps.
 table.pres.rating=Rating (1 to 5)
 table.pres.comment=Comments and rating
-rating.default=No comment
+rating.default=

@@ -21,18 +21,12 @@
                 }
                 @if(flash.get("success").isDefined) {
                     <div class="col-md-12">
-                    <div class="alert alert-success alert-dismissable">
-                    @flash.get("success").get
-                    </div>
+                        <div class="alert alert-success alert-dismissable">
+                        @flash.get("success").get
+                        </div>
                     </div>
                 }
-            <div class="col-md-12 col-sm-12">
-                <img src="/assets/images/devoxx_fr_2016_banner_900_230.png" alt="Devoxx France 2016" title="Programme">
-                <h3><a href="/2016/index.html"><i class="icon-arrow-right"></i> Programme complet</a> <small>jour par jour, par type de sujet, etc.</small> </h3>
-                <hr>
-            </div>
-
-            <div class="col-md-5 col-sm-12">
+            <div class="col-md-5">
                 <h3><i class="icon-calendar"></i> Agenda</h3>
                 <p><strong>@Messages("cfp.opening") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpOpenedOn, lang)</p>
                 <p><strong>@Messages("cfp.closing") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpClosedOn, lang)</p>
@@ -44,9 +38,10 @@
                 <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date", FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.scheduleAnnouncedOn, lang))</p>
             </div>
 
-            <div class="col-md-5 col-sm-12">
-                <h3><i class="icon-facetime-video"></i> @Messages("video.title")</h3>
-                <p>@Messages("video.tag") <a href="https://www.parleys.com/channel/5355419ce4b0524a2f28bca0/presentations" target="new">Parleys.com</a> </p>
+            <div class="col-md-5">
+                <h3><i class="icon-youtube-play"></i> @Messages("video.title")</h3>
+                <h5><i class="icon-youtube-sign"></i> @Messages("video.tag") <a href="https://www.youtube.com/c/devoxx2015" target="new">YouTube channel</a> </h5>
+
             </div>
 
             <div class="clearfix">
@@ -54,21 +49,21 @@
 
             <div class="col-md-5 col-sm-5">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                    @if(ConferenceDescriptor.isCFPOpen) {
+                <div class="panel-heading">
+                    @if(ConferenceDescriptor.isCFPOpen){
                         <h3><i class="icon-bullhorn"></i> @Messages("cfp.isOpen")</h3>
-                    } else {
+                    }else{
                         <h3><i class="icon-bullhorn"></i> @Messages("cfp.isClosed")</h3>
                     }
-                    </div>
-                    <div class="panel-body">
-                    @if(ConferenceDescriptor.isCFPOpen) {
+                </div>
+                <div class="panel-body">
+                    @if(ConferenceDescriptor.isCFPOpen){
                         <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.open.enter")</a>
-                    } else {
+                    }else{
                         <p>@Messages("cfp.isClosed.expl")</p>
                         <a href="@routes.Application.home()" class="btn btn-primary">@Messages("cfp.closed.enter")</a>
                     }
-                    </div>
+                </div>
                 </div>
             </div>
             @if(ConferenceDescriptor.isGoldenTicketActive) {
@@ -79,7 +74,6 @@
                         </div>
                         <div class="panel-body">
                             <p><a href="@routes.GoldenTicketController.authenticate()" class="btn btn-primary">@Messages("cfp.gt.enter")</a></p>
-                            <p><a href="http://reg.devoxx.fr/#golden-ticket">@Messages("cfp.gt.infos")</a></p>
                         </div>
                     </div>
                 </div>

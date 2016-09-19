@@ -36,8 +36,6 @@ import play.api.mvc.{Action, Controller}
 object Status extends Controller {
 
   def index = Action {
-    implicit request =>
-      Ok(s"Redis PING ${Redis.checkIfConnected()}")
+    implicit request => Ok(s"Redis PING ${Redis.checkIfConnected()}")
   }
-
 }

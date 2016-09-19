@@ -24,7 +24,7 @@
 package models
 
 import library.Redis
-import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import play.api.libs.json.Json
 
 /**
@@ -33,13 +33,27 @@ import play.api.libs.json.Json
   */
 case class GoldenTicket(id: String, ticketId: String, webuserUUID: String, ticketType: String)
 
+
 object GoldenTicket {
   val GD_TICKET = "GoldenTicket:2016"
 
   implicit val goldenTicketFormat = Json.format[GoldenTicket]
 
-  def generateId(): String = {
-    RandomStringUtils.randomAlphabetic(6).toUpperCase + "-" + RandomStringUtils.randomNumeric(5)
+  def generateId(ticketId:String, email:String): String = {
+    val cleanEmail = StringUtils.trimToEmpty(email).toLowerCase
+    val cleanTicketId = StringUtils.trimToEmpty(ticketId).toLowerCase
+    cleanEmail.hashCode().toString+cleanTicketId.hashCode.toString
+  }
+
+  def importTicket(gti: GoldenTicketImport): GoldenTicket = {
+    val gt = createGoldenTicket(gti.ticketId
+      , gti.firstName
+      , gti.lastName
+      , gti.email
+      , gti.ticketType
+    )
+    save(gt)
+    gt
   }
 
   def createGoldenTicket(ticketId: String, firstName: String, lastName: String, email: String, ticketType: String): GoldenTicket = {
@@ -54,7 +68,7 @@ object GoldenTicket {
     }
 
     Webuser.addToGoldenTicket(uuid)
-    val id = generateId()
+    val id = generateId(ticketId, email)
     GoldenTicket(id, ticketId, uuid, ticketType)
   }
 
@@ -86,6 +100,7 @@ object GoldenTicket {
   def save(gd: GoldenTicket) = Redis.pool.withClient {
     implicit client =>
       val json: String = Json.toJson(gd).toString()
+      println("Save Golden Ticket id " + gd.id)
       val tx = client.multi()
       tx.hset(GD_TICKET, gd.id, json)
       tx.sadd(GD_TICKET + ":UniqueUser", gd.webuserUUID)
@@ -124,3 +139,25 @@ object GoldenTicket {
   }
 
 }
+
+// Used for bulk import only
+case class GoldenTicketImport(ticketId: String, firstName: String, lastName: String, email: String, ticketType: String)
+
+object GoldenTicketImport {
+  private val ticketTypes = Set("conf", "combi", "uni")
+
+  def buildFrom(ticketId: String, firstName: String, lastName: String, email: String, ticketType: String): GoldenTicketImport = {
+    assert(StringUtils.trimToNull(ticketId) != null, s"ticketId cannot be null for $lastName $firstName")
+    assert(StringUtils.trimToNull(email) != null, s"Email cannot be null for $lastName $firstName")
+    val correctTicketType = ticketTypes.find(_ == StringUtils.trimToEmpty(ticketType)).getOrElse("conf")
+
+    GoldenTicketImport(
+      StringUtils.trimToEmpty(ticketId)
+      , StringUtils.trimToEmpty(firstName)
+      , StringUtils.trimToEmpty(lastName)
+      , StringUtils.trimToEmpty(email.toLowerCase())
+      , correctTicketType)
+  }
+}
+
+case class GoldenTicketBulkImport(tickets: List[GoldenTicketImport])

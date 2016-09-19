@@ -1,10 +1,9 @@
 @(vote:Int)
-
 <strong>@vote</strong>
 @if(vote==0){
-<i class="icon-star-empty"></i>
+    <i class="icon-star-empty"></i>
 }else{
-@for(i<- 1 to vote){
-<i class="icon-star"></i>
-}
+    @for(i<- 1 to vote){
+        <i class="icon-star"></i>
+    }
 }

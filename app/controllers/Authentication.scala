@@ -112,12 +112,12 @@ object Authentication extends Controller {
         },
         validForm =>
           Webuser.checkPassword(validForm._1, validForm._2) match {
-            case Some(webuser) if visitor =>
-              val cookie = createCookie(webuser)
-              Redirect(routes.Publisher.homePublisher()).withSession("uuid" -> webuser.uuid).withCookies(cookie)
-            case Some(webuser) =>
-              val cookie = createCookie(webuser)
-              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> webuser.uuid).withCookies(cookie)
+            case Some(webUser) if visitor =>
+              val cookie = createCookie(webUser)
+              Redirect(routes.Publisher.homePublisher()).withSession("uuid" -> webUser.uuid).withCookies(cookie)
+            case Some(webUser) =>
+              val cookie = createCookie(webUser)
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> webUser.uuid).withCookies(cookie)
             case None if visitor =>
               Redirect(routes.Application.homeVisitor()).flashing("error" -> Messages("login.error"))
             case None =>
@@ -128,8 +128,8 @@ object Authentication extends Controller {
 
   def logout = Action {
     implicit request =>
-      val discardingCookie = DiscardingCookie("cfp_rm", "/", None, false)
-      Redirect(routes.Application.index).discardingCookies(discardingCookie).withNewSession
+      val discardingCookie = DiscardingCookie("cfp_rm", "/", None, secure = false)
+      Redirect(routes.Application.index()).discardingCookies(discardingCookie).withNewSession
   }
 
   def githubLogin(visitor: Boolean) = Action {
@@ -153,37 +153,32 @@ object Authentication extends Controller {
       oauthForm.bindFromRequest.fold(invalidForm => {
         Future.successful(BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form"))
       }, {
-        case (code, state) if state == Crypto.sign("ok") => {
+        case (code, state) if state == Crypto.sign("ok") =>
           val auth = for (clientId <- Play.current.configuration.getString("github.client_id");
                           clientSecret <- Play.current.configuration.getString("github.client_secret")) yield (clientId, clientSecret)
           auth.map {
-            case (clientId, clientSecret) => {
+            case (clientId, clientSecret) =>
               val url = "https://github.com/login/oauth/access_token"
               val wsCall = WS.url(url).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code)))
               wsCall.map {
                 result =>
                   result.status match {
-                    case 200 => {
+                    case 200 =>
                       val b = result.body
                       try {
                         val accessToken = b.substring(b.indexOf("=") + 1, b.indexOf("&"))
                         Redirect(routes.Authentication.createFromGithub(visitor)).withSession("access_token" -> accessToken)
                       } catch {
-                        case e: IndexOutOfBoundsException => {
+                        case e: IndexOutOfBoundsException =>
                           Redirect(routes.Application.index()).flashing("error" -> "access token not found in query string")
-                        }
                       }
-                    }
-                    case _ => {
+                    case _ =>
                       Redirect(routes.Application.index()).flashing("error" -> ("Could not complete Github OAuth, got HTTP response" + result.status + " " + result.body))
-                    }
                   }
               }
-            }
           }.getOrElse {
             Future.successful(InternalServerError("github.client_secret is not configured in application.conf"))
           }
-        }
         case other => Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
       })
   }
@@ -256,15 +251,15 @@ object Authentication extends Controller {
       futureResult.map {
         result =>
           result.status match {
-            case 200 => {
+            case 200 =>
               val json = Json.parse(result.body)
-              val resultParse = (for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
-                                      name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
-                yield (email, name))
+              val resultParse = for (email <- json.\("email").asOpt[String].toRight("github.importprofile.error.emailnotfound").right;
+                                     name <- json.\("name").asOpt[String].toRight("github.importprofile.error.namenotfound").right)
+                yield (email, name)
 
               resultParse.fold(missingField =>
                 Redirect(routes.Application.home()).flashing(
-                  "error" -> (List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" "))),
+                  "error" -> List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" ")),
                 validFields => {
                   validFields match {
                     case (emailS, nameS) =>
@@ -303,12 +298,9 @@ object Authentication extends Controller {
                       }
                   }
                 })
-
-            }
-            case other => {
+            case other =>
               play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
               BadRequest("Unable to complete the Github User API call")
-            }
           }
       }
 
@@ -454,36 +446,32 @@ object Authentication extends Controller {
           BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
         }
       }, {
-        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
+        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) =>
           val auth = for (clientId <- Play.current.configuration.getString("linkedin.client_id");
                           clientSecret <- Play.current.configuration.getString("linkedin.client_secret")) yield (clientId, clientSecret)
           auth.map {
-            case (clientId, clientSecret) => {
+            case (clientId, clientSecret) =>
               val url = "https://www.linkedin.com/uas/oauth2/accessToken"
               val redirect_uri = routes.Authentication.callbackLinkedin().absoluteURL()
-              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("Content-Type" -> "application/x-www-form-urlencoded"))
+              val wsCall = WS.url(url).withHeaders("Accept" -> "application/json", "Content-Type" -> "application/x-www-form-urlencoded")
                 .post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
-                    case 200 => {
+                    case 200 =>
                       val b = result.body
                       val json = Json.parse(result.body)
                       val token = json.\("access_token").as[String]
-                      Redirect(routes.Authentication.createFromLinkedin).withSession("linkedin_token" -> token)
-                    }
-                    case _ => {
+                      Redirect(routes.Authentication.createFromLinkedin()).withSession("linkedin_token" -> token)
+                    case _ =>
                       Redirect(routes.Application.index()).flashing("error" -> ("error with LinkedIn OAuth2.0 : got HTTP response " + result.status + " " + result.body))
-                    }
                   }
               }
-            }
           }.getOrElse {
             Future.successful {
               InternalServerError("linkedin.client_id and linkedin.client_secret are not configured in application.conf")
             }
           }
-        }
         case other => Future.successful {
           BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
         }
@@ -505,7 +493,7 @@ object Authentication extends Controller {
           futureResult.map {
             result =>
               result.status match {
-                case 200 => {
+                case 200 =>
                   val json = Json.parse(result.body)
                   val email = json.\("emailAddress").as[String]
                   val firstName = json.\("firstName").asOpt[String]
@@ -522,11 +510,10 @@ object Authentication extends Controller {
                     val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience")
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
-                }
-                case other => {
+
+                case other =>
                   play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
                   BadRequest("Unable to complete the LinkedIn User API call")
-                }
               }
           }
       }.getOrElse {
@@ -559,37 +546,31 @@ object Authentication extends Controller {
           BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
         }
       }, {
-        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) => {
+        case (code, state) if state == Crypto.sign(session.get("state").getOrElse("")) =>
           val auth = for (clientId <- Play.current.configuration.getString("google.client_id");
                           clientSecret <- Play.current.configuration.getString("google.client_secret")) yield (clientId, clientSecret)
           auth.map {
-            case (clientId, clientSecret) => {
+            case (clientId, clientSecret) =>
               val url = "https://accounts.google.com/o/oauth2/token"
               val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
-              val wsCall = WS.url(url).withHeaders(("Accept" -> "application/json"), ("User-Agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname))).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
+              val wsCall = WS.url(url).withHeaders("Accept" -> "application/json", "User-Agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname)).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
               wsCall.map {
                 result =>
                   result.status match {
-                    case 200 => {
+                    case 200 =>
                       val b = result.body
                       val googleToken = Json.parse(result.body).as[GoogleToken]
-                      Redirect(routes.Authentication.createFromGoogle).withSession("google_token" -> googleToken.access_token)
-                    }
-                    case _ => {
+                      Redirect(routes.Authentication.createFromGoogle()).withSession("google_token" -> googleToken.access_token)
+                    case _ =>
                       Redirect(routes.Application.index()).flashing("error" -> ("error with Google OAuth2.0 : got HTTP response " + result.status + " " + result.body))
-                    }
                   }
               }
-            }
           }.getOrElse {
             Future.successful {
               InternalServerError("google.client_id is not configured in application.conf")
             }
           }
-        }
-        case other => Future.successful {
-          BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
-        }
+        case other => Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
       })
   }
 
@@ -610,7 +591,7 @@ object Authentication extends Controller {
           futureResult.map {
             result =>
               result.status match {
-                case 200 => {
+                case 200 =>
                   //Ok(result.body).as("application/json")
                   val json = Json.parse(result.body)
 
@@ -629,11 +610,9 @@ object Authentication extends Controller {
                     val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo, "No experience")
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
-                }
-                case other => {
+                case other =>
                   play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
                   BadRequest("Unable to complete the Github User API call")
-                }
               }
           }
       }.getOrElse {
@@ -653,4 +632,3 @@ object Authentication extends Controller {
 }
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
-

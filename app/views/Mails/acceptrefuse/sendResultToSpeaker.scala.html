@@ -51,7 +51,7 @@ droits à une entrée. Il est indispensable de prendre une place pour les Quicki
 pour les BOFs.</p>
 }
 
-@if(listOfApprovedProposals.size==0){
+@if(listOfApprovedProposals.isEmpty){
  <p>Nous sommes au regret de vous informer qu'aucune de vos propositions n'a été sélectionnée cette année pour @Messages("longYearlyName").</p>
  <p>Le comité de sélection a reçu un très grand nombre de sujets. Après une sélection précise, sur plus de 790 propositions de sujets
     pour 220 conférences, et pour équilibrer les sujets, nous n'avons pas retenu votre(vos) sujet(s). Au nom de toute
@@ -105,10 +105,10 @@ Dear @toSpeaker.firstName.getOrElse("speaker")
   <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()</a>
 }
 
-@if(listOfApprovedProposals.size==0){
+@if(listOfApprovedProposals.isEmpty){
  <p>We're sorry to inform you that none of your proposals has been accepted for @Messages("longYearlyName").</p>
- <p>The program committee has received more than 670 proposals for 154 available slots. As you can imagine, the selection of speakers wasn’t an easy task, considering that we received a lot of very interesting propositions for the conference. We would like to thank you for your time and we hope to see you as an attendee on @ConferenceDescriptor.current().timing.firstDayEn, at @Messages("longName").</p>
- <p>Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com</p>
+ <p>The program committee has received more than 700+ proposals for 200 available slots. As you can imagine, the selection of speakers wasn’t an easy task, considering that we received a lot of very interesting proposals for the conference. We would like to thank you for your time and we hope to see you as an attendee on @ConferenceDescriptor.current().timing.firstDayEn, at @Messages("longName").</p>
+ <p>Please consider Devoxx US in San Jose, the CFP will open on September 1st 2016.</p>
 }
 <br>
 <p>The @Messages("longName") program committee.</p>

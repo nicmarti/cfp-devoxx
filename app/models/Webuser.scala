@@ -41,12 +41,12 @@ object Webuser {
   val Internal=Webuser("internal",ConferenceDescriptor.current().fromEmail,"CFP","Program Committee",RandomStringUtils.random(64),"visitor")
 
   def gravatarHash(email: String): String = {
-    val cleanEmail = email.trim().toLowerCase()
-    DigestUtils.md5Hex(cleanEmail)
-  }
+      val cleanEmail = email.trim().toLowerCase()
+      DigestUtils.md5Hex(cleanEmail)
+    }
 
-  def generateUUID(email: String): String = {
-    Crypto.sign(StringUtils.abbreviate(email.trim().toLowerCase, 255))
+  def generateUUID(email:String):String={
+    Crypto.sign(StringUtils.abbreviate(email.trim().toLowerCase,255))
   }
 
   def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
@@ -80,7 +80,7 @@ object Webuser {
       }
   }
 
-  def saveAndValidateWebuser(webuser: Webuser): String = Redis.pool.withClient {
+  def saveAndValidateWebuser(webuser: Webuser):String = Redis.pool.withClient {
     client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       val json = Json.toJson(cleanWebuser).toString
@@ -95,15 +95,15 @@ object Webuser {
       cleanWebuser.uuid
   }
 
-  def isEmailRegistered(email: String): Boolean = Redis.pool.withClient {
-    implicit client =>
-      client.exists("Webuser:Email:" + email.toLowerCase.trim)
+  def isEmailRegistered(email:String):Boolean=Redis.pool.withClient{
+    implicit client=>
+      client.exists("Webuser:Email:"+email.toLowerCase.trim)
   }
 
   def findByEmail(email: String): Option[Webuser] = email match {
     case null => None
     case "" => None
-    case validEmail => {
+    case validEmail =>
       val _email = validEmail.toLowerCase.trim
       Redis.pool.withClient {
         client =>
@@ -115,7 +115,6 @@ object Webuser {
               }
           }
       }
-    }
   }
 
   def getUUIDfromEmail(email: String): Option[String] = Redis.pool.withClient {
@@ -125,11 +124,11 @@ object Webuser {
 
   def findByUUID(uuid: String): Option[Webuser] = Redis.pool.withClient {
     client =>
-      client.hget("Webuser", uuid).map {
-        json: String =>
-          Json.parse(json).as[Webuser]
+        client.hget("Webuser", uuid).map {
+          json: String =>
+            Json.parse(json).as[Webuser]
+        }
       }
-  }
 
   def checkPassword(email: String, password: String): Option[Webuser] = Redis.pool.withClient {
     client =>
@@ -146,7 +145,7 @@ object Webuser {
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
       Proposal.allMyDraftProposals(cleanWebuser.uuid).foreach {
         proposal =>
-          play.Logger.of("models.Webuser").debug(s"Deleting proposal ${proposal}")
+          play.Logger.of("models.Webuser").debug(s"Deleting proposal $proposal")
           Proposal.destroy(proposal)
       }
 
@@ -156,9 +155,9 @@ object Webuser {
       tx.del("Webuser:Email:" + cleanWebuser.email)
       tx.srem("Webuser:" + cleanWebuser.profile, cleanWebuser.email)
       tx.hdel("Webuser:New", cleanWebuser.email)
-      tx.srem("Webuser:speaker", cleanWebuser.uuid)
-      tx.srem("Webuser:cfp", cleanWebuser.uuid)
-      tx.srem("Webuser:admin", cleanWebuser.uuid)
+      tx.srem("Webuser:speaker",cleanWebuser.uuid)
+      tx.srem("Webuser:cfp",cleanWebuser.uuid)
+      tx.srem("Webuser:admin",cleanWebuser.uuid)
       tx.exec()
 
       TrackLeader.deleteWebuser(cleanWebuser.uuid)
@@ -192,15 +191,14 @@ object Webuser {
 
   def isMember(uuid: String, securityGroup: String): Boolean = Redis.pool.withClient {
     client =>
-      client.sismember("Webuser:" + securityGroup, uuid)
-  }
+        client.sismember("Webuser:" + securityGroup, uuid)
+      }
 
     def isNotMember(uuid: String, securityGroup: String): Boolean = {
       !isMember(uuid,securityGroup)
-    }
+  }
 
   def hasAccessToCFP(uuid: String): Boolean = isMember(uuid, "cfp")
-
   def hasAccessToAdmin(uuid: String): Boolean = isMember(uuid, "admin")
 
   def hasAccessToGoldenTicket(uuid: String): Boolean = isMember(uuid, "gticket")
@@ -229,7 +227,7 @@ object Webuser {
 
   def removeFromCFPAdmin(uuid: String) = Redis.pool.withClient {
     client =>
-      client.srem("Webuser:cfp", uuid)
+        client.srem("Webuser:cfp", uuid)
   }
 
   def allSpeakers: List[Webuser] = Redis.pool.withClient {
@@ -241,10 +239,10 @@ object Webuser {
       }
   }
 
-  def allWebusers: Map[String, Option[Webuser]] = Redis.pool.withClient {
+  def allWebusers:Map[String, Option[Webuser]]=Redis.pool.withClient {
     client =>
       client.hgetAll("Webuser").map {
-        case (key: String, valueJson: String) =>
+        case (key:String, valueJson: String) =>
           (key, Json.parse(valueJson).asOpt[Webuser])
       }
   }
@@ -269,19 +267,19 @@ object Webuser {
       }
   }
 
-  /* Required for helper.options */
-  def allCFPAdminUsers(): Seq[(String, String)] = {
-    val cfpUsers = Webuser.allCFPWebusers().sortBy(_.cleanName)
-    val cfpUsersAndTracks = cfpUsers.toSeq.flatMap {
-      w: Webuser =>
-        Seq((w.uuid, w.cleanName))
-    }
+    /* Required for helper.options */
+ def allCFPAdminUsers():Seq[(String,String)]={
+    val cfpUsers =  Webuser.allCFPWebusers().sortBy(_.cleanName)
+      val cfpUsersAndTracks = cfpUsers.flatMap{
+        w:Webuser=>
+          Seq((w.uuid,w.cleanName))
+      }
     cfpUsersAndTracks
   }
 
   def getEmailFromUUID(uuid: String): Option[String] = Redis.pool.withClient {
     client =>
-      client.get("Webuser:UUID:" + uuid)
+        client.get("Webuser:UUID:" + uuid)
   }
 
   val DEFAULT_LABEL = ("", play.api.i18n.Messages("noOther.speaker"))

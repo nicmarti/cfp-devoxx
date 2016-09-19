@@ -1,40 +1,27 @@
-@(subSlots: List[Slot], room: Room, roomSize: Int)(implicit req: RequestHeader)
+@(subSlots: List[Slot], room: Room, roomSize: Int)(implicit req:RequestHeader)
 
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
-        @zeSlot.proposal.map { p: Proposal =>
-
-            @if(p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY) {
-                <td class="room @room.id @zeSlot.id" colspan="@roomSize">
-                    <span class="talkType">@Messages(p.talkType.id) (retransmission en salle Maillot, Neuilly 252-AB et Paris 242-AB)</span>
-                    <h4><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></h4>
-                    <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                        @tags.publisher.renderSpeaker(speakerUUID,true)
-                    }</span>
-                    @tags.publisher.renderFavorite(p.id)
-                </td>
+        @if(zeSlot.notAllocated) {
+            @if(zeSlot.from.getHourOfDay < 11 && zeSlot.from.dayOfWeek().get() == 3) {
+                <td>Keynote overflow</td>
             } else {
-                <td class="room @room.id @zeSlot.id">
-                    <span class="talkType">@Messages(p.talkType.id)</span>
-                    <span class="track"> @tags.publisher.renderIconForTrack(p.track)</span>
-                    <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
-                    <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                        @tags.publisher.renderSpeaker(speakerUUID)
-                    }</span>
-                    @tags.publisher.renderFavorite(p.id)
-                </td>
+                <td>TBA</td>
             }
-
-
+        }
+        @zeSlot.proposal.map { p: Proposal =>
+            <td class="room @room.id @zeSlot.id">
+                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
+                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                    @tags.publisher.renderSpeaker(speakerUUID)
+                }</span>
+            </td>
         }
         @if(zeSlot.break.isDefined) {
             <td class="break @room.id" colspan="@roomSize">
-            @Messages("tagRenderRow-" + zeSlot.break.get.id)
+            @zeSlot.break.get.nameEN
             </td>
         }
-        @if(zeSlot.notAllocated) {
-            <td class="notAllocated @zeSlot.id">TBA</td>
-        }
-
     }
     @if(!subSlots.exists(_.room.id == room.id)) {
         <td>&nbsp;</td>

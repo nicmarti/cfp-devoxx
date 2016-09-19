@@ -25,39 +25,43 @@
             <h3>Home backoffice</h3>
         </div>
         <div class="panel-body">
-            <h4>ElasticSearch</h4>
-                <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Delete speakers and proposals ES Indexes</a><br>
-                <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Force indexation of speakers and proposals</a><br>
 
-            <h4>Accepted talks notification service</h4>
+            <h4><i class="icon-check"></i> Accepted talks notification service</h4>
             <p>This service lets you search for a talk, then send a notification to the speaker</p>
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                 <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
-            <h4>Refused talks notification service</h4>
+            <h4><i class="icon-ban-circle"></i> Refused talks notification service</h4>
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                 <a href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
 
-            <h4>Mass refuse system</h4>
+            <h4><i class="icon-ban-circle"></i> Mass refuse system</h4>
             <a href="@routes.ApproveOrRefuse.prepareMassRefuse("tia")" class="btn btn-danger btn-sm"><i class="icon-warning-sign"></i> Mass Refuse system</a>
 
-            <h4><i class="icon-ticket"></i> Golden ticket </h4>
-            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-sm btn-primary">Show all Golden tickets</a>
-            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary">Create a new golden ticket</a>
-            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-primary">All Votes</a>
+            <h4><i class="icon-ticket"></i> Golden Tickets</h4>
+            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Golden Tickets</a>
+            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> Create a Golden Ticket</a>
+            <a href="@routes.GoldenTicketAdminController.newGroupOfGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-cloud-download"></i> Import/create Golden Tickets</a>
+            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-success"><i class="icon-star"></i> Golden Ticket Votes</a>
 
-
-            <h4>Planner</h4>
+            <h4><i class="icon-calendar"></i> Planner</h4>
             <a href="/assets/angular/index.html" class="btn btn-success btn-sm"><i class="icon-adjust"></i> Angular Schedule application</a>
             <a href="@routes.Backoffice.sanityCheckSchedule()"  class="btn btn-sm btn-primary"><i class="icon-medkit"></i> Sanity check for schedule</a>
+            <a href="@routes.Favorites.showAllForAdmin()"  class="btn btn-sm btn-primary"><i class="icon-calendar"></i> Most popular talks faved on Agenda</a>
 
-            <h4>Webusers</h4>
+            <h4><i class="icon-group"></i> Webusers</h4>
             <a href="@routes.CFPAdmin.allWebusers()" class="btn btn-sm btn-primary"><i class="icon-user"></i> @Messages("admin.btn.webuser")</a>
             <a href="@routes.CFPAdmin.allCFPWebusers()" class="btn btn-sm btn-primary"><i class="icon-user-md"></i> @Messages("admin.btn.tracklead")</a>
+            <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
 
-            <h4>Cron</h4>
+            <h4><i class="icon-moon"></i> Cron</h4>
             <a href="@routes.Backoffice.sendDraftReminder()" class="btn btn-sm btn-primary"><i class="icon-refresh"></i> Send a reminder to speakers for DRAFT</a>
+
+            <h4><i class="icon-search"></i> ElasticSearch</h4>
+            <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-warning btn-sm"><i class="icon-remove"></i> Delete Index</a>
+            <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Re-index</a><br>
+
         </div>
         </div>
     </div>

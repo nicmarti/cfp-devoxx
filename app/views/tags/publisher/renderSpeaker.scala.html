@@ -1,6 +1,4 @@
 @(uuid: String, renderPhoto:Boolean=false)
-
-
 @models.Speaker.findByUUID(uuid).map { speaker =>
 <div class="speaker">
 <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" title="@speaker.cleanName" alt="@speaker.urlName">
@@ -13,4 +11,3 @@
 </a>
 </div>
 }
-

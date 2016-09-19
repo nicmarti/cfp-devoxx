@@ -1,64 +1,66 @@
 @(ratings: List[Rating], proposals: Map[String, Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@main("Rating") {
-    <div class="row">
-        <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-bar-chart"></i> Rating system</h2>
-        </div>
-        <div class="clearfix"></div>
+    @main("Rating") {
+        <div class="row">
+            <div class="col-lg-offset-4 col-md-4">
+                <h2><i class="icon-bar-chart"></i> Rating system</h2>
+            </div>
+            <div class="clearfix"></div>
 
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Rating results</h4>
-                    <p>No specific order</p>
-                </div>
-                <div class="panel-body">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Rating results</h4>
+                        <p>No specific order</p>
+                    </div>
+                    <div class="panel-body">
 
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr><th>Total votes :</th> <td>@ratings.size</td></tr>
-                            <tr><th>Average score :</th> <td>@library.Stats.average(ratings.flatMap(_.details.map(_.rating.toDouble)))</td></tr>
-                        </thead>
-                    @ratings.groupBy(_.talkId).map { case (talkId, groupedRatings) =>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr><th>Total votes :</th> <td>@ratings.size</td></tr>
+                                <tr><th>Average score :</th> <td>@library.Stats.average(ratings.flatMap(_.details.map(_.rating.toDouble)))</td></tr>
+                            </thead>
+                        @ratings.groupBy(_.talkId).map { case (talkId, groupedRatings) =>
 
-                            @proposals.get(talkId).map { proposal =>
-                                <tr>
-                                    <th class="alert alert-info">@proposal.title</th>
-                                    <th class="alert alert-info">@Messages(proposal.talkType.id)</th>
-                                </tr>
-                                <tr>
-                                    <th>Speaker(s) :</th>
-                                </tr>
-                                <tr>
-                                    @proposal.allSpeakers.map { s: Speaker =>
-                                        <td>@s.cleanName</td>
-                                    }
-                                </tr>
-                              <tr>
-                                  <th>Average score :</th>
-                                  <td class="alert alert-danger">@library.Stats.average(groupedRatings.flatMap(_.details.map(_.rating.toDouble))) for @groupedRatings.size vote(s)</td>
-                              </tr>
-
-
-                                  @groupedRatings.map{rat=>
+                                @proposals.get(talkId).map { proposal =>
                                     <tr>
-                                      <td>@rat.details.map{d:RatingDetail=>
-                                        @d.rating for @d.aspect @d.review.map{ rv =>
-                                        <small>"@rv"</small><br>
-                                        }
-                                      }</td>
+                                        <th class="alert alert-info">
+                                            <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
+                                        </th>
+                                        <th class="alert alert-info">@Messages(proposal.talkType.id)</th>
                                     </tr>
-                                  }
-                            }
+                                    <tr>
+                                        <th>Speaker(s) :</th>
+                                    </tr>
+                                    <tr>
+                                        @proposal.allSpeakers.map { s: Speaker =>
+                                            <td>@s.cleanName</td>
+                                        }
+                                    </tr>
+                                  <tr>
+                                      <th>Average score :</th>
+                                      <td class="alert alert-danger">@library.Stats.average(groupedRatings.flatMap(_.details.map(_.rating.toDouble))) for @groupedRatings.size vote(s)</td>
+                                  </tr>
 
-                        <tr>
-                            <td>&nbsp;</td>
-                        </tr>
-                    }
-                    </table>
+
+                                      @groupedRatings.map{rat=>
+                                        <tr>
+                                          <td>@rat.details.map{d:RatingDetail=>
+                                            @d.rating for @d.aspect @d.review.map{ rv =>
+                                            <small>"@rv"</small><br>
+                                            }
+                                          }</td>
+                                        </tr>
+                                      }
+                                }
+
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        }
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }

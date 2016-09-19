@@ -1,9 +1,5 @@
 @(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
-
-@import helper.twitterBootstrap._
-
 @main("Create a new speaker") {
-
 <div class="row">
     <div class="col-md-12 page-header">
         <h3>@Messages("newSpeaker.title")</h3>
@@ -43,7 +39,7 @@
             @helper.textarea(speakerForm("qualifications2"), 'cols -> 70, 'rows -> 3)
             @helper.inputText(speakerForm("twitter2"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog2"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
-            @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "fr")
+            @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "en")
             @helper.checkbox(speakerForm("acceptTermsConditions"))
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
@@ -56,5 +52,4 @@ $(document).ready(function($){
     setformfieldsize($('#bio'), 750, 'charsremain');
 });
 </script>
-
 }

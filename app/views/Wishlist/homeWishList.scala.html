@@ -1,16 +1,14 @@
 @(requests:List[(models.RequestToTalk,Option[Webuser])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-
-@import helper.twitterBootstrap._
-
-@main("Wishlist") {
+@main("WishList") {
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
 
+
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishlist.title")</h2>
+            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishList.title")</h2>
         </div>
 
         <div class="clearfix"></div>
@@ -18,12 +16,12 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3><i class="icon-stackexchange"></i> @Messages("wishlist.recentEvents")</h3>
+                    <h3><i class="icon-stackexchange"></i> @Messages("wishList.recentEvents")</h3>
                 </div>
 
                 <div class="panel-body">
-<a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishlist.newWishlist")</a><br>
-                    <p>Total wishlisted : @requests.size</p>
+<a href="@routes.Wishlist.newRequestToTalk" class="btn btn-small btn-primary">@Messages("wishList.newWishList")</a><br>
+                    <p>Total wishListed : @requests.size</p>
   @if(flash.get("error").isDefined) {
                         <div class="alert alert-danger alert-dismissable">
                             <strong>Error :</strong>
@@ -35,7 +33,7 @@
                         @flash.get("success").get
                         </div>
                     }
-<table id="allWishlist" class="table table-bordered table-hover table-condensed">
+<table id="allWishList" class="table table-bordered table-hover table-condensed">
     <thead>
         <tr>
             <th>@Messages("wl.action")</th>
@@ -56,7 +54,7 @@
             <a href="@routes.Wishlist.edit(request.id)" class="btn btn-small btn-primary"><i class="icon-edit"></i></a>
             <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-small btn-danger"><i class="icon-trash"></i></a>
         </td>
-        <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, dd MMM, HH:mm"))</td>
+        <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, d MMM YYYY, HH:mm"))</td>
         <td>@request.speakerName</td>
         <td>
            @maybePersonInCharge.map{webuser=>
@@ -85,30 +83,29 @@
         </div>
 </div>
 
-
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#allWishlist').dataTable({
+
+    $('#allWishList').dataTable({
     "aaSorting": [[ 2, "desc" ]],
     "iDisplayLength" : -1,
     "aLengthMenu": [
     [25, 50, 100, 200, -1],
     [25, 50, 100, 200, "All"]
     ],
-    "bStateSave": true,
-    "aoColumns": [
-    { "sType": "string"},
-    { "sType": "date"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "string"},
-    { "sType": "boolean"},
-    { "sType": "string"}
-    ]
+        "bStateSave": true,
+        "aoColumns": [
+        { "sType": "string"},
+        { "sType": "date"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "boolean"},
+        { "sType": "string"}
+        ]
     });
-    } );
+} );
 </script>
-
 }

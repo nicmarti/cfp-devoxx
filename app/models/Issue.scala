@@ -59,39 +59,43 @@ object Issue {
   }
 
   def publish(issue: Issue) = {
-    val postUrl = Play.current.configuration.getString("bitbucket.issues.url").getOrElse("Missing bitbucket issues url in config file")
+    Play.current.configuration.getString("bitbucket.issues.url").map {
+      postUrl =>
 
-    val bugReport:String = s"# AUTOMATIC Bug Report\n\n## Message posté du site ${ConferenceDescriptor.current().conferenceUrls.cfpHostname}\n## Reporté par ${issue.reportedBy}\n Git Hash ${issue.gitHash}  Git branch: ${issue.gitBranch}\n-----------------\n${issue.msg}"
+        val bugReport: String = s"# AUTOMATIC Bug Report\n\n## Message posté du site ${ConferenceDescriptor.current().conferenceUrls.cfpHostname}\n## Reporté par ${issue.reportedBy}\n Git Hash ${issue.gitHash}  Git branch: ${issue.gitBranch}\n-----------------\n${issue.msg}"
 
-    // See Bitbucket doc https://confluence.atlassian.com/display/BITBUCKET/issues+Resource#issuesResource-POSTanewissue
-    val futureResult = WS.url(postUrl)
-      .withAuth(
-        username=Play.current.configuration.getString("bitbucket.username").getOrElse("Missing bitbucket username in config file"),
-        password=Play.current.configuration.getString("bitbucket.password").getOrElse("Missing bitbucket token in config file"),
+        // See Bitbucket doc https://confluence.atlassian.com/display/BITBUCKET/issues+Resource#issuesResource-POSTanewissue
+        val futureResult = WS.url(postUrl)
+          .withAuth(
+            username = Play.current.configuration.getString("bitbucket.username").getOrElse("Missing bitbucket username in config file"),
+            password = Play.current.configuration.getString("bitbucket.password").getOrElse("Missing bitbucket token in config file"),
 
-        scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
-      .withHeaders(
-      ("Accept", "application/json"), ("User-Agent", "CFP "+ConferenceDescriptor.current().conferenceUrls.cfpHostname)
-    ).post(
-      Map(
-        "status"-> Seq("new"),
-        "title" -> Seq(StringUtils.abbreviate(issue.msg, 30)),
-        "content" ->Seq(bugReport)
-      )
-    )
+            scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
+          .withHeaders(
+            ("Accept", "application/json"), ("User-Agent", "CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname)
+          ).post(
+          Map(
+            "status" -> Seq("new"),
+            "title" -> Seq(StringUtils.abbreviate(issue.msg, 30)),
+            "content" -> Seq(bugReport)
+          )
+        )
 
 
-    futureResult.map {
-      response =>
-        response.status match {
-          case 200 => play.Logger.of("models.Issue").info("Success: new issue posted")
-          case 201 => play.Logger.of("models.Issue").info("Created: new issue created")
-          case other => {
-            play.Logger.of("models.Issue").warn("Bitbucket responded " + other)
-            play.Logger.of("models.Issue").warn(response.body)
-          }
+        futureResult.map {
+          response =>
+            response.status match {
+              case 200 => play.Logger.of("models.Issue").info("Success: new issue posted")
+              case 201 => play.Logger.of("models.Issue").info("Created: new issue created")
+              case other =>
+                play.Logger.of("models.Issue").warn("Bitbucket responded " + other)
+                play.Logger.of("models.Issue").warn(response.body)
+            }
+
         }
-
+    }.getOrElse{
+      play.Logger.error(s"Error reported by ${issue.reportedBy}")
+      play.Logger.error(s"Message: ${issue.msg}")
     }
 
   }

@@ -25,49 +25,49 @@ package controllers
 
 import akka.util.Crypt
 import library.search.ElasticSearch
+import play.api.libs.json.{JsObject, Json}
 import library.{LogURL, ZapActor}
 import models._
 import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
 
-
 /**
-  * Publisher is the controller responsible for the Web content of your conference Program.
-  * Created by nicolas on 12/02/2014.
-  */
+ * Publisher is the controller responsible for the Web content of your conference Program.
+ * Created by nicolas on 12/02/2014.
+ */
 object Publisher extends Controller {
+
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val etag = Crypt.md5(result.toString() + "dvx").toString
+      val eTag = Crypt.md5(result.toString() + "dvx").toString
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
-        case Some(oldEtag) if oldEtag == etag => NotModified
-        case other => Ok(result).withHeaders(ETAG -> etag)
+        case Some(oldEtag) if oldEtag == eTag => NotModified
+        case other => Ok(result).withHeaders(ETAG -> eTag)
       }
   }
 
   def showAllSpeakers = Action {
     implicit request =>
+      // Show all speakers from accepted proposals instead of scheduled!
+      val accepted: List[Proposal] = Proposal.allAccepted()
+      val allSpeakersIDs = accepted.flatMap(_.allSpeakerUUIDs).toSet
 
-      // First load published slots
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-      val etag = allSpeakersIDs.hashCode.toString
+      val eTag = allSpeakersIDs.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag =>
+        case Some(tag) if tag == eTag =>
           NotModified
 
         case other =>
           val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
           val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
-          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> etag)
+          Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
       }
   }
 
@@ -79,18 +79,17 @@ object Publisher extends Controller {
       }
       val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
         speakers.map {
-          speaker =>
-            (speaker.urlName, speaker.uuid)
+          speaker => (speaker.urlName, speaker.uuid)
         }.toMap
       }
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
       maybeSpeaker match {
-        case Some(speaker) => {
+        case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           // Log which speaker is hot or not
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
-        }
+
         case None => NotFound(views.html.Publisher.speakerNotFound())
       }
   }
@@ -99,11 +98,11 @@ object Publisher extends Controller {
     implicit request =>
       val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
-        case Some(speaker) => {
+        case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", uuid, name)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
-        }
+
         case None => NotFound("Speaker not found")
       }
   }
@@ -114,66 +113,75 @@ object Publisher extends Controller {
         case ConferenceDescriptor.ConferenceProposalTypes.CONF.id =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
             ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), talkType))
+
         case other =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
       }
   }
 
-  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = "wednesday") = Action {
+  private val monday: String = "monday"
+  private val tuesday: String = "tuesday"
+  private val wednesday: String = "wednesday"
+  private val thursday: String = "thursday"
+  private val friday: String = "friday"
+
+  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = wednesday) = Action {
     implicit request =>
       val realSlotId = slotId.orElse {
         ScheduleConfiguration.getPublishedSchedule(confType)
       }
       if (realSlotId.isEmpty) {
-        NotFound(views.html.Publisher.agendaNotYetPublished())
+        // Show the accepted talks instead
+        Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
       } else {
         val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(realSlotId.get)
         maybeScheduledConfiguration match {
-          case Some(slotConfig) if day == null => {
+          case Some(slotConfig) if day == null =>
             val updatedConf = slotConfig.copy(slots = slotConfig.slots)
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "wednesday"))
-          }
-          case Some(slotConfig) if day == "monday" => {
-            val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == "monday")
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, wednesday))
+
+          case Some(slotConfig) if day == monday =>
+            val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == monday)
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 1))
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "monday"))
-          }
-          case Some(slotConfig) if day == "tuesday" => {
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, monday))
+
+          case Some(slotConfig) if day == tuesday =>
             val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == "tuesday")
+              slots = slotConfig.slots.filter(_.day == tuesday)
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 2)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "tuesday"))
-          }
-          case Some(slotConfig) if day == "wednesday" => {
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, tuesday))
+
+          case Some(slotConfig) if day == wednesday =>
             val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == "wednesday")
+              slots = slotConfig.slots.filter(_.day == wednesday)
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 3)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "wednesday"))
-          }
-          case Some(slotConfig) if day == "thursday" => {
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, wednesday))
+
+          case Some(slotConfig) if day == thursday =>
             val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == "thursday")
+              slots = slotConfig.slots.filter(_.day == thursday)
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 4)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "thursday"))
-          }
-          case Some(slotConfig) if day == "friday" => {
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, thursday))
+
+          case Some(slotConfig) if day == friday =>
             val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == "friday")
+              slots = slotConfig.slots.filter(_.day == friday)
               , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 5)
             )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf.slots, confType, "friday"))
-          }
+            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, friday))
 
-          case None => NotFound(views.html.Publisher.agendaNotYetPublished())
+          case None => Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
+            // NotFound(views.html.Publisher.agendaNotYetPublished())
         }
       }
   }
 
   def showByDay(day: String) = Action {
     implicit request =>
+
       def _showDay(slots: List[Slot], day: String) = {
         val rooms = slots.groupBy(_.room).keys.toList
         val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
@@ -181,11 +189,11 @@ object Publisher extends Controller {
       }
 
       day match {
-        case d if Set("mon", "monday", "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "monday")
-        case d if Set("tue", "tuesday", "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "tuesday")
-        case d if Set("wed", "wednesday", "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesday, "wednesday")
-        case d if Set("thu", "thursday", "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursday, "thursday")
-        case d if Set("fri", "friday", "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.friday, "friday")
+        case d if Set("mon", monday, "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.mondaySchedule, monday)
+        case d if Set("tue", tuesday, "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesdaySchedule, tuesday)
+        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
+        case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
+        case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
         case other => NotFound("Day not found")
       }
   }
@@ -201,7 +209,8 @@ object Publisher extends Controller {
     })
   )
 
-  def showDetailsForProposal(proposalId: String, proposalTitle: String) = Action {
+  def showDetailsForProposal(proposalId: String, proposalTitle: String) =
+    Action {
     implicit request =>
       Proposal.findById(proposalId) match {
         case None => NotFound("Proposal not found")
@@ -221,7 +230,7 @@ object Publisher extends Controller {
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
       ElasticSearch.doPublisherSearch(q, p).map {
-        case r if r.isSuccess => {
+        case r if r.isSuccess =>
           val json = Json.parse(r.get)
           val total = (json \ "hits" \ "total").as[Int]
           val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
@@ -229,17 +238,16 @@ object Publisher extends Controller {
           val results = hitContents.map {
             jsvalue =>
               val index = (jsvalue \ "_index").as[String]
-              val source = (jsvalue \ "_source")
+              val source = jsvalue \ "_source"
               val id = (source \ "id").as[String]
               val proposal = source.as[Proposal]
               proposal
           }
 
           Ok(views.html.Publisher.searchResult(total, results, q, p)).as("text/html")
-        }
-        case r if r.isFailure => {
+
+        case r if r.isFailure =>
           InternalServerError(r.get)
-        }
       }
   }
 }

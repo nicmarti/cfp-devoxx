@@ -62,11 +62,11 @@ trait UserCFPController extends Controller {
    * @param authorize an Authorize object that checks if the user is authorized to invoke the action
    * @tparam A for action
    */
-  class SecuredActionBuilder[A](authorize: Option[Authorization] = None) extends ActionBuilder[({type R[A] = SecuredRequest[A]})#R] {
+  class SecuredActionBuilder[A](authorize: Option[Authorization] = None) extends ActionBuilder[({type R[B] = SecuredRequest[B]})#R] {
 
-    def invokeSecuredBlock[A](authorize: Option[Authorization],
-                              request: Request[A],
-                              block: SecuredRequest[A] => Future[SimpleResult]): Future[SimpleResult] = {
+    def invokeSecuredBlock[C](authorize: Option[Authorization],
+                              request: Request[C],
+                              block: SecuredRequest[C] => Future[SimpleResult]): Future[SimpleResult] = {
       implicit val req = request
       val result = for (
         authenticator <- SecureCFPController.findAuthenticator;
@@ -89,10 +89,9 @@ trait UserCFPController extends Controller {
       })
     }
 
-    def invokeBlock[A](request: Request[A], block: SecuredRequest[A] => Future[SimpleResult]) =
+    def invokeBlock[D](request: Request[D], block: SecuredRequest[D] => Future[SimpleResult]): Future[SimpleResult] =
       invokeSecuredBlock(authorize, request, block)
   }
-
 }
 
 object UserCFPController {
@@ -118,6 +117,4 @@ object UserCFPController {
   def getCurrentUser(implicit request:RequestHeader):Option[Webuser]={
     findAuthenticator.flatMap(uuid => lookupWebuser(uuid))
   }
-
 }
-

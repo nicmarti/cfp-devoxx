@@ -56,7 +56,7 @@ object CallForPaper extends SecureCFPController {
           (needsToAcceptTermAndCondition, hasApproved, hasAccepted) match {
             case (true, _, _) => Redirect(routes.ApproveOrRefuse.acceptTermsAndConditions())
             case (false, true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
-            case other => {
+            case other =>
               val allProposals = Proposal.allMyProposals(uuid)
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
               val ratings = if(hasAccepted||hasApproved){
@@ -65,7 +65,6 @@ object CallForPaper extends SecureCFPController {
                 Map.empty[Proposal,List[Rating]]
               }
               Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived,ratings))
-            }
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
@@ -134,7 +133,7 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalForm.fill(proposal)
             Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
@@ -149,10 +148,8 @@ object CallForPaper extends SecureCFPController {
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
           }
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -179,7 +176,7 @@ object CallForPaper extends SecureCFPController {
         proposal => {
           // If the editor is not the owner then findProposal returns None
           Proposal.findProposal(uuid, proposal.id) match {
-            case Some(existingProposal) => {
+            case Some(existingProposal) =>
               // This is an edit operation
               // First we try to reset the speaker's, we do not take the values from the FORM for security reason
               val updatedProposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
@@ -194,20 +191,18 @@ object CallForPaper extends SecureCFPController {
                 Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state [" + existingProposal.state.code + "]"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
               }
-            }
-            case other => {
+            case other =>
               // Check that this is really a new id and that it does not exist
               if (Proposal.isNew(proposal.id)) {
                 // This is a "create new" operation
                 Proposal.save(uuid, proposal, ProposalState.DRAFT)
                 Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
-                Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("saved"))
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
                 Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
-                Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
               }
-            }
           }
         }
       )
@@ -219,7 +214,7 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalSpeakerForm.fill(proposal.secondarySpeaker, proposal.otherSpeakers)
             Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, proposalForm))
@@ -233,10 +228,8 @@ object CallForPaper extends SecureCFPController {
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
           }
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -247,7 +240,7 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
             hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
@@ -286,13 +279,11 @@ object CallForPaper extends SecureCFPController {
               Proposal.updateOtherSpeakers(uuid, proposalId, proposal.otherSpeakers, validNewSpeakers._2)
               Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list for proposal " + StringUtils.abbreviate(proposal.title, 80)))
 
-              Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("speakers.updated"))
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("speakers.updated"))
             }
           )
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -301,13 +292,11 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           Proposal.delete(uuid, proposalId)
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("deleted" -> proposalId)
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("deleted" -> proposalId)
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -316,13 +305,11 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDeleted(uuid, proposalId)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           Proposal.draft(uuid, proposalId)
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.draft"))
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.draft"))
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -331,17 +318,15 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraft(uuid, proposalId)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
           if(ConferenceDescriptor.current().notifyProposalSubmitted) {
-            // This generates too mmany emails for France and is useless
+            // This generates too many emails for France and is useless
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
           }
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("success" -> Messages("talk.submitted"))
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -352,12 +337,10 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           Ok(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), speakerMsg))
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -366,7 +349,7 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
       maybeProposal match {
-        case Some(proposal) => {
+        case Some(proposal) =>
           speakerMsg.bindFromRequest.fold(
             hasErrors => {
               BadRequest(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), hasErrors))
@@ -377,10 +360,8 @@ object CallForPaper extends SecureCFPController {
               Redirect(routes.CallForPaper.showCommentForProposal(proposalId)).flashing("success" -> "Message was sent")
             }
           )
-        }
-        case None => {
-          Redirect(routes.CallForPaper.homeForSpeaker).flashing("error" -> Messages("invalid.proposal"))
-        }
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
   }
 
@@ -395,18 +376,14 @@ object CallForPaper extends SecureCFPController {
 
       Cache.getOrElse("elasticSearch", 3600) {
         ElasticSearch.getTag("proposals/proposal").map {
-          case r if r.isSuccess => {
+          case r if r.isSuccess =>
             val json = Json.parse(r.get)
             val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
             Ok(views.html.CallForPaper.cloudTags(tags))
-          }
-          case r if r.isFailure => {
+          case r if r.isFailure =>
             play.Logger.error(r.get)
             InternalServerError
-          }
         }
       }
   }
-
 }
-

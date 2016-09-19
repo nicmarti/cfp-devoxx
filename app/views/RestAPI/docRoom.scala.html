@@ -1,6 +1,6 @@
 @()(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@api("Doc docConferences") {
+@api("rooms") {
     <div class="row">
         <div class="col-md-12">
             <h1>@Messages("shortName") API</h1>
@@ -15,7 +15,6 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showRooms(Conference
 
         <h4>Result:</h4>
             <code>
-                <pre>
 {
     "content": "All rooms",
     "rooms": [
@@ -91,7 +90,6 @@ curl -H "Accept: application/json" <a href="@routes.RestAPI.showRooms(Conference
         }
     ]
 }
-               </pre>
             </code>
         </div>
     </div>

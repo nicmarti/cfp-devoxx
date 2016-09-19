@@ -52,7 +52,7 @@ object MobileVotingV1 extends SecureCFPController {
           "review" -> optional(text(maxLength = 200))
         )(RatingDetail.apply)(RatingDetail.unapply)
       )
-    )(Rating.createNew)(Rating.unapplyRating _) verifying("Failed form constraints!", fields => fields match {
+    )(Rating.createNew)(Rating.unapplyRating) verifying("Failed form constraints!", fields => fields match {
       case userData =>
         userData.details.nonEmpty
     })
@@ -138,5 +138,4 @@ object MobileVotingV1 extends SecureCFPController {
     implicit request =>
       MovedPermanently(routes.RestAPI.showTracks(Conference.currentConference.eventCode).absoluteURL())
   }
-
 }

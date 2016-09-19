@@ -1,6 +1,6 @@
 @(total:Int, results:List[Proposal], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@views.html.Publisher.devoxxFR2016("Search result"){
+@views.html.Publisher.devoxxBE2016("Search result"){
   <div class="large-12 columns">
 <h2 class="entry-title">
 @if(total==0){
@@ -17,7 +17,7 @@
   </div>
     <div class="large-3 columns">
         <div class="input-wrap">
-            <form name="search" action="@routes.Publisher.search(None,None)" method="GET">
+            <form name="search" action="/2016/search" method="GET">
             <label for="search">Find a talk or a speaker : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
         </form>
         </div>

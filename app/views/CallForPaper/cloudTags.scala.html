@@ -20,8 +20,7 @@
         @cloud.map{tc=>
 {text:"@tc.term",size:@tc.count},
         }
-    ]
-
+    ];
 
   d3.layout.cloud().size([600, 600])
       .words(someWords)
@@ -58,7 +57,5 @@
 }
 <hr>
 @cloud.map(s=>"\""+s.term+"\"").mkString(", ")
-
-
 </body>
 </html>

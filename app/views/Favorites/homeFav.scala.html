@@ -2,14 +2,14 @@
 
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxFR2016("My Schedule") {
+@views.html.Publisher.devoxxBE2016("My Schedule") {
     @if(timeSlots.isEmpty){
 
     <div class="columns large-12 woocommerce">
         <h1>Build your own schedule</h1>
         <p>You don't have any schedule yet.</p>
-        <p>Browse the <a href="@routes.Publisher.showByDay("wednesday")">schedule</a> and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.</p>
-        <img src="/assets/devoxxbe2015/images/myschedule.png" alt="My schedule">
+        <p>Browse the <a href="@routes.Publisher.showByDay("monday")">schedule</a> and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.</p>
+        <img src="/assets/devoxxbe2016/images/myschedule.png" alt="My schedule">
     </div>
     }
     @timeSlots.groupBy(_.to.getDayOfWeek).toList.sortBy(_._1).map { case (day, slots:List[Slot]) =>

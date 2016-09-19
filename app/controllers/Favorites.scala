@@ -31,7 +31,6 @@ import play.api.mvc.Action
 
 import scala.concurrent.Future
 
-
 /**
  * Controller used from the program pages, to fav a talk.
  *
@@ -72,12 +71,9 @@ object Favorites extends UserCFPController {
 
   }
 
-
   def welcomeVisitor() = SecuredAction.async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Future.successful(
-        Ok(views.html.Favorites.welcomeVisitor(request.webuser))
-      )
+      Future.successful(Ok(views.html.Favorites.welcomeVisitor(request.webuser)))
   }
 
   def isFav(proposalId: String) = Action {

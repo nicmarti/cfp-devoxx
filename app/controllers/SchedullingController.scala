@@ -23,20 +23,15 @@
 
 package controllers
 
-import play.api.mvc.Action
+import library.{SaveSlots, ZapActor}
 import models._
-import play.api.libs.json.Json
-import library.ZapActor
-import library.SaveSlots
-import play.api.libs.json.JsString
-import play.api.libs.json.JsNumber
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
-import scala.util.Random
-import org.joda.time.{DateTimeZone, DateTime}
-
+import play.api.libs.json.{JsNumber, JsString, Json}
+import play.api.mvc.Action
 
 /**
- * Schedulling Controller.
+ * Scheduling Controller.
  * Plannification et création des agendas par type de conférence.
  * Created by nicolas martignole on 07/02/2014.
  */
@@ -96,10 +91,9 @@ object SchedullingController extends SecureCFPController {
           val saveSlotsWithSpeakerUUIDs = newSlots.map {
             slot: Slot =>
               slot.proposal match {
-                case Some(proposal) => {
+                case Some(proposal) =>
                   // Transform back speaker name to speaker UUID when we store the slots
                   slot.copy(proposal = Proposal.findById(proposal.id))
-                }
                 case other => slot
               }
           }
@@ -122,7 +116,7 @@ object SchedullingController extends SecureCFPController {
           case (key, dateAsDouble) =>
             val scheduledSaved = Json.parse(key).as[ScheduleSaved]
             Map("key" -> Json.toJson(scheduledSaved),
-                "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")))
+              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")))
             )
         })
       )
@@ -137,16 +131,16 @@ object SchedullingController extends SecureCFPController {
       val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(id)
       maybeScheduledConfiguration match {
         case None => NotFound
-        case Some(config) => {
+        case Some(config) =>
           val configWithSpeakerNames = config.slots.map {
             slot: Slot =>
               slot.proposal match {
-                case Some(definedProposal) => {
+                case Some(definedProposal) =>
                   // Create a copy of the proposal, but with clean name
                   val proposalWithSpeakerNames = {
                     val mainWebuser = Speaker.findByUUID(definedProposal.mainSpeaker)
-                    val secWebuser = definedProposal.secondarySpeaker.flatMap(Speaker.findByUUID(_))
-                    val oSpeakers = definedProposal.otherSpeakers.map(Speaker.findByUUID(_))
+                    val secWebuser = definedProposal.secondarySpeaker.flatMap(Speaker.findByUUID)
+                    val oSpeakers = definedProposal.otherSpeakers.map(Speaker.findByUUID)
                     val preferredDay = Proposal.getPreferredDay(definedProposal.id)
 
                     val newTitleWithStars: String = s"[${FavoriteTalk.countForProposal(definedProposal.id)}★] ${definedProposal.title}"
@@ -172,12 +166,10 @@ object SchedullingController extends SecureCFPController {
 
                   }
                   slot.copy(proposal = Option(proposalWithSpeakerNames))
-                }
                 case None => slot
               }
           }
           Ok(Json.toJson(config.copy(slots = configWithSpeakerNames))).as(JSON)
-        }
       }
   }
 
@@ -205,8 +197,9 @@ object SchedullingController extends SecureCFPController {
 
   def getPublishedSchedule(confType: String, day: Option[String]) = Action {
     implicit request =>
-      Redirect(routes.Publisher.homePublisher).flashing("success" -> Messages("not.published"))
+      ScheduleConfiguration.getPublishedSchedule(confType) match {
+        case Some(id) => Redirect(routes.Publisher.showAgendaByConfType(confType, Option(id), day.getOrElse("wednesday")))
+        case None => Redirect(routes.Publisher.homePublisher()).flashing("success" -> Messages("not.published"))
+      }
   }
-
-
 }

@@ -44,6 +44,14 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
 
   @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
 
+@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
+ This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
+
+ See below for registration
+
+ @ConferenceDescriptor.current().conferenceUrls.registration
+}
+
  For any question regarding your talk:
  ------------------------------------
  Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests

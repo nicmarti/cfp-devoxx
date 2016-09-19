@@ -139,7 +139,7 @@ object Review {
 
   def currentScore(proposalId: String): Int = Redis.pool.withClient {
     client =>
-      val allScores = client.zrevrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 10, 0).toList
+      val allScores = client.zrevrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 10, 0)
       allScores.foldRight(0)((scoreAndReview, accumulated: Int) => accumulated + scoreAndReview._2.toInt)
   }
 
@@ -164,7 +164,7 @@ object Review {
 
   def allVotesFor(proposalId: String): List[ReviewerAndVote] = Redis.pool.withClient {
     implicit client =>
-      client.zrevrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 10, 0).toList
+      client.zrevrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 10, 0)
   }
 
   type VotesPerProposal = (String, Long)

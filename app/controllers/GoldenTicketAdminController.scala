@@ -45,9 +45,8 @@ object GoldenTicketAdminController extends SecureCFPController {
     "lastName" -> nonEmptyText(maxLength = 50),
     "email" -> (email verifying nonEmpty),
     "ticketType" -> nonEmptyText(maxLength = 50)
-  )(GoldenTicket.createGoldenTicket)(GoldenTicket.unapplyForm _)
+  )(GoldenTicket.createGoldenTicket)(GoldenTicket.unapplyForm)
   )
-
 
   def showAll() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -57,7 +56,7 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def newGoldenTicket() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.GoldenTicketAdmin.newGoldenTicket(goldenTicketForm))
+      Ok(views.html.GoldenTicketAdmin.newGoldenTicket(goldenTicketForm.fill(GoldenTicket.createGoldenTicket(RandomStringUtils.randomNumeric(16), "", "", "", "combi"))))
   }
 
   def saveGoldenTicket() = SecuredAction(IsMemberOf("admin")) {
@@ -75,7 +74,58 @@ object GoldenTicketAdminController extends SecureCFPController {
             ZapActor.actor ! NotifyGoldenTicket(validTicket)
             Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "New ticket created for ")
           }
+        }
+      )
+  }
 
+  def newGroupOfGoldenTicket() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.GoldenTicketAdmin.newGroupOfGoldenTicket())
+  }
+
+  def importGroupOfGT() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      request.body.asFormUrlEncoded.map {
+        form =>
+          form.get("bulk").map {
+            maybeSomeTextContent =>
+              maybeSomeTextContent.headOption.map {
+                textareaContent: String =>
+                  val goldenTickets = parseGoldenTicketBulk(textareaContent)
+                  val zeForm = bulkImportGoldenTicket.fill(GoldenTicketBulkImport(goldenTickets))
+
+                  Ok(views.html.GoldenTicketAdmin.importGroupOfGT(zeForm))
+              }.getOrElse(BadRequest("Invalid bulk content"))
+          }.getOrElse(BadRequest("Input bulk not found, bug in HTML Form"))
+      }.getOrElse(BadRequest("Invalid form"))
+  }
+
+  val bulkImportGoldenTicket: Form[GoldenTicketBulkImport] = Form(
+    mapping(
+      "tickets" -> list(
+        mapping(
+          "ticketId" -> nonEmptyText(maxLength = 20),
+          "firstName" -> text(maxLength = 30),
+          "lastName" -> text(maxLength = 50),
+          "email" -> email,
+          "ticketType" -> text(maxLength = 30)
+        )(GoldenTicketImport.apply)(GoldenTicketImport.unapply)
+      )
+    )(GoldenTicketBulkImport.apply)(GoldenTicketBulkImport.unapply)
+  )
+
+  def bulkImport() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      bulkImportGoldenTicket.bindFromRequest().fold(
+        hasErrors =>
+          BadRequest(views.html.GoldenTicketAdmin.importGroupOfGT(hasErrors)),
+        validForm => {
+          validForm.tickets.foreach {
+            ticket =>
+              val gt = GoldenTicket.importTicket(ticket)
+              ZapActor.actor ! NotifyGoldenTicket(gt)
+          }
+          Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> s"Successfully created ${validForm.tickets.length} golden tickets")
         }
       )
   }
@@ -148,5 +198,23 @@ object GoldenTicketAdminController extends SecureCFPController {
       val totalGoldenTicket = GoldenTicket.size()
 
       Ok(views.html.GoldenTicketAdmin.showStats(listOfProposals, totalGoldenTicket))
+  }
+
+  // Very very bad code I wrote in the train before France-Germany soccer
+  private def parseGoldenTicketBulk(textAreaContent: String): List[GoldenTicketImport] = {
+    textAreaContent.split("\n").toList.flatMap {
+      oneLine =>
+        val tokens = oneLine.split(",")
+        if (tokens.size == 5) {
+          val maybeEmail = tokens(3)
+          if (maybeEmail.contains("@")) {
+            Some(GoldenTicketImport.buildFrom(tokens(0), tokens(1), tokens(2), maybeEmail, tokens(4)))
+          } else {
+            None
+          }
+        } else {
+          None
+        }
+    }
   }
 }
