@@ -85,7 +85,7 @@ object ApprovedProposal {
         speakerId =>
           tx.del(s"$speakerId")
       }
-      allApproved().map {
+      allApproved().foreach {
         proposal =>
           tx.sadd("ApprovedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
           proposal.secondarySpeaker.map(secondarySpeaker => tx.sadd("ApprovedSpeakers:" + secondarySpeaker, proposal.id.toString))
@@ -282,12 +282,12 @@ object ApprovedProposal {
   def allApproved(): Set[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allKeys = client.keys("Approved:*")
-      val finalList = allKeys.map {
+      val finalList = allKeys.flatMap {
         key =>
           val allProposalIDs = client.smembers(key).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}")).toList
           val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs.toSet)
           allProposalWithVotes.values.toList
-      }.flatten
+      }
       finalList
   }
 
