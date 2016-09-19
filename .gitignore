@@ -53,9 +53,8 @@ run-fr.sh
 
 env.sh
 run-be.sh
-run-us.sh
+# run-us.sh
 /conf/redis-devoxxlocal.conf
 /conf/dump.rdb
 /conf/application.conf.local
 /run-local.sh
-public/devoxxuk/
