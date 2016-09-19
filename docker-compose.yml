@@ -1,8 +1,24 @@
-elasticsearch:
- image: elasticsearch
- ports:
-   - "9200:9200"
-redis:
- image : redis:2.8.21
- ports:
-   - "6379:6379"
+version: '2'
+services:
+  elasticsearch:
+   image: elasticsearch
+   expose:
+     - 9200
+  redis:
+   image : redis:2.8.21
+   expose:
+     - 6379
+  play:
+    image: alexproca/play:2.2.3
+    volumes:
+      - .:/app:rw
+    ports:
+      - "9000:9000"
+    links:
+      - elasticsearch
+      - redis
+    working_dir: /app
+    stdin_open: true
+    env_file:
+      - run.env
+    command: play run
