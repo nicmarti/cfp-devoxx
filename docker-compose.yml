@@ -19,6 +19,7 @@ services:
       - redis
     working_dir: /app
     stdin_open: true
+    restart: always
     env_file:
       - run.env
     command: play run
