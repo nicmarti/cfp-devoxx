@@ -8,6 +8,13 @@ services:
    image : redis:2.8.21
    expose:
      - 6379
+  redsmin-proxy:
+    image: redsmin/proxy
+    environment:
+      - REDIS_URI=redis://redis:6379
+      - REDSMIN_KEY=please-use-your-key-from-redsmin-app
+    links:
+      - redis     
   play:
     image: alexproca/play:2.2.3
     volumes:
