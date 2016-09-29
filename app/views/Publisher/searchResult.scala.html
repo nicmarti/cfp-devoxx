@@ -17,24 +17,30 @@
   </div>
     <div class="large-3 columns">
         <div class="input-wrap">
-            <form name="search" action="/2016/search" method="GET">
-            <label for="search">Find a talk or a speaker : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
+            <form name="search" action="/2016/search" method="GET"><br>
+            <input type="search" name="q" value="" placeholder="Search by title, keyword or speaker" class="wpcf7-form-control wpcf7-text" autofocus>
         </form>
         </div>
     </div>
 <div class="large-12 columns">
-<div class="panel">
-<dl>
-@results.zipWithIndex.map{ case(proposal:Proposal,idx:Int)=>
-   <dt>@proposal.title - <em>@Messages(proposal.talkType.id)/@Messages(proposal.track.label)</em></dt>
-   <dd>@proposal.mainSpeaker @proposal.secondarySpeaker.map(s=>", "+s) @proposal.otherSpeakers.map(o=> ", "+o)
-   <a href="@routes.Publisher.showDetailsForProposal(proposal.id,proposal.title)">See details</a>
-   </dd>
-}
-</dl>
-</div>
+    <table class="agendaTable">
+
+@results.zipWithIndex.map{ case(p:Proposal,idx:Int)=>
+                <tr>
+                    <td class="room">
+                        <span class="track">
+                            @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
+                        </span>
+                        <br>
+                        <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a> (@Messages(p.talkType.id))</span>
+                        <span class="speaker">
+                            by @p.mainSpeaker @p.secondarySpeaker.map(s=>", "+s) @p.otherSpeakers.map(o=> ", "+o)
+                        </span>
+                    </td>
+                </tr>
+            }
+    </table>
 @tags.renderPaginator(req, p.getOrElse(1), total)
 
 </div>
-
 }
