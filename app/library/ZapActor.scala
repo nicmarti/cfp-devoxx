@@ -83,6 +83,8 @@ case class NotifyGoldenTicket(goldenTicket: GoldenTicket)
 
 case class SendHeartbeat(apiKey: String, name: String)
 
+case class NotifyMobileApps(confType: String)
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -107,6 +109,7 @@ class ZapActor extends Actor {
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
     case NotifyGoldenTicket(goldenTicket:GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
+    case NotifyMobileApps(confType: String) => doNotifyMobileApps(confType)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -200,9 +203,6 @@ class ZapActor extends Actor {
 
   def doSaveSlots(confType: String, slots: List[Slot], createdBy: Webuser) {
     ScheduleConfiguration.persist(confType, slots, createdBy)
-
-    // Notify the mobile apps via AWS SNS that a schedule has been updated
-    doNotifyMobileApps(confType)
   }
 
   def doLogURL(url: String, objRef: String, objValue: String) {

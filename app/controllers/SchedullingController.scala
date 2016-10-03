@@ -23,7 +23,7 @@
 
 package controllers
 
-import library.{SaveSlots, ZapActor}
+import library.{NotifyMobileApps, SaveSlots, ZapActor}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
@@ -188,6 +188,9 @@ object SchedullingController extends SecureCFPController {
           val confType = json.\("confType").as[String]
 
           ScheduleConfiguration.publishConf(id, confType)
+
+          // Notify the mobile apps via AWS SNS that a new schedule has been published
+          ZapActor.actor ! NotifyMobileApps(confType)
 
           Ok("{\"status\":\"success\"}").as("application/json")
       }.getOrElse {
