@@ -16,7 +16,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 
 /**
-  * The back office controller for the CFP technical committee.
+  * The backoffice controller for the CFP technical committee.
   *
   * Author: @nmartignole
   * Created: 11/11/2013 09:09 in Thalys, heading to Devoxx2013
@@ -230,7 +230,8 @@ object CFPAdmin extends SecureCFPController {
       val totalWithVotes = Leaderboard.totalWithVotes()
       val totalNoVotes = Leaderboard.totalNoVotes()
       val maybeMostVoted = Leaderboard.mostReviewed()
-      val bestReviewer = Leaderboard.bestReviewer()
+      // val bestReviewer = Leaderboard.bestReviewer()
+      val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
 
       val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
@@ -252,7 +253,7 @@ object CFPAdmin extends SecureCFPController {
       Ok(
         views.html.CFPAdmin.leaderBoard(
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
-          totalNoVotes, maybeMostVoted, bestReviewer, lazyOnes,
+          totalNoVotes, maybeMostVoted, bestReviewers, lazyOnes,
           totalSubmittedByTrack, totalSubmittedByType,
           totalAcceptedByTrack, totalAcceptedByType,
           totalSlotsToAllocate,
