@@ -246,7 +246,7 @@ object ConferenceDescriptor {
     val eveningKeynoteRoom = List(ROOM5)
 
     val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10)
-    val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM10)
+    val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM6)
 
     val allRoomsQuick = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3)
 
