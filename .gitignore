@@ -51,6 +51,7 @@ run-be.sh
 run.sh
 run-uk.sh
 run-fr.sh
+run-us.sh
 
 env.sh
 run-be.sh
