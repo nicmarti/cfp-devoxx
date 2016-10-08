@@ -835,12 +835,12 @@ object Conference {
     ))
 
   def conference2015(implicit req: RequestHeader) = Conference(
-    ConferenceDescriptor.conference2015().eventCode,
-    Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.conference2015().timing.datesI18nKey),
-    ConferenceDescriptor.conference2015().locale.map(_.toString),
-    ConferenceDescriptor.conference2015().localisation,
+    ConferenceDescriptor.conference2017().eventCode,
+    Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.conference2017().timing.datesI18nKey),
+    ConferenceDescriptor.conference2017().locale.map(_.toString),
+    ConferenceDescriptor.conference2017().localisation,
     Link(
-      routes.RestAPI.showConference(ConferenceDescriptor.conference2015().eventCode).absoluteURL(),
+      routes.RestAPI.showConference(ConferenceDescriptor.conference2017().eventCode).absoluteURL(),
       routes.RestAPI.profile("conference").absoluteURL(),
       "See more details about " + Messages("longYearlyName")
     ))

@@ -835,79 +835,79 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2016).withMonthOfYear(11).withDayOfMonth(7)
-  val toDay = new DateTime().withYear(2016).withMonthOfYear(11).withDayOfMonth(10)
+  val fromDay = new DateTime().withYear(2017).withMonthOfYear(05).withDayOfMonth(11)
+  val toDay = new DateTime().withYear(2017).withMonthOfYear(05).withDayOfMonth(12)
 
   def current() = ConferenceDescriptor(
-    eventCode = "DV16",
+    eventCode = "DV17",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxbe2016",
+    confUrlCode = "devoxxuk2017",
     frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
-    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.co.uk"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      faq = "https://devoxx.be/faq/",
-      registration = "http://reg.devoxx.be",
-      confWebsite = "https://devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
+      faq = "https://devoxx.co.uk/faq/",
+      registration = "http://reg.devoxx.co.uk",
+      confWebsite = "https://devoxx.co.uk/",
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.co.uk")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "7th-11th November",
-      speakersPassDuration = 5,
+      datesI18nKey = "11th-12th May",
+      speakersPassDuration = 2,
       preferredDayEnabled = true,
-      firstDayFr = "9 novembre",
-      firstDayEn = "november 7th",
-      datesFr = "du 7 au 10 Novembre 2016",
-      datesEn = "from 7th to 10th of November, 2016",
-      cfpOpenedOn = DateTime.parse("2016-05-23T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2016-07-06T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2016-09-15T00:00:00+02:00"),
+      firstDayFr = "11 mei",
+      firstDayEn = "may 11th",
+      datesFr = "do 11 au 12 Mei 2017",
+      datesEn = "from 11th to 12th of May, 2017",
+      cfpOpenedOn = DateTime.parse("2016-10-25T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2017-01-09T23:59:59+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-01-23T00:00:00+02:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
-    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
-    hashTag = "#Devoxx",
+    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUK",
+    hashTag = "#DevoxxUK",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
-    , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
     , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
-  def conference2015() = ConferenceDescriptor(
-    eventCode = "DV15",
+  def conference2017() = ConferenceDescriptor(
+    eventCode = "DV17",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxbe2015",
+    confUrlCode = "devoxxuk2017",
     frLangEnabled = false,
-    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.com"),
-    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.com"),
+    fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.co.uk"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      faq = "https://devoxx.be/faq/",
-      registration = "http://reg.devoxx.be",
-      confWebsite = "https://devoxx.be/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.be")
+      faq = "https://devoxx.co.uk/faq/",
+      registration = "http://reg.devoxx.co.uk",
+      confWebsite = "https://devoxx.co.uk/",
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.co.uk")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "9th-13th November",
-      speakersPassDuration = 5,
+      datesI18nKey = "11th-12th May",
+      speakersPassDuration = 2,
       preferredDayEnabled = true,
-      firstDayFr = "9 novembre",
-      firstDayEn = "november 9th",
-      datesFr = "du 9 au 13 Novembre 2015",
-      datesEn = "from 9th to 13th of November, 2015",
-      cfpOpenedOn = DateTime.parse("2015-05-23T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2015-07-06T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2015-09-15T00:00:00+02:00"),
+      firstDayFr = "11 mei",
+      firstDayEn = "may 11th",
+      datesFr = "me 11 au 12 Mei 2017",
+      datesEn = "from 11th to 12th of May, 2017",
+      cfpOpenedOn = DateTime.parse("2016-10-25T00:00:00+01:00"),
+      cfpClosedOn = DateTime.parse("2017-01-09T23:59:59+01:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-01-23T00:00:00+01:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
-    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxBE",
-    hashTag = "#Devoxx",
+    hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUK",
+    hashTag = "#DevoxxUK",
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
-    , "Metropolis Antwerp, Groenendaallaan 394, 2030 Antwerp,Belgium"
+    , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
     , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
