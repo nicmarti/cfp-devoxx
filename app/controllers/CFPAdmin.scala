@@ -246,21 +246,25 @@ object CFPAdmin extends SecureCFPController {
 
       val allApproved = ApprovedProposal.allApproved()
 
-      val allApprovedByTrack: Map[String, Int] = allApproved.groupBy(_.track.label).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
-      val allApprovedByTalkType: Map[String, Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
+      val allApprovedByTrack:Map[String,Int] = allApproved.groupBy(_.track.label).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
+      val allApprovedByTalkType:Map[String,Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
 
+
+      val generousVoters:List[(String, BigDecimal)] =
+          bestReviewers.filter(_._3 > 0)
+                       .map(b=>(b._1 , BigDecimal(b._2.toDouble / b._3.toDouble).round( new java.math.MathContext(3))))
 
       Ok(
         views.html.CFPAdmin.leaderBoard(
           totalSpeakers, totalProposals, totalVotes, totalWithVotes,
-          totalNoVotes, maybeMostVoted, bestReviewers, lazyOnes,
+          totalNoVotes, maybeMostVoted, bestReviewers, lazyOnes, generousVoters,
           totalSubmittedByTrack, totalSubmittedByType,
           totalAcceptedByTrack, totalAcceptedByType,
           totalSlotsToAllocate,
           totalApprovedSpeakers,
           totalWithTickets,
           totalRefusedSpeakers,
-          allApprovedByTrack, allApprovedByTalkType
+          allApprovedByTrack,allApprovedByTalkType
         )
       )
   }
