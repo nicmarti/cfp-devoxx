@@ -108,9 +108,9 @@
                             <thead>
                                 <tr>
                                     <th>Proposal type</th>
-                                    <th>Proposal received</th>
+                                    <th>Proposals received</th>
                                     <th>Total slots</th>
-                                    <th>Proposal approved</th>
+                                    <th>Proposals approved</th>
                                     <th>To allocate</th>
                                 </tr>
                             </thead>
@@ -152,8 +152,7 @@
                             <h3>Approved by Type</h3>
 
                             @allApprovedByTalkType.map { case (propType, total) =>
-                                @Messages(propType) : <span class="label label-warning">@total</span>
-                                approved submissions for <span class="label label-success">@totalSlotsToAllocate.get(propType + ".label")</span> slots<br>
+                                @Messages(propType) : <span class="label label-warning">@total</span> approved for <span class="label label-success">@totalSlotsToAllocate.get(propType + ".label")</span> slots<br><br>
                             }
                         </div>
                     }
@@ -179,10 +178,8 @@
                     @if(totalAcceptedByType.nonEmpty){
                     <div class="col-md-6">
                         <h3>Accepted by Type</h3>
-                        <p>Talk accepted by a speaker</p>
                         @totalAcceptedByType.map { case (propType, total) =>
-                                @Messages(propType) : <span class="label label-warning">@total</span>
-                                accepted submissions for <span class="label label-success">@totalSlotsToAllocate.get(propType+".label")</span> slots<br>
+                                @Messages(propType) : <span class="label label-warning">@total</span> accepted for <span class="label label-success">@totalSlotsToAllocate.get(propType+".label")</span> slots<br><br>
                             }
                     </div>
                     }
