@@ -250,7 +250,7 @@ object CFPAdmin extends SecureCFPController {
       val allApprovedByTalkType:Map[String,Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
 
 
-      val generousVoters:List[(String, BigDecimal)] =
+      def generousVoters:List[(String, BigDecimal)] =
           bestReviewers.filter(_._3 > 0)
                        .map(b=>(b._1 , BigDecimal(b._2.toDouble / b._3.toDouble).round( new java.math.MathContext(3))))
 
