@@ -687,6 +687,14 @@ object ConferenceDescriptor {
                       new DateTime("2016-11-10T16:10:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r4)
       }
 
+      val conferenceThursdaySlot5 = ConferenceRooms.allRoomsConf.map {
+        r5 =>
+          SlotBuilder(ConferenceProposalTypes.CONF.id,
+            THURSDAY,
+            new DateTime("2016-11-10T16:40:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime("2016-11-10T17:40:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r5)
+      }
+
       val conferenceThursdaySlot6 = ConferenceRooms.allRoomsConf.map {
         r6 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id,
@@ -711,6 +719,7 @@ object ConferenceDescriptor {
                      conferenceThursdaySlot2 ++
                      conferenceThursdaySlot3 ++
                      conferenceThursdaySlot4 ++
+                     conferenceThursdaySlot5 ++
                      conferenceThursdaySlot6 ++
                      closingSessions
 
