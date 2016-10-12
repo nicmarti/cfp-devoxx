@@ -602,8 +602,8 @@ object ConferenceDescriptor {
       ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
-            new DateTime("2016-11-09T19:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
-            new DateTime("2016-11-09T19:45:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
+            new DateTime("2016-11-10T19:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime("2016-11-10T19:45:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
       }
     }
 
