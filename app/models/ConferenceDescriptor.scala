@@ -246,7 +246,7 @@ object ConferenceDescriptor {
     val eveningKeynoteRoom = List(ROOM5)
 
     val allRoomsConf = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3, ROOM10)
-    val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9, ROOM6)
+    val fridayRoomsConf = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
     val allRoomsQuick = List(ROOM8, ROOM5, ROOM9, ROOM6, ROOM7, ROOM4, ROOM3)
 
@@ -602,8 +602,8 @@ object ConferenceDescriptor {
       ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
-            new DateTime("2016-11-10T19:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
-            new DateTime("2016-11-10T19:45:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
+            new DateTime("2016-11-09T19:00:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)),
+            new DateTime("2016-11-09T19:45:00.000+01:00").toDateTime(DateTimeZone.forID(europeBrussels)), r1)
       }
     }
 
