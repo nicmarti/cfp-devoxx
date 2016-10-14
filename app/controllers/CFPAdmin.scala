@@ -64,7 +64,7 @@ object CFPAdmin extends SecureCFPController {
 
       request.headers.get("If-None-Match") match {
         case Some(tag) if tag == etag => NotModified
-        case _ => Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc)).withHeaders("ETag" -> etag)
+        case _ => Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, track)).withHeaders("ETag" -> etag)
       }
   }
 

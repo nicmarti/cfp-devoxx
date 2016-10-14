@@ -3,7 +3,8 @@
  totalEvents:Long,
  page:Int,
  sort:Option[String],
- ascdesc:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+ ascdesc:Option[String],
+ track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
     <div class="row">
@@ -115,10 +116,10 @@
                                     <small>
                                     @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
                                     @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; @Messages("previous.page")</a> -
+                                      <a href="@routes.CFPAdmin.index(page-1,sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
                                     }
                                     @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1)">@Messages("next.page") &gt;</a>
+                                      <a href="@routes.CFPAdmin.index(page+1,sort,ascdesc,track)">@Messages("next.page") &gt;</a>
                                     }</small>
                                 </td>
                             </tr>
@@ -146,10 +147,10 @@
                                     <small>
                                     @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
                                     @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1)">&lt; @Messages("previous.page")</a> -
+                                      <a href="@routes.CFPAdmin.index(page-1,sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
                                     }
                                     @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1)">@Messages("next.page") &gt;</a>
+                                      <a href="@routes.CFPAdmin.index(page+1,sort,ascdesc,track)">@Messages("next.page") &gt;</a>
                                     }
                                     </small>
                                 </td>
