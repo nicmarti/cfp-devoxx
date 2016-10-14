@@ -1,4 +1,4 @@
-@(totalSpeakers: Long, totalProposals: Long, totalReviews: Long, totalVotes: Long, totalNoVotes: Long, mostVoted: Option[(String, String)], bestReviewers: List[(String, Int, Int)], lazyOnes: Map[String, String], generousOnes: List[(String, scala.math.BigDecimal)], totalSubmittedByTrack: Map[String, Int], totalSubmittedByType: Map[String, Int], totalAcceptedByTrack: Map[String, Int], totalAcceptedByType: Map[String, Int], totalSlotsToAllocate: Map[String, Int], totalApprovedSpeakers:Long, totalWithTickets:Long, totalRefusedSpeakers:Long, allApprovedByTrack:Map[String,Int], allApprovedByTalkType:Map[String,Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(params: controllers.CFPAdmin.LeaderBoardParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Leaderboard") {
     <div class="row">
@@ -12,56 +12,70 @@
 
                 <div class="panel-body">
                     <div class="col-md-3">
-                        <h1>@totalSpeakers</h1>
+                        <h1>@params.totalSpeakers</h1>
                         <small><i class="icon-user"></i> speakers</small>
                     </div>
 
                       <div class="col-md-3">
-                        <h1>@totalApprovedSpeakers</h1>
+                        <h1>@params.totalApprovedSpeakers</h1>
                         <small><i class="icon-user"></i> approved speakers</small><br>
                     </div>
 
                     <div class="col-md-3">
-                        <h1>@totalRefusedSpeakers</h1>
+                        <h1>@params.totalRefusedSpeakers</h1>
                         <small><i class="icon-user"></i> refused speakers</small><br>
                     </div>
 
                     <div class="col-md-3">
-                        <h1>@totalWithTickets</h1>
+                        <h1>@params.totalWithTickets</h1>
                         <small><i class="icon-user"></i> with a @Messages("shortName") Pass</small><br>
                     </div>
 
                     <div class="col-md-3">
-                        <h1>@totalProposals</h1>
+                        <h1>@params.totalProposals</h1>
                         <small><i class="icon-book"></i> proposals</small>
                     </div>
 
                     <div class="col-md-3">
-                        <h1>@totalVotes</h1>
+                        <h1>@params.totalVotes</h1>
                         <small><i class="icon-eye-open"></i> proposals with vote</small>
                     </div>
 
                     <div class="col-md-3">
-                        <h1><a href="@routes.CFPAdmin.showProposalsWithNoVotes()">@totalNoVotes</a></h1>
+                        <h1><a href="@routes.CFPAdmin.showProposalsWithNoVotes()">@params.totalNoVotes</a></h1>
                         <small><i class="icon-eye-close"></i> proposals with no vote (incl. Draft)</small>
                     </div>
 
                     <div class="col-md-3">
-                        <h1>@totalReviews</h1>
+                        <h1>@params.totalVotes</h1>
                         <small><i class="icon-camera-retro"></i> reviews</small>
                     </div>
 
-                    @mostVoted.map { mv =>
-                        <div class="col-md-3">
-                            <h3><a href="@routes.CFPAdmin.showVotesForProposal(mv._1)">@mv._1</a></h3>
-                            <small><i class="icon-heart"></i> most voted with @mv._2 reviews</small>
-                        </div>
-                    }
+                    <div class="col-md-3">
+                        <h3>Most Votes</h3>
+                        @params.mostReviewed.map { mr =>
+                            <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes<br><br>
+                        }
+                    </div>
+
+                    <div class="col-md-3">
+                        <h3>Eager Speakers</h3>
+                        @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
+                            @tags.renderGravatar(br._1)
+                            @tags.renderMostProposals(br._2)
+                        }
+                    </div>
+                    <div class="col-md-3">
+                        <h3>Most Debatable</h3>
+                        @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
+                            <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments<br><br>
+                        }
+                    </div>
                     <div class="clearfix"></div>
 
                     <div class="col-md-4">
-                        <h3>Top 5 Reviewers</h3>
-                        @bestReviewers.sortBy(_._2).reverse.take(5).map { br =>
+                        <h3>Top Reviewers</h3>
+                        @params.bestReviewers.sortBy(_._2).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
                             @tags.renderTalksReviewed(br._3)
                         }
@@ -70,14 +84,14 @@
 
                     <div class="col-md-4">
                         <h3>The Lazy One's</h3>
-                        @lazyOnes.map { wr =>
+                        @params.lazyOnes.map { wr =>
                             @tags.renderGravatar(wr._1)
                             @tags.renderTalksReviewed(wr._2.toInt)
                         }
                     </div>
                     <div class="col-md-4">
                         <h3>The Generous One's</h3>
-                        @generousOnes.sortBy(_._2).reverse.take(5).map { wr =>
+                        @params.generousVoters.sortBy(_._2).reverse.take(5).map { wr =>
                             @tags.renderGravatar(wr._1)
                         <small>avg. rating of @wr._2</small>
                         }
@@ -85,11 +99,11 @@
 
                     <div class="clearfix"></div>
 
-                    @if(totalSubmittedByTrack.nonEmpty){
+                    @if(params.totalSubmittedByTrack.nonEmpty){
                     <div class="col-md-6">
                         <h3>Submitted by Track</h3>
-                            @defining(totalSubmittedByTrack.map(_._2).max){maxValue=>
-                            @totalSubmittedByTrack.map{case(track,total)=>
+                            @defining(params.totalSubmittedByTrack.values.max){maxValue=>
+                            @params.totalSubmittedByTrack.map{case(track,total)=>
                                 <span class="label label-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
@@ -101,28 +115,28 @@
                     </div>
                         }
 
-                    @if(totalSubmittedByType.nonEmpty){
+                    @if(params.totalSubmittedByType.nonEmpty){
                     <div class="col-md-6">
                         <h3>Submitted by Type</h3>
                         <table class="table table-bordered table-simple">
                             <thead>
                                 <tr>
                                     <th>Proposal type</th>
-                                    <th>Proposals received</th>
+                                    <th>Proposal received</th>
                                     <th>Total slots</th>
-                                    <th>Proposals approved</th>
+                                    <th>Proposal approved</th>
                                     <th>To allocate</th>
                                 </tr>
                             </thead>
-                        @totalSubmittedByType.map { case (propType, total) =>
+                        @params.totalSubmittedByType.map { case (propType, total) =>
                             <tbody>
                                 <tr>
                                     <th>@Messages(propType) <a href="@routes.CFPAdmin.allProposalsByType(propType)"><i class="icon-arrow-right"></i></a></th>
                                     <td><span class="label label-warning">@total</span></td>
-                                    <td><span class="label label-success">@totalSlotsToAllocate.get(propType+".label")</span></td>
+                                    <td><span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span></td>
                             @defining(models.ApprovedProposal.countApproved(propType)) { approvedTotal =>
                                        <td><span class="label label-primary">@approvedTotal</span> </td>
-                                       <td><span class="label label-danger">@(totalSlotsToAllocate.get(propType+".label").map(s=>s-approvedTotal))</span> </td>
+                                       <td><span class="label label-danger">@(params.totalSlotsToAllocate.get(propType+".label").map(s=>s-approvedTotal))</span> </td>
                             }
                                 </tr>
                             </tbody>
@@ -131,11 +145,11 @@
                     </div>
                     }
 
-                    @if(allApprovedByTrack.nonEmpty) {
+                    @if(params.allApprovedByTrack.nonEmpty) {
                         <div class="col-md-6">
-                        <h3>Approved by Track (total @allApprovedByTrack.size)</h3>
-                        @defining(allApprovedByTrack.map(_._2).max){maxValue=>
-                            @allApprovedByTrack.map{case(track,total)=>
+                        <h3>Approved by Track (total @params.allApprovedByTrack.size)</h3>
+                        @defining(params.allApprovedByTrack.values.max){maxValue=>
+                            @params.allApprovedByTrack.map{case(track,total)=>
                                 <span class="label label-info">@total</span> @Messages(track)
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
@@ -147,23 +161,23 @@
 
                         </div>
                     }
-                    @if(allApprovedByTalkType.nonEmpty) {
+                    @if(params.allApprovedByTalkType.nonEmpty) {
                         <div class="col-md-6">
                             <h3>Approved by Type</h3>
 
-                            @allApprovedByTalkType.map { case (propType, total) =>
-                                @Messages(propType) : <span class="label label-warning">@total</span> approved for <span class="label label-success">@totalSlotsToAllocate.get(propType + ".label")</span> slots<br><br>
+                            @params.allApprovedByTalkType.map { case (propType, total) =>
+                                @Messages(propType) : <span class="label label-warning">@total</span>
+                                approved submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType + ".label")</span> slots<br>
                             }
                         </div>
                     }
 
-
-                    @if(totalAcceptedByTrack.nonEmpty){
+                    @if(params.totalAcceptedByTrack.nonEmpty){
                         <div class="clearfix"></div>
                      <div class="col-md-6">
                         <h3>Accepted by Track</h3>
-                            @defining(totalAcceptedByTrack.map(_._2).max){maxValue=>
-                            @totalAcceptedByTrack.map{case(track,total)=>
+                            @defining(params.totalAcceptedByTrack.values.max){maxValue=>
+                            @params.totalAcceptedByTrack.map{case(track,total)=>
                                 <span class="label label-info">@total</span> @Messages(track)
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
@@ -175,11 +189,13 @@
                     </div>
                     }
 
-                    @if(totalAcceptedByType.nonEmpty){
+                    @if(params.totalAcceptedByType.nonEmpty){
                     <div class="col-md-6">
                         <h3>Accepted by Type</h3>
-                        @totalAcceptedByType.map { case (propType, total) =>
-                                @Messages(propType) : <span class="label label-warning">@total</span> accepted for <span class="label label-success">@totalSlotsToAllocate.get(propType+".label")</span> slots<br><br>
+                        <p>Talk accepted by a speaker</p>
+                        @params.totalAcceptedByType.map { case (propType, total) =>
+                                @Messages(propType) : <span class="label label-warning">@total</span>
+                                accepted submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span> slots<br>
                             }
                     </div>
                     }

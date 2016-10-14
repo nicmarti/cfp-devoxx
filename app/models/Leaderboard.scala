@@ -23,6 +23,8 @@
 
 package models
 
+import java.util
+
 import library.Redis
 
 /**
@@ -30,7 +32,8 @@ import library.Redis
  * Created by nicolas on 21/01/2014.
  */
 object Leaderboard {
-  def computeStats() = Redis.pool.withClient {
+
+  def computeStats(): util.List[AnyRef] = Redis.pool.withClient {
     implicit client =>
 
       // First, stats on Proposal, cause Computed:Reviewer:ReviewedOne is used for
@@ -57,13 +60,9 @@ object Leaderboard {
       tx.set("Leaderboard:totalNoVotes", totalNoVotes.toString)
 
       val mostReviewed = Review.mostReviewed()
-      mostReviewed.map{
-        mr =>
-        tx.set("Leaderboard:mostReviewed:proposal", mr._1)
-        tx.set("Leaderboard:mostReviewed:score", mr._2.toString)
-      }.getOrElse{
-        tx.del("Leaderboard:mostReviewed:proposal")
-        tx.del("Leaderboard:mostReviewed:score")
+      tx.del("Leaderboard:mostReviewed")
+      mostReviewed.foreach {
+        mr => tx.hset("Leaderboard:mostReviewed", mr._1, mr._2.toString)
       }
 
       Review.bestReviewer().map {
@@ -119,16 +118,23 @@ object Leaderboard {
       val totalWithTickets = ApprovedProposal.allApprovedSpeakersWithFreePass().map(_.uuid).diff(allWebusers.map(_.uuid)).size
       tx.set("Leaderboard:totalWithTickets", totalWithTickets.toString)
 
-    val allCFPWebusers= Webuser.allCFPWebusers().map(w=>w.uuid).toSet
-    val allApprovedIDs= ApprovedProposal.allApprovedSpeakerIDs()
-    val allRejectedIDs= ApprovedProposal.allRefusedSpeakerIDs()
+      val allCFPWebusers= Webuser.allCFPWebusers().map(w=>w.uuid).toSet
+      val allApprovedIDs= ApprovedProposal.allApprovedSpeakerIDs()
+      val allRejectedIDs= ApprovedProposal.allRefusedSpeakerIDs()
 
-    val refusedSpeakers = allRejectedIDs.diff(allCFPWebusers).diff(allApprovedIDs)
+      val refusedSpeakers = allRejectedIDs.diff(allCFPWebusers).diff(allApprovedIDs)
 
-    val totalRefusedSpeakers = refusedSpeakers.size
-    tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
+      val totalRefusedSpeakers = refusedSpeakers.size
+      tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
 
-    tx.exec()
+      val totalCommentsPerProposal = Review.totalInternalCommentsPerProposal()
+      tx.del("Leaderboard:totalCommentsPerProposal")
+      totalCommentsPerProposal.map {
+        case (proposalId: String, totalComments: Int) =>
+          tx.hset("Leaderboard:totalCommentsPerProposal", proposalId, totalComments.toString)
+      }
+
+      tx.exec()
   }
 
   def totalSpeakers():Long = {
@@ -151,12 +157,20 @@ object Leaderboard {
     getFromRedis("Leaderboard:totalNoVotes")
   }
 
-  def mostReviewed():Option[(String,String)] = {
-    Redis.pool.withClient {
-      implicit client =>
-        for (proposalId <- client.get("Leaderboard:mostReviewed:proposal");
-             score <- client.get("Leaderboard:mostReviewed:score")) yield (proposalId, score)
-    }
+  def totalCommentsPerProposal():Map[String,Int] = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll("Leaderboard:totalCommentsPerProposal").map {
+        case (key: String, value: String) =>
+          (key, value.toInt)
+      }
+  }
+
+  def mostReviewed():Map[String,Int] = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll("Leaderboard:mostReviewed").map {
+        case (key: String, value: String) =>
+          (key, value.toInt)
+      }
   }
 
   def bestReviewer():Option[(String,String)] = Redis.pool.withClient {
