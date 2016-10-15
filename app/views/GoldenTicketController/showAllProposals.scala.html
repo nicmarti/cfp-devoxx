@@ -1,4 +1,8 @@
-@(allProposalsForReview: List[Proposal], page:Int, sort:Option[String], ascdesc:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(allProposalsForReview: List[Proposal],
+  page:Int,
+  sort:Option[String],
+  ascdesc:Option[String],
+  track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
     <div class="row">
@@ -33,6 +37,13 @@
                     <p><label class="label label-success"><i class="icon-lightbulb"></i> @Messages("gt.special.need")</label></p>
                     <br>
                     @if(allProposalsForReview.nonEmpty) {
+                        <i class="icon-filter"></i> Filter on
+                        @Track.allIDs.map{idTrack=>
+                            <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
+                        }
+                        <br>
+                        <br>
+
                         <table class="table table-bordered table-striped table-hover table-condensed">
                             <thead>
                                 <tr>
