@@ -1,4 +1,6 @@
-@(proposal: Proposal, voteForm: Form[Int], maybeMyVote: Option[ReviewByGoldenTicket])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(proposal: Proposal,
+  voteForm: Form[Int],
+  maybeMyVote: Option[ReviewByGoldenTicket])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("Golden Ticket - Show " + proposal.id) {
     <div class="row">
