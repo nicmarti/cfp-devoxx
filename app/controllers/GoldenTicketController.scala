@@ -89,7 +89,7 @@ object GoldenTicketController extends SecureCFPController {
 
       request.headers.get(IF_NONE_MATCH) match {
         case Some(tag) if tag == etag.toString => NotModified
-        case _ => Ok(views.html.GoldenTicketController.showAllProposals(allProposalsForReview, page, sort, ascdesc)).withHeaders(ETAG -> etag.toString)
+        case _ => Ok(views.html.GoldenTicketController.showAllProposals(allProposalsForReview, page, sort, ascdesc, track)).withHeaders(ETAG -> etag.toString)
       }
 
   }

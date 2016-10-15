@@ -4,6 +4,7 @@
 
 # except for .gitignore
 !.gitignore
+!.htaccess
 
 # Ignore Play! working directory #
 # in Dev branch, we do not want to save the application.conf file cause it contains password
@@ -50,6 +51,7 @@ run-be.sh
 run.sh
 run-uk.sh
 run-fr.sh
+run-us.sh
 
 env.sh
 run-be.sh

@@ -173,6 +173,15 @@ object Review {
     implicit client =>
       val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
       val totalPerProposal = onlyValidProposalIDs.map {
+        proposalId => (proposalId, totalVoteCastFor(proposalId))
+      }
+      totalPerProposal.toList
+  }
+
+  def allProposalsAndComments: List[VotesPerProposal] = Redis.pool.withClient {
+    implicit client =>
+      val onlyValidProposalIDs = Proposal.allProposalIDsNotDeleted
+      val totalPerProposal = onlyValidProposalIDs.map {
         proposalId =>
           (proposalId, totalVoteCastFor(proposalId))
       }
@@ -199,8 +208,8 @@ object Review {
     totalPerProposal.size
   }
 
-  def mostReviewed(): Option[VotesPerProposal] = {
-    val maybeBestProposal = allProposalsAndReviews.sortBy(_._2).reverse.headOption
+  def mostReviewed(): List[VotesPerProposal] = {
+    val maybeBestProposal = allProposalsAndReviews.sortBy(_._2).reverse.take(5)
     maybeBestProposal
   }
 
@@ -236,6 +245,17 @@ object Review {
       } else {
         None
       }
+  }
+
+  def totalInternalCommentsPerProposal(): List[(String, Int)] = {
+    val proposalsCommentsCount: List[(String, Int)] = {
+      allProposalsAndReviews.map(proposal => (proposal._1, Comment.allInternalComments(proposal._1).size))
+                              .filter(_._2 > 2) // At least three comments
+                              .sortBy(_._2)
+                              .reverse.take(5)
+    }
+
+    proposalsCommentsCount
   }
 
   def allVotesFromUser(reviewerUUID: String): Set[(String, Option[Double])] = Redis.pool.withClient {
@@ -423,8 +443,6 @@ object Review {
         (uuid, 0, 0)
       )
       allVoted.toList ++ noReviewsAndNote.toList
-
-
   }
 
   def diffReviewBetween(firstUUID: String, secondUUID: String): Set[String] = Redis.pool.withClient {
@@ -435,5 +453,4 @@ object Review {
         "Proposals:ByState:" + ProposalState.ARCHIVED.code,
         "Proposals:ByState:" + ProposalState.DRAFT.code)
   }
-
 }
