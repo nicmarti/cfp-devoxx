@@ -820,7 +820,7 @@ object Conference {
   implicit val confFormat = Json.format[Conference]
 
   def all(implicit req: RequestHeader) = {
-    List(currentConference, conference2015)
+    List(currentConference)
   }
 
   def currentConference(implicit req: RequestHeader) = Conference(
@@ -830,17 +830,6 @@ object Conference {
     ConferenceDescriptor.current().localisation,
     Link(
       routes.RestAPI.showConference(ConferenceDescriptor.current().eventCode).absoluteURL(),
-      routes.RestAPI.profile("conference").absoluteURL(),
-      "See more details about " + Messages("longYearlyName")
-    ))
-
-  def conference2015(implicit req: RequestHeader) = Conference(
-    ConferenceDescriptor.conference2015().eventCode,
-    Messages("longYearlyName") + ", " + Messages(ConferenceDescriptor.conference2015().timing.datesI18nKey),
-    ConferenceDescriptor.conference2015().locale.map(_.toString),
-    ConferenceDescriptor.conference2015().localisation,
-    Link(
-      routes.RestAPI.showConference(ConferenceDescriptor.conference2015().eventCode).absoluteURL(),
       routes.RestAPI.profile("conference").absoluteURL(),
       "See more details about " + Messages("longYearlyName")
     ))
