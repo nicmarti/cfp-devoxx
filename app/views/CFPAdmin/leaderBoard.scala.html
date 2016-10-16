@@ -78,7 +78,7 @@
 
                     <div class="col-md-4">
                         <h3>Top Reviewers</h3>
-                        @params.bestReviewers.sortBy(_._2).reverse.take(5).map { br =>
+                        @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
                             @tags.renderTalksReviewed(br._3)
                         }
@@ -87,7 +87,7 @@
 
                     <div class="col-md-4">
                         <h3>The Lazy One's</h3>
-                        @params.lazyOnes.map { wr =>
+                        @params.lazyOnes.filter(_._2.toInt < 5).map { wr =>
                             @tags.renderGravatar(wr._1)
                             @tags.renderTalksReviewed(wr._2.toInt)
                         }
