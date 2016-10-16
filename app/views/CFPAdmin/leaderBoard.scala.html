@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <h1>@params.totalVotes</h1>
+                        <h1>@params.totalWithVotes</h1>
                         <small><i class="icon-eye-open"></i> proposals with vote</small>
                     </div>
 
@@ -58,6 +58,7 @@
                             @tags.renderGravatarByProposal(mr._1)
                             <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes
                         }
+                        <br><br><small><a href='@routes.CFPAdmin.allVotes("all", None)' class="btn btn-sm btn-primary">See all Votes</a></small>
                     </div>
 
                     <div class="col-md-4">
