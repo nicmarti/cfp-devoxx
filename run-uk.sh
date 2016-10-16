@@ -61,6 +61,8 @@ export ACTIVATE_HTTPS="false"
 export ACTIVATE_FAVORITES="true"
 export ACTIVATE_VOTE="true"
 
+export BUCKET_ROOTFOLDER="$HOME/redis/cfp.devoxx.co.uk"
+
 echo -n "--- Configured for development ---"
 
 #play
