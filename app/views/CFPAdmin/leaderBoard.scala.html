@@ -52,24 +52,26 @@
                     </div>
                     <div class="clearfix"></div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>Most Votes</h3>
                         @params.mostReviewed.map { mr =>
-                            <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes<br><br>
+                            @tags.renderGravatarByProposal(mr._1)
+                            <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes
                         }
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>Eager Speakers</h3>
                         @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
                             @tags.renderMostProposals(br._2)
                         }
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>Most Debatable</h3>
                         @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
-                            <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments<br><br>
+                            @tags.renderGravatarByProposal(tc._1)
+                            <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
                         }
                     </div>
                     <div class="clearfix"></div>
