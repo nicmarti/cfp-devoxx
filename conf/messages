@@ -157,7 +157,7 @@ cfp.reminder.proposals=do not forget to submit your Draft
 cfp.program=Program announced :
 cfp.program.date=from {0}
 video.title=Videos
-video.tag=Review Devoxx UK 2015''s videos on
+video.tag=Review Devoxx UK 2016''s videos on
 theme.title=Tracks
 theme.track=List of tracks for Devoxx United-Kingdom 2017:
 track.title=Title
@@ -728,7 +728,7 @@ gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, b
 gt.intro.2=If needed, you can also
 gt.reviewYourVotes=review your Votes
 gt.intro.3=while the CFP is open.
-gt.special.need=If you have a specific speaker you would love to see present at Devoxx UK, drop an email to program@devoxx.be and we’ll do our best to get them there.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx UK, drop an email to program@devoxx.co.uk and we’ll do our best to get them there.
 gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes
