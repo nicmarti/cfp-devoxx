@@ -318,7 +318,7 @@ object RestAPI extends Controller {
       // So I need to do a temporary filter
       // val proposals = ApprovedProposal.allApproved().filterNot(_.event==eventCode).toList.sortBy(_.title)
 
-      val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx BE 2015 is not valid
+      val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx UK 2016 is not valid
       val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
 
       val eTag = proposals.hashCode.toString
