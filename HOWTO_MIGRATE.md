@@ -4,11 +4,11 @@ This document describes how to upgrade and to prepare your CFP for a new edition
 
 # Do a backup of the HTML program
 
-First, if you used the Publisher component, you should do a backup of all your program pages. To do so, we recommend that you use [wget](http://linuxreviews.org/quicktips/wget/) with a recursive option. 
+First, if you used the Publisher component, you should do a backup of all your program pages. To do so, we recommend that you use [wget](http://linuxreviews.org/quicktips/wget/) with a recursive option and -N option (see http://stackoverflow.com/questions/4944295/skip-download-if-files-exist-in-wget). 
  
 For e.g., to save the Devoxx France 2015 content : 
 
-    wget -r http://cfp.devoxx.fr/2015/index.html
+    wget -N -r http://cfp.devoxx.fr/2015/index.html
     ...
     ...
     
@@ -33,6 +33,37 @@ Before performing any operation from the Admin panel, make a copy of your Redis 
 
 Run redis-server and redis-client (see sections ... in README.md). Once they are running, SYNC them, and run SAVE or BGSAVE them. please readup and refer to this resource http://zdk.blinkenshell.org/redis-backup-and-restore/.
 
+At the redis-cli prompt run this command:
+CONFIG GET *
+
+The configuration will enlist the home directory where redis sits and also where the backup files are created:
+
+.
+.
+.
+104) "/home/[username]]/redis"
+.
+.
+.
+
+List the /home/[username]]/redis folder to see something like the below, and should contain the names of the recent backup files (look for .rdb or .aof extensions):
+
+zsh 10094 % ls -lash /home/[username]/redis             
+total 145M
+4.0K drwxrwxr-x   3 [username] [username] 4.0K Oct  6 00:26 .
+ 20K drwx------ 185 [username] [username]  20K Oct  6 00:37 ..
+ 54M -rw-rw-r--   1 [username] [username]  54M Oct  6 00:26 appendonly_devoxx_uk.aof
+ 47M -rw-rw-r--   1 [username] [username]  47M Oct  6 00:25 dump_devoxxUK.rdb
+4.0K drwxrwxr-x   6 [username] [username] 4.0K Mar 10  2015 redis-2.8.19
+   0 -rw-rw-r--   1 [username] [username]    0 Mar 10  2015 redis_uk.pid
+120K -rw-rw-r--   1 [username] [username] 114K Oct  6 00:14 stdout_redis_uk.log.txt
+ 11M -rw-r--r--   1 [username] [username]  11M Mar 10  2015 temp-1426015903.23718.rdb
+2.0M -rw-r--r--   1 [username] [username] 2.0M Mar 10  2015 temp-1426015974.23808.rdb
+1.4M -rw-r--r--   1 [username] [username] 1.4M Mar 10  2015 temp-1426015983.23824.rdb
+ 31M -rw-r--r--   1 [username] [username]  31M Feb  6  2016 temp-1454796874.32571.rdb
+
+
+
 # Create a tag on Github
 
 On the dev branch, create a tag such as `DevoxxFR_2015_Backup`, in order to be able to compare between any two years. Here are the steps to go about:
@@ -49,11 +80,6 @@ $ git tag Devoxx[xx]_[year]_backup
 $ git push upstream dev-[...]
 $ git push origin dev-[...]
 ```
-
- Create a tag for the 
-
-
-
 
 # Start with the configuration 
 
