@@ -162,7 +162,7 @@ theme.title=Tracks
 theme.track=List of tracks for Devoxx United-Kingdom 2017:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx UK 2017, 7th-11th November
+appel.conf.dates=Devoxx UK 2017, 11th-12th May
 
 # Tracks
 
@@ -469,11 +469,11 @@ day-confThursday=Thursday
 day-lab=Wednesday
 day-confFriday=Friday
 day-bof=Thursday, 19h30
-day-monday=Monday, 7th November
-day-tuesday=Tuesday, 8th November
-day-wednesday=Wednesday, 9th November
-day-thursday=Thursday, 10th November
-day-friday=Friday, 11th November
+day-monday=Monday, 8th May
+day-tuesday=Tuesday, 9th May
+day-wednesday=Wednesday, 10th May
+day-thursday=Thursday, 11th May
+day-friday=Friday, 12th May
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -502,11 +502,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 7th November 2017
-sw.show.title.tue=Tuesday, 8th November 2017
-sw.show.title.wed=Wednesday, 9th November 2017
-sw.show.title.thu=Thursday, 10th November 2017
-sw.show.title.fri=Friday, 11th November 2017
+sw.show.title.mon=Monday, 8th May 2017
+sw.show.title.tue=Tuesday, 9th May 2017
+sw.show.title.wed=Wednesday, 10th May 2017
+sw.show.title.thu=Thursday, 11th May 2017
+sw.show.title.fri=Friday, 12th May 2017
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast

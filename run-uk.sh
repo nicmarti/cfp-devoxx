@@ -62,6 +62,9 @@ export ACTIVATE_FAVORITES="true"
 export ACTIVATE_VOTE="true"
 
 export BUCKET_ROOTFOLDER="$HOME/redis/cfp.devoxx.co.uk"
+export AWS_SECRET=""
+export AWS_KEY=""
+export AWS_REGION=""
 
 echo -n "--- Configured for development ---"
 
