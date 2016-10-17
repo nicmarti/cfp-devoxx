@@ -44,18 +44,15 @@ project/plugins/project/
 .scala_dependencies
 
 # My custom scripts to run locally with env variables
-run-fr.sh
-run-be.sh
 
 /public/speakers/
 run.sh
 run-uk.sh
 run-fr.sh
 run-us.sh
-
 env.sh
 run-be.sh
-# run-us.sh
+
 /conf/redis-devoxxlocal.conf
 /conf/dump.rdb
 /conf/application.conf.local
