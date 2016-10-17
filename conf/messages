@@ -167,6 +167,7 @@ appel.conf.dates=Devoxx UK 2017, 7th-11th November
 # Tracks
 
 method_archi.label=Methodology & Architecture
+archisec.label=Methodology & Architecture
 track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
 
 java.label=Java Language
