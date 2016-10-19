@@ -54,7 +54,7 @@
 
                     <div class="col-md-3">
                         <br>
-                        <small><a href="@routes.CFPAdmin.allProposalsByCompany()" class="btn btn-sm btn-warning">All Proposal by Company</a></small>
+                        <small><a href="@routes.CFPAdmin.allProposalsByCompany()" class="btn btn-sm btn-warning">All Proposals by Company</a></small>
                     </div>
 
                     <div class="col-md-3">
@@ -158,6 +158,7 @@
                         }
                         </table>
                     </div>
+                    <div class="clearfix"></div>
                     }
 
                     @if(params.allApprovedByTrack.nonEmpty) {
@@ -185,6 +186,7 @@
                                 approved submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType + ".label")</span> slots<br>
                             }
                         </div>
+                        <div class="clearfix"></div>
                     }
 
                     @if(params.totalAcceptedByTrack.nonEmpty){
@@ -213,6 +215,7 @@
                                 accepted submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span> slots<br>
                             }
                     </div>
+                    <div class="clearfix"></div>
                     }
                 </div>
             </div>
