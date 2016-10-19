@@ -742,7 +742,7 @@ object CFPAdmin extends SecureCFPController {
         case (company, speakerList) =>
           val setOfProposals = speakerList.flatMap {
             s =>
-              Proposal.allProposalsByAuthor(s.uuid).values
+              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).values
           }.toSet
           (company, setOfProposals)
       }.filterNot(_._2.isEmpty)
