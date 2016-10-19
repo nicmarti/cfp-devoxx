@@ -13,7 +13,7 @@
                   @submittedProps.values.groupBy(_.track).map { byTracks =>
                     <h4>@Messages(byTracks._1.label)</h4>
                     @byTracks._2.map{props=>
-                      <a href="@routes.CFPAdmin.openForReview(props.id)">@props.title</a> by @props.allSpeakers.map(_.cleanShortName)<br>
+                      <a href="@routes.CFPAdmin.openForReview(props.id)">@props.title</a> by @props.allSpeakers.map(_.cleanShortName).mkString(", ")<br>
                     }
                   }
                 }
@@ -23,7 +23,7 @@
                     @submittedProps.values.groupBy(_.track).map { byTracks =>
                    <h4>@Messages(byTracks._1.label)</h4>
                     @byTracks._2.map{props=>
-                      @props.title  by @props.allSpeakers.map(_.cleanShortName)<br>
+                      @props.title  by @props.allSpeakers.map(_.cleanShortName).mkString(", ")<br>
                     }
                   }
                 }

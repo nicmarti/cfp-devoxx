@@ -22,7 +22,7 @@
                                 <th>Average</th>
                             </tr>
                         </thead>
-                    @reviewers.sortBy(_._2).reverse.map { uuidAndTotal =>
+                    @reviewers.sortBy(_._3).reverse.map { uuidAndTotal =>
                         <tr>
                             <td>
                                 @tags.renderGravatar(uuidAndTotal._1)

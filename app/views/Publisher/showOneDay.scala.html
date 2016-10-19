@@ -26,7 +26,7 @@
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                 <tr >
                     <th class="timeSlot">
-                        @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
                     </th>
                     @rooms.sorted.map { room =>
                         @tags.publisher.tagRenderRow(subSlots,room,rooms.size)
