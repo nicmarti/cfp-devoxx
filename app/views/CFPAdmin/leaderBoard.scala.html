@@ -52,6 +52,17 @@
                     </div>
                     <div class="clearfix"></div>
 
+                    <div class="col-md-3">
+                        <br>
+                        <small><a href="@routes.CFPAdmin.allProposalsByCompany()" class="btn btn-sm btn-warning">All Proposal by Company</a></small>
+                    </div>
+
+                    <div class="col-md-3">
+                        <br>
+                        <small><a href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-sm btn-success">Approved Speakers by Company</a></small>
+                    </div>
+                    <div class="clearfix"></div>
+
                     <div class="col-md-4">
                         <h3>Most Votes</h3>
                         @params.mostReviewed.map { mr =>

@@ -719,7 +719,7 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
-  def allProposalsByCompany() = SecuredAction(IsMemberOf("admin")) {
+  def allProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       val allInteresting = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
@@ -745,7 +745,9 @@ object CFPAdmin extends SecureCFPController {
               Proposal.allProposalsByAuthor(s.uuid).values
           }.toSet
           (company, setOfProposals)
-      }.filterNot(_._2.isEmpty).sortBy(p => p._2.size).reverse
+      }.filterNot(_._2.isEmpty)
+       .sortBy(p => p._2.size)
+       .reverse
 
       Ok(views.html.CFPAdmin.allProposalsByCompany(companiesAndProposals))
   }
