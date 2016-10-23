@@ -1,4 +1,5 @@
-@(params: controllers.CFPAdmin.LeaderBoardParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(params: controllers.CFPAdmin.LeaderBoardParams,
+  golden: controllers.CFPAdmin.GoldenTicketsParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Leaderboard") {
     <div class="row">
@@ -114,51 +115,51 @@
 
                     <div class="clearfix"></div>
 
-                    @if(params.totalGTStats.nonEmpty) {
+                    @if(golden.stats.nonEmpty) {
                         <div class="goldenticket">
                             <h3><i class="icon-ticket"></i> Golden Ticket Stats</h3>
 
                             <div class="col-md-3">
-                                <h1>@params.totalGTStats.size</h1>
-                                <small><i class="icon-ticket"></i> Created</small>
+                                <h1>@golden.totalTickets</h1>
+                                <small><i class="icon-ticket"></i> Tickets Created</small>
                             </div>
 
                             <div class="col-md-3">
-                                <h1>@params.totalGTStats.count(st => st._3 > 0)</h1>
+                                <h1>@golden.stats.count(st => st._3 > 0)</h1>
                                 <small><i class="icon-ticket"></i> Active Voters</small>
                             </div>
 
                             <div class="col-md-3">
-                                <h1>@params.totalGTStats.map(st => st._2).sum</h1>
+                                <h1>@golden.stats.map(st => st._2).sum</h1>
                                 <small><i class="icon-ticket"></i> Total Points Given</small>
                             </div>
 
                             <div class="col-md-3">
-                                <h1>@params.totalGTStats.map(st => st._3).sum</h1>
+                                <h1>@golden.stats.map(st => st._3).sum</h1>
                                 <small><i class="icon-ticket"></i> Proposals Reviewed</small>
                             </div>
                             <div class="clearfix"></div>
 
-                            @if(params.totalGTStats.size > 4) {
+                            @if(golden.stats.size > 4) {
                                 <br>
                                 <div class="col-md-4">
-                                    @params.totalGTStats.sortBy(_._3).reverse.take(5).map { gt =>
+                                    @golden.stats.sortBy(_._3).reverse.take(5).map { gt =>
                                         @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                         by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                     }
                             </div>
 
-                                @if(params.totalGTStats.size > 9) {
+                                @if(golden.stats.size > 9) {
                                     <div class="col-md-4">
-                                        @params.totalGTStats.sortBy(_._3).reverse.slice(5, 10).map { gt =>
+                                        @golden.stats.sortBy(_._3).reverse.slice(5, 10).map { gt =>
                                             @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                             by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                         }
                                     </div>
 
-                                    @if(params.totalGTStats.size > 14) {
+                                    @if(golden.stats.size > 14) {
                                         <div class="col-md-4">
-                                            @params.totalGTStats.sortBy(_._3).reverse.slice(10, 15).map { gt =>
+                                            @golden.stats.sortBy(_._3).reverse.slice(10, 15).map { gt =>
                                                 @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                                 by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                             }
