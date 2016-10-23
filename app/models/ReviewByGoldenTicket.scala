@@ -51,10 +51,14 @@ object ReviewByGoldenTicket {
       ZapActor.actor ! ComputeVotesAndScore()
   }
 
+  def totalGoldenTickets():Int=Redis.pool.withClient {
+    implicit client =>
+       client.smembers("Webuser:gticket").size
+  }
+
   def countVotesForAllUsers():List[(String,Long)]=Redis.pool.withClient{
     implicit client=>
       val allGoldenTicketUUID:Set[String] = client.smembers("Webuser:gticket")
-
 
       val votesPerReviewers = allGoldenTicketUUID.map{
         reviewerUUID:String=>
@@ -368,8 +372,6 @@ object ReviewByGoldenTicket {
         (uuid, 0, 0)
       )
       allVoted.toList ++ noReviewsAndNote.toList
-
-
   }
 
   def diffReviewBetween(firstUUID: String, secondUUID: String): Set[String] = Redis.pool.withClient {
