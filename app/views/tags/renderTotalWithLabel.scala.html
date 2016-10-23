@@ -1,0 +1,10 @@
+@(total:Int,singular:String,plural:String)
+@if(total == 0) {
+    No @plural
+} else {
+    @if(total == 1) {
+        1 @singular
+    } else {
+        @total @plural
+    }
+}
