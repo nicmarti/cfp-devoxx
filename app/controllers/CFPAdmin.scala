@@ -225,6 +225,11 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
+  case class GoldenTicketsParams(
+                                  totalTickets: Int,
+                                  stats: List[(String, Int, Int)]
+                                )
+
   case class LeaderBoardParams(
                                totalSpeakers: Long,
                                totalProposals: Long,
@@ -246,8 +251,7 @@ object CFPAdmin extends SecureCFPController {
                                allApprovedByTrack: Map[String, Int],
                                allApprovedByTalkType: Map[String, Int],
                                totalWithVotes: Long,
-                               totalNoVotes: Long,
-                               totalGTStats: List[(String, Int, Int)]
+                               totalNoVotes: Long
                               )
 
   def leaderBoard = SecuredAction(IsMemberOf("cfp")) {
@@ -262,7 +266,7 @@ object CFPAdmin extends SecureCFPController {
       val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
 
-
+      val totalGTickets = ReviewByGoldenTicket.totalGoldenTickets()
       val totalGTStats = ReviewByGoldenTicket.allReviewersAndStats()
 
       val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
@@ -305,10 +309,11 @@ object CFPAdmin extends SecureCFPController {
                                  totalRefusedSpeakers,
                                  allApprovedByTrack,
                                  allApprovedByTalkType,
-                                 totalWithVotes, totalNoVotes,
-                                 totalGTStats)
+                                 totalWithVotes, totalNoVotes)
 
-      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams))
+      def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
+
+      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams, goldenTicketParam))
   }
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
