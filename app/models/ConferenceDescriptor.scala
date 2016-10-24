@@ -852,7 +852,7 @@ object ConferenceDescriptor {
         new DateTime(WED_DATE + "08:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
         new DateTime(WED_DATE + "09:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)))
       , SlotBuilder(ConferenceSlotBreaks.coffee, WEDNESDAY,
-        new DateTime(WED_DATE + "11:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
+        new DateTime(WED_DATE + "11:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
         new DateTime(WED_DATE + "12:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)))
       , SlotBuilder(ConferenceSlotBreaks.lunch, WEDNESDAY,
         new DateTime(WED_DATE + "13:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
