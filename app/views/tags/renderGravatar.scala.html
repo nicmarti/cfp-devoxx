@@ -1,11 +1,12 @@
 @(uuid: String, showName:Boolean = true, showPhoto:Boolean = Some(true))
+
 @models.Speaker.findByUUID(uuid).map { speaker =>
     @models.Webuser.findByUUID(uuid).map { webuser =>
         @if(speaker.avatarUrl.isEmpty) {
             <div class="media">
                 <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(uuid)">
                     @if(showPhoto) {
-                        <img class="media-object" width="35" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+                        <img class="media-object" width="35" src="https://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
                     }
                     @if(showName) {
                         <div class="media-body"><small class="media-heading">@webuser.cleanName</small></div>
