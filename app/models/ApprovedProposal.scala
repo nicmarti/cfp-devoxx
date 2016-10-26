@@ -38,14 +38,11 @@ object ApprovedProposal {
 
   val getTotal: Map[String, Int] = Map(
     ("conf.label", ConferenceProposalConfigurations.CONF.slotsCount)
-    , ("uni.label", ConferenceProposalConfigurations.UNI.slotsCount)
-    , ("tia.label", ConferenceProposalConfigurations.TIA.slotsCount)
     , ("lab.label", ConferenceProposalConfigurations.LAB.slotsCount)
     , ("quick.label", ConferenceProposalConfigurations.QUICK.slotsCount)
     , ("bof.label", ConferenceProposalConfigurations.BOF.slotsCount)
     , ("key.label", ConferenceProposalConfigurations.KEY.slotsCount)
     , ("ignite.label", ConferenceProposalConfigurations.IGNITE.slotsCount)
-    , ("other.label", ConferenceProposalConfigurations.OTHER.slotsCount)
   )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {

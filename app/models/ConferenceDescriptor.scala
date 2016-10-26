@@ -113,10 +113,6 @@ object ConferenceDescriptor {
   object ConferenceProposalTypes {
     val CONF = ProposalType(id = "conf", label = "conf.label")
 
-    val UNI = ProposalType(id = "uni", label = "uni.label")
-
-    val TIA = ProposalType(id = "tia", label = "tia.label")
-
     val LAB = ProposalType(id = "lab", label = "lab.label")
 
     val QUICK = ProposalType(id = "quick", label = "quick.label")
@@ -125,36 +121,22 @@ object ConferenceDescriptor {
 
     val KEY = ProposalType(id = "key", label = "key.label")
 
-    val START = ProposalType(id = "start", label = "start.label")
-
     val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
 
-    val OTHER = ProposalType(id = "other", label = "other.label")
-
-    val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, START, IGNITE, OTHER)
+    val ALL = List(CONF, LAB, QUICK, BOF, KEY, IGNITE)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
-      case "uni" => UNI
-      case "tia" => TIA
       case "lab" => LAB
       case "quick" => QUICK
       case "bof" => BOF
       case "key" => KEY
-      case "start" => START
       case "ignite" => IGNITE
-      case "other" => OTHER
-      case other => OTHER
     }
-
   }
 
   object ConferenceProposalConfigurations {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.CONF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-microphone",
-      chosablePreferredDay = true)
-    val UNI = ProposalConfiguration(id = "uni", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.UNI.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-laptop",
-      chosablePreferredDay = true)
-    val TIA = ProposalConfiguration(id = "tia", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.TIA.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-legal",
       chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
@@ -166,10 +148,8 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
-    val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
-      hiddenInCombo = true, chosablePreferredDay = false)
 
-    val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, IGNITE, OTHER)
+    val ALL = List(CONF, LAB, QUICK, BOF, KEY, IGNITE)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -187,8 +167,11 @@ object ConferenceDescriptor {
     val FUTURE = Track("future", "future.label")
     val MOBILE = Track("mobile", "mobile.label")
 
+    val SECURITY = Track("security", "security.label")
+    val ARCHITECTURE = Track("architecture", "architecture.label")
+
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, UNKNOWN)
+    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, SECURITY, ARCHITECTURE, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
@@ -202,6 +185,9 @@ object ConferenceDescriptor {
     val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2016/images/icon_future.png", ConferenceTracks.FUTURE.label, "track.future.desc")
     val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
 
+    val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.SECURITY.label, "track.security.desc")
+    val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
+
     val ALL = List(METHOD_ARCHI
       , JAVA
       , CLOUD
@@ -211,6 +197,8 @@ object ConferenceDescriptor {
       , WEB
       , FUTURE
       , MOBILE
+      , SECURITY
+      , ARCHITECTURE
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {
@@ -236,10 +224,6 @@ object ConferenceDescriptor {
 
     val BOF1 = Room("bof1", "BOF 1", 70, "classroom")
     val BOF2 = Room("bof2", "BOF 2", 70, "classroom")
-
-    val allRoomsUni = List(ROOM4, ROOM5, ROOM8, ROOM9)
-
-    val allRoomsTIA = List(ROOM4, ROOM5, ROOM8, ROOM9)
 
     val keynoteRoom = List(ROOM8, ROOM4, ROOM5, ROOM9)
 
@@ -292,122 +276,6 @@ object ConferenceDescriptor {
     private val FRI_DATE = "2017-05-12T"
 
     private val MIN_SEC = ":00.000+01:00"
-
-    // UNIVERSITY
-
-    val universitySlotsMonday: List[Slot] = {
-
-      val universityMondayMorning = ConferenceRooms.allRoomsUni.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.UNI.id,
-                      MONDAY,
-                      new DateTime(MON_DATE + "09:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(MON_DATE + "12:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
-      }
-      val universityMondayAfternoon = ConferenceRooms.allRoomsUni.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.UNI.id,
-                      MONDAY,
-                      new DateTime(MON_DATE + "13:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(MON_DATE + "16:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
-      }
-      universityMondayMorning ++
-      universityMondayAfternoon
-    }
-
-    val universitySlotsTuesday: List[Slot] = {
-
-      val universityTuesdayMorning = ConferenceRooms.allRoomsUni.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.UNI.id,
-                      TUESDAY,
-                      new DateTime(TUE_DATE + "09:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(TUE_DATE + "12:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
-      }
-      val universityTuesdayAfternoon = ConferenceRooms.allRoomsUni.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.UNI.id,
-                      TUESDAY,
-                      new DateTime(TUE_DATE + "13:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(TUE_DATE + "16:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
-      }
-      universityTuesdayMorning ++
-      universityTuesdayAfternoon
-    }
-
-    // TOOLS IN ACTION
-
-    val tiaSlotsMonday: List[Slot] = {
-
-      val toolsMondayAfternoonSlot1 = ConferenceRooms.allRoomsTIA.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      MONDAY,
-                      new DateTime(MON_DATE + "16:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(MON_DATE + "17:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
-      }
-      val toolsMondayAfternoonSlot2 = ConferenceRooms.allRoomsTIA.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      MONDAY,
-                      new DateTime(MON_DATE + "17:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(MON_DATE + "17:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
-      }
-      val toolsMondayAfternoonSlot3 = ConferenceRooms.allRoomsTIA.map {
-        r3 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      MONDAY,
-                      new DateTime(MON_DATE + "18:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(MON_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r3)
-      }
-      val toolsMondayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
-        r4 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      MONDAY,
-                      new DateTime(MON_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(MON_DATE + "19:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r4)
-      }
-      toolsMondayAfternoonSlot1 ++
-      toolsMondayAfternoonSlot2 ++
-      toolsMondayAfternoonSlot3 ++
-      toolsMondayAfternoonSlot4
-    }
-
-    val tiaSlotsTuesday: List[Slot] = {
-
-      val toolsTuesdayAfternoonSlot1 = ConferenceRooms.allRoomsTIA.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      TUESDAY,
-                      new DateTime(TUE_DATE + "16:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(TUE_DATE + "17:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
-      }
-      val toolsTuesdayAfternoonSlot2 = ConferenceRooms.allRoomsTIA.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      TUESDAY,
-                      new DateTime(TUE_DATE + "17:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(TUE_DATE + "17:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
-      }
-      val toolsTuesdayAfternoonSlot3 = ConferenceRooms.allRoomsTIA.map {
-        r3 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      TUESDAY,
-                      new DateTime(TUE_DATE + "18:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(TUE_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r3)
-      }
-      val toolsTuesdayAfternoonSlot4 = ConferenceRooms.allRoomsTIA.map {
-        r4 =>
-          SlotBuilder(ConferenceProposalTypes.TIA.id,
-                      TUESDAY,
-                      new DateTime(TUE_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-                      new DateTime(TUE_DATE + "19:25" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r4)
-      }
-      toolsTuesdayAfternoonSlot1 ++
-      toolsTuesdayAfternoonSlot2 ++
-      toolsTuesdayAfternoonSlot3 ++
-      toolsTuesdayAfternoonSlot4
-    }
 
     // HANDS ON LABS
 
@@ -893,16 +761,12 @@ object ConferenceDescriptor {
 
     val mondaySchedule: List[Slot] = {
       mondayBreaks ++
-      universitySlotsMonday ++
-      tiaSlotsMonday ++
       labsSlotsMonday ++
       bofSlotsMonday
     }
 
     val tuesdaySchedule: List[Slot] = {
       tuesdayBreaks ++
-      universitySlotsTuesday ++
-      tiaSlotsTuesday ++
       labsSlotsTuesday ++
       bofSlotsTuesday
     }
@@ -967,9 +831,9 @@ object ConferenceDescriptor {
       firstDayEn = "may 11th",
       datesFr = "do 11 au 12 Mai 2017",
       datesEn = "from 11th to 12th of May, 2017",
-      cfpOpenedOn = DateTime.parse("2016-10-25T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2017-01-09T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2017-01-23T00:00:00+02:00"),
+      cfpOpenedOn = DateTime.parse("2016-11-01T00:00:00+01:00"),
+      cfpClosedOn = DateTime.parse("2017-01-16T23:59:59+01:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-01-30T00:00:00+01:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUK",

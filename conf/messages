@@ -1,6 +1,6 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx 2017
+CONF.title=Devoxx UK 2017
 CONF.subtitle=UK
 
 # Equivalent to ConferenceNaming
@@ -123,26 +123,18 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Wednesday, Thursday
+key.label=Keynote, 1hour, Thursday morning or Friday afternoon
 key.label.simple=Keynote
-conf.label=Conference, 1h, Wednesday, Thursday and Friday morning
+conf.label=Conference, 50minutes, Thursday and Friday
 conf.label.simple=Conference
-uni.label=University, 3h, Monday or Tuesday
-uni.label.simple=University
-tia.label=Tools in Action, 30mn, only Monday or Tuesday
-tia.label.simple=Tools in Action
-quick.label=Quickie, 15mn, Wednesday and Thursday, during lunch
+quick.label=Quickie Sessions, 15minutes, Thursday and Friday lunchtimes
 quick.label.simple=Quickie
-bof.label=Bird of a Feather, 1h, Monday to Thursday evening
-bof.label.simple=Bird of a Feather
-lab.label=Hands-on Labs, 3h, Monday and Tuesday
-lab.label.simple=Hand''s on Lab
-ignite.label=Ignite Sessions, 5mn, Wednesday or Thursday early afternoon
+bof.label=Birds of a Feather, 1hour, Thursday evening
+bof.label.simple=Birds of a Feather
+lab.label=Hands-on Labs, 2hours, Thursday and Friday
+lab.label.simple=Hands-on Lab
+ignite.label=Ignite Sessions, 5minutes, Thursday evening
 ignite.label.simple=Ignite Sessions
-other.label=Other event
-other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Thursday
-start.label.simple=Startup
 
 # Bug report
 Issue.report=Report an issue
@@ -166,8 +158,8 @@ appel.conf.dates=Devoxx UK 2017, 11th-12th May
 
 # Tracks
 
-method_archi.label=Methodology & Architecture
-archisec.label=Methodology & Architecture
+method_archi.label=Methodology & Culture
+archisec.label=Methodology & Culture
 track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
 
 java.label=Java Language
@@ -188,11 +180,17 @@ track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 web.label=Modern Web
 track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
 
-future.label=Future<Devoxx>
+future.label=Curiosities
 track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
 
-mobile.label=Mobile & Embedded
+mobile.label=IoT
 track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
+
+security.label=Security
+track.security.desc=Encryption & best practices to develop secure software
+
+architecture.label=Architecture
+track.architecture.desc=Software development methodologies and architectures to develop software
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
@@ -401,16 +399,12 @@ sw.talkType=All talks
 sw.details=See details
 
 conf=Conference
-uni=University
-tia=Tools-in-Action
 lab=Hands-on Labs
 quick=Quickie
 bof=BOF (Bird of a Feather)
 hack=Hackaton
 key=Keynote
-other=Other format
 all=All
-start=Startup presentation
 ignite=Ignite Sessions
 amd=Après-midi des Décideurs
 
@@ -420,14 +414,11 @@ admin.btn.changeState=Change one proposal state
 sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
-sw.all.uni=All Universities
 sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
-sw.all.start=All Startup''s talks
 sw.all.ignite=All Ignite Sessions
-sw.all.tia=All Tools in Action
 sw.speakers=Devoxxians
 sw.intro=The agenda is published every day.
 sw.programme=Agenda
@@ -477,7 +468,6 @@ day-friday=Friday, 12th May
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
-sw.otherEvents=Special events
 sw.allEvents=See all events
 sw.all.key=Keynotes
 sw.agenda=Agenda
@@ -596,7 +586,7 @@ mail.account_created.subject=Welcome to the CFP for {0} !
 mail.email_validation.subject=Welcome to {0}, please validate your email address now
 mail.issue_reported.subject=New issue reported on CFP web site
 mail.cfp_message_to_speaker.subject=[{1}] Message about your presentation {0}
-mail.question_to_speaker.subject=[{1}] New question posted on Devoxx Web site about {0}
+mail.question_to_speaker.subject=[{1}] New question posted on Devoxx UK Web site about {0}
 mail.speaker_message_to_cfp.subject=[{0}] {1} posted a new message
 mail.notify_proposal.subject={0} submitted a proposal [{1}]
 mail.notify_proposal.content=A Proposal has been submitted on the CFP, with Title: [{0}], Track: [{1}] and Type: [{2}]
@@ -637,8 +627,8 @@ error.invalid=Invalid value
 hack.label=Hackaton
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
-menu.blog=Site DevoxxFR
-signup.long=Register as a speaker on Devoxx France CFP
+menu.blog=Site DevoxxUK
+signup.long=Register as a speaker on Devoxx United-Kingdom CFP
 sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
@@ -703,9 +693,9 @@ visitor.index.signup2=Sign-up as a visitor and save your Schedule, vote for the 
 
 # welcomeVisitor
 visitor.welcome.title=Welcome {0}
-visitor.welcome.text1=You are now authenticated as a Devoxx visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
+visitor.welcome.text1=You are now authenticated as a Devoxx UK visitor. You can mark your favorite talks from the {0} schedule and retrieve your agenda from your profile page.
 visitor.welcome.publisher=Browse the conference schedule
-visitor.welcome.profile=See the list of talks you faved
+visitor.welcome.profile=See the list of talks you favourited
 
 # renderProposals
 renderProposal.archived={0} proposals archived from some previous editions.
@@ -722,7 +712,7 @@ goldenTicket.help.title=Golden Ticket review
 goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
 
 gt.title=CFP for Golden ticket
-gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
+gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx UK. By opening this account you agree not to disclose or publish publicly, including via social media, any of the information you see in the CFP tool.
 
 gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.
 gt.intro.2=If needed, you can also
@@ -732,7 +722,7 @@ gt.special.need=If you have a specific speaker you would love to see present at 
 gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes
-gt.personnal=Your personnal leaderboard
+gt.personnal=Your personal leaderboard
 gt.youReviewed=You reviewed {0} talk(s)
 gt.youVoted=You have voted for {0} talk(s)
 gt.averageVote=Your average vote is {0}
@@ -767,7 +757,7 @@ svp.noshow=Sorry, votes for your talk are hidden.
 svp.voted=voted
 svp.goldenTicket.title=Golden Ticket votes
 svp.gt.novotes=No vote yet from any Golden ticket
-svp.split=Diff between GT score and Comittee score
+svp.split=Diff between GT score and Committee score
 
 gt.admin.sp.privateMessage=Private message for the program committee
 

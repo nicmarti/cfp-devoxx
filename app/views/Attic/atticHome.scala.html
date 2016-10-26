@@ -44,16 +44,8 @@
                         <button type="submit" class="btn btn-primary">Prune draft proposals</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.UNI.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all University</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.KEY.id"/>
                         <button type="submit" class="btn btn-primary">Archive all Keynotes</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.TIA.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Tools-in-Action</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CONF.id"/>
@@ -70,10 +62,6 @@
                     <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.LAB.id"/>
                         <button type="submit" class="btn btn-primary">Archive all Labs</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.OTHER.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all other talks</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
