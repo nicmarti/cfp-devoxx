@@ -25,7 +25,7 @@
                     <h3>All talks faved</h3>
                 </div>
                 <div class="panel-body">
-                    <h4>List of talks favourited by visitor on <a href="/2016/index.html">the Program page</a> </h4>
+                    <h4>List of talks favourited by visitor on <a href="/2017/index.html">the Program page</a> </h4>
                     @all.map{case(proposal,vote)=>
 <p>@vote @if(vote == 1){ star } else { stars }
 for @Messages(proposal.talkType.id) <strong>@proposal.title</strong> by @proposal.allSpeakers.map(s=>s.cleanName).mkString(", ")</p>
