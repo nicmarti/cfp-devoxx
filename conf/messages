@@ -158,8 +158,8 @@ appel.conf.dates=Devoxx UK 2017, 11th-12th May
 
 # Tracks
 
-method_archi.label=Methodology & Architecture
-archisec.label=Methodology & Architecture
+method_archi.label=Methodology & Culture
+archisec.label=Methodology & Culture
 track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
 
 java.label=Java Language
@@ -180,11 +180,17 @@ track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 web.label=Modern Web
 track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
 
-future.label=Future<Devoxx>
+future.label=Curiosities
 track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
 
-mobile.label=Mobile & Embedded
+mobile.label=IoT
 track.mobile.desc=Tools, frameworks & libraries for building native mobile apps, developing for embedded devices, the IoT, Arduino, Raspberry Pi etc
+
+security.label=Security
+track.security.desc=Encryption & best practices to develop secure software
+
+architecture.label=Architecture
+track.architecture.desc=Software development methodologies and architectures to develop software
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
