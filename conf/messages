@@ -85,7 +85,7 @@ lang=Main language
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
-mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
+mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, Hands-on-Labs. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">FAQ</a>.
@@ -128,9 +128,11 @@ key.label.simple=Keynote
 conf.label=Conference, 50minutes, Thursday and Friday
 conf.label.simple=Conference
 quick.label=Quickie Sessions, 15minutes, Thursday and Friday lunchtimes
-quick.label.simple=Quickie
+quick.label.simple=Quickie Sessions
 bof.label=Birds of a Feather, 1hour, Thursday evening
 bof.label.simple=Birds of a Feather
+hack.label=Hackathons, 3hours 10minutes, Thursday evening
+hack.label.simple=Hackathons
 lab.label=Hands-on Labs, 2hours, Thursday and Friday
 lab.label.simple=Hands-on Lab
 ignite.label=Ignite Sessions, 5minutes, Thursday evening
@@ -163,21 +165,25 @@ archisec.label=Methodology & Culture
 track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
 
 java.label=Java Language
+javase.label=Java Language
 track.java.desc=Java Language, Java SE, JDK, Performance Tuning, Modularity, etc…
 
 cloud.label=Cloud, Containers & Infrastructure
 track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
 
 ssj.label=Server Side Java
+serverside.label=Server Side Java
 track.ssj.desc=Java EE, Spring, App Servers, databases, MOM, Batch processing & related JSRs
 
 lang.label=Programming languages
 track.lang.desc=Anything related to other languages than Java running on the JVM, the languages, tools, libraries and best practices
 
 bigdata.label=Big Data
+bd.label=Big Data
 track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning, etc.
 
 web.label=Modern Web
+webHtml5.label=Modern Web
 track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
 
 future.label=Curiosities
@@ -400,13 +406,12 @@ sw.details=See details
 
 conf=Conference
 lab=Hands-on Labs
-quick=Quickie
-bof=BOF (Bird of a Feather)
-hack=Hackaton
+quick=Quickie Sessions
+bof=BOF (Birds of a Feather)
+hack=Hackathons
 key=Keynote
 all=All
 ignite=Ignite Sessions
-amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
@@ -416,7 +421,8 @@ sw.showDetails=See details
 sw.home=Home
 sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
-sw.all.quick=All Quickies
+sw.all.hack=All Hackathons
+sw.all.quick=All Quickie Sessions
 sw.all.bof=All BOFs
 sw.all.ignite=All Ignite Sessions
 sw.speakers=Devoxxians
@@ -442,7 +448,7 @@ lang2=Will speak in English or French? (en/fr)
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
 sp.editName=Edit name
-sw.hackatons=Hackatons
+sw.hackatons=Hackathons
 sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
 calendar.pref=Speaker''s preferences for schedulling
@@ -560,16 +566,16 @@ wl_trackCode=Track
 wl_statusCode=Current state
 wl_travel.checkbox=Yes, include T&L
 
-# wl_suggested=Suggested
-# wl_contactedUs=Speaker contacted us
-# wl_discuss=Discussion
-# wl_contactSpeaker=Contact speaker
-# wl_contacted=Contacted
-# wl_accepted=Speaker accepted
-# wl_declined=Speaker declined
-# wl_onhold=On hold
-# wl_deleted=Deleted
-# wl_unknown=Unknown
+wl_suggested=Suggested
+wl_contactedUs=Speaker contacted us
+wl_discuss=Discussion
+wl_contactSpeaker=Contact speaker
+wl_contacted=Contacted
+wl_accepted=Speaker accepted
+wl_declined=Speaker declined
+wl_onhold=On hold
+wl_deleted=Deleted
+wl_unknown=Unknown
 
 wishList.newWishList=Create new Wishlist
 
@@ -624,12 +630,10 @@ day-mercredi=Wednesday
 day-vendredi=Friday
 error.email=Invalid email address
 error.invalid=Invalid value
-hack.label=Hackaton
 lg_alter.label=Alternate languages on the JVM
 lgaltern.label=Alternate languages on the JVM
 menu.blog=Site DevoxxUK
 signup.long=Register as a speaker on Devoxx United-Kingdom CFP
-sw.all.hack=Hackatons
 approved=Speaker approved
 cstory=Session de live coding Code-story
 day-jeudi=Thursday
