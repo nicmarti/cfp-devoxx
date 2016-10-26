@@ -117,7 +117,7 @@ We're sorry to inform you that none of your proposals has been accepted for @Mes
 The program committee has received more than 670 proposals for 154 slots. As you can imagine, the selection of speakers
 was a quite uneasy task, considering that we received a lot of very interesting applications for the conference.
 We would like to thank you for your time and we look forward to see you on @ConferenceDescriptor.current().timing.firstDayEn, at @Messages("longName").
-Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.com
+Please, do not forget Devoxx UK in London, the CFP is also available at https://cfp.devoxx.co.uk
 }
 
 The @Messages("longName") program committee.
