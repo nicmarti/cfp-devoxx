@@ -967,9 +967,9 @@ object ConferenceDescriptor {
       firstDayEn = "may 11th",
       datesFr = "do 11 au 12 Mai 2017",
       datesEn = "from 11th to 12th of May, 2017",
-      cfpOpenedOn = DateTime.parse("2016-10-25T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2017-01-09T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2017-01-23T00:00:00+02:00"),
+      cfpOpenedOn = DateTime.parse("2016-11-01T00:00:00+01:00"),
+      cfpClosedOn = DateTime.parse("2017-01-16T23:59:59+01:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-01-30T00:00:00+01:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUK",
