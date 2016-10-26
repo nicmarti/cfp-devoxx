@@ -18,7 +18,7 @@
     <table id="allProposals" class="table table-condensed table-bordered">
         <thead>
             <tr>
-                <th>Slod ID</th>
+                <th>Slot ID</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Room</th>
@@ -35,7 +35,6 @@
                   <td>@slot.room.name</td>
                   <td>@slot.proposal.map(_.title)</td>
                   <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
-
               </tr>
             }
         </tbody>
