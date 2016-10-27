@@ -43,6 +43,7 @@ object ApprovedProposal {
     , ("bof.label", ConferenceProposalConfigurations.BOF.slotsCount)
     , ("key.label", ConferenceProposalConfigurations.KEY.slotsCount)
     , ("ignite.label", ConferenceProposalConfigurations.IGNITE.slotsCount)
+    , ("hack.label", ConferenceProposalConfigurations.HACK.slotsCount)
   )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
