@@ -174,9 +174,10 @@ object ConferenceDescriptor {
 
     val SECURITY = Track("security", "security.label")
     val ARCHITECTURE = Track("architecture", "architecture.label")
+    val GEEK = Track("geek", "geek.label")
 
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, SECURITY, ARCHITECTURE, UNKNOWN)
+    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, SECURITY, ARCHITECTURE, GEEK, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
@@ -191,7 +192,8 @@ object ConferenceDescriptor {
     val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
 
     val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.SECURITY.label, "track.security.desc")
-    val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
+    val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxbe2016/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
+    val GEEK = TrackDesc(ConferenceTracks.GEEK.id, "/assets/devoxxbe2016/images/icon_geek.png", ConferenceTracks.GEEK.label, "track.geek.desc")
 
     val ALL = List(METHOD_ARCHI
       , JAVA
@@ -204,6 +206,7 @@ object ConferenceDescriptor {
       , MOBILE
       , SECURITY
       , ARCHITECTURE
+      , GEEK
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {
