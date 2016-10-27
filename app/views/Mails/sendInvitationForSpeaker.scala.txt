@@ -1,7 +1,7 @@
 @(message:String,requestId:String)
 
 --------------------------------------------------
-                Devoxx 2016
+                Devoxx UK 2017
 --------------------------------------------------
 
 @message
@@ -18,5 +18,5 @@ If you are interested and you would like to propose a talk for Devoxx UK 2017 :
   Please, visit this URL : @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Wishlist.speakerDeclineRequest(requestId)
 
 Thanks,
-The Devoxx team.
+The Devoxx UK team.
 
