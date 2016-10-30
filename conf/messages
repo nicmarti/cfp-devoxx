@@ -186,20 +186,17 @@ web.label=Modern Web
 webHtml5.label=Modern Web
 track.web.desc=HTTP/2, Web frameworks, HTML5, CSS3, JavaScript, libraries & tools to build web apps
 
-future.label=Curiosities
-track.future.desc=Looking Forwards - Quantum computing, biological computing, cybernetics, industrial robotics, AI etc
+geek.label=Mind the Geek
+track.geek.desc=Developer candy: stuff we want to know about but don’t (generally) do at work. Robotics, biological computing, cybernetics, AI, new toys, tomorrow’s world…
 
-mobile.label=IoT
-track.mobile.desc=Developing for the IOT, embedded, M2M, smart objects. Connectivity, security, infrastructure and how our world is changing.
+iot.label=IoT
+track.iot.desc=Developing for the IOT, embedded, M2M, smart objects. Connectivity, security, infrastructure and how our world is changing.
 
 security.label=Security
 track.security.desc=Encryption, defensive practices, tools and technologies to be secure
 
 architecture.label=Architecture
 track.architecture.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right.
-
-geek.label=Mind the Geek
-track.geek.desc=Developer candy: stuff we want to know about but don’t (generally) do at work. Robotics, biological computing, cybernetics, AI, new toys, tomorrow’s world…
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
