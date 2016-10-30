@@ -56,7 +56,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DELETED)
 
@@ -89,7 +90,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
 
@@ -125,7 +127,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
         Option("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       val proposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
       Proposal.submit(uuidTest, proposalId)
@@ -153,7 +156,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
         Option("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
       Proposal.submit(uuidTest, newProposalId)
@@ -220,7 +224,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       Review.countWithVotes() mustEqual 0
       Review.currentScore(proposalId) mustEqual 0
       Review.lastVoteByUserForOneProposal(reviewerUUID, proposalId) mustEqual None
-      Review.mostReviewed() mustEqual None
+      Review.mostReviewed() mustEqual Nil
       Review.totalReviewedByCFPuser() mustEqual Nil
       Review.totalVoteCastFor(proposalId) mustEqual 0
       Review.totalVoteFor(proposalId) mustEqual 0
@@ -300,7 +304,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
       Leaderboard.totalVotes() mustEqual 0L
       Leaderboard.totalWithVotes() mustEqual 0L
       Leaderboard.totalNoVotes() mustEqual 0L
-      Leaderboard.mostReviewed() mustEqual None
+      Leaderboard.mostReviewed() mustEqual Map.empty
       Leaderboard.bestReviewer() mustEqual None
       Leaderboard.worstReviewer() mustEqual None
       Leaderboard.lazyOnes() mustEqual Map.empty
@@ -343,7 +347,9 @@ class ArchivedProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.ALL.head.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.fr")
+    )
 
     Proposal.save(speakerUUID, someProposal, ProposalState.DRAFT)
     // Submit the proposal
