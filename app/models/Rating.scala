@@ -42,6 +42,19 @@ case class Rating(talkId: String, user: String, conference: String, timestamp: L
   def id(): String = {
     StringUtils.trimToEmpty((talkId + user + conference).toLowerCase()).hashCode.toString
   }
+
+  def allVotes: List[Int] = details.map(_.rating)
+
+  def sum: Int = allVotes.sum
+
+  def count: Int = allVotes.length
+
+  def average: Double = if (count == 0) {
+    0
+  } else {
+    sum / count
+  }
+
 }
 
 object Rating {
@@ -65,7 +78,7 @@ object Rating {
           r.user,
           r.details.map(_.rating).headOption,
           Seq.empty[RatingDetail]
-          )
+        )
       )
     } else {
       Some(
@@ -74,7 +87,7 @@ object Rating {
           r.user,
           None,
           r.details
-          )
+        )
       )
     }
   }
@@ -129,10 +142,10 @@ object Rating {
     )
   }
 
-  def findForUserIdAndProposalId(userId:String, talkId:String):Option[Rating]=Redis.pool.withClient{
-    client=>
-      client.hmget("Rating:2016", client.smembers("Rating:2016:ByTalkId:" + talkId)).map{
-        json:String=>
+  def findForUserIdAndProposalId(userId: String, talkId: String): Option[Rating] = Redis.pool.withClient {
+    client =>
+      client.hmget("Rating:2016", client.smembers("Rating:2016:ByTalkId:" + talkId)).map {
+        json: String =>
           Json.parse(json).as[Rating]
       }.find(rating => rating.user == userId)
   }
@@ -165,6 +178,24 @@ object Rating {
         json =>
           Json.parse(json).as[Rating]
       }
+  }
+
+  def sortByRating(mapOfProposalsAndRating: Map[Proposal, List[Rating]]): List[(Proposal, List[Rating])] = {
+    mapOfProposalsAndRating.toList.sortWith { (left, right) =>
+      calculateScore(left._2) > calculateScore(right._2)
+    }
+  }
+
+  def calculateScore(ratings: List[Rating]): Double = {
+    val allAverages = ratings.map(_.average)
+    val count = allAverages.size
+    val total = allAverages.sum
+    val score = if (count == 0) {
+      0
+    } else {
+      total / count
+    }
+    score
   }
 
 }
