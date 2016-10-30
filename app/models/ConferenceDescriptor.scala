@@ -169,15 +169,13 @@ object ConferenceDescriptor {
     val LANG = Track("lang", "lang.label")
     val BIGDATA = Track("bigdata", "bigdata.label")
     val WEB = Track("web", "web.label")
-    val FUTURE = Track("future", "future.label")
-    val MOBILE = Track("mobile", "mobile.label")
+    val GEEK = Track("geek", "geek.label")
+    val IOT = Track("iot", "iot.label")
 
     val SECURITY = Track("security", "security.label")
     val ARCHITECTURE = Track("architecture", "architecture.label")
-    val GEEK = Track("geek", "geek.label")
-
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, SECURITY, ARCHITECTURE, GEEK, UNKNOWN)
+    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, GEEK, IOT, SECURITY, ARCHITECTURE, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
@@ -188,12 +186,11 @@ object ConferenceDescriptor {
     val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxxbe2016/images/icon_alternative.png", ConferenceTracks.LANG.label, "track.lang.desc")
     val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxxbe2016/images/icon_architecture.png", ConferenceTracks.BIGDATA.label, "track.bigdata.desc")
     val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxbe2016/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
-    val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/devoxxbe2016/images/icon_future.png", ConferenceTracks.FUTURE.label, "track.future.desc")
-    val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.MOBILE.label, "track.mobile.desc")
-
-    val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxbe2016/images/icon_mobile.png", ConferenceTracks.SECURITY.label, "track.security.desc")
-    val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxbe2016/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
     val GEEK = TrackDesc(ConferenceTracks.GEEK.id, "/assets/devoxxbe2016/images/icon_geek.png", ConferenceTracks.GEEK.label, "track.geek.desc")
+    val IOT = TrackDesc(ConferenceTracks.IOT.id, "/assets/devoxxbe2016/images/icon_iot.png", ConferenceTracks.IOT.label, "track.iot.desc")
+
+    val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxbe2016/images/icon_security.png", ConferenceTracks.SECURITY.label, "track.security.desc")
+    val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxbe2016/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
 
     val ALL = List(METHOD_ARCHI
       , JAVA
@@ -202,11 +199,10 @@ object ConferenceDescriptor {
       , LANG
       , BIGDATA
       , WEB
-      , FUTURE
-      , MOBILE
+      , GEEK
+      , IOT
       , SECURITY
       , ARCHITECTURE
-      , GEEK
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {
