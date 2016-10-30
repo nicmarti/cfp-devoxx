@@ -1,0 +1,33 @@
+@(proposalId: String,
+  showName:Boolean = true,
+  showPhoto:Boolean = Some(true))
+
+@models.Proposal.findById(proposalId).map { proposal =>
+  @models.Webuser.findByUUID(proposal.mainSpeaker).map { webuser =>
+    <div class="media">
+      <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)">
+
+      @if(models.Speaker.findByUUID(webuser.uuid).head.avatarUrl.isEmpty) {
+            @if(showPhoto) {
+              <img class="media-object"
+                   width="35"
+                   src="https://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35"
+                   alt="@webuser.cleanName"
+                   title="@webuser.cleanName"/>
+            }
+      } else {
+            @if(showPhoto) {
+              <img class="media-object"
+                   width="35"
+                   src="@models.Speaker.findByUUID(webuser.uuid).head.avatarUrl.get"
+                   alt="@webuser.cleanName"
+                   title="@webuser.cleanName"/>
+            }
+      }
+      @if(showName) {
+        <div class="media-body"><small class="media-heading">@webuser.cleanName</small></div>
+      }
+      </a>
+    </div>
+  }
+}
