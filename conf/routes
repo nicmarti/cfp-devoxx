@@ -287,7 +287,7 @@ GET           /cfpadmin/allRatings                                              
 # Voting API v1 as it has been specified and implemented by Jon Mort
 POST          /api/voting/v1/vote                                                controllers.MobileVotingV1.acceptVoteForTalk()
 GET           /api/voting/v1/talk/:talkId                                        controllers.MobileVotingV1.allVotesForTalk(talkId:String)
-GET           /api/voting/v1/top/talks                                           controllers.MobileVotingV1.topTalks(day:Option[String] ?=None, talkType:Option[String] ?=None, track:Option[String] ?=None)
+GET           /api/voting/v1/top/talks                                           controllers.MobileVotingV1.topTalks(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=10)
 GET           /api/voting/v1/categories                                          controllers.MobileVotingV1.categories()
 
 # Map static resources from the /public folder to the /assets URL path
