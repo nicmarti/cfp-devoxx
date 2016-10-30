@@ -390,7 +390,7 @@ class TestVotingSpecs extends PlaySpecification {
     }
 
     "returns a 503 Service Unavailable if the vote is closed " in new WithApplication(app = appWithClosedVotes()) {
-       // GIVEN
+      // GIVEN
       emptyRedis()
 
       val proposalId = createProposal()
@@ -423,12 +423,12 @@ class TestVotingSpecs extends PlaySpecification {
         "rating" -> 1,
         "user" -> "123456-2222-aaa"
       )
-       val validVote2 = Json.obj(
+      val validVote2 = Json.obj(
         "talkId" -> s"${proposalId}",
         "rating" -> 3,
         "user" -> "123456-2222-aaa"
       )
-        val validVote3 = Json.obj(
+      val validVote3 = Json.obj(
         "talkId" -> s"${proposalId}",
         "rating" -> 5,
         "user" -> "123456-2222-aaa"
@@ -468,7 +468,67 @@ class TestVotingSpecs extends PlaySpecification {
       status(response3) must be equalTo 202
       contentType(response3) must beSome.which(_ == "application/json")
       contentAsJson(response3) must be equals validVote3
-contentAsJson(response3).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":5,\"v\":null}]")
+      contentAsJson(response3).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":5,\"v\":null}]")
+
+    }
+
+    "store only one vote if the vote does already exists" in new WithApplication(app = appWithTestRedis()) {
+      // GIVEN
+      emptyRedis()
+
+      val proposalId = createProposal()
+
+      val validVote = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 1,
+        "user" -> "123456-2222-aaa"
+      )
+      val validVote2 = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 3,
+        "user" -> "123456-2222-aaa"
+      )
+      val validVote3 = Json.obj(
+        "talkId" -> s"${proposalId}",
+        "rating" -> 5,
+        "user" -> "123456-2222-aaa"
+      )
+      // WHEN
+      val response = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // 201 Created
+      status(response) must be equalTo 201
+      contentType(response) must beSome.which(_ == "application/json")
+      contentAsJson(response).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":1,\"v\":null}]")
+
+      // Do a 2nd vote
+      val response2 = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote2).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // It should returns a 202
+      status(response2) must be equalTo 202
+      contentType(response2) must beSome.which(_ == "application/json")
+      contentAsJson(response2).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":3,\"v\":null}]")
+
+      // Do a 3nd vote
+      val response3 = route(
+        FakeRequest(POST,
+          "/api/voting/v1/vote"
+        ).withJsonBody(validVote3).withHeaders("User-Agent" -> "Unit test")
+      ).get
+
+      // It should returns a 202
+      status(response3) must be equalTo 202
+      contentType(response3) must beSome.which(_ == "application/json")
+      contentAsJson(response3) must be equals validVote3
+      contentAsJson(response3).\\("dt").head.toString must be_==("[{\"a\":\"default\",\"r\":5,\"v\":null}]")
 
     }
 
@@ -489,7 +549,8 @@ contentAsJson(response3).\\("dt").head.toString must be_==("[{\"a\":\"default\",
     val uuidTest = "test_user"
     val proposal = Proposal.validateNewProposal(Some(proposalId), "fr", "test proposal", None, Nil,
       ConferenceDescriptor.ConferenceProposalTypes.CONF.id, "audience level", "summary", "private message",
-      sponsorTalk = false, ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"), userGroup = None)
+      sponsorTalk = false, ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"), userGroup = None,
+      youTubeLink = Some("http://www.youtube.fr"))
     Proposal.save(uuidTest, proposal, ProposalState.ACCEPTED)
     proposalId
   }
