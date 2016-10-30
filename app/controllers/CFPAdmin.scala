@@ -119,8 +119,7 @@ object CFPAdmin extends SecureCFPController {
         Proposal.findById(proposalId) match {
           case Some(proposal) =>
             val currentAverageScore = Review.averageScore(proposalId)
-            val countVotesCast = Review.totalVoteCastFor(proposalId)
-            // votes exprimes (sans les votes a zero)
+            val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
             val countVotes = Review.totalVoteFor(proposalId)
             val allVotes = Review.allVotesFor(proposalId)
 
