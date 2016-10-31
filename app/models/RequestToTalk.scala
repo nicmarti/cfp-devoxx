@@ -179,4 +179,13 @@ object RequestToTalk {
       }
   }
 
+  def attic() = Redis.pool.withClient{
+    client=>
+      val tx = client.multi()
+      tx.del("RequestToTalk:PersonInCharge")
+      tx.del("RequestToTalk")
+      tx.del("RequestToTalk:IDs")
+      tx.exec()
+  }
+
 }

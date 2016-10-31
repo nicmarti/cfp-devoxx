@@ -224,6 +224,11 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
+  case class GoldenTicketsParams(
+                                  totalTickets: Int,
+                                  stats: List[(String, Int, Int)]
+                                )
+
   case class LeaderBoardParams(
                                totalSpeakers: Long,
                                totalProposals: Long,
@@ -259,6 +264,9 @@ object CFPAdmin extends SecureCFPController {
       val mostReviewed = Leaderboard.mostReviewed().map{ case(k,v) => (k.toString, v) } toList
       val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
+
+      val totalGTickets = ReviewByGoldenTicket.totalGoldenTickets()
+      val totalGTStats = ReviewByGoldenTicket.allReviewersAndStats()
 
       val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
       val totalSubmittedByType = Leaderboard.totalSubmittedByType()
@@ -302,7 +310,9 @@ object CFPAdmin extends SecureCFPController {
                                  allApprovedByTalkType,
                                  totalWithVotes, totalNoVotes)
 
-      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams))
+      def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
+
+      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams, goldenTicketParam))
   }
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
@@ -611,10 +621,6 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
   }
 
-
-  import play.api.data.Form
-  import play.api.data.Forms._
-
   def allSpeakersWithAcceptedTalksForExport() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
@@ -720,5 +726,38 @@ object CFPAdmin extends SecureCFPController {
         proposal: Proposal =>
           Ok(views.html.CFPAdmin.history(proposal))
       }.getOrElse(NotFound("Proposal not found"))
+  }
+
+  def allProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val allInteresting = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
+
+      val allInterestingProposals = Proposal.loadAndParseProposals(allInteresting)
+
+      val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.values.flatMap(p =>p.allSpeakerUUIDs)
+
+      val uniqueSetOfSpeakersUUID: Set[String] = allSpeakersUUIDs.toSet
+
+      val allSpeakers:List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
+
+      val speakers = allSpeakers
+        .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("No Company"))
+        .toList
+        .sortBy(_._2.size)
+        .reverse
+
+      val companiesAndProposals = speakers.map {
+        case (company, speakerList) =>
+          val setOfProposals = speakerList.flatMap {
+            s =>
+              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).values
+          }.toSet
+          (company, setOfProposals)
+      }.filterNot(_._2.isEmpty)
+       .sortBy(p => p._2.size)
+       .reverse
+
+      Ok(views.html.CFPAdmin.allProposalsByCompany(companiesAndProposals))
   }
 }
