@@ -1,100 +1,116 @@
 @()(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@main("Backoffice") {
-    <div class="row">
-        <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-archive"></i> Attic</h2>
-        </div>
-        <div class="clearfix"></div>
-
-        @if(flash.get("error").isDefined) {
-            <div class="alert alert-danger alert-dismissable col-md-12">
-                <strong>Error :</strong>
-                @flash.get("error").get
+    @main("Backoffice") {
+        <div class="row">
+            <div class="col-lg-offset-4 col-md-4">
+                <h2><i class="icon-archive"></i> Attic</h2>
             </div>
-        }
-        @if(flash.get("success").isDefined) {
-            <div class="alert alert-success alert-dismissable col-md-12">
-            @flash.get("success").get
-            </div>
-        }
+            <div class="clearfix"></div>
 
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3>Attic backoffice</h3>
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable col-md-12">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
                 </div>
-                <div class="panel-body">
-                    <div class="alert alert-danger alert-dismissable col-md-12">
-                        <strong>Warning :</strong>
-                        <p>You are about to archive/to delete ALL proposals from your CFP.</p>
-                        <p>Please, create a REDIS backup (with BGSAVE) and save your AOF file in a safe place BEFORE you start to click and to archive talks and reviews</p>
-                        <p>If you used the Publisher controller, you must also save all the generated HTML pages with the list of talks, speakers bios, etc. I use WGET (see README) with noclobber</p>
-                        <p>French</p>
-                        <p>Vous êtes sur le point d'archiver/d'effacer TOUTES les propositions de votre base du CFP.</p>
-                        <p>Sérieusement, faîtes un backup de votre fichier DUMP et de votre fichier AOF avant de commencer à cliquer sur l'un de ces boutons.</p>
+            }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable col-md-12">
+                @flash.get("success").get
+                </div>
+            }
+
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>Attic backoffice</h3>
                     </div>
+                    <div class="panel-body">
+                        <div class="alert alert-danger alert-dismissable col-md-12">
+                            <strong>Warning :</strong>
+                            <p>You are about to archive/to delete ALL proposals from your CFP.</p>
+                            <p>Please, create a REDIS backup (with BGSAVE) and save your AOF file in a safe place BEFORE you start to click and to archive talks and reviews</p>
+                            <p>If you used the Publisher controller, you must also save all the generated HTML pages with the list of talks, speakers bios, etc. I use WGET (see README) with noclobber</p>
+                            <p>French</p>
+                            <p>Vous êtes sur le point d'archiver/d'effacer TOUTES les propositions de votre base du CFP.</p>
+                            <p>Sérieusement, faîtes un backup de votre fichier DUMP et de votre fichier AOF avant de commencer à cliquer sur l'un de ces boutons.</p>
+                        </div>
 
-                    <form action="@routes.Attic.prune()" method="POST">
-                        <input type="hidden" name="opType" value="deleted"/>
-                        <button type="submit" class="btn btn-primary">Prune deleted proposals</button>
-                    </form>
-                    <form action="@routes.Attic.prune()" method="POST">
-                        <input type="hidden" name="opType" value="draft"/>
-                        <button type="submit" class="btn btn-primary">Prune draft proposals</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.UNI.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all University</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.KEY.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Keynotes</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.TIA.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Tools-in-Action</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CONF.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Conferences</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.QUICK.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Quickies</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.BOF.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all BOF</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.LAB.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Labs</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.OTHER.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all other talks</button>
-                    </form>
-                    <form action="@routes.Attic.doArchive()" method="POST">
-                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Ignite</button>
-                    </form>
+                        <div class="col-md-6">
+                            <form action="@routes.Attic.prune()" method="POST">
+                                <input type="hidden" name="opType" value="deleted"/>
+                                <button type="submit" class="btn btn-primary">Prune deleted proposals</button>
+                            </form>
+                            <form action="@routes.Attic.prune()" method="POST">
+                                <input type="hidden" name="opType" value="draft"/>
+                                <button type="submit" class="btn btn-primary">Prune draft proposals</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.UNI.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all University</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.KEY.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all Keynotes</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.TIA.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all Tools-in-Action</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CONF.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all Conferences</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.QUICK.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all Quickies</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.BOF.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all BOF</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.LAB.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all Labs</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.OTHER.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all other talks</button>
+                            </form>
+                            <form action="@routes.Attic.doArchive()" method="POST">
+                                <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.IGNITE.id"/>
+                                <button type="submit" class="btn btn-primary">Archive all Ignite</button>
+                            </form>
+                        </div>
 
-                    <hr>
-                    <form action="@routes.Attic.deleteInvitedSpeakers()" method="POST">
-                        <button type="submit" class="btn btn-warning">Remote status [Invited] from all speakers</button>
-                    </form>
-                    <form action="@routes.Attic.resetEvents()" method="POST">
-                        <button type="submit" class="btn btn-warning">Delete all Events and history</button> <em>Events is a log of all actions such as votes, new proposals, actions and updates performed by speakers and the team.</em>
-                    </form>
-                    <form action="@routes.Attic.resetNotified()" method="POST">
-                        <button type="submit" class="btn btn-warning">Reset the list of notified Speakers (approved and refused)</button>
-                    </form>
+                        <div class="clearfix"></div>
 
+                        <div class="col-lg-12 col-md-12">
+                            <form action="@routes.Attic.deleteInvitedSpeakers()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Remote status [Invited] from all speakers</button>
+                            </form>
+                            <form action="@routes.Attic.resetEvents()" method="POST">
+                                <button type="submit" class="btn btn-warning">Delete all Events and history</button> <em>
+                                Events is a log of all actions such as votes, new proposals, actions and updates performed by speakers and the team.</em>
+                            </form>
+                            <form action="@routes.Attic.resetNotified()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Reset the list of notified Speakers (approved and refused)</button>
+                            </form>
+                            <form action="@routes.Attic.deleteGoldenTickets()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete all Golden Tickets</button>
+                            </form>
+                                  <form action="@routes.Attic.deleteWishlist()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete Wishlisted speakers</button>
+                            </form>
+                        </div>
 
-
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }

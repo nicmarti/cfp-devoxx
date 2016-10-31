@@ -103,6 +103,7 @@ GET           /cfpadmin/allSpeakers                                             
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
+GET           /cfpadmin/allSpeakers/byProposals/byCompany                       controllers.CFPAdmin.allProposalsByCompany()
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
 GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     controllers.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge()
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()
@@ -256,6 +257,8 @@ POST          /cfpadmin/attic/doArchive                                         
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()
 POST          /cfpadmin/attic/resetEvents                                       controllers.Attic.resetEvents()
+POST          /cfpadmin/attic/deleteGoldenTickets                               controllers.Attic.deleteGoldenTickets()
+POST          /cfpadmin/attic/deleteWishlisted                                  controllers.Attic.deleteWishlist()
 
 # Golden ticket admin
 GET           /admin/goldenTickets                                              controllers.GoldenTicketAdminController.showAll()
