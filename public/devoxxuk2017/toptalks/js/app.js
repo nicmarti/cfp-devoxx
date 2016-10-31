@@ -204,7 +204,7 @@
     _.forEach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'], function(dow){
         createTopTalksTable(
             'devoxx-top-talks' + dow,
-            '2016 ' + capitalizeFirstLetter(dow) + "'s",
+            '2017 ' + capitalizeFirstLetter(dow) + "'s",
             TOP_TALKS_URL + "&day=" + dow
         );
     });
@@ -219,7 +219,7 @@
             _.forEach(_.sortBy(data.tracks), function(track, idx){
                 createTopTalksTable(
                     'devoxx-top-talks-track-' + idx,
-                    "2016 '" + track + "'",
+                    "2017 '" + track + "'",
                     TOP_TALKS_URL + "&track=" + encodeURIComponent(track)
                 );
             });
@@ -228,7 +228,7 @@
             _.forEach(_.sortBy(data.talkTypes), function(type, idx){
                 createTopTalksTable(
                     'devoxx-top-talks-type-' + idx,
-                    "2016 '" + type + "'",
+                    "2017 '" + type + "'",
                     TOP_TALKS_URL + "&talkType=" + encodeURIComponent(type)
                 );
             });
