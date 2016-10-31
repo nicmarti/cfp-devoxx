@@ -198,4 +198,15 @@ object Rating {
     score
   }
 
+  def attic() = Redis.pool.withClient {
+    implicit client =>
+      client.del("Rating:2017")
+
+      val allKeys = client.keys("Rating:2017:ByTalkId:*")
+      val tx = client.multi()
+      allKeys.foreach { key: String => tx.del(key) }
+      tx.exec()
+
+
+  }
 }
