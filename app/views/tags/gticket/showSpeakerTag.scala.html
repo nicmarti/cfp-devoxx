@@ -1,6 +1,5 @@
 @(uuid:String)
-
-    @models.Speaker.findByUUID(uuid).map{speaker:Speaker=>
+@models.Speaker.findByUUID(uuid).map{speaker:Speaker=>
     <table>
         <tr>
             <td>
@@ -13,7 +12,7 @@
                     <img class="media-object" width="80" src="@speaker.avatarUrl.get" alt="@speaker.cleanName" title="@speaker.cleanName"/>
                 }
                 @if(speaker.twitter.isDefined) {
-                    </a>
+    </a>
                 }
             </td>
             <td>
@@ -32,4 +31,4 @@
             </td>
         </tr>
     </table>
-    }.getOrElse("Speaker not found")
+}.getOrElse("Speaker not found")
