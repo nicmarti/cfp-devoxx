@@ -223,6 +223,7 @@ class ZapActor extends Actor {
     Webuser.findByUUID(author).map {
       reporterWebuser: Webuser =>
         Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
+        play.Logger.debug("Email sent out to " + author + "for ${proposal.id} '${proposal.title}'")
     }.getOrElse {
       play.Logger.error("User not found with uuid " + author)
     }
