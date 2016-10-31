@@ -57,7 +57,9 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk")
+    )
 
     Proposal.save("123", newProposal, ProposalState.SUBMITTED)
 
@@ -117,7 +119,9 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk")
+    )
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.ACCEPTED)
 
@@ -149,7 +153,9 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk")
+    )
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
 
@@ -180,7 +186,8 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
 
@@ -208,7 +215,8 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
 
@@ -239,7 +247,8 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
 
@@ -273,7 +282,8 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save(mainSpeaker, newProposal, ProposalState.SUBMITTED)
 
@@ -303,7 +313,8 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save(mainSpeaker, proposal, ProposalState.ACCEPTED)
     val correctProposal = Proposal.findById(proposal.id).get // Cause we need the correct speakerId
@@ -335,7 +346,8 @@ class ProposalSpecs extends PlaySpecification {
       ProposalState.UNKNOWN, sponsorTalk = false,
       Track.parse("java"), Some("d1"),
       userGroup = None,
-      wishlisted = Some(false))
+      wishlisted = Some(false),
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", toBeDestroyedProposal, ProposalState.DRAFT)
 
@@ -352,7 +364,8 @@ class ProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
 
@@ -372,7 +385,7 @@ class ProposalSpecs extends PlaySpecification {
   }
 
   "return the list of Proposal to delete not including archived and deleted proposals" in new WithApplication(appWithTestRedis) {
-        // WARN : flush the DB, but on Database = 1
+    // WARN : flush the DB, but on Database = 1
     Redis.pool.withClient {
       client =>
         client.select(1)
@@ -380,7 +393,7 @@ class ProposalSpecs extends PlaySpecification {
     }
 
     val proposalId = "TST-001333"
-     val keepProposal = Proposal.validateNewProposal(Some(proposalId),
+    val keepProposal = Proposal.validateNewProposal(Some(proposalId),
       "fr",
       "test proposal deleted",
       None,
@@ -392,7 +405,8 @@ class ProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
 
@@ -404,7 +418,7 @@ class ProposalSpecs extends PlaySpecification {
   }
 
   "return no result when a Draft proposal has been destroyed" in new WithApplication(appWithTestRedis) {
-        // WARN : flush the DB, but on Database = 1
+    // WARN : flush the DB, but on Database = 1
     Redis.pool.withClient {
       client =>
         client.select(1)
@@ -412,7 +426,7 @@ class ProposalSpecs extends PlaySpecification {
     }
 
     val proposalId = "TST-001333"
-     val keepProposal = Proposal.validateNewProposal(Some(proposalId),
+    val keepProposal = Proposal.validateNewProposal(Some(proposalId),
       "fr",
       "test proposal deleted",
       None,
@@ -424,7 +438,8 @@ class ProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
 
@@ -436,7 +451,7 @@ class ProposalSpecs extends PlaySpecification {
   }
 
   "return no result when a deleted proposal has been destroyed" in new WithApplication(appWithTestRedis) {
-        // WARN : flush the DB, but on Database = 1
+    // WARN : flush the DB, but on Database = 1
     Redis.pool.withClient {
       client =>
         client.select(1)
@@ -444,7 +459,7 @@ class ProposalSpecs extends PlaySpecification {
     }
 
     val proposalId = "TST-001333"
-     val keepProposal = Proposal.validateNewProposal(Some(proposalId),
+    val keepProposal = Proposal.validateNewProposal(Some(proposalId),
       "fr",
       "test proposal deleted",
       None,
@@ -456,7 +471,8 @@ class ProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DELETED)
 
@@ -468,7 +484,7 @@ class ProposalSpecs extends PlaySpecification {
   }
 
   "return a Proposal not including deleted or archived talk" in new WithApplication(appWithTestRedis) {
-        // WARN : flush the DB, but on Database = 1
+    // WARN : flush the DB, but on Database = 1
     Redis.pool.withClient {
       client =>
         client.select(1)
@@ -478,7 +494,7 @@ class ProposalSpecs extends PlaySpecification {
 
     // 1-
     val proposalIdToDelete = "DEL-001333"
-     val proposalToDelete = Proposal.validateNewProposal(Some(proposalIdToDelete),
+    val proposalToDelete = Proposal.validateNewProposal(Some(proposalIdToDelete),
       "fr",
       "test proposal deleted",
       None,
@@ -490,13 +506,14 @@ class ProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", proposalToDelete, ProposalState.DELETED)
 
     // 2-
     val proposalIdToArchive = "ARC-001333"
-     val archivedProposal = Proposal.validateNewProposal(Some(proposalIdToArchive),
+    val archivedProposal = Proposal.validateNewProposal(Some(proposalIdToArchive),
       "fr",
       "test proposal archive",
       None,
@@ -508,13 +525,14 @@ class ProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", archivedProposal, ProposalState.ARCHIVED)
 
     // 3-
     val proposalId = "OK-001333"
-     val someProposal = Proposal.validateNewProposal(Some(proposalId),
+    val someProposal = Proposal.validateNewProposal(Some(proposalId),
       "fr",
       "some Proposal",
       None,
@@ -526,7 +544,8 @@ class ProposalSpecs extends PlaySpecification {
       sponsorTalk = false,
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
-      userGroup = None)
+      userGroup = None,
+      youTubeLink = Some("http://www.youtube.co.uk"))
 
     Proposal.save("user_1234", someProposal, ProposalState.SUBMITTED)
 
