@@ -127,4 +127,17 @@ object Attic extends SecureCFPController {
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted wishlisted"))
   }
 
+  def deleteFavoriteTalks()= SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      FavoriteTalk.attic()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted favorite talks"))
+  }
+
+  // Mobile API
+  def deleteRatings()= SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Rating.attic()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted mobile votes"))
+  }
+
 }

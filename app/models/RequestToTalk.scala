@@ -186,6 +186,11 @@ object RequestToTalk {
       tx.del("RequestToTalk")
       tx.del("RequestToTalk:IDs")
       tx.exec()
+
+      val allReq=client.keys("RequestsToTalk:*")
+      val tx2=client.multi()
+      allReq.foreach{k:String=> tx2.del(k)}
+      tx2.exec()
   }
 
 }
