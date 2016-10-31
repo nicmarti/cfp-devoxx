@@ -434,6 +434,7 @@ object Review {
           val nbrOfTalksReviewed = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid",
             "Proposals:ByState:" + ProposalState.DELETED.code,
             "Proposals:ByState:" + ProposalState.ARCHIVED.code,
+            "Proposals:ByState:" + ProposalState.UNKNOWN.code,
             "Proposals:ByState:" + ProposalState.DRAFT.code).size
           (uuid, totalPoints.toInt, nbrOfTalksReviewed)
       }

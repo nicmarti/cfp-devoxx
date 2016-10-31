@@ -225,34 +225,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  case class GoldenTicketsParams(
-                                  totalTickets: Int,
-                                  stats: List[(String, Int, Int)]
-                                )
-
-  case class LeaderBoardParams(
-                               totalSpeakers: Long,
-                               totalProposals: Long,
-                               totalVotes: Long,
-                               mostReviewed: List[(String, Int)],
-                               bestReviewers: List[(String, Int, Int)],
-                               lazyOnes: Map[String, String],
-                               generousVoters: List[(String, BigDecimal)],
-                               proposalsBySpeakers: List[(String, Int)],
-                               totalSubmittedByTrack: Map[String, Int],
-                               totalSubmittedByType: Map[String, Int],
-                               totalCommentsPerProposal: List[(String, Int)],
-                               totalAcceptedByTrack: Map[String, Int],
-                               totalAcceptedByType: Map[String, Int],
-                               totalSlotsToAllocate: Map[String, Int],
-                               totalApprovedSpeakers: Long,
-                               totalWithTickets: Long,
-                               totalRefusedSpeakers: Long,
-                               allApprovedByTrack: Map[String, Int],
-                               allApprovedByTalkType: Map[String, Int],
-                               totalWithVotes: Long,
-                               totalNoVotes: Long
-                              )
+  case class GoldenTicketsParams(totalTickets: Int, stats: List[(String, Int, Int)])
 
   def leaderBoard = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -262,7 +235,7 @@ object CFPAdmin extends SecureCFPController {
       val totalVotes = Leaderboard.totalVotes()
       val totalWithVotes = Leaderboard.totalWithVotes()
       val totalNoVotes = Leaderboard.totalNoVotes()
-      val mostReviewed = Leaderboard.mostReviewed().map{ case(k,v) => (k.toString, v) } toList
+      val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) } toList
       val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
 
@@ -278,38 +251,38 @@ object CFPAdmin extends SecureCFPController {
       val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
       val totalWithTickets = Leaderboard.totalWithTickets()
       val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
-      val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map{ case(k,v) => (k.toString, v) } toList
+      val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map { case (k, v) => (k.toString, v) } toList
 
       val allApproved = ApprovedProposal.allApproved()
 
-      val allApprovedByTrack:Map[String,Int] = allApproved.groupBy(_.track.label).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
-      val allApprovedByTalkType:Map[String,Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
+      val allApprovedByTrack: Map[String, Int] = allApproved.groupBy(_.track.label).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
+      val allApprovedByTalkType: Map[String, Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
 
       // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
-      def generousVoters:List[(String, BigDecimal)] =
-          bestReviewers.filter(_._3 > 0)
-                       .map(b=>(b._1 , BigDecimal(b._2.toDouble / b._3.toDouble).round( new java.math.MathContext(3))))
+      def generousVoters: List[(String, BigDecimal)] =
+        bestReviewers.filter(_._3 > 0)
+          .map(b => (b._1, BigDecimal(b._2.toDouble / b._3.toDouble).round(new java.math.MathContext(3))))
 
-      def proposalsBySpeakers:List[(String, Int)] =
-                     Speaker.allSpeakers()
-                            .map( speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
-                            .filter( _._2 > 0)
+      def proposalsBySpeakers: List[(String, Int)] =
+        Speaker.allSpeakers()
+          .map(speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
+          .filter(_._2 > 0)
 
       def leaderBoardParams = LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
-                                 mostReviewed,
-                                 bestReviewers,
-                                 lazyOnes, generousVoters,
-                                 proposalsBySpeakers,
-                                 totalSubmittedByTrack, totalSubmittedByType,
-                                 totalCommentsPerProposal,
-                                 totalAcceptedByTrack, totalAcceptedByType,
-                                 totalSlotsToAllocate,
-                                 totalApprovedSpeakers,
-                                 totalWithTickets,
-                                 totalRefusedSpeakers,
-                                 allApprovedByTrack,
-                                 allApprovedByTalkType,
-                                 totalWithVotes, totalNoVotes)
+        mostReviewed,
+        bestReviewers,
+        lazyOnes, generousVoters,
+        proposalsBySpeakers,
+        totalSubmittedByTrack, totalSubmittedByType,
+        totalCommentsPerProposal,
+        totalAcceptedByTrack, totalAcceptedByType,
+        totalSlotsToAllocate,
+        totalApprovedSpeakers,
+        totalWithTickets,
+        totalRefusedSpeakers,
+        allApprovedByTrack,
+        allApprovedByTalkType,
+        totalWithVotes, totalNoVotes)
 
       def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
 
@@ -736,11 +709,11 @@ object CFPAdmin extends SecureCFPController {
 
       val allInterestingProposals = Proposal.loadAndParseProposals(allInteresting)
 
-      val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.values.flatMap(p =>p.allSpeakerUUIDs)
+      val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.values.flatMap(p => p.allSpeakerUUIDs)
 
       val uniqueSetOfSpeakersUUID: Set[String] = allSpeakersUUIDs.toSet
 
-      val allSpeakers:List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
+      val allSpeakers: List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
 
       val speakers = allSpeakers
         .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("No Company"))
@@ -756,8 +729,8 @@ object CFPAdmin extends SecureCFPController {
           }.toSet
           (company, setOfProposals)
       }.filterNot(_._2.isEmpty)
-       .sortBy(p => p._2.size)
-       .reverse
+        .sortBy(p => p._2.size)
+        .reverse
 
       Ok(views.html.CFPAdmin.allProposalsByCompany(companiesAndProposals))
   }
