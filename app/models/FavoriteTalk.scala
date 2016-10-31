@@ -26,14 +26,13 @@ package models
 import library.Redis
 
 /**
- * Repository for Favorite Talk
- * @author created by N.Martignole, Innoteria, on 27/10/15.
- */
+  * Repository for Favorite Talk
+  *
+  * @author created by N.Martignole, Innoteria, on 27/10/15.
+  */
 
 object FavoriteTalk {
-
-  private val redis = s"FavTalk:${ConferenceDescriptor.current().eventCode}:"
-
+  private val redis = s"FavTalk:${ConferenceDescriptor.current().eventCode}"
 
   def favTalk(proposalId: String, webuserId: String) = Redis.pool.withClient {
     implicit client =>
@@ -67,9 +66,9 @@ object FavoriteTalk {
       Proposal.loadAndParseProposals(ids).values
   }
 
-  def countForProposal(proposalId:String):Long=Redis.pool.withClient{
-    implicit client=>
-      client.scard(redis+":ByProp:"+proposalId)
+  def countForProposal(proposalId: String): Long = Redis.pool.withClient {
+    implicit client =>
+      client.scard(redis + ":ByProp:" + proposalId)
   }
 
   def all() = Redis.pool.withClient {
@@ -81,13 +80,22 @@ object FavoriteTalk {
           key.substring((redis + ":ByProp:").length)
       }
 
-      allProposalIDs.map{
-        proposalId=>
+      allProposalIDs.map {
+        proposalId =>
           val proposal = Proposal.findById(proposalId)
-          val total= client.scard(redis+":ByProp:"+proposalId)
-          (proposal,total)
+          val total = client.scard(redis + ":ByProp:" + proposalId)
+          (proposal, total)
       }.filterNot(_._1.isEmpty)
-      .map(t=>(t._1.get,t._2))
+        .map(t => (t._1.get, t._2))
+  }
 
+  def attic() = Redis.pool.withClient {
+    implicit client =>
+      val allKeys = client.keys(s"FavTalk:*")
+      val tx = client.multi()
+      allKeys.foreach { key: String =>
+        tx.del(key)
+      }
+      tx.exec()
   }
 }

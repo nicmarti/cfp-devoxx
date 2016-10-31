@@ -103,9 +103,17 @@
                                 <button type="submit" class="btn btn-warning">
                                     Delete all Golden Tickets</button>
                             </form>
-                                  <form action="@routes.Attic.deleteWishlist()" method="POST">
+                            <form action="@routes.Attic.deleteWishlist()" method="POST">
                                 <button type="submit" class="btn btn-warning">
                                     Delete Wishlisted speakers</button>
+                            </form>
+                            <form action="@routes.Attic.deleteFavoriteTalks()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete all Talks "faved" by a user on the agenda (bookmarked)</button>
+                            </form>
+                             <form action="@routes.Attic.deleteRatings()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete all mobile votes</button>
                             </form>
                         </div>
 
