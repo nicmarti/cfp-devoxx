@@ -1,6 +1,6 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxBE2016("Schedule",Some("Devoxx UK 2017 agenda")){
+@views.html.Publisher.devoxxUK2017("Schedule",Some("Devoxx UK 2017 agenda")){
 
 <div class="large-12 columns">
 <h2>Devoxx UK 2017 Schedule</h2>
@@ -30,6 +30,16 @@
                 <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack")</td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
+                <!-- ******************************************************************* //-->
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("lab", "thursday", "Hands-on labs")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("lab", "friday", "Hands-on labs")
+                </td>
+            </tr>
+            <!-- ******************************************************************* //-->
             <tr>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("bof", "thursday", "BOFs")

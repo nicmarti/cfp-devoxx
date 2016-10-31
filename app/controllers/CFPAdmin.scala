@@ -500,7 +500,7 @@ object CFPAdmin extends SecureCFPController {
       val dir = new File("./public/speakers")
       FileUtils.forceMkdir(dir)
 
-      val file = new File(dir, "speakersDevoxxBE2016.csv")
+      val file = new File(dir, "speakersDevoxxUK2017.csv")
 
       val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"), true)
 

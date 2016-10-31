@@ -179,18 +179,18 @@ object ConferenceDescriptor {
   }
 
   object ConferenceTracksDescription {
-    val METHOD_ARCHI = TrackDesc(ConferenceTracks.METHOD_ARCHI.id, "/assets/devoxxbe2016/images/icon_methodology.png", ConferenceTracks.METHOD_ARCHI.label, "track.method_archi.desc")
-    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxbe2016/images/icon_javase.png", ConferenceTracks.JAVA.label, "track.java.desc")
-    val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/devoxxbe2016/images/icon_cloud.png", ConferenceTracks.CLOUD.label, "track.cloud.desc")
-    val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxbe2016/images/icon_javaee.png", ConferenceTracks.SSJ.label, "track.ssj.desc")
-    val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxxbe2016/images/icon_alternative.png", ConferenceTracks.LANG.label, "track.lang.desc")
-    val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxxbe2016/images/icon_architecture.png", ConferenceTracks.BIGDATA.label, "track.bigdata.desc")
-    val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxbe2016/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
-    val GEEK = TrackDesc(ConferenceTracks.GEEK.id, "/assets/devoxxbe2016/images/icon_geek.png", ConferenceTracks.GEEK.label, "track.geek.desc")
-    val IOT = TrackDesc(ConferenceTracks.IOT.id, "/assets/devoxxbe2016/images/icon_iot.png", ConferenceTracks.IOT.label, "track.iot.desc")
+    val METHOD_ARCHI = TrackDesc(ConferenceTracks.METHOD_ARCHI.id, "/assets/devoxxuk2017/images/icon_methodology.png", ConferenceTracks.METHOD_ARCHI.label, "track.method_archi.desc")
+    val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/devoxxuk2017/images/icon_javase.png", ConferenceTracks.JAVA.label, "track.java.desc")
+    val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/devoxxuk2017/images/icon_cloud.png", ConferenceTracks.CLOUD.label, "track.cloud.desc")
+    val SSJ = TrackDesc(ConferenceTracks.SSJ.id, "/assets/devoxxuk2017/images/icon_javaee.png", ConferenceTracks.SSJ.label, "track.ssj.desc")
+    val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/devoxxuk2017/images/icon_alternative.png", ConferenceTracks.LANG.label, "track.lang.desc")
+    val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/devoxxuk2017/images/icon_architecture.png", ConferenceTracks.BIGDATA.label, "track.bigdata.desc")
+    val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/devoxxuk2017/images/icon_web.png", ConferenceTracks.WEB.label, "track.web.desc")
+    val GEEK = TrackDesc(ConferenceTracks.GEEK.id, "/assets/devoxxuk2017/images/icon_geek.png", ConferenceTracks.GEEK.label, "track.geek.desc")
+    val IOT = TrackDesc(ConferenceTracks.IOT.id, "/assets/devoxxuk2017/images/icon_iot.png", ConferenceTracks.IOT.label, "track.iot.desc")
 
-    val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxbe2016/images/icon_security.png", ConferenceTracks.SECURITY.label, "track.security.desc")
-    val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxbe2016/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
+    val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxuk2017/images/icon_security.png", ConferenceTracks.SECURITY.label, "track.security.desc")
+    val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxuk2017/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
 
     val ALL = List(METHOD_ARCHI
       , JAVA
@@ -229,6 +229,7 @@ object ConferenceDescriptor {
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
     val bofThu = List(AUDIT)
+    val labsThu = List(ROOM_B, ROOM_C, ROOM_D, ROOM_E)
     val hackThu = List(ROOM_D)
     val igniteThu = List(ROOM_B)
     val quickieThu = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
@@ -263,6 +264,63 @@ object ConferenceDescriptor {
     private val MIN_SEC = ":00.000+01:00"
 
     // HANDS ON LABS
+    val labsSlotThursday: List[Slot] = {
+
+      val labsThursdayEveningSlot1 = ConferenceRooms.labsThu.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "10:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "12:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
+      }
+
+      val labsThursdayEveningSlot2 = ConferenceRooms.labsThu.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "13:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "15:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
+      }
+
+      val labsThursdayEveningSlot3 = ConferenceRooms.labsThu.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            THURSDAY,
+            new DateTime(THU_DATE + "16:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "18:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r3)
+      }
+
+      labsThursdayEveningSlot1 ++ labsThursdayEveningSlot2 ++ labsThursdayEveningSlot3
+    }
+
+    val labsSlotFriday: List[Slot] = {
+
+      val labsFridayEveningSlot1 = ConferenceRooms.labsFri.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(FRI_DATE + "11:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
+      }
+
+      val labsFridayEveningSlot2 = ConferenceRooms.labsFri.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "11:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(FRI_DATE + "13:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
+      }
+
+      val labsFridayEveningSlot3 = ConferenceRooms.labsFri.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.LAB.id,
+            FRIDAY,
+            new DateTime(FRI_DATE + "14:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(FRI_DATE + "16:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r3)
+      }
+
+      labsFridayEveningSlot1 ++ labsFridayEveningSlot2 ++ labsFridayEveningSlot3
+    }
 
     // BOFS
 
@@ -541,13 +599,16 @@ object ConferenceDescriptor {
       conferenceSlotsThursday ++
       quickiesSlotsThursday ++
       bofSlotThursday ++
+      labsSlotThursday ++
+      hackSlotsThursday ++
       igniteSlotsThursday
     }
 
     val fridaySchedule: List[Slot] = {
       fridayBreaks ++
-        conferenceSlotsFriday ++
-        quickiesSlotsFriday
+      conferenceSlotsFriday ++
+      labsSlotFriday ++
+      quickiesSlotsFriday
     }
 
     // COMPLETE DEVOXX

@@ -153,7 +153,7 @@ label.cfp-lab {
     right: 1px;
     width: 20px;
     height: 20px;
-    background:url('/assets/devoxxbe2016/images/beer-icons-off.png') no-repeat;
+    background:url('/assets/devoxxuk2017/images/beer-icons-off.png') no-repeat;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -165,5 +165,5 @@ input.cfp-fav:checked + label.cfp-lab {
     height: 22px;
     margin: 4px 0 0;
     padding: 0;
-    background: url('/assets/devoxxbe2016/images/beer-icons-on.png') no-repeat;
+    background: url('/assets/devoxxuk2017/images/beer-icons-on.png') no-repeat;
 }
