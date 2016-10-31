@@ -656,7 +656,7 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
-    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    , notifyProposalSubmitted = true // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
@@ -693,7 +693,7 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
-    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
+    , notifyProposalSubmitted = true // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
