@@ -1,0 +1,29 @@
+@(companiesAndProposals:List[(String,scala.collection.immutable.Set[Proposal])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Speakers") {
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>All proposals grouped by Company</h3>
+          <span class="label label-info">@companiesAndProposals.size companies</span>
+        </div>
+        <div class="panel-body">
+        @companiesAndProposals.map {case (company, props) =>
+        <h3>@company.capitalize @props.size talk(s)</h3>
+          @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
+            @Messages(proposal.talkType.id) - <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a> by @proposal.allSpeakers.map(_.cleanName).mkString(", ")
+          <span class="label label-success">@Messages(proposal.state.code)</span> <br>
+          }
+        }
+
+        </div>
+      </div>
+    </div>
+  </div>
+}
