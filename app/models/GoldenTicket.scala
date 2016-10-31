@@ -39,10 +39,10 @@ object GoldenTicket {
 
   implicit val goldenTicketFormat = Json.format[GoldenTicket]
 
-  def generateId(ticketId:String, email:String): String = {
+  def generateId(ticketId: String, email: String): String = {
     val cleanEmail = StringUtils.trimToEmpty(email).toLowerCase
     val cleanTicketId = StringUtils.trimToEmpty(ticketId).toLowerCase
-    cleanEmail.hashCode().toString+cleanTicketId.hashCode.toString
+    cleanEmail.hashCode().toString + cleanTicketId.hashCode.toString
   }
 
   def importTicket(gti: GoldenTicketImport): GoldenTicket = {
@@ -110,9 +110,8 @@ object GoldenTicket {
   def attic() = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
-      val uk2016 = "GoldenTicket:2016" // todo see FR or BE
-      tx.del(uk2016)
-      tx.del(uk2016 + ":UniqueUser")
+      tx.del(GD_TICKET)
+      tx.del(GD_TICKET + ":UniqueUser")
       tx.del("Webuser:gticket")
       tx.exec()
   }
