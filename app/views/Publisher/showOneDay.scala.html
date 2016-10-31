@@ -1,7 +1,8 @@
 @(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxBE2016(Messages(s"sw.show.$day")) {
+
+    @views.html.Publisher.devoxxFR2016(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
@@ -18,7 +19,7 @@
     <div class="columns large-12 woocommerce">
         <table class="agendaTable">
             <tr>
-                <th><i class="icon-time"></i> Room</th>
+                <th><i class="icon-time"></i> @Messages("publisher.room")</th>
                 @rooms.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
@@ -34,7 +35,7 @@
                 </tr>
             }
             <tr>
-                <th><i class="icon-time"></i> Room</th>
+                <th><i class="icon-time"></i> @Messages("publisher.room")</th>
                 @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>
                     <td>@roomName.name</td>
                 }
