@@ -28,9 +28,9 @@ import java.util
 import library.Redis
 
 /**
- * Leaderboard for stats, used by ZapActor.
- * Created by nicolas on 21/01/2014.
- */
+  * Leaderboard for stats, used by ZapActor.
+  * Created by nicolas on 21/01/2014.
+  */
 object Leaderboard {
 
   def computeStats(): util.List[AnyRef] = Redis.pool.withClient {
@@ -69,16 +69,16 @@ object Leaderboard {
         bestReviewer =>
           tx.set("Leaderboard:bestReviewer:uuid", bestReviewer._1)
           tx.set("Leaderboard:bestReviewer:score", bestReviewer._2.toString)
-      }.getOrElse{
+      }.getOrElse {
         tx.del("Leaderboard:bestReviewer:uuid")
         tx.del("Leaderboard:bestReviewer:score")
       }
 
-      Review.worstReviewer().map{
+      Review.worstReviewer().map {
         worstReviewer =>
           tx.set("Leaderboard:worstReviewer:uuid", worstReviewer._1)
           tx.set("Leaderboard:worstReviewer:score", worstReviewer._2.toString)
-      }.getOrElse{
+      }.getOrElse {
         tx.del("Leaderboard:worstReviewer:uuid")
         tx.del("Leaderboard:worstReviewer:score")
       }
@@ -111,18 +111,19 @@ object Leaderboard {
           tx.hset("Leaderboard:totalAcceptedByType", propType.id, total.toString)
       }
 
-      val allWebusers= Webuser.allCFPWebusers().toSet
+      val allWebusers = Webuser.allCFPWebusers().toSet
       val totalApprovedSpeakers = ApprovedProposal.allApprovedSpeakerIDs().diff(allWebusers.map(_.uuid)).size
       tx.set("Leaderboard:totalApprovedSpeakers", totalApprovedSpeakers.toString)
 
       val totalWithTickets = ApprovedProposal.allApprovedSpeakersWithFreePass().map(_.uuid).diff(allWebusers.map(_.uuid)).size
       tx.set("Leaderboard:totalWithTickets", totalWithTickets.toString)
 
-      val allCFPWebusers= Webuser.allCFPWebusers().map(w=>w.uuid).toSet
-      val allApprovedIDs= ApprovedProposal.allApprovedSpeakerIDs()
-      val allRejectedIDs= ApprovedProposal.allRefusedSpeakerIDs()
+      val allCFPWebusers = Webuser.allCFPWebusers().map(w => w.uuid).toSet
+      val allApprovedIDs = ApprovedProposal.allApprovedSpeakerIDs()
+      val allRejectedIDs = ApprovedProposal.allRefusedSpeakerIDs()
 
       val refusedSpeakers = allRejectedIDs.diff(allCFPWebusers).diff(allApprovedIDs)
+      println("refused " + refusedSpeakers)
 
       val totalRefusedSpeakers = refusedSpeakers.size
       tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
@@ -137,27 +138,27 @@ object Leaderboard {
       tx.exec()
   }
 
-  def totalSpeakers():Long = {
+  def totalSpeakers(): Long = {
     getFromRedis("Leaderboard:totalSpeakers")
   }
 
-  def totalProposals():Long = {
+  def totalProposals(): Long = {
     getFromRedis("Leaderboard:totalProposals")
   }
 
-  def totalVotes():Long = {
+  def totalVotes(): Long = {
     getFromRedis("Leaderboard:totalVotes")
   }
 
-  def totalWithVotes():Long = {
+  def totalWithVotes(): Long = {
     getFromRedis("Leaderboard:totalWithVotes")
   }
 
-  def totalNoVotes():Long = {
+  def totalNoVotes(): Long = {
     getFromRedis("Leaderboard:totalNoVotes")
   }
 
-  def totalCommentsPerProposal():Map[String,Int] = Redis.pool.withClient {
+  def totalCommentsPerProposal(): Map[String, Int] = Redis.pool.withClient {
     implicit client =>
       client.hgetAll("Leaderboard:totalCommentsPerProposal").map {
         case (key: String, value: String) =>
@@ -165,7 +166,7 @@ object Leaderboard {
       }
   }
 
-  def mostReviewed():Map[String,Int] = Redis.pool.withClient {
+  def mostReviewed(): Map[String, Int] = Redis.pool.withClient {
     implicit client =>
       client.hgetAll("Leaderboard:mostReviewed").map {
         case (key: String, value: String) =>
@@ -173,14 +174,14 @@ object Leaderboard {
       }
   }
 
-  def bestReviewer():Option[(String,String)] = Redis.pool.withClient {
+  def bestReviewer(): Option[(String, String)] = Redis.pool.withClient {
     implicit client =>
       for (uuid <- client.get("Leaderboard:bestReviewer:uuid");
            score <- client.get("Leaderboard:bestReviewer:score")) yield (uuid, score)
   }
 
   // Returns the Reviewer that did at least one review, but the fewest reviews.
-  def worstReviewer():Option[(String,String)] = Redis.pool.withClient {
+  def worstReviewer(): Option[(String, String)] = Redis.pool.withClient {
     implicit client =>
       for (uuid <- client.get("Leaderboard:worstReviewer:uuid");
            score <- client.get("Leaderboard:worstReviewer:score")) yield (uuid, score)
@@ -188,16 +189,16 @@ object Leaderboard {
 
   // Returns the user that has the lowest reviewed number of proposals and the full list of cfp user that did not
   // yet reviewed any talk
-  def lazyOnes():Map[String, String] = Redis.pool.withClient {
+  def lazyOnes(): Map[String, String] = Redis.pool.withClient {
     implicit client =>
-     val lazyOneWithOneVote = worstReviewer()
+      val lazyOneWithOneVote = worstReviewer()
       // Take CFP members, remove admin and remove all webuser that reviewed at least one
-     val otherThatHaveNoVotes  =  client.sdiff("Webuser:cfp", "Webuser:admin", "Computed:Reviewer:ReviewedOne" ).map(s=>(s,"0"))
-     val toReturn = (lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes).toMap
-    toReturn
+      val otherThatHaveNoVotes = client.sdiff("Webuser:cfp", "Webuser:admin", "Computed:Reviewer:ReviewedOne").map(s => (s, "0"))
+      val toReturn = (lazyOneWithOneVote.toSet ++ otherThatHaveNoVotes).toMap
+      toReturn
   }
 
-  def totalSubmittedByTrack():Map[String,Int] = Redis.pool.withClient {
+  def totalSubmittedByTrack(): Map[String, Int] = Redis.pool.withClient {
     implicit client =>
       client.hgetAll("Leaderboard:totalSubmittedByTrack").map {
         case (key: String, value: String) =>
@@ -205,7 +206,7 @@ object Leaderboard {
       }
   }
 
-  def totalSubmittedByType():Map[String,Int] = Redis.pool.withClient {
+  def totalSubmittedByType(): Map[String, Int] = Redis.pool.withClient {
     implicit client =>
       client.hgetAll("Leaderboard:totalSubmittedByType").map {
         case (key: String, value: String) =>
@@ -213,7 +214,7 @@ object Leaderboard {
       }
   }
 
-  def totalAcceptedByTrack():Map[String,Int] = Redis.pool.withClient {
+  def totalAcceptedByTrack(): Map[String, Int] = Redis.pool.withClient {
     implicit client =>
       client.hgetAll("Leaderboard:totalAcceptedByTrack").map {
         case (key: String, value: String) =>
@@ -221,7 +222,7 @@ object Leaderboard {
       }
   }
 
-  def totalAcceptedByType():Map[String,Int] = Redis.pool.withClient {
+  def totalAcceptedByType(): Map[String, Int] = Redis.pool.withClient {
     implicit client =>
       client.hgetAll("Leaderboard:totalAcceptedByType").map {
         case (key: String, value: String) =>
@@ -234,15 +235,39 @@ object Leaderboard {
       client.get(key).map(_.toLong).getOrElse(0L)
   }
 
-  def totalApprovedSpeakers():Long ={
-      getFromRedis("Leaderboard:totalApprovedSpeakers")
+  def totalApprovedSpeakers(): Long = {
+    getFromRedis("Leaderboard:totalApprovedSpeakers")
   }
 
-  def totalWithTickets():Long ={
-      getFromRedis("Leaderboard:totalWithTickets")
+  def totalWithTickets(): Long = {
+    getFromRedis("Leaderboard:totalWithTickets")
   }
 
-  def totalRefusedSpeakers():Long={
+  def totalRefusedSpeakers(): Long = {
     getFromRedis("Leaderboard:totalRefusedSpeakers")
   }
 }
+
+
+case class LeaderBoardParams(totalSpeakers: Long,
+                              totalProposals: Long,
+                              totalVotes: Long,
+                              mostReviewed: List[(String, Int)],
+                              bestReviewers: List[(String, Int, Int)],
+                              lazyOnes: Map[String, String],
+                              generousVoters: List[(String, BigDecimal)],
+                              proposalsBySpeakers: List[(String, Int)],
+                              totalSubmittedByTrack: Map[String, Int],
+                              totalSubmittedByType: Map[String, Int],
+                              totalCommentsPerProposal: List[(String, Int)],
+                              totalAcceptedByTrack: Map[String, Int],
+                              totalAcceptedByType: Map[String, Int],
+                              totalSlotsToAllocate: Map[String, Int],
+                              totalApprovedSpeakers: Long,
+                              totalWithTickets: Long,
+                              totalRefusedSpeakers: Long,
+                              allApprovedByTrack: Map[String, Int],
+                              allApprovedByTalkType: Map[String, Int],
+                              totalWithVotes: Long,
+                              totalNoVotes: Long
+                            )
