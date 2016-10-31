@@ -72,32 +72,39 @@
                         <button type="submit" class="btn btn-primary">Archive all Hacks</button>
                     </form>
 
-                    <hr>
-                    <form action="@routes.Attic.deleteInvitedSpeakers()" method="POST">
-                        <button type="submit" class="btn btn-warning">Remote status [Invited] from all speakers</button>
-                    </form>
-                    <form action="@routes.Attic.resetEvents()" method="POST">
-                        <button type="submit" class="btn btn-warning">Delete all Events and history</button> <em>Events is a log of all actions such as votes, new proposals, actions and updates performed by speakers and the team.</em>
-                    </form>
-                    <form action="@routes.Attic.resetNotified()" method="POST">
-                        <button type="submit" class="btn btn-warning">Reset the list of notified Speakers (approved and refused)</button>
-                    </form>
-                    <form action="@routes.Attic.deleteGoldenTickets()" method="POST">
-                        <button type="submit" class="btn btn-warning">
-                            Delete all Golden Tickets</button>
-                    </form>
-                    <form action="@routes.Attic.deleteWishlist()" method="POST">
-                        <button type="submit" class="btn btn-warning">
-                            Delete Wishlisted speakers</button>
-                    </form>
-                    <form action="@routes.Attic.deleteFavoriteTalks()" method="POST">
-                        <button type="submit" class="btn btn-warning">
-                            Delete all Talks "faved" by a user on the agenda (bookmarked)</button>
-                    </form>
-                    <form action="@routes.Attic.deleteRatings()" method="POST">
-                        <button type="submit" class="btn btn-warning">
-                            Delete all mobile votes</button>
-                    </form>
+                        <div class="clearfix"></div>
+
+                        <div class="col-lg-12 col-md-12">
+                            <form action="@routes.Attic.deleteInvitedSpeakers()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Remote status [Invited] from all speakers</button>
+                            </form>
+                            <form action="@routes.Attic.resetEvents()" method="POST">
+                                <button type="submit" class="btn btn-warning">Delete all Events and history</button> <em>
+                                Events is a log of all actions such as votes, new proposals, actions and updates performed by speakers and the team.</em>
+                            </form>
+                            <form action="@routes.Attic.resetNotified()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Reset the list of notified Speakers (approved and refused)</button>
+                            </form>
+                            <form action="@routes.Attic.deleteGoldenTickets()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete all Golden Tickets</button>
+                            </form>
+                            <form action="@routes.Attic.deleteWishlist()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete Wishlisted speakers</button>
+                            </form>
+                            <form action="@routes.Attic.deleteFavoriteTalks()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete all Talks "faved" by a user on the agenda (bookmarked)</button>
+                            </form>
+                             <form action="@routes.Attic.deleteRatings()" method="POST">
+                                <button type="submit" class="btn btn-warning">
+                                    Delete all mobile votes</button>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
             </div>
