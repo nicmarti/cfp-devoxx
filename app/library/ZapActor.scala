@@ -222,8 +222,9 @@ class ZapActor extends Actor {
     Event.storeEvent(Event(proposal.id, author, s"Submitted a proposal ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(author).map {
       reporterWebuser: Webuser =>
+        play.Logger.info(s"About to send out email to ${author}for ${proposal.id} '${proposal.title}'")
         Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
-        play.Logger.debug("Email sent out to " + author + "for ${proposal.id} '${proposal.title}'")
+        play.Logger.info(s"Email sent out to $author for ${proposal.id} '${proposal.title}'")
     }.getOrElse {
       play.Logger.error("User not found with uuid " + author)
     }
