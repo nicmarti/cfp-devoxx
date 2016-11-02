@@ -101,7 +101,6 @@ case class ConferenceDescriptor(eventCode: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[Locale],
                                 localisation: String,
-                                notifyProposalSubmitted: Boolean,
                                 maxProposalSummaryCharacters: Int = 1200
                                )
 
@@ -706,7 +705,6 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.FRENCH)
     , "Palais des Congrès, Porte Maillot, Paris"
-    , notifyProposalSubmitted = false // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
@@ -720,6 +718,14 @@ object ConferenceDescriptor {
   def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 
   def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+
+  // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
+  // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
+  def isResetVotesForSubmitted = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
+
+  // Set this to true temporarily
+  // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
+  def notifyProposalSubmitted = true
 
 }
 
