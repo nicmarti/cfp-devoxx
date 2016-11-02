@@ -123,7 +123,6 @@ object Leaderboard {
       val allRejectedIDs = ApprovedProposal.allRefusedSpeakerIDs()
 
       val refusedSpeakers = allRejectedIDs.diff(allCFPWebusers).diff(allApprovedIDs)
-      println("refused " + refusedSpeakers)
 
       val totalRefusedSpeakers = refusedSpeakers.size
       tx.set("Leaderboard:totalRefusedSpeakers", totalRefusedSpeakers.toString)
