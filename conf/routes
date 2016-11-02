@@ -157,6 +157,7 @@ GET           /ar/showAcceptTerms                                               
 GET           /ar/accept                                                        controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET           /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST          /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
+GET           /ar/decline                                                       controllers.ApproveOrRefuse.declineTermsAndConditions()
 
 GET           /ar/prepareMassRefuse                                             controllers.ApproveOrRefuse.prepareMassRefuse(confType:String ?="conf")
 GET           /ar/doMassRefuseAndRedirect                                       controllers.ApproveOrRefuse.doRefuseAndRedirectToMass(proposalId:String, confType:String)

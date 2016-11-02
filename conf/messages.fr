@@ -764,3 +764,5 @@ cfpAdmin.showWhenCreated=Sujet soumis par le speaker sur le CFP le {0}
 
 publisher.showMore=Voir la description
 publisher.room=Salle
+
+refused.termsConditions=Attention, vous avez refusé les Terms & Conditions Devoxx et vous ne pourrez donc pas présenter le ou les sujet(s) retenus. Si vous souhaitez revenir sur ce point, contacter l''équipe par email : program@devoxx.fr
