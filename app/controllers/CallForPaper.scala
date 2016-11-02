@@ -322,7 +322,9 @@ object CallForPaper extends SecureCFPController {
           Proposal.submit(uuid, proposalId)
           if(ConferenceDescriptor.current().notifyProposalSubmitted) {
             // This generates too many emails for France and is useless
+            play.Logger.info("notifyProposalSubmitted is enabled, and about to send an email.")
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
+            play.Logger.info("Sent email successfully.")
           } else {
             play.Logger.debug("notifyProposalSubmitted is set to 'false', hence no emails are sent when talks are submitted (new or changes)")
           }
