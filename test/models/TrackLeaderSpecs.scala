@@ -133,7 +133,7 @@ class TrackLeaderSpecs extends PlaySpecification {
 
       // Then
       TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beTrue
-      TrackLeader.isTrackLeader(sampleTrack.SSJ.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.LANG.id, testWebuser.uuid) must beFalse
       TrackLeader.isTrackLeader(sampleTrack.JAVA.id, testWebuser.uuid) must beTrue
 
       Webuser.delete(testWebuser)
@@ -154,7 +154,7 @@ class TrackLeaderSpecs extends PlaySpecification {
       // Then
       TrackLeader.isTrackLeader(sampleTrack.CLOUD.id, testWebuser.uuid) must beTrue
       TrackLeader.isTrackLeader(sampleTrack.CLOUD.id,  RandomStringUtils.randomAlphabetic(9)) must beFalse
-      TrackLeader.isTrackLeader(sampleTrack.SSJ.id, testWebuser.uuid) must beFalse
+      TrackLeader.isTrackLeader(sampleTrack.LANG.id, testWebuser.uuid) must beFalse
 
       Webuser.delete(testWebuser)
     }

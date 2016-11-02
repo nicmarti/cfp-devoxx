@@ -170,10 +170,15 @@ track.mobile.desc=Mobile, Java et l’internet des objets, la domotique et l’e
 mobile.label=Mobile, IoT
 mobile.leaderboard=Mobile, IoT
 
-track.web.title=Web, HTML5 et UX
-track.web.desc=Web, user-experience, front-end et architecture Webs.
-web.label=Web, HTML5 et UX
-wm.leaderboard=Web, HTML5 et UX
+track.web.title=Web, JS, HTML5 et UX
+track.web.desc=Web, JS, user-experience, front-end et architecture Webs.
+web.label=Web, JS, HTML5 et UX
+wm.leaderboard=Web, JS, HTML5 et UX
+
+track.cloud.title=Cloud, Container et Scalabilité
+track.cloud.desc=Cloud-computing, Container, Virtualisation, Architectures résilientes
+cloud.label=Cloud, Container et Scalabilité
+cldops.leaderboard=Cloud, Container et Scalabilité
 
 track.archisec.title=Architecture, Performance & Securité
 track.archisec.desc=Architecture, performance, encryption et meilleures pratiques pour développer un logiciel sécurisé.
@@ -185,15 +190,10 @@ track.agile_devops.desc=Méthodes et pratiques de développement / déploiement 
 agile_devops.label=DevOps, Agilité, Méthodologie & Tests
 agTest.leaderboard=DevOps, Agilité, Méthodologie & Tests
 
-track.cloud.title=Cloud et Scaling
-track.cloud.desc=Cloud-computing, Architectures résilientes, containeurs
-cloud.label=Cloud et Scaling
-cldops.leaderboard=Cloud et Scaling
-
-track.bigdata.title=BigData et Analytics
+track.bigdata.title=BigData, Machine-learning, Intelligence artificielle et Analytics
 track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
-bigd.label=BigData et Analytics
-bigd.leaderboard=BigData et Analytics
+bigd.label=BigData, ML, IA
+bigd.leaderboard=BigData, ML, IA
 
 track.future.title=Future, Robotique
 track.future.desc=La robotique et l''informatique de demain
@@ -201,7 +201,7 @@ future.label=Future, Robotique
 future.leaderboard=Future, Robotique
 
 track.lang.title=Langages alternatifs
-track.lang.desc=Groovy, Scala, Go, Javascript, Clojure, Haskell, Haskell, Ceylon, etc.
+track.lang.desc=Tous les langages alternatifs à Java
 lang.label=Langages alternatifs
 lang.leaderboard=Langages alternatifs
 
@@ -764,3 +764,5 @@ cfpAdmin.showWhenCreated=Sujet soumis par le speaker sur le CFP le {0}
 
 publisher.showMore=Voir la description
 publisher.room=Salle
+
+refused.termsConditions=Attention, vous avez refusé les Terms & Conditions Devoxx et vous ne pourrez donc pas présenter le ou les sujet(s) retenus. Si vous souhaitez revenir sur ce point, contacter l''équipe par email : program@devoxx.fr
