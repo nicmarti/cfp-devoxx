@@ -179,13 +179,13 @@ track.mobile.desc=Mobile, Java & Internet of Things
 mobile.label=Mobile, IoT
 mobile.leaderboard=Mobile, IoT
 
-track.web.title=Web, HTML5 et UX
-track.web.desc=Web, user-experience, front-end and Web architecture
-web.label=Web, HTML5 et UX
-wm.label=Web, HTML5 et UX
-wm.leaderboard=Web, HTML5 et UX
+track.web.title=Web, JS, HTML5 & UX
+track.web.desc=Web, JS, user-experience, front-end and Web architecture
+web.label=Web, JS, HTML5 &  UX
+wm.label=Web, JS, HTML5 & UX
+wm.leaderboard=Web, JS, HTML5 & UX
 
-track.archisec.title=Architecture, Performance & Securité
+track.archisec.title=Architecture, Performance & Security
 track.archisec.desc=Software architecture, performance, encryption and best practices to develop secure software
 archisec.label=Architecture, Performance and Security
 archisec.leaderboard=Architecture, Performance and Security
@@ -196,15 +196,15 @@ agile_devops.label=DevOps, Agile, Methodology & Tests
 agTest.label=DevOps, Agile, Methodology & Tests
 agTest.leaderboard=DevOps, Agile, Methodology & Tests
 
-track.cloud.title=Cloud & Scaling
+track.cloud.title=Cloud, container & Scaling
 track.cloud.desc=Cloud-computing, containers, resilient architectures.
 cloud.label=Cloud & Scaling
 cldops.label=Cloud & Scaling
 cldops.leaderboard=Cloud & Scaling
 
-track.bigdata.title=Big Data & Analytics
+track.bigdata.title=Big Data, Machine Learning, I.A & Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
-bigdata.label=Big Data & Analytics
+bigdata.label=Big Data, Machine Learning, IA & Analytics
 bigd.leaderboard=Big Data & Analytics
 
 track.future.title=Future & Robotics
@@ -823,3 +823,7 @@ hfspk.rating.desc=Rating given by visitors during the conference with mobile app
 table.pres.rating=Rating (1 to 5)
 table.pres.comment=Comments and rating
 rating.default=No comment
+
+# If a speaker declined T&C
+# I don't really know what we should do but the speaker will have to contact the team if he changes its choice.
+refused.termsConditions=Warning : you declined the Devoxx Terms & Conditions and thus, you cannot present or talk at Devoxx. If needed, please contact our team by email.

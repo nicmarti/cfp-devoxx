@@ -184,6 +184,10 @@ object CallForPaper extends SecureCFPController {
               // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
               if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
+                if(ConferenceDescriptor.isResetVotesForSubmitted){
+                  Review.archiveAllVotesOnProposal(proposal.id)
+                  Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
+                }
                 Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
               } else {
@@ -320,7 +324,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
-          if(ConferenceDescriptor.current().notifyProposalSubmitted) {
+          if(ConferenceDescriptor.notifyProposalSubmitted) {
             // This generates too many emails for France and is useless
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
           }

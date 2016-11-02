@@ -1,5 +1,5 @@
 @(speakers: List[Speaker])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-    @views.html.Publisher.devoxxBE2016("Speakers",Some("All Devoxx 2016 speakers")) {
+    @views.html.Publisher.devoxxFR2016("Speakers",Some("All Devoxx speakers")) {
         <div class="large-12 columns">
             <h1 class="entry-title">@Messages("sw.speakers")</h1>
             <p>@speakers.size @Messages("sw.allSpeakers")</p>

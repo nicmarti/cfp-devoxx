@@ -4,7 +4,11 @@
         <table>
             <tr>
                 <td>
-                    <img class="media-object" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=80" alt="@speaker.name" title="@speaker.cleanName"/>
+                    @if(speaker.avatarUrl.isEmpty) {
+                        <img class="media-object" src="https://www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=80" alt="@speaker.cleanName" title="@speaker.cleanName"/>
+                    } else {
+                        <img class="media-object" width="80" src="@speaker.avatarUrl.get" alt="@speaker.cleanName" title="@speaker.cleanName"/>
+                    }
                 </td>
                 <td>
                     <h3>

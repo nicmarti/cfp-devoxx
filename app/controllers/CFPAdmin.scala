@@ -119,7 +119,8 @@ object CFPAdmin extends SecureCFPController {
         Proposal.findById(proposalId) match {
           case Some(proposal) =>
             val currentAverageScore = Review.averageScore(proposalId)
-            val countVotesCast = Review.totalVoteCastFor(proposalId) // votes exprimes (sans les votes a zero)
+            val countVotesCast = Review.totalVoteCastFor(proposalId)
+            // votes exprimes (sans les votes a zero)
             val countVotes = Review.totalVoteFor(proposalId)
             val allVotes = Review.allVotesFor(proposalId)
 
@@ -224,29 +225,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  case class LeaderBoardParams(
-                                totalSpeakers: Long,
-                                totalProposals: Long,
-                                totalVotes: Long,
-                                mostReviewed: List[(String, Int)],
-                                bestReviewers: List[(String, Int, Int)],
-                                lazyOnes: Map[String, String],
-                                generousVoters: List[(String, BigDecimal)],
-                                proposalsBySpeakers: List[(String, Int)],
-                                totalSubmittedByTrack: Map[String, Int],
-                                totalSubmittedByType: Map[String, Int],
-                                totalCommentsPerProposal: List[(String, Int)],
-                                totalAcceptedByTrack: Map[String, Int],
-                                totalAcceptedByType: Map[String, Int],
-                                totalSlotsToAllocate: Map[String, Int],
-                                totalApprovedSpeakers: Long,
-                                totalWithTickets: Long,
-                                totalRefusedSpeakers: Long,
-                                allApprovedByTrack: Map[String, Int],
-                                allApprovedByTalkType: Map[String, Int],
-                                totalWithVotes: Long,
-                                totalNoVotes: Long
-                              )
+  case class GoldenTicketsParams(totalTickets: Int, stats: List[(String, Int, Int)])
 
   def leaderBoard = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
@@ -259,6 +238,9 @@ object CFPAdmin extends SecureCFPController {
       val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) } toList
       val bestReviewers = Review.allReviewersAndStats()
       val lazyOnes = Leaderboard.lazyOnes()
+
+      val totalGTickets = ReviewByGoldenTicket.totalGoldenTickets()
+      val totalGTStats = ReviewByGoldenTicket.allReviewersAndStats()
 
       val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
       val totalSubmittedByType = Leaderboard.totalSubmittedByType()
@@ -302,7 +284,9 @@ object CFPAdmin extends SecureCFPController {
         allApprovedByTalkType,
         totalWithVotes, totalNoVotes)
 
-      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams))
+      def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
+
+      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams, goldenTicketParam))
   }
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
@@ -720,30 +704,33 @@ object CFPAdmin extends SecureCFPController {
 
   def allProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val allInterestings = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
 
-      val allInterestingProposals = Proposal.loadAndParseProposals(allInterestings)
+      val allInteresting = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
 
-      val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.values.flatMap(p =>p.allSpeakerUUIDs)
+      val allInterestingProposals = Proposal.loadAndParseProposals(allInteresting)
+
+      val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.values.flatMap(p => p.allSpeakerUUIDs)
 
       val uniqueSetOfSpeakersUUID: Set[String] = allSpeakersUUIDs.toSet
 
-      val allSpeakers:List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
+      val allSpeakers: List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
 
       val speakers = allSpeakers
-        .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("Pas de société"))
+        .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("No Company"))
         .toList
         .sortBy(_._2.size)
         .reverse
 
       val companiesAndProposals = speakers.map {
-        case (company, subSpeakers) =>
-          val setOfProposals = subSpeakers.toList.flatMap {
+        case (company, speakerList) =>
+          val setOfProposals = speakerList.flatMap {
             s =>
-              Proposal.allApprovedProposalsByAuthor(s.uuid).values
+              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).values
           }.toSet
           (company, setOfProposals)
       }.filterNot(_._2.isEmpty)
+        .sortBy(p => p._2.size)
+        .reverse
 
       Ok(views.html.CFPAdmin.allProposalsByCompany(companiesAndProposals))
   }
