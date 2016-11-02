@@ -40,18 +40,20 @@
             }
 
             <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
+                    </div>
+                </div>
 
-                    @if(allProposalsForReview.nonEmpty) {
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
-                            </div>
-                        </div>
+                <i class="icon-filter"></i> @Messages("cfpadmin.filterOn")
+                @Track.allIDs.filterNot(_=="unknown").map { idTrack =>
+                    <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Messages(idTrack + ".leaderboard")</a>
+                }
+                <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn btn-success btn-sm"><i class="icon-filter"></i>
+                    All</a>
 
-                        <i class="icon-filter"></i> Filter on
-                        @Track.allIDs.map{idTrack=>
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
-                        }
+                @if(allProposalsForReview.nonEmpty) {
                         <br>
                         <br>
                         <table class="table table-bordered table-striped table-hover table-condensed">
@@ -91,7 +93,11 @@
                             </tbody>
                         </table>
                     } else {
-                        <h4>@Messages("admin.cfp.empty")</h4>
+                        @if(track.isDefined){
+                            <h4>@Messages("admin.cfp.empty.track", Messages(track.get +".leaderboard"))</h4>
+                        }else{
+                            <h4>@Messages("admin.cfp.empty")</h4>
+                        }
                     }
             </div>
         </div>

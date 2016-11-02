@@ -793,4 +793,11 @@ hfspk.rating.title=Rating
 hfspk.rating.desc=Rating given by visitors during the conference with mobile apps.
 table.pres.rating=Rating (1 to 5)
 table.pres.comment=Comments and rating
-rating.default=
+rating.default=No comment
+
+# If a speaker declined T&C
+# I don't really know what we should do but the speaker will have to contact the team if he changes its choice.
+refused.termsConditions=Warning : you declined the Devoxx Terms & Conditions and thus, you cannot present or talk at Devoxx. If needed, please contact our team by email.
+
+cfpadmin.filterOn=Filter on
+admin.cfp.empty.track=There is no new submitted proposals in track {0} for the time being
