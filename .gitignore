@@ -42,10 +42,6 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 
-# My custom scripts to run locally with env variables
-run-fr.sh
-run-be.sh
-
 /public/speakers/
 run.sh
 run-uk.sh
