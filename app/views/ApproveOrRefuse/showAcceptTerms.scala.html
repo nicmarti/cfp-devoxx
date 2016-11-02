@@ -60,7 +60,7 @@ I undertake in each of my presentations to strictly comply with the principles o
                             @helper.form(routes.ApproveOrRefuse.acceptTermsAndConditions()) {
                                 @helper.checkbox(formAccept("accept.chk"))
                                 <input type="submit" value="Validate" class="btn btn-lg btn-success">
-                                <a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-lg btn-danger">Decline</a>
+                                <a href="@routes.ApproveOrRefuse.declineTermsAndConditions()" class="btn btn-lg btn-danger">Decline</a>
                             }
 
 
