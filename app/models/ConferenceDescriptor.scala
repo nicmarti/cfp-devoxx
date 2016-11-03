@@ -101,7 +101,6 @@ case class ConferenceDescriptor(eventCode: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[Locale],
                                 localisation: String,
-                                notifyProposalSubmitted:Boolean,
                                 maxProposalSummaryCharacters:Int=1200
                                )
 
@@ -620,8 +619,8 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2017).withMonthOfYear(05).withDayOfMonth(11)
-  val toDay = new DateTime().withYear(2017).withMonthOfYear(05).withDayOfMonth(12)
+  val fromDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(11)
+  val toDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(12)
 
   def current() = ConferenceDescriptor(
     eventCode = "DV17",
@@ -656,7 +655,6 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
-    , notifyProposalSubmitted = true // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
@@ -693,7 +691,6 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
-    , notifyProposalSubmitted = true // Do not send an email for each talk submitted for France
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
@@ -706,6 +703,14 @@ object ConferenceDescriptor {
   def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 
   def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+
+  // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
+  // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
+  def isResetVotesForSubmitted = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
+
+  // Set this to true temporarily
+  // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
+  def notifyProposalSubmitted = true
 
 }
 
