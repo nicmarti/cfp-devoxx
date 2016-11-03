@@ -157,6 +157,7 @@ GET           /ar/showAcceptTerms                                               
 GET           /ar/accept                                                        controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET           /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST          /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
+GET           /ar/decline                                                       controllers.ApproveOrRefuse.declineTermsAndConditions()
 
 GET           /ar/prepareMassRefuse                                             controllers.ApproveOrRefuse.prepareMassRefuse(confType:String ?="conf")
 GET           /ar/doMassRefuseAndRedirect                                       controllers.ApproveOrRefuse.doRefuseAndRedirectToMass(proposalId:String, confType:String)
@@ -180,8 +181,11 @@ GET           /2017/agenda/:confType/:day                                       
 GET           /2017/byday/:day                                                  controllers.Publisher.showByDay(day:String)
 GET           /2017/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 
-# This is Devoxx BE 2015
+# Archive folder
+# 1) download all web pages with wget
+# 2) upload to Clever cloud the web pages
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
+GET           /2016/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 GET           /2015/*file                                                       controllers.BucketContentLoader.at(path="/devoxx_content/2015", file)
 
 # Favorites
@@ -255,6 +259,10 @@ POST          /cfpadmin/attic/doArchive                                         
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()
 POST          /cfpadmin/attic/resetEvents                                       controllers.Attic.resetEvents()
+POST          /cfpadmin/attic/deleteGoldenTickets                               controllers.Attic.deleteGoldenTickets()
+POST          /cfpadmin/attic/deleteWishlisted                                  controllers.Attic.deleteWishlist()
+POST          /cfpadmin/attic/deleteFav                                         controllers.Attic.deleteFavoriteTalks()
+POST          /cfpadmin/attic/deleteRatings                                     controllers.Attic.deleteRatings()
 
 # Golden ticket admin
 GET           /admin/goldenTickets                                              controllers.GoldenTicketAdminController.showAll()
