@@ -53,9 +53,8 @@ object CallForPaper extends SecureCFPController {
           val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
           val needsToAcceptTermAndCondition = Speaker.needsToAccept(uuid) && (hasAccepted || hasApproved)
 
-          (needsToAcceptTermAndCondition, hasApproved, hasAccepted) match {
-            case (true, _, _) => Redirect(routes.ApproveOrRefuse.acceptTermsAndConditions())
-            case (false, true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
+          (hasApproved, hasAccepted) match {
+            case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
             case other =>
               val allProposals = Proposal.allMyProposals(uuid)
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
@@ -64,7 +63,7 @@ object CallForPaper extends SecureCFPController {
               }else{
                 Map.empty[Proposal,List[Rating]]
               }
-              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived,ratings))
+              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
@@ -184,6 +183,10 @@ object CallForPaper extends SecureCFPController {
               // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
               if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
+                if (ConferenceDescriptor.isResetVotesForSubmitted) {
+                  Review.archiveAllVotesOnProposal(proposal.id)
+                  Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
+                }
                 Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
               } else {
@@ -320,7 +323,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
-          if(ConferenceDescriptor.current().notifyProposalSubmitted) {
+          if(ConferenceDescriptor.notifyProposalSubmitted) {
             // This generates too many emails for France and is useless
             play.Logger.info("notifyProposalSubmitted is enabled, and about to send an email.")
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)

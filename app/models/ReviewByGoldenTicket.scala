@@ -23,9 +23,10 @@
 
 package models
 
-import library.{ComputeVotesAndScore, ZapActor, Stats, Redis}
+import library.{ComputeVotesAndScore, Redis, Stats, ZapActor}
 import models.Review._
-import org.joda.time.{Instant, DateTime}
+import org.joda.time.{DateTime, Instant}
+
 import scala.math.BigDecimal.RoundingMode
 
 /**
@@ -411,5 +412,33 @@ object ReviewByGoldenTicket {
 
   def orderByAverageScore:Ordering[(Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))]={
     Ordering.by[(Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev)), Double](_._2._4.n)
+  }
+
+
+  // Delete all Golgen Ticket's reviews
+  def attic() = Redis.pool.withClient {
+    client =>
+      val tx = client.multi()
+      // Stats
+      tx.del("GT:Computed:Reviewer:Total")
+      tx.del("GT:Computed:Reviewer:ReviewedOne")
+      tx.del("GT:Computed:Scores")
+      tx.del("GT:Computed:Voters")
+      tx.del("GT:Computed:Average")
+      tx.del("GT:Computed:Votes:ScoreAndCount")
+      tx.del("GT:Computed:StandardDeviation")
+      tx.del("GT:Computed:VotersAbstention")
+      tx.del("GT:Computed:Median")
+      tx.exec()
+
+      // This is a SLOW operation but since it's once a year... It's ok
+      val allGT = client.keys("ReviewGT:*")
+
+      val tx2 = client.multi()
+      allGT.foreach {
+        key: String =>
+          tx2.del(key)
+      }
+      tx2.exec()
   }
 }

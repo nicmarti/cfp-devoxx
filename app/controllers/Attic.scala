@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{Event, ArchiveProposal, Invitation}
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -31,6 +31,7 @@ import scala.concurrent.Future
 
 /**
  * Attic service to archive conference and talks.
+  *
  * @author created by N.Martignole, Innoteria, on 14/11/2014.
  */
 object Attic extends SecureCFPController {
@@ -45,6 +46,7 @@ object Attic extends SecureCFPController {
 
   /**
    * Either destroy [draft] or [deleted] proposals, using a Future, as this code is slow and blocks
+    *
    * @return
    */
   def prune() = SecuredAction(IsMemberOf("admin")).async {
@@ -108,4 +110,34 @@ object Attic extends SecureCFPController {
       Event.resetEvents()
       Redirect(routes.Attic.atticHome()).flashing(("success", s"Events log flushed."))
   }
+
+  /**
+    * Delete all the golden tickets
+    */
+  def deleteGoldenTickets() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      GoldenTicket.attic()
+      ReviewByGoldenTicket.attic()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Golden Tickets deleted"))
+  }
+
+  def deleteWishlist()= SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      RequestToTalk.attic()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted wishlisted"))
+  }
+
+  def deleteFavoriteTalks()= SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      FavoriteTalk.attic()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted favorite talks"))
+  }
+
+  // Mobile API
+  def deleteRatings()= SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Rating.attic()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted mobile votes"))
+  }
+
 }
