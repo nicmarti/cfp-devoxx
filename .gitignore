@@ -59,3 +59,4 @@ run-be.sh
 /conf/dump.rdb
 /conf/application.conf.local
 /run-local.sh
+/run-uk.sh
