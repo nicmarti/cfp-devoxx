@@ -184,7 +184,7 @@ object CallForPaper extends SecureCFPController {
               // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
               if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
-                if(ConferenceDescriptor.isResetVotesForSubmitted){
+                if (ConferenceDescriptor.isResetVotesForSubmitted) {
                   Review.archiveAllVotesOnProposal(proposal.id)
                   Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                 }
@@ -324,7 +324,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
-          if(ConferenceDescriptor.notifyProposalSubmitted) {
+          if (ConferenceDescriptor.notifyProposalSubmitted) {
             // This generates too many emails for France and is useless
             play.Logger.info("notifyProposalSubmitted is enabled, and about to send an email.")
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
