@@ -53,18 +53,17 @@ object CallForPaper extends SecureCFPController {
           val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
           val needsToAcceptTermAndCondition = Speaker.needsToAccept(uuid) && (hasAccepted || hasApproved)
 
-          (needsToAcceptTermAndCondition, hasApproved, hasAccepted) match {
-            case (true, _, _) => Redirect(routes.ApproveOrRefuse.acceptTermsAndConditions())
-            case (false, true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
+          (hasApproved, hasAccepted) match {
+            case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
             case other =>
               val allProposals = Proposal.allMyProposals(uuid)
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-              val ratings = if(hasAccepted||hasApproved){
+              val ratings = if (hasAccepted || hasApproved) {
                 Rating.allRatingsForTalks(allProposals)
-              }else{
-                Map.empty[Proposal,List[Rating]]
+              } else {
+                Map.empty[Proposal, List[Rating]]
               }
-              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived,ratings))
+              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
@@ -159,7 +158,8 @@ object CallForPaper extends SecureCFPController {
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
-          val summary = validProposal.summaryAsHtml // markdown to HTML
+          val summary = validProposal.summaryAsHtml
+          // markdown to HTML
           val privateMessage = validProposal.privateMessageAsHtml // markdown to HTML
           Ok(views.html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
         }
@@ -184,7 +184,7 @@ object CallForPaper extends SecureCFPController {
               // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
               if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
-                if(ConferenceDescriptor.isResetVotesForSubmitted){
+                if (ConferenceDescriptor.isResetVotesForSubmitted) {
                   Review.archiveAllVotesOnProposal(proposal.id)
                   Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                 }
@@ -324,7 +324,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
-          if(ConferenceDescriptor.notifyProposalSubmitted) {
+          if (ConferenceDescriptor.notifyProposalSubmitted) {
             // This generates too many emails for France and is useless
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
           }
