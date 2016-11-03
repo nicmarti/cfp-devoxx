@@ -58,10 +58,10 @@ object CallForPaper extends SecureCFPController {
             case other =>
               val allProposals = Proposal.allMyProposals(uuid)
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-              val ratings = if(hasAccepted||hasApproved){
+              val ratings = if (hasAccepted || hasApproved) {
                 Rating.allRatingsForTalks(allProposals)
-              }else{
-                Map.empty[Proposal,List[Rating]]
+              } else {
+                Map.empty[Proposal, List[Rating]]
               }
               Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
           }
@@ -158,7 +158,8 @@ object CallForPaper extends SecureCFPController {
       Proposal.proposalForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
-          val summary = validProposal.summaryAsHtml // markdown to HTML
+          val summary = validProposal.summaryAsHtml
+          // markdown to HTML
           val privateMessage = validProposal.privateMessageAsHtml // markdown to HTML
           Ok(views.html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
         }
@@ -323,7 +324,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
-          if(ConferenceDescriptor.notifyProposalSubmitted) {
+          if (ConferenceDescriptor.notifyProposalSubmitted) {
             // This generates too many emails for France and is useless
             play.Logger.info("notifyProposalSubmitted is enabled, and about to send an email.")
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
