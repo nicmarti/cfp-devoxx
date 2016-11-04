@@ -57,7 +57,7 @@ object ElasticSearch {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
       play.Logger.of("library.ElasticSearch").debug(s"Indexing to $index $json")
     }
-    val futureResponse = WS.url(host + "/" + index)
+    val futureResponse = WS.url(host + index)
       .withAuth(username, password, AuthScheme.BASIC)
       .put(json)
     futureResponse.map {
@@ -75,7 +75,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Bulk index ${indexName} started to $host")
     }
 
-    val futureResponse = WS.url(s"$host/$indexName/_bulk")
+    val futureResponse = WS.url(s"$host$indexName/_bulk")
       .withAuth(username, password, AuthScheme.BASIC)
       .post(json)
     futureResponse.map {
@@ -100,7 +100,7 @@ object ElasticSearch {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
       play.Logger.of("library.ElasticSearch") debug s"Create index ${index} with settings ${settings}"
     }
-    val url = s"$host/${index.toLowerCase}"
+    val url = s"$host${index.toLowerCase}"
     val futureResponse = WS.url(url)
       .withAuth(username, password, AuthScheme.BASIC)
       .post(settings)
@@ -126,7 +126,7 @@ object ElasticSearch {
 
   // PUT /speakers/speaker/_mapping?ignore_conflicts=true
   def createMapping(index: String, mapping: String) = {
-    val url = s"$host/$index/_mapping?ignore_conflicts=true"
+    val url = s"$host$index/_mapping?ignore_conflicts=true"
     val futureResponse = WS.url(url)
       .withAuth(username, password, AuthScheme.BASIC)
       .withRequestTimeout(6000)
@@ -163,7 +163,7 @@ object ElasticSearch {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
       play.Logger.of("library.ElasticSearch").debug(s"Deleting index $indexName")
     }
-    val futureResponse = WS.url(host + "/" + indexName + "/")
+    val futureResponse = WS.url(host + indexName + "/")
       .withAuth(username, password, AuthScheme.BASIC)
       .delete()
     futureResponse.map {
@@ -179,7 +179,7 @@ object ElasticSearch {
 
   def doSearch(query: String): Future[Try[String]] = {
     val serviceParams = Seq(("q", query))
-    val futureResponse = WS.url(host + "/_search")
+    val futureResponse = WS.url(host + "_search")
       .withAuth(username, password, AuthScheme.BASIC)
       .withQueryString(serviceParams: _*).get()
     futureResponse.map {
@@ -219,7 +219,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch query $json")
     }
 
-    val futureResponse = WS.url(host + "/" + index + "/_search")
+    val futureResponse = WS.url(host + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
       .withAuth(username, password, AuthScheme.BASIC)
@@ -274,7 +274,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch query $json")
     }
 
-    val futureResponse = WS.url(host + "/" + index + "/_search")
+    val futureResponse = WS.url(host + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
       .withAuth(username, password, AuthScheme.BASIC)
@@ -334,7 +334,7 @@ object ElasticSearch {
         |}
       """.stripMargin
 
-    val futureResponse = WS.url(host + "/" + index + "/_search?search_type=count")
+    val futureResponse = WS.url(host + index + "/_search?search_type=count")
       .withAuth(username, password, AuthScheme.BASIC)
       .post(json)
     futureResponse.map {
@@ -347,4 +347,105 @@ object ElasticSearch {
     }
   }
 
+  def doStats(zeQuery: String, index: String, maybeUserFilter: Option[String]) = {
+    val json: String =
+      s"""
+        |{
+        |  "from" : 0, "size" : 10,
+        |   $zeQuery
+        |   , "facets" : {
+        |       "villeFacet" : {
+        |        "terms" : {
+        |           "field" : "ville",
+        |           "all_terms":false,
+        |           "order" : "count",
+        |           "size":50
+        |         }
+        |         ${maybeUserFilter.getOrElse("")}
+        |      },
+        |     "idRaisonAppelFacet" : {
+        |        "terms" : {
+        |          "field" : "idRaisonAppel",
+        |          "all_terms":true,
+        |          "order" : "term",
+        |          "size":50
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |      },
+        |      "clotureFacet":{
+        |       "terms" : {
+        |         "field" : "cloture"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     },
+        |      "statusFacet" : {
+        |        "terms" : {
+        |          "field" : "status",
+        |          "all_terms":true,
+        |          "order" : "term",
+        |          "size":20
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |      },
+        |      "agenceFacet" : {
+        |        "terms" : {
+        |          "field" : "idAgence",
+        |          "all_terms":false,
+        |          "order" : "term",
+        |          "size":50
+        |        }
+        |       ${maybeUserFilter.getOrElse("")}
+        |      },
+        |     "histoWeek" : {
+        |        "date_histogram" : {
+        |          "field" : "dateSaisie",
+        |          "interval" : "day"
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |     },
+        |     "statsTicket":{
+        |       "statistical":{
+        |         "field":"delaiIntervention"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     },
+        |     "typeInterFacet" : {
+        |      "terms":{
+        |        "field":"delaiStatus",
+        |        "size":100
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |     ,
+        |     "statsAgeFacet" : {
+        |      "statistical":{
+        |         "field":"age"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |     ,
+        |     "statsReactionFacet" : {
+        |      "statistical":{
+        |         "field":"tempsReactionToMinute"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |   }
+        | }
+      """.stripMargin
+
+    if (play.Logger.of("ElasticSearch").isDebugEnabled) {
+      play.Logger.of("ElasticSearch").debug("Sending to ES request:")
+      play.Logger.of("ElasticSearch").debug(json)
+    }
+
+    val futureResponse = WS.url(host + index + "/_search").withRequestTimeout(4000).post(json)
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 200 => Success(response.body)
+          case other => Failure(new RuntimeException("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+  }
 }
