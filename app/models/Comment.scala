@@ -123,13 +123,8 @@ object Comment {
       val comments = client.zrevrangeWithScores(redisKey, 0, 0).map {
         case (json, dateValue) =>
           val c = Json.parse(json).as[Comment]
-          if (c.eventDate.isEmpty) {
-            // This is for legacy comment without a datetime value
-            val date = new Instant(dateValue.toLong)
-            c.copy(eventDate = Option(date.toDateTime))
-          } else {
-            c
-          }
+          val date = new Instant(dateValue.toLong)
+          c.copy(eventDate = Option(date.toDateTime))
       }
       comments.headOption
   }
