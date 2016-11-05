@@ -23,16 +23,16 @@
 
 package models
 
-import org.joda.time.{Instant, DateTime}
 import library.Redis
+import org.joda.time.{DateTime, Instant}
 import play.api.libs.json.Json
 
 /**
- * A comment object is attached to a Proposal.
- *
- * Author: nicolas martignole
- * Created: 13/11/2013 14:37 created during devoxx belgium 2013
- */
+  * A comment object is attached to a Proposal.
+  *
+  * Author: nicolas martignole
+  * Created: 13/11/2013 14:37 created during devoxx belgium 2013
+  */
 case class Comment(proposalId: String, uuidAuthor: String, msg: String, eventDate: Option[DateTime])
 
 object Comment {
@@ -45,6 +45,14 @@ object Comment {
 
   def saveInternalComment(proposalId: String, uuidAuthor: String, msg: String) = {
     saveComment(s"Comments:Internal:$proposalId", proposalId, uuidAuthor, msg)
+  }
+
+  def mostRecentCommentForSpeaker(proposalId: String): Option[Comment] = {
+    mostRecentComment(s"Comments:ForSpeaker:$proposalId", proposalId)
+  }
+
+  def mostRecentCommentInternal(proposalId: String): Option[Comment] = {
+    mostRecentComment(s"Comments:Internal:$proposalId", proposalId)
   }
 
   def allSpeakerComments(proposalId: String): List[Comment] = {
@@ -63,15 +71,37 @@ object Comment {
     client => client.zcard(s"Comments:Internal:$proposalId").longValue
   }
 
-  def deleteAllComments(proposalId:String) = Redis.pool.withClient{
+  def deleteAllComments(proposalId: String) = Redis.pool.withClient {
     client =>
       val tx = client.multi()
       tx.del(s"Comments:ForSpeaker:$proposalId")
       tx.del(s"Comments:Internal:$proposalId")
+      tx.del(s"Comments:Internal:$proposalId:LastMessageId")
+      tx.del(s"Comments:Internal:$proposalId:LastMessageId")
       tx.exec()
   }
 
-  private def saveComment(redisKey: String, proposalId: String, uuidAuthor: String, msg: String) = Redis.pool.withClient {
+  def lastMessageIDInternal(proposalId: String): Option[String] = Redis.pool.withClient {
+    client =>
+      client.get(s"Comments:Internal:$proposalId:LastMessageId")
+  }
+
+  def lastMessageIDForSpeaker(proposalId: String): Option[String] = Redis.pool.withClient {
+    client =>
+      client.get(s"Comments:ForSpeaker:$proposalId:LastMessageId")
+  }
+
+  def storeLastMessageIDInternal(proposalId: String, messageId: String) = Redis.pool.withClient {
+    client =>
+      client.set(s"Comments:Internal:$proposalId:LastMessageId", messageId)
+  }
+
+  def storeLastMessageIDForSpeaker(proposalId: String, messageId: String) = Redis.pool.withClient {
+    client =>
+      client.set(s"Comments:ForSpeaker:$proposalId:LastMessageId", messageId)
+  }
+
+  private def saveComment(redisKey: String, proposalId: String, uuidAuthor: String, msg: String): Long = Redis.pool.withClient {
     client =>
       val comment = Comment(proposalId, uuidAuthor, msg, None)
       client.zadd(redisKey, new Instant().getMillis.toDouble, Json.toJson(comment).toString())
@@ -86,5 +116,21 @@ object Comment {
           c.copy(eventDate = Option(date.toDateTime))
       }
       comments
+  }
+
+  private def mostRecentComment(redisKey: String, proposalId: String): Option[Comment] = Redis.pool.withClient {
+    client =>
+      val comments = client.zrevrangeWithScores(redisKey, 0, 0).map {
+        case (json, dateValue) =>
+          val c = Json.parse(json).as[Comment]
+          if (c.eventDate.isEmpty) {
+            // This is for legacy comment without a datetime value
+            val date = new Instant(dateValue.toLong)
+            c.copy(eventDate = Option(date.toDateTime))
+          } else {
+            c
+          }
+      }
+      comments.headOption
   }
 }
