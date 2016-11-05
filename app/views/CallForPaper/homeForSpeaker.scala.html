@@ -1,4 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]], needsToAcceptTermAndCondition:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import org.apache.commons.lang3.StringUtils
 @main(Messages("cfp.title")){
     <div class="row">
@@ -136,6 +136,12 @@
                  }
                  </div>
              }
+            @if(needsToAcceptTermAndCondition){
+                <div class="alert alert-warning alert-dismissable">
+                    <strong>Warning :</strong> You have not yet accepted the Devoxx's Terms & Conditions.
+                    <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">Accept Terms & Conditions</a>
+                </div>
+            }
 
             @if(myProposals.isEmpty) {
                 <div class="info">
