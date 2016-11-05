@@ -144,7 +144,7 @@ object Rating {
 
   def findForUserIdAndProposalId(userId: String, talkId: String): Option[Rating] = Redis.pool.withClient {
     client =>
-      client.hmget("Rating:2016", client.smembers("Rating:2016:ByTalkId:" + talkId)).map {
+      client.hmget("Rating:2017", client.smembers("Rating:2017:ByTalkId:" + talkId)).map {
         json: String =>
           Json.parse(json).as[Rating]
       }.find(rating => rating.user == userId)
@@ -200,9 +200,9 @@ object Rating {
 
   def attic() = Redis.pool.withClient {
     implicit client =>
-      client.del("Rating:2016")
+      client.del("Rating:2017")
 
-      val allKeys = client.keys("Rating:2016:ByTalkId:*")
+      val allKeys = client.keys("Rating:2017:ByTalkId:*")
       val tx = client.multi()
       allKeys.foreach { key: String => tx.del(key) }
       tx.exec()
