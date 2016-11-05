@@ -30,10 +30,10 @@ import play.api.data.Forms._
 import scala.concurrent.Future
 
 /**
- * Attic service to archive conference and talks.
+  * Attic service to archive conference and talks.
   *
- * @author created by N.Martignole, Innoteria, on 14/11/2014.
- */
+  * @author created by N.Martignole, Innoteria, on 14/11/2014.
+  */
 object Attic extends SecureCFPController {
 
   val opTypeForm = Form("opType" -> text)
@@ -45,10 +45,10 @@ object Attic extends SecureCFPController {
   }
 
   /**
-   * Either destroy [draft] or [deleted] proposals, using a Future, as this code is slow and blocks
+    * Either destroy [draft] or [deleted] proposals, using a Future, as this code is slow and blocks
     *
-   * @return
-   */
+    * @return
+    */
   def prune() = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import scala.concurrent.ExecutionContext.Implicits.global
@@ -94,8 +94,8 @@ object Attic extends SecureCFPController {
 
 
   /**
-   * Reset the list of notifed speakers.
-   */
+    * Reset the list of notifed speakers.
+    */
   def resetNotified() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Event.resetSpeakersNotified()
@@ -103,8 +103,8 @@ object Attic extends SecureCFPController {
   }
 
   /**
-   * Flush the logs and the Events. The Events is an Audit log. See Event model for more details.
-   */
+    * Flush the logs and the Events. The Events is an Audit log. See Event model for more details.
+    */
   def resetEvents() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Event.resetEvents()
@@ -139,5 +139,4 @@ object Attic extends SecureCFPController {
       Rating.attic()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted mobile votes"))
   }
-
 }

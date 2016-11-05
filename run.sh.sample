@@ -40,9 +40,9 @@ export REDIS_PASSWORD="TODO"
 export CRON_UPDATER="false"
 export CRON_DAYS="2"
 
-export ES_HOST="http://TODO:9200"
-export ES_USERNAME="TODO"
-export ES_PASSWORD="TODO"
+export ES_ADDON_URI="http://localhost:9200"
+export ES_ADDON_USER=""
+export ES_ADDON_PASSWORD=""
 
 export BITBUCKET_USERNAME="TODO"
 export BITBUCKET_PASSWORD="TODO"
@@ -51,10 +51,25 @@ export BITBUCKET_URL="https://bitbucket.org/api/1.0/repositories/TODO/TODO/issue
 export OPSGENIE_API="TODO"
 export OPSGENIE_NAME="TODO"
 
-export CFP_IS_OPEN="false"
+export CFP_IS_OPEN="true"
 
 export ACTIVATE_GOLDEN_TICKET="false"
+export ACTIVATE_GOLDEN_TICKET="true"
+export ACTIVATE_HTTPS="false"
+
+# Set to false to close/unactivate the fav system in development mode
+# For Prod => it has to be done on Clever-cloud
+export ACTIVATE_FAVORITES="true"
+export ACTIVATE_VOTE="true"
+
+export BUCKET_ROOTFOLDER="$HOME/redis/cfp.devoxx.co.uk"
+
+export AWS_SECRET=""
+export AWS_KEY=""
+export AWS_REGION=""
+
+export CFP_RESET_VOTES_SUBMITTED="true"
 
 echo -n "--- Configured for development ---"
 
-play
+play || ~/activator run

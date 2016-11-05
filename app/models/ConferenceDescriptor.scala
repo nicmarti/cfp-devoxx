@@ -101,7 +101,8 @@ case class ConferenceDescriptor(eventCode: String,
                                 conferenceSponsor: ConferenceSponsor,
                                 locale: List[Locale],
                                 localisation: String,
-                                maxProposalSummaryCharacters:Int=1200
+                                notifyProposalSubmitted: Boolean,
+                                maxProposalSummaryCharacters: Int = 1200
                                )
 
 object ConferenceDescriptor {
@@ -655,6 +656,7 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
+    , notifyProposalSubmitted = true
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 
@@ -691,6 +693,7 @@ object ConferenceDescriptor {
     conferenceSponsor = ConferenceSponsor(showSponsorProposalCheckbox = true, sponsorProposalType = ConferenceProposalTypes.CONF)
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
+    , notifyProposalSubmitted = true
     , 1200 // French developers tends to be a bit verbose... we need extra space :-)
   )
 

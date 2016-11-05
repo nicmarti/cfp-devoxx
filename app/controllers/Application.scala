@@ -69,7 +69,6 @@ object Application extends Controller {
       Issue.bugReportForm.bindFromRequest.fold(
         invalidForm => BadRequest(html.Application.bugReport(invalidForm)),
         validBugReport => {
-          notifiers.Mails.sendBugReport(validBugReport)
           ZapActor.actor ! ReportIssue(validBugReport)
           Redirect(routes.Application.index()).flashing("success" -> Messages("bugReport.sent"))
         })

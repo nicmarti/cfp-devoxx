@@ -1,8 +1,8 @@
 @(validationLink:String, conferenceName:String)
 
-<h2>Welcome to @conferenceName!</h2>
+<h2>Welcome to @conferenceName</h2>
 <p>Thanks for joining @conferenceName CFP Web site. To validate your email address, please copy the following link to your browser address bar:</p>
-<p><a href="@validationLink">@validationLink</a></p>
+<p><a rel="notrack"  href="@validationLink">@validationLink</a></p>
 <br/>
 <p>The @conferenceName Team</p>
 <br/>
@@ -12,7 +12,7 @@
     <p>Merci de vous être inscrit sur le site du CFP de @Messages("longName").
         Pour valider votre adresse de courrier électronique, merci d'ouvrir le lien suivant ou de le recopier
         dans la barre d'adresse de votre navigateur internet :</p>
-    <p><a href="@validationLink">@validationLink</a></p>
+    <p><a rel="notrack" href="@validationLink">@validationLink</a></p>
     <br/>
     <p>L'équipe @conferenceName</p>
     <br/>
