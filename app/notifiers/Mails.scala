@@ -49,7 +49,7 @@ object Mails {
     val listOfEmails = extractOtherEmails(proposal)
 
     val email = Email(
-      subject = s"[${proposal.id}] ${proposal.title}",
+      subject = "[${proposal.id}] ${proposal.title}",
       from = fromSender,
       to = Seq(toWebuser.email),
       cc = listOfEmails,
@@ -63,7 +63,7 @@ object Mails {
 
     // For Program committee
     val emailForCommittee = Email(
-      subject = s"[${proposal.id}] ${proposal.title}",
+      subject = "[${proposal.id}] ${proposal.title}",
       from = fromSender,
       to = Seq(committeeEmail),
       cc = listOfEmails,
@@ -80,7 +80,7 @@ object Mails {
     val listOfOtherSpeakersEmail = extractOtherEmails(proposal)
 
     val email = Email(
-      subject = s"[${proposal.id}] ${proposal.title}", // please keep a generic subject => perfect for Mail Thread
+      subject = "[${proposal.id}] ${proposal.title}", // please keep a generic subject => perfect for Mail Thread
       from = fromSender,
       to = Seq(committeeEmail),
       cc = listOfOtherSpeakersEmail,
