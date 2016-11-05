@@ -117,6 +117,7 @@ class ZapActor extends Actor {
     if (play.Logger.of("application.ZapActor").isDebugEnabled) {
       play.Logger.of("application.ZapActor").debug(s"Posting a new bug report to Bitbucket")
     }
+    notifiers.TransactionalEmails.sendBugReport(issue)
 
     // All the functional code should be outside the Actor, so that we can test it separately
     Issue.publish(issue)
@@ -135,7 +136,7 @@ class ZapActor extends Actor {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
-        Mails.sendMessageToCommitte(reporterWebuser, proposal, msg)
+        Mails.sendMessageToCommittee(reporterWebuser, proposal, msg)
     }.getOrElse {
       play.Logger.error("User not found with uuid " + reporterUUID)
     }
@@ -145,9 +146,13 @@ class ZapActor extends Actor {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message for ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
-        Mails.postInternalMessage(reporterWebuser, proposal, msg)
+        // try to load the last Message ID that was sent
+        val maybeMessageID = Comment.lastMessageIDInternal(proposal.id)
+        val newMessageID = Mails.postInternalMessage(reporterWebuser, proposal, msg, maybeMessageID)
+        // Overwrite the messageID for the next email (to set the In-Reply-To)
+        Comment.storeLastMessageIDInternal(proposal.id,newMessageID)
     }.getOrElse {
-      play.Logger.error("User not found with uuid " + reporterUUID)
+      play.Logger.error("Cannot post internal message, User not found with uuid " + reporterUUID)
     }
   }
 
