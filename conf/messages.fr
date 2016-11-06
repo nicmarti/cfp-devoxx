@@ -453,6 +453,8 @@ calendar.pref=Préférences de plannification
 calendar.pref.thursday=Le jeudi
 calendar.pref.friday=Le vendredi
 calendar.pref.wednesday=Le mercredi
+proposalLang_fr=Présentation en Français
+proposalLang_en=Présentation en Anglais
 
 calendar.pref.reset=Pas de préférences
 sw.all.other=Evénements spéciaux
