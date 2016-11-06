@@ -44,40 +44,38 @@ object Mails {
 
   /**
     * Send a message to a set of Speakers.
+    * This function used to send 2 emails in the previous version.
+    * @return the rfc 822 Message-ID
     */
-  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo:Option[String]):String = {
     val listOfEmails = extractOtherEmails(proposal)
+
+    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
+      replyId: String =>
+        Seq("In-Reply-To" -> replyId)
+    }.getOrElse(Seq.empty[(String, String)])
 
     val email = Email(
       subject = s"[${proposal.id}] ${proposal.title}",
       from = fromSender,
       to = Seq(toWebuser.email),
-      cc = listOfEmails,
+      cc = committeeEmail :: listOfEmails , // Send the email to the speaker and to the committee
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
       bodyHtml = Some(views.html.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
-      headers = Seq()
+      headers = inReplyHeaders
     )
-    MailerPlugin.send(email)
-
-    // For Program committee
-    val emailForCommittee = Email(
-      subject = s"[${proposal.id}] ${proposal.title}",
-      from = fromSender,
-      to = Seq(committeeEmail),
-      cc = listOfEmails,
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
-      bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommitte(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
-      charset = Some("utf-8"),
-      headers = Seq()
-    )
-    MailerPlugin.send(emailForCommittee)
+    MailerPlugin.send(email) // returns the message-ID
   }
 
-  def sendMessageToCommittee(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
+  def sendMessageToCommittee(fromWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo:Option[String]):String = {
     val listOfOtherSpeakersEmail = extractOtherEmails(proposal)
+
+    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
+      replyId: String =>
+        Seq("In-Reply-To" -> replyId)
+    }.getOrElse(Seq.empty[(String, String)])
 
     val email = Email(
       subject = s"[${proposal.id}] ${proposal.title}", // please keep a generic subject => perfect for Mail Thread
@@ -88,9 +86,9 @@ object Mails {
       bodyText = Some(views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
       bodyHtml = Some(views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
-      headers = Seq()
+      headers = inReplyHeaders
     )
-    MailerPlugin.send(email)
+    MailerPlugin.send(email) // returns the message-ID
   }
 
   def sendNotifyProposalSubmitted(fromWebuser: Webuser, proposal: Proposal) = {
