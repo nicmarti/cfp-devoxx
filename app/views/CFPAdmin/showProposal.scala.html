@@ -30,6 +30,20 @@
                                 <td>@Messages(proposal.talkType.id)</td>
                                 <td>@proposal.id</td>
                             </tr>
+
+                            @if(ConferenceDescriptor.current().frLangEnabled){
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                    @Messages("lang")
+                                    </th>
+                                    <td colspan="2">
+                                        <img src="@routes.Assets.at(path="/public", file=s"images/${proposal.lang}.png")" alt="Langue">
+                                    @Messages("proposalLang_"+proposal.lang)
+                                    </td>
+                                </tr>
+                            }
+
                             <tr>
                                 <th colspan="4">
                                 @Messages("admin.proposals.th.abstract")

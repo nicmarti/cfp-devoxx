@@ -801,3 +801,6 @@ refused.termsConditions=Warning : you declined the Devoxx UK Terms & Conditions 
 
 cfpadmin.filterOn=Filter on
 admin.cfp.empty.track=There is no new submitted proposals in track {0} for the time being
+
+proposalLang_fr=Proposal in French
+proposalLang_en=Proposal in English
