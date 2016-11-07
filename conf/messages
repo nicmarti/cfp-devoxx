@@ -833,3 +833,25 @@ admin.cfp.empty.track=There is no new submitted proposals in track {0} for the t
 
 proposalLang_fr=Proposal in French
 proposalLang_en=Proposal in English
+
+# Wishlist labels
+wl_accepted=Speaker accepted
+wl_company=Company
+wl_contacted=Contacted
+wl_contactedUs=Speaker contacted us
+wl_contactSpeaker=To contact
+wl_country=Country
+wl_declined=Speaker has declined
+wl_deleted=Deleted
+wl_discuss=In progress
+wl_message=Message for speaker
+wl_note=Private discussions
+wl_onhold=On hold
+wl_speakerEmail=Speaker''s email
+wl_speakerName=Speaker''s name
+wl_statusCode=Current status
+wl_suggested=Suggested by committee
+wl_trackCode=Track
+wl_travel=Travel & hotel
+wl_travel.checkbox=Yes, cover travel expenses
+wl_unknown=Unknown
