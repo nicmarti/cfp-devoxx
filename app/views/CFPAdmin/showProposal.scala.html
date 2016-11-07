@@ -20,6 +20,7 @@
                                 <th>@Messages("admin.proposals.th.talkType")
                                     <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" title="See all proposals by type"><i class="icon-arrow-right"></i> </a></small>
                                 </th>
+                                <th>Proposal ID</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,7 +28,22 @@
                                 <td>@proposal.title</td>
                                 <td>@Messages(proposal.track.label)</td>
                                 <td>@Messages(proposal.talkType.id)</td>
+                                <td>@proposal.id</td>
                             </tr>
+
+                            @if(ConferenceDescriptor.current().frLangEnabled){
+                                <tr>
+                                    <td></td>
+                                    <th>
+                                    @Messages("lang")
+                                    </th>
+                                    <td colspan="2">
+                                        <img src="@routes.Assets.at(path="/public", file=s"images/${proposal.lang}.png")" alt="Langue">
+                                    @Messages("proposalLang_"+proposal.lang)
+                                    </td>
+                                </tr>
+                            }
+
                             <tr>
                                 <th colspan="4">
                                 @Messages("admin.proposals.th.abstract")
@@ -228,7 +244,7 @@
                 @if(ConferenceDescriptor.current().timing.preferredDayEnabled) {
                     @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
                         <div class="panel panel-default">
-                            <div class="panel-default">
+                            <div class="panel-heading">
                                 <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
                             </div>
                             <div class="panel-body">

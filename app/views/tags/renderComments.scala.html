@@ -1,17 +1,17 @@
 @(comments: List[models.Comment])
 @comments.map { c =>
-    <div class="media">
+    <div class="media commentCfp">
         @models.Speaker.findByUUID(c.uuidAuthor).map { speaker =>
             @models.Webuser.findByUUID(c.uuidAuthor).map { webuser =>
                 @if(speaker.avatarUrl.isEmpty) {
-                    <small class="media-object">
+                    <small class="media-object commentDate">
                        @Messages("tags.renderComment.postedBy" , webuser.cleanName , library.FormatDate.ellapsed(c.eventDate))
                     </small>
                     <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">
                         <img class="media-object" width="35" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
                     </a>
                 } else {
-                    <small class="media-object">
+                    <small class="media-object commentDate">
                         @Messages("tags.renderComment.postedBy", webuser.cleanName,library.FormatDate.ellapsed(c.eventDate))
                     </small>
                     <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">
