@@ -31,6 +31,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.libs.json._
+import play.api.mvc.Action
 
 /**
   * Mobile App voting REST API.
@@ -130,64 +131,17 @@ object MobileVotingV1 extends SecureCFPController {
       }
   }
 
-  def topTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10) = UserAgentActionAndAllowOrigin {
+  // REturns the top talks for the Tweetwall
+  // floorPct is a special parameter that will filterOut the talks that don't have at least 80% of the total vote
+  // This is to avoid a top ten where a talk with only one vote sets to 10 is above a talk with 100 votes and a score of 9.8
+  def topTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan:Int = 3) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      // create a list of Proposals
-      // Will try to filter either from the URL params (talkTypeID, trackId) or use the Rating
-
-      val allProposalsToLoad: List[Proposal] = day match {
-        case None => {
-          // Load all ratings because no day was specified, thus it's faster
-          val allRatings = Rating.allRatings()
-          val talkIds = allRatings.map(_.talkId)
-          Proposal.loadAndParseProposals(talkIds.toSet).values.toList
-        }
-
-        // If one day was specified then we needs to load the schedule.
-        case Some(specifiedDay) => {
-          def publishedProposalsForOneDay(slots: List[Slot], day: String): List[Proposal] = {
-            val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
-            allSlots.flatMap(slot => slot.proposal)
-          }
-
-          val proposalsForThisDay: List[Proposal] = specifiedDay match {
-            case d if Set("mon", "monday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.mondaySchedule, "monday")
-            case d if Set("tue", "tuesday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.tuesdaySchedule, "tuesday")
-            case d if Set("wed", "wednesday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
-            case d if Set("thu", "thursday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
-            case d if Set("fri", "friday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
-            case other => {
-              play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected monday/tuesday/wednesday...")
-              Nil
-            }
-          }
-          proposalsForThisDay
-        }
-      }
-
-      // 2. Now the list of Proposals has to be filtered
-      val proposalsToLoad = (talkTypeId, trackId) match {
-        case (None, None) =>
-          allProposalsToLoad
-        case (Some(someTalkType), None) =>
-          allProposalsToLoad.filter(_.talkType.id == someTalkType)
-        case (None, Some(someTrackId)) =>
-          allProposalsToLoad.filter(_.track.id == someTrackId)
-        case (Some(someTalkType), Some(someTrackId)) =>
-          allProposalsToLoad.filter(p => p.track.id == someTrackId && p.talkType.id == someTalkType)
-      }
-
-      // We can finally load the Ratings from the list of Proposals
-      val allRatingsFiltered: Map[Proposal, List[Rating]] = Rating.allRatingsForTalks(proposalsToLoad)
-
-      // Now we can sort this list and take the top XXX (or the worst XXX)
-      val sortedProposalByRating = Rating.sortByRating(allRatingsFiltered)
-
-      // Tips : if we want the top worst talks, we can use sortedProposalByRating.reverse here
-
       // Use the limit parameter to take only 5, 10 or X results
-      val onlyXXXResults = sortedProposalByRating.take(limit)
+      val allRatings = loadTopTalks(day, talkTypeId, trackId)
 
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
+
+       val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t=> Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
 
       if (onlyXXXResults.isEmpty) {
         NoContent.as(JSON)
@@ -201,10 +155,9 @@ object MobileVotingV1 extends SecureCFPController {
               "proposalTitle" -> Json.toJson(proposal.title),
               "proposalTalkType" -> Json.toJson(Messages(proposal.talkType.id)),
               "proposalTalkTypeId" -> Json.toJson(proposal.talkType.id),
-              "ratingAverageScore"->Json.toJson(Rating.calculateScore(ratings)),
-              "ratingTotalVotes"->Json.toJson(ratings.length),
+              "ratingAverageScore" -> Json.toJson(Rating.calculateScore(ratings)),
+              "ratingTotalVotes" -> Json.toJson(ratings.length),
               "proposalsSpeakers" -> Json.toJson(proposal.allSpeakers.map(_.cleanName).mkString(", "))
-
             )
         }
 
@@ -212,18 +165,112 @@ object MobileVotingV1 extends SecureCFPController {
           "day" -> day.map(d => JsString(d)).getOrElse(JsNull)
           , "talkTypeId" -> talkTypeId.map(d => JsString(d)).getOrElse(JsNull)
           , "trackId" -> trackId.map(d => JsString(d)).getOrElse(JsNull)
-          , "totalResults" -> JsNumber(sortedProposalByRating.size)
+          , "totalResults" -> JsNumber(sortedRatings.size)
           , "talks" -> JsArray(jsonResult)
         )
 
         val finalResult = Json.obj("result" -> Json.toJson(result))
-
-        println("Returns " + finalResult.toString())
-
         Ok(finalResult).as(JSON)
       }
+  }
 
-    //      NotImplemented(Json.obj("reason" -> "Not yet implemented, stay tuned")).as(JSON)
+  // Code written during Devoxx BE 2016. I could have used the HTTP header Accept but I didn't want to explode the TwitterWall
+  def topTalksAsHtml(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan:Int = 3) = Action {
+    implicit request =>
+      val allRatings:Map[Proposal,List[Rating]] = loadTopTalks(day, talkTypeId, trackId)
+
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings,floorPct)
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t=> Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
+
+      if (onlyXXXResults.isEmpty) {
+        NoContent
+      } else {
+        Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
+      }
+  }
+
+  private def loadTopTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String]):Map[Proposal,List[Rating]] = {
+    // create a list of Proposals
+    // Will try to filter either from the URL params (talkTypeID, trackId) or use the Rating
+
+    val allProposalsToLoad: List[Proposal] = day match {
+      case None => {
+        // Load all ratings because no day was specified, thus it's faster
+        val allRatings = Rating.allRatings()
+        val talkIds = allRatings.map(_.talkId)
+        Proposal.loadAndParseProposals(talkIds.toSet).values.toList
+      }
+
+      // If one day was specified then we needs to load the schedule.
+      case Some(specifiedDay) => {
+        def publishedProposalsForOneDay(slots: List[Slot], day: String): List[Proposal] = {
+          val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
+          allSlots.flatMap(slot => slot.proposal)
+        }
+
+        val proposalsForThisDay: List[Proposal] = specifiedDay match {
+          case d if Set("mon", "monday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.mondaySchedule, "monday")
+          case d if Set("tue", "tuesday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.tuesdaySchedule, "tuesday")
+          case d if Set("wed", "wednesday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
+          case d if Set("thu", "thursday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
+          case d if Set("fri", "friday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
+          case other => {
+            play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected monday/tuesday/wednesday...")
+            Nil
+          }
+        }
+        proposalsForThisDay
+      }
+    }
+
+    // 2. Now the list of Proposals has to be filtered
+    val proposalsToLoad = (talkTypeId, trackId) match {
+      case (None, None) =>
+        allProposalsToLoad
+      case (Some(someTalkType), None) =>
+        allProposalsToLoad.filter(_.talkType.id == someTalkType)
+      case (None, Some(someTrackId)) =>
+        allProposalsToLoad.filter(_.track.id == someTrackId)
+      case (Some(someTalkType), Some(someTrackId)) =>
+        allProposalsToLoad.filter(p => p.track.id == someTrackId && p.talkType.id == someTalkType)
+    }
+
+    // We can finally load the Ratings from the list of Proposals
+    val allRatingsFiltered: Map[Proposal, List[Rating]] = Rating.allRatingsForTalks(proposalsToLoad)
+
+    allRatingsFiltered
+  }
+
+  def sortByScoreAndKeepTopVotes(ratings:Map[Proposal,List[Rating]], floorPct:Int):List[(Proposal,List[Rating])]={
+
+    val groupedByNumberOfVotes=ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
+    val totalTalksEvaluated = groupedByNumberOfVotes.size
+    val averageNumberOfVotes = groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated
+
+    // println(groupedByNumberOfVotes.map(_._1).sorted.reverse)
+
+    // println("averageNumber of votes " +averageNumberOfVotes)
+
+    // Keep only talks with number of votes > average
+
+    val onlyWithEnoughVotes = groupedByNumberOfVotes.sortBy(_._1).reverse.takeWhile(_._1 >= averageNumberOfVotes - floorPct)
+
+    // println("Got "+onlyWithEnoughVotes.map(_._1))
+
+    val onlyRatinsAndProposals = onlyWithEnoughVotes.flatMap(_._2)
+
+    val sortedByScore = onlyRatinsAndProposals.sortBy{
+      case (_,rt)=>
+        Rating.calculateScore(rt)
+    }.reverse
+
+//    sortedByScore.foreach{
+//      case(proposal,r)=>
+//        println(s"${proposal.title} ${Rating.calculateScore(r)}")
+//    }
+
+    sortedByScore
   }
 
 
