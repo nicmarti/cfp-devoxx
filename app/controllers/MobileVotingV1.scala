@@ -146,7 +146,10 @@ object MobileVotingV1 extends SecureCFPController {
 
       // Use the limit parameter to take only 5, 10 or X results
       val allRatings = loadTopTalks(day, talkTypeId, trackId)
-      if (allRatings.nonEmpty) {
+      if (allRatings.isEmpty) {
+        NoContent.as(JSON)
+      }
+      else {
 
         val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
 
@@ -188,7 +191,6 @@ object MobileVotingV1 extends SecureCFPController {
           Ok(finalResult).as(JSON)
         }
       }
-      NoContent.as(JSON)
   }
 
   // Code written during Devoxx BE 2016. I could have used the HTTP header Accept but I didn't want to explode the TwitterWall
@@ -209,12 +211,11 @@ object MobileVotingV1 extends SecureCFPController {
 
         val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(max)
 
-        if (onlyXXXResults.nonEmpty) {
-          Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
-        }
-      }
+        Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
 
-      NoContent.as(HTML)
+      } else {
+        NoContent.as(HTML)
+      }
   }
 
   private def loadTopTalks(day: Option[String],
