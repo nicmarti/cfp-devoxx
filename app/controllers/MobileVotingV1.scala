@@ -155,8 +155,8 @@ object MobileVotingV1 extends SecureCFPController {
 
         // Only allow top 50 to protect the "not so good" speakers
         var max = limit
-        if (max > 50) {
-          max = 50
+        if (max > 20) {
+          max = 20
         }
 
         val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(max)
@@ -194,7 +194,12 @@ object MobileVotingV1 extends SecureCFPController {
   }
 
   // Code written during Devoxx BE 2016. I could have used the HTTP header Accept but I didn't want to explode the TwitterWall
-  def topTalksAsHtml(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan:Int = 3) = Action {
+  def topTalksAsHtml(day: Option[String],
+                     talkTypeId: Option[String],
+                     trackId: Option[String],
+                     limit: Int = 50,
+                     floorPct: Int = 0,
+                     hideScoreLowerThan:Int = 3) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
       val allRatings:Map[Proposal,List[Rating]] = loadTopTalks(day, talkTypeId, trackId)
@@ -203,13 +208,7 @@ object MobileVotingV1 extends SecureCFPController {
 
         val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
 
-        // Only allow top 50 to protect the "not so good" speakers
-        var max = limit
-        if (max > 50) {
-          max = 50
-        }
-
-        val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(max)
+        val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
 
         Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
 

@@ -59,6 +59,9 @@
             <a href="@routes.CFPAdmin.allCFPWebusers()" class="btn btn-sm btn-primary"><i class="icon-user-md"></i> @Messages("admin.btn.tracklead")</a>
             <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
 
+            <h4><i class="icon-star"></i> Top Talks</h4>
+            <a href="@routes.MobileVotingV1.topTalksAsHtml()" class="btn btn-sm btn-success"><i class="icon-star-half-full"></i> Show the top rated talks</a>
+
             <h4><i class="icon-moon"></i> Cron</h4>
             <a href="@routes.Backoffice.sendDraftReminder()" class="btn btn-sm btn-primary"><i class="icon-refresh"></i> Send a reminder to speakers for DRAFT</a>
 

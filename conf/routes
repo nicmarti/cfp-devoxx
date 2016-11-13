@@ -291,8 +291,8 @@ GET           /api/voting/v1/talk/:talkId                                       
 GET           /api/voting/v1/top/talks                                           controllers.MobileVotingV1.topTalks(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=10, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
 GET           /api/voting/v1/categories                                          controllers.MobileVotingV1.categories()
 
-# Debug
-GET           /toptalks                                                          controllers.MobileVotingV1.topTalksAsHtml(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=10, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
+# CFP Admin
+GET           /toptalks                                                          controllers.MobileVotingV1.topTalksAsHtml(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=50, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                      controllers.Assets.at(path="/public", file)
