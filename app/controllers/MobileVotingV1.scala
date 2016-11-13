@@ -60,6 +60,7 @@ object MobileVotingV1 extends SecureCFPController {
     })
   )
 
+  // TODO :  Only accepts votes during the talk or after it.  EXCLUDE votes before the talk!!
   def acceptVoteForTalk() = UserAgentActionAndAllowOrigin {
     implicit request =>
 
@@ -136,12 +137,19 @@ object MobileVotingV1 extends SecureCFPController {
   // This is to avoid a top ten where a talk with only one vote sets to 10 is above a talk with 100 votes and a score of 9.8
   def topTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan:Int = 3) = UserAgentActionAndAllowOrigin {
     implicit request =>
+
       // Use the limit parameter to take only 5, 10 or X results
       val allRatings = loadTopTalks(day, talkTypeId, trackId)
 
       val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
 
-       val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t=> Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
+      // Only allow top 50 to protect the "not so good" speakers
+      var max = limit
+      if (max > 50) {
+        max = 50
+      }
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t=> Rating.calculateScore(t._2) >= hideScoreLowerThan).take(max)
 
       if (onlyXXXResults.isEmpty) {
         NoContent.as(JSON)
@@ -181,7 +189,13 @@ object MobileVotingV1 extends SecureCFPController {
 
       val sortedRatings = sortByScoreAndKeepTopVotes(allRatings,floorPct)
 
-      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t=> Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
+      // Only allow top 50 to protect the "not so good" speakers
+      var max = limit
+      if (max > 50) {
+        max = 50
+      }
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t=> Rating.calculateScore(t._2) >= hideScoreLowerThan).take(max)
 
       if (onlyXXXResults.isEmpty) {
         NoContent
@@ -195,12 +209,11 @@ object MobileVotingV1 extends SecureCFPController {
     // Will try to filter either from the URL params (talkTypeID, trackId) or use the Rating
 
     val allProposalsToLoad: List[Proposal] = day match {
-      case None => {
+      case None =>
         // Load all ratings because no day was specified, thus it's faster
         val allRatings = Rating.allRatings()
         val talkIds = allRatings.map(_.talkId)
         Proposal.loadAndParseProposals(talkIds.toSet).values.toList
-      }
 
       // If one day was specified then we needs to load the schedule.
       case Some(specifiedDay) => {
@@ -258,9 +271,9 @@ object MobileVotingV1 extends SecureCFPController {
 
     // println("Got "+onlyWithEnoughVotes.map(_._1))
 
-    val onlyRatinsAndProposals = onlyWithEnoughVotes.flatMap(_._2)
+    val onlyRatingsAndProposals = onlyWithEnoughVotes.flatMap(_._2)
 
-    val sortedByScore = onlyRatinsAndProposals.sortBy{
+    val sortedByScore = onlyRatingsAndProposals.sortBy{
       case (_,rt)=>
         Rating.calculateScore(rt)
     }.reverse
