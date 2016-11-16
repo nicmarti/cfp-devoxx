@@ -247,7 +247,6 @@ object MobileVotingV1 extends SecureCFPController {
             }
           }
           proposalsForThisDay
-        }
       }
 
     // 2. Now the list of Proposals has to be filtered
