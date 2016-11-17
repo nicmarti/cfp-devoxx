@@ -82,7 +82,7 @@
         </div>
 
         <div class="col-lg-12">
-            <h3>Votes par utilisateur</h3>
+            <h3>Votes by user</h3>
             @ReviewByGoldenTicket.countVotesForAllUsers().map { uuidAndVotes =>
               @uuidAndVotes._2 @Webuser.findByUUID(uuidAndVotes._1).map(_.cleanName)<br>
             }
