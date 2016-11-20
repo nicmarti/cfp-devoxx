@@ -100,7 +100,6 @@ object GoldenTicket {
   def save(gd: GoldenTicket) = Redis.pool.withClient {
     implicit client =>
       val json: String = Json.toJson(gd).toString()
-      println("Save Golden Ticket id " + gd.id)
       val tx = client.multi()
       tx.hset(GD_TICKET, gd.id, json)
       tx.sadd(GD_TICKET + ":UniqueUser", gd.webuserUUID)
