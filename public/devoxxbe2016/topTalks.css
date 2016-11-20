@@ -1,0 +1,65 @@
+
+html {
+    font-family: sans-serif; /* 1 */
+    -ms-text-size-adjust: 100%; /* 2 */
+    -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+body {
+    margin: 0;
+}
+html, body {
+    font-size: 100%
+}
+
+body {
+    background: #000;
+    color: #fff;
+    padding: 0;
+    margin: 0;
+    font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    position: relative;
+    cursor: default
+}
+
+.brainBackground{
+    background-image: url("https://s3-eu-west-1.amazonaws.com/devoxxbelgium/wp-content/uploads/2016/05/23082339/DevoxxBelgium2016v3.jpg");
+    background-repeat: no-repeat ;
+
+}
+
+a {
+    background: transparent;
+}
+a:focus {
+    outline: thin dotted;
+}
+a:active,
+a:hover {
+    outline: 0;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+b, strong {
+    font-weight: bold;
+}
+
+.container{
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+}
+.topBox{
+    padding: 10px;
+    background-color: #1A1917;
+    text-align: left;
+    margin: 50px auto;
+    width: 80%;
+}
