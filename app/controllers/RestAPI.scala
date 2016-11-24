@@ -66,12 +66,12 @@ object RestAPI extends Controller {
       <rss version="2.0">
         <channel>
           <title>Accepted proposals</title>
-          <link>{ routes.Publisher.homePublisher().absoluteURL(false) }</link>
+          <link>{ ConferenceDescriptor.current().conferenceUrls.cfpHostname }</link>
           <description>Accepted Proposals</description>
           { Proposal.allAccepted().map { proposal =>
           <item>
-            <title>{ proposal.title }</title>
-            <link>{ routes.Publisher.showDetailsForProposal(proposal.id, proposal.title).absoluteURL(false) }</link>
+            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}</title>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)print("s")}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
         }}
@@ -374,7 +374,7 @@ object RestAPI extends Controller {
 
           val jsonObject = Json.toJson(finalJson)
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,
             "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL() + ">; rel=\"profile\"")
           )
       }
@@ -386,15 +386,6 @@ object RestAPI extends Controller {
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val mapOfSchedules = Map(
         "links" -> Json.toJson(List(
-          Link(
-            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.mon")
-          ), Link(
-            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.tue")
-          ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL(),
             routes.RestAPI.profile("schedule").absoluteURL(),
