@@ -273,6 +273,7 @@ POST          /admin/goldenTickets/newTicket/importGroupOfGT                    
 POST          /admin/goldenTickets/newTicket/bulkImport                         controllers.GoldenTicketAdminController.bulkImport()
 GET           /admin/goldenTickets/votes                                        controllers.GoldenTicketAdminController.showGoldenTicketVotes()
 GET           /admin/goldenTickets/stats                                        controllers.GoldenTicketAdminController.showStats()
+GET           /admin/goldenTickets/deleteVotesForAllUsers                       controllers.GoldenTicketAdminController.deleteGoldenTicketVotesForAllUsers()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
 POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    controllers.GoldenTicketAdminController.sendEmail(goldenTicketId:String)
 
