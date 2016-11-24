@@ -61,6 +61,25 @@ object RestAPI extends Controller {
       }
   }
 
+  def RSSFeedAcceptedProposals = Action { implicit request =>
+    Ok(
+      <rss version="2.0">
+        <channel>
+          <title>Accepted proposals</title>
+          <link>{ routes.Publisher.homePublisher().absoluteURL(false) }</link>
+          <description>Accepted Proposals</description>
+          { Proposal.allAccepted().map { proposal =>
+          <item>
+            <title>{ proposal.title }</title>
+            <link>{ routes.Publisher.showDetailsForProposal(proposal.id, proposal.title).absoluteURL(false) }</link>
+            <description>{ proposal.summary }</description>
+          </item>
+        }}
+        </channel>
+      </rss>
+    )
+  }
+
   def showAllConferences() = UserAgentActionAndAllowOrigin {
     implicit request =>
 
