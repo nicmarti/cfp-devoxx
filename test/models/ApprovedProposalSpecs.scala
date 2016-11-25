@@ -24,13 +24,13 @@
 package models
 
 import library.Redis
-import play.api.test.{WithApplication, FakeApplication, PlaySpecification}
+import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
 
 /**
- * Tests for approve/refuse service.
- *
- * @author created by N.Martignole, Innoteria, on 19/08/2014.
- */
+  * Tests for approve/refuse service.
+  *
+  * @author created by N.Martignole, Innoteria, on 19/08/2014.
+  */
 class ApprovedProposalSpecs extends PlaySpecification {
   // Use a different Redis Database than the PROD one
   val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
@@ -49,11 +49,20 @@ class ApprovedProposalSpecs extends PlaySpecification {
       }
 
       // GIVEN
-      val proposal = Proposal.validateNewProposal(None, "fr", "test proposal", None, Nil,
-        ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
-        "audience level", "summary", "private message", sponsorTalk = false,
-        ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = Some(true))
+      val proposal = Proposal.validateNewProposal(None,
+        lang="fr",
+        title="test proposal",
+        secondarySpeaker = None,
+        otherSpeakers = Nil,
+        talkType = ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
+        audienceLevel = "audience level",
+        summary="summary",
+        privateMessage = "private message",
+        sponsorTalk = false,
+        track = ConferenceDescriptor.ConferenceTracks.JAVA.id,
+        demoLevel = Some("beginner"),
+        userGroup = Some(true),
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -79,7 +88,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -107,7 +117,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -135,7 +146,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -162,7 +174,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -191,7 +204,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -219,7 +233,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -247,7 +262,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -274,7 +290,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -290,7 +307,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
       ApprovedProposal.allApprovedTalksForSpeaker("newSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker"))
     }
 
-     "update the list of Accepted speakers when we change the secondarySpeaker on a proposal" in new WithApplication(app = appWithTestRedis()) {
+    "update the list of Accepted speakers when we change the secondarySpeaker on a proposal" in new WithApplication(app = appWithTestRedis()) {
       // WARN : flush the DB, but on Database = 1
       Redis.pool.withClient {
         client =>
@@ -304,7 +321,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -320,7 +338,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
       ApprovedProposal.allApprovedTalksForSpeaker("newSecSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", secondarySpeaker = Some("newSecSpeaker")))
     }
 
-     "update the list of Accepted speakers when we change the otherSpeakers on a proposal" in new WithApplication(app = appWithTestRedis()) {
+    "update the list of Accepted speakers when we change the otherSpeakers on a proposal" in new WithApplication(app = appWithTestRedis()) {
       // WARN : flush the DB, but on Database = 1
       Redis.pool.withClient {
         client =>
@@ -334,7 +352,8 @@ class ApprovedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
-        userGroup = None)
+        userGroup = None,
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 

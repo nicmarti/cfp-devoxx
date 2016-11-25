@@ -23,287 +23,234 @@
 
 package notifiers
 
-import com.typesafe.plugin._
 import models._
-import org.joda.time.{DateTime, DateTimeZone}
 import play.api.Play.current
 import play.api.i18n.Messages
+import play.api.libs.mailer.{Email, MailerPlugin}
 
 /**
- * Sends all emails
- *
- * Author: nmartignole
- * Created: 04/10/2013 15:56
- */
+  * Sends all emails
+  *
+  * Author: nmartignole
+  * Created: 04/10/2013 15:56
+  */
 
 object Mails {
 
-  lazy val from = ConferenceDescriptor.current().fromEmail
-  lazy val committeeEmail = ConferenceDescriptor.current().committeeEmail
-  lazy val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
-  lazy val bcc = ConferenceDescriptor.current().bccEmail
-  
-  def sendResetPasswordLink(email: String, resetUrl: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val timestamp: String = new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm dd/MM")
-    val subject:String = Messages("mail.reset_password_link.subject",timestamp,Messages("longName"))
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(email)
-    // If you want to receive a copy for validation
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.setCharset("utf-8")
-    emailer.send(views.txt.Mails.sendResetLink(resetUrl).toString(), views.html.Mails.sendResetLink(resetUrl).toString)
+  val fromSender: String = ConferenceDescriptor.current().fromEmail
+  val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
+  val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
+  val bccEmail: Option[String] = ConferenceDescriptor.current().bccEmail
+
+  /**
+    * Send a message to a set of Speakers.
+    * This function used to send 2 emails in the previous version.
+    * @return the rfc 822 Message-ID
+    */
+  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo:Option[String]):String = {
+    val listOfEmails = extractOtherEmails(proposal)
+
+    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
+      replyId: String =>
+        Seq("In-Reply-To" -> replyId)
+    }.getOrElse(Seq.empty[(String, String)])
+
+    val email = Email(
+      subject = s"[${proposal.id}] ${proposal.title}",
+      from = fromSender,
+      to = Seq(toWebuser.email),
+      cc = committeeEmail :: listOfEmails , // Send the email to the speaker and to the committee
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
+      charset = Some("utf-8"),
+      headers = inReplyHeaders
+    )
+    MailerPlugin.send(email) // returns the message-ID
   }
 
-  def sendAccessCode(email: String, code: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject:String = Messages("mail.access_code.subject", Messages("longName"))
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(email)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.sendAccessCode(email, code).toString(),
-      views.html.Mails.sendAccessCode(email, code).toString
+  def sendMessageToCommittee(fromWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo:Option[String]):String = {
+    val listOfOtherSpeakersEmail = extractOtherEmails(proposal)
+
+    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
+      replyId: String =>
+        Seq("In-Reply-To" -> replyId)
+    }.getOrElse(Seq.empty[(String, String)])
+
+    val email = Email(
+      subject = s"[${proposal.id}] ${proposal.title}", // please keep a generic subject => perfect for Mail Thread
+      from = fromSender,
+      to = Seq(committeeEmail),
+      cc = listOfOtherSpeakersEmail,
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
+      charset = Some("utf-8"),
+      headers = inReplyHeaders
     )
-  }
-
-  def sendWeCreatedAnAccountForYou(email: String, firstname: String, tempPassword: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.account_created.subject", Messages("longName"))
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.addRecipient(email)
-    emailer.setCharset("utf-8")
-    emailer.send(views.txt.Mails.sendAccountCreated(firstname, email, tempPassword).toString(), views.html.Mails.sendAccountCreated(firstname, email, tempPassword).toString)
-  }
-
-  def sendValidateYourEmail(email: String, validationLink: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val conferenceName=Messages("longName")
-    val subject: String = Messages("mail.email_validation.subject", conferenceName)
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.addRecipient(email)
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.sendValidateYourEmail(validationLink, conferenceName).toString(),
-      views.html.Mails.sendValidateYourEmail(validationLink, conferenceName).toString()
-    )
-  }
-
-  def sendBugReport(bugReport: Issue) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.issue_reported.subject")
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addCc(bugReport.reportedBy)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.addRecipient(bugReportRecipient)
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.html.Mails.sendBugReport(bugReport).toString(),
-      views.html.Mails.sendBugReport(bugReport).toString()
-    )
-  }
-
-  def sendMessageToSpeakers(fromWebuser: Webuser, toWebuser: Webuser, proposal: Proposal, msg: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.cfp_message_to_speaker.subject", proposal.title, ConferenceDescriptor.current().eventCode)
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.addRecipient(toWebuser.email)
-
-    // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
-    // I am a Scala coder, please get me out of here...
-    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
-
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString(),
-      views.html.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()
-    )
-
-    // For Program committee
-    emailer.setSubject(s"[${proposal.title} ${proposal.id}]")
-    emailer.addFrom(from)
-    emailer.addRecipient(committeeEmail)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString(),
-      views.html.Mails.sendMessageToSpeakerCommitte(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()
-    )
-  }
-
-  def sendMessageToCommitte(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.speaker_message_to_cfp.subject", proposal.title,fromWebuser.cleanName)
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(committeeEmail)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.setCharset("utf-8")
-
-    // Send also a copy of the message to the other speakers
-    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val mainSpeaker = Webuser.getEmailFromUUID(proposal.mainSpeaker)
-    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val listOfEmails = mainSpeaker ++ maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
-
-    emailer.send(
-      views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString(),
-      views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()
-    )
+    MailerPlugin.send(email) // returns the message-ID
   }
 
   def sendNotifyProposalSubmitted(fromWebuser: Webuser, proposal: Proposal) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.notify_proposal.subject", fromWebuser.cleanName, proposal.title)
+    val listOfOtherSpeakersEmail = extractOtherEmails(proposal)
+    val subjectEmail: String = Messages("mail.notify_proposal.subject", fromWebuser.cleanName, proposal.title)
 
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(committeeEmail)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString(),
-      views.html.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(committeeEmail),
+      cc = listOfOtherSpeakersEmail,
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()),
+      bodyHtml = Some(views.html.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()),
+      charset = Some("utf-8"),
+      headers = Seq()
     )
+    MailerPlugin.send(email)
   }
 
-  def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    emailer.setSubject(s"[PRIVATE][${proposal.title}]")
-    emailer.addFrom(from)
-    emailer.addRecipient(committeeEmail)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
+  /**
+    * Post a new message to SMTP with an optional In-Reply-To, so that Mail clients can order by / group by all messages together.
+    * Message-ID cannot be set here. MimeMessages updateMessageID() method would need to be overloaded but it's too complex.
+    *
+    * @return the RFC 822 Message-ID generated by MimeMessages
+    */
+  def postInternalMessage(fromWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo: Option[String]): String = {
+    val subjectEmail: String = s"[PRIVATE][${proposal.id}] ${proposal.title}"
 
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString(),
-      views.html.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString()
+    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
+      replyId: String =>
+        Seq("In-Reply-To" -> replyId)
+    }.getOrElse(Seq.empty[(String, String)])
+
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(committeeEmail),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString()),
+      charset = Some("utf-8"),
+      headers = inReplyHeaders
     )
+
+    // Mailjet does not keep the Message-ID, you must use Mailgun if you want this code to work
+    val messageId = MailerPlugin.send(email)
+    messageId
   }
 
   def sendReminderForDraft(speaker: Webuser, proposals: List[Proposal]) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    if (proposals.size == 1) {
-      val subject: String = Messages("mail.draft_single_reminder.subject", Messages("longYearlyName"))
-      emailer.setSubject(subject)
+    val subjectEmail = proposals.size match {
+      case x if x > 1 => Messages("mail.draft_multiple_reminder.subject", proposals.size, Messages("longYearlyName"))
+      case other => Messages("mail.draft_single_reminder.subject", Messages("longYearlyName"))
     }
-    if (proposals.size > 1) {
-      val subject: String = Messages("mail.draft_multiple_reminder.subject", proposals.size, Messages("longYearlyName"))
-      emailer.setSubject(subject)
-    }
-    emailer.addFrom(from)
-    emailer.addRecipient(speaker.email)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
 
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.sendReminderForDraft(speaker.firstName, proposals).toString(),
-      views.html.Mails.sendReminderForDraft(speaker.firstName, proposals).toString()
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(speaker.email),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendReminderForDraft(speaker.firstName, proposals).toString()),
+      bodyHtml = Some(views.html.Mails.sendReminderForDraft(speaker.firstName, proposals).toString()),
+      charset = Some("utf-8")
     )
+
+    MailerPlugin.send(email)
   }
 
-  def sendProposalApproved(toWebuser: Webuser, proposal: Proposal) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.proposal_approved.subject",proposal.title)
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(toWebuser.email)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
+  def sendProposalApproved(speaker: Webuser, proposal: Proposal) = {
+    val subjectEmail: String = Messages("mail.proposal_approved.subject", proposal.title)
+    val otherSpeakers = extractOtherEmails(proposal)
 
-    // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
-    // I am a Scala coder, please get me out of here...
-    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
-
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString(),
-      views.html.Mails.acceptrefuse.sendProposalApproved(proposal).toString()
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(speaker.email),
+      cc = otherSpeakers,
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
+      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
+      charset = Some("utf-8")
     )
+
+    MailerPlugin.send(email)
   }
 
-  def sendProposalRefused(toWebuser: Webuser, proposal: Proposal) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val subject: String = Messages("mail.proposal_refused.subject",proposal.title)
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(toWebuser.email)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
+  def sendProposalRefused(speaker: Webuser, proposal: Proposal) = {
+    val subjectEmail: String = Messages("mail.proposal_refused.subject", proposal.title)
+    val otherSpeakers = extractOtherEmails(proposal)
 
-    // The Java Mail API accepts varargs... Thus we have to concatenate and turn Scala to Java
-    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
-    val listOfEmails = maybeOtherEmails ++ maybeSecondSpeaker.toList
-    emailer.addCc(listOfEmails.toSeq: _*) // magic trick to create a java varargs from a scala List
-
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString(),
-      views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(speaker.email),
+      cc = otherSpeakers,
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
+      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
+      charset = Some("utf-8")
     )
+
+    MailerPlugin.send(email)
   }
 
   def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+    val subjectEmail: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
 
-    val subject: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(speaker.email)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString(),
-      views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(speaker.email),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
+      bodyHtml = Some(views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
+      charset = Some("utf-8")
     )
+
+    MailerPlugin.send(email)
   }
 
   def sendInvitationForSpeaker(speakerEmail: String, message: String, requestId: String) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
-    val shortYearlyName = Messages("shortYearlyName")
-    emailer.setSubject(s"$shortYearlyName special request")
-    emailer.addFrom(from)
-    emailer.addRecipient(speakerEmail)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
+    val subjectEmail: String = Messages("shortYearlyName") + " special request"
 
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.sendInvitationForSpeaker(message, requestId).toString(),
-      views.html.Mails.sendInvitationForSpeaker(message, requestId).toString()
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(speakerEmail),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendInvitationForSpeaker(message, requestId).toString()),
+      bodyHtml = Some(views.html.Mails.sendInvitationForSpeaker(message, requestId).toString()),
+      charset = Some("utf-8")
     )
+
+    MailerPlugin.send(email)
   }
 
-  def sendGoldenTicketEmail(invitedWebuser: Webuser, gt: GoldenTicket) = {
-    val emailer = current.plugin[MailerPlugin].map(_.email).getOrElse(sys.error("Problem with the MailerPlugin"))
+  def sendGoldenTicketEmail(webuser: Webuser, gt: GoldenTicket) = {
+    val subjectEmail: String = Messages("mail.goldenticket.subject", Messages("shortYearlyName"))
 
-    val subject: String = Messages("mail.goldenticket.subject", Messages("shortYearlyName"))
-    emailer.setSubject(subject)
-    emailer.addFrom(from)
-    emailer.addRecipient(invitedWebuser.email)
-    bcc.map(bccEmail => emailer.addBcc(bccEmail))
-    emailer.setCharset("utf-8")
-    emailer.send(
-      views.txt.Mails.goldenticket.sendGoldenTicketEmail(invitedWebuser, gt).toString(),
-      views.html.Mails.goldenticket.sendGoldenTicketEmail(invitedWebuser, gt).toString()
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq(webuser.email),
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.goldenticket.sendGoldenTicketEmail(webuser, gt).toString()),
+      bodyHtml = Some(views.html.Mails.goldenticket.sendGoldenTicketEmail(webuser, gt).toString()),
+      charset = Some("utf-8")
     )
+
+    MailerPlugin.send(email)
+  }
+
+  private def extractOtherEmails(proposal: Proposal): List[String] = {
+    val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    val maybeOtherEmails = proposal.otherSpeakers.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
+    maybeOtherEmails ++ maybeSecondSpeaker.toList
+  }
+
+  private def extractAllEmails(proposal: Proposal): Iterable[String] = {
+    val mainSpeakerEmail = Webuser.getEmailFromUUID(proposal.mainSpeaker)
+    mainSpeakerEmail ++ extractOtherEmails(proposal)
   }
 
 }
