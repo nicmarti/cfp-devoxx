@@ -101,7 +101,8 @@ audienceLevel.help=Please, indicate the required audience level for your talk\:\
 privateMessage=Message for the program committee, motivation for your presentation
 privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk for example on Parleys.com.
 sponsorTalk=Is this a sponsor presentation?
-
+videoLinkMessage=Share a video link
+videoLinkMessage.help=Share a link to one of your related online video talks.
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
 sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
