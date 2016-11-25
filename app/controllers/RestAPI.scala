@@ -387,11 +387,6 @@ object RestAPI extends Controller {
       val mapOfSchedules = Map(
         "links" -> Json.toJson(List(
           Link(
-            routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.wed")
-          ),
-          Link(
             routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL(),
             routes.RestAPI.profile("schedule").absoluteURL(),
             Messages("sw.show.title.thu")
