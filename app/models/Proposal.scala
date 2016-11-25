@@ -133,7 +133,7 @@ case class Proposal(id: String,
                     demoLevel: Option[String],
                     userGroup: Option[Boolean],
                     wishlisted: Option[Boolean] = None,
-                    youTubeLink: Option[String] = None) {
+                    videoLink: Option[String] = None) {
 
   def escapedTitle: String = title match {
     case null => ""
@@ -240,7 +240,7 @@ object Proposal {
     , "track" -> nonEmptyText
     , "demoLevel" -> optional(text)
     , "userGroup" -> optional(boolean)
-    , "youTubeLink" -> optional(text)
+    , "videoLink" -> optional(text)
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = Redis.pool.withClient {
@@ -267,7 +267,7 @@ object Proposal {
                           track: String,
                           demoLevel: Option[String],
                           userGroup: Option[Boolean],
-                          youTubeLink: Option[String] = None): Proposal = {
+                          videoLink: Option[String] = None): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
       ConferenceDescriptor.current().eventCode,
@@ -286,7 +286,7 @@ object Proposal {
       demoLevel,
       userGroup,
       wishlisted = None, //deprecated, keeped for backward compatibiliy
-      youTubeLink
+      videoLink
     )
   }
 
@@ -298,8 +298,21 @@ object Proposal {
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
     Boolean, String, Option[String], Option[Boolean], Option[String])] = {
-    Option((Option(p.id), p.lang, p.title, p.secondarySpeaker, p.otherSpeakers, p.talkType.id, p.audienceLevel, p.summary, p.privateMessage,
-      p.sponsorTalk, p.track.id, p.demoLevel, p.userGroup, p.youTubeLink))
+    Option((
+      Option(p.id),
+      p.lang,
+      p.title,
+      p.secondarySpeaker,
+      p.otherSpeakers,
+      p.talkType.id,
+      p.audienceLevel,
+      p.summary,
+      p.privateMessage,
+      p.sponsorTalk,
+      p.track.id,
+      p.demoLevel,
+      p.userGroup,
+      p.videoLink))
   }
 
   def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
