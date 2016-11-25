@@ -61,6 +61,25 @@ object RestAPI extends Controller {
       }
   }
 
+  def RSSFeedAcceptedProposals = Action { implicit request =>
+    Ok(
+      <rss version="2.0">
+        <channel>
+          <title>Accepted proposals</title>
+          <link>{ ConferenceDescriptor.current().conferenceUrls.cfpHostname }</link>
+          <description>Accepted Proposals</description>
+          { Proposal.allAccepted().map { proposal =>
+          <item>
+            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}</title>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)print("s")}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
+            <description>{ proposal.summary }</description>
+          </item>
+        }}
+        </channel>
+      </rss>
+    )
+  }
+
   def showAllConferences() = UserAgentActionAndAllowOrigin {
     implicit request =>
 
@@ -367,20 +386,6 @@ object RestAPI extends Controller {
       val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
       val mapOfSchedules = Map(
         "links" -> Json.toJson(List(
-          Link(
-            routes.RestAPI.showScheduleFor(eventCode, "monday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.mon")
-          ), Link(
-            routes.RestAPI.showScheduleFor(eventCode, "tuesday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.tue")
-          ),
-          Link(
-            routes.RestAPI.showScheduleFor(eventCode, "wednesday").absoluteURL(),
-            routes.RestAPI.profile("schedule").absoluteURL(),
-            Messages("sw.show.title.wed")
-          ),
           Link(
             routes.RestAPI.showScheduleFor(eventCode, "thursday").absoluteURL(),
             routes.RestAPI.profile("schedule").absoluteURL(),

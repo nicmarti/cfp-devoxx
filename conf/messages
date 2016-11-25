@@ -178,8 +178,8 @@ track.ssj.desc=Java EE, appservers, databases, MOM, batch processing &amp; relat
 lang.label=Programming languages
 track.lang.desc=Other languages running on the JVM, functional languages, mobile and new kids on the block. The languages, tools, libraries and best practices
 
-bigdata.label=Big Data
-bd.label=Big Data
+bigdata.label=Big Data & Machine Learning
+bd.label=Big Data & Machine Learning
 track.bigdata.desc=Big Data, NoSQL, Spark, Hadoop, Drill, Machine learning.
 
 web.label=Modern Web
