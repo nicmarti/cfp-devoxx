@@ -20,7 +20,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     filters, // protection against CSRF
     "redis.clients" % "jedis" % "2.1.0"
-    , "com.typesafe" %% "play-plugins-mailer" % "2.1.0"
+    , "com.typesafe.play" %% "play-mailer" % "2.4.1"
     , "org.apache.commons" % "commons-lang3" % "3.1"
     , "commons-io" % "commons-io" % "2.4"
     , "commons-logging" % "commons-logging" % "1.2"
