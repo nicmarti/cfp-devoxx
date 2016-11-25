@@ -374,7 +374,7 @@ object RestAPI extends Controller {
 
           val jsonObject = Json.toJson(finalJson)
 
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> etag,
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
             "Links" -> ("<" + routes.RestAPI.profile("list-of-approved-talks").absoluteURL() + ">; rel=\"profile\"")
           )
       }
