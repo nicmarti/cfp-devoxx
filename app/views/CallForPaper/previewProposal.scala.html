@@ -1,4 +1,7 @@
-@(htmlSummary: String, privateMessage:String, newProposal: Form[models.Proposal], currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(htmlSummary: String,
+  privateMessage:String,
+  newProposal: Form[models.Proposal],
+  currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main(newProposal("id").value.map(id => "Edit " + id + " " + newProposal("title").value.getOrElse("")).getOrElse("New proposal preview")) {
     <div class="row">
@@ -24,6 +27,7 @@
             <input type="hidden" name="userGroup" value="@newProposal("userGroup").value">
             <input type="hidden" name="track" value="@newProposal("track").value">
             <input type="hidden" name="demoLevel" value="@newProposal("demoLevel").value">
+            <input type="hidden" name="videoLink" value="@newProposal("videoLink").value">
             <input type="hidden" name="id" value="@newProposal("id").value">
             <div class="alert alert-info"><i class="icon-warning-sign"></i> @Messages("not.saved")</div>
         </div>
