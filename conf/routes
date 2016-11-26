@@ -298,3 +298,6 @@ GET           /toptalks                                                         
 GET           /assets/*file                                                      controllers.Assets.at(path="/public", file)
 
 GET           /bp/fullAgenda                                                     controllers.Backoffice.showAllAgendaForInge()
+
+# RSS Feed accepted talks
+GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()
