@@ -78,6 +78,22 @@
                                     <td colspan="2"><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
                                 </tr>
                             }
+                            @if(proposal.videoLink.nonEmpty) {
+                                <tr>
+                                    <th>Related Video</th>
+                                    <td colspan="2">
+                                        @if(proposal.videoLink.get.indexOf("youtube") > 0) {
+                                            <iframe width="100%" height="600" src="https://www.youtube.com/embed/@proposal.videoLink.get.split("=").toList.reverse.take(1)" frameborder="0" allowfullscreen></iframe>
+                                        } else {
+                                            @if(proposal.videoLink.get.indexOf("vimeo") > 0) {
+                                                <iframe src="//player.vimeo.com/video/@proposal.videoLink.get.split("/").toList.reverse.take(1)" width="100%" height="600" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                            } else {
+                                                <a href="@proposal.videoLink.get" target="_blank">@proposal.videoLink.get</a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
                         </tfoot>
                     </table>
                 </div>
@@ -240,38 +256,6 @@
                 </div>
             </div>
             <div class="col-md-6">
-                @* FIXME : Better variabilize week days by replacing the preferredDayEnabled flag *@
-                @if(ConferenceDescriptor.current().timing.preferredDayEnabled) {
-                    @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
-                            </div>
-                            <div class="panel-body">
-                            @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
-                                @if(preferredDay == Some("Wed")) {
-                                    <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.wednesday")</a>
-                                } else {
-                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Wed")" class="btn btn-sm btn-default">@Messages("calendar.pref.wednesday")</a>
-                                }
-                                @if(preferredDay == Some("Thu")) {
-                                    <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
-                                } else {
-                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Thu")" class="btn btn-sm btn-default">@Messages("calendar.pref.thursday")</a>
-                                }
-                                @if(preferredDay == Some("Fri")) {
-                                    <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.friday")</a>
-                                } else {
-                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Fri")" class="btn btn-sm btn-default">@Messages("calendar.pref.friday")</a>
-                                }
-                                @if(preferredDay.isDefined) {
-                                    <a href="@routes.CFPAdmin.resetPreferredDay(proposal.id)" class="btn btn-sm btn-default">@Messages("calendar.pref.reset")</a>
-                                }
-                            }
-                            </div>
-                        </div>
-                    }
-                }
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
