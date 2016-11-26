@@ -66,15 +66,7 @@
                                 <tr>
                                     <th>Related Video</th>
                                     <td colspan="2">
-                                        @if(proposal.videoLink.get.indexOf("youtube") > 0) {
-                                            <iframe width="100%" height="600" src="https://www.youtube.com/embed/@proposal.videoLink.get.split("=").toList.reverse.take(1)" frameborder="0" allowfullscreen></iframe>
-                                        } else {
-                                            @if(proposal.videoLink.get.indexOf("vimeo") > 0) {
-                                                <iframe src="//player.vimeo.com/video/@proposal.videoLink.get.split("/").toList.reverse.take(1)" width="100%" height="600" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                                            } else {
-                                                <a href="@proposal.videoLink.get" target="_blank">@proposal.videoLink.get</a>
-                                            }
-                                        }
+                                        @tags.renderVideoLink(proposal.videoLink.get)
                                     </td>
                                 </tr>
                             }
