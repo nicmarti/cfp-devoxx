@@ -70,7 +70,9 @@ object RestAPI extends Controller {
           <description>Accepted Proposals</description>
           { Proposal.allAccepted().map { proposal =>
           <item>
-            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}</title>
+            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
+              ({Speaker.findByUUID(proposal.mainSpeaker).get.cleanTwitter.getOrElse("")})
+            </title>
             <link>http{if(ConferenceDescriptor.isHTTPSEnabled)print("s")}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
