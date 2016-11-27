@@ -27,6 +27,7 @@ import library.{ComputeVotesAndScore, Redis, Stats, ZapActor}
 import models.Review._
 import org.joda.time.{DateTime, Instant}
 
+import scala.collection.immutable.Set
 import scala.math.BigDecimal.RoundingMode
 
 /**
@@ -52,15 +53,19 @@ object ReviewByGoldenTicket {
       ZapActor.actor ! ComputeVotesAndScore()
   }
 
-  def totalGoldenTickets(): Int = Redis.pool.withClient {
+  def allGoldenTicketReviewerUUIDs(): Set[String] = Redis.pool.withClient {
     implicit client =>
-      client.smembers("Webuser:gticket").size
+      client.smembers("Webuser:gticket")
+  }
+
+  def totalGoldenTickets(): Int = {
+    allGoldenTicketReviewerUUIDs().size
   }
 
   def countVotesForAllUsers(): List[(String, Long)] = Redis.pool.withClient {
     implicit client =>
-      val allGoldenTicketUUID: Set[String] = client.smembers("Webuser:gticket")
-      val votesPerReviewers = allGoldenTicketUUID.map {
+      val allReviewerUUIDs: Set[String] = allGoldenTicketReviewerUUIDs()
+      val votesPerReviewers = allReviewerUUIDs.map {
         reviewerUUID: String =>
           val totalVotes = client.scard(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID")
           (reviewerUUID, totalVotes)
@@ -118,6 +123,8 @@ object ReviewByGoldenTicket {
       tx.del(s"ReviewGT:Votes:$proposalId")
       tx.del(s"ReviewGT:Dates:$proposalId")
       tx.exec()
+
+      play.Logger.info(s"Golden ticket review related proposal id $proposalId has been deleted.")
   }
 
   val ReviewerAndVote = "(\\w+)__(\\d+)".r

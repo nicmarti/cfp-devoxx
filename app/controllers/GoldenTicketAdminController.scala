@@ -177,15 +177,23 @@ object GoldenTicketAdminController extends SecureCFPController {
 
   def deleteGoldenTicketVotesForAllUsers() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val uuid = request.webuser.uuid
-
       val allVotes: Set[(String, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = ReviewByGoldenTicket.allVotes()
-      val result = allVotes.toList.sortBy(_._2._1.s).reverse
-      val allProposalIDs = result.map(_._1)
+      val allVotesReversedSorted = allVotes.toList.sortBy(_._2._1.s).reverse
+      val allProposalIDs = allVotesReversedSorted.map(_._1)
 
       allProposalIDs.foreach(
         proposalId => ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
       )
+
+      val allGoldenTicketReviewerUUIDs: Set[String] = ReviewByGoldenTicket.allGoldenTicketReviewerUUIDs();
+
+      val allGoldenTicketsWithTheirReviewer: List[(GoldenTicket, Webuser)] = GoldenTicket.allWithWebuser()
+      allGoldenTicketReviewerUUIDs.foreach(
+        reviewerUuid => {
+              if (! allGoldenTicketsWithTheirReviewer.exists(_._2.uuid.equals(reviewerUuid))) {
+                  Webuser.removeFromGoldenTicket(reviewerUuid)
+              }
+      })
 
       Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "Deleted votes for all users")
   }
