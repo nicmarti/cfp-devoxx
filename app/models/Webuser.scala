@@ -215,6 +215,13 @@ object Webuser {
       client.sadd("Webuser:gticket", uuid)
   }
 
+  def removeFromGoldenTicket(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.srem("Webuser:gticket", uuid)
+
+    play.Logger.info(s"Golden Ticket reviewer $uuid has been deleted from the Golden ticket reviewers list.")
+  }
+
   def noBackofficeAdmin() = Redis.pool.withClient {
     client =>
       !client.exists("Webuser:admin")
