@@ -273,39 +273,39 @@ POST          /admin/goldenTickets/newTicket/importGroupOfGT                    
 POST          /admin/goldenTickets/newTicket/bulkImport                         controllers.GoldenTicketAdminController.bulkImport()
 GET           /admin/goldenTickets/votes                                        controllers.GoldenTicketAdminController.showGoldenTicketVotes()
 GET           /admin/goldenTickets/stats                                        controllers.GoldenTicketAdminController.showStats()
-GET           /admin/goldenTickets/deleteVotesForAllUsers                       controllers.GoldenTicketAdminController.deleteGoldenTicketVotesForAllUsers()
+GET           /admin/goldenTickets/repairStatsAfterGTArchivingAction            controllers.GoldenTicketAdminController.repairStatsAfterGTArchivingAction()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
 POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    controllers.GoldenTicketAdminController.sendEmail(goldenTicketId:String)
 
 # Golden ticket webuser side
-GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
-GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf")
-GET           /cfp/goldenticket                                                  controllers.GoldenTicketController.authenticate()
-POST          /cfp/goldenticket                                                  controllers.GoldenTicketController.doAuthenticate()
+GET           /cfp/goldenticket/proposals                                       controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
+GET           /cfp/goldenticket/myvotes                                         controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf")
+GET           /cfp/goldenticket                                                 controllers.GoldenTicketController.authenticate()
+POST          /cfp/goldenticket                                                 controllers.GoldenTicketController.doAuthenticate()
 
-GET           /cfp/goldenticket/proposals/:proposalId                            controllers.GoldenTicketController.openForReview(proposalId:String)
-GET           /cfp/goldenticket/proposals/:proposalId/vote                       controllers.GoldenTicketController.voteForProposal(proposalId:String)
-GET           /cfp/goldenticket/proposals/:proposalId/clearVote                  controllers.GoldenTicketController.clearVoteForProposal(proposalId:String)
-GET           /cfp/goldenticket/proposals/:proposalId/showvotes                  controllers.GoldenTicketController.showVotesForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId                           controllers.GoldenTicketController.openForReview(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/vote                      controllers.GoldenTicketController.voteForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/clearVote                 controllers.GoldenTicketController.clearVoteForProposal(proposalId:String)
+GET           /cfp/goldenticket/proposals/:proposalId/showvotes                 controllers.GoldenTicketController.showVotesForProposal(proposalId:String)
 
 # Rating system for mobile app
-GET           /cfpadmin/rating                                                   controllers.RatingController.homeRating()
-GET           /cfpadmin/postForBackup                                            controllers.RatingController.postForBackup()
-POST          /cfpadmin/rating                                                   controllers.RatingController.acceptVoteForTalk()
-GET           /cfpadmin/allRatings                                               controllers.RatingController.allRatings()
+GET           /cfpadmin/rating                                                  controllers.RatingController.homeRating()
+GET           /cfpadmin/postForBackup                                           controllers.RatingController.postForBackup()
+POST          /cfpadmin/rating                                                  controllers.RatingController.acceptVoteForTalk()
+GET           /cfpadmin/allRatings                                              controllers.RatingController.allRatings()
 
 # Voting API v1 as it has been specified and implemented by Jon Mort
-POST          /api/voting/v1/vote                                                controllers.MobileVotingV1.acceptVoteForTalk()
-GET           /api/voting/v1/talk/:talkId                                        controllers.MobileVotingV1.allVotesForTalk(talkId:String)
-GET           /api/voting/v1/top/talks                                           controllers.MobileVotingV1.topTalks(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=10, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
-GET           /api/voting/v1/categories                                          controllers.MobileVotingV1.categories()
+POST          /api/voting/v1/vote                                               controllers.MobileVotingV1.acceptVoteForTalk()
+GET           /api/voting/v1/talk/:talkId                                       controllers.MobileVotingV1.allVotesForTalk(talkId:String)
+GET           /api/voting/v1/top/talks                                          controllers.MobileVotingV1.topTalks(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=10, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
+GET           /api/voting/v1/categories                                         controllers.MobileVotingV1.categories()
 
 # CFP Admin
-GET           /toptalks                                                          controllers.MobileVotingV1.topTalksAsHtml(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=50, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
+GET           /toptalks                                                         controllers.MobileVotingV1.topTalksAsHtml(day:Option[String] ?=None, talkTypeId:Option[String] ?=None, trackId:Option[String] ?=None, limit:Int ?=50, floorPct:Int ?=0, hideScoreLowerThan:Int ?=3)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                                                      controllers.Assets.at(path="/public", file)
+GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
-GET           /bp/fullAgenda                                                     controllers.Backoffice.showAllAgendaForInge()
+GET           /bp/fullAgenda                                                    controllers.Backoffice.showAllAgendaForInge()
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()

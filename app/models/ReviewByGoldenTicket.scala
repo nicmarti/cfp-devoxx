@@ -113,6 +113,8 @@ object ReviewByGoldenTicket {
 
   def deleteVoteForProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
+      val votesOnThisProposal = totalVoteFor(proposalId)
+
       val allAuthors = client.smembers(s"ReviewGT:Reviewed:ByProposal:$proposalId")
       val tx = client.multi()
       allAuthors.foreach {
@@ -124,7 +126,7 @@ object ReviewByGoldenTicket {
       tx.del(s"ReviewGT:Dates:$proposalId")
       tx.exec()
 
-      play.Logger.info(s"Golden ticket review related proposal id $proposalId has been deleted.")
+      play.Logger.info(s"Golden ticket review details for proposal $proposalId has been deleted, the proposal had $votesOnThisProposal vote(s) before deletion.")
   }
 
   val ReviewerAndVote = "(\\w+)__(\\d+)".r
