@@ -175,7 +175,11 @@ object GoldenTicketAdminController extends SecureCFPController {
       Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals))
   }
 
-  def deleteGoldenTicketVotesForAllUsers() = SecuredAction(IsMemberOf("admin")) {
+  def repairStatsAfterGTArchivingAction() = SecuredAction(IsMemberOf("admin")) {
+    def doesNotExist(reviewerUuid: String, allGoldenTicketsWithTheirReviewer: List[(GoldenTicket, Webuser)]): Boolean = {
+      ! allGoldenTicketsWithTheirReviewer.exists(_._2.uuid.equals(reviewerUuid))
+    }
+
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allVotes: Set[(String, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = ReviewByGoldenTicket.allVotes()
       val allVotesReversedSorted = allVotes.toList.sortBy(_._2._1.s).reverse
@@ -188,14 +192,12 @@ object GoldenTicketAdminController extends SecureCFPController {
       val allGoldenTicketReviewerUUIDs: Set[String] = ReviewByGoldenTicket.allGoldenTicketReviewerUUIDs();
 
       val allGoldenTicketsWithTheirReviewer: List[(GoldenTicket, Webuser)] = GoldenTicket.allWithWebuser()
-      allGoldenTicketReviewerUUIDs.foreach(
-        reviewerUuid => {
-              if (! allGoldenTicketsWithTheirReviewer.exists(_._2.uuid.equals(reviewerUuid))) {
-                  Webuser.removeFromGoldenTicket(reviewerUuid)
-              }
-      })
 
-      Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "Deleted votes for all users")
+      allGoldenTicketReviewerUUIDs
+        .filter(reviewerUuid => doesNotExist(reviewerUuid, allGoldenTicketsWithTheirReviewer))
+        .foreach(reviewerUuid => Webuser.removeFromGoldenTicket(reviewerUuid))
+
+      Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "Repaired Golden Tickets stats after Archiving action.")
   }
 
   def showStats() = SecuredAction(IsMemberOf("cfp")) {
