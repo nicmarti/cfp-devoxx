@@ -759,8 +759,8 @@ object ConferenceDescriptor {
         r3 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id,
                       FRIDAY,
-                      new DateTime(FRI_DATE + "11:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
-                      new DateTime(FRI_DATE + "12:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r3)
+                      new DateTime(FRI_DATE + "11:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)),
+                      new DateTime(FRI_DATE + "12:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeBrussels)), r3)
       }
       conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3
       }
