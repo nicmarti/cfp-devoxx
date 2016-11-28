@@ -71,9 +71,13 @@ object RestAPI extends Controller {
           { Proposal.allAccepted().map { proposal =>
           <item>
             <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
-              ({Speaker.findByUUID(proposal.mainSpeaker).get.cleanTwitter.getOrElse("")})
+              { val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
+                if(speaker.cleanTwitter.nonEmpty) {
+                  "(" + speaker.cleanTwitter.get + ")"
+                }
+              }
             </title>
-            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)print("s")}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
         }}

@@ -88,7 +88,7 @@ mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, Hands-on-Labs. Quickie speakers need to purchase a conference pass!
 otherSpeakers=Other speakers
 talkType=Type of talk
-talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">FAQ</a>.
+talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">Info</a>.
 
 audienceLevel=Audience level :
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
