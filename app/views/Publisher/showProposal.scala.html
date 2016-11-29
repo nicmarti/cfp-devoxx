@@ -17,12 +17,20 @@
     }
     </div>
 
-    <div class="columns large-offset-1 large-11">
-        <h1>@proposal.title</h1>
-        <h3><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></h3>
-    </div>
-
     <div class="clearfix"></div>
+
+    @if(proposal.videoLink.nonEmpty) {
+        <div class="columns large-offset-1 large-10" style="padding-bottom: 10px">
+            @tags.renderVideoLink(proposal.videoLink.get)
+        </div>
+
+        <div class="clearfix"></div>
+    } else {
+        <div class="columns large-offset-1 large-11">
+            <h1>@proposal.title</h1>
+            <h3><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></h3>
+        </div>
+    }
 
     <div class="columns large-offset-1 large-6">
         <table>

@@ -70,8 +70,14 @@ object RestAPI extends Controller {
           <description>Accepted Proposals</description>
           { Proposal.allAccepted().map { proposal =>
           <item>
-            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}</title>
-            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)print("s")}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
+            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
+              { val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
+                if(speaker.cleanTwitter.nonEmpty) {
+                  "(" + speaker.cleanTwitter.get + ")"
+                }
+              }
+            </title>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
         }}
