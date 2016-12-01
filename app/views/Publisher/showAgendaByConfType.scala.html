@@ -54,7 +54,9 @@
                                     @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
                                 </span>
                                 <br>
-                                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+                                <span class="title">
+                                    <a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a>
+                                </span>
                                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                                     @tags.publisher.renderSpeaker(speakerUUID)
                                 }</span>
