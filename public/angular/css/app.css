@@ -16,7 +16,7 @@ body {
     border: 2px solid black;
     padding: 5px;
     margin: 5px;
-    background-color: red;
+    background-color: orange;
     border-radius: 3px;
     box-shadow: 2px 2px #bbb;
 }
@@ -25,7 +25,25 @@ body {
     border: 2px solid black;
     padding: 5px;
     margin: 5px;
-    background-color: #fceec3;
+    background-color: greenyellow;
+    border-radius: 3px;
+    box-shadow: 2px 2px #bbb;
+}
+.declined {
+    display: block;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: red;
+    border-radius: 3px;
+    box-shadow: 2px 2px #bbb;
+}
+.submitted {
+    display: block;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: blue;
     border-radius: 3px;
     box-shadow: 2px 2px #bbb;
 }
