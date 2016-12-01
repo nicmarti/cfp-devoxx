@@ -1,19 +1,18 @@
 @(proposalId: String)(implicit req: RequestHeader)
 
 @if(ConferenceDescriptor.isFavoritesSystemActive){
-@defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
-    @maybeUuid.map { uuid:String =>
-        @if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) {
-            <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId" checked>
-            <label class="cfp-lab" title="Remove from MySchedule" for="checkbox_@proposalId"></label>
-        } else {
-            <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId">
-            <label class="cfp-lab" title="Add to MySchedule" for="checkbox_@proposalId"></label>
+    @defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
+        @maybeUuid.map { uuid:String =>
+
+            @if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) {
+                <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId" checked>
+            } else {
+                <input id="checkbox_@proposalId" type="checkbox" class="cfp-fav" value="@proposalId">
+            }
+            <label title="@FavoriteTalk.countForProposal(proposalId)★" class="cfp-lab" for="checkbox_@proposalId"></label>
+
+        }.getOrElse {
+                <a href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda"><img src="@routes.Assets.at(path="/public", file="images/fav/not_fav.png")" alt="Click here to save this talk in your agenda"></a>
         }
-    }.getOrElse {
-        <a href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda">
-            <img src="@routes.Assets.at(path="/public", file="images/fav/beer-icons-off.png")" alt="Click here to save this talk in your agenda">
-        </a>
     }
-}
 }
