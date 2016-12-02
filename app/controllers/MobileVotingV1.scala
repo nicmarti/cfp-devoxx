@@ -208,7 +208,7 @@ object MobileVotingV1 extends SecureCFPController {
       if (onlyXXXResults.isEmpty) {
         NoContent
       } else {
-        Ok(views.html.CFPAdmin.topTalksDevoxxBE2016(onlyXXXResults, day.getOrElse("wed")))
+        Ok(views.html.CFPAdmin.topTalksDevoxx(onlyXXXResults, day.getOrElse("wed")))
       }
   }
 
