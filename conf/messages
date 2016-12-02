@@ -89,6 +89,7 @@ mainSpeaker.help=You can add more speakers once the proposal is created. We offe
 otherSpeakers=Other speakers
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">FAQ</a>.
+videoLink=Related video link
 
 audienceLevel=Audience level :
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
@@ -101,7 +102,8 @@ audienceLevel.help=Please, indicate the required audience level for your talk\:\
 privateMessage=Message for the program committee, motivation for your presentation
 privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk for example on Parleys.com.
 sponsorTalk=Is this a sponsor presentation?
-
+videoLinkMessage=Related video link
+videoLinkMessage.help=Share with the program committee a link to one of your related online videos on YouTube or Vimeo
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
 sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
