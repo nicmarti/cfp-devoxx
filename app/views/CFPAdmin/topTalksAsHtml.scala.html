@@ -1,0 +1,24 @@
+@(results:List[(Proposal,List[Rating])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Top talks") {
+
+    <h1>Top Talks</h1>
+    <p>@results.size</p>
+
+
+    <ul>
+    @results.map{case(proposal,ratings)=>
+        <li>
+            "@proposal.title" par @proposal.allSpeakers.map(_.cleanName).mkString(", ")<br>
+        @Messages(proposal.talkType.id) @models.Rating.calculateScore(ratings) with @ratings.length votes<br>
+    </li>
+    }
+
+    </ul>
+
+    <hr>
+    <p>For testing</p>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("monday"),None,None,20,0,0)">Show 20 talks on Monday, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("monday"),None,None,10,0,4)">Show top ten on Monday, keep only talks with at least 50% of votes above the average, with score >= 4</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("monday"),None,None,10,10,3)">Show top ten on Monday, keep only talks with at least 40% of votes above the average with score >= 3</a> (returns more talks)
+}

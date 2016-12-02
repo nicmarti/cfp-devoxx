@@ -31,6 +31,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.libs.json._
+import play.api.mvc.Action
 
 /**
   * Mobile App voting REST API.
@@ -130,8 +131,88 @@ object MobileVotingV1 extends SecureCFPController {
       }
   }
 
-  def topTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10) = UserAgentActionAndAllowOrigin {
+  // Returns the top talks for the Tweet wall.
+  // floorPct is a special parameter that will filterOut the talks that don't have at least 80% of the total vote
+  // This is to avoid a top ten where a talk with only one vote sets to 10 is above a talk with 100 votes and a score of 9.8
+  def topTalks(day: Option[String]
+               , talkTypeId: Option[String]
+               , trackId: Option[String]
+               , limit: Int = 10 // Stephan => if you want only 10 talks
+               , floorPct: Int = 0 // This loads all talk, calculate the average number of votes and take only talks with at most 50% of votes + floor
+               , hideScoreLowerThan: Int = 3 // If you want to hide the not-so-good talks, here is the param. It could be a Double so that you set 3.56 for instance
+              ) = UserAgentActionAndAllowOrigin {
     implicit request =>
+      // Use the limit parameter to take only 5, 10 or X results
+      val allRatings = loadTopTalks(day, talkTypeId, trackId)
+
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
+
+      if (onlyXXXResults.isEmpty) {
+        NoContent.as(JSON)
+      } else {
+        // JSON Serializer
+
+        val jsonResult = onlyXXXResults.map {
+          case (proposal, ratings) =>
+            Json.obj(
+              "proposalId" -> Json.toJson(proposal.id),
+              "proposalTitle" -> Json.toJson(proposal.title),
+              "proposalTalkType" -> Json.toJson(Messages(proposal.talkType.id)),
+              "proposalTalkTypeId" -> Json.toJson(proposal.talkType.id),
+              "ratingAverageScore" -> Json.toJson(Rating.calculateScore(ratings)),
+              "ratingTotalVotes" -> Json.toJson(ratings.length),
+              "proposalsSpeakers" -> Json.toJson(proposal.allSpeakers.map(_.cleanName).mkString(", "))
+            )
+        }
+
+        val result = Map(
+          "day" -> day.map(d => JsString(d)).getOrElse(JsNull)
+          , "talkTypeId" -> talkTypeId.map(d => JsString(d)).getOrElse(JsNull)
+          , "trackId" -> trackId.map(d => JsString(d)).getOrElse(JsNull)
+          , "totalResults" -> JsNumber(sortedRatings.size)
+          , "talks" -> JsArray(jsonResult)
+        )
+
+        val finalResult = Json.obj("result" -> Json.toJson(result))
+        Ok(finalResult).as(JSON)
+      }
+  }
+
+  // Code written during Devoxx BE 2016. I could have used the HTTP header Accept but I didn't want to explode the TwitterWall
+  def topTalksAsHtml(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan: Int = 3) = Action {
+    implicit request =>
+      val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, talkTypeId, trackId)
+
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
+
+      if (onlyXXXResults.isEmpty) {
+        NoContent
+      } else {
+        Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
+      }
+  }
+
+  // Public call for a simple Web page for Devoxx Belgium 2016
+  def topTalksForDevoxx(day: Option[String]) = Action {
+    implicit request =>
+      val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, None, None)
+
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct = 0)
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= 3).take(100)
+
+      if (onlyXXXResults.isEmpty) {
+        NoContent
+      } else {
+        Ok(views.html.CFPAdmin.topTalksDevoxx(onlyXXXResults, day.getOrElse("wed")))
+      }
+  }
+
+  private def loadTopTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String]): Map[Proposal, List[Rating]] = {
       // create a list of Proposals
       // Will try to filter either from the URL params (talkTypeID, trackId) or use the Rating
 
@@ -180,50 +261,38 @@ object MobileVotingV1 extends SecureCFPController {
       // We can finally load the Ratings from the list of Proposals
       val allRatingsFiltered: Map[Proposal, List[Rating]] = Rating.allRatingsForTalks(proposalsToLoad)
 
-      // Now we can sort this list and take the top XXX (or the worst XXX)
-      val sortedProposalByRating = Rating.sortByRating(allRatingsFiltered)
+    allRatingsFiltered
+  }
 
-      // Tips : if we want the top worst talks, we can use sortedProposalByRating.reverse here
+  def sortByScoreAndKeepTopVotes(ratings: Map[Proposal, List[Rating]], floorPct: Int): List[(Proposal, List[Rating])] = {
 
-      // Use the limit parameter to take only 5, 10 or X results
-      val onlyXXXResults = sortedProposalByRating.take(limit)
+    val groupedByNumberOfVotes = ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
+    val totalTalksEvaluated = groupedByNumberOfVotes.size
+    val averageNumberOfVotes = groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated
 
+    // println(groupedByNumberOfVotes.map(_._1).sorted.reverse)
 
-      if (onlyXXXResults.isEmpty) {
-        NoContent.as(JSON)
-      } else {
-        // JSON Serializer
+    // println("averageNumber of votes " +averageNumberOfVotes)
 
-        val jsonResult = onlyXXXResults.map {
-          case (proposal, ratings) =>
-            Json.obj(
-              "proposalId" -> Json.toJson(proposal.id),
-              "proposalTitle" -> Json.toJson(proposal.title),
-              "proposalTalkType" -> Json.toJson(Messages(proposal.talkType.id)),
-              "proposalTalkTypeId" -> Json.toJson(proposal.talkType.id),
-              "ratingAverageScore"->Json.toJson(Rating.calculateScore(ratings)),
-              "ratingTotalVotes"->Json.toJson(ratings.length),
-              "proposalsSpeakers" -> Json.toJson(proposal.allSpeakers.map(_.cleanName).mkString(", "))
+    // Keep only talks with number of votes > average
 
-            )
-        }
+    val onlyWithEnoughVotes = groupedByNumberOfVotes.sortBy(_._1).reverse.takeWhile(_._1 >= averageNumberOfVotes - floorPct)
 
-        val result = Map(
-          "day" -> day.map(d => JsString(d)).getOrElse(JsNull)
-          , "talkTypeId" -> talkTypeId.map(d => JsString(d)).getOrElse(JsNull)
-          , "trackId" -> trackId.map(d => JsString(d)).getOrElse(JsNull)
-          , "totalResults" -> JsNumber(sortedProposalByRating.size)
-          , "talks" -> JsArray(jsonResult)
-        )
+    // println("Got "+onlyWithEnoughVotes.map(_._1))
 
-        val finalResult = Json.obj("result" -> Json.toJson(result))
+    val onlyRatinsAndProposals = onlyWithEnoughVotes.flatMap(_._2)
 
-        println("Returns " + finalResult.toString())
+    val sortedByScore = onlyRatinsAndProposals.sortBy {
+      case (_, rt) =>
+        Rating.calculateScore(rt)
+    }.reverse
 
-        Ok(finalResult).as(JSON)
-      }
+    //    sortedByScore.foreach{
+    //      case(proposal,r)=>
+    //        println(s"${proposal.title} ${Rating.calculateScore(r)}")
+    //    }
 
-    //      NotImplemented(Json.obj("reason" -> "Not yet implemented, stay tuned")).as(JSON)
+    sortedByScore
   }
 
 
