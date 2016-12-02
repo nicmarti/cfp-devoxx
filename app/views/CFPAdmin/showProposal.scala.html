@@ -78,6 +78,14 @@
                                     <td colspan="2"><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
                                 </tr>
                             }
+                            @if(proposal.videoLink.nonEmpty) {
+                                <tr>
+                                    <th>Related Video</th>
+                                    <td colspan="2">
+                                        @tags.renderVideoLink(proposal.videoLink.get)
+                                    </td>
+                                </tr>
+                            }
                         </tfoot>
                     </table>
                 </div>

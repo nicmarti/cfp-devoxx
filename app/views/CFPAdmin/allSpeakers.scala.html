@@ -6,6 +6,7 @@
         <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
+
     @if(flash.get("error").isDefined){
         <div class="alert alert-danger alert-dismissable col-md-12">
             <strong>Error :</strong>
@@ -17,6 +18,7 @@
             @flash.get("success").get
         </div>
     }
+
     <div class="col-md-12">
         <div class="panel panel-default">
         <div class="panel-heading">
@@ -56,6 +58,7 @@
                            <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
                            <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
                         </td>
+
                     </tr>
                 }
                 </tbody>

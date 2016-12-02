@@ -61,6 +61,31 @@ object RestAPI extends Controller {
       }
   }
 
+  def RSSFeedAcceptedProposals = Action { implicit request =>
+    Ok(
+      <rss version="2.0">
+        <channel>
+          <title>Accepted proposals</title>
+          <link>{ ConferenceDescriptor.current().conferenceUrls.cfpHostname }</link>
+          <description>Accepted Proposals</description>
+          { Proposal.allAccepted().map { proposal =>
+          <item>
+            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
+              { val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
+                if(speaker.cleanTwitter.nonEmpty) {
+                  "(" + speaker.cleanTwitter.get + ")"
+                }
+              }
+            </title>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2017/talk/{proposal.id}</link>
+            <description>{ proposal.summary }</description>
+          </item>
+        }}
+        </channel>
+      </rss>
+    )
+  }
+
   def showAllConferences() = UserAgentActionAndAllowOrigin {
     implicit request =>
 

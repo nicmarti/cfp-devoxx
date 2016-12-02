@@ -1,8 +1,5 @@
 @(newProposal:Form[models.Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
-@import helper.twitterBootstrap._
-@import org.apache.commons.lang3.StringUtils
-
 @main("New proposal") {
 <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
 
@@ -40,6 +37,7 @@
                 @helper.textarea(newProposal("summary"), 'cols->60, 'rows->6,  'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain"></span> <small>@Messages("newProposal.maxLength")</small>
                 @helper.textarea(newProposal("privateMessage"), 'cols->60,'rows->10,  'class->"form-control")
+                @helper.inputText(newProposal("videoLink"), 'class->"form-control")
                 <i class="icon-text-width"></i> : <span id="charsremain2"></span>
                 @if(ConferenceDescriptor.current().frLangEnabled) {
                     @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
@@ -72,6 +70,7 @@
             <p><label>@Messages("title") : </label><br> @Messages("title.help")</p>
             <p><label>@Messages("summary") : </label><br> @Html(Messages("summary.help"))</p>
             <p><label>@Messages("privateMessage") : </label><br> @Messages("privateMessage.help")</p>
+            <p><label>@Messages("videoLinkMessage") : </label><br> @Messages("videoLinkMessage.help")</p>
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
             <p><label>@Messages("mainSpeaker2")</label><br> @Messages("mainSpeaker.help")</p>
             @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
