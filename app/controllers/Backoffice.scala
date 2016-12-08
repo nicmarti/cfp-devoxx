@@ -1,15 +1,18 @@
 package controllers
 
+import controllers.Wishlist.{NotFound, Ok}
 import library.search.{DoIndexProposal, _}
 import library.{DraftReminder, Redis, ZapActor}
-import models._
+import models.{Tag, _}
 import org.joda.time.Instant
 import play.api.Play
 import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
 import play.api.data._
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
+import views.html
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -270,7 +273,7 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")
   }
 
-  def showAllDeclined() = SecuredAction(IsMemberOf("admin")) {
+  def showAllDeclined = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
       val allDeclined = Proposal.allDeclinedProposals()
@@ -283,5 +286,66 @@ object Backoffice extends SecureCFPController {
     implicit request =>
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
       Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+  }
+
+  // Tag related controllers
+
+  def showAllTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allTags = Tag.allTags()
+      Ok(views.html.Backoffice.showAllTags(allTags))
+  }
+
+  def newTag = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.newTag(Tag.tagForm))
+  }
+
+  def saveTag() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      Tag.tagForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.newTag(hasErrors)),
+        tagData => Tag.save(tagData)
+      )
+
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.saved"))
+  }
+
+  def editTag(uuid : String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val foundTag = Tag.findByUUID(uuid)
+       foundTag match {
+        case None => NotFound("Sorry, this tag does not exit")
+        case Some(tag) => {
+          Ok(views.html.Backoffice.newTag(Tag.tagForm.fill(tag)))
+        }
+      }
+  }
+
+  def importTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.importTags(Tag.tagForm))
+  }
+
+  def saveImportTags() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      Tag.tagForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importTags(hasErrors)),
+        tagData => {
+          val tags = tagData.value.split(";")
+          tags.foreach(f => Tag.save(Tag.createTag(f)))
+        }
+      )
+
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.imported"))
+  }
+
+  def deleteTag(uuid : String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      // TODO is used by proposal then don't allow deletion of tag
+      Tag.delete(uuid)
+      Ok(views.html.Backoffice.showAllTags(allTags)).flashing("success" -> Messages("tag.removed"))
   }
 }

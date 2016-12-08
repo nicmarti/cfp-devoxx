@@ -546,6 +546,12 @@ btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
 saved=Proposal saved, do not forget to SUBMIT this talk to the program committee when you are ready
 
+tag.edit=Edit Tag
+tag.new=New Tag
+tag.saved=Tag saved
+tag.removed=Tag removed
+tag.imported=Tags imported
+
 wishList.title=WishList
 wishList.menu=Menu
 wishList.recentEvents=All requests

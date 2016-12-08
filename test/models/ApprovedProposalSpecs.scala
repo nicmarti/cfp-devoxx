@@ -62,7 +62,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         track = ConferenceDescriptor.ConferenceTracks.JAVA.id,
         demoLevel = Some("beginner"),
         userGroup = Some(true),
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -89,7 +89,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -118,7 +118,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -147,7 +147,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -175,7 +175,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("test", proposal, ProposalState.SUBMITTED)
 
@@ -205,7 +205,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -234,7 +234,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -263,7 +263,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -291,7 +291,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -322,7 +322,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
@@ -353,7 +353,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
