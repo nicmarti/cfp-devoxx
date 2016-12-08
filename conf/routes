@@ -45,6 +45,7 @@ GET           /cfp/newSpeakerForExistingWebuser                                 
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
 POST          /cfp/proposal/preview                                             controllers.CallForPaper.previewProposal()
 POST          /cfp/proposal/save                                                controllers.CallForPaper.saveProposal()
+GET           /cfp/proposal/tags/autocomplete                                   controllers.CallForPaper.autoCompleteTag(term:String ?= "")
 
 GET           /cfp/proposal/edit/:proposalId                                    controllers.CallForPaper.editProposal(proposalId:String)
 GET           /cfp/proposal/edit/:proposalId/speakers                           controllers.CallForPaper.editOtherSpeakers(proposalId:String)
@@ -139,6 +140,15 @@ GET           /admin/sanitycheck/proposals                                      
 
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
+
+# Tags
+GET           /admin/tags/list                                                  controllers.Backoffice.showAllTags()
+GET           /admin/tags/new                                                   controllers.Backoffice.newTag()
+GET           /admin/tags/edit/:uuid                                            controllers.Backoffice.editTag(uuid : String)
+GET           /admin/tags/import                                                controllers.Backoffice.importTags()
+POST          /admin/tag/save                                                   controllers.Backoffice.saveTag()
+POST          /admin/tags/saveAll                                               controllers.Backoffice.saveImportTags()
+GET           /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
 
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()

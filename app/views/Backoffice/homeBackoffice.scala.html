@@ -66,6 +66,11 @@
             <h4><i class="icon-moon"></i> Cron</h4>
             <a href="@routes.Backoffice.sendDraftReminder()" class="btn btn-sm btn-primary"><i class="icon-refresh"></i> Send a reminder to speakers for DRAFT</a>
 
+            <h4><i class="icon-tags"></i> Tags</h4>
+            <a href="@routes.Backoffice.showAllTags()" class="btn btn-sm btn-primary"><i class="icon-tag"></i> All tags</a>
+            <a href="@routes.Backoffice.newTag()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> New tag</a>
+            <a href="@routes.Backoffice.importTags()" class="btn btn-sm btn-primary"><i class="icon-truck"></i> Import tags</a>
+
             <h4><i class="icon-search"></i> ElasticSearch</h4>
             <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-warning btn-sm"><i class="icon-remove"></i> Delete Index</a>
             <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="icon-search"></i> Re-index</a><br>

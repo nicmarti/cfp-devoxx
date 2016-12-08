@@ -322,7 +322,7 @@ class ApprovedProposalSpecs extends PlaySpecification {
         "audience level", "summary 2", "private message 2", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.JAVA.id, Some("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.co.uk"))
+        youTubeLink = Some("http://www.youtube.fr"))
 
       Proposal.save("speaker1", proposal, ProposalState.SUBMITTED)
 
