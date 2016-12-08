@@ -292,7 +292,7 @@ object Backoffice extends SecureCFPController {
 
   def showAllTags = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val allTags = Tag.allTags()
+      val allTags = Tag.allTags().sortBy(t => t.value)
       Ok(views.html.Backoffice.showAllTags(allTags))
   }
 
