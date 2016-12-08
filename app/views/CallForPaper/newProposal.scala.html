@@ -50,6 +50,8 @@
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,'_default->"--- Please select ---",  'class->"form-control")
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,'_default->"--- Please select ---",  'class->"form-control")
 
+                <label for="tag1">Tags</label>
+                <input id="tag1" placeholder="Please select a tag" title="tag 1"><input id="tag2" placeholder="and another one" title="tag 2"><input placeholder="thanks!" id="tag3" title="tag 3">
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
 
                 @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
@@ -73,6 +75,17 @@
             <p><label>@Messages("videoLinkMessage") : </label><br> @Messages("videoLinkMessage.help")</p>
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
             <p><label>@Messages("mainSpeaker2")</label><br> @Messages("mainSpeaker.help")</p>
+
+            <script>
+
+                    $("[id^=tag]" ).autocomplete({
+                        source: '/cfp/proposal/tags/autocomplete',
+                        minLength: 2,
+                        select: function( event, ui ) {
+                            $(this).val(ui.item.value);
+                        }});
+            </script>
+
             @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                 <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
             }

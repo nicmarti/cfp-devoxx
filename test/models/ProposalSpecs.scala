@@ -365,7 +365,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr"))
+      videoLink = Some("http://www.youtube.fr"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
 
@@ -406,7 +406,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr"))
+      videoLink = Some("http://www.youtube.fr"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
 
@@ -439,7 +439,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr"))
+      videoLink = Some("http://www.youtube.fr"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DRAFT)
 
@@ -472,7 +472,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr"))
+      videoLink = Some("http://www.youtube.fr"))
 
     Proposal.save("user_1234", keepProposal, ProposalState.DELETED)
 
@@ -507,7 +507,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr"))
+      videoLink = Some("http://www.youtube.fr"))
 
     Proposal.save("user_1234", proposalToDelete, ProposalState.DELETED)
 
@@ -526,7 +526,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr"))
+      videoLink = Some("http://www.youtube.fr"))
 
     Proposal.save("user_1234", archivedProposal, ProposalState.ARCHIVED)
 
@@ -545,7 +545,7 @@ class ProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr"))
+      videoLink = Some("http://www.youtube.fr"))
 
     Proposal.save("user_1234", someProposal, ProposalState.SUBMITTED)
 

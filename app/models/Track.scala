@@ -40,7 +40,7 @@ object Track {
 
   val all = ConferenceDescriptor.ConferenceTracks.ALL
 
-  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).toSeq.sorted
+  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).sorted
 
   val allIDs=ConferenceDescriptor.ConferenceTracks.ALL.map(_.id)
 
