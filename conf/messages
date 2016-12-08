@@ -356,7 +356,7 @@ cfp.isClosed=The CFP is closed
 cfp.isClosed.expl=CFP is closed and does not accept submission.
 cfp.closed.enter=Sign-in
 tbl.cfp.closed=CFP closed
-cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
+cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completely once it has been submitted. A proposal that differs from the original version will be refused.
 
 forget.password.title=Forget your access code?
 forget.password.txt=Send me a new access code
