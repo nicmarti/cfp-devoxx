@@ -346,6 +346,7 @@ object Backoffice extends SecureCFPController {
     implicit request =>
       // TODO is used by proposal then don't allow deletion of tag
       Tag.delete(uuid)
+      val allTags = Tag.allTags()
       Ok(views.html.Backoffice.showAllTags(allTags)).flashing("success" -> Messages("tag.removed"))
   }
 }
