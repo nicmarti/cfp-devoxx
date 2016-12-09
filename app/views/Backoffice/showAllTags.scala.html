@@ -45,9 +45,9 @@
             <tbody>
             @tags.map{ tag =>
               <tr>
-                <td><a href="@routes.Backoffice.editTag(tag.uuid)" class="icon-edit"></a></td>
+                <td><a href="@routes.Backoffice.editTag(tag.id)" class="icon-edit"></a></td>
                 <td>@tag.value</td>
-                <td><a href="@routes.Backoffice.deleteTag(tag.uuid)" class="icon-remove btn-color-1"></a></td>
+                <td><a href="@routes.Backoffice.deleteTag(tag.id)" class="icon-remove btn-color-1"></a></td>
               </tr>
             }
             </tbody>

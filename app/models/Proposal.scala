@@ -133,7 +133,8 @@ case class Proposal(id: String,
                     demoLevel: Option[String],
                     userGroup: Option[Boolean],
                     wishlisted: Option[Boolean] = None,
-                    videoLink: Option[String] = None) {
+                    videoLink: Option[String] = None,
+                    tags: Option[Seq[Tag]]) {
 
   def escapedTitle: String = title match {
     case null => ""
@@ -208,6 +209,7 @@ object Proposal {
         secondarySpeaker =>
           tx.sadd("Proposals:ByAuthor:" + secondarySpeaker, proposalId)
       }
+
       // other speaker
       proposalWithMainSpeaker.otherSpeakers.map {
         otherSpeaker =>
@@ -220,6 +222,8 @@ object Proposal {
 
       changeProposalState(authorUUID, proposal.id, proposalState)
 
+      changeTags(proposal.id, proposal.tags)
+
       // Reflect any changes such as talkType or speaker to the list of accepted/refused talks.
       ApprovedProposal.reflectProposalChanges(proposal)
 
@@ -227,20 +231,27 @@ object Proposal {
   }
 
   val proposalForm = Form(mapping(
-    "id" -> optional(text)
-    , "lang" -> text
-    , "title" -> nonEmptyText(maxLength = 125)
-    , "secondarySpeaker" -> optional(text)
-    , "otherSpeakers" -> list(text)
-    , "talkType" -> nonEmptyText
-    , "audienceLevel" -> text
-    , "summary" -> nonEmptyText(maxLength = 200 + ConferenceDescriptor.current().maxProposalSummaryCharacters) // Add 20% characters for Markdown extra characters.
-    , "privateMessage" -> nonEmptyText(maxLength = 3500)
-    , "sponsorTalk" -> boolean
-    , "track" -> nonEmptyText
-    , "demoLevel" -> optional(text)
-    , "userGroup" -> optional(boolean)
-    , "videoLink" -> optional(text)
+    "id" -> optional(text),
+    "lang" -> text,
+    "title" -> nonEmptyText(maxLength = 125),
+    "secondarySpeaker" -> optional(text),
+    "otherSpeakers" -> list(text),
+    "talkType" -> nonEmptyText,
+    "audienceLevel" -> text,
+    // Add 20% characters for Markdown extra characters.
+    "summary" -> nonEmptyText(maxLength = 200 + ConferenceDescriptor.current().maxProposalSummaryCharacters),
+    "privateMessage" -> nonEmptyText(maxLength = 3500),
+    "sponsorTalk" -> boolean,
+    "track" -> nonEmptyText,
+    "demoLevel" -> optional(text),
+    "userGroup" -> optional(boolean),
+    "videoLink" -> optional(text),
+    "tags" -> optional(seq(
+      mapping(
+        "id" -> optional(text),
+        "value" -> text
+      )(Tag.validateNewTag)(Tag.unapplyTagForm)
+    ))
   )(validateNewProposal)(unapplyProposalForm))
 
   def generateId(): String = Redis.pool.withClient {
@@ -267,7 +278,8 @@ object Proposal {
                           track: String,
                           demoLevel: Option[String],
                           userGroup: Option[Boolean],
-                          videoLink: Option[String] = None): Proposal = {
+                          videoLink: Option[String] = None,
+                          tags: Option[Seq[Tag]] = None): Proposal = {
     Proposal(
       id.getOrElse(generateId()),
       ConferenceDescriptor.current().eventCode,
@@ -285,8 +297,9 @@ object Proposal {
       Track.parse(track),
       demoLevel,
       userGroup,
-      wishlisted = None, //deprecated, keeped for backward compatibiliy
-      videoLink
+      wishlisted = None, //deprecated, kept for backward compatibility
+      videoLink,
+      tags
     )
   }
 
@@ -297,7 +310,7 @@ object Proposal {
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
-    Boolean, String, Option[String], Option[Boolean], Option[String])] = {
+    Boolean, String, Option[String], Option[Boolean], Option[String], Option[Seq[Tag]] )] = {
     Option((
       Option(p.id),
       p.lang,
@@ -312,7 +325,8 @@ object Proposal {
       p.track.id,
       p.demoLevel,
       p.userGroup,
-      p.videoLink))
+      p.videoLink,
+      p.tags))
   }
 
   def changeTrack(uuid: String, proposal: Proposal) = Redis.pool.withClient {
@@ -365,6 +379,18 @@ object Proposal {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
         Event.storeEvent(Event(proposalId, uuid, s"Posted new talk $proposalId with status ${newState.code}"))
+      }
+  }
+
+  def changeTags(proposalId: String, tags: Option[Seq[Tag]]) = Redis.pool.withClient {
+    implicit client =>
+      if (tags.isDefined) {
+        // TODO remove existing entries for proposal ID (update)
+
+        tags.get.foreach( tag => {
+          // Tags:233 is a Set and it contains proposalId
+          client.sadd("Tags:" + tag.id, proposalId)
+        } )
       }
   }
 

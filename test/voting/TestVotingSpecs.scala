@@ -628,7 +628,7 @@ class TestVotingSpecs extends PlaySpecification {
     val proposal = Proposal.validateNewProposal(Some(proposalId), "fr", "test proposal", Some("secondarySpeaker"), Nil,
       ConferenceDescriptor.ConferenceProposalTypes.CONF.id, "audience level", "summary", "private message",
       sponsorTalk = false, ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"), userGroup = None,
-      youTubeLink = Some("http://www.youtube.co.uk"))
+      videoLink = Some("http://www.youtube.co.uk"), tags = None)
     Proposal.save(uuidTest, proposal, ProposalState.ACCEPTED)
     proposalId
   }

@@ -10,7 +10,7 @@ import play.api.libs.json.Json
   *
   * @author Stephan Janssen
   */
-case class Tag(uuid: String, value: String) { }
+case class Tag(id: String, value: String) { }
 
 object Tag {
 
@@ -27,46 +27,46 @@ object Tag {
     id: Option[String],
     value: String): Tag = {
     Tag (
-      id.getOrElse(generateUUID(value)),
+      id.getOrElse(generateID(value)),
       value
     )
   }
 
   def unapplyTagForm(tag: Tag): Option[(Option[String], String)] = {
     Option(
-      Option(tag.uuid),
+      Option(tag.id),
       tag.value)
   }
 
-  def generateUUID(value:String): String = {
+  def generateID(value:String): String = {
     value.toLowerCase.trim.hashCode.toString
   }
 
   def createTag(value: String): Tag = {
-    Tag(generateUUID(value), value)
+    Tag(generateID(value), value)
   }
 
   def save(newTag: Tag) = Redis.pool.withClient {
     client =>
-      client.hset(tags, newTag.uuid, newTag.value)
+      client.hset(tags, newTag.id, newTag.value)
   }
 
-  def findByUUID(uuid: String): Option[Tag] = Redis.pool.withClient {
+  def findByID(id: String): Option[Tag] = Redis.pool.withClient {
     client =>
-      client.hget(tags, uuid).map {
+      client.hget(tags, id).map {
         value => createTag(value)
       }
   }
 
-  def findTagById(uuid : String): Option[String] = Redis.pool.withClient {
+  def findTagById(id : String): Option[String] = Redis.pool.withClient {
     client => {
-      client.hget(tags, uuid)
+      client.hget(tags, id)
     }
   }
 
-  def delete(uuid: String) = Redis.pool.withClient {
+  def delete(id: String) = Redis.pool.withClient {
     client =>
-      client.hdel(tags, uuid)
+      client.hdel(tags, id)
   }
 
   def allTags(): List[Tag] = Redis.pool.withClient {
@@ -79,6 +79,6 @@ object Tag {
   def isNew(value: String): Boolean = Redis.pool.withClient {
     client =>
       // Important when we create a new tag
-      !client.hexists(tags, generateUUID(value))
+      !client.hexists(tags, generateID(value))
   }
 }
