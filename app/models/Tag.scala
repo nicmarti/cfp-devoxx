@@ -1,6 +1,6 @@
 package models
 
-import library.{Redis, ZapJson}
+import library.Redis
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
@@ -16,7 +16,7 @@ object Tag {
 
   implicit val tagFormat = Json.format[Tag]
 
-  private val tags = "TagsTmp"
+  private val tags = "Tags"
 
   val tagForm = Form(mapping(
     "id" -> optional(text),
@@ -39,7 +39,7 @@ object Tag {
   }
 
   def generateUUID(value:String): String = {
-    value.trim.hashCode.toString
+    value.toLowerCase.trim.hashCode.toString
   }
 
   def createTag(value: String): Tag = {
@@ -48,18 +48,13 @@ object Tag {
 
   def save(newTag: Tag) = Redis.pool.withClient {
     client =>
-      val jsonTag = Json.stringify(Json.toJson(newTag))
-      client.hset(tags, newTag.uuid, jsonTag)
+      client.hset(tags, newTag.uuid, newTag.value)
   }
 
   def findByUUID(uuid: String): Option[Tag] = Redis.pool.withClient {
     client =>
-      client.hget(tags, uuid).flatMap {
-        json: String =>
-          Json.parse(json).validate[Tag].fold(invalid => {
-            play.Logger.error("Invalid json format for Tag, unable to unmarshall " + ZapJson.showError(invalid))
-            None
-          }, validTag => Some(validTag))
+      client.hget(tags, uuid).map {
+        value => createTag(value)
       }
   }
 
@@ -76,11 +71,9 @@ object Tag {
 
   def allTags(): List[Tag] = Redis.pool.withClient {
     client =>
-      client.hvals(tags).flatMap {
-        jsString =>
-          val maybeTag = Json.parse(jsString).asOpt[Tag]
-          maybeTag
-      }
+      client.hvals(tags).map(
+        value => createTag(value)
+      )
   }
 
   def isNew(value: String): Boolean = Redis.pool.withClient {
