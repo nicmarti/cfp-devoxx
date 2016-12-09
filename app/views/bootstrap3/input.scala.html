@@ -1,0 +1,14 @@
+@(field: Field, label: String = "CHANGEME", placeholder: String = "")
+
+<div class="form-group input-group @if(field.hasErrors) {has-error}">
+    <input  type="text"
+            class="form-control"
+            id="@field.id"
+            name="@field.name"
+            value="@field.value.getOrElse("")"
+            placeholder="@placeholder" />
+    <span class="input-group-addon">
+      <i class="icon-tag"></i>
+    </span>
+    <span class="help-block">@{field.error.map { error => error.message }}</span>
+</div>

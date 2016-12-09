@@ -50,12 +50,23 @@
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,'_default->"--- Please select ---",  'class->"form-control")
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,'_default->"--- Please select ---",  'class->"form-control")
 
-                <label for="tag1">Please select 3 tags related to your proposal</label><br>
-                <input id="tag1" name="tags[0].value" class="form-control" placeholder="primary tag" size="50" title="tag 1"><br>
-                <input id="tag2" name="tags[1].value" class="form-control" placeholder="secondary tag" size="50" title="tag 2"><br>
-                <input id="tag3" name="tags[2].value" class="form-control" placeholder="related tag" size="50" title="tag 3"><br>
-                <input id="tag4" name="tags[3].value" class="form-control" placeholder="optional tag" size="50" title="tag 4"><br>
-                <input id="tag5" name="tags[4].value" class="form-control" placeholder="going the full 9 yards" size="50" title="tag 5"><br>
+                <label for="tag1">@Messages("tag.title")</label><br>
+
+                @views.html.bootstrap3.input(newProposal("tags[0].value"),
+                    placeholder = Messages("tag.placeholder1"))
+
+                @views.html.bootstrap3.input(newProposal("tags[1].value"),
+                    placeholder = Messages("tag.placeholder2"))
+
+                @views.html.bootstrap3.input(newProposal("tags[2].value"),
+                    placeholder = Messages("tag.placeholder3"))
+
+                @views.html.bootstrap3.input(newProposal("tags[3].value"),
+                    placeholder = Messages("tag.placeholder4"))
+
+                @views.html.bootstrap3.input(newProposal("tags[4].value"),
+                    placeholder = Messages("tag.placeholder5"))
+
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
 
                 @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
@@ -80,16 +91,6 @@
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
             <p><label>@Messages("mainSpeaker2")</label><br> @Messages("mainSpeaker.help")</p>
 
-            <script>
-
-                    $("[id^=tag]" ).autocomplete({
-                        source: '/cfp/proposal/tags/autocomplete',
-                        minLength: 2,
-                        select: function( event, ui ) {
-                            $(this).val(ui.item.value);
-                        }});
-            </script>
-
             @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                 <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
             }
@@ -100,6 +101,15 @@
     </div>
 
 <script type="text/javascript" src="/assets/js/maxlength.js"></script>
+
+<script type="text/javascript">
+    $("[id^=tags]" ).autocomplete({
+        source: '/cfp/proposal/tags/autocomplete',
+        minLength: 2,
+        select: function( event, ui ) {
+            $(this).val(ui.item.value);
+        }});
+</script>
 
 <script type="text/javascript">
 $(document).ready(function($){
