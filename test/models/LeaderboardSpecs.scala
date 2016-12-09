@@ -84,7 +84,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -118,7 +119,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -154,7 +156,9 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -202,7 +206,9 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -258,7 +264,8 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -299,7 +306,10 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
+
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
             val proposalId2= RandomStringUtils.randomAlphabetic(12)
@@ -316,7 +326,10 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
+
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
       val reviewerUUID = "SUPER_VOTER"
@@ -374,7 +387,10 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
+
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
       val proposalId2= RandomStringUtils.randomAlphabetic(12)
@@ -391,7 +407,10 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
+
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
       Leaderboard.computeStats()
@@ -423,7 +442,10 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.UNKNOWN
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
+
       Proposal.save("mainSpeakerUUID", proposal, ProposalState.SUBMITTED)
 
       val proposalId2= RandomStringUtils.randomAlphabetic(12)
@@ -440,7 +462,10 @@ class LeaderboardSpecs extends PlaySpecification {
         , track = Track.all.filterNot(_.id==Track.UNKNOWN.id).head
         , demoLevel = Some("l1")
         , userGroup = Some(false)
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
+
       Proposal.save("mainSpeakerUUID2", proposal2, ProposalState.SUBMITTED)
 
       Leaderboard.computeStats()

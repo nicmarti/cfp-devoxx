@@ -51,11 +51,11 @@
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,'_default->"--- Please select ---",  'class->"form-control")
 
                 <label for="tag1">Please select 3 tags related to your proposal</label><br>
-                <input id="tag1" class="form-control" placeholder="primary tag" size="50" title="tag 1"><br>
-                <input id="tag2" class="form-control" placeholder="secondary tag" size="50" title="tag 2"><br>
-                <input id="tag3" class="form-control" placeholder="related tag" size="50" title="tag 3"><br>
-                <input id="tag3" class="form-control" placeholder="optional tag" size="50" title="tag 4"><br>
-                <input id="tag3" class="form-control" placeholder="going the full 9 yards" size="50" title="tag 5"><br>
+                <input id="tag1" name="tags[0].value" class="form-control" placeholder="primary tag" size="50" title="tag 1"><br>
+                <input id="tag2" name="tags[1].value" class="form-control" placeholder="secondary tag" size="50" title="tag 2"><br>
+                <input id="tag3" name="tags[2].value" class="form-control" placeholder="related tag" size="50" title="tag 3"><br>
+                <input id="tag4" name="tags[3].value" class="form-control" placeholder="optional tag" size="50" title="tag 4"><br>
+                <input id="tag5" name="tags[4].value" class="form-control" placeholder="going the full 9 yards" size="50" title="tag 5"><br>
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
 
                 @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {

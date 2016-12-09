@@ -308,10 +308,12 @@ object Backoffice extends SecureCFPController {
         hasErrors => BadRequest(views.html.Backoffice.newTag(hasErrors)),
         tagData => {
           // Is it an update?
-          if (Tag.findByUUID(tagData.uuid).nonEmpty) {
-            Tag.delete(tagData.uuid)
+          if (Tag.findByID(tagData.id).nonEmpty) {
+            Tag.delete(tagData.id)
+            Tag.save(Tag.createTag(tagData.value))
+          } else {
+            Tag.save(tagData)
           }
-          Tag.save(tagData)
         }
       )
 
@@ -320,7 +322,7 @@ object Backoffice extends SecureCFPController {
 
   def editTag(uuid : String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val foundTag = Tag.findByUUID(uuid)
+      val foundTag = Tag.findByID(uuid)
        foundTag match {
         case None => NotFound("Sorry, this tag does not exit")
         case Some(tag) => {
@@ -348,10 +350,10 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.imported"))
   }
 
-  def deleteTag(uuid : String) = SecuredAction(IsMemberOf("admin")) {
+  def deleteTag(id : String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       // TODO is used by proposal then don't allow deletion of tag
-      Tag.delete(uuid)
+      Tag.delete(id)
       val allTags = Tag.allTags()
       Ok(views.html.Backoffice.showAllTags(allTags)).flashing("success" -> Messages("tag.removed"))
   }

@@ -103,7 +103,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
 
       // WHEN
@@ -136,7 +138,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -171,7 +175,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -206,7 +212,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -245,7 +253,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save("123", proposal, ProposalState.SUBMITTED)
 
@@ -289,7 +299,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
       Review.voteForProposal(proposalId, reviewerUUID, 10)
@@ -338,7 +350,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
 
@@ -378,7 +392,9 @@ class ReviewSpecs extends PlaySpecification with Debug {
         , track = Track.UNKNOWN
         , demoLevel = Some("novice")
         , userGroup = None
-        , wishlisted = None)
+        , wishlisted = None
+        , videoLink = None
+        , tags = None)
 
       Proposal.save(author, proposal, ProposalState.SUBMITTED)
       // Both votes 0 for this talk
