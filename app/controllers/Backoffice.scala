@@ -306,7 +306,13 @@ object Backoffice extends SecureCFPController {
 
       Tag.tagForm.bindFromRequest.fold(
         hasErrors => BadRequest(views.html.Backoffice.newTag(hasErrors)),
-        tagData => Tag.save(tagData)
+        tagData => {
+          // Is it an update?
+          if (Tag.findByUUID(tagData.uuid).nonEmpty) {
+            Tag.delete(tagData.uuid)
+          }
+          Tag.save(tagData)
+        }
       )
 
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.saved"))

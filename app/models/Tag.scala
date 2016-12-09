@@ -33,9 +33,9 @@ object Tag {
   }
 
   def unapplyTagForm(tag: Tag): Option[(Option[String], String)] = {
-    Option((
+    Option(
       Option(tag.uuid),
-      tag.value))
+      tag.value)
   }
 
   def generateUUID(value:String): String = {
