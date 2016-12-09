@@ -357,4 +357,11 @@ object Backoffice extends SecureCFPController {
       val allTags = Tag.allTags()
       Ok(views.html.Backoffice.showAllTags(allTags)).flashing("success" -> Messages("tag.removed"))
   }
+
+  def getProposalsByTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allProposals = Tags.allProposalsByTags()
+
+      Ok(views.html.Backoffice.showAllProposalsByTags(allProposals))
+  }
 }
