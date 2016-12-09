@@ -149,6 +149,7 @@ GET           /admin/tags/import                                                
 POST          /admin/tag/save                                                   controllers.Backoffice.saveTag()
 POST          /admin/tags/saveAll                                               controllers.Backoffice.saveImportTags()
 GET           /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
+GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
 
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
