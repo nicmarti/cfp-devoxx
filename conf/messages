@@ -90,7 +90,7 @@ otherSpeakers=Other speakers
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">Info</a>.
 
-audienceLevel=Audience level :
+audienceLevel=Audience level
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
 1- for all audience, beginner or novice\
 2- for intermediate, talented\
@@ -547,6 +547,13 @@ tag.new=New Tag
 tag.saved=Tag saved
 tag.removed=Tag removed
 tag.imported=Tags imported
+tag.title=Please select min. 3 tags related to your proposal
+tag.placeholder1=Primary tag
+tag.placeholder2=Secondary tag
+tag.placeholder3=Related tag
+tag.placeholder4=Nice to have tag
+tag.placeholder5=The full Monty tag
+
 
 wishList.title=WishList
 wishList.menu=Menu

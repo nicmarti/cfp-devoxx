@@ -352,16 +352,19 @@ object Backoffice extends SecureCFPController {
 
   def deleteTag(id : String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      // TODO is used by proposal then don't allow deletion of tag
-      Tag.delete(id)
-      val allTags = Tag.allTags()
-      Ok(views.html.Backoffice.showAllTags(allTags)).flashing("success" -> Messages("tag.removed"))
+      if (Tags.isTagLinkedByProposal(id)) {
+        BadRequest("Tag is used by a proposal, unlink tag first.")
+      } else {
+        Tag.delete(id)
+        val allTags = Tag.allTags()
+        Ok(views.html.Backoffice.showAllTags(allTags)).flashing("success" -> Messages("tag.removed"))
+      }
   }
 
   def getProposalsByTags = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val allProposals = Tags.allProposalsByTags()
+      val allProposalsByTags = Tags.allProposals()
 
-      Ok(views.html.Backoffice.showAllProposalsByTags(allProposals))
+      Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
   }
 }
