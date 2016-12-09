@@ -27,7 +27,7 @@
         </div>
       }
       @helper.form(action = routes.Backoffice.saveTag()) {
-
+        <input type="hidden" name="id" value="@newTag("id").value">
         @helper.inputText(newTag("value"), 'class->"form-control")
 
         @if(newTag("value").value.isDefined) {
