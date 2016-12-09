@@ -17,7 +17,12 @@ object Tags {
     new TagProposalEntry(tag, proposal, proposalId)
   }
 
-  def allProposalsByTags(): List[TagProposalEntry] = Redis.pool.withClient {
+  def isTagLinkedByProposal(tagId : String): Boolean = Redis.pool.withClient {
+    client =>
+      client.smembers("Tags:"+tagId).nonEmpty
+  }
+
+  def allProposals(): List[TagProposalEntry] = Redis.pool.withClient {
     client =>
       val foundTags = scala.collection.mutable.Set[TagProposalEntry]()
 
