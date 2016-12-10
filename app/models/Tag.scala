@@ -51,14 +51,19 @@ object Tag {
       client.hset(tags, newTag.id, newTag.value)
   }
 
-  def findByID(id: String): Option[Tag] = Redis.pool.withClient {
+  def doesTagValueExist(value : String) : Boolean = Redis.pool.withClient {
+    client =>
+      client.hvals(tags).exists(tag => value.toLowerCase.equals(value))
+  }
+
+  def findById(id: String): Option[Tag] = Redis.pool.withClient {
     client =>
       client.hget(tags, id).map {
         value => createTag(value)
       }
   }
 
-  def findTagById(id : String): Option[String] = Redis.pool.withClient {
+  def findTagValueById(id : String): Option[String] = Redis.pool.withClient {
     client => {
       client.hget(tags, id)
     }
