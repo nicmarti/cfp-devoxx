@@ -308,7 +308,7 @@ object Backoffice extends SecureCFPController {
         hasErrors => BadRequest(views.html.Backoffice.newTag(hasErrors)),
         tagData => {
           // Is it an update?
-          if (Tag.findByID(tagData.id).nonEmpty) {
+          if (Tag.findById(tagData.id).nonEmpty) {
             Tag.delete(tagData.id)
             Tag.save(Tag.createTag(tagData.value))
           } else {
@@ -322,7 +322,7 @@ object Backoffice extends SecureCFPController {
 
   def editTag(uuid : String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val foundTag = Tag.findByID(uuid)
+      val foundTag = Tag.findById(uuid)
        foundTag match {
         case None => NotFound("Sorry, this tag does not exit")
         case Some(tag) => {

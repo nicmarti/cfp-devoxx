@@ -398,6 +398,7 @@ sw.proposal.title=Title
 sw.proposal.talkType=Type of presentation
 sw.proposal.summary=Summary
 sw.proposal.track=Track
+sw.proposal.tags=Tags
 sw.proposal.lang=Lang
 sw.proposals=Talks
 sw.proposal=Talk

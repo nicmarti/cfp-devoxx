@@ -697,7 +697,7 @@ object CFPAdmin extends SecureCFPController {
   def showProposalsByTagId(tagId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val tag = Tag.findByID(tagId).get
+      val tag = Tag.findById(tagId).get
       val proposals = Tags.allProposalsByTagId(tagId)
 
       Ok(views.html.CFPAdmin.showProposalsByTag(tag, proposals))

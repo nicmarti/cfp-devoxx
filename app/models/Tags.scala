@@ -42,7 +42,7 @@ object Tags {
 
         // Create TagProposalEntries
         proposals.foreach(proposalId => {
-          foundTags.add(createTagEntry(Tag.findByID(tagId).get.value,
+          foundTags.add(createTagEntry(Tag.findById(tagId).get.value,
                                        Proposal.findById(proposalId).get.title,
                                        proposalId))
         })
