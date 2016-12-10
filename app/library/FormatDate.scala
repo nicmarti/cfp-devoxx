@@ -37,12 +37,20 @@ import play.api.i18n.{Messages, Lang}
  */
 object FormatDate {
 
-  def ellapsed(maybeEventDate: Option[DateTime]): String = {
+  def elapsed(maybeEventDate: Option[DateTime]): String = {
     maybeEventDate.map {
       eventDate =>
         val p:PrettyTime = new PrettyTime()
         p.format(eventDate.toDate)
     }.getOrElse("Unknown")
+  }
+
+  def jodaDateFormat(date: DateTime, lang: Lang): String = {
+    DateTimeFormat.forPattern("d MMM YY").withLocale(lang.toLocale).print(date)
+  }
+
+  def jodaTimeFormat(date: DateTime, lang: Lang): String = {
+    DateTimeFormat.forPattern("HH:mm").withLocale(lang.toLocale).print(date)
   }
 
   def jodaFullDateFormat(date: DateTime, lang: Lang): String = {
