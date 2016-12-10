@@ -388,9 +388,17 @@ object Proposal {
 
         // Sync Tags:{tagId} Set for tags that have been removed
         val oldTags = Proposal.findById(proposalId).get.tags
+        play.Logger.of("models.Proposal").warn("Old tags: "+oldTags.get.toList.toStream.mkString(","))
+        play.Logger.of("models.Proposal").warn("New tags: "+newTags.get.toList.toStream.mkString(","))
+
         if (oldTags.isDefined) {
           val diff = oldTags.get.diff(newTags.get)
-            diff.foreach( oldTag => client.srem("Tags:" + oldTag.id, proposalId))
+          play.Logger.of("models.Proposal").warn("Diff : "+diff.mkString(","))
+
+            diff.map( oldTag => {
+              play.Logger.of("models.Proposal").warn("srem Tags:"+ oldTag.id + " for proposal "+proposalId)
+              client.srem("Tags:" + oldTag.id, proposalId)
+            })
         }
 
         // Add proposal id for new tags
