@@ -388,19 +388,24 @@ object Proposal {
     implicit client =>
       if (newTags.isDefined) {
 
-        // Sync Tags:{tagId} Set for tags that have been removed
-        val oldTags = Proposal.findById(proposalId).get.tags
-        play.Logger.of("models.Proposal").warn("Old tags: "+oldTags.get.toList.toStream.mkString(","))
-        play.Logger.of("models.Proposal").warn("New tags: "+newTags.get.toList.toStream.mkString(","))
+        // Existing proposal?
+        val oldProposal = Proposal.findById(proposalId)
+        if (oldProposal.isDefined) {
 
-        if (oldTags.isDefined) {
-          val diff = oldTags.get.diff(newTags.get)
-          play.Logger.of("models.Proposal").warn("Diff : "+diff.mkString(","))
+          // Sync Tags:{tagId} Set for tags that have been removed
+          val oldTags = oldProposal.get.tags
+          play.Logger.of("models.Proposal").warn("Old tags: " + oldTags.get.toList.toStream.mkString(","))
+          play.Logger.of("models.Proposal").warn("New tags: " + newTags.get.toList.toStream.mkString(","))
 
-            diff.map( oldTag => {
-              play.Logger.of("models.Proposal").warn("srem Tags:"+ oldTag.id + " for proposal "+proposalId)
+          if (oldTags.isDefined) {
+            val diff = oldTags.get.diff(newTags.get)
+            play.Logger.of("models.Proposal").warn("Diff : " + diff.mkString(","))
+
+            diff.map(oldTag => {
+              play.Logger.of("models.Proposal").warn("srem Tags:" + oldTag.id + " for proposal " + proposalId)
               client.srem("Tags:" + oldTag.id, proposalId)
             })
+          }
         }
 
         // Add proposal id for new tags
