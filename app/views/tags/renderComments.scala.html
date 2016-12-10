@@ -3,39 +3,43 @@
     <div class="media">
         @models.Speaker.findByUUID(c.uuidAuthor).map { speaker =>
             @models.Webuser.findByUUID(c.uuidAuthor).map { webuser =>
+
+                <small class="media-object">
+                    @Messages("tags.renderComment.postedBy",
+                        webuser.cleanName,
+                        library.FormatDate.jodaDateFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang),
+                        library.FormatDate.jodaTimeFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang))
+                </small>
+                <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">
                 @if(speaker.avatarUrl.isEmpty) {
-                    <small class="media-object">
-                       @Messages("tags.renderComment.postedBy" , webuser.cleanName , library.FormatDate.ellapsed(c.eventDate))
-                    </small>
-                    <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">
                         <img class="media-object" width="35" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
-                    </a>
                 } else {
-                    <small class="media-object">
-                        @Messages("tags.renderComment.postedBy", webuser.cleanName,library.FormatDate.ellapsed(c.eventDate))
-                    </small>
-                    <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">
                         <img class="media-object" width="35" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName"/>
-                    </a>
                 }
+                </a>
             }
         }
-    @if(c.uuidAuthor==Webuser.Internal.uuid) {
-        <small class="media-object">
-            @Messages("tags.renderComment.postedBy" ,Webuser.Internal.cleanName,  library.FormatDate.ellapsed(c.eventDate))
-        </small>
-        <a class="cfp-gravatars pull-left" href="#">
-            <img class="media-object" width="35" height="35" src="http://lorempixel.com/35/35/abstract/2"/>
-        </a>
-    }
+
+        @if(c.uuidAuthor==Webuser.Internal.uuid) {
+            <small class="media-object">
+                @Messages("tags.renderComment.postedBy",
+                    Webuser.Internal.cleanName,
+                    library.FormatDate.jodaDateFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang),
+                    library.FormatDate.jodaTimeFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang))
+            </small>
+            <a class="cfp-gravatars pull-left" href="#">
+                <img class="media-object" width="35" height="35" src="http://lorempixel.com/35/35/abstract/2"/>
+            </a>
+        }
+
         @defining(c.msg.replaceAll("script", ".script").replaceAll("\n", "<br>")) { message: String =>
             <span class="msgSpeaker media-object">@Html(message)</span>
-        @models.Proposal.ProposalIDRegExp.findAllIn(message).map { proposalIdRef =>
-            <span class="msgSpeaker media-object">@tags.linkToProposal(proposalIdRef)</span>
-        }
-        @models.Proposal.HttpUrl.findAllIn(message).map { test =>
-            <span class="msgSpeaker media-object"><a href="@test" target="_blank"><i class="icon-external-link"></i> @test</a></span>
-        }
+            @models.Proposal.ProposalIDRegExp.findAllIn(message).map { proposalIdRef =>
+                <span class="msgSpeaker media-object">@tags.linkToProposal(proposalIdRef)</span>
+            }
+            @models.Proposal.HttpUrl.findAllIn(message).map { test =>
+                <span class="msgSpeaker media-object"><a href="@test" target="_blank"><i class="icon-external-link"></i> @test</a></span>
+            }
         }
     </div>
 }

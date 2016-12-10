@@ -338,7 +338,7 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
-tags.renderComment.postedBy=Posted by {0} - {1}
+tags.renderComment.postedBy=Posted by {0} on {1} at {2}
 
 admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
