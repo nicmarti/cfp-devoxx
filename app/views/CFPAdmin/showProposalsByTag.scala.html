@@ -1,0 +1,21 @@
+@(tag:Tag, proposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@main("Proposals by Tag"){
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3><i class="icon-tags"></i> Found @tags.renderTotalWithLabel(proposals.size, "Proposal", "Proposals") with '@tag.value' tag</h3>
+        </div>
+        <div class="panel-body">
+            <ol>
+            @proposals.map { proposal =>
+                <li>
+                    <a href="@routes.CFPAdmin.openForReview(proposal._1)">@proposal._2.title</a> by @Speaker.findByUUID(proposal._2.mainSpeaker).get.cleanName
+                </li>
+            }
+            </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+}

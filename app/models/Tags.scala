@@ -22,6 +22,12 @@ object Tags {
       client.smembers("Tags:"+tagId).nonEmpty
   }
 
+  def allProposalsByTagId(tagId : String) : Map[String, Proposal] = Redis.pool.withClient {
+    client =>
+      val proposalIds = client.smembers("Tags:"+tagId)
+      Proposal.loadAndParseProposals(proposalIds)
+  }
+
   def allProposals(): List[TagProposalEntry] = Redis.pool.withClient {
     client =>
       val foundTags = scala.collection.mutable.Set[TagProposalEntry]()
