@@ -189,6 +189,10 @@ object Proposal {
 
   def save(authorUUID: String, proposal: Proposal, proposalState: ProposalState): String = Redis.pool.withClient {
     client =>
+
+      // Has to happen here, so we can verify the old proposal tags and update any "relationships"
+      changeTags(proposal.id, proposal.tags)
+
       // We enforce the user id, for security reason
       val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
 
@@ -221,8 +225,6 @@ object Proposal {
       changeTrack(authorUUID, proposal)
 
       changeProposalState(authorUUID, proposal.id, proposalState)
-
-      changeTags(proposal.id, proposal.tags)
 
       // Reflect any changes such as talkType or speaker to the list of accepted/refused talks.
       ApprovedProposal.reflectProposalChanges(proposal)
