@@ -385,11 +385,15 @@ object Proposal {
   def changeTags(proposalId: String, tags: Option[Seq[Tag]]) = Redis.pool.withClient {
     implicit client =>
       if (tags.isDefined) {
-        // TODO remove existing entries for proposal ID (update)
+        // TODO Update any removed tags in the Redis Tags:{proposalId} Set
 
         tags.get.foreach( tag => {
-          // Tags:233 is a Set and it contains proposalId
-          client.sadd("Tags:" + tag.id, proposalId)
+
+          // Only allow tags that exist
+          if (Tag.doesTagValueExist(tag.value)) {
+
+            client.sadd("Tags:" + tag.id, proposalId)
+          }
         } )
       }
   }
