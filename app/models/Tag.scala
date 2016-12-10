@@ -53,7 +53,7 @@ object Tag {
 
   def doesTagValueExist(value : String) : Boolean = Redis.pool.withClient {
     client =>
-      client.hvals(tags).exists(tag => value.toLowerCase.equals(value))
+      client.hvals(tags).exists(tag => tag.toLowerCase.equals(value))
   }
 
   def findById(id: String): Option[Tag] = Redis.pool.withClient {

@@ -394,26 +394,29 @@ object Proposal {
 
           // Sync Tags:{tagId} Set for tags that have been removed
           val oldTags = oldProposal.get.tags
-          play.Logger.of("models.Proposal").warn("Old tags: " + oldTags.get.toList.toStream.mkString(","))
-          play.Logger.of("models.Proposal").warn("New tags: " + newTags.get.toList.toStream.mkString(","))
 
           if (oldTags.isDefined) {
             val diff = oldTags.get.diff(newTags.get)
-            play.Logger.of("models.Proposal").warn("Diff : " + diff.mkString(","))
-
-            diff.map(oldTag => {
-              play.Logger.of("models.Proposal").warn("srem Tags:" + oldTag.id + " for proposal " + proposalId)
-              client.srem("Tags:" + oldTag.id, proposalId)
-            })
+            if (diff.nonEmpty) {
+              diff.map(oldTag => {
+                client.srem("Tags:" + oldTag.id, proposalId)
+              })
+            }
           }
         }
 
         // Add proposal id for new tags
         newTags.get.foreach( tag => {
 
+          play.Logger.of("models.Proposal").info("tag:" + tag.value)
+
           // Only allow tags that exist
           if (Tag.doesTagValueExist(tag.value)) {
+            play.Logger.of("models.Proposal").info("tag " + tag.value + " exists")
+
             client.sadd("Tags:" + tag.id, proposalId)
+          } else {
+            play.Logger.of("models.Proposal").info("tag " + tag.value + " DOES NOT exist")
           }
         } )
       }
