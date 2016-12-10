@@ -382,16 +382,22 @@ object Proposal {
       }
   }
 
-  def changeTags(proposalId: String, tags: Option[Seq[Tag]]) = Redis.pool.withClient {
+  def changeTags(proposalId: String, newTags: Option[Seq[Tag]]) = Redis.pool.withClient {
     implicit client =>
-      if (tags.isDefined) {
-        // TODO Update any removed tags in the Redis Tags:{proposalId} Set
+      if (newTags.isDefined) {
 
-        tags.get.foreach( tag => {
+        // Sync Tags:{tagId} Set for tags that have been removed
+        val oldTags = Proposal.findById(proposalId).get.tags
+        if (oldTags.isDefined) {
+          val diff = oldTags.get.diff(newTags.get)
+            diff.foreach( oldTag => client.srem("Tags:" + oldTag.id, proposalId))
+        }
+
+        // Add proposal id for new tags
+        newTags.get.foreach( tag => {
 
           // Only allow tags that exist
           if (Tag.doesTagValueExist(tag.value)) {
-
             client.sadd("Tags:" + tag.id, proposalId)
           }
         } )
