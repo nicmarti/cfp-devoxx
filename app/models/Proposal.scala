@@ -409,14 +409,17 @@ object Proposal {
         newTags.get.foreach( tag => {
 
           play.Logger.of("models.Proposal").info("tag:" + tag.value)
+          if (tag.value.nonEmpty) {
+            // Only allow tags that exist
+            if (Tag.doesTagValueExist(tag.value)) {
+              play.Logger.of("models.Proposal").info("tag " + tag.value + " exists")
 
-          // Only allow tags that exist
-          if (Tag.doesTagValueExist(tag.value)) {
-            play.Logger.of("models.Proposal").info("tag " + tag.value + " exists")
-
-            client.sadd("Tags:" + tag.id, proposalId)
+              client.sadd("Tags:" + tag.id, proposalId)
+            } else {
+              play.Logger.of("models.Proposal").info("tag " + tag.value + " DOES NOT exist")
+            }
           } else {
-            play.Logger.of("models.Proposal").info("tag " + tag.value + " DOES NOT exist")
+            play.Logger.of("models.Proposal").info("tag is empty")
           }
         } )
       }
