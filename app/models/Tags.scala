@@ -5,7 +5,7 @@ import library.Redis
 /**
   * @author Stephan Janssen
   */
-case class TagProposalEntry(tag: String, proposal: String, proposalId: String) {
+case class TagProposalEntry(tag: Tag, proposal: Proposal) {
 
 }
 
@@ -13,8 +13,8 @@ object Tags {
 
   private val tags = "Tags:*"
 
-  def createTagEntry(tag: String, proposal: String, proposalId: String): TagProposalEntry = {
-    new TagProposalEntry(tag, proposal, proposalId)
+  def createTagProposalEntry(tag: Tag, proposal: Proposal): TagProposalEntry = {
+    new TagProposalEntry(tag, proposal)
   }
 
   def isTagLinkedByProposal(tagId : String): Boolean = Redis.pool.withClient {
@@ -42,12 +42,11 @@ object Tags {
 
         // Create TagProposalEntries
         proposals.foreach(proposalId => {
-          foundTags.add(createTagEntry(Tag.findById(tagId).get.value,
-                                       Proposal.findById(proposalId).get.title,
-                                       proposalId))
+          foundTags.add(createTagProposalEntry(Tag.findById(tagId).get,
+                                               Proposal.findById(proposalId).get))
         })
       })
 
-      foundTags.toList.sortBy(tpe => tpe.tag)
+      foundTags.toList.sortBy(tpe => tpe.tag.value)
   }
 }
