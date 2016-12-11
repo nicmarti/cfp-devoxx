@@ -724,10 +724,14 @@ object CFPAdmin extends SecureCFPController {
   def showProposalsByTagId(tagId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val tag = Tag.findById(tagId).get
-      val proposals = Tags.allProposalsByTagId(tagId)
+      val tag = Tag.findById(tagId)
+      if (tag.isDefined) {
+        val proposals = Tags.allProposalsByTagId(tagId)
 
-      Ok(views.html.CFPAdmin.showProposalsByTag(tag, proposals))
+        Ok(views.html.CFPAdmin.showProposalsByTag(tag.get, proposals))
+      } else {
+        BadRequest("Invalid tag")
+      }
   }
 
   def history(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
