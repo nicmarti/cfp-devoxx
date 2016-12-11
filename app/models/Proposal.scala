@@ -191,7 +191,7 @@ object Proposal {
     client =>
 
       // Has to happen here, so we can verify the old proposal tags and update any "relationships"
-      changeTags(proposal.id, proposal.tags)
+      changeTags(proposal, proposal.tags)
 
       // We enforce the user id, for security reason
       val proposalWithMainSpeaker = proposal.copy(mainSpeaker = authorUUID)
@@ -384,12 +384,12 @@ object Proposal {
       }
   }
 
-  def changeTags(proposalId: String, newTags: Option[Seq[Tag]]) = Redis.pool.withClient {
+  def changeTags(proposal: Proposal, newTags: Option[Seq[Tag]]) = Redis.pool.withClient {
     implicit client =>
       if (newTags.isDefined) {
 
         // Existing proposal?
-        val oldProposal = Proposal.findById(proposalId)
+        val oldProposal = Proposal.findById(proposal.id)
         if (oldProposal.isDefined) {
 
           // Sync Tags:{tagId} Set for tags that have been removed
@@ -405,7 +405,7 @@ object Proposal {
 
             if (diff.nonEmpty) {
               diff.map(oldTag => {
-                client.srem("Tags:" + oldTag.id, proposalId)
+                client.srem("Tags:" + oldTag.id, proposal.id)
               })
             }
           }
@@ -420,7 +420,7 @@ object Proposal {
             if (Tag.doesTagValueExist(tag.value)) {
               play.Logger.of("models.Proposal").info("tag " + tag.value + " exists")
 
-              client.sadd("Tags:" + tag.id, proposalId)
+              client.sadd("Tags:" + tag.id, proposal.id)
             } else {
               play.Logger.of("models.Proposal").info("tag " + tag.value + " DOES NOT exist")
             }
