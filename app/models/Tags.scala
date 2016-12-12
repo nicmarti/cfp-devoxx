@@ -1,5 +1,6 @@
 package models
 
+import controllers.CallForPaper.TermCount
 import library.Redis
 
 /**
@@ -26,6 +27,24 @@ object Tags {
     client =>
       val proposalIds = client.smembers("Tags:"+tagId)
       Proposal.loadAndParseProposals(proposalIds)
+  }
+
+  def countProposalTags() : List[TermCount]  = Redis.pool.withClient {
+    client =>
+
+      val tagIDs: Set[String] = client.keys(tags).map(key => key.split(":").last)
+      val termCounts = scala.collection.mutable.Set[TermCount]()
+
+      tagIDs.map(tagId => {
+        val tagValue = Tag.findTagValueById(tagId).get
+
+        val count = client.scard("Tags:" + tagId)
+
+        termCounts.add(TermCount(tagValue, count.toInt))
+
+      })
+
+      termCounts.toList
   }
 
   def allProposals(): List[TagProposalEntry] = Redis.pool.withClient {

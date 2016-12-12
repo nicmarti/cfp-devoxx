@@ -367,4 +367,14 @@ object Backoffice extends SecureCFPController {
 
       Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
   }
+
+  def getCloudTag = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val termCounts = Tags.countProposalTags()
+      if (termCounts.nonEmpty) {
+        Ok(views.html.CallForPaper.cloudTags(termCounts))
+      } else {
+        NotFound("No proposal tags found")
+      }
+  }
 }
