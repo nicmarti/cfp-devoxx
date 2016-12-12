@@ -70,14 +70,16 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       val sorter = CFPAdmin.proposalSorter(sort)
       val orderer = CFPAdmin.proposalOrder(ascdesc)
-      // TODO after CFP is closed we want to review only Conference
-//      val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-//        .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
-//        .filterNot(_.sponsorTalk)
 
-       val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-        .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF)
-        .filterNot(_.sponsorTalk)
+      val allNotReviewed = if (ConferenceDescriptor.isCFPOpen) {
+        ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
+          .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
+          .filterNot(_.sponsorTalk)
+      } else {
+        ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
+          .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF)
+          .filterNot(_.sponsorTalk)
+      }
 
       val maybeFilteredProposals = track match {
         case None => allNotReviewed
@@ -85,7 +87,7 @@ object GoldenTicketController extends SecureCFPController {
       }
       val allProposalsForReview = CFPAdmin.sortProposals(maybeFilteredProposals, sorter, orderer)
 
-      val etag = "gt2_"+allProposalsForReview.hashCode()
+      val etag = "gt2_" + allProposalsForReview.hashCode()
 
       request.headers.get(IF_NONE_MATCH) match {
         case Some(tag) if tag == etag.toString => NotModified
@@ -119,10 +121,10 @@ object GoldenTicketController extends SecureCFPController {
               BadRequest(views.html.GoldenTicketController.showProposal(proposal, hasErrors, maybeMyVote))
             },
             validVote => {
-              if(Proposal.isSpeaker(proposalId,uuid)){
+              if (Proposal.isSpeaker(proposalId, uuid)) {
                 ReviewByGoldenTicket.voteForProposal(proposalId, uuid, 0)
                 Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> Messages("gt.vote.foryou"))
-              }else{
+              } else {
                 ReviewByGoldenTicket.voteForProposal(proposalId, uuid, validVote)
                 Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> Messages("gt.vote.submitted"))
               }
