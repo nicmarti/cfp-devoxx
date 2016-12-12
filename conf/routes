@@ -109,6 +109,7 @@ GET           /cfpadmin/allSpeakers/byProposals/byCompany                       
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
 GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     controllers.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge()
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()
+GET           /cfpadmin/allSpeakers/rejectedTalks/all                           controllers.CFPAdmin.allSpeakersWithRejectedTalks()
 GET           /cfpadmin/allSpeakers/acceptedTalks/export                        controllers.CFPAdmin.allSpeakersWithAcceptedTalksForExport()
 GET           /cfpadmin/allSpeakers/invited                                     controllers.InviteController.allInvitations()
 
