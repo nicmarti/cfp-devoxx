@@ -50,7 +50,9 @@
                 @tags.selectI18N(field = newProposal("audienceLevel"), options=ProposalType.audienceLevels,'_default->"--- Please select ---",  'class->"form-control")
                 @tags.selectI18N(field = newProposal("demoLevel"), options=ProposalType.demoLevels,'_default->"--- Please select ---",  'class->"form-control")
 
-                @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
+                @if(ConferenceDescriptor.isGoldenTicketActive) {
+                    @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
+                }
 
                 @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                     @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
