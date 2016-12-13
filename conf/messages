@@ -207,6 +207,11 @@ cldops.leaderboard=Cloud & Scaling
 track.bigdata.title=Big Data, Machine Learning, I.A & Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
 bigdata.label=Big Data, Machine Learning, IA & Analytics
+bigdata.leaderboard=Big Data & Analytics
+
+track.bigd.title=Big Data, Machine Learning, I.A & Analytics
+track.bigd.desc=From real-time analysis to massive prediction and cloud storage
+bigd.label=Big Data, Machine Learning, IA & Analytics
 bigd.leaderboard=Big Data & Analytics
 
 track.future.title=Future & Robotics
