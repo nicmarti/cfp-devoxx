@@ -45,7 +45,8 @@ The CFP is implemented with Scala and Play Framework v2.2.3. Redis 2.8 is used f
 - [BDX.IO](http://cfp.bdx.io/)
 - [Scala.IO](http://cfp.scala.io/)
 - [Breizh Camp](http://cfp.breizhcamp.org/)
-- [Droid Con](http://cfp.droidcon.fr/home/)
+- [Droidcon Paris](http://cfp.droidcon.fr/home/)
+- [Android Makers](http://cfp.androidmakers.fr)
 
 Send a message to (@nmartignole)[http://www.twitter.com/nmartignole) if you plan to use the CFP.
 
