@@ -118,6 +118,13 @@ reloadScheduleConfController.controller('ReloadScheduleConfController', function
         } else {
             var newConfType = $scope.loadedScheduledConfiguration.confType;
             $rootScope.slots = $scope.loadedScheduledConfiguration.slots;
+            $rootScope.available = 0;
+            $rootScope.slots.forEach(function(element) {
+                if (element.proposal == null) {
+                    $rootScope.available++;
+                }
+            });
+
             $location.path('/slots').search({confType: newConfType}).replace();
         }
     });
