@@ -10,7 +10,8 @@
 <div class="col-lg-12">
 <flash-messages>
 </flash-messages>
-    <ul ng-repeat="savedConf in allScheduledConfiguration">
+    <label>Filter <input ng-model="search" placeholder="Filter on event type"></label><br>
+    <ul ng-repeat="savedConf in allScheduledConfiguration | filter:search">
         <li>
             <strong>{{savedConf.key.confType}}</strong>
             created by
