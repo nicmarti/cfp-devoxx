@@ -1,0 +1,41 @@
+@(newTag:Form[models.Tag])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@main("New tag") {
+  <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          @if(newTag("value").value.isDefined) {
+            <h2>@Messages("tag.edit")</h2>
+          } else {
+            <h2>@Messages("tag.new")</h2>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable">
+        @flash.get("error").get
+        </div>
+      }
+      @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable">
+        @flash.get("success").get
+        </div>
+      }
+      @helper.form(action = routes.Backoffice.saveTag()) {
+        <input type="hidden" name="id" value="@newTag("id").value">
+        @helper.inputText(newTag("value"), 'class->"form-control")
+
+        @if(newTag("value").value.isDefined) {
+          <button type="submit" class="btn btn-success btn-lg"><i class="icon-save"></i> Update</button>
+        }else {
+          <button type="submit" class="btn btn-success btn-lg"><i class="icon-save"></i> Save</button>
+        }
+      }
+    </div>
+  </div>
+}

@@ -212,6 +212,19 @@ object CallForPaper extends SecureCFPController {
       )
   }
 
+  def autoCompleteTag(term:String) = SecuredAction {
+    implicit request => {
+
+      val tagsFound = Tag.allTags()
+                         .filter(tag => tag.value.toLowerCase.contains(term.toLowerCase))
+                         .sortBy(f => f.value)
+                         .map(tag => tag.value)
+                         .take(10)
+
+      Ok(Json.toJson(tagsFound))
+    }
+  }
+
   // Load a proposal by its id
   def editOtherSpeakers(proposalId: String) = SecuredAction {
     implicit request =>

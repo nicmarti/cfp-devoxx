@@ -1,0 +1,34 @@
+@(newTag:Form[models.Tag])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@main("Import tags") {
+  <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2>Import Tags</h2>
+          <p>Provide a semi colon (;) delimited list of tags to import.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable">
+        @flash.get("error").get
+        </div>
+      }
+      @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable">
+        @flash.get("success").get
+        </div>
+      }
+      @helper.form(action = routes.Backoffice.saveImportTags()) {
+
+        @helper.textarea(newTag("value"), 'class->"form-control")
+
+        <button type="submit" class="btn btn-success btn-lg"><i class="icon-save"></i> Import</button>
+      }
+    </div>
+  </div>
+}

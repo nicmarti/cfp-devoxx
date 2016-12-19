@@ -71,6 +71,10 @@
                                 <tr>
                                     <td>
                                         @proposal.title
+                                        @if(proposal.tags.isDefined) {
+                                            <br><br>
+                                            @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag))
+                                        }
                                     </td>
                                     <td>
                                     @Messages(proposal.track.label)

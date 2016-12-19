@@ -595,6 +595,23 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
   }
 
+  def allSpeakersWithRejectedTalks() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val refusedSpeakers = ApprovedProposal.allRefusedSpeakerIDs()
+      val approvedSpeakers = ApprovedProposal.allApprovedSpeakerIDs()
+
+      val diffRejectedSpeakers: Set[String] = refusedSpeakers.diff(approvedSpeakers)
+
+      val proposals: List[(Speaker, Iterable[Proposal])] = diffRejectedSpeakers.toList.map {
+        speakerId =>
+          val allProposalsForThisSpeaker = Proposal.allRejectedForSpeaker(speakerId)
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speakerId || p.secondarySpeaker == Some(speakerId))
+          (Speaker.findByUUID(speakerId).get, onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty)
+
+     Ok(views.html.CFPAdmin.allSpeakersWithRejectedProposals(proposals))
+  }
+
   def allSpeakersWithAcceptedTalksForExport() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val speakers = ApprovedProposal.allApprovedSpeakers()
@@ -692,6 +709,19 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val proposals = Review.allProposalsWithNoVotes
       Ok(views.html.CFPAdmin.showProposalsWithNoVotes(proposals))
+  }
+
+  def showProposalsByTagId(tagId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val tag = Tag.findById(tagId)
+      if (tag.isDefined) {
+        val proposals = Tags.allProposalsByTagId(tagId)
+
+        Ok(views.html.CFPAdmin.showProposalsByTag(tag.get, proposals))
+      } else {
+        BadRequest("Invalid tag")
+      }
   }
 
   def history(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {

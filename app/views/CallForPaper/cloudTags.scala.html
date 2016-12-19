@@ -18,7 +18,7 @@
 
   var someWords = [
         @cloud.map{tc=>
-{text:"@tc.term",size:@tc.count},
+            {text:"@tc.term",size:@tc.count},
         }
     ];
 
@@ -51,11 +51,11 @@
   }
 </script>
 <hr>
-<h3>World frequency</h3>
+<h3>Word frequency</h3>
 @cloud.map{termCount=>
     @termCount.term : @termCount.count<br>
 }
 <hr>
-@cloud.map(s=>"\""+s.term+"\"").mkString(", ")
+@cloud.map(s=>"\""+s.term+"\"").mkString("; ")
 </body>
 </html>

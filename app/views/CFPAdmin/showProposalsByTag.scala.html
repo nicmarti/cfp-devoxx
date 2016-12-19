@@ -1,0 +1,51 @@
+@(tag:Tag, proposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@main("Proposals by Tag"){
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3><i class="icon-tags"></i> Found @tags.renderTotalWithLabel(proposals.size, "proposal", "proposals") with '@tag.value' tag</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered table-striped table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Track</th>
+                        <th>Speakers</th>
+                        <th>Type of Talk</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+            @proposals.map { proposal =>
+                <tr>
+                    <td>
+                        <a href="@routes.CFPAdmin.openForReview(proposal._1)">@proposal._2.title</a><br><br>
+                        @proposal._2.tags.get.filter(tag => tag.value.nonEmpty).map( tag => tags.renderProposalTag(tag) )
+                    </td>
+                    <td>
+                        @Messages(proposal._2.track.label)
+                    </td>
+                    <td>
+                        @tags.renderGravatar(proposal._2.mainSpeaker)
+                        @proposal._2.secondarySpeaker.map { sc =>
+                            @tags.renderGravatar(sc)
+                        }
+                        @proposal._2.otherSpeakers.map { s =>
+                            @tags.renderGravatar(s)
+                        }
+                    </td>
+                    <td>@Messages(proposal._2.talkType.id)</td>
+                    <td>
+                        <a href="@routes.CFPAdmin.openForReview(proposal._2.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                    </td>
+
+                </tr>
+            }
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+}

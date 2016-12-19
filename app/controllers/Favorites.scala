@@ -54,7 +54,9 @@ object Favorites extends UserCFPController {
 
   def likeOrUnlike = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      formProposal.bindFromRequest().fold(hasErrors => BadRequest("Invalid proposalId"), proposalId => {
+      formProposal.bindFromRequest().fold(
+        hasErrors => BadRequest("Invalid proposalId"),
+        proposalId => {
         Proposal.findById(proposalId).filterNot(_.state == ProposalState.ARCHIVED).map {
           proposal =>
             if (FavoriteTalk.isFavByThisUser(proposal.id, request.webuser.uuid)) {

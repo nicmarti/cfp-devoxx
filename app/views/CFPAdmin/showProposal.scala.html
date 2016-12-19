@@ -52,41 +52,41 @@
                             <tr>
                                 <td colspan="4" class="proposal">
                                 @Html(proposal.summaryAsHtml)
+                                @if(proposal.tags.isDefined) {
+                                    @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag))
+                                }
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+
                     <table class="table table-bordered table-stripped">
                         <tbody>
                             <tr>
-                                <th colspan="1">@Messages("proposal.audienceLevel")</th>
-                                <td colspan="3">@Messages(proposal.audienceLevel + ".label")</td>
+                                <th class="proposalCol">@Messages("proposal.audienceLevel")</th>
+                                <td>@Messages(proposal.audienceLevel + ".label")</td>
                             </tr>
                             <tr>
-                                <th colspan="1">@Messages("proposal.demoLevel")</th>
-                                <td colspan="3">@proposal.demoLevel.map(d => Messages(d + ".label"))</td>
+                                <th class="proposalCol">@Messages("proposal.demoLevel")</th>
+                                <td>@proposal.demoLevel.map(d => Messages(d + ".label"))</td>
                             </tr>
-                        </tbody>
-                        <tfoot>
                             <tr>
-                                <th>@Messages("admin.sp.privateMessage")</th>
-                                <td colspan="2">@Html(proposal.privateMessageAsHtml)</td>
+                                <th class="proposalCol">@Messages("admin.sp.privateMessage")</th>
+                                <td>@Html(proposal.privateMessageAsHtml)</td>
                             </tr>
                             @if(proposal.sponsorTalk) {
                                 <tr>
-                                    <th>@Messages("admin.sp.sponsorTalk")</th>
-                                    <td colspan="2"><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
+                                    <th class="proposalCol">@Messages("admin.sp.sponsorTalk")</th>
+                                    <td><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
                                 </tr>
                             }
                             @if(proposal.videoLink.nonEmpty) {
                                 <tr>
-                                    <th>Related Video</th>
-                                    <td colspan="2">
-                                        @tags.renderVideoLink(proposal.videoLink.get)
-                                    </td>
+                                    <th class="proposalCol">Related Video</th>
+                                    <td>@tags.renderVideoLink(proposal.videoLink.get)</td>
                                 </tr>
                             }
-                        </tfoot>
+                        </tbody>
                     </table>
                 </div>
             </div>
