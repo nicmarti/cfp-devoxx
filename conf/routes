@@ -148,6 +148,7 @@ GET           /admin/tags/list                                                  
 GET           /admin/tags/new                                                   controllers.Backoffice.newTag()
 GET           /admin/tags/edit/:uuid                                            controllers.Backoffice.editTag(uuid : String)
 GET           /admin/tags/import                                                controllers.Backoffice.importTags()
+GET           /admin/tags/export                                                controllers.Backoffice.exportTags()
 POST          /admin/tag/save                                                   controllers.Backoffice.saveTag()
 POST          /admin/tags/saveAll                                               controllers.Backoffice.saveImportTags()
 GET           /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
