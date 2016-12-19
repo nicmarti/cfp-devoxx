@@ -194,6 +194,7 @@ GET           /2016/index.html                                                  
 GET           /2016/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2016/byday/:day                                                  controllers.Publisher.showByDay(day:String)
 GET           /2016/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET           /2016/sitemap.xml                                                 controllers.Assets.at(path="/public/devoxxbe2016", file="sitemap.xml")
 
 # This is Devoxx BE 2015
 # The folder is mounted from ./clevercloud/buckets.json to /bucket
