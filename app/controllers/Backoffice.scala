@@ -336,6 +336,12 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.importTags(Tag.tagForm))
   }
 
+  def exportTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allTags = Tag.allTags().sortBy(t => t.value)
+      Ok(views.html.Backoffice.exportTags(allTags))
+  }
+
   def saveImportTags() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
