@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <!-- www.check-domains.com sitemap generator -->
+
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/index.html</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>1.0000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/hack/thursday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/lab/thursday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/lab/friday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/bof/thursday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/quick/thursday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/quick/friday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/ignite/thursday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/conf/thursday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+   <url>
+      <loc>http://cfp.devoxx.co.uk/2017/agenda/conf/friday</loc>
+      <lastmod>2016-12-19T22:09:03+00:00</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8000</priority>
+   </url>
+</urlset>
