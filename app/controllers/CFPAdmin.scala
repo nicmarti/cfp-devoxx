@@ -76,13 +76,9 @@ object CFPAdmin extends SecureCFPController {
 
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
-      request.headers.get("If-None-Match") match {
-        case Some(tag) if tag == etag => NotModified
-        case _ =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
-            .withHeaders("ETag" -> etag)
-            .withCookies(Cookie("track", trackValue))
-      }
+      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
+        .withHeaders("ETag" -> etag)
+        .withCookies(Cookie("track", trackValue, Option(2592000)))  // Expires in one month
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
