@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.Backoffice.Redirect
 import controllers.Wishlist.{NotFound, Ok}
 import library.search.{DoIndexProposal, _}
 import library.{DraftReminder, Redis, ZapActor}
@@ -361,9 +362,13 @@ object Backoffice extends SecureCFPController {
       if (Tags.isTagLinkedByProposal(id)) {
         BadRequest("Tag is used by a proposal, unlink tag first.")
       } else {
-        Tag.delete(id)
-        val allTags = Tag.allTags()
-        Ok(views.html.Backoffice.showAllTags(allTags)).flashing("success" -> Messages("tag.removed"))
+        val tagValue = Tag.findTagValueById(id)
+        if (tagValue.isDefined) {
+          Tag.delete(id)
+          Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.removed", tagValue.get))
+        } else {
+          BadRequest("Tag ID doesn't exist")
+        }
       }
   }
 
