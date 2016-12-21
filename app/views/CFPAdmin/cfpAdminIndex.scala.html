@@ -41,17 +41,22 @@
 
             <div class="panel-body">
 
-                    @if(allProposalsForReview.nonEmpty) {
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
-                            </div>
+                <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
                         </div>
+                    </div>
 
-                        <i class="icon-filter"></i> Filter on
-                        @Track.allIDs.map{idTrack=>
+                    <i class="icon-filter"></i> Filter on
+                    @Track.allIDs.map{idTrack=>
+                        @if(track.get.equals(idTrack)) {
+                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@idTrack</a>
+                        }else {
                             <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
                         }
+                    }
+
+                    @if(allProposalsForReview.nonEmpty) {
                         <br>
                         <br>
                         <table class="table table-bordered table-striped table-hover table-condensed">
@@ -95,7 +100,7 @@
                             </tbody>
                         </table>
                     } else {
-                        <h4>@Messages("admin.cfp.empty")</h4>
+                        <h4>@Messages("admin.cfp.empty", track.get)</h4>
                     }
             </div>
         </div>
