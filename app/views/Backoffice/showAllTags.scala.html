@@ -20,43 +20,69 @@
     }
     @if(flash.get("success").isDefined){
       <div class="alert alert-success alert-dismissable col-md-12">
-      @Html(flash.get("success").get)
+        @flash.get("success").get
       </div>
     }
 
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3>All Tags</h3>
+          <h3><i class="icon-tags"></i> All Tags (@tags.length)</h3>
         </div>
 
         <div class="panel-body">
-
-        @if(tags.nonEmpty){
-          <h5>@tags.length tags available</h5>
-          <table id="allTags" class="table table-bordered table-hover table-condensed">
-            <thead>
-              <tr>
-                <th style="width: 20px"></th>
-                <th>Tag Name</th>
-                <th style="width: 20px"></th>
-              </tr>
-            </thead>
-            <tbody>
-            @tags.map{ tag =>
-              <tr>
-                <td><a href="@routes.Backoffice.editTag(tag.id)" class="icon-edit"></a></td>
-                <td>@tag.value</td>
-                <td><a href="@routes.Backoffice.deleteTag(tag.id)" class="icon-remove btn-color-1"></a></td>
-              </tr>
-            }
-            </tbody>
-          </table>
-        }else{
-          <P>There are no tags available, you should first create or import them.</P>
-        }
+          <a href="@routes.Backoffice.newTag()" class="btn btn-sm btn-primary">Create a new Tag</a>
+          <br><br>
+          @if(tags.nonEmpty){
+            <table id="tags" class="table table-bordered table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>Tag Name</th>
+                  <th style="width: 25px">Edit</th>
+                  <th style="width: 25px">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+              @tags.map{ tag =>
+                <tr>
+                  <td>
+                      @tag.value
+                  </td>
+                  <td>
+                    <form action="@routes.Backoffice.editTag(tag.id)" method="POST">
+                      <button type="submit" value="unactivate" class="btn btn-success btn-small"><i class="icon-edit"></i></button>
+                    </form>
+                  </td>
+                  <td>
+                    <form action="@routes.Backoffice.deleteTag(tag.id)" method="POST">
+                      <button type="submit" value="unactivate" class="btn btn-warning btn-small"><i class="icon-trash"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          }else{
+            <P>There are no tags available, you should first create or import them.</P>
+          }
         </div>
       </div>
     </div>
   </div>
+  <script type="text/javascript">
+          $(document).ready(function() {
+
+            $('#tags').dataTable({
+              "aaSorting": [[ 1, "desc" ]],
+              "iDisplayLength": 50,
+              "aLengthMenu": [[25, 50, 100], [25, 50, 100]],
+              "bStateSave": true,
+              "aoColumns": [
+                { "sType": "string"},
+                { "sType": "string"},
+                { "sType": "string"}
+              ]
+            });
+          } );
+  </script>
 }
