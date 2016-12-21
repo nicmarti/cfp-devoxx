@@ -13,7 +13,6 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
-import play.api.libs.Crypto
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Cookie
 
