@@ -20,7 +20,7 @@
         }
         @if(flash.get("success").isDefined) {
             <div class="alert alert-success alert-dismissable col-md-12">
-            @Html(flash.get("success").get)
+                @flash.get("success").get
             </div>
         }
         <div class="col-md-12">
