@@ -14,6 +14,7 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Cookie
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -47,25 +48,37 @@ object CFPAdmin extends SecureCFPController {
     "qualifications2" -> nonEmptyText(maxLength = 750)
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
-  def index(page: Int, sort: Option[String], ascdesc: Option[String], track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+  def index(page: Int,
+            sort: Option[String],
+            ascdesc: Option[String],
+            track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
       val uuid = request.webuser.uuid
       val sorter = proposalSorter(sort)
       val orderer = proposalOrder(ascdesc)
       val allNotReviewed = Review.allProposalsNotReviewed(uuid)
-      val maybeFilteredProposals = track match {
-        case None => allNotReviewed
-        case Some(trackLabel) => allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
+
+      // Get a default track to filter on and save it in cookie
+      var trackValue : String = Track.allIDs.take(1).last
+      val trackCookie = request.cookies.get("track")
+
+      if (track.isDefined) {
+        trackValue = track.get
+      } else if (trackCookie.isDefined) {
+          trackValue = trackCookie.get.value
       }
+
+      val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
       val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
+
       val twentyEvents = Event.loadEvents(20, page)
 
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
-      request.headers.get("If-None-Match") match {
-        case Some(tag) if tag == etag => NotModified
-        case _ => Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, track)).withHeaders("ETag" -> etag)
-      }
+      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
+        .withHeaders("ETag" -> etag)
+        .withCookies(Cookie("track", trackValue, Option(2592000)))  // Expires in one month
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
