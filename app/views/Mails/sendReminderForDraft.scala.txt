@@ -25,7 +25,7 @@ L'équipe de sélection de @Messages("longName")
 }
 Dear @firstName
 
-CFP will be closed on @ConferenceDescriptor.current().timing.cfpClosedOn.toString("EEEE dd/MM/YYYY HH:mm")
+The CFP for @Messages("CONF.title") will close on @ConferenceDescriptor.current().timing.cfpClosedOn.toString("EEEE dd/MM/YYYY HH:mm").
 
 We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on @Messages("longName") CFP.
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.

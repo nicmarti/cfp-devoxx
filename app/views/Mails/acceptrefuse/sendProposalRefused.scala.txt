@@ -17,13 +17,13 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
 ----------------------------------------------------------------------------------------------------------------
 }
 Hi,
-We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused,  keep in mind that
-we received close to 700+ proposals and the available slots are very limited.
+
+We're sorry to inform you that your proposal for @Messages("longYearlyName") did not make it into the final program for @Messages("CONF.title"). Please keep in mind that we received close to 700+ proposals and the available slots are very limited.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
 We would like to thank you sincerely for your proposal.
-Hopefully we can still welcome you as a Devoxxian, registration details
+Hopefully we can still welcome you as a Devoxxian, and to thank you for your effort of submitting a proposal we can offer you a 25% discount on the published ticket rates. Please use promotion code DVXSBMTR17 when registering at https://www.eventbrite.co.uk/e/devoxx-uk-2017-tickets-28649696012
 
 @ConferenceDescriptor.current().conferenceUrls.registration
 
