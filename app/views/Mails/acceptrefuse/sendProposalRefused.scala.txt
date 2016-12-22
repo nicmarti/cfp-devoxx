@@ -18,8 +18,7 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
 }
 Hi,
 
-We're sorry to inform you that your proposal for @Messages("longYearlyName") did not make it into the final program for @Messages("CONF.title"). Please keep in mind that
-we received close to 700+ proposals and the available slots are very limited.
+We're sorry to inform you that your proposal for @Messages("longYearlyName") did not make it into the final program for @Messages("CONF.title"). Please keep in mind that we received close to 700+ proposals and the available slots are very limited.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
