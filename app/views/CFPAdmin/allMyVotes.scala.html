@@ -16,10 +16,10 @@
                         @defining(allMyVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
-                            Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br>
+                            Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br/><br/>
                         }
                     }else{
-                        You haven't voted for any proposal so far.
+                        You haven't voted for any proposal so far. <br/><br/>
                     }
 
                     @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
