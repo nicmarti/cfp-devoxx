@@ -741,7 +741,7 @@ gt.special.need=If you have a specific speaker you would love to see present at 
 gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes
-gt.personnal=Your personal leaderboard
+gt.personal=Your personal leaderboard
 gt.youReviewed=You reviewed {0} talk(s)
 gt.youVoted=You have voted for {0} talk(s)
 gt.averageVote=Your average vote is {0}

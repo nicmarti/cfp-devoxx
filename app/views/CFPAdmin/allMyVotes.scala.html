@@ -10,7 +10,7 @@
 
             <div class="panel-body">
                 <div class="col-md-12">
-                    <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
+                    <h3><i class="icon-beaker"></i> Your personal leaderboard</h3>
                     @if(allMyVotes.nonEmpty){
                         You have voted for @allMyVotes.filter(_._2.isDefined).size talks<br>
                         @defining(allMyVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
