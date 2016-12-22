@@ -22,7 +22,7 @@
     <hr>
 }
 <h3>Welcome to @Messages("longYearlyName")</h3>
-<p>Hi @firstName,</p>
+<p>Hi,</p>
 <p>We're glad to inform you that your proposal for @Messages("longYearlyName") has been <strong>accepted</strong> !</p>
 <p>Proposition title : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
 <hr>
@@ -35,7 +35,7 @@
 }
 <br>
 <h3>For any question regarding your talk</h3>
-<p>Please, do not respond to this email. Send any comment through the web interface, or email info@devoxx.co.uk, and our team will respond as quickly as possible.</p>
+<p>Please, do not respond to this email. Send any comment through the web interface, or email info@@devoxx.co.uk, and our team will respond as quickly as possible.</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
 <p>The @Messages("longYearlyName") team</p>

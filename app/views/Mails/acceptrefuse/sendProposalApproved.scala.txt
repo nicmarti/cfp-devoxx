@@ -32,7 +32,7 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
 
 ----------------------------------------------------------------------------------------------------------------------
 }
-Hi @firstName,
+Hi,
 
 We're glad to inform you that your proposal for @Messages("longYearlyName") has been accepted !
 Proposition title : @proposal.title, of type [@Messages(proposal.talkType.id)].
@@ -51,7 +51,7 @@ this presentation :
 
 For any question regarding your talk:
 -------------------------------------
-Please, do not respond to this email. Send any comment through the web interface, or email info@devoxx.co.uk, and our team will respond as quickly as possible.
+Please, do not respond to this email. Send any comment through the web interface, or email info@@devoxx.co.uk, and our team will respond as quickly as possible.
 
 @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
 
