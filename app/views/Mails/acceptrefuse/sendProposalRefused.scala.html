@@ -16,17 +16,18 @@
     <p>L'équipe de sélection de la conférence @Messages("longYearlyName")</p>
     <hr>
 }
-<p>Dear Devoxxian,</p>
-<p>We're sorry to inform you that your proposal "<strong>@proposal.title</strong>" for @Messages("longYearlyName") was <strong>refused</strong>.</p>
-<p>Do keep in mind that we received close to 800 proposals and the available slots are very limited!</p>
+<p>Hi @firstName,</p>
 <p></p>
-<p>Proposal : <strong>@proposal.title</strong> [<strong>@Messages(proposal.talkType.id)</strong>]</p>
+<p>We're sorry to inform you that your proposal for @Messages("longYearlyName") did not make it into the final program for @Messages("CONF.title"). Please keep in mind that</p>
+<p>we received close to 700+ proposals and the available slots are very limited.</p>
 <p></p>
-<p>We would like to thank you sincerely for your proposal and shown interest.</p>
-<p>Hopefully we can still welcome you at Devoxx United-Kingdom.</p>
-<p>Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
-<br>
-<br>
+<p>Proposition title : @proposal.title, @Messages(proposal.talkType.id).</p>
+<p></p>
+<p>We would like to thank you sincerely for your proposal.</p>
+<p>Hopefully we can still welcome you as a Devoxxian, and to thank you for your effort of submitting a proposal we can offer you a 25% discount on the published ticket rates. Please use promotion code DVXSBMTR17 when registering at https://www.eventbrite.co.uk/e/devoxx-uk-2017-tickets-28649696012</p>
+<p></p>
+<p>@ConferenceDescriptor.current().conferenceUrls.registration</p>
+<p></p>
 <p>Kind regards,</p>
 <p>The @Messages("longYearlyName") team</p>
 <p></p>
