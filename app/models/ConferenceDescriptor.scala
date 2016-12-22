@@ -147,7 +147,7 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-group",
       chosablePreferredDay = false)
-    val HACK = ProposalConfiguration(id = "hack", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-group",
+    val HACK = ProposalConfiguration(id = "hack", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.HACK.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-group",
       chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
