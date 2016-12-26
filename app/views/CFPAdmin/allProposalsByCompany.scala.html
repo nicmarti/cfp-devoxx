@@ -15,10 +15,17 @@
         </div>
         <div class="panel-body">
             @companiesAndProposals.map {case (company, props) =>
-            <h3>@company.capitalize @props.size talk(s)</h3>
+            <h3>@company.capitalize </h3>
+                <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
+                <br>
+                <label class="label label-danger">@props.map(p=>p.allSpeakers.map(_.uuid)).toSet.size speaker(s)</label>
+                <br>
+
                 @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
                     @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") -
-                    <span class="label label-success">@Messages(proposal.state.code)</span> <br>
+                    <span class="label @Messages("label-" + proposal.state.code)">@Messages(proposal.state.code)</span>
+                    <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A>
+                    <br>
                 }
             }
 
