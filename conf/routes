@@ -40,6 +40,7 @@ GET           /cfp/home                                                         
 GET           /cfp/profile                                                      controllers.CallForPaper.editProfile
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
+POST          /cfp/profile/digest                                               controllers.DigestController.update()
 
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
