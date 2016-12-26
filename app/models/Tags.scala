@@ -15,7 +15,7 @@ object Tags {
   private val tags = "Tags:*"
 
   def createTagProposalEntry(tag: Tag, proposal: Proposal): TagProposalEntry = {
-    new TagProposalEntry(tag, proposal)
+    TagProposalEntry(tag, proposal)
   }
 
   def isTagLinkedByProposal(tagId : String): Boolean = Redis.pool.withClient {
