@@ -716,16 +716,16 @@ object CFPAdmin extends SecureCFPController {
       val allSpeakers: List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
 
       val speakers = allSpeakers
-        .groupBy(_.company.map(_.toLowerCase.trim).getOrElse("No Company"))
+        .groupBy(_.company.map(_.toUpperCase.trim).getOrElse("No Company"))
         .toList
         .sortBy(_._2.size)
         .reverse
 
-      val companiesAndProposals = speakers.map {
+      val companiesAndProposals:List[(String,Set[Proposal])] = speakers.map {
         case (company, speakerList) =>
           val setOfProposals = speakerList.flatMap {
             s =>
-              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).values
+              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).filterNot(_._2.state == ProposalState.DELETED).values
           }.toSet
           (company, setOfProposals)
       }.filterNot(_._2.isEmpty)
