@@ -337,6 +337,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
+
           if (ConferenceDescriptor.notifyProposalSubmitted) {
             // This generates too many emails for France and is useless
             play.Logger.info("notifyProposalSubmitted is enabled, and about to send an email.")
@@ -345,6 +346,9 @@ object CallForPaper extends SecureCFPController {
           } else {
             play.Logger.debug("notifyProposalSubmitted is set to 'false', hence no emails are sent when talks are submitted (new or changes)")
           }
+
+          // TODO Digest.newProposal(uuid, proposal)
+
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
         case None =>
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))

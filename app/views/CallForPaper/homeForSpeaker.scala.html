@@ -1,4 +1,8 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]], needsToAcceptTermAndCondition:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speaker: Speaker,
+  webuser: Webuser,
+  myProposals: List[Proposal],
+  totalArchived:Int,
+  ratings:Map[Proposal,List[Rating]])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import org.apache.commons.lang3.StringUtils
 @main(Messages("cfp.title")){
     <div class="row">
@@ -97,6 +101,7 @@
                             }
                             </td>
                         </tr>
+
                     </tbody>
                 </table>
 
@@ -104,8 +109,34 @@
                 <div class="panel-footer">
                     <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary">@Html(Messages("edit.profile"))</a>
                 </div>
-
             </div>
+            @if(Webuser.isMember(webuser.uuid, "cfp")){
+                <div class="digestMessage">
+                <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>@Messages("email.digest.description")</td>
+                            <td>
+                                <select id="digest">
+                                @Digest.allDigests.map { digest =>
+                                    @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
+                                        <option value='@digest.value' selected>
+                                    }else {
+                                        <option value='@digest.value'>
+                                        }
+                                    @digest.value
+                                </option>
+                                }
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <i>Work in progress, not yet active!</i>
+            }
 
         </div>
 
@@ -295,6 +326,15 @@
         }
 
 </div>
+<script language="JavaScript">
+    var selection = $('#digest');
+    selection.change(function(){
+        $.ajax({
+            type: "POST",
+            url: "/cfp/profile/digest?value="+selection.val()
+        })
+    });
+</script>
 <!-- @speaker.uuid -->
 <!-- @webuser.uuid -->
 }
