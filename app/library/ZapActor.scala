@@ -85,6 +85,8 @@ case class SendHeartbeat(apiKey: String, name: String)
 
 case class NotifyMobileApps(confType: String)
 
+case class EmailDigests(digest : Digest)
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -110,6 +112,7 @@ class ZapActor extends Actor {
     case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
     case NotifyGoldenTicket(goldenTicket:GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case NotifyMobileApps(confType: String) => doNotifyMobileApps(confType)
+    case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -324,5 +327,28 @@ class ZapActor extends Actor {
     } else {
       play.Logger.error("AWS key and secret not configured")
     }
+  }
+
+  /**
+    * Handle email digests.
+    *
+    * @param digest the digest to process
+    */
+  def doEmailDigests(digest: Digest) {
+
+    // Filter CFP users on given digest
+    val foundUsers = Webuser.allCFPWebusers()
+      .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
+      .map(userToNotify => userToNotify.email)
+
+    play.Logger.debug("Process digests " + digest.value + " for " + foundUsers.size + " users.")
+
+    // Mail digest for found users
+    if (foundUsers.nonEmpty) {
+      Digest.mail(foundUsers, digest)
+    }
+
+    // Empty digest for next interval.
+    Digest.purge(digest)
   }
 }

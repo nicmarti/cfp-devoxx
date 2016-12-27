@@ -1,8 +1,4 @@
-@(speaker: Speaker,
-  webuser: Webuser,
-  myProposals: List[Proposal],
-  totalArchived:Int,
-  ratings:Map[Proposal,List[Rating]])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]], needsToAcceptTermAndCondition:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import org.apache.commons.lang3.StringUtils
 @main(Messages("cfp.title")){
     <div class="row">

@@ -1,0 +1,15 @@
+@(proposals:List[Proposal])
+
+CFP Daily Digest
+
+New Proposals
+
+@proposals.map{proposal=>
+    @proposal.title by @proposal.allSpeakers.mkString(", ")
+}
+
+
+Happy rating!
+
+The CFP Team
+

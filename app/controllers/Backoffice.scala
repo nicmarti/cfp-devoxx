@@ -388,4 +388,28 @@ object Backoffice extends SecureCFPController {
         NotFound("No proposal tags found")
       }
   }
+
+  def showDigests = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
+      val dailyDigests = Digest.pendingProposals(Digest.DAILY)
+      val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
+
+      val realTime = realTimeDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val daily = dailyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val weekly = weeklyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
+  }
 }
