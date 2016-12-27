@@ -682,7 +682,7 @@ object ConferenceDescriptor {
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      faq = "http://www.devoxx.fr/faq/",
+      faq = "http://www.devoxx.fr/faq",
       registration = "https://reg.devoxx.fr",
       confWebsite = "http://www.devoxx.fr/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
