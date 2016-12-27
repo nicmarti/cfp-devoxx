@@ -2,67 +2,141 @@ package models
 
 import java.lang.Long
 
-import library.{NotifyProposalSubmitted, Redis, ZapActor}
+import library.{Redis, ZapActor}
+import notifiers.Mails
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import play.api.libs.json.{Format, Json}
 
 /**
+  * The email digest.
+  *
+  * Redis keys used :
+  *
+  * 1) Identify which digest setting a CFP web user has:
+  * "Key = Digest:User:[WebUserId] / Value = Realtime, Daily, Weekly, Never"
+  *
+  * 2) The next redis key holds the Daily and Weekly new proposals IDs
+  * "Key = Digest:Daily /  Keys = IDs of new proposals for one day  / Values = creation data
+  * "Key = Digest:Weekly / Keys = IDs of new proposals for one week / Values = creation data
   *
   * @author Stephan Janssen
   */
-
-case class Digest(value: String, intervalInDays: Integer) {
+case class Digest(value: String) {
 }
 
 object Digest {
-  val REAL_TIME = Digest("Realtime", 0)
-  val DAILY = Digest("Daily", 1)
-  val WEEKLY = Digest("Weekly", 7)
-  val NEVER = Digest("Never", -1)
 
+  val REAL_TIME = Digest("Realtime")    // Real time email updates
+  val DAILY = Digest("Daily")           // Daily email digest
+  val WEEKLY = Digest("Weekly")         // Weekly
+  val NEVER = Digest("Never")           // Never, means the CFP user will never receive proposal updates!
+
+  // All the digest interval values
   val allDigests = List(REAL_TIME, DAILY, WEEKLY, NEVER)
 
-  def update(uuid: String, digest: String): String = Redis.pool.withClient {
-      client =>
-        client.set("Digest:"+uuid, digest)
+  private val digestRedisKey = "Digest:"
+  private val digestUserRedisKey = digestRedisKey + "User:"
+
+  /**
+    * Update the email digest for the give web user id.
+    *
+    * @param webUserId  the web user id to update
+    * @param digest the new email digest setting
+    * @return
+    */
+  def update(webUserId: String, digest: String): String = Redis.pool.withClient {
+    implicit client =>
+        client.set(digestUserRedisKey+webUserId, digest)
   }
 
-  def retrieve(uuid: String) : String = Redis.pool.withClient {
-    client =>
-      if (client.exists("Digest:"+uuid)) {
-        client.get("Digest:" + uuid).get
+  /**
+    * Retrieve the email digest setting for the web user UUID.
+    *
+    * @param webUserId  the web user UUID
+    * @return the email digest setting
+    */
+  def retrieve(webUserId: String) : String = Redis.pool.withClient {
+    implicit client =>
+      if (client.exists(digestUserRedisKey+webUserId)) {
+        client.get(digestUserRedisKey + webUserId).get
       } else {
         Digest.REAL_TIME.value
       }
   }
 
   /**
-    * Store a proposal into the digest "queue".
+    * Purge (delete) the given digest.
     *
-    * @param digest the digest type (daily, weekly, never)
-    * @param uuid the CFP user to notify
-    * @param proposalId the proposal Id
+    * @param digest the digest to clean up
     * @return
     */
-  def queueProposal(digest : String, uuid : String, proposalId : String): Long = Redis.pool.withClient {
-    client =>
-      client.hset("Digest:"+digest, uuid, proposalId)
+  def purge(digest: Digest): Long = Redis.pool.withClient {
+    implicit client =>
+      client.del(digestRedisKey + digest.value)
   }
 
-  def newProposal(speakerId : String, proposal : Proposal): Unit = Redis.pool.withClient {
-    client =>
+  /**
+    * Add the submitted proposal to the digest queue.
+    *
+    * @param proposalId the actual new proposal
+    */
+  def addProposal(proposalId : String): Unit = Redis.pool.withClient {
+    implicit client =>
+      val now = DateTime.now().toString("d MMM yyyy HH:mm")
+      allDigests.foreach(digest => {
+        client.hset(digestRedisKey + digest.value, proposalId, now)
+      })
+  }
 
-      // Walk through all the CFP members and verify digest setting
-      Webuser.allCFPWebusers().foreach(user => {
-        val digestValue = retrieve(user.uuid)
-        digestValue match {
-          case Digest.NEVER => // don't do anything for now
-
-          // Notify user immediately
-          case Digest.REAL_TIME => ZapActor.actor ! NotifyProposalSubmitted(speakerId, proposal)
-
-          // Store notification in digest queue
-          case Some(Digest) => queueProposal(digestValue, DAILY, user.uuid, proposalId)
-
+  /**
+    * Delete a proposal from the email digest queue.
+    *
+    * @param proposalId the actual new proposal
+    */
+  def deleteProposal(proposalId : String): Unit = Redis.pool.withClient {
+    implicit client =>
+      allDigests.foreach(digest => {
+        if (client.hexists(digestRedisKey + digest.value, proposalId)) {
+          client.hdel(digestRedisKey + digest.value, proposalId)
         }
       })
+  }
+
+  /**
+    * The pending proposals for the given digest.
+    *
+    * @param digest the digest to query
+    * @return list of proposals
+    */
+  def pendingProposals(digest : Digest) : Map[String, String] = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll(digestRedisKey + digest.value).map {
+        case (key: String, value: String) =>
+          (key, value)
+      }
+  }
+
+  /**
+    * Mail the digest.
+    *
+    * @param userEmails user email list to receive email digest
+    * @param digest the digest interval
+    * @see library.ZapActor.doEmailDigests
+    */
+  def mail(userEmails : List[String], digest : Digest): Unit = Redis.pool.withClient {
+    implicit client =>
+
+      val newProposalsIds = pendingProposals(digest)
+
+      play.Logger.debug("Mail " + digest.value +
+                        " digests for " + newProposalsIds.size +
+                        " proposal(s) and " + userEmails.size +
+                        " users.")
+
+      if (newProposalsIds.nonEmpty) {
+        val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
+        ZapActor.actor ! Mails.sendDailyDigest(userEmails, proposals)
+      }
   }
 }

@@ -194,7 +194,32 @@ object Mails {
     MailerPlugin.send(email)
   }
 
-  def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
+  /**
+    * send daily digest.
+    *
+    * @param emails the list of CFP user emails for given digest
+    * @param digest  List of speakers and their new proposals
+    * @return
+    */
+  def sendDailyDigest(emails: List[String], digest: List[Proposal]) = {
+    val subjectEmail: String = Messages("mail.digest.subject", Messages("longYearlyName"))
+
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq("digest@devoxx.com"),   // Use externalise value
+      bcc = emails,
+      bodyText = Some(views.txt.Mails.digest.sendDailyDigest(digest).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDailyDigest(digest).toString()),
+      charset = Some("utf-8")
+    )
+
+    MailerPlugin.send(email)
+  }
+
+  def sendResultToSpeaker(speaker: Speaker,
+                          listOfApprovedProposals: Set[Proposal],
+                          listOfRefusedProposals: Set[Proposal]) = {
     val subjectEmail: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
 
     val email = Email(

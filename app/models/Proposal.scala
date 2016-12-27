@@ -446,14 +446,17 @@ object Proposal {
         ApprovedProposal.cancelApprove(proposal)
         ApprovedProposal.cancelRefuse(proposal)
     }
+
     // TODO delete votes for a Proposal if a speaker decided to cancel this talk
-
-
     changeProposalState(uuid, proposalId, ProposalState.DELETED)
+
+    // Removed proposal from Digest Queue
+    Digest.deleteProposal(proposalId)
   }
 
   def submit(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.SUBMITTED)
+    Digest.addProposal(proposalId)
   }
 
   def approve(uuid: String, proposalId: String) = {
@@ -478,6 +481,9 @@ object Proposal {
 
   def draft(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.DRAFT)
+
+    // Removed proposal if present in Digest Queue
+    Digest.deleteProposal(proposalId)
   }
 
   def archive(uuid: String, proposalId: String) = {

@@ -2,7 +2,8 @@ import java.util.concurrent.TimeUnit
 
 import library.search.{StopIndex, _}
 import library.{DraftReminder, _}
-import org.joda.time.DateMidnight
+import models.Digest
+import org.joda.time.{DateMidnight, DateTime}
 import play.api.Play.current
 import play.api.libs.concurrent._
 import play.api.mvc.RequestHeader
@@ -25,6 +26,7 @@ object Global extends GlobalSettings {
         CronTask.doComputeStats()
       //CronTask.doSetupOpsGenie()
       case Some(true) if Play.isDev =>
+        CronTask.doEmailDigests()
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
       case _ =>
@@ -112,7 +114,20 @@ object CronTask {
     Akka.system.scheduler.schedule(10 minutes, 5 minutes, ZapActor.actor, ComputeLeaderboard())
     Akka.system.scheduler.schedule(4 minutes, 5 minutes, ZapActor.actor, ComputeVotesAndScore())
     Akka.system.scheduler.schedule(2 minutes, 30 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
+  }
 
+  def doEmailDigests() = {
+    import library.Contexts.statsContext
+
+    // The 5 min. (semi) real time digest schedule
+    Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
+
+    // The daily digest schedule
+    val initialDelay = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
+    Akka.system.scheduler.schedule(initialDelay milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
+
+    // TODO The weekly digest schedule
+    // Akka.system.scheduler.schedule(initialDelay milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.WEEKLY))
   }
 
   def doSetupOpsGenie() = {
