@@ -14,7 +14,7 @@ object DigestController extends SecureCFPController {
             if (newDigestValue.isDefined) {
                 val uuid = request.webuser.uuid
                 Digest.update(uuid, newDigestValue.get)
-                Ok
+                Ok(Digest.message(uuid))
             } else {
                 BadRequest("Digest value not defined")
             }
