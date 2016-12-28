@@ -117,7 +117,8 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <td>@Messages("email.digest.description")</td>
+                            <td>@Messages("email.digest.description")<br>
+                                <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
                             <td>
                                 <select id="digest">
                                 @Digest.allDigests.map { digest =>
@@ -135,7 +136,6 @@
                     </tbody>
                 </table>
                 </div>
-                <i>Work in progress, not yet active!</i>
             }
 
         </div>
@@ -325,7 +325,10 @@
     selection.change(function(){
         $.ajax({
             type: "POST",
-            url: "/cfp/profile/digest?value="+selection.val()
+            url: "/cfp/profile/digest?value="+selection.val(),
+            success: function(data) {
+                return $('#digestMsg').text(data);
+            }
         })
     });
 </script>

@@ -3,7 +3,8 @@ import java.util.concurrent.TimeUnit
 import library.search.{StopIndex, _}
 import library.{DraftReminder, _}
 import models.Digest
-import org.joda.time.{DateMidnight, DateTime}
+import org.joda.time.format.DateTimeFormatterBuilder
+import org.joda.time.{DateMidnight, DateTime, LocalTime}
 import play.api.Play.current
 import play.api.libs.concurrent._
 import play.api.mvc.RequestHeader
@@ -116,15 +117,44 @@ object CronTask {
     Akka.system.scheduler.schedule(2 minutes, 30 minutes, ZapActor.actor, RemoveVotesForDeletedProposal())
   }
 
+  /**
+    * Calculate and set the daily and weekly email digest schedules.
+    *
+    * @return
+    */
   def doEmailDigests() = {
     import library.Contexts.statsContext
+
+    // The daily digest schedule
+    var delayForDaily : Long = 0L
+    val dayValue = Play.configuration.getString("digest.daily")
+    if (dayValue.isDefined) {
+      // Use hour given by CFP super user
+      val parseFormat = new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter
+      val localTime = LocalTime.parse(dayValue.get, parseFormat)
+      delayForDaily = (DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis) + localTime.getMillisOfDay
+    } else {
+      // Default is midnight
+      delayForDaily = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
+    }
+    Akka.system.scheduler.schedule(delayForDaily milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
+
+    // The weekly digest schedule
+    var delayForWeekly : Long = 0L
+    val weeklyValue = Play.configuration.getInt("digest.weekly")
+    if (weeklyValue.isDefined) {
+      val dayDelta = 7 + weeklyValue.get - DateTime.now().dayOfWeek().get()
+      delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
+    } else {
+      // Default is Monday at midnight
+      val dayDelta = 7 - DateTime.now().dayOfWeek().get()
+      delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
+    }
+    Akka.system.scheduler.schedule(delayForWeekly + delayForDaily milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
 
     // The 5 min. (semi) real time digest schedule
     Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
 
-    // The daily digest schedule
-    val initialDelay = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
-    Akka.system.scheduler.schedule(initialDelay milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
 
     // TODO The weekly digest schedule
     // Akka.system.scheduler.schedule(initialDelay milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.WEEKLY))
