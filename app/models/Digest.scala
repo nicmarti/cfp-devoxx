@@ -1,12 +1,13 @@
 package models
 
 import java.lang.Long
+import java.util.Locale
 
 import library.{Redis, ZapActor}
 import notifiers.Mails
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import play.api.libs.json.{Format, Json}
+import org.joda.time.{DateTime, DateTimeConstants}
+import play.Play
+import play.api.i18n.Messages
 
 /**
   * The email digest.
@@ -37,6 +38,35 @@ object Digest {
 
   private val digestRedisKey = "Digest:"
   private val digestUserRedisKey = digestRedisKey + "User:"
+
+
+  def message(uuid: String): String = {
+    val app = Play.application()
+
+    var hour = app.configuration().getString("digest.daily")
+    if (hour.isEmpty) {
+       hour = "00:00"
+    }
+
+    val day = app.configuration().getInt("digest.weekly")
+    var dayMsg : String = ""
+    if (day == null) {
+      dayMsg = "Monday"
+    } else {
+      dayMsg = Messages("email.digest.day."+day)
+    }
+
+    retrieve(uuid) match {
+      case "Daily" => Messages("email.digest.daily.description", hour)
+
+      case "Weekly" => Messages("email.digest.weekly.description",
+        app.configuration().getString("digest.daily"), dayMsg)
+
+      case "Realtime" => Messages("email.digest.realtime.description")
+
+      case "Never" => Messages("email.digest.never.description")
+    }
+  }
 
   /**
     * Update the email digest for the give web user id.
