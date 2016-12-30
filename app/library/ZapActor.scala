@@ -30,8 +30,10 @@ import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
 import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model._
 import com.amazonaws.{ClientConfiguration, Protocol}
+import controllers.CFPAdmin
 import models._
 import notifiers.Mails
+import org.apache.commons.lang3.StringUtils
 import play.api.Play
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
@@ -359,7 +361,7 @@ class ZapActor extends Actor {
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
-        Mails.sendDigest(foundUsers, proposals, digest)
+        Mails.sendDigest(digest, foundUsers, proposals, CFPAdmin.getLeaderBoardParams)
 
       } else {
         play.Logger.debug("No users found for digest " + digest.value)
