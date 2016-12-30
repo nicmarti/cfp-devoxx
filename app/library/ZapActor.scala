@@ -341,19 +341,35 @@ class ZapActor extends Actor {
 
     play.Logger.debug("doEmailDigests for " + digest.value)
 
-    // Filter CFP users on given digest
-    val foundUsers = Webuser.allCFPWebusers()
-      .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
-      .map(userToNotify => userToNotify.email)
+    // Retrieve new proposals for digest
+    val newProposalsIds = Digest.pendingProposals(digest)
 
-    play.Logger.info("Process digests " + digest.value + " for " + foundUsers.size + " users.")
+    if (newProposalsIds.nonEmpty) {
 
-    // Mail digest for found users
-    if (foundUsers.nonEmpty) {
-      Digest.mail(foundUsers, digest)
+      // Filter CFP users on given digest
+      val foundUsers = Webuser.allCFPWebusers()
+        .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
+        .map(userToNotify => userToNotify.email)
+
+      play.Logger.info(foundUsers.size + " user(s) for digest " + digest.value)
+
+      if (foundUsers.nonEmpty) {
+
+        play.Logger.debug(newProposalsIds.size + " proposal(s) found for digest " + digest.value)
+
+        val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
+
+        Mails.sendDigest(foundUsers, proposals, digest)
+
+      } else {
+        play.Logger.debug("No users found for digest " + digest.value)
+      }
+
+      // Empty digest for next interval.
+      Digest.purge(digest)
+
+    } else {
+      play.Logger.debug("No new proposals found for digest " + digest.value)
     }
-
-    // Empty digest for next interval.
-    Digest.purge(digest)
   }
 }
