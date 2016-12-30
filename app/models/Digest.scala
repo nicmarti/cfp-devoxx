@@ -2,9 +2,8 @@ package models
 
 import java.lang.Long
 
-import library.{Redis, ZapActor}
-import notifiers.Mails
-import org.joda.time.{DateTime}
+import library.Redis
+import org.joda.time.DateTime
 import play.Play
 import play.api.i18n.Messages
 
@@ -22,15 +21,15 @@ import play.api.i18n.Messages
   *
   * @author Stephan Janssen
   */
-case class Digest(value: String) {
+case class Digest(value: String, storeProposals: Boolean) {
 }
 
 object Digest {
 
-  val REAL_TIME = Digest("Realtime")    // Real time email updates
-  val DAILY = Digest("Daily")           // Daily email digest
-  val WEEKLY = Digest("Weekly")         // Weekly
-  val NEVER = Digest("Never")           // Never, means the CFP user will never receive proposal updates!
+  val REAL_TIME = Digest("Realtime", storeProposals = true)    // Real time email updates
+  val DAILY = Digest("Daily", storeProposals = true)           // Daily email digest
+  val WEEKLY = Digest("Weekly", storeProposals = true)         // Weekly
+  val NEVER = Digest("Never", storeProposals = false)          // Never, means the CFP user will never receive proposal updates!
 
   // All the digest interval values
   val allDigests = List(REAL_TIME, DAILY, WEEKLY, NEVER)
@@ -122,7 +121,8 @@ object Digest {
   def addProposal(proposalId : String): Unit = Redis.pool.withClient {
     implicit client =>
       val now = DateTime.now().toString("d MMM yyyy HH:mm")
-      allDigests.foreach(digest => {
+      allDigests.filter(digest => digest.storeProposals)
+                .foreach(digest => {
         client.hset(digestRedisKey + digest.value, proposalId, now)
       })
   }
