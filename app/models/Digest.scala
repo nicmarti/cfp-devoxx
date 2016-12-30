@@ -154,27 +154,4 @@ object Digest {
           (key, value)
       }
   }
-
-  /**
-    * Mail the digest.
-    *
-    * @param userEmails user email list to receive email digest
-    * @param digest the digest interval
-    * @see library.ZapActor.doEmailDigests
-    */
-  def mail(userEmails : List[String], digest : Digest): Unit = Redis.pool.withClient {
-    implicit client =>
-
-      val newProposalsIds = pendingProposals(digest)
-
-      play.Logger.debug("Mail " + digest.value +
-                        " digests for " + newProposalsIds.size +
-                        " proposal(s) and " + userEmails.size +
-                        " users.")
-
-      if (newProposalsIds.nonEmpty) {
-        val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
-        ZapActor.actor ! Mails.sendDigest(userEmails, proposals, digest)
-      }
-  }
 }
