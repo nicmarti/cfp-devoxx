@@ -1,11 +1,10 @@
 package models
 
 import java.lang.Long
-import java.util.Locale
 
 import library.{Redis, ZapActor}
 import notifiers.Mails
-import org.joda.time.{DateTime, DateTimeConstants}
+import org.joda.time.{DateTime}
 import play.Play
 import play.api.i18n.Messages
 
@@ -39,32 +38,41 @@ object Digest {
   private val digestRedisKey = "Digest:"
   private val digestUserRedisKey = digestRedisKey + "User:"
 
+  private val app = Play.application()
 
+  /**
+    * Construct the digest message.
+    *
+    * @param uuid the user id
+    * @return the I18N digest message for the UI view
+    */
   def message(uuid: String): String = {
-    val app = Play.application()
-
-    var hour = app.configuration().getString("digest.daily")
-    if (hour.isEmpty) {
-       hour = "00:00"
-    }
-
-    val day = app.configuration().getInt("digest.weekly")
-    var dayMsg : String = ""
-    if (day == null) {
-      dayMsg = "Monday"
-    } else {
-      dayMsg = Messages("email.digest.day."+day)
-    }
-
     retrieve(uuid) match {
-      case "Daily" => Messages("email.digest.daily.description", hour)
+      case DAILY.value => Messages("email.digest.daily.description", getDayMoment)
 
-      case "Weekly" => Messages("email.digest.weekly.description",
-        app.configuration().getString("digest.daily"), dayMsg)
+      case WEEKLY.value => Messages("email.digest.weekly.description", getDayMoment, getWeekMoment)
 
-      case "Realtime" => Messages("email.digest.realtime.description")
+      case REAL_TIME.value => Messages("email.digest.realtime.description")
 
-      case "Never" => Messages("email.digest.never.description")
+      case NEVER.value => Messages("email.digest.never.description")
+    }
+  }
+
+  def getDayMoment: String = {
+    val daily = app.configuration().getString("digest.daily")
+    if (daily == null) {
+      "00:00" // default value
+    } else {
+      daily
+    }
+  }
+
+  def getWeekMoment: String = {
+    val day = app.configuration().getInt("digest.weekly")
+    if (day == null) {
+      "Monday"  // default value
+    } else {
+      Messages("email.digest.day." + day)
     }
   }
 
@@ -77,7 +85,7 @@ object Digest {
     */
   def update(webUserId: String, digest: String): String = Redis.pool.withClient {
     implicit client =>
-        client.set(digestUserRedisKey+webUserId, digest)
+        client.set(digestUserRedisKey + webUserId, digest)
   }
 
   /**
@@ -88,7 +96,7 @@ object Digest {
     */
   def retrieve(webUserId: String) : String = Redis.pool.withClient {
     implicit client =>
-      if (client.exists(digestUserRedisKey+webUserId)) {
+      if (client.exists(digestUserRedisKey + webUserId)) {
         client.get(digestUserRedisKey + webUserId).get
       } else {
         Digest.REAL_TIME.value
@@ -166,7 +174,7 @@ object Digest {
 
       if (newProposalsIds.nonEmpty) {
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
-        ZapActor.actor ! Mails.sendDailyDigest(userEmails, proposals)
+        ZapActor.actor ! Mails.sendDigest(userEmails, proposals, digest)
       }
   }
 }

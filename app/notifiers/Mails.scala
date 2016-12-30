@@ -195,22 +195,22 @@ object Mails {
   }
 
   /**
-    * send daily digest.
+    * Mail digest.
     *
     * @param emails the list of CFP user emails for given digest
     * @param digest  List of speakers and their new proposals
     * @return
     */
-  def sendDailyDigest(emails: List[String], digest: List[Proposal]) = {
+  def sendDigest(emails: List[String], proposals: List[Proposal], digest : Digest) = {
     val subjectEmail: String = Messages("mail.digest.subject", Messages("longYearlyName"))
 
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
-      to = Seq("digest@devoxx.com"),   // Use externalise value
+      to = Seq("no-reply-digest@devoxx.com"),   // Use fake email because we use bcc instead
       bcc = emails,
-      bodyText = Some(views.txt.Mails.digest.sendDailyDigest(digest).toString()),
-      bodyHtml = Some(views.html.Mails.digest.sendDailyDigest(digest).toString()),
+      bodyText = Some(views.txt.Mails.digest.sendDigest(proposals, digest).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDigest(proposals, digest).toString()),
       charset = Some("utf-8")
     )
 
