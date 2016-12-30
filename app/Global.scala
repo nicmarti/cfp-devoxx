@@ -128,28 +128,32 @@ object CronTask {
 
     // The daily digest schedule
     var delayForDaily : Long = 0L
-    val dayValue = Play.configuration.getString("digest.daily")
-    if (dayValue.isDefined) {
-      // Use hour given by CFP super user
-      val parseFormat = new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter
-      val localTime = LocalTime.parse(dayValue.get, parseFormat)
-      delayForDaily = (DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis) + localTime.getMillisOfDay
-    } else {
-      // Default is midnight
-      delayForDaily = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
+
+    Play.configuration.getString("digest.daily") match {
+      case Some(value) =>
+        // Use hour given by CFP super user
+        val parseFormat = new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter
+        val localTime = LocalTime.parse(value, parseFormat)
+        delayForDaily = (DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis) + localTime.getMillisOfDay
+
+      case _ =>
+        // Default is midnight
+        delayForDaily = DateMidnight.now().plusDays(1).getMillis - DateTime.now().getMillis
     }
     Akka.system.scheduler.schedule(delayForDaily milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
 
     // The weekly digest schedule
     var delayForWeekly : Long = 0L
-    val weeklyValue = Play.configuration.getInt("digest.weekly")
-    if (weeklyValue.isDefined) {
-      val dayDelta = 7 + weeklyValue.get - DateTime.now().dayOfWeek().get()
-      delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
-    } else {
-      // Default is Monday at midnight
-      val dayDelta = 7 - DateTime.now().dayOfWeek().get()
-      delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
+
+    Play.configuration.getInt("digest.weekly") match {
+      case Some(value) =>
+        val dayDelta = 7 + value - DateTime.now().dayOfWeek().get()
+        delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
+
+      case _ =>
+        // Default is Monday at midnight
+        val dayDelta = 7 - DateTime.now().dayOfWeek().get()
+        delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
     }
     Akka.system.scheduler.schedule(delayForWeekly + delayForDaily milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
 
