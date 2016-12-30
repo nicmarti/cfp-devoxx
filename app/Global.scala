@@ -154,10 +154,6 @@ object CronTask {
 
     // The 5 min. (semi) real time digest schedule
     Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
-
-
-    // TODO The weekly digest schedule
-    // Akka.system.scheduler.schedule(initialDelay milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.WEEKLY))
   }
 
   def doSetupOpsGenie() = {
