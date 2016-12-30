@@ -336,12 +336,14 @@ class ZapActor extends Actor {
     */
   def doEmailDigests(digest: Digest) {
 
+    play.Logger.debug("doEmailDigests for " + digest.value)
+
     // Filter CFP users on given digest
     val foundUsers = Webuser.allCFPWebusers()
       .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
       .map(userToNotify => userToNotify.email)
 
-    play.Logger.debug("Process digests " + digest.value + " for " + foundUsers.size + " users.")
+    play.Logger.info("Process digests " + digest.value + " for " + foundUsers.size + " users.")
 
     // Mail digest for found users
     if (foundUsers.nonEmpty) {
