@@ -14,7 +14,7 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Cookie
+import play.api.mvc.{Action, AnyContent, Cookie}
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -240,66 +240,73 @@ object CFPAdmin extends SecureCFPController {
 
   case class GoldenTicketsParams(totalTickets: Int, stats: List[(String, Int, Int)])
 
-  def leaderBoard = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+  /**
+    * Constructs the LeaderBoardParams, also used by the digest emails.
+    *
+    * @return LeaderBoardParams
+    */
+  def getLeaderBoardParams: LeaderBoardParams = {
+    val totalSpeakers = Leaderboard.totalSpeakers()
+    val totalProposals = Leaderboard.totalProposals()
+    val totalVotes = Leaderboard.totalVotes()
+    val totalWithVotes = Leaderboard.totalWithVotes()
+    val totalNoVotes = Leaderboard.totalNoVotes()
+    val mostReviewed = Leaderboard.mostReviewed().map{ case(k,v) => (k.toString, v) } toList
+    val bestReviewers = Review.allReviewersAndStats()
+    val lazyOnes = Leaderboard.lazyOnes()
 
-      val totalSpeakers = Leaderboard.totalSpeakers()
-      val totalProposals = Leaderboard.totalProposals()
-      val totalVotes = Leaderboard.totalVotes()
-      val totalWithVotes = Leaderboard.totalWithVotes()
-      val totalNoVotes = Leaderboard.totalNoVotes()
-      val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) } toList
-      val bestReviewers = Review.allReviewersAndStats()
-      val lazyOnes = Leaderboard.lazyOnes()
+    val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
+    val totalSubmittedByType = Leaderboard.totalSubmittedByType()
+    val totalAcceptedByTrack = Leaderboard.totalAcceptedByTrack()
+    val totalAcceptedByType = Leaderboard.totalAcceptedByType()
+
+    val totalSlotsToAllocate = ApprovedProposal.getTotal
+    val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
+    val totalWithTickets = Leaderboard.totalWithTickets()
+    val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
+    val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map{ case(k,v) => (k.toString, v) } toList
+
+    val allApproved = ApprovedProposal.allApproved()
+
+    val allApprovedByTrack:Map[String,Int] = allApproved.groupBy(_.track.label).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
+    val allApprovedByTalkType:Map[String,Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
+
+    // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
+    def generousVoters:List[(String, BigDecimal)] =
+      bestReviewers.filter(_._3 > 0)
+        .map(b=>(b._1 , BigDecimal(b._2.toDouble / b._3.toDouble).round( new java.math.MathContext(3))))
+
+    def proposalsBySpeakers:List[(String, Int)] =
+      Speaker.allSpeakers()
+        .map( speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
+        .filter( _._2 > 0)
+
+    LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
+      mostReviewed,
+      bestReviewers,
+      lazyOnes, generousVoters,
+      proposalsBySpeakers,
+      totalSubmittedByTrack, totalSubmittedByType,
+      totalCommentsPerProposal,
+      totalAcceptedByTrack, totalAcceptedByType,
+      totalSlotsToAllocate,
+      totalApprovedSpeakers,
+      totalWithTickets,
+      totalRefusedSpeakers,
+      allApprovedByTrack,
+      allApprovedByTalkType,
+      totalWithVotes, totalNoVotes)
+  }
+
+  def leaderBoard: Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       val totalGTickets = ReviewByGoldenTicket.totalGoldenTickets()
       val totalGTStats = ReviewByGoldenTicket.allReviewersAndStats()
 
-      val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
-      val totalSubmittedByType = Leaderboard.totalSubmittedByType()
-      val totalAcceptedByTrack = Leaderboard.totalAcceptedByTrack()
-      val totalAcceptedByType = Leaderboard.totalAcceptedByType()
-
-      val totalSlotsToAllocate = ApprovedProposal.getTotal
-      val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
-      val totalWithTickets = Leaderboard.totalWithTickets()
-      val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
-      val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map { case (k, v) => (k.toString, v) } toList
-
-      val allApproved = ApprovedProposal.allApproved()
-
-      val allApprovedByTrack: Map[String, Int] = allApproved.groupBy(_.track.label).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
-      val allApprovedByTalkType: Map[String, Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
-
-      // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
-      def generousVoters: List[(String, BigDecimal)] =
-        bestReviewers.filter(_._3 > 0)
-          .map(b => (b._1, BigDecimal(b._2.toDouble / b._3.toDouble).round(new java.math.MathContext(3))))
-
-      def proposalsBySpeakers: List[(String, Int)] =
-        Speaker.allSpeakers()
-          .map(speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
-          .filter(_._2 > 0)
-
-      def leaderBoardParams = LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
-        mostReviewed,
-        bestReviewers,
-        lazyOnes, generousVoters,
-        proposalsBySpeakers,
-        totalSubmittedByTrack, totalSubmittedByType,
-        totalCommentsPerProposal,
-        totalAcceptedByTrack, totalAcceptedByType,
-        totalSlotsToAllocate,
-        totalApprovedSpeakers,
-        totalWithTickets,
-        totalRefusedSpeakers,
-        allApprovedByTrack,
-        allApprovedByTalkType,
-        totalWithVotes, totalNoVotes)
-
       def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
 
-      Ok(views.html.CFPAdmin.leaderBoard(leaderBoardParams, goldenTicketParam))
+      Ok(views.html.CFPAdmin.leaderBoard(getLeaderBoardParams, goldenTicketParam))
   }
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
