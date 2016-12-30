@@ -10,7 +10,7 @@ CFP '@digest.value' Digest
 
 @proposals.map{proposal=>
 
-    - @proposal.title by @proposal.allSpeakers.mkString(", ") (@Messages(proposal.track.label) / @Messages(proposal.talkType.label))
+    - @proposal.title by @proposal.allSpeakers.map(speaker => speaker.cleanName).toList.mkString(", ") (@Messages(proposal.track.label) / @Messages(proposal.talkType.label))
 
 }
 

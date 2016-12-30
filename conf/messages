@@ -634,7 +634,7 @@ mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to su
 mail.proposal_approved.subject=Your proposal has been approved {0}
 mail.proposal_refused.subject=Your proposal has been refused {0}
 mail.speaker_cfp_results.subject=Call for Paper {0}
-mail.digest.subject=[CFP] Email Digest {0}
+mail.digest.subject=[CFP] {0} Digest {1}
 
 proposal.audienceLevel=Audience level
 proposal.demoLevel=Type of presentation
