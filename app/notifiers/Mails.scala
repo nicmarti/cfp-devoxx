@@ -202,7 +202,7 @@ object Mails {
     * @return
     */
   def sendDigest(emails: List[String], proposals: List[Proposal], digest : Digest) = {
-    val subjectEmail: String = Messages("mail.digest.subject", Messages("longYearlyName"))
+    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
 
     val email = Email(
       subject = subjectEmail,

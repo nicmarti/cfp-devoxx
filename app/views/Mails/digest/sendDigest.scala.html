@@ -1,16 +1,15 @@
 @(proposals:List[Proposal], digest : Digest)
 
-<h3>CFP '@digest.value' Digest</h3>
-
 @if(ConferenceDescriptor.current().frLangEnabled) {
-    <h5>Nouvelles propositions depuis le dernier digest</h5>
+    <h3>Nouvelles propositions depuis le dernier digest</h3>
 }else {
-    <h5>New proposals since last digest</h5>
+    <h3>New proposals since last digest</h3>
 }
 <UL>
 @proposals.map{proposal=>
     <LI>
-        <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.editProposal(proposal.id)">@proposal.title</a> by @proposal.allSpeakers.mkString(", ")
+        <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.voteForProposal(proposal.id)">@proposal.title</a> by
+        @proposal.allSpeakers.map(speaker => speaker.cleanName).toList.mkString(", ") -
         (@Messages(proposal.track.label) / @Messages(proposal.talkType.label))
     </LI>
 }
@@ -29,5 +28,3 @@
     <p>Happy rating!</p>
     <p>The CFP Team</p>
 }
-
-
