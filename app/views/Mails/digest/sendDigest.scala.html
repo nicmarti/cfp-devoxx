@@ -1,4 +1,6 @@
-@(proposals:List[Proposal], digest : Digest)
+@(digest: Digest,
+  proposals:List[Proposal],
+  params: controllers.CFPAdmin.LeaderBoardParams)
 
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <h3>Nouvelles propositions depuis le dernier digest</h3>
@@ -15,6 +17,68 @@
 }
 </UL>
 
+<HR>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
+            </div>
+
+            <div class="col-md-4">
+                <h3><i class="icon-star"></i> Most Votes</h3>
+                @params.mostReviewed.map { mr =>
+                    @tags.renderGravatarByProposal(mr._1)
+                <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes
+                }
+            </div>
+
+            <div class="col-md-4">
+                <h3><i class="icon-bell"></i> Eager Speakers</h3>
+                @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
+                    @tags.renderGravatar(br._1)
+                    @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
+                }
+            </div>
+            <div class="col-md-4">
+                <h3><i class="icon-comments"></i> Most Debatable</h3>
+                @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
+                    @tags.renderGravatarByProposal(tc._1)
+                <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
+                }
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="col-md-4">
+                <h3><i class="icon-trophy"></i> Top Reviewers</h3>
+                @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
+                    @tags.renderGravatar(br._1)
+                    @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
+                }
+            </div>
+
+            <div class="col-md-4">
+                <h3><i class="icon-ambulance"></i> The Lazy One's</h3>
+                @params.lazyOnes.filter(_._2.toInt < 5).map { wr =>
+                    @tags.renderGravatar(wr._1)
+                    @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
+                }
+            </div>
+            <div class="col-md-4">
+                <h3><i class="icon-heart"></i> Generous One's</h3>
+                @params.generousVoters.sortBy(_._2).reverse.take(5).map { wr =>
+                    @tags.renderGravatar(wr._1)
+                <small>avg. rating of @wr._2</small>
+                }
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<br>
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <p>Vous pouvez toujours <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()"">mettre à jour</a> votre digest.</p>
 }else {

@@ -201,7 +201,11 @@ object Mails {
     * @param digest  List of speakers and their new proposals
     * @return
     */
-  def sendDigest(emails: List[String], proposals: List[Proposal], digest : Digest) = {
+  def sendDigest(digest: Digest,
+                 emails: List[String],
+                 proposals: List[Proposal],
+                 leaderBoardParams: controllers.CFPAdmin.LeaderBoardParams): String = {
+
     val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
 
     val email = Email(
@@ -209,8 +213,8 @@ object Mails {
       from = fromSender,
       to = Seq("no-reply-digest@devoxx.com"),   // Use fake email because we use bcc instead
       bcc = emails,
-      bodyText = Some(views.txt.Mails.digest.sendDigest(proposals, digest).toString()),
-      bodyHtml = Some(views.html.Mails.digest.sendDigest(proposals, digest).toString()),
+      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
       charset = Some("utf-8")
     )
 
