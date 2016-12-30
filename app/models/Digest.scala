@@ -99,7 +99,7 @@ object Digest {
       if (client.exists(digestUserRedisKey + webUserId)) {
         client.get(digestUserRedisKey + webUserId).get
       } else {
-        Digest.REAL_TIME.value
+        Digest.NEVER.value
       }
   }
 

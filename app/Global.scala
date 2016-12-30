@@ -25,7 +25,8 @@ object Global extends GlobalSettings {
         CronTask.draftReminder()
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
-      //CronTask.doSetupOpsGenie()
+        CronTask.doEmailDigests()
+        // CronTask.doSetupOpsGenie()
       case Some(true) if Play.isDev =>
         CronTask.doEmailDigests()
         CronTask.doIndexElasticSearch()
