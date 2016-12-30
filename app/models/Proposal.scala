@@ -15,7 +15,13 @@ import play.api.templates.HtmlFormat
   * Author: nicolas martignole
   * Created: 12/10/2013 15:19
   */
-case class ProposalType(id: String, label: String)
+case class ProposalType(id: String, label: String) {
+
+  // Returns the simple label name used in the I18N Messages resource bundle
+  def simpleLabel: String = {
+    label + ".simple"
+  }
+}
 
 object ProposalType {
   implicit val proposalTypeFormat = Json.format[ProposalType]

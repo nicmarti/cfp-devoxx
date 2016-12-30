@@ -10,7 +10,7 @@
     <LI>
         <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.voteForProposal(proposal.id)">@proposal.title</a> by
         @proposal.allSpeakers.map(speaker => speaker.cleanName).toList.mkString(", ") -
-        (@Messages(proposal.track.simpleLabel) / @Messages(proposal.talkType.label))
+        (@Messages(proposal.track.label) / @Messages(proposal.talkType.simpleLabel))
     </LI>
 }
 </UL>
