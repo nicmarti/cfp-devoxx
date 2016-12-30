@@ -32,11 +32,6 @@ import play.api.libs.json.{Format, Json}
  * Created: 06/11/2013 01:41
  */
 case class Track(id: String, label: String) {
-
-  // Returns the simple label name used in the I18N Messages resource bundle
-  def simpleLabel : String = {
-      label + ".simple"
-  }
 }
 
 object Track {
