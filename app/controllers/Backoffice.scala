@@ -1,5 +1,6 @@
 package controllers
 
+import akka.actor.ActorRefFactory
 import controllers.Backoffice.Redirect
 import controllers.Wishlist.{NotFound, Ok}
 import library.search.{DoIndexProposal, _}
@@ -391,6 +392,9 @@ object Backoffice extends SecureCFPController {
 
   def showDigests = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
+
+      // TODO Can this be condensed in Scala ?  (Stephan)
+
       val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
       val dailyDigests = Digest.pendingProposals(Digest.DAILY)
       val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
