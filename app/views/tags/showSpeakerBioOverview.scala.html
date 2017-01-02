@@ -4,9 +4,7 @@
 <div class="panel-group">
     <div class="panel panel-default">
         <div class="panel-heading">
-            @speaker.company.map{company=>
-                @tags.showSpeakerTag(speaker.uuid, company)
-            }
+            @tags.showSpeakerTag(speaker.uuid)
         </div>
         <div class="panel-body">
             @tags.checkInvited(speaker.uuid)
