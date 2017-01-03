@@ -32,7 +32,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Gravatar</th>
+                        <th>Digest</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -40,12 +40,18 @@
                 @speakers.sortBy(w=>Webuser.hasAccessToCFP(w.uuid)).reverse.map{ webuser: Webuser =>
                     <tr>
                         <td>
-                            @webuser.cleanName
+                            @tags.renderGravatar(webuser.uuid, showName=true, showPhoto=false)
                         </td>
                          <td>
-                            <small>@webuser.email</small>
+                             <small>@webuser.email</small>
                         </td>
-                        <td>@tags.renderGravatar(webuser.uuid, showName=true, showPhoto=false)</td>
+                        <td>
+                        @if(Webuser.isMember(webuser.uuid, "cfp")) {
+                            @Digest.retrieve(webuser.uuid)
+                        }else {
+                            N/A
+                        }
+                        </td>
                         <td>
                             <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
                            @if(SecureCFPController.hasAccessToAdmin(req)){

@@ -1,0 +1,65 @@
+@(tagProposalEntries:List[TagProposalEntry])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin - all declined") {
+
+  <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-danger alert-dismissable col-md-12">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success alert-dismissable col-md-12">
+      @Html(flash.get("success").get)
+      </div>
+    }
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>Proposals list by tags</h3>
+        </div>
+
+        <div class="panel-body">
+
+        @if(tagProposalEntries.nonEmpty){
+          <table class="table table-bordered table-striped table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Tag Name</th>
+                <th>Proposal Title</th>
+                <th>Speaker</th>
+                <th>Track</th>
+                <th>Talk Type</th>
+              </tr>
+            </thead>
+            <tbody>
+            @tagProposalEntries.map{ entry =>
+              <tr>
+                <td>@tags.renderProposalTag(entry.tag)</td>
+                <td><a href="@routes.CFPAdmin.openForReview(entry.proposal.id)">@entry.proposal.title</a></td>
+                <td>@tags.renderGravatar(entry.proposal.mainSpeaker)</td>
+                <td>@Messages(entry.proposal.track.label)</td>
+                <td>@Messages(entry.proposal.talkType.id)</td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }else{
+          <P>There are no proposals available with tags.</P>
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+}

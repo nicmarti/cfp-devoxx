@@ -1,0 +1,39 @@
+@(speakersAndProposals: List[(Speaker, Iterable[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Speakers") {
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined) {
+      <div class="alert alert-danger alert-dismissable col-md-12">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined) {
+      <div class="alert alert-success alert-dismissable col-md-12">
+      @flash.get("success").get
+      </div>
+    }
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>All speakers with only rejected proposal</h3>
+          <span class="label label-info">@speakersAndProposals.size speakers</span>
+        </div>
+        <div class="panel-footer">
+          <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
+        </div>
+      </div>
+    </div>
+    <pre>
+@speakersAndProposals.sortBy(_._1.name.map(_.capitalize.trim)).map{case(speaker,props)=>
+"@speaker.name.map(_.capitalize)","@speaker.firstName.get","@speaker.email.trim","@speaker.company.getOrElse("")"}
+    </pre>
+
+  </div>
+}

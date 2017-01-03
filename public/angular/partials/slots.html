@@ -11,7 +11,7 @@
 
 <div class="col-lg-3 panel_talks">
     <input type="search" ng-model="filterTalk" placeholder="Filter Talks..."/><br>
-    <small>Slots: {{approvedTalks.length}}</small>
+    <small>Proposals: {{approvedTalks.length}}</small>
 
             <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
                  class="{{talk.state.code}}"
@@ -34,7 +34,7 @@
 </div>
 
 <div class="col-lg-9 panel_slots">
-    <small>Scheduled: {{slots.length}}</small>
+    <small>Available: {{available}} / {{slots.length}}</small>
     <div class="col-lg-9">
         <input type="search" ng-model="q" placeholder="Filter Slots..."/>
     </div>

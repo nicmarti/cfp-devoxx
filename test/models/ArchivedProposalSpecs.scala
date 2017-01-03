@@ -57,7 +57,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"),
+        tags = None)
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DELETED)
 
@@ -91,7 +92,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         "audience level", "summary", "private message", sponsorTalk = false,
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id, Option("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"),
+        tags = None)
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
 
@@ -128,7 +130,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
         Option("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"),
+        tags = None)
 
       val proposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
       Proposal.submit(uuidTest, proposalId)
@@ -157,7 +160,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
         ConferenceDescriptor.ConferenceTracks.UNKNOWN.id,
         Option("beginner"),
         userGroup = None,
-        youTubeLink = Some("http://www.youtube.fr"))
+        videoLink = Some("http://www.youtube.fr"),
+        tags = None)
 
       val newProposalId = Proposal.save(uuidTest, proposal, ProposalState.DRAFT)
       Proposal.submit(uuidTest, newProposalId)
@@ -348,7 +352,8 @@ class ArchivedProposalSpecs extends PlaySpecification {
       ConferenceDescriptor.ConferenceTracks.ALL.head.id,
       Option("beginner"),
       userGroup = None,
-      youTubeLink = Some("http://www.youtube.fr")
+      videoLink = Some("http://www.youtube.fr"),
+      tags = None
     )
 
     Proposal.save(speakerUUID, someProposal, ProposalState.DRAFT)

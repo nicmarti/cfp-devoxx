@@ -32,6 +32,7 @@ import com.amazonaws.services.sns.model._
 import com.amazonaws.{ClientConfiguration, Protocol}
 import models._
 import notifiers.Mails
+import org.apache.commons.lang3.StringUtils
 import play.api.Play
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
@@ -85,6 +86,8 @@ case class SendHeartbeat(apiKey: String, name: String)
 
 case class NotifyMobileApps(confType: String)
 
+case class EmailDigests(digest : Digest)
+
 // Defines an actor (no failover strategy here)
 object ZapActor {
   val actor = Akka.system.actorOf(Props[ZapActor])
@@ -110,6 +113,7 @@ class ZapActor extends Actor {
     case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case NotifyMobileApps(confType: String) => doNotifyMobileApps(confType)
+    case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -326,6 +330,47 @@ class ZapActor extends Actor {
       play.Logger.debug(publish.getMessageId)
     } else {
       play.Logger.error("AWS key and secret not configured")
+    }
+  }
+
+  /**
+    * Handle email digests.
+    *
+    * @param digest the digest to process
+    */
+  def doEmailDigests(digest: Digest) {
+
+    play.Logger.debug("doEmailDigests for " + digest.value)
+
+    // Retrieve new proposals for digest
+    val newProposalsIds = Digest.pendingProposals(digest)
+
+    if (newProposalsIds.nonEmpty) {
+
+      // Filter CFP users on given digest
+      val foundUsers = Webuser.allCFPWebusers()
+        .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
+        .map(userToNotify => userToNotify.email)
+
+      play.Logger.info(foundUsers.size + " user(s) for digest " + digest.value)
+
+      if (foundUsers.nonEmpty) {
+
+        play.Logger.debug(newProposalsIds.size + " proposal(s) found for digest " + digest.value)
+
+        val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
+
+        Mails.sendDigest(digest, foundUsers, proposals, CFPAdmin.getLeaderBoardParams)
+
+      } else {
+        play.Logger.debug("No users found for digest " + digest.value)
+      }
+
+      // Empty digest for next interval.
+      Digest.purge(digest)
+
+    } else {
+      play.Logger.debug("No new proposals found for digest " + digest.value)
     }
   }
 }

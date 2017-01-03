@@ -29,6 +29,8 @@ import library.Redis
 import org.apache.commons.lang3.StringUtils
 import play.api.libs.json._
 
+import scala.math.BigDecimal.RoundingMode
+
 /**
   * A Rating is a comment and a rating given by an attendee during the conference.
   * Rating are posted to the CFP by Mobile application.

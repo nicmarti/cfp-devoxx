@@ -1,5 +1,4 @@
 @(slots:List[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-
 @main("CFP Admin - all declined") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -19,7 +18,7 @@
     <table id="allProposals" class="table table-condensed table-bordered">
         <thead>
             <tr>
-                <th>Slod ID</th>
+                <th>Slot ID</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Room</th>
@@ -31,12 +30,11 @@
             @slots.map { slot: Slot =>
               <tr>
                   <td>@slot.id</td>
-                  <td>@slot.from.toString("yyyy-MM-dd HH:mm:ss.S")</td>
-                  <td>@slot.to.toString("yyyy-MM-dd HH:mm:ss.S")</td>
+                  <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
+                  <td>@slot.to.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
                   <td>@slot.room.name</td>
                   <td>@slot.proposal.map(_.title)</td>
                   <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
-
               </tr>
             }
         </tbody>

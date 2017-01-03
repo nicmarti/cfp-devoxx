@@ -41,10 +41,15 @@ GET           /cfp/profile                                                      
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
 
+# Email Digests
+POST          /cfp/profile/digest                                               controllers.DigestController.update()
+GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
+
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
 POST          /cfp/proposal/preview                                             controllers.CallForPaper.previewProposal()
 POST          /cfp/proposal/save                                                controllers.CallForPaper.saveProposal()
+GET           /cfp/proposal/tags/autocomplete                                   controllers.CallForPaper.autoCompleteTag(term:String ?= "")
 
 GET           /cfp/proposal/edit/:proposalId                                    controllers.CallForPaper.editProposal(proposalId:String)
 GET           /cfp/proposal/edit/:proposalId/speakers                           controllers.CallForPaper.editOtherSpeakers(proposalId:String)
@@ -81,6 +86,7 @@ GET           /cfpadmin/proposal/:proposalId/score                              
 GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
+GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
 
 GET           /cfpadmin/leaderboard                                             controllers.CFPAdmin.leaderBoard
 GET           /cfpadmin/leaderboard/reviewerStats                               controllers.CFPAdmin.allReviewersAndStats
@@ -107,6 +113,7 @@ GET           /cfpadmin/allSpeakers/byProposals/byCompany                       
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
 GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     controllers.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge()
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()
+GET           /cfpadmin/allSpeakers/rejectedTalks/all                           controllers.CFPAdmin.allSpeakersWithRejectedTalks()
 GET           /cfpadmin/allSpeakers/acceptedTalks/export                        controllers.CFPAdmin.allSpeakersWithAcceptedTalksForExport()
 GET           /cfpadmin/allSpeakers/invited                                     controllers.InviteController.allInvitations()
 
@@ -139,6 +146,18 @@ GET           /admin/sanitycheck/proposals                                      
 
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
+
+# Tags
+GET           /admin/tags/list                                                  controllers.Backoffice.showAllTags()
+GET           /admin/tags/new                                                   controllers.Backoffice.newTag()
+POST          /admin/tags/edit/:uuid                                            controllers.Backoffice.editTag(uuid : String)
+GET           /admin/tags/import                                                controllers.Backoffice.importTags()
+GET           /admin/tags/export                                                controllers.Backoffice.exportTags()
+POST          /admin/tag/save                                                   controllers.Backoffice.saveTag()
+POST          /admin/tags/saveAll                                               controllers.Backoffice.saveImportTags()
+POST          /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
+GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
+GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()

@@ -27,16 +27,22 @@ import library.Redis
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import play.api.libs.Crypto
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
-case class Webuser(uuid: String, email: String, firstName: String, lastName: String, password: String, profile: String) {
-  val cleanName = {
+case class Webuser(uuid: String,
+                   email: String,
+                   firstName: String,
+                   lastName: String,
+                   password: String,
+                   profile: String) {
+
+  val cleanName: String = {
     firstName.capitalize + " " + lastName
   }
 }
 
 object Webuser {
-  implicit val webuserFormat = Json.format[Webuser]
+  implicit val webuserFormat: Format[Webuser] = Json.format[Webuser]
 
   val Internal=Webuser("internal",ConferenceDescriptor.current().fromEmail,"CFP","Program Committee",RandomStringUtils.random(64),"visitor")
 
@@ -272,7 +278,7 @@ object Webuser {
     val cfpUsers =  Webuser.allCFPWebusers().sortBy(_.cleanName)
       val cfpUsersAndTracks = cfpUsers.flatMap{
         w:Webuser=>
-          Seq((w.uuid,w.cleanName))
+          Seq((w.uuid, w.cleanName))
       }
     cfpUsersAndTracks
   }
@@ -282,7 +288,7 @@ object Webuser {
         client.get("Webuser:UUID:" + uuid)
   }
 
-  val DEFAULT_LABEL = ("", play.api.i18n.Messages("noOther.speaker"))
+  val DEFAULT_LABEL: (String, String) = ("", play.api.i18n.Messages("noOther.speaker"))
 
   def doesNotExist(uuid: String): Boolean = Redis.pool.withClient {
     client =>

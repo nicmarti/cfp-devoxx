@@ -23,7 +23,7 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
 /**
  * A Track is a general topic (Java, Architecture, Security)
@@ -31,16 +31,17 @@ import play.api.libs.json.Json
  * Author: nicolas martignole
  * Created: 06/11/2013 01:41
  */
-case class Track(id: String, label: String)
+case class Track(id: String, label: String) {
+}
 
 object Track {
-  implicit val trackFormat = Json.format[Track]
+  implicit val trackFormat: Format[Track] = Json.format[Track]
 
   val UNKNOWN=Track("unknown", "unknown.label")
 
   val all = ConferenceDescriptor.ConferenceTracks.ALL
 
-  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).toSeq.sorted
+  val allAsIdsAndLabels:Seq[(String,String)] = all.map(a=>(a.id,a.label)).sorted
 
   val allIDs=ConferenceDescriptor.ConferenceTracks.ALL.map(_.id)
 

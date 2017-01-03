@@ -17,7 +17,6 @@
                                 <th>@Messages("admin.proposals.th.title")</th>
                                 <th>@Messages("admin.proposals.th.track")</th>
                                 <th>@Messages("admin.proposals.th.talkType")</th>
-                                <th>@Messages("admin.proposals.th.lang")</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,7 +24,6 @@
                                 <td>@proposal.title</td>
                                 <td>@Messages(proposal.track.label)</td>
                                 <td>@Messages(proposal.talkType.id)</td>
-                                <td><img src="/assets/images/@(proposal.lang).png" alt="@proposal.lang" title="@proposal.lang"/></td>
                             </tr>
                             <tr>
                                 <th colspan="4">
@@ -52,13 +50,19 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="panel-heading">
+                        <h3><i class="icon-user"></i>
+                            @if(proposal.secondarySpeaker.isDefined) {
+                                @Messages("admin.sp.speakers")
+                            } else {
+                                @Messages("admin.sp.speaker")
+                            }
+                        </h3>
+                    </div>
                     <table class="table table-bordered speakerTable">
                         <tbody>
                             <tr>
-                                <th>
-                                    @tags.gticket.showSpeakerTag(proposal.mainSpeaker)
-                                </th>
-                                <td>
+                                <td colspan="4">
                                     <div class="showSpeakerDetails">
                                     @tags.gticket.showSpeakerBio(proposal.mainSpeaker)
                                     </div>
@@ -66,11 +70,7 @@
                             </tr>
                             @if(proposal.secondarySpeaker.isDefined) {
                                 <tr>
-                                    <th>@proposal.secondarySpeaker.map { secondarySpeaker =>
-                                    @tags.gticket.showSpeakerTag(proposal.mainSpeaker)
-                                    }
-                                    </th>
-                                    <td>
+                                    <td colspan="4">
                                         <div class="showSecSpeakerDetails">
                                         @proposal.secondarySpeaker.map { secondarySpeaker =>
                                             @tags.gticket.showSpeakerBio(secondarySpeaker)
@@ -81,12 +81,7 @@
                             }
                             @if(proposal.otherSpeakers.nonEmpty) {
                                 <tr>
-                                    <th>
-                                    @proposal.otherSpeakers.map { sp =>
-                                        @tags.gticket.showSpeakerTag(sp)
-                                    }
-                                    </th>
-                                    <td>
+                                    <td colspan="4">
                                     @proposal.otherSpeakers.map { sp =>
                                         @tags.gticket.showSpeakerBio(sp)
                                     }
@@ -179,6 +174,8 @@
                             }
                         }
                     }
+                <br>
+                <p>Voting 0 is an abstain vote, this will remove the talk from your todo list.</p>
             </div>
             </div>
         @if(flash.get("vote").isDefined) {

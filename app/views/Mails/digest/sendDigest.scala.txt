@@ -1,0 +1,31 @@
+@(digest: Digest,
+  proposals:List[Proposal],
+  params: controllers.CFPAdmin.LeaderBoardParams)
+
+CFP '@digest.value' Digest
+
+@if(ConferenceDescriptor.current().frLangEnabled) {
+    Nouvelles propositions depuis le dernier digest
+}else {
+    New proposals since last digest
+}
+
+@proposals.map{proposal=>
+
+    - @proposal.title by @proposal.allSpeakers.map(speaker => speaker.cleanName).toList.mkString(", ") (@Messages(proposal.track.label) / @Messages(proposal.talkType.label))
+
+}
+
+@if(ConferenceDescriptor.current().frLangEnabled) {
+    Vous pouvez toujours mettre à jour votre digest.
+}else {
+    You can always update your digest.
+}
+
+@if(ConferenceDescriptor.current().frLangEnabled) {
+    Bonne évaluation
+    L'équipe CFP
+}else {
+    Happy rating!
+    The CFP Team
+}
