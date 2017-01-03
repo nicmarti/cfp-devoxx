@@ -689,7 +689,7 @@ userGroup=Faire évaluer aussi ma proposition de sujet par les Golden Ticket ?
 userGroup.checkbox= Oui, j'accepte que ma proposition soit revue par les personnes ayant acheté un Golden Ticket.
 
 goldenTicket.help.title=Golden Ticket
-goldenTicket.help.txt=Une nouveauté de {0} est l''introduction d''un petit comité de sélection composé de personnes ayant acheté l''un des 64 Golden Ticket sur le site de {0}. Si vous acceptez, ils peuvent alors revoir votre présentation, l''évaluer et la noter. Le comité du programme {0} évalue aussi votre proposition, et 2 notes différentes seront alors enregistrées. A noter que vous pouvez changer le status de ce flag à tout moment. <a href="http://www.devoxx.fr/2015/12/golden-ticket/" target="new">Plus de détails sur cette page</a>
+goldenTicket.help.txt=Une nouveauté de {0} est l''introduction d''un petit comité de sélection composé de personnes ayant acheté l''un des 64 Golden Ticket sur le site de {0}. Si vous acceptez, ils peuvent alors revoir votre présentation, l''évaluer et la noter. Le comité du programme {0} évalue aussi votre proposition, et 2 notes différentes seront alors enregistrées. A noter que vous pouvez changer le status de ce flag à tout moment.
 
 gt.title=CFP spécial Golden ticket
 gt.disclaimer=Nous vous remercions de respecter les personnes qui proposent des sujets pour Devoxx France. En utilisant ce compte vous acceptez de ne pas publier sur les réseaux sociaux ou publiquement les informations que vous verrez sur le CFP.
