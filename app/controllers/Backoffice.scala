@@ -1,15 +1,20 @@
 package controllers
 
+import akka.actor.ActorRefFactory
+import controllers.Backoffice.Redirect
+import controllers.Wishlist.{NotFound, Ok}
 import library.search.{DoIndexProposal, _}
 import library.{DraftReminder, Redis, ZapActor}
-import models._
+import models.{Tag, _}
 import org.joda.time.Instant
 import play.api.Play
 import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
 import play.api.data._
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
+import views.html
 
 /**
  * Backoffice actions, for maintenance and validation.
@@ -270,7 +275,7 @@ object Backoffice extends SecureCFPController {
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Sent draft reminder to speakers")
   }
 
-  def showAllDeclined() = SecuredAction(IsMemberOf("admin")) {
+  def showAllDeclined = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
       val allDeclined = Proposal.allDeclinedProposals()
@@ -283,5 +288,132 @@ object Backoffice extends SecureCFPController {
     implicit request =>
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
       Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+  }
+
+  // Tag related controllers
+
+  def showAllTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allTags = Tag.allTags().sortBy(t => t.value)
+      Ok(views.html.Backoffice.showAllTags(allTags))
+  }
+
+  def newTag = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.newTag(Tag.tagForm))
+  }
+
+  def saveTag() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      Tag.tagForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.newTag(hasErrors)),
+        tagData => {
+          // Is it an update?
+          if (Tag.findById(tagData.id).nonEmpty) {
+            Tag.delete(tagData.id)
+            Tag.save(Tag.createTag(tagData.value))
+          } else {
+            Tag.save(tagData)
+          }
+        }
+      )
+
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.saved"))
+  }
+
+  def editTag(uuid : String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val foundTag = Tag.findById(uuid)
+       foundTag match {
+        case None => NotFound("Sorry, this tag does not exit")
+        case Some(tag) => {
+          Ok(views.html.Backoffice.newTag(Tag.tagForm.fill(tag)))
+        }
+      }
+  }
+
+  def importTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Ok(views.html.Backoffice.importTags(Tag.tagForm))
+  }
+
+  def exportTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allTags = Tag.allTags().sortBy(t => t.value)
+      Ok(views.html.Backoffice.exportTags(allTags))
+  }
+
+  def saveImportTags() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      Tag.tagForm.bindFromRequest.fold(
+        hasErrors => BadRequest(views.html.Backoffice.importTags(hasErrors)),
+        tagData => {
+          val tags = tagData.value.split(";")
+          tags.foreach(f => Tag.save(Tag.createTag(f)))
+        }
+      )
+
+      Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.imported"))
+  }
+
+  def deleteTag(id : String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      if (Tags.isTagLinkedByProposal(id)) {
+        BadRequest("Tag is used by a proposal, unlink tag first.")
+      } else {
+        val tagValue = Tag.findTagValueById(id)
+        if (tagValue.isDefined) {
+          Tag.delete(id)
+          Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> Messages("tag.removed", tagValue.get))
+        } else {
+          BadRequest("Tag ID doesn't exist")
+        }
+      }
+  }
+
+  def getProposalsByTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allProposalsByTags = Tags.allProposals()
+
+      Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
+  }
+
+  def getCloudTag = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val termCounts = Tags.countProposalTags()
+      if (termCounts.nonEmpty) {
+        Ok(views.html.CallForPaper.cloudTags(termCounts))
+      } else {
+        NotFound("No proposal tags found")
+      }
+  }
+
+  def showDigests = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      // TODO Can this be condensed in Scala ?  (Stephan)
+
+      val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
+      val dailyDigests = Digest.pendingProposals(Digest.DAILY)
+      val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
+
+      val realTime = realTimeDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val daily = dailyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      val weekly = weeklyDigests.map {
+        case (key: String, value: String) =>
+          (Proposal.findById(key).get, value)
+      }
+
+      Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
 }

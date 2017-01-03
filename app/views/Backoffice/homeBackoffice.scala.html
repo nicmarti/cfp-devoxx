@@ -59,8 +59,20 @@
             <a href="@routes.CFPAdmin.allCFPWebusers()" class="btn btn-sm btn-primary"><i class="icon-user-md"></i> @Messages("admin.btn.tracklead")</a>
             <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="icon-group"></i> @Messages("admin.btn.speakers")</a>
 
+            <h4><i class="icon-star"></i> Top Talks</h4>
+            <a href="@routes.MobileVotingV1.topTalksAsHtml()" class="btn btn-sm btn-success"><i class="icon-star-half-full"></i> Show the top rated talks</a>
+
             <h4><i class="icon-moon"></i> Cron</h4>
             <a href="@routes.Backoffice.sendDraftReminder()" class="btn btn-sm btn-primary"><i class="icon-refresh"></i> Send a reminder to speakers for DRAFT</a>
+            <a href="@routes.Backoffice.showDigests()" class="btn btn-sm btn-primary"><i class="icon-envelope"></i> Email Digests</a>
+
+            <h4><i class="icon-tags"></i> Tags</h4>
+            <a href="@routes.Backoffice.showAllTags()" class="btn btn-sm btn-primary"><i class="icon-tag"></i> All tags</a>
+            <a href="@routes.Backoffice.newTag()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> New tag</a>
+            <a href="@routes.Backoffice.getProposalsByTags()" class="btn btn-sm btn-primary"><i class="icon-tags"></i> All proposals by Tags</a>
+            <a href="@routes.Backoffice.getCloudTag()" class="btn btn-sm btn-primary"><i class="icon-cloud"></i> Cloud Tag</a>
+            <a href="@routes.Backoffice.importTags()" class="btn btn-sm btn-primary"><i class="icon-truck"></i> Import tags</a>
+            <a href="@routes.Backoffice.exportTags()" class="btn btn-sm btn-primary"><i class="icon-save"></i> Export tags</a>
 
             <h4><i class="icon-search"></i> ElasticSearch</h4>
             <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-warning btn-sm"><i class="icon-remove"></i> Delete Index</a>

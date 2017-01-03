@@ -54,6 +54,25 @@
                     @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
                 }
 
+                <label for="tag1">@Messages("tag.title")</label><br>
+
+                @views.html.bootstrap3.input(newProposal("tags[0].value"),
+                    placeholder = Messages("tag.placeholder1"))
+
+                @views.html.bootstrap3.input(newProposal("tags[1].value"),
+                    placeholder = Messages("tag.placeholder2"))
+
+                @views.html.bootstrap3.input(newProposal("tags[2].value"),
+                    placeholder = Messages("tag.placeholder3"))
+
+                @views.html.bootstrap3.input(newProposal("tags[3].value"),
+                    placeholder = Messages("tag.placeholder4"))
+
+                @views.html.bootstrap3.input(newProposal("tags[4].value"),
+                    placeholder = Messages("tag.placeholder5"))
+
+                @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
+
                 @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                     @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
                     <div id="sponsorTalkMsg" class="alert alert-info">
@@ -75,6 +94,7 @@
             <p><label>@Messages("videoLinkMessage") : </label><br> @Messages("videoLinkMessage.help")</p>
             <p><label>@Messages("talkType") : </label><br> @Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
             <p><label>@Messages("mainSpeaker2")</label><br> @Messages("mainSpeaker.help")</p>
+
             @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                 <p><label>@Messages("sponsorTalk.help.title") : </label><br> @Messages("sponsorTalk.help")</p>
             }
@@ -85,6 +105,22 @@
     </div>
 
 <script type="text/javascript" src="/assets/js/maxlength.js"></script>
+
+<script type="text/javascript">
+    $("[id^=tags]" ).autocomplete({
+        source: '/cfp/proposal/tags/autocomplete',
+        minLength: 2,
+        select: function( event, ui ) {
+            $(this).val(ui.item.value);
+        },
+        change: function(event,ui) {
+            if (ui.item==null) {
+                $(this).val('');
+                $(this).focus();
+            }
+        }
+    });
+</script>
 
 <script type="text/javascript">
 $(document).ready(function($){

@@ -52,16 +52,17 @@ object ReviewByGoldenTicket {
       ZapActor.actor ! ComputeVotesAndScore()
   }
 
-  def totalGoldenTickets(): Int = Redis.pool.withClient {
+  def totalGoldenTickets():Int=Redis.pool.withClient {
     implicit client =>
-      client.smembers("Webuser:gticket").size
+       client.smembers("Webuser:gticket").size
   }
 
-  def countVotesForAllUsers(): List[(String, Long)] = Redis.pool.withClient {
-    implicit client =>
-      val allGoldenTicketUUID: Set[String] = client.smembers("Webuser:gticket")
-      val votesPerReviewers = allGoldenTicketUUID.map {
-        reviewerUUID: String =>
+  def countVotesForAllUsers():List[(String,Long)]=Redis.pool.withClient{
+    implicit client=>
+      val allGoldenTicketUUID:Set[String] = client.smembers("Webuser:gticket")
+
+      val votesPerReviewers = allGoldenTicketUUID.map{
+        reviewerUUID:String=>
           val totalVotes = client.scard(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID")
           (reviewerUUID, totalVotes)
       }.toList.sortBy(_._2).reverse

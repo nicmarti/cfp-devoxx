@@ -1,0 +1,2996 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">	  	  
+<!-- www.check-domains.com sitemap generator -->
+
+<url>
+   <loc>http://cfp.devoxx.be/2016/index.html</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>1.0000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/uni/monday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/uni/tuesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/tia/monday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/tia/tuesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/lab/monday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/lab/tuesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/monday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/tuesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/wednesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/thursday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/quick/wednesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/quick/thursday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/ignite/thursday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/conf/wednesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/conf/thursday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/conf/friday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.8000</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/uni</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/monday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WSB-5493/Java_on_Mobile_:_Write_once,_Run_on_iOS_&amp;_Android</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/paul_anderson</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/gail_anderson</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VZX-4012/Be_Productive_with_JHipster_</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/julien_dubois</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/deepu_k_sasidharan</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DYM-1744/Developing_Reactive_applications_with_Reactive_Streams_and_Java_8</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/brian_clozel</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sebastien_deleuze</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ADY-5626/JavaFX_in_action</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/alexander_casall</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/QKJ-0150/Managing_Cloud_Native_Applications_with_Kubernetes_-_End-to-End</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/ray_tsang</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/james_strachan</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mandy_waite</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/IIH-2926/Deep_Learning:_An_Introduction</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/breandan_considine</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ULZ-3941/Java_9_Modularity_in_Action</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sander_mak</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/paul_bakker</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/IJX-7017/It&amp;#x27;s_a_kind_of_magic:_under_the_covers_of_Spring_Boot</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stephane_nicoll</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/andy_wilkinson</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/tuesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SBX-4851/Array_Linked_to_a_List,_the_full_story!</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jose_paumard</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MBV-6308/Java_EE,_TypeScript_and_Angular2</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/antonio_goncalves</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sebastien_pertus</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/NXW-8662/Reactive_Programming</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/venkat_subramaniam</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ULT-2698/Tensorflow_and_deep_learning_-_without_at_PhD</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/martin_gorner</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/BLY-5449/Modular_Development_with_JDK_9</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mark_reinhold</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/alan_bateman</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/KAV-4723/Nuts_and_Bolts_of_Docker</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/patrick_chanezon</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HHV-6547/Exploring_Java_9</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XOR-6380/Deep_dive_into_Watson&amp;#x27;s_Neural_Networks</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sandhya_kapoor</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/bowen__zhou</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/arthur_kantor</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/tia</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AUX-3854/Ehcache_out_of_his_Element</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/louis_jacomet</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XBS-2666/Make_CSS_Fun_Again_with_Flexbox!</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/hubert_sablonniere</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CJZ-6085/Configuration_management_with_Spring</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/pierre-jean_vardanega</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LDL-1473/Elasticsearch_+_Hibernate:_from_artisanal_to_industrial_integration</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/emmanuel_bernard</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/david_pilato</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TXP-1648/Serverless_Microservices_with_Google_Cloud_Functions</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/bret_mcgowen</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/PTE-7793/Easily_secure_your_Front_and_back_applications_with_KeyCloak</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sebastien_blanc</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/EJZ-7564/Do_you_really_want_to_go_fully_micro%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/robert_munteanu</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TAM-4238/And_the_beats_go_on!</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FJC-9681/Going_global_with_Nomad_and_Google_Cloud_Platform.</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/bastiaan_bakker</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HPE-5408/Binge-streaming_your_Web_API</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/guillaume_laforge</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/audrey_neveu</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HWG-9405/Java9_and_the_impact_on_Maven_Projects</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/robert_scholte</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DTA-9267/Sentiment_analysis_of_social_media_posts_using_Apache_Spark</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/niels_dommerholt</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/STH-6071/Gradle_meets_Kotlin</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/rene_groeschke</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JVY-2604/Supercharge_your_web_app_with_the_new_Firebase</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VEI-8748/Behavior-Driven_Development_in_Java_with_JGiven</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jan_schafer</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/KJD-8834/Apache_Spark%3F_If_only_it_worked.</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/marcin_szymaniuk</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/PLR-0807/Composite_Builds_with_Gradle</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stefan_oehme</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MSD-7684/Javaslang_-_Functional_Java_Done_Right</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/grzegorz_piwowarek</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OAG-4537/The_end_of_polling_:_why_and_how_to_transform_a_REST_API_into_a_Data_Streaming_API%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/EBI-8705/Running_Docker_in_production_on_AWS</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/oliver_geisser</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/UXX-4833/How_to_test_your_awesome_iOS_mobile_application_%3F_</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/maxime_david</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ICJ-3714/Serenity-JS:_next_generation_acceptance_testing_for_Angular-JS_in_TypeScript</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/john_smart</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jan_molak</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/EAP-4528/Prometheus_Monitoring_for_Java_Developers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/fabian_staber</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ALF-6522/Open_Sesame!_Conversations_With_My_Front_Door</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/maurice_naftalin</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XOE-6216/Djinni_in_a_bottle_-_Easily_share_code_between_iOS_and_Android_using_C++</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stephan_jaetzold</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/PPK-6316/What_can_you_learn_from_thousands_of_source_files_in_Github%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/PPQ-9247/JUnit_5:_Next_Generation_Testing_on_the_JVM</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/nicolai_parlog</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XVI-8392/Feign_in_Action</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/igor_laborie</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FVY-3267/Embedded_Rust_%E2%80%93_Rust_on_IoT_devices</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/lars_gregori</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/BRC-3050/Notes_on_Type_Theory_for_absolute_beginners_</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/hanneli_tavante</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/GLJ-8229/Maven__-_your_ultimate_CD_tool</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jakub_marchwicki</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/GVZ-8755/Avoid_the_headaches_%E2%80%93_Make_your_asynchronous_code_look_synchronous!</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jordane_grenat</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/lab</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XMX-6190/Codelab:_Tensorflow_and_deep_learning_-_without_at_PhD</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VHS-6611/Getting_started_with_Hyperledger_(Blockchain)_in_the_Cloud__</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/nitesh_thakrar</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/benjamin_fuentes</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FRE-1271/Progressive_Web_Apps_with_Polymer</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/horacio_gonzalez</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TOU-7137/Lagom_Microservice_-_Canceled</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/lutz_huehnken</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DLX-1294/Hands-on_with_Kubernetes_-_from_basic_to_advanced_features</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/rafael_benevides</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RPF-1880/Become_an_expert_in_webscraping_(data_extraction)</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/fabien_vauchelles</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YMI-7185/Decomposing_a_Java_EE_monolith_into_WildFly_Swarm_microservices</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/heiko_braun</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/dimitris_andreadis</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LJP-3156/Let&amp;#x27;s_React:_the_workshop</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sebastien_prunier</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mathieu_ancelin</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/bof</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/UZN-9261/The_modern_view_on_implementation_of_classic_design_patterns_in_Java</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mikalai_alimenkou</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TYT-6605/OCI_&amp;_runC:_A_Developer&amp;#x27;s_Playground_for_Constructing_Containers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/phil_estes</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LEY-5980/I_know_why_your_Java_is_slow</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/alexey_ragozin</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DJW-9982/Opinionated_containerized_microservices_with_the_Netflix_stack</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/lieven_doclo</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YVV-3891/Performance_Tuning_Clinic</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/kirk_pepperdine</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SRM-9598/The_Java_Community_Process:_Advance_Your_Career_and_Help_Define_Java&amp;#x27;s_Future_</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/heather_vancura</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/patrick_curran</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TFF-9852/Writers_Write!_The_Documentation_BOF</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/dan_allen</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FNC-3081/DevOps:_State_of_the_Union</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/michael_huttermann</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/wednesday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TOO-8828/The_Java_Pub_Quiz</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/richard_kettelerij</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/bert_jan_schrijver</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/peter_hendriks</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/roy_van_rijn</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/tim_prijn</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XZM-9163/The_Spring_BOF</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/marius_bogoevici</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/rossen_stoyanchev</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SZF-5477/The_Devoxx_Tweetwall_-_Past,_Present,_Future</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sven_reimers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jan-kees_van_andel</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/PUT-7801/Microprofile.io:__An_open_community_discussion</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/david_blevins</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/alasdair_nottingham</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mike_croft</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/KHW-8924/Streams_in_JDK_8:_The_Good,_The_Bad_and_The_Ugly</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/simon_ritter</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JTF-6021/Meet_and_greet_Duchess_an_unconference</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/regina_ten_bruggencate</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/linda_van_der_pal</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/thursday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OIP-8842/Devoxx4Kids_BOF</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/daniel_de_luca</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AKB-2514/10_SQL_Tricks_that_You_Didn&amp;#x27;t_Think_Were_Possible</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/lukas_eder</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YRI-7316/More_Java_Community_Insider_Secrets!</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/yolande_poirier</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/cassandra_clark</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/martijn_verburg</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/NTP-3050/Riding_the_Jet_Streams</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/neil_stevenson</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/quick</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JVP-2134/The_road_to_Node_Package_Manager_Hell</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/paul_watson</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OXS-1955/A_MicroProfile_for_Micro_Services</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/QBN-7622/Algebraic_data_types_for_fun_and_profit</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/clement_delafargue</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YTQ-0303/Having_fun_with_Robots_using_microservices_on_Docker_and_Kubernetes</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/renze_de_vries</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AWT-8881/Crowdsourcing_knowledge:_write_for_Voxxed</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/katharine_beaumont</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SZY-5767/Hot.orElse(Not)</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/nick_vanderhoven</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jeroen_horemans</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ZWN-2846/Modern_web_development_using_Aurelia</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/harro_lissenberg</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XSW-7518/Stupid_REPL_tricks_-_an_introduction_to_Jshell_for_Java_Developers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/pavel_rozenblioum</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AHL-4947/15_Kubernetes_features_in_15_minutes</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/marc_sluiter</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MZH-4825/From_Monolithic_App_Server_to_Micro_Profile_App_Server</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/NWD-7559/It%E2%80%99s_Java_Jim,_But_Not_As_We_Know_It</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YJP-1600/Billions_of_lines_of_code_in_a_single_repository,_SRSLY%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SFJ-2079/Devoxx,_where_wireless_dreams_comes_true</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/glenn_de_haes</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ESC-3284/Why_computers_calculate_wrong</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/karl_brodowsky</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JHR-5766/Talk_to_your_home!</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/joost_den_boer</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WAL-0861/Eddystone,_the_open_location_beacon_standard</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/alex_van_boxel</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/GDZ-1171/DROP_DB_%E2%80%93_simple_event_sourcing_for_simple_aliens</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jarek_ratajski</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XZG-7360/The_ISS_position_in_real_time_on_my_mobile_in_less_than_15mn_%3F_Yes,_we_can.</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MVN-2891/Become_a_King_with_Kong</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/cedric_tran-xuan</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HLD-0889/Introducing_JSR_354_-_The_Money_&amp;_Currency_API</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/wim_van_haaren</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jeroen_burggraaf</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/KBR-2455/Mobycraft:_Manage_Docker_containers_using_Minecraft</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/arun_gupta</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/IYZ-6965/NoOps_in_the_cloud</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/constantijn_visinescu</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HGJ-2011/Testing_Time_in_Java</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/joep_weijers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RVO-9682/The_Power_of_Real-Time_Machine_Learning</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/ji_lucas</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/ignite</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AYX-2480/Why_we_need_diversity</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/GKJ-8040/Functional_programming:_It_sounds_awful</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YAV-7760/How_to_choose_the_right_web_framework%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YXP-1780/Anti_Anti-Patterns</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SYE-7988/Modern_day_software_delivery:_getting_the_terminology_straight</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jaap_coomans</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/BUQ-6586/Hacker&amp;#x27;s_Guide_to_Coffee_(Java)</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stephen_chin</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/KZM-7858/What_users_want</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/vladimir_dejanovic</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VLW-7273/Mood_Driven_Development</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/EFU-2371/Java_Sutra</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WPU-1373/Bicycle_Touring__Travelling_for_Vacation_and_Business_by_Bicycle</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/QBD-3776/How_to_build_your_own_self-driving_car</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/conf</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YEB-5920/Microservices_and_the_PaaS_:_A_true_(love)_story</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/gilles_stragier</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jef_verelst</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TPV-3975/Property-Based_Testing_for_everyone</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/romeu_moura</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RBY-6694/Security_and_Microservices</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sam_newman</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DQN-8492/Elegant_Builds_at_Scale_with_Gradle_3.0</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/hans_dockter</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JFP-1865/BPMN_plus_DMN:_Combining_Workflows_and_Decisions</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/niall_deehan</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SWW-4927/Twelve_Ways_to_Make_Code_Suck_Less</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/EFQ-9530/Advanced_Spring_Data_REST</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/oliver_gierke</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AXR-1221/People,_Platforms_and_Pipelines</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/alex_ley</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LLO-3403/Sharing_2_years_experience_using_Scala_in_a_real_project_by_a_Java_team</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/IQL-6684/Artificial_Intelligence_-_the_(near)_future_of_software_development</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jedrzej_osinski</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JGN-0641/Modular_monoliths</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/simon_brown</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OGM-5699/Containers,_VMs,_Processes%E2%80%A6__How_all_of_these_technologies_work_%3F_Deep_dive_and_learn_about_your_OS</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/quentin_adam</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SUS-5959/Reactive_Machine_Learning_On_and_Beyond_the_JVM</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jeff_smith</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/IZL-4696/Designing_for_Performance</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/martin_thompson</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AIF-2822/Progressive_Web_Apps</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/cyril_balit</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/florian_orpeliere</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CSP-1623/In-memory_data_revenge:_the_substrate_between_apps_and_data_-_an_Infinispan_case</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DWW-9249/Why_you_should_really_care_about_the_blockchain</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sebastien_arbogast</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/said_eloudrhiri</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SRK-1932/Get_started_writing_TypeScript_today!</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/dominik_kundel</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WGS-9297/_Introduction_to_Modular_Development</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DUK-7522/100%25_Stateless_with_JWT_(JSON_Web_Token)</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LZB-2365/Using_Machine_Learning_to_Enhance_your_Apps</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sara_robinson</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mete_atamel</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MLS-6332/g_%E2%88%98_f_patterns</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mario_fusco</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AUW-2376/The_JVM_and_Docker._A_good_idea%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/christopher_batey</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OCA-5415/Java_EE_8_and_Java_EE_9_-_What&amp;#x27;s_coming%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/david_delabassee</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WMP-8487/%E2%80%9CRight_Size%E2%80%9D_your_Services_with_WildFly_Swarm</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LBV-8292/Ask_the_JDK_Architects</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/brian_goetz</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/BED-6160/Better_performance_with_HTTP%2F2</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/julien_viet</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RMS-3799/Testing_Legacy_Code</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/elliotte_rusty_harold</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RFJ-6873/building_secure_software_with_OWASP</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/martin_knobloch</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OFC-6030/Authentication_and_Authorization_in_a_Cloud_and_Microservice_World</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stefan_reuter</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/thomas_kruse</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FFR-8486/How_Google_DeepMind_conquered_the_game_of_Go</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CJT-4943/Clojure_Web-Application_101</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/michael_vitz</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WZG-2836/Cloud_Native_Java</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/josh_long</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RMY-7835/Unikernels_and_Docker:_From_revolution_to_evolution</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/richard_mortier</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OUB-2765/Wait,_what!%3F_Our_microservices_have_actual_human_users%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stefan_tilkov</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AUZ-9008/Introduction_to_gRPC:_A_general_RPC_framework_that_puts_mobile_and_HTTP%2F2_first</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MNZ-0269/You_always_dreamt_of_your_own_quantum_computer._Now_you_can_have_it_in_the_Cloud.</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/eric_cattoir</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OJP-6150/Deep_Dive_into_JUnit_5</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sam_brannen</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CAL-9448/Just_enough_app_server</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/EMH-3283/Terracotta_Ehcache:_simpler,_faster,_distributed</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/anthony_dahanne</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/UYS-1254/Programming_your_body_with_chip_implants</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/par_siko</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JWK-6289/Javaslang_-_Functional_Java_The_Easy_Way</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/david_schmitz</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/KMR-8467/_Advanced_Modular_Development</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ELI-0364/How_Angular_Makes_the_Mobile_Web_Awesome</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stephen_fluin</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HQK-8232/Cloud_Native_Streaming_and_Event-Driven_Microservices</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/OQN-8982/Effective_Service_API_Design_</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TXB-7643/The_New_JDK_HTTP_Client_API</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/michael_mcmahon</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/SHM-1895/Delivering_Better_and_Faster_Microservices_and_Mobile_Apps</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/bruno_borges</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CQZ-1658/How_to_Create_a_New_JVM_Language_in_Under_an_Hour</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/oleg_selajev</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LYF-6510/Introducing_the_MicroProfile</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/andy_gumbrecht</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VXM-7030/Optional_-_The_Mother_of_All_Bikesheds</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stuart_marks</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/QIW-8916/Mission_to_Mars:_Exploring_new_worlds_with_AWS_IoT</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jeroen_resoort</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DME-3874/Distributed_Commit_Logs_with_Apache_Kafka</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/james_ward</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ETR-4645/Microservices_Evolution:_How_to_break_your_monolithic_database</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/edson_yanaga</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/QFW-7960/Docker_Security_for_Developers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/justin_cormack</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DPH-4004/The_Java,_the_Javascript,_and_the_future</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/amahdy_abdelaziz</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/teemu_suo-anttila</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LFC-8783/Fast_Cars,_Big_Data_-_How_Streaming_Can_Help_Formula_1</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/tugdual_grall</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CMG-0599/DevOps_on_Android:_From_one_git_push_to_a_Play_Store_release</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jeremie_martinez</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FYR-1485/Are_you_botching_the_security_of_your_AngularJS_application%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/philippe_de_ryck</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FBB-9293/A_tour_of_the_(advanced)_Akka_features_in_60_minutes</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/johan_janssen</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/GNG-2804/Java_Collections:_The_Force_Awakens</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/raoul-gabriel_urma</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/richard_warburton</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/PUX-9752/A_Crash_Course_in_Modern_Hardware</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/cliff_click</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/APW-8063/Continuous_Delivery_At_GitHub</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/alain_helaili</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WQG-1208/It_is_tough_to_be_an_application_in_2016._Lagom_can_help.</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/katrin_shechtman</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VOW-7651/Effective_Android_dev</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/filip_maelbrancke</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/NJU-8271/Machine_Learning_for_Developers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/danilo_poccia</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/sebastien_stormacq</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WRQ-1456/Java_on_Google_Cloud_Platform</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/patrick_flynn</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/rajeev_dayal</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FWD-0632/Debugging_Distributed_Systems</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/donny_nadolny</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/URM-2795/Refactoring_to_Java_8</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/trisha_gee</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TDC-8712/Declarative_Thinking,_Declarative_Practice</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/kevlin_henney</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ICY-6912/Cloud_native_development</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/michael_willemse</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JLM-7245/Android_Architecture_Blueprints</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/david_gonzalez</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/QJO-3473/Developing_for_Smart_TVs</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CTP-1409/Google_Dataflow:_The_New_Open_Model_for_Batch_and_Stream_Processing</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/robert_kubis</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XYK-5936/Elixir_-_Easy_fun_for_busy_developers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TYS-8334/Rust_as_a_support_language</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/geoffroy_couprie</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/UBC-7195/Zen_&amp;_The_Art_of_Angular_2</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/igor__minar</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VNH-0402/_Project_Jigsaw:_Under_The_Hood</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AWL-6219/Oops,_I_broke_my_API</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/michael_demey</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/benoit_lagae</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XLQ-1296/Swift:_the_mobile_language_that&amp;#x27;s_coming_to_the_cloud</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/ian_partridge</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/JNW-6691/Anticipating_Java_9_-_Functionality_and_Tooling</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/BVZ-0081/graph_databases_and_the_%22panama_papers%22</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stefan_armbruster</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/UTP-8686/What&amp;#x27;s_NOT_new_in_modular_Java</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/milen_dyankov</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/PBU-8531/Java_on_Mobile,_WORA_at_your_fingertips</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/johan_vos</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/WCQ-4448/Migrate_your_traditional_VM-based_clusters_to_Containers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HFW-0944/Machine_Intelligence_at_Google_Scale:_Vision%2FSpeech_API,_TensorFlow_and_Cloud_Machine_Learning</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FBA-3369/Combining_2_Clouds:_An_end-to-end_DevOps_demo</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jessica_perez</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YIR-1518/Functional_patterns_for_scala_practitionners</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RMC-9947/Sherlock,_a_Watson_Cognitive_Computing_Use_Case</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/stephan_janssen</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/james_weaver</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YQN-7342/Machine_Learning_for_Developers_-_Dive_deeper</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HKC-9910/Reactive_Microservices_with_Vert.x</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/GCY-1917/develop_faster_with_an_open_source_microservices_platform_based_on_docker,_kubernetes_and_jenkins</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RCB-5152/Lambda_Puzzlers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/peter_lawrey</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CKK-4126/Tensorflow_and_deep_learning_-_without_at_PhD</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/TLX-9575/A_JVM_does_That%3F</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/friday</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/UBJ-1333/Patterns_and_Antipatterns_in_Docker_Image_Lifecycle</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jonathan_roquelaure</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XKB-1958/Java_Language_and_Platform_Futures:_A_Sneak_Peek</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/RZQ-2819/Reactive_Web_Applications_with_Spring_5</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/ZMW-0118/Testing_made_sweet_with_a_Mockito</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/jeroen_mols</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XFU-9980/Reactive_Streams_principles_applied_in_Akka_Streams</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/eric_loots</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HYC-2710/Flying_services_with_the_drone</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/krzysztof_kudrynski</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/blazej_kubiak</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/VNH-8902/Thinking_In_Parallel</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LUB-6226/CDI_2.0_is_upon_us</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/antoine_sabot-durand</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/XHW-5562/Netty_-_One_Framework_to_rule_them_all</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/norman_maurer</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MQT-2690/Building_Chat_Bots_-_The_Next_Gen_UI</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/BIC-3525/ScreenPlay:_the_next_stage_in_automated_acceptance_testing_</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HQE-5922/Modular_web_applications_using_Across_and_Spring</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/arne_vandamme</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.6400</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/mon</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/tue</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/wed</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/thu</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/byday/fri</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/uni/monday?slotId=uni-wdy-90</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speakers.html</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/uni/tuesday?slotId=uni-wdy-90</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/NIU-1535/The_Java_Council</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talks/key</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/simon_maple</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/AID-7819/30_min_Keynote_Session</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/KJD-8834/Apache_Spark%3F_If_only_it_worked</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FJC-9681/Going_global_with_Nomad_and_Google_Cloud_Platform</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/tia/monday?slotId=tia-pok-93</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/FVY-9716/Serverless_Microservices_with_Google_Cloud_Functions</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/tia/tuesday?slotId=tia-pok-93</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/BRR-9566/Hackergarten</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/andres_almiray</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/lab/monday?slotId=lab-lfw-25</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/lab/tuesday?slotId=lab-lfw-25</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/monday?slotId=bof-uop-06</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/tuesday?slotId=bof-uop-06</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CLO-5704/Welcome_&amp;_Announcements_-_Overflow</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/CCS-6745/Welcome_&amp;_Announcements_-_Overflow</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/YAE-5269/Welcome_&amp;_Announcements</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/MGV-9488/Welcome_&amp;_Announcements_-_Overflow</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/DXE-9458/Everything_Your_Mother_Should_Know_About_Compilers</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/wednesday?slotId=bof-uop-06</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/bof/thursday?slotId=bof-uop-06</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/HDC-3205/The_architectural_patterns_-_a_la_carte</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/speaker/mani_sarkar</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/UAC-3830/Lambda_Core_%E2%80%93_HardCore</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/quick/wednesday?slotId=quick-zyo-30</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/quick/thursday?slotId=quick-zyo-30</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/ignite/thursday?slotId=ignite-pez-37</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/talk/LZR-6727/ROCA:_Why_you_shouldn%E2%80%99t_build_Web_UIs_the_way_you_do</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/conf/wednesday?slotId=conf-afa-99</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/conf/thursday?slotId=conf-afa-99</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/conf/friday?slotId=conf-afa-99</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.5120</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/key/thursday?slotId=key-rfu-35</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.4096</priority>
+</url>
+<url>
+   <loc>http://cfp.devoxx.be/2016/agenda/key/wednesday?slotId=key-rfu-35</loc>
+   <lastmod>2016-12-19T14:06:03+00:00</lastmod>
+   <changefreq>monthly</changefreq>
+   <priority>0.4096</priority>
+</url>
+</urlset>

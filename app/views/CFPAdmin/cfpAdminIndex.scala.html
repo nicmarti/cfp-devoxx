@@ -40,20 +40,23 @@
             }
 
             <div class="panel-body">
+
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
+                        <div class="panel-heading">
+                            <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
+                        </div>
                     </div>
-                </div>
 
-                <i class="icon-filter"></i> @Messages("cfpadmin.filterOn")
-                @Track.allIDs.filterNot(_=="unknown").map { idTrack =>
-                    <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Messages(idTrack + ".leaderboard")</a>
-                }
-                <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn btn-success btn-sm"><i class="icon-filter"></i>
-                    All</a>
+                    <i class="icon-filter"></i> Filter on
+                    @Track.allIDs.map{idTrack=>
+                        @if(track.get.equals(idTrack)) {
+                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@idTrack</a>
+                        }else {
+                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
+                        }
+                    }
 
-                @if(allProposalsForReview.nonEmpty) {
+                    @if(allProposalsForReview.nonEmpty) {
                         <br>
                         <br>
                         <table class="table table-bordered table-striped table-hover table-condensed">
@@ -71,6 +74,10 @@
                                 <tr>
                                     <td>
                                         @proposal.title
+                                        @if(proposal.tags.isDefined) {
+                                            <br><br>
+                                            @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag))
+                                        }
                                     </td>
                                     <td>
                                     @Messages(proposal.track.label)

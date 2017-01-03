@@ -1,0 +1,25 @@
+@(tags:List[Tag])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin - Export Tags") {
+
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>Export Tag list</h3>
+          <p>All the tags delimited by a colon ';'</p>
+        </div>
+        @if(tags.nonEmpty){
+          @tags.map(_.value).mkString(";"))
+        }else{
+          <P>There are no tags available, you should first create or import them.</P>
+        }
+        </div>
+      </div>
+    </div>
+}

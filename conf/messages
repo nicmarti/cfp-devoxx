@@ -32,9 +32,23 @@ index.txt2=Use one of the following social service, this is simpler and you won'
 company=Your company
 bio=A short bio
 twitter=Your twitter handle
+email.digest.label=Email Digest
+email.digest.description=Receive new proposals notifications via a digest email.
+email.digest.realtime.description=Interval is every 5 minutes.
+email.digest.daily.description=Expect your daily digest at {0} GMT.
+email.digest.weekly.description=Expect your weekly digest at {0} GMT on {1}.
+email.digest.never.description=Digest turned off. Don't be a stranger!
+email.digest.day.1=Monday
+email.digest.day.2=Tuesday
+email.digest.day.3=Wednesday
+email.digest.day.4=Thursday
+email.digest.day.5=Friday
+email.digest.day.6=Saturday
+email.digest.day.7=Sunday
 blog=Your blog or company website
 qualifications=Your speaker''s qualifications
 qualifications2=Speaker''s qualifications
+digest=Select your email notifications for new proposals (digest)
 qualifications.label=Qualifications
 index.signupTitle=Sign-up as a speaker
 index.signup2=Sign-up as speaker for {0} and propose one or more subjects.
@@ -91,7 +105,7 @@ talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">FAQ</a>.
 videoLink=Related video link
 
-audienceLevel=Audience level :
+audienceLevel=Audience level
 audienceLevel.help=Please, indicate the required audience level for your talk\:\
 1- for all audience, beginner or novice\
 2- for intermediate, talented\
@@ -106,7 +120,7 @@ videoLinkMessage=Related video link
 videoLinkMessage.help=Share with the program committee a link to one of your related online videos on YouTube or Vimeo
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
-sponsorTalk.help=Platinum and Gold sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -330,7 +344,7 @@ admin.btn.speakersInvited=All invited speakers
 admin.btn.draft=All DRAFT
 admin.btn.submitted=All SUBMITTED
 admin.btn.review=Open for review
-admin.cfp.empty=There is no new submitted proposals for the time being...
+admin.cfp.empty=There are no new proposals for track {0}, maybe select another track?
 admin.cfp.recentEvents=Events
 admin.cfp.date=Date
 admin.cfp.author=Author
@@ -367,7 +381,7 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
-tags.renderComment.postedBy=Posted by {0} - {1}
+tags.renderComment.postedBy=Posted by {0} on {1} at {2}
 
 admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
@@ -385,7 +399,7 @@ cfp.isClosed=The CFP is closed
 cfp.isClosed.expl=CFP is closed and does not accept submission.
 cfp.closed.enter=Sign-in
 tbl.cfp.closed=CFP closed
-cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completly once it has been submitted. A proposal that differs from the original version will be refused.
+cfp.closed.restrictions=CFP is closed. You can edit your proposal, but please, do not change it completely once it has been submitted. A proposal that differs from the original version will be refused.
 
 forget.password.title=Forget your access code?
 forget.password.txt=Send me a new access code
@@ -423,6 +437,7 @@ sw.proposal.title=Title
 sw.proposal.talkType=Type of presentation
 sw.proposal.summary=Summary
 sw.proposal.track=Track
+sw.proposal.tags=Tags
 sw.proposal.lang=Lang
 sw.proposals=Talks
 sw.proposal=Talk
@@ -575,6 +590,19 @@ btn.saveDraft=Save as draft
 btn.saveAndSend=Save and Submit to committee
 saved=Proposal saved, do not forget to SUBMIT this talk to the program committee when you are ready
 
+tag.edit=Edit Tag
+tag.new=New Tag
+tag.saved=Tag saved
+tag.removed=Tag "{0}" removed
+tag.imported=Tags imported
+tag.title=Please select min. 3 tags related to your proposal
+tag.placeholder1=Primary tag
+tag.placeholder2=Secondary tag
+tag.placeholder3=Related tag
+tag.placeholder4=Nice to have tag
+tag.placeholder5=The full Monty tag
+
+
 wishList.title=WishList
 wishList.menu=Menu
 wishList.recentEvents=All requests
@@ -635,6 +663,7 @@ mail.draft_multiple_reminder.subject={1} reminder : you have {0} proposals to su
 mail.proposal_approved.subject=Your proposal has been approved {0}
 mail.proposal_refused.subject=Your proposal has been refused {0}
 mail.speaker_cfp_results.subject=Call for Paper {0}
+mail.digest.subject=[CFP] {0} Digest {1}
 
 proposal.audienceLevel=Audience level
 proposal.demoLevel=Type of presentation
@@ -758,7 +787,7 @@ gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, b
 gt.intro.2=If needed, you can also
 gt.reviewYourVotes=review your Votes
 gt.intro.3=while the CFP is open.
-gt.special.need=If you have a specific speaker you would love to see present at Devoxx FR, drop an email to program@devoxx.be and we’ll do our best to get them there.
+gt.special.need=If you have a specific speaker you would love to see present at Devoxx BE, drop an email to program@devoxx.be and we’ll do our best to get them there.
 gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes
