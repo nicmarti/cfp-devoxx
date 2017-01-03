@@ -17,9 +17,9 @@ import play.api.Play
   * @author Frederic Camblor, BDX.IO 2014
   */
 
-case class ConferenceUrls(info: String, registration: String, confWebsite: String, cfpHostname: String){
-    def cfpURL:String={
-    if(Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)){
+case class ConferenceUrls(faq: String, registration: String, confWebsite: String, cfpHostname: String) {
+  def cfpURL(): String = {
+    if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
       s"https://$cfpHostname"
     }else{
       s"http://$cfpHostname"
@@ -633,10 +633,10 @@ object ConferenceDescriptor {
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      info = "http://www.devoxx.co.uk/#info",
-      registration = "https://www.eventbrite.co.uk/e/devoxx-uk-2017-tickets-28649696012",
-      confWebsite = "https://devoxx.co.uk/",
-      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.co.uk")
+      faq = "http://www.devoxx.fr/faq",
+      registration = "https://reg.devoxx.fr",
+      confWebsite = "http://www.devoxx.fr/",
+      cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
     ),
     timing = ConferenceTiming(
       datesI18nKey = "11th-12th May",
