@@ -56,7 +56,7 @@ case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: S
 
 case class SendQuestionToSpeaker(visitorEmail: String, visitorName: String, proposal: Proposal, msg: String)
 
-case class SendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String)
+case class SendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String)
 
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
 
@@ -99,7 +99,7 @@ class ZapActor extends Actor {
   def receive = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
-    case SendMessageToCommitte(reporterUUID, proposal, msg) => sendMessageToCommitte(reporterUUID, proposal, msg)
+    case SendMessageToCommittee(reporterUUID, proposal, msg) => sendMessageToCommittee(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
     case ComputeLeaderboard() => doComputeLeaderboard()
@@ -138,7 +138,7 @@ class ZapActor extends Actor {
     }
   }
 
-  def sendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String) {
+  def sendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>

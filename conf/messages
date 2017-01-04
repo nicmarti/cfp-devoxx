@@ -432,7 +432,7 @@ ignite=Ignite Sessions
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
 
-sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
+sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
 sw.all.conf=All Conferences

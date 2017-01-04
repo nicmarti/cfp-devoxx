@@ -181,7 +181,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  // Post an internal message that is visible only for program committe
+  // Post an internal message that is visible only for program committee
   def postInternalMessage(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid

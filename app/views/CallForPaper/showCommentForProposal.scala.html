@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="panel-body">
-                @helper.form(action = routes.CallForPaper.sendMessageToCommitte(proposal.id)) {
+                @helper.form(action = routes.CallForPaper.sendMessageToCommittee(proposal.id)) {
                     @helper.textarea(msgToCommittee("msg"), 'class -> "form-control input-xs")
                     <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
                 }

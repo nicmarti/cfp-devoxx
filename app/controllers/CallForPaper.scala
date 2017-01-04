@@ -24,7 +24,7 @@
 package controllers
 
 import library.search.ElasticSearch
-import library.{NotifyProposalSubmitted, SendMessageToCommitte, ZapActor}
+import library.{NotifyProposalSubmitted, SendMessageToCommittee, ZapActor}
 import models._
 import org.apache.commons.lang3.StringUtils
 import play.api.cache.Cache
@@ -266,7 +266,7 @@ object CallForPaper extends SecureCFPController {
                   val newSpeaker = Speaker.findByUUID(newSecondarySpeaker)
                   val validMsg = s"Internal notification : Added [${newSpeaker.map(_.cleanName).get}] as a secondary speaker"
                   if (proposal.state != ProposalState.DRAFT) {
-                    ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                    ZapActor.actor ! SendMessageToCommittee(uuid, proposal, validMsg)
                   }
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, None, Some(newSecondarySpeaker))
@@ -275,7 +275,7 @@ object CallForPaper extends SecureCFPController {
                   val newSpeaker = Speaker.findByUUID(newSecondarySpeaker)
                   val validMsg = s"Internal notification : Removed [${oldSpeaker.map(_.cleanName).get}] and added [${newSpeaker.map(_.cleanName).get}] as a secondary speaker"
                   if (proposal.state != ProposalState.DRAFT) {
-                    ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                    ZapActor.actor ! SendMessageToCommittee(uuid, proposal, validMsg)
                   }
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), Some(newSecondarySpeaker))
@@ -283,7 +283,7 @@ object CallForPaper extends SecureCFPController {
                   val oldSpeaker = Speaker.findByUUID(oldSpeakerUUID)
                   val validMsg = s"Internal notification : Removed [${oldSpeaker.map(_.cleanName).get}] as a secondary speaker"
                   if (proposal.state != ProposalState.DRAFT) {
-                    ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+                    ZapActor.actor ! SendMessageToCommittee(uuid, proposal, validMsg)
                   }
                   Event.storeEvent(Event(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), None)
@@ -357,7 +357,7 @@ object CallForPaper extends SecureCFPController {
       }
   }
 
-  def sendMessageToCommitte(proposalId: String) = SecuredAction {
+  def sendMessageToCommittee(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
@@ -369,7 +369,7 @@ object CallForPaper extends SecureCFPController {
             },
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg)
-              ZapActor.actor ! SendMessageToCommitte(uuid, proposal, validMsg)
+              ZapActor.actor ! SendMessageToCommittee(uuid, proposal, validMsg)
               Redirect(routes.CallForPaper.showCommentForProposal(proposalId)).flashing("success" -> "Message was sent")
             }
           )

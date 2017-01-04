@@ -69,7 +69,7 @@ object Mails {
       cc = listOfEmails,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
-      bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommitte(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
       headers = Seq()
     )
@@ -85,8 +85,8 @@ object Mails {
       to = Seq(committeeEmail),
       cc = listOfOtherSpeakersEmail,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
-      bodyHtml = Some(views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyText = Some(views.txt.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
       headers = Seq()
     )
@@ -206,7 +206,7 @@ object Mails {
   def sendDigest(digest: Digest,
                  emails: List[String],
                  proposals: List[Proposal],
-                 leaderBoardParams: controllers.CFPAdmin.LeaderBoardParams): String = {
+                 leaderBoardParams: models.LeaderBoardParams): String = {
 
     val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
 
