@@ -37,9 +37,9 @@ import play.api.libs.mailer.{Email, MailerPlugin}
 
 object Mails {
 
-  val fromSender = ConferenceDescriptor.current().fromEmail
-  val committeeEmail = ConferenceDescriptor.current().committeeEmail
-  val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
+  val fromSender: String = ConferenceDescriptor.current().fromEmail
+  val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
+  val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
   val bccEmail: Option[String] = ConferenceDescriptor.current().bccEmail
 
   /**
@@ -258,6 +258,34 @@ object Mails {
 
     MailerPlugin.send(email)
   }
+
+  /**
+    * Mail digest.
+    *
+    * @param emails the list of CFP user emails for given digest
+    * @param digest List of speakers and their new proposals
+    * @return
+    */
+  def sendDigest(digest: Digest,
+                 emails: List[String],
+                 proposals: List[Proposal],
+                 leaderBoardParams: controllers.CFPAdmin.LeaderBoardParams): String = {
+
+    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
+
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq("no-reply-digest@devoxx.com"), // Use fake email because we use bcc instead
+      bcc = emails,
+      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      charset = Some("utf-8")
+    )
+
+    MailerPlugin.send(email)
+  }
+
 
   private def extractOtherEmails(proposal: Proposal): List[String] = {
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))
