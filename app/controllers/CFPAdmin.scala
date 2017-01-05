@@ -60,13 +60,13 @@ object CFPAdmin extends SecureCFPController {
       val allNotReviewed = Review.allProposalsNotReviewed(uuid)
 
       // Get a default track to filter on and save it in cookie
-      var trackValue : String = Track.allIDs.take(1).last
+      var trackValue: String = Track.allIDs.take(1).last
       val trackCookie = request.cookies.get("track")
 
       if (track.isDefined) {
         trackValue = track.get
       } else if (trackCookie.isDefined) {
-          trackValue = trackCookie.get.value
+        trackValue = trackCookie.get.value
       }
 
       val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
@@ -78,7 +78,7 @@ object CFPAdmin extends SecureCFPController {
 
       Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
         .withHeaders("ETag" -> etag)
-        .withCookies(Cookie("track", trackValue, Option(2592000)))  // Expires in one month
+        .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
@@ -244,27 +244,27 @@ object CFPAdmin extends SecureCFPController {
                                 )
 
   case class LeaderBoardParams(
-                               totalSpeakers: Long,
-                               totalProposals: Long,
-                               totalVotes: Long,
-                               mostReviewed: List[(String, Int)],
-                               bestReviewers: List[(String, Int, Int)],
-                               lazyOnes: Map[String, String],
-                               generousVoters: List[(String, BigDecimal)],
-                               proposalsBySpeakers: List[(String, Int)],
-                               totalSubmittedByTrack: Map[String, Int],
-                               totalSubmittedByType: Map[String, Int],
-                               totalCommentsPerProposal: List[(String, Int)],
-                               totalAcceptedByTrack: Map[String, Int],
-                               totalAcceptedByType: Map[String, Int],
-                               totalSlotsToAllocate: Map[String, Int],
-                               totalApprovedSpeakers: Long,
-                               totalWithTickets: Long,
-                               totalRefusedSpeakers: Long,
-                               allApprovedByTrack: Map[String, Int],
-                               allApprovedByTalkType: Map[String, Int],
-                               totalWithVotes: Long,
-                               totalNoVotes: Long
+                                totalSpeakers: Long,
+                                totalProposals: Long,
+                                totalVotes: Long,
+                                mostReviewed: List[(String, Int)],
+                                bestReviewers: List[(String, Int, Int)],
+                                lazyOnes: Map[String, String],
+                                generousVoters: List[(String, BigDecimal)],
+                                proposalsBySpeakers: List[(String, Int)],
+                                totalSubmittedByTrack: Map[String, Int],
+                                totalSubmittedByType: Map[String, Int],
+                                totalCommentsPerProposal: List[(String, Int)],
+                                totalAcceptedByTrack: Map[String, Int],
+                                totalAcceptedByType: Map[String, Int],
+                                totalSlotsToAllocate: Map[String, Int],
+                                totalApprovedSpeakers: Long,
+                                totalWithTickets: Long,
+                                totalRefusedSpeakers: Long,
+                                allApprovedByTrack: Map[String, Int],
+                                allApprovedByTalkType: Map[String, Int],
+                                totalWithVotes: Long,
+                                totalNoVotes: Long
                               )
 
   /**
@@ -278,7 +278,7 @@ object CFPAdmin extends SecureCFPController {
     val totalVotes = Leaderboard.totalVotes()
     val totalWithVotes = Leaderboard.totalWithVotes()
     val totalNoVotes = Leaderboard.totalNoVotes()
-    val mostReviewed = Leaderboard.mostReviewed().map{ case(k,v) => (k.toString, v) } toList
+    val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) } toList
     val bestReviewers = Review.allReviewersAndStats()
     val lazyOnes = Leaderboard.lazyOnes()
 
@@ -291,22 +291,22 @@ object CFPAdmin extends SecureCFPController {
     val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
     val totalWithTickets = Leaderboard.totalWithTickets()
     val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
-    val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map{ case(k,v) => (k.toString, v) } toList
+    val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map { case (k, v) => (k.toString, v) } toList
 
     val allApproved = ApprovedProposal.allApproved()
 
-    val allApprovedByTrack:Map[String,Int] = allApproved.groupBy(_.track.label).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
-    val allApprovedByTalkType:Map[String,Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals=>(trackAndProposals._1,trackAndProposals._2.size))
+    val allApprovedByTrack: Map[String, Int] = allApproved.groupBy(_.track.label).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
+    val allApprovedByTalkType: Map[String, Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
 
     // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
-    def generousVoters:List[(String, BigDecimal)] =
+    def generousVoters: List[(String, BigDecimal)] =
       bestReviewers.filter(_._3 > 0)
-        .map(b=>(b._1 , BigDecimal(b._2.toDouble / b._3.toDouble).round( new java.math.MathContext(3))))
+        .map(b => (b._1, BigDecimal(b._2.toDouble / b._3.toDouble).round(new java.math.MathContext(3))))
 
-    def proposalsBySpeakers:List[(String, Int)] =
+    def proposalsBySpeakers: List[(String, Int)] =
       Speaker.allSpeakers()
-        .map( speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
-        .filter( _._2 > 0)
+        .map(speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
+        .filter(_._2 > 0)
 
     LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
       mostReviewed,
@@ -338,8 +338,39 @@ object CFPAdmin extends SecureCFPController {
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(views.html.CFPAdmin.allReviewersAndStatsAsChart(Review.allReviewersAndStats()))
+  }
 
-      Ok(views.html.CFPAdmin.allReviewersAndStats(Review.allReviewersAndStats()))
+  def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      // Do not keep someone that did zero review
+      val data = Review.allReviewersAndStats().filterNot(_._3==0).flatMap {
+        case (uuid, totalPoints, nbReview) =>
+          Webuser.findByUUID(uuid).map {
+            webuser =>
+              val webuserNick = webuser.firstName.take(1).toUpperCase+webuser.lastName.replaceAll(" ","").take(2).toUpperCase()
+              val reviewer = webuser.firstName + " " + webuser.lastName
+              val average = if (nbReview > 0) {
+                BigDecimal(totalPoints.toDouble./(nbReview.toDouble)).round(new java.math.MathContext(3))
+              } else {
+                0
+              }
+              s"{c:[{v:'${webuserNick}'},{v:$nbReview},{v:$average},{v:'$reviewer'},{v:$totalPoints}]}"
+          }
+      }.mkString("[", ",", "]")
+
+      val response: String =
+        s"""google.visualization.Query.setResponse(
+           |{version:'0.6',
+           |reqId:'0',
+           |status:'ok',sig:'5982206968295329967',
+           |table:{
+           |cols:[{label:'ID',type:'string'},{label:'Number of Review',type:'number'},{label:'Average Rate',type:'number'},{label:'Reviewer',type:'string'},{label:'Points',type:'number'}],
+           |rows:$data
+           |}});
+        """.stripMargin
+
+      Ok(response).as(JSON)
   }
 
   def doComputeLeaderBoard() = SecuredAction(IsMemberOf("cfp")) {
@@ -656,7 +687,7 @@ object CFPAdmin extends SecureCFPController {
           (Speaker.findByUUID(speakerId).get, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty)
 
-     Ok(views.html.CFPAdmin.allSpeakersWithRejectedProposals(proposals))
+      Ok(views.html.CFPAdmin.allSpeakersWithRejectedProposals(proposals))
   }
 
   def allSpeakersWithAcceptedTalksForExport() = SecuredAction(IsMemberOf("cfp")) {
@@ -798,7 +829,7 @@ object CFPAdmin extends SecureCFPController {
         .sortBy(_._2.size)
         .reverse
 
-      val companiesAndProposals:List[(String,Set[Proposal])] = speakers.map {
+      val companiesAndProposals: List[(String, Set[Proposal])] = speakers.map {
         case (company, speakerList) =>
           val setOfProposals = speakerList.flatMap {
             s =>
