@@ -91,6 +91,7 @@ GET           /cfpadmin/proposals/byTag/:tagId                                  
 GET           /cfpadmin/leaderboard                                             controllers.CFPAdmin.leaderBoard
 GET           /cfpadmin/leaderboard/reviewerStats                               controllers.CFPAdmin.allReviewersAndStats
 GET           /cfpadmin/leaderboard/compute                                     controllers.CFPAdmin.doComputeLeaderBoard
+GET           /cfpadmin/leaderboard/reviewerStatsData                           controllers.CFPAdmin.dataForAllReviewersAndStats
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
