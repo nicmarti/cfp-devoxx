@@ -25,8 +25,8 @@ package notifiers
 
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.Play.current
 import play.api.i18n.Messages
+import play.api.Play.current
 import play.api.libs.mailer.{Email, MailerPlugin}
 
 /**
