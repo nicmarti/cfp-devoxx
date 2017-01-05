@@ -30,6 +30,7 @@ import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
 import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model._
 import com.amazonaws.{ClientConfiguration, Protocol}
+import controllers.CFPAdmin
 import models._
 import notifiers.Mails
 import org.apache.commons.lang3.StringUtils
@@ -352,11 +353,11 @@ class ZapActor extends Actor {
         .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
         .map(userToNotify => userToNotify.email)
 
-      play.Logger.info(foundUsers.size + " user(s) for digest " + digest.value)
+      play.Logger.debug(s"Email Digest ${foundUsers.size} user(s) for digest ${digest.value}")
 
       if (foundUsers.nonEmpty) {
 
-        play.Logger.debug(newProposalsIds.size + " proposal(s) found for digest " + digest.value)
+        play.Logger.debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
