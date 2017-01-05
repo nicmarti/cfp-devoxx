@@ -351,11 +351,11 @@ class ZapActor extends Actor {
         .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
         .map(userToNotify => userToNotify.email)
 
-      play.Logger.info(foundUsers.size + " user(s) for digest " + digest.value)
+      play.Logger.debug(s"Email Digest ${foundUsers.size} user(s) for digest ${digest.value}")
 
       if (foundUsers.nonEmpty) {
 
-        play.Logger.debug(newProposalsIds.size + " proposal(s) found for digest " + digest.value)
+        play.Logger.debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
