@@ -41,6 +41,10 @@ GET           /cfp/profile                                                      
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
 
+# Email Digests
+POST          /cfp/profile/digest                                               controllers.DigestController.update()
+GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
+
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
 POST          /cfp/proposal/preview                                             controllers.CallForPaper.previewProposal()
@@ -54,7 +58,7 @@ GET           /cfp/proposal/delete/:proposalId                                  
 GET           /cfp/proposal/undelete/:proposalId                                controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET           /cfp/proposal/submit/:proposalId                                  controllers.CallForPaper.submitProposal(proposalId:String)
 GET           /cfp/comment/:proposalId                                          controllers.CallForPaper.showCommentForProposal(proposalId:String)
-POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
+POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommittee(proposalId:String)
 
 # Password
 GET           /forget                                                           controllers.Authentication.forgetPassword

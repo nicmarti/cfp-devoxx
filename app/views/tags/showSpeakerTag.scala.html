@@ -1,4 +1,4 @@
-@(uuid:String,company:String)
+@(uuid:String)
 
 @models.Speaker.findByUUID(uuid).map{speaker:Speaker=>
         <table>
@@ -16,8 +16,8 @@
                             @speaker.cleanName
                         </a>
                     </h3>
-                    @if(!company.isEmpty) {
-                        @company
+                    @speaker.company.map{validCompany=>
+                      <span class="label label-default">@validCompany</span>
                     }
                 </td>
             </tr>

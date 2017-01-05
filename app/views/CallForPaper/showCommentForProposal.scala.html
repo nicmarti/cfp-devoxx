@@ -1,4 +1,4 @@
-@(proposal: Proposal, comments: List[Comment], msgToCommitte: Form[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(proposal: Proposal, comments: List[Comment], msgToCommittee: Form[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("Comments for proposal " + proposal.id) {
     <div class="row">
@@ -44,8 +44,8 @@
                 </div>
 
                 <div class="panel-body">
-                @helper.form(action = routes.CallForPaper.sendMessageToCommitte(proposal.id)) {
-                    @helper.textarea(msgToCommitte("msg"), 'class -> "form-control input-xs")
+                @helper.form(action = routes.CallForPaper.sendMessageToCommittee(proposal.id)) {
+                    @helper.textarea(msgToCommittee("msg"), 'class -> "form-control input-xs")
                     <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
                 }
                 </div>

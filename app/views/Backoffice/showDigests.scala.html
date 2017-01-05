@@ -1,0 +1,146 @@
+@(realtime:Map[Proposal, String],
+  daily:Map[Proposal, String],
+  weekly:Map[Proposal, String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin - Email Digests Queue") {
+
+  <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-envelope"></i> New Proposals</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-danger alert-dismissable col-md-12">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success alert-dismissable col-md-12">
+      @flash.get("success").get
+      </div>
+    }
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3><i class="icon-inbox"></i> Real Time Digest (@realtime.size)</h3>
+        </div>
+
+        <div class="panel-body">
+          @if(realtime.nonEmpty){
+            <table id="tags" class="table table-bordered table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>Created On</th>
+                  <th>Title</th>
+                  <th>Main Speaker</th>
+                </tr>
+              </thead>
+              <tbody>
+              @realtime.map{ proposal =>
+                <tr>
+                  <td>
+                    @proposal._2
+                  </td>
+                  <td>
+                    <a href="@routes.CFPAdmin.openForReview(proposal._1.id)">@proposal._1.title</a>
+                  </td>
+                  <td>
+                    @Speaker.findByUUID(proposal._1.mainSpeaker).get.cleanName
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          }else{
+            <P>There are no real time proposals pending</P>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3><i class="icon-inbox"></i> Daily Digest (@daily.size)</h3>
+        </div>
+
+        <div class="panel-body">
+        @if(daily.nonEmpty){
+          <table id="tags" class="table table-bordered table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Created On</th>
+                <th>Title</th>
+                <th>Main Speaker</th>
+              </tr>
+            </thead>
+            <tbody>
+            @daily.map{ proposal =>
+              <tr>
+                <td>
+                  @proposal._2
+                </td>
+                <td>
+                  <a href="@routes.CFPAdmin.openForReview(proposal._1.id)">@proposal._1.title</a>
+                </td>
+                <td>
+                @Speaker.findByUUID(proposal._1.mainSpeaker).get.cleanName
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }else{
+          <P>There are no daily proposals pending</P>
+        }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3><i class="icon-inbox"></i> Weekly Digest (@weekly.size)</h3>
+        </div>
+
+        <div class="panel-body">
+        @if(weekly.nonEmpty){
+          <table id="tags" class="table table-bordered table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Created On</th>
+                <th>Title</th>
+                <th>Main Speaker</th>
+              </tr>
+            </thead>
+            <tbody>
+            @weekly.map{ proposal =>
+              <tr>
+                <td>
+                  @proposal._2
+                </td>
+                <td>
+                  <a href="@routes.CFPAdmin.openForReview(proposal._1.id)">@proposal._1.title</a>
+                </td>
+                <td>
+                  @Speaker.findByUUID(proposal._1.mainSpeaker).get.cleanName
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }else{
+          <P>There are no weekly proposals pending</P>
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+}

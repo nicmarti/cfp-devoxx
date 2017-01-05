@@ -69,7 +69,7 @@ object Mails {
       cc = listOfEmails,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
-      bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommitte(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
       headers = Seq()
     )
@@ -85,8 +85,8 @@ object Mails {
       to = Seq(committeeEmail),
       cc = listOfOtherSpeakersEmail,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
-      bodyHtml = Some(views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyText = Some(views.txt.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
       headers = Seq()
     )
@@ -196,7 +196,36 @@ object Mails {
     MailerPlugin.send(email)
   }
 
-  def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
+  /**
+    * Mail digest.
+    *
+    * @param emails the list of CFP user emails for given digest
+    * @param digest  List of speakers and their new proposals
+    * @return
+    */
+  def sendDigest(digest: Digest,
+                 emails: List[String],
+                 proposals: List[Proposal],
+                 leaderBoardParams: models.LeaderBoardParams): String = {
+
+    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
+
+    val email = Email(
+      subject = subjectEmail,
+      from = fromSender,
+      to = Seq("no-reply-digest@devoxx.com"),   // Use fake email because we use bcc instead
+      bcc = emails,
+      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      charset = Some("utf-8")
+    )
+
+    MailerPlugin.send(email)
+  }
+
+  def sendResultToSpeaker(speaker: Speaker,
+                          listOfApprovedProposals: Set[Proposal],
+                          listOfRefusedProposals: Set[Proposal]) = {
     val subjectEmail: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
 
     val email = Email(

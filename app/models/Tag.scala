@@ -1,9 +1,11 @@
 package models
 
+import java.lang.Long
+
 import library.Redis
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
 /**
   * Proposal tags
@@ -14,7 +16,7 @@ case class Tag(id: String, value: String) { }
 
 object Tag {
 
-  implicit val tagFormat = Json.format[Tag]
+  implicit val tagFormat: Format[Tag] = Json.format[Tag]
 
   private val tags = "Tags"
 
@@ -46,7 +48,7 @@ object Tag {
     Tag(generateID(value), value)
   }
 
-  def save(newTag: Tag) = Redis.pool.withClient {
+  def save(newTag: Tag): Long = Redis.pool.withClient {
     client =>
       client.hset(tags, newTag.id, newTag.value)
   }
@@ -69,7 +71,7 @@ object Tag {
     }
   }
 
-  def delete(id: String) = Redis.pool.withClient {
+  def delete(id: String): Long = Redis.pool.withClient {
     client =>
       client.hdel(tags, id)
   }

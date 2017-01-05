@@ -23,9 +23,9 @@
 
 package models
 
-import library.{Dress, Redis}
-import play.api.data.Form
-import play.api.data.Forms._
+import java.util
+
+import library.Redis
 
 /**
  * A track leader is the association between a user and a track.
@@ -38,31 +38,31 @@ import play.api.data.Forms._
 
 object TrackLeader {
 
-  def assign(trackId: String, webuserId: String) {
-    if (Webuser.hasAccessToCFP(webuserId)) {
+  def assign(trackId: String, webUserId: String) {
+    if (Webuser.hasAccessToCFP(webUserId)) {
       Redis.pool.withClient {
         client =>
-          client.hset(s"TrackLeaders", trackId, webuserId)
+          client.hset(s"TrackLeaders", trackId, webUserId)
       }
     }
   }
 
-  def unassign(trackId: String, webuserId: String) {
+  def unassign(trackId: String, webUserId: String) {
     Redis.pool.withClient {
       client =>
         client.hdel(s"TrackLeaders", trackId)
     }
   }
 
-  def isTrackLeader(trackId: String, webuserId: String): Boolean = Redis.pool.withClient {
+  def isTrackLeader(trackId: String, webUserId: String): Boolean = Redis.pool.withClient {
     client =>
       client.hget(s"TrackLeaders", trackId) match {
-        case Some(w) if w == webuserId => true
+        case Some(w) if w == webUserId => true
         case _ => false
       }
   }
 
-  def updateAllTracks(mapsByTrack: Map[String, Seq[String]]) = Redis.pool.withClient{
+  def updateAllTracks(mapsByTrack: Map[String, Seq[String]]): util.List[AnyRef] = Redis.pool.withClient{
     client=>
     val tx = client.multi()
     tx.del("TrackLeaders")
@@ -79,11 +79,10 @@ object TrackLeader {
     tx.exec()
   }
 
-  def deleteWebuser(webuserUUID: String) = {
+  def deleteWebuser(webUserUUID: String): Unit = {
     Track.allIDs.foreach {
       trackId: String =>
-        unassign(trackId, webuserUUID)
+        unassign(trackId, webUserUUID)
     }
   }
-
 }

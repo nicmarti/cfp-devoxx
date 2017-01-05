@@ -1,7 +1,8 @@
 @(state:ProposalState)
 
-@if(state==ProposalState.DELETED){
-    <i class="icon-trash"></i> @Messages(state.code)
+
+@if(state.code==ProposalState.DELETED.code || state.code == ProposalState.ARCHIVED.code){
+<i class="icon-trash"></i> @Messages(state.code)
 }else{
-    @Messages(state.code)
+@Messages(state.code)
 }
