@@ -49,7 +49,7 @@
 
                     <i class="icon-filter"></i> @Messages("cfp.filter.on")
                     @Track.allIDs.map{idTrack=>
-                        @if(track.get.equals(idTrack)) {
+                        @if(track.isDefined && track.get == idTrack) {
                             <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@idTrack</a>
                         }else {
                             <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
