@@ -891,3 +891,6 @@ wl_trackCode=Track
 wl_travel=Travel & hotel
 wl_travel.checkbox=Yes, cover travel expenses
 wl_unknown=Unknown
+
+cfp.filter.on=Filter on :
+cfp.filter.off=Remove filter

@@ -59,26 +59,29 @@ object CFPAdmin extends SecureCFPController {
       val orderer = proposalOrder(ascdesc)
       val allNotReviewed = Review.allProposalsNotReviewed(uuid)
 
-      // Get a default track to filter on and save it in cookie
-      var trackValue: String = Track.allIDs.take(1).last
       val trackCookie = request.cookies.get("track")
+      val maybeTrackValue: Option[String] = track.orElse(trackCookie.map(_.value))
 
-      if (track.isDefined) {
-        trackValue = track.get
-      } else if (trackCookie.isDefined) {
-        trackValue = trackCookie.get.value
-      }
-
-      val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
+      val maybeFilteredProposals = maybeTrackValue.map {
+        trackValue: String =>
+          allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
+      }.getOrElse(allNotReviewed)
       val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
 
       val twentyEvents = Event.loadEvents(20, page)
 
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
-      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
-        .withHeaders("ETag" -> etag)
-        .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+      maybeTrackValue.map {
+        trackValue =>
+          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, maybeTrackValue))
+            .withHeaders("ETag" -> etag)
+            .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+      }.getOrElse {
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None))
+          .withHeaders("ETag" -> etag)
+      }
+
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
@@ -344,11 +347,11 @@ object CFPAdmin extends SecureCFPController {
   def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       // Do not keep someone that did zero review
-      val data = Review.allReviewersAndStats().filterNot(_._3==0).flatMap {
+      val data = Review.allReviewersAndStats().filterNot(_._3 == 0).flatMap {
         case (uuid, totalPoints, nbReview) =>
           Webuser.findByUUID(uuid).map {
             webuser =>
-              val webuserNick = webuser.firstName.take(1).toUpperCase+webuser.lastName.replaceAll(" ","").take(2).toUpperCase()
+              val webuserNick = webuser.firstName.take(1).toUpperCase + webuser.lastName.replaceAll(" ", "").take(2).toUpperCase()
               val reviewer = webuser.firstName + " " + webuser.lastName
               val average = if (nbReview > 0) {
                 BigDecimal(totalPoints.toDouble./(nbReview.toDouble)).round(new java.math.MathContext(3))
