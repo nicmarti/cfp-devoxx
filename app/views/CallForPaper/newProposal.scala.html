@@ -54,6 +54,8 @@
                     @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
                 }
 
+                @if(ConferenceDescriptor.isTagSystemActive){
+
                 <label for="tag1">@Messages("tag.title")</label><br>
 
                 @views.html.bootstrap3.input(newProposal("tags[0].value"),
@@ -70,6 +72,7 @@
 
                 @views.html.bootstrap3.input(newProposal("tags[4].value"),
                     placeholder = Messages("tag.placeholder5"))
+                }
 
                 @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
 
