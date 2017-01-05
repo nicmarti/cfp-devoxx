@@ -14,7 +14,7 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, Cookie}
+import play.api.mvc.{Action, AnyContent, Cookie, DiscardingCookie}
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -80,6 +80,7 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse {
         Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None))
           .withHeaders("ETag" -> etag)
+          .discardingCookies(DiscardingCookie("track"))
       }
 
   }
