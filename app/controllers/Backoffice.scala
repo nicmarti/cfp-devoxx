@@ -413,29 +413,4 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
 
-  // Some Webuser are in the Speaker HSET but not in the Webuser:speaker SET => BUG
-  def checkAndCleanInvalidSpeakerProfiles = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-
-      Redis.pool.withClient {
-        client =>
-          val allUUIDsnotInSpeaker = client.hkeys("Speaker").flatMap {
-            uuid =>
-              if (client.sismember("Webuser:speaker", uuid)) {
-                None
-              } else {
-                Some(uuid)
-              }
-          }
-
-          val webusers = allUUIDsnotInSpeaker.map {
-            uuid =>
-              Webuser.addToSpeaker(uuid)
-          }
-
-          Ok("Resultat " + allUUIDsnotInSpeaker.size)
-
-      }
-
-  }
 }

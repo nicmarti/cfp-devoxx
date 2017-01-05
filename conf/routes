@@ -163,7 +163,6 @@ POST          /admin/tags/saveAll                                               
 POST          /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
 GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
-GET             /admin/checkAndCleanInvalidSpeakerProfiles                      controllers.Backoffice.checkAndCleanInvalidSpeakerProfiles()
 
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
