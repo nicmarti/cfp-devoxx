@@ -12,7 +12,7 @@ import play.api.libs.json.{Format, Json}
   *
   * @author Stephan Janssen
   */
-case class Tag(id: String, value: String) { }
+case class Tag(id: String, value: String)
 
 object Tag {
 
