@@ -370,8 +370,6 @@ class ZapActor extends Actor {
       // Empty digest for next interval.
       Digest.purge(digest)
 
-    } else {
-      play.Logger.debug("No new proposals found for digest " + digest.value)
     }
   }
 }
