@@ -2,7 +2,8 @@
   webuser: Webuser,
   myProposals: List[Proposal],
   totalArchived:Int,
-  ratings:Map[Proposal,List[Rating]])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+  ratings:Map[Proposal,List[Rating]],
+  needsToAcceptTermAndCondition:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @import org.apache.commons.lang3.StringUtils
 @main(Messages("cfp.title")){
     <div class="row">
@@ -101,7 +102,6 @@
                             }
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
 
@@ -109,6 +109,7 @@
                 <div class="panel-footer">
                     <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary">@Html(Messages("edit.profile"))</a>
                 </div>
+
             </div>
             @if(Webuser.isMember(webuser.uuid, "cfp")){
                 <div class="digestMessage">
