@@ -3,7 +3,7 @@ package controllers
 import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 
 import library.search.ElasticSearch
-import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
+import library.{SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
 import models._
 import org.apache.commons.io.FileUtils
@@ -14,7 +14,7 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, Cookie, DiscardingCookie}
+import play.api.mvc.{Cookie, DiscardingCookie}
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -242,148 +242,6 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  case class GoldenTicketsParams(
-                                  totalTickets: Int,
-                                  stats: List[(String, Int, Int)]
-                                )
-
-  case class LeaderBoardParams(
-                                totalSpeakers: Long,
-                                totalProposals: Long,
-                                totalVotes: Long,
-                                mostReviewed: List[(String, Int)],
-                                bestReviewers: List[(String, Int, Int)],
-                                lazyOnes: Map[String, String],
-                                generousVoters: List[(String, BigDecimal)],
-                                proposalsBySpeakers: List[(String, Int)],
-                                totalSubmittedByTrack: Map[String, Int],
-                                totalSubmittedByType: Map[String, Int],
-                                totalCommentsPerProposal: List[(String, Int)],
-                                totalAcceptedByTrack: Map[String, Int],
-                                totalAcceptedByType: Map[String, Int],
-                                totalSlotsToAllocate: Map[String, Int],
-                                totalApprovedSpeakers: Long,
-                                totalWithTickets: Long,
-                                totalRefusedSpeakers: Long,
-                                allApprovedByTrack: Map[String, Int],
-                                allApprovedByTalkType: Map[String, Int],
-                                totalWithVotes: Long,
-                                totalNoVotes: Long
-                              )
-
-  /**
-    * Constructs the LeaderBoardParams, also used by the digest emails.
-    *
-    * @return LeaderBoardParams
-    */
-  def getLeaderBoardParams: LeaderBoardParams = {
-    val totalSpeakers = Leaderboard.totalSpeakers()
-    val totalProposals = Leaderboard.totalProposals()
-    val totalVotes = Leaderboard.totalVotes()
-    val totalWithVotes = Leaderboard.totalWithVotes()
-    val totalNoVotes = Leaderboard.totalNoVotes()
-    val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) } toList
-    val bestReviewers = Review.allReviewersAndStats()
-    val lazyOnes = Leaderboard.lazyOnes()
-
-    val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
-    val totalSubmittedByType = Leaderboard.totalSubmittedByType()
-    val totalAcceptedByTrack = Leaderboard.totalAcceptedByTrack()
-    val totalAcceptedByType = Leaderboard.totalAcceptedByType()
-
-    val totalSlotsToAllocate = ApprovedProposal.getTotal
-    val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
-    val totalWithTickets = Leaderboard.totalWithTickets()
-    val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
-    val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map { case (k, v) => (k.toString, v) } toList
-
-    val allApproved = ApprovedProposal.allApproved()
-
-    val allApprovedByTrack: Map[String, Int] = allApproved.groupBy(_.track.label).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
-    val allApprovedByTalkType: Map[String, Int] = allApproved.groupBy(_.talkType.id).map(trackAndProposals => (trackAndProposals._1, trackAndProposals._2.size))
-
-    // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
-    def generousVoters: List[(String, BigDecimal)] =
-      bestReviewers.filter(_._3 > 0)
-        .map(b => (b._1, BigDecimal(b._2.toDouble / b._3.toDouble).round(new java.math.MathContext(3))))
-
-    def proposalsBySpeakers: List[(String, Int)] =
-      Speaker.allSpeakers()
-        .map(speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
-        .filter(_._2 > 0)
-
-    LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
-      mostReviewed,
-      bestReviewers,
-      lazyOnes, generousVoters,
-      proposalsBySpeakers,
-      totalSubmittedByTrack, totalSubmittedByType,
-      totalCommentsPerProposal,
-      totalAcceptedByTrack, totalAcceptedByType,
-      totalSlotsToAllocate,
-      totalApprovedSpeakers,
-      totalWithTickets,
-      totalRefusedSpeakers,
-      allApprovedByTrack,
-      allApprovedByTalkType,
-      totalWithVotes, totalNoVotes)
-  }
-
-  def leaderBoard: Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      val totalGTickets = ReviewByGoldenTicket.totalGoldenTickets()
-      val totalGTStats = ReviewByGoldenTicket.allReviewersAndStats()
-
-      def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
-
-      Ok(views.html.CFPAdmin.leaderBoard(getLeaderBoardParams, goldenTicketParam))
-  }
-
-  def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.CFPAdmin.allReviewersAndStatsAsChart(Review.allReviewersAndStats()))
-  }
-
-  def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      // Do not keep someone that did zero review
-      val data = Review.allReviewersAndStats().filterNot(_._3 == 0).flatMap {
-        case (uuid, totalPoints, nbReview) =>
-          Webuser.findByUUID(uuid).map {
-            webuser =>
-              val webuserNick = webuser.firstName.take(1).toUpperCase + webuser.lastName.replaceAll(" ", "").take(2).toUpperCase()
-              val reviewer = webuser.firstName + " " + webuser.lastName
-              val average = if (nbReview > 0) {
-                BigDecimal(totalPoints.toDouble./(nbReview.toDouble)).round(new java.math.MathContext(3))
-              } else {
-                0
-              }
-              s"{c:[{v:'${webuserNick}'},{v:$nbReview},{v:$average},{v:'$reviewer'},{v:$totalPoints}]}"
-          }
-      }.mkString("[", ",", "]")
-
-      val response: String =
-        s"""google.visualization.Query.setResponse(
-           |{version:'0.6',
-           |reqId:'0',
-           |status:'ok',sig:'5982206968295329967',
-           |table:{
-           |cols:[{label:'ID',type:'string'},{label:'Number of Review',type:'number'},{label:'Average Rate',type:'number'},{label:'Reviewer',type:'string'},{label:'Points',type:'number'}],
-           |rows:$data
-           |}});
-        """.stripMargin
-
-      Ok(response).as(JSON)
-  }
-
-  def doComputeLeaderBoard() = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      library.ZapActor.actor ! ComputeLeaderboard()
-      library.ZapActor.actor ! ComputeVotesAndScore()
-      Redirect(routes.CFPAdmin.index()).flashing("success" -> Messages("leaderboard.compute"))
-  }
-
   def allMyVotes(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
@@ -506,12 +364,6 @@ object CFPAdmin extends SecureCFPController {
 
       val totalRemaining = ApprovedProposal.remainingSlots(confType)
       Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
-  }
-
-  def doComputeVotesTotal() = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      ZapActor.actor ! ComputeVotesAndScore()
-      Redirect(routes.CFPAdmin.allVotes("conf", None)).flashing("success" -> "Recomputing votes and scores...")
   }
 
   def removeSponsorTalkFlag(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
@@ -814,36 +666,4 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
-  def allProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      val allInteresting = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
-
-      val allInterestingProposals = Proposal.loadAndParseProposals(allInteresting)
-
-      val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.values.flatMap(p => p.allSpeakerUUIDs)
-
-      val uniqueSetOfSpeakersUUID: Set[String] = allSpeakersUUIDs.toSet
-
-      val allSpeakers: List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
-
-      val speakers = allSpeakers
-        .groupBy(_.company.map(_.toUpperCase.trim).getOrElse("No Company"))
-        .toList
-        .sortBy(_._2.size)
-        .reverse
-
-      val companiesAndProposals: List[(String, Set[Proposal])] = speakers.map {
-        case (company, speakerList) =>
-          val setOfProposals = speakerList.flatMap {
-            s =>
-              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).filterNot(_._2.state == ProposalState.DELETED).values
-          }.toSet
-          (company, setOfProposals)
-      }.filterNot(_._2.isEmpty)
-        .sortBy(p => p._2.size)
-        .reverse
-
-      Ok(views.html.CFPAdmin.allProposalsByCompany(companiesAndProposals))
-  }
 }

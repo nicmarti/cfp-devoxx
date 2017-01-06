@@ -27,6 +27,7 @@ import models._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.mailer.{Email, MailerPlugin}
+import controllers.LeaderBoardParams
 
 /**
   * Sends all emails
@@ -269,7 +270,7 @@ object Mails {
   def sendDigest(digest: Digest,
                  emails: List[String],
                  proposals: List[Proposal],
-                 leaderBoardParams: controllers.CFPAdmin.LeaderBoardParams): String = {
+                 leaderBoardParams: LeaderBoardParams): String = {
 
     val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
 
