@@ -74,8 +74,6 @@
                     placeholder = Messages("tag.placeholder5"))
                 }
 
-                @tags.checkboxI18N(newProposal("userGroup"),  'text->"userGroup.checkbox", 'checked->"true")
-
                 @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
                     @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
                     <div id="sponsorTalkMsg" class="alert alert-info">
