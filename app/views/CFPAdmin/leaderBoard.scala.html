@@ -1,5 +1,5 @@
-@(params: controllers.CFPAdmin.LeaderBoardParams,
-  golden: controllers.CFPAdmin.GoldenTicketsParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(params: controllers.LeaderBoardParams,
+  golden: controllers.GoldenTicketsParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Leaderboard") {
     <div class="row">
@@ -8,7 +8,7 @@
                 <div class="panel-heading">
                     <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
                     <small>Stats are computed every 10 minuts</small><br>
-                    <small><a href="@routes.CFPAdmin.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh now</a></small>
+                    <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh now</a></small>
                 </div>
 
                 <div class="panel-body">
@@ -55,7 +55,7 @@
 
                     <div class="col-md-3">
                         <br>
-                        <small><a href="@routes.CFPAdmin.allProposalsByCompany()" class="btn btn-sm btn-warning">All Proposals by Company</a></small>
+                        <small><a href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-sm btn-warning">All Proposals by Company</a></small>
                     </div>
 
                     <div class="col-md-3">
@@ -95,7 +95,7 @@
                             @tags.renderGravatar(br._1)
                             @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
                         }
-                        <br><br><small><a href="@routes.CFPAdmin.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small>
+                        <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small>
                     </div>
 
                     <div class="col-md-4">

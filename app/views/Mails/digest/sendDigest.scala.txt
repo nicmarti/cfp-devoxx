@@ -1,6 +1,6 @@
 @(digest: Digest,
   proposals:List[Proposal],
-  params: controllers.CFPAdmin.LeaderBoardParams)
+  params: controllers.LeaderBoardParams)
 
 CFP '@digest.value' Digest
 

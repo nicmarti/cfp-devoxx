@@ -28,7 +28,7 @@ $(document).ready(function() {
         // Replace the data source URL on next line with your data source URL.
 
         // TODO for Dev it should be http, and for Prod it should be HTTPS
-        var hostAndURL = '@routes.CFPAdmin.dataForAllReviewersAndStats.absoluteURL(secure = true)';
+        var hostAndURL = '@routes.LeaderboardController.dataForAllReviewersAndStats.absoluteURL(secure = true)';
         var query = new google.visualization.Query(hostAndURL, opts);
 
         // Send the query with a callback function.

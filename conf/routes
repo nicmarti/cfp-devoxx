@@ -88,14 +88,9 @@ GET           /cfpadmin/proposals/byTrack/:track                                
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
 GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
 
-GET           /cfpadmin/leaderboard                                             controllers.CFPAdmin.leaderBoard
-GET           /cfpadmin/leaderboard/reviewerStats                               controllers.CFPAdmin.allReviewersAndStats
-GET           /cfpadmin/leaderboard/compute                                     controllers.CFPAdmin.doComputeLeaderBoard
-GET           /cfpadmin/leaderboard/reviewerStatsData                           controllers.CFPAdmin.dataForAllReviewersAndStats
-
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
-GET           /cfpadmin/recompute/allvotes                                      controllers.CFPAdmin.doComputeVotesTotal()
+
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks
 GET           /cfpadmin/speaker/:uuidSpeaker                                    controllers.CFPAdmin.showSpeakerAndTalks(uuidSpeaker:String)
@@ -110,7 +105,16 @@ GET           /cfpadmin/allSpeakers                                             
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
-GET           /cfpadmin/allSpeakers/byProposals/byCompany                       controllers.CFPAdmin.allProposalsByCompany()
+
+GET           /cfpadmin/leaderboard                                             controllers.LeaderboardController.leaderBoard
+GET           /cfpadmin/leaderboard/reviewerStats                               controllers.LeaderboardController.allReviewersAndStats
+GET           /cfpadmin/leaderboard/compute                                     controllers.LeaderboardController.doComputeLeaderBoard
+GET           /cfpadmin/leaderboard/reviewerStatsData                           controllers.LeaderboardController.dataForAllReviewersAndStats
+GET           /cfpadmin/leaderboard/proposals/companies                         controllers.LeaderboardController.allProposalsByCompany()
+GET           /cfpadmin/leaderboard/proposals/companies/graph                   controllers.LeaderboardController.allProposalsByCompanyAsGraph()
+GET           /cfpadmin/leaderboard/proposals/companies/data                    controllers.LeaderboardController.dataForAllProposalsByCompany()
+GET           /cfpadmin/recompute/allvotes                                      controllers.LeaderboardController.doComputeVotesTotal()
+
 GET           /cfpadmin/allSpeakers/acceptedTalks/forgetToAccept                controllers.CFPAdmin.allSpeakersThatForgetToAccept()
 GET           /cfpadmin/allSpeakers/acceptedTalks/withBadge                     controllers.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge()
 GET           /cfpadmin/allSpeakers/acceptedTalks/all                           controllers.CFPAdmin.allSpeakersWithAcceptedTalks()
