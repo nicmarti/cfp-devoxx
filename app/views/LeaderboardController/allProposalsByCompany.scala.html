@@ -15,18 +15,35 @@
             <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
         </div>
         <div class="panel-body">
-            @companiesAndProposals.map {case (company, props) =>
+            @companiesAndProposals.map {case (company:String, props:Set[Proposal]) =>
             <h3>@company.capitalize </h3>
                 <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
-                <br>
-                <label class="label label-danger">@props.map(p=>p.allSpeakers.map(_.uuid)).toSet.size speaker(s)</label>
-                <br>
 
                 @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
-                    @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") -
+                    @Messages(proposal.talkType.id) - @proposal.title -
+                    @proposal.allSpeakers.map { speaker =>
+                      @if(speaker.company.map(_.toUpperCase.trim) == Some(company)){
+                          <strong>@speaker.cleanName</strong>
+                      }else{
+                          <em>@speaker.cleanName</em>
+                      }
+                    }
+                    -
                     <span class="label @Messages("label-" + proposal.state.code)">@Messages(proposal.state.code)</span>
                     <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A>
                     <br>
+                }
+
+                @defining(props.map(_.allSpeakers.toSet).flatten){ speakers:Set[Speaker] =>
+                        <h4>Speakers from @company : </h4>
+                        @defining(speakers.filter(_.company.map(_.toUpperCase.trim)==Some(company)).toList.sortBy(_.name)) { filterSpeakers =>
+                                <span class="label label-primary">@filterSpeakers.size speakers</span>
+                            @filterSpeakers.map(_.cleanName).mkString(", ")<br>
+                        }
+                        <h4>Speakers from other companies : </h4>
+                        @defining(speakers.filter(_.company.map(_.toUpperCase.trim)!=Some(company))) { notSpeakers =>
+                          @notSpeakers.map(p=> p.cleanName+"["+p.company.getOrElse("")+"]").mkString(", ")
+                        }
                 }
             }
 
