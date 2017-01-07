@@ -101,12 +101,12 @@ object LeaderboardController extends SecureCFPController {
 
       def goldenTicketParam = GoldenTicketsParams(totalGTickets, totalGTStats)
 
-      Ok(views.html.CFPAdmin.leaderBoard(getLeaderBoardParams, goldenTicketParam))
+      Ok(views.html.LeaderboardController.leaderBoard(getLeaderBoardParams, goldenTicketParam))
   }
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.CFPAdmin.allReviewersAndStatsAsChart(Review.allReviewersAndStats()))
+      Ok(views.html.LeaderboardController.allReviewersAndStatsAsChart(Review.allReviewersAndStats()))
   }
 
   def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
@@ -177,19 +177,22 @@ object LeaderboardController extends SecureCFPController {
         case (company, speakerList) =>
           val setOfProposals = speakerList.flatMap {
             s =>
-              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).filterNot(_._2.state == ProposalState.DELETED).values
+              Proposal.allProposalsByAuthor(s.uuid).filter(p=> p._2.state == ProposalState.SUBMITTED || p._2.state == ProposalState.ACCEPTED || p._2.state == ProposalState.APPROVED).values
           }.toSet
           (company, setOfProposals)
       }.filterNot(_._2.isEmpty)
         .sortBy(p => p._2.size)
         .reverse
 
-      Ok(views.html.CFPAdmin.allProposalsByCompany(companiesAndProposals))
+      println("Total companiesAndProposals proposals "+companiesAndProposals.head._2.size)
+      println("Speakers test "+companiesAndProposals.head._2.map(_.allSpeakerUUIDs).toSet.size)
+
+      Ok(views.html.LeaderboardController.allProposalsByCompany(companiesAndProposals))
   }
 
   def allProposalsByCompanyAsGraph() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok("Test")
+      Ok(views.html.LeaderboardController.allProposalsByCompanyAsGraph())
   }
 
   def dataForAllProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
@@ -197,41 +200,69 @@ object LeaderboardController extends SecureCFPController {
 
       val allInteresting = Proposal.allProposalIDs.diff(Proposal.allProposalIDsDeletedArchivedOrDraft())
 
-      val allInterestingProposals: Set[Proposal] = Proposal.loadAndParseProposals(allInteresting).values.toSet
+      val allInterestingProposals: Set[Proposal] = Proposal.loadAndParseProposals(allInteresting).values.toSet.filter(p=> p.state == ProposalState.SUBMITTED || p.state == ProposalState.ACCEPTED || p.state == ProposalState.APPROVED)
 
       val allSpeakersUUIDs: Iterable[String] = allInterestingProposals.flatMap(p => p.allSpeakerUUIDs)
 
       val uniqueSetOfSpeakersUUID: Set[String] = allSpeakersUUIDs.toSet
-
       val allSpeakers: List[Speaker] = Speaker.loadSpeakersFromSpeakerIDs(uniqueSetOfSpeakersUUID)
 
-      val speakers = allSpeakers
+      val companyAndSpeakersUUID = allSpeakers
         .groupBy(_.company.map(_.toUpperCase.trim).getOrElse("No Company"))
-        .toList
-        .sortBy(_._2.size)
-        .reverse
+        .map{
+          case(company,listOfSpeakers)=>
+            (company, listOfSpeakers.map(_.uuid).toSet)
+        }
 
-      val companiesAndProposals2: List[(String, Set[(String, Double)])] = speakers.map {
-        case (company, speakerList) =>
-          val setOfProposals = speakerList.flatMap {
+      //println("Company "+companyAndSpeakersUUID.values.flatten.size)
+
+      val companiesAndProposals2: List[(String,Int, Set[Double], Int)] = companyAndSpeakersUUID.map {
+        case (company, setOfSpeakerUUID) =>
+
+          val submittedProposals= setOfSpeakerUUID.flatMap {
             s =>
-              Proposal.allProposalsByAuthor(s.uuid).filterNot(_._2.state == ProposalState.ARCHIVED).filterNot(_._2.state == ProposalState.DELETED).filterNot(_._2.state == ProposalState.DRAFT).values.map(_.id)
-          }.toSet
-
-          val withScore: Set[(String, Double)] = setOfProposals.map {
-            proposalId =>
-              (proposalId, Review.averageScore(proposalId))
+              Proposal.allProposalsByAuthor(s).filter(p=> p._2.state == ProposalState.SUBMITTED || p._2.state == ProposalState.ACCEPTED || p._2.state == ProposalState.APPROVED)
           }
 
-          (company, withScore)
-      }.filterNot(_._2.isEmpty)
-        .sortBy(p => p._2.size)
-        .reverse
+          val validSpeakersUUID= submittedProposals.flatMap(_._2.allSpeakerUUIDs.toSet)
+          println("Got validSpeakersUUID="+validSpeakersUUID.size)
 
-      println("Test 2 " + companiesAndProposals2.size)
+          val onlySpeakersThatSubmitted = validSpeakersUUID.intersect(setOfSpeakerUUID)
+          println("Got onlySpeakersThatSubmitted="+onlySpeakersThatSubmitted.size)
 
+          val withScore = submittedProposals.map {
+            prop =>
+              Review.averageScore(prop._1)
+          }
+          val nbOfProposals = submittedProposals.size
+          (company, nbOfProposals, withScore, onlySpeakersThatSubmitted.size)
+      }.filter(nbOfProposals => nbOfProposals._2>7) // show only companies with at least 7 proposals
+        .toList
+        .sortBy(_._4).reverse
 
-      Ok("Test")
+      val data = companiesAndProposals2.map {
+        case (company,nbProposals, proposalIDandScore, totalSpeakers) =>
+          val nbReview = proposalIDandScore.size
+          val total=proposalIDandScore.sum
+
+          val average = total / nbReview
+
+          s"{c:[{v:'$company'},{v:$nbProposals},{v:$average},{v:'$company'},{v:$totalSpeakers}]}"
+
+      }.mkString("[", ",", "]")
+
+      val response: String =
+        s"""google.visualization.Query.setResponse(
+           |{version:'0.6',
+           |reqId:'0',
+           |status:'ok',sig:'5982206968295329967',
+           |table:{
+           |cols:[{label:'Company',type:'string'},{label:'Nb of talks',type:'number'},{label:'Average Score',type:'number'},{label:'Company name',type:'string'},{label:'Nb speakers',type:'number'}],
+           |rows:$data
+           |}});
+        """.stripMargin
+
+      Ok(response).as(JSON)
   }
 }
 
