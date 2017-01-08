@@ -10,8 +10,9 @@
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3>All proposals grouped by Company</h3>
-          <span class="label label-info">@companiesAndProposals.size companies</span>
+            <h3>All proposals grouped by Company</h3>
+            <span class="label label-info">@companiesAndProposals.size companies</span>
+            <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
         </div>
         <div class="panel-body">
             @companiesAndProposals.map {case (company, props) =>
