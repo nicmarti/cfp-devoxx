@@ -8,10 +8,10 @@
     <h2>New proposals since last digest</h2>
 }
 <UL>
-@proposals.map{proposal=>
+@proposals.sortBy(_.track.label).map{proposal=>
     <LI>
         <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.voteForProposal(proposal.id)">@proposal.title</a> by
-        @proposal.allSpeakers.map(speaker => speaker.cleanName).toList.mkString(", ") -
+        @proposal.allSpeakers.map(speaker => speaker.cleanName).mkString(", ") -
         (@Messages(proposal.track.label) / @Messages(proposal.talkType.simpleLabel))
     </LI>
 }
