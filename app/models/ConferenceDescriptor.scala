@@ -734,7 +734,7 @@ object ConferenceDescriptor {
 
   // Set this to true temporarily
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
-  def notifyProposalSubmitted = true
+  def notifyProposalSubmitted = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
 
 }
 
