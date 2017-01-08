@@ -27,6 +27,7 @@ import models._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.mailer.{Email, MailerPlugin}
+import controllers.LeaderBoardParams
 
 /**
   * Sends all emails
@@ -200,20 +201,20 @@ object Mails {
     * Mail digest.
     *
     * @param emails the list of CFP user emails for given digest
-    * @param digest  List of speakers and their new proposals
+    * @param digest List of speakers and their new proposals
     * @return
     */
   def sendDigest(digest: Digest,
                  emails: List[String],
                  proposals: List[Proposal],
-                 leaderBoardParams: models.LeaderBoardParams): String = {
+                 leaderBoardParams: LeaderBoardParams): String = {
 
-    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
+  val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
 
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
-      to = Seq("no-reply-digest@devoxx.com"),   // Use fake email because we use bcc instead
+      to = Seq("no-reply-digest@devoxx.co.uk"), // Use fake email because we use bcc instead
       bcc = emails,
       bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
       bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
