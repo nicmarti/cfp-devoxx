@@ -224,24 +224,6 @@ object Mails {
     MailerPlugin.send(email)
   }
 
-  def sendResultToSpeaker(speaker: Speaker,
-                          listOfApprovedProposals: Set[Proposal],
-                          listOfRefusedProposals: Set[Proposal]) = {
-    val subjectEmail: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
-
-    val email = Email(
-      subject = subjectEmail,
-      from = fromSender,
-      to = Seq(speaker.email),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
-      bodyHtml = Some(views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
-      charset = Some("utf-8")
-    )
-
-    MailerPlugin.send(email)
-  }
-
   def sendInvitationForSpeaker(speakerEmail: String, message: String, requestId: String) = {
     val subjectEmail: String = Messages("shortYearlyName") + " special request"
 
