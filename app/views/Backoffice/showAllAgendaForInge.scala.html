@@ -25,6 +25,8 @@
                 <th>Room</th>
                 <th>Title</th>
                 <th>Speaker(s)</th>
+                <th>Track</th>
+                <th>Type</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +38,8 @@
                   <td>@slot.room.name</td>
                   <td>@slot.proposal.map(_.title)</td>
                   <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
+                  <td>@Messages(slot.proposal.map(_.track.label))</td>
+                  <td>@Messages(slot.proposal.map(_.talkType.label))</td>
               </tr>
             }
         </tbody>
