@@ -26,27 +26,20 @@
                 <th>Title</th>
                 <th>Speaker(s)</th>
                 <th>Track</th>
-                <th>Type</th>
+                <th>Event</th>
             </tr>
         </thead>
         <tbody>
-            @slots.foreach { slot: Slot =>
+            @slots.map { slot: Slot =>
               <tr>
                   <td>@slot.id</td>
                   <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/London")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
                   <td>@slot.to.toDateTime(org.joda.time.DateTimeZone.forID("Europe/London")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
                   <td>@slot.room.name</td>
-                  @if(slot.proposal.isDefined) {
-                      <td>@slot.proposal.map(_.title)</td>
-                      <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
-                      <td>@Messages(slot.proposal.get.track.label)</td>
-                      <td>@Messages(slot.proposal.get.talkType.label)</td>
-                  }else {
-                      <td>No proposal</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                  }
+                  <td>@slot.proposal.map(_.title)</td>
+                  <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
+                  <td>@slot.proposal.map(_.track.id)</td>
+                  <td>@slot.proposal.map(_.talkType.id)</td>
               </tr>
             }
         </tbody>
@@ -67,6 +60,8 @@ $(document).ready(function() {
         { "sType": "string"},
         { "sType": "date"},
         { "sType": "date"},
+        { "sType": "string"},
+        { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"}
