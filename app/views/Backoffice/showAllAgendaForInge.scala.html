@@ -30,16 +30,23 @@
             </tr>
         </thead>
         <tbody>
-            @slots.map { slot: Slot =>
+            @slots.foreach { slot: Slot =>
               <tr>
                   <td>@slot.id</td>
                   <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/London")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
                   <td>@slot.to.toDateTime(org.joda.time.DateTimeZone.forID("Europe/London")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
                   <td>@slot.room.name</td>
-                  <td>@slot.proposal.map(_.title)</td>
-                  <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
-                  <td>@Messages(slot.proposal.map(_.track.label))</td>
-                  <td>@Messages(slot.proposal.map(_.talkType.label))</td>
+                  @if(slot.proposal.isDefined) {
+                      <td>@slot.proposal.map(_.title)</td>
+                      <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
+                      <td>@Messages(slot.proposal.get.track.label)</td>
+                      <td>@Messages(slot.proposal.get.talkType.label)</td>
+                  }else {
+                      <td>No proposal</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                  }
               </tr>
             }
         </tbody>
