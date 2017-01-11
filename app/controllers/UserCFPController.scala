@@ -66,7 +66,7 @@ trait UserCFPController extends Controller {
 
     def invokeSecuredBlock[C](authorize: Option[Authorization],
                               request: Request[C],
-                              block: SecuredRequest[C] => Future[SimpleResult]): Future[SimpleResult] = {
+                              block: SecuredRequest[C] => Future[Result]): Future[Result] = {
       implicit val req = request
       val result = for (
         authenticator <- SecureCFPController.findAuthenticator;

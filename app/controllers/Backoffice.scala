@@ -191,7 +191,7 @@ object Backoffice extends SecureCFPController {
         client =>
           val toReturn = client.hgetAll("Proposal:SubmittedDate").map {
             case (proposal, submitted) =>
-              (proposal, new Instant(submitted.toLong).toDateTime.toDateMidnight.toString("dd-MM-yyyy"))
+              (proposal, new Instant(submitted.toLong).toDateTime.toString("dd-MM-yyyy"))
           }.groupBy(_._2).map {
             tuple =>
               (tuple._1, tuple._2.size)

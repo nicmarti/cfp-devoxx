@@ -1,4 +1,4 @@
-@()(implicit flash:Flash, lang:Lang, req: RequestHeader)
+@(isHTTPS:Boolean)(implicit flash:Flash, lang:Lang, req: RequestHeader)
 @main("Proposals by companies") {
     <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -29,7 +29,7 @@ $(document).ready(function() {
         // Replace the data source URL on next line with your data source URL.
 
         // TODO for Dev it should be http, and for Prod it should be HTTPS
-        var hostAndURL = '@routes.LeaderboardController.dataForAllProposalsByCompany.absoluteURL(secure = true)';
+        var hostAndURL = '@routes.LeaderboardController.dataForAllProposalsByCompany.absoluteURL(secure = isHTTPS)';
         var query = new google.visualization.Query(hostAndURL, opts);
 
         // Send the query with a callback function.

@@ -34,19 +34,9 @@ libraryDependencies ++= Seq(
     , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
     //, "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
     , "com.sksamuel.elastic4s" %% "elastic4s" % elastic4sV
-      exclude("org.elasticsearch", "elasticsearch")
-      exclude ("com.fasterxml.jackson.core", "jackson-annotations")
-      exclude ("com.fasterxml.jackson.core", "jackson-core")
-      exclude ("com.fasterxml.jackson.core", "jackson-databind")
-
     , "org.elasticsearch" % "elasticsearch" % elasticSearchV
+
     , "io.get-coursier" %% "coursier" % "1.0.0-M14"
     , "io.get-coursier" %% "coursier-cache" % "1.0.0-M14"
   , "com.amazonaws" % "aws-java-sdk-sns" % "1.11.29"
-    exclude ("com.fasterxml.jackson.core", "jackson-annotations")
-    exclude ("com.fasterxml.jackson.core", "jackson-core")
-    exclude ("com.fasterxml.jackson.core", "jackson-databind")
-    exclude ("joda-time", "joda-time")
-
-//  , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
 )
