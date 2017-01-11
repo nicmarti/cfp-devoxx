@@ -5,6 +5,7 @@
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 // Use the Play sbt plugin for Play projects
+// Play 2.3.x the last smart version before the D.I nightmare
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.10")
 
 addSbtPlugin("com.updateimpact" % "updateimpact-sbt-plugin" % "2.1.1")

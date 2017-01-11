@@ -46,7 +46,7 @@ object LeaderboardController extends SecureCFPController {
     val totalVotes = Leaderboard.totalVotes()
     val totalWithVotes = Leaderboard.totalWithVotes()
     val totalNoVotes = Leaderboard.totalNoVotes()
-    val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) } toList
+    val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) }.toList
     val bestReviewers = Review.allReviewersAndStats()
     val lazyOnes = Leaderboard.lazyOnes()
 
@@ -59,7 +59,7 @@ object LeaderboardController extends SecureCFPController {
     val totalApprovedSpeakers = Leaderboard.totalApprovedSpeakers()
     val totalWithTickets = Leaderboard.totalWithTickets()
     val totalRefusedSpeakers = Leaderboard.totalRefusedSpeakers()
-    val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map { case (k, v) => (k.toString, v) } toList
+    val totalCommentsPerProposal = Leaderboard.totalCommentsPerProposal().map { case (k, v) => (k.toString, v) }.toList
 
     val allApproved = ApprovedProposal.allApproved()
 
@@ -106,7 +106,7 @@ object LeaderboardController extends SecureCFPController {
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.LeaderboardController.allReviewersAndStatsAsChart(Review.allReviewersAndStats()))
+      Ok(views.html.LeaderboardController.allReviewersAndStatsAsChart(Review.allReviewersAndStats(), isHTTPS=play.Play.application().isProd))
   }
 
   def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
@@ -123,7 +123,7 @@ object LeaderboardController extends SecureCFPController {
               } else {
                 0
               }
-              s"{c:[{v:'${webuserNick}'},{v:$nbReview},{v:$average},{v:'$reviewer'},{v:$totalPoints}]}"
+              s"{c:[{v:'$webuserNick'},{v:$nbReview},{v:$average},{v:'$reviewer'},{v:$totalPoints}]}"
           }
       }.mkString("[", ",", "]")
 
@@ -184,15 +184,12 @@ object LeaderboardController extends SecureCFPController {
         .sortBy(p => p._2.size)
         .reverse
 
-      println("Total companiesAndProposals proposals "+companiesAndProposals.head._2.size)
-      println("Speakers test "+companiesAndProposals.head._2.map(_.allSpeakerUUIDs).toSet.size)
-
       Ok(views.html.LeaderboardController.allProposalsByCompany(companiesAndProposals))
   }
 
   def allProposalsByCompanyAsGraph() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.LeaderboardController.allProposalsByCompanyAsGraph())
+      Ok(views.html.LeaderboardController.allProposalsByCompanyAsGraph(isHTTPS=play.Play.application().isProd))
   }
 
   def dataForAllProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {
@@ -214,8 +211,6 @@ object LeaderboardController extends SecureCFPController {
             (company, listOfSpeakers.map(_.uuid).toSet)
         }
 
-      //println("Company "+companyAndSpeakersUUID.values.flatten.size)
-
       val companiesAndProposals2: List[(String,Int, Set[Double], Int)] = companyAndSpeakersUUID.map {
         case (company, setOfSpeakerUUID) =>
 
@@ -225,11 +220,7 @@ object LeaderboardController extends SecureCFPController {
           }
 
           val validSpeakersUUID= submittedProposals.flatMap(_._2.allSpeakerUUIDs.toSet)
-          println("Got validSpeakersUUID="+validSpeakersUUID.size)
-
           val onlySpeakersThatSubmitted = validSpeakersUUID.intersect(setOfSpeakerUUID)
-          println("Got onlySpeakersThatSubmitted="+onlySpeakersThatSubmitted.size)
-
           val withScore = submittedProposals.map {
             prop =>
               Review.averageScore(prop._1)
