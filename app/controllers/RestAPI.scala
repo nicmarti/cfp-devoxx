@@ -814,11 +814,10 @@ object RestAPI extends Controller {
       val webuser = Webuser.findByEmail(email)
       if (webuser.isDefined) {
 
-        // Update users social network credentials
-        val foundUser :Webuser = webuser.get
-        Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
-
-        Ok
+            // Update users social network credentials
+            val foundUser: Webuser = webuser.get
+            Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+            Ok(foundUser.uuid)
 
       } else {
         // User does not exist, lets create
