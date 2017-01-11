@@ -162,7 +162,7 @@ trait SecureCFPController extends Controller {
     * An action that adds the current user in the request if it's available.
     */
   object UserAwareAction extends ActionBuilder[RequestWithUser] {
-    protected def invokeBlock[A](request: Request[A],
+    def invokeBlock[A](request: Request[A],
                                  block: (RequestWithUser[A]) => Future[SimpleResult]): Future[SimpleResult] = {
       implicit val req = request
       val user = for (

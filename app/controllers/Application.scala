@@ -36,7 +36,7 @@ object Application extends Controller {
 
   def home = Action {
     implicit request =>
-      session.get("uuid") match {
+      request.session.get("uuid") match {
         case Some(validUUID) =>
           Webuser.findByUUID(validUUID) match {
             case Some(webuser) =>

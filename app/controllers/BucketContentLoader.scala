@@ -88,7 +88,9 @@ object BucketContentLoader extends AssetsBuilder {
     }
   }
 
-  override def at(path: String, file: String) = Action {
+
+
+  override def at(path: String, file: String, aggresiveCaching:Boolean) = Action {
     implicit request =>
       def parseDate(date: String): Option[java.util.Date] = try {
         //jodatime does not parse timezones, so we handle that manually
