@@ -245,6 +245,13 @@ GET           /api/conferences/:eventCode/tracks                                
 
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
 
+# New My Devoxx and PWA REST endpoints
+POST          /api/account/verify                                               controllers.RestAPI.verifyAccount(networkType:String, networkId:String, email:String)
+GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
+POST          /api/proposals/:uuid/schedule/:proposalId                         controllers.Favorites.scheduleProposal(uuid:String, proposalId:String)
+GET           /api/proposals/:uuid/favored                                      controllers.Favorites.favoredProposals(uuid:String)
+POST          /api/proposals/:uuid/favor/:proposalId                            controllers.Favorites.favorProposal(uuid:String, proposalId:String)
+
 # API for AngularJS
 GET           /schedulling/slots                                                controllers.SchedullingController.slots(confType:String)
 GET           /schedulling/approvedTalks                                        controllers.SchedullingController.approvedTalks(confType:String)

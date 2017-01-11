@@ -234,11 +234,11 @@ object Authentication extends Controller {
       w =>
         Some(
           (w.uuid,
-            w.email,
-            w.firstName,
-            w.lastName,
-            w.password,
-            w.profile)
+           w.email,
+           w.firstName,
+           w.lastName,
+           w.password,
+           w.profile)
         )
     }
   )
