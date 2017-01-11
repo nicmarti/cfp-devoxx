@@ -139,8 +139,8 @@ object Favorites extends UserCFPController {
     * Schedule a proposal.
     * Note : you can only schedule one proposal in a time slot but have multiple favorites.
     *
-    * @param uuid
-    * @param proposalId
+    * @param uuid the user identifier
+    * @param proposalId the proposal identifier
     */
   def scheduleProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
@@ -149,20 +149,25 @@ object Favorites extends UserCFPController {
   }
 
   /**
+    * Remove a scheduled proposal for user.
     *
-    * @param uuid
-    * @param proposalId
+    * @param uuid the user identifier
+    * @param proposalId the proposal identifier
     */
-  def unscheduleProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
+  def removeScheduledProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      ScheduleTalk.unscheduleTalk(proposalId, uuid)
-      Ok
+      if (ScheduleTalk.isScheduledByThisUser(proposalId, uuid)) {
+        ScheduleTalk.unscheduleTalk(proposalId, uuid)
+        Gone
+      } else {
+        BadRequest("Not scheduled by user")
+      }
   }
 
   /**
     * Return list of proposals that have been favored by user.
     *
-    * @param uuid
+    * @param uuid the user identifier
     */
   def favoredProposals(uuid: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
@@ -193,11 +198,11 @@ object Favorites extends UserCFPController {
   }
 
   /**
-    * Favor a proposal.
+    * Favor a proposal for user.
     * Note : you can favorite multiple proposals in one timeslot but only schedule one.
     *
-    * @param uuid
-    * @param proposalId
+    * @param uuid the user identifier
+    * @param proposalId the proposal identifier
     */
   def favorProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
@@ -206,14 +211,18 @@ object Favorites extends UserCFPController {
   }
 
   /**
-    * Unfavor a
+    * Remove a proposal favorite for given user.
     *
-    * @param uuid
-    * @param proposalId
+    * @param uuid the user identifier
+    * @param proposalId the proposal identifier
     */
-  def unfavorProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
+  def removeFavoredProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      FavoriteTalk.unfavTalk(proposalId, uuid)
-      Ok
+      if (FavoriteTalk.isFavByThisUser(proposalId, uuid)) {
+        FavoriteTalk.unfavTalk(proposalId, uuid)
+        Gone
+      } else {
+        BadRequest("Not favorited by user")
+      }
   }
 }
