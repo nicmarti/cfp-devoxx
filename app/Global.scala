@@ -6,17 +6,18 @@ import models.Digest
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.{DateMidnight, DateTime, LocalTime}
 import play.api.Play.current
+import play.api._
 import play.api.libs.concurrent._
-import play.api.mvc.RequestHeader
+import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
-import play.api.templates.HtmlFormat
-import play.api.{UnexpectedException, _}
 import play.core.Router.Routes
-import views.html.errorPage
+import scala.util.control.NonFatal
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.util.control.NonFatal
+
+// We must import the compiled cfp error page
+import views.html.cfpErrorPage
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
@@ -26,7 +27,7 @@ object Global extends GlobalSettings {
         CronTask.doIndexElasticSearch()
         CronTask.doComputeStats()
         CronTask.doEmailDigests()
-        // CronTask.doSetupOpsGenie()
+      // CronTask.doSetupOpsGenie()
       case Some(true) if Play.isDev =>
         CronTask.doEmailDigests()
         CronTask.doIndexElasticSearch()
@@ -36,30 +37,34 @@ object Global extends GlobalSettings {
     }
   }
 
-  override def onError(request: RequestHeader, ex: Throwable) = {
-    val viewO: Option[(UsefulException) => HtmlFormat.Appendable] = Play.maybeApplication.map {
-      case app if app.mode != Mode.Prod => views.html.defaultpages.devError.f
-      case app => errorPage.apply(_: UsefulException)(request)
-    }
-    try {
-      Future.successful(InternalServerError(viewO.getOrElse(views.html.defaultpages.devError.f) {
-        ex match {
-          case e: UsefulException => e
-          case NonFatal(e) => UnexpectedException(unexpected = Some(e))
-        }
-      }))
-    } catch {
-      case e: Throwable =>
-        Logger.error("Error while rendering default error page", e)
-        Future.successful(InternalServerError)
-    }
-  }
-
+  /**
+    * Server error 500
+    */
+// override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
+//    def devError = views.html.defaultpages.devError(Option(System.getProperty("play.editor"))) _
+//    def prodError = views.html.cfpErrorPage.f // Devoxx Error page
+//    try {
+//      Future.successful(InternalServerError(Play.maybeApplication.map {
+//        case app if app.mode == Mode.Prod => prodError
+//        case app => devError
+//      }.getOrElse(devError) {
+//        ex match {
+//          case e: UsefulException => e
+//          case NonFatal(e) => UnexpectedException(unexpected = Some(e))
+//        }
+//      }))
+//    } catch {
+//      case NonFatal(e) => {
+//        Logger.error("Error while rendering default error page", e)
+//        Future.successful(InternalServerError)
+//      }
+//    }
+//  }
   /**
     * 404 custom page, for Prod mode only
     */
   override def onHandlerNotFound(request: RequestHeader) = {
-    val viewO: Option[(RequestHeader, Option[Routes]) => HtmlFormat.Appendable] = Play.maybeApplication.map {
+    val viewO: Option[(RequestHeader, Option[Routes]) => play.twirl.api.HtmlFormat.Appendable] = Play.maybeApplication.map {
       case app if app.mode != Mode.Prod => views.html.defaultpages.devNotFound.f
       case app => views.html.notFound.apply(_, _)(request)
     }
@@ -127,7 +132,7 @@ object CronTask {
     import library.Contexts.statsContext
 
     // The daily digest schedule
-    var delayForDaily : Long = 0L
+    var delayForDaily: Long = 0L
 
     Play.configuration.getString("digest.daily") match {
       case Some(value) =>
@@ -143,7 +148,7 @@ object CronTask {
     Akka.system.scheduler.schedule(delayForDaily milliseconds, 1 day, ZapActor.actor, EmailDigests(Digest.DAILY))
 
     // The weekly digest schedule
-    var delayForWeekly : Long = 0L
+    var delayForWeekly: Long = 0L
 
     Play.configuration.getInt("digest.weekly") match {
       case Some(value) =>
