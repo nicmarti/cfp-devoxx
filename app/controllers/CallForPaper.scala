@@ -51,7 +51,7 @@ object CallForPaper extends SecureCFPController {
         speaker: Speaker =>
           // BUG
           if(Webuser.isSpeaker(uuid)==false){
-            Webuser.addToSpeaker(uuid)
+            Webuser.addToDevoxxians(uuid)
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
           val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
