@@ -1,5 +1,0 @@
-{
-  "deploy":{
-    "goal": "-Dconfig.resource=application.conf"
-  }
-}
