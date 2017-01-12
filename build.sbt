@@ -4,7 +4,7 @@ version := "2.3-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
-includeFilter in (Assets, LessKeys.less) := "*.less"
+includeFilter in(Assets, LessKeys.less) := "*.less"
 
 scalaVersion := "2.11.6"
 
@@ -25,18 +25,15 @@ val elasticSearchV = "1.3.2"
 
 // Coursier
 libraryDependencies ++= Seq(
-   "redis.clients" % "jedis" % "2.1.0"
-    ,"com.typesafe.play" %% "play-mailer" % "2.4.1"
-    , "org.apache.commons" % "commons-lang3" % "3.1"
-    , "commons-io" % "commons-io" % "2.4"
-    , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
-    , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
-    , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
-    //, "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
-    , "com.sksamuel.elastic4s" %% "elastic4s" % elastic4sV
-    , "org.elasticsearch" % "elasticsearch" % elasticSearchV
-
-    , "io.get-coursier" %% "coursier" % "1.0.0-M14"
-    , "io.get-coursier" %% "coursier-cache" % "1.0.0-M14"
+  "redis.clients" % "jedis" % "2.1.0"
+  , "com.typesafe.play" %% "play-mailer" % "2.4.1"
+  , "org.apache.commons" % "commons-lang3" % "3.1"
+  , "commons-io" % "commons-io" % "2.4"
+  , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
+  , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
+  , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
+  //, "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
+  , "com.sksamuel.elastic4s" %% "elastic4s" % elastic4sV
+  , "org.elasticsearch" % "elasticsearch" % elasticSearchV
   , "com.amazonaws" % "aws-java-sdk-sns" % "1.11.29"
 )
