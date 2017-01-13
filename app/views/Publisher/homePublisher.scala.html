@@ -25,6 +25,8 @@
         <tbody>
             <tr>
                 <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
+                <td class="scheduleRow">Keynotes</td>
+                <td class="scheduleRow">Keynotes</td>
             </tr>
             <tr>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack")</td>
@@ -67,8 +69,19 @@
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
                 </td>
+                <td class="scheduleRow">&nbsp;</td>
+            </tr>
+            <tr>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
+                    <a href="@routes.Publisher.showByDay("thu")">Full Day</a>
+                </td>
+                <td class="scheduleRow">
+                    <a href="@routes.Publisher.showByDay("fri")">Full Day</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <span>You can click on the above dates for full day schedule views.</span>
                 </td>
             </tr>
         </tbody>
