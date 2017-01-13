@@ -18,15 +18,15 @@
         <thead>
             <tr>
                 <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader">@Messages("day-thursday")</th>
-                <th class="scheduleHeader">@Messages("day-friday")</th>
+                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("thu")">@Messages("day-thursday")</a></th>
+                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("fri")">@Messages("day-friday")</a></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">Keynotes</td>
-                <td class="scheduleRow">Keynotes</td>
+                <td rowspan="10"  class="scheduleHeader scheduleRight">What's on</td>
+                <td class="scheduleRow">&nbsp;</td>
+                <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack")</td>
@@ -76,11 +76,11 @@
                     <a href="@routes.Publisher.showByDay("thu")">Full Day</a>
                 </td>
                 <td class="scheduleRow">
-                    <a href="@routes.Publisher.showByDay("fri")">Full Day</a>
+                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
                 </td>
             </tr>
             <tr>
-                <td colspan="4">
+                <td colspan="6">
                     <span>You can click on the above dates for full day schedule views.</span>
                 </td>
             </tr>

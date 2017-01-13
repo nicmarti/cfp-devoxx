@@ -36,6 +36,7 @@ object Digest {
 
   private val digestRedisKey = "Digest:"
   private val digestUserRedisKey = digestRedisKey + "User:"
+  private val digestFilterRedisKey = digestUserRedisKey + "Filter:"
 
   private val app = Play.application()
 
@@ -85,6 +86,27 @@ object Digest {
   def update(webUserId: String, digest: String): String = Redis.pool.withClient {
     implicit client =>
         client.set(digestUserRedisKey + webUserId, digest)
+  }
+
+  /**
+    * Filter digest on given tracks for user.
+    *
+    * @param webUserId the web user uuid
+    * @param tracks the tracks to filter on
+    */
+  def setTrackFilter(webUserId: String, tracks: String): String = Redis.pool.withClient {
+    implicit client =>
+        client.set(digestFilterRedisKey + webUserId, tracks.trim)
+  }
+
+  /**
+    * Get the track filter
+    * @param webUserId the web user uuid
+    * @return the track HTML entries
+    */
+  def getTrackFilter(webUserId: String): Option[String] = Redis.pool.withClient {
+    implicit client =>
+      client.get(digestFilterRedisKey + webUserId)
   }
 
   /**

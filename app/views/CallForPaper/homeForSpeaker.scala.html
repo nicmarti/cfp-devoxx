@@ -108,29 +108,34 @@
             </div>
             @if(Webuser.isMember(webuser.uuid, "cfp")){
                 <div class="digestMessage">
-                <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
-
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>@Messages("email.digest.description")<br>
-                                <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
-                            <td>
-                                <select id="digest">
-                                @Digest.allDigests.map { digest =>
-                                    @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
-                                        <option value='@digest.value' selected>
-                                    }else {
-                                        <option value='@digest.value'>
-                                        }
-                                    @digest.value
-                                </option>
-                                }
-                                </select>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>@Messages("email.digest.description")<br>
+                                    <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
+                                <td>
+                                    <select id="digest">
+                                    @Digest.allDigests.map { digest =>
+                                        @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
+                                            <option value='@digest.value' selected>
+                                        }else {
+                                            <option value='@digest.value'>
+                                            }
+                                        @digest.value
+                                    </option>
+                                    }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    Filter your digest for selected track(s). Empty filter will list all tracks in your digest.
+                                    @tags.renderDigestTrackFilter(webuser.uuid)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             }
 
@@ -323,11 +328,11 @@
 
 </div>
 <script language="JavaScript">
-    var selection = $('#digest');
-    selection.change(function(){
+
+    $('#digest').change(function(){
         $.ajax({
             type: "POST",
-            url: "/cfp/profile/digest?value="+selection.val(),
+            url: "/cfp/profile/digest?value="+$('#digest').val(),
             success: function(data) {
                 return $('#digestMsg').text(data);
             }
