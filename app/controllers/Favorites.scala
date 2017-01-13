@@ -110,28 +110,34 @@ object Favorites extends UserCFPController {
   def scheduledProposals(uuid: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
-      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
-      val toReturn = ScheduleTalk.allForUser(uuid).map {
-        proposalId =>
-          Json.toJson {
-            Map(
-              "id" -> Json.toJson(proposalId)
-            )
-          }
-      }
+      val scheduledProposals = ScheduleTalk.allForUser(uuid)
 
-      val jsonObject = Json.toJson(
-        Map(
-          "scheduled" -> Json.toJson(toReturn)
+      if (scheduledProposals.isEmpty) {
+        NotFound
+      } else {
+        val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+        val toReturn = scheduledProposals.map {
+          proposalId =>
+            Json.toJson {
+              Map(
+                "id" -> Json.toJson(proposalId)
+              )
+            }
+        }
+
+        val jsonObject = Json.toJson(
+          Map(
+            "scheduled" -> Json.toJson(toReturn)
+          )
         )
-      )
 
-      val eTag = toReturn.hashCode().toString
+        val eTag = toReturn.hashCode().toString
 
-      ifNoneMatch match {
-        case Some(someEtag) if someEtag == eTag => NotModified
-        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
-          "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
+        ifNoneMatch match {
+          case Some(someEtag) if someEtag == eTag => NotModified
+          case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
+            "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
+        }
       }
   }
 
@@ -144,8 +150,13 @@ object Favorites extends UserCFPController {
     */
   def scheduleProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      ScheduleTalk.scheduleTalk(proposalId, uuid)
-      Ok
+      if (Webuser.findByUUID(uuid).isDefined &&
+          Proposal.findById(proposalId).isDefined) {
+        ScheduleTalk.scheduleTalk(proposalId, uuid)
+        Created
+      } else {
+        BadRequest
+      }
   }
 
   /**
@@ -172,28 +183,34 @@ object Favorites extends UserCFPController {
   def favoredProposals(uuid: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
 
-      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
-      val toReturn = FavoriteTalk.allForUser(uuid).map {
-        proposalId =>
-          Json.toJson {
-            Map(
-              "id" -> Json.toJson(proposalId)
-            )
-          }
-      }
+      val favoriteProposals = FavoriteTalk.allForUser(uuid)
 
-      val jsonObject = Json.toJson(
-        Map(
-          "favored" -> Json.toJson(toReturn)
+      if (favoriteProposals.isEmpty) {
+        NotFound
+      } else {
+        val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+        val toReturn = favoriteProposals.map {
+          proposalId =>
+            Json.toJson {
+              Map(
+                "id" -> Json.toJson(proposalId)
+              )
+            }
+        }
+
+        val jsonObject = Json.toJson(
+          Map(
+            "favored" -> Json.toJson(toReturn)
+          )
         )
-      )
 
-      val eTag = toReturn.hashCode().toString
+        val eTag = toReturn.hashCode().toString
 
-      ifNoneMatch match {
-        case Some(someEtag) if someEtag == eTag => NotModified
-        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
-          "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
+        ifNoneMatch match {
+          case Some(someEtag) if someEtag == eTag => NotModified
+          case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
+            "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
+        }
       }
   }
 
@@ -206,8 +223,13 @@ object Favorites extends UserCFPController {
     */
   def favorProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
     implicit request =>
-      FavoriteTalk.favTalk(proposalId, uuid)
-      Ok
+      if (Webuser.findByUUID(uuid).isDefined &&
+          Proposal.findById(proposalId).isDefined) {
+        FavoriteTalk.favTalk(proposalId, uuid)
+        Created
+      } else {
+        BadRequest
+      }
   }
 
   /**
