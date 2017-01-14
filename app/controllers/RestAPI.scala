@@ -814,7 +814,7 @@ object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.ap
 
   import ExecutionContext.Implicits.global
 
-  override protected def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[SimpleResult]): Future[SimpleResult] = {
+  override def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]): Future[Result] = {
     request.headers.get(USER_AGENT).collect {
       case some =>
         block(request).map { result =>

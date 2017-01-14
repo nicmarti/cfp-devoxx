@@ -127,7 +127,7 @@ object CallForPaper extends SecureCFPController {
   def newProposal() = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
+      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(request.session + ("token" -> Crypto.sign(uuid)))
   }
 
   // Load a proposal
@@ -139,15 +139,15 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) =>
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalForm.fill(proposal)
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
             // Switch the mainSpeaker and the other Speakers
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.otherSpeakers.contains(uuid)) {
             // Switch the secondary speaker and this speaker
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
           }

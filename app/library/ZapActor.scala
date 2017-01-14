@@ -40,6 +40,7 @@ import play.api.libs.ws.WS
 import play.libs.Akka
 
 import scala.Predef._
+import play.api.Play.current
 
 /**
   * Akka actor that is in charge to process batch operations and long running queries

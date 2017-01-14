@@ -31,7 +31,8 @@ import org.apache.commons.lang3.StringUtils
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import library.GitUtils
 import play.api.Play
-
+import play.api.Play.current
+import play.api.libs.ws.WSAuthScheme.BASIC
 
 /**
  * An issue or a bug.
@@ -69,8 +70,7 @@ object Issue {
           .withAuth(
             username = Play.current.configuration.getString("bitbucket.username").getOrElse("Missing bitbucket username in config file"),
             password = Play.current.configuration.getString("bitbucket.password").getOrElse("Missing bitbucket token in config file"),
-
-            scheme = com.ning.http.client.Realm.AuthScheme.BASIC)
+            scheme = BASIC)
           .withHeaders(
             ("Accept", "application/json"), ("User-Agent", "CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname)
           ).post(

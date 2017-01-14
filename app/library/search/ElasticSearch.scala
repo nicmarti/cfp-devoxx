@@ -25,13 +25,13 @@ package library.search
 
 import models.ApprovedProposal
 import play.api.libs.ws.WS
-
 import play.api.libs.concurrent.Execution.Implicits._
-import scala.util.{Try, Failure, Success}
+
+import scala.util.{Failure, Success, Try}
 import scala.concurrent.Future
 import play.api.Play
-import com.ning.http.client.Realm.AuthScheme
-
+import play.api.Play.current
+import play.api.libs.ws.WSAuthScheme.BASIC
 /**
  * Wrapper and helper, to reuse the ElasticSearch REST API.
  *
@@ -49,7 +49,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Indexing to $index $json")
     }
     val futureResponse = WS.url(host + "/" + index)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .put(json)
     futureResponse.map {
       response =>
@@ -67,7 +67,7 @@ object ElasticSearch {
     }
 
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -93,7 +93,7 @@ object ElasticSearch {
     }
     val url = s"$host/${index.toLowerCase}"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .post(settings)
     futureResponse.map {
       response =>
@@ -119,7 +119,7 @@ object ElasticSearch {
   def createMapping(index: String, mapping: String) = {
     val url = s"$host/$index/_mapping?ignore_conflicts=true"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .withRequestTimeout(6000)
       .put(mapping)
     futureResponse.map {
@@ -137,7 +137,7 @@ object ElasticSearch {
     val url = s"$host/_refresh"
     val futureResponse = WS.url(url)
       .withRequestTimeout(6000)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .post("{}")
     futureResponse.map {
       response =>
@@ -155,7 +155,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Deleting index $indexName")
     }
     val futureResponse = WS.url(host + "/" + indexName + "/")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .delete()
     futureResponse.map {
       response =>
@@ -171,7 +171,7 @@ object ElasticSearch {
   def doSearch(query: String): Future[Try[String]] = {
     val serviceParams = Seq(("q", query))
     val futureResponse = WS.url(host + "/_search")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .withQueryString(serviceParams: _*).get()
     futureResponse.map {
       response =>
@@ -213,7 +213,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -268,7 +268,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -327,7 +327,7 @@ object ElasticSearch {
       """.stripMargin
 
     val futureResponse = WS.url(host + "/" + index + "/_search?search_type=count")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password,BASIC)
       .post(json)
     futureResponse.map {
       response =>
