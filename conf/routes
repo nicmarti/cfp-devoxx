@@ -252,10 +252,10 @@ GET           /api/profile/:docName                                             
 # New My Devoxx and PWA REST endpoints
 POST          /api/account/verify                                               controllers.RestAPI.verifyAccount(networkType:String, networkId:String, email:String)
 GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
-DELETE        /api/proposals/:uuid/scheduled                                    controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)
+DELETE        /api/proposals/:uuid/scheduled/:proposalId                        controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)
 POST          /api/proposals/:uuid/schedule/:proposalId                         controllers.Favorites.scheduleProposal(uuid:String, proposalId:String)
 GET           /api/proposals/:uuid/favored                                      controllers.Favorites.favoredProposals(uuid:String)
-DELETE        /api/proposals/:uuid/favored                                      controllers.Favorites.removeFavoredProposal(uuid:String, proposalId:String)
+DELETE        /api/proposals/:uuid/favored/:proposalId                          controllers.Favorites.removeFavoredProposal(uuid:String, proposalId:String)
 POST          /api/proposals/:uuid/favor/:proposalId                            controllers.Favorites.favorProposal(uuid:String, proposalId:String)
 
 # API for AngularJS
