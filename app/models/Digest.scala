@@ -89,24 +89,37 @@ object Digest {
   }
 
   /**
-    * Filter digest on given tracks for user.
+    * Add a track digest filter for user.
     *
     * @param webUserId the web user uuid
-    * @param tracks the tracks to filter on
+    * @param trackId the track ID to filter on
     */
-  def setTrackFilter(webUserId: String, tracks: String): String = Redis.pool.withClient {
+  def addTrackFilter(webUserId: String, trackId: String): Long = Redis.pool.withClient {
     implicit client =>
-        client.set(digestFilterRedisKey + webUserId, tracks.trim)
+      val now = DateTime.now().toString("d MMM yyyy HH:mm")
+      client.hset(digestFilterRedisKey + webUserId, trackId, now)
   }
 
   /**
-    * Get the track filter
+    * Remove a track digest filter for user.
+    *
+    * @param webUserId the web user uuid
+    * @param trackId the track ID to filter on
+    */
+  def delTrackFilter(webUserId: String, trackId: String): Long = Redis.pool.withClient {
+    implicit client =>
+      client.hdel(digestFilterRedisKey + webUserId, trackId)
+  }
+
+  /**
+    * Get the digest filter track identifiers.
+    *
     * @param webUserId the web user uuid
     * @return the track HTML entries
     */
-  def getTrackFilter(webUserId: String): Option[String] = Redis.pool.withClient {
+  def getTrackFilters(webUserId: String): List[String] = Redis.pool.withClient {
     implicit client =>
-      client.get(digestFilterRedisKey + webUserId)
+      client.hkeys(digestFilterRedisKey + webUserId).toList
   }
 
   /**

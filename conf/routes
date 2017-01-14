@@ -43,7 +43,8 @@ GET           /cfp/newSpeakerForExistingWebuser                                 
 
 # Email Digests
 POST          /cfp/profile/digest                                               controllers.DigestController.update()
-POST          /cfp/profile/digestTracks                                         controllers.DigestController.setFilter()
+DELETE        /cfp/profile/digestTrack                                          controllers.DigestController.removeFilter()
+POST          /cfp/profile/digestTrack                                          controllers.DigestController.addFilter()
 GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
 

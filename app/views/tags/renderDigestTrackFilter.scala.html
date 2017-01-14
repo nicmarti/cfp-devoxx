@@ -1,43 +1,5 @@
 @(uuid:String)
-<dl class="dropdown">
-  <dt>
-    <a href="#">
-      @if(Digest.getTrackFilter(uuid).isEmpty ||
-          (Digest.getTrackFilter(uuid).isDefined &&
-           Digest.getTrackFilter(uuid).get.trim.length == 0)) {
-        <span class="hida">Select track(s)</span>
-      }
-      <p class="multiSel">
-      @if(Digest.getTrackFilter(uuid).isDefined &&
-          Digest.getTrackFilter(uuid).get.trim.length > 0) {
-        @Html(Digest.getTrackFilter(uuid).get)
-      }
-      </p>
-    </a>
-  </dt>
 
-  <dd>
-    <div class="mutliSelect">
-      <ul>
-      @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
-        <li>
-          @if(Digest.getTrackFilter(uuid).nonEmpty) {
-            @if(Digest.getTrackFilter(uuid).get.contains(track.id)) {
-              <input type="checkbox" value="@track.id" checked/>
-            } else {
-              <input type="checkbox" value="@track.id"/>
-            }
-          } else {
-            <input type="checkbox" value="@track.id"/>
-          }
-          @track.id
-        </li>
-      }
-      </ul>
-    </div>
-    <button>Filter (not yet enabled)</button>
-  </dd>
-</dl>
 
 <script language="JavaScript">
 

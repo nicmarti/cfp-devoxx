@@ -200,24 +200,27 @@ object Mails {
   /**
     * Mail digest.
     *
-    * @param emails the list of CFP user emails for given digest
-    * @param digest List of speakers and their new proposals
+    * @param userIDs the list of CFP uuids for given digest
+    * @param digest  List of speakers and their new proposals
     * @return
     */
   def sendDigest(digest: Digest,
-                 emails: List[String],
+                 userIDs: List[String],
                  proposals: List[Proposal],
+                 isDigestFilterOn: Boolean,
                  leaderBoardParams: LeaderBoardParams): String = {
 
   val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
+
+    val emails = userIDs.map(uuid => Webuser.findByUUID(uuid).get.email)
 
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
       to = Seq("no-reply-digest@devoxx.co.uk"), // Use fake email because we use bcc instead
       bcc = emails,
-      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
-      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
+      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
       charset = Some("utf-8")
     )
 

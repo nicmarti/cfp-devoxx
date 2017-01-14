@@ -1,6 +1,6 @@
 @(digest: Digest,
   proposals:List[Proposal],
-  params: controllers.LeaderBoardParams)
+  params: controllers.CFPAdmin.LeaderBoardParams)
 
 CFP '@digest.value' Digest
 
@@ -8,6 +8,10 @@ CFP '@digest.value' Digest
     Nouvelles propositions depuis le dernier digest
 }else {
     New proposals since last digest
+}
+
+@if(isDigestFilterOn) {
+    Please note that this is a sublist based on your digest track(s) filter.
 }
 
 @proposals.map{proposal=>
