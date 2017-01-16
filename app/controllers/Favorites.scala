@@ -107,7 +107,7 @@ object Favorites extends UserCFPController {
     * @param uuid the web user id
     * @return JSON list of proposal IDs
     */
-  def scheduledProposals(uuid: String) = UserAgentActionAndAllowOrigin {
+  def scheduledProposals(uuid: String) = SecuredAction {
     implicit request =>
 
       val scheduledProposals = ScheduleTalk.allForUser(uuid)
@@ -148,7 +148,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def scheduleProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
+  def scheduleProposal(uuid: String, proposalId: String) = SecuredAction {
     implicit request =>
       if (Webuser.findByUUID(uuid).isDefined &&
           Proposal.findById(proposalId).isDefined) {
@@ -165,7 +165,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeScheduledProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
+  def removeScheduledProposal(uuid: String, proposalId: String) = SecuredAction {
     implicit request =>
       if (ScheduleTalk.isScheduledByThisUser(proposalId, uuid)) {
         ScheduleTalk.unscheduleTalk(proposalId, uuid)
@@ -180,7 +180,7 @@ object Favorites extends UserCFPController {
     *
     * @param uuid the user identifier
     */
-  def favoredProposals(uuid: String) = UserAgentActionAndAllowOrigin {
+  def favoredProposals(uuid: String) = SecuredAction {
     implicit request =>
 
       val favoriteProposals = FavoriteTalk.allForUser(uuid)
@@ -221,7 +221,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def favorProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
+  def favorProposal(uuid: String, proposalId: String) = SecuredAction {
     implicit request =>
       if (Webuser.findByUUID(uuid).isDefined &&
           Proposal.findById(proposalId).isDefined) {
@@ -238,7 +238,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeFavoredProposal(uuid: String, proposalId: String) = UserAgentActionAndAllowOrigin {
+  def removeFavoredProposal(uuid: String, proposalId: String) = SecuredAction {
     implicit request =>
       if (FavoriteTalk.isFavByThisUser(proposalId, uuid)) {
         FavoriteTalk.unfavTalk(proposalId, uuid)
