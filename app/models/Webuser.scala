@@ -53,8 +53,8 @@ object Webuser {
             "Program Committee",
             RandomStringUtils.random(64),
             "visitor",
-            Some(""),
-            Some(""))
+            None,
+            None)
 
   def gravatarHash(email: String): String = {
     val cleanEmail = email.trim().toLowerCase()
@@ -74,8 +74,8 @@ object Webuser {
             lastName,
             RandomStringUtils.randomAlphabetic(7),
             "speaker",
-            Some(""),
-            Some(""))
+            None,
+            None)
   }
 
   def createVisitor(email: String,
@@ -87,8 +87,8 @@ object Webuser {
             lastName,
             RandomStringUtils.randomAlphabetic(7),
             "visitor",
-            Some(""),
-            Some(""))
+            None,
+            None)
   }
 
   def createDevoxxian(email: String,
