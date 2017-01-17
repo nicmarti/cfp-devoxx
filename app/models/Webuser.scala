@@ -187,6 +187,13 @@ object Webuser {
       }
   }
 
+  def findUser(email: String, password: String): Boolean = Redis.pool.withClient {
+    client =>
+      val maybeUser = findByEmail(email)
+      maybeUser.exists(_.password == password)
+  }
+
+
   def delete(webuser: Webuser) = Redis.pool.withClient {
     implicit client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)

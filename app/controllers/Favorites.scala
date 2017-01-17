@@ -23,7 +23,6 @@
 
 package controllers
 
-import controllers.RestAPI.{ETAG, IF_NONE_MATCH, JSON, NotModified, Ok}
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -107,8 +106,9 @@ object Favorites extends UserCFPController {
     * @param uuid the web user id
     * @return JSON list of proposal IDs
     */
-  def scheduledProposals(uuid: String) = SecuredAction {
-    implicit request =>
+
+  def scheduledProposals(uuid: String) = BasicAuthentication(Webuser.findUser) {
+    Action { implicit request =>
 
       val scheduledProposals = ScheduleTalk.allForUser(uuid)
 
@@ -139,6 +139,7 @@ object Favorites extends UserCFPController {
             "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
         }
       }
+    }
   }
 
   /**
@@ -148,15 +149,16 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def scheduleProposal(uuid: String, proposalId: String) = SecuredAction {
-    implicit request =>
+  def scheduleProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.findUser) {
+    Action { implicit request =>
       if (Webuser.findByUUID(uuid).isDefined &&
-          Proposal.findById(proposalId).isDefined) {
+        Proposal.findById(proposalId).isDefined) {
         ScheduleTalk.scheduleTalk(proposalId, uuid)
         Created
       } else {
         BadRequest
       }
+    }
   }
 
   /**
@@ -165,14 +167,15 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeScheduledProposal(uuid: String, proposalId: String) = SecuredAction {
-    implicit request =>
+  def removeScheduledProposal(uuid: String, proposalId: String)  = BasicAuthentication(Webuser.findUser) {
+    Action { implicit request =>
       if (ScheduleTalk.isScheduledByThisUser(proposalId, uuid)) {
         ScheduleTalk.unscheduleTalk(proposalId, uuid)
         Gone
       } else {
         BadRequest("Not scheduled by user")
       }
+    }
   }
 
   /**
@@ -180,8 +183,8 @@ object Favorites extends UserCFPController {
     *
     * @param uuid the user identifier
     */
-  def favoredProposals(uuid: String) = SecuredAction {
-    implicit request =>
+  def favoredProposals(uuid: String)  = BasicAuthentication(Webuser.findUser) {
+    Action { implicit request =>
 
       val favoriteProposals = FavoriteTalk.allForUser(uuid)
 
@@ -212,6 +215,7 @@ object Favorites extends UserCFPController {
             "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
         }
       }
+    }
   }
 
   /**
@@ -221,15 +225,16 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def favorProposal(uuid: String, proposalId: String) = SecuredAction {
-    implicit request =>
+  def favorProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.findUser) {
+    Action { implicit request =>
       if (Webuser.findByUUID(uuid).isDefined &&
-          Proposal.findById(proposalId).isDefined) {
+        Proposal.findById(proposalId).isDefined) {
         FavoriteTalk.favTalk(proposalId, uuid)
         Created
       } else {
         BadRequest
       }
+    }
   }
 
   /**
@@ -238,13 +243,14 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeFavoredProposal(uuid: String, proposalId: String) = SecuredAction {
-    implicit request =>
+  def removeFavoredProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.findUser) {
+    Action { implicit request =>
       if (FavoriteTalk.isFavByThisUser(proposalId, uuid)) {
         FavoriteTalk.unfavTalk(proposalId, uuid)
         Gone
       } else {
         BadRequest("Not favorited by user")
       }
+    }
   }
 }
