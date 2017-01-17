@@ -20,7 +20,7 @@
                 <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
 
                 @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
-                    @Messages(proposal.talkType.id) - @proposal.title -
+                    @Messages(proposal.talkType.id) - @proposal.title (@models.Review.averageScore(proposal.id)) -
                     @proposal.allSpeakers.map { speaker =>
                       @if(speaker.company.map(_.toUpperCase.trim) == Some(company)){
                           <strong>@speaker.cleanName</strong>
