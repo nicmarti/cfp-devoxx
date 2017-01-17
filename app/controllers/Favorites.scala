@@ -113,7 +113,7 @@ object Favorites extends UserCFPController {
       val scheduledProposals = ScheduleTalk.allForUser(uuid)
 
       if (scheduledProposals.isEmpty) {
-        NotFound
+        Ok("[]")  // Returning empty array, on request by client mobile app :)
       } else {
         val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
         val toReturn = scheduledProposals.map {
@@ -189,7 +189,7 @@ object Favorites extends UserCFPController {
       val favoriteProposals = FavoriteTalk.allForUser(uuid)
 
       if (favoriteProposals.isEmpty) {
-        NotFound
+        Ok("[]")  // Returning empty array, on request by client mobile app :)
       } else {
         val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
         val toReturn = favoriteProposals.map {
