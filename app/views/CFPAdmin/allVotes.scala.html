@@ -68,6 +68,7 @@
                             <th>Speakers</th>
                             <th>Type</th>
                             <th>Track</th>
+                            <th>Lang</th>
                             <th><i class="icon-thumbs-up"></i> / <i class="icon-thumbs-down"></i></th>
                         </tr>
                     </thead>
@@ -121,6 +122,9 @@
                                     </td>
                                     <td>
                                         <small>@Messages(proposal.track.label)</small>
+                                    </td>
+                                    <td>
+                                        @proposal.lang
                                     </td>
                                     <td>
                                         @if(proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP) {
@@ -190,7 +194,7 @@
                         "aoColumnsDef": [
                             {"bSortable": "false", "bSearchable": "false", "aTargets": 0},
                             {"sType": "numeric", "aTargets": [1, 2, 3, 4]},
-                            {"sType": "string", "aTargets": [5, 6, 7, 8, 9, 10, 11, 12]}
+                            {"sType": "string", "aTargets": [5, 6, 7, 8, 9, 10, 11, 12,13]}
                         ],
                         "stripeClasses": []
                     });
