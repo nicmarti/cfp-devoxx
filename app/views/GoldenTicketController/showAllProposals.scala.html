@@ -40,7 +40,7 @@
                         <br>
 
                     @if(allProposalsForReview.nonEmpty) {
-                        <i class="icon-filter"></i> Filter on
+                        <i class="icon-filter"></i> @Messages("cfpadmin.filterOn")
                         @Track.allIDs.map{idTrack=>
                             <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
                         }
