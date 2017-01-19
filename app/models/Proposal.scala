@@ -162,16 +162,12 @@ case class Proposal(id: String,
   }
 
   lazy val summaryAsHtml: String = {
-    val escapedHtml = HtmlFormat.escape(summary).body
-    // escape HTML code and JS
-    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(summary).trim()) // Then do markdown processing
     processedMarkdownTest
   }
 
   lazy val privateMessageAsHtml: String = {
-    val escapedHtml = HtmlFormat.escape(privateMessage).body
-    // escape HTML code and JS
-    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(privateMessage).trim()) // Then do markdown processing
     processedMarkdownTest
   }
 }

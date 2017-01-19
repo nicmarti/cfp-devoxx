@@ -43,6 +43,9 @@ GET           /cfp/newSpeakerForExistingWebuser                                 
 
 # Email Digests
 POST          /cfp/profile/digest                                               controllers.DigestController.update()
+DELETE        /cfp/profile/digestTrack                                          controllers.DigestController.removeFilter()
+POST          /cfp/profile/digestTrack                                          controllers.DigestController.addFilter()
+GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
 
 # proposal
@@ -102,6 +105,7 @@ POST          /cfpadmin/cfpWebusers/trackLeaders                                
 GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
 
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
+GET           /cfpadmin/allDevoxxians                                           controllers.CFPAdmin.allDevoxxians()
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
@@ -244,6 +248,15 @@ GET           /api/conferences/:eventCode/proposalTypes                         
 GET           /api/conferences/:eventCode/tracks                                controllers.RestAPI.showTracks(eventCode:String)
 
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
+
+# New My Devoxx and PWA REST endpoints
+POST          /api/account/verify                                               controllers.RestAPI.verifyAccount(networkType:String, networkId:String, email:String)
+GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
+DELETE        /api/proposals/:uuid/scheduled/:proposalId                        controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/schedule/:proposalId                         controllers.Favorites.scheduleProposal(uuid:String, proposalId:String)
+GET           /api/proposals/:uuid/favored                                      controllers.Favorites.favoredProposals(uuid:String)
+DELETE        /api/proposals/:uuid/favored/:proposalId                          controllers.Favorites.removeFavoredProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/favor/:proposalId                            controllers.Favorites.favorProposal(uuid:String, proposalId:String)
 
 # API for AngularJS
 GET           /schedulling/slots                                                controllers.SchedullingController.slots(confType:String)

@@ -34,7 +34,9 @@ case class Webuser(uuid: String,
                    firstName: String,
                    lastName: String,
                    password: String,
-                   profile: String) {
+                   profile: String,
+                   networkId: Option[String] = None,
+                   networkType: Option[String] = None) {
 
   val cleanName: String = {
     firstName.capitalize + " " + lastName
@@ -44,7 +46,15 @@ case class Webuser(uuid: String,
 object Webuser {
   implicit val webuserFormat: Format[Webuser] = Json.format[Webuser]
 
-  val Internal = Webuser("internal", ConferenceDescriptor.current().fromEmail, "CFP", "Program Committee", RandomStringUtils.random(64), "visitor")
+  val Internal =
+    Webuser("internal",
+            ConferenceDescriptor.current().fromEmail,
+            "CFP",
+            "Program Committee",
+            RandomStringUtils.random(64),
+            "visitor",
+            None,
+            None)
 
   def gravatarHash(email: String): String = {
     val cleanEmail = email.trim().toLowerCase()
@@ -55,12 +65,43 @@ object Webuser {
     Crypto.sign(StringUtils.abbreviate(email.trim().toLowerCase, 255))
   }
 
-  def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
+  def createSpeaker(email: String,
+                    firstName: String,
+                    lastName: String): Webuser = {
+    Webuser(generateUUID(email),
+            email,
+            firstName,
+            lastName,
+            RandomStringUtils.randomAlphabetic(7),
+            "speaker",
+            None,
+            None)
   }
 
-  def createVisitor(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "visitor")
+  def createVisitor(email: String,
+                    firstName: String,
+                    lastName: String): Webuser = {
+    Webuser(generateUUID(email),
+            email,
+            firstName,
+            lastName,
+            RandomStringUtils.randomAlphabetic(7),
+            "visitor",
+            None,
+            None)
+  }
+
+  def createDevoxxian(email: String,
+                      networkType: String,
+                      networkId: String): Webuser = {
+    Webuser(generateUUID(email),
+            email,
+            "Devoxx",
+            "CFP",
+            RandomStringUtils.randomAlphabetic(7),
+            "devoxxian",
+            Some(networkId),
+            Some(networkType))
   }
 
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
@@ -146,6 +187,13 @@ object Webuser {
       }
   }
 
+  def findUser(email: String, password: String): Boolean = Redis.pool.withClient {
+    client =>
+      val maybeUser = findByEmail(email)
+      maybeUser.exists(_.password == password)
+  }
+
+
   def delete(webuser: Webuser) = Redis.pool.withClient {
     implicit client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
@@ -217,9 +265,9 @@ object Webuser {
       client.sadd("Webuser:cfp", uuid)
   }
 
-  def addToSpeaker(uuid: String) = Redis.pool.withClient {
+  def addToDevoxxians(uuid: String) = Redis.pool.withClient {
     client =>
-      client.sadd("Webuser:speaker", uuid)
+      client.sadd("Webuser:devoxxian", uuid)
   }
 
   def addToGoldenTicket(uuid: String) = Redis.pool.withClient {
@@ -260,6 +308,15 @@ object Webuser {
               None
             }, w => Option(w)
           )
+      }
+  }
+
+  def allDevoxxians(): List[Webuser] = Redis.pool.withClient {
+    client =>
+      val allDevoxxianUUIDs = client.smembers("Webuser:devoxxian").toList
+      client.hmget("Webuser", allDevoxxianUUIDs).flatMap {
+        js: String =>
+          Json.parse(js).asOpt[Webuser]
       }
   }
 

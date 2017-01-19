@@ -326,7 +326,7 @@ class Pool(val underlying: JedisPool) {
     try {
       // Select the active Redis database if it was specified in the configuration
       // Note : you should not change the activeDatabase, unless you do testing
-      activeRedisDatabase.map(jedis.select(_))
+      activeRedisDatabase.map(jedis.select)
 
       body(Dress.up(jedis))
     } finally {

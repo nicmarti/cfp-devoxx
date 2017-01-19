@@ -1,4 +1,5 @@
 @(slots:List[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
 @main("CFP Admin - all declined") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -24,6 +25,8 @@
                 <th>Room</th>
                 <th>Title</th>
                 <th>Speaker(s)</th>
+                <th>Track</th>
+                <th>Event</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +38,8 @@
                   <td>@slot.room.name</td>
                   <td>@slot.proposal.map(_.title)</td>
                   <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
+                  <td>@slot.proposal.map(_.track.id)</td>
+                  <td>@slot.proposal.map(_.talkType.id)</td>
               </tr>
             }
         </tbody>
@@ -55,6 +60,8 @@ $(document).ready(function() {
         { "sType": "string"},
         { "sType": "date"},
         { "sType": "date"},
+        { "sType": "string"},
+        { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"}

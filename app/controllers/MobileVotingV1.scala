@@ -272,7 +272,7 @@ object MobileVotingV1 extends SecureCFPController {
 
     val groupedByNumberOfVotes=ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
     val totalTalksEvaluated = groupedByNumberOfVotes.size
-    val averageNumberOfVotes = groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated
+    val averageNumberOfVotes = if(totalTalksEvaluated>0){ groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated} else { 0 }
 
     // println(groupedByNumberOfVotes.map(_._1).sorted.reverse)
 

@@ -23,6 +23,7 @@
 
 package controllers
 
+import controllers.Favorites.{JSON, Ok}
 import models.Speaker._
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
@@ -108,7 +109,8 @@ object RestAPI extends Controller {
               }
             )
           )
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("conferences").absoluteURL() + ">; rel=\"profile\""))
+          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
+            "Links" -> ("<" + routes.RestAPI.profile("conferences").absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -794,6 +796,37 @@ object RestAPI extends Controller {
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag)
       }
   }
+
+  /**
+    * Verify a user account.
+    * This can also create a new user when the email does not exist!
+    *
+    * @param newNetworkType  the social network type (FACEBOOK, TWITTER, ...)
+    * @param newNetworkId    the network account id
+    * @param email        the user id
+    * @return
+    */
+  def verifyAccount(newNetworkType: String,
+                    newNetworkId: String,
+                    email: String) = UserAgentActionAndAllowOrigin {
+
+    implicit request =>
+      val webuser = Webuser.findByEmail(email)
+      if (webuser.isDefined) {
+
+            // Update users social network credentials
+            val foundUser: Webuser = webuser.get
+            Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+            Ok(foundUser.uuid)
+
+      } else {
+        // User does not exist, lets create
+        val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
+        val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+        Webuser.addToDevoxxians(uuid)
+        Created(uuid)
+      }
+  }
 }
 
 object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.api.http.HeaderNames {
@@ -808,6 +841,7 @@ object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.ap
             case Some(o) => result.withHeaders("Access-Control-Allow-Origin" -> o,
               "Access-Control-Expose-Headers" -> "etag,links",
               "Access-Control-Allow-Credentials" -> "true",
+              "Access-Control-Allow-Headers" -> "Origin, X-Requested-With, Content-Type, Accept",
               "Access-Control-Max-Age" -> "3600")
             case None => result.withHeaders("X-No-Access" -> "no-origin")
           }

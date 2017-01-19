@@ -34,6 +34,7 @@ bio=A short bio
 twitter=Your twitter handle
 email.digest.label=Email Digest
 email.digest.description=Receive new proposals notifications via a digest email.
+email.digest.track=Filter digest on tracks
 email.digest.realtime.description=Interval is every 5 minutes.
 email.digest.daily.description=Expect your daily digest at {0} GMT.
 email.digest.weekly.description=Expect your weekly digest at {0} GMT on {1}.
@@ -175,16 +176,15 @@ appel.conf.dates=Devoxx UK 2017, 11th-12th May
 
 # Tracks
 
-method_archi.label=Methodology & Culture
-archisec.label=Methodology & Culture
-track.method_archi.desc=Software development methodologies, developer culture and related subjects
+method_archi.label=Methodology &amp; Architecture
+track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
 
 java.label=Java Language
 javase.label=Java Language
 track.java.desc=Java Language, Java SE, JDK, performance tuning, modularity, and more.
 
-cloud.label=Cloud, Containers & Infrastructure
-track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices.
+cloud.label=Cloud, Containers &amp; Infrastructure
+track.cloud.desc=Docker, Kubernetes, Vagrant, Cloud, PaaS, best practices etc.
 
 ssj.label=Server Side Java
 serverside.label=Server Side Java
@@ -315,6 +315,7 @@ admin.btn.leaderboard=See Leaderboard
 admin.btn.myvotes=My votes
 admin.btn.sponsortalks=Sponsor''s talks
 admin.btn.speakers=All speakers
+admin.btn.devoxxians=Devoxxians
 admin.btn.speakersInvited=All invited speakers
 admin.btn.draft=All DRAFT
 admin.btn.submitted=All SUBMITTED

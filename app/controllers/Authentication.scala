@@ -26,7 +26,7 @@ import java.math.BigInteger
 import java.security.SecureRandom
 
 import models._
-import notifiers.{Mails, TransactionalEmails}
+import notifiers.TransactionalEmails
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
@@ -234,11 +234,11 @@ object Authentication extends Controller {
       w =>
         Some(
           (w.uuid,
-            w.email,
-            w.firstName,
-            w.lastName,
-            w.password,
-            w.profile)
+           w.email,
+           w.firstName,
+           w.lastName,
+           w.password,
+           w.profile)
         )
     }
   )
@@ -402,7 +402,7 @@ object Authentication extends Controller {
           }
           val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications)
           Speaker.save(newSpeaker)
-          Webuser.addToSpeaker(validWebuser.uuid)
+          Webuser.addToDevoxxians(validWebuser.uuid)
 
           Ok(views.html.Authentication.validateImportedSpeaker(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
         }

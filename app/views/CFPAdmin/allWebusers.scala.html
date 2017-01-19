@@ -33,6 +33,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Digest</th>
+                        <th>Track Filter</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -48,6 +49,13 @@
                         <td>
                         @if(Webuser.isMember(webuser.uuid, "cfp")) {
                             @Digest.retrieve(webuser.uuid)
+                        }else {
+                            N/A
+                        }
+                        </td>
+                        <td>
+                        @if(Webuser.isMember(webuser.uuid, "cfp")) {
+                            @Digest.getTrackFilters(webuser.uuid).mkString(", ")
                         }else {
                             N/A
                         }

@@ -144,9 +144,15 @@ object GoldenTicket {
   }
 
   private def createWebuser(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(Webuser.generateUUID(email.toLowerCase.trim), email.toLowerCase.trim, firstName, lastName, RandomStringUtils.randomAlphabetic(8), "gticket")
+    Webuser(Webuser.generateUUID(email.toLowerCase.trim),
+            email.toLowerCase.trim,
+            firstName,
+            lastName,
+            RandomStringUtils.randomAlphabetic(8),
+            "gticket",
+            Some(""),
+            Some(""))
   }
-
 }
 
 // Used for bulk import only
