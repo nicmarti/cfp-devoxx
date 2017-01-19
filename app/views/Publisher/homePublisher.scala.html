@@ -35,26 +35,36 @@
                 <!-- ******************************************************************* //-->
             <tr>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("lab", "thursday", "Hands-on labs")
+                @tags.publisher.renderShowDay("conf", "thursday", "Conference Schedule")
                 </td>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("lab", "friday", "Hands-on labs")
+                @tags.publisher.renderShowDay("conf", "friday", "Conference Schedule")
+                </td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack Schedule")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "friday", "Hack Schedule")</td>
+            </tr>
+            <tr>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")</td>
+            </tr>
+            <!-- ******************************************************************* //-->
+            <tr>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "thursday", "Quickies Schedule")
+                </td>
+                <td class="scheduleRow">
+                @tags.publisher.renderShowDay("quick", "friday", "Quickies Schedule")
                 </td>
             </tr>
             <!-- ******************************************************************* //-->
             <tr>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("bof", "thursday", "BOFs")
-                </td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("quick", "thursday", "Quickie Sessions")
+                @tags.publisher.renderShowDay("bof", "thursday", "BOFs Schedule")
                 </td>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("quick", "friday", "Quickie Sessions")
+                @tags.publisher.renderShowDay("bof", "friday", "BOFs Schedule")
                 </td>
             </tr>
             <!-- ******************************************************************* //-->
@@ -73,10 +83,10 @@
             </tr>
             <tr>
                 <td class="scheduleRow">
-                    <a href="@routes.Publisher.showByDay("thu")">Full Day</a>
+                    <a href="@routes.Publisher.showByDay("thu")">Full day view</a>
                 </td>
                 <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
+                    <a href="@routes.Publisher.showByDay("fri")">Full day view</a>
                 </td>
             </tr>
             <tr>
@@ -89,7 +99,11 @@
 
 
     <!-- ******************************************************************* //-->
-<div class="large-3 columns">
+
+<div class="large-6 columns">
+<h3>The Devoxxians</h3>
+<p>We're welcoming rock star speakers from around the globe, see the full list <a href="/2017/speakers.html">here</a>.</p>
+
 <h3>Hack</h3>
 <p>A tradition at Devoxx UK, Thursday night houses a dedicated 3 hour Hack event. Participants split into groups of 3 or 4 people and use devices and software to build innovative and fun projects. Experts are on hand to help and we round off the Hack with a presentation of each project, but awarding prizes for the most innovative.</p>
 </div>
