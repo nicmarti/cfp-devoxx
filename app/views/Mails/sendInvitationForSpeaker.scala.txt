@@ -18,5 +18,5 @@ If you are interested and you would like to propose a talk for @Messages("CONF.t
   Please, visit this URL : @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.Wishlist.speakerDeclineRequest(requestId)
 
 Thanks,
-The Devoxx UK team.
+The @Messages("shortName") team.
 
