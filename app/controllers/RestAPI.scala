@@ -801,6 +801,7 @@ object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.ap
             case Some(o) => result.withHeaders("Access-Control-Allow-Origin" -> o,
               "Access-Control-Expose-Headers" -> "etag,links",
               "Access-Control-Allow-Credentials" -> "true",
+              "Access-Control-Allow-Headers" -> "Origin, X-Requested-With, Content-Type, Accept",
               "Access-Control-Max-Age" -> "3600")
             case None => result.withHeaders("X-No-Access" -> "no-origin")
           }
