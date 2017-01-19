@@ -43,12 +43,12 @@
             <a href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Proposals by Company</a>
             <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-warning btn-sm"><i class="icon-ticket"></i> Approved by Company</a>
 
-            <h4><i class="icon-ticket"></i> Golden Tickets</h4>
-            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All Golden Tickets</a>
-            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> Create a Golden Ticket</a>
-            <a href="@routes.GoldenTicketAdminController.newGroupOfGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-cloud-download"></i> Import/create Golden Tickets</a>
-            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-success"><i class="icon-star"></i> Golden Ticket Votes</a>
-            <!-- <a href="@routes.GoldenTicketAdminController.repairStatsAfterGTArchivingAction()" class="btn btn-sm btn-success"><i class="icon-warning"></i> Repair Stats after Golden Tickets archiving action (dangerous)</a> -->
+            <h4><i class="icon-ticket"></i> @Messages("cfp.goldenTickets")</h4>
+            <a href="@routes.GoldenTicketAdminController.showAll()" class="btn btn-primary btn-sm"><i class="icon-ticket"></i> All @Messages("cfp.goldenTickets")</a>
+            <a href="@routes.GoldenTicketAdminController.newGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-plus"></i> Create a @Messages("cfp.goldenTicket")</a>
+            <a href="@routes.GoldenTicketAdminController.newGroupOfGoldenTicket()" class="btn btn-sm btn-primary"><i class="icon-cloud-download"></i> Import/create @Messages("cfp.goldenTickets")</a>
+            <a href="@routes.GoldenTicketAdminController.showGoldenTicketVotes()" class="btn btn-sm btn-success"><i class="icon-star"></i> @Messages("cfp.goldenTicket") Votes</a>
+            <!-- <a href="@routes.GoldenTicketAdminController.repairStatsAfterGTArchivingAction()" class="btn btn-sm btn-success"><i class="icon-warning"></i> Repair Stats after @Messages("cfp.goldenTicket") archiving action (dangerous)</a> -->
 
             <h4><i class="icon-calendar"></i> Planner</h4>
             <a href="/assets/angular/index.html" class="btn btn-success btn-sm"><i class="icon-adjust"></i> Angular Schedule application</a>

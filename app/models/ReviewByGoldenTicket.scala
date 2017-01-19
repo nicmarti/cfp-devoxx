@@ -26,6 +26,7 @@ package models
 import library.{ComputeVotesAndScore, Redis, Stats, ZapActor}
 import models.Review._
 import org.joda.time.{DateTime, Instant}
+import play.api.i18n.Messages
 
 import scala.collection.immutable.Set
 import scala.math.BigDecimal.RoundingMode
@@ -126,7 +127,7 @@ object ReviewByGoldenTicket {
       tx.del(s"ReviewGT:Dates:$proposalId")
       tx.exec()
 
-      play.Logger.info(s"Golden ticket review details for proposal $proposalId has been deleted, the proposal had $votesOnThisProposal vote(s) before deletion.")
+      play.Logger.info(s"${Messages("cfp.goldenTicket")} review details for proposal $proposalId has been deleted, the proposal had $votesOnThisProposal vote(s) before deletion.")
   }
 
   val ReviewerAndVote = "(\\w+)__(\\d+)".r
@@ -352,7 +353,7 @@ object ReviewByGoldenTicket {
         """.stripMargin
 
       val sha1script = client.scriptLoad(script)
-      play.Logger.of("models.ReviewByGoldenTicket").info("Uploaded LUA script for Golden ticket to Redis " + sha1script)
+      play.Logger.of("models.ReviewByGoldenTicket").info(s"Uploaded LUA script for ${Messages("cfp.goldenTicket")} to Redis " + sha1script)
       sha1script
   }
 

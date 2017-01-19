@@ -799,7 +799,8 @@ gt.admin.sp.privateMessage=Private message for the program committee
 
 speaker.notfound=Speaker not found, please sign-up and create a speaker profile. A Golden ticket profile is not valid, you must create a separate profile.
 callforpaper.gt.create.profile=You have a Golden ticket profile, but not a Speaker profile. Please complete your profile to proceed.
-cfp.goldenTicket=Golden tickets
+cfp.goldenTicket=Golden ticket
+cfp.goldenTickets=Golden tickets
 cfp.gt.enter=Authenticate
 cfp.gt.infos=More details about Golden tickets (in French)
 callforpaper.import.profile=Speaker profile not found, please complete your profile.

@@ -29,7 +29,7 @@
                 </div>
                 @if(allMyVotes.nonEmpty){
                     <div class="col-md-12 col-lg-12">
-                        <h3><i class="icon-bar-chart"></i> Proposals of type @Messages(talkType) for which you voted</h3>
+                        <h3><i class="icon-bar-chart"></i> @Messages("gt.myvotes", Messages(talkType)) for which you voted</h3>
                         <table id="tableMyVotes" class="table table-bordered">
                             <thead>
                                 <tr>

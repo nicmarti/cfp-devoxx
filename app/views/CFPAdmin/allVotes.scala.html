@@ -13,7 +13,7 @@
                     <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label + ".simple")</a>
                 }
                 <br>
-                <i class="icon-filter"></i> Show only:
+                <i class="icon-filter"></i> @Messages("search.showOnly"):
                 @Track.allIDs.map { idTrack =>
                     <a href="@routes.CFPAdmin.allVotes(confType, Some(idTrack))" class="btn btn-default btn-sm">@idTrack
                         - @confType</a>

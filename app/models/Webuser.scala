@@ -26,6 +26,7 @@ package models
 import library.Redis
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
+import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.{Format, Json}
 
@@ -279,7 +280,7 @@ object Webuser {
     client =>
       client.srem("Webuser:gticket", uuid)
 
-    play.Logger.info(s"Golden Ticket reviewer $uuid has been deleted from the Golden ticket reviewers list.")
+    play.Logger.info(s"${Messages("cfp.goldenTicket")} reviewer $uuid has been deleted from the ${Messages("cfp.goldenTicket")} reviewers list.")
   }
 
   def noBackofficeAdmin() = Redis.pool.withClient {
