@@ -2,7 +2,7 @@
 
 Dear @firstName
 
-Welcome to @Messages("longName") (Call For Papers)
+Welcome to @Messages("longName") (@Messages("CallForPapers"))
 
 As a convenience to you, we have created an account for you on @Messages("longName"). This account will enable to you access your profile and your submissions.
 To access your @Messages("longName") speaker dashboard, please click in the link below.
