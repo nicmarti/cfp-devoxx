@@ -112,10 +112,7 @@ object Favorites extends UserCFPController {
 
       val scheduledProposals = ScheduleTalk.allForUser(uuid)
 
-      if (scheduledProposals.isEmpty) {
-        Ok("[]")  // Returning empty array, on request by client mobile app :)
-      } else {
-        val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
         val toReturn = scheduledProposals.map {
           proposalId =>
             Json.toJson {
@@ -139,7 +136,6 @@ object Favorites extends UserCFPController {
             "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
         }
       }
-    }
   }
 
   /**
@@ -188,32 +184,28 @@ object Favorites extends UserCFPController {
 
       val favoriteProposals = FavoriteTalk.allForUser(uuid)
 
-      if (favoriteProposals.isEmpty) {
-        Ok("[]")  // Returning empty array, on request by client mobile app :)
-      } else {
-        val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
-        val toReturn = favoriteProposals.map {
-          proposalId =>
-            Json.toJson {
-              Map(
-                "id" -> Json.toJson(proposalId)
-              )
-            }
-        }
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val toReturn = favoriteProposals.map {
+        proposal =>
+          Json.toJson {
+            Map(
+              "id" -> Json.toJson(proposal.id)
+            )
+          }
+      }
 
-        val jsonObject = Json.toJson(
-          Map(
-            "favored" -> Json.toJson(toReturn)
-          )
+      val jsonObject = Json.toJson(
+        Map(
+          "favored" -> Json.toJson(toReturn)
         )
+      )
 
-        val eTag = toReturn.hashCode().toString
+      val eTag = toReturn.hashCode().toString
 
-        ifNoneMatch match {
-          case Some(someEtag) if someEtag == eTag => NotModified
-          case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
-            "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
-        }
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == eTag => NotModified
+        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
+          "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
       }
     }
   }
