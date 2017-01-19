@@ -1,37 +1,37 @@
 @(companiesAndProposals:List[(String,scala.collection.immutable.Set[Proposal])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Speakers") {
-  <div class="row">
-    <div class="col-lg-offset-4 col-md-4">
-      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
-    </div>
-    <div class="clearfix"></div>
-
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3>All proposals grouped by Company</h3>
-            <span class="label label-info">@companiesAndProposals.size companies</span>
-            <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
+    <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
         </div>
-        <div class="panel-body">
-            @companiesAndProposals.map {case (company, props) =>
-            <h3>@company.capitalize </h3>
-                <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
-                <br>
-                <label class="label label-danger">@props.map(p=>p.allSpeakers.map(_.uuid)).toSet.size speaker(s)</label>
-                <br>
+        <div class="clearfix"></div>
 
-                @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
-                    @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") -
-                    <span class="label @Messages("label-" + proposal.state.code)">@Messages(proposal.state.code)</span>
-                    <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>All proposals grouped by Company</h3>
+                    <span class="label label-info">@companiesAndProposals.size companies</span>
+                    <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
+                </div>
+                <div class="panel-body">
+                @companiesAndProposals.map {case (company, props) =>
+                <h3>@company.capitalize @props.size talk(s)</h3>
+                    <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
                     <br>
-                }
-            }
+                    <label class="label label-danger">@props.map(p=>p.allSpeakers.map(_.uuid)).toSet.size speaker(s)</label>
+                    <br>
 
+                    @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
+                        @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") -
+                        <span class="label @Messages("label-" + proposal.state.code)">@Messages(proposal.state.code)</span>
+                        <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A>
+                        <br>
+                    }
+                }
+
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 }
