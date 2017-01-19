@@ -1,9 +1,9 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxUK2017("Schedule",Some("Devoxx UK 2017 agenda")){
+@views.html.Publisher.devoxxUK2017("Schedule",Some(Messages("CONF.title") + " agenda")){
 
 <div class="large-12 columns">
-<h2>Devoxx UK 2017 Schedule</h2>
+<h2>@Messages("CONF.title") Schedule</h2>
 </div>
 
     <div class="large-3 columns">

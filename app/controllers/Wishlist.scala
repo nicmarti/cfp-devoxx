@@ -25,6 +25,7 @@ package controllers
 
 import models.{RequestToTalk, Webuser}
 import library.{EditRequestToTalk, NotifySpeakerRequestToTalk, ZapActor}
+import play.api.i18n.Messages
 import play.api.mvc.Action
 import views.html
 
@@ -103,7 +104,7 @@ object Wishlist extends SecureCFPController {
   def speakerApproveRequest(requestId: String) = Action {
     implicit request =>
       RequestToTalk.speakerApproved(requestId)
-      Redirect(routes.Application.home()).flashing("success" -> "Request accepted. Welcome to Devoxx UK 2017! Please, create a speaker account :")
+      Redirect(routes.Application.home()).flashing("success" -> s"Request accepted. Welcome to ${Messages("CONF.title")}! Please, create a speaker account :")
   }
 
   def speakerDeclineRequest(requestId: String) = Action {

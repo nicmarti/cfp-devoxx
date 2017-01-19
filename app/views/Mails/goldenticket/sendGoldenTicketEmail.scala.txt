@@ -9,7 +9,7 @@
 
 Dear @webuser.firstName
 
-Congratulations! By purchasing a Blind Bird ticket for Devoxx UK 2017 you can now help to shape the program.
+Congratulations! By purchasing a Blind Bird ticket for @Messages("CONF.title") you can now help to shape the program.
 
 Community and crowd-sourced content is already a core strand of the Devoxx DNA. With the Community Review Panel initiative you are given special access to our database where you can rate any or, for the brave, all talks proposed during the Call for Papers period.
 
