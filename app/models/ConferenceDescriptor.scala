@@ -4,6 +4,7 @@ import java.util.Locale
 
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
+import play.api.i18n.Messages
 
 /**
   * ConferenceDescriptor.
@@ -646,7 +647,7 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "11th-12th May",
+      datesI18nKey = Messages("conference.dates"),
       speakersPassDuration = 2,
       preferredDayEnabled = true,
       firstDayFr = "11 mai",
@@ -683,7 +684,7 @@ object ConferenceDescriptor {
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.co.uk")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "11th-12th May",
+      datesI18nKey = Messages("conference.dates"),
       speakersPassDuration = 2,
       preferredDayEnabled = true,
       firstDayFr = "11 mai",

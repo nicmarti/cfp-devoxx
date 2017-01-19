@@ -1,9 +1,9 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxUK2017("Schedule",Some("Devoxx UK 2017 agenda")){
+@views.html.Publisher.devoxxUK2017("Schedule",Some(Messages("CONF.title") + " agenda")){
 
 <div class="large-12 columns">
-<h2>Devoxx UK 2017 Schedule</h2>
+<h2>@Messages("CONF.title") Schedule</h2>
 </div>
 
     <div class="large-3 columns">
@@ -105,7 +105,7 @@
 <p>We're welcoming rock star speakers from around the globe, see the full list <a href="/2017/speakers.html">here</a>.</p>
 
 <h3>Hack</h3>
-<p>A tradition at Devoxx UK, Thursday night houses a dedicated 3 hour Hack event. Participants split into groups of 3 or 4 people and use devices and software to build innovative and fun projects. Experts are on hand to help and we round off the Hack with a presentation of each project, but awarding prizes for the most innovative.</p>
+<p>A tradition at @Messages("shortName"), Thursday night houses a dedicated 3 hour Hack event. Participants split into groups of 3 or 4 people and use devices and software to build innovative and fun projects. Experts are on hand to help and we round off the Hack with a presentation of each project, but awarding prizes for the most innovative.</p>
 </div>
 
 <div class="large-3 columns">

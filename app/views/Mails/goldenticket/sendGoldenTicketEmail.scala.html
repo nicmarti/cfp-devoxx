@@ -5,7 +5,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width�vice-width. initial-scale=1.0">
-        <title>golden ticket @Messages("shortYearlyName")</title>
+        <title>@Messages("cfp.goldenTicket") @Messages("shortYearlyName")</title>
 
     <style type="text/css">
 body.#bodyTable.#bodyCell{
@@ -475,12 +475,12 @@ display:block !important;
 
                         <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%;text-align: left;">
 
-                            <h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 40px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -1px;text-align: left;color: #606060 !important;">Golden Ticket #@gt.ticketId</h1>
+                            <h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 40px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -1px;text-align: left;color: #606060 !important;">@Messages("cfp.goldenTicket") #@gt.ticketId</h1>
 
 <p>Dear @webuser.firstName</p>
 
-<p>Congratulations! By purchasing a Blind Bird ticket for Devoxx UK 2017 you can now help to shape the program.</p>
-<p>Community and crowd-sourced content is already a core strand of the Devoxx DNA. With the Community Review Panel initiative you are given special access to our database where you can rate any or, for the brave, all talks proposed during the Call for Papers period.</p>
+<p>Congratulations! By purchasing a Blind Bird ticket for @Messages("CONF.title") you can now help to shape the program.</p>
+<p>Community and crowd-sourced content is already a core strand of the Devoxx DNA. With the Community Review Panel initiative you are given special access to our database where you can rate any or, for the brave, all talks proposed during the @Messages("CallForPapers") period.</p>
 
 <p>Your ratings will then be used by the crack team we’ve assembled for the programme committee to help shape the final schedule for the conference in May.</p>
 
@@ -488,13 +488,13 @@ display:block !important;
 
 <p>To access the ratings tool, go to the authenticate page <a href="http://cfp.devoxx.co.uk@routes.GoldenTicketController.authenticate()">the authenticate page</a> and use the email address we've sent this to and your unique access code : <strong>@webuser.password</strong>
 
-<p>Our short how-to video here: <a href="https://www.youtube.com/watch?v=vYHv4ZNG3TY">how to rate on the Devoxx UK CFP</a> should give you all the info you need to get started.</p>
+<p>Our short how-to video here: <a href="https://www.youtube.com/watch?v=vYHv4ZNG3TY">how to rate on the @Messages("shortName") CFP</a> should give you all the info you need to get started.</p>
 
 <p>This is your conference and we hope you’ll help us shape it.</p>
 
 <p></p>
 <p>Happy rating,</p>
-<p>The Devoxx UK Team</p>
+<p>The @Messages("shortName") Team</p>
                         </td>
                     </tr>
                 </tbody></table>
@@ -538,7 +538,7 @@ display:block !important;
                             <table border="0" cellpadding="0" cellspacing="0" id="canspamBar">
                                 <tr>
                                     <td align="center" valign="top" style="color:#606060; font-family:Helvetica. Arial. sans-serif; font-size:11px; line-height:150%; padding-right:20px; padding-bottom:5px; padding-left:20px; text-align:center;">
-                                        This email was sent by <a href="https://@ConferenceDescriptor.current().conferenceUrls.cfpURL()">Devoxx UK CFP web site</a>.
+                                        This email was sent by <a href="https://@ConferenceDescriptor.current().conferenceUrls.cfpURL()">@Messages("shortName") CFP web site</a>.
                                         <br />
                                             @Messages("shortYearlyName")
                                         <br />

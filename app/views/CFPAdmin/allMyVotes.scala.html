@@ -12,14 +12,14 @@
                 <div class="col-md-12">
                     <h3><i class="icon-beaker"></i> Your personal leaderboard</h3>
                     @if(allMyVotes.nonEmpty){
-                        You have voted for @allMyVotes.filter(_._2.isDefined).size talks<br>
+                        @Messages("gt.youVoted", allMyVotes.filter(_._2.isDefined).size)<br>
                         @defining(allMyVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
-                            Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br/><br/>
+                            @Messages("svp.standardDev") for your vote is @library.Stats.standardDeviation(allScores)<br/><br/>
                         }
                     }else{
-                        You haven't voted for any proposal so far. <br/><br/>
+                        @Messages("gt.noVotes") <br/><br/>
                     }
 
                     @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
@@ -29,12 +29,12 @@
                 </div>
                 @if(allMyVotes.nonEmpty){
                     <div class="col-md-12 col-lg-12">
-                        <h3><i class="icon-bar-chart"></i> Proposals of type @Messages(talkType) for which you voted</h3>
+                        <h3><i class="icon-bar-chart"></i> @Messages("gt.myvotes", Messages(talkType)) for which you voted</h3>
                         <table id="tableMyVotes" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>You voted</th>
-                                    <th>Current score</th>
+                                    <th>@Messages("svp.score")</th>
                                     <th>Id</th>
                                     <th>Title</th>
                                     <th>Track</th>

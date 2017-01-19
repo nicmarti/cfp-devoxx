@@ -1,12 +1,12 @@
 @(allVotes: List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))], totalGoldenTicket: Long)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-    @main("Golden ticket - Stats") {
+    @main(s"${Messages("cfp.goldenTicket")} - Stats") {
 
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h1><i class="icon-bar-chart"></i> Golden ticket stats</h1>
+                        <h1><i class="icon-bar-chart"></i> @Messages("cfp.goldenTicket") stats</h1>
                     </div>
 
                     <div class="panel-body">

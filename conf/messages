@@ -33,6 +33,7 @@ company=Your company
 bio=A short bio
 twitter=Your twitter handle
 email.digest.label=Email Digest
+email.digests.label=Email Digests
 email.digest.description=Receive new proposals notifications via a digest email.
 email.digest.track=Filter digest on tracks
 email.digest.realtime.description=Interval is every 5 minutes.
@@ -695,8 +696,7 @@ tag.proposal.title=Title
 tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
-
-
+        
 speaker.mustAcceptTC=You must accept Terms and Conditions
 speaker.ar1=Please click
 speaker.ar2=here
@@ -741,7 +741,7 @@ mail.goldenticket.subject=Golden Ticket for {0}
 error.loginRequired=Access restricted, please authenticate.
 
 userGroup=Show my proposal to Golden Ticket holder?
-userGroup.checkbox= Yes, I would like my proposal to be reviewed by Attendees with a Golden Ticket
+userGroup.checkbox=Yes, I would like my proposal to be reviewed by Attendees with a Golden Ticket
 
 goldenTicket.help.title=Golden Ticket review
 goldenTicket.help.txt=A new feature of {0} is the introduction of a Community Advisory Panel comprised of people who have bought a ticket during the CFP window. If you agree, they will be able to review and rate your proposals. The Program Committee will also review and rate proposals, and the 2 sets of ratings will be used to determine what make it onto the final agenda.
@@ -773,7 +773,7 @@ gt.nextTalk=Continue and evaluate next talk
 gt.nextTalkType=Continue and evaluate another {0}
 gt.nextTalkTrack=Continue and evaluate next talk for track {0}
 
-gtAdmin.totalGT=Total number of person with a Golden Ticket: {0}
+gtAdmin.totalGT=Total number of persons with a Golden Ticket: {0}
 gtAdmin.top5=Top 5 by score
 gtAdmin.topWorst=Last 5 by score
 gtAdmin.average=Average score given my Golden ticket is {0}
@@ -798,7 +798,8 @@ gt.admin.sp.privateMessage=Private message for the program committee
 
 speaker.notfound=Speaker not found, please sign-up and create a speaker profile. A Golden ticket profile is not valid, you must create a separate profile.
 callforpaper.gt.create.profile=You have a Golden ticket profile, but not a Speaker profile. Please complete your profile to proceed.
-cfp.goldenTicket=Golden tickets
+cfp.goldenTicket=Golden ticket
+cfp.goldenTickets=Golden tickets
 cfp.gt.enter=Authenticate
 cfp.gt.infos=More details about Golden tickets (in French)
 callforpaper.import.profile=Speaker profile not found, please complete your profile.

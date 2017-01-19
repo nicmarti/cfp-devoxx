@@ -36,6 +36,7 @@ import models._
 import notifiers.Mails
 import org.apache.commons.lang3.StringUtils
 import play.api.Play
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
@@ -268,14 +269,14 @@ class ZapActor extends Actor {
   }
 
   def doNotifyGoldenTicket(gt:GoldenTicket):Unit={
-    play.Logger.debug(s"Notify golden ticket ${gt.ticketId} ${gt.webuserUUID}")
+    play.Logger.debug(s"Notify ${Messages("cfp.goldenTicket")} ${gt.ticketId} ${gt.webuserUUID}")
 
     Webuser.findByUUID(gt.webuserUUID).map {
       invitedWebuser: Webuser =>
-         Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New golden ticket for user ${invitedWebuser.cleanName}"))
+         Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New ${Messages("cfp.goldenTicket")} for user ${invitedWebuser.cleanName}"))
         Mails.sendGoldenTicketEmail(invitedWebuser,gt)
     }.getOrElse {
-      play.Logger.error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
+      play.Logger.error(s"${Messages("cfp.goldenTicket")} error : user not found with uuid ${gt.webuserUUID}")
     }
   }
 

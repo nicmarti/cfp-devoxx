@@ -26,6 +26,7 @@ package controllers
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 
 import scala.concurrent.Future
 
@@ -118,7 +119,7 @@ object Attic extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       GoldenTicket.attic()
       ReviewByGoldenTicket.attic()
-      Redirect(routes.Attic.atticHome()).flashing(("success", "Golden Tickets deleted"))
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"${Messages("cfp.goldenTickets")} deleted"))
   }
 
   def deleteWishlist()= SecuredAction(IsMemberOf("admin")) {

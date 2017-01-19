@@ -17,8 +17,8 @@
 
                         <table class="table table-bordered">
                             <thead>
-                                <tr><th>Total votes :</th> <td>@ratings.size</td></tr>
-                                <tr><th>Average score :</th> <td>@library.Stats.average(ratings.flatMap(_.details.map(_.rating.toDouble)))</td></tr>
+                                <tr><th>@Messages("svp.votes") :</th> <td>@ratings.size</td></tr>
+                                <tr><th>@Messages("svp.average") :</th> <td>@library.Stats.average(ratings.flatMap(_.details.map(_.rating.toDouble)))</td></tr>
                             </thead>
                         @ratings.groupBy(_.talkId).map { case (talkId, groupedRatings) =>
 
@@ -38,7 +38,7 @@
                                         }
                                     </tr>
                                   <tr>
-                                      <th>Average score :</th>
+                                      <th>@Messages("svp.average") :</th>
                                       <td class="alert alert-danger">@library.Stats.average(groupedRatings.flatMap(_.details.map(_.rating.toDouble))) for @groupedRatings.size vote(s)</td>
                                   </tr>
 
