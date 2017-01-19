@@ -33,6 +33,7 @@ company=Your company
 bio=A short bio
 twitter=Your twitter handle
 email.digest.label=Email Digest
+email.digests.label=Email Digests
 email.digest.description=Receive new proposals notifications via a digest email.
 email.digest.track=Filter digest on tracks
 email.digest.realtime.description=Interval is every 5 minutes.
