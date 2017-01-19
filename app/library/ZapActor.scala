@@ -367,7 +367,7 @@ class ZapActor extends Actor {
         // Mail digest to users who have no track filter set
         if (noTrackDigestUsersIDs.nonEmpty) {
 
-          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, CFPAdmin.getLeaderBoardParams)
+          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
         }
 
         // Handle the digest users that have a track filter
@@ -381,7 +381,7 @@ class ZapActor extends Actor {
 
           // If proposals exist, then mail digest to user
           if (trackFilterProposals.nonEmpty) {
-            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, CFPAdmin.getLeaderBoardParams)
+            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, LeaderboardController.getLeaderBoardParams)
           }
         }
 
