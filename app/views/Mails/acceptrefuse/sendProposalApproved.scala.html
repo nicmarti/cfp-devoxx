@@ -30,7 +30,7 @@
 <p>You must now validate or decline the general terms and conditions, and confirm that you are still ok to do this presentation :</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
 <br>
-@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
+@if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
     <p>As an accepted speaker a conference pass will be provided to you.</p>
 }
 <br>
