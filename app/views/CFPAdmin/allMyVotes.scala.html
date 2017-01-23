@@ -13,7 +13,7 @@
                     <h3><i class="icon-beaker"></i> Your personal leaderboard</h3>
                     @if(allMyVotes.nonEmpty){
                         @Messages("gt.youVoted", allMyVotes.filter(_._2.isDefined).size)<br>
-                        @defining(allMyVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
+                        @defining(allMyVotes.filter(_._2.isDefined).map(_._2.get)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
                             @Messages("svp.standardDev") for your vote is @library.Stats.standardDeviation(allScores)<br/><br/>

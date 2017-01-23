@@ -335,6 +335,7 @@ object Review {
         """
           |local proposals = redis.call("KEYS", "Proposals:Votes:*")
           |redis.call("DEL", "Computed:Reviewer:Total")
+          |redis.call("DEL", "Computed:Reviewer:NbTalkVoted")
           |redis.call("DEL", "Computed:Reviewer:ReviewedOne")
           |redis.call("DEL", "Computed:Scores")
           |redis.call("DEL", "Computed:Voters")
@@ -361,6 +362,7 @@ object Review {
           |    redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
           |    redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
           |    redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
+          |    redis.call("HINCRBY", "Computed:Reviewer:NbTalkVoted", uuidAndScores[j], 1)
           |    redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
           |  end
           |
@@ -424,6 +426,8 @@ object Review {
       }
   }
 
+  // Warning : this returns also the vote with Abstention
+  // It cannot be used to compute "generous one" for instance.
   def allReviewersAndStats(): List[(String, Int, Int)] = Redis.pool.withClient {
     client =>
       // Remove reviewer that are not any longer part of CFP
@@ -431,11 +435,7 @@ object Review {
 
       val allVoted = client.hgetAll("Computed:Reviewer:Total").filter(uuidAndPoints => validReviewers.contains(uuidAndPoints._1)).map {
         case ( uuid: String,totalPoints: String) =>
-          val nbrOfTalksReviewed = client.sdiff(s"Proposals:Reviewed:ByAuthor:$uuid",
-            "Proposals:ByState:" + ProposalState.DELETED.code,
-            "Proposals:ByState:" + ProposalState.ARCHIVED.code,
-            "Proposals:ByState:" + ProposalState.UNKNOWN.code,
-            "Proposals:ByState:" + ProposalState.DRAFT.code).size
+          val nbrOfTalksReviewed = client.hget("Computed:Reviewer:NbTalkVoted",uuid).map(_.toInt).getOrElse(0)
           (uuid, totalPoints.toInt, nbrOfTalksReviewed)
       }
 
