@@ -3,6 +3,9 @@
     background-color: #211c1b;
     color: white;
 }
+th.scheduleHeader {
+    color: white;
+}
 
 .scheduleRow {
     background-color: #f5f5f5;
@@ -31,6 +34,13 @@
     background-color: black;
     color: white;
 }
+.scheduleRight {
+    text-align: center;
+    font-size: 23px;
+    font-weight: bold;
+    width: 150px;
+}
+
 .agendaTable {
     border: 1px solid #ffd297;
 }
