@@ -13,7 +13,7 @@
                     <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
                     @if(allMyVotes.nonEmpty){
                         You have voted for @allMyVotes.filter(_._2.isDefined).size talks<br>
-                        @defining(allMyVotes.filter(_._2.isDefined).toList.map(_._2.get)){ allScores =>
+                        @defining(allMyVotes.filter(_._2.isDefined).map(_._2.get)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
                             Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br>
