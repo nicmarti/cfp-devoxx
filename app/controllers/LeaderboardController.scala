@@ -106,7 +106,7 @@ object LeaderboardController extends SecureCFPController {
 
   def allReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.LeaderboardController.allReviewersAndStatsAsChart(Review.allReviewersAndStats(), isHTTPS=play.Play.application().isProd))
+      Ok(views.html.LeaderboardController.allReviewersAndStatsAsChart(isHTTPS=play.Play.application().isProd))
   }
 
   def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
