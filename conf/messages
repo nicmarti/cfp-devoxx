@@ -894,3 +894,6 @@ wl_unknown=Unknown
 
 cfp.filter.on=Filter on :
 cfp.filter.off=Remove filter
+
+cfpadmin.totalReviewed={0} reviewed
+cfpadmin.totalVoted={0} voted

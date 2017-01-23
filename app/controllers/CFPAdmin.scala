@@ -14,7 +14,6 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Cookie, DiscardingCookie}
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -59,10 +58,10 @@ object CFPAdmin extends SecureCFPController {
       val orderer = proposalOrder(ascdesc)
       val allNotReviewed = Review.allProposalsNotReviewed(uuid)
 
-      val trackCookie = request.cookies.get("track")
-      val maybeTrackValue: Option[String] = track.orElse(trackCookie.map(_.value))
+      val totalReviewed=Review.totalNumberOfReviewedProposals(uuid)
+      val totalVoted = Review.totalProposalsVotedForUser(uuid)
 
-      val maybeFilteredProposals = maybeTrackValue.map {
+      val maybeFilteredProposals = track.map {
         trackValue: String =>
           allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
       }.getOrElse(allNotReviewed)
@@ -72,15 +71,13 @@ object CFPAdmin extends SecureCFPController {
 
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
-      maybeTrackValue.map {
-        trackValue =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, maybeTrackValue))
+      track.map {
+        trackValue: String =>
+          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted))
             .withHeaders("ETag" -> etag)
-            .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
       }.getOrElse {
-        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None))
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted))
           .withHeaders("ETag" -> etag)
-          .discardingCookies(DiscardingCookie("track"))
       }
 
   }

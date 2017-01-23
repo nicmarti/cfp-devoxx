@@ -4,7 +4,10 @@
  page:Int,
  sort:Option[String],
  ascdesc:Option[String],
- track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+ track:Option[String],
+ totalReviewed:Long,
+ totalVoted:Option[Int]
+)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
     <div class="row">
@@ -43,7 +46,9 @@
 
                 <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small></h3>
+                            <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small>
+                            </h3>
+                            @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0))
                         </div>
                     </div>
 

@@ -454,4 +454,16 @@ object Review {
         "Proposals:ByState:" + ProposalState.ARCHIVED.code,
         "Proposals:ByState:" + ProposalState.DRAFT.code)
   }
+
+  // Return the current number of Proposal for which the specified UUID voted between 1 to 10
+  // This does not return the abstention votes.
+  def totalProposalsVotedForUser(uuid:String):Option[Int]=Redis.pool.withClient{
+    client=>
+      client.hget("Computed:Reviewer:NbTalkVoted",uuid).map(_.toInt)
+  }
+
+  def totalNumberOfReviewedProposals(uuid:String):Long=Redis.pool.withClient{
+    client=>
+      client.scard(s"Proposals:Reviewed:ByAuthor:$uuid")
+  }
 }

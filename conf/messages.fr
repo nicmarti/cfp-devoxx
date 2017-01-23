@@ -774,3 +774,5 @@ admin.cfp.empty.track=Il n''y a pas de nouvelles propositions de sujets dans la 
 cfp.filter.on=Filtrer par Track :
 cfp.filter.off=Pas de filtre
 
+cfpadmin.totalReviewed={0} revus
+cfpadmin.totalVoted={0} votés
