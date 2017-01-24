@@ -54,7 +54,7 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                            @proposals.map(_._2).groupBy(_.talkType).map(s=> ( s._2.size, Messages(s._1.id)))
+                            @proposals.values.groupBy(_.talkType).map(s=> ( s._2.size, Messages(s._1.id)))
                         </td>
                         <td>
                            <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
