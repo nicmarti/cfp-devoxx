@@ -109,7 +109,7 @@
                                     <td>
                                     @proposal.allSpeakers.map { s: Speaker =>
                                         @if(models.Invitation.isInvited(s.uuid)) {
-                                            <span class="label label-warning"><i class="icon-glass"></i> @s.cleanName <small>
+                                            <span class="label label-warning">♥ @s.cleanName <small>
                                                 [@s.company.map(_.toLowerCase.capitalize)]</small></span>
                                         } else {
                                             <span class="label label-default">@s.cleanName <small>
