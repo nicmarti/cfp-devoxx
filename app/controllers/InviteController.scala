@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{Speaker, Invitation}
+import models.{Invitation, Proposal, ProposalState, Speaker}
 
 /**
  * A controller that is now responsible for the invitation system, introduced for Devoxx BE 2014.
@@ -38,7 +38,12 @@ object InviteController extends SecureCFPController{
         Speaker.findByUUID(uuid)
       }
 
-      Ok(views.html.InviteController.allInvitations(speakers))
+      val toReturn = speakers.map{
+        s=>
+          (s,Proposal.allProposalsByAuthor(s.uuid).filter(s=> s._2.state==ProposalState.SUBMITTED || s._2.state==ProposalState.APPROVED ))
+      }
+
+      Ok(views.html.InviteController.allInvitations(toReturn))
   }
 
   def invite(speakerUUID:String) = SecuredAction(IsMemberOf("cfp")) {

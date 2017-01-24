@@ -1,4 +1,4 @@
-@(speakers:Set[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(speakers:Set[(Speaker,Map[String,Proposal])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All invited speakers"){
 <div class="row">
@@ -34,15 +34,15 @@
                         <th>Lang</th>
                         <th>Company</th>
                         <th>Email</th>
+                        <th>Talks Approved or Submitted</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                @speakers.map{ speaker: Speaker =>
+                @speakers.map{ case(speaker: Speaker,proposals) =>
                     <tr>
                        <td>
-                           @speaker.cleanName
-                           @tags.checkInvited(speaker.uuid)
+                           @tags.renderGravatar(speaker.uuid)
                        </td>
                         <td>
                             @speaker.cleanLang
@@ -52,6 +52,9 @@
                         </td>
                         <td>
                             <small>@speaker.email</small>
+                        </td>
+                        <td>
+                            @proposals.map(_._2).groupBy(_.talkType).map(s=> ( s._2.size, Messages(s._1.id)))
                         </td>
                         <td>
                            <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
