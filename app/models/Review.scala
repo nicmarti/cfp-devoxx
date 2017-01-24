@@ -148,6 +148,11 @@ object Review {
       client.zcount(s"Proposals:Votes:$proposalId", 0, 10) // how many votes between 0 and 10 ?
   }
 
+  def standardDeviation(proposalId:String)=Redis.pool.withClient{
+    client=>
+      client.hget("Computed:StandardDeviation", s"Proposals:Votes:$proposalId"  )
+  }
+
   // If we remove those who voted "0" for a talk, how many votes do we have?
   def totalVoteCastFor(proposalId: String): Long = Redis.pool.withClient {
     implicit client =>
