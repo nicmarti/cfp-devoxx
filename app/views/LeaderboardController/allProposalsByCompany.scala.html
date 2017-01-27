@@ -17,7 +17,10 @@
         <div class="panel-body">
             @companiesAndProposals.map {case (company:String, props:Set[Proposal]) =>
             <h3>@company.capitalize </h3>
-                <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
+                <label class="label label-submitted">@props.filter(p=> p.state==ProposalState.SUBMITTED).size submitted</label>
+                <label class="label label-approved">@props.filter(p=> p.state==ProposalState.APPROVED).size approved</label>
+                <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED ).size accepted</label>
+                <br>
 
                 @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
                     @Messages(proposal.talkType.id) - @proposal.title (@models.Review.averageScore(proposal.id)) -
