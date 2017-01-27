@@ -1,16 +1,16 @@
 @(proposal:models.Proposal)
 
 @if(ConferenceDescriptor.current().frLangEnabled) {
-    <h3>Bienvenue à @Messages("longYearlyName")</h3>
+    <h3>Bienvenue à @Messages("shortYearlyName")</h3>
     <strong>English version below</strong>
     <hr>
     <p>Bonjour,</p>
     <p>Nous avons le plaisir de vous informer que la présentation <strong>@proposal.title</strong> au format
-    [<strong>@Messages(proposal.talkType.id)</strong>] a été <strong>acceptée</strong> pour @Messages("longYearlyName") !</p>
+    [<strong>@Messages(proposal.talkType.id)</strong>] a été <strong>acceptée</strong> pour @Messages("shortYearlyName") !</p>
     <hr>
     <h3>Comment valider ou non votre participation ?</h3>
     <p>Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
-    présence à @Messages("longYearlyName") comme présentateur.</p>
+    présence à @Messages("shortYearlyName") comme présentateur.</p>
     <p><strong>Merci de valider dès maintenant en suivant ce lien dans votre navigateur :</strong></p>
     <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
     <p>Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).</p>
@@ -18,24 +18,24 @@
     <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
     <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
     <br>
-    <p>L'équipe de sélection de la conférence @Messages("longYearlyName")</p>
+    <p>L'équipe de sélection de la conférence @Messages("shortYearlyName")</p>
     <hr>
 }
-<h3>Welcome to @Messages("longYearlyName")</h3>
-<p>Hi,</p>
-<p>We're glad to inform you that your proposal for @Messages("longYearlyName") has been <strong>accepted</strong> !</p>
+<h3>Welcome to @Messages("shortYearlyName")</h3>
+<p>Hi Speaker.findByUUID(@proposal.mainSpeaker).map(_.firstName).getOrElse(""),</p>
+<p>We're glad to inform you that your proposal for @Messages("shortYearlyName") has been <strong>accepted</strong> !</p>
 <p>Proposition title : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
 <hr>
 <h3>Important information</h3>
-<p>You must now validate or decline the general terms and conditions, and confirm that you are still ok to do this presentation :</p>
+<p>You must now validate or decline the general terms and conditions, and confirm that you are still ok to attend and present this session :</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
 <br>
 @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-    <p>As an accepted speaker a conference pass will be provided to you.</p>
+    <p>As an accepted speaker you will be provided with a conference pass.</p>
 }
 <br>
-<h3>For any question regarding your talk</h3>
-<p>Please, do not respond to this email. Send any comment through the web interface, or email info@@devoxx.co.uk, and our team will respond as quickly as possible.</p>
+<h3>For any questions regarding your talk</h3>
+<p>Please, do not respond to this email. Instead send any comments through the web interface, or email info@@devoxx.co.uk, and our team will respond as quickly as possible.</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
 <br>
-<p>The @Messages("longYearlyName") team</p>
+<p>The @Messages("shortYearlyName") Team</p>
