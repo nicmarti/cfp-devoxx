@@ -4,7 +4,7 @@
     <h3>Bienvenue à @Messages("shortYearlyName")</h3>
     <strong>English version below</strong>
     <hr>
-    <p>Bonjour,</p>
+    <p>Bonjour @Speaker.findByUUID(proposal.mainSpeaker).map(_.firstName).getOrElse(""),</p>
     <p>Nous avons le plaisir de vous informer que la présentation <strong>@proposal.title</strong> au format
     [<strong>@Messages(proposal.talkType.id)</strong>] a été <strong>acceptée</strong> pour @Messages("shortYearlyName") !</p>
     <hr>
@@ -22,16 +22,16 @@
     <hr>
 }
 <h3>Welcome to @Messages("shortYearlyName")</h3>
-<p>Hi Speaker.findByUUID(@proposal.mainSpeaker).map(_.firstName).getOrElse(""),</p>
+<p>Hi @Speaker.findByUUID(proposal.mainSpeaker).map(_.firstName).getOrElse(""),</p>
 <p>We're glad to inform you that your proposal for @Messages("shortYearlyName") has been <strong>accepted</strong> !</p>
 <p>Proposition title : <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
 <hr>
 <h3>Important information</h3>
-<p>You must now validate or decline the general terms and conditions, and confirm that you are still ok to attend and present this session :</p>
+<p>You must now validate or decline the general terms and conditions, and confirm that you are still ok to attend and present this session: </p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
 <br>
 @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-    <p>As an accepted speaker you will be provided with a conference pass.</p>
+<p>As an accepted speaker you will be provided with a conference pass.</p>
 }
 <br>
 <h3>For any questions regarding your talk</h3>

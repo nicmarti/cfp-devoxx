@@ -5,7 +5,7 @@
 @if(ConferenceDescriptor.current().frLangEnabled) {
 English version below
 
-Bonjour,
+Bonjour @Speaker.findByUUID(proposal.mainSpeaker).map(_.firstName).getOrElse(""),
 
 Nous avons le plaisir de vous informer que la présentation [@proposal.title] au format
 [@Messages(proposal.talkType.id)] a été approuvée pour @Messages("shortYearlyName") !
@@ -32,20 +32,19 @@ L'équipe de sélection de la conférence @Messages("shortYearlyName")
 
 ----------------------------------------------------------------------------------------------------------------------
 }
-Hi Speaker.findByUUID(@proposal.mainSpeaker).map(_.firstName).getOrElse(""),
+Hi @Speaker.findByUUID(proposal.mainSpeaker).map(_.firstName).getOrElse(""),
 
 We're glad to inform you that your proposal for @Messages("shortYearlyName") has been accepted !
 Proposition title : @proposal.title, of type [@Messages(proposal.talkType.id)].
 
 Important information
 ---------------------
-You must now validate or decline the general terms and conditions, and confirm that you are still ok to attend and present this session :
+You must now validate or decline the general terms and conditions, and confirm that you are still ok to attend and present this session:
 
     @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()
 
 @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-
-    As an accepted speaker you will be provided with a conference pass.
+As an accepted speaker you will be provided with a conference pass.
 }
 
 For any questions regarding your talk:
