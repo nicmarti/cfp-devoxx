@@ -221,6 +221,8 @@ object ConferenceDescriptor {
     val AUDIT = Room("aud_room", "Auditorium", 550, "theatre")
     val ROOM_A = Room("room1", "Room A", 220, "theatre")
     val ROOM_B = Room("room2", "Room B", 32, "classroom")
+    val LAB_ROOM_A = Room("lab_room1", "Lab Room A", 32, "classroom")
+    val LAB_ROOM_B = Room("lab_room2", "Lab Room B", 32, "classroom")
     val ROOM_C = Room("room3", "Room C", 32, "classroom")
     val ROOM_D = Room("room4", "Room D", 32, "classroom")
     val ROOM_E = Room("room5", "Room E", 32, "classroom")
@@ -229,7 +231,7 @@ object ConferenceDescriptor {
 
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
-    val bofThu = List(AUDIT)
+    val bofThu = List(ROOM_A, ROOM_C, ROOM_D, LAB_ROOM_B)
     val labsThu = List(ROOM_A, ROOM_B)
     val hackThu = List(ROOM_A)
     val igniteThu = List(ROOM_B)
