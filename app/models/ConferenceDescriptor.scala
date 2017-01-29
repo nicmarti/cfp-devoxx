@@ -216,7 +216,9 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, "special")
+    val GALLERY_HALL = Room("a_gallery_hall", "Gallery Hall", 1500, "special")
+    
+    val HALL_EXPO = Room("z_hall", "Exhibition floor", 1500, "special")
 
     val AUDIT = Room("aud_room", "Auditorium", 550, "theatre")
     val ROOM_A = Room("room1", "Room A", 220, "theatre")
@@ -225,21 +227,24 @@ object ConferenceDescriptor {
     val ROOM_D = Room("room4", "Room D", 32, "classroom")
     val ROOM_E = Room("room5", "Room E", 32, "classroom")
 
-    val keynoteRoom = List(AUDIT)
+    val LAB_ROOM_A = Room("x_lab_room1", "Lab Room A", 32, "classroom")
+    val LAB_ROOM_B = Room("y_lab_room2", "Lab Room B", 32, "classroom")
 
-    val conferenceRooms = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val keynoteRoom = List(GALLERY_HALL)
 
-    val bofThu = List(AUDIT)
-    val labsThu = List(ROOM_A, ROOM_B)
-    val hackThu = List(ROOM_D)
+    val conferenceRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+
+    val bofThu = List(ROOM_A, ROOM_C, ROOM_D, LAB_ROOM_B)
+    val labsThu = List(LAB_ROOM_A, LAB_ROOM_B)
+    val hackThu = List(ROOM_A)
     val igniteThu = List(ROOM_B)
-    val quickieThu = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val quickieThu = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
     val uniFri = List(ROOM_A)
-    val quickieFri = List(ROOM_A, ROOM_B, ROOM_C, ROOM_D)
-    val labsFri = List(ROOM_A, ROOM_B)
+    val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val labsFri = List(LAB_ROOM_A, LAB_ROOM_B)
 
-    val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, AUDIT)
+    val allRooms = List(GALLERY_HALL, ROOM_A, ROOM_B, ROOM_C, ROOM_D, AUDIT, HALL_EXPO)
   }
 
   object ConferenceSlotBreaks {
@@ -345,8 +350,8 @@ object ConferenceDescriptor {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.HACK.id,
             THURSDAY,
-            new DateTime(THU_DATE + "18:35" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "19:35" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
+            new DateTime(THU_DATE + "18:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "21:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
       hackThursdayEveningSlot
     }
@@ -395,13 +400,35 @@ object ConferenceDescriptor {
 
     val keynoteSlotThursday: List[Slot] = {
 
-      val keynoteSlot = ConferenceRooms.keynoteRoom.map {
+      val keynoteSlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
             new DateTime(THU_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "10:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
+            new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
-      keynoteSlot
+
+      val keynoteSlot2 = ConferenceRooms.keynoteRoom.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
+      }
+
+      val keynoteSlot3 = ConferenceRooms.keynoteRoom.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r3)
+      }
+
+      val keynoteSlot4 = ConferenceRooms.keynoteRoom.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "10:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r4)
+      }
+
+      keynoteSlot1 ++ keynoteSlot2 ++ keynoteSlot3 ++ keynoteSlot4
     }
 
     val keynoteSlotFriday: List[Slot] = {
@@ -553,10 +580,7 @@ object ConferenceDescriptor {
             new DateTime(THU_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room),
           SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
             new DateTime(THU_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room),
-          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
-            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room)
+            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room)
         )
       }
     }
@@ -581,6 +605,9 @@ object ConferenceDescriptor {
     )
 
     val fridayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registrationAndCoffee, FRIDAY,
+        new DateTime(FRI_DATE + "08:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+        new DateTime(FRI_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon))),
       SlotBuilder(ConferenceSlotBreaks.coffee, FRIDAY,
         new DateTime(FRI_DATE + "10:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
         new DateTime(FRI_DATE + "11:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon))),
