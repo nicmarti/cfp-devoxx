@@ -241,7 +241,7 @@ object ConferenceDescriptor {
 
     val uniFri = List(ROOM_A)
     val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
-    val labsFri = List(ROOM_A, ROOM_B)
+    val labsFri = List(LAB_ROOM_A, LAB_ROOM_B)
 
     val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, GALLERY_HALL, AUDIT)
   }
