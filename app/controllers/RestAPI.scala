@@ -93,22 +93,11 @@ object RestAPI extends Controller {
       val eTag = conferences.hashCode.toString
 
       request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == eTag =>
-          NotModified
+        case Some(tag) if tag == eTag => NotModified
+        case _ =>
+          val jsonObject = Json.obj("content" -> "All conferences", "links" -> conferences.map(_.link))
 
-        case other =>
-          val jsonObject = Json.toJson(
-            Map(
-              "content" -> Json.toJson("All conferences"),
-              "links" -> Json.toJson {
-                Conference.all.map {
-                  conference: Conference =>
-                    conference.link
-                }
-              }
-            )
-          )
-          Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("conferences").absoluteURL() + ">; rel=\"profile\""))
+          Ok(jsonObject).withHeaders(ETAG -> eTag, "Links" -> ("<" + routes.RestAPI.profile("conferences").absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
