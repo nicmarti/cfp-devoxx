@@ -604,6 +604,9 @@ object ConferenceDescriptor {
     )
 
     val fridayBreaks = List(
+      SlotBuilder(ConferenceSlotBreaks.registrationAndCoffee, FRIDAY,
+        new DateTime(FRI_DATE + "08:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+        new DateTime(FRI_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon))),
       SlotBuilder(ConferenceSlotBreaks.coffee, FRIDAY,
         new DateTime(FRI_DATE + "10:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
         new DateTime(FRI_DATE + "11:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon))),
