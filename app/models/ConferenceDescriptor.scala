@@ -216,18 +216,19 @@ object ConferenceDescriptor {
 
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, "special")
-
-    val GALLERY_HALL = Room("gallery_hall", "Gallery Hall", 1500, "special")
+    val GALLERY_HALL = Room("a_gallery_hall", "Gallery Hall", 1500, "special")
+    
+    val HALL_EXPO = Room("z_hall", "Exhibition floor", 1500, "special")
 
     val AUDIT = Room("aud_room", "Auditorium", 550, "theatre")
     val ROOM_A = Room("room1", "Room A", 220, "theatre")
     val ROOM_B = Room("room2", "Room B", 32, "classroom")
-    val LAB_ROOM_A = Room("lab_room1", "Lab Room A", 32, "classroom")
-    val LAB_ROOM_B = Room("lab_room2", "Lab Room B", 32, "classroom")
     val ROOM_C = Room("room3", "Room C", 32, "classroom")
     val ROOM_D = Room("room4", "Room D", 32, "classroom")
     val ROOM_E = Room("room5", "Room E", 32, "classroom")
+
+    val LAB_ROOM_A = Room("x_lab_room1", "Lab Room A", 32, "classroom")
+    val LAB_ROOM_B = Room("y_lab_room2", "Lab Room B", 32, "classroom")
 
     val keynoteRoom = List(GALLERY_HALL)
 
@@ -243,7 +244,7 @@ object ConferenceDescriptor {
     val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
     val labsFri = List(LAB_ROOM_A, LAB_ROOM_B)
 
-    val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, GALLERY_HALL, AUDIT)
+    val allRooms = List(GALLERY_HALL, ROOM_A, ROOM_B, ROOM_C, ROOM_D, AUDIT, HALL_EXPO)
   }
 
   object ConferenceSlotBreaks {
