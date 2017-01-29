@@ -395,13 +395,35 @@ object ConferenceDescriptor {
 
     val keynoteSlotThursday: List[Slot] = {
 
-      val keynoteSlot = ConferenceRooms.keynoteRoom.map {
+      val keynoteSlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
             new DateTime(THU_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "10:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
+            new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
-      keynoteSlot
+
+      val keynoteSlot2 = ConferenceRooms.keynoteRoom.map {
+        r2 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
+      }
+
+      val keynoteSlot3 = ConferenceRooms.keynoteRoom.map {
+        r3 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r3)
+      }
+
+      val keynoteSlot4 = ConferenceRooms.keynoteRoom.map {
+        r4 =>
+          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+            new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "10:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r4)
+      }
+
+      keynoteSlot1 ++ keynoteSlot2 ++ keynoteSlot3 ++ keynoteSlot4
     }
 
     val keynoteSlotFriday: List[Slot] = {
