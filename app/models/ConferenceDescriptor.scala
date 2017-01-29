@@ -232,7 +232,7 @@ object ConferenceDescriptor {
     val conferenceRooms = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
     val bofThu = List(ROOM_A, ROOM_C, ROOM_D, LAB_ROOM_B)
-    val labsThu = List(ROOM_A, ROOM_B)
+    val labsThu = List(LAB_ROOM_A, LAB_ROOM_B)
     val hackThu = List(ROOM_A)
     val igniteThu = List(ROOM_B)
     val quickieThu = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
