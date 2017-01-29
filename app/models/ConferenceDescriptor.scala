@@ -218,6 +218,8 @@ object ConferenceDescriptor {
     // the first column on the HTML Table
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 1500, "special")
 
+    val GALLERY_HALL = Room("gallery_hall", "Gallery Hall", 1500, "special")
+
     val AUDIT = Room("aud_room", "Auditorium", 550, "theatre")
     val ROOM_A = Room("room1", "Room A", 220, "theatre")
     val ROOM_B = Room("room2", "Room B", 32, "classroom")
@@ -227,21 +229,21 @@ object ConferenceDescriptor {
     val ROOM_D = Room("room4", "Room D", 32, "classroom")
     val ROOM_E = Room("room5", "Room E", 32, "classroom")
 
-    val keynoteRoom = List(AUDIT)
+    val keynoteRoom = List(GALLERY_HALL)
 
-    val conferenceRooms = List(HALL_EXPO, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val conferenceRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
     val bofThu = List(ROOM_A, ROOM_C, ROOM_D, LAB_ROOM_B)
     val labsThu = List(LAB_ROOM_A, LAB_ROOM_B)
     val hackThu = List(ROOM_A)
     val igniteThu = List(ROOM_B)
-    val quickieThu = List(HALL_EXPO, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val quickieThu = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
     val uniFri = List(ROOM_A)
     val quickieFri = List(ROOM_A, ROOM_B, ROOM_C, ROOM_D)
     val labsFri = List(ROOM_A, ROOM_B)
 
-    val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, AUDIT)
+    val allRooms = List(HALL_EXPO, ROOM_A, ROOM_B, ROOM_C, ROOM_D, GALLERY_HALL, AUDIT)
   }
 
   object ConferenceSlotBreaks {
