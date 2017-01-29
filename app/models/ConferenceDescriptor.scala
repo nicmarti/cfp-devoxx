@@ -579,10 +579,7 @@ object ConferenceDescriptor {
             new DateTime(THU_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room),
           SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
             new DateTime(THU_DATE + "18:45" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room),
-          SlotBuilder(ConferenceProposalTypes.IGNITE.id, THURSDAY,
-            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "18:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room)
+            new DateTime(THU_DATE + "18:50" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), room)
         )
       }
     }
