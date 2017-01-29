@@ -231,7 +231,7 @@ object ConferenceDescriptor {
 
     val bofThu = List(AUDIT)
     val labsThu = List(ROOM_A, ROOM_B)
-    val hackThu = List(ROOM_D)
+    val hackThu = List(ROOM_A)
     val igniteThu = List(ROOM_B)
     val quickieThu = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
@@ -345,8 +345,8 @@ object ConferenceDescriptor {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.HACK.id,
             THURSDAY,
-            new DateTime(THU_DATE + "18:35" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(THU_DATE + "19:35" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
+            new DateTime(THU_DATE + "18:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+            new DateTime(THU_DATE + "21:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
       hackThursdayEveningSlot
     }
