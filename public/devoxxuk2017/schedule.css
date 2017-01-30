@@ -177,3 +177,11 @@ input.cfp-fav:checked + label.cfp-lab {
     padding: 0;
     background: url('/assets/devoxxuk2017/images/beer-icons-on.png') no-repeat;
 }
+.tagLabel {
+    background-color: lightgray;
+    padding-left: 10px;
+    padding-top: 2px;
+    padding-right: 4px;
+    border-radius: 6px;
+    padding-bottom: 2px;
+}
