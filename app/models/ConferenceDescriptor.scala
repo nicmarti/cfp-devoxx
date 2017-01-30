@@ -629,7 +629,7 @@ object ConferenceDescriptor {
 
     val thursdaySchedule: List[Slot] = {
       thursdayBreaks ++
-      keynoteSlotFriday ++
+      keynoteSlotThursday ++
       conferenceSlotsThursday ++
       quickiesSlotsThursday ++
       bofSlotThursday ++
@@ -640,6 +640,7 @@ object ConferenceDescriptor {
 
     val fridaySchedule: List[Slot] = {
       fridayBreaks ++
+      keynoteSlotFriday ++
       conferenceSlotsFriday ++
       labsSlotFriday ++
       quickiesSlotsFriday
