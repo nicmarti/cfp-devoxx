@@ -15,8 +15,10 @@
             <img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: top"></a>
         }
     </h1>
-    @speaker.company.map{cp=>
-    <h4>From @cp</h4>
+    @if(speaker.company.nonEmpty) {
+        @speaker.company.map { cp =>
+            <h4>From @cp</h4>
+        }
     }
     <div class="speakerbio">
     @Html(speaker.bioAsHtml)
