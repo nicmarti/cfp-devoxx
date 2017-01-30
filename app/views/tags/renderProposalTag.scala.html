@@ -1,4 +1,9 @@
-@(tag:Tag)
+@(tag:Tag, cfpAdmin:Boolean)
 <span class="tagLabel">
-    <a href="@routes.CFPAdmin.showProposalsByTagId(tag.id)"><i class="icon-tag">&nbsp;</i>@tag.value</a>
+    @if(cfpAdmin){
+        <a href="@routes.CFPAdmin.showProposalsByTagId(tag.id)">
+    }else{
+        <a href="@routes.Publisher.showByTag(tag.id)">
+    }
+    <i class="icon-tag">&nbsp;</i>@tag.value</a>
 </span>&nbsp;

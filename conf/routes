@@ -205,6 +205,7 @@ GET           /2017/talks/:talkType                                             
 GET           /2017/talks                                                       controllers.Publisher.showAllTalksByType()
 GET           /2017/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2017/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /2017/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
 GET           /2017/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2017/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2017/byday/:day                                                  controllers.Publisher.showByDay(day:String)

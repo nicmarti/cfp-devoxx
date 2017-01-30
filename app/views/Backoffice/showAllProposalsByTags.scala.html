@@ -46,7 +46,7 @@
             <tbody>
             @tagProposalEntries.map{ entry =>
               <tr>
-                <td>@tags.renderProposalTag(entry.tag)</td>
+                <td>@tags.renderProposalTag(entry.tag, cfpAdmin = true)</td>
                 <td><a href="@routes.CFPAdmin.openForReview(entry.proposal.id)">@entry.proposal.title</a></td>
                 <td>@tags.renderGravatar(entry.proposal.mainSpeaker)</td>
                 <td>@Messages(entry.proposal.track.label)</td>

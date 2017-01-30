@@ -22,7 +22,7 @@
                 <tr>
                     <td>
                         <a href="@routes.CFPAdmin.openForReview(proposal._1)">@proposal._2.title</a><br><br>
-                        @proposal._2.tags.get.filter(tag => tag.value.nonEmpty).map( tag => tags.renderProposalTag(tag) )
+                        @proposal._2.tags.get.filter(tag => tag.value.nonEmpty).map( tag => tags.renderProposalTag(tag, cfpAdmin = true) )
                     </td>
                     <td>
                         @Messages(proposal._2.track.label)

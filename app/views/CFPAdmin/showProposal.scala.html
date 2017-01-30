@@ -53,7 +53,7 @@
                                 <td colspan="4" class="proposal">
                                 @Html(proposal.summaryAsHtml)
                                 @if(proposal.tags.isDefined) {
-                                    @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag))
+                                    @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag, cfpAdmin = true))
                                 }
                                 </td>
                             </tr>
