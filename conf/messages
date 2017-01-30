@@ -214,6 +214,9 @@ track.security.desc=Encryption, defensive practices, tools and technologies to b
 architecture.label=Architecture
 track.architecture.desc=How-Tos, strategies, tools, techniques and best practices for getting architecture right.
 
+unknown.label=Unknown
+track.unknown.desc=Unknown track
+
 # confirm import
 confirm.import.title=Create your Speaker''s profile
 confirm.import.save=Save and send an email

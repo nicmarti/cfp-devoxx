@@ -193,6 +193,8 @@ object ConferenceDescriptor {
     val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxuk2017/images/icon_security.png", ConferenceTracks.SECURITY.label, "track.security.desc")
     val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxuk2017/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
 
+    val UNKNOWN = TrackDesc(ConferenceTracks.UNKNOWN.id, "/assets/devoxxuk2017/images/icon_web.png", ConferenceTracks.UNKNOWN.label, "track.unknown.desc")
+
     val ALL = List(METHOD_ARCHI
       , JAVA
       , CLOUD
@@ -207,7 +209,11 @@ object ConferenceDescriptor {
     )
 
     def findTrackDescFor(t: Track): TrackDesc = {
-      ALL.find(_.id == t.id).head
+      if (ALL.exists(_.id == t.id)) {
+        ALL.find(_.id == t.id).head
+      } else {
+        ConferenceTracksDescription.UNKNOWN
+      }
     }
   }
 

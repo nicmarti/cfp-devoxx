@@ -27,13 +27,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td rowspan="10"  class="scheduleHeader scheduleRight">What's On?</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack")</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
                 <!-- ******************************************************************* //-->
             <tr>
+                <td rowspan="8"  class="scheduleHeader scheduleRight">What's On?</td>
                 <td class="scheduleRow">
                 @tags.publisher.renderShowDay("conf", "thursday", "Conference Schedule")
                 </td>
@@ -41,10 +37,7 @@
                 @tags.publisher.renderShowDay("conf", "friday", "Conference Schedule")
                 </td>
             </tr>
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack Schedule")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "friday", "Hack Schedule")</td>
-            </tr>
+                <!-- ******************************************************************* //-->
             <tr>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")</td>
@@ -76,11 +69,10 @@
             </tr>
                 <!-- ******************************************************************* //-->
             <tr>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
-                </td>
+                <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack Schedule")</td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
+                <!-- ******************************************************************* //-->
             <tr>
                 <td colspan="4" class="scheduleContentRow ">
                     <p class="scheduleAllTalks"><a href="/2017/talks">Click</a> to see all the talks grouped by track</p>
@@ -92,7 +84,7 @@
 
     <!-- ******************************************************************* //-->
 
-<div class="large-6 columns">
+<div class="large-3 columns">
 <h3>The Devoxxians</h3>
 <p>We're welcoming rock star speakers from around the globe, see the full list <a href="/2017/speakers.html">here</a>.</p>
 
