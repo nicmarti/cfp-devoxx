@@ -17,11 +17,20 @@
 }
 
 .scheduleRight {
-    text-align: right;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    text-align: center;
+    font-size: 23px;
+    font-weight: bold;
+    width: 150px;
 }
-
+.scheduleHeaderDate {
+    font-size: 25px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+.scheduleContentRow {
+    background-color: black;
+    color: white;
+}
 .agendaTable {
     border: 1px solid #ffd297;
 }

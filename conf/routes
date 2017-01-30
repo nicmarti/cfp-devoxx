@@ -202,6 +202,7 @@ GET           /cloudtags                                                        
 GET           /2017/speakers.html                                               controllers.Publisher.showAllSpeakers()
 GET           /2017/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
 GET           /2017/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
+GET           /2017/talks                                                       controllers.Publisher.showAllTalksByType()
 GET           /2017/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2017/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
 GET           /2017/index.html                                                  controllers.Publisher.homePublisher()

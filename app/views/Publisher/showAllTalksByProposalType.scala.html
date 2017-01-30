@@ -1,0 +1,32 @@
+@(proposals:List[(String, List[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@views.html.Publisher.devoxxUK2017("All Talks") {
+  <p class="breadcrumb">
+    <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>
+  </p>
+  @proposals.map{entry =>
+  <div class="large-12">
+    <h3>@Messages(entry._1) (@entry._2.size)</h3>
+  </div>
+
+  @entry._2.groupBy(_.track).sliding(3,3).map { case oneRow =>
+    @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
+    <div class="large-3 columns trackBox">
+      @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+    <ul>
+    @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
+      <li>
+        <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)" class="blackLink">@proposal.title</a></strong>
+        <br>
+        @proposal.allSpeakerUUIDs.map { speakerUUID =>
+          @tags.publisher.renderSpeaker(speakerUUID)
+        }
+      </li>
+    }
+    </ul>
+    </div>
+    }
+    <div class="clearfix"><hr></div>
+  }
+    <hr>
+  }
+}

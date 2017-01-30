@@ -119,6 +119,14 @@ object Publisher extends Controller {
       }
   }
 
+  def showAllTalksByType = Action {
+    implicit request =>
+      val proposals = ConferenceDescriptor.ConferenceTracksDescription.ALL.map(proposalType =>
+        (proposalType.id, Proposal.allAcceptedByTalkType(proposalType.id)))
+
+      Ok(views.html.Publisher.showAllTalksByProposalType(proposals))
+  }
+
   private val monday: String = "monday"
   private val tuesday: String = "tuesday"
   private val wednesday: String = "wednesday"

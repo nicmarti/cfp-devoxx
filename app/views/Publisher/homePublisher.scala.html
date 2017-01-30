@@ -18,17 +18,17 @@
         <thead>
             <tr>
                 <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("thu")">@Messages("day-thursday")</a></th>
-                <th class="scheduleHeader"><a href="@routes.Publisher.showByDay("fri")">@Messages("day-friday")</a></th>
+                <th class="scheduleHeader">
+                    <div class="scheduleHeaderDate">@Messages("day-thursday")</div><br><a href="@routes.Publisher.showByDay("thu")">Click</a> to see full schedule
+                </th>
+                <th class="scheduleHeader">
+                    <div class="scheduleHeaderDate">@Messages("day-friday")</div><br><a href="@routes.Publisher.showByDay("fri")">Click</a> to see full schedule
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td rowspan="10"  class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
+                <td rowspan="10"  class="scheduleHeader scheduleRight">What's On?</td>
                 <td class="scheduleRow">@tags.publisher.renderShowDay("hack", "thursday", "Hack")</td>
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
@@ -82,16 +82,8 @@
                 <td class="scheduleRow">&nbsp;</td>
             </tr>
             <tr>
-                <td class="scheduleRow">
-                    <a href="@routes.Publisher.showByDay("thu")">Full day view</a>
-                </td>
-                <td class="scheduleRow">
-                    <a href="@routes.Publisher.showByDay("fri")">Full day view</a>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6">
-                    <span>You can click on the above dates for full day schedule views.</span>
+                <td colspan="4" class="scheduleContentRow ">
+                    <p class="scheduleAllTalks"><a href="/2017/talks">Click</a> to see all the talks grouped by track</p>
                 </td>
             </tr>
         </tbody>
