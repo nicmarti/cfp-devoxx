@@ -37,6 +37,7 @@ th.scheduleHeader {
 .scheduleContentRow {
     background-color: black;
     color: white;
+    padding-top: 27px;
 }
 .scheduleRight {
     text-align: center;
