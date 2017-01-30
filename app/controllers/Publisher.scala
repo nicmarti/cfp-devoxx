@@ -121,7 +121,7 @@ object Publisher extends Controller {
 
   def showAllTalksByType = Action {
     implicit request =>
-      val proposals = ConferenceDescriptor.ConferenceTracksDescription.ALL.map(proposalType =>
+      val proposals = ConferenceDescriptor.ConferenceProposalTypes.ALL.map(proposalType =>
         (proposalType.id, Proposal.allAcceptedByTalkType(proposalType.id)))
 
       Ok(views.html.Publisher.showAllTalksByProposalType(proposals))
