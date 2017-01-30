@@ -443,7 +443,7 @@ object ConferenceDescriptor {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.KEY.id, FRIDAY,
             new DateTime(FRI_DATE + "17:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-            new DateTime(FRI_DATE + "18:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
+            new DateTime(FRI_DATE + "18:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
     }
 
@@ -629,7 +629,7 @@ object ConferenceDescriptor {
 
     val thursdaySchedule: List[Slot] = {
       thursdayBreaks ++
-      keynoteSlotFriday ++
+      keynoteSlotThursday ++
       conferenceSlotsThursday ++
       quickiesSlotsThursday ++
       bofSlotThursday ++
@@ -640,6 +640,7 @@ object ConferenceDescriptor {
 
     val fridaySchedule: List[Slot] = {
       fridayBreaks ++
+      keynoteSlotFriday ++
       conferenceSlotsFriday ++
       labsSlotFriday ++
       quickiesSlotsFriday
