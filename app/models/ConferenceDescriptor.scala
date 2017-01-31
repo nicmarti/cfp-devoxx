@@ -18,7 +18,7 @@ import play.api.i18n.Messages
   * @author Frederic Camblor, BDX.IO 2014
   */
 
-case class ConferenceUrls(info: String, registration: String, confWebsite: String, cfpHostname: String) {
+case class ConferenceUrls(info: String, registration: String, sponsors: String, confWebsite: String, cfpHostname: String) {
   def cfpURL(): String = {
     if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
       s"https://$cfpHostname"
@@ -668,7 +668,8 @@ object ConferenceDescriptor {
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
-      info = "http://www.devoxx.co.uk/faq",
+      info = "http://www.devoxx.co.uk/#info",
+      sponsors = "http://www.devoxx.co.uk/#sponsors",
       registration = "https://www.eventbrite.co.uk/e/devoxx-uk-2017-tickets-28649696012",
       confWebsite = "http://www.devoxx.co.uk/",
       cfpHostname = {
@@ -713,6 +714,7 @@ object ConferenceDescriptor {
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
       info = "http://www.devoxx.co.uk/#info",
+      sponsors = "http://www.devoxx.co.uk/#sponsors",
       registration = "https://www.eventbrite.co.uk/e/devoxx-uk-2017-tickets-28649696012",
       confWebsite = "https://devoxx.co.uk/",
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.co.uk")
