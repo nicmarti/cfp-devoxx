@@ -1,0 +1,52 @@
+@(form: Form[AdvancedSearchParam])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+    @api(Messages("shortName") + " Advanced Search API") {
+        <div class="row">
+            <div class="col-md-12">
+                <h1>@Messages("shortName") Search API</h1>
+                <hr>
+                <div class="panel panel-info">
+                    <div class="panel-heading">Advanced search API</div>
+                    <div class="panel-body">
+                        <p>Sample Form</p>
+                        <form class="form" method="POST" name="advancedForm" id="Advanced" action="@routes.SearchAPI.searchTalks()">
+                            <div class="form-group">
+                                <label for="topic">Topic or subject :
+                                    <input class="form-control" type="text" name="topic" id="topic" value="" placeholder="Topic">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="track">Track :
+                                    <input class="form-control" type="text" name="track" id="track" value="" placeholder="Track">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="format">Proposal type or format :
+                                    <input class="form-control" type="text" name="format" id="format" value="" placeholder="Format or proposal type">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="room">Room :
+                                    <input class="form-control" type="text" name="room" id="room" value="" placeholder="Room">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="after">Show only results after the specified date and time :
+                                    <input class="form-control" type="text" name="after" id="after" value="" placeholder="after specifed date and time">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="speaker">Speaker name or company :
+                                    <input class="form-control" type="text" name="speaker" id="speaker" value="" placeholder="Speaker name or company">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success" type="submit" value="Search">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }

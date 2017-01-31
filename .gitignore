@@ -43,10 +43,9 @@ project/plugins/project/
 .scala_dependencies
 
 /public/speakers/
-run.sh
-run-uk.sh
-run-fr.sh
-run-us.sh
+
+# Ignore all run scripts
+run*.sh
 
 env.sh
 run-be.sh
