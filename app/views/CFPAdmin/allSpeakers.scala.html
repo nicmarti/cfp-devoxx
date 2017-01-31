@@ -1,6 +1,9 @@
 @(speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Speakers") {
+    <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
         <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
@@ -29,7 +32,7 @@
         <div class="panel-body">
 
             @if(speakers.nonEmpty){
-            <table class="table table-bordered table-strippted">
+            <table id="speakersTable" class="table table-bordered table-strippted">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -43,7 +46,7 @@
                 @speakers.map{ speaker: Speaker =>
                     <tr>
                        <td>
-                           @speaker.cleanName
+                            @tags.renderGravatar(speaker.uuid, showName=true, showPhoto=false)
                        </td>
                         <td>
                             @speaker.cleanLang
@@ -70,4 +73,23 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('#speakersTable').dataTable({
+        "aaSorting": [[ 0, "desc" ]],
+        "iDisplayLength": 50,
+        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        "bStateSave": true,
+        "aoColumns": [
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"}
+        ]
+    });
+} );
+</script>
 }
