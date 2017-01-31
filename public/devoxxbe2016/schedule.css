@@ -1,16 +1,4 @@
-.scheduleHeader {
-    text-align: center;
-    background-color: #211c1b;
-    color: white;
-}
-th.scheduleHeader {
-    color: white;
-}
-.scheduleHeaderDate {
-    font-size: 25px;
-    padding-top: 20px;
-    padding-bottom: 10px;
-}
+
 .scheduleRow {
     background-color: #f5f5f5;
     border-color: #CED4BD;
@@ -24,25 +12,9 @@ th.scheduleHeader {
 }
 
 .scheduleRight {
-    text-align: center;
-    font-size: 23px;
-    font-weight: bold;
-    width: 150px;
-}
-.scheduleHeaderDate {
-    font-size: 25px;
+    text-align: right;
     padding-top: 20px;
-    padding-bottom: 10px;
-}
-.scheduleContentRow {
-    background-color: black;
-    color: white;
-}
-.scheduleRight {
-    text-align: center;
-    font-size: 23px;
-    font-weight: bold;
-    width: 150px;
+    padding-bottom: 20px;
 }
 
 .agendaTable {
@@ -171,13 +143,12 @@ input.cfp-fav {
 }
 
 label.cfp-lab {
-    display: inline-block;
-    width:100%;
-    height:18px;
-    padding: 0;
-    margin: 4px 0 0;
-    text-align: right;
-    background:url('/assets/devoxxus2017/images/beer-icons-off.png') no-repeat;
+    position: absolute;
+    bottom: 3px;
+    right: 1px;
+    width: 20px;
+    height: 20px;
+    background:url('/assets/devoxxbe2016/images/beer-icons-off.png') no-repeat;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -189,8 +160,9 @@ input.cfp-fav:checked + label.cfp-lab {
     height: 22px;
     margin: 4px 0 0;
     padding: 0;
-    background: url('/assets/devoxxuk2017/images/beer-icons-on.png') no-repeat;
+    background: url('/assets/devoxxbe2016/images/beer-icons-on.png') no-repeat;
 }
+
 .tagLabel {
     background-color: lightgray;
     padding-left: 10px;
