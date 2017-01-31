@@ -140,8 +140,8 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 1hour, Thursday morning or Friday afternoon
-key.label.simple=Keynote
+opening.key.label=Opening Keynote, 20minutes, Thursday morning
+opening.key.label.simple=Opening Keynote
 conf.label=Conference, 50minutes, Thursday and Friday
 conf.label.simple=Conference
 quick.label=Quickie Sessions, 15minutes, Thursday and Friday lunchtimes
@@ -430,7 +430,7 @@ lab=Hands-on Labs
 quick=Quickie Sessions
 bof=BOF (Birds of a Feather)
 hack=Hackathons
-key=Keynote
+opening_key=Opening Keynote
 all=All
 ignite=Ignite Sessions
 
@@ -440,6 +440,7 @@ admin.btn.changeState=Change one proposal state
 sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
+sw.all.opening_key=All Opening Keynotes
 sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
 sw.all.hack=All Hackathons
@@ -496,7 +497,6 @@ day-friday=Friday, 12th May
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
 sw.allEvents=See all events
-sw.all.key=Keynotes
 sw.agenda=Agenda
 sw.agenda.txt=Opening, closing hours and global agenda per day
 sw.agenda.mon=Monday

@@ -41,7 +41,7 @@ object ApprovedProposal {
     , ("lab.label", ConferenceProposalConfigurations.LAB.slotsCount)
     , ("quick.label", ConferenceProposalConfigurations.QUICK.slotsCount)
     , ("bof.label", ConferenceProposalConfigurations.BOF.slotsCount)
-    , ("key.label", ConferenceProposalConfigurations.KEY.slotsCount)
+    , ("opening.key.label", ConferenceProposalConfigurations.OPENING_KEY.slotsCount)
     , ("ignite.label", ConferenceProposalConfigurations.IGNITE.slotsCount)
     , ("hack.label", ConferenceProposalConfigurations.HACK.slotsCount)
   )
