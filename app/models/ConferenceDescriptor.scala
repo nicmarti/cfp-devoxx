@@ -617,9 +617,9 @@ object ConferenceDescriptor {
       SlotBuilder(ConferenceSlotBreaks.coffee, FRIDAY,
         new DateTime(FRI_DATE + "10:55" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
         new DateTime(FRI_DATE + "11:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon))),
-      SlotBuilder(ConferenceSlotBreaks.lunch, THURSDAY,
-        new DateTime(THU_DATE + "13:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
-        new DateTime(THU_DATE + "14:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon))),
+      SlotBuilder(ConferenceSlotBreaks.lunch, FRIDAY,
+        new DateTime(FRI_DATE + "13:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
+        new DateTime(FRI_DATE + "14:15" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon))),
       SlotBuilder(ConferenceSlotBreaks.coffee, FRIDAY,
         new DateTime(FRI_DATE + "16:10" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
         new DateTime(FRI_DATE + "16:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)))
