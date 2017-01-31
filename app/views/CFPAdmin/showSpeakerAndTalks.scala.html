@@ -88,7 +88,8 @@
             </div>
         </div>
     </div>
-@if(SecureCFPController.hasAccessToCFP(req)){
+ @** DO NOT TOUCH THIS else speaker can discover if their talks has been selected or not **@
+@if(SecureCFPController.hasAccessToCFPAdmin(req)){
     <div class="col-md-12">
         <div class="panel-heading">
             <h3><i class="icon-bullhorn"></i> Talks</h3>
