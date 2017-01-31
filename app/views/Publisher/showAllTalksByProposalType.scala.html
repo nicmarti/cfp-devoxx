@@ -11,7 +11,7 @@
   @entry._2.groupBy(_.track).sliding(3,3).map { case oneRow =>
     @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
     <div class="large-3 columns trackBox">
-      @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+      @tags.publisher.renderIconForTrack(track) @Html(Messages(track.label))
     <ul>
     @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
       <li>

@@ -51,7 +51,7 @@
                         <td class="room">
                             @slot.proposal.map { p: Proposal =>
                                 <span class="track">
-                                    @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
+                                    @tags.publisher.renderIconForTrack(p.track) @Html(Messages(p.track.label))
                                 </span>
                                 <br>
                                 <span class="title">
