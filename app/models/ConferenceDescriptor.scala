@@ -122,11 +122,13 @@ object ConferenceDescriptor {
 
     val HACK = ProposalType(id = "hack", label = "hack.label")
 
-    val KEY = ProposalType(id = "key", label = "key.label")
+    val OPENING_KEY = ProposalType(id = "opening_key", label = "opening.key.label")
+
+    val CLOSING_KEY = ProposalType(id = "closing_key", label = "closing.key.label")
 
     val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
 
-    val ALL = List(CONF, LAB, QUICK, BOF, KEY, IGNITE)
+    val ALL = List(CONF, LAB, QUICK, BOF, OPENING_KEY, CLOSING_KEY, IGNITE)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -134,7 +136,8 @@ object ConferenceDescriptor {
       case "quick" => QUICK
       case "bof" => BOF
       case "hack" => HACK
-      case "key" => KEY
+      case "opening_key" => OPENING_KEY
+      case "closing_key" => CLOSING_KEY
       case "ignite" => IGNITE
     }
   }
@@ -150,12 +153,14 @@ object ConferenceDescriptor {
       chosablePreferredDay = false)
     val HACK = ProposalConfiguration(id = "hack", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.HACK.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-group",
       chosablePreferredDay = false)
-    val KEY = ProposalConfiguration(id = "key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val OPENING_KEY = ProposalConfiguration(id = "opening_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+      chosablePreferredDay = true)
+    val CLOSING_KEY = ProposalConfiguration(id = "closing_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
 
-    val ALL = List(CONF, LAB, QUICK, BOF, HACK, KEY, IGNITE)
+    val ALL = List(CONF, LAB, QUICK, BOF, HACK, OPENING_KEY, CLOSING_KEY, IGNITE)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -223,7 +228,7 @@ object ConferenceDescriptor {
     // Tip : I use the ID to sort-by on the view per day... So if the exhibition floor id is "aaa" it will be
     // the first column on the HTML Table
     val GALLERY_HALL = Room("a_gallery_hall", "Gallery Hall", 1500, "special")
-    
+
     val HALL_EXPO = Room("z_hall", "Exhibition floor", 1500, "special")
 
     val AUDIT = Room("aud_room", "Auditorium", 550, "theatre")
@@ -408,28 +413,28 @@ object ConferenceDescriptor {
 
       val keynoteSlot1 = ConferenceRooms.keynoteRoom.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
             new DateTime(THU_DATE + "09:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
             new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
 
       val keynoteSlot2 = ConferenceRooms.keynoteRoom.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
             new DateTime(THU_DATE + "09:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
             new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r2)
       }
 
       val keynoteSlot3 = ConferenceRooms.keynoteRoom.map {
         r3 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
             new DateTime(THU_DATE + "09:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
             new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r3)
       }
 
       val keynoteSlot4 = ConferenceRooms.keynoteRoom.map {
         r4 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, THURSDAY,
+          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, THURSDAY,
             new DateTime(THU_DATE + "10:00" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
             new DateTime(THU_DATE + "10:20" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r4)
       }
@@ -441,7 +446,7 @@ object ConferenceDescriptor {
 
       ConferenceRooms.keynoteRoom.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.KEY.id, FRIDAY,
+          SlotBuilder(ConferenceProposalTypes.CLOSING_KEY.id, FRIDAY,
             new DateTime(FRI_DATE + "17:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
             new DateTime(FRI_DATE + "18:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
