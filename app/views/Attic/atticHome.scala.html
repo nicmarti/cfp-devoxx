@@ -45,7 +45,11 @@
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.OPENING_KEY.id"/>
-                        <button type="submit" class="btn btn-primary">Archive all Keynotes</button>
+                        <button type="submit" class="btn btn-primary">Archive all Opening Keynotes</button>
+                    </form>
+                    <form action="@routes.Attic.doArchive()" method="POST">
+                        <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CLOSING_KEY.id"/>
+                        <button type="submit" class="btn btn-primary">Archive all Closing Keynotes</button>
                     </form>
                     <form action="@routes.Attic.doArchive()" method="POST">
                         <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.CONF.id"/>

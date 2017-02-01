@@ -74,6 +74,7 @@ object GoldenTicketController extends SecureCFPController {
       val allNotReviewed = if (ConferenceDescriptor.isCFPOpen) {
         ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
           .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OPENING_KEY)
+          .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CLOSING_KEY)
           .filterNot(_.sponsorTalk)
       } else {
         ReviewByGoldenTicket.allProposalsNotReviewed(uuid)

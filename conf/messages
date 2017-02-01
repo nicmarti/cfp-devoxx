@@ -142,6 +142,8 @@ next.action=Select next action:
 # Proposal type
 opening.key.label=Opening Keynote, 20minutes, Thursday morning
 opening.key.label.simple=Opening Keynote
+closing.key.label=Closing Keynote, 50minutes, Friday afternoon
+closing.key.label.simple=Closing Keynote
 conf.label=Conference, 50minutes, Thursday and Friday
 conf.label.simple=Conference
 quick.label=Quickie Sessions, 15minutes, Thursday and Friday lunchtimes
@@ -431,6 +433,7 @@ quick=Quickie Sessions
 bof=BOF (Birds of a Feather)
 hack=Hackathons
 opening_key=Opening Keynote
+closing_key=Closing Keynote
 all=All
 ignite=Ignite Sessions
 
@@ -441,6 +444,7 @@ sw.talkType.warn=List of talks approved by the program committee and accepted by
 sw.showDetails=See details
 sw.home=Home
 sw.all.opening_key=All Opening Keynotes
+sw.all.closing_key=All Closing Keynotes
 sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
 sw.all.hack=All Hackathons

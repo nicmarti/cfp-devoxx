@@ -124,9 +124,11 @@ object ConferenceDescriptor {
 
     val OPENING_KEY = ProposalType(id = "opening_key", label = "opening.key.label")
 
+    val CLOSING_KEY = ProposalType(id = "closing_key", label = "closing.key.label")
+
     val IGNITE = ProposalType(id = "ignite", label = "ignite.label")
 
-    val ALL = List(CONF, LAB, QUICK, BOF, OPENING_KEY, IGNITE)
+    val ALL = List(CONF, LAB, QUICK, BOF, OPENING_KEY, CLOSING_KEY, IGNITE)
 
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
@@ -135,6 +137,7 @@ object ConferenceDescriptor {
       case "bof" => BOF
       case "hack" => HACK
       case "opening_key" => OPENING_KEY
+      case "closing_key" => CLOSING_KEY
       case "ignite" => IGNITE
     }
   }
@@ -152,10 +155,12 @@ object ConferenceDescriptor {
       chosablePreferredDay = false)
     val OPENING_KEY = ProposalConfiguration(id = "opening_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
+    val CLOSING_KEY = ProposalConfiguration(id = "closing_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+      chosablePreferredDay = true)
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
 
-    val ALL = List(CONF, LAB, QUICK, BOF, HACK, OPENING_KEY, IGNITE)
+    val ALL = List(CONF, LAB, QUICK, BOF, HACK, OPENING_KEY, CLOSING_KEY, IGNITE)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
@@ -441,7 +446,7 @@ object ConferenceDescriptor {
 
       ConferenceRooms.keynoteRoom.map {
         r1 =>
-          SlotBuilder(ConferenceProposalTypes.OPENING_KEY.id, FRIDAY,
+          SlotBuilder(ConferenceProposalTypes.CLOSING_KEY.id, FRIDAY,
             new DateTime(FRI_DATE + "17:40" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)),
             new DateTime(FRI_DATE + "18:30" + MIN_SEC).toDateTime(DateTimeZone.forID(europeLondon)), r1)
       }
