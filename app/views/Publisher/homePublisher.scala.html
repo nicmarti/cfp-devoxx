@@ -13,66 +13,6 @@
         </form>
         </div>
     </div>
-    <div class="small-12 medium-12 large-12 column">
-    <table class="mainSchedule">
-        <thead>
-            <tr>
-                <th class="scheduleHeader">&nbsp;</th>
-                <th class="scheduleHeader">@Messages("day-wednesday")</th>
-                <th class="scheduleHeader">@Messages("day-thursday")</th>
-                <th class="scheduleHeader">@Messages("day-friday")</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="9"  class="scheduleHeader scheduleRight">What's on</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "wednesday", "University Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "wednesday", "Tools-in-Action Sessions") </td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "thursday", "Tools-in-Action Sessions")</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-               <tr>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")</td>
-            </tr>
-            <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("bof", "thursday", "BOFs")</td>
-                <td class="scheduleRow">&nbsp;</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                 <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "thursday", "Quickies")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "friday", "Quickies")</td>
-            </tr>
-            <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("ignite", "thursday", "Ignite Sessions")</td>
-                <td class="scheduleRow">@tags.publisher.renderShowDay("ignite", "friday", "Ignite Sessions")</td>
-            </tr>
-                <!-- ******************************************************************* //-->
-            <tr>
-                <td class="scheduleRow">&nbsp;</td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "thursday", "Conference Sessions")
-                </td>
-                <td class="scheduleRow">
-                @tags.publisher.renderShowDay("conf", "friday", "Conference Sessions")
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-
-    <!-- ******************************************************************* //-->
-</div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Keynotes</h3>
@@ -84,7 +24,7 @@
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Conference</h3>
-        <p>Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 100 conférences
+        <p>Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 96 conférences
             pendant 2 jours. Toutes les sessions sont filmées, ce qui vous permet de revoir plus tard les conférences.</p>
         <p><A href="@routes.Publisher.showByTalkType("conf")">Liste des Conférences</A></p>
 </div>
@@ -92,6 +32,7 @@
     <div class="small-12 medium-6 large-6 column">
         <h3>University</h3>
         <p>Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes.</p>
+        <p>A noter qu'il y aura 16 Universités pour 2017 au lieu de 8, ce format étant très demandé.</p>
         <p><A href="@routes.Publisher.showByTalkType("uni")">Liste des Universités</A></p>
 
 </div>
@@ -101,8 +42,8 @@
     <div class="small-12 medium-6 large-6 column">
         <h3>Tools in Action</h3>
         <p>Les TIA (Tools-in-Action) sont des sessions courtes de 25mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
-        <p>Pour la 5ème édition de Devoxx France, les TIA auront lieu le mercredi et le jeudi en fin de journée avec une track de TIA en plus
-        le jeudi soir.</p>
+        <p>Pour la 6ème édition de Devoxx France, les TIA auront lieu le mercredi et le jeudi en fin de journée avec une track de TIA en plus
+        le jeudi soir. Il y a 38 TIA au total.</p>
         <p><A href="@routes.Publisher.showByTalkType("tia")">Liste des Tools in Action</A></p>
 </div>
 
@@ -110,7 +51,7 @@
         <h3>Hands-on Labs</h3>
         <p>Session pratique de 3h, dans des salles de 25 à 60 personnes. Les Labs sont des sessions pratiques pendant les 3 jours qui permettent
             de découvrir ou d'approfondir un sujet. Il faut venir avec son ordinateur, les hands-on labs proposent un accès à Internet
-        via du Wifi.</p>
+        via du Wifi. Nous avons prévu entre 28 et 30 Hands-on Lab pour 2017.</p>
         <p><A href="@routes.Publisher.showByTalkType("lab")">Liste des Hands-on Labs</A></p>
 </div>
     <div class="clearfix"></div>
@@ -119,7 +60,7 @@
     <h3>Quickies</h3>
         <p>Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner jeudi et vendredi. C'est LE format
             dédié aux débutants, mais aussi aux experts qui n'ont que 15mn pour vous convaincre. Le format simple et rapide permet
-            de découvrir un projet ou une idée pendant l'heure du repas.</p>
+            de découvrir un projet ou une idée pendant l'heure du repas. 28 Quickies animeront les journées du jeudi et du vendredi.</p>
         <p><A href="@routes.Publisher.showByTalkType("quick")">Liste des Quickies</A></p>
 </div>
 
