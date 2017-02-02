@@ -158,7 +158,7 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
       chosablePreferredDay = false)
-    val KEY = ProposalConfiguration(id = "key", slotsCount = 7, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val KEY = ProposalConfiguration(id = "key", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.KEY.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
@@ -267,6 +267,8 @@ object ConferenceDescriptor {
     val keynoteRoom = List(AMPHI_BLEU)
 
     val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
+
+    val allRoomsConfFridayNight = List(AMPHI_BLEU, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
 
     val allRoomsQuickiesThu = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id)
 
@@ -586,12 +588,13 @@ object ConferenceDescriptor {
             new DateTime(s"${thirdDay}T16:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime(s"${thirdDay}T16:55:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r5)
       }
-      val conferenceFridaySlot5extra = ConferenceRooms.allRoomsConf.map {
+      val conferenceFridaySlot5extra = ConferenceRooms.allRoomsConfFridayNight.map {
         r5 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
             new DateTime(s"${thirdDay}T17:10:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime(s"${thirdDay}T17:55:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r5)
       }
+
 
       // Cast codeur
       val conferenceFridaySlot6 = List(ConferenceRooms.NEUILLY_252AB).map {
