@@ -105,7 +105,8 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal: Proposal =>
           ZapActor.actor ! ProposalApproved(request.webuser.uuid, proposal)
       }
-      Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
+       Ok(s"Proposal ${proposalId} Accepted - You might want to Ctrl-click on the refuse link... this speed up the process")
+      //Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
   }
 
   def notifyRefused(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -114,7 +115,8 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal: Proposal =>
           ZapActor.actor ! ProposalRefused(request.webuser.uuid, proposal)
       }
-      Redirect(routes.ApproveOrRefuse.allRefusedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
+        Ok(s"Proposal ${proposalId} Refused - You might want to Ctrl-click on the refuse link... this speed up the process")
+      //Redirect(routes.ApproveOrRefuse.allRefusedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
   }
 
   val formApprove = Form(
