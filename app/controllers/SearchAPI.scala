@@ -49,7 +49,6 @@ object SearchAPI extends Controller {
     )(AdvancedSearchParam.apply)(AdvancedSearchParam.unapply _)
   )
 
-
   def index = UserAgentActionAndAllowOrigin(implicit request => Ok(views.html.SearchAPI.indexSearch(searchTalkForm)))
 
   def searchTalks() = UserAgentActionAndAllowOrigin {

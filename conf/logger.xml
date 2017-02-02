@@ -22,9 +22,8 @@
     <logger name="library.ElasticSearch" level="INFO"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="DEBUG"/>
-    <logger name="application.IndexMaster" level="INFO"/>
-    <logger name="application.Reaper" level="INFO"/>
-    <logger name="application.Tweetwall" level="INFO"/>
+    <logger name="application.IndexMaster" level="DEBUG"/>
+    <logger name="application.Reaper" level="DEBUG"/>
     <logger name="application.ApproveOrRefuse" level="INFO"/>
 
     <logger name="net.sf.ehcache.sizeof.verboseDebugLogging" level="INFO"/>

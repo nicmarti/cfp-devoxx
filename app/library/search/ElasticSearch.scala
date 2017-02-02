@@ -23,6 +23,7 @@
 
 package library.search
 
+import controllers.AdvancedSearchParam
 import models.ApprovedProposal
 import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
@@ -440,4 +441,50 @@ object ElasticSearch {
         }
     }
   }
+
+ def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
+    val index = ApprovedProposal.elasticSearchIndex()
+    val zeQuery =
+      s"""
+        |"dis_max": {
+        |   "queries": [
+        |                { "match": { "title":"${query.topic.getOrElse("")}"}},
+        |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
+        |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
+        |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
+        |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("")}" }},
+        |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("")}" }},
+        |                { "match": { "id":"${query.topic.getOrElse("")}"}}
+        |            ]
+        |}
+      """.stripMargin
+
+    val json: String = s"""
+        |{
+        | "from" : 0,
+        | "size" : 10,
+        | "query" : {
+        |   $zeQuery
+        | }
+        |}
+      """.stripMargin
+
+    if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
+      play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch advanced talk search query $json")
+    }
+
+    val futureResponse = WS.url(host + "/" + index + "/_search")
+      .withFollowRedirects(true)
+      .withRequestTimeout(4000)
+      .withAuth(username, password,BASIC)
+      .post(json)
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 200 => Success(response.body)
+          case other => Failure(new RuntimeException("Unable to perform search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+  }
+
 }
