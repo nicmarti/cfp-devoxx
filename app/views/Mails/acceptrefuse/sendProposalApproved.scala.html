@@ -18,6 +18,16 @@
     <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
     <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
     <br>
+<br>
+    @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
+    <p><strong>Attention</strong>, ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas de badge speaker</strong>. Vous devez
+        acheter une place à la conférence pour participer, si vous ne disposez pas par ailleurs d'un ticket.</P>
+     <p>Si vous ne pouvez pas obtenir de place, nous ne pourrons malheureusement pas vous accueillir.</p>
+        <p>Inscription en ligne sur le site : <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
+} else {
+    <p>Ce type de présentation donne droit à un badge speaker, et vous permettra d'accéder à l'ensemble de la conférence, ainsi qu'au diner des speakers.</p>
+    <p>Vous n'avez pas à vous inscrire, votre badge Speaker sera préparé pour vous à l'entrée de la conférence.</p>
+}
     <p>L'équipe de sélection de la conférence @Messages("longYearlyName")</p>
     <hr>
 }
@@ -35,7 +45,7 @@
     Registration details <a href="@ConferenceDescriptor.current().conferenceUrls.registration">@ConferenceDescriptor.current().conferenceUrls.registration</a>.</p>
 } else {
     <p>As a confirmed speaker you'll receive, a couple of weeks before the event takes place, a discount code for a Devoxx Combi pass (full week).</p>
-    <p>You'll also receive an invite for the exclusive speakers reception on Tuesday evening.</p>
+    <p>You'll also receive an invite for the exclusive speakers reception.</p>
 }
 
 <h3>For any question regarding your talk</h3>

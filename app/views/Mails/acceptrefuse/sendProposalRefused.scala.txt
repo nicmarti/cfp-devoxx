@@ -3,12 +3,11 @@
 @if(ConferenceDescriptor.current().frLangEnabled) {
 Bonjour,
 
-Nous avons le regret de vous informer que votre proposition @proposal.title au format @proposal.talkType.label n'a pas été acceptée.
+Nous avons le regret de vous informer que votre proposition @proposal.title au format @Messages(proposal.talkType.id) n'a pas été acceptée.
 Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.
 
-Si vous souhaitez vous inscrire, nous avons prolongé l'offre "early-bird" afin de vous faire
-bénéficier du prix discount. La sélection cette année a encore été difficile. Nous communiquerons sur
-notre site plus d'informations sur la sélection.
+La sélection cette année a encore été difficile avec 913 sujets reçus pour 228 slots.
+Nous communiquerons sur notre site plus d'informations sur la sélection.
 
 Merci pour votre proposition,
 
@@ -23,7 +22,7 @@ we received close to 700+ proposals and the available slots are very limited.
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
 We would like to thank you sincerely for your proposal.
-Hopefully we can still welcome you as a Devoxxian, registration details
+Hopefully we can still welcome you at @Messages("longYearlyName"), registration details
 
 @ConferenceDescriptor.current().conferenceUrls.registration
 
