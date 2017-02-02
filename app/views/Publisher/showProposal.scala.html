@@ -19,28 +19,10 @@
 
     <div class="clearfix"></div>
 
-    @if(proposal.videoLink.nonEmpty) {
-        <div class="columns large-offset-1 large-10" style="padding-bottom: 10px">
-
-        @if(proposal.videoLink.get.indexOf("www.youtube.com/watch?v=") > 0) {
-            <iframe width="100%" height="600" src="https://www.youtube.com/embed/@proposal.videoLink.get.split("=").toList.reverse.take(1)" frameborder="0" allowfullscreen></iframe>
-        } else {
-            @if(proposal.videoLink.get.indexOf("vimeo") > 0) {
-                <iframe src="//player.vimeo.com/video/@proposal.videoLink.get.split("/").toList.reverse.take(1)" width="100%" height="600" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            } else {
-                <a href="@proposal.videoLink.get" target="_blank">Related video</a>
-            }
-        }
-
-        </div>
-
-        <div class="clearfix"></div>
-    } else {
-        <div class="columns large-offset-1 large-11">
-            <h1>@proposal.title</h1>
-            <h3><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></h3>
-        </div>
-    }
+    <div class="columns large-offset-1 large-11">
+        <h1>@proposal.title</h1>
+        <h3><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></h3>
+    </div>
 
     <div class="columns large-offset-1 large-6">
         <table>
