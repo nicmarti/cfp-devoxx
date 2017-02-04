@@ -6,9 +6,6 @@
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            @*<a href="@routes.Publisher.showByDay("mon")">@Messages("sw.agenda.mon")</a> /*@
-            @*<a href="@routes.Publisher.showByDay("tue")">@Messages("sw.agenda.tue")</a> /*@
-            @*<a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /*@
             <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
             <a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a>
         </p>
@@ -23,16 +20,24 @@
                     <td>@roomName.name</td>
                 }
             </tr>
+
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                 <tr >
                     <th class="timeSlot">
                         @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
                     </th>
-                    @rooms.sorted.map { room =>
-                        @tags.publisher.tagRenderRow(subSlots,room,rooms.size)
-                    }
+                        @if(subSlots.head.break.isDefined) {
+                            <td class="break" colspan="9">
+                                @subSlots.head.break.get.nameEN
+                            </td>
+                        } else {
+                            @rooms.sorted.map { room =>
+                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size)
+                            }
+                        }
                 </tr>
             }
+            
             <tr>
                 <th><i class="icon-time"></i> Room</th>
                 @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>
