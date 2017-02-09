@@ -55,6 +55,14 @@
             <a href="@routes.Backoffice.sanityCheckSchedule()"  class="btn btn-sm btn-primary"><i class="icon-medkit"></i> Sanity check for schedule</a>
             <a href="@routes.Favorites.showAllForAdmin()"  class="btn btn-sm btn-primary"><i class="icon-calendar"></i> Most popular talks faved on Agenda</a>
 
+            @if(controllers.Backoffice.isScheduleInProgressMessageDisplayStatus().equals(Some("Hide"))) {
+                <a href="@routes.Backoffice.setSchedulingInProgressMessageTo("Show")" class="btn btn-sm btn-primary"><i class="icon-info-sign"></i>
+                    Show Schedule-in-progress message</a>
+            } else {
+                <a href="@routes.Backoffice.setSchedulingInProgressMessageTo("Hide")" class="btn btn-sm btn-primary"><i class="icon-remove-sign"></i>
+                    Hide Schedule-in-progress message</a>
+            }
+
             <h4><i class="icon-group"></i> Webusers</h4>
             <a href="@routes.CFPAdmin.allWebusers()" class="btn btn-sm btn-primary"><i class="icon-user"></i> @Messages("admin.btn.webuser")</a>
             <a href="@routes.CFPAdmin.allCFPWebusers()" class="btn btn-sm btn-primary"><i class="icon-user-md"></i> @Messages("admin.btn.tracklead")</a>
