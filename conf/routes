@@ -269,6 +269,7 @@ POST          /schedulling/slots                                                
 DELETE        /schedulling/deletescheduledConfigurations                        controllers.SchedullingController.deleteScheduleConfiguration(id:String)
 POST          /schedulling/publish                                              controllers.SchedullingController.publishScheduleConfiguration()
 GET           /schedulling/published                                            controllers.SchedullingController.getPublishedSchedule(confType:String, day:Option[String])
+GET           /schedulling/setSchedulingInProgressMessageTo                     controllers.Backoffice.setSchedulingInProgressMessageTo(displayStatus: String)
 
 # WishList
 GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishList()
@@ -346,7 +347,7 @@ GET           /toptalks                                                         
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
-GET           /bp/fullAgenda                                                     controllers.Backoffice.showAllAgendaForInge()
+GET           /bp/fullAgenda                                                    controllers.Backoffice.showAllAgendaForInge()
 
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()

@@ -5,7 +5,9 @@
         <p class="breadcrumb">
             <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; @Messages("sw.all." + talkType)
         </p>
-        <h4>Scheduling in full progress... it's an art form, it can take some time & iterations :)</h4>
+        @if(controllers.Backoffice.isScheduleInProgressMessageDisplayStatus().equals(Some("Show"))) {
+            <h4>Scheduling in full progress... it's an art form, it can take some time & iterations :)</h4>
+        }
     </div>
 
     @proposals.groupBy(_.track).sliding(3,3).map { case oneRow =>
