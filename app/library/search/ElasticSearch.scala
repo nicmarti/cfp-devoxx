@@ -25,14 +25,13 @@ package library.search
 
 import models.ApprovedProposal
 import play.api.libs.ws.WS
-
-import akka.actor._
-import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
-import scala.util.{Try, Failure, Success}
+
+import controllers.AdvancedSearchParam
+import scala.util.{Failure, Success, Try}
 import scala.concurrent.Future
 import play.api.Play
-import com.ning.http.client.Realm.AuthScheme
+import com.ning.http.client.Realm.AuthScheme.BASIC
 
 /**
  * Wrapper and helper, to reuse the ElasticSearch REST API.
@@ -58,7 +57,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Indexing to $index $json")
     }
     val futureResponse = WS.url(host + "/" + index)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .put(json)
     futureResponse.map {
       response =>
@@ -76,7 +75,7 @@ object ElasticSearch {
     }
 
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -102,7 +101,7 @@ object ElasticSearch {
     }
     val url = s"$host/${index.toLowerCase}"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(settings)
     futureResponse.map {
       response =>
@@ -128,7 +127,7 @@ object ElasticSearch {
   def createMapping(index: String, mapping: String) = {
     val url = s"$host/$index/_mapping?ignore_conflicts=true"
     val futureResponse = WS.url(url)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .withRequestTimeout(6000)
       .put(mapping)
     futureResponse.map {
@@ -146,7 +145,7 @@ object ElasticSearch {
     val url = s"$host/_refresh"
     val futureResponse = WS.url(url)
       .withRequestTimeout(6000)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post("{}")
     futureResponse.map {
       response =>
@@ -164,7 +163,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Deleting index $indexName")
     }
     val futureResponse = WS.url(host + "/" + indexName + "/")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .delete()
     futureResponse.map {
       response =>
@@ -180,7 +179,7 @@ object ElasticSearch {
   def doSearch(query: String): Future[Try[String]] = {
     val serviceParams = Seq(("q", query))
     val futureResponse = WS.url(host + "/_search")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .withQueryString(serviceParams: _*).get()
     futureResponse.map {
       response =>
@@ -222,7 +221,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -277,7 +276,7 @@ object ElasticSearch {
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -303,16 +302,17 @@ object ElasticSearch {
         |         "fields" : ["summary"],
         |         "size":100,
         |         "exclude": ["a","on","de","et","les","la","des","pour","le","en","un","à","vous","une","est","dans","cette",
+        |         "avant","faut","site","certains","quoi","dont","me","deux","trois","quatre","fois","façon","vers",
         |        "du","que","avec","comment","nous","sur","ce","plus","qui","au","ou","il","votre","pas",
         |        "mais","par","applications","ne","tout","présentation","faire","vos","peut","sont","you",
         |        "si","aussi","se","son","can","ces","je","bien","être","tous","comme","we","sans","mettre",
         |        "verrons","permet","quelques","avez","aux","y","travers","notre","entre",
         |        "cet","ont","même","mise","soit","permettant","développeur","also",
-        |        "your", "quand", "temps", "systèmes", "data", "système","permettent",
+        |        "your", "quand", "temps", "systèmes", "système","permettent",
         |        "réel", "hands", "facile", "rencontre", "puissance", "outils","peuvent","etc",
         |        "minutes", "why", "who", "webs", "vivre", "vite", "tour", "time","l'occasion",
         |        "testez", "sérialisez", "suite", "side", "recommandation","d’un","qu'il",
-        |        "programming", "programmation", "pourquoi","cela","like","point","chaque","bonnes","ans","when",
+        |        "pourquoi","cela","like","point","chaque","bonnes","ans","when",
         |        "alors","lors","leur","leurs","pourtant","peu","elle","il","là","toutes",
         |        "venez", "temps", "ses", "talk", "sa", "allons", "all", "différents",
         |        "mieux", "have", "propose", "new", "place", "également", "fait","from",
@@ -335,7 +335,7 @@ object ElasticSearch {
       """.stripMargin
 
     val futureResponse = WS.url(host + "/" + index + "/_search?search_type=count")
-      .withAuth(username, password, AuthScheme.BASIC)
+      .withAuth(username, password, BASIC)
       .post(json)
     futureResponse.map {
       response =>
@@ -343,6 +343,153 @@ object ElasticSearch {
           case 201 => Success(response.body)
           case 200 => Success(response.body)
           case other => Failure(new RuntimeException("Unable to load tag, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+  }
+
+  def doStats(zeQuery: String, index: String, maybeUserFilter: Option[String]) = {
+    val json: String =
+      s"""
+        |{
+        |  "from" : 0, "size" : 10,
+        |   $zeQuery
+        |   , "facets" : {
+        |       "villeFacet" : {
+        |        "terms" : {
+        |           "field" : "ville",
+        |           "all_terms":false,
+        |           "order" : "count",
+        |           "size":50
+        |         }
+        |         ${maybeUserFilter.getOrElse("")}
+        |      },
+        |     "idRaisonAppelFacet" : {
+        |        "terms" : {
+        |          "field" : "idRaisonAppel",
+        |          "all_terms":true,
+        |          "order" : "term",
+        |          "size":50
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |      },
+        |      "clotureFacet":{
+        |       "terms" : {
+        |         "field" : "cloture"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     },
+        |      "statusFacet" : {
+        |        "terms" : {
+        |          "field" : "status",
+        |          "all_terms":true,
+        |          "order" : "term",
+        |          "size":20
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |      },
+        |      "agenceFacet" : {
+        |        "terms" : {
+        |          "field" : "idAgence",
+        |          "all_terms":false,
+        |          "order" : "term",
+        |          "size":50
+        |        }
+        |       ${maybeUserFilter.getOrElse("")}
+        |      },
+        |     "histoWeek" : {
+        |        "date_histogram" : {
+        |          "field" : "dateSaisie",
+        |          "interval" : "day"
+        |        }
+        |        ${maybeUserFilter.getOrElse("")}
+        |     },
+        |     "statsTicket":{
+        |       "statistical":{
+        |         "field":"delaiIntervention"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     },
+        |     "typeInterFacet" : {
+        |      "terms":{
+        |        "field":"delaiStatus",
+        |        "size":100
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |     ,
+        |     "statsAgeFacet" : {
+        |      "statistical":{
+        |         "field":"age"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |     ,
+        |     "statsReactionFacet" : {
+        |      "statistical":{
+        |         "field":"tempsReactionToMinute"
+        |       }
+        |       ${maybeUserFilter.getOrElse("")}
+        |     }
+        |   }
+        | }
+      """.stripMargin
+
+    if (play.Logger.of("ElasticSearch").isDebugEnabled) {
+      play.Logger.of("ElasticSearch").debug("Sending to ES request:")
+      play.Logger.of("ElasticSearch").debug(json)
+    }
+
+    val futureResponse = WS.url(host + "/" + index + "/_search").withRequestTimeout(4000).post(json)
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 200 => Success(response.body)
+          case other => Failure(new RuntimeException("Unable to index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
+        }
+    }
+  }
+
+ def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
+    val index = ApprovedProposal.elasticSearchIndex()
+    val zeQuery =
+      s"""
+        |"dis_max": {
+        |   "queries": [
+        |                { "match": { "title":"${query.topic.getOrElse("")}"}},
+        |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
+        |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
+        |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
+        |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("")}" }},
+        |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("")}" }},
+        |                { "match": { "id":"${query.topic.getOrElse("")}"}}
+        |            ]
+        |}
+      """.stripMargin
+
+    val json: String = s"""
+        |{
+        | "from" : 0,
+        | "size" : 10,
+        | "query" : {
+        |   $zeQuery
+        | }
+        |}
+      """.stripMargin
+
+    if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
+      play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch advanced talk search query $json")
+    }
+
+    val futureResponse = WS.url(host + "/" + index + "/_search")
+      .withFollowRedirects(true)
+      .withRequestTimeout(4000)
+      .withAuth(username, password, BASIC)
+      .post(json)
+    futureResponse.map {
+      response =>
+        response.status match {
+          case 200 => Success(response.body)
+          case other => Failure(new RuntimeException("Unable to perform search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
   }

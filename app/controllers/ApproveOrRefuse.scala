@@ -105,7 +105,8 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal: Proposal =>
           ZapActor.actor ! ProposalApproved(request.webuser.uuid, proposal)
       }
-      Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
+       Ok(s"Proposal $proposalId Accepted - You might want to Ctrl-click on the refuse link... this speed up the process")
+      //Redirect(routes.ApproveOrRefuse.allApprovedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
   }
 
   def notifyRefused(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -114,7 +115,8 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal: Proposal =>
           ZapActor.actor ! ProposalRefused(request.webuser.uuid, proposal)
       }
-      Redirect(routes.ApproveOrRefuse.allRefusedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
+        Ok(s"Proposal $proposalId Refused - You might want to Ctrl-click on the refuse link... this speed up the process")
+      //Redirect(routes.ApproveOrRefuse.allRefusedByTalkType(talkType)).flashing("success" -> s"Notified speakers for Proposal ID $proposalId")
   }
 
   val formApprove = Form(
@@ -157,7 +159,7 @@ object ApproveOrRefuse extends SecureCFPController {
 
       val (accepted, rejected) = allMyProposals.partition(p => p.state == ProposalState.APPROVED || p.state == ProposalState.DECLINED || p.state == ProposalState.ACCEPTED || p.state == ProposalState.BACKUP)
       Ok(views.html.ApproveOrRefuse.acceptOrRefuseTalks(accepted, rejected.filter(_.state == ProposalState.REJECTED), cssrf))
-        .withSession(session.+(("CSSRF", Crypt.sha1(cssrf))))
+        .withSession(request.session.+(("CSSRF", Crypt.sha1(cssrf))))
   }
 
   val formAccept = Form(tuple("proposalId" -> nonEmptyText(maxLength = 8), "dec" -> nonEmptyText, "cssrf_t" -> nonEmptyText))
@@ -169,7 +171,7 @@ object ApproveOrRefuse extends SecureCFPController {
         Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error" -> "Invalid form, please check and validate again")
         , validForm => {
           val cssrf = Crypt.sha1(validForm._3)
-          val fromSession = session.get("CSSRF")
+          val fromSession = request.session.get("CSSRF")
           if (Some(cssrf) != fromSession) {
             Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("error" -> "Invalid CSSRF token")
           } else {
