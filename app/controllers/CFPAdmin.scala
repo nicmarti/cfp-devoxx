@@ -405,7 +405,7 @@ object CFPAdmin extends SecureCFPController {
 
       val file = new File(dir, "speakersDevoxxUK2017.csv")
 
-      val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"), true)
+      val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), true)
 
       allSpeakers.sortBy(_.email).foreach {
         s =>
@@ -421,7 +421,7 @@ object CFPAdmin extends SecureCFPController {
             writer.print(s.name.getOrElse("?").capitalize)
             writer.print(",")
 
-            Proposal.allAcceptedForSpeaker(s.uuid).foreach { p =>
+            proposals.foreach { p =>
               ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map { slot =>
                 writer.print(Messages(p.talkType.id))
                 writer.print(": \"" + p.title.replaceAll(",", " ") + "\"")
@@ -430,8 +430,8 @@ object CFPAdmin extends SecureCFPController {
               }.getOrElse {
                 writer.print("\"")
                 writer.print(p.title.replaceAll(",", " "))
-                writer.print("\"")
-                writer.print(s" ${p.talkType.label}}] not yet scheduled")
+                writer.print("\", ")
+                writer.print(s" ${Messages(p.talkType.label)} not yet scheduled")
 
               }
 
