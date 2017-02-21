@@ -39,7 +39,7 @@
     @acceptedProposals.map {  proposal=>
         <div class="divider"></div>
         <div class="columns large-12 team-member row">
-              @tags.publisher.renderIconForTrack(proposal.track) @proposal.track.htmlUnescapeLabel()
+              @tags.publisher.renderIconForTrack(proposal.track) @Html(Messages(proposal.track.label))
               <h4 class="speakerTitle"><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h4>
               <p><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)"> @Messages(proposal.talkType.id)</a></p>
               @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)){
