@@ -30,7 +30,6 @@ import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.{SimpleResult, _}
-import play.api.templates.Html
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -256,7 +255,7 @@ object RestAPI extends Controller {
                   Map(
                     "id" -> Json.toJson(proposal.id),
                     "title" -> Json.toJson(proposal.title),
-                    "track" -> Json.toJson(Html(Messages(proposal.track.label))),
+                    "track" -> Json.toJson(Messages(proposal.track.label)),
                     "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                     "links" -> Json.toJson(
                       List(
@@ -310,7 +309,7 @@ object RestAPI extends Controller {
                   "lang" -> Json.toJson(proposal.lang),
                   "summary" -> Json.toJson(proposal.summary),
                   "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
-                  "track" -> Json.toJson(Html(Messages(proposal.track.label))),
+                  "track" -> Json.toJson(Messages(proposal.track.label)),
                   "trackId" -> Json.toJson(proposal.track.id),
                   "speakers" -> Json.toJson(allSpeakers.map {
                     speaker =>
@@ -439,7 +438,7 @@ object RestAPI extends Controller {
                       "lang" -> Json.toJson(proposal.lang),
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
-                      "track" -> Json.toJson(Html(Messages(proposal.track.label))),
+                      "track" -> Json.toJson(Messages(proposal.track.label)),
                       "trackId" -> Json.toJson(proposal.track.id),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                       "speakers" -> Json.toJson(allSpeakers.map {
@@ -509,7 +508,7 @@ object RestAPI extends Controller {
                       "lang" -> Json.toJson(proposal.lang),
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
-                      "track" -> Json.toJson(Html(Messages(proposal.track.label))),
+                      "track" -> Json.toJson(Messages(proposal.track.label)),
                       "trackId" -> Json.toJson(proposal.track.id),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                       "speakers" -> Json.toJson(allSpeakers.map {
@@ -676,7 +675,7 @@ object RestAPI extends Controller {
                       "lang" -> Json.toJson(proposal.lang),
                       "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                       "summary" -> Json.toJson(proposal.summary),
-                      "track" -> Json.toJson(Html(Messages(proposal.track.label))),
+                      "track" -> Json.toJson(Messages(proposal.track.label)),
                       "trackId" -> Json.toJson(proposal.track.id),
                       "talkType" -> Json.toJson(Messages(proposal.talkType.id)),
                       "speakers" -> Json.toJson(allSpeakers.map {
