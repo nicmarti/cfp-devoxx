@@ -23,6 +23,7 @@
 
 package models
 
+import play.api.i18n.Messages
 import play.api.libs.json.{Format, Json}
 
 /**
@@ -32,6 +33,9 @@ import play.api.libs.json.{Format, Json}
  * Created: 06/11/2013 01:41
  */
 case class Track(id: String, label: String) {
+  def htmlUnescapeLabel(): String = {
+    Messages(label).replaceAll("&amp;", "&")
+  }
 }
 
 object Track {
