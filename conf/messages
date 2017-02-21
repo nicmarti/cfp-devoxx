@@ -193,7 +193,7 @@ ssj.label=Server Side Java
 serverside.label=Server Side Java
 track.ssj.desc=Java EE, appservers, databases, MOM, batch processing &amp; related JSRs
 
-lang.label=Programming languages
+lang.label=Programming Languages
 track.lang.desc=Other languages running on the JVM, functional languages, mobile and new kids on the block. The languages, tools, libraries and best practices
 
 bigdata.label=Big Data & Machine Learning
