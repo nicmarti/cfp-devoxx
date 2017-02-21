@@ -1,5 +1,7 @@
 @(proposals:List[Proposal], track:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main(track + ", All submitted proposals") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
@@ -18,7 +20,7 @@
                         <div class="col-md-12">
 
                             @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
-                                <a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Messages(track.label)</a>
+                                <a href="@routes.CFPAdmin.allProposalsByTrack(track.id)" class="btn btn-primary btn-sm">@Html(Messages(track.label))</a>
                             }
 
                             @if(flash.get("error").isDefined) {

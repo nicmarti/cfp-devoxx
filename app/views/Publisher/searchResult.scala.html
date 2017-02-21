@@ -1,5 +1,7 @@
 @(total:Int, results:List[Proposal], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
+@import play.api.templates.Html
+
 @views.html.Publisher.devoxxUK2017("Search result"){
   <div class="large-12 columns">
 <h2 class="entry-title">
@@ -29,7 +31,7 @@
                 <tr>
                     <td class="room">
                         <span class="track">
-                            @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
+                            @tags.publisher.renderIconForTrack(p.track) @Html(Messages(p.track.label))
                         </span>
                         <br>
                         <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a> (@Messages(p.talkType.id))</span>

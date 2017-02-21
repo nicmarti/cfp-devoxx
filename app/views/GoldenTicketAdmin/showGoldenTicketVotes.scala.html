@@ -1,5 +1,7 @@
 @(allVotes:List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main("All votes") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -74,7 +76,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @Messages(proposal.track.label)
+                                        @Html(Messages(proposal.track.label))
                                     </td>
                                     <td>
                                         @Messages(proposal.talkType.id)

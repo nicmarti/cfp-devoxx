@@ -1,5 +1,7 @@
 @(speakersByCompany:List[(String,Set[Speaker])], proposals:List[(String,scala.collection.immutable.Set[Proposal])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main("CFP Speakers") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
@@ -39,7 +41,7 @@
             @proposals.map { case (company, props) =>
             @*<h3>@company.capitalize @props.size talk(s)</h3>*@
                 @props.toList.sortBy(_.talkType.id).map {proposal=>
-                    @proposal.state.code;@Messages(proposal.talkType.id);@Messages(proposal.track.label);@proposal.title;@company.capitalize;@proposal.allSpeakers.map(_.cleanName).mkString(";");@proposal.allSpeakers.map(_.email).mkString(";")<br>
+                    @proposal.state.code;@Messages(proposal.talkType.id);@Html(Messages(proposal.track.label));@proposal.title;@company.capitalize;@proposal.allSpeakers.map(_.cleanName).mkString(";");@proposal.allSpeakers.map(_.email).mkString(";")<br>
                 }
             }
 

@@ -3,6 +3,8 @@
   isDigestFilterOn: Boolean,
   params: controllers.LeaderBoardParams)
 
+@import play.api.templates.Html
+
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <h2>Nouvelles propositions depuis le dernier digest</h2>
 }else {
@@ -16,7 +18,7 @@
     <LI>
         <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.voteForProposal(proposal.id)">@proposal.title</a> by
         @proposal.allSpeakers.map(speaker => speaker.cleanName).mkString(", ") -
-        (@Messages(proposal.track.label) / @Messages(proposal.talkType.simpleLabel))
+        (@Html(Messages(proposal.track.label)) / @Messages(proposal.talkType.simpleLabel))
     </LI>
 }
 </UL>

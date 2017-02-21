@@ -2,6 +2,8 @@
   voteForm: Form[Int],
   maybeMyVote: Option[ReviewByGoldenTicket])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
+@import play.api.templates.Html
+
 @main(s"${Messages("cfp.goldenTicket")} - Show ${proposal.id}") {
     <div class="row">
         <div class="col-md-12">
@@ -22,7 +24,7 @@
                         <tbody>
                             <tr>
                                 <td>@proposal.title</td>
-                                <td>@Messages(proposal.track.label)</td>
+                                <td>@Html(Messages(proposal.track.label))</td>
                                 <td>@Messages(proposal.talkType.id)</td>
                             </tr>
                             <tr>

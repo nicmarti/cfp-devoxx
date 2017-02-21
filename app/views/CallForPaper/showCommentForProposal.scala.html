@@ -1,5 +1,7 @@
 @(proposal: Proposal, comments: List[Comment], msgToCommittee: Form[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main("Comments for proposal " + proposal.id) {
     <div class="row">
         <div class="col-md-12">
@@ -23,7 +25,7 @@
                                 @proposal.title
                                 </td>
                                 <td>
-                                @Messages(proposal.track.label)
+                                @Html(Messages(proposal.track.label))
                                 </td>
                                 <td>@Messages(proposal.talkType.id)</td>
                             </tr>

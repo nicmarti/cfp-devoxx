@@ -4,6 +4,8 @@
   ascdesc:Option[String],
   track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main("CFP Admin") {
     <div class="row">
         <div class="col-lg-offset-5 col-md-5">
@@ -69,7 +71,7 @@
                                         @proposal.title
                                     </td>
                                     <td>
-                                    @Messages(proposal.track.label)
+                                    @Html(Messages(proposal.track.label))
                                     </td>
                                     <td>
                                         @tags.renderGravatar(proposal.mainSpeaker)

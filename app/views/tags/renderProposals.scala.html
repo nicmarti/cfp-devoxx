@@ -1,5 +1,6 @@
 @(proposals: Map[String, Proposal], currentUser: String)(implicit req: RequestHeader)
 
+@import play.api.templates.Html
 
 @defining(proposals.values.partition(_.state.code==ProposalState.ARCHIVED.code)) { case (archivedProposals, notArchived) =>
 
@@ -59,7 +60,7 @@
                 </td>
             }
         <td>@Messages(proposal.talkType.id)</td>
-        <td>@Messages(proposal.track.label)</td>
+        <td>@Html(Messages(proposal.track.label))</td>
         </tr>
         }
     }

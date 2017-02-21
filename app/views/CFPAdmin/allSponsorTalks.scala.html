@@ -1,4 +1,7 @@
 @(proposals: List[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import play.api.templates.Html
+
 @main("All sponsors's talks") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
@@ -19,7 +22,7 @@
                 <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>@proposal.title</h3>
-                    <h4>@Messages(proposal.track.label) - @Messages(proposal.talkType.id)</h4>
+                    <h4>@Html(Messages(proposal.track.label)) - @Messages(proposal.talkType.id)</h4>
                     <p><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a> </p>
                     @tags.renderGravatar(proposal.mainSpeaker)
                     @proposal.secondarySpeaker.map { sc =>

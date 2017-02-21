@@ -1,4 +1,7 @@
 @(tagName: String, proposals: Iterable[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import play.api.templates.Html
+
 @views.html.Publisher.devoxxUK2017("Proposals by Tag") {
   <div class="large-12">
     <h3>@tags.renderMostProposals(proposals.size) found with tag '@tagName' </h3>
@@ -10,7 +13,7 @@
   @proposals.groupBy(_.track).sliding(3,3).map { case oneRow =>
     @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
     <div class="large-4 columns trackBox">
-      @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+      @tags.publisher.renderIconForTrack(track) @Html(Messages(track.label))
     <ul>
     @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
       <li>

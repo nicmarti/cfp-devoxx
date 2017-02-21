@@ -1,5 +1,7 @@
 @(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main("All refused talks") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -40,7 +42,7 @@
 
 
                     @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
-                        <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
+                        <span class="label label-info">@listOfProps.size @Html(Messages(track.label))</span>
                     }
 
                     <br>
@@ -74,7 +76,7 @@
                                     }
                                     </td>
                                     <td>
-                                        @Messages(proposal.track.label)
+                                        @Html(Messages(proposal.track.label))
                                     </td>
                                     <td>
                                         @Messages(proposal.state.code)
