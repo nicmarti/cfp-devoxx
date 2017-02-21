@@ -1,5 +1,7 @@
-@import play.api.templates.Html
 @(currentUser:String, proposal: models.Proposal, nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@import play.api.templates.Html
+
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
         <div class="col-md-12">

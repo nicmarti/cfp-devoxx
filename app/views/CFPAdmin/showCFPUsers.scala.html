@@ -1,8 +1,6 @@
-@import play.api.templates.Html
 @(allTrackLeaders:Seq[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import helper.twitterBootstrap._
-@import org.apache.commons.lang3.StringUtils
+@import play.api.templates.Html
 
 @main("Diff between you and another reviewer"){
 <div class="row">

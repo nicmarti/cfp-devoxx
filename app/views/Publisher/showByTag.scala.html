@@ -1,5 +1,7 @@
-@import play.api.templates.Html
 @(tagName: String, proposals: Iterable[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import play.api.templates.Html
+
 @views.html.Publisher.devoxxUK2017("Proposals by Tag") {
   <div class="large-12">
     <h3>@tags.renderMostProposals(proposals.size) found with tag '@tagName' </h3>

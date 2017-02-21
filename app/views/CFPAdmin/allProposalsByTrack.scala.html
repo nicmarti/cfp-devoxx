@@ -1,5 +1,6 @@
-@import play.api.templates.Html
 @(proposals:List[Proposal], track:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import play.api.templates.Html
 
 @main(track + ", All submitted proposals") {
 

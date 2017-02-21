@@ -1,6 +1,7 @@
-@import play.api.templates.Html
 @(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved: Long, totalRemaining: Long, confType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
     @import models.Review.{AverageNote, TotalAbst, TotalVoter}
+    @import play.api.templates.Html
 
     @main("All votes") {
         <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>

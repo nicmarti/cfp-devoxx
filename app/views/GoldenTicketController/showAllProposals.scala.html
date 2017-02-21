@@ -1,9 +1,10 @@
-@import play.api.templates.Html
 @(allProposalsForReview: List[Proposal],
   page:Int,
   sort:Option[String],
   ascdesc:Option[String],
   track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@import play.api.templates.Html
 
 @main("CFP Admin") {
     <div class="row">

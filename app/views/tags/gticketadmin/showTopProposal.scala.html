@@ -1,6 +1,6 @@
-@import play.api.templates.Html
 @(allConf: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
+@import play.api.templates.Html
 
  <div class="col-sm-12 col-md-6 col-lg-6">
                                 <h4>@Messages("gtAdmin.top5")</h4>

@@ -1,5 +1,6 @@
-@import play.api.templates.Html
 @(speakersByCompany:List[(String,Set[Speaker])], proposals:List[(String,scala.collection.immutable.Set[Proposal])])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import play.api.templates.Html
 
 @main("CFP Speakers") {
 <div class="row">

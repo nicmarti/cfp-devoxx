@@ -1,5 +1,6 @@
-@import play.api.templates.Html
 @(allVotes:List[(models.Proposal,(models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import play.api.templates.Html
 
 @main("All votes") {
 

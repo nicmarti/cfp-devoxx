@@ -1,7 +1,8 @@
-@import play.api.templates.Html
 @(proposal: Proposal,
   voteForm: Form[Int],
   maybeMyVote: Option[ReviewByGoldenTicket])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+
+@import play.api.templates.Html
 
 @main(s"${Messages("cfp.goldenTicket")} - Show ${proposal.id}") {
     <div class="row">

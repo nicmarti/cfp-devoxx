@@ -1,5 +1,6 @@
-@import play.api.templates.Html
 @(total:Int, results:List[Proposal], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import play.api.templates.Html
 
 @views.html.Publisher.devoxxUK2017("Search result"){
   <div class="large-12 columns">

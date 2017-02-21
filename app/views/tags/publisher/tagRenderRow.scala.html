@@ -1,6 +1,7 @@
-@import play.api.templates.Html
 @(subSlots: List[Slot], room: Room, roomSize: Int)(implicit req:RequestHeader)
 
+    @import play.api.templates.Html
+    
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated) {
             @if(zeSlot.from.getHourOfDay < 11 && zeSlot.from.dayOfWeek().get() == 3) {

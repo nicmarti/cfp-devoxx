@@ -1,8 +1,9 @@
-@import play.api.templates.Html
 @(digest: Digest,
   proposals:List[Proposal],
   isDigestFilterOn: Boolean,
   params: controllers.LeaderBoardParams)
+
+@import play.api.templates.Html
 
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <h2>Nouvelles propositions depuis le dernier digest</h2>
