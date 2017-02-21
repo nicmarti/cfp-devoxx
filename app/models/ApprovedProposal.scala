@@ -41,10 +41,10 @@ object ApprovedProposal {
     , ("lab.label", ConferenceProposalConfigurations.LAB.slotsCount)
     , ("quick.label", ConferenceProposalConfigurations.QUICK.slotsCount)
     , ("bof.label", ConferenceProposalConfigurations.BOF.slotsCount)
+    , ("hack.label", ConferenceProposalConfigurations.HACK.slotsCount)
     , ("opening.key.label", ConferenceProposalConfigurations.OPENING_KEY.slotsCount)
     , ("closing.key.label", ConferenceProposalConfigurations.CLOSING_KEY.slotsCount)
     , ("ignite.label", ConferenceProposalConfigurations.IGNITE.slotsCount)
-    , ("hack.label", ConferenceProposalConfigurations.HACK.slotsCount)
   )
 
   def countApproved(talkType: String): Long = Redis.pool.withClient {
@@ -52,7 +52,7 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:key") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
+          client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:quick") + client.scard("Approved:bof") + client.scard("Approved:hack") + client.scard("Approved:tia") + client.scard("Approved:opening_key") + client.scard("Approved:closing_key") + client.scard("Approved:ignite")
         case other =>
           client.scard(s"Approved:$talkType")
       }
@@ -63,7 +63,7 @@ object ApprovedProposal {
       talkType match {
         case null => 0
         case "all" =>
-          client.scard("Refused:conf") + client.scard("Refused:lab") + client.scard("Refused:bof") + client.scard("Refused:tia") + client.scard("Refused:uni") + client.scard("Refused:quick")
+          client.scard("Refused:conf") + client.scard("Refused:lab") + client.scard("Refused:quick") + client.scard("Refused:bof") + client.scard("Refused:hack") + client.scard("Refused:tia") + client.scard("Refused:opening_key") + client.scard("Refused:closing_key") + client.scard("Refused:ignite")
         case other =>
           client.scard(s"Refused:$talkType")
       }
