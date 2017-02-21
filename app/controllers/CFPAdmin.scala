@@ -422,15 +422,21 @@ object CFPAdmin extends SecureCFPController {
             writer.print(",")
 
             proposals.foreach { p =>
+              val proposalUrl = "http://" + ConferenceDescriptor.current().conferenceUrls.cfpHostname +
+                routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)
+
               ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map { slot =>
                 writer.print(Messages(p.talkType.id))
                 writer.print(": \"" + p.title.replaceAll(",", " ") + "\"")
+                writer.print(": \"" + p.title.replaceAll(",", " ") + "\"")
+                writer.print(proposalUrl + ", ")
                 writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
                 writer.print(s"from ${slot.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")} to ${slot.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")}")
               }.getOrElse {
                 writer.print("\"")
                 writer.print(p.title.replaceAll(",", " "))
                 writer.print("\", ")
+                writer.print(proposalUrl + ", ")
                 writer.print(s" ${Messages(p.talkType.label)} not yet scheduled")
 
               }
