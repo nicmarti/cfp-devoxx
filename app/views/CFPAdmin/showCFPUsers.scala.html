@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(allTrackLeaders:Seq[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @import helper.twitterBootstrap._
@@ -34,7 +35,7 @@
                 <tbody>
                         @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
                         <tr>
-                            <td>@Messages(track.label)</td>
+                            <td>@Html(Messages(track.label))</td>
                             <td>
                             <div class="input">
                                 <select id="@track.id" name="@track.id">

@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All refused talks") {
@@ -40,7 +41,7 @@
 
 
                     @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
-                        <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
+                        <span class="label label-info">@listOfProps.size @Html(Messages(track.label))</span>
                     }
 
                     <br>
@@ -74,7 +75,7 @@
                                     }
                                     </td>
                                     <td>
-                                        @Messages(proposal.track.label)
+                                        @Html(Messages(proposal.track.label))
                                     </td>
                                     <td>
                                         @Messages(proposal.state.code)

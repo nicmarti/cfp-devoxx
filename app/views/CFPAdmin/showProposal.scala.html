@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
@@ -26,7 +27,7 @@
                         <tbody>
                             <tr>
                                 <td>@proposal.title</td>
-                                <td>@Messages(proposal.track.label)</td>
+                                <td>@Html(Messages(proposal.track.label))</td>
                                 <td>@Messages(proposal.talkType.id)</td>
                                 <td>@proposal.id</td>
                             </tr>

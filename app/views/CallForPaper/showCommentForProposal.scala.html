@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(proposal: Proposal, comments: List[Comment], msgToCommittee: Form[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("Comments for proposal " + proposal.id) {
@@ -23,7 +24,7 @@
                                 @proposal.title
                                 </td>
                                 <td>
-                                @Messages(proposal.track.label)
+                                @Html(Messages(proposal.track.label))
                                 </td>
                                 <td>@Messages(proposal.talkType.id)</td>
                             </tr>

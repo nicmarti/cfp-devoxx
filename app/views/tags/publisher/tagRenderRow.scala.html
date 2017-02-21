@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(subSlots: List[Slot], room: Room, roomSize: Int)(implicit req:RequestHeader)
 
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
@@ -10,7 +11,7 @@
         }
         @zeSlot.proposal.map { p: Proposal =>
             <td class="room @room.id @zeSlot.id">
-                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
+                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Html(Messages(p.track.label)) @tags.publisher.renderFavorite(p.id)</span>
                 <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                     @tags.publisher.renderSpeaker(speakerUUID)

@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(proposals: Map[String, Proposal], currentUser: String)(implicit req: RequestHeader)
 
 
@@ -59,7 +60,7 @@
                 </td>
             }
         <td>@Messages(proposal.talkType.id)</td>
-        <td>@Messages(proposal.track.label)</td>
+        <td>@Html(Messages(proposal.track.label))</td>
         </tr>
         }
     }

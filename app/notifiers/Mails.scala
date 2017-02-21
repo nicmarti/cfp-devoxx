@@ -28,6 +28,7 @@ import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.mailer.{Email, MailerPlugin}
 import controllers.LeaderBoardParams
+import play.api.templates.Html
 
 /**
   * Sends all emails
@@ -104,8 +105,8 @@ object Mails {
       to = Seq(committeeEmail),
       cc = listOfOtherSpeakersEmail,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()),
-      bodyHtml = Some(views.html.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()),
+      bodyText = Some(views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Html(Messages(proposal.track.label)), Messages(proposal.talkType.id)).toString()),
+      bodyHtml = Some(views.html.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Html(Messages(proposal.track.label)), Messages(proposal.talkType.id)).toString()),
       charset = Some("utf-8"),
       headers = Seq()
     )

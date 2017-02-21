@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(allMyVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 
@@ -63,7 +64,7 @@
                                         </td>
 
                                         <td>
-                                            <small>@Messages(proposal.track.label)</small>
+                                            <small>@Html(Messages(proposal.track.label))</small>
                                         </td>
                                         <td>
                                             <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>

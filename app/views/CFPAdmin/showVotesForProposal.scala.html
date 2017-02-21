@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(currentUser: String, proposal: models.Proposal, currentAverageScore: Double, totalVotesCast: Long, totalVotes: Long, allVotes: List[(String, Double)], nextToBeReviewedSameTrack: Option[Proposal], nextToBeReviewedSameFormat: Option[Proposal], averageScoreGT: Double, countVotesCastGT: Option[Long])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
     @main("Votes for " + proposal.id + "/" + proposal.title) {
@@ -143,7 +144,7 @@
                         @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.nonEmpty) {
                             @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
                                 <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                                    @Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a>
+                                    @Html(Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label)))</a>
                             } else {
                                 <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
                                     @Messages("gt.nextTalk")</a>
@@ -159,7 +160,7 @@
                         @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.isEmpty) {
                             @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
                                 <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                                    @Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a>
+                                    @Html(Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label)))</a>
                             } else {
                                 <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
                                     @Messages("gt.nextTalk")</a>

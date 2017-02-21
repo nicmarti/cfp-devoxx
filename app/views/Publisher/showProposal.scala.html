@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
@@ -37,7 +38,7 @@
             <tbody>
                 <tr>
                     <td colspan="2">
-                        @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
+                        @tags.publisher.renderIconForTrack(proposal.track) @Html(Messages(proposal.track.label))
                     </td>
                 </tr>
                 @if(slot.isDefined) {

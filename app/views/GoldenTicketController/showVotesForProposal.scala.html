@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(currentUser:String, proposal: models.Proposal, nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -45,7 +46,7 @@
                 @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.nonEmpty){
                      @if(nextToBeReviewedSameTrack.head.track.id ==  proposal.track.id ) {
  <a class="btn btn-success btn-sm" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                             @Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a><br>
+                             @Html(Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label)))</a><br>
                      } else {
                          <a class="btn btn-success btn-sm" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
                              @Messages("gt.nextTalk")</a><br>
@@ -61,7 +62,7 @@
                  @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.isEmpty){
                      @if(nextToBeReviewedSameTrack.head.track.id ==  proposal.track.id ) {
                          <a class="btn btn-success" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                             @Messages("gt.nextTalkTrack" ,Messages(nextToBeReviewedSameTrack.head.track.label))</a><br>
+                             @Html(Messages("gt.nextTalkTrack" , Messages(nextToBeReviewedSameTrack.head.track.label)))</a><br>
                      } else {
                          <a class="btn btn-success" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
                              @Messages("gt.nextTalk")</a><br>

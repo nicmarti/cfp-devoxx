@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(allConf: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 
@@ -33,7 +34,7 @@
                                             <small>@Messages(p.talkType.id)</small>
                                         </td>
                                         <td>
-                                            <small>@Messages(p.track.label)
+                                            <small>@Html(Messages(p.track.label))
                                     </small>
                                     </td>
                                     </tr>

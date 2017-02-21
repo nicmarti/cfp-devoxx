@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(params: controllers.LeaderBoardParams,
   golden: controllers.GoldenTicketsParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
@@ -190,7 +191,7 @@
                         <h3>Submitted by Track</h3>
                             @defining(params.totalSubmittedByTrack.values.max){maxValue=>
                             @params.totalSubmittedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
+                                <span class="label label-info">@total</span> @Html(Messages(track+".label")) <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -237,7 +238,7 @@
                         <h3>Approved by Track (total @params.allApprovedByTrack.size)</h3>
                         @defining(params.allApprovedByTrack.values.max){maxValue=>
                             @params.allApprovedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track)
+                                <span class="label label-info">@total</span> @Html(Messages(track))
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -266,7 +267,7 @@
                         <h3>Accepted by Track</h3>
                             @defining(params.totalAcceptedByTrack.values.max){maxValue=>
                             @params.totalAcceptedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track)
+                                <span class="label label-info">@total</span> @Html(Messages(track))
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>

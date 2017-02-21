@@ -1,3 +1,4 @@
+@import play.api.templates.Html
 @(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved: Long, totalRemaining: Long, confType: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
     @import models.Review.{AverageNote, TotalAbst, TotalVoter}
 
@@ -121,7 +122,7 @@
                                         <small>@proposal.talkType.id</small>
                                     </td>
                                     <td>
-                                        <small>@Messages(proposal.track.label)</small>
+                                        <small>@Html(Messages(proposal.track.label))</small>
                                     </td>
                                     <td>
                                         [@proposal.lang]
