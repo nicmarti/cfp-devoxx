@@ -66,7 +66,7 @@
         </td>
         <td>@request.company</td>
         <td>@request.country</td>
-        <td>@Messages(request.track.label)</td>
+        <td>@Html(Messages(request.track.label))</td>
         <td>@if(request.keynote.isDefined && request.keynote.get){
             Yes
         } else{
