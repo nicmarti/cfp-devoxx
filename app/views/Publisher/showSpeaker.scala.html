@@ -1,4 +1,7 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import play.api.templates.Html
+
 @views.html.Publisher.devoxxUK2017(speaker.cleanName,Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")){
 <section id="speaker">
 <div class="columns large-12 team-member row fadeInUp animated">

@@ -1,5 +1,7 @@
 @(tagProposalEntries:List[TagProposalEntry])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main("CFP Admin - all declined") {
 
   <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -49,7 +51,7 @@
                 <td>@tags.renderProposalTag(entry.tag, cfpAdmin = true)</td>
                 <td><a href="@routes.CFPAdmin.openForReview(entry.proposal.id)">@entry.proposal.title</a></td>
                 <td>@tags.renderGravatar(entry.proposal.mainSpeaker)</td>
-                <td>@Messages(entry.proposal.track.label)</td>
+                <td>@Html(Messages(entry.proposal.track.label))</td>
                 <td>@Messages(entry.proposal.talkType.id)</td>
               </tr>
             }
