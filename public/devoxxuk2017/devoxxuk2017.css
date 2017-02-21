@@ -26894,9 +26894,7 @@ div.speakerCard .speakerPhoto {
     max-height: 128px;
     /* margin-right: 20px; */
     /* margin-top: 22px; */
-    border-radius: 100px;
     overflow: hidden;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
 }
 
 div.speakerCard .speakerURL a {
@@ -26946,9 +26944,7 @@ img.speakerRound {
     float: left;
     margin-right: 20px;
     margin-top: 22px;
-    border-radius: 100px;
     overflow: hidden;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
 }
 .speakerBio{
     background: white;
