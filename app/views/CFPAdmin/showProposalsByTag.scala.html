@@ -1,4 +1,7 @@
 @(tag:Tag, proposals:Map[String,Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@import play.api.templates.Html
+
 @main("Proposals by Tag"){
   <div class="row">
     <div class="col-sm-12">
@@ -25,7 +28,7 @@
                         @proposal._2.tags.get.filter(tag => tag.value.nonEmpty).map( tag => tags.renderProposalTag(tag, cfpAdmin = true) )
                     </td>
                     <td>
-                        @Messages(proposal._2.track.label)
+                        @Html(Messages(proposal._2.track.label))
                     </td>
                     <td>
                         @tags.renderGravatar(proposal._2.mainSpeaker)

@@ -6,6 +6,8 @@
  ascdesc:Option[String],
  track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
+@import play.api.templates.Html
+
 @main("CFP Admin") {
     <div class="row">
 
@@ -50,9 +52,9 @@
                     <i class="icon-filter"></i> @Messages("cfpadmin.filterOn")
                     @Track.allIDs.map{idTrack=>
                         @if(track.isDefined && track.get == idTrack) {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@idTrack</a>
+                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@Html(Messages(idTrack + ".label"))</a>
                         }else {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
+                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Html(Messages(idTrack+".label"))</a>
                         }
                     }
 

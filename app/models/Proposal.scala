@@ -567,8 +567,8 @@ object Proposal {
       for (proposalJson <- client.hget("Proposals", proposalId);
            proposal <- Json.parse(proposalJson).asOpt[Proposal];
            realState <- findProposalState(proposal.id)) yield {
-        proposal.copy(state = realState)
-      }
+              proposal.copy(state = realState)
+           }
   }
 
   def findProposalState(proposalId: String): Option[ProposalState] = Redis.pool.withClient {
