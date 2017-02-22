@@ -105,6 +105,7 @@ POST          /cfpadmin/cfpWebusers/trackLeaders                                
 GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
 
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
+GET           /cfpadmin/duplicateSpeakers                                       controllers.CFPAdmin.duplicateSpeakers()
 GET           /cfpadmin/allDevoxxians                                           controllers.CFPAdmin.allDevoxxians()
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
