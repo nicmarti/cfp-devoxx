@@ -473,6 +473,7 @@ blog2=Web site or personal blog
 lang2=Will speak in English or French? (en/fr)
 sp.editSpeaker=Edit this speaker
 sp.authenticateAs=Authenticate as
+sp.deleteSpeaker=Delete this speaker
 sp.editName=Edit name
 sw.hackatons=Hackathons
 sw.hackatons.describe=Coding events, hacking day, organized during the conference
@@ -776,7 +777,7 @@ gt.showVotes.review=Review or change your vote
 gt.home=Go back to home
 gt.vote.ok=Your vote has been recorded.
 gt.youcan=You can now:
-gt.nomore=There is no more talk to review, congratulation you did it!
+gt.nomore=There are no more talks to review, congratulation you did it!
 gt.nextTalk=Continue and evaluate next talk
 gt.nextTalkType=Continue and evaluate another {0}
 gt.nextTalkTrack=Continue and evaluate next talk for track {0}
@@ -840,7 +841,7 @@ rating.default=No comment
 refused.termsConditions=Warning : you declined the Devoxx UK Terms & Conditions and thus, you cannot present or talk at Devoxx UK. If needed, please contact our team by email.
 
 cfpadmin.filterOn=Filter on
-admin.cfp.empty.track=There is no new submitted proposals in track {0} for the time being
+admin.cfp.empty.track=There are no new submitted proposals in track {0} for the time being
 
 proposalLang_fr=Proposal in French
 proposalLang_en=Proposal in English

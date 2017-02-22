@@ -456,6 +456,30 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakersHome())
   }
 
+  def duplicateSpeakers() = SecuredAction(IsMemberOf("cfp")) {
+    var uniqueSpeakers = scala.collection.mutable.Set[Speaker]()
+
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val allApprovedSpeakers = ApprovedProposal.allApprovedSpeakers()
+      val allRefusedSpeakers = ApprovedProposal.allRefusedSpeakers()
+      val allSpeakers = allApprovedSpeakers ++ allRefusedSpeakers
+
+      val speakersSortedByUUID = allSpeakers.toList
+        .sortBy(_.uuid)
+        .groupBy(_.uuid)
+        .filter(_._2.size == 1)
+        .flatMap { uuid => uuid._2}
+
+
+      val uniqueSpeakersSortedByName = speakersSortedByUUID.toList
+        .sortBy(_.cleanName)
+        .groupBy(_.cleanName)
+        .filter(_._2.size != 1)
+        .flatMap { name => name._2}
+      
+      Ok(views.html.CFPAdmin.duplicateSpeakers(uniqueSpeakersSortedByName.toList))
+  }
+
   def allDevoxxians() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val devoxxians = Webuser.allDevoxxians()

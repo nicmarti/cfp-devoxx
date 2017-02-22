@@ -25,7 +25,7 @@
     <div class="col-md-12">
         <div class="panel panel-default">
         <div class="panel-heading">
-            <h3>All speakers</h3>
+            <h3>Duplicate speakers</h3>
             <h4></h4>
             <span class="label label-info">@speakers.size users</span>
         </div>
@@ -58,8 +58,7 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                           <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
-                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
+                            <a href="@routes.Backoffice.deleteSpeaker(speaker.uuid)" class="btn btn-sm btn-danger" ><i class="icon-lock"></i> @Messages("sp.deleteSpeaker")</a>
                         </td>
 
                     </tr>
@@ -67,7 +66,7 @@
                 </tbody>
             </table>
             }else{
-                <P>There are no speakers.</P>
+                <P>There are no duplicate speakers.</P>
             }
         </div>
         </div>
@@ -78,7 +77,7 @@
 $(document).ready(function() {
 
     $('#speakersTable').dataTable({
-        "aaSorting": [[ 0, "desc" ]],
+        "aaSorting": [[ 0, "asc" ]],
         "iDisplayLength": 50,
         "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
         "bStateSave": true,

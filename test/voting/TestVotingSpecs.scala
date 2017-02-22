@@ -60,7 +60,7 @@ class TestVotingSpecs extends PlaySpecification {
       contentType(response) must beSome.which(_ == "application/json")
     }
 
-    "returns a 204 when there is no vote for a talk" in new WithApplication(app = appWithTestRedis()) {
+    "returns a 204 when there are no votes for a talk" in new WithApplication(app = appWithTestRedis()) {
       // GIVEN
       emptyRedis()
 
@@ -558,7 +558,7 @@ class TestVotingSpecs extends PlaySpecification {
 
     }
 
-    "returns a HTTP 204 for top talks when there is no votes" in new WithApplication(app = appWithTestRedis()) {
+    "returns a HTTP 204 for top talks when there are no votes" in new WithApplication(app = appWithTestRedis()) {
       // GIVEN
       emptyRedis()
 

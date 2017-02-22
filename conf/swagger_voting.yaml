@@ -62,7 +62,7 @@ paths:
             items:
               $ref: '#/definitions/TalkAndVote'
         "201":
-          description: There is no vote for this talk
+          description: There are no votes for this talk
         "404":
           description: This talk ID does not exist
          
