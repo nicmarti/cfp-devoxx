@@ -202,9 +202,9 @@ object Rating {
 
   def attic() = Redis.pool.withClient {
     implicit client =>
-      client.del("Rating:2017")
+      client.del("Rating:2016")
 
-      val allKeys = client.keys("Rating:2017:ByTalkId:*")
+      val allKeys = client.keys("Rating:2016:ByTalkId:*")
       val tx = client.multi()
       allKeys.foreach { key: String => tx.del(key) }
       tx.exec()
