@@ -827,6 +827,50 @@ object RestAPI extends Controller {
         Created(uuid)
       }
   }
+
+  /**
+    * Verify a user account.
+    * This can also create a new user when the email does not exist!
+    *
+    * @return
+    */
+  def verifyAccount() = UserAgentActionAndAllowOrigin {
+
+    implicit request =>
+
+      val body: AnyContent = request.body
+      val data = body.asMultipartFormData
+
+      if (data.nonEmpty) {
+        // Not 100% sure this is how it should be done in Scala/Play (Stephan)
+        val email = data.get.asFormUrlEncoded("email").mkString("")
+        val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
+        val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
+
+        if (email.nonEmpty &&
+          newNetworkType.nonEmpty &&
+          newNetworkId.nonEmpty) {
+
+          val webuser = Webuser.findByEmail(email)
+          if (webuser.isDefined) {
+
+            // Update users social network credentials
+            val foundUser: Webuser = webuser.get
+            Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+            Ok(foundUser.uuid)
+
+          } else {
+            // User does not exist, lets create
+            val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
+            val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+            Webuser.addToDevoxxians(uuid)
+            Created(uuid)
+          }
+        } else {
+          BadRequest("email not provided")
+        }
+      }
+  }
 }
 
 object UserAgentActionAndAllowOrigin extends ActionBuilder[Request] with play.api.http.HeaderNames {
