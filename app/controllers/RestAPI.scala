@@ -846,7 +846,7 @@ object RestAPI extends Controller {
         val email = data.get.asFormUrlEncoded("email").mkString("")
         val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
         val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
-
+  
         if (email.nonEmpty &&
           newNetworkType.nonEmpty &&
           newNetworkId.nonEmpty) {
@@ -869,6 +869,8 @@ object RestAPI extends Controller {
         } else {
           BadRequest("email not provided")
         }
+      } else {
+        BadRequest("Not a multipart form")
       }
   }
 }
