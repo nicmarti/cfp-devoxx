@@ -476,7 +476,7 @@ object CFPAdmin extends SecureCFPController {
         .groupBy(_.cleanName)
         .filter(_._2.size != 1)
         .flatMap { name => name._2}
-      
+
       Ok(views.html.CFPAdmin.duplicateSpeakers(uniqueSpeakersSortedByName.toList))
   }
 

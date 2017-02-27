@@ -30,6 +30,8 @@
               <tr>
                 <th>Email</th>
                 <th>Network</th>
+                <th># Favorites</th>
+                <th># Scheduled</th>
               </tr>
             </thead>
             <tbody>
@@ -40,6 +42,12 @@
                 </td>
                 <td>
                   @webuser.networkType
+                </td>
+                <td>
+                  @FavoriteTalk.allForUser(webuser.uuid).size
+                </td>
+                <td>
+                  @ScheduleTalk.allForUser(webuser.uuid).size
                 </td>
               </tr>
             }
