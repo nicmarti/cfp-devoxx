@@ -1,0 +1,31 @@
+@(results: List[(Proposal, List[Rating])], day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+
+        <link href="@routes.Assets.at(path = "/public", file = "devoxxus2017/topTalks.css")" rel="stylesheet">
+        <title>Devoxx US 2017 top talks : @day</title>
+    </head>
+    <body class="brainBackground">
+
+        <div class="container">
+
+            <div class="topBox">
+                <h1>Top Talks - @day.capitalize</h1>
+                <ul>
+                @results.map { case (proposal, ratings) =>
+                <li><span class="title">@proposal.title</span>
+                    <span class="score">@Messages(proposal.talkType.id) @models.Rating.calculateScore(ratings) with @ratings.length votes</span>
+                    <span class="speaker">@proposal.allSpeakers.map(_.cleanName).mkString(", ")</span>
+                </li>
+                }
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
