@@ -16,7 +16,7 @@
             <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
                  class="{{talk.state.code}}"
                  drag="talk" dragStyle="columnDrag"
-                 dropStyle="columnDrop">
+                 dropStyle="columnDrop" title="{{talk.state.code}}">
                 <span class="proposalTitle">{{talk.title}}</span>
                 <span class="label label-default">{{talk.id}}</span>
 
@@ -43,8 +43,8 @@
             <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
             <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
         </div>
-        <div ng-show="slot.proposal">
-            <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
+        <div ng-show="slot.proposal" title="{{slot.proposal.state.code}}">
+            <span class="label label-default">{{slot.day}} {{slot.from -28800000 | date:'H:mm'}} {{slot.to -28800000 | date:'H:mm'}}</span>
                 <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
                 <button class="btn-remove btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> </button>
             <br>
