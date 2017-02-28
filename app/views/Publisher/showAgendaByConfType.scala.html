@@ -1,5 +1,7 @@
 @(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
 @import org.joda.time.DateTimeZone
+@import models.ConferenceDescriptor
 
     @views.html.Publisher.devoxxUK2017(Messages("agenda-" + talkType),Some(s"Agenda for ${Messages("CONF.title")} for $day${Messages("day-" + day)}")) {
         <div class="large-12 columns">
@@ -42,9 +44,10 @@
                         <!--
                         time = @time
                         localdatetime = @time.toLocalDateTime
-                        to = @slots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
+                        to = @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm")
                         -->
-                        @time.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
+                        @time.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm") -
+                        @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm a")
                     </th>
                     @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
 

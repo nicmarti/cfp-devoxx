@@ -49,7 +49,7 @@ object Event {
 
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
-      val jsEvent = Json.stringify(Json.toJson(event.copy(date = Some(new DateTime().toDateTime(DateTimeZone.forID("Europe/London"))))))
+      val jsEvent = Json.stringify(Json.toJson(event.copy(date = Some(new DateTime().toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))))))
       val tx = client.multi()
       val now = new Instant().getMillis
       tx.zadd("Events:V2:", now, jsEvent)
@@ -127,6 +127,4 @@ object Event {
       client.del("Notified:ApprovedSpeakers")
       client.del("Notified:BackupSpeakers")
   }
-
-
 }

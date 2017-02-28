@@ -182,7 +182,7 @@ object ScheduleConfiguration {
   def loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots)
-    Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("America/Los_Angeles")))).sortBy(_.from.toDate.getTime).take(10))
+    Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)))).sortBy(_.from.toDate.getTime).take(10))
   }
 
   def loadRandomTalks() = {

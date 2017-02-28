@@ -146,3 +146,9 @@ cfp.resetVotesForSubmitted=${CFP_RESET_VOTES_SUBMITTED}
 digest.daily=${DIGEST_DAILY}
 # Day of the week, Monday = 1, etc.
 digest.weekly=${DIGEST_WEEKLY}
+
+# Push emails on new new proposals to program committee
+email.on.new.proposal=${EMAIL_NEW_PROPOSALS}
+
+# Conference Timezone
+conference.timezone=${CONFERENCE_TIMEZONE}

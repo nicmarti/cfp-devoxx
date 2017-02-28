@@ -1,5 +1,7 @@
 @(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader)
+
 @import org.joda.time.DateTimeZone
+@import models.ConferenceDescriptor
 
 @views.html.Publisher.devoxxUK2017(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
@@ -24,7 +26,7 @@
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                 <tr >
                     <th class="timeSlot">
-                        @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
+                        @subSlots.head.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
                     </th>
                         @if(subSlots.head.break.isDefined) {
                             <td class="break" colspan="9">
@@ -37,7 +39,7 @@
                         }
                 </tr>
             }
-            
+
             <tr>
                 <th><i class="icon-time"></i> Room</th>
                 @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>

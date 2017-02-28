@@ -663,7 +663,7 @@ object ConferenceDescriptor {
   val fromDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(11)
   val toDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(12)
 
-  def current() = ConferenceDescriptor(
+  def current(): ConferenceDescriptor = new ConferenceDescriptor(
     eventCode = "DV17",
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxuk2017",
@@ -691,13 +691,13 @@ object ConferenceDescriptor {
       speakersPassDuration = 2,
       preferredDayEnabled = true,
       firstDayFr = "11 mai",
-      firstDayEn = "may 11th",
+      firstDayEn = "May 11th",
       datesFr = "do 11 au 12 Mai 2017",
       datesEn = "from 11th to 12th of May, 2017",
       cfpOpenedOn = DateTime.parse("2016-11-01T00:00:00+01:00"),
       cfpClosedOn = DateTime.parse("2017-01-16T23:59:59+01:00"),
       scheduleAnnouncedOn = DateTime.parse("2017-01-30T00:00:00+01:00"),
-      days=dateRange(fromDay,toDay,new Period().withDays(1))
+      days=dateRange(fromDay, toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUK",
     hashTag = "#DevoxxUK",
@@ -750,11 +750,15 @@ object ConferenceDescriptor {
     Play.current.configuration.getBoolean("cfp.isOpen").getOrElse(false)
   }
 
-  def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
+  // All timezone sensitive methods are using this constant variable.
+  // Defaults to "America/Los_Angeles" if not set in the Clever Cloud env. variables page.
+  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("America/Los_Angeles")
 
-  def isFavoritesSystemActive:Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
+  def isGoldenTicketActive: Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
-  def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+  def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
+
+  def isHTTPSEnabled: Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
 
   // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
   // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
@@ -763,6 +767,4 @@ object ConferenceDescriptor {
   // Set this to true temporarily
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
   def notifyProposalSubmitted = true
-
 }
-

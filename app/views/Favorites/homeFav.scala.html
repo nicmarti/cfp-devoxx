@@ -1,6 +1,7 @@
 @(timeSlots: List[Slot], rooms:List[Room])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @import org.joda.time.DateTimeZone
+@import models.ConferenceDescriptor
 
 @views.html.Publisher.devoxxUK2017("My Schedule") {
     @if(timeSlots.isEmpty){
@@ -26,8 +27,8 @@
             @slots.groupBy(s => s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
             <tr >
                 <th class="timeSlot">
-                    @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
-                    - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/London")).toString("HH:mm")
+                    @subSlots.head.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
+                    - @subSlots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
                 </th>
                 @rooms.sorted.map { room =>
                     @tags.publisher.tagRenderRow(subSlots, room, rooms.size)

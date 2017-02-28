@@ -116,7 +116,7 @@ object SchedullingController extends SecureCFPController {
           case (key, dateAsDouble) =>
             val scheduledSaved = Json.parse(key).as[ScheduleSaved]
             Map("key" -> Json.toJson(scheduledSaved),
-              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/London")))
+                "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)))
             )
         })
       )

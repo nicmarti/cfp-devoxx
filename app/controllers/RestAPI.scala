@@ -23,14 +23,12 @@
 
 package controllers
 
-import controllers.Favorites.{JSON, Ok}
 import models.Speaker._
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.{SimpleResult, _}
-
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
@@ -528,8 +526,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
@@ -695,8 +693,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
@@ -762,8 +760,8 @@ object RestAPI extends Controller {
               val maybeSlot = {
                 ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id).map {
                   slot =>
-                    val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
-                    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
+                    val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+                    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
 
                     Map(
                       "slotId" -> Json.toJson(slot.id)
@@ -846,7 +844,7 @@ object RestAPI extends Controller {
         val email = data.get.asFormUrlEncoded("email").mkString("")
         val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
         val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
-  
+
         if (email.nonEmpty &&
           newNetworkType.nonEmpty &&
           newNetworkId.nonEmpty) {

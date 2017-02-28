@@ -1,5 +1,7 @@
 @(slots:List[Slot])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
+@import org.joda.time.DateTimeZone
+
 @main("CFP Admin - all declined") {
 
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
@@ -33,8 +35,8 @@
             @slots.map { slot: Slot =>
               <tr>
                   <td>@slot.id</td>
-                  <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/London")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
-                  <td>@slot.to.toDateTime(org.joda.time.DateTimeZone.forID("Europe/London")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
+                  <td>@slot.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("yyyy-MM-dd HH:mm:ss.S")
+                  <td>@slot.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("yyyy-MM-dd HH:mm:ss.S")
                   <td>@slot.room.name</td>
                   <td>@slot.proposal.map(_.title)</td>
                   <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
