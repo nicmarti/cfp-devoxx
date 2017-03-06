@@ -23,9 +23,9 @@
     </div>
 
     @speaker.blog.map{blog=>
-            @if(blog.startsWith("http://")) {
+            @if(blog.toLowerCase.startsWith("http://") || blog.toLowerCase.startsWith("https://"))  {
                 <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
-            } else {
+            } else{
                 <p>Blog: <a href="http://@blog" rel="no-follow">@blog</a></p>
             }
     }
