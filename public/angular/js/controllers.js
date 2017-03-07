@@ -131,13 +131,13 @@ reloadScheduleConfController.controller('ReloadScheduleConfController', function
 
 });
 
-deleteSlotController.controller('DeleteSlotController', function DeleteSlotController($routeParams,$location, DeleteScheduledConfiguration,flash ){
+deleteSlotController.controller('DeleteSlotController', function DeleteSlotController($routeParams, $location, DeleteScheduledConfiguration,flash ){
     DeleteScheduledConfiguration.delete({id: $routeParams.id}, function () {
         flash("Deleted configuration");
     });
 });
 
-publishController.controller('PublishController', function PublishController($routeParams,$location, PublishScheduledConfiguration, flash ){
+publishController.controller('PublishController', function PublishController($routeParams, $location, PublishScheduledConfiguration, flash ){
     PublishScheduledConfiguration.save({id: $routeParams.id, confType: $routeParams.confType}, function (){
         flash("Configuration published");
     });

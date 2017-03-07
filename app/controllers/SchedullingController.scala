@@ -189,8 +189,8 @@ object SchedullingController extends SecureCFPController {
 
           ScheduleConfiguration.publishConf(id, confType)
 
-          // Notify the mobile apps via AWS SNS that a new schedule has been published
-          ZapActor.actor ! NotifyMobileApps(confType)
+          // Notify the mobile apps via Gluon that a new schedule has been published
+          ZapActor.actor ! NotifyMobileApps("refresh", Some(true))
 
           Ok("{\"status\":\"success\"}").as("application/json")
       }.getOrElse {

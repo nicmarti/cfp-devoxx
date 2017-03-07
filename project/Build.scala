@@ -27,13 +27,6 @@ object ApplicationBuild extends Build {
     , "commons-codec" % "commons-codec" % "1.9" // for new Base64 that has support for String
     , "com.typesafe.play" %% "play-cache" % "2.2.0"
     ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
-
-    , "com.amazonaws" % "aws-java-sdk-sns" % "1.11.29"
-    exclude ("com.fasterxml.jackson.core", "jackson-annotations")
-    exclude ("com.fasterxml.jackson.core", "jackson-core")
-    exclude ("com.fasterxml.jackson.core", "jackson-databind")
-    exclude ("joda-time", "joda-time")
-
     , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
   )
 

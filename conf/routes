@@ -169,6 +169,9 @@ POST          /admin/tag/delete/:uuid                                           
 GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
+# Push notification message to "My Devoxx" mobile app
+POST          /admin/push/message                                               controllers.Backoffice.pushNotifications()
+
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
 
