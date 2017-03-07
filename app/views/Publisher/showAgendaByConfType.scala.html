@@ -49,25 +49,27 @@
                         @time.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm") -
                         @slots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("h:mm a")
                     </th>
-                    @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
 
+                    @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
                         <td class="room">
-                            @slot.proposal.map { p: Proposal =>
-                                <span class="track">
-                                    @tags.publisher.renderIconForTrack(p.track) @Html(Messages(p.track.label))
-                                </span>
-                                <br>
-                                <span class="title">
-                                    <a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a>
-                                </span>
-                                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                          @slots.filter(slot => slot.room.name.equals(room.name)).sortBy(_.room).map { slot : Slot =>
+                              @if(slot.proposal.isEmpty && slot.break.isEmpty) {
+                                  &nbsp;
+                              }
+                              @if(slot.proposal.isDefined){
+                                  <span class="track">
+                                  @tags.publisher.renderIconForTrack(slot.proposal.get.track) @Messages(slot.proposal.get.track.label)
+                                  </span>
+                                  <br>
+                                  <span class="title">
+                                      <a href="@routes.Publisher.showDetailsForProposal(slot.proposal.get.id, slot.proposal.get.escapedTitle)">@slot.proposal.get.title</a>
+                                  </span>
+                                  <span class="speaker"> @slot.proposal.get.allSpeakerUUIDs.map { speakerUUID =>
                                     @tags.publisher.renderSpeaker(speakerUUID)
                                 }</span>
-                                @tags.publisher.renderFavorite(p.id)
+                                @tags.publisher.renderFavorite(slot.proposal.get.id)
                             }
-                        @if(slot.proposal.isEmpty && slot.break.isEmpty ){
-                            TBA
-                        }
+                          }
                         </td>
                     }
                 </tr>
