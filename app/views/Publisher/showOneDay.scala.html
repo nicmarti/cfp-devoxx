@@ -26,7 +26,8 @@
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                 <tr >
                     <th class="timeSlot">
-                        @subSlots.head.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
+                        @subSlots.head.from.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm") -
+                        @subSlots.head.to.toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone)).toString("HH:mm")
                     </th>
                         @if(subSlots.head.break.isDefined) {
                             <td class="break" colspan="9">
