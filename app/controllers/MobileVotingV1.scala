@@ -197,7 +197,7 @@ object MobileVotingV1 extends SecureCFPController {
       }
   }
 
-  // Public call for a simple Web page for Devoxx US 2017
+  // Public call for a simple Web page for Devoxx UK 2017
   def topTalksForDevoxx(day: Option[String]) = Action {
     implicit request =>
       val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, None, None)
