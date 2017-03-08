@@ -235,27 +235,24 @@ object ConferenceDescriptor {
     val ROOM_A = Room("room1", "Room A", 220, "theatre")
     val ROOM_B = Room("room2", "Room B", 32, "classroom")
     val ROOM_C = Room("room3", "Room C", 32, "classroom")
-    val ROOM_D = Room("room4", "Room D", 32, "classroom")
-    val ROOM_E = Room("room5", "Room E", 32, "classroom")
 
     val LAB_ROOM_A = Room("x_lab_room1", "Lab Room A", 32, "classroom")
     val LAB_ROOM_B = Room("y_lab_room2", "Lab Room B", 32, "classroom")
 
     val keynoteRoom = List(GALLERY_HALL)
 
-    val conferenceRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val conferenceRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C)
 
-    val bofThu = List(ROOM_A, ROOM_C, ROOM_D, LAB_ROOM_B)
+    val bofThu = List(ROOM_A, ROOM_C, LAB_ROOM_B)
     val labsThu = List(LAB_ROOM_A, LAB_ROOM_B)
-    val hackThu = List(ROOM_A)
     val igniteThu = List(ROOM_B)
-    val quickieThu = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val quickieThu = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C)
 
     val uniFri = List(ROOM_A)
-    val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
+    val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C)
     val labsFri = List(LAB_ROOM_A, LAB_ROOM_B)
 
-    val allRooms = List(GALLERY_HALL, ROOM_A, ROOM_B, ROOM_C, ROOM_D, AUDIT, HALL_EXPO)
+    val allRooms = List(GALLERY_HALL, ROOM_A, ROOM_B, ROOM_C, AUDIT, HALL_EXPO)
   }
 
   object ConferenceSlotBreaks {
@@ -350,20 +347,6 @@ object ConferenceDescriptor {
                       new DateTime(THU_DATE + "19:35" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
       }
       bofThursdayEveningSlot
-    }
-
-    // HACK
-
-    val hackSlotsThursday: List[Slot] = {
-
-      val hackThursdayEveningSlot = ConferenceRooms.hackThu.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.HACK.id,
-            THURSDAY,
-            new DateTime(THU_DATE + "18:20" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)),
-            new DateTime(THU_DATE + "21:30" + MIN_SEC).toDateTime(DateTimeZone.forID(timeZone)), r1)
-      }
-      hackThursdayEveningSlot
     }
 
     // QUICKIES
@@ -638,7 +621,6 @@ object ConferenceDescriptor {
       quickiesSlotsThursday ++
       bofSlotThursday ++
       labsSlotThursday ++
-      hackSlotsThursday ++
       igniteSlotsThursday
     }
 
