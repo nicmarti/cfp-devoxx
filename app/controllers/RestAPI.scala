@@ -456,8 +456,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/London"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID(ConferenceDescriptor.timeZone))
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
