@@ -135,92 +135,85 @@ object MobileVotingV1 extends SecureCFPController {
   // Returns the top talks for the Tweet wall.
   // floorPct is a special parameter that will filterOut the talks that don't have at least 80% of the total vote
   // This is to avoid a top ten where a talk with only one vote sets to 10 is above a talk with 100 votes and a score of 9.8
-  def topTalks(day: Option[String],
-               talkTypeId: Option[String],
-               trackId: Option[String],
-               limit: Int = 10,
-               floorPct: Int = 0,
-               hideScoreLowerThan:Int = 3) = UserAgentActionAndAllowOrigin {
-
+  def topTalks(day: Option[String]
+               , talkTypeId: Option[String]
+               , trackId: Option[String]
+               , limit: Int = 10 // Stephan => if you want only 10 talks
+               , floorPct: Int = 0 // This loads all talk, calculate the average number of votes and take only talks with at most 50% of votes + floor
+               , hideScoreLowerThan: Int = 3 // If you want to hide the not-so-good talks, here is the param. It could be a Double so that you set 3.56 for instance
+              ) = UserAgentActionAndAllowOrigin {
     implicit request =>
-
       // Use the limit parameter to take only 5, 10 or X results
       val allRatings = loadTopTalks(day, talkTypeId, trackId)
-      if (allRatings.isEmpty) {
+
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
+
+      if (onlyXXXResults.isEmpty) {
         NoContent.as(JSON)
-      }
-      else {
+      } else {
+        // JSON Serializer
 
-        val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
-
-        // Only allow top 50 to protect the "not so good" speakers
-        var max = limit
-        if (max > 20) {
-          max = 20
+        val jsonResult = onlyXXXResults.map {
+          case (proposal, ratings) =>
+            Json.obj(
+              "proposalId" -> Json.toJson(proposal.id),
+              "proposalTitle" -> Json.toJson(proposal.title),
+              "proposalTalkType" -> Json.toJson(Messages(proposal.talkType.id)),
+              "proposalTalkTypeId" -> Json.toJson(proposal.talkType.id),
+              "ratingAverageScore" -> Json.toJson(Rating.calculateScore(ratings)),
+              "ratingTotalVotes" -> Json.toJson(ratings.length),
+              "proposalsSpeakers" -> Json.toJson(proposal.allSpeakers.map(_.cleanName).mkString(", "))
+            )
         }
 
-        val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(max)
+        val result = Map(
+          "day" -> day.map(d => JsString(d)).getOrElse(JsNull)
+          , "talkTypeId" -> talkTypeId.map(d => JsString(d)).getOrElse(JsNull)
+          , "trackId" -> trackId.map(d => JsString(d)).getOrElse(JsNull)
+          , "totalResults" -> JsNumber(sortedRatings.size)
+          , "talks" -> JsArray(jsonResult)
+        )
 
-        if (onlyXXXResults.isEmpty) {
-          NoContent.as(JSON)
-        } else {
-          // JSON Serializer
-
-          val jsonResult = onlyXXXResults.map {
-            case (proposal, ratings) =>
-              Json.obj(
-                "proposalId" -> Json.toJson(proposal.id),
-                "proposalTitle" -> Json.toJson(proposal.title),
-                "proposalTalkType" -> Json.toJson(Messages(proposal.talkType.id)),
-                "proposalTalkTypeId" -> Json.toJson(proposal.talkType.id),
-                "ratingAverageScore" -> Json.toJson(Rating.calculateScore(ratings)),
-                "ratingTotalVotes" -> Json.toJson(ratings.length),
-                "proposalsSpeakers" -> Json.toJson(proposal.allSpeakers.map(_.cleanName).mkString(", "))
-              )
-          }
-
-          val result = Map(
-            "day" -> day.map(d => JsString(d)).getOrElse(JsNull)
-            , "talkTypeId" -> talkTypeId.map(d => JsString(d)).getOrElse(JsNull)
-            , "trackId" -> trackId.map(d => JsString(d)).getOrElse(JsNull)
-            , "totalResults" -> JsNumber(sortedRatings.size)
-            , "talks" -> JsArray(jsonResult)
-          )
-
-          val finalResult = Json.obj("result" -> Json.toJson(result))
-          Ok(finalResult).as(JSON)
-        }
+        val finalResult = Json.obj("result" -> Json.toJson(result))
+        Ok(finalResult).as(JSON)
       }
   }
 
   // Code written during Devoxx BE 2016. I could have used the HTTP header Accept but I didn't want to explode the TwitterWall
-  def topTalksAsHtml(day: Option[String],
-                     talkTypeId: Option[String],
-                     trackId: Option[String],
-                     limit: Int = 50,
-                     floorPct: Int = 0,
-                     hideScoreLowerThan:Int = 3) = SecuredAction(IsMemberOf("admin")) {
+  def topTalksAsHtml(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan: Int = 3) = Action {
     implicit request =>
+      val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, talkTypeId, trackId)
 
-      val allRatings:Map[Proposal,List[Rating]] = loadTopTalks(day, talkTypeId, trackId)
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
 
-      if (allRatings.nonEmpty) {
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
 
-        val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct)
-
-        val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
-
-        Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
-
+      if (onlyXXXResults.isEmpty) {
+        NoContent
       } else {
-        NoContent.as(HTML)
+        Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
       }
   }
 
-  private def loadTopTalks(day: Option[String],
-                           talkTypeId: Option[String],
-                           trackId: Option[String]):Map[Proposal,List[Rating]] = {
+  // Public call for a simple Web page for Devoxx UK 2017
+  def topTalksForDevoxx(day: Option[String]) = Action {
+    implicit request =>
+      val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, None, None)
 
+      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct = 0)
+
+      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= 3).take(100)
+
+      if (onlyXXXResults.isEmpty) {
+        NoContent
+      } else {
+        Ok(views.html.CFPAdmin.topTalksDevoxx(onlyXXXResults, day.getOrElse("thu")))
+      }
+  }
+
+  private def loadTopTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String]): Map[Proposal, List[Rating]] = {
     // create a list of Proposals
     // Will try to filter either from the URL params (talkTypeID, trackId) or use the Rating
 
@@ -238,16 +231,16 @@ object MobileVotingV1 extends SecureCFPController {
           allSlots.flatMap(slot => slot.proposal)
         }
 
-          val proposalsForThisDay: List[Proposal] = specifiedDay match {
-            case d if Set("thu", "thursday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
-            case d if Set("fri", "friday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
-            case other => {
-              play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected thursday/friday...")
-              Nil
-            }
+        val proposalsForThisDay: List[Proposal] = specifiedDay match {
+          case d if Set("thu", "thursday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
+          case d if Set("fri", "friday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
+          case other => {
+            play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected thursday/friday...")
+            Nil
           }
-          proposalsForThisDay
-      }
+        }
+        proposalsForThisDay
+    }
 
     // 2. Now the list of Proposals has to be filtered
     val proposalsToLoad = (talkTypeId, trackId) match {
@@ -270,7 +263,7 @@ object MobileVotingV1 extends SecureCFPController {
   def sortByScoreAndKeepTopVotes(ratings:Map[Proposal,List[Rating]],
                                  floorPct:Int):List[(Proposal,List[Rating])]={
 
-    val groupedByNumberOfVotes=ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
+    val groupedByNumberOfVotes = ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
     val totalTalksEvaluated = groupedByNumberOfVotes.size
     val averageNumberOfVotes = if(totalTalksEvaluated>0){ groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated} else { 0 }
 
@@ -286,19 +279,18 @@ object MobileVotingV1 extends SecureCFPController {
 
     val onlyRatingsAndProposals = onlyWithEnoughVotes.flatMap(_._2)
 
-    val sortedByScore = onlyRatingsAndProposals.sortBy{
-      case (_,rt)=>
+    val sortedByScore = onlyRatingsAndProposals.sortBy {
+      case (_, rt) =>
         Rating.calculateScore(rt)
     }.reverse
 
-//    sortedByScore.foreach{
-//      case(proposal,r)=>
-//        println(s"${proposal.title} ${Rating.calculateScore(r)}")
-//    }
+    //    sortedByScore.foreach{
+    //      case(proposal,r)=>
+    //        println(s"${proposal.title} ${Rating.calculateScore(r)}")
+    //    }
 
     sortedByScore
   }
-
 
   def categories() = UserAgentActionAndAllowOrigin {
     implicit request =>

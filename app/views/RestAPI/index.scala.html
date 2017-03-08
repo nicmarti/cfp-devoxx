@@ -72,11 +72,6 @@
         curl -H "Accept: application/json" <a href="@routes.RestAPI.showAllSchedules(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showAllSchedules(Conference.currentConference.eventCode).absoluteURL()</a>
     </code>
 
-    <h4>See the schedule for Wednesday</h4>
-    <code>
-        curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"wednesday").absoluteURL()</a>
-    </code>
-
     <h4>Show the list of rooms</h4>
     <code>
         curl -H "Accept: application/json" <a href="@routes.RestAPI.showRooms(Conference.currentConference.eventCode).absoluteURL()">@routes.RestAPI.showRooms(Conference.currentConference.eventCode).absoluteURL()</a>
@@ -85,6 +80,11 @@
     <h4>See the schedule for Room8 for Thursday</h4>
     <code>
         curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleForRoom(Conference.currentConference.eventCode,"room8","thursday").absoluteURL()">@routes.RestAPI.showScheduleForRoom(Conference.currentConference.eventCode,"room8","thursday").absoluteURL()</a>
+    </code>
+
+    <h4>See the schedule for Friday</h4>
+    <code>
+        curl -H "Accept: application/json" <a href="@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"wednesday").absoluteURL()">@routes.RestAPI.showScheduleFor(Conference.currentConference.eventCode,"friday").absoluteURL()</a>
     </code>
 
     <h4>French is also supported, use Accept-language header :</h4>

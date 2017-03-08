@@ -144,7 +144,7 @@ object Publisher extends Controller {
   private val thursday: String = "thursday"
   private val friday: String = "friday"
 
-  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = wednesday) = Action {
+  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = thursday) = Action {
     implicit request =>
       val realSlotId = slotId.orElse {
         ScheduleConfiguration.getPublishedSchedule(confType)

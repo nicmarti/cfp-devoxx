@@ -107,7 +107,7 @@ object Favorites extends UserCFPController {
     * @return JSON list of proposal IDs
     */
 
-  def scheduledProposals(uuid: String) = BasicAuthentication(Webuser.findUser) {
+  def scheduledProposals(uuid: String) = BasicAuthentication(Webuser.gluonUser) {
     Action { implicit request =>
 
       val scheduledProposals = ScheduleTalk.allForUser(uuid)
@@ -145,7 +145,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def scheduleProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.findUser) {
+  def scheduleProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.gluonUser) {
     Action { implicit request =>
       if (Webuser.findByUUID(uuid).isDefined &&
         Proposal.findById(proposalId).isDefined) {
@@ -163,7 +163,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeScheduledProposal(uuid: String, proposalId: String)  = BasicAuthentication(Webuser.findUser) {
+  def removeScheduledProposal(uuid: String, proposalId: String)  = BasicAuthentication(Webuser.gluonUser) {
     Action { implicit request =>
       if (ScheduleTalk.isScheduledByThisUser(proposalId, uuid)) {
         ScheduleTalk.unscheduleTalk(proposalId, uuid)
@@ -179,7 +179,7 @@ object Favorites extends UserCFPController {
     *
     * @param uuid the user identifier
     */
-  def favoredProposals(uuid: String)  = BasicAuthentication(Webuser.findUser) {
+  def favoredProposals(uuid: String)  = BasicAuthentication(Webuser.gluonUser) {
     Action { implicit request =>
 
       val favoriteProposals = FavoriteTalk.allForUser(uuid)
@@ -217,7 +217,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def favorProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.findUser) {
+  def favorProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.gluonUser) {
     Action { implicit request =>
       if (Webuser.findByUUID(uuid).isDefined &&
         Proposal.findById(proposalId).isDefined) {
@@ -235,7 +235,7 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeFavoredProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.findUser) {
+  def removeFavoredProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.gluonUser) {
     Action { implicit request =>
       if (FavoriteTalk.isFavByThisUser(proposalId, uuid)) {
         FavoriteTalk.unfavTalk(proposalId, uuid)

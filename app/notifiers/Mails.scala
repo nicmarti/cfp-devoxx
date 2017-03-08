@@ -38,10 +38,10 @@ import controllers.LeaderBoardParams
 
 object Mails {
 
-  val fromSender = ConferenceDescriptor.current().fromEmail
-  val committeeEmail = ConferenceDescriptor.current().committeeEmail
-  val bugReportRecipient = ConferenceDescriptor.current().bugReportRecipient
-  val bccEmail: Option[String] = ConferenceDescriptor.current().bccEmail
+  lazy val from: String = ConferenceDescriptor.current().fromEmail
+  lazy val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
+  lazy val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
+  lazy val bcc: Option[String] = ConferenceDescriptor.current().bccEmail
 
   /**
     * Send a message to a set of Speakers.
@@ -51,10 +51,10 @@ object Mails {
 
     val email = Email(
       subject = s"[${proposal.id}] ${proposal.title}",
-      from = fromSender,
+      from = from,
       to = Seq(toWebuser.email),
       cc = listOfEmails,
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
       bodyHtml = Some(views.html.Mails.sendMessageToSpeaker(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
@@ -65,10 +65,10 @@ object Mails {
     // For Program committee
     val emailForCommittee = Email(
       subject = s"[${proposal.id}] ${proposal.title}",
-      from = fromSender,
+      from = from,
       to = Seq(committeeEmail),
       cc = listOfEmails,
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
       bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
@@ -82,10 +82,10 @@ object Mails {
 
     val email = Email(
       subject = s"[${proposal.id}] ${proposal.title}", // please keep a generic subject => perfect for Mail Thread
-      from = fromSender,
+      from = from,
       to = Seq(committeeEmail),
       cc = listOfOtherSpeakersEmail,
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
       bodyHtml = Some(views.html.Mails.sendMessageToCommittee(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
@@ -100,10 +100,10 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq(committeeEmail),
       cc = listOfOtherSpeakersEmail,
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()),
       bodyHtml = Some(views.html.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()),
       charset = Some("utf-8"),
@@ -128,9 +128,9 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq(committeeEmail),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString()),
       bodyHtml = Some(views.html.Mails.postInternalMessage(fromWebuser.cleanName, proposal, msg).toString()),
       charset = Some("utf-8"),
@@ -150,9 +150,9 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq(speaker.email),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendReminderForDraft(speaker.firstName, proposals).toString()),
       bodyHtml = Some(views.html.Mails.sendReminderForDraft(speaker.firstName, proposals).toString()),
       charset = Some("utf-8")
@@ -167,10 +167,10 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq(speaker.email),
       cc = otherSpeakers,
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
       bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
       charset = Some("utf-8")
@@ -185,10 +185,10 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq(speaker.email),
       cc = otherSpeakers,
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
       bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
       charset = Some("utf-8")
@@ -216,7 +216,7 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq("no-reply-digest@devoxx.co.uk"), // Use fake email because we use bcc instead
       bcc = emails,
       bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
@@ -232,9 +232,9 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq(speakerEmail),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendInvitationForSpeaker(message, requestId).toString()),
       bodyHtml = Some(views.html.Mails.sendInvitationForSpeaker(message, requestId).toString()),
       charset = Some("utf-8")
@@ -248,9 +248,9 @@ object Mails {
 
     val email = Email(
       subject = subjectEmail,
-      from = fromSender,
+      from = from,
       to = Seq(webuser.email),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bcc = bcc.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.goldenticket.sendGoldenTicketEmail(webuser, gt).toString()),
       bodyHtml = Some(views.html.Mails.goldenticket.sendGoldenTicketEmail(webuser, gt).toString()),
       charset = Some("utf-8")

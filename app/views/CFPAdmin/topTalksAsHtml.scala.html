@@ -3,11 +3,14 @@
 @main("Top talks") {
 
     <h1>Top Talks</h1>
+    <p>@results.size</p>
+
 
     <ul>
     @results.map{case(proposal,ratings)=>
-        <li><strong>@proposal.title</strong> @Messages(proposal.talkType.id) @models.Rating.calculateScore(ratings) with @ratings.length votes<br>
-        <small>@proposal.allSpeakers.map(_.cleanShortName).mkString(", ")</small>
+        <li>
+            "@proposal.title" par @proposal.allSpeakers.map(_.cleanName).mkString(", ")<br>
+        @Messages(proposal.talkType.id) @models.Rating.calculateScore(ratings) with @ratings.length votes<br>
     </li>
     }
 
