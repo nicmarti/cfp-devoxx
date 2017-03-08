@@ -26,14 +26,9 @@ package library
 import java.util
 
 import akka.actor._
-import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
-import com.amazonaws.services.sns.AmazonSNSClient
-import com.amazonaws.services.sns.model._
-import com.amazonaws.{ClientConfiguration, Protocol}
-import controllers.{CFPAdmin, LeaderboardController}
+import controllers.LeaderboardController
 import models._
 import notifiers.Mails
-import org.apache.commons.lang3.StringUtils
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.DefaultHttpClient
@@ -41,7 +36,6 @@ import org.apache.http.message.BasicNameValuePair
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
-import play.api.Play
 import play.libs.Akka
 import scala.Predef._
 
@@ -359,7 +353,7 @@ class ZapActor extends Actor {
         .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
         .map(userToNotify => userToNotify.uuid)
 
-      play.Logger.info(foundUsersIDs.size + " user(s) for digest " + digest.value)
+      play.Logger.info(s"${foundUsersIDs.size} user(s) for digest ${digest.value}")
 
       if (foundUsersIDs.nonEmpty) {
 
