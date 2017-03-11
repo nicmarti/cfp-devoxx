@@ -741,5 +741,7 @@ object ConferenceDescriptor {
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
   def notifyProposalSubmitted = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
 
+  // For practical reason we want to hide the room and the time slot until the full agenda is published
+  def isShowRoomAndTimeslot:Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
 }
 
