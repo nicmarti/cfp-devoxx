@@ -1,7 +1,7 @@
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxFR2016(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
+@views.html.Publisher.devoxxFR2017(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
 
     <div class="large-12 columns">
 

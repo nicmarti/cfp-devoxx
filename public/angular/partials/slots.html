@@ -16,7 +16,7 @@
             <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
                  class="{{talk.state.code}}"
                  drag="talk" dragStyle="columnDrag"
-                 dropStyle="columnDrop">
+                 dropStyle="columnDrop" title="{{talk.state.code}}">
                 <span class="proposalTitle">{{talk.title}}</span>
                 <span class="label label-default">{{talk.id}}</span>
 

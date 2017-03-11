@@ -1,5 +1,5 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@views.html.Publisher.devoxxFR2016(speaker.cleanName,Some(s"${speaker.cleanName} at Devoxx 2014")){
+@views.html.Publisher.devoxxFR2017(speaker.cleanName,Some(s"${speaker.cleanName} at Devoxx 2014")){
 <section id="speaker">
 <div class="columns large-12 team-member row fadeInUp animated">
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>

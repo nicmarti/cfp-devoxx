@@ -627,9 +627,9 @@ admin.btn.speakersInvited=Tous les speakers invités
 
 bof.label.simple=Bird of a Feather
 day-monday=Lundi 10 novembre
-day-wednesday=Mercredi 20 avril
-day-thursday=Jeudi 21 avril
-day-friday=Vendredi 22 avril
+day-wednesday=Mercredi 5 avril
+day-thursday=Jeudi 6 avril
+day-friday=Vendredi 7 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}

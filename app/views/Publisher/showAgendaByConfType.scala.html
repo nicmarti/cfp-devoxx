@@ -1,7 +1,7 @@
 @(schedule: ScheduleConfiguration, talkType: String, day: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-    @views.html.Publisher.devoxxFR2016(Messages("agenda-" + talkType), Some(s"Agenda for Devoxx FR 2016 for $day" + Messages("day-" + day))) {
+    @views.html.Publisher.devoxxFR2017(Messages("agenda-" + talkType), Some(s"Agenda for Devoxx FR 2016 for $day" + Messages("day-" + day))) {
         <div class="large-12 columns">
             <h3>@Messages(talkType), @Messages("day-" + day)</h3>
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>  &gt;
