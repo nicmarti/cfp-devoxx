@@ -318,14 +318,14 @@ class ZapActor extends Actor {
     post.addHeader("Authorization","Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj")
 
     val urlParameters = new util.ArrayList[BasicNameValuePair]()
-    urlParameters.add(new BasicNameValuePair("title", ConferenceDescriptor.current().eventCode))
+    urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
     urlParameters.add(new BasicNameValuePair("body", message))
     urlParameters.add(new BasicNameValuePair("deliveryDate", "0"))
     urlParameters.add(new BasicNameValuePair("priority", "HIGH"))
     urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
     urlParameters.add(new BasicNameValuePair("expirationAmount", "1"))
-    urlParameters.add(new BasicNameValuePair("targetType", "ALL_DEVICES"))
-
+    urlParameters.add(new BasicNameValuePair("targetTopic", ConferenceDescriptor.current().confUrlCode))
+    urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
     urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
 
     post.setEntity(new UrlEncodedFormEntity(urlParameters))
