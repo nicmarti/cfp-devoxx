@@ -319,7 +319,13 @@ class ZapActor extends Actor {
 
     val urlParameters = new util.ArrayList[BasicNameValuePair]()
     urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
-    urlParameters.add(new BasicNameValuePair("body", message))
+
+    if (scheduleUpdate.getOrElse(false)) {
+      urlParameters.add(new BasicNameValuePair("body", ConferenceDescriptor.current().confUrlCode))
+    } else {
+      urlParameters.add(new BasicNameValuePair("body", message))
+    }
+
     urlParameters.add(new BasicNameValuePair("deliveryDate", "0"))
     urlParameters.add(new BasicNameValuePair("priority", "HIGH"))
     urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
