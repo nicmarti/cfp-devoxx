@@ -743,5 +743,7 @@ object ConferenceDescriptor {
 
   // For practical reason we want to hide the room and the time slot until the full agenda is published
   def isShowRoomAndTimeslot:Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
+
+  def isShowRoom:Boolean = Play.current.configuration.getBoolean("cfp.showRoom").getOrElse(false)
 }
 

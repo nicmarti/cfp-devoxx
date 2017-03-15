@@ -492,6 +492,9 @@ sw.horaires=Horaires
 sw.breakfast=Accueil et petit-déjeuner
 sw.mainEvents=Evénements principaux
 sw.lunch=Déjeuner
+
+sw.reg=Accueil et petit déjeuner
+sw.coffee=Pause café
 sw.coffee.break=Pause café
 sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition
 sw.cocktail=Soirée Meet and Greet dans l''espace d''exposition jusqu''à 22h30
@@ -776,3 +779,5 @@ cfp.filter.off=Pas de filtre
 
 cfpadmin.totalReviewed={0} revus
 cfpadmin.totalVoted={0} votés
+
+publisher.room.disclaimer=La salle est susceptible d''être changée jusqu''à 48h avant le début de Devoxx France.

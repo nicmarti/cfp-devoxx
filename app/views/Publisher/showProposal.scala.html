@@ -38,7 +38,11 @@
                     @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
                         <tr>
                             <td>
-                                <h4 style="padding-top: 10px;">@slot.map(_.room.name)</h4>
+                                @if(ConferenceDescriptor.isShowRoom) {
+                                    <h4 style="padding-top: 10px;">@slot.map(_.room.name)</h4>
+                                }else{
+                                    &nbsp;
+                                }
                             </td>
                             <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE")
                                 from @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") til @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>

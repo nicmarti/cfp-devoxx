@@ -73,6 +73,16 @@
 .agendaTable .track {
     display: block;
 }
+
+.agendaTable .proposalType {
+    display: block;
+    background-color: #f4882d;
+    color:white;
+    font-size: 0.8em;
+    padding: 2px;
+    text-align: center;
+}
+
 .agendaTable .talkType{
     display: block;
     background-color: #1f1f1f;
