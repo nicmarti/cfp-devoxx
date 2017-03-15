@@ -206,7 +206,7 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined).filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
 
       val declined = publishedConf.filter(_.proposal.get.state == ProposalState.DECLINED)
 
@@ -214,15 +214,23 @@ object Backoffice extends SecureCFPController {
 
       val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
+      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet.filter(s=> s == "62aced05d74e41c8f705d1675e55be24bad7d08a")
+
+      println("allSpeakers IDs " + declined.exists(_.proposal.get.allSpeakerUUIDs.contains("62aced05d74e41c8f705d1675e55be24bad7d08a")) )
+
+      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid)).filter{
+        speakerUUID=>
+          // Keep only speakers with at least one accepted or approved talk
+          approved.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID)) || accepted.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID))
+      }
+
       val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatNeedsToAcceptTerms)
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
         slot: Slot =>
           val proposal = slot.proposal.get
-          Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
+          !Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
       }
 
       Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, allSpeakers))

@@ -1,4 +1,7 @@
-@(declined:List[Slot], approved:List[Slot], acceptedThenChangedToOtherState:List[Slot], speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(declined:List[Slot],
+        approved:List[Slot],
+        acceptedThenChangedToOtherState:List[Slot],
+        speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin sanity check") {
 
@@ -128,6 +131,7 @@
                 }
                 @if(speakers.nonEmpty){
                     <h3>Speakers that have not yet accepted Terms&Conditions</h3>
+                    <p>This list does not include the speakers for B.O.F</p>
                     <p>Speaker's bio is not displayed on web site. Speaker is not listed on REST API and SQL export.</p>
                     <strong>@speakers.length speaker(s)</strong><br>
                     @speakers.sortBy(_.cleanName).map{speaker:Speaker=>
