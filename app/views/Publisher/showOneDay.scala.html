@@ -31,9 +31,18 @@
                 <tr >
                     <th class="timeSlot">
                         @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        @if(subSlots.map(_.to).toSet.size>1){
+                            @subSlots.map(_.to).toSet.map { s:org.joda.time.DateTime =>
+                              <small>@s.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</small>
+                            }
+                        }
                     </th>
                     @rooms.sorted.map { room =>
-                        @tags.publisher.tagRenderRow(subSlots,room,rooms.size)
+                            @if(subSlots.map(_.to).toSet.size>1){
+                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, true)
+                            }else {
+                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, false)
+                            }
                     }
                 </tr>
             }

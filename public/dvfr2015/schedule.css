@@ -75,6 +75,15 @@
     font-size: 0.8em;
 }
 
+.agendaTable .endTime{
+    display: block;
+    background-color: #f4b787;
+    color:white;
+    font-size: 0.8em;
+    padding: 2px;
+    text-align: center;
+}
+
 .agendaTable .proposalType {
     display: block;
     background-color: #f4882d;

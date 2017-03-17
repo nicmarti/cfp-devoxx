@@ -1,5 +1,5 @@
-@(subSlots: List[Slot], room: Room, roomSize: Int)(implicit req:RequestHeader)
-
+@(subSlots: List[Slot], room: Room, roomSize: Int, showEndTime:Boolean)(implicit req:RequestHeader)
+@import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated) {
             <td>TBA</td>
@@ -12,6 +12,11 @@
                     @tags.publisher.renderSpeaker(speakerUUID)
                 }</span>
                 <span class="track"> @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
+
+                @if(showEndTime){
+                    <span class="endTime"> @zeSlot.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @zeSlot.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</span>
+                }
+
             </td>
         }
         @if(zeSlot.break.isDefined) {
