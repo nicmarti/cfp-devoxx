@@ -13,6 +13,59 @@
         </form>
         </div>
     </div>
+    <div class="small-12 medium-12 large-12 column">
+        <table class="mainSchedule">
+            <thead>
+                <tr>
+                    <th class="scheduleHeader">&nbsp;</th>
+                    <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed")">[Détails]</a> </th>
+
+                    <th class="scheduleHeader">@Messages("day-thursday") <a href="@routes.Publisher.showByDay("thu")">[Détails]</a></th>
+                    <th class="scheduleHeader">@Messages("day-friday") <a href="@routes.Publisher.showByDay("fri")">[Détails]</a></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="9" class="scheduleHeader scheduleRight">&nbsp;</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "wednesday", "University")</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "wednesday", "Tools-in-Action") </td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "thursday", "Tools-in-Action")</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")</td>
+                </tr>
+                <tr>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("bof", "thursday", "BOFs")</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                </tr>
+                    <!-- ******************************************************************* //-->
+                <tr>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "thursday", "Quickies")</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "friday", "Quickies")</td>
+                </tr>
+                    <!-- ******************************************************************* //-->
+                <tr>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">
+                    @tags.publisher.renderShowDay("conf", "thursday", "Conference")
+                    </td>
+                    <td class="scheduleRow">
+                    @tags.publisher.renderShowDay("conf", "friday", "Conference")
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+            <!-- ******************************************************************* //-->
+    </div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Keynotes</h3>

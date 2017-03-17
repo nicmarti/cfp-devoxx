@@ -553,6 +553,10 @@ sw.show.title.wed=Wednesday, 5th April 2017
 sw.show.title.thu=Thursday, 6th April 2017
 sw.show.title.fri=Friday, 7th April 2017
 
+sw.details.wednesday=Wednesday
+sw.details.thursday=Thursday
+sw.details.friday=Friday
+
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
 sw.mainEvents=Main events and conferences
@@ -564,7 +568,8 @@ sw.showAllDay=Show complete agenda for this day
 not.published=The agenda for this conference is not yet published
 sw.reg=Registration and Breakfast
 sw.coffee=Coffee break
-
+sw.chgt=Coffee break
+sw.def=Coffee
 day-wed=Wednesday
 day-thu=Thursday
 day-fri=Friday

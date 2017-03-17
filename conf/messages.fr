@@ -494,23 +494,42 @@ sw.mainEvents=Evénements principaux
 sw.lunch=Déjeuner
 
 sw.reg=Accueil et petit déjeuner
+sw.dej=Accueil et petit déjeuner
+sw.chgt=Pause café
 sw.coffee=Pause café
 sw.coffee.break=Pause café
 sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition
 sw.cocktail=Soirée Meet and Greet dans l''espace d''exposition jusqu''à 22h30
 sw.showAllDay=Voir l''agenda de toute la journée
 not.published=L''agenda pour ce type de conférence n''est pas encore publié.
-day-thu=Jeudi
-day-fri=Vendredi
-day-wed=Mercredi
+
 acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !
- 
+
+sw.details.mon=Détail du lundi
+sw.details.monday=Détail du lundi
+sw.details.tue=Détail du mardi
+sw.details.tuesday=Détail du mardi
+sw.details.wed=Détail du mercredi
+sw.details.wednesday=Détail du mercredi
+sw.details.thu=Détail du jeudi
+sw.details.thursday=Détail du jeudi
+sw.details.fri=Détail du vendredi
+sw.details.friday=Détail du vendredi
+
+
 antispam=Pour prouver que vous n''êtes pas un robot mais un humain, combien font 38+4 ?
 bugReport.sent=Votre message a été envoyé à l''équipe, merci !
 sw.proposal.whenWhere=Heure de passage et salle
+day-mercredi=Mercredi
 day-jeudi=Jeudi
 day-vendredi=Vendredi
-day-mercredi=Mercredi
+day-monday=Lundi
+day-thu=Jeudi
+day-thursday=Jeudi
+day-fri=Vendredi
+day-friday=Vendredi
+day-wed=Mercredi
+day-wednesday=Mercredi
  
 showAgendaByRoom=Agenda par salle
 Abs=Abs
@@ -629,10 +648,6 @@ wl_unknown=Inconnu
 admin.btn.speakersInvited=Tous les speakers invités
 
 bof.label.simple=Bird of a Feather
-day-monday=Lundi 10 novembre
-day-wednesday=Mercredi 5 avril
-day-thursday=Jeudi 6 avril
-day-friday=Vendredi 7 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
