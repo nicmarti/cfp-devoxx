@@ -3,7 +3,7 @@ package controllers
 import library.search.{DoIndexProposal, _}
 import library.{DraftReminder, Redis, ZapActor}
 import models.{Tag, _}
-import org.joda.time.Instant
+import org.joda.time.{DateTime, Instant}
 import play.api.Play
 import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
@@ -206,24 +206,21 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined).filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
+      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val publishedTalksExceptBOF = allPublishedProposals.filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
 
-      val declined = publishedConf.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val declined = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val approved = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.APPROVED)
+      val accepted = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val approved = publishedConf.filter(_.proposal.get.state == ProposalState.APPROVED)
 
-      val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
-
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet.filter(s=> s == "62aced05d74e41c8f705d1675e55be24bad7d08a")
-
-      println("allSpeakers IDs " + declined.exists(_.proposal.get.allSpeakerUUIDs.contains("62aced05d74e41c8f705d1675e55be24bad7d08a")) )
-
-      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid)).filter{
-        speakerUUID=>
+      // For Terms&Conditions we focus on all talks except BOF
+      val allSpeakersExceptBOF = publishedTalksExceptBOF.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersExceptBOF.filter(uuid => Speaker.needsToAccept(uuid)).filter {
+        speakerUUID =>
           // Keep only speakers with at least one accepted or approved talk
           approved.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID)) || accepted.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID))
       }
-
       val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatNeedsToAcceptTerms)
 
       // Speaker declined talk AFTER it has been published
@@ -233,7 +230,31 @@ object Backoffice extends SecureCFPController {
           !Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, allSpeakers))
+      // ALL Talks for Conflict search
+      val approvedOrAccepted = allPublishedProposals.filter(p => p.proposal.get.state == ProposalState.ACCEPTED || p.proposal.get.state == ProposalState.APPROVED)
+      val allSpeakersIDs = approvedOrAccepted.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+
+      val specialSpeakers = allSpeakersIDs
+
+      // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
+      val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
+        for (speakerId <- specialSpeakers) yield {
+        val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
+        val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
+        val conflict = groupedByDate.filter(_._2.size > 1)
+        val speaker = Speaker.findByUUID(speakerId).get
+        (speaker, conflict)
+      }
+
+      Ok(
+        views.html.Backoffice.sanityCheckSchedule(
+          declined,
+          approved,
+          acceptedThenChangedToOtherState,
+          allSpeakers,
+          allWithConflicts.filter(_._2.nonEmpty)
+        )
+      )
 
   }
 
