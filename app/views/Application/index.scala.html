@@ -5,7 +5,7 @@
 <div class="container">
     <div class="bs-docs-section clearfix">
         <div class="row">
-            <div class="col-md-12 col-sm-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="page-header">
                     <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
                         @Messages("appel.conf.dates")</small></h2>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 }
-            <div class="col-md-5">
+            <div class="col-md-5 col-xs-12">
                 <h3><i class="icon-calendar"></i> Agenda</h3>
                 <p><strong>@Messages("cfp.opening") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpOpenedOn, lang)</p>
                 <p><strong>@Messages("cfp.closing") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpClosedOn, lang)</p>
@@ -38,7 +38,7 @@
                 <p><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date", FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.scheduleAnnouncedOn, lang))</p>
             </div>
 
-            <div class="col-md-5">
+            <div class="col-md-5 col-xs-12">
                 <h3><i class="icon-youtube-play"></i> @Messages("video.title")</h3>
                 <h5><i class="icon-youtube-sign"></i> @Messages("video.tag") <a href="https://www.youtube.com/channel/UCsVPQfo5RZErDL41LoWvk0A" target="new">YouTube channel</a> </h5>
             </div>
@@ -46,7 +46,7 @@
             <div class="clearfix">
             </div>
 
-            <div class="col-md-5 col-sm-5">
+            <div class="col-md-5 col-sm-12 col-xs-12">
                 <div class="panel panel-default">
                 <div class="panel-heading">
                     @if(ConferenceDescriptor.isCFPOpen){
@@ -66,7 +66,7 @@
                 </div>
             </div>
             @if(ConferenceDescriptor.isGoldenTicketActive) {
-                <div class="col-md-5 col-sm-5">
+                <div class="col-md-5 col-sm-12 col-xs-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3><i class="icon-ticket"></i> @Messages("cfp.goldenTicket")</h3>
@@ -78,7 +78,20 @@
                 </div>
             }
 
-            <div class="clearfix"></div>
+            @if(ConferenceDescriptor.isFavoritesSystemActive){
+                <div class="clearfix"></div>
+                <div class="col-md-12 col-lg-12 col-xs-12  col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3><i class="icon-calendar"></i> @Messages("cfp.showAgenda.title")</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p><A href="@routes.Publisher.homePublisher()" class="btn btn-primary" title="See the conference agenda">@Messages("cfp.showAgenda.txt")</A> </p>
+                        </div>
+                    </div>
+                </div>
+            }
+
 
             <div class="col-md-12 col-sm-12">
                 <h3><i class="icon-book"></i> @Messages("theme.title")</h3>

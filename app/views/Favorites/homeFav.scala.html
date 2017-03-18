@@ -2,26 +2,28 @@
 
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxBE2016("My Schedule") {
+@views.html.Publisher.devoxxFR2017("My Schedule") {
     @if(timeSlots.isEmpty){
 
     <div class="columns large-12 woocommerce">
-        <h1>Build your own schedule</h1>
-        <p>You don't have any schedule yet.</p>
-        <p>Browse the <a href="@routes.Publisher.showByDay("monday")">schedule</a> and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.</p>
+        <h1>@Messages("fav.title")</h1>
+        <p>@Messages("fav.noAgenda")</p>
+        <p>@Messages("fav.txt1") <a href="@routes.Publisher.showByDay("monday")">@Messages("fav.schedule")</a> @Messages("fav.txt2")</p>
         <img src="/assets/devoxxbe2016/images/myschedule.png" alt="My schedule">
     </div>
     }
     @timeSlots.groupBy(_.to.getDayOfWeek).toList.sortBy(_._1).map { case (day, slots:List[Slot]) =>
-    <h2>Day @day</h2>
+    <h2>@Messages("fav.day."+day)</h2>
     <div class="columns large-12 woocommerce">
         <table class="agendaTable">
-            <tr>
-                <th><i class="icon-time"></i> Room</th>
-                @rooms.sorted.map { roomName: Room =>
-                    <td>@roomName.name</td>
-                }
-                </tr>
+             @if(ConferenceDescriptor.isShowRoom) {
+                 <tr>
+                     <th><i class="icon-time"></i> Room</th>
+                     @rooms.sorted.map { roomName: Room =>
+                         <td>@roomName.name</td>
+                     }
+                 </tr>
+             }
 
             @slots.groupBy(s => s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
             <tr >

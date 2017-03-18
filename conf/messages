@@ -906,3 +906,18 @@ cfpadmin.totalReviewed={0} reviewed
 cfpadmin.totalVoted={0} voted
 
 publisher.room.disclaimer=The designated room for a presentation can be changed 48 hours before the beginning of Devoxx.
+
+cfp.showAgenda.title=Agenda
+cfp.showAgenda.txt=The agenda is now online, see the list of conferences.
+
+# Favorites and My Agenda
+fav.title=Build your own schedule
+fav.noAgenda=You don't have any schedule yet.
+fav.txt1=Browse the
+fav.schedule=schedule
+fav.txt2=and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.
+fav.day.1=Monday
+fav.day.2=Tuesday
+fav.day.3=Wednesday
+fav.day.4=Thursday
+fav.day.5=Friday

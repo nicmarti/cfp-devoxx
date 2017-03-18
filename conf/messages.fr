@@ -796,3 +796,18 @@ cfpadmin.totalReviewed={0} revus
 cfpadmin.totalVoted={0} votés
 
 publisher.room.disclaimer=La salle est susceptible d''être changée jusqu''à 48h avant le début de Devoxx France.
+
+cfp.showAgenda.title=Agenda
+cfp.showAgenda.txt=Agenda des conférences
+
+# Favorites and My Agenda
+fav.title=Préparer votre agenda
+fav.noAgenda=Vous n''avez pas encore créé d'agenda pour enregistrer la liste des présentations que vous aimeriez voir.
+fav.txt1=Parcourez
+fav.schedule=l''agenda des présentations
+fav.txt2=et ajoutez une présentation en cliquant sur la petite étoile à côté du titre. Vous pourrez alors retrouver ici l''agenda avec la liste des salles, pour chaque présentation.
+fav.day.1=Lundi
+fav.day.2=Mardi
+fav.day.3=Mercredi
+fav.day.4=Jeudi
+fav.day.5=Vendredi
