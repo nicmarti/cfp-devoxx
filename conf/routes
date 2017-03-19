@@ -21,8 +21,6 @@ GET           /login/linkedin                                                   
 POST          /authenticate/linkedin                                            controllers.Authentication.callbackLinkedin
 GET           /authenticate/linkedin                                            controllers.Authentication.callbackLinkedin
 
-GET           /access_token                                                     controllers.Authentication.showAccessToken
-
 POST          /newspeaker                                                       controllers.Authentication.saveNewSpeaker
 GET           /newspeaker/validateMail                                          controllers.Authentication.validateYourEmailForSpeaker(t:String,a:String)
 POST          /newspeaker/validImported                                         controllers.Authentication.validateImportedSpeaker

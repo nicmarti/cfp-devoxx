@@ -29,7 +29,7 @@ import models._
 import notifiers.{Mails, TransactionalEmails}
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import play.api.Play
 import play.api.data.Form
 import play.api.data.Forms._
@@ -184,11 +184,6 @@ object Authentication extends Controller {
       })
   }
 
-  def showAccessToken = Action {
-    implicit request =>
-      Ok(request.session.get("access_token").getOrElse("No access token in your current session"))
-  }
-
   val importSpeakerForm = Form(tuple(
     "email" -> email,
     "firstName" -> nonEmptyText(maxLength = 50),
@@ -260,43 +255,42 @@ object Authentication extends Controller {
 
               resultParse.fold(missingField =>
                 Redirect(routes.Application.home()).flashing(
-                  "error" -> List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" ")),
-                {
-                  case (emailS, nameS) =>
-                    /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
-                    val bioS = json.\("bio").asOpt[String].getOrElse("")
-                    val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
-                    val company = json.\("company").asOpt[String]
-                    val blog = json.\("blog").asOpt[String]
+                  "error" -> List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" ")), {
+                case (emailS, nameS) =>
+                  /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
+                  val bioS = json.\("bio").asOpt[String].getOrElse("")
+                  val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
+                  val company = json.\("company").asOpt[String]
+                  val blog = json.\("blog").asOpt[String]
 
-                    // Try to lookup the speaker
-                    Webuser.findByEmail(emailS).map {
-                      w =>
-                        val cookie = createCookie(w)
-                        if (visitor) {
-                          Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> w.uuid).withCookies(cookie)
-                        } else {
-                          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
-                        }
-                    }.getOrElse {
-                      // Create a new one but ask for confirmation
-                      val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
-                        (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
-                      } else {
-                        (nameS, nameS)
-                      }
-
+                  // Try to lookup the speaker
+                  Webuser.findByEmail(emailS).map {
+                    w =>
+                      val cookie = createCookie(w)
                       if (visitor) {
-                        val newWebuser = Webuser.createVisitor(emailS, firstName, lastName)
-                        Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
-
+                        Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> w.uuid).withCookies(cookie)
                       } else {
-                        val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
-
-                        Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
                       }
+                  }.getOrElse {
+                    // Create a new one but ask for confirmation
+                    val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
+                      (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
+                    } else {
+                      (nameS, nameS)
                     }
-                })
+
+                    if (visitor) {
+                      val newWebuser = Webuser.createVisitor(emailS, firstName, lastName)
+                      Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
+
+                    } else {
+                      val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
+
+                      Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                    }
+                  }
+              })
             case other =>
               play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
               BadRequest("Unable to complete the Github User API call")
