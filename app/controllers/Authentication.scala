@@ -26,11 +26,14 @@ import java.math.BigInteger
 import java.security.SecureRandom
 
 import models._
-import notifiers.{Mails, TransactionalEmails}
+import notifiers.TransactionalEmails
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
+import org.joda.time.{DateTime, DateTimeZone}
+import pdi.jwt.{Jwt, JwtAlgorithm}
 import play.api.Play
+import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
@@ -42,7 +45,7 @@ import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.Play.current
+import scala.util.{Failure, Success}
 
 /**
   * Signup and Signin.
@@ -52,15 +55,6 @@ import play.api.Play.current
   */
 object Authentication extends Controller {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
-
-  def prepareSignup(visitor: Boolean) = Action {
-    implicit request =>
-      if (visitor) {
-        Ok(views.html.Authentication.prepareSignupVisitor(newVisitorForm))
-      } else {
-        Ok(views.html.Authentication.prepareSignup(newWebuserForm))
-      }
-  }
 
   def forgetPassword = Action {
     implicit request =>
@@ -613,6 +607,59 @@ object Authentication extends Controller {
         Future.successful {
           Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
         }
+      }
+  }
+
+  def prepareSignup(visitor: Boolean) = Action {
+    implicit request =>
+      if (visitor) {
+        if (ConferenceDescriptor.isMyDevoxxActive) {
+          play.Logger.info("Redirecting to MyDevoxx")
+          Redirect(ConferenceDescriptor.myDevoxxURL(),
+            Map(
+              "redirect_uri" -> Seq(routes.Authentication.jwtCallback(Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID("Europe/Brussels")).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))).absoluteURL(ConferenceDescriptor.isHTTPSEnabled))
+            ),
+            SEE_OTHER
+          )
+
+        } else {
+          Ok(views.html.Authentication.prepareSignupVisitor(newVisitorForm))
+        }
+      } else {
+        Ok(views.html.Authentication.prepareSignup(newWebuserForm))
+      }
+  }
+
+  def jwtCallback(token: String) = Action.async {
+    implicit request =>
+      if (token == Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID("Europe/Brussels")).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))) {
+        request.getQueryString("jwtToken") match {
+          case None =>
+            Future.successful(Unauthorized("No JWT Token"))
+          case Some(jwtToken) =>
+
+              Jwt.decode(jwtToken, ConferenceDescriptor.jwtSharedSecret(), Seq(JwtAlgorithm.HS256)) match {
+              case Success(decodedString) =>
+                val json = Json.parse(decodedString)
+                val firstName = (json \ "firstName").as[String]
+                val lastName = (json \ "lastName").as[String]
+                val uuid = (json \ "userId").as[String]
+                val email = (json \ "email").as[String]
+
+                val webuser=Webuser(uuid,email,firstName,lastName,password = RandomStringUtils.random(8),"visitor")
+                val newUUID = Webuser.saveAndValidateWebuser(webuser) // it is generated
+
+                val cookie = createCookie(webuser)
+                Future.successful(
+                  Redirect(
+                    request.headers.toSimpleMap.getOrElse(REFERER, routes.Publisher.homePublisher().absoluteURL(ConferenceDescriptor.isHTTPSEnabled))
+                  ).flashing("success" -> Messages("mydevoxx.authenticated")).withSession("uuid" -> newUUID).withCookies(cookie)
+                )
+              case Failure(_) => Future.successful(Unauthorized("Not Authorised - token is invalid"))
+            }
+        }
+      } else {
+        Future.successful(Unauthorized("Invalid secure token"))
       }
   }
 

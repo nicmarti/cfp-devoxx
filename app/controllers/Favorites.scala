@@ -23,7 +23,7 @@
 
 package controllers
 
-import models.{FavoriteTalk, Proposal, ProposalState, ScheduleConfiguration}
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.{JsObject, JsString}
@@ -84,7 +84,6 @@ object Favorites extends UserCFPController {
         uuid =>
           val jsonResponse = JsObject(Seq("proposalId" -> JsString(proposalId)))
           Ok(jsonResponse)
-
       }.getOrElse {
         NoContent
       }

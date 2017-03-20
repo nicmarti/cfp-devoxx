@@ -921,3 +921,5 @@ fav.day.2=Tuesday
 fav.day.3=Wednesday
 fav.day.4=Thursday
 fav.day.5=Friday
+
+mydevoxx.authenticated=You are now authenticated through MyDevoxx, you can browser the Agenda and add talks to your Schedule

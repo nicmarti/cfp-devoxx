@@ -212,10 +212,13 @@ GET           /2016/*file                                                       
 # Favorites
 GET           /myagenda                                                         controllers.Favorites.home
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
-GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
+GET           /favorites/proposal/:proposalId                                   controllers.Favorites.isFav(proposalId:String)
 
 # This is an AJAX callback triggered from devoxxBE2016.scala (the publisher web pages)
 POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
+
+# Redirect URL from MyDevoxx
+GET           /auth/jwtCallback/:token                                         controllers.Authentication.jwtCallback(token:String)
 
 # REST API
 GET           /api                                                              controllers.RestAPI.index()

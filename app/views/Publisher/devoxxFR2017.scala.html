@@ -1,4 +1,4 @@
-@(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader)
+@(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader, flash:Flash)
 
 <!DOCTYPE html>
 <html lang="en-US">
@@ -72,6 +72,18 @@
 	    <div class="row blog-post single-blog-post">
 	        <div class="large-12 large-centered columns single-page">
 	            <div class="single-content single-content-page row">
+
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable">
+                @flash.get("success").get
+                </div>
+            }
 <!-- ************** Begin generated content by Play ************************ //-->
 @content
 <!--  ************* End generated content by Play ************************** //-->

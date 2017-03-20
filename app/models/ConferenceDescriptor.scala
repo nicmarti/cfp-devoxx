@@ -745,5 +745,14 @@ object ConferenceDescriptor {
   def isShowRoomAndTimeslot:Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
 
   def isShowRoom:Boolean = Play.current.configuration.getBoolean("cfp.showRoom").getOrElse(false)
+
+  // My Devoxx is an OAuth provider on which a user can register
+  def isMyDevoxxActive:Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)
+  def myDevoxxSharedSecret = Play.current.configuration.getBoolean("mydevoxx.jwt.shared_secret").getOrElse("")
+
+  def myDevoxxURL():String = Play.current.configuration.getString("mydevoxx.url").getOrElse("https://my.devoxx.fr")
+
+  // This is a JWT String shared secret that needs to be configured as a global environment variable
+  def jwtSharedSecret() : String = Play.current.configuration.getString("mydevoxx.jwtSharedSecret").getOrElse("change me please")
 }
 

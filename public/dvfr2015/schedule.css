@@ -198,3 +198,16 @@ input.cfp-fav:checked + label.cfp-lab {
     background: url('/assets/images/fav/fav.png') no-repeat;
 }
 
+.alert-success {
+    display: block;
+    padding: 15px;
+    background-color: #05b60e;
+    color:white;
+}
+
+.alert-error {
+    display: block;
+    padding: 15px;
+    background-color: #e46f59;
+    color:white;
+}

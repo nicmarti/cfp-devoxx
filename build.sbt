@@ -36,4 +36,5 @@ libraryDependencies ++= Seq(
   , "com.sksamuel.elastic4s" %% "elastic4s" % elastic4sV
   , "org.elasticsearch" % "elasticsearch" % elasticSearchV
   , "com.amazonaws" % "aws-java-sdk-sns" % "1.11.29"
+  , "com.pauldijou" %% "jwt-core" % "0.9.2"
 )
