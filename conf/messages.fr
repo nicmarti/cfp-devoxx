@@ -813,3 +813,8 @@ fav.day.4=Jeudi
 fav.day.5=Vendredi
 
 mydevoxx.authenticated=Vous êtes authentifié via MyDevoxx. Vous pouvez sélectionner les sessions que vous souhaitez voir, et les ajouter dans votre agenda.
+
+visitor.welcome.title=Bienvenue {0}
+visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vous pouvez marquer vos sujets favoris dans l''agenda de {0} et recharger cet agenda plus tard, via cette page.
+visitor.welcome.profile=Liste des sujets marqués comme favoris
+visitor.welcome.publisher=Parcourir l''agenda des conférences
