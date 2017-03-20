@@ -748,7 +748,6 @@ object ConferenceDescriptor {
 
   // My Devoxx is an OAuth provider on which a user can register
   def isMyDevoxxActive:Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)
-  def myDevoxxSharedSecret = Play.current.configuration.getBoolean("mydevoxx.jwt.shared_secret").getOrElse("")
 
   def myDevoxxURL():String = Play.current.configuration.getString("mydevoxx.url").getOrElse("https://my.devoxx.fr")
 
