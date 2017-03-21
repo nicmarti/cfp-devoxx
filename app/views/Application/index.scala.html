@@ -1,5 +1,7 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
 @import library.FormatDate
+@import play.api.templates.Html
 
 @main(Messages("cfp.title")){
 <div class="container">
@@ -88,8 +90,8 @@
                     <tbody>
                         @for(track <- ConferenceDescriptor.ConferenceTracksDescription.ALL) {
                             <tr>
-                                <td>@Messages(track.i18nTitleProp)</td>
-                                <td>@Messages(track.i18nDescProp)</td>
+                                <td>@Html(Messages(track.i18nTitleProp))</td>
+                                <td>@Html(Messages(track.i18nDescProp))</td>
                             </tr>
                         }
                     </tbody>
