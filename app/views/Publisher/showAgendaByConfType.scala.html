@@ -2,6 +2,7 @@
 
 @import org.joda.time.DateTimeZone
 @import models.ConferenceDescriptor
+@import play.api.templates.Html
 
     @views.html.Publisher.devoxxUK2017(Messages("agenda-" + talkType),Some(s"Agenda for ${Messages("CONF.title")} for $day${Messages("day-" + day)}")) {
         <div class="large-12 columns">
@@ -58,7 +59,7 @@
                               }
                               @if(slot.proposal.isDefined){
                                   <span class="track">
-                                  @tags.publisher.renderIconForTrack(slot.proposal.get.track) @Messages(slot.proposal.get.track.label)
+                                  @tags.publisher.renderIconForTrack(slot.proposal.get.track)  @Html(Messages(slot.proposal.get.track.label))
                                   </span>
                                   <br>
                                   <span class="title">
