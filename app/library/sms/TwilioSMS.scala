@@ -33,7 +33,7 @@ import play.api.data.Forms._
   */
 case class TwilioSMS(messageSid: String, // A 34 character unique identifier for the message. May be used to later retrieve this message from the REST API.
                      accountSid: String, // The 34 character id of the Account this message is associated with.
-                     messagingServiceSid: String, // 	The 34 character id of the Messaging Service associated to the message.
+                     messagingServiceSid: Option[String], // 	The 34 character id of the Messaging Service associated to the message.
                      from: String, // Sender
                      to: String, // To
                      body: String, // up to 1600
@@ -44,7 +44,7 @@ object TwilioSMS {
   def createRandom() = TwilioSMS(
     messageSid = RandomStringUtils.randomAlphanumeric(34),
     accountSid = RandomStringUtils.randomAlphanumeric(34),
-    messagingServiceSid = RandomStringUtils.randomAlphanumeric(34),
+    messagingServiceSid = None,
     from = "33663204850",
     to = "33644642531",
     body = "talks",
@@ -54,7 +54,7 @@ object TwilioSMS {
   val smsForm = Form(mapping(
     "MessageSid" -> text(maxLength = 34),
     "AccountSid" -> text(maxLength = 34),
-    "MessagingServiceSid" -> text(maxLength = 34),
+    "MessagingServiceSid" -> optional(text(maxLength = 34)),
     "From" -> nonEmptyText(maxLength = 16),
     "To" -> nonEmptyText(maxLength = 16),
     "Body" -> nonEmptyText(maxLength = 1600),
