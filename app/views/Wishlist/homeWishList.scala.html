@@ -1,4 +1,7 @@
 @(requests:List[(models.RequestToTalk,Option[Webuser])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import play.api.templates.Html
+
 @main("WishList") {
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
