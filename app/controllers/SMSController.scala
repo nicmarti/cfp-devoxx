@@ -57,8 +57,8 @@ object SMSController extends SecureCFPController {
         },
         validSMS => {
           validSMS.body match {
-            case t if t.contains("TALK") => SmsActor.actor ! SendListOfTalks(validSMS.from)
-            case t if t.contains("HELP") => SmsActor.actor ! SendHelpMessage(validSMS.from, t)
+            case t if t.toLowerCase.contains("talk") => SmsActor.actor ! SendListOfTalks(validSMS.from)
+            case t if t.toLowerCase.contains("help") => SmsActor.actor ! SendHelpMessage(validSMS.from, t)
             case other => SmsActor.actor ! SendWelcomeAndHelp(validSMS.from)
           }
 
