@@ -1,0 +1,51 @@
+@(form: Form[library.sms.TwilioSMS])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Backoffice") {
+    <div class="row">
+        <div class="col-lg-offset-2 col-md-10">
+            <h2><i class="icon-phone-sign"></i> Speakers with a cell phone number</h2>
+        </div>
+        <div class="clearfix"></div>
+
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Test form</h3>
+                </div>
+                <div class="panel-body">
+
+                    @if(flash.get("error").isDefined) {
+                        <div class="alert alert-danger alert-dismissable col-md-12">
+                            <strong>Error :</strong>
+                            @flash.get("error").get
+                        </div>
+                    }
+                    @if(flash.get("success").isDefined) {
+                        <div class="alert alert-success alert-dismissable col-md-12">
+                        @flash.get("success").get
+                        </div>
+                    }
+
+                    <p>Use this form to simulate a message received by Twilio from a Speaker.</p>
+                    <p>When a speaker send a text message, Twilio triggers this webhook and POST a request to the SMS Callback action.</p>
+                    <p>This test form can be used to simulate SMS received from  Twilio.</p>
+
+                    @helper.form(action = routes.SMSController.callback()) {
+
+                        @helper.inputText(form("MessageSid"), 'size -> 34)
+                        @helper.inputText(form("AccountSid"), 'size -> 80)
+                        @helper.inputText(form("MessagingServiceSid"), 'size -> 80)
+                        @helper.inputText(form("From"), 'size -> 80)
+                        @helper.inputText(form("To"))
+                        @helper.inputText(form("NumMedia"))
+                        @helper.textarea(form("Body"), 'cols -> 70, 'rows -> 5)
+                        <button class="btn btn-success" type="submit">Send test message to CFP callback</button>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

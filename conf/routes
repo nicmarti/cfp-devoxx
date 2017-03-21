@@ -332,7 +332,14 @@ GET           /toptalks                                                         
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
-GET           /bp/fullAgenda                                                     controllers.Backoffice.showAllAgendaForInge()
+GET           /bp/fullAgenda                                                    controllers.Backoffice.showAllAgendaForInge()
+
+# SMS
+GET           /sms/speakers                                                     controllers.SMSController.allSpeakers()
+GET           /sms/talks                                                        controllers.SMSController.sendTalksDetails(phoneNumber:String)
+GET           /sms/welcome                                                      controllers.SMSController.sendWelcomeMessage(phoneNumber:String)
+GET           /sms/callback                                                     controllers.SMSController.testCallback()
+POST          /sms/callback                                                     controllers.SMSController.callback()
 
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()

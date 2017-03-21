@@ -24,7 +24,7 @@
 package controllers
 
 import library.search.ElasticSearch
-import library.sms.TwilioSender
+import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import library.{NotifyProposalSubmitted, SendMessageToCommitte, ZapActor}
 import models._
 import org.apache.commons.lang3.StringUtils
@@ -451,6 +451,7 @@ object CallForPaper extends SecureCFPController {
           val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
           if (theConfCode == code) {
             Speaker.updatePhone(webuser.uuid, thePhone, request.acceptLanguages.headOption)
+            SmsActor.actor ! SendWelcomeAndHelp(thePhone)
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("phonenumber.updated.success"))
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code"))

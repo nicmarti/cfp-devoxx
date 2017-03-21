@@ -74,15 +74,11 @@ object Publisher extends Controller {
   def showSpeakerByName(name: String) = Action {
     implicit request =>
       import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
-        Speaker.allSpeakersWithAcceptedTerms()
-      }
-      val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
-        speakers.map {
+      val speakers = Speaker.allSpeakersWithAcceptedTerms()
+      val speakerNameAndUUID = speakers.map {
           speaker => (speaker.urlName, speaker.uuid)
         }.toMap
-      }
-      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
+      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => speakers.find(_.uuid==id))
       maybeSpeaker match {
         case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
