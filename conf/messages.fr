@@ -820,7 +820,7 @@ visitor.welcome.profile=Liste des sujets marqués comme favoris
 visitor.welcome.publisher=Parcourir l''agenda des conférences
 
 sms.text1=Vous souhaitez être notifié par SMS de l''heure de passage ? En cas de changement de salle de votre présentation ? Renseignez votre numéro de téléphone :
-sms.explanation=Numéro de téléphone au format international (exemple : +33 6 61 70 80 90)
+sms.explanation=Numéro de téléphone au format international (exemple : +33661708090)
 confirm.phone=Confirmer votre numéro de téléphone
 confirm.shortExplanation=Nous avons envoyé un code de confirmation au {0}. Une fois le code reçu, recopiez celui-ci dans le formulaire puis validez pour terminer de configurer votre numéro.
 confirm.entercode=Code de confirmation
