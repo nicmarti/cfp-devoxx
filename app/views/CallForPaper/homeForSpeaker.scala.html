@@ -112,9 +112,6 @@
 
             </div>
 
-<!-- @ConferenceDescriptor.isTwilioSMSActive() -->
-<!-- @myProposals.exists(p => p.state == ProposalState.ACCEPTED ||  p.state == ProposalState.APPROVED ) -->
-
             @if(ConferenceDescriptor.isTwilioSMSActive() && myProposals.exists(p => p.state == ProposalState.ACCEPTED ||  p.state == ProposalState.APPROVED )) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
