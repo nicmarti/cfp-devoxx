@@ -61,7 +61,7 @@ class SmsActor extends Actor {
     play.Logger.of("library.sms.SmsActor").debug(s"sendListOfTalks to $phoneNumber")
 
     val allSpeakers = Speaker.allSpeakers().filter(_.phoneNumber.isDefined)
-    val searchForSpeaker = allSpeakers.find(s => s.phoneNumber.get == phoneNumber)
+    val searchForSpeaker = allSpeakers.find(s => s.phoneNumber.get == phoneNumber || "+33"+s.phoneNumber.get.substring(1) == phoneNumber)
 
     searchForSpeaker.map {
       speaker =>
@@ -109,7 +109,7 @@ class SmsActor extends Actor {
 
   def sendHelpMessage(from:String, message:String ) ={
     val allSpeakers = Speaker.allSpeakers().filter(_.phoneNumber.isDefined)
-    val searchForSpeaker = allSpeakers.find(s => s.phoneNumber.get == from)
+    val searchForSpeaker = allSpeakers.find(s => s.phoneNumber.get == from || "+33"+s.phoneNumber.get.substring(1) == from)
 
     searchForSpeaker.map{
       speaker=>

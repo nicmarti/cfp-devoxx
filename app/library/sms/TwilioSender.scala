@@ -39,17 +39,20 @@ object TwilioSender {
   val client = new TwilioRestClient.Builder(ConferenceDescriptor.twilioAccountSid,ConferenceDescriptor.twilioAuthToken).build()
 
   def send(phoneNumber:String, message:String)={
-//    play.Logger.of("library.sms.TwilioSender").info("---- SHORT SMS ----")
-//    play.Logger.of("library.sms.TwilioSender").info(s"To $phoneNumber")
-//    play.Logger.of("library.sms.TwilioSender").info(message)
-//    play.Logger.of("library.sms.TwilioSender").info("--------------------")
-    val msg = new MessageCreator(
-        new PhoneNumber(phoneNumber),
-        new PhoneNumber(ConferenceDescriptor.twilioSenderNumber),
-      message
-    )
+    play.Logger.of("library.sms.TwilioSender").info("---- SHORT SMS ----")
+    play.Logger.of("library.sms.TwilioSender").info(s"To $phoneNumber")
+    play.Logger.of("library.sms.TwilioSender").info(message)
+    play.Logger.of("library.sms.TwilioSender").info("--------------------")
 
-    msg.create(client)
+
+    if(ConferenceDescriptor.twilioMockSMS==false) {
+          val msg = new MessageCreator(
+              new PhoneNumber(phoneNumber),
+              new PhoneNumber(ConferenceDescriptor.twilioSenderNumber),
+            message
+          )
+          msg.create(client)
+    }
   }
 
 }

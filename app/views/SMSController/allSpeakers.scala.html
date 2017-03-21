@@ -26,12 +26,13 @@
                         @flash.get("success").get
                         </div>
                     }
+                    <a href="@routes.SMSController.testCallback()" class="btn btn-sm btn-success">Test callback</a><br>
 
                     @speakers.sortBy(_.name.map(_.toUpperCase).getOrElse("?")).map { speaker: Speaker =>
 
                         <p>@speaker.cleanName @speaker.phoneNumber.get
                         <A href="@routes.SMSController.sendTalksDetails(speaker.phoneNumber.get)" class="btn btn-primary btn-sm">Send talks</A> -
-                        <A href="@routes.SMSController.sendWelcomeMessage(speaker.phoneNumber.get)">Send Welcome txt</A>
+                        <A href="@routes.SMSController.sendWelcomeMessage(speaker.phoneNumber.get)" class="btn btn-primary btn-sm">Send Welcome txt</A>
                         </p>
 
 
