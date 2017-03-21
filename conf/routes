@@ -39,6 +39,9 @@ GET           /cfp/profile                                                      
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
 
+POST           /cfp/profile/phoneNumber                                         controllers.CallForPaper.updatePhoneNumber()
+POST           /cfp/profile/phoneNumber/confirm                                 controllers.CallForPaper.confirmPhone()
+
 # Email Digests
 POST          /cfp/profile/digest                                               controllers.DigestController.update()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()

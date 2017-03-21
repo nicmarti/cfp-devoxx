@@ -96,6 +96,7 @@ title.help=Think carefully and try to create a title that is descriptive enough.
 summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
+phoneNumber=cell phone number
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
@@ -923,3 +924,15 @@ fav.day.4=Thursday
 fav.day.5=Friday
 
 mydevoxx.authenticated=You are now authenticated through MyDevoxx, you can browser the Agenda and add talks to your Schedule
+
+sms.text1=Want to be notified by SMS of the scheduled time for your talk? Should your presentation''s room change ? Fill in your phone number:
+sms.explanation=Cell phone number, international format (eg : 1661708090)
+confirm.phone=Confirm your cell phone number
+confirm.shortExplanation=Can you please enter the verification code we just sent to {0} ?
+confirm.entercode=Confirmation code:
+confirm.button=Verify token
+phonenumber.updated.success=Your phone number is valid and is now ready to receive SMS / text messages from the Devoxx team.
+confirm.phone.error=Sorry, the confirmation code is not correct
+invalid.confirmation.code=Invalid confirmation code
+invalid.phone=Invalid phone number, please use the international phone number format.
+sms.confirmationTxt=Your Devoxx confirmation code is {0}

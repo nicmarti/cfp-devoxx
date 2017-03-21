@@ -111,6 +111,24 @@
                 </div>
 
             </div>
+
+            @if(ConferenceDescriptor.isTwilioSMSActive && myProposals.exists(p => p.state == ProposalState.ACCEPTED ||  p.state == ProposalState.APPROVED )) {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><i class="icon-phone"></i> SMS </h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>@Messages("sms.text1")</p>
+                        <form action="@routes.CallForPaper.updatePhoneNumber" method="POST" class="form form-inline">
+                        <label for="phoneNumber">@Messages("sms.explanation")
+                            <input type="tel" id="phoneNumber" name="phoneNumber" value="@speaker.phoneNumber.getOrElse("")" placeholder="+33 6 61 70 80 90"/>
+                            <input type="submit" value="Ok">
+                        </label>
+                        </form>
+                    </div>
+                </div>
+            }
+
             @if(Webuser.isMember(webuser.uuid, "cfp")){
                 <div class="digestMessage">
                 <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
@@ -138,6 +156,7 @@
                 </table>
                 </div>
             }
+
 
         </div>
 
@@ -242,12 +261,7 @@
                             </td>
                             <td>
                              @defining(models.Comment.countComments(prop.id)){totalComments:Long=>
-                                @if(totalComments == 0){
-&nbsp;
-                                }
-                                @if(totalComments > 0){
-                                    <a href="@routes.CallForPaper.showCommentForProposal(prop.id)" class="label label-warning">@totalComments</a>
-                                }
+                                <a href="@routes.CallForPaper.showCommentForProposal(prop.id)" class="label label-warning">@totalComments</a>
                              }
                             </td>
                             <td>
@@ -284,6 +298,7 @@
             <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
 }else{
     <div class="panel panel-success">
+        <div class="panel-heading">Information</div>
         <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
     </div>
 }
@@ -332,7 +347,7 @@
     selection.change(function(){
         $.ajax({
             type: "POST",
-            url: "/cfp/profile/digest?value="+selection.val(),
+            url: "@routes.DigestController.update().absoluteURL(ConferenceDescriptor.isHTTPSEnabled)?value="+selection.val(),
             success: function(data) {
                 return $('#digestMsg').text(data);
             }

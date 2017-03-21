@@ -1,0 +1,29 @@
+@(confirmPhone:Form[(String,String)])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@main(Messages("cfp.title")) {
+    <div class="row">
+        <div class="col-md-8 col-xs-12 col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-phone-sign"></i> @Messages("confirm.phone")</h3>
+                </div>
+                <Div class="panel-body">
+                    @if(confirmPhone.hasErrors) {
+                        <div class="alert alert-danger">
+                            <p>@Messages("confirm.phone.error")</p>
+                        </div>
+                    }
+
+                    <form action="@routes.CallForPaper.confirmPhone()" method="POST">
+                        <p>@Messages("confirm.shortExplanation", confirmPhone.value.map(_._1).getOrElse("?"))</p>
+                        <label for="confirm">@Messages("confirm.entercode")</label>
+                        <input type="text" name="confirmation" value="" placeholder="" required>
+                        <input type="hidden" name="phoneNumber" value="@confirmPhone.value.map(_._1)">
+                        <button class="btn btn-primary">@Messages("confirm.button")</button>
+
+                    </form>
+                </Div>
+            </div>
+        </div>
+    </div>
+}

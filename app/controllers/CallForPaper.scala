@@ -24,6 +24,7 @@
 package controllers
 
 import library.search.ElasticSearch
+import library.sms.TwilioSender
 import library.{NotifyProposalSubmitted, SendMessageToCommitte, ZapActor}
 import models._
 import org.apache.commons.lang3.StringUtils
@@ -34,6 +35,8 @@ import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
+
+import scala.concurrent.Future
 
 /**
   * Main controller for the speakers.
@@ -50,7 +53,7 @@ object CallForPaper extends SecureCFPController {
       Speaker.findByUUID(uuid).map {
         speaker: Speaker =>
           // BUG
-          if(Webuser.isSpeaker(uuid)==false){
+          if (Webuser.isSpeaker(uuid) == false) {
             Webuser.addToSpeaker(uuid)
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
@@ -99,7 +102,8 @@ object CallForPaper extends SecureCFPController {
     "company" -> optional(text),
     "blog" -> optional(text),
     "firstName" -> nonEmptyText(maxLength = 25),
-    "qualifications" -> nonEmptyText(maxLength = 750)
+    "qualifications" -> nonEmptyText(maxLength = 750),
+    "phoneNumber" -> optional(text)
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
   def editProfile = SecuredAction {
@@ -216,14 +220,14 @@ object CallForPaper extends SecureCFPController {
       )
   }
 
-  def autoCompleteTag(term:String) = SecuredAction {
+  def autoCompleteTag(term: String) = SecuredAction {
     implicit request => {
 
       val tagsFound = Tag.allTags()
-                         .filter(tag => tag.value.toLowerCase.contains(term.toLowerCase))
-                         .sortBy(f => f.value)
-                         .map(tag => tag.value)
-                         .take(10)
+        .filter(tag => tag.value.toLowerCase.contains(term.toLowerCase))
+        .sortBy(f => f.value)
+        .map(tag => tag.value)
+        .take(10)
 
       Ok(Json.toJson(tagsFound))
     }
@@ -406,5 +410,53 @@ object CallForPaper extends SecureCFPController {
             InternalServerError
         }
       }
+  }
+
+  val phoneForm = play.api.data.Form("phoneNumber" -> nonEmptyText(maxLength = 15))
+  val phoneConfirmForm = play.api.data.Form(tuple(
+    "phoneNumber" -> nonEmptyText(maxLength = 15),
+    "confirmation" -> nonEmptyText(maxLength = 15)
+  )
+  )
+
+  def updatePhoneNumber() = SecuredAction.async {
+    implicit request =>
+      phoneForm.bindFromRequest().fold(
+        invalidPhone => Future.successful(Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.phone"))),
+        validPhone => {
+          Future.successful {
+            val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
+            if (ConferenceDescriptor.isTwilioSMSActive()) {
+              TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code))
+              Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
+            } else {
+              val webuser = request.webuser
+              Speaker.updatePhone(webuser.uuid, validPhone, request.acceptLanguages.headOption)
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("phonenumber.updated.success"))
+            }
+
+          }
+        }
+      )
+  }
+
+  def confirmPhone() = SecuredAction {
+    implicit request =>
+      phoneConfirmForm.bindFromRequest().fold(
+        hasErrors => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code")),
+        success => {
+          val thePhone = success._1
+          val theConfCode = success._2
+          val webuser = request.webuser
+          val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
+          if (theConfCode == code) {
+            Speaker.updatePhone(webuser.uuid, thePhone, request.acceptLanguages.headOption)
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("phonenumber.updated.success"))
+          } else {
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code"))
+          }
+
+        }
+      )
   }
 }

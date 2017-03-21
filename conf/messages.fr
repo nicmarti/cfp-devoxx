@@ -818,3 +818,17 @@ visitor.welcome.title=Bienvenue {0}
 visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vous pouvez marquer vos sujets favoris dans l''agenda de {0} et recharger cet agenda plus tard, via cette page.
 visitor.welcome.profile=Liste des sujets marqués comme favoris
 visitor.welcome.publisher=Parcourir l''agenda des conférences
+
+sms.text1=Vous souhaitez être notifié par SMS de l''heure de passage ? En cas de changement de salle de votre présentation ? Renseignez votre numéro de téléphone :
+sms.explanation=Numéro de téléphone au format international (exemple : +33 6 61 70 80 90)
+confirm.phone=Confirmer votre numéro de téléphone
+confirm.shortExplanation=Nous avons envoyé un code de confirmation au {0}. Une fois le code reçu, recopiez celui-ci dans le formulaire puis validez pour terminer de configurer votre numéro.
+confirm.entercode=Code de confirmation
+confirm.button=Valider
+phonenumber.updated.success=Votre numéro de téléphone a été configuré. Vous pourrez recevoir désormais des SMS, afin de vous informer de vos heures de passages ou des changements de salle.
+confirm.phone.error=Le code de confirmation n'est pas valide.
+invalid.confirmation.code=Code de confirmation incorrect, ou ayant expiré. Merci de retenter.
+invalid.phone=Numéro de téléphone invalide, il doit respecter le format international. Pour la France, les numéros de téléphones sont de la forme +3366....
+sms.confirmationTxt=Code de confirmation Devoxx à saisir sur le site du CFP : {0}
+
+phoneNumber=Numéro de téléphone portable

@@ -325,7 +325,8 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           webuser =>
             val uuid = Webuser.saveAndValidateWebuser(webuser) // it is generated
-            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience"))
+            val someLang = request.acceptLanguages.headOption.map(_.code)
+            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang,None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience",None))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -381,15 +382,8 @@ object Authentication extends Controller {
             newWebuser
           }
 
-          val lang = request.headers.get("Accept-Language").map {
-            s =>
-              if (s.contains("fr_FR")) {
-                "fr"
-              } else {
-                "en"
-              }
-          }
-          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications)
+          val lang = request.acceptLanguages.headOption.map(_.code)
+          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications, None)
           Speaker.save(newSpeaker)
           Webuser.addToSpeaker(validWebuser.uuid)
 
@@ -403,11 +397,8 @@ object Authentication extends Controller {
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.confirmImportVisitor(invalidForm)).flashing("error" -> "Please check your profile, invalid webuser."),
         webuserForm => {
-
           val validWebuser = Webuser.createVisitor(webuserForm.email, webuserForm.firstName, webuserForm.lastName)
-
           Webuser.saveAndValidateWebuser(validWebuser)
-
           Ok(views.html.Authentication.validateImportedVisitor(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
         }
       )

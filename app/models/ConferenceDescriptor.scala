@@ -753,5 +753,15 @@ object ConferenceDescriptor {
 
   // This is a JWT String shared secret that needs to be configured as a global environment variable
   def jwtSharedSecret() : String = Play.current.configuration.getString("mydevoxx.jwtSharedSecret").getOrElse("change me please")
+
+  // Use Twilio (SMS service) to send notification to all speakers and to recieve also commands
+  def isTwilioSMSActive():Boolean = Play.current.configuration.getBoolean("cfp.twilioSMS.active").getOrElse(false)
+
+  def twilioAccountSid:String =  Play.current.configuration.getString("cfp.twilioSMS.accountSid").getOrElse("")
+
+  def twilioAuthToken:String =  Play.current.configuration.getString("cfp.twilioSMS.authToken").getOrElse("")
+
+  def twilioSenderNumber:String =  Play.current.configuration.getString("cfp.twilioSMS.senderNumber").getOrElse("")
+
 }
 
