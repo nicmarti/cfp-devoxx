@@ -403,7 +403,8 @@ object CFPAdmin extends SecureCFPController {
       val dir = new File("./public/speakers")
       FileUtils.forceMkdir(dir)
 
-      val file = new File(dir, "speakersDevoxxUK2017.csv")
+      val conferenceNameSpaces = Messages("CONF.title").replaceAll(" ", "")
+      val file = new File(dir, s"speakers${conferenceNameSpaces}.csv")
 
       val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), true)
 
@@ -415,6 +416,8 @@ object CFPAdmin extends SecureCFPController {
           if (proposals.nonEmpty) {
 
             writer.print(s.email.toLowerCase)
+            writer.print(",")
+            writer.print(s.cleanTwitter.getOrElse("").toLowerCase)
             writer.print(",")
             writer.print(s.firstName.getOrElse("?").capitalize)
             writer.print(",")
