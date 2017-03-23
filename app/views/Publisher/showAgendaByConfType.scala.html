@@ -15,14 +15,14 @@
         <div class="large-12 columns woocommerce">
 
             <table class="agendaTable">
-                     @if(ConferenceDescriptor.isShowRoom) {
-                         <tr>
-                             <th><i class="icon-time"></i>  @Messages("publisher.room")</th>
-                             @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
-                                 <td>@room.name</td>
-                             }
-                         </tr>
-                     }
+                 @if(ConferenceDescriptor.isShowRoom) {
+                     <tr>
+                         <th><i class="icon-time"></i>  @Messages("publisher.room")</th>
+                         @schedule.slots.groupBy(_.room).keys.toList.sorted.map { room: Room =>
+                             <td>@room.name</td>
+                         }
+                     </tr>
+                 }
                 @if(day.toLowerCase=="thursday" && talkType.toLowerCase=="conf" ){
                     <tr>
                         <th>
@@ -49,11 +49,6 @@
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
                     <th class="timeSlot">
-                        <!--
-                        time = @time
-                        localdatetime = @time.toLocalDateTime
-                        to = @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
-                        -->
                         @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>

@@ -332,7 +332,7 @@ GET           /toptalks                                                         
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
-GET           /bp/fullAgenda                                                    controllers.Backoffice.showAllAgendaForInge()
+GET           /bp/exportAgenda                                                  controllers.Backoffice.exportAgenda()
 
 # SMS
 GET           /sms/speakers                                                     controllers.SMSController.allSpeakers()

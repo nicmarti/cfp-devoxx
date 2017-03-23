@@ -194,16 +194,6 @@ object Publisher extends Controller {
       }
   }
 
-  val speakerMsg = Form(
-    tuple(
-      "msg_pub" -> nonEmptyText(maxLength = 1500),
-      "fullname" -> nonEmptyText(maxLength = 40),
-      "email_pub" -> email.verifying(nonEmpty),
-      "email_pub2" -> email.verifying(nonEmpty)
-    ) verifying("Email does not match the confirmation email", constraint => constraint match {
-      case (_, _, e1, e2) => e1 == e2
-    })
-  )
 
   def showDetailsForProposal(proposalId: String, proposalTitle: String) =
     Action {
@@ -216,7 +206,7 @@ object Publisher extends Controller {
 
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
-          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg))
+          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot))
       }
   }
 

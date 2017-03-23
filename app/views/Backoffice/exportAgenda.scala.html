@@ -7,7 +7,7 @@
 
 <div class="row">
 
-    <div class="col-md-12">
+    <div class="col-md-12 col-lg-12">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3>All published Slots with a talk</h3>
@@ -18,48 +18,33 @@
     <table id="allProposals" class="table table-condensed table-bordered">
         <thead>
             <tr>
-                <th>Slot ID</th>
+                <th>Proposal type</th>
+                <th>Day</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Room</th>
                 <th>Title</th>
+                <th>Lang</th>
+                <th>Track</th>
                 <th>Speaker(s)</th>
             </tr>
         </thead>
         <tbody>
             @slots.map { slot: Slot =>
               <tr>
-                  <td>@slot.id</td>
-                  <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
-                  <td>@slot.to.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("yyyy-MM-dd HH:mm:ss.S")</td>
+                  <td>@slot.proposal.map(p=> p.talkType.id)</td>
+                  <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("EEEE")</td>
+                  <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
+                  <td>@slot.to.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
                   <td>@slot.room.name</td>
                   <td>@slot.proposal.map(_.title)</td>
-                  <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString("/"))</td>
+                  <td>@slot.proposal.map(_.lang)</td>
+                  <td>@slot.proposal.map(p=> Messages(p.track.label))</td>
+                  <td>@slot.proposal.map(_.allSpeakers.map(_.cleanName).mkString(", "))</td>
               </tr>
             }
         </tbody>
     </table>
 </div>
-    </div>
-    </div>
 </div>
-<script type="text/javascript">
-$(document).ready(function() {
-
-    $('#allProposals').dataTable({
-        "aaSorting": [[ 2, "asc" ]],
-        "iDisplayLength": 50,
-        "aLengthMenu": [[5, 25, 50, -1], [5,  25, 50, "All"]],
-        "bStateSave": true,
-        "aoColumns": [
-        { "sType": "string"},
-        { "sType": "date"},
-        { "sType": "date"},
-        { "sType": "string"},
-        { "sType": "string"},
-        { "sType": "string"}
-        ]
-    });
-} );
-</script>
 }

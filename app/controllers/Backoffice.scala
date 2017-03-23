@@ -309,10 +309,10 @@ object Backoffice extends SecureCFPController {
 
   }
 
-  def showAllAgendaForInge = SecuredAction(IsMemberOf("admin")) {
+  def exportAgenda = Action {
     implicit request =>
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
-      Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+      Ok(views.html.Backoffice.exportAgenda(publishedConf))
   }
 
   // Tag related controllers
