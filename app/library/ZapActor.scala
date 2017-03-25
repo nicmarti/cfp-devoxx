@@ -342,8 +342,6 @@ class ZapActor extends Actor {
     */
   def doEmailDigests(digest: Digest) {
 
-    play.Logger.debug("doEmailDigests for " + digest.value)
-
     // Retrieve new proposals for digest
     val newProposalsIds = Digest.pendingProposals(digest)
 

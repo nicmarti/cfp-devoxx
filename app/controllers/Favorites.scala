@@ -89,9 +89,17 @@ object Favorites extends UserCFPController {
       }
   }
 
-  def showAllForAdmin()=SecuredAction(IsMemberOf("admin")){
+  def showAllForAdmin(proposalType:Option[String])=SecuredAction(IsMemberOf("admin")){
     implicit r:SecuredRequest[play.api.mvc.AnyContent]=>
       val all=FavoriteTalk.all().toList.sortBy(_._2).reverse
-      Ok(views.html.Favorites.showAllForAdmin(all))
+
+      proposalType match {
+        case None =>
+          Ok(views.html.Favorites.showAllForAdmin(all, proposalType))
+        case Some(pType)=>
+          Ok(views.html.Favorites.showAllForAdmin(all.filter(_._1.talkType.id == pType), proposalType))
+      }
+
+
   }
 }

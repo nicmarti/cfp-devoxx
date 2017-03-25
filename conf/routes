@@ -166,7 +166,7 @@ GET           /admin/tags                                                       
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
 # Favorites and starred talks
-GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
+GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin(proposalType:Option[String])
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
