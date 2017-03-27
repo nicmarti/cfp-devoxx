@@ -38,4 +38,5 @@ libraryDependencies ++= Seq(
   , "com.amazonaws" % "aws-java-sdk-sns" % "1.11.29"
   , "com.pauldijou" %% "jwt-core" % "0.9.2" // JWT for MyDevoxx
   , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
+  , "org.scalaz" %% "scalaz-core" % "7.2.10"
 )

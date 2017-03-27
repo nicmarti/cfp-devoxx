@@ -1,7 +1,7 @@
 package controllers
 
 import library.search.{DoIndexProposal, _}
-import library.{DraftReminder, Redis, ZapActor}
+import library._
 import models.{Tag, _}
 import org.joda.time.{DateTime, Instant}
 import play.api.Play
@@ -11,6 +11,8 @@ import play.api.data._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
+
+import scala.concurrent.Future
 
 /**
   * Backoffice actions, for maintenance and validation.
@@ -239,12 +241,12 @@ object Backoffice extends SecureCFPController {
       // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
       val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
         for (speakerId <- specialSpeakers) yield {
-        val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
-        val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
-        val conflict = groupedByDate.filter(_._2.size > 1)
-        val speaker = Speaker.findByUUID(speakerId).get
-        (speaker, conflict)
-      }
+          val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
+          val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
+          val conflict = groupedByDate.filter(_._2.size > 1)
+          val speaker = Speaker.findByUUID(speakerId).get
+          (speaker, conflict)
+        }
 
       Ok(
         views.html.Backoffice.sanityCheckSchedule(
@@ -256,6 +258,30 @@ object Backoffice extends SecureCFPController {
         )
       )
 
+  }
+
+  def refreshSchedules() = SecuredAction(IsMemberOf("admin")).async {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import akka.pattern.ask
+      import akka.util.Timeout
+
+      import scala.concurrent.ExecutionContext.Implicits.global
+      import scala.concurrent.duration._
+      implicit val timeout = Timeout(15 seconds)
+
+      val futureMessages:Future[Any] = ZapActor.actor  ? CheckSchedules
+
+      futureMessages.map {
+        case s: List[(Proposal,String,String,String)] =>
+          Ok(views.html.Backoffice.refreshSchedules(s))
+        case other => Ok("unknown return type from Akka")
+      }
+  }
+
+  def confirmPublicationChange(talkType:String, proposalId:String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      ZapActor.actor ! UpdateSchedule(talkType, proposalId)
+      Redirect(routes.Backoffice.refreshSchedules())
   }
 
   def sanityCheckProposals() = SecuredAction(IsMemberOf("admin")) {

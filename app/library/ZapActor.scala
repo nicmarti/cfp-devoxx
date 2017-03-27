@@ -88,7 +88,12 @@ case class SendHeartbeat(apiKey: String, name: String)
 
 case class NotifyMobileApps(confType: String)
 
-case class EmailDigests(digest : Digest)
+case class EmailDigests(digest: Digest)
+
+case object CheckSchedules
+
+case class UpdateSchedule(talkType:String, proposalId:String)
+
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
@@ -116,6 +121,8 @@ class ZapActor extends Actor {
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case NotifyMobileApps(confType: String) => doNotifyMobileApps(confType)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
+    case CheckSchedules => doCheckSchedules()
+    case UpdateSchedule(talkType:String, proposalId:String) => doUpdateProposal(talkType:String, proposalId:String)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -371,4 +378,101 @@ class ZapActor extends Actor {
 
     }
   }
+
+  def doCheckSchedules() = {
+
+    import scalaz._
+    import Scalaz._
+
+    val allPublishedSlots: List[Slot] = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+    val approvedOrAccepted = allPublishedSlots.filter(p => p.proposal.get.state == ProposalState.APPROVED || p.proposal.get.state == ProposalState.ACCEPTED)
+
+    val publishedProposalIDs: Set[String] = approvedOrAccepted.map(_.proposal.get.id).toSet
+
+    // Build the list of Speakers
+//    val allSpeakersUUID: Set[String] = approvedOrAccepted.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+//    val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(allSpeakersUUID)
+
+    val allValidProposals = Proposal.loadAndParseProposals(publishedProposalIDs)
+
+    type ProposalAndError=(Proposal, String, String,String)
+
+    def checkSameTitle: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+      if (p1.title == p2.title) "Same title".successNel
+      else (p1, "Title was changed",p1.title, p2.title).failureNel
+    }
+
+    def checkSameSummary: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+      if (p1.summary == p2.summary) "Same summary".successNel
+      else (p1,"Summary was changed",p1.summary, p2.summary).failureNel
+    }
+
+    def checkSameMainSpeaker: (Proposal, Proposal) =>ValidationNel[ProposalAndError, String] = (p1,p2) => {
+      if (p1.mainSpeaker == p2.mainSpeaker) "Same main speaker".successNel
+      else (p1, "Main speaker was changed", p1.mainSpeaker, p2.mainSpeaker).failureNel
+    }
+
+    def checkSameSecondSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+      if (p1.secondarySpeaker == p2.secondarySpeaker) "Same secondary speaker".successNel
+      else (p1,"Secondary speaker was changed",p1.secondarySpeaker.getOrElse("?"), p2.secondarySpeaker.getOrElse("?")).failureNel
+    }
+
+    def checkSameOtherSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+      if (p1.otherSpeakers == p2.otherSpeakers) "Same other speaker".successNel
+      else (p1, "Other speaker was changed", p1.otherSpeakers.mkString("/") , p2.otherSpeakers.mkString("/")).failureNel
+    }
+
+    val validateProposals= for {
+      a <- checkSameTitle
+      b <- checkSameSummary
+      c <- checkSameMainSpeaker
+      d <- checkSameSecondSpeakers
+      e <- checkSameOtherSpeakers
+    } yield( a |@| b |@| c |@| d |@| e ) // |@| is an Applicative Builder -> it accumulates the combined result as a tuple
+
+    def doNothing(p1:String, p2:String, p3:String,p4:String, p5:String) = s"$p1 $p2 $p3 $p4 $p5"
+
+   val messages:List[ValidationNel[ProposalAndError,String]]= allPublishedSlots.map {
+      s: Slot =>
+        val publishedProposal = s.proposal.get
+        // cause we did a filter where proposal is Defined
+        val fromCFPProposal = allValidProposals(publishedProposal.id)
+        validateProposals(publishedProposal, fromCFPProposal)(doNothing)
+    }
+
+    val onlyErrors= messages.filter(_.isFailure).flatMap { f: Validation[NonEmptyList[ProposalAndError], String] =>
+      val noEmpty = f.toEither.left.get
+      noEmpty.toList
+    }
+
+
+    sender() ! onlyErrors
+
+  }
+
+  def doUpdateProposal(confType:String, proposalId:String)={
+    play.Logger.debug("Update published Schedule for proposal Id "+proposalId)
+
+    ScheduleConfiguration.findSlotForConfType(confType,proposalId).foreach{
+      slot=>
+        val proposal = slot.proposal.get
+        ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id).foreach{
+          id=>
+            ScheduleConfiguration.loadScheduledConfiguration(id).foreach{ p=>
+              val newSlots = p.slots.map{
+                s:Slot=>
+                  s match {
+                    case e if e.proposal.isDefined && e.proposal.get.id==proposalId =>
+                      e.copy(proposal=Proposal.findById(proposalId))
+                    case other => other
+                  }
+              }
+              val newID = ScheduleConfiguration.persist(confType, newSlots, Webuser.Internal)
+              ScheduleConfiguration.publishConf(newID,confType)
+            }
+
+        }
+    }
+  }
+
 }
