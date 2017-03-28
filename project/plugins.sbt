@@ -4,13 +4,15 @@
 // The Typesafe repository
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
+dependencyOverrides += "org.scala-sbt" % "sbt" % "0.13.13"
+
 // Use the Play sbt plugin for Play projects
 // Play 2.3.x the last smart version before the D.I nightmare
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.10")
 
 addSbtPlugin("com.updateimpact" % "updateimpact-sbt-plugin" % "2.1.1")
 
-addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-M14")
+addSbtPlugin("com.github.alexarchambault" % "coursier-sbt-plugin-java-6" % "1.0.0-M8")
 
 // Dependency graph
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.0")

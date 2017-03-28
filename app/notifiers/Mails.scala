@@ -212,16 +212,30 @@ object Mails {
     MailerPlugin.send(email)
   }
 
-  def sendResultToSpeaker(speaker: Speaker, listOfApprovedProposals: Set[Proposal], listOfRefusedProposals: Set[Proposal]) = {
-    val subjectEmail: String = Messages("mail.speaker_cfp_results.subject", Messages("longYearlyName"))
+  /**
+    * Mail digest.
+    *
+    * @param userIDs the list of CFP uuids for given digest
+    * @param digest  List of speakers and their new proposals
+    * @return
+    */
+  def sendDigest(digest: Digest,
+                 userIDs: List[String],
+                 proposals: List[Proposal],
+                 isDigestFilterOn: Boolean,
+                 leaderBoardParams: LeaderBoardParams): String = {
+
+  val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
+
+    val emails = userIDs.map(uuid => Webuser.findByUUID(uuid).get.email)
 
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
-      to = Seq(speaker.email),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
-      bodyHtml = Some(views.html.Mails.acceptrefuse.sendResultToSpeaker(speaker, listOfApprovedProposals, listOfRefusedProposals).toString()),
+      to = Seq("no-reply-digest@devoxx.com"),   // Use fake email because we use bcc instead
+      bcc = emails,
+      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
+      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
       charset = Some("utf-8")
     )
 
@@ -259,34 +273,6 @@ object Mails {
 
     MailerPlugin.send(email)
   }
-
-  /**
-    * Mail digest.
-    *
-    * @param emails the list of CFP user emails for given digest
-    * @param digest List of speakers and their new proposals
-    * @return
-    */
-  def sendDigest(digest: Digest,
-                 emails: List[String],
-                 proposals: List[Proposal],
-                 leaderBoardParams: LeaderBoardParams): String = {
-
-    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
-
-    val email = Email(
-      subject = subjectEmail,
-      from = fromSender,
-      to = Seq("no-reply-digest@devoxx.com"), // Use fake email because we use bcc instead
-      bcc = emails,
-      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
-      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, leaderBoardParams).toString()),
-      charset = Some("utf-8")
-    )
-
-    MailerPlugin.send(email)
-  }
-
 
   private def extractOtherEmails(proposal: Proposal): List[String] = {
     val maybeSecondSpeaker = proposal.secondarySpeaker.flatMap(uuid => Webuser.getEmailFromUUID(uuid))

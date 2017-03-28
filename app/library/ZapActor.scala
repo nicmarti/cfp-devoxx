@@ -26,15 +26,13 @@ package library
 import java.util
 
 import akka.actor._
-import com.amazonaws.auth.{AWSCredentials, BasicAWSCredentials}
-import com.amazonaws.services.sns.AmazonSNSClient
-import com.amazonaws.services.sns.model._
-import com.amazonaws.{ClientConfiguration, Protocol}
 import controllers.{CFPAdmin, LeaderboardController}
 import models._
 import notifiers.Mails
-import org.apache.commons.lang3.StringUtils
-import play.api.Play
+import org.apache.http.client.entity.UrlEncodedFormEntity
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.message.BasicNameValuePair
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
@@ -86,7 +84,7 @@ case class NotifyGoldenTicket(goldenTicket: GoldenTicket)
 
 case class SendHeartbeat(apiKey: String, name: String)
 
-case class NotifyMobileApps(confType: String)
+case class NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean] = None)
 
 case class EmailDigests(digest: Digest)
 
@@ -119,7 +117,7 @@ class ZapActor extends Actor {
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
-    case NotifyMobileApps(confType: String) => doNotifyMobileApps(confType)
+    case NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]) => doNotifyMobileApps(message, scheduleUpdate)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case CheckSchedules => doCheckSchedules()
     case UpdateSchedule(talkType:String, proposalId:String) => doUpdateProposal(talkType:String, proposalId:String)
@@ -290,64 +288,76 @@ class ZapActor extends Actor {
   }
 
   /**
-    * Push mobile schedule notification via AWS SNS.
+    * Push mobile schedule notification via Gluon Link
     *
-    * @param confType the event type that has been modified
+    * method: POST
+    * url: https://cloud.gluonhq.com/3/push/enterprise/notification
+    * form params:
+    *   - title: notification title
+    *   - body: notification body
+    *   - deliveryDate: when the push notification should be sent (not yet implemented, give 0 for now)
+    *   - priority: HIGH of NORMAL
+    *   - expirationType: WEEKS, DAYS, HOURS of MINUTES
+    *   - expirationAmount: number of units of expirationType: WEEKS [0,4], DAYS: [0,7], HOURS: [0,24], MINUTES: [0,60]
+    *   - targetType: ALL_DEVICES or SINGLE_DEVICE
+    *   - targetDeviceToken: the device token where to push the notification, only in combination with targetType=SINGLE_DEVICE
+    *   - invisible: true or false
+    *   authenticatie: Authorization header with value: "Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
+    *
+    * Example silent push
+    *
+    * curl https://cloud.gluonhq.com/3/push/enterprise/notification -i -X POST
+    *   -H "Authorization: Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
+    *   -d "title=update"
+    *   -d "body=update"
+    *   -d "deliveryDate=0"
+    *   -d "priority=HIGH"
+    *   -d "expirationType=DAYS"
+    *   -d "expirationAmount=1"
+    *   -d "targetType=ALL_DEVICES"
+    *   -d "invisible=true"
+    *
+    *
+    * @param message the notification message
+    * @param scheduleUpdate true = invisible message
     */
-  def doNotifyMobileApps(confType: String): Unit = {
+  def doNotifyMobileApps(message:String, scheduleUpdate: Option[Boolean]): Unit = {
 
-    play.Logger.debug("Notify mobile apps of a schedule change")
+    play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
 
-    val awsKey: Option[String] = Play.current.configuration.getString("aws.key")
-    val awsSecret: Option[String] = Play.current.configuration.getString("aws.secret")
-    val awsRegion: Option[String] = Play.current.configuration.getString("aws.region")
+    val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
+    post.addHeader("Authorization","Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj")
 
-    if (awsKey.isDefined && awsSecret.isDefined && awsRegion.isDefined) {
+    val urlParameters = new util.ArrayList[BasicNameValuePair]()
+    urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
 
-      val credentials: AWSCredentials with Object = new BasicAWSCredentials(awsKey.get, awsSecret.get)
-
-      val configClient: ClientConfiguration = new ClientConfiguration()
-      configClient.setProtocol(Protocol.HTTP)
-
-      val snsClient: AmazonSNSClient = new AmazonSNSClient(credentials, configClient)
-      snsClient.setEndpoint(awsRegion.get)
-
-      //create a new SNS topic
-      val createTopicRequest: CreateTopicRequest = new CreateTopicRequest("cfp_schedule_updates")
-      val createTopicResult: CreateTopicResult = snsClient.createTopic(createTopicRequest)
-
-      play.Logger.debug(createTopicResult.getTopicArn)
-
-      //publish to an SNS topic
-      val publishRequest: PublishRequest = new PublishRequest()
-
-      publishRequest.setMessage("{\"default\": \"test-message\", \"GCM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"ADM\": \"{ \\\"data\\\": { \\\"message\\\": \\\"" + confType + "\\\" } }\", \"WNS\" : \"" + confType + "\"}")
-
-      val messageAttributeValue: MessageAttributeValue = new MessageAttributeValue()
-      messageAttributeValue.setStringValue("wns/raw")
-      messageAttributeValue.setDataType("String")
-
-      val attributeValueMap: util.HashMap[String, MessageAttributeValue] = new util.HashMap[String, MessageAttributeValue]()
-      attributeValueMap.put("AWS.SNS.MOBILE.WNS.Type", messageAttributeValue)
-
-      publishRequest.setMessageAttributes(attributeValueMap)
-      publishRequest.setMessageStructure("json")
-      publishRequest.setTargetArn(createTopicResult.getTopicArn)
-
-      val publish: PublishResult = snsClient.publish(publishRequest)
-
-      play.Logger.debug(publish.getMessageId)
+    if (scheduleUpdate.getOrElse(false)) {
+      urlParameters.add(new BasicNameValuePair("body", ConferenceDescriptor.current().confUrlCode))
     } else {
-      play.Logger.error("AWS key and secret not configured")
+      urlParameters.add(new BasicNameValuePair("body", message))
     }
+
+    urlParameters.add(new BasicNameValuePair("deliveryDate", "0"))
+    urlParameters.add(new BasicNameValuePair("priority", "HIGH"))
+    urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
+    urlParameters.add(new BasicNameValuePair("expirationAmount", "1"))
+    urlParameters.add(new BasicNameValuePair("targetTopic", ConferenceDescriptor.current().confUrlCode))
+    urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
+    urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
+
+    post.setEntity(new UrlEncodedFormEntity(urlParameters))
+    val client = new DefaultHttpClient
+    client.execute(post)
   }
 
   /**
-    * Handle email digests.
+    * Handle email digests, including track proposal filters.
     *
     * @param digest the digest to process
     */
   def doEmailDigests(digest: Digest) {
+
+    play.Logger.debug("doEmailDigests for " + digest.value)
 
     // Retrieve new proposals for digest
     val newProposalsIds = Digest.pendingProposals(digest)
@@ -355,19 +365,43 @@ class ZapActor extends Actor {
     if (newProposalsIds.nonEmpty) {
 
       // Filter CFP users on given digest
-      val foundUsers = Webuser.allCFPWebusers()
+      val foundUsersIDs = Webuser.allCFPWebusers()
         .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
-        .map(userToNotify => userToNotify.email)
+        .map(userToNotify => userToNotify.uuid)
 
-      play.Logger.debug(s"Email Digest ${foundUsers.size} user(s) for digest ${digest.value}")
+      play.Logger.info(foundUsersIDs.size + " user(s) for digest " + digest.value)
 
-      if (foundUsers.nonEmpty) {
+      if (foundUsersIDs.nonEmpty) {
 
         play.Logger.debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
-        Mails.sendDigest(digest, foundUsers, proposals, LeaderboardController.getLeaderBoardParams)
+        // Check which users have digest track filters
+        val trackDigestUsersIDs = foundUsersIDs.filter(uuid => Digest.getTrackFilters(uuid).nonEmpty)
+
+        val noTrackDigestUsersIDs = trackDigestUsersIDs.diff(foundUsersIDs)
+
+        // Mail digest to users who have no track filter set
+        if (noTrackDigestUsersIDs.nonEmpty) {
+
+          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
+        }
+
+        // Handle the digest users that have a track filter
+        trackDigestUsersIDs.map{uuid =>
+
+          // Filter the proposals based on digest tracks
+          val trackFilterIDs = Digest.getTrackFilters(uuid)
+
+          val trackFilterProposals =
+            proposals.filter(proposal => trackFilterIDs.contains(proposal.track.id))
+
+          // If proposals exist, then mail digest to user
+          if (trackFilterProposals.nonEmpty) {
+            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, LeaderboardController.getLeaderBoardParams)
+          }
+        }
 
       } else {
         play.Logger.debug("No users found for digest " + digest.value)
@@ -376,6 +410,8 @@ class ZapActor extends Actor {
       // Empty digest for next interval.
       Digest.purge(digest)
 
+    } else {
+      play.Logger.debug("No new proposals found for digest " + digest.value)
     }
   }
 
