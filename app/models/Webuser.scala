@@ -26,6 +26,7 @@ package models
 import library.Redis
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
+import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.{Format, Json}
 
@@ -34,7 +35,9 @@ case class Webuser(uuid: String,
                    firstName: String,
                    lastName: String,
                    password: String,
-                   profile: String) {
+                   profile: String,
+                   networkId: Option[String] = None,
+                   networkType: Option[String] = None) {
 
   val cleanName: String = {
     firstName.capitalize + " " + lastName
@@ -44,7 +47,15 @@ case class Webuser(uuid: String,
 object Webuser {
   implicit val webuserFormat: Format[Webuser] = Json.format[Webuser]
 
-  val Internal = Webuser("internal", ConferenceDescriptor.current().fromEmail, "CFP", "Program Committee", RandomStringUtils.random(64), "visitor")
+  val Internal =
+    Webuser("internal",
+            ConferenceDescriptor.current().fromEmail,
+            "CFP",
+            "Program Committee",
+            RandomStringUtils.random(64),
+            "visitor",
+            None,
+            None)
 
   def gravatarHash(email: String): String = {
     val cleanEmail = email.trim().toLowerCase()
@@ -55,12 +66,43 @@ object Webuser {
     Crypto.sign(StringUtils.abbreviate(email.trim().toLowerCase, 255))
   }
 
-  def createSpeaker(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "speaker")
+  def createSpeaker(email: String,
+                    firstName: String,
+                    lastName: String): Webuser = {
+    Webuser(generateUUID(email),
+            email,
+            firstName,
+            lastName,
+            RandomStringUtils.randomAlphabetic(7),
+            "speaker",
+            None,
+            None)
   }
 
-  def createVisitor(email: String, firstName: String, lastName: String): Webuser = {
-    Webuser(generateUUID(email), email, firstName, lastName, RandomStringUtils.randomAlphabetic(7), "visitor")
+  def createVisitor(email: String,
+                    firstName: String,
+                    lastName: String): Webuser = {
+    Webuser(generateUUID(email),
+            email,
+            firstName,
+            lastName,
+            RandomStringUtils.randomAlphabetic(7),
+            "visitor",
+            None,
+            None)
+  }
+
+  def createDevoxxian(email: String,
+                      networkType: String,
+                      networkId: String): Webuser = {
+    Webuser(generateUUID(email),
+            email,
+            "Devoxx",
+            "CFP",
+            RandomStringUtils.randomAlphabetic(7),
+            "devoxxian",
+            Some(networkId),
+            Some(networkType))
   }
 
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
@@ -146,6 +188,18 @@ object Webuser {
       }
   }
 
+  def findUser(email: String, password: String): Boolean = Redis.pool.withClient {
+    client =>
+      val maybeUser = findByEmail(email)
+      maybeUser.exists(_.password == password)
+  }
+
+  // The My Devoxx Gluon mobile app will use the following hard coded credentials to basic authenticate.
+  def gluonUser(email: String, password: String): Boolean = {
+    email.equals("gluon@devoxx.com") &&
+    password.equals("XYiDB;YncRe*QR#KT8FshBKgWqsyDuyq")
+  }
+
   def delete(webuser: Webuser) = Redis.pool.withClient {
     implicit client =>
       val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
@@ -222,9 +276,21 @@ object Webuser {
       client.sadd("Webuser:speaker", uuid)
   }
 
+  def addToDevoxxians(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.sadd("Webuser:devoxxian", uuid)
+  }
+
   def addToGoldenTicket(uuid: String) = Redis.pool.withClient {
     client =>
       client.sadd("Webuser:gticket", uuid)
+  }
+
+  def removeFromGoldenTicket(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.srem("Webuser:gticket", uuid)
+
+    play.Logger.info(s"${Messages("cfp.goldenTicket")} reviewer $uuid has been deleted from the ${Messages("cfp.goldenTicket")} reviewers list.")
   }
 
   def noBackofficeAdmin() = Redis.pool.withClient {
@@ -253,6 +319,15 @@ object Webuser {
               None
             }, w => Option(w)
           )
+      }
+  }
+
+  def allDevoxxians(): List[Webuser] = Redis.pool.withClient {
+    client =>
+      val allDevoxxianUUIDs = client.smembers("Webuser:devoxxian").toList
+      client.hmget("Webuser", allDevoxxianUUIDs).flatMap {
+        js: String =>
+          Json.parse(js).asOpt[Webuser]
       }
   }
 

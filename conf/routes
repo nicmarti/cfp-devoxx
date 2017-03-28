@@ -169,11 +169,11 @@ POST          /admin/tag/delete/:uuid                                           
 GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
-# Push notification message to "My Devoxx" mobile app
-POST          /admin/push/message                                               controllers.Backoffice.pushNotifications()
 
 # Favorites and starred talks
-GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin(proposalType:Option[String])
+GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
+
+
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
@@ -222,7 +222,7 @@ GET           /2016/*file                                                       
 # Favorites
 GET           /myagenda                                                         controllers.Favorites.home
 GET           /newvisitor/welcome                                               controllers.Favorites.welcomeVisitor()
-GET           /favorites/proposal/:proposalId                                   controllers.Favorites.isFav(proposalId:String)
+GET           /favorites/:proposalId                                            controllers.Favorites.isFav(proposalId:String)
 
 # This is an AJAX callback triggered from devoxxBE2016.scala (the publisher web pages)
 POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
@@ -253,6 +253,15 @@ GET           /api/conferences/:eventCode/proposalTypes                         
 GET           /api/conferences/:eventCode/tracks                                controllers.RestAPI.showTracks(eventCode:String)
 
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
+
+# New My Devoxx and PWA REST endpoints
+POST          /api/account/verify                                               controllers.RestAPI.verifyAccount()
+GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
+DELETE        /api/proposals/:uuid/scheduled/:proposalId                        controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/schedule/:proposalId                         controllers.Favorites.scheduleProposal(uuid:String, proposalId:String)
+GET           /api/proposals/:uuid/favored                                      controllers.Favorites.favoredProposals(uuid:String)
+DELETE        /api/proposals/:uuid/favored/:proposalId                          controllers.Favorites.removeFavoredProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/favor/:proposalId                            controllers.Favorites.favorProposal(uuid:String, proposalId:String)
 
 # API for AngularJS
 GET           /schedulling/slots                                                controllers.SchedullingController.slots(confType:String)

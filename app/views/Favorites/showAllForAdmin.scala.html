@@ -1,4 +1,4 @@
-@(all: List[(Proposal, Long)], filter:Option[String])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(all: List[(Proposal, Long)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("All Faved talks") {
     <div class="row">
@@ -25,15 +25,7 @@
                     <h3>All talks faved</h3>
                 </div>
                 <div class="panel-body">
-                    <h4>List of talks favourited by visitor on <a href="@routes.Publisher.homePublisher()">the Program page</a> </h4>
-
-
-                        <a href="@routes.Favorites.showAllForAdmin(None)" class="btn btn-sm btn-success">All</a> -
-                        @ProposalType.allIDsOnly.map{pType=>
-                            <a href="@routes.Favorites.showAllForAdmin(Option(pType))" class="btn btn-sm btn-primary">@Messages(pType)</a>
-                        }
-
-
+                    <h4>List of talks faved by visitor on <a href="/2016/index.html">the Program page</a> </h4>
                     @all.map{case(proposal,vote)=>
 <p>@vote @if(vote == 1){ star } else { stars }
 for @Messages(proposal.talkType.id) <strong>@proposal.title</strong> by @proposal.allSpeakers.map(s=>s.cleanName).mkString(", ")</p>
