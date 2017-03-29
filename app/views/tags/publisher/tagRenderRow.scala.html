@@ -1,25 +1,27 @@
-@(subSlots: List[Slot], room: Room, roomSize: Int)(implicit req:RequestHeader)
-
+@(subSlots: List[Slot], room: Room, roomSize: Int, showEndTime:Boolean)(implicit req:RequestHeader)
+@import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated) {
-            @if(zeSlot.from.getHourOfDay < 11 && zeSlot.from.dayOfWeek().get() == 3) {
-                <td>Keynote overflow</td>
-            } else {
-                <td>TBA</td>
-            }
+            <td>TBA</td>
         }
         @zeSlot.proposal.map { p: Proposal =>
             <td class="room @room.id @zeSlot.id">
-                <span class="track"> @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
-                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a></span>
+                <span class="proposalType">@Messages(p.talkType.id)</span>
+                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                     @tags.publisher.renderSpeaker(speakerUUID)
                 }</span>
+                <span class="track"> @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
+
+                @if(showEndTime){
+                    <span class="endTime"> @zeSlot.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @zeSlot.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</span>
+                }
+
             </td>
         }
         @if(zeSlot.break.isDefined) {
             <td class="break @room.id" colspan="@roomSize">
-            @zeSlot.break.get.nameEN
+            @Messages(s"sw.${zeSlot.break.get.id}")
             </td>
         }
     }

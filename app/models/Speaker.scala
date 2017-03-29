@@ -27,6 +27,7 @@ import com.github.rjeschke.txtmark.Processor
 import library.{Benchmark, Redis, ZapJson}
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.{DateTime, Instant}
+import play.api.i18n.Lang
 import play.api.libs.json.Json
 import play.api.templates.HtmlFormat
 
@@ -48,7 +49,9 @@ case class Speaker(uuid: String
                    , company: Option[String]
                    , blog: Option[String]
                    , firstName: Option[String]
-                   , qualifications: Option[String]) {
+                   , qualifications: Option[String]
+                   , phoneNumber:Option[String]
+                  ) {
 
   def cleanName: String = {
     firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
@@ -98,7 +101,6 @@ case class Speaker(uuid: String
 
   lazy val bioAsHtml: String = {
     val escapedHtml = play.twirl.api.HtmlFormat.escape(bio).body
-    // escape HTML code and JS
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
@@ -110,8 +112,8 @@ object Speaker {
 
   def createSpeaker(webuserUUID: String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
-                    qualifications: String): Speaker = {
-    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications))
+                    qualifications: String, phoneNumber:Option[String]): Speaker = {
+    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications),phoneNumber)
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
@@ -124,20 +126,20 @@ object Speaker {
         } else {
           refuseTerms(newUUID)
         }
-        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications))
+        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications),None)
       case Some(validUuid) =>
         if (acceptTerms) {
           doAcceptTerms(validUuid)
         } else {
           refuseTerms(validUuid)
         }
-        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications))
+        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications),None)
     }
 
   }
 
-  def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, String)] = {
-    Some("xxx", s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"))
+  def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, String, Option[String])] = {
+    Some("xxx",s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.phoneNumber)
   }
 
   def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean, String)] = {
@@ -155,6 +157,13 @@ object Speaker {
       val jsonSpeaker = Json.stringify(Json.toJson(speaker.copy(uuid = uuid)))
       client.hset("Speaker", uuid, jsonSpeaker)
   }
+
+    def updatePhone(uuid: String, thePhone: String, maybeLang:Option[Lang]) = {
+      for(speaker <- findByUUID(uuid)){
+        val speakerLang = maybeLang.map(_.code).getOrElse("en")
+        Speaker.update(uuid,speaker.copy(phoneNumber = Option(thePhone), lang=Option(speakerLang)))
+      }
+    }
 
   def updateName(uuid: String, firstName: String, lastName: String) = {
     findByUUID(uuid).map {

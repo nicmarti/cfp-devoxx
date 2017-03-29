@@ -20,6 +20,7 @@
     <logger name="library.Zedis" level="INFO"/>
     <logger name="library.Zedis.client" level="INFO"/>
     <logger name="library.ElasticSearch" level="INFO"/>
+    <logger name="library.sms.TwilioSender" level="INFO"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="DEBUG"/>
     <logger name="application.IndexMaster" level="DEBUG"/>

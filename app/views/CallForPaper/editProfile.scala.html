@@ -1,10 +1,10 @@
 @(speakerForm: Form[Speaker], readOnlyUUID:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @main("Edit your profile") {
 <div class="row">
-    <div class="col-md-12 page-header">
+    <div class="col-md-8 page-header">
         <h3>@Messages("editProfile.title")</h3>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-8">
         <p>@Messages("editProfile.help")</p>
 
         @if(flash.get("error").isDefined){
@@ -30,6 +30,10 @@
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
             @helper.textarea(speakerForm("qualifications"), 'cols -> 70, 'rows -> 5)
+            @helper.inputText(speakerForm("phoneNumber"))
+
+             @tags.selectI18N(field = speakerForm("lang"), options=Seq(("en","English"),("fr","French")),  'class->"form-control")
+
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
     <hr>

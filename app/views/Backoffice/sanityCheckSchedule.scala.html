@@ -1,4 +1,10 @@
-@(declined:List[Slot], approved:List[Slot], acceptedThenChangedToOtherState:List[Slot], speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@import org.joda.time.DateTimeZone
+@(declined:List[Slot],
+        approved:List[Slot],
+        acceptedThenChangedToOtherState:List[Slot],
+        speakers:List[Speaker],
+        conflicts:Set[(Speaker, Map[org.joda.time.DateTime, Iterable[Slot]])]
+)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin sanity check") {
 
@@ -128,6 +134,7 @@
                 }
                 @if(speakers.nonEmpty){
                     <h3>Speakers that have not yet accepted Terms&Conditions</h3>
+                    <p>This list does not include the speakers for B.O.F</p>
                     <p>Speaker's bio is not displayed on web site. Speaker is not listed on REST API and SQL export.</p>
                     <strong>@speakers.length speaker(s)</strong><br>
                     @speakers.sortBy(_.cleanName).map{speaker:Speaker=>
@@ -143,5 +150,35 @@
         </div>
     </div>
     </div>
+
+    @if(conflicts.nonEmpty) {
+        <div class="col-md-12">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h2>Conflicts</h2>
+                </div>
+            </div>
+            <p>The following talks are scheduled on the same day, same time slot, for the same speaker : </p>
+            @conflicts.map{case(speaker,timeSlots)=>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>@speaker.cleanName</h4>
+                    </div>
+                    <div class="panel-body">
+
+                @timeSlots.map{case(time:org.joda.time.DateTime,slots)=>
+                    <b>Conflict on @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE HH:mm")</b><br>
+                    @slots.map{slot:Slot=>
+                        @slot.proposal.map {p:Proposal=>
+                          <i class="icon-warning-sign"></i> <b>@p.id</b> @Messages(p.talkType.id): @p.title<br>
+                        }
+                    }
+                }
+                </div>
+            </div>
+            }
+        </div>
+    }
+
 </div>
 }

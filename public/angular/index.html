@@ -12,11 +12,11 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="/cfpadmin" class="navbar-brand">Devox<span class="yl">x</span> BE CFP Admin</a>
+            <a href="/cfpadmin" class="navbar-brand">Devox<span class="yl">x</span> CFP Admin</a>
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="https://devoxx.be/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span> Belgium website</a></li>
+                <li><a href="https://devoxx.fr/" target="_blank"><i class="icon-arrow-right"></i> Devox<span class="yl">x</span> France website</a></li>
             </ul>
         </div>
     </div>
@@ -39,7 +39,10 @@
   </ul>
 
     <p>
-        <a href="/admin/sanitycheck "  class="btn btn-sm btn-warning"><i class="icon-medkit"></i> Sanity check for schedule</a>
+        <a href="/admin/sanitycheck"  class="btn btn-sm btn-warning"><i class="icon-medkit"></i> Sanity check for schedule</a>
+        </p>
+    <p>
+        <a href="/admin/refreshSchedules"  class="btn btn-sm btn-success"><i class="icon-refresh"></i> Refresh published schedules</a> (Required if a speaker edited its bio or a talk description)
     </p>
 
     <div ng-view></div>

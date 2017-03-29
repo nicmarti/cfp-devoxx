@@ -111,31 +111,67 @@
                 </div>
 
             </div>
+
+            @if(ConferenceDescriptor.isTwilioSMSActive() && myProposals.exists(p => p.state == ProposalState.ACCEPTED ||  p.state == ProposalState.APPROVED )) {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><i class="icon-phone"></i> SMS </h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>@Messages("sms.text1")</p>
+                        <form action="@routes.CallForPaper.updatePhoneNumber" method="POST" class="form form-inline">
+                        <label for="phoneNumber">@Messages("sms.explanation")
+                            <input type="tel" id="phoneNumber" name="phoneNumber" value="@speaker.phoneNumber.getOrElse("")" placeholder="+33661708090"/>
+                            <input type="submit" value="Ok">
+                        </label>
+                        </form>
+                    </div>
+                </div>
+            }
+
             @if(Webuser.isMember(webuser.uuid, "cfp")){
                 <div class="digestMessage">
-                <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
-
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>@Messages("email.digest.description")<br>
-                                <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
-                            <td>
-                                <select id="digest">
-                                @Digest.allDigests.map { digest =>
-                                    @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
-                                        <option value='@digest.value' selected>
-                                    }else {
-                                        <option value='@digest.value'>
+                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>@Messages("email.digest.description")<br>
+                                    <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
+                                <td>
+                                    <select id="digest">
+                                    @Digest.allDigests.map { digest =>
+                                        @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
+                                            <option value='@digest.value' selected>
+                                        }else {
+                                            <option value='@digest.value'>
+                                            }
+                                        @digest.value
+                                    </option>
+                                    }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    Filter your digest for selected track(s). Uncheck all tracks to disable filter.<br><br>
+                                    <div class="filterTracks">
+                                    @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
+                                        @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
+                                            @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
+                                                <input type="checkbox" id="@track.id" checked/>
+                                            } else {
+                                                <input type="checkbox" id="@track.id"/>
+                                            }
+                                        } else {
+                                            <input type="checkbox" id="@track.id"/>
                                         }
-                                    @digest.value
-                                </option>
-                                }
-                                </select>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                        &nbsp;@Html(Messages(track.label))<br>
+                                    }
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             }
 
@@ -242,12 +278,7 @@
                             </td>
                             <td>
                              @defining(models.Comment.countComments(prop.id)){totalComments:Long=>
-                                @if(totalComments == 0){
-&nbsp;
-                                }
-                                @if(totalComments > 0){
-                                    <a href="@routes.CallForPaper.showCommentForProposal(prop.id)" class="label label-warning">@totalComments</a>
-                                }
+                                <a href="@routes.CallForPaper.showCommentForProposal(prop.id)" class="label label-warning">@totalComments</a>
                              }
                             </td>
                             <td>
@@ -284,6 +315,7 @@
             <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
 }else{
     <div class="panel panel-success">
+        <div class="panel-heading">Information</div>
         <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
     </div>
 }
@@ -328,15 +360,31 @@
 
 </div>
 <script language="JavaScript">
-    var selection = $('#digest');
-    selection.change(function(){
+
+    $('#digest').change(function(){
         $.ajax({
             type: "POST",
-            url: "/cfp/profile/digest?value="+selection.val(),
+            url: "/cfp/profile/digest?value="+$('#digest').val(),
             success: function(data) {
                 return $('#digestMsg').text(data);
             }
         })
+    });
+
+    $('.filterTracks input[type="checkbox"]').on('click', function() {
+
+        if ($(this).is(':checked')) {
+            $.ajax({
+                type: "POST",
+                url: "/cfp/profile/digestTrack?value="+$(this).attr('id')
+            })
+
+        } else {
+            $.ajax({
+                type: "DELETE",
+                url: "/cfp/profile/digestTrack?value="+$(this).attr('id')
+            })
+        }
     });
 </script>
 <!-- @speaker.uuid -->

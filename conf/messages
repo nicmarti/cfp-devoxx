@@ -96,6 +96,7 @@ title.help=Think carefully and try to create a title that is descriptive enough.
 summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
+phoneNumber=cell phone number
 lang.help=100% of {0} talks are in English
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
@@ -553,6 +554,10 @@ sw.show.title.wed=Wednesday, 5th April 2017
 sw.show.title.thu=Thursday, 6th April 2017
 sw.show.title.fri=Friday, 7th April 2017
 
+sw.details.wednesday=Wednesday
+sw.details.thursday=Thursday
+sw.details.friday=Friday
+
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
 sw.mainEvents=Main events and conferences
@@ -562,7 +567,11 @@ sw.endOfDay=End of day, exhibition floor closing
 sw.cocktail=Meet and Greet party until 10:30pm in the main exhibition hall
 sw.showAllDay=Show complete agenda for this day
 not.published=The agenda for this conference is not yet published
-
+sw.reg=Registration and Breakfast
+sw.dej=Registration and Breakfast
+sw.coffee=Coffee break
+sw.chgt=Coffee break
+sw.def=Coffee
 day-wed=Wednesday
 day-thu=Thursday
 day-fri=Friday
@@ -897,3 +906,34 @@ cfp.filter.off=Remove filter
 
 cfpadmin.totalReviewed={0} reviewed
 cfpadmin.totalVoted={0} voted
+
+publisher.room.disclaimer=The designated room for a presentation can be changed 48 hours before the beginning of Devoxx.
+
+cfp.showAgenda.title=Agenda
+cfp.showAgenda.txt=The agenda is now online, see the list of conferences.
+
+# Favorites and My Agenda
+fav.title=Build your own schedule
+fav.noAgenda=You don't have any schedule yet.
+fav.txt1=Browse the
+fav.schedule=schedule
+fav.txt2=and select a talk by clicking the little star next to it. Retrieve your schedule here, with up-to-date rooms and details for each talk.
+fav.day.1=Monday
+fav.day.2=Tuesday
+fav.day.3=Wednesday
+fav.day.4=Thursday
+fav.day.5=Friday
+
+mydevoxx.authenticated=You are now authenticated through MyDevoxx, you can browser the Agenda and add talks to your Schedule
+
+sms.text1=Want to be notified by SMS of the scheduled time for your talk? Should your presentation''s room change ? Fill in your phone number:
+sms.explanation=Cell phone number, international format (eg : 1661708090)
+confirm.phone=Confirm your cell phone number
+confirm.shortExplanation=Can you please enter the verification code we just sent to {0} ?
+confirm.entercode=Confirmation code:
+confirm.button=Verify token
+phonenumber.updated.success=Your phone number is valid and is now ready to receive SMS / text messages from the Devoxx team.
+confirm.phone.error=Sorry, the confirmation code is not correct
+invalid.confirmation.code=Invalid confirmation code
+invalid.phone=Invalid phone number, please use the international phone number format.
+sms.confirmationTxt=Your Devoxx confirmation code is {0}

@@ -1,0 +1,50 @@
+@(errors: List[(Proposal, String, String, String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("CFP Admin - Backoffice") {
+
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-time"></i> Agenda - Check</h2>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Published talks</h3>
+
+                    <p>Show the list of talks which have been edited compared to the published version on the Program.</p>
+                    <p>Review and confirm each update, to update the published agenda.</p>
+                </div>
+
+                <div class="panel-body">
+
+                @errors.map { err =>
+                    <div class="col-md-12">
+                        <h4>@err._1.id @err._1.title <em>@Messages(err._1.talkType.id)</em>
+                        <a href="@routes.CFPAdmin.openForReview(err._1.id)">see details</a> </h4>
+                        <strong>@err._2</strong>
+                        <div class="panel">
+                            <div class="panel-heading">Before</div>
+                            <div class="panel-body">
+                                <pre>@err._3</pre>
+                            </div>
+
+                            <div class="panel-heading">After</div>
+                            <div class="panel-body">
+                                <pre>@err._4</pre>
+                            </div>
+
+                            <div class="panel-footer">
+                                <a href="@routes.Backoffice.confirmPublicationChange(err._1.talkType.id, err._1.id)" class="btn btn-sm btn-success">
+                                    Confirm and update the Agenda for @err._1.id</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -74,15 +74,11 @@ object Publisher extends Controller {
   def showSpeakerByName(name: String) = Action {
     implicit request =>
       import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
-        Speaker.allSpeakersWithAcceptedTerms()
-      }
-      val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
-        speakers.map {
+      val speakers = Speaker.allSpeakersWithAcceptedTerms()
+      val speakerNameAndUUID = speakers.map {
           speaker => (speaker.urlName, speaker.uuid)
         }.toMap
-      }
-      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => Speaker.findByUUID(id))
+      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => speakers.find(_.uuid==id))
       maybeSpeaker match {
         case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
@@ -198,16 +194,6 @@ object Publisher extends Controller {
       }
   }
 
-  val speakerMsg = Form(
-    tuple(
-      "msg_pub" -> nonEmptyText(maxLength = 1500),
-      "fullname" -> nonEmptyText(maxLength = 40),
-      "email_pub" -> email.verifying(nonEmpty),
-      "email_pub2" -> email.verifying(nonEmpty)
-    ) verifying("Email does not match the confirmation email", constraint => constraint match {
-      case (_, _, e1, e2) => e1 == e2
-    })
-  )
 
   def showDetailsForProposal(proposalId: String, proposalTitle: String) =
     Action {
@@ -220,7 +206,7 @@ object Publisher extends Controller {
 
           ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
-          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, speakerMsg))
+          Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot))
       }
   }
 

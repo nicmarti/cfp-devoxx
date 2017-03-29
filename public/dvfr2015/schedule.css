@@ -72,7 +72,27 @@
 
 .agendaTable .track {
     display: block;
+    font-size: 0.8em;
 }
+
+.agendaTable .endTime{
+    display: block;
+    background-color: #f4b787;
+    color:white;
+    font-size: 0.8em;
+    padding: 2px;
+    text-align: center;
+}
+
+.agendaTable .proposalType {
+    display: block;
+    background-color: #f4882d;
+    color:white;
+    font-size: 0.8em;
+    padding: 2px;
+    text-align: center;
+}
+
 .agendaTable .talkType{
     display: block;
     background-color: #1f1f1f;
@@ -178,3 +198,16 @@ input.cfp-fav:checked + label.cfp-lab {
     background: url('/assets/images/fav/fav.png') no-repeat;
 }
 
+.alert-success {
+    display: block;
+    padding: 15px;
+    background-color: #05b60e;
+    color:white;
+}
+
+.alert-error {
+    display: block;
+    padding: 15px;
+    background-color: #e46f59;
+    color:white;
+}

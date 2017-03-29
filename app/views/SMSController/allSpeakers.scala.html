@@ -1,0 +1,44 @@
+@(speakers: List[Speaker])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Backoffice") {
+    <div class="row">
+        <div class="col-lg-offset-2 col-md-10">
+            <h2><i class="icon-phone-sign"></i> Speakers with a cell phone number</h2>
+        </div>
+        <div class="clearfix"></div>
+
+
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Speakers : @speakers.size</h3>
+                </div>
+                <div class="panel-body">
+
+                    @if(flash.get("error").isDefined) {
+                        <div class="alert alert-danger alert-dismissable col-md-12">
+                            <strong>Error :</strong>
+                            @flash.get("error").get
+                        </div>
+                    }
+                    @if(flash.get("success").isDefined) {
+                        <div class="alert alert-success alert-dismissable col-md-12">
+                        @flash.get("success").get
+                        </div>
+                    }
+                    <a href="@routes.SMSController.testCallback()" class="btn btn-sm btn-success">Test callback</a><br>
+
+                    @speakers.sortBy(_.name.map(_.toUpperCase).getOrElse("?")).map { speaker: Speaker =>
+
+                        <p>@speaker.cleanName @speaker.phoneNumber.get
+                        <A href="@routes.SMSController.sendTalksDetails(speaker.phoneNumber.get)" class="btn btn-primary btn-sm">Send talks</A> -
+                        <A href="@routes.SMSController.sendWelcomeMessage(speaker.phoneNumber.get)" class="btn btn-primary btn-sm">Send Welcome txt</A>
+                        </p>
+
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

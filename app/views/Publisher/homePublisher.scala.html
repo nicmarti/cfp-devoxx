@@ -1,6 +1,6 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxFR2016("Schedule", Some("Devoxx FR 2017 agenda")) {
+@views.html.Publisher.devoxxFR2017("Schedule", Some("Devoxx FR 2017 agenda")) {
 
     <div class="large-12 column">
        <h3>Devoxx France 2017 <small>Mercredi 5 au vendredi 7 avril 2017</small></h3>
@@ -13,11 +13,64 @@
         </form>
         </div>
     </div>
+    <div class="small-12 medium-12 large-12 column">
+        <table class="mainSchedule">
+            <thead>
+                <tr>
+                    <th class="scheduleHeader">&nbsp;</th>
+                    <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed")">[Détails]</a> </th>
+
+                    <th class="scheduleHeader">@Messages("day-thursday") <a href="@routes.Publisher.showByDay("thu")">[Détails]</a></th>
+                    <th class="scheduleHeader">@Messages("day-friday") <a href="@routes.Publisher.showByDay("fri")">[Détails]</a></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="9" class="scheduleHeader scheduleRight">&nbsp;</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "wednesday", "University")</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "wednesday", "Tools-in-Action") </td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "thursday", "Tools-in-Action")</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")</td>
+                </tr>
+                <tr>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("bof", "thursday", "BOFs")</td>
+                    <td class="scheduleRow">&nbsp;</td>
+                </tr>
+                    <!-- ******************************************************************* //-->
+                <tr>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "thursday", "Quickies")</td>
+                    <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "friday", "Quickies")</td>
+                </tr>
+                    <!-- ******************************************************************* //-->
+                <tr>
+                    <td class="scheduleRow">&nbsp;</td>
+                    <td class="scheduleRow">
+                    @tags.publisher.renderShowDay("conf", "thursday", "Conference")
+                    </td>
+                    <td class="scheduleRow">
+                    @tags.publisher.renderShowDay("conf", "friday", "Conference")
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+            <!-- ******************************************************************* //-->
+    </div>
 
     <div class="small-12 medium-6 large-6 column">
         <h3>Keynotes</h3>
         <p>Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le jeudi à 9h précise.
-            Autour du thème "Informatique et société", quel est l'impact de notre métier sur la société ?
+            Autour du thème de 2017  "Intelligence Artificielle", soyez prêt à être surpris.
         </p>
         <p><A href="@routes.Publisher.showByTalkType("key")">Liste des Keynotes</A></p>
 </div>

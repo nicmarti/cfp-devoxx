@@ -389,8 +389,8 @@ object ConferenceDescriptor {
       val labsFridayMorning = ConferenceRooms.allRoomsLabFriday.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.LAB.id, "friday",
-            new DateTime(s"${thirdDay}T11:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime(s"${thirdDay}T13:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(s"${secondDay}T12:55:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+            new DateTime(s"${secondDay}T15:55:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
       }
       labsFridayMorning
     }
@@ -741,5 +741,28 @@ object ConferenceDescriptor {
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
   def notifyProposalSubmitted = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
 
+  // For practical reason we want to hide the room and the time slot until the full agenda is published
+  def isShowRoomAndTimeslot:Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
+
+  def isShowRoom:Boolean = Play.current.configuration.getBoolean("cfp.showRoom").getOrElse(false)
+
+  // My Devoxx is an OAuth provider on which a user can register
+  def isMyDevoxxActive:Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)
+
+  def myDevoxxURL():String = Play.current.configuration.getString("mydevoxx.url").getOrElse("https://my.devoxx.fr")
+
+  // This is a JWT String shared secret that needs to be configured as a global environment variable
+  def jwtSharedSecret() : String = Play.current.configuration.getString("mydevoxx.jwtSharedSecret").getOrElse("change me please")
+
+  // Use Twilio (SMS service) to send notification to all speakers and to recieve also commands
+  def isTwilioSMSActive():Boolean = Play.current.configuration.getBoolean("cfp.twilioSMS.active").getOrElse(false)
+
+  def twilioAccountSid:String =  Play.current.configuration.getString("cfp.twilioSMS.accountSid").getOrElse("")
+
+  def twilioAuthToken:String =  Play.current.configuration.getString("cfp.twilioSMS.authToken").getOrElse("")
+
+  def twilioSenderNumber:String =  Play.current.configuration.getString("cfp.twilioSMS.senderNumber").getOrElse("")
+
+  def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
 }
 

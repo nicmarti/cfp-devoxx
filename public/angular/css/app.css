@@ -48,6 +48,13 @@ body {
     box-shadow: 2px 2px #bbb;
 }
 
+.label-en{
+    background-color: darkblue;
+}
+.label-fr{
+    background-color: #87840b;
+}
+
 .slot {
 
     border: 2px solid black;

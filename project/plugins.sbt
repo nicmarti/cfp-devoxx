@@ -4,6 +4,8 @@
 // The Typesafe repository
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
+dependencyOverrides += "org.scala-sbt" % "sbt" % "0.13.13"
+
 // Use the Play sbt plugin for Play projects
 // Play 2.3.x the last smart version before the D.I nightmare
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.10")

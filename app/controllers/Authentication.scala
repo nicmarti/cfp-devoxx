@@ -26,11 +26,14 @@ import java.math.BigInteger
 import java.security.SecureRandom
 
 import models._
-import notifiers.{Mails, TransactionalEmails}
+import notifiers.TransactionalEmails
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
+import org.joda.time.{DateTime, DateTimeZone}
+import pdi.jwt.{Jwt, JwtAlgorithm}
 import play.api.Play
+import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
@@ -42,7 +45,7 @@ import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.Play.current
+import scala.util.{Failure, Success}
 
 /**
   * Signup and Signin.
@@ -52,15 +55,6 @@ import play.api.Play.current
   */
 object Authentication extends Controller {
   val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
-
-  def prepareSignup(visitor: Boolean) = Action {
-    implicit request =>
-      if (visitor) {
-        Ok(views.html.Authentication.prepareSignupVisitor(newVisitorForm))
-      } else {
-        Ok(views.html.Authentication.prepareSignup(newWebuserForm))
-      }
-  }
 
   def forgetPassword = Action {
     implicit request =>
@@ -184,11 +178,6 @@ object Authentication extends Controller {
       })
   }
 
-  def showAccessToken = Action {
-    implicit request =>
-      Ok(request.session.get("access_token").getOrElse("No access token in your current session"))
-  }
-
   val importSpeakerForm = Form(tuple(
     "email" -> email,
     "firstName" -> nonEmptyText(maxLength = 50),
@@ -260,43 +249,42 @@ object Authentication extends Controller {
 
               resultParse.fold(missingField =>
                 Redirect(routes.Application.home()).flashing(
-                  "error" -> List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" ")),
-                {
-                  case (emailS, nameS) =>
-                    /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
-                    val bioS = json.\("bio").asOpt[String].getOrElse("")
-                    val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
-                    val company = json.\("company").asOpt[String]
-                    val blog = json.\("blog").asOpt[String]
+                  "error" -> List("github.importprofile.error", missingField, "github.importprofile.error.advice").map(Messages(_)).mkString(" ")), {
+                case (emailS, nameS) =>
+                  /* bio : "Recommendation: Do not use this attribute. It is obsolete." http://developer.github.com/v3/ */
+                  val bioS = json.\("bio").asOpt[String].getOrElse("")
+                  val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
+                  val company = json.\("company").asOpt[String]
+                  val blog = json.\("blog").asOpt[String]
 
-                    // Try to lookup the speaker
-                    Webuser.findByEmail(emailS).map {
-                      w =>
-                        val cookie = createCookie(w)
-                        if (visitor) {
-                          Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> w.uuid).withCookies(cookie)
-                        } else {
-                          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
-                        }
-                    }.getOrElse {
-                      // Create a new one but ask for confirmation
-                      val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
-                        (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
-                      } else {
-                        (nameS, nameS)
-                      }
-
+                  // Try to lookup the speaker
+                  Webuser.findByEmail(emailS).map {
+                    w =>
+                      val cookie = createCookie(w)
                       if (visitor) {
-                        val newWebuser = Webuser.createVisitor(emailS, firstName, lastName)
-                        Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
-
+                        Redirect(routes.Favorites.welcomeVisitor()).withSession("uuid" -> w.uuid).withCookies(cookie)
                       } else {
-                        val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
-
-                        Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                        Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
                       }
+                  }.getOrElse {
+                    // Create a new one but ask for confirmation
+                    val (firstName, lastName) = if (nameS.indexOf(" ") != -1) {
+                      (nameS.substring(0, nameS.indexOf(" ")), nameS.substring(nameS.indexOf(" ") + 1))
+                    } else {
+                      (nameS, nameS)
                     }
-                })
+
+                    if (visitor) {
+                      val newWebuser = Webuser.createVisitor(emailS, firstName, lastName)
+                      Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
+
+                    } else {
+                      val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
+
+                      Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                    }
+                  }
+              })
             case other =>
               play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
               BadRequest("Unable to complete the Github User API call")
@@ -337,7 +325,8 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           webuser =>
             val uuid = Webuser.saveAndValidateWebuser(webuser) // it is generated
-            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience"))
+            val someLang = request.acceptLanguages.headOption.map(_.code)
+            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang,None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience",None))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -393,15 +382,8 @@ object Authentication extends Controller {
             newWebuser
           }
 
-          val lang = request.headers.get("Accept-Language").map {
-            s =>
-              if (s.contains("fr_FR")) {
-                "fr"
-              } else {
-                "en"
-              }
-          }
-          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications)
+          val lang = request.acceptLanguages.headOption.map(_.code)
+          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications, None)
           Speaker.save(newSpeaker)
           Webuser.addToSpeaker(validWebuser.uuid)
 
@@ -415,11 +397,8 @@ object Authentication extends Controller {
       newWebuserForm.bindFromRequest.fold(
         invalidForm => BadRequest(views.html.Authentication.confirmImportVisitor(invalidForm)).flashing("error" -> "Please check your profile, invalid webuser."),
         webuserForm => {
-
           val validWebuser = Webuser.createVisitor(webuserForm.email, webuserForm.firstName, webuserForm.lastName)
-
           Webuser.saveAndValidateWebuser(validWebuser)
-
           Ok(views.html.Authentication.validateImportedVisitor(validWebuser.email, validWebuser.password)).withSession("uuid" -> validWebuser.uuid).withCookies(createCookie(validWebuser))
         }
       )
@@ -619,6 +598,59 @@ object Authentication extends Controller {
         Future.successful {
           Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
         }
+      }
+  }
+
+  def prepareSignup(visitor: Boolean) = Action {
+    implicit request =>
+      if (visitor) {
+        if (ConferenceDescriptor.isMyDevoxxActive) {
+          play.Logger.info("Redirecting to MyDevoxx")
+          Redirect(ConferenceDescriptor.myDevoxxURL(),
+            Map(
+              "redirect_uri" -> Seq(routes.Authentication.jwtCallback(Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID("Europe/Brussels")).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))).absoluteURL(ConferenceDescriptor.isHTTPSEnabled))
+            ),
+            SEE_OTHER
+          )
+
+        } else {
+          Ok(views.html.Authentication.prepareSignupVisitor(newVisitorForm))
+        }
+      } else {
+        Ok(views.html.Authentication.prepareSignup(newWebuserForm))
+      }
+  }
+
+  def jwtCallback(token: String) = Action.async {
+    implicit request =>
+      if (token == Crypto.sign("secure_callback_" + DateTime.now(DateTimeZone.forID("Europe/Brussels")).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0))) {
+        request.getQueryString("jwtToken") match {
+          case None =>
+            Future.successful(Unauthorized("No JWT Token"))
+          case Some(jwtToken) =>
+
+              Jwt.decode(jwtToken, ConferenceDescriptor.jwtSharedSecret(), Seq(JwtAlgorithm.HS256)) match {
+              case Success(decodedString) =>
+                val json = Json.parse(decodedString)
+                val firstName = (json \ "firstName").as[String]
+                val lastName = (json \ "lastName").as[String]
+                val uuid = (json \ "userId").as[String]
+                val email = (json \ "email").as[String]
+
+                val webuser=Webuser(uuid,email,firstName,lastName,password = RandomStringUtils.random(8),"visitor")
+                val newUUID = Webuser.saveAndValidateWebuser(webuser) // it is generated
+
+                val cookie = createCookie(webuser)
+                Future.successful(
+                  Redirect(
+                    request.headers.toSimpleMap.getOrElse(REFERER, routes.Publisher.homePublisher().absoluteURL(ConferenceDescriptor.isHTTPSEnabled))
+                  ).flashing("success" -> Messages("mydevoxx.authenticated")).withSession("uuid" -> newUUID).withCookies(cookie)
+                )
+              case Failure(_) => Future.successful(Unauthorized("Not Authorised - token is invalid"))
+            }
+        }
+      } else {
+        Future.successful(Unauthorized("Invalid secure token"))
       }
   }
 

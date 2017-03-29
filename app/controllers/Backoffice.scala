@@ -1,9 +1,9 @@
 package controllers
 
 import library.search.{DoIndexProposal, _}
-import library.{DraftReminder, Redis, ZapActor}
+import library._
 import models.{Tag, _}
-import org.joda.time.Instant
+import org.joda.time.{DateTime, Instant}
 import play.api.Play
 import play.api.cache.EhCachePlugin
 import play.api.data.Forms._
@@ -11,6 +11,8 @@ import play.api.data._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
+
+import scala.concurrent.Future
 
 /**
   * Backoffice actions, for maintenance and validation.
@@ -207,27 +209,80 @@ object Backoffice extends SecureCFPController {
 
   def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val publishedTalksExceptBOF = allPublishedProposals.filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
 
-      val declined = publishedConf.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val declined = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.DECLINED)
+      val approved = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.APPROVED)
+      val accepted = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
-      val approved = publishedConf.filter(_.proposal.get.state == ProposalState.APPROVED)
 
-      val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
-
-      val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
+      // For Terms&Conditions we focus on all talks except BOF
+      val allSpeakersExceptBOF = publishedTalksExceptBOF.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersExceptBOF.filter(uuid => Speaker.needsToAccept(uuid)).filter {
+        speakerUUID =>
+          // Keep only speakers with at least one accepted or approved talk
+          approved.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID)) || accepted.exists(_.proposal.get.allSpeakerUUIDs.contains(speakerUUID))
+      }
       val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatNeedsToAcceptTerms)
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {
         slot: Slot =>
           val proposal = slot.proposal.get
-          Proposal.findProposalState(proposal.id) != Some(ProposalState.ACCEPTED)
+          !Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
       }
 
-      Ok(views.html.Backoffice.sanityCheckSchedule(declined, approved, acceptedThenChangedToOtherState, allSpeakers))
+      // ALL Talks for Conflict search
+      val approvedOrAccepted = allPublishedProposals.filter(p => p.proposal.get.state == ProposalState.ACCEPTED || p.proposal.get.state == ProposalState.APPROVED)
+      val allSpeakersIDs = approvedOrAccepted.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
 
+      val specialSpeakers = allSpeakersIDs
+
+      // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
+      val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
+        for (speakerId <- specialSpeakers) yield {
+          val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
+          val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
+          val conflict = groupedByDate.filter(_._2.size > 1)
+          val speaker = Speaker.findByUUID(speakerId).get
+          (speaker, conflict)
+        }
+
+      Ok(
+        views.html.Backoffice.sanityCheckSchedule(
+          declined,
+          approved,
+          acceptedThenChangedToOtherState,
+          allSpeakers,
+          allWithConflicts.filter(_._2.nonEmpty)
+        )
+      )
+
+  }
+
+  def refreshSchedules() = SecuredAction(IsMemberOf("admin")).async {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import akka.pattern.ask
+      import akka.util.Timeout
+
+      import scala.concurrent.ExecutionContext.Implicits.global
+      import scala.concurrent.duration._
+      implicit val timeout = Timeout(15 seconds)
+
+      val futureMessages:Future[Any] = ZapActor.actor  ? CheckSchedules
+
+      futureMessages.map {
+        case s: List[(Proposal,String,String,String)] =>
+          Ok(views.html.Backoffice.refreshSchedules(s))
+        case other => Ok("unknown return type from Akka")
+      }
+  }
+
+  def confirmPublicationChange(talkType:String, proposalId:String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      ZapActor.actor ! UpdateSchedule(talkType, proposalId)
+      Redirect(routes.Backoffice.refreshSchedules())
   }
 
   def sanityCheckProposals() = SecuredAction(IsMemberOf("admin")) {
@@ -281,10 +336,10 @@ object Backoffice extends SecureCFPController {
 
   }
 
-  def showAllAgendaForInge = SecuredAction(IsMemberOf("admin")) {
+  def exportAgenda = Action {
     implicit request =>
       val publishedConf = ScheduleConfiguration.loadAllPublishedSlots()
-      Ok(views.html.Backoffice.showAllAgendaForInge(publishedConf))
+      Ok(views.html.Backoffice.exportAgenda(publishedConf))
   }
 
   // Tag related controllers
@@ -412,6 +467,22 @@ object Backoffice extends SecureCFPController {
       }
 
       Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
+  }
+
+
+  def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+      request.body.asJson.map {
+        json =>
+          val message = json.\("stringField").as[String]
+
+          ZapActor.actor ! NotifyMobileApps(message)
+
+          Ok(message)
+      }.getOrElse {
+        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+      }
   }
 
 }

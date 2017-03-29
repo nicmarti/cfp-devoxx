@@ -1,15 +1,17 @@
-@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], speakerMsg:Form[(String,String,String,String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxFR2016(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
+@views.html.Publisher.devoxxFR2017(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
 
     <div class="large-12 columns">
 
     @if(slot.isDefined && publishedConfiguration.isDefined) {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all." + proposal.talkType.id)</a>  &gt;
-            <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages(s"sw.agenda.${slot.get.day}")</a> &gt;
-            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">See all @Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) for this day</a>
+            @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
+                <a href="@routes.Publisher.showByDay(slot.get.day)">@Messages(s"sw.agenda.${slot.get.day}")</a> &gt;
+            }
+            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">@Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) @Messages("sw.agenda."+ slot.map(_.day).getOrElse("sw.agenda.wed"))</a>
 
         </p>
     } else {
@@ -33,12 +35,19 @@
                     </td>
                 </tr>
                 @if(slot.isDefined) {
-                    <tr>
-                        <td>
-                            <h4 style="padding-top:10px;">@slot.map(_.room.name)</h4>
-                        </td>
-                        <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE") from @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") til @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
-                    </tr>
+                    @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
+                        <tr>
+                            <td>
+                                @if(ConferenceDescriptor.isShowRoom) {
+                                    <h4 style="padding-top: 10px;">@slot.map(_.room.name)</h4>
+                                }else{
+                                    &nbsp;
+                                }
+                            </td>
+                            <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE")
+                                from @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") til @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
+                        </tr>
+                    }
                 }
 
                 <tr>

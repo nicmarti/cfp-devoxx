@@ -21,8 +21,6 @@ GET           /login/linkedin                                                   
 POST          /authenticate/linkedin                                            controllers.Authentication.callbackLinkedin
 GET           /authenticate/linkedin                                            controllers.Authentication.callbackLinkedin
 
-GET           /access_token                                                     controllers.Authentication.showAccessToken
-
 POST          /newspeaker                                                       controllers.Authentication.saveNewSpeaker
 GET           /newspeaker/validateMail                                          controllers.Authentication.validateYourEmailForSpeaker(t:String,a:String)
 POST          /newspeaker/validImported                                         controllers.Authentication.validateImportedSpeaker
@@ -40,6 +38,9 @@ GET           /cfp/home                                                         
 GET           /cfp/profile                                                      controllers.CallForPaper.editProfile
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
+
+POST           /cfp/profile/phoneNumber                                         controllers.CallForPaper.updatePhoneNumber()
+POST           /cfp/profile/phoneNumber/confirm                                 controllers.CallForPaper.confirmPhone()
 
 # Email Digests
 POST          /cfp/profile/digest                                               controllers.DigestController.update()
@@ -145,9 +146,13 @@ GET           /admin/authenticateAndCreate/:uuid                                
 
 GET           /admin/elastic/reset                                              controllers.Backoffice.doResetAndConfigureElasticSearch()
 GET           /admin/elastic/index                                              controllers.Backoffice.doIndexElasticSearch()
+
+# Warning the sanitycheck and refreshschedule URLs are hard-coded in index.html in Angular
 GET           /admin/sanitycheck                                                controllers.Backoffice.sanityCheckSchedule()
 GET           /admin/sanitycheck/fix                                            controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String)
 GET           /admin/sanitycheck/proposals                                      controllers.Backoffice.sanityCheckProposals()
+GET           /admin/refreshSchedules                                           controllers.Backoffice.refreshSchedules()
+GET           /admin/confirmPublicationChange                                   controllers.Backoffice.confirmPublicationChange(talkType:String, proposalId:String)
 
 # Send a reminder
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
@@ -164,8 +169,11 @@ POST          /admin/tag/delete/:uuid                                           
 GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
+
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
+
+
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
@@ -219,6 +227,9 @@ GET           /favorites/:proposalId                                            
 # This is an AJAX callback triggered from devoxxBE2016.scala (the publisher web pages)
 POST          /favorites/likeOrUnlink                                           controllers.Favorites.likeOrUnlike()
 
+# Redirect URL from MyDevoxx
+GET           /auth/jwtCallback/:token                                         controllers.Authentication.jwtCallback(token:String)
+
 # REST API
 GET           /api                                                              controllers.RestAPI.index()
 GET           /api/conferences/                                                 controllers.RestAPI.redirectToConferences()
@@ -243,10 +254,18 @@ GET           /api/conferences/:eventCode/tracks                                
 
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
 
-
 # API for Search engine
-GET           /api/search/talks                                              controllers.SearchAPI.index()
-POST          /api/search/talks                                              controllers.SearchAPI.searchTalks()
+GET           /api/search/talks                                                 controllers.SearchAPI.index()
+POST          /api/search/talks                                                 controllers.SearchAPI.searchTalks()
+
+# New My Devoxx and PWA REST endpoints
+POST          /api/account/verify                                               controllers.RestAPI.verifyAccount()
+GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
+DELETE        /api/proposals/:uuid/scheduled/:proposalId                        controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/schedule/:proposalId                         controllers.Favorites.scheduleProposal(uuid:String, proposalId:String)
+GET           /api/proposals/:uuid/favored                                      controllers.Favorites.favoredProposals(uuid:String)
+DELETE        /api/proposals/:uuid/favored/:proposalId                          controllers.Favorites.removeFavoredProposal(uuid:String, proposalId:String)
+POST          /api/proposals/:uuid/favor/:proposalId                            controllers.Favorites.favorProposal(uuid:String, proposalId:String)
 
 # API for AngularJS
 GET           /schedulling/slots                                                controllers.SchedullingController.slots(confType:String)
@@ -333,7 +352,14 @@ GET           /toptalks                                                         
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
-GET           /bp/fullAgenda                                                     controllers.Backoffice.showAllAgendaForInge()
+GET           /bp/exportAgenda                                                  controllers.Backoffice.exportAgenda()
+
+# SMS
+GET           /sms/speakers                                                     controllers.SMSController.allSpeakers()
+GET           /sms/talks                                                        controllers.SMSController.sendTalksDetails(phoneNumber:String)
+GET           /sms/welcome                                                      controllers.SMSController.sendWelcomeMessage(phoneNumber:String)
+GET           /sms/callback                                                     controllers.SMSController.testCallback()
+POST          /sms/callback                                                     controllers.SMSController.callback()
 
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()

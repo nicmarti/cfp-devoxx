@@ -478,8 +478,11 @@ sw.all.amd=Présentations de l''Après-midi des Décideurs
 sw.agenda=Agenda
 sw.agenda.txt=Horaires par journée
 sw.agenda.wed=Mercredi
+sw.agenda.wednesday=Mercredi
 sw.agenda.thu=Jeudi
+sw.agenda.thursday=Jeudi
 sw.agenda.fri=Vendredi
+sw.agenda.friday=Vendredi
 sw.show.wed=Mercredi
 sw.show.thu=Jeudi
 sw.show.fri=Vendredi
@@ -492,22 +495,44 @@ sw.horaires=Horaires
 sw.breakfast=Accueil et petit-déjeuner
 sw.mainEvents=Evénements principaux
 sw.lunch=Déjeuner
+
+sw.reg=Accueil et petit déjeuner
+sw.dej=Accueil et petit déjeuner
+sw.chgt=Pause café
+sw.coffee=Pause café
 sw.coffee.break=Pause café
 sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition
 sw.cocktail=Soirée Meet and Greet dans l''espace d''exposition jusqu''à 22h30
 sw.showAllDay=Voir l''agenda de toute la journée
 not.published=L''agenda pour ce type de conférence n''est pas encore publié.
-day-thu=Jeudi
-day-fri=Vendredi
-day-wed=Mercredi
+
 acceptedTerms.msg=Vous avez accepté les Termes et Conditions de Devoxx, merci !
- 
+
+sw.details.mon=Détail du lundi
+sw.details.monday=Détail du lundi
+sw.details.tue=Détail du mardi
+sw.details.tuesday=Détail du mardi
+sw.details.wed=Détail du mercredi
+sw.details.wednesday=Détail du mercredi
+sw.details.thu=Détail du jeudi
+sw.details.thursday=Détail du jeudi
+sw.details.fri=Détail du vendredi
+sw.details.friday=Détail du vendredi
+
+
 antispam=Pour prouver que vous n''êtes pas un robot mais un humain, combien font 38+4 ?
 bugReport.sent=Votre message a été envoyé à l''équipe, merci !
 sw.proposal.whenWhere=Heure de passage et salle
+day-mercredi=Mercredi
 day-jeudi=Jeudi
 day-vendredi=Vendredi
-day-mercredi=Mercredi
+day-monday=Lundi
+day-thu=Jeudi
+day-thursday=Jeudi
+day-fri=Vendredi
+day-friday=Vendredi
+day-wed=Mercredi
+day-wednesday=Mercredi
  
 showAgendaByRoom=Agenda par salle
 Abs=Abs
@@ -626,10 +651,6 @@ wl_unknown=Inconnu
 admin.btn.speakersInvited=Tous les speakers invités
 
 bof.label.simple=Bird of a Feather
-day-monday=Lundi 10 novembre
-day-wednesday=Mercredi 20 avril
-day-thursday=Jeudi 21 avril
-day-friday=Vendredi 22 avril
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
@@ -776,3 +797,41 @@ cfp.filter.off=Pas de filtre
 
 cfpadmin.totalReviewed={0} revus
 cfpadmin.totalVoted={0} votés
+
+publisher.room.disclaimer=La salle est susceptible d''être changée jusqu''à 48h avant le début de Devoxx France.
+
+cfp.showAgenda.title=Agenda
+cfp.showAgenda.txt=Agenda des conférences
+
+# Favorites and My Agenda
+fav.title=Préparer votre agenda
+fav.noAgenda=Vous n''avez pas encore créé d'agenda pour enregistrer la liste des présentations que vous aimeriez voir.
+fav.txt1=Parcourez
+fav.schedule=l''agenda des présentations
+fav.txt2=et ajoutez une présentation en cliquant sur la petite étoile à côté du titre. Vous pourrez alors retrouver ici l''agenda avec la liste des salles, pour chaque présentation.
+fav.day.1=Lundi
+fav.day.2=Mardi
+fav.day.3=Mercredi
+fav.day.4=Jeudi
+fav.day.5=Vendredi
+
+mydevoxx.authenticated=Vous êtes authentifié via MyDevoxx. Vous pouvez sélectionner les sessions que vous souhaitez voir, et les ajouter dans votre agenda.
+
+visitor.welcome.title=Bienvenue {0}
+visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vous pouvez marquer vos sujets favoris dans l''agenda de {0} et recharger cet agenda plus tard, via cette page.
+visitor.welcome.profile=Liste des sujets marqués comme favoris
+visitor.welcome.publisher=Parcourir l''agenda des conférences
+
+sms.text1=Vous souhaitez être notifié par SMS de l''heure de passage ? En cas de changement de salle de votre présentation ? Renseignez votre numéro de téléphone :
+sms.explanation=Numéro de téléphone au format international (exemple : +33661708090)
+confirm.phone=Confirmer votre numéro de téléphone
+confirm.shortExplanation=Nous avons envoyé un code de confirmation au {0}. Une fois le code reçu, recopiez celui-ci dans le formulaire puis validez pour terminer de configurer votre numéro.
+confirm.entercode=Code de confirmation
+confirm.button=Valider
+phonenumber.updated.success=Votre numéro de téléphone a été configuré. Vous pourrez recevoir désormais des SMS, afin de vous informer de vos heures de passages ou des changements de salle.
+confirm.phone.error=Le code de confirmation n'est pas valide.
+invalid.confirmation.code=Code de confirmation incorrect, ou ayant expiré. Merci de retenter.
+invalid.phone=Numéro de téléphone invalide, il doit respecter le format international. Pour la France, les numéros de téléphones sont de la forme +3366....
+sms.confirmationTxt=Code de confirmation Devoxx à saisir sur le site du CFP : {0}
+
+phoneNumber=Numéro de téléphone portable

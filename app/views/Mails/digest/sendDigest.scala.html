@@ -1,11 +1,15 @@
 @(digest: Digest,
   proposals:List[Proposal],
+  isDigestFilterOn: Boolean,
   params: controllers.LeaderBoardParams)
 
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <h2>Nouvelles propositions depuis le dernier digest</h2>
 }else {
     <h2>New proposals since last digest</h2>
+}
+@if(isDigestFilterOn) {
+    <P>Please note that this is a sublist based on your digest track(s) filter.</P>
 }
 <UL>
 @proposals.sortBy(_.track.label).map{proposal=>

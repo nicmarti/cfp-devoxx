@@ -108,6 +108,7 @@ mainController.controller('MainController', function MainController($rootScope, 
     };
 
     $scope.isNotAcepted=true;
+    $scope.showEmpty=false;
 });
 
 reloadScheduleConfController.controller('ReloadScheduleConfController', function ReloadScheduleConfController($location, $rootScope, $scope, $routeParams, ReloadScheduleConf) {
