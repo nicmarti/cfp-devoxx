@@ -1,4 +1,4 @@
-@(form: Form[AdvancedSearchParam])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(form: Form[library.search.AdvancedSearchParam])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
     @api(Messages("shortName") + " Advanced Search API") {
         <div class="row">
@@ -36,8 +36,13 @@
                                 </label>
                             </div>
                             <div class="form-group">
-                                <label for="speaker">Speaker name or company :
-                                    <input class="form-control" type="text" name="speaker" id="speaker" value="" placeholder="Speaker name or company">
+                                <label for="speaker">Speaker name :
+                                    <input class="form-control" type="text" name="speaker" id="speaker" value="" placeholder="Speaker's firstname or lastname">
+                                </label>
+                            </div>
+                             <div class="form-group">
+                                <label for="speaker">Company :
+                                    <input class="form-control" type="text" name="company" id="company" value="" placeholder="company...">
                                 </label>
                             </div>
                             <div class="form-group">

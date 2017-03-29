@@ -23,7 +23,6 @@
 
 package library.search
 
-import controllers.AdvancedSearchParam
 import models.ApprovedProposal
 import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
