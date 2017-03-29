@@ -32,13 +32,13 @@ import play.api.libs.json.Json
 import play.api.templates.HtmlFormat
 
 /**
- * Speaker profile, is used mainly to show details.
- *
- * Webuser is the "technical" and internal web user representation.
- *
- * Author: nicolas martignole
- * Created: 28/09/2013 11:01
- */
+  * Speaker profile, is used mainly to show details.
+  *
+  * Webuser is the "technical" and internal web user representation.
+  *
+  * Author: nicolas martignole
+  * Created: 28/09/2013 11:01
+  */
 case class Speaker(uuid: String
                    , email: String
                    , name: Option[String]
@@ -100,7 +100,7 @@ case class Speaker(uuid: String
   def hasBlog = StringUtils.trimToEmpty(blog.getOrElse("")).nonEmpty
 
   lazy val bioAsHtml: String = {
-    val escapedHtml = play.twirl.api.HtmlFormat.escape(bio).body // escape HTML code and JS
+    val escapedHtml = play.twirl.api.HtmlFormat.escape(bio).body
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
@@ -110,7 +110,7 @@ object Speaker {
 
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(webuserUUID:String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
+  def createSpeaker(webuserUUID: String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
                     qualifications: String, phoneNumber:Option[String]): Speaker = {
     Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications),phoneNumber)
@@ -249,22 +249,22 @@ object Speaker {
   def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
     client =>
 
-      val termKeys = Benchmark.measure(()=>
+      val termKeys = Benchmark.measure(() =>
         client.hkeys("TermsAndConditions")
-        ,"termKeys")
+        , "termKeys")
 
       val speakerIDs = Benchmark.measure(() =>
         termKeys.filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
-        ,"speakerIDs")
+        , "speakerIDs")
 
       val allSpeakers = Benchmark.measure(() =>
         client.hmget("Speaker", speakerIDs).flatMap {
-        json: String =>
-          Json.parse(json).validate[Speaker].fold(invalid => {
-            play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
-            None
-          }, validSpeaker => Some(validSpeaker))
-      },"allSpeakers")
+          json: String =>
+            Json.parse(json).validate[Speaker].fold(invalid => {
+              play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
+              None
+            }, validSpeaker => Some(validSpeaker))
+        }, "allSpeakers")
       allSpeakers
   }
 
@@ -273,5 +273,13 @@ object Speaker {
       val allSpeakerIDs = client.keys("ApprovedSpeakers:*").map(s => s.substring("ApprovedSpeakers:".length))
       val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
       allSpeakerIDs.diff(allThatAcceptedConditions)
+  }
+
+  def allSpeakersFromPublishedSlots: List[Speaker] = {
+    val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+    val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
+    val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
+    val speakers: List[Speaker] = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
+    speakers.sortBy(_.name.getOrElse(""))
   }
 }

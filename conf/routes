@@ -254,6 +254,10 @@ GET           /api/conferences/:eventCode/tracks                                
 
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
 
+# API for Search engine
+GET           /api/search/talks                                                 controllers.SearchAPI.index()
+POST          /api/search/talks                                                 controllers.SearchAPI.searchTalks()
+
 # New My Devoxx and PWA REST endpoints
 POST          /api/account/verify                                               controllers.RestAPI.verifyAccount()
 GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)

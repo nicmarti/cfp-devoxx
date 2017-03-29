@@ -150,6 +150,7 @@ object Backoffice extends SecureCFPController {
       ElasticSearchActor.masterActor ! DoIndexAllProposals
       ElasticSearchActor.masterActor ! DoIndexAllAccepted
       ElasticSearchActor.masterActor ! DoIndexAllHitViews
+      ElasticSearchActor.masterActor ! DoIndexSchedule
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Elastic search actor started...")
   }
 

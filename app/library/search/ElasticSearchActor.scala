@@ -23,24 +23,22 @@
 
 package library.search
 
-import java.io.{PrintWriter, FileWriter, File}
-
-import play.api.libs.json.Json
 import akka.actor._
-import play.api.libs.concurrent.Execution.Implicits._
 import models._
-import org.joda.time.{DateTimeZone, DateMidnight, DateTime}
+import org.joda.time.{DateMidnight, DateTime, DateTimeZone}
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json.Json
 
 import scala.concurrent.Future
 import scala.util.Try
 
 /**
- * ElasticSearch Akka Actor. Yes, I should write more doc, I know.
- * Give me a beer and I'll explain how does it work.
- *
- * Author: nicolas martignole
- * Created: 20 dec 2013.
- */
+  * ElasticSearch Akka Actor. Yes, I should write more doc, I know.
+  * Give me a beer and I'll explain how does it work.
+  *
+  * Author: nicolas martignole
+  * Created: 20 dec 2013.
+  */
 object ElasticSearchActor {
   val system = ActorSystem("ElasticSearch")
   val masterActor = system.actorOf(Props[IndexMaster], "masterActorIndex")
@@ -98,6 +96,8 @@ case object DoIndexAllAccepted
 
 case object DoIndexAllHitViews
 
+case object DoIndexSchedule
+
 case class Index(obj: ESType)
 
 case object StopIndex
@@ -122,6 +122,7 @@ class IndexMaster extends ESActor {
     case DoIndexAllProposals => doIndexAllProposals()
     case DoIndexAllAccepted => doIndexAllAccepted()
     case DoIndexAllHitViews => doIndexAllHitViews()
+    case DoIndexSchedule => doIndexSchedule()
     case StopIndex => stopIndex()
     case DoCreateConfigureIndex => doCreateConfigureIndex()
     case other => play.Logger.of("application.IndexMaster").error("Received an invalid actor message: " + other)
@@ -173,7 +174,7 @@ class IndexMaster extends ESActor {
     val allAccepted = Proposal.allAccepted()
     val allSubmitted = Proposal.allSubmitted()
 
-    if(play.Logger.of("application.IndexMaster").isDebugEnabled){
+    if (play.Logger.of("application.IndexMaster").isDebugEnabled) {
       play.Logger.of("application.IndexMaster").debug(s"Indexing ${allAccepted.size} accepted proposals")
       play.Logger.of("application.IndexMaster").debug(s"Indexing ${allSubmitted.size} submitted proposals")
     }
@@ -204,9 +205,9 @@ class IndexMaster extends ESActor {
         sb.append("\n")
         sb.append(Json.toJson(
           proposal.copy(privateMessage = "",
-          mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
-          secondarySpeaker = proposal.secondarySpeaker.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName)),
-          otherSpeakers = proposal.otherSpeakers.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName))
+            mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
+            secondarySpeaker = proposal.secondarySpeaker.flatMap(s => Speaker.findByUUID(s).map(_.cleanName)),
+            otherSpeakers = proposal.otherSpeakers.flatMap(s => Speaker.findByUUID(s).map(_.cleanName))
           )
         )) // do not index the private message
         sb.append("\n")
@@ -217,7 +218,7 @@ class IndexMaster extends ESActor {
   }
 
   def doIndexAllAccepted() {
-    val proposals = Proposal.allApproved()++Proposal.allAccepted()
+    val proposals = Proposal.allApproved() ++ Proposal.allAccepted()
 
     val indexName = ApprovedProposal.elasticSearchIndex()
     play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size} to index $indexName")
@@ -232,8 +233,8 @@ class IndexMaster extends ESActor {
         sb.append(Json.toJson(proposal.copy(
           privateMessage = "",
           mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
-          secondarySpeaker = proposal.secondarySpeaker.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName)),
-          otherSpeakers = proposal.otherSpeakers.flatMap(s=>Speaker.findByUUID(s).map(_.cleanName))
+          secondarySpeaker = proposal.secondarySpeaker.flatMap(s => Speaker.findByUUID(s).map(_.cleanName)),
+          otherSpeakers = proposal.otherSpeakers.flatMap(s => Speaker.findByUUID(s).map(_.cleanName))
         )))
         sb.append("\n")
     }
@@ -242,6 +243,43 @@ class IndexMaster extends ESActor {
     ElasticSearch.indexBulk(sb.toString(), indexName)
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
+  }
+
+  // Create an ES index with the agenda
+  def doIndexSchedule() = {
+    val allAgendas = ScheduleConfiguration.loadAllConfigurations()
+    val slots = allAgendas.flatMap(_.slots).filterNot(_.break.isDefined)
+    val indexName = "schedule_" + ConferenceDescriptor.current().eventCode
+
+     play.Logger.of("application.IndexMaster").debug(s"Index ${slots.size} slots for schedule")
+    val sb = new StringBuilder
+    slots.foreach {
+      slot: Slot =>
+        sb.append("{\"index\":{\"_index\":\"")
+        sb.append(indexName)
+        sb.append("\",\"_type\":\"schedule\",\"_id\":\"" + slot.id + "\"}}")
+        sb.append("\n")
+        sb.append(
+          s"""
+             |{
+             | "name":"${slot.name}",
+             | "day":"${slot.day}",
+             | "from":"${slot.from}",
+             | "to":"${slot.to}",
+             | "room":"${slot.room}",
+             | "title":"${slot.proposal.map(_.title)}",
+             | "talkType.id":"${slot.proposal.map(_.talkType.id)}",
+             | "track.id":"${slot.proposal.map(_.track.id)}"
+             |}
+          """.stripMargin)
+        sb.append("\n")
+        sb.append("\n")
+    }
+    sb.append("\n")
+    ElasticSearch.indexBulk(sb.toString(), indexName)
+
+    play.Logger.of("application.IndexMaster").debug(s"Done indexing schedule to index $indexName")
+
   }
 
   def doIndexAllReviews() {
@@ -253,28 +291,28 @@ class IndexMaster extends ESActor {
     reviews.foreach {
       case (proposalId, reviewAndVotes) =>
         Proposal.findById(proposalId).map {
-          proposal=>
-          sb.append("{\"index\":{\"_index\":\"reviews\",\"_type\":\"review\",\"_id\":\"" + proposalId + "\"}}")
-          sb.append("\n")
-          sb.append("{")
-          sb.append("\"totalVoters\": " + reviewAndVotes._2 + ", ")
-          sb.append("\"totalAbstentions\": " + reviewAndVotes._3 + ", ")
-          sb.append("\"average\": " + reviewAndVotes._4 + ", ")
-          sb.append("\"standardDeviation\": " + reviewAndVotes._5 + ", ")
-          sb.append("\"title\": \"" + proposal.title + "\",")
-          sb.append("\"track\": \"" + proposal.track.id + "\",")
-          sb.append("\"lang\": \"" + proposal.lang + "\",")
-          sb.append("\"sponsor\": \"" + proposal.sponsorTalk + "\",")
-          sb.append("\"type\": \"" + proposal.talkType.id + "\"")
-          sb.append("}\n")
-          sb.append("\n")
+          proposal =>
+            sb.append("{\"index\":{\"_index\":\"reviews\",\"_type\":\"review\",\"_id\":\"" + proposalId + "\"}}")
+            sb.append("\n")
+            sb.append("{")
+            sb.append("\"totalVoters\": " + reviewAndVotes._2 + ", ")
+            sb.append("\"totalAbstentions\": " + reviewAndVotes._3 + ", ")
+            sb.append("\"average\": " + reviewAndVotes._4 + ", ")
+            sb.append("\"standardDeviation\": " + reviewAndVotes._5 + ", ")
+            sb.append("\"title\": \"" + proposal.title + "\",")
+            sb.append("\"track\": \"" + proposal.track.id + "\",")
+            sb.append("\"lang\": \"" + proposal.lang + "\",")
+            sb.append("\"sponsor\": \"" + proposal.sponsorTalk + "\",")
+            sb.append("\"type\": \"" + proposal.talkType.id + "\"")
+            sb.append("}\n")
+            sb.append("\n")
         }
     }
     sb.append("\n")
 
     ElasticSearch.indexBulk(sb.toString(), "reviews")
 
-    play.Logger.of("application.IndexMaster").debug("Done indexing all proposals")
+    play.Logger.of("application.IndexMaster").debug("Done indexing all reviews")
   }
 
   def doIndexAllHitViews() {
@@ -455,126 +493,218 @@ class IndexMaster extends ESActor {
 """.stripMargin
   }
 
+  private val scheduleJsonMapping: String = {
+    s"""
+       | "schedule": {
+       |         "properties": {
+       |              "day": {
+       |                  "type": "string",
+       |                  "index" : "not_analyzed"
+       |              },
+       |              "name": {
+       |                  "type": "string",
+       |                  "analyzer":"english"
+       |              },
+       |            "summary": {
+       |                "type": "string",
+       |                "analyzer": "english"
+       |            },
+       |             "room": {
+       |                "type": "string",
+       |                "analyzer": "english"
+       |            },
+       |            "talkType": {
+       |                "properties": {
+       |                    "id": {
+       |                        "type": "string",
+       |                        "index": "not_analyzed"
+       |                    },
+       |                    "label": {
+       |                        "type": "string",
+       |                        "index": "no"
+       |                    }
+       |                }
+       |            },
+       |            "title": {
+       |                "type":"string"
+       |            },
+       |            "track": {
+       |                "properties": {
+       |                    "id": {
+       |                        "type": "string",
+       |                        "index": "not_analyzed"
+       |                    },
+       |                    "label": {
+       |                        "type": "string",
+       |                        "index": "no"
+       |                    }
+       |                }
+       |            }
+       |         }
+       |     }
+     """.stripMargin
+  }
+
+
   private def _createConfigureIndex(): Future[Try[String]] = {
     // This is important for French content
     // Leave it, even if your CFP is in English
     def settingsFrench =
     """
-        |    {
-        |    	"settings" : {
-        |    		"index":{
-        |    			"analysis":{
-        |    				"analyzer":{
-        |              "analyzer_keyword":{
-        |                 "tokenizer":"keyword",
-        |                 "filter":"lowercase"
-        |              },
-        |              "analyzer_startswith":{
-        |                      "tokenizer":"keyword",
-        |                      "filter":"lowercase"
-        |             },
-        |    					"francais":{
-        |    						"type":"custom",
-        |    						"tokenizer":"standard",
-        |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
-        |    					}
-        |    				},
-        |    				"filter":{
-        |    					"stop_francais":{
-        |    						"type":"stop",
-        |    						"stopwords":["_french_"]
-        |    					},
-        |    					"fr_stemmer" : {
-        |    						"type" : "stemmer",
-        |    						"name" : "french"
-        |    					},
-        |    					"elision" : {
-        |    						"type" : "elision",
-        |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
-        |    					}
-        |    				}
-        |    			}
-        |    		}
-        |    	}
-        | }
-      """.stripMargin
+      |    {
+      |    	"settings" : {
+      |    		"index":{
+      |    			"analysis":{
+      |    				"analyzer":{
+      |              "analyzer_keyword":{
+      |                 "tokenizer":"keyword",
+      |                 "filter":"lowercase"
+      |              },
+      |              "analyzer_startswith":{
+      |                      "tokenizer":"keyword",
+      |                      "filter":"lowercase"
+      |             },
+      |    					"francais":{
+      |    						"type":"custom",
+      |    						"tokenizer":"standard",
+      |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
+      |    					}
+      |    				},
+      |    				"filter":{
+      |    					"stop_francais":{
+      |    						"type":"stop",
+      |    						"stopwords":["_french_"]
+      |    					},
+      |    					"fr_stemmer" : {
+      |    						"type" : "stemmer",
+      |    						"name" : "french"
+      |    					},
+      |    					"elision" : {
+      |    						"type" : "elision",
+      |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
+      |    					}
+      |    				}
+      |    			}
+      |    		}
+      |    	}
+      | }
+    """.stripMargin
 
     def settingsProposalsEnglish =
       s"""
-        |{
-        |    "mappings": {
-        |     $proposalJsonMapping
-        |    },
-        |    "settings": {
-        |        "index": {
-        |            "analysis": {
-        |                "analyzer": {
-        |                    "english": {
-        |                        "type": "custom",
-        |                        "tokenizer": "standard",
-        |                        "filter": [
-        |                            "standard",
-        |                            "lowercase",
-        |                            "english_stop"
-        |                        ]
-        |                    },
-        |                    "analyzer_keyword":{
-        |                       "tokenizer":"keyword",
-        |                       "filter":"lowercase"
-        |                     },
-        |                    "analyzer_startswith":{
-        |                      "tokenizer":"keyword",
-        |                      "filter":"lowercase"
-        |                    }
-        |                },
-        |                "filter": {
-        |                    "english_stop": {
-        |                        "type": "stop",
-        |                        "stopwords": "_english_"
-        |                    }
-        |                }
-        |            }
-        |        }
-        |    }
-        |}
+         |{
+         |    "mappings": {
+         |     $proposalJsonMapping
+         |    },
+         |    "settings": {
+         |        "index": {
+         |            "analysis": {
+         |                "analyzer": {
+         |                    "english": {
+         |                        "type": "custom",
+         |                        "tokenizer": "standard",
+         |                        "filter": [
+         |                            "standard",
+         |                            "lowercase",
+         |                            "english_stop"
+         |                        ]
+         |                    },
+         |                    "analyzer_keyword":{
+         |                       "tokenizer":"keyword",
+         |                       "filter":"lowercase"
+         |                     },
+         |                    "analyzer_startswith":{
+         |                      "tokenizer":"keyword",
+         |                      "filter":"lowercase"
+         |                    }
+         |                },
+         |                "filter": {
+         |                    "english_stop": {
+         |                        "type": "stop",
+         |                        "stopwords": "_english_"
+         |                    }
+         |                }
+         |            }
+         |        }
+         |    }
+         |}
       """.stripMargin
 
     def settingsSpeakersEnglish =
       s"""
-        |{
-        |    "mappings": {
-        |     $speakerJsonMapping
-        |    },
-        |    "settings": {
-        |        "index": {
-        |            "analysis": {
-        |                "analyzer": {
-        |                    "english": {
-        |                        "type": "custom",
-        |                        "tokenizer": "standard",
-        |                        "filter": [
-        |                            "standard",
-        |                            "lowercase",
-        |                            "english_stop"
-        |                        ]
-        |                    },
-        |                    "analyzer_keyword":{
-        |                       "tokenizer":"keyword",
-        |                       "filter":"lowercase"
-        |                     }
-        |                },
-        |                "filter": {
-        |                    "english_stop": {
-        |                        "type": "stop",
-        |                        "stopwords": "_english_"
-        |                    }
-        |                }
-        |            }
-        |        }
-        |    }
-        |}
+         |{
+         |    "mappings": {
+         |     $speakerJsonMapping
+         |    },
+         |    "settings": {
+         |        "index": {
+         |            "analysis": {
+         |                "analyzer": {
+         |                    "english": {
+         |                        "type": "custom",
+         |                        "tokenizer": "standard",
+         |                        "filter": [
+         |                            "standard",
+         |                            "lowercase",
+         |                            "english_stop"
+         |                        ]
+         |                    },
+         |                    "analyzer_keyword":{
+         |                       "tokenizer":"keyword",
+         |                       "filter":"lowercase"
+         |                     }
+         |                },
+         |                "filter": {
+         |                    "english_stop": {
+         |                        "type": "stop",
+         |                        "stopwords": "_english_"
+         |                    }
+         |                }
+         |            }
+         |        }
+         |    }
+         |}
       """.stripMargin
 
+    def settingsAgenda =
+      s"""
+         |{
+         |    "mappings": {
+         |     $scheduleJsonMapping
+         |    },
+         |    "settings": {
+         |        "index": {
+         |            "analysis": {
+         |                "analyzer": {
+         |                    "english": {
+         |                        "type": "custom",
+         |                        "tokenizer": "standard",
+         |                        "filter": [
+         |                            "standard",
+         |                            "lowercase",
+         |                            "english_stop"
+         |                        ]
+         |                    },
+         |                    "analyzer_keyword":{
+         |                       "tokenizer":"keyword",
+         |                       "filter":"lowercase"
+         |                     },
+         |                    "analyzer_startswith":{
+         |                      "tokenizer":"keyword",
+         |                      "filter":"lowercase"
+         |                    }
+         |                },
+         |                "filter": {
+         |                    "english_stop": {
+         |                        "type": "stop",
+         |                        "stopwords": "_english_"
+         |                    }
+         |                }
+         |            }
+         |        }
+         |    }
+         |}
+      """.stripMargin
 
     // We use a for-comprehension on purpose so that each action is executed sequentially.
     // res2 is executed when res1 is done
@@ -585,7 +715,7 @@ class IndexMaster extends ESActor {
     }
 
     val resFinal2 = for (res1 <- ElasticSearch.deleteIndex(ApprovedProposal.elasticSearchIndex());
-                        res2 <- ElasticSearch.createIndexWithSettings(ApprovedProposal.elasticSearchIndex(), settingsFrench)
+                         res2 <- ElasticSearch.createIndexWithSettings(ApprovedProposal.elasticSearchIndex(), settingsFrench)
     ) yield {
       res2
     }
@@ -596,7 +726,15 @@ class IndexMaster extends ESActor {
       res2
     }
 
-    resFinal
+    val indexName = "schedule_" + ConferenceDescriptor.current().eventCode
+
+    val resFinalSchedule = for (res1 <- ElasticSearch.deleteIndex(indexName);
+                                res2 <- ElasticSearch.createIndexWithSettings(indexName, settingsAgenda)
+    ) yield {
+      res2
+    }
+
+    resFinalSchedule
   }
 }
 
@@ -607,8 +745,8 @@ class Reaper extends ESActor {
     case other => play.Logger.of("application.Reaper").warn("unknown message received " + other)
   }
 
-  import scala.util.Try
   import scala.concurrent.Future
+  import scala.util.Try
 
   def doIndex(obj: ESType) =
     logResult(obj, sendRequest(obj))

@@ -1,0 +1,22 @@
+@(results:String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+    @api(Messages("shortName") + " Advanced Search API") {
+        <div class="row">
+            <div class="col-md-12">
+                <h1>@Messages("shortName") Search API</h1>
+                <hr>
+                <div class="panel panel-info">
+                    <div class="panel-heading">Success</div>
+                    <div class="panel-body">
+                        <p>Received a JSON object from the Search endpoint</p>
+
+                        <pre>
+@results
+                        </pre>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
