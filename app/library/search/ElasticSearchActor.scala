@@ -25,9 +25,10 @@ package library.search
 
 import akka.actor._
 import models._
+import org.apache.commons.lang3.{StringEscapeUtils, StringUtils}
 import org.joda.time.{DateMidnight, DateTime, DateTimeZone}
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.json.{JsNull, Json}
+import play.api.libs.json.Json
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -261,28 +262,27 @@ class IndexMaster extends ESActor {
         sb.append("\",\"_type\":\"schedule\",\"_id\":\"" + slot.id + "\"}}")
         sb.append("\n")
         sb.append(
-          s"""
-             |{
+          s"""{
              | "name":"${slot.name}",
              | "day":"${slot.day}",
              | "from":"${slot.from}",
              | "to":"${slot.to}",
              | "room":"${slot.room.name}",
-             | "title":"${slot.proposal.map(_.title).getOrElse("")}",
-             | "summary":"${slot.proposal.map(_.summary).getOrElse("")}",
+             | "title":"${StringEscapeUtils.escapeJson(slot.proposal.map(_.title).getOrElse(""))}",
+             | "summary":"${StringEscapeUtils.escapeJson(StringUtils.abbreviate(slot.proposal.map(_.summary.replaceAll("\n", "")).getOrElse(""), 100))}",
              | "track":${slot.proposal.map(p => Json.toJson(p.track).toString).getOrElse("")},
              | "talkType":${slot.proposal.map(p => Json.toJson(p.talkType).toString).getOrElse("")},
-             | "mainSpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.mainSpeaker).map(_.cleanName)).getOrElse("")},
-             | "secondarySpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.secondarySpeaker.getOrElse("??")).map(_.cleanName)).getOrElse("")}
+             | "mainSpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.mainSpeaker).map(s => "\"" + s.cleanName + "\"")).getOrElse("")},
+             | "secondarySpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.secondarySpeaker.getOrElse("??")).map(s => "\"" + s.cleanName + "\"")).getOrElse("\"\"")}
              |}
-          """.stripMargin.stripLineEnd.replaceAll("\n", ""))
+          """.stripMargin.replaceAll("\n", ""))
         sb.append("\n")
     }
     sb.append("\n")
 
-//    println("---------------- ES Actor")
-//    println(sb.toString())
-//    println("---------------- ES Actor")
+    println("---------------- ES Actor")
+    println(sb.toString())
+    println("---------------- ES Actor")
 
     ElasticSearch.indexBulk(sb.toString(), indexName).map {
       case Success(ok) =>

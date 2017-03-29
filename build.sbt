@@ -27,7 +27,7 @@ val elasticSearchV = "1.3.2"
 libraryDependencies ++= Seq(
   "redis.clients" % "jedis" % "2.1.0"
   , "com.typesafe.play" %% "play-mailer" % "2.4.1"
-  , "org.apache.commons" % "commons-lang3" % "3.1"
+  , "org.apache.commons" % "commons-lang3" % "3.5"
   , "commons-io" % "commons-io" % "2.4"
   , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
   , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
