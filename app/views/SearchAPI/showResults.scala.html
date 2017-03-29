@@ -1,4 +1,4 @@
-@(results:String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(results:library.search.ESSearchResult)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
     @api(Messages("shortName") + " Advanced Search API") {
         <div class="row">
@@ -10,9 +10,16 @@
                     <div class="panel-body">
                         <p>Received a JSON object from the Search endpoint</p>
 
-                        <pre>
-@results
-                        </pre>
+                        @if(results.hits.total==0){
+                            <p>No results.</p>
+                        }else{
+                            <h3>Got @results.hits.total result@if(results.hits.total>1){s}</h3>
+
+                            @results.hits.hits.map{hit:library.search.ESResult=>
+                                <p>@hit._score </p>
+                                <pre>@hit._source</pre>
+                            }
+                        }
 
                     </div>
                 </div>

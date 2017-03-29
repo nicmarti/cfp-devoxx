@@ -23,7 +23,7 @@
 
 package controllers
 
-import library.search.{AdvancedSearchParam, ElasticSearch}
+import library.search.{AdvancedSearchParam, ESSearchResult, ElasticSearch}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.{JsValue, Json}
@@ -57,7 +57,6 @@ object SearchAPI extends Controller {
 
   def index = UserAgentActionAndAllowOrigin{
     implicit request =>
-
       Ok(views.html.SearchAPI.indexSearch(searchTalkForm))
   }
 
@@ -75,7 +74,12 @@ object SearchAPI extends Controller {
         ElasticSearch.doAdvancedTalkSearch(validSearch).map {
           case Success(result) =>
             if (request.accepts("text/html")) {
-              Ok(views.html.SearchAPI.showResults(result))
+
+              play.Logger.of("SearchAPI").warn("Raw json "+result)
+
+              import library.search.ESSchedule._
+              val searchResult = Json.parse(result).as[ESSearchResult]
+              Ok(views.html.SearchAPI.showResults(searchResult))
             } else {
               Ok(result).as(JSON)
             }

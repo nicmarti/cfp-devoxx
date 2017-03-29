@@ -255,8 +255,30 @@ class IndexMaster extends ESActor {
 
     play.Logger.of("application.IndexMaster").debug(s"Send to index [$indexName] ${slots.size} slots for schedule")
     val sb = new StringBuilder
-    slots.take(3).foreach {
+    slots.foreach {
       slot: Slot =>
+
+        val secondarySpeaker: Option[String] = slot.proposal.flatMap {
+          p =>
+            p.secondarySpeaker.flatMap {
+              uuid: String =>
+                Speaker.findByUUID(uuid).map {
+                  speaker =>
+                   speaker.cleanName
+                }
+            }
+        }
+        val otherSpeakers: Option[String] = slot.proposal.map {
+          p =>
+            p.otherSpeakers.map {
+              uuid: String =>
+                Speaker.findByUUID(uuid).map {
+                  speaker =>
+                    speaker.cleanName
+                }
+            }.mkString(",")
+        }
+
         sb.append("{\"index\":{\"_index\":\"")
         sb.append(indexName)
         sb.append("\",\"_type\":\"schedule\",\"_id\":\"" + slot.id + "\"}}")
@@ -269,11 +291,13 @@ class IndexMaster extends ESActor {
              | "to":"${slot.to}",
              | "room":"${slot.room.name}",
              | "title":"${StringEscapeUtils.escapeJson(slot.proposal.map(_.title).getOrElse(""))}",
-             | "summary":"${StringEscapeUtils.escapeJson(StringUtils.abbreviate(slot.proposal.map(_.summary.replaceAll("\n", "")).getOrElse(""), 100))}",
+             | "summary":"${StringEscapeUtils.escapeJson(slot.proposal.map(_.summary.replaceAll("\r\n", "")).getOrElse(""))}",
              | "track":${slot.proposal.map(p => Json.toJson(p.track).toString).getOrElse("")},
              | "talkType":${slot.proposal.map(p => Json.toJson(p.talkType).toString).getOrElse("")},
              | "mainSpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.mainSpeaker).map(s => "\"" + s.cleanName + "\"")).getOrElse("")},
-             | "secondarySpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.secondarySpeaker.getOrElse("??")).map(s => "\"" + s.cleanName + "\"")).getOrElse("\"\"")}
+             | "secondarySpeaker": "${secondarySpeaker.getOrElse("")}",
+             | "otherSpeakers": "${otherSpeakers.getOrElse("")}",
+             | "company": "${slot.proposal.map(p => p.allSpeakers.map(s =>  s.company.getOrElse("") ).mkString(", ")).getOrElse("")}"
              |}
           """.stripMargin.replaceAll("\n", ""))
         sb.append("\n")
@@ -590,6 +614,12 @@ class IndexMaster extends ESActor {
        |            },
        |            "secondarySpeaker": {
        |                "type":"string","index": "francais"
+       |            },
+       |            "otherSpeakers": {
+       |                "type":"string","index": "francais"
+       |            },
+       |            "company": {
+       |                "type":"string"
        |            }
        |         }
        |     }
