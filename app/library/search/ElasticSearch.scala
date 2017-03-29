@@ -446,15 +446,16 @@ object ElasticSearch {
       s"""
         |"dis_max": {
         |   "queries": [
-        |                { "match": { "title":"${query.topic.getOrElse("")}"}},
-        |                { "match": { "room":"${query.room.getOrElse("")}"}},
-        |                { "match": { "day":"${query.day.getOrElse("")}"}},
-        |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
-        |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
-        |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
-        |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("")}" }},
-        |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("")}" }},
-        |                { "match": { "id":"${query.topic.getOrElse("")}"}}
+        |                { "match": { "name":"${query.format.getOrElse("%")}"}},
+        |                { "match": { "day":"${query.day.getOrElse("%")}"}},
+        |                { "match": { "from":"${query.after.getOrElse("2017-01-01T00:15:00.000Z")}"}},
+        |                { "match": { "room":"${query.room.getOrElse("%")}"}},
+        |                { "match": { "title":"${query.topic.getOrElse("%")}"}},
+        |                { "match": { "summary":"${query.topic.getOrElse("%")}"}},
+        |                { "match": { "track.id":"${query.track.getOrElse("%")}"}},
+        |                { "match": { "talkType.id":"${query.format.getOrElse("%")}"}},
+        |                { "match": { "mainSpeaker":"${query.speaker.getOrElse("%")}" }},
+        |                { "match": { "otherSpeakers":"${query.speaker.getOrElse("%")}" }}
         |            ]
         |}
       """.stripMargin

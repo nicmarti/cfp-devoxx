@@ -254,7 +254,7 @@ class IndexMaster extends ESActor {
 
     play.Logger.of("application.IndexMaster").debug(s"Send to index [$indexName] ${slots.size} slots for schedule")
     val sb = new StringBuilder
-    slots.foreach {
+    slots.take(3).foreach {
       slot: Slot =>
         sb.append("{\"index\":{\"_index\":\"")
         sb.append(indexName)
@@ -267,15 +267,22 @@ class IndexMaster extends ESActor {
              | "day":"${slot.day}",
              | "from":"${slot.from}",
              | "to":"${slot.to}",
-             | "room":"${slot.room}",
+             | "room":"${slot.room.name}",
              | "title":"${slot.proposal.map(_.title).getOrElse("")}",
+             | "summary":"${slot.proposal.map(_.summary).getOrElse("")}",
+             | "track":${slot.proposal.map(p=> Json.toJson(p.track).toString).getOrElse("")},
              | "talkType":${slot.proposal.map(p=> Json.toJson(p.talkType).toString).getOrElse("")},
-             | "track":${slot.proposal.map(p=> Json.toJson(p.track).toString).getOrElse("")}
+             | "mainSpeaker":${slot.proposal.flatMap(p=> Speaker.findByUUID(p.mainSpeaker).map(_.cleanName)).getOrElse("")},
+             | "secondarySpeaker":${slot.proposal.flatMap(p=> Speaker.findByUUID(p.secondarySpeaker.getOrElse("??")).map(_.cleanName)).getOrElse("")}
              |}
           """.stripMargin.stripLineEnd.replaceAll("\n",""))
         sb.append("\n")
     }
     sb.append("\n")
+
+println("---------------- ES Actor")
+println(sb.toString())
+println("---------------- ES Actor")
 
     ElasticSearch.indexBulk(sb.toString(), indexName).map{
       case Success(ok)=>
@@ -526,13 +533,13 @@ class IndexMaster extends ESActor {
     s"""
        | "schedule": {
        |         "properties": {
-       |              "day": {
-       |                  "type": "string",
-       |                  "index" : "not_analyzed"
-       |              },
        |              "name": {
        |                  "type": "string",
        |                  "analyzer":"english"
+       |              },
+       |              "day": {
+       |                  "type": "string",
+       |                  "index" : "not_analyzed"
        |              },
        |              "from": {
        |                  "type": "date",
@@ -542,15 +549,31 @@ class IndexMaster extends ESActor {
        |                  "type": "date",
        |                  "format" : "date_time"
        |              },
-       |            "summary": {
+       |              "room": {
        |                "type": "string",
        |                "analyzer": "english"
-       |            },
-       |             "room": {
+       |              },
+       |              "title": {
        |                "type": "string",
-       |                "analyzer": "english"
-       |            },
-       |            "talkType": {
+       |                "analyzer": "francais"
+       |              },
+       |              "summary": {
+       |                "type": "string",
+       |                "analyzer": "francais"
+       |              },
+       |              "track": {
+       |                "properties": {
+       |                    "id": {
+       |                        "type": "string",
+       |                        "index": "not_analyzed"
+       |                    },
+       |                    "label": {
+       |                        "type": "string",
+       |                        "index": "no"
+       |                    }
+       |                }
+       |             },
+       |             "talkType": {
        |                "properties": {
        |                    "id": {
        |                        "type": "string",
@@ -562,20 +585,11 @@ class IndexMaster extends ESActor {
        |                    }
        |                }
        |            },
-       |            "title": {
-       |                "type":"string"
+       |            "mainSpeaker": {
+       |                "type":"string", "index": "francais"
        |            },
-       |            "track": {
-       |                "properties": {
-       |                    "id": {
-       |                        "type": "string",
-       |                        "index": "not_analyzed"
-       |                    },
-       |                    "label": {
-       |                        "type": "string",
-       |                        "index": "no"
-       |                    }
-       |                }
+       |            "secondarySpeaker": {
+       |                "type":"string","index": "francais"
        |            }
        |         }
        |     }
@@ -701,45 +715,7 @@ class IndexMaster extends ESActor {
        |}
       """.stripMargin
 
-  def settingsAgenda =
-    s"""
-       |{
-       |    "mappings": {
-       |     $scheduleJsonMapping
-       |    },
-       |    "settings": {
-       |        "index": {
-       |            "analysis": {
-       |                "analyzer": {
-       |                    "english": {
-       |                        "type": "custom",
-       |                        "tokenizer": "standard",
-       |                        "filter": [
-       |                            "standard",
-       |                            "lowercase",
-       |                            "english_stop"
-       |                        ]
-       |                    },
-       |                    "analyzer_keyword":{
-       |                       "tokenizer":"keyword",
-       |                       "filter":"lowercase"
-       |                     },
-       |                    "analyzer_startswith":{
-       |                      "tokenizer":"keyword",
-       |                      "filter":"lowercase"
-       |                    }
-       |                },
-       |                "filter": {
-       |                    "english_stop": {
-       |                        "type": "stop",
-       |                        "stopwords": "_english_"
-       |                    }
-       |                }
-       |            }
-       |        }
-       |    }
-       |}
-      """.stripMargin
+  def settingsAgenda = settingsFrench
 
   private def _createConfigureIndex(zeIndexName: String, settings: String): Future[Try[String]] = {
 
@@ -791,3 +767,7 @@ class Reaper extends ESActor {
         play.Logger.of("application.Reaper").warn(s"Could not index speaker $obj due to $r")
     }
 }
+
+/*
+y.kazar@yogosha.com,matthieu@nudgeapm.io,lionel.porcheron@bleemeo.com,jbbeuzelin@lucca.fr,jules@colisweb.com,mathias@contentsquare.com,fawzi.babali@qikobjects.com,david.dhenaux@smart-side.com,maxime.thomas@stootie.com,thierry.abalea@fluo.com,yann@scalingo.com,romain@facileit.com
+ */
