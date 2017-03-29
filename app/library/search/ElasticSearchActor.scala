@@ -270,25 +270,25 @@ class IndexMaster extends ESActor {
              | "room":"${slot.room.name}",
              | "title":"${slot.proposal.map(_.title).getOrElse("")}",
              | "summary":"${slot.proposal.map(_.summary).getOrElse("")}",
-             | "track":${slot.proposal.map(p=> Json.toJson(p.track).toString).getOrElse("")},
-             | "talkType":${slot.proposal.map(p=> Json.toJson(p.talkType).toString).getOrElse("")},
-             | "mainSpeaker":${slot.proposal.flatMap(p=> Speaker.findByUUID(p.mainSpeaker).map(_.cleanName)).getOrElse("")},
-             | "secondarySpeaker":${slot.proposal.flatMap(p=> Speaker.findByUUID(p.secondarySpeaker.getOrElse("??")).map(_.cleanName)).getOrElse("")}
+             | "track":${slot.proposal.map(p => Json.toJson(p.track).toString).getOrElse("")},
+             | "talkType":${slot.proposal.map(p => Json.toJson(p.talkType).toString).getOrElse("")},
+             | "mainSpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.mainSpeaker).map(_.cleanName)).getOrElse("")},
+             | "secondarySpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.secondarySpeaker.getOrElse("??")).map(_.cleanName)).getOrElse("")}
              |}
-          """.stripMargin.stripLineEnd.replaceAll("\n",""))
+          """.stripMargin.stripLineEnd.replaceAll("\n", ""))
         sb.append("\n")
     }
     sb.append("\n")
 
-println("---------------- ES Actor")
-println(sb.toString())
-println("---------------- ES Actor")
+//    println("---------------- ES Actor")
+//    println(sb.toString())
+//    println("---------------- ES Actor")
 
-    ElasticSearch.indexBulk(sb.toString(), indexName).map{
-      case Success(ok)=>
+    ElasticSearch.indexBulk(sb.toString(), indexName).map {
+      case Success(ok) =>
         play.Logger.of("application.IndexMaster").debug(s"Indexed ${slots.size} to ${indexName}")
-      case Failure(ex)=>
-        play.Logger.of("application.IndexMaster").error(s"Could not indexed ${slots.size} to ${indexName} due to ${ex.getMessage}",ex)
+      case Failure(ex) =>
+        play.Logger.of("application.IndexMaster").error(s"Could not indexed ${slots.size} to ${indexName} due to ${ex.getMessage}", ex)
     }
 
     play.Logger.of("application.IndexMaster").debug(s"Done indexing schedule to index $indexName")
@@ -725,15 +725,15 @@ println("---------------- ES Actor")
                         res2 <- ElasticSearch.createIndexWithSettings(zeIndexName, settings)
     ) yield {
       res1 match {
-        case Failure(ex)=>
+        case Failure(ex) =>
           play.Logger.of("library.ElasticSearch").warn(s"Unable to delete index $zeIndexName due to ${ex.getMessage}")
-        case Success(_)=>
+        case Success(_) =>
           play.Logger.of("library.ElasticSearch").debug(s"Deleted index $zeIndexName")
       }
       res2 match {
-        case Failure(ex)=>
+        case Failure(ex) =>
           play.Logger.of("library.ElasticSearch").warn(s"Unable to create index [$zeIndexName] with settings due to ${ex.getMessage}")
-        case Success(_)=>
+        case Success(_) =>
           play.Logger.of("library.ElasticSearch").debug(s"Created index $zeIndexName")
       }
       res2
@@ -767,7 +767,3 @@ class Reaper extends ESActor {
         play.Logger.of("application.Reaper").warn(s"Could not index speaker $obj due to $r")
     }
 }
-
-/*
-y.kazar@yogosha.com,matthieu@nudgeapm.io,lionel.porcheron@bleemeo.com,jbbeuzelin@lucca.fr,jules@colisweb.com,mathias@contentsquare.com,fawzi.babali@qikobjects.com,david.dhenaux@smart-side.com,maxime.thomas@stootie.com,thierry.abalea@fluo.com,yann@scalingo.com,romain@facileit.com
- */
