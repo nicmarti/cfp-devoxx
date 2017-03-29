@@ -937,3 +937,6 @@ confirm.phone.error=Sorry, the confirmation code is not correct
 invalid.confirmation.code=Invalid confirmation code
 invalid.phone=Invalid phone number, please use the international phone number format.
 sms.confirmationTxt=Your Devoxx confirmation code is {0}
+
+invalid.phoneNumber=Invalid phone number
+invalid.phone.txt=Invalid phone number or permission to send an SMS has not been enabled for the region indicated by this phone number. Please contact our team so that we can add our country to the list of valid region. Thanks.

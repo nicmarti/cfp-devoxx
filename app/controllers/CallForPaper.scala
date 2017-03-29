@@ -37,6 +37,7 @@ import play.api.libs.Crypto
 import play.api.libs.json.Json
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 /**
   * Main controller for the speakers.
@@ -427,8 +428,13 @@ object CallForPaper extends SecureCFPController {
           Future.successful {
             val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
             if (ConferenceDescriptor.isTwilioSMSActive()) {
-              TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code))
-              Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
+
+                TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code)) match {
+                  case Success(reason)=>
+                    Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
+                  case Failure(exception)=>
+                    InternalServerError(views.html.CallForPaper.invalidPhoneNumber(exception)).as(HTML)
+                }
             } else {
               val webuser = request.webuser
               Speaker.updatePhone(webuser.uuid, validPhone, request.acceptLanguages.headOption)

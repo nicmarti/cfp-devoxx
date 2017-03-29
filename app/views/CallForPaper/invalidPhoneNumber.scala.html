@@ -1,0 +1,21 @@
+@(ex: Throwable)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+
+@main("Invalid phone number") {
+    <div class="row">
+        <div class="col-md-8 col-xs-12 col-lg-8">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3><i class="icon-phone-sign"></i> @Messages("invalid.phoneNumber")</h3>
+                </div>
+                <Div class="panel-body">
+                    <p>@Messages("invalid.phone.txt")</p>
+
+                    <p>Exception :</p>
+                    <pre>@ex.getMessage</pre>
+
+                    <a href="@routes.CallForPaper.homeForSpeaker()" class="btn btn-primary">Go back</a>
+                </Div>
+            </div>
+        </div>
+    </div>
+}

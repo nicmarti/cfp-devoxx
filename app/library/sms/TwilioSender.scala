@@ -28,6 +28,8 @@ import models.ConferenceDescriptor
 import com.twilio.http.TwilioRestClient
 import com.twilio.rest.api.v2010.account.MessageCreator
 
+import scala.util.{Failure, Success, Try}
+
 
 /**
   * Class for SMS Twilio service. Used to send SMS to Speakers.
@@ -36,22 +38,32 @@ import com.twilio.rest.api.v2010.account.MessageCreator
   */
 object TwilioSender {
 
-  val client = new TwilioRestClient.Builder(ConferenceDescriptor.twilioAccountSid,ConferenceDescriptor.twilioAuthToken).build()
+  val client = new TwilioRestClient.Builder(ConferenceDescriptor.twilioAccountSid, ConferenceDescriptor.twilioAuthToken).build()
 
-  def send(phoneNumber:String, message:String)={
-    play.Logger.of("library.sms.TwilioSender").info("---- SHORT SMS ----")
-    play.Logger.of("library.sms.TwilioSender").info(s"To $phoneNumber")
-    play.Logger.of("library.sms.TwilioSender").info(message)
-    play.Logger.of("library.sms.TwilioSender").info("--------------------")
+  def send(phoneNumber: String, message: String): Try[String] = {
+    if (ConferenceDescriptor.twilioMockSMS) {
+      play.Logger.of("library.sms.TwilioSender").info("MOCK ---- SHORT SMS ----")
+      play.Logger.of("library.sms.TwilioSender").info(s"MOCK : To $phoneNumber")
+      play.Logger.of("library.sms.TwilioSender").info(message)
+      play.Logger.of("library.sms.TwilioSender").info("MOCK  --------------------")
+      Success("OK")
+    } else {
+      try {
+        val msg = new MessageCreator(
+          new PhoneNumber(phoneNumber),
+          new PhoneNumber(ConferenceDescriptor.twilioSenderNumber),
+          message
+        )
+        msg.create(client)
+        Success("Ok")
+      } catch {
+        case ex: com.twilio.exception.ApiException =>
+          Failure(ex)
+        case other =>
+          play.Logger.error("Unknown Twilio Exception", other)
+          Failure(other)
+      }
 
-
-    if(ConferenceDescriptor.twilioMockSMS==false) {
-          val msg = new MessageCreator(
-              new PhoneNumber(phoneNumber),
-              new PhoneNumber(ConferenceDescriptor.twilioSenderNumber),
-            message
-          )
-          msg.create(client)
     }
   }
 
