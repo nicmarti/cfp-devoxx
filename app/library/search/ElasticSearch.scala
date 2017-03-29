@@ -23,7 +23,7 @@
 
 package library.search
 
-import models.ApprovedProposal
+import models.{ApprovedProposal, ConferenceDescriptor}
 import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
 
@@ -148,7 +148,6 @@ object ElasticSearch {
         }
     }
   }
-
 
   def deleteIndex(indexName: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -442,12 +441,14 @@ object ElasticSearch {
   }
 
  def doAdvancedTalkSearch(query: AdvancedSearchParam) = {
-    val index = ApprovedProposal.elasticSearchIndex()
+   val indexName = "schedule_" + ConferenceDescriptor.current().eventCode.toLowerCase
     val zeQuery =
       s"""
         |"dis_max": {
         |   "queries": [
         |                { "match": { "title":"${query.topic.getOrElse("")}"}},
+        |                { "match": { "room":"${query.room.getOrElse("")}"}},
+        |                { "match": { "day":"${query.day.getOrElse("")}"}},
         |                { "match": { "summary":"${query.topic.getOrElse("")}"}},
         |                { "match": { "track.id":"${query.track.getOrElse("")}"}},
         |                { "match": { "talkType.id":"${query.format.getOrElse("")}"}},
@@ -472,7 +473,7 @@ object ElasticSearch {
       play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch advanced talk search query $json")
     }
 
-    val futureResponse = WS.url(host + "/" + index + "/_search")
+    val futureResponse = WS.url(host + "/" + indexName + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
       .withAuth(username, password,BASIC)

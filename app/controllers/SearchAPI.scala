@@ -48,13 +48,18 @@ object SearchAPI extends Controller {
       "track" -> optional(text),
       "format" -> optional(text),
       "room" -> optional(text),
+      "day" -> optional(text),
       "after" -> optional(text),
       "speaker" -> optional(text),
       "company" -> optional(text)
     )(AdvancedSearchParam.apply)(AdvancedSearchParam.unapply _)
   )
 
-  def index = UserAgentActionAndAllowOrigin(implicit request => Ok(views.html.SearchAPI.indexSearch(searchTalkForm)))
+  def index = UserAgentActionAndAllowOrigin{
+    implicit request =>
+
+      Ok(views.html.SearchAPI.indexSearch(searchTalkForm))
+  }
 
   def searchTalks() = UserAgentActionAndAllowOrigin.async {
     implicit request =>

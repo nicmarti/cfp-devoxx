@@ -250,6 +250,8 @@ object ConferenceDescriptor {
       PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
       PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, PARIS_204, PARIS_201)
 
+    val allRoomsAsIdsAndLabels:Seq[(String,String)] = allRooms.map(a=>(a.id,a.name)).sorted
+
     val allRoomsUni = List(AMPHI_BLEU, MAILLOT, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
     val allRoomsTIAWed = allRoomsUni
@@ -678,7 +680,7 @@ object ConferenceDescriptor {
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxFR2016",
+    eventCode = "DevoxxFR2017",
     // You will need to update conf/routes files with this code if modified
     confUrlCode = "devoxxfr2017",
     frLangEnabled = true,

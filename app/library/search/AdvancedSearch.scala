@@ -35,6 +35,7 @@ case class AdvancedSearchParam(topic:Option[String],
                                track:Option[String],
                                format:Option[String],
                                room:Option[String],
+                               day:Option[String],
                                after:Option[String],
                                speaker:Option[String],
                                company:Option[String])
