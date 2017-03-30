@@ -304,9 +304,11 @@ class IndexMaster extends ESActor {
     }
     sb.append("\n")
 
-    println("---------------- ES Actor")
-    println(sb.toString())
-    println("---------------- ES Actor")
+     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
+       play.Logger.of("library.ElasticSearch").debug("---------------- ES Actor")
+       play.Logger.of("library.ElasticSearch").debug(sb.toString())
+       play.Logger.of("library.ElasticSearch").debug("---------------- ES Actor")
+     }
 
     ElasticSearch.indexBulk(sb.toString(), indexName).map {
       case Success(ok) =>
