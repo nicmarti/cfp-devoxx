@@ -662,6 +662,8 @@ println("Test 2 webuser "+existingWebuser)
                   case other=>
                     val webuser = Webuser.createDevoxxian(email, "MY_DEVOXX_FR", "00000")
                     val newUUID = Webuser.saveAndValidateWebuser(webuser)
+                    Webuser.addToDevoxxians(newUUID)
+
                     (webuser,newUUID)
                 }
 
