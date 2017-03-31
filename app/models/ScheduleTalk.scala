@@ -63,4 +63,14 @@ object ScheduleTalk {
       }.filterNot(_._1.isEmpty)
         .map(t => (t._1.get, t._2))
   }
+
+  def deleteAllForWebuser(webuserId: String) = Redis.pool.withClient {
+    implicit client =>
+      val allFavoritesProposals = client.smembers(redis + ":ByUser:" + webuserId)
+      client.del(redis + ":ByUser:" + webuserId)
+      allFavoritesProposals.foreach { propId =>
+        client.del(redis + ":ByProp:" + propId, webuserId)
+      }
+  }
 }
+

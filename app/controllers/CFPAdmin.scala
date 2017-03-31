@@ -457,6 +457,18 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.Backoffice.allDevoxxians(devoxxians))
   }
 
+  def invalidDevoxxians() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val devoxxians = Webuser.allDevoxxians().sortBy(_.email)
+
+      val duplicateEmails = devoxxians.groupBy(_.email).filter(_._2.size>1)
+
+      val removeNoEmails = duplicateEmails.filterNot(s=> s._1 == "no_email_defined")
+
+      Ok(views.html.Backoffice.invalidDevoxxians(removeNoEmails.values.flatten.toList))
+  }
+
+
   def allSpeakersWithApprovedTalks() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = ApprovedProposal.allApprovedSpeakers()

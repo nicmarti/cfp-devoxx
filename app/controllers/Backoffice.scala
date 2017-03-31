@@ -485,4 +485,17 @@ object Backoffice extends SecureCFPController {
       }
   }
 
+  def deleteWebuser(uuid:String)=SecuredAction(IsMemberOf("admin")) {
+    implicit request=>
+      Webuser.findByUUID(uuid) match{
+        case Some(w) =>
+          Webuser.delete(w)
+          Speaker.delete(uuid)
+          FavoriteTalk.deleteAllForWebuser(uuid)
+          ScheduleTalk.deleteAllForWebuser(uuid)
+          Ok("Deleted Webuser and deleted speaker, favorite talks and scheduleTalk. Webuser="+w)
+        case None => NotFound("Webuser not found")
+      }
+  }
+
 }

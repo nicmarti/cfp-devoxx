@@ -22,15 +22,15 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3>@devoxxians.size Devoxxians</h3>
+          <p>Those are invalid and duplicate profiles</p>
         </div>
         <div class="panel-body">
         @if(devoxxians.nonEmpty){
-
-          <a href="@routes.CFPAdmin.invalidDevoxxians()" class="btn btn-warning">Show only duplicate or invalid Devoxxians</a>
-
+          <a href="@routes.CFPAdmin.allDevoxxians()" class="btn btn-warning">Show all Devoxxians</a>
           <table class="table table-bordered table-strippted">
             <thead>
               <tr>
+                <th>Id</th>
                 <th>Email</th>
                 <th>Network</th>
                 <th># Favorites</th>
@@ -41,16 +41,22 @@
             @devoxxians.map{ webuser: Webuser =>
               <tr>
                 <td>
+                  <small>@webuser.uuid</small>
+                </td>
+                <td>
                   <small>@webuser.email</small>
                 </td>
                 <td>
                   @webuser.networkType
                 </td>
-                <td>
+                <td @if(FavoriteTalk.allForUser(webuser.uuid).size==0){ class="panel-danger" } >
                   @FavoriteTalk.allForUser(webuser.uuid).size
                 </td>
                 <td>
                   @ScheduleTalk.allForUser(webuser.uuid).size
+                </td>
+                <td>
+                  <a href="@routes.Backoffice.deleteWebuser(webuser.uuid)" class="btn btn-sm btn-danger">DEL</a>
                 </td>
               </tr>
             }

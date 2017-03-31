@@ -218,6 +218,9 @@ object Webuser {
       tx.srem("Webuser:speaker", cleanWebuser.uuid)
       tx.srem("Webuser:cfp", cleanWebuser.uuid)
       tx.srem("Webuser:admin", cleanWebuser.uuid)
+      tx.srem("Webuser:visitor", cleanWebuser.uuid)
+      tx.srem("Webuser:gticket", cleanWebuser.uuid)
+      tx.srem("Webuser:devoxxian", cleanWebuser.uuid)
       tx.exec()
 
       TrackLeader.deleteWebuser(cleanWebuser.uuid)

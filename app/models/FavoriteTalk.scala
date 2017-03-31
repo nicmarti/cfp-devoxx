@@ -98,4 +98,13 @@ object FavoriteTalk {
       }
       tx.exec()
   }
+
+  def deleteAllForWebuser(webuserId:String)=Redis.pool.withClient{
+    implicit client =>
+      val allFavoritesProposals = client.smembers(redis + ":ByUser:" + webuserId)
+      client.del(redis + ":ByUser:" + webuserId)
+      allFavoritesProposals.foreach { propId =>
+        client.del(redis + ":ByProp:" + propId, webuserId)
+      }
+  }
 }
