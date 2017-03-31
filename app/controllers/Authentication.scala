@@ -654,11 +654,13 @@ println("Test 2 webuser "+existingWebuser)
                     // fix for Speaker destroyed by the previous bug
                     val fixSpeaker = Webuser(s.get.uuid,email, firstName, lastName, password = RandomStringUtils.randomAlphabetic(8),"speaker")
                     Webuser.saveAndValidateWebuser(fixSpeaker)
+                    Webuser.addToDevoxxians(s.get.uuid)
                     (maybeWebuserFromSpeaker.get, maybeWebuserFromSpeaker.get.uuid)
                   case (s,w) if s.isEmpty && w.isDefined =>
+                    Webuser.addToDevoxxians(s.get.uuid)
                     (existingWebuser.get, existingWebuser.get.uuid)
                   case other=>
-                    val webuser = Webuser(uuid,email,firstName,lastName,password = RandomStringUtils.randomAlphabetic(8),"visitor")
+                    val webuser = Webuser.createDevoxxian(email, "MY_DEVOXX_FR", "00000")
                     val newUUID = Webuser.saveAndValidateWebuser(webuser)
                     (webuser,newUUID)
                 }
