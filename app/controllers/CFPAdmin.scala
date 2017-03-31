@@ -513,6 +513,17 @@ object CFPAdmin extends SecureCFPController {
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
             .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
           (speaker, onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty).map{
+        case (speaker,zeProposals)=>
+          val updated=zeProposals.filter{
+            proposal=>
+              Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
+          }
+          if(updated.size!=zeProposals.size){
+            play.Logger.debug(s"Removed rejected proposal for speaker ${speaker.cleanName}")
+          }
+
+          (speaker,updated)
       }.filter(_._2.nonEmpty)
 
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
