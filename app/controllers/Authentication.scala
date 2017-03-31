@@ -637,8 +637,31 @@ object Authentication extends Controller {
                 val uuid = (json \ "userId").as[String]
                 val email = (json \ "email").as[String]
 
-                val webuser=Webuser(uuid,email,firstName,lastName,password = RandomStringUtils.random(8),"visitor")
-                val newUUID = Webuser.saveAndValidateWebuser(webuser) // it is generated
+
+                // Check if the user is not already a speaker or a valid webuser
+                val maybeWebuserFromSpeaker = Speaker.allSpeakers().find(_.email == email).map{
+                  existingSpeaker =>
+                    Webuser(existingSpeaker.uuid,email,firstName,lastName,password = RandomStringUtils.randomAlphabetic(8),"speaker")
+                }
+                val existingWebuser = Webuser.findByEmail(email)
+
+println("Test 1 speaker "+maybeWebuserFromSpeaker)
+println("Test 2 webuser "+existingWebuser)
+
+                val (webuser:Webuser, newUUID:String) =(maybeWebuserFromSpeaker,existingWebuser) match {
+                  case (s,w) if s.isDefined =>
+                    play.Logger.warn(s"Existing speaker found, patch the Speaker ${s.get.uuid} ${s.get.email}")
+                    // fix for Speaker destroyed by the previous bug
+                    val fixSpeaker = Webuser(s.get.uuid,email, firstName, lastName, password = RandomStringUtils.randomAlphabetic(8),"speaker")
+                    Webuser.saveAndValidateWebuser(fixSpeaker)
+                    (maybeWebuserFromSpeaker.get, maybeWebuserFromSpeaker.get.uuid)
+                  case (s,w) if s.isEmpty && w.isDefined =>
+                    (existingWebuser.get, existingWebuser.get.uuid)
+                  case other=>
+                    val webuser = Webuser(uuid,email,firstName,lastName,password = RandomStringUtils.randomAlphabetic(8),"visitor")
+                    val newUUID = Webuser.saveAndValidateWebuser(webuser)
+                    (webuser,newUUID)
+                }
 
                 val cookie = createCookie(webuser)
                 Future.successful(

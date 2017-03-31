@@ -188,6 +188,7 @@ object Speaker {
       client.hdel("Speaker", uuid)
   }
 
+  // Warning : that's a slow operation
   def allSpeakers(): List[Speaker] = Redis.pool.withClient {
     client =>
       client.hvals("Speaker").flatMap {
