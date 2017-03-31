@@ -451,6 +451,12 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakersHome())
   }
 
+  def allDevoxxians() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val devoxxians = Webuser.allDevoxxians()
+      Ok(views.html.Backoffice.allDevoxxians(devoxxians))
+  }
+
   def allSpeakersWithApprovedTalks() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = ApprovedProposal.allApprovedSpeakers()

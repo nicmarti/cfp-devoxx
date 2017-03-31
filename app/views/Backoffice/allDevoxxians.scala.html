@@ -1,0 +1,63 @@
+@(devoxxians:List[Webuser])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Devoxxians") {
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-danger alert-dismissable col-md-12">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success alert-dismissable col-md-12">
+      @flash.get("success").get
+      </div>
+    }
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>@devoxxians.size Devoxxians</h3>
+        </div>
+        <div class="panel-body">
+        @if(devoxxians.nonEmpty){
+          <table class="table table-bordered table-strippted">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Network</th>
+                <th># Favorites</th>
+                <th># Scheduled</th>
+              </tr>
+            </thead>
+            <tbody>
+            @devoxxians.map{ webuser: Webuser =>
+              <tr>
+                <td>
+                  <small>@webuser.email</small>
+                </td>
+                <td>
+                  @webuser.networkType
+                </td>
+                <td>
+                  @FavoriteTalk.allForUser(webuser.uuid).size
+                </td>
+                <td>
+                  @ScheduleTalk.allForUser(webuser.uuid).size
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }else{
+          <P>There are no Devoxxians</P>
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+}
