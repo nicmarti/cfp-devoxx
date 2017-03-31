@@ -837,3 +837,5 @@ sms.confirmationTxt=Code de confirmation Devoxx à saisir sur le site du CFP : {
 phoneNumber=Numéro de téléphone portable
 invalid.phoneNumber=Numéro de téléphone non valide
 invalid.phone.txt=Votre numéro de téléphone n''est pas valide ou n''est pas autorisé par notre plate-forme. Contactez l''équipe pour que nous puissions autoriser le pays de votre numéro de portable, ou corrigez le numéro.
+
+admin.btn.devoxxians=Tous les Devoxxians

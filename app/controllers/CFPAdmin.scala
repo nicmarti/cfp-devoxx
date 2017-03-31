@@ -453,7 +453,7 @@ object CFPAdmin extends SecureCFPController {
 
   def allDevoxxians() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val devoxxians = Webuser.allDevoxxians()
+      val devoxxians = Webuser.allDevoxxians().sortBy(_.email)
       Ok(views.html.Backoffice.allDevoxxians(devoxxians))
   }
 
