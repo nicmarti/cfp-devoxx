@@ -23,13 +23,16 @@
 
 package controllers
 
+import controllers.Link.call2String
 import models.Speaker._
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsObject, Json}
-import play.api.mvc.{SimpleResult, _}
-import Link.call2String
+import play.api.mvc._
+
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
@@ -795,44 +798,39 @@ object RestAPI extends Controller {
     *
     * @return
     */
+  val verifyAccountForm=Form(
+    tuple(
+      "email"->email,
+      "networkId"->optional(text),
+      "networkType"->optional(text)
+    )
+  )
+
   def verifyAccount() = UserAgentActionAndAllowOrigin {
-
     implicit request =>
-
-      val body: AnyContent = request.body
-      val data = body.asMultipartFormData
-
-      if (data.nonEmpty) {
-        // Not 100% sure this is how it should be done in Scala/Play (Stephan)
-        val email = data.get.asFormUrlEncoded("email").mkString("")
-        val newNetworkId = data.get.asFormUrlEncoded("networkId").mkString("")
-        val newNetworkType = data.get.asFormUrlEncoded("networkType").mkString("")
-
-        if (email.nonEmpty &&
-          newNetworkType.nonEmpty &&
-          newNetworkId.nonEmpty) {
-
-          val webuser = Webuser.findByEmail(email)
-          if (webuser.isDefined) {
-
+      verifyAccountForm.bindFromRequest().fold(
+        invalidForm=>{
+          BadRequest(invalidForm.errorsAsJson).as(JSON)
+        },
+        validTuple=>{
+          val email = validTuple._1
+          val newNetworkType = validTuple._2
+          val newNetworkId = validTuple._3
+          Webuser.findByEmail(email) match {
+            case Some(foundUser)=>
             // Update users social network credentials
-            val foundUser: Webuser = webuser.get
-            Webuser.update(foundUser.copy(networkType = Some(newNetworkType), networkId = Some(newNetworkId)))
+            Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
             Ok(foundUser.uuid)
 
-          } else {
+            case None=>
             // User does not exist, lets create
             val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
             val uuid = Webuser.saveAndValidateWebuser(devoxxian)
             Webuser.addToDevoxxians(uuid)
             Created(uuid)
           }
-        } else {
-          BadRequest("email not provided")
         }
-      } else {
-        BadRequest("Not a multipart form")
-      }
+      )
   }
 }
 

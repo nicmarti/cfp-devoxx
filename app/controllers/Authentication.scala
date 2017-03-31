@@ -645,9 +645,6 @@ object Authentication extends Controller {
                 }
                 val existingWebuser = Webuser.findByEmail(email)
 
-println("Test 1 speaker "+maybeWebuserFromSpeaker)
-println("Test 2 webuser "+existingWebuser)
-
                 val (webuser:Webuser, newUUID:String) =(maybeWebuserFromSpeaker,existingWebuser) match {
                   case (s,w) if s.isDefined =>
                     play.Logger.warn(s"Existing speaker found, patch the Speaker ${s.get.uuid} ${s.get.email}")
@@ -660,7 +657,7 @@ println("Test 2 webuser "+existingWebuser)
                     Webuser.addToDevoxxians(s.get.uuid)
                     (existingWebuser.get, existingWebuser.get.uuid)
                   case other=>
-                    val webuser = Webuser.createDevoxxian(email, "MY_DEVOXX_FR", "00000")
+                    val webuser = Webuser.createDevoxxian(email, Some("MY_DEVOXX_FR"), Some("00000"))
                     val newUUID = Webuser.saveAndValidateWebuser(webuser)
                     Webuser.addToDevoxxians(newUUID)
 

@@ -93,16 +93,16 @@ object Webuser {
   }
 
   def createDevoxxian(email: String,
-                      networkType: String,
-                      networkId: String): Webuser = {
+                      networkType: Option[String],
+                      networkId: Option[String]): Webuser = {
     Webuser(generateUUID(email),
             email,
             "Devoxx",
             "CFP",
             RandomStringUtils.randomAlphabetic(7),
             "devoxxian",
-            Some(networkId),
-            Some(networkType))
+            networkId,
+            networkType)
   }
 
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
