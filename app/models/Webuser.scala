@@ -130,29 +130,37 @@ object Webuser {
 
   def saveAndValidateWebuser(webuser: Webuser): String = Redis.pool.withClient {
     client =>
-      val cleanWebuser = webuser.copy(email = webuser.email.toLowerCase.trim)
+      val cleanEmail =  StringUtils.trimToEmpty(webuser.email.toLowerCase)
+      val cleanWebuser = webuser.copy(email =cleanEmail)
       val json = Json.toJson(cleanWebuser).toString
 
       val tx = client.multi()
       tx.hset("Webuser", cleanWebuser.uuid, json)
       tx.set("Webuser:UUID:" + cleanWebuser.uuid, webuser.email)
-      tx.set("Webuser:Email:" + cleanWebuser.email, webuser.uuid)
+      tx.set("Webuser:Email:" + cleanEmail, webuser.uuid)
       tx.sadd("Webuser:" + cleanWebuser.profile, webuser.uuid)
-      tx.hdel("Webuser:New", cleanWebuser.email)
+      tx.hdel("Webuser:New", cleanEmail)
       tx.exec()
       cleanWebuser.uuid
   }
 
   def isEmailRegistered(email: String): Boolean = Redis.pool.withClient {
     implicit client =>
-      client.exists("Webuser:Email:" + email.toLowerCase.trim)
+      val cleanEmail = StringUtils.trimToEmpty(email.toLowerCase)
+      client.exists("Webuser:Email:" + cleanEmail)
+  }
+
+  def fixMissingEmail(email:String, uuid:String)=Redis.pool.withClient{
+    implicit client=>
+      val cleanEmail = StringUtils.trimToEmpty(email.toLowerCase)
+      client.set("Webuser:Email:" + cleanEmail, uuid)
   }
 
   def findByEmail(email: String): Option[Webuser] = email match {
     case null => None
     case "" => None
     case validEmail =>
-      val _email = validEmail.toLowerCase.trim
+      val _email = StringUtils.trimToEmpty(validEmail.toLowerCase)
       Redis.pool.withClient {
         client =>
           client.get("Webuser:Email:" + _email).flatMap {
@@ -167,7 +175,8 @@ object Webuser {
 
   def getUUIDfromEmail(email: String): Option[String] = Redis.pool.withClient {
     client =>
-      client.get("Webuser:Email:" + email.toLowerCase.trim)
+      val _email = StringUtils.trimToEmpty(email.toLowerCase)
+      client.get("Webuser:Email:" + _email)
   }
 
   def findByUUID(uuid: String): Option[Webuser] = Redis.pool.withClient {
@@ -197,7 +206,7 @@ object Webuser {
   // The My Devoxx Gluon mobile app will use the following hard coded credentials to basic authenticate.
   def gluonUser(email: String, password: String): Boolean = {
     email.equals("gluon@devoxx.com") &&
-    password.equals("XYiDB;YncRe*QR#KT8FshBKgWqsyDuyq")
+    password.equals(ConferenceDescriptor.gluonPassword())
   }
 
   def delete(webuser: Webuser) = Redis.pool.withClient {

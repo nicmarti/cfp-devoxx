@@ -360,6 +360,7 @@ GET           /toptalks                                                         
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
 GET           /bp/exportAgenda                                                  controllers.Backoffice.exportAgenda()
+GET           /admin/checkWebusersForSpeakers                                   controllers.Backoffice.checkInvalidWebuserForAllSpeakers()
 
 # SMS
 GET           /sms/speakers                                                     controllers.SMSController.allSpeakers()

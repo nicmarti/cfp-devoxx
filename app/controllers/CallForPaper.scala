@@ -55,6 +55,7 @@ object CallForPaper extends SecureCFPController {
         speaker: Speaker =>
           // BUG
           if (Webuser.isSpeaker(uuid) == false) {
+            play.Logger.error(s"****** Speaker ${speaker.cleanName} was not in the SPEAKER Webuser group")
             Webuser.addToSpeaker(uuid)
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0

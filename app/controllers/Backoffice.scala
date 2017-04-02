@@ -498,4 +498,37 @@ object Backoffice extends SecureCFPController {
       }
   }
 
+  def checkInvalidWebuserForAllSpeakers()=SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Speaker.allSpeakersUUID().foreach{
+        uuid=>
+          Webuser.findByUUID(uuid) match {
+            case None=>
+               val s = Speaker.findByUUID(uuid)
+              play.Logger.info("Missing Webuser for Speaker "+uuid+" "+s.map(_.cleanName))
+            case other=>
+          }
+
+          Webuser.isSpeaker(uuid) match {
+            case false =>
+              val s = Speaker.findByUUID(uuid)
+              play.Logger.info("Missing group for speaker "+uuid+" "+s.map(_.cleanName))
+            case other=>
+          }
+          Speaker.findByUUID(uuid).foreach{
+            speaker=>
+              Webuser.isEmailRegistered(speaker.email) match {
+                case false =>
+                  play.Logger.error(s"Speaker's email is not stored in Webuser:Email => BUG ${speaker.email}")
+                  Webuser.fixMissingEmail(speaker.email,speaker.uuid)
+                case other=>
+              }
+          }
+
+      }
+      Ok("voir la console")
+
+
+  }
+
 }

@@ -68,7 +68,6 @@ object Authentication extends Controller {
       emailForm.bindFromRequest.fold(
         errorForm => BadRequest(views.html.Authentication.forgetPassword(errorForm)),
         validEmail => {
-
           if (Webuser.isEmailRegistered(validEmail)) {
             val resetURL = routes.Authentication.resetPassword(Crypto.sign(validEmail.toLowerCase.trim), new String(Base64.encodeBase64(validEmail.toLowerCase.trim.getBytes("UTF-8")), "UTF-8")).absoluteURL()
             TransactionalEmails.sendResetPasswordLink(validEmail, resetURL)

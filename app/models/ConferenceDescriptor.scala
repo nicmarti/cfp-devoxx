@@ -106,6 +106,8 @@ case class ConferenceDescriptor(eventCode: String,
 
 object ConferenceDescriptor {
 
+
+
   /**
     * TODO configure here the kind of talks you will propose
     */
@@ -765,5 +767,7 @@ object ConferenceDescriptor {
   def twilioSenderNumber:String =  Play.current.configuration.getString("cfp.twilioSMS.senderNumber").getOrElse("")
 
   def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
+
+  def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
 }
 
