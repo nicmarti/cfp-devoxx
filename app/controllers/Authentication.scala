@@ -653,7 +653,7 @@ object Authentication extends Controller {
                     Webuser.addToDevoxxians(s.get.uuid)
                     (maybeWebuserFromSpeaker.get, maybeWebuserFromSpeaker.get.uuid)
                   case (s,w) if s.isEmpty && w.isDefined =>
-                    Webuser.addToDevoxxians(s.get.uuid)
+                    Webuser.addToDevoxxians(existingWebuser.get.uuid)
                     (existingWebuser.get, existingWebuser.get.uuid)
                   case other=>
                     val webuser = Webuser.createDevoxxian(email, Some("MY_DEVOXX_FR"), Some("00000"))
