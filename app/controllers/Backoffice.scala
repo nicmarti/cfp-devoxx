@@ -241,11 +241,10 @@ object Backoffice extends SecureCFPController {
 
       // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
       val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
-        for (speakerId <- specialSpeakers) yield {
+        for (speakerId <- specialSpeakers ; speaker <- Speaker.findByUUID(speakerId)) yield {
           val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
           val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
           val conflict = groupedByDate.filter(_._2.size > 1)
-          val speaker = Speaker.findByUUID(speakerId).get
           (speaker, conflict)
         }
 
