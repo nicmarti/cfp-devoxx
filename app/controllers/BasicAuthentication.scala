@@ -21,7 +21,9 @@ object BasicAuthentication extends Controller {
 
           allCatch.opt {
             val (email, password) = (authInfo.head, authInfo(1))
-            userExists(email, password)
+            val exists = userExists(email, password)
+            play.Logger.of("controllers.BasicAuthentication").debug(s"$email:$password=$exists")
+            exists
           } getOrElse false
         }
       }.map(_ => action(request)).getOrElse {
