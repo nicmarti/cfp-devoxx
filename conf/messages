@@ -356,6 +356,11 @@ admin.btn.sendMessage=Post your message
 admin.sp.internal=Private discussions
 admin.sp.deleteMyVote=Delete my vote
 admin.btn.allvotes=All votes
+admin.btn.vote_0=Thanks for playing a fair game!
+admin.btn.vote_1=You're basically veto'ing this talk, please add an internal comment to justify the low rating.
+admin.btn.vote_2=Very low vote, please add an internal comment to justify the low rating.
+admin.btn.vote_9=You really like this proposal, please explain to the team members why  :)
+admin.btn.vote_10=Why a 10, are you friends or colleages? :)  Please add internal comment to justify.
 
 speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.
 admin.draft.warning=Warning

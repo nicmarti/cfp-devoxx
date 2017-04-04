@@ -198,20 +198,20 @@
                             <div class="btn-block">
                                 @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
                                     @if(maybeMyVote.isDefined && maybeMyVote.get.vote == 0) {
-                                        <button name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
+                                        <button id="vote_0" name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
                                     } else {
-                                        <button name="vote" value="0" class="btn btn-lg btn-default">@Messages("Abs")</button>
+                                        <button id="vote_0" name="vote" value="0" class="btn btn-lg btn-default">@Messages("Abs")</button>
                                     }
                                     @for(i <- 1 to 10) {
                                         @maybeMyVote.map { review: Review =>
                                             @if(review.vote == i) {
-                                                <button name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
+                                                <button id="vote_@i" name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
                                             } else {
-                                                <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                                <button id="vote_@i" name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
                                             }
                                         }
                                         @if(maybeMyVote.isEmpty) {
-                                            <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                            <button id="vote_@i" name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
                                         }
                                     }
                                 }
@@ -268,5 +268,21 @@
             </div>
         </div>
     </div>
-
+    <script type="text/javascript">
+        $('#vote_0').on("click",function(e) {
+            alert("@Messages("admin.btn.vote_0")");
+        });
+        $('#vote_1').on("click",function(e) {
+            alert("@Messages("admin.btn.vote_1")");
+        });
+        $('#vote_2').on("click",function(e) {
+            alert("@Messages("admin.btn.vote_2")");
+        });
+        $('#vote_9').on("click",function(e) {
+            alert("@Messages("admin.btn.vote_9")");
+        });
+        $('#vote_10').on("click",function(e) {
+            alert("@Messages("admin.btn.vote_10")");
+        });
+    </script>
 }
