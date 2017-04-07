@@ -115,6 +115,13 @@ case class Speaker(uuid: String
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
     processedMarkdownTest
   }
+
+  lazy val questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion: Boolean = {
+    val speakerQuestionIsFilledIn = ! speakerQ1AsText.trim().isEmpty
+    val speakerAnswerIsFilledIn = ! speakerA1AsHtml.trim().isEmpty
+    
+    speakerQuestionIsFilledIn && speakerAnswerIsFilledIn
+  }
 }
 
 object Speaker {
