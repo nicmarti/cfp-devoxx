@@ -104,22 +104,28 @@ case class Speaker(uuid: String
     processedMarkdownTest
   }
 
-  lazy val speakerQ1AsText: String = {
-    val text = speakerQ1.getOrElse("")
-    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(text).trim()) // Then do markdown processing
-    processedMarkdownTest
+  lazy val speakerQ1AsHtml: String = {
+    convertToEscapedHtml(speakerQ1)
   }
 
   lazy val speakerA1AsHtml: String = {
-    val escapedHtml = HtmlFormat.escape(speakerA1.getOrElse("")).body // escape HTML code and JS
-    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(escapedHtml).trim()) // Then do markdown processing
+    convertToEscapedHtml(speakerA1)
+  }
+
+  private def convertToEscapedHtml(question: Option[String]): String = {
+    val html = HtmlFormat.escape(question.getOrElse("")).body // escape HTML code and JS
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(html).trim()) // Then do markdown processing
     processedMarkdownTest
   }
 
   lazy val questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion: Boolean = {
-    val speakerQuestionIsFilledIn = ! speakerQ1AsText.trim().isEmpty
-    val speakerAnswerIsFilledIn = ! speakerA1AsHtml.trim().isEmpty
-    
+    hasFieldsBeenFilledIn(speakerQ1AsHtml, speakerA1AsHtml)
+  }
+
+  def hasFieldsBeenFilledIn(question: String, answer: String): Boolean = {
+    val speakerQuestionIsFilledIn = ! question.trim().isEmpty
+    val speakerAnswerIsFilledIn = ! answer.trim().isEmpty
+
     speakerQuestionIsFilledIn && speakerAnswerIsFilledIn
   }
 }

@@ -60,9 +60,13 @@
 
 @if(speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion) {
     <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
-    <br>
-    <h5>@Html(speaker.speakerQ1AsText)</h5>
-    @Html(speaker.speakerA1AsHtml)
+
+    @if(speaker.hasFieldsBeenFilledIn(speaker.speakerQ1AsHtml, speaker.speakerA1AsHtml)) {
+        <br>
+        <h5>@Html(speaker.speakerQ1AsHtml)</h5>
+        @Html(speaker.speakerA1AsHtml)
+    }
+
 } else {
     <!-- no need to display anything -->
 }
