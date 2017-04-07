@@ -105,9 +105,9 @@ case class Speaker(uuid: String
   }
 
   lazy val speakerQ1AsText: String = {
-    val html = speakerQ1.getOrElse("")
-    System.out.print(html)
-    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(html).trim()) // Then do markdown processing
+    val text = speakerQ1.getOrElse("")
+    System.out.print(text)
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(text).trim()) // Then do markdown processing
     System.out.print(processedMarkdownTest)
     processedMarkdownTest
   }
