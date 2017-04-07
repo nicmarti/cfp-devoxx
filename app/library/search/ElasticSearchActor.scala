@@ -387,6 +387,14 @@ class IndexMaster extends ESActor {
                         "type": "string",
                         "analyzer":"francais"
                     },
+                    "speakerQ1": {
+                        "type": "string",
+                        "analyzer":"francais"
+                    },
+                    "speakerQ1": {
+                        "type": "string",
+                        "analyzer":"francais"
+                    },
                     "twitter": {
                         "type": "string",
                         "analyzer": "analyzer_keyword"

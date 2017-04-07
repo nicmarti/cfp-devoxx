@@ -52,8 +52,11 @@
               }
               @Html(proposal.summaryAsHtml)
 
-              <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA.label"))</a></h4>
-              @Html(proposal.speakerQandAAsHtml)
+              <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
+              <br>
+              <h5>@Html(speaker.speakerQ1AsText)</h5>
+              @Html(speaker.speakerA1AsHtml)
+                  
         </div>
 <div class="clearfix"></div>
     }

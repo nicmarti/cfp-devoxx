@@ -1,5 +1,16 @@
 @(speakerForm: Form[Speaker], readOnlyUUID:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @main("Edit your profile") {
+
+<style>
+    .markdown-link {
+        display: inline-block;
+        padding-top: 10px;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #586069;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-12 page-header">
         <h3>@Messages("editProfile.title")</h3>
@@ -30,7 +41,24 @@
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
             @helper.textarea(speakerForm("qualifications"), 'cols -> 70, 'rows -> 5)
+
+            @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
+                @helper.inputText(speakerForm("speakerQ1"), 'size -> 70)
+            } else {
+                @helper.inputText(speakerForm("speakerQ1"), 'size -> 70, 'disabled -> true)
+            }
+
+            @helper.textarea(speakerForm("speakerA1"), 'cols -> 70, 'rows -> 5)
+
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
+
+            <div>
+                <br/>
+                <a class="markdown-link" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" data-ga-click="Markdown Toolbar, click, help">
+                    <svg aria-hidden="true" class="octicon octicon-markdown v-align-bottom" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M14.85 3H1.15C.52 3 0 3.52 0 4.15v7.69C0 12.48.52 13 1.15 13h13.69c.64 0 1.15-.52 1.15-1.15v-7.7C16 3.52 15.48 3 14.85 3zM9 11H7V8L5.5 9.92 4 8v3H2V5h2l1.5 2L7 5h2v6zm2.99.5L9.5 8H11V5h2v3h1.5l-2.51 3.5z"></path></svg>
+                    Styling with Markdown is supported in the above input and text areas (click for a quick cheatsheet)
+                </a>
+            </div>
         }
     <hr>
         <small>Your UUID: @readOnlyUUID</small>

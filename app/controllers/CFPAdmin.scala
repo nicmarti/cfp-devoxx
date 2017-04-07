@@ -45,7 +45,9 @@ object CFPAdmin extends SecureCFPController {
     "blog2" -> optional(text),
     "firstName" -> text,
     "acceptTermsConditions" -> boolean,
-    "qualifications2" -> nonEmptyText(maxLength = 750)
+    "qualifications2" -> nonEmptyText(maxLength = 750),
+    "speakerQ1_2" -> optional(text),
+    "speakerA1_2" -> optional(text)
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
   def index(page: Int,

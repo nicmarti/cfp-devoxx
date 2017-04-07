@@ -187,7 +187,7 @@ object Authentication extends Controller {
     implicit request =>
       Ok(request.session.get("access_token").getOrElse("No access token in your current session"))
   }
-
+  
   val importSpeakerForm = Form(tuple(
     "email" -> email,
     "firstName" -> nonEmptyText(maxLength = 50),
@@ -197,7 +197,9 @@ object Authentication extends Controller {
     "twitter" -> optional(text),
     "blog" -> optional(text),
     "avatarUrl" -> optional(text),
-    "qualifications" -> nonEmptyText(maxLength = 750)
+    "qualifications" -> nonEmptyText(maxLength = 750),
+    "speakerQ1" -> optional(text),
+    "speakerA1" -> optional(text)
   ))
 
   val newWebuserForm: Form[Webuser] = Form(
@@ -266,7 +268,10 @@ object Authentication extends Controller {
                     val bioS = json.\("bio").asOpt[String].getOrElse("")
                     val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
                     val company = json.\("company").asOpt[String]
+                    val twitter = json.\("twitter").asOpt[String]
                     val blog = json.\("blog").asOpt[String]
+                    val speakerQ1 = json.\("speakerQ1").asOpt[String]
+                    val speakerA1 = json.\("speakerA1").asOpt[String]
 
                     // Try to lookup the speaker
                     Webuser.findByEmail(emailS).map {
@@ -290,7 +295,7 @@ object Authentication extends Controller {
                         Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
 
                       } else {
-                        val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
+                        val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, twitter, blog, avatarUrl, "No experience", speakerQ1, speakerA1)
 
                         Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                       }
@@ -336,7 +341,7 @@ object Authentication extends Controller {
         futureMaybeWebuser.map {
           webuser =>
             val uuid = Webuser.saveAndValidateWebuser(webuser) // it is generated
-            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience"))
+            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", None, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience", None, None))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -380,6 +385,8 @@ object Authentication extends Controller {
           val blog = validFormData._7
           val avatarUrl = validFormData._8
           val qualifications = validFormData._9
+          val speakerQ1 = validFormData._10
+          val speakerA1 = validFormData._11
 
           val validWebuser = if (Webuser.isEmailRegistered(email)) {
             // An existing webuser might have been created with a different play.secret key
@@ -400,7 +407,7 @@ object Authentication extends Controller {
                 "en"
               }
           }
-          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications)
+          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications, speakerQ1, speakerA1)
           Speaker.save(newSpeaker)
           Webuser.addToDevoxxians(validWebuser.uuid)
 
@@ -506,7 +513,7 @@ object Authentication extends Controller {
                       val cookie = createCookie(w)
                       Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
                   }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience")
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience", None, None)
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
 
@@ -599,6 +606,8 @@ object Authentication extends Controller {
                   val lastName = json.\("family_name").asOpt[String]
                   val blog = json.\("profile").asOpt[String]
                   val photo = json.\("picture").asOpt[String]
+                  val speakerQ1 = json.\("speakerQ1").asOpt[String]
+                  val speakerA1 = json.\("speakerA1").asOpt[String]
 
                   // Try to lookup the speaker
                   Webuser.findByEmail(email).map {
@@ -606,7 +615,7 @@ object Authentication extends Controller {
                       val cookie = createCookie(w)
                       Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
                   }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo, "No experience")
+                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo, "No experience", speakerQ1, speakerA1)
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
                 case other =>
