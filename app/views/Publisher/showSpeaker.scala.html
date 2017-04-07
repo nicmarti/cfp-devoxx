@@ -58,11 +58,11 @@
     }
 }
 
-<h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
-<br>
 @if(speaker.speakerA1AsHtml.trim().isEmpty) {
         <!-- no need to display anything -->
 } else {
+    <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
+    <br>
     <h5>@Html(speaker.speakerQ1AsText)</h5>
     @Html(speaker.speakerA1AsHtml)
 }
