@@ -103,8 +103,7 @@ case class ConferenceDescriptor(eventCode: String,
                                 locale: List[Locale],
                                 localisation: String,
                                 notifyProposalSubmitted: Boolean,
-                                maxProposalSummaryCharacters: Int = 1200
-                               )
+                                maxProposalSummaryCharacters: Int = 1200)
 
 object ConferenceDescriptor {
 
@@ -643,6 +642,8 @@ object ConferenceDescriptor {
 
   val fromDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(11)
   val toDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(12)
+  
+  val MAXIMUM_SUMMARY_CHARACTERS = 1200
 
   def current(): ConferenceDescriptor = new ConferenceDescriptor(
     eventCode = "DV17",
@@ -686,7 +687,7 @@ object ConferenceDescriptor {
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
     , notifyProposalSubmitted = true
-    , 1200 // French developers tends to be a bit verbose... we need extra space :-)
+    , MAXIMUM_SUMMARY_CHARACTERS // French developers tends to be a bit verbose... we need extra space :-)
   )
 
   def conference2017() = ConferenceDescriptor(
@@ -724,7 +725,7 @@ object ConferenceDescriptor {
     , List(Locale.ENGLISH)
     , "Business Design Centre, 52 Upper St, London N1 0QH, United Kingdom"
     , notifyProposalSubmitted = true
-    , 1200 // French developers tends to be a bit verbose... we need extra space :-)
+    , MAXIMUM_SUMMARY_CHARACTERS // French developers tends to be a bit verbose... we need extra space :-)
   )
 
   def isCFPOpen: Boolean = {

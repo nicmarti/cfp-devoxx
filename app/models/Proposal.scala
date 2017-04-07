@@ -313,8 +313,8 @@ object Proposal {
       !client.hexists("Proposals", id)
   }
 
-  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
-    Boolean, String, Option[String], Option[Boolean], Option[String], Option[Seq[Tag]] )] = {
+  def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String,
+    String, String, String, Boolean, String, Option[String], Option[Boolean], Option[String], Option[Seq[Tag]] )] = {
     Option((
       Option(p.id),
       p.lang,
