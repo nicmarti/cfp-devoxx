@@ -52,18 +52,19 @@
               }
               @Html(proposal.summaryAsHtml)
 
-              <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
-              <br>
-              @if(speaker.speakerA1AsHtml.trim().isEmpty) {
-                  <i>No Q&A available to display at the moment</i>
-              } else {
-                  <h5>@Html(speaker.speakerQ1AsText)</h5>
-                  @Html(speaker.speakerA1AsHtml)
-              }
-                  
         </div>
-<div class="clearfix"></div>
+
+        <div class="clearfix"></div>
     }
+}
+
+@if(speaker.speakerA1AsHtml.trim().isEmpty) {
+        <!-- no need to display anything -->
+} else {
+    <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
+    <br>
+    <h5>@Html(speaker.speakerQ1AsText)</h5>
+    @Html(speaker.speakerA1AsHtml)
 }
 </section>
 }
