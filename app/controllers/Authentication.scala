@@ -36,7 +36,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
-import play.api.libs.{Crypto}
+import play.api.libs.{Crypto, json}
 import play.api.libs.json._
 import play.api.libs.ws._
 import play.api.mvc._

@@ -108,10 +108,13 @@ case class Speaker(uuid: String
 
   lazy val questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion: Boolean = {
     var atLeastOneOfThemIsFilledIn = false
-    questionAndAnswers.get.toList.foreach {
-      questionAndAnswer =>
-        atLeastOneOfThemIsFilledIn = atLeastOneOfThemIsFilledIn ||
-          hasFieldsBeenFilledIn(questionAndAnswer)
+
+    if (questionAndAnswers.isDefined) {
+      questionAndAnswers.get.toList.foreach {
+        questionAndAnswer =>
+          atLeastOneOfThemIsFilledIn = atLeastOneOfThemIsFilledIn ||
+            hasFieldsBeenFilledIn(questionAndAnswer)
+      }
     }
     atLeastOneOfThemIsFilledIn
   }
