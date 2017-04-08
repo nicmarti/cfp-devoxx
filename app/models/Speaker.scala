@@ -24,7 +24,6 @@
 package models
 
 import com.github.rjeschke.txtmark.Processor
-import controllers.QuestionAndAnswers
 import library.{Benchmark, Redis, ZapJson}
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.{DateTime, Instant}
