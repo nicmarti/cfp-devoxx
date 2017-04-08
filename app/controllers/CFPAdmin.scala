@@ -3,7 +3,7 @@ package controllers
 import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 
 import library.search.ElasticSearch
-import library.{SendMessageInternal, SendMessageToSpeaker, _}
+import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
 import models._
 import org.apache.commons.io.FileUtils
@@ -277,7 +277,7 @@ object CFPAdmin extends SecureCFPController {
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-
+      import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
       ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
         case r if r.isSuccess =>
