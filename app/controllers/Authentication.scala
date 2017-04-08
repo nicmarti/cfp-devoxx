@@ -204,7 +204,7 @@ object Authentication extends Controller {
       mapping(
         "question" -> optional(text),
         "answer" -> optional(text)
-      )(QuestionAndAnswers.apply)(QuestionAndAnswers.unapply))
+      )(QuestionAndAnswer.apply)(QuestionAndAnswer.unapply))
     )
   ))
 
@@ -251,8 +251,6 @@ object Authentication extends Controller {
     }
   )
 
-  implicit val questionAndAnswerFormat = Json.format[QuestionAndAnswers]
-
   def createFromGithub(visitor: Boolean) = Action.async {
     implicit request =>
 
@@ -277,7 +275,7 @@ object Authentication extends Controller {
                     val avatarUrl = Option("http://www.gravatar.com/avatar/" + DigestUtils.md5Hex(emailS))
                     val company = json.\("company").asOpt[String]
                     val blog = json.\("blog").asOpt[String]
-                    val questionAndAnswers = Option(json.\("questionAndAnswers").asOpt[QuestionAndAnswers].toSeq)
+                    val questionAndAnswers = Option(json.\("questionAndAnswers").asOpt[QuestionAndAnswer].toSeq)
 
                     // Try to lookup the speaker
                     Webuser.findByEmail(emailS).map {
@@ -352,7 +350,7 @@ object Authentication extends Controller {
             Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", None, None,
               Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None,
               webuser.firstName, "No experience",
-              QuestionAndAnswers.empty))
+              QuestionAndAnswer.empty))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -527,7 +525,7 @@ object Authentication extends Controller {
                   }.getOrElse {
                     val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"),
                       None, None, None, photo, "No experience",
-                      QuestionAndAnswers.empty)
+                      QuestionAndAnswer.empty)
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
 
@@ -620,7 +618,7 @@ object Authentication extends Controller {
                   val lastName = json.\("family_name").asOpt[String]
                   val blog = json.\("profile").asOpt[String]
                   val photo = json.\("picture").asOpt[String]
-                  val questionAndAnswers = Option(json.\("questionAndAnswers").asOpt[QuestionAndAnswers].toSeq)
+                  val questionAndAnswers = Option(json.\("questionAndAnswers").asOpt[QuestionAndAnswer].toSeq)
 
                   // Try to lookup the speaker
                   Webuser.findByEmail(email).map {
@@ -655,42 +653,6 @@ object Authentication extends Controller {
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
 
-case class QuestionAndAnswers(question: Option[String], answer: Option[String]) {
 
-  implicit object QuestionAndAnswerFormat extends Format[QuestionAndAnswers] {
-    def reads(json: JsValue) = JsSuccess(
-      QuestionAndAnswers(
-        (json \ "question").asOpt[String],
-        (json \ "answer").asOpt[String]
-      )
-    )
 
-    def writes(questionAndAnswers: QuestionAndAnswers): JsValue = JsObject(
-      Seq(
-        "question" -> questionAndAnswers.question.map(JsString).getOrElse(JsNull),
-        "answer" -> questionAndAnswers.answer.map(JsString).getOrElse(JsNull)
-      )
-    )
-  }
 
-  lazy val questionAsHtml: String = {
-    convertToEscapedHtml(question)
-  }
-
-  lazy val answerAsHtml: String = {
-    convertToEscapedHtml(answer)
-  }
-
-  def convertToEscapedHtml(field: Option[String]): String = {
-    val html = HtmlFormat.escape(field.getOrElse("")).body // escape HTML code and JS
-    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(html).trim()) // Then do markdown processing
-    processedMarkdownTest
-  }
-}
-
-object QuestionAndAnswers {
-  def empty: Option[Seq[QuestionAndAnswers]] = {
-    val questionAndAnswers = List(new QuestionAndAnswers(None, None))
-    Option.apply(questionAndAnswers)
-  }
-}

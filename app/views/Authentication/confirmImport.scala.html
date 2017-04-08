@@ -1,7 +1,8 @@
 @(formWebuser: Form[(String, String,String,String,Option[String],Option[String],Option[String],Option[String],String,
-        Option[Seq[QuestionAndAnswers]])])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+        Option[Seq[QuestionAndAnswer]])])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @@import org.apache.commons.codec.digest.DigestUtils
+@import models.QuestionAndAnswer
 
 @main("New profil") {
 <div class="row">

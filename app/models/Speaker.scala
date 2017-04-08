@@ -31,8 +31,6 @@ import org.joda.time.{DateTime, Instant}
 import play.api.libs.json.Json
 import play.api.templates.HtmlFormat
 
-import controllers.QuestionAndAnswers
-
 /**
   * Speaker profile, is used mainly to show details.
   *
@@ -52,7 +50,7 @@ case class Speaker(uuid: String
                    , blog: Option[String]
                    , firstName: Option[String]
                    , qualifications: Option[String]
-                   , questionAndAnswers: Option[Seq[QuestionAndAnswers]]) {
+                   , questionAndAnswers: Option[Seq[QuestionAndAnswer]]) {
 
   def cleanName: String = {
     firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
@@ -133,7 +131,7 @@ case class Speaker(uuid: String
     resultAsHtml
   }
 
-  def hasFieldsBeenFilledIn(questionAndAnswer: QuestionAndAnswers): Boolean = {
+  def hasFieldsBeenFilledIn(questionAndAnswer: QuestionAndAnswer): Boolean = {
     val questionIsFilledIn = ! questionAndAnswer.question.getOrElse("").trim().isEmpty
     val answerIsFilledIn = ! questionAndAnswer.answer.getOrElse("").trim().isEmpty
     
@@ -143,12 +141,11 @@ case class Speaker(uuid: String
 
 object Speaker {
 
-  implicit val questionAndAnswerFormat = Json.format[QuestionAndAnswers]
   implicit val speakerFormat = Json.format[Speaker]
 
   def createSpeaker(webuserUUID: String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, qualifications: String,
-                    questionAndAnswers: Option[Seq[QuestionAndAnswers]]): Speaker = {
+                    questionAndAnswers: Option[Seq[QuestionAndAnswer]]): Speaker = {
     Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog,
       Some(firstName), Option(qualifications), questionAndAnswers)
   }
@@ -156,7 +153,7 @@ object Speaker {
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String],
                           twitter: Option[String], avatarUrl: Option[String], company: Option[String],
                           blog: Option[String], firstName: String, acceptTerms: Boolean, qualifications: String,
-                          questionAndAnswers: Option[Seq[QuestionAndAnswers]]): Speaker   = {
+                          questionAndAnswers: Option[Seq[QuestionAndAnswer]]): Speaker   = {
     uuid match {
       case None =>
         val newUUID = Webuser.generateUUID(email)
@@ -179,13 +176,13 @@ object Speaker {
   }
 
   def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String],
-    Option[String], Option[String], String, String, Option[Seq[QuestionAndAnswers]])] = {
+    Option[String], Option[String], String, String, Option[Seq[QuestionAndAnswer]])] = {
     Some("xxx", s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""),
       s.qualifications.getOrElse("No experience"), s.questionAndAnswers)
   }
 
   def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String],
-    Option[String], Option[String], Option[String], String, Boolean, String, Option[Seq[QuestionAndAnswers]])] = {
+    Option[String], Option[String], Option[String], String, Boolean, String, Option[Seq[QuestionAndAnswer]])] = {
     Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog,
       s.firstName.getOrElse(""), !needsToAccept(s.uuid), s.qualifications.getOrElse("No experience"), s.questionAndAnswers)
   }

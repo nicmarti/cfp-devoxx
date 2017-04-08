@@ -85,7 +85,7 @@ object CallForPaper extends SecureCFPController {
     implicit request =>
       val w = request.webuser
       val defaultValues = (w.email, w.firstName, w.lastName, StringUtils.abbreviate("...", 750), None, None, None, None, "No experience",
-        QuestionAndAnswers.empty)
+        QuestionAndAnswer.empty)
       Ok(views.html.Authentication.confirmImport(Authentication.importSpeakerForm.fill(defaultValues)))
   }
 
@@ -106,7 +106,7 @@ object CallForPaper extends SecureCFPController {
       mapping(
         "question" -> optional(text),
         "answer" -> optional(text)
-      )(QuestionAndAnswers.apply)(QuestionAndAnswers.unapply))
+      )(QuestionAndAnswer.apply)(QuestionAndAnswer.unapply))
     )
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 

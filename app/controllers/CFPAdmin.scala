@@ -50,7 +50,7 @@ object CFPAdmin extends SecureCFPController {
       mapping(
         "question" -> optional(text),
         "answer" -> optional(text)
-      )(QuestionAndAnswers.apply)(QuestionAndAnswers.unapply))
+      )(QuestionAndAnswer.apply)(QuestionAndAnswer.unapply))
     )
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
