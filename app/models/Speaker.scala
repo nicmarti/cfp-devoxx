@@ -31,6 +31,8 @@ import org.joda.time.{DateTime, Instant}
 import play.api.libs.json.Json
 import play.api.templates.HtmlFormat
 
+import controllers.QuestionAndAnswers
+
 /**
   * Speaker profile, is used mainly to show details.
   *
