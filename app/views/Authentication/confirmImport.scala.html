@@ -2,6 +2,7 @@
         Option[Seq[QuestionAndAnswer]])])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @import org.apache.commons.codec.digest.DigestUtils
+@import play.api.templates.Html
 @import models.QuestionAndAnswer
 
 @main("New profil") {
@@ -25,29 +26,30 @@
             @flash.get("success").get
             </div>
         }
-            @helper.inputText(formWebuser("email") , 'size->50, 'length->50)
-            @helper.inputText(formWebuser("firstName"))
-            @helper.inputText(formWebuser("lastName"))
-            @helper.textarea(formWebuser("bio"), 'cols -> 80, 'rows -> 5)
-            <i class="icon-text-width"></i> : <span id="charsremain"></span>
-            @helper.inputText(formWebuser("company"))
-            @helper.inputText(formWebuser("twitter"), 'placeholder -> "@nickname")
-            @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
-            @helper.textarea(formWebuser("qualifications"), 'cols -> 80, 'rows -> 3, 'placeholder -> "No experience")
 
-            <hr/>
-            <br/><b>Speaker Q&amp;A</b>
-            @helper.inputText(formWebuser("speakerQ1"))
-            @helper.textarea(formWebuser("speakerA1"), 'cols -> 80, 'rows -> 3)
-            @helper.inputText(formWebuser("speakerQ2"))
-            @helper.textarea(formWebuser("speakerA2"), 'cols -> 80, 'rows -> 3)
-            @helper.inputText(formWebuser("speakerQ3"))
-            @helper.textarea(formWebuser("speakerA3"), 'cols -> 80, 'rows -> 3)
-            @helper.inputText(formWebuser("speakerQ4"))
-            @helper.textarea(formWebuser("speakerA4"), 'cols -> 80, 'rows -> 3)
-            @helper.inputText(formWebuser("speakerQ5"))
-            @helper.textarea(formWebuser("speakerA5"), 'cols -> 80, 'rows -> 3)
-            <hr/>
+        @helper.inputText(formWebuser("email") , 'size->50, 'length->50)
+        @helper.inputText(formWebuser("firstName"))
+        @helper.inputText(formWebuser("lastName"))
+        @helper.textarea(formWebuser("bio"), 'cols -> 80, 'rows -> 5)
+        <i class="icon-text-width"></i> : <span id="charsremain"></span>
+        @helper.inputText(formWebuser("company"))
+        @helper.inputText(formWebuser("twitter"), 'placeholder -> "@nickname")
+        @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
+        @helper.textarea(formWebuser("qualifications"), 'cols -> 80, 'rows -> 3, 'placeholder -> "No experience")
+
+        <div class="prettyprint">
+            <h4><b>@Messages("speakerQandA")</b></h4>
+
+            @helper.repeat(formWebuser("questionAndAnswers2"), min = 5) { questionAndAnswer =>
+                @Html("<hr color=#000000 />")
+                @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")) {
+                    @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70)
+                } else {
+                    @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70, 'disabled -> true)
+                }
+                @helper.textarea(questionAndAnswer("answer"), '_label -> "Answer", 'cols -> 70, 'rows -> 5)
+            }
+        </div>
 
         @if(formWebuser("email").value!=""){
                 @if(formWebuser("avatarUrl").value.isEmpty){
