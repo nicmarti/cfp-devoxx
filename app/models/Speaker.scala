@@ -106,71 +106,35 @@ case class Speaker(uuid: String
     processedMarkdownTest
   }
 
-  lazy val speakerQ1AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.question)
-    ""
-  }
-
-  lazy val speakerA1AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.answer)
-    ""
-  }
-
-  lazy val speakerQ2AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.question)
-    ""
-  }
-
-  lazy val speakerA2AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.answer)
-    ""
-  }
-
-  lazy val speakerQ3AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.question)
-    ""
-  }
-
-  lazy val speakerA3AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.answer)
-    ""
-  }
-
-  lazy val speakerQ4AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.question)
-    ""
-  }
-
-  lazy val speakerA4AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.answer)
-    ""
-  }
-
-  lazy val speakerQ5AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.question)
-    ""
-  }
-
-  lazy val speakerA5AsHtml: String = {
-    //convertToEscapedHtml(questionAndAnswers.answer)
-    ""
-  }
-
-  private def convertToEscapedHtml(question: Option[String]): String = {
-    val html = HtmlFormat.escape(question.getOrElse("")).body // escape HTML code and JS
-    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(html).trim()) // Then do markdown processing
-    processedMarkdownTest
-  }
-
   lazy val questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion: Boolean = {
-    hasFieldsBeenFilledIn(speakerQ1AsHtml, speakerA1AsHtml)
+    var atLeastOneOfThemIsFilledIn = false
+    questionAndAnswers.get.toList.foreach {
+      questionAndAnswer =>
+        atLeastOneOfThemIsFilledIn = atLeastOneOfThemIsFilledIn ||
+          hasFieldsBeenFilledIn(questionAndAnswer)
+    }
+    atLeastOneOfThemIsFilledIn
   }
 
-  def hasFieldsBeenFilledIn(question: String, answer: String): Boolean = {
-    val speakerQuestionIsFilledIn = ! question.trim().isEmpty
-    val speakerAnswerIsFilledIn = ! answer.trim().isEmpty
+  lazy val questionAndAnswersAsHtml: String = {
+    var resultAsHtml = ""
+    questionAndAnswers.get.toList.foreach {
+      questionAndAnswer =>
+        if (hasFieldsBeenFilledIn(questionAndAnswer)) {
+          resultAsHtml +=
+            "<br/>" +
+              s"<h5>${questionAndAnswer.questionAsHtml}</h5>" +
+              s"${questionAndAnswer.answerAsHtml}"
+        }
+    }
+    resultAsHtml
+  }
 
-    speakerQuestionIsFilledIn && speakerAnswerIsFilledIn
+  def hasFieldsBeenFilledIn(questionAndAnswer: QuestionAndAnswers): Boolean = {
+    val questionIsFilledIn = ! questionAndAnswer.question.getOrElse("").trim().isEmpty
+    val answerIsFilledIn = ! questionAndAnswer.answer.getOrElse("").trim().isEmpty
+    
+    questionIsFilledIn && answerIsFilledIn
   }
 }
 

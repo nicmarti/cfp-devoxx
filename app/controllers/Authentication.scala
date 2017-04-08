@@ -25,6 +25,7 @@ package controllers
 import java.math.BigInteger
 import java.security.SecureRandom
 
+import com.github.rjeschke.txtmark.Processor
 import models._
 import notifiers.TransactionalEmails
 import org.apache.commons.codec.binary.Base64
@@ -35,10 +36,11 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
-import play.api.libs.{Crypto, json}
+import play.api.libs.{Crypto}
 import play.api.libs.json._
 import play.api.libs.ws._
 import play.api.mvc._
+import play.api.templates.HtmlFormat
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -652,7 +654,7 @@ object Authentication extends Controller {
 }
 
 case class GoogleToken(access_token: String, token_type: String, expires_in: Long, id_token: String)
-                                                      
+
 case class QuestionAndAnswers(question: Option[String], answer: Option[String]) {
 
   implicit object QuestionAndAnswerFormat extends Format[QuestionAndAnswers] {
@@ -669,6 +671,20 @@ case class QuestionAndAnswers(question: Option[String], answer: Option[String]) 
         "answer" -> questionAndAnswers.answer.map(JsString).getOrElse(JsNull)
       )
     )
+  }
+
+  lazy val questionAsHtml: String = {
+    convertToEscapedHtml(question)
+  }
+
+  lazy val answerAsHtml: String = {
+    convertToEscapedHtml(answer)
+  }
+
+  def convertToEscapedHtml(field: Option[String]): String = {
+    val html = HtmlFormat.escape(field.getOrElse("")).body // escape HTML code and JS
+    val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(html).trim()) // Then do markdown processing
+    processedMarkdownTest
   }
 }
 
