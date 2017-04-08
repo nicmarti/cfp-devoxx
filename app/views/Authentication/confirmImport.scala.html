@@ -1,6 +1,7 @@
-@(formWebuser: Form[(String, String,String,String,Option[String],Option[String],Option[String],Option[String],String,Option[String],Option[String])])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(formWebuser: Form[(String, String,String,String,Option[String],Option[String],Option[String],Option[String],String,
+        Option[Seq[QuestionAndAnswers]])])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
-@import org.apache.commons.codec.digest.DigestUtils
+@@import org.apache.commons.codec.digest.DigestUtils
 
 @main("New profil") {
 <div class="row">
@@ -34,8 +35,16 @@
             @helper.textarea(formWebuser("qualifications"), 'cols -> 80, 'rows -> 3, 'placeholder -> "No experience")
             @helper.inputText(formWebuser("speakerQ1"))
             @helper.textarea(formWebuser("speakerA1"), 'cols -> 80, 'rows -> 3)
+            @helper.inputText(formWebuser("speakerQ2"))
+            @helper.textarea(formWebuser("speakerA2"), 'cols -> 80, 'rows -> 3)
+            @helper.inputText(formWebuser("speakerQ3"))
+            @helper.textarea(formWebuser("speakerA3"), 'cols -> 80, 'rows -> 3)
+            @helper.inputText(formWebuser("speakerQ4"))
+            @helper.textarea(formWebuser("speakerA4"), 'cols -> 80, 'rows -> 3)
+            @helper.inputText(formWebuser("speakerQ5"))
+            @helper.textarea(formWebuser("speakerA5"), 'cols -> 80, 'rows -> 3)
 
-            @if(formWebuser("email").value!=""){
+        @if(formWebuser("email").value!=""){
                 @if(formWebuser("avatarUrl").value.isEmpty){
                     <P>@Messages("avatarUrl.isEmpty") <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
                         Gravatar</a>

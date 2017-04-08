@@ -1,6 +1,6 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import play.api.templates.Html
+@@import play.api.templates.Html
 
 @views.html.Publisher.devoxxUK2017(speaker.cleanName,Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")){
 <section id="speaker">
@@ -67,6 +67,29 @@
         @Html(speaker.speakerA1AsHtml)
     }
 
+    @if(speaker.hasFieldsBeenFilledIn(speaker.speakerQ2AsHtml, speaker.speakerA2AsHtml)) {
+        <br>
+        <h5>@Html(speaker.speakerQ2AsHtml)</h5>
+        @Html(speaker.speakerA2AsHtml)
+    }
+
+    @if(speaker.hasFieldsBeenFilledIn(speaker.speakerQ3AsHtml, speaker.speakerA3AsHtml)) {
+        <br>
+        <h5>@Html(speaker.speakerQ3AsHtml)</h5>
+        @Html(speaker.speakerA3AsHtml)
+    }
+
+    @if(speaker.hasFieldsBeenFilledIn(speaker.speakerQ4AsHtml, speaker.speakerA4AsHtml)) {
+        <br>
+        <h5>@Html(speaker.speakerQ4AsHtml)</h5>
+        @Html(speaker.speakerA4AsHtml)
+    }
+
+    @if(speaker.hasFieldsBeenFilledIn(speaker.speakerQ5AsHtml, speaker.speakerA5AsHtml)) {
+        <br>
+        <h5>@Html(speaker.speakerQ5AsHtml)</h5>
+        @Html(speaker.speakerA5AsHtml)
+    }
 } else {
     <!-- no need to display anything -->
 }

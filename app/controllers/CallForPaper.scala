@@ -24,7 +24,7 @@
 package controllers
 
 import library.search.ElasticSearch
-import library.{NotifyProposalSubmitted, SendMessageToCommittee, ZapActor}
+import library.{SendMessageToCommittee, ZapActor}
 import models._
 import org.apache.commons.lang3.StringUtils
 import play.api.cache.Cache
@@ -84,12 +84,13 @@ object CallForPaper extends SecureCFPController {
   def newSpeakerForExistingWebuser = SecuredAction {
     implicit request =>
       val w = request.webuser
-      val defaultValues = (w.email, w.firstName, w.lastName, StringUtils.abbreviate("...", 750), None, None, None, None, "No experience", None, None)
+      val defaultValues = (w.email, w.firstName, w.lastName, StringUtils.abbreviate("...", 750), None, None, None, None, "No experience",
+        QuestionAndAnswers.empty)
       Ok(views.html.Authentication.confirmImport(Authentication.importSpeakerForm.fill(defaultValues)))
   }
 
   val speakerForm = play.api.data.Form(mapping(
-    "uuid" -> ignored("xxx"),
+    "uuid" -> optional(ignored("xxx")),
     "email" -> (email verifying nonEmpty),
     "lastName" -> nonEmptyText(maxLength = 25),
     "bio" -> nonEmptyText(maxLength = 750),
@@ -99,10 +100,15 @@ object CallForPaper extends SecureCFPController {
     "company" -> optional(text),
     "blog" -> optional(text),
     "firstName" -> nonEmptyText(maxLength = 25),
+    "acceptTermsConditions" -> boolean,
     "qualifications" -> nonEmptyText(maxLength = 750),
-    "speakerQ1" -> optional(text),
-    "speakerA1" -> optional(text)
-  )(Speaker.createSpeaker)(Speaker.unapplyForm))
+    "questionAndAnswers" -> optional(seq(
+      mapping(
+        "question" -> optional(text),
+        "answer" -> optional(text)
+      )(QuestionAndAnswers.apply)(QuestionAndAnswers.unapply))
+    )
+  )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
   def editProfile = SecuredAction {
     implicit request =>
