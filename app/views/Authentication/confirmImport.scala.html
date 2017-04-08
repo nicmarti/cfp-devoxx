@@ -33,6 +33,9 @@
             @helper.inputText(formWebuser("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
             @helper.textarea(formWebuser("qualifications"), 'cols -> 80, 'rows -> 3, 'placeholder -> "No experience")
+
+            <hr/>
+            <br/><b>Speaker Q&amp;A</b>
             @helper.inputText(formWebuser("speakerQ1"))
             @helper.textarea(formWebuser("speakerA1"), 'cols -> 80, 'rows -> 3)
             @helper.inputText(formWebuser("speakerQ2"))
@@ -43,6 +46,7 @@
             @helper.textarea(formWebuser("speakerA4"), 'cols -> 80, 'rows -> 3)
             @helper.inputText(formWebuser("speakerQ5"))
             @helper.textarea(formWebuser("speakerA5"), 'cols -> 80, 'rows -> 3)
+            <hr/>
 
         @if(formWebuser("email").value!=""){
                 @if(formWebuser("avatarUrl").value.isEmpty){
