@@ -114,16 +114,8 @@ speakerQ4=Question 4
 speakerA4=Answer
 speakerQ5=Question 4
 speakerA5=Answer
-speakerQ1_2=Question 1
-speakerA1_2=Answer
-speakerQ2_2=Question 2
-speakerA2_2=Answer
-speakerQ3_2=Question 3
-speakerA3_2=Answer
-speakerQ4_2=Question 4
-speakerA4_2=Answer
-speakerQ5_2=Question 5
-speakerA5_2=Answer
+question=Question
+answer=Answer
 talkType=Type of talk
 talkType.help=Each type of talk is described on the <a href="{0}#confType" target="new">Info</a>.
 

@@ -46,7 +46,7 @@ object CFPAdmin extends SecureCFPController {
     "firstName" -> text,
     "acceptTermsConditions" -> boolean,
     "qualifications2" -> nonEmptyText(maxLength = 750),
-    "questionAndAnswers" -> optional(seq(
+    "questionAndAnswers2" -> optional(seq(
       mapping(
         "question" -> optional(text),
         "answer" -> optional(text)

@@ -1,4 +1,7 @@
 @(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@import play.api.templates.Html
+
 @main("Create a new speaker") {
 
 <style>
@@ -61,40 +64,16 @@
 
             <div class="prettyprint">
                 <h4><b>@Messages("speakerQandA")</b></h4>
-                @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
-                    @helper.inputText(speakerForm("speakerQ1_2"), 'size -> 70)
-                } else {
-                    @helper.inputText(speakerForm("speakerQ1_2"), 'size -> 70, 'disabled -> true)
-                }
-                @helper.textarea(speakerForm("speakerA1_2"), 'cols -> 70, 'rows -> 3)
 
-                @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
-                    @helper.inputText(speakerForm("speakerQ2_2"), 'size -> 70)
-                } else {
-                    @helper.inputText(speakerForm("speakerQ2_2"), 'size -> 70, 'disabled -> true)
-                }
-                @helper.textarea(speakerForm("speakerA2_2"), 'cols -> 70, 'rows -> 3)
-
-                @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
-                    @helper.inputText(speakerForm("speakerQ3_2"), 'size -> 70)
-                } else {
-                    @helper.inputText(speakerForm("speakerQ3_2"), 'size -> 70, 'disabled -> true)
-                }
-                @helper.textarea(speakerForm("speakerA3_2"), 'cols -> 70, 'rows -> 3)
-
-                @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
-                    @helper.inputText(speakerForm("speakerQ4_2"), 'size -> 70)
-                } else {
-                    @helper.inputText(speakerForm("speakerQ4_2"), 'size -> 70, 'disabled -> true)
-                }
-                @helper.textarea(speakerForm("speakerA4_2"), 'cols -> 70, 'rows -> 3)
-
-                @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
-                    @helper.inputText(speakerForm("speakerQ5_2"), 'size -> 70)
-                } else {
-                    @helper.inputText(speakerForm("speakerQ5_2"), 'size -> 70, 'disabled -> true)
-                }
-                @helper.textarea(speakerForm("speakerA5_2"), 'cols -> 70, 'rows -> 3)
+                    @helper.repeat(speakerForm("questionAndAnswers2"), min = 5) { questionAndAnswer =>
+                        @Html("<hr color=#000000 />")
+                        @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")) {
+                            @helper.inputText(questionAndAnswer, '_label -> "Question", 'size -> 70)
+                        } else {
+                            @helper.inputText(questionAndAnswer, '_label -> "Question", 'size -> 70, 'disabled -> true)
+                        }
+                        @helper.textarea(questionAndAnswer, '_label -> "Answer", 'cols -> 70, 'rows -> 5)
+                    }
             </div>
 
             @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "en")
@@ -108,7 +87,7 @@
                     Styling with Markdown is supported in the above input and text areas (click for a quick cheatsheet)
                 </a>
             </div>
-        }
+    }
     </div>
 </div>
 
