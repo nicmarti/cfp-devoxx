@@ -57,7 +57,8 @@
                 <h4><b>@Messages("speakerQandA")</b></h4>
                 @helper.repeat(speakerForm("questionAndAnswers"), min = 5) { questionAndAnswer =>
                     @Html("<hr color=#000000/>")
-                    @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")) {
+                    @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin") ||
+                        Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "cfp")) {
                         @helper.inputText(questionAndAnswer("question"), 'label -> "Question", 'size -> 70)
                     } else {
                         @helper.inputText(questionAndAnswer("question"), 'label -> "Question", 'size -> 70, 'disabled -> true)
