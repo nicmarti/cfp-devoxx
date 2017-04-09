@@ -1,4 +1,7 @@
 @(speakerForm: Form[Speaker], readOnlyUUID:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@import play.api.templates.Html
+
 @main("Edit your profile") {
 
 <style>
@@ -8,6 +11,14 @@
         margin-left: 10px;
         font-size: 14px;
         color: #586069;
+    }
+
+    .prettyprint {
+        display: block;
+        color: #393318;
+        background: rgba(255, 138, 0, 0.33);
+        padding: 1%;
+        width: 60%;
     }
 </style>
 
@@ -42,13 +53,20 @@
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
             @helper.textarea(speakerForm("qualifications"), 'cols -> 70, 'rows -> 5)
 
-            @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
-                @helper.inputText(speakerForm("speakerQ1"), 'size -> 70)
-            } else {
-                @helper.inputText(speakerForm("speakerQ1"), 'size -> 70, 'disabled -> true)
-            }
+            <div class="prettyprint">
+                <h4><b>@Messages("speakerQandA")</b></h4>
+                @helper.repeat(speakerForm("questionAndAnswers"), min = 5) { questionAndAnswer =>
+                    @Html("<hr color=#000000/>")
+                    @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")) {
+                        @helper.inputText(questionAndAnswer("question"), 'label -> "Question", 'size -> 70)
+                    } else {
+                        @helper.inputText(questionAndAnswer("question"), 'label -> "Question", 'size -> 70, 'disabled -> true)
+                    }
+                    @helper.textarea(questionAndAnswer("answer"), 'label -> "Answer", 'cols -> 70, 'rows -> 5)
+                }
+            </div>
 
-            @helper.textarea(speakerForm("speakerA1"), 'cols -> 70, 'rows -> 5)
+            @helper.inputText(speakerForm("lang"), 'size->20, 'placeholder -> "en")
 
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
 

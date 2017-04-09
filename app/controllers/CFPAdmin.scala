@@ -3,8 +3,8 @@ package controllers
 import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 
 import library.search.ElasticSearch
-import library.{SendMessageInternal, SendMessageToSpeaker, _}
-import models.Review.{mostReviewed, _}
+import library.{ComputeLeaderboard, ComputeVotesAndScore, SendMessageInternal, SendMessageToSpeaker, _}
+import models.Review._
 import models._
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
@@ -14,7 +14,7 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, Cookie}
+import play.api.mvc.Cookie
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -46,8 +46,12 @@ object CFPAdmin extends SecureCFPController {
     "firstName" -> text,
     "acceptTermsConditions" -> boolean,
     "qualifications2" -> nonEmptyText(maxLength = 750),
-    "speakerQ1_2" -> optional(text),
-    "speakerA1_2" -> optional(text)
+    "questionAndAnswers2" -> optional(seq(
+      mapping(
+        "question" -> optional(text),
+        "answer" -> optional(text)
+      )(QuestionAndAnswer.apply)(QuestionAndAnswer.unapply))
+    )
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
   def index(page: Int,
@@ -63,7 +67,7 @@ object CFPAdmin extends SecureCFPController {
 
       // Get a default track to filter on and save it in cookie
       var trackValue : String = Track.allIDs.take(1).last
-      val trackCookie = request.cookies.get("track")
+      val trackCookie = request.cookies.  get("track")
 
       if (track.isDefined) {
         trackValue = track.get

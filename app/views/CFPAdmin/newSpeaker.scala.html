@@ -1,4 +1,7 @@
 @(speakerForm: Form[Speaker])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+
+@import play.api.templates.Html
+
 @main("Create a new speaker") {
 
 <style>
@@ -8,6 +11,14 @@
         margin-left: 10px;
         font-size: 14px;
         color: #586069;
+    }
+
+    .prettyprint {
+        display: block;
+        color: #393318;
+        background: rgba(255, 138, 0, 0.33);
+        padding: 1%;
+        width: 60%;
     }
 </style>
 
@@ -51,14 +62,20 @@
             @helper.inputText(speakerForm("twitter2"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog2"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
 
-            @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")){
-                @helper.inputText(speakerForm("speakerQ1_2"), 'size -> 70)
-            } else {
-                @helper.inputText(speakerForm("speakerQ1_2"), 'size -> 70, 'disabled -> true)
-            }
+            <div class="prettyprint">
+                <h4><b>@Messages("speakerQandA")</b></h4>
 
-            @helper.textarea(speakerForm("speakerA1_2"), 'cols -> 70, 'rows -> 3)
-            
+                    @helper.repeat(speakerForm("questionAndAnswers2"), min = 5) { questionAndAnswer =>
+                        @Html("<hr color=#000000 />")
+                        @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin")) {
+                            @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70)
+                        } else {
+                            @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70, 'disabled -> true)
+                        }
+                        @helper.textarea(questionAndAnswer("answer"), '_label -> "Answer", 'cols -> 70, 'rows -> 5)
+                    }
+            </div>
+
             @helper.inputText(speakerForm("lang2"), 'size->20, 'placeholder -> "en")
             @helper.checkbox(speakerForm("acceptTermsConditions"))
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
@@ -70,7 +87,7 @@
                     Styling with Markdown is supported in the above input and text areas (click for a quick cheatsheet)
                 </a>
             </div>
-        }
+    }
     </div>
 </div>
 

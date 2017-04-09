@@ -1,6 +1,6 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@import play.api.templates.Html
+@@import play.api.templates.Html
 
 @views.html.Publisher.devoxxUK2017(speaker.cleanName,Some(s"${speaker.cleanName} at ${Messages("CONF.title")}")){
 <section id="speaker">
@@ -58,13 +58,11 @@
     }
 }
 
-@if(speaker.speakerA1AsHtml.trim().isEmpty) {
-        <!-- no need to display anything -->
-} else {
+@if(speaker.questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion) {
     <h4 class="speakerTitle"><a href="">@Html(Messages("speakerQandA"))</a></h4>
-    <br>
-    <h5>@Html(speaker.speakerQ1AsText)</h5>
-    @Html(speaker.speakerA1AsHtml)
+
+    @Html(speaker.questionAndAnswersAsHtml)
 }
+
 </section>
 }
