@@ -15,10 +15,10 @@ case class QuestionAndAnswer(question: Option[String], answer: Option[String]) {
       )
     )
 
-    def writes(questionAndAnswers: QuestionAndAnswer): JsValue = JsObject(
+    def writes(questionAndAnswer: QuestionAndAnswer): JsValue = JsObject(
       Seq(
-        "question" -> questionAndAnswers.question.map(JsString).getOrElse(JsNull),
-        "answer" -> questionAndAnswers.answer.map(JsString).getOrElse(JsNull)
+        "question" -> questionAndAnswer.question.map(JsString).getOrElse(JsNull),
+        "answer" -> questionAndAnswer.answer.map(JsString).getOrElse(JsNull)
       )
     )
   }
@@ -39,10 +39,12 @@ case class QuestionAndAnswer(question: Option[String], answer: Option[String]) {
 }
 
 object QuestionAndAnswer {
+  implicit val questionAndAnswerFormat = Json.format[QuestionAndAnswer]
+}
+
+object QuestionAndAnswers {
   def empty: Option[Seq[QuestionAndAnswer]] = {
     val questionAndAnswers = List(new QuestionAndAnswer(None, None))
     Option.apply(questionAndAnswers)
   }
-  
-  implicit val questionAndAnswerFormat = Json.format[QuestionAndAnswer]
 }

@@ -350,7 +350,7 @@ object Authentication extends Controller {
             Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", None, None,
               Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None,
               webuser.firstName, "No experience",
-              QuestionAndAnswer.empty))
+              QuestionAndAnswers.empty))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -525,7 +525,7 @@ object Authentication extends Controller {
                   }.getOrElse {
                     val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"),
                       None, None, None, photo, "No experience",
-                      QuestionAndAnswer.empty)
+                      QuestionAndAnswers.empty)
                     Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                   }
 
