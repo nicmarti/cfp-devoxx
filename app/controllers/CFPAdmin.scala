@@ -478,14 +478,27 @@ object CFPAdmin extends SecureCFPController {
         .filter(_._2.size == 1)
         .flatMap { uuid => uuid._2}
 
-
       val uniqueSpeakersSortedByName = speakersSortedByUUID.toList
         .sortBy(_.cleanName)
         .groupBy(_.cleanName)
         .filter(_._2.size != 1)
         .flatMap { name => name._2}
 
-      Ok(views.html.CFPAdmin.duplicateSpeakers(uniqueSpeakersSortedByName.toList))
+      val speakersSortedByEmail = allSpeakers.toList
+        .sortBy(_.email)
+        .groupBy(_.email)
+        .filter(_._2.size != 1)
+        .flatMap { email => email._2}
+
+      val uniqueSpeakersSortedByEmail = speakersSortedByEmail.toList
+        .sortBy(_.email)
+        .groupBy(_.email)
+        .filter(_._2.size != 1)
+        .flatMap { email => email._2}
+
+      val combinedList = uniqueSpeakersSortedByName.toList ++ uniqueSpeakersSortedByEmail.toList
+
+      Ok(views.html.CFPAdmin.duplicateSpeakers(combinedList))
   }
 
   def allDevoxxians() = SecuredAction(IsMemberOf("admin")) {
