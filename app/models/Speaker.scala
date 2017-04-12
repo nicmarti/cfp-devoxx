@@ -103,38 +103,32 @@ case class Speaker(uuid: String
     processedMarkdownTest
   }
 
-  lazy val questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion: Boolean = {
-    var atLeastOneOfThemIsFilledIn = false
+  lazy val filteredListOfQuestionsAndAnswers = getFilteredListOfAnsweredQuestionsAndAnswers
 
-    if (questionAndAnswers.isDefined) {
-      questionAndAnswers.get.toList.foreach {
-        questionAndAnswer =>
-          atLeastOneOfThemIsFilledIn = atLeastOneOfThemIsFilledIn ||
-            hasFieldsBeenFilledIn(questionAndAnswer)
-      }
-    }
-    atLeastOneOfThemIsFilledIn
+  lazy val questionsArePresentAndSpeakerHasAnsweredAtLeastOneQuestion = filteredListOfQuestionsAndAnswers.size > 0
+
+  def getFilteredListOfAnsweredQuestionsAndAnswers: Seq[QuestionAndAnswer]  = {
+    val actualQuestionAndAnswers = questionAndAnswers.getOrElse(QuestionAndAnswers.empty.get)
+    actualQuestionAndAnswers.filter(
+        questionAndAnswer => {
+          val questionIsFilledIn = questionAndAnswer.question.getOrElse("").trim().nonEmpty
+          val answerIsFilledIn = questionAndAnswer.answer.getOrElse("").trim().nonEmpty
+
+          questionIsFilledIn && answerIsFilledIn
+        }
+      )
   }
 
   lazy val questionAndAnswersAsHtml: String = {
     var resultAsHtml = ""
-    questionAndAnswers.get.toList.foreach {
+    filteredListOfQuestionsAndAnswers.foreach {
       questionAndAnswer =>
-        if (hasFieldsBeenFilledIn(questionAndAnswer)) {
           resultAsHtml +=
             "<br/>" +
               s"<h5>${questionAndAnswer.questionAsHtml}</h5>" +
               s"${questionAndAnswer.answerAsHtml}"
-        }
     }
     resultAsHtml
-  }
-
-  def hasFieldsBeenFilledIn(questionAndAnswer: QuestionAndAnswer): Boolean = {
-    val questionIsFilledIn = ! questionAndAnswer.question.getOrElse("").trim().isEmpty
-    val answerIsFilledIn = ! questionAndAnswer.answer.getOrElse("").trim().isEmpty
-    
-    questionIsFilledIn && answerIsFilledIn
   }
 }
 

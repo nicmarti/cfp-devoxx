@@ -44,7 +44,6 @@ object QuestionAndAnswer {
 
 object QuestionAndAnswers {
   def empty: Option[Seq[QuestionAndAnswer]] = {
-    val questionAndAnswers = List(new QuestionAndAnswer(None, None))
-    Option.apply(questionAndAnswers)
+    Option.apply(Seq.empty)
   }
 }
