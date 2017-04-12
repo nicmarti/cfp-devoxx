@@ -119,8 +119,6 @@ object ConferenceDescriptor {
 
     val BOF = ProposalType(id = "bof", label = "bof.label")
 
-    val HACK = ProposalType(id = "hack", label = "hack.label")
-
     val OPENING_KEY = ProposalType(id = "opening_key", label = "opening.key.label")
 
     val CLOSING_KEY = ProposalType(id = "closing_key", label = "closing.key.label")
@@ -134,7 +132,6 @@ object ConferenceDescriptor {
       case "lab" => LAB
       case "quick" => QUICK
       case "bof" => BOF
-      case "hack" => HACK
       case "opening_key" => OPENING_KEY
       case "closing_key" => CLOSING_KEY
       case "ignite" => IGNITE
@@ -150,8 +147,6 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-group",
       chosablePreferredDay = false)
-    val HACK = ProposalConfiguration(id = "hack", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.HACK.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-group",
-      chosablePreferredDay = false)
     val OPENING_KEY = ProposalConfiguration(id = "opening_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = true)
     val CLOSING_KEY = ProposalConfiguration(id = "closing_key", slotsCount = 1, givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
@@ -159,7 +154,7 @@ object ConferenceDescriptor {
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
 
-    val ALL = List(CONF, LAB, QUICK, BOF, HACK, OPENING_KEY, CLOSING_KEY, IGNITE)
+    val ALL = List(CONF, LAB, QUICK, BOF, OPENING_KEY, CLOSING_KEY, IGNITE)
 
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
