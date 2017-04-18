@@ -29,15 +29,16 @@ import akka.actor._
 import controllers.LeaderboardController
 import models._
 import notifiers.Mails
-import org.apache.http.HttpHeaders
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.message.BasicNameValuePair
+import org.mortbay.jetty.HttpHeaders
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
+
 import scala.Predef._
 
 /**

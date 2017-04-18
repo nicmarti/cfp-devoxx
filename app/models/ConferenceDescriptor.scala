@@ -642,9 +642,9 @@ object ConferenceDescriptor {
   val MAXIMUM_SUMMARY_CHARACTERS = 1200
 
   def current() = ConferenceDescriptor(
-    eventCode = "DV16",
+    eventCode = "DV17",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxbe2016",
+    confUrlCode = "devoxxbe2017",
     frLangEnabled = false,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.co.uk"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
@@ -686,10 +686,10 @@ object ConferenceDescriptor {
     , MAXIMUM_SUMMARY_CHARACTERS // French developers tends to be a bit verbose... we need extra space :-)
   )
 
-  def conference2015() = ConferenceDescriptor(
-    eventCode = "DV15",
+  def conference2017() = ConferenceDescriptor(
+    eventCode = "DV17",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxbe2015",
+    confUrlCode = "devoxxuk2017",
     frLangEnabled = false,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.co.uk"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
