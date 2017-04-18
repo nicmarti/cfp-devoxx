@@ -173,10 +173,10 @@ cfp.program.date=from {0}
 video.title=Videos
 video.tag=Review Devoxx UK 2016''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx United-Kingdom 2017:
+theme.track=List of tracks for Devoxx Belgium 2016:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx UK 2017, 11th-12th May
+appel.conf.dates=Devoxx Belgium 2016, 7th-11th November
 
 # Tracks
 
@@ -526,11 +526,11 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 8th May 2017
-sw.show.title.tue=Tuesday, 9th May 2017
-sw.show.title.wed=Wednesday, 10th May 2017
-sw.show.title.thu=Thursday, 11th May 2017
-sw.show.title.fri=Friday, 12th May 2017
+sw.show.title.mon=Monday, 7th November 2016
+sw.show.title.tue=Tuesday, 8th November 2016
+sw.show.title.wed=Wednesday, 9th November 2016
+sw.show.title.thu=Thursday, 10th November 2016
+sw.show.title.fri=Friday, 11th November 2016
 
 sw.horaires=Schedule
 sw.breakfast=Welcome and Breakfast
@@ -707,7 +707,7 @@ tag.proposal.title=Title
 tag.proposal.status=Status
 tag.proposal.type=Type
 tag.proposal.track=Track
-        
+
 speaker.mustAcceptTC=You must accept Terms and Conditions
 speaker.ar1=Please click
 speaker.ar2=here
