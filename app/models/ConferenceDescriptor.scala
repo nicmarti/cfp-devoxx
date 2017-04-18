@@ -746,10 +746,10 @@ object ConferenceDescriptor {
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
   def notifyProposalSubmitted = true
 
+  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
 
   def capgeminiUsername(): String = Play.current.configuration.getString("capgemini.username").getOrElse("")
   def capgeminiPassword(): String = Play.current.configuration.getString("capgemini.password").getOrElse("")
-
 }
