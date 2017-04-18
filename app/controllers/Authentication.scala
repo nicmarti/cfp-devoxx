@@ -189,6 +189,17 @@ object Authentication extends Controller {
     implicit request =>
       Ok(request.session.get("access_token").getOrElse("No access token in your current session"))
   }
+
+  // Needed for CapGemini recommendation project
+  def getUUID(email: String) = BasicAuthentication {
+    request =>
+        val uuid = Webuser.getUUIDfromEmail(email)
+        if (uuid.nonEmpty) {
+          Ok(uuid.get)
+        } else {
+          NotFound
+        }
+  }
   
   val importSpeakerForm = Form(tuple(
     "email" -> email,

@@ -16,6 +16,9 @@ GET           /login/github                                                     
 POST          /github/callback                                                  controllers.Authentication.callbackGithub(visitor:Boolean)
 GET           /github/callback                                                  controllers.Authentication.callbackGithub(visitor:Boolean)
 
+# Capgemini Feature
+GET           /uuid                                                             controllers.Authentication.getUUID(email:String)
+
 GET           /signup/linkedin                                                  controllers.Authentication.createFromLinkedin
 GET           /login/linkedin                                                   controllers.Authentication.linkedinLogin(visitor:Boolean ?=false)
 POST          /authenticate/linkedin                                            controllers.Authentication.callbackLinkedin

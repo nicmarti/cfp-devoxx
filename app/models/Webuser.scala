@@ -197,7 +197,7 @@ object Webuser {
   // The My Devoxx Gluon mobile app will use the following hard coded credentials to basic authenticate.
   def gluonUser(email: String, password: String): Boolean = {
     email.equals("gluon@devoxx.com") &&
-    password.equals("XYiDB;YncRe*QR#KT8FshBKgWqsyDuyq")
+    password.equals(ConferenceDescriptor.gluonPassword())
   }
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
