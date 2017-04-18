@@ -315,7 +315,7 @@ class ZapActor extends Actor {
     play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
 
     val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
-    post.addHeader("Authorization","Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj")
+    post.addHeader("Authorization", ConferenceDescriptor.gluonAuthorization())
 
     val urlParameters = new util.ArrayList[BasicNameValuePair]()
     urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
