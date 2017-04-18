@@ -181,6 +181,9 @@ POST          /admin/push/message                                               
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
 
+# Push notification message to "My Devoxx" mobile app
+POST          /admin/push/message                                               controllers.Backoffice.pushNotifications()
+
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)
 GET           /ar/refuse/:proposalId                                            controllers.ApproveOrRefuse.doRefuse(proposalId:String)

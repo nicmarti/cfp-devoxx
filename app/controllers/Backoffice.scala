@@ -443,16 +443,5 @@ object Backoffice extends SecureCFPController {
       }.getOrElse {
         BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
       }
-//
-//          val jsonValue = request.body.asJson.get.toString()
-//
-//      """
-//        |jsonValue
-//      """.stripMargin
-//      val parsed = Json.parse(jsonValue)
-//      val value = parsed.\("stringField").as[String]
-//
-//      Ok(value)
   }
-
 }

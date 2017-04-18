@@ -180,9 +180,6 @@ appel.conf.dates=Devoxx Belgium 2016, 7th-11th November
 
 # Tracks
 
-method_archi.label=Methodology &amp; Culture
-track.method_archi.desc=Software development methodologies, architectures, encryption & best practices to develop secure software
-
 java.label=Java Language
 javase.label=Java Language
 track.java.desc=Java Language, Java SE, JDK, performance tuning, modularity, and more.
