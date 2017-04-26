@@ -172,11 +172,42 @@ object Favorites extends UserCFPController {
   }
 
   /**
+    * Return all the favorites (talk ID and #favs counter).
+    *
+    * @return All favs JSON
+    */
+  def allFavorites() = BasicAuthentication {
+    request =>
+      val allFavorites = FavoriteTalk.all().toList.sortBy(_._2).reverse
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val toReturn = allFavorites.map {
+        entry =>
+          Json.toJson {
+            Map("id" -> Json.toJson(entry._1.id), "favs" -> Json.toJson(entry._2))
+          }
+      }
+
+      val jsonObject = Json.toJson(
+        Map(
+          "favorites" -> Json.toJson(toReturn)
+        )
+      )
+
+      val eTag = toReturn.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == eTag => NotModified
+        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
+      }
+  }
+
+  /**
     * Return list of proposals that have been favored by user.
     *
     * @param uuid the user identifier
     */
-  def favoredProposals(uuid: String)  = BasicAuthentication {
+  def favoredProposals(uuid: String) = BasicAuthentication {
     request =>
 
       val favoriteProposals = FavoriteTalk.allForUser(uuid)
