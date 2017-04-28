@@ -229,15 +229,16 @@ object ConferenceDescriptor {
     val ROOM_A = Room("room1", "Room A", 220, "theatre")
     val ROOM_B = Room("room2", "Room B", 32, "classroom")
     val ROOM_C = Room("room3", "Room C", 32, "classroom")
+    val ROOM_D = Room("room4", "Room D", 32, "classroom")
 
     val LAB_ROOM_A = Room("x_lab_room1", "Lab Room A", 32, "classroom")
     val LAB_ROOM_B = Room("y_lab_room2", "Lab Room B", 32, "classroom")
 
     val keynoteRoom = List(GALLERY_HALL)
 
-    val conferenceRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C)
+    val conferenceRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D)
 
-    val bofThu = List(AUDIT, ROOM_A, ROOM_B, ROOM_C, LAB_ROOM_A, LAB_ROOM_B)
+    val bofThu = List(AUDIT, ROOM_A, ROOM_C, LAB_ROOM_A, LAB_ROOM_B)
     val labsThu = List(LAB_ROOM_A, LAB_ROOM_B)
     val igniteThu = List(ROOM_B)
     val quickieThu = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C)
@@ -246,7 +247,7 @@ object ConferenceDescriptor {
     val quickieFri = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C)
     val labsFri = List(LAB_ROOM_A, LAB_ROOM_B)
 
-    val allRooms = List(GALLERY_HALL, ROOM_A, ROOM_B, ROOM_C, AUDIT, HALL_EXPO)
+   val allRooms = List(GALLERY_HALL, AUDIT, ROOM_A, ROOM_B, ROOM_C, ROOM_D, LAB_ROOM_A, LAB_ROOM_B, HALL_EXPO)
   }
 
   object ConferenceSlotBreaks {
