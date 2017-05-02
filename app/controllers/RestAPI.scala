@@ -309,6 +309,7 @@ object RestAPI extends Controller {
                   "summaryAsHtml" -> Json.toJson(proposal.summaryAsHtml),
                   "track" -> Json.toJson(Messages(proposal.track.label)),
                   "trackId" -> Json.toJson(proposal.track.id),
+                  "videoURL" -> Json.toJson(proposal.videoLink),    // Needed by Cap Gemini MyDevoxx Dashboard
                   "speakers" -> Json.toJson(allSpeakers.map {
                     speaker =>
                       Map(
