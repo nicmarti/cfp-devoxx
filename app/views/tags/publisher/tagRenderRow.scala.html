@@ -4,10 +4,19 @@
     
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated) {
-            @if(zeSlot.from.getHourOfDay < 11 && zeSlot.from.dayOfWeek().get() == 3) {
-                <td>Keynote overflow</td>
-            } else {
-                <td>TBA</td>
+            @{
+
+                if(zeSlot.from.getHourOfDay < 11 && zeSlot.from.dayOfWeek().get() == 3) {
+                    <td>Keynote overflow</td>
+                } else if( zeSlot.room.name.equals("Room B") &&
+                           zeSlot.day.equals("thursday") &&
+                           zeSlot.name.equals("bof") ) {
+                       // do nothing to the agenda,
+                       // check with Nicolas on how why this happens and
+                       // how to delete the (deleted) slot from the Redis database -->
+                } else {
+                    <td>TBA</td>
+                }
             }
         }
         @zeSlot.proposal.map { p: Proposal =>
