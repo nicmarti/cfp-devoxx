@@ -19,7 +19,8 @@
                                         <img class="media-object"
                                         src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=75"
                                         alt="@webuser.firstName @webuser.lastName"
-                                        title="This is you" />
+                                        title="This is you"
+                                        onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unknownSpeakerImage.png';"/>
                                     <div class="media-body">
                                         <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
                                             Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
@@ -31,7 +32,8 @@
                                         width="75"
                                         src="@speaker.avatarUrl.get"
                                         alt="@webuser.firstName @webuser.lastName"
-                                        title="This is you" />
+                                        title="This is you"
+                                        onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unknownSpeakerImage.png';"/>
                                 </div>
                             }
                             </td>
