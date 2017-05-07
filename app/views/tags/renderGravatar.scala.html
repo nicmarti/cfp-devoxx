@@ -6,7 +6,7 @@
             <div class="media">
                 <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(uuid)">
                     @if(showPhoto) {
-                        <img class="media-object" width="35" src="https://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+                        <img class="media-object" width="35" src="https://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName" onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unknownSpeakerImage.png';"/>
                     }
                     @if(showName) {
                         <div class="media-body"><small class="media-heading">@webuser.cleanName</small></div>
@@ -18,7 +18,7 @@
             <div class="media">
                 <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(uuid)">
                     @if(showPhoto) {
-                        <img class="media-object" width="35" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+                        <img class="media-object" width="35" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName" onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unknownSpeakerImage.png';"/>
                     }
                     @if(showName) {
                         <div class="media-body"><small class="media-heading">@webuser.cleanName</small></div>

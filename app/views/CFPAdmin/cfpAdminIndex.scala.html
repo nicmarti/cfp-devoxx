@@ -103,7 +103,7 @@
                             </tbody>
                         </table>
                     } else {
-                        <h4>@Messages("admin.cfp.empty", track.get)</h4>
+                        <h4>@Html(Messages("admin.cfp.empty", Messages(track.get+".label")))</h4>
                     }
             </div>
         </div>
