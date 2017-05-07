@@ -8,7 +8,7 @@
     <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
     <h1 class="entry-title">
          @speaker.avatarUrl.map{url=>
-            <img class="speakerRound"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
+            <img class="speakerRound" src="@url" alt="@speaker.cleanName" title="@speaker.cleanName" onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/anonymous.jpg';"><br>
         }
         @speaker.cleanTwitter.map{tw=>
         <a href="https://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">

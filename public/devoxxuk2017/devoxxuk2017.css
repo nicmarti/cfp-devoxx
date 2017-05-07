@@ -26946,6 +26946,11 @@ img.speakerRound {
     margin-top: 22px;
     overflow: hidden;
 }
+img.speakerRoundProposal {
+    max-width: 128px;
+    margin-right: 20px;
+    overflow: hidden;
+}
 .speakerBio{
     background: white;
 margin-bottom: 1.25rem;

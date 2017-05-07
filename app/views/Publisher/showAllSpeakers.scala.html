@@ -14,7 +14,7 @@
                 <div class="speakerCard">
                     <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="speakerURL">
                         @speaker.avatarUrl.map { url =>
-                            <img src="@url" class="speakerPhoto" alt="@speaker.cleanName" title="@speaker.cleanName">
+                            <img src="@url" class="speakerPhoto" alt="@speaker.cleanName" title="@speaker.cleanName" onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/anonymous.jpg';">
                         }
                         <br>
                         <span class="name">@speaker.cleanName</span></a><br>
