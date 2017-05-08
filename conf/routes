@@ -93,6 +93,9 @@ GET           /cfpadmin/proposals/byType/:confType                              
 GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
 GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
+GET           /cfpadmin/proposal/starred/:proposalId                            controllers.CFPAdmin.isProposalStarred(proposalId:String)
+POST          /cfpadmin/proposal/star/:proposalId                               controllers.CFPAdmin.starProposal(proposalId:String)
+GET           /cfpadmin/starProposals                                           controllers.CFPAdmin.allStarProposals()
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
