@@ -7,7 +7,7 @@ import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.{DateMidnight, DateTime, LocalTime}
 import play.api.Play.current
 import play.api.libs.concurrent._
-import play.api.mvc.RequestHeader
+import play.api.mvc.{Action, Handler, RequestHeader}
 import play.api.mvc.Results._
 import play.api.templates.HtmlFormat
 import play.api.{UnexpectedException, _}
@@ -19,6 +19,7 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 object Global extends GlobalSettings {
+
   override def onStart(app: Application) {
     Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
       case Some(true) if Play.isProd =>
@@ -70,6 +71,19 @@ object Global extends GlobalSettings {
     ZapActor.actor ! akka.actor.PoisonPill
     ElasticSearchActor.masterActor ! StopIndex
     super.onStop(app)
+  }
+
+  /**
+    * Force HTTPS redirect for GET requests when host is not localhost.
+    *
+    * @param req the request header
+    * @return https Moved Permanently
+    */
+  override def onRouteRequest(req: RequestHeader): Option[Handler] = {
+    (req.method, req.headers.get("X-Forwarded-Proto")) match {
+      case ("GET", Some(protocol)) if protocol != "https" => Some(Action{ MovedPermanently("https://"+req.host+req.uri)})
+      case (_, _) => super.onRouteRequest(req)
+    }
   }
 }
 

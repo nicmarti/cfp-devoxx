@@ -119,7 +119,7 @@ goldenTicket.active=${ACTIVATE_GOLDEN_TICKET}
 # Set to true if you have HTTPS enabled
 cfp.activateHTTPS=${ACTIVATE_HTTPS}
 
-# For SSL suppoer
+# For SSL support
 trustxforwarded=true
 
 # ACtivate or not the "Favorites / MySchedule" system on the CFP
