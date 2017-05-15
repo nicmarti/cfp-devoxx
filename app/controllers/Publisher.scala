@@ -66,8 +66,7 @@ object Publisher extends Controller {
           NotModified
 
         case other =>
-          val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
-          val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
+          val speakers = Speaker.loadSpeakersFromSpeakerIDs(allSpeakersIDs)
           Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
       }
   }
@@ -75,8 +74,8 @@ object Publisher extends Controller {
   def showSpeakerByName(name: String) = Action {
     implicit request =>
       import play.api.Play.current
-      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakersWithAcceptedTerms", 600) {
-        Speaker.allSpeakersWithAcceptedTerms()
+      val speakers = Cache.getOrElse[List[Speaker]]("allSpeakers", 600) {
+        Speaker.allSpeakers()
       }
       val speakerNameAndUUID = Cache.getOrElse[Map[String, String]]("allSpeakersName", 600) {
         speakers.map {

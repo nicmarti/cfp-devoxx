@@ -218,8 +218,10 @@ object Backoffice extends SecureCFPController {
       val accepted = publishedConf.filter(_.proposal.get.state == ProposalState.ACCEPTED)
 
       val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-      val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
-      val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatNeedsToAcceptTerms)
+
+      // val onlySpeakersThatNeedsToAcceptTerms: Set[String] = allSpeakersIDs.filter(uuid => Speaker.needsToAccept(uuid))
+
+      val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(allSpeakersIDs)
 
       // Speaker declined talk AFTER it has been published
       val acceptedThenChangedToOtherState = accepted.filter {

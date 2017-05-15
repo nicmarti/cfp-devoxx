@@ -136,33 +136,50 @@ object Speaker {
 
   implicit val speakerFormat = Json.format[Speaker]
 
-  def createSpeaker(webuserUUID: String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
-                    avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String, qualifications: String,
+  def createSpeaker(webuserUUID: String,
+                    email: String,
+                    name: String,
+                    bio: String,
+                    lang: Option[String],
+                    twitter: Option[String],
+                    avatarUrl: Option[String],
+                    company: Option[String],
+                    blog: Option[String],
+                    firstName: String,
+                    qualifications: String,
                     questionAndAnswers: Option[Seq[QuestionAndAnswer]]): Speaker = {
-    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog,
-      Some(firstName), Option(qualifications), questionAndAnswers)
+    Speaker(webuserUUID,
+      email.trim().toLowerCase,
+      Option(name),
+      bio,
+      lang,
+      twitter,
+      avatarUrl,
+      company,
+      blog,
+      Some(firstName),
+      Option(qualifications),
+      questionAndAnswers)
   }
 
-  def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String],
-                          twitter: Option[String], avatarUrl: Option[String], company: Option[String],
-                          blog: Option[String], firstName: String, acceptTerms: Boolean, qualifications: String,
+  def createOrEditSpeaker(uuid: Option[String],
+                          email: String,
+                          name: String,
+                          bio: String,
+                          lang: Option[String],
+                          twitter: Option[String],
+                          avatarUrl: Option[String],
+                          company: Option[String],
+                          blog: Option[String],
+                          firstName: String,
+                          qualifications: String,
                           questionAndAnswers: Option[Seq[QuestionAndAnswer]]): Speaker   = {
     uuid match {
       case None =>
         val newUUID = Webuser.generateUUID(email)
-        if (acceptTerms) {
-          doAcceptTerms(newUUID)
-        } else {
-          refuseTerms(newUUID)
-        }
         Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog,
           Option(firstName), Option(qualifications), questionAndAnswers)
       case Some(validUuid) =>
-        if (acceptTerms) {
-          doAcceptTerms(validUuid)
-        } else {
-          refuseTerms(validUuid)
-        }
         Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog,
           Option(firstName), Option(qualifications), questionAndAnswers)
     }
@@ -175,9 +192,9 @@ object Speaker {
   }
 
   def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String],
-    Option[String], Option[String], Option[String], String, Boolean, String, Option[Seq[QuestionAndAnswer]])] = {
+    Option[String], Option[String], Option[String], String, String, Option[Seq[QuestionAndAnswer]])] = {
     Some(Option(s.uuid), s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog,
-      s.firstName.getOrElse(""), !needsToAccept(s.uuid), s.qualifications.getOrElse("No experience"), s.questionAndAnswers)
+      s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.questionAndAnswers)
   }
 
   def save(speaker: Speaker) = Redis.pool.withClient {
@@ -250,63 +267,10 @@ object Speaker {
       client.hlen("Speaker")
   }
 
-  def needsToAccept(speakerId: String) = Redis.pool.withClient {
-    client =>
-      !client.hexists("TermsAndConditions", speakerId)
-  }
-
-  def doAcceptTerms(speakerId: String) = Redis.pool.withClient {
-    client =>
-      client.hset("TermsAndConditions", speakerId, new Instant().getMillis.toString)
-  }
-
-  def refuseTerms(speakerId: String) = Redis.pool.withClient {
-    client =>
-      client.hdel("TermsAndConditions", speakerId)
-  }
-
-  def getAcceptedDate(speakerId: String): Option[DateTime] = Redis.pool.withClient {
-    client =>
-      client.hget("TermsAndConditions", speakerId).map {
-        dateStr: String =>
-          new org.joda.time.Instant(dateStr).toDateTime
-      }
-  }
-
-  def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
-    client =>
-
-      val termKeys = Benchmark.measure(() =>
-        client.hkeys("TermsAndConditions")
-        , "termKeys")
-
-      val speakerIDs = Benchmark.measure(() =>
-        termKeys.filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
-        , "speakerIDs")
-
-      val allSpeakers = Benchmark.measure(() =>
-        client.hmget("Speaker", speakerIDs).flatMap {
-          json: String =>
-            Json.parse(json).validate[Speaker].fold(invalid => {
-              play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
-              None
-            }, validSpeaker => Some(validSpeaker))
-        }, "allSpeakers")
-      allSpeakers
-  }
-
-  def allThatDidNotAcceptedTerms(): Set[String] = Redis.pool.withClient {
-    client =>
-      val allSpeakerIDs = client.keys("ApprovedSpeakers:*").map(s => s.substring("ApprovedSpeakers:".length))
-      val allThatAcceptedConditions = client.hkeys("TermsAndConditions")
-      allSpeakerIDs.diff(allThatAcceptedConditions)
-  }
-
   def allSpeakersFromPublishedSlots: List[Speaker] = {
     val publishedConf = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
     val allSpeakersIDs = publishedConf.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-    val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
-    val speakers: List[Speaker] = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
+    val speakers: List[Speaker] = loadSpeakersFromSpeakerIDs(allSpeakersIDs)
     speakers.sortBy(_.name.getOrElse(""))
   }
 }

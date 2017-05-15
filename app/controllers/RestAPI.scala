@@ -193,8 +193,7 @@ object RestAPI extends Controller {
           NotModified
 
         case other =>
-          val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => needsToAccept(uuid))
-          val speakers = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
+          val speakers = loadSpeakersFromSpeakerIDs(allSpeakersIDs)
 
           val updatedSpeakers = speakers.sortBy(_.name).map {
             speaker: Speaker =>

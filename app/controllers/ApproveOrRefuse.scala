@@ -125,11 +125,7 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def showAcceptTerms() = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      if (Speaker.needsToAccept(request.webuser.uuid)) {
-        Ok(views.html.ApproveOrRefuse.showAcceptTerms(formApprove))
-      } else {
-        Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success" -> Messages("acceptedTerms.msg"))
-      }
+    Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success" -> Messages("acceptedTerms.msg"))
   }
 
   def acceptTermsAndConditions() = SecuredAction {
@@ -137,7 +133,6 @@ object ApproveOrRefuse extends SecureCFPController {
       formApprove.bindFromRequest().fold(
         hasErrors => BadRequest(views.html.ApproveOrRefuse.showAcceptTerms(hasErrors)),
         successForm => {
-          Speaker.doAcceptTerms(request.webuser.uuid)
           Event.storeEvent(Event("speaker", request.webuser.uuid, "has accepted Terms and conditions"))
           Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks())
         }
@@ -146,7 +141,7 @@ object ApproveOrRefuse extends SecureCFPController {
 
   def declineTermsAndConditions() = SecuredAction {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Speaker.refuseTerms(request.webuser.uuid)
+      // Speaker.refuseTerms(request.webuser.uuid)
       Event.storeEvent(Event("speaker", request.webuser.uuid, "has REFUSED Terms and conditions"))
       Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("refused.termsConditions"))
   }

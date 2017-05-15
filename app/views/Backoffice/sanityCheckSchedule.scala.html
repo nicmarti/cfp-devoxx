@@ -49,17 +49,7 @@
                                 @defining(Proposal.findProposalState(slot.proposal.get.id).get){currentState:ProposalState=>
                                     <p>Proposal state on the published Agenda: <span class="alert alert-danger">@Messages(slot.proposal.get.state.code)</span></p>
                                     <p>Current state on Redis: @Messages(currentState.code)</p>
-
-                                    @if(currentState.code=="accepted"){
-                                        <div class="alert">
-                                        <a href="@routes.Backoffice.fixToAccepted(slot.id, slot.proposal.get.id, slot.proposal.get.talkType.id)" class="btn btn-small btn-success"><i class="icon-info-sign"></i> Set the status to 'accepted'</a>
-                                        <br>
-                                        @slot.proposal.get.allSpeakers.filter(s=>Speaker.needsToAccept(s.uuid)).map{s:Speaker=>
-                                            @s.cleanName needs to accept "Terms&Conditions" : <a href="@routes.CFPAdmin.newOrEditSpeaker(Some(s.uuid))">Edit speaker and accept T&C</a>
-                                        }
-                                        </div>
-                                    }
-
+                                        
                                     @if(currentState.code=="declined"){
                                         <div class="alert alert-danger">
                                             <i class="icon-warning-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
@@ -125,19 +115,6 @@
                         <p>Ok ! perfect, no invalid talks.</p>
                     </div>
 
-                }
-                @if(speakers.nonEmpty){
-                    <h3>Speakers that have not yet accepted Terms&Conditions</h3>
-                    <p>Speaker's bio is not displayed on web site. Speaker is not listed on REST API and SQL export.</p>
-                    <strong>@speakers.length speaker(s)</strong><br>
-                    @speakers.sortBy(_.cleanName).map{speaker:Speaker=>
-                        <a href="@routes.CFPAdmin.showSpeakerAndTalks(speaker.uuid)">@speaker.cleanName</a><br>
-                }
-                <a href="mailto:@speakers.map(s => s.email).mkString(",")">Open and write an email for all speakers</a>
-                }
-                @if(speakers.isEmpty){
-                    <h3>Speakers ok</h3>
-                    <p>All speakers accepted Terms&Conditions</p>
                 }
             </div>
         </div>
