@@ -80,9 +80,11 @@ object Global extends GlobalSettings {
     * @return https Moved Permanently
     */
   override def onRouteRequest(req: RequestHeader): Option[Handler] = {
-    (req.method, req.headers.get("X-Forwarded-Proto")) match {
-      case ("GET", Some(protocol)) if protocol != "https" => Some(Action{ MovedPermanently("https://"+req.host+req.uri)})
-      case (_, _) => super.onRouteRequest(req)
+    if (!req.host.contains("localhost") && req.method.equals("GET")) {
+      val url = "https://" + req.host + req.uri
+      Some(Action(MovedPermanently(url)))
+    } else {
+      super.onRouteRequest(req)
     }
   }
 }
