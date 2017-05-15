@@ -1,5 +1,5 @@
 Options +FollowSymLinks
 RewriteEngine On
 RewriteBase /
-RewriteCond %{HTTP_HOST} ^berlin\.voxxeddays\.com$ [NC]
-RewriteRule ^(.*)$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
