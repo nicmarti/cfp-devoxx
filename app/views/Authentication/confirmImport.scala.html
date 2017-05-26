@@ -37,20 +37,22 @@
         @helper.inputText(formWebuser("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
         @helper.textarea(formWebuser("qualifications"), 'cols -> 80, 'rows -> 3, 'placeholder -> "No experience")
 
-        <div class="prettyprint">
-            <h4><b>@Messages("speakerQandA")</b></h4>
+        @if(SecureCFPController.getCurrentUser(req).isDefined) {
+            <div class="prettyprint">
+                <h4><b>@Messages("speakerQandA")</b></h4>
 
-            @helper.repeat(formWebuser("questionAndAnswers2"), min = 5) { questionAndAnswer =>
-                @Html("<hr color=#000000 />")
-                @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin") ||
-                    Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "cfp")) {
-                    @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70)
-                } else {
-                    @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70, 'disabled -> true)
+                @helper.repeat(formWebuser("questionAndAnswers2"), min = 5) { questionAndAnswer =>
+                    @Html("<hr color=#000000 />")
+                    @if(Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "admin") ||
+                        Webuser.isMember(SecureCFPController.getCurrentUser(req).get.uuid, "cfp")) {
+                        @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70)
+                    } else {
+                        @helper.inputText(questionAndAnswer("question"), '_label -> "Question", 'size -> 70, 'disabled -> true)
+                    }
+                    @helper.textarea(questionAndAnswer("answer"), '_label -> "Answer", 'cols -> 70, 'rows -> 5)
                 }
-                @helper.textarea(questionAndAnswer("answer"), '_label -> "Answer", 'cols -> 70, 'rows -> 5)
-            }
-        </div>
+            </div>
+        }
 
         @if(formWebuser("email").value!=""){
                 @if(formWebuser("avatarUrl").value.isEmpty){
