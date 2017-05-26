@@ -1,0 +1,19 @@
+@(results:Map[String, String])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Star Proposals") {
+
+  <h1>Star Proposals (@results.size)</h1>
+
+  <ul>
+  <!-- TODO Work in progress -->
+  @results.map{case(proposalId, webUserId)=>
+  <li>
+    @Proposal.findById(proposalId).map( proposal => {
+      "\"" + proposal.title + "\"" + " by " +
+      Webuser.findByUUID(proposal.mainSpeaker).get.cleanName +
+      " (" + Messages(proposal.track.label) + "  track lead " + Webuser.findByUUID(webUserId).get.cleanName + ")"
+    })
+  </li>
+  }
+  </ul>
+}

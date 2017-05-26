@@ -1,5 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived:Int, ratings:Map[Proposal,List[Rating]], needsToAcceptTermAndCondition:Boolean)(implicit flash: Flash, lang: Lang, req:RequestHeader)
-
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived: Int, ratings: Map[Proposal, List[Rating]])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 @import org.apache.commons.lang3.StringUtils
 @import play.api.templates.Html
 
@@ -19,7 +18,8 @@
                                         <img class="media-object"
                                         src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=75"
                                         alt="@webuser.firstName @webuser.lastName"
-                                        title="This is you" />
+                                        title="This is you"
+                                        onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unknownSpeakerImage.png';"/>
                                     <div class="media-body">
                                         <small>@Html(Messages("profile.gravatar")) <a href="http://www.gravatar.com" target="_blank">
                                             Gravatar.com</a> @Html(Messages("profile.gravatar2")) @speaker.email. </small>
@@ -31,7 +31,8 @@
                                         width="75"
                                         src="@speaker.avatarUrl.get"
                                         alt="@webuser.firstName @webuser.lastName"
-                                        title="This is you" />
+                                        title="This is you"
+                                        onerror="this.src='https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unknownSpeakerImage.png';"/>
                                 </div>
                             }
                             </td>
@@ -49,7 +50,7 @@
                         </tr>
 
                         <tr>
-                            <td>@Html(Messages("url.photo"))</td>
+                            <td>@Messages("url.photo")</td>
                             <td>
                             @if(speaker.hasAvatar) {
                                 <i class="icon-ok alert-success"></i>
@@ -60,7 +61,7 @@
                         </tr>
 
                         <tr>
-                            <td>@Html(Messages("blog.website"))</td>
+                            <td>@Messages("blog.website")</td>
                             <td>
                             @if(speaker.hasBlog) {
                                 <i class="icon-ok alert-success"></i>
@@ -70,7 +71,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>@Html(Messages("company"))</td>
+                            <td>@Messages("company")</td>
                             <td>
                             @if(speaker.hasCompany) {
                                 <i class="icon-ok alert-success"></i>
@@ -81,7 +82,7 @@
                         </tr>
 
                         <tr>
-                            <td>@Html(Messages("twitter"))</td>
+                            <td>@Messages("twitter")</td>
                             <td>
                             @if(speaker.hasTwitter) {
                                 <i class="icon-ok alert-success"></i>
@@ -91,7 +92,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>@Html(Messages("qualifications.label"))</td>
+                            <td>@Messages("qualifications.label")</td>
                             <td>
                             @if(StringUtils.trimToEmpty(speaker.qualifications.getOrElse("")).isEmpty) {
                                 <i class="icon-exclamation-sign error"></i>
@@ -100,7 +101,6 @@
                             }
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
 
@@ -171,22 +171,17 @@
                  </div>
              }
             @if(flash.get("warning").isDefined) {
-                 <div class="alert alert-warning alert-dismissable">
-                 @flash.get("warning").get
-                 </div>
-             }
-             @if(flash.get("deleted").isDefined) {
-                 <div class="alert alert-warning">
-                 @Messages("talk.deleted")<br>
-                 @flash.get("deleted").map{proposalId:String=>
-                     <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
-                 }
-                 </div>
-             }
-            @if(needsToAcceptTermAndCondition){
                 <div class="alert alert-warning alert-dismissable">
-                    <strong>Warning :</strong> You have not yet accepted the Devoxx's Terms & Conditions.
-                    <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">Accept Terms & Conditions</a>
+                @flash.get("warning").get
+                </div>
+            }
+            @if(flash.get("deleted").isDefined) {
+                <div class="alert alert-warning">
+                    @Messages("talk.deleted") <br>
+                    @flash.get("deleted").map { proposalId: String =>
+                        <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
+                    }
+
                 </div>
             }
 

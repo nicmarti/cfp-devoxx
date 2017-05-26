@@ -44,7 +44,6 @@ object CFPAdmin extends SecureCFPController {
     "company2" -> optional(text),
     "blog2" -> optional(text),
     "firstName" -> text,
-    "acceptTermsConditions" -> boolean,
     "qualifications2" -> nonEmptyText(maxLength = 750),
     "questionAndAnswers2" -> optional(seq(
       mapping(
@@ -717,5 +716,29 @@ object CFPAdmin extends SecureCFPController {
         proposal: Proposal =>
           Ok(views.html.CFPAdmin.history(proposal))
       }.getOrElse(NotFound("Proposal not found"))
+  }
+
+  def isProposalStarred(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(StarProposal.isStarred(proposalId, request.webuser.uuid).toString)
+  }
+
+  def starProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      if (StarProposal.isStarred(proposalId, request.webuser.uuid)) {
+        StarProposal.unassign(proposalId, request.webuser.uuid)
+        Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' unstar'ed by ${request.webuser.cleanName}"))
+        Gone("unstar")
+      } else {
+        StarProposal.assign(proposalId, request.webuser.uuid)
+        Event.storeEvent(Event(request.webuser.uuid, proposalId, s"Proposal '${Proposal.findById(proposalId).get.title}' star'ed by ${request.webuser.cleanName}"))
+        Created("star")
+      }
+  }
+
+  def allStarProposals() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val starProposals = StarProposal.all().toSeq.sortBy(_._2).toMap
+      Ok(views.html.CFPAdmin.starProposals(starProposals))
   }
 }

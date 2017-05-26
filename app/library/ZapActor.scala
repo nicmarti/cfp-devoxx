@@ -33,10 +33,12 @@ import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.message.BasicNameValuePair
+import org.mortbay.jetty.HttpHeaders
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
+
 import scala.Predef._
 
 /**
@@ -315,7 +317,8 @@ class ZapActor extends Actor {
     play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
 
     val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
-    post.addHeader("Authorization", ConferenceDescriptor.gluonAuthorization())
+    post.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=utf-8")
+    post.addHeader(HttpHeaders.AUTHORIZATION, ConferenceDescriptor.gluonAuthorization())
 
     val urlParameters = new util.ArrayList[BasicNameValuePair]()
     urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))

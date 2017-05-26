@@ -26,7 +26,9 @@ object ApplicationBuild extends Build {
     , "commons-logging" % "commons-logging" % "1.2"
     , "commons-codec" % "commons-codec" % "1.9" // for new Base64 that has support for String
     , "com.typesafe.play" %% "play-cache" % "2.2.0"
-    ,"org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
+    , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
+    , "org.apache.httpcomponents" % "httpclient" % "4.1.1"
+    , "org.apache.httpcomponents" % "httpcore" % "4.1.1"
     , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
   )
 

@@ -18,8 +18,7 @@ object BasicAuthentication extends AuthenticatedBuilder(
 object AuthenticationHelpers {
 
   val validCredentials = Set(
-    Credentials(User(ConferenceDescriptor.gluonUsername()), Password(ConferenceDescriptor.gluonPassword())),
-    Credentials(User(ConferenceDescriptor.capgeminiUsername()), Password(ConferenceDescriptor.capgeminiPassword()))
+    Credentials(User(ConferenceDescriptor.gluonUsername()), Password(ConferenceDescriptor.gluonPassword()))
   )
 
   def authHeaderValue(credentials: Credentials): String =

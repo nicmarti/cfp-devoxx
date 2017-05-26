@@ -1,7 +1,7 @@
 @(speakerUUID:String)
 
 @if(models.Invitation.isInvited(speakerUUID)){
-    <a href="#" class="btn btn-sm btn-warning ajax-cancelInvitation" data-speaker="@speakerUUID">Invited</a>
+    <a href="#" class="btn btn-sm btn-warning ajax-cancelInvitation" data-speaker="@speakerUUID">Invited by @Webuser.getName(models.Invitation.invitedBy(speakerUUID).getOrElse("Unknown"))</a>
 }else{
     <a href="#" class="btn btn-sm btn-primary ajax-invite" data-speaker="@speakerUUID">Invite</a>
 }

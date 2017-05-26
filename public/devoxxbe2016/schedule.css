@@ -1,4 +1,15 @@
 
+th.scheduleHeader {
+    color: white;
+    font-size: 16px;
+}
+
+.scheduleHeaderDate {
+    font-size: 19px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
 .scheduleRow {
     background-color: #f5f5f5;
     border-color: #CED4BD;
@@ -12,9 +23,15 @@
 }
 
 .scheduleRight {
-    text-align: right;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    text-align: center;
+    font-size: 23px;
+    font-weight: bold;
+    width: 150px;
+}
+
+.scheduleContentRow {
+    background-color: black;
+    color: white;
 }
 
 .agendaTable {

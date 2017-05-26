@@ -1,0 +1,58 @@
+@(proposal:Proposal, currentUser:String)
+
+@if(TrackLeader.isTrackLeader(proposal.track.id, currentUser)) {
+    <div>
+        <script language="JavaScript">
+
+            // First, let's check the status of the proposal (star or unstar?)
+            checkProposalStarStatus('@proposal.id');
+
+            function checkProposalStarStatus(proposalId) {
+                $.ajax({
+                    type: "GET",
+                    url: "/cfpadmin/proposal/starred/" + proposalId,
+                    success: function (data) {
+                        if (data === "true") {
+                            setStar();
+                        } else {
+                            disableStar();
+                        }
+                    }
+                });
+            }
+
+            function handleStarClick(proposalId) {
+                $.ajax({
+                    type: "POST",
+                    url: "/cfpadmin/proposal/star/"+proposalId,
+                    success: function(data) {
+                        if (data==="star") {
+                            setStar();
+                        } else {
+                            disableStar();
+                        }
+                    }
+                });
+            }
+
+            function setStar() {
+                $("#star").attr("src", "https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/starProposal.png");
+                $("#msg").text("Click icon to remove this proposal from your star list.");
+            }
+
+            function disableStar() {
+                $("#star").attr("src", "https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unstarProposal.png");
+                $("#msg").text("As track lead you can star this proposal, adding to your track favorites.");
+            }
+
+        </script>
+        <div class="col-xs-1">
+              <img id="star" onclick="handleStarClick('@proposal.id');"
+                   class="starProposal"
+                   src="https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/unstarProposal.png">
+        </div>
+        <div class="col-xs-9" style="left: -50px; top: 2px;">
+            <h4 id="msg">Checking...</h4>
+        </div>
+    </div>
+}

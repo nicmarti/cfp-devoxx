@@ -55,7 +55,6 @@ object CallForPaper extends SecureCFPController {
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
           val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
-          val needsToAcceptTermAndCondition = Speaker.needsToAccept(uuid) && (hasAccepted || hasApproved)
 
           (hasApproved, hasAccepted) match {
             case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
@@ -67,7 +66,7 @@ object CallForPaper extends SecureCFPController {
               } else {
                 Map.empty[Proposal, List[Rating]]
               }
-              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
+              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings))
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
@@ -75,7 +74,7 @@ object CallForPaper extends SecureCFPController {
         } else {
           Messages("callforpaper.import.profile")
         }
-        //We have a Webuser but no associated Speaker profile v
+        //We have a Webuser but no associated Speaker profile
         Redirect(routes.CallForPaper.newSpeakerForExistingWebuser()).flashing("success" -> flashMessage)
       }
   }
@@ -100,7 +99,6 @@ object CallForPaper extends SecureCFPController {
     "company" -> optional(text),
     "blog" -> optional(text),
     "firstName" -> nonEmptyText(maxLength = 25),
-    "acceptTermsConditions" -> boolean,
     "qualifications" -> nonEmptyText(maxLength = 750),
     "questionAndAnswers" -> optional(seq(
       mapping(

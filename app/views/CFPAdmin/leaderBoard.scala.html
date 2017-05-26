@@ -5,12 +5,17 @@
 
 @main("Leaderboard") {
     <div class="row">
+        <div class="col-lg-offset-4 col-md-4">
+            <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        </div>
+        <div class="clearfix"></div>
+
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
-                    <small>Stats are computed every 10 minuts</small><br>
+                    <h1 class="panel-title"><i class="icon-trophy"></i> Leader Board</h1>
                     <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh now</a></small>
+                    <small>Stats are computed every 10 minuts</small><br>
                 </div>
 
                 <div class="panel-body">

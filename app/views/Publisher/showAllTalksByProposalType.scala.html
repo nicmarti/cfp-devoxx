@@ -1,4 +1,7 @@
 @(proposals:List[(String, List[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@import play.api.templates.Html
+
 @views.html.Publisher.devoxxUK2017("All Talks") {
   <p class="breadcrumb">
     <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a>

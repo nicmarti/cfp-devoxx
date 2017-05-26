@@ -171,7 +171,6 @@ object ConferenceDescriptor {
     val WEB = Track("web", "web.label")
     val GEEK = Track("geek", "geek.label")
     val IOT = Track("iot", "iot.label")
-
     val SECURITY = Track("security", "security.label")
     val ARCHITECTURE = Track("architecture", "architecture.label")
     val UNKNOWN = Track("unknown", "unknown track")
@@ -191,7 +190,6 @@ object ConferenceDescriptor {
 
     val SECURITY = TrackDesc(ConferenceTracks.SECURITY.id, "/assets/devoxxuk2017/images/icon_security.png", ConferenceTracks.SECURITY.label, "track.security.desc")
     val ARCHITECTURE = TrackDesc(ConferenceTracks.ARCHITECTURE.id, "/assets/devoxxuk2017/images/icon_architecture.png", ConferenceTracks.ARCHITECTURE.label, "track.architecture.desc")
-
     val UNKNOWN = TrackDesc(ConferenceTracks.UNKNOWN.id, "/assets/devoxxuk2017/images/icon_web.png", ConferenceTracks.UNKNOWN.label, "track.unknown.desc")
 
     val ALL = List(METHOD_ARCHI
@@ -638,7 +636,7 @@ object ConferenceDescriptor {
 
   val fromDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(11)
   val toDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(12)
-  
+
   val MAXIMUM_SUMMARY_CHARACTERS = 1200
 
   def current(): ConferenceDescriptor = new ConferenceDescriptor(
