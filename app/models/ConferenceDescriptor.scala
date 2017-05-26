@@ -634,15 +634,15 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay: DateTime = new DateTime().withYear(2016).withMonthOfYear(11).withDayOfMonth(7)
-  val toDay: DateTime = new DateTime().withYear(2016).withMonthOfYear(11).withDayOfMonth(10)
+  val fromDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(11)
+  val toDay = new DateTime().withYear(2017).withMonthOfYear(5).withDayOfMonth(12)
 
   val MAXIMUM_SUMMARY_CHARACTERS = 1200
 
-  def current() = ConferenceDescriptor(
+  def current(): ConferenceDescriptor = new ConferenceDescriptor(
     eventCode = "DV17",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxbe2017",
+    confUrlCode = "devoxxuk2017",
     frLangEnabled = false,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("info@devoxx.co.uk"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.co.uk"),
@@ -663,17 +663,17 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "7th-11th November",
-      speakersPassDuration = 5,
+      datesI18nKey = Messages("conference.dates"),
+      speakersPassDuration = 2,
       preferredDayEnabled = true,
-      firstDayFr = "9 novembre",
-      firstDayEn = "november 7th",
-      datesFr = "du 7 au 10 Novembre 2016",
-      datesEn = "from 7th to 10th of November, 2016",
-      cfpOpenedOn = DateTime.parse("2016-05-23T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2016-07-06T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2016-09-15T00:00:00+02:00"),
-      days=dateRange(fromDay,toDay,new Period().withDays(1))
+      firstDayFr = "11 mai",
+      firstDayEn = "May 11th",
+      datesFr = "do 11 au 12 Mai 2017",
+      datesEn = "from 11th to 12th of May, 2017",
+      cfpOpenedOn = DateTime.parse("2016-11-01T00:00:00+01:00"),
+      cfpClosedOn = DateTime.parse("2017-01-16T23:59:59+01:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-01-30T00:00:00+01:00"),
+      days=dateRange(fromDay, toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUK",
     hashTag = "#DevoxxUK",
@@ -701,16 +701,16 @@ object ConferenceDescriptor {
       cfpHostname = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.co.uk")
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "9th-13th November",
-      speakersPassDuration = 5,
+      datesI18nKey = Messages("conference.dates"),
+      speakersPassDuration = 2,
       preferredDayEnabled = true,
-      firstDayFr = "9 novembre",
-      firstDayEn = "november 9th",
-      datesFr = "du 9 au 13 Novembre 2015",
-      datesEn = "from 9th to 13th of November, 2015",
-      cfpOpenedOn = DateTime.parse("2015-05-23T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2015-07-06T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2015-09-15T00:00:00+02:00"),
+      firstDayFr = "11 mai",
+      firstDayEn = "may 11th",
+      datesFr = "me 11 au 12 Mai 2017",
+      datesEn = "from 11th to 12th of May, 2017",
+      cfpOpenedOn = DateTime.parse("2016-11-01T00:00:00+01:00"),
+      cfpClosedOn = DateTime.parse("2017-01-16T23:59:59+01:00"),
+      scheduleAnnouncedOn = DateTime.parse("2017-01-30T00:00:00+01:00"),
       days=dateRange(fromDay,toDay,new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxUK",
@@ -728,9 +728,9 @@ object ConferenceDescriptor {
 
   // All timezone sensitive methods are using this constant variable.
   // Defaults to "Europe/London" if not set in the Clever Cloud env. variables page.
-  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/Brussels")
+  def timeZone: String = Play.current.configuration.getString("conference.timezone").getOrElse("Europe/London")
 
-  def isGoldenTicketActive:Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
+  def isGoldenTicketActive: Boolean = Play.current.configuration.getBoolean("goldenTicket.active").getOrElse(false)
 
   def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 
