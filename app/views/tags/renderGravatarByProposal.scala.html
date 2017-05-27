@@ -5,7 +5,7 @@
 @models.Proposal.findById(proposalId).map { proposal =>
   @models.Webuser.findByUUID(proposal.mainSpeaker).map { webuser =>
     <div class="media">
-      <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)">
+      <a class="cfp-gravatars pull-left" href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)">
 
       @if(models.Speaker.findByUUID(webuser.uuid).head.avatarUrl.isEmpty) {
             @if(showPhoto) {
