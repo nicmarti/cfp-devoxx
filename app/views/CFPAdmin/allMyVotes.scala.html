@@ -67,7 +67,15 @@
                                             <small>@Html(Messages(proposal.track.label))</small>
                                         </td>
                                           <td>
-                                            <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
+                                              @tags.renderGravatar(proposal.mainSpeaker)
+
+                                              @proposal.secondarySpeaker.map { sc =>
+                                                  @tags.renderGravatar(sc)
+                                              }
+
+                                              @proposal.otherSpeakers.map { s =>
+                                                  @tags.renderGravatar(s)
+                                              }
                                         </td>
                                     }
                                     }

@@ -1,8 +1,10 @@
-@(uuid: String, showName:Boolean = true, showPhoto:Boolean = Some(true))
+@(uuid: String,
+  showName: Boolean = true,
+  showPhoto: Boolean = true)
 
 @models.Speaker.findByUUID(uuid).map { speaker =>
     @models.Webuser.findByUUID(uuid).map { webuser =>
-        @if(speaker.avatarUrl.isEmpty) {
+    @if(speaker.avatarUrl.isEmpty) {
             <div class="media">
                 <a class="cfp-gravatars pull-left" href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.showSpeakerAndTalks(uuid)">
                     @if(showPhoto) {

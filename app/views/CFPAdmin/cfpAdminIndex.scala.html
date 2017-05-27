@@ -87,9 +87,11 @@
                                     </td>
                                     <td>
                                         @tags.renderGravatar(proposal.mainSpeaker)
+
                                         @proposal.secondarySpeaker.map { sc =>
                                             @tags.renderGravatar(sc)
                                         }
+
                                         @proposal.otherSpeakers.map { s =>
                                             @tags.renderGravatar(s)
                                         }

@@ -211,16 +211,16 @@
                                 <a style="padding-left:4px;padding-left:3px;" href="@routes.CallForPaper.editOtherSpeakers(prop.id)" class="btn btn-xs btn-primary" title="@Messages("table.speaker.addremove")"><i class="icon-plus-sign"></i>/<i class="icon-minus-sign"></i> @Messages("hfspk.edit.speaker")</a>
                             </td>
                             <td>
-                                <div style="max-width:114px">
-                                @tags.renderGravatar(prop.mainSpeaker,showName = false)
-                                @prop.secondarySpeaker.map{secondarySpeakerUUID=>
-                                    @tags.renderGravatar(secondarySpeakerUUID,showName = false)
-                                }
-                                @prop.otherSpeakers.map{listOfUUID=>
-                                    @listOfUUID.split(",").map{suid=>
-                                        @tags.renderGravatar(suid,showName = false)
+                                <div style="max-width: 114px">
+                                    @tags.renderGravatar(prop.mainSpeaker)
+                                    @prop.secondarySpeaker.map { secondarySpeakerUUID =>
+                                        @tags.renderGravatar(secondarySpeakerUUID)
                                     }
-                                }
+                                    @prop.otherSpeakers.map { listOfUUID =>
+                                        @listOfUUID.split(",").map { suid =>
+                                            @tags.renderGravatar(suid)
+                                        }
+                                    }
                                 </div>
                             </td>
                             <td>

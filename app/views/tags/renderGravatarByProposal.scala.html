@@ -1,6 +1,6 @@
 @(proposalId: String,
-  showName:Boolean = true,
-  showPhoto:Boolean = Some(true))
+  showName:Option[Boolean] = Some(true),
+  showPhoto:Option[Boolean] = Some(true))
 
 @models.Proposal.findById(proposalId).map { proposal =>
   @models.Webuser.findByUUID(proposal.mainSpeaker).map { webuser =>

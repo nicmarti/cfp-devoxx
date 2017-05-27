@@ -82,7 +82,7 @@
                         <div class="media">
                         @allVotes.sortBy(_._2).map { case (author, vote) =>
                         <div class="media-body">
-                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span> &nbsp; <h5 class="media-heading">@Messages("svp.voted") @tags.renderVote(vote.toInt) </h5>
+                            <span class="pull-left">@tags.renderGravatar(author)</span> &nbsp; <h5 class="media-heading">@Messages("svp.voted") @tags.renderVote(vote.toInt) </h5>
                         </div>
                         }
                         </div>

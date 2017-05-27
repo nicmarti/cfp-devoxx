@@ -60,3 +60,6 @@ run-be.sh
 /conf/application.conf.local
 /run-local.sh
 /run-uk.sh
+/redis-devoxxlocal.conf
+app-2.10/
+conf/redis-devoxxlocal.conf

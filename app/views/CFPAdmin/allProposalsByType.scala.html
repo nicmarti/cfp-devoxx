@@ -54,7 +54,7 @@
                                             </td>
                                             <td>@proposal.id</td>
                                             <td>
-                                            @tags.renderGravatar(proposal.mainSpeaker,showName = true, showPhoto = false)
+                                            @tags.renderGravatar(proposal.mainSpeaker,showName = Some(true))
                                             </td>
                                             <td>
                                             @Messages(proposal.track.id)
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-
+    </div>
 <script type="text/javascript">
 $(document).ready(function() {
 

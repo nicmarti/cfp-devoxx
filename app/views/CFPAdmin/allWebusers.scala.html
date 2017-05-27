@@ -41,7 +41,7 @@
                 @speakers.sortBy(w=>Webuser.hasAccessToCFP(w.uuid)).reverse.map{ webuser: Webuser =>
                     <tr>
                         <td>
-                            @tags.renderGravatar(webuser.uuid, showName=true, showPhoto=false)
+                            @tags.renderGravatar(webuser.uuid, showPhoto = false)
                         </td>
                          <td>
                              <small>@webuser.email</small>
