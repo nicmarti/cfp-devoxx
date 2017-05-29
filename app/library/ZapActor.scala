@@ -26,6 +26,9 @@ package library
 import java.util
 
 import akka.actor._
+import com.gluonhq.cloudlink.client.enterprise.CloudLinkConfig
+import com.gluonhq.cloudlink.client.enterprise.domain.{PushNotification, PushNotificationTarget}
+import com.gluonhq.cloudlink.client.enterprise.javaee.JavaEECloudLinkClient
 import controllers.LeaderboardController
 import models._
 import notifiers.Mails
@@ -316,31 +319,51 @@ class ZapActor extends Actor {
 
     play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
 
-    val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
-    post.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=utf-8")
-    post.addHeader(HttpHeaders.AUTHORIZATION, ConferenceDescriptor.gluonAuthorization())
-
-    val urlParameters = new util.ArrayList[BasicNameValuePair]()
-    urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
-
+    val client = new JavaEECloudLinkClient(new CloudLinkConfig(ConferenceDescriptor.gluonAuthorization()))
+    val pushNotif = new PushNotification()
     if (scheduleUpdate.getOrElse(false)) {
-      urlParameters.add(new BasicNameValuePair("body", ConferenceDescriptor.current().confUrlCode))
+      pushNotif.setBody(ConferenceDescriptor.current().confUrlCode))
     } else {
-      urlParameters.add(new BasicNameValuePair("body", message))
+      pushNotif.setBody(message)
     }
+    pushNotif.setTitle("My Devoxx BE")
+    pushNotif.setExpirationAmount(1)
+    pushNotif.setExpirationType(PushNotification.ExpirationType.HOURS)
+    pushNotif.setPriority(PushNotification.Priority.NORMAL)
 
-    urlParameters.add(new BasicNameValuePair("deliveryDate", "0"))
-    urlParameters.add(new BasicNameValuePair("priority", "HIGH"))
-    urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
-    urlParameters.add(new BasicNameValuePair("expirationAmount", "1"))
-    urlParameters.add(new BasicNameValuePair("targetTopic", ConferenceDescriptor.current().confUrlCode))
-    urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
-    urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
+    val target = new PushNotificationTarget()
+    target.setTopic(ConferenceDescriptor.current().confUrlCode)
+    target.setType(PushNotificationTarget.Type.SINGLE_DEVICE)
+    target.setDeviceToken("6A1669A0-C320-45FC-ADA9-A8BC3E8B03CB")
+    pushNotif.setTarget(target)
 
-    post.setEntity(new UrlEncodedFormEntity(urlParameters))
+    client.sendPushNotification(pushNotif)
 
-    val client = new DefaultHttpClient
-    client.execute(post)
+//    val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
+//    post.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=utf-8")
+//    post.addHeader(HttpHeaders.AUTHORIZATION, ConferenceDescriptor.gluonAuthorization())
+//
+//    val urlParameters = new util.ArrayList[BasicNameValuePair]()
+//    urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
+//
+//    if (scheduleUpdate.getOrElse(false)) {
+//      urlParameters.add(new BasicNameValuePair("body", ConferenceDescriptor.current().confUrlCode))
+//    } else {
+//      urlParameters.add(new BasicNameValuePair("body", message))
+//    }
+//
+//    urlParameters.add(new BasicNameValuePair("deliveryDate", "0"))
+//    urlParameters.add(new BasicNameValuePair("priority", "HIGH"))
+//    urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
+//    urlParameters.add(new BasicNameValuePair("expirationAmount", "1"))
+//    urlParameters.add(new BasicNameValuePair("targetTopic", ConferenceDescriptor.current().confUrlCode))
+//    urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
+//    urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
+//
+//    post.setEntity(new UrlEncodedFormEntity(urlParameters))
+//
+//    val client = new DefaultHttpClient
+//    client.execute(post)
   }
 
   /**
