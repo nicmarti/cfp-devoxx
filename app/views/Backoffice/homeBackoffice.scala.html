@@ -92,7 +92,7 @@
             <div class="panel panel-danger">
                 <div class="panel-heading"><h4><i class="icon-comment"></i> 'My Devoxx' Mobile Notifications</h4></div>
                 <div class="panel-body">
-                    <form accept-charset="UTF-8">
+                    <form>
                         <div class="form-group">
                             <div class="input-group">
                                 <span class="input-group-addon">Push notification</span>
@@ -118,7 +118,6 @@
         $.ajax({
             type : 'POST',
             url : "/admin/push/message",
-            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             data: JSON.stringify(obj),
             headers: {
                 'Content-Type': 'application/json'
