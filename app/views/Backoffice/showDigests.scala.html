@@ -121,7 +121,7 @@
               </tr>
             </thead>
             <tbody>
-            @weekly.map{ proposal =>
+            @weekly.toSeq.sortBy(entry => entry._2).map{ proposal =>
               <tr>
                 <td>
                   @proposal._2
