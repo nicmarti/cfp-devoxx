@@ -29,7 +29,6 @@ object ApplicationBuild extends Build {
     , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
     , "org.apache.httpcomponents" % "httpclient" % "4.1.1"
     , "org.apache.httpcomponents" % "httpcore" % "4.1.1"
-    , "com.gluonhq" % "cloudlink-client-enterprise-javaee" % "1.0.1"
     , "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
   )
 
@@ -38,7 +37,7 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
     resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-    resolvers += "Gluon HQ Nexus" at "http://nexus.gluonhq.com/nexus/content/repositories/releases",
+
     scalacOptions ++= Seq("-Xmax-classfile-name", "100") // add "-feature" to the Seq to have more details
   )
 }
