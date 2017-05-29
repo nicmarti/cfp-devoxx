@@ -322,7 +322,7 @@ class ZapActor extends Actor {
     val client = new JavaEECloudLinkClient(new CloudLinkConfig(ConferenceDescriptor.gluonAuthorization()))
     val pushNotif = new PushNotification()
     if (scheduleUpdate.getOrElse(false)) {
-      pushNotif.setBody(ConferenceDescriptor.current().confUrlCode))
+      pushNotif.setBody(ConferenceDescriptor.current().confUrlCode)
     } else {
       pushNotif.setBody(message)
     }
