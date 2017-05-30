@@ -140,6 +140,9 @@ object CronTask {
   def doEmailDigests() = {
     import library.Contexts.statsContext
 
+    // The 5 min. (semi) real time digest schedule
+    Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
+
     // The daily digest schedule
     var delayForDaily : Long = 0L
 
@@ -169,10 +172,10 @@ object CronTask {
         val dayDelta = 7 - DateTime.now().dayOfWeek().get()
         delayForWeekly = DateMidnight.now().plusDays(dayDelta).getMillis - DateTime.now().getMillis
     }
-    Akka.system.scheduler.schedule(delayForWeekly + delayForDaily milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
+    val totalDelay = delayForWeekly + delayForDaily
+    Akka.system.scheduler.schedule(totalDelay milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
 
-    // The 5 min. (semi) real time digest schedule
-    Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
+    play.Logger.of("Global").info("deEmailDigests weekly delay : "+ delayForWeekly + " & " + delayForDaily)
   }
 
   def doSetupOpsGenie() = {
