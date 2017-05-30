@@ -29,14 +29,14 @@
 
 <table width="100%">
     <tr>
-        <td width="33%">
+        <td width="33%" valign="top">
             <h3>Most Votes</h3>
             @params.mostReviewed.map { mr =>
                 @tags.renderGravatarByProposal(mr._1)
                 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes<br>
             }
         </td>
-        <td width="33%">
+        <td width="33%" valign="top">
             <h3>Eager Speakers</h3>
             @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
                 @tags.renderGravatar(br._1)
@@ -44,7 +44,7 @@
                 <br>
             }
         </td>
-        <td width="33%">
+        <td width="33%" valign="top">
         @if(params.totalCommentsPerProposal.nonEmpty) {
             <h3>Most Debatable</h3>
             @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
@@ -55,7 +55,7 @@
         </td>
     </tr>
     <tr>
-        <td width="33%">
+        <td width="33%" valign="top">
             <h3>Top Reviewers</h3>
             @params.bestReviewers.filter(entry => entry._3 > 0).sortBy(_._3).reverse.take(5).map { br =>
                 @tags.renderGravatar(br._1)
@@ -63,7 +63,7 @@
                 <br>
             }
         </td>
-        <td width="33%">
+        <td width="33%" valign="top">
             <h3>The Lazy One's</h3>
             @scala.util.Random.shuffle(params.lazyOnes.filter(_._2.toInt < 5)).take(5).map { wr =>
                 @tags.renderGravatar(wr._1)
@@ -71,7 +71,7 @@
                 <br>
             }
         </td>
-        <td width="33%">
+        <td width="33%" valign="top">
             <h3>Generous One's</h3>
             @params.generousVoters.sortBy(_._2).reverse.take(5).map { wr =>
                 @tags.renderGravatar(wr._1)
