@@ -11,7 +11,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><i class="icon-bar-chart"></i> All submitted proposals for type : <span class="label label-primary">@confType</span> </h1>
+                    <h1 class="panel-title"><i class="icon-bar-chart"></i> All submitted proposals for type <span class="label label-primary">@Messages(confType + ".label.simple")</span> </h1>
                 </div>
 
                 <div class="panel-body">
@@ -57,7 +57,7 @@
                                             @tags.renderGravatar(proposal.mainSpeaker,showName = Some(true))
                                             </td>
                                             <td>
-                                            @Messages(proposal.track.id)
+                                            @Html(Messages(proposal.track.id))
                                             </td>
                                         </tr>
                                     }
