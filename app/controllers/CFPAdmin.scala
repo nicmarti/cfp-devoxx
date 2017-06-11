@@ -74,16 +74,30 @@ object CFPAdmin extends SecureCFPController {
           trackValue = trackCookie.get.value
       }
 
-      val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
-      val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
+      if ((trackCookie.isDefined && trackCookie.get.value.equals("all")) ||
+          (track.isDefined && track.get.equals("all"))) {
+        val allProposalsForReview = sortProposals(allNotReviewed, sorter, orderer)
 
-      val twentyEvents = Event.loadEvents(20, page)
+        val twentyEvents = Event.loadEvents(20, page)
 
-      val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
+        val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
-      Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
-        .withHeaders("ETag" -> etag)
-        .withCookies(Cookie("track", trackValue, Option(2592000)))  // Expires in one month
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
+          .withHeaders("ETag" -> etag)
+          .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+
+      } else {
+        val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
+        val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
+
+        val twentyEvents = Event.loadEvents(20, page)
+
+        val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
+
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Option(trackValue)))
+          .withHeaders("ETag" -> etag)
+          .withCookies(Cookie("track", trackValue, Option(2592000))) // Expires in one month
+      }
   }
 
   def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
