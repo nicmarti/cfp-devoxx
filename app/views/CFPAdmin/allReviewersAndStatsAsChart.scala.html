@@ -7,7 +7,7 @@
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
+                    <h1 class="panel-title"><i class="icon-trophy"></i> Leader Board</h1>
                 </div>
 
                 <div class="panel-body">
@@ -18,7 +18,65 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+
+                <div class="panel-body">
+                    <table id="reviewer" class="table table-bordered table-stripped">
+                        <thead>
+                            <tr>
+                                <th>Reviewer</th>
+                                <th>Nbr of proposals reviewed</th>
+                                <th>Total points</th>
+                                <th>Average</th>
+                            </tr>
+                        </thead>
+                        @reviewers.sortBy(_._3).reverse.map { uuidAndTotal =>
+                            <tr>
+                                <td>
+                                    @tags.renderGravatar(uuidAndTotal._1)
+                                </td>
+                                <td>
+                                @uuidAndTotal._3
+                                </td>
+                                <td>
+                                @uuidAndTotal._2
+                                </td>
+                                <td>
+                                @if(uuidAndTotal._3 > 0) {
+                                    @BigDecimal(uuidAndTotal._2.toDouble./(uuidAndTotal._3.toDouble)).round(new java.math.MathContext(3))
+                                }else{
+                                    0
+                                }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
+            $(document).ready(function() {
+                $('#reviewer').dataTable({
+                    "aaSorting": [[ 1, "desc" ]],
+                    "iDisplayLength" : -1,
+                    "aLengthMenu": [
+                        [25, 50, 100, 200, -1],
+                        [25, 50, 100, 200, "All"]
+                    ],
+                    "bStateSave": true,
+                    "aoColumns": [
+                        { "sType": "string"},
+                        { "sType": "numeric"},
+                        { "sType": "numeric"},
+                        { "sType": "numeric"}
+                    ]
+                });
+            } );
+
             $(document).ready(function() {
                 google.charts.load('current', {'packages':['corechart']});
                 google.charts.setOnLoadCallback(initialize);
