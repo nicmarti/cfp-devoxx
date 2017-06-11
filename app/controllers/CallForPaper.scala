@@ -23,6 +23,9 @@
 
 package controllers
 
+import java.io.File
+import java.net.URL
+
 import library.search.ElasticSearch
 import library.{SendMessageToCommittee, ZapActor}
 import models._
@@ -34,6 +37,7 @@ import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
+import views.html
 
 /**
   * Main controller for the speakers.
@@ -66,7 +70,7 @@ object CallForPaper extends SecureCFPController {
               } else {
                 Map.empty[Proposal, List[Rating]]
               }
-              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings))
+              Ok(html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings))
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
@@ -113,27 +117,57 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       Speaker.findByUUID(uuid).map {
         speaker =>
-          Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker), uuid))
+          Ok(html.CallForPaper.editProfile(speakerForm.fill(speaker), uuid))
       }.getOrElse(Unauthorized("User not found"))
   }
 
   def saveProfile = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
+
+
       speakerForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm, uuid)).flashing("error" -> "Invalid form, please check and correct errors. "),
-        updatedSpeaker => {
-          Speaker.update(uuid, updatedSpeaker)
-          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
+        invalidForm => BadRequest(html.CallForPaper.editProfile(invalidForm, uuid)).flashing("error" -> "Invalid form, please check and correct errors. "),
+        success = updatedSpeaker => {
+
+          val avatarUrl = speakerForm.bindFromRequest().data.get("avatarUrl")
+          if (avatarUrl.isDefined) {
+            try {
+              checkImageDimensions(avatarUrl.get)
+
+              Speaker.update(uuid, updatedSpeaker)
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
+
+            } catch {
+              case e: IllegalArgumentException =>
+                Redirect(routes.CallForPaper.editProfile()).flashing("error" -> "Avatar image is too big, must be smaller than 750px")
+            }
+          } else {
+            // Not sure how I can remove the duplicate lines after checkImageDimensions ?!!? (Stephan)
+            Speaker.update(uuid, updatedSpeaker)
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
+          }
         }
       )
+  }
+
+  def checkImageDimensions(imageUrl : String) {
+    import javax.imageio.ImageIO
+
+    val url = new URL(imageUrl.replace("https", "http"))
+    val image = ImageIO.read(url)
+
+    if (image.getHeight > 750 || image.getWidth > 750) {
+      throw new IllegalArgumentException("Image is too big")
+    }
+
   }
 
   // Load a new proposal form
   def newProposal() = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
-      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
+      Ok(html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(session + ("token" -> Crypto.sign(uuid)))
   }
 
   // Load a proposal
@@ -145,15 +179,15 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) =>
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalForm.fill(proposal)
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
             // Switch the mainSpeaker and the other Speakers
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
           } else if (proposal.otherSpeakers.contains(uuid)) {
             // Switch the secondary speaker and this speaker
             val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
+            Ok(html.CallForPaper.newProposal(proposalForm)).withSession(session + ("token" -> Crypto.sign(proposalId)))
           } else {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
           }
@@ -166,12 +200,12 @@ object CallForPaper extends SecureCFPController {
   def previewProposal() = SecuredAction {
     implicit request =>
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
+        hasErrors => BadRequest(html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
         validProposal => {
           val summary = validProposal.summaryAsHtml
           // markdown to HTML
           val privateMessage = validProposal.privateMessageAsHtml // markdown to HTML
-          Ok(views.html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
+          Ok(html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
         }
       )
   }
@@ -182,7 +216,7 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
 
       Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+        hasErrors => BadRequest(html.CallForPaper.newProposal(hasErrors)),
         proposal => {
           // If the editor is not the owner then findProposal returns None
           Proposal.findProposal(uuid, proposal.id) match {
@@ -244,11 +278,11 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) =>
           if (proposal.mainSpeaker == uuid) {
             val proposalForm = Proposal.proposalSpeakerForm.fill(proposal.secondarySpeaker, proposal.otherSpeakers)
-            Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, proposalForm))
+            Ok(html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, proposalForm))
           } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
             // Switch the mainSpeaker and the other Speakers
             val proposalForm = Proposal.proposalSpeakerForm.fill(Option(proposal.mainSpeaker), proposal.otherSpeakers)
-            Ok(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, proposalForm))
+            Ok(html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, proposalForm))
           } else if (proposal.otherSpeakers.contains(uuid)) {
             // let this speaker as a member of the third list
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("speaker.other.error"))
@@ -269,7 +303,7 @@ object CallForPaper extends SecureCFPController {
       maybeProposal match {
         case Some(proposal) =>
           Proposal.proposalSpeakerForm.bindFromRequest.fold(
-            hasErrors => BadRequest(views.html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
+            hasErrors => BadRequest(html.CallForPaper.editOtherSpeaker(Webuser.getName(uuid), proposal, hasErrors)).flashing("error" -> "Errors in the proposal form, please correct errors"),
             validNewSpeakers => {
               (proposal.secondarySpeaker, validNewSpeakers._1) match {
                 case (None, Some(newSecondarySpeaker)) =>
@@ -361,7 +395,7 @@ object CallForPaper extends SecureCFPController {
       val maybeProposal = Proposal.findProposal(uuid, proposalId)
       maybeProposal match {
         case Some(proposal) =>
-          Ok(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), speakerMsg))
+          Ok(html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), speakerMsg))
         case None =>
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
       }
@@ -375,7 +409,7 @@ object CallForPaper extends SecureCFPController {
         case Some(proposal) =>
           speakerMsg.bindFromRequest.fold(
             hasErrors => {
-              BadRequest(views.html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), hasErrors))
+              BadRequest(html.CallForPaper.showCommentForProposal(proposal, Comment.allSpeakerComments(proposal.id), hasErrors))
             },
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg)
@@ -402,7 +436,7 @@ object CallForPaper extends SecureCFPController {
           case r if r.isSuccess =>
             val json = Json.parse(r.get)
             val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
-            Ok(views.html.CallForPaper.cloudTags(tags))
+            Ok(html.CallForPaper.cloudTags(tags))
           case r if r.isFailure =>
             play.Logger.error(r.get)
             InternalServerError

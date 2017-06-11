@@ -172,9 +172,9 @@ object ConferenceDescriptor {
     val GEEK = Track("geek", "geek.label")
     val IOT = Track("iot", "iot.label")
     val SECURITY = Track("security", "security.label")
-
+    val ARCHITECTURE = Track("architecture", "architecture.label")
     val UNKNOWN = Track("unknown", "unknown track")
-    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, FUTURE, MOBILE, UNKNOWN)
+    val ALL = List(METHOD_ARCHI, JAVA, CLOUD, SSJ, LANG, BIGDATA, WEB, GEEK, IOT, SECURITY, ARCHITECTURE, UNKNOWN)
   }
 
   object ConferenceTracksDescription {
