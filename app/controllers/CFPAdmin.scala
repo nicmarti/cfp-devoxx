@@ -74,11 +74,12 @@ object CFPAdmin extends SecureCFPController {
           trackValue = trackCookie.get.value
       }
 
+      val twentyEvents = Event.loadEvents(20, page)
+
+      // How can this if/else statement be written more compact in scala? (Stephan)
       if ((trackCookie.isDefined && trackCookie.get.value.equals("all")) ||
           (track.isDefined && track.get.equals("all"))) {
         val allProposalsForReview = sortProposals(allNotReviewed, sorter, orderer)
-
-        val twentyEvents = Event.loadEvents(20, page)
 
         val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
@@ -89,8 +90,6 @@ object CFPAdmin extends SecureCFPController {
       } else {
         val maybeFilteredProposals = allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
         val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
-
-        val twentyEvents = Event.loadEvents(20, page)
 
         val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
