@@ -130,23 +130,23 @@ object CallForPaper extends SecureCFPController {
         invalidForm => BadRequest(html.CallForPaper.editProfile(invalidForm, uuid)).flashing("error" -> "Invalid form, please check and correct errors. "),
         success = updatedSpeaker => {
 
-          val avatarUrl = speakerForm.bindFromRequest().data.get("avatarUrl")
-          if (avatarUrl.isDefined) {
-            try {
-              checkImageDimensions(avatarUrl.get)
-
-              Speaker.update(uuid, updatedSpeaker)
-              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
-
-            } catch {
-              case e: IllegalArgumentException =>
-                Redirect(routes.CallForPaper.editProfile()).flashing("error" -> "Avatar image is too big, must be smaller than 750px")
-            }
-          } else {
-            // Not sure how I can remove the duplicate lines after checkImageDimensions ?!!? (Stephan)
+//          val avatarUrl = speakerForm.bindFromRequest().data.get("avatarUrl")
+//          if (avatarUrl.isDefined) {
+//            try {
+//              checkImageDimensions(avatarUrl.get)
+//
+//              Speaker.update(uuid, updatedSpeaker)
+//              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
+//
+//            } catch {
+//              case e: IllegalArgumentException =>
+//                Redirect(routes.CallForPaper.editProfile()).flashing("error" -> "Avatar image is too big, must be smaller than 750px")
+//            }
+//          } else {
+//            // Not sure how I can remove the duplicate lines after checkImageDimensions ?!!? (Stephan)
             Speaker.update(uuid, updatedSpeaker)
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
-          }
+//          }
         }
       )
   }
