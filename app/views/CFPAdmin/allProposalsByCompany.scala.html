@@ -7,28 +7,24 @@
         </div>
         <div class="clearfix"></div>
 
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3>All proposals grouped by Company</h3>
-                    <span class="label label-info">@companiesAndProposals.size companies</span>
-                    <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>All proposals grouped by Company</h3>
+          <span class="label label-info">@companiesAndProposals.size companies</span>
+        <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
                 </div>
-                <div class="panel-body">
-                @companiesAndProposals.map {case (company, props) =>
-                <h3>@company.capitalize @props.size talk(s)</h3>
-                    <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
+        <div class="panel-body">
+        @companiesAndProposals.map {case (company, props) =>
+        <h3>@company.capitalize @props.size @if(props.size>1){talks}else{talk}</h3><UL id="tree">
+          <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED || p.state==ProposalState.APPROVED || p.state==ProposalState.SUBMITTED).size approved/accepted/submitted talk(s)</label
                     <br>
                     <label class="label label-danger">@props.map(p=>p.allSpeakers.map(_.uuid)).toSet.size speaker(s)</label>
-                    <br>
-
-                    @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
-                        @Messages(proposal.talkType.id) - @proposal.title - @proposal.allSpeakers.map(_.cleanName).mkString(", ") -
-                        <span class="label @Messages("label-" + proposal.state.code)">@Messages(proposal.state.code)</span>
-                        <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A>
-                        <br>
-                    }
-                }
+                    <br>@props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
+            <LI>@Messages(proposal.talkType.id) - @proposal.title- @proposal.allSpeakers.map(_.cleanName).mkString(", ")-
+          <span class="label @Messages("label-" + proposal.state.code)">@Messages(proposal.state.code)</span> <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A></LI>
+          }
+        </UL>}
 
                 </div>
             </div>
