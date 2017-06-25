@@ -40,7 +40,7 @@ import scala.math.BigDecimal.RoundingMode
 
 case class RatingDetail(aspect: String = "default", rating: Int, review: Option[String])
 
-case class RatingReview(total: Int = 0, rates: IndexedSeq[(Int, Int)], feedback: List[(Int, String)] = List.empty, averageScore: Double)
+case class RatingReview(total: Int = 0, rates: IndexedSeq[(Int, Int)], feedback: List[(Int, String, String)] = List.empty, averageScore: Double)
 
 case class Rating(talkId: String, user: String, conference: String, timestamp: Long, details: List[RatingDetail]) {
   def id(): String = {
@@ -187,7 +187,7 @@ object Rating {
 
       val feedback = ratings.map(rating => rating.details)
                             .flatMap(rd => rd.filter(rd => rd.review.isDefined && rd.review.get.length > 0)
-                            .map(rd => (rd.rating, rd.review.get)))
+                            .map(rd => (rd.rating, rd.aspect, rd.review.get)))
 
       val average = library.Stats.average(ratings.flatMap(_.details.map(_.rating.toDouble)))
 
