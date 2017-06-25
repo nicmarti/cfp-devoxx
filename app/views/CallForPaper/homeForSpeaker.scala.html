@@ -317,7 +317,7 @@
                         <td>
                             @StringUtils.abbreviate(prop.title, 50)</td>
                         <td>
-                            @ratingReview.averageScore / 5average <br>
+                            <b>@ratingReview.averageScore </ b><br>
                             @ratingReview.total votes<br><br>
                             @for(rating <- ratingReview.rates) {
                                 @if(rating._2 > 0) {

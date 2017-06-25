@@ -195,9 +195,8 @@ object Rating {
   }
 
   def allRatingReviewsForTalks(allProposals: List[Proposal]): List[(Proposal, RatingReview)] = {
-    allProposals.map {
-      proposal => (proposal, allRatingReviewsForSpecificTalkId(proposal.id))
-    }
+    allProposals.filter(p => p.state == ProposalState.ACCEPTED)
+                .map(proposal => (proposal, allRatingReviewsForSpecificTalkId(proposal.id)))
   }
 
   def allRatings(): List[Rating] = Redis.pool.withClient {
