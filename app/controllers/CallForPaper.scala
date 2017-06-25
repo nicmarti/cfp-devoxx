@@ -51,7 +51,7 @@ object CallForPaper extends SecureCFPController {
       Speaker.findByUUID(uuid).map {
         speaker: Speaker =>
           // BUG
-          if(Webuser.isSpeaker(uuid)==false){
+          if(!Webuser.isSpeaker(uuid)){
             Webuser.addToDevoxxians(uuid)
           }
           val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
@@ -60,14 +60,24 @@ object CallForPaper extends SecureCFPController {
           (hasApproved, hasAccepted) match {
             case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
             case other =>
+
               val allProposals = Proposal.allMyProposals(uuid)
+
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-              val ratings = if (hasAccepted || hasApproved) {
-                Rating.allRatingsForTalks(allProposals)
-              } else {
-                Map.empty[Proposal, List[Rating]]
-              }
-              Ok(html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings))
+
+//              val ratings: List[(Proposal, RatingReview)] = if (hasAccepted || hasApproved) {
+//                Rating.allRatingsForTalks(allProposals)
+//              } else {
+//                List.empty[Proposal, RatingReview]
+//              }
+
+              val ratings = Rating.allRatingReviewsForTalks(allProposals)
+
+              Ok(html.CallForPaper.homeForSpeaker(speaker,
+                                                  request.webuser,
+                                                  allProposals,
+                                                  totalArchived,
+                                                  ratings))
           }
       }.getOrElse {
         val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {

@@ -1,4 +1,4 @@
-@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived: Int, ratings: Map[Proposal, List[Rating]])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(speaker: Speaker, webuser: Webuser, myProposals: List[Proposal], totalArchived: Int, ratings: List[(Proposal, RatingReview)])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 @import org.apache.commons.lang3.StringUtils
 @import play.api.templates.Html
 
@@ -307,29 +307,33 @@
                     <thead>
                         <tr>
                             <th>@Messages("table.pres.title")</th>
-                            <th>@Messages("table.pres.rating")</th>
+                            <th style="width: 120px">@Messages("table.pres.rating")</th>
                             <th>@Messages("table.pres.comment")</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @ratings.map { case(prop:Proposal,allRatings:List[Rating]) =>
-                        <tr>
-                            <td>
-                                @StringUtils.abbreviate(prop.title,50)</td>
-                            <td>
-                                @library.Stats.average(allRatings.flatMap(_.details.map(_.rating.toDouble)))<br>
-                                @allRatings.size votes
-                            </td>
-                            <td>
-                                @allRatings.map { r: Rating =>
-                                  @r.details.map { details =>
-                                    @details.rating @details.review.map { d =>
-                                    <strong>@details.aspect</strong> @d
-                                    }<br>
-                                  }
+                    @ratings.map { case (prop: Proposal, ratingReview: RatingReview) =>
+                    <tr>
+                        <td>
+                            @StringUtils.abbreviate(prop.title, 50)</td>
+                        <td>
+                            @ratingReview.averageScore / 5average <br>
+                            @ratingReview.total votes<br><br>
+                            @for(rating <- ratingReview.rates) {
+                                @if(rating._2 > 0) {
+                                    @rating._2 * @rating._1 stars
+                                    <br>
                                 }
-                            </td>
-                        </tr>
+                            }
+                        </td>
+                        <td>
+                        <UL>
+                            @ratingReview.feedback.map { entry =>
+                                <LI>@entry._2 (@entry._1 stars) </LI>
+                                }
+                             </UL>
+                    </td>
+                    </tr>
                     }
                     </tbody>
                 </table>

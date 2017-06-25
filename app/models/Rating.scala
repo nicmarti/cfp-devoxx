@@ -40,6 +40,8 @@ import scala.math.BigDecimal.RoundingMode
 
 case class RatingDetail(aspect: String = "default", rating: Int, review: Option[String])
 
+case class RatingReview(total: Int = 0, rates: IndexedSeq[(Int, Int)], feedback: List[(Int, String)] = List.empty, averageScore: Double)
+
 case class Rating(talkId: String, user: String, conference: String, timestamp: Long, details: List[RatingDetail]) {
   def id(): String = {
     StringUtils.trimToEmpty((talkId + user + conference).toLowerCase()).hashCode.toString
@@ -51,12 +53,13 @@ case class Rating(talkId: String, user: String, conference: String, timestamp: L
 
   def count: Int = allVotes.length
 
+  def hasReview: Boolean = details.exists(r => r.review.isDefined)
+
   def average: Double = if (count == 0) {
     0
   } else {
     sum / count
   }
-
 }
 
 object Rating {
@@ -144,9 +147,11 @@ object Rating {
     )
   }
 
+  private val RATING_KEY = "Rating:2017"
+
   def findForUserIdAndProposalId(userId: String, talkId: String): Option[Rating] = Redis.pool.withClient {
     client =>
-      client.hmget("Rating:2017", client.smembers("Rating:2017:ByTalkId:" + talkId)).map {
+      client.hmget(RATING_KEY, client.smembers(RATING_KEY + ":ByTalkId:" + talkId)).map {
         json: String =>
           Json.parse(json).as[Rating]
       }.find(rating => rating.user == userId)
@@ -155,15 +160,15 @@ object Rating {
   def saveNewRating(newRating: Rating) = Redis.pool.withClient {
     client =>
       val tx = client.multi
-      tx.hset("Rating:2017", newRating.id(), Json.toJson(newRating).toString())
-      tx.sadd("Rating:2017:ByTalkId:" + newRating.talkId, newRating.id())
+      tx.hset(RATING_KEY, newRating.id(), Json.toJson(newRating).toString())
+      tx.sadd(RATING_KEY + ":ByTalkId:" + newRating.talkId, newRating.id())
       tx.exec()
   }
 
   def allRatingsForSpecificTalkId(talkId: String): List[Rating] = Redis.pool.withClient {
     client =>
-      val ratingIDs = client.smembers("Rating:2017:ByTalkId:" + talkId)
-      client.hmget("Rating:2017", ratingIDs).map {
+      val ratingIDs = client.smembers(RATING_KEY + ":ByTalkId:" + talkId)
+      client.hmget(RATING_KEY, ratingIDs).map {
         json =>
           Json.parse(json).as[Rating]
       }
@@ -174,9 +179,30 @@ object Rating {
       (proposal, allRatingsForSpecificTalkId(proposal.id))
   }.filter(_._2.nonEmpty).toMap
 
+  def allRatingReviewsForSpecificTalkId(talkId: String): RatingReview = Redis.pool.withClient {
+    client =>
+      val ratings = allRatingsForSpecificTalkId(talkId)
+
+      val ratingsRange = (1 to 5).map(e => (e, ratings.count(rating => rating.average == e)))
+
+      val feedback = ratings.map(rating => rating.details)
+                            .flatMap(rd => rd.filter(rd => rd.review.isDefined && rd.review.get.length > 0)
+                            .map(rd => (rd.rating, rd.review.get)))
+
+      val average = library.Stats.average(ratings.flatMap(_.details.map(_.rating.toDouble)))
+
+      RatingReview(ratings.size, ratingsRange, feedback, average)
+  }
+
+  def allRatingReviewsForTalks(allProposals: List[Proposal]): List[(Proposal, RatingReview)] = {
+    allProposals.map {
+      proposal => (proposal, allRatingReviewsForSpecificTalkId(proposal.id))
+    }
+  }
+
   def allRatings(): List[Rating] = Redis.pool.withClient {
     client =>
-      client.hvals("Rating:2017").map {
+      client.hvals(RATING_KEY).map {
         json =>
           Json.parse(json).as[Rating]
       }
@@ -202,9 +228,9 @@ object Rating {
 
   def attic() = Redis.pool.withClient {
     implicit client =>
-      client.del("Rating:2016")
+      client.del(RATING_KEY)
 
-      val allKeys = client.keys("Rating:2016:ByTalkId:*")
+      val allKeys = client.keys(RATING_KEY + ":ByTalkId:*")
       val tx = client.multi()
       allKeys.foreach { key: String => tx.del(key) }
       tx.exec()
