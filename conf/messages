@@ -316,7 +316,7 @@ profile.imported=Profile imported successfully
 profile.imported.txt=Your profile has been successfully imported. You can change at any time your bio, your personal information or the address of your blog on the CFP Home.
 profile.continue=Continue
 profile.username=Your username:
-profile.password=Your access code (cannot be change):
+profile.password=Your access code (cannot be changed):
 profile.password.help=We do not want to store one of your password. We prefer to generate one for you. We encourage you to use the OpenID access via Github or Google.
 
 error.real=Real number value expected
