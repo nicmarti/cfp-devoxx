@@ -380,6 +380,18 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
   }
 
+
+  def allEagerSpeakers() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      def proposalsBySpeakers: List[(String, Int)] =
+        Speaker.allSpeakers()
+          .map(speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
+          .filter(_._2 > 0)
+
+      Ok(views.html.CFPAdmin.allEagerSpeakers(proposalsBySpeakers))
+  }
+
   def removeSponsorTalkFlag(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid

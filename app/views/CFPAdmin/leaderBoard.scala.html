@@ -95,6 +95,7 @@
                             @tags.renderGravatar(br._1)
                             @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
                         }
+                        <br><br><small><a href='@routes.CFPAdmin.allEagerSpeakers()' class="btn btn-sm btn-primary">See all</a></small>
                     </div>
                     @if(params.totalCommentsPerProposal.nonEmpty) {
                         <div class="col-md-4">
