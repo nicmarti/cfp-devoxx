@@ -65,12 +65,6 @@ object CallForPaper extends SecureCFPController {
 
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
 
-//              val ratings: List[(Proposal, RatingReview)] = if (hasAccepted || hasApproved) {
-//                Rating.allRatingsForTalks(allProposals)
-//              } else {
-//                List.empty[Proposal, RatingReview]
-//              }
-
               val ratings = Rating.allRatingReviewsForTalks(allProposals)
 
               Ok(html.CallForPaper.homeForSpeaker(speaker,
