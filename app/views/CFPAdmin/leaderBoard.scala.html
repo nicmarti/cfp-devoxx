@@ -14,9 +14,17 @@
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><i class="icon-trophy"></i> Leader Board</h1>
-                    <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh now</a></small>
-                    <small>Stats are computed every 10 minuts</small><br>
+                    <table>
+                        <tr>
+                            <td width="90%">
+                                <h1 class="panel-title"><i class="icon-trophy"></i> Leader Board</h1>
+                            </td>
+                            <td>
+                                <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh</a></small><br>
+                                <small>Computed every 10 minuts</small><br>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
 
                 <div class="panel-body">
