@@ -175,7 +175,7 @@ object CronTask {
     val totalDelay = delayForWeekly + delayForDaily
     Akka.system.scheduler.schedule(totalDelay milliseconds, 7 days, ZapActor.actor, EmailDigests(Digest.WEEKLY))
 
-    play.Logger.of("Global").info("deEmailDigests weekly delay : "+ delayForWeekly + " & " + delayForDaily)
+    play.Logger.of("Global").info("Email digests weekly delay : "+ delayForWeekly + " & " + delayForDaily)
   }
 
   def doSetupOpsGenie() = {
