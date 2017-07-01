@@ -46,7 +46,7 @@
                 @speakers.map{ speaker: Speaker =>
                     <tr>
                        <td>
-                            @tags.renderGravatar(speaker.uuid, showName=true, showPhoto=false)
+                            @tags.renderGravatar(speaker.uuid, showName = Some(true))
                        </td>
                         <td>
                             @speaker.cleanLang

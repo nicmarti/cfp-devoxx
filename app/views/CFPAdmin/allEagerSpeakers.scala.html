@@ -1,0 +1,47 @@
+@(proposals: List[(String, Int)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+
+@main("Eager Speakers") {
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3><i class="icon-trophy"></i> Eager Speakers</h3>
+          <small>Draft & submitted proposals</small>
+        </div>
+
+        <div class="panel-body">
+
+          <table>
+          @proposals.sortBy(_._2).reverse.take(100).map { br =>
+              <tr>
+                <td valign="top">
+                    @tags.renderGravatar(br._1)
+                </td>
+                <td>
+                  <OL>
+                    @Proposal.allMyDraftAndSubmittedProposals(br._1).map { proposal =>
+                      <LI>
+                        <a href="@routes.CFPAdmin.openForReview(proposal.id)">
+                          <small>
+                            @Html(proposal.title)
+                            <span class="label label-success">@Messages(proposal.state.code)</span>
+                          </small>
+                        </a>
+                      </LI>
+                    }
+                  </OL>
+                  <HR>
+                </td>
+              </tr>
+          }
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+}

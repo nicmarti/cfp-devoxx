@@ -1,6 +1,7 @@
 @(params: controllers.LeaderBoardParams,
   golden: controllers.GoldenTicketsParams)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
+@import scala.util.Random
 @import play.api.templates.Html
 
 @main("Leaderboard") {
@@ -13,9 +14,17 @@
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><i class="icon-trophy"></i> Leader Board</h1>
-                    <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh now</a></small>
-                    <small>Stats are computed every 10 minuts</small><br>
+                    <table>
+                        <tr>
+                            <td width="90%">
+                                <h3><i class="icon-trophy"></i> Leader Board</h3>
+                            </td>
+                            <td>
+                                <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh</a></small><br>
+                                <small>Computed every 10'</small><br>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
 
                 <div class="panel-body">
@@ -86,19 +95,22 @@
                             @tags.renderGravatar(br._1)
                             @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
                         }
+                        <br><br><small><a href='@routes.CFPAdmin.allEagerSpeakers()' class="btn btn-sm btn-primary">See all</a></small>
                     </div>
-                    <div class="col-md-4">
-                        <h3><i class="icon-comments"></i> Most Debatable</h3>
-                        @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
-                            @tags.renderGravatarByProposal(tc._1)
+                    @if(params.totalCommentsPerProposal.nonEmpty) {
+                        <div class="col-md-4">
+                            <h3><i class="icon-comments"></i> Most Debatable</h3>
+                            @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
+                                @tags.renderGravatarByProposal(tc._1)
                             <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
-                        }
-                    </div>
+                            }
+                        </div>
+                    }
                     <div class="clearfix"></div>
 
                     <div class="col-md-4">
                         <h3><i class="icon-trophy"></i> Top Reviewers</h3>
-                        @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
+                        @params.bestReviewers.filter(entry => entry._3 > 0).sortBy(_._3).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
                             @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
                         }
@@ -107,10 +119,11 @@
 
                     <div class="col-md-4">
                         <h3><i class="icon-ambulance"></i> The Lazy One's</h3>
-                        @params.lazyOnes.filter(_._2.toInt < 5).map { wr =>
+                        @Random.shuffle(params.lazyOnes.filter(_._2.toInt < 5)).take(5).map { wr =>
                             @tags.renderGravatar(wr._1)
                             @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
                         }
+                        <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all</a></small>
                     </div>
                     <div class="col-md-4">
                         <h3><i class="icon-heart"></i> Generous One's</h3>
@@ -147,34 +160,35 @@
                             </div>
                             <div class="clearfix"></div>
 
-                            @if(golden.stats.size > 4) {
-                                <br>
-                                <div class="col-md-4">
-                                    @golden.stats.sortBy(_._3).reverse.take(5).map { gt =>
-                                        @tags.renderTotalWithLabel(gt._3, "review", "reviews")
-                                        by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
-                                    }
-                            </div>
-
-                                @if(golden.stats.size > 9) {
+                            @if(golden.stats.map(st => st._3).sum > 0) {
+                                @if(golden.stats.size > 4) {
+                                    <br>
                                     <div class="col-md-4">
-                                        @golden.stats.sortBy(_._3).reverse.slice(5, 10).map { gt =>
+                                        @golden.stats.sortBy(_._3).reverse.take(5).map { gt =>
                                             @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                             by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                         }
-                                    </div>
+                                </div>
 
-                                    @if(golden.stats.size > 14) {
+                                    @if(golden.stats.size > 9) {
                                         <div class="col-md-4">
-                                            @golden.stats.sortBy(_._3).reverse.slice(10, 15).map { gt =>
+                                            @golden.stats.sortBy(_._3).reverse.slice(5, 10).map { gt =>
                                                 @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                                 by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                             }
                                         </div>
+
+                                        @if(golden.stats.size > 14) {
+                                            <div class="col-md-4">
+                                                @golden.stats.sortBy(_._3).reverse.slice(10, 15).map { gt =>
+                                                    @tags.renderTotalWithLabel(gt._3, "review", "reviews")
+                                                    by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
+                                                }
+                                            </div>
+                                        }
                                     }
                                 }
                             }
-
                             <div class="clearfix"></div>
 
                             <div class="col-md-4">
@@ -259,7 +273,7 @@
                         <div class="col-md-6">
                             <h3>Approved by Type</h3>
 
-                            @params.allApprovedByTalkType.map { case (propType, total) =>
+                            @params.allApprovedByTalkType.foreach { case (propType, total) =>
                                 @Messages(propType) : <span class="label label-warning">@total</span>
                                 approved submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType + ".label")</span> slots<br>
                             }
@@ -288,7 +302,7 @@
                     <div class="col-md-6">
                         <h3>Accepted by Type</h3>
                         <p>Talk accepted by a speaker</p>
-                        @params.totalAcceptedByType.map { case (propType, total) =>
+                        @params.totalAcceptedByType.foreach { case (propType, total) =>
                                 @Messages(propType) : <span class="label label-warning">@total</span>
                                 accepted submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span> slots<br>
                             }

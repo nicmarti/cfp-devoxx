@@ -1,15 +1,15 @@
 package controllers
 
-import com.fasterxml.jackson.databind.JsonNode
-import controllers.SchedullingController.BadRequest
+import scala.concurrent.duration._
 import library.search.{DoIndexProposal, _}
-import library.{DraftReminder, NotifyMobileApps, Redis, ZapActor}
+import library._
 import models._
 import org.joda.time.Instant
 import play.api.cache.EhCachePlugin
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.libs.concurrent.Akka
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 import play.api.Play
@@ -416,6 +416,18 @@ object Backoffice extends SecureCFPController {
       }
 
       Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
+  }
+
+  def doWeeklyDigests = SecuredAction(IsMemberOf("admin")) {
+
+    implicit request =>
+
+      import play.api.Play.current
+      import library.Contexts.statsContext
+
+      Akka.system.scheduler.schedule(1 milliseconds, 1 milliseconds, ZapActor.actor, EmailDigests(Digest.WEEKLY))
+
+      Redirect(routes.Backoffice.showDigests()).flashing("success" -> "Weekly digest sent")
   }
 
   def isScheduleInProgressMessageDisplayStatus(): Option[String] = Redis.pool.withClient {

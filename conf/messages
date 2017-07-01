@@ -61,7 +61,7 @@ email.alreadyexists=This email is already registered in our database.
 register.withopenid=Register with your social profile
 forget.password.confirm=An email was sent to the provided email address. Please check your mailbox.
 forget.password=Forget access code?
-avatarUrl=URL to your latest profile photo
+avatarUrl=URL to your latest profile photo (max 750x750 pixels)
 home.txt2=Use one of the following social service, this is simpler and you won''t have to remember another password. If your profile does not yet exist, it will be created automatically.
 register.visitor.github=Use Github OAuth, this is simpler and you won''t have to remember another password.
 format.boolean=
@@ -239,7 +239,7 @@ signup.txt2=A validation email will be sent to the address indicated. Your profi
 
 # edit profile
 editProfile.title=Your profile
-editProfile.help=Take the time to complete your profile. This content will then be published on the site if you are selected as a speaker, as well as in the conference program:
+editProfile.help=Take the time to complete your profile. This content will then be published on the site if you are selected as a speaker, as well as in the conference program. 
 editProfile.save=Save
 
 # Home
@@ -786,10 +786,10 @@ gt.nextTalkType=Continue and evaluate another {0}
 gt.nextTalkTrack=Continue and evaluate next talk for track {0}
 
 gtAdmin.totalGT=Total number of persons with a Golden Ticket: {0}
-gtAdmin.top5=Top 5 by score
-gtAdmin.topWorst=Last 5 by score
-gtAdmin.average=Average score given my Golden ticket is {0}
-gtAdmin.totalReviewer=Total number of Proposals reviewed by Golden Ticket : {0}
+gtAdmin.top10=Top 10 by score
+gtAdmin.bottom10=Last 10 by score
+gtAdmin.average=Average score given by Golden ticket is {0}
+gtAdmin.totalReviewer=Total number of Proposals reviewed by Golden Ticket holders : {0}
 
 svp.score=Current score
 svp.average=Average score
@@ -835,8 +835,8 @@ publisher.room=Room
 hfspk.edit.speaker=Add/remove speaker
 hfspk.rating.title=Rating
 hfspk.rating.desc=Rating given by visitors during the conference with mobile apps.
-table.pres.rating=Rating (1 to 5)
-table.pres.comment=Comments and rating
+table.pres.rating=Ratings 
+table.pres.comment=Feedback
 rating.default=No comment
 
 # If a speaker declined T&C

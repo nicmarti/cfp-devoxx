@@ -1,13 +1,16 @@
 @(reviewers:List[(String,Int, Int)])(implicit flash:Flash, lang:Lang, req: RequestHeader)
 @main("Leaderboard Reviewers") {
+    <link href="@routes.Assets.at(path="/public",file="css/jquery.dataTables.min.css")" rel="stylesheet" id="theme">
+    <script src="@routes.Assets.at(path="/public",file="js/jquery.dataTables.min.js")" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+
     <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
     <div class="row">
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
+                    <h1 class="panel-title"><i class="icon-trophy"></i> Leader Board</h1>
                 </div>
 
                 <div class="panel-body">
@@ -18,7 +21,65 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+
+                <div class="panel-body">
+                    <table id="reviewer" class="table table-bordered table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Reviewer</th>
+                                <th>Nbr of proposals reviewed</th>
+                                <th>Total points</th>
+                                <th>Average</th>
+                            </tr>
+                        </thead>
+                        @reviewers.sortBy(_._3).reverse.map { uuidAndTotal =>
+                            <tr>
+                                <td>
+                                    @tags.renderGravatar(uuidAndTotal._1)
+                                </td>
+                                <td>
+                                @uuidAndTotal._3
+                                </td>
+                                <td>
+                                @uuidAndTotal._2
+                                </td>
+                                <td>
+                                @if(uuidAndTotal._3 > 0) {
+                                    @BigDecimal(uuidAndTotal._2.toDouble./(uuidAndTotal._3.toDouble)).round(new java.math.MathContext(3))
+                                }else{
+                                    0
+                                }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
+            $(document).ready(function() {
+                $('#reviewer').dataTable({
+                    "aaSorting": [[ 1, "desc" ]],
+                    "iDisplayLength" : -1,
+                    "aLengthMenu": [
+                        [25, 50, 100, 200, -1],
+                        [25, 50, 100, 200, "All"]
+                    ],
+                    "bStateSave": true,
+                    "aoColumns": [
+                        { "sType": "string"},
+                        { "sType": "numeric"},
+                        { "sType": "numeric"},
+                        { "sType": "numeric"}
+                    ]
+                });
+            } );
+
             $(document).ready(function() {
                 google.charts.load('current', {'packages':['corechart']});
                 google.charts.setOnLoadCallback(initialize);
@@ -44,8 +105,8 @@
                     var data = response.getDataTable();
 
                     var options = {
-                        title: 'Number of votes, number of reviewer talk',
-                        hAxis: {title: 'Nbre of review'},
+                        title: 'Total number of reviews and avg. rating score',
+                        hAxis: {title: '# reviews'},
                         vAxis: {title: 'Average rate'},
                         bubble: {textStyle: {fontSize: 9}}
                     };
@@ -53,9 +114,6 @@
                     var chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
                     chart.draw(data, options);
                 }
-
-
-
             } );
     </script>
 }

@@ -67,12 +67,12 @@
                                     </td>
                                     <td>@proposal.id</td>
                                     <td>
-                                        @tags.renderGravatar(proposal.mainSpeaker,showName = true, showPhoto = false)
+                                        @tags.renderGravatar(proposal.mainSpeaker, showName = Some(true))
                                     @proposal.secondarySpeaker.map { sp =>
-                                        @tags.renderGravatar(sp,showName = true, showPhoto = false)
+                                        @tags.renderGravatar(sp, showName = Some(true))
                                     }
                                     @proposal.otherSpeakers.map{ sp2=>
-                                        @tags.renderGravatar(sp2,showName = true, showPhoto = false)
+                                        @tags.renderGravatar(sp2, showName = Some(true))
                                     }
                                     </td>
                                     <td>

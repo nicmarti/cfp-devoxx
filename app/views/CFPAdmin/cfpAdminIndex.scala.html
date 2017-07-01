@@ -58,7 +58,12 @@
                             <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Html(Messages(idTrack+".label"))</a>
                         }
                     }
-
+                    @if(track.isDefined && track.get == "all") {
+                        <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option("all"))" class="btn btn-default btn-success">ALL</a>
+                    }else {
+                        <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option("all"))" class="btn btn-default btn-sm">ALL</a>
+                    }
+                    
                     @if(allProposalsForReview.nonEmpty) {
                         <br>
                         <br>
@@ -87,9 +92,11 @@
                                     </td>
                                     <td>
                                         @tags.renderGravatar(proposal.mainSpeaker)
+
                                         @proposal.secondarySpeaker.map { sc =>
                                             @tags.renderGravatar(sc)
                                         }
+
                                         @proposal.otherSpeakers.map { s =>
                                             @tags.renderGravatar(s)
                                         }

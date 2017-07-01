@@ -50,6 +50,7 @@ DELETE        /cfp/profile/digestTrack                                          
 POST          /cfp/profile/digestTrack                                          controllers.DigestController.addFilter()
 GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
+GET           /cfp/backoffice/triggerDigest                                     controllers.Backoffice.doWeeklyDigests()
 
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
@@ -99,6 +100,7 @@ GET           /cfpadmin/starProposals                                           
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
+GET           /cfpadmin/allEagerSpeakers                                        controllers.CFPAdmin.allEagerSpeakers()
 
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks

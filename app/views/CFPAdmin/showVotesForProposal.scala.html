@@ -80,11 +80,18 @@
                     } else {
 
                         <div class="media">
+                        <table>
                         @allVotes.sortBy(_._2).map { case (author, vote) =>
-                        <div class="media-body">
-                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span> &nbsp; <h5 class="media-heading">@Messages("svp.voted") @tags.renderVote(vote.toInt) </h5>
-                        </div>
+                            <tr>
+                                <td width="125px">
+                                    <span class="pull-left">@tags.renderGravatar(author)</span>
+                                </td>
+                                <td>
+                                    @tags.renderVote(vote.toInt) 
+                                </td>
+                            </tr>
                         }
+                        </table>
                         </div>
                     }
                     </div>
@@ -104,24 +111,13 @@
                         } else {
 
                             <h4>@averageScoreGT <small>@Messages("svp.gt.average", countVotesCastGT.getOrElse(0))</small></h4>
-
-
-
-                            <div class="progress" style="height: 50px">
-                                <div class="progress-bar progress-bar-success" style="width: @Math.round(currentAverageScore*10)%">
-                                    <span> @currentAverageScore by @totalVotesCast Commitee</span>
-                                </div>
-                            </div>
+                            
                             <div class="progress" style="height: 50px">
                                 <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: @Math.round(averageScoreGT * 10)%">
                                     <span>@averageScoreGT by @countVotesCastGT.getOrElse(0) GT </span>
                                 </div>
                             </div>
-
-
                         }
-
-
                         </div>
                     </div>
 

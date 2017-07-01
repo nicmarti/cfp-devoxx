@@ -19,10 +19,9 @@
                                  <div class="col-sm-12 col-md-12 col-lg-12">
                                      <div class="panel">
                                          <div class="panel-heading panel-primary">
-                                                <h4>@Messages(currentProposalType.id)</h4>
+                                                <h3>@Html(Messages(currentProposalType.id))</h3>
                                          </div>
                                      </div>
-
                                  </div>
                                 @tags.gticketadmin.showTopProposal(groupedProposals)
                                 @tags.gticketadmin.showWorstProposal(groupedProposals)
