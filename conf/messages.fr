@@ -98,7 +98,7 @@ summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vo
 lang=Langue
 lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
 mainSpeaker=Présentateur principal
-mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx France uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
+mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx France uniquement pour les formats de présentation suivants : Conference, Deep Dive, Hands-on-Labs et Tools-in-Action.
 talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/faq" target="new">FAQ</a> du site Devoxx France.
  
  
@@ -129,7 +129,7 @@ presubmit.reminder=Lorsque vous êtes prêt à soumettre votre proposition, n''o
 # Proposal type
 key.label=Keynote, 20mn, jeudi et vendredi matin
 conf.label=Conference, 45mn, jeudi et vendredi
-uni.label=University, 3h, mercredi uniquement
+uni.label=Deep Dive, 3h, mercredi uniquement
 tia.label=Tools in Action, 30mn, mercredi/jeudi
 quick.label=Quickie, 15mn, jeudi et vendredi midi
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
@@ -274,7 +274,7 @@ noOther.speaker=---- Pas d''autre présentateur ----
  
 # short talk
 conf=Conference
-uni=University
+uni=Deep Dive
 tia=Tools-in-Action
 lab=Hands-on Labs
 quick=Quickie
@@ -418,7 +418,7 @@ admin.btn.changeState=Changer le status d''un Talk
 sw.talkType.warn=Liste des sujets approuvés par le comité et confirmés par le présentateur
 sw.showDetails=Voir le sujet
 sw.home=Accueil programme
-sw.all.uni=Toutes les universités
+sw.all.uni=Toutes les Deep Dive
 sw.all.conf=Toutes les conférences
 sw.all.lab=Tous les hand''s on labs
 sw.all.quick=Tous les quickies
@@ -612,7 +612,7 @@ start.label.simple=
 sw.hackatons=Hackatons
 table.pres.trash=Effacer cette proposition
 tia.label.simple=Tools in Action
-uni.label.simple=University
+uni.label.simple=Deep Dive
 unknown=Inconnu
 wishlist.cancelEdit=Retourner à votre liste de requêtes
 wishlist.createRequest=Créer une requête
