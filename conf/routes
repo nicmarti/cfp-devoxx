@@ -317,6 +317,7 @@ GET           /cfpadmin/invitations/cancel                                      
 GET           /cfpadmin/attic/home                                              controllers.Attic.atticHome()
 POST          /cfpadmin/attic/pruneDraft                                        controllers.Attic.prune()
 POST          /cfpadmin/attic/doArchive                                         controllers.Attic.doArchive()
+POST          /cfpadmin/attic/doArchiveSpeakersAndQandA                         controllers.Attic.doArchiveAllSpeakersQandA()
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()
 POST          /cfpadmin/attic/resetEvents                                       controllers.Attic.resetEvents()
