@@ -51,6 +51,8 @@ case class Speaker(uuid: String
                    , qualifications: Option[String]
                    , questionAndAnswers: Option[Seq[QuestionAndAnswer]]) {
 
+  val MAX_NUMBER_OF_QUESTIONS = 5
+
   def cleanName: String = {
     firstName.getOrElse("").capitalize + name.map(n => " " + n).getOrElse("").capitalize
   }
@@ -130,11 +132,22 @@ case class Speaker(uuid: String
     }
     resultAsHtml
   }
+
+  lazy val questionAndAnswerAsJson: String = {
+    Json.stringify(Json.toJson(questionAndAnswers))
+  }
+
+  lazy val asJson: String = {
+    Json.stringify(Json.toJson(this))
+  }
+
 }
 
 object Speaker {
 
   implicit val speakerFormat = Json.format[Speaker]
+  implicit val speakerFormatWriter = Json.writes[Speaker]
+  implicit val speakerFormatReader = Json.reads[Speaker]
 
   def createSpeaker(webuserUUID: String,
                     email: String,
@@ -199,8 +212,7 @@ object Speaker {
 
   def save(speaker: Speaker) = Redis.pool.withClient {
     client =>
-      val jsonSpeaker = Json.stringify(Json.toJson(speaker))
-      client.hset("Speaker", speaker.uuid, jsonSpeaker)
+      client.hset("Speaker", speaker.uuid, speaker.asJson)
   }
 
   def update(uuid: String, speaker: Speaker) = Redis.pool.withClient {
@@ -239,6 +251,55 @@ object Speaker {
           val maybeSpeaker = Json.parse(jsString).asOpt[Speaker]
           maybeSpeaker
       }
+  }
+
+  def archiveAllSpeakersQandA() {
+    val allSpeakers = Speaker.allSpeakers().sortBy (_.cleanName)
+
+    Redis.pool.withClient {
+      implicit client =>
+        val tx = client.multi()
+        allSpeakers.foreach (speaker => {
+          val conferenceCode = ConferenceDescriptor.current ().eventCode
+
+          play.Logger.info(s"Attempting to archive ${speaker.uuid.toString} for ${conferenceCode}.")
+
+          tx.hset(s"Archived", speaker.uuid.toString, conferenceCode)
+          tx.sadd(s"ArchivedSpeaker:${conferenceCode}", speaker.asJson)
+          play.Logger.info(s"Archived speaker ${speaker.uuid.toString} for ${conferenceCode}.")
+
+          play.Logger.info(s"Speaker ${speaker.uuid.toString} Q & A => ${speaker.questionAndAnswerAsJson}")
+            tx.sadd(s"ArchivedSpeakerQandA:${conferenceCode}", speaker.questionAndAnswerAsJson)
+
+            play.Logger.debug(s"Pruning Q & A for speaker ${speaker.uuid.toString}...")
+            val prunedSpeaker = saveSpeakerWithoutQandA(speaker)
+            play.Logger.debug(s"Speaker ${speaker.uuid.toString} Q & A => ${prunedSpeaker.questionAndAnswerAsJson}")
+            play.Logger.debug(s"Finished pruning Q & A for speaker ${speaker.uuid.toString} for ${conferenceCode}.")
+        })
+
+        tx.exec()
+    }
+    
+    play.Logger.info(s"${allSpeakers.size} speakers archived.")
+  }
+  
+  private def saveSpeakerWithoutQandA(speaker: Speaker) = {
+    val prunedSpeaker = Speaker.createSpeaker(
+      speaker.uuid,
+      speaker.email,
+      speaker.name.getOrElse(""),
+      speaker.bio,
+      speaker.lang,
+      speaker.twitter,
+      speaker.avatarUrl,
+      speaker.company,
+      speaker.blog,
+      speaker.firstName.getOrElse(""),
+      speaker.qualifications.getOrElse(""),
+      QuestionAndAnswers.empty
+    )
+    save(prunedSpeaker)
+    prunedSpeaker
   }
 
   def withOneProposal(speakers: List[Speaker]) = {
