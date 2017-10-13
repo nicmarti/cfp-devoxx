@@ -64,6 +64,9 @@
                 @if(SecureCFPController.hasAccessToAdmin(req)){
                     <li><a href="@routes.Backoffice.homeBackoffice()"><i class="icon-magnet"></i> Backoffice</a></li>
                 }
+                @if(SecureCFPController.hasAccessToCFPAdmin(req)){
+                    <li><a href="@routes.Attic.atticHome()"><i class="icon-magnet"></i> Attic</a></li>
+                }
             </ul>
             @if(SecureCFPController.hasAccessToCFP(req)){
             <form id="searchForm" class="navbar-form navbar-right" role="search">

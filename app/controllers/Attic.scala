@@ -87,6 +87,12 @@ object Attic extends SecureCFPController {
       )
   }
 
+  def doArchiveAllSpeakersQandA() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Speaker.archiveAllSpeakersQandA()
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"All speakers archived (along with their Q&A)"))
+  }
+
   def deleteInvitedSpeakers() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Invitation.deleteAll()
