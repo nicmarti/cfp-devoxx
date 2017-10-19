@@ -266,12 +266,12 @@ object Speaker {
 
           tx.hset(s"Archived", speaker.uuid.toString, conferenceCode)
           tx.sadd(s"ArchivedSpeaker:${conferenceCode}", speaker.asJson)
-          play.Logger.info(s"Archived speaker ${speaker.uuid.toString} for ${conferenceCode}.")
+          play.Logger.info(s"Finished archiving speaker ${speaker.uuid.toString} for ${conferenceCode}.")
 
           play.Logger.info(s"Speaker ${speaker.uuid.toString} Q & A => ${speaker.questionAndAnswerAsJson}")
             tx.sadd(s"ArchivedSpeakerQandA:${conferenceCode}", speaker.questionAndAnswerAsJson)
 
-            play.Logger.debug(s"Pruning Q & A for speaker ${speaker.uuid.toString}...")
+            play.Logger.debug(s"Attempting to prune Q & A for speaker ${speaker.uuid.toString}...")
             val prunedSpeaker = saveSpeakerWithoutQandA(speaker)
             play.Logger.debug(s"Speaker ${speaker.uuid.toString} Q & A => ${prunedSpeaker.questionAndAnswerAsJson}")
             play.Logger.debug(s"Finished pruning Q & A for speaker ${speaker.uuid.toString} for ${conferenceCode}.")
