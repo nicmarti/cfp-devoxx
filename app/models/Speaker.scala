@@ -279,10 +279,10 @@ object Speaker {
 
         tx.exec()
     }
-    
+
     play.Logger.info(s"${allSpeakers.size} speakers archived.")
   }
-  
+
   private def saveSpeakerWithoutQandA(speaker: Speaker) = {
     val prunedSpeaker = Speaker.createSpeaker(
       speaker.uuid,
