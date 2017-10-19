@@ -146,6 +146,8 @@ case class Speaker(uuid: String
 object Speaker {
 
   implicit val speakerFormat = Json.format[Speaker]
+  implicit val speakerFormatWriter = Json.writes[Speaker]
+  implicit val speakerFormatReader = Json.reads[Speaker]
 
   def createSpeaker(webuserUUID: String,
                     email: String,
@@ -256,25 +258,28 @@ object Speaker {
 
     Redis.pool.withClient {
       implicit client =>
+        val tx = client.multi()
         allSpeakers.foreach (speaker => {
           val conferenceCode = ConferenceDescriptor.current ().eventCode
-          val tx = client.multi ()
 
-          play.Logger.debug(s"Archiving ${speaker.uuid.toString} for ${conferenceCode}.")
-          tx.hset (s"Archived", speaker.uuid.toString, conferenceCode)
-          tx.sadd (s"ArchivedSpeaker:${conferenceCode}", speaker.asJson)
-          tx.sadd (s"ArchivedSpeakerQandA:${conferenceCode}", speaker.questionAndAnswerAsJson)
-          tx.exec ()
-          play.Logger.debug(s"Speaker ${speaker.uuid.toString} Q & A => ${speaker.questionAndAnswerAsJson}")
-          play.Logger.debug(s"Finished Archiving ${speaker.uuid.toString} for ${conferenceCode}.")
+          play.Logger.info(s"Attempting to archive ${speaker.uuid.toString} for ${conferenceCode}.")
 
-          play.Logger.debug(s"Pruning Q & A for speaker ${speaker.uuid.toString}...")
-          val prunedSpeaker = saveSpeakerWithoutQandA(speaker)
-          play.Logger.debug(s"Speaker ${speaker.uuid.toString} Q & A => ${prunedSpeaker.questionAndAnswerAsJson}")
-          play.Logger.debug(s"Finished pruning Q & A for speaker ${speaker.uuid.toString} for ${conferenceCode}.")
+          tx.hset(s"Archived", speaker.uuid.toString, conferenceCode)
+          tx.sadd(s"ArchivedSpeaker:${conferenceCode}", speaker.asJson)
+          play.Logger.info(s"Finished archiving speaker ${speaker.uuid.toString} for ${conferenceCode}.")
+
+          play.Logger.info(s"Speaker ${speaker.uuid.toString} Q & A => ${speaker.questionAndAnswerAsJson}")
+            tx.sadd(s"ArchivedSpeakerQandA:${conferenceCode}", speaker.questionAndAnswerAsJson)
+
+            play.Logger.debug(s"Attempting to prune Q & A for speaker ${speaker.uuid.toString}...")
+            val prunedSpeaker = saveSpeakerWithoutQandA(speaker)
+            play.Logger.debug(s"Speaker ${speaker.uuid.toString} Q & A => ${prunedSpeaker.questionAndAnswerAsJson}")
+            play.Logger.debug(s"Finished pruning Q & A for speaker ${speaker.uuid.toString} for ${conferenceCode}.")
         })
+
+        tx.exec()
     }
-    
+
     play.Logger.info(s"${allSpeakers.size} speakers archived.")
   }
 
