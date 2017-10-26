@@ -225,7 +225,7 @@ object Rating {
     BigDecimal(score).setScale(2,RoundingMode.HALF_EVEN).toDouble
   }
 
-  def attic() = Redis.pool.withClient {
+  def deleteAll() = Redis.pool.withClient {
     implicit client =>
       client.del(RATING_KEY)
 
@@ -233,5 +233,43 @@ object Rating {
       val tx = client.multi()
       allKeys.foreach { key: String => tx.del(key) }
       tx.exec()
+  }
+
+  def archiveTalkRatings(): Unit = Redis.pool.withClient {
+    val conferenceCode = ConferenceDescriptor.current().eventCode
+            
+    val allAcceptedTalks = Proposal.allProposals().filter(_.state == ProposalState.ACCEPTED)
+    val allRatingsForTalks = allRatings()
+
+    implicit client =>
+      val allRatingsForTalksByTalkId = allAcceptedTalks.flatMap(
+        talk => client.hmget(RATING_KEY, client.smembers(s"$RATING_KEY:ByTalkId:${talk.id}"))
+      )
+
+      val tx = client.multi()
+
+      play.Logger.info(s"Attempting to archive summarised ratings (aka mobile votes) for all talks for $conferenceCode.")
+      allRatingsForTalks.foreach {
+        rating =>
+          tx.hset(s"Archived:$RATING_KEY", rating.id(), Json.toJson(rating).toString())
+          play.Logger.debug(s"Archived:$RATING_KEY:${rating.id()} => ${Json.toJson(rating).toString()}");
+      }
+      play.Logger.info(s"Finished archiving summarised ratings (aka mobile votes - (${allRatingsForTalks.size} of them) for all talks for $conferenceCode.")
+
+      play.Logger.info(s"Attempting to archive individual ratings for all talks for $conferenceCode.")
+
+      allRatingsForTalksByTalkId.foreach {
+        json => {
+          val rating = Json.parse(json).as[Rating]
+          tx.sadd(s"Archived:$RATING_KEY:ByTalkId:${rating.talkId}", rating.id())
+          play.Logger.debug(s"Archived:$RATING_KEY:ByTalkId:${rating.talkId} => ${rating.id()}");
+        }
+      }
+
+      play.Logger.info(s"Deleting summarised and individual talk ratings for all talks for $conferenceCode.")
+      deleteAll()
+
+      tx.exec()
+      play.Logger.debug(s"Finished archiving ratings (aka mobile votes - ${allRatingsForTalksByTalkId.size} of them) for all talks for ${conferenceCode}.")
   }
 }
