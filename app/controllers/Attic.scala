@@ -93,6 +93,12 @@ object Attic extends SecureCFPController {
       Redirect(routes.Attic.atticHome()).flashing(("success", s"All speakers archived (along with their Q&A)"))
   }
 
+  def doArchiveRatings()= SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Rating.archiveTalkRatings()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Archived ratings (aka mobile votes) for all talks"))
+  }
+
   def deleteInvitedSpeakers() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Invitation.deleteAll()
@@ -143,7 +149,7 @@ object Attic extends SecureCFPController {
   // Mobile API
   def deleteRatings()= SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Rating.attic()
+      Rating.deleteAll()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted mobile votes"))
   }
 }

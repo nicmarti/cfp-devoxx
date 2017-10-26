@@ -77,6 +77,11 @@
                         <button type="submit" class="btn btn-primary">Archive all speakers (along with their Q&A)</button>
                     </form>
 
+                    <form action="@routes.Attic.doArchiveRatings()" method="POST">
+                        <input type="hidden" name="opType" value="prune"/>
+                            <button type="submit" class="btn btn-primary">Archive ratings (aka mobile votes) of all talks</button>
+                    </form>
+
                         <div class="clearfix"></div>
 
                         <div class="col-lg-12 col-md-12">
