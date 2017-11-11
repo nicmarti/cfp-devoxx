@@ -9,7 +9,7 @@ services:
    expose:
      - 6379
   play:
-    image: alexproca/play:2.2.3
+    image: ifinavet/playframework:2.2.3
     volumes:
       - .:/app:rw
     ports:
