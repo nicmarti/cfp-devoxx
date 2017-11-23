@@ -293,9 +293,9 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    val firstDay = "2017-04-05"
-    val secondDay = "2017-04-06"
-    val thirdDay = "2017-04-07"
+    val firstDay = "2018-04-18"
+    val secondDay = "2018-04-19"
+    val thirdDay = "2018-04-20"
 
     // UNIVERSITY
     val universitySlotsWednesday: List[Slot] = {
@@ -676,14 +676,14 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2017).withMonthOfYear(4).withDayOfMonth(5)
-  val toDay = new DateTime().withYear(2017).withMonthOfYear(4).withDayOfMonth(7)
+  val fromDay = new DateTime().withYear(2018).withMonthOfYear(4).withDayOfMonth(18)
+  val toDay = new DateTime().withYear(2018).withMonthOfYear(4).withDayOfMonth(20)
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxFR2017",
+    eventCode = "DevoxxFR2018",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxfr2017",
+    confUrlCode = "devoxxfr2018",
     frLangEnabled = true,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.fr"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.fr"),
@@ -703,16 +703,16 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "5 au 7 avril 2017",
+      datesI18nKey = "18 au 20 avril 2018",
       speakersPassDuration = 5,
       preferredDayEnabled = true,
-      firstDayFr = "5 avril",
-      firstDayEn = "april 5th",
-      datesFr = "du 5 au 7 avril 2017",
-      datesEn = "from 5th to 7th of April, 2017",
-      cfpOpenedOn = DateTime.parse("2016-11-01T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2017-01-08T23:59:00+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2017-02-15T00:00:00+02:00"),
+      firstDayFr = "18 avril",
+      firstDayEn = "april 18th",
+      datesFr = "du 18 au 20 avril 2018",
+      datesEn = "from 18th to 20th of April, 2018",
+      cfpOpenedOn = DateTime.parse("2017-11-28T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2018-01-30T23:59:00+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2018-02-15T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",

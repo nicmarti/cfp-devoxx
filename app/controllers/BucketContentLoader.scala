@@ -106,7 +106,7 @@ object BucketContentLoader extends AssetsBuilder {
         val resourceAsHtml = new File("/app", resourceName + ".html")
 
         if (resourceAsHtml.exists() && resourceAsHtml.canRead) {
-          MovedPermanently(routes.BucketContentLoader.at(file + ".html").url)
+          MovedPermanently(routes.BucketContentLoader.at(path, file + ".html").url)
         } else {
           val resource = new File("/app", resourceName)
           if (resource.exists() && resource.canRead) {
