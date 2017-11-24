@@ -89,7 +89,11 @@
                             </tbody>
                         </table>
                     } else {
-                        <h4>@Messages("admin.cfp.empty")</h4>
+                        @if(track.isDefined){
+                            <h4>@Messages("admin.cfp.empty.track", Messages(track.get +".leaderboard"))</h4>
+                        }else{
+                            <h4>@Messages("admin.cfp.empty")</h4>
+                        }
                     }
                 </div>
             </div>
