@@ -40,6 +40,7 @@ case class Review(reviewer: String, proposalId: String, vote: Int, date: DateTim
 
 object Review {
 
+
   // We use 4 different Redis objects
   // 1) a SET to keep an history of all proposals we voted for
   // 2) a SET to keep an history of all voters for a proposal
@@ -470,5 +471,13 @@ object Review {
   def totalNumberOfReviewedProposals(uuid:String):Long=Redis.pool.withClient{
     client=>
       client.scard(s"Proposals:Reviewed:ByAuthor:$uuid")
+  }
+
+  def archiveAllReviews() = Redis.pool.withClient{
+    client=>
+      client.keys("Proposals:Reviewed:ByAuthor:*").foreach {
+        reviewKey: String =>
+          client.del(reviewKey)
+      }
   }
 }

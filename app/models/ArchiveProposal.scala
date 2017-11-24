@@ -62,6 +62,8 @@ object ArchiveProposal {
 
     // TODO delete or archive all Reviews Proposals:Reviewed:ByAuthor:*
 
+    Review.archiveAllReviews()
+
     onlySameType.size
   }
 
