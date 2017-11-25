@@ -84,7 +84,10 @@
                             @if(proposal.videoLink.nonEmpty) {
                                 <tr>
                                     <th class="proposalCol">Related Video</th>
-                                    <td>@tags.renderVideoLink(proposal.videoLink.get)</td>
+                                    <td>
+                                    @tags.renderVideoLink(proposal.videoLink.get)
+                                    <br><small>Video link: <a href="@proposal.videoLink.get"><i class="icon-arrow-right"></i> @proposal.videoLink.get</a> </small>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
