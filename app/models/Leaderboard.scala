@@ -170,7 +170,7 @@ object Leaderboard {
       client.hgetAll("Leaderboard:mostReviewed").map {
         case (key: String, value: String) =>
           (key, value.toInt)
-      }
+      }.filterNot(_._2 < 1) // Do not keep reviewers that had a talk, deleted this talk and thus, are not at zero
   }
 
   def bestReviewer(): Option[(String, String)] = Redis.pool.withClient {
