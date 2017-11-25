@@ -115,6 +115,17 @@ object Publisher extends Controller {
       }
   }
 
+  def showByTag(tagId: String) = Action {
+    implicit request =>
+      val tag = Tag.findById(tagId)
+      if (tag.isDefined) {
+        val acceptedProposalsByTag = Tags.allProposalsByTagId(tagId).filter(entry => entry._2.state == ProposalState.ACCEPTED)
+        Ok(views.html.Publisher.showByTag(tag.get.value, acceptedProposalsByTag.values))
+      } else {
+        BadRequest("Tag not found")
+      }
+  }
+
   private val monday: String = "monday"
   private val tuesday: String = "tuesday"
   private val wednesday: String = "wednesday"
