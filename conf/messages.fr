@@ -181,7 +181,7 @@ cloud.label=Cloud, Container et Scalabilité
 cldops.leaderboard=Cloud, Container et Scalabilité
 
 track.archisec.title=Architecture, Performance & Securité
-track.archisec.desc=Architecture, performance, encryption et meilleures pratiques pour développer un logiciel sécurisé.
+track.archisec.desc=Architecture, performance, chiffrement et meilleures pratiques pour développer un logiciel sécurisé.
 archisec.label=Architecture, Performance et Securité
 archisec.leaderboard=Architecture, Performance et Securité
 
