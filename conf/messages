@@ -97,7 +97,9 @@ summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
 phoneNumber=cell phone number
-lang.help=100% of {0} talks are in English
+lang.help=25% of talks at Devoxx FR are in English, the others are in French. If you speaker French, please do present in French. If you are not sure, ask the question in the 'Message for program committee' textarea.
+track.help=Tracks are the main topics of the conference.
+
 mainSpeaker=Main speaker
 mainSpeaker2=Multiple Speakers?
 mainSpeaker.help=You can add more speakers once the proposal is created. We offer a full Combi pass for the following slots : Conference, University, Hands-on-Labs, Tools-in-Action. Quickie speakers need to purchase a conference pass!
@@ -107,11 +109,10 @@ talkType.help=Each type of talk is described on the <a href="{0}#confType" targe
 videoLink=Related video link
 
 audienceLevel=Audience level
-audienceLevel.help=Please, indicate the required audience level for your talk\:\
-1- for all audience, beginner or novice\
-2- for intermediate, talented\
-3- experienced, proficient\
-4- expert, senior \
+audienceLevel.help=Please, indicate the required audience level for your talk
+
+demoLevel.help=
+title.maxLength=125 char max.
 
 
 privateMessage=Message for the program committee, motivation for your presentation
@@ -610,6 +611,9 @@ tag.placeholder2=Secondary tag
 tag.placeholder3=Related tag
 tag.placeholder4=Nice to have tag
 tag.placeholder5=The full Monty tag
+
+tag.help.title=About tags
+tag.help.txt=You can select between 3 to 5 tags to describe your proposal. You cannot create your own tag. Those tags are used for the Agenda and on the mobile app.
 
 
 wishList.title=WishList

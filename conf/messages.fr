@@ -106,7 +106,7 @@ talkType=Type de présentation
 audienceLevel=Niveau de la présentation
 privateMessage=Message pour le comité de sélection
 privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation, l''ensemble des éléments qui doivent nous faire choisir votre proposition de sujet. Vous pouvez inclure l''URL vers vos diapositives si vous le souhaitez.
-sponsorTalk=Merci de cocher cette case s''il s''agit d''une présentation "exposant/sponsor"
+sponsorTalk=Merci de cocher cette case s''il s''agit de la présentation "exposant/sponsor" lié au sponsoring
 sponsorTalk.help=Les sponsors Gold et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée. Ne cochez pas cette case si votre société est sponsor alors que vous souhaitez simplement proposer un sujet.
 sponsorTalk.help.title=Talk sponsor
 sponsor.name.plz=Merci d''indiquer le nom de votre société dans le champ "Message privé pour le comité"
@@ -156,6 +156,7 @@ video.title=Vidéos des éditions précédentes
 video.tag=Retrouvez toutes les vidéos des éditions précédentes sur le site
 theme.title=Thèmes
 theme.track=Les différentes tracks pour proposer un sujet :
+track.help=Les Tracks permettent d''indiquer le thème principal de votre présentation. Lorsque vous hésitez entre plusieurs thèmes... demandez l''avis d''une autre personne :-)
 
 track.title=Titre
 track.description=Description
@@ -538,12 +539,8 @@ showAgendaByRoom=Agenda par salle
 Abs=Abs
 admin.btn.tracklead=Track leader
 approved=Talk approuvé
-audienceLevel.help=Merci d'indiquer le niveau requis de votre audience pour ce sujet:\
-\
-1- pour tout le monde, débutant comme expert\
-2- pour des personnes ayant déjà une expérience\
-3- pour des personnes expérimentés, avancées\
-4- pour experts et senior sur ce sujet\
+audienceLevel.help=Merci d''indiquer le niveau requis de votre audience pour ce sujet :
+
 bof.label.simple=Bird of a Feather
 btn.saveAndSend=Sauver et envoyer au comité
 btn.saveDraft=Sauver comme Draft (Brouillon)
@@ -706,11 +703,11 @@ renderProposal.noTalks=Ce speaker n'a pas d''autres propositions actuellement
 mail.goldenticket.subject=Golden Ticket pour {0}
 error.loginRequired=Accès restreint, merci de vous authentifier
 
-userGroup=Faire évaluer aussi ma proposition de sujet par les Golden Ticket ?
-userGroup.checkbox= Oui, j'accepte que ma proposition soit revue par les personnes ayant acheté un Golden Ticket.
+userGroup=Golden Ticket ?
+userGroup.checkbox= Oui, j''accepte que ma proposition soit revue par les personnes ayant acheté un Golden Ticket.
 
 goldenTicket.help.title=Golden Ticket
-goldenTicket.help.txt=Une nouveauté de {0} est l''introduction d''un petit comité de sélection composé de personnes ayant acheté l''un des 64 Golden Ticket sur le site de {0}. Si vous acceptez, ils peuvent alors revoir votre présentation, l''évaluer et la noter. Le comité du programme {0} évalue aussi votre proposition, et 2 notes différentes seront alors enregistrées. A noter que vous pouvez changer le status de ce flag à tout moment.
+goldenTicket.help.txt=Les Golden Tickets sont des conférenciers ayant acheté l''un des 64 Golden Ticket sur le site de {0}. Si vous acceptez, ils peuvent alors revoir votre présentation, l''évaluer et la noter. Le comité du programme {0} évalue aussi votre proposition, et 2 notes différentes seront alors enregistrées. A noter que vous pouvez changer le status de ce flag à tout moment.
 
 gt.title=CFP spécial Golden ticket
 gt.disclaimer=Nous vous remercions de respecter les personnes qui proposent des sujets pour Devoxx France. En utilisant ce compte vous acceptez de ne pas publier sur les réseaux sociaux ou publiquement les informations que vous verrez sur le CFP.
@@ -841,3 +838,23 @@ invalid.phone.txt=Votre numéro de téléphone n''est pas valide ou n''est pas a
 admin.btn.devoxxians=Tous les Devoxxians
 
 cfp.maxProposals.reached=Attention, vous ne pouvez pas soumettre plus de {0} sujets. Nous limitons le nombre de soumissions volontairement.
+videoLinkMessage=Lien vers une vidéo
+videoLinkMessage.help=Vous pouvez partager un lien vers une vidéo où vous avez été orateur ou une vidéo en rapport avec votre proposition de sujet. Indiquez l''URL complète YouTube ou autre.
+videoLink=Vidéo relative à votre proposition 
+tag.title=Merci de sélectionner au moins 3 Tags pour décrire votre proposition de sujet
+tag.help.title=A propos des Tags
+tag.help.txt=Vous avez la possibilité de sélectionner entre 3 et 5 mots clés (tag) pour décrire votre proposition. Il n''est pas possible de créer ses propres tags. Ces tags seront utilisés pour le programme du conférencier. Les tags sont en Anglais uniquement. Commencez à saisir les premières lettres, puis sélectionnez ensuite le tag voulu.
+
+tag.edit=Editer un Tag
+tag.new=Nouvea Tag
+tag.saved=Tag sauvegardé
+tag.removed=Tag "{0}" effacé
+tag.imported=Tags importé
+tag.placeholder1=Le Tag principal
+tag.placeholder2=Tag secondaire
+tag.placeholder3=Dernier tag
+tag.placeholder4=Tag si vous avez envie
+tag.placeholder5=Tag de la mort, le dernier
+title.maxLength=125 caractères max.
+
+demoLevel.help=Slides, atelier, ou démonstration en direct... à vous de préciser. Cette information n''est utile que pour le comité de sélection.
