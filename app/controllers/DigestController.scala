@@ -19,4 +19,36 @@ object DigestController extends SecureCFPController {
                 BadRequest("Digest value not defined")
             }
     }
+
+    def removeFilter() = SecuredAction(IsMemberOf("cfp")) {
+        implicit request =>
+            val trackFilter = request.request.getQueryString("value")
+
+            if (trackFilter.isDefined) {
+                val uuid = request.webuser.uuid
+                Digest.delTrackFilter(uuid, trackFilter.get)
+                Gone
+            } else {
+                BadRequest("Track value not defined")
+            }
+    }
+
+
+    def addFilter() = SecuredAction(IsMemberOf("cfp")) {
+        implicit request =>
+            val trackFilter = request.request.getQueryString("value")
+
+            if (trackFilter.isDefined) {
+                val uuid = request.webuser.uuid
+                Digest.addTrackFilter(uuid, trackFilter.get)
+                Ok
+            } else {
+                BadRequest("Track value(s) not defined")
+            }
+    }
+
+    def getFilter() = SecuredAction(IsMemberOf("cfp")) {
+        implicit request =>
+            Ok(Digest.getTrackFilters(request.webuser.uuid).toString())
+    }
 }
