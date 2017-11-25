@@ -258,7 +258,7 @@ object LeaderboardController extends SecureCFPController {
 }
 
 case class GoldenTicketsParams(
-                                totalTickets: Int,
+                                totalTickets: Long,
                                 stats: List[(String, Int, Int)]
                               )
 

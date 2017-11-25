@@ -839,3 +839,5 @@ invalid.phoneNumber=Numéro de téléphone non valide
 invalid.phone.txt=Votre numéro de téléphone n''est pas valide ou n''est pas autorisé par notre plate-forme. Contactez l''équipe pour que nous puissions autoriser le pays de votre numéro de portable, ou corrigez le numéro.
 
 admin.btn.devoxxians=Tous les Devoxxians
+
+cfp.maxProposals.reached=Attention, vous ne pouvez pas soumettre plus de {0} sujets. Nous limitons le nombre de soumissions volontairement.

@@ -942,3 +942,7 @@ invalid.phoneNumber=Invalid phone number
 invalid.phone.txt=Invalid phone number or permission to send an SMS has not been enabled for the region indicated by this phone number. Please contact our team so that we can add our country to the list of valid region. Thanks.
 
 admin.btn.devoxxians=All Devoxxians
+
+cfp.maxProposals.reached=Warning, you cannot submit more than {0} proposals. We had to limit the number of submission.
+
+cfp.goldenTicket=Golden Tickets

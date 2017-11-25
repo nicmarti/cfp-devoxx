@@ -768,6 +768,10 @@ object ConferenceDescriptor {
 
   def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
 
+  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
+  def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
+
+  def maxProposals(): Int = Play.current.configuration.getInt("cfp.max.proposals").getOrElse(5)
 }
 
