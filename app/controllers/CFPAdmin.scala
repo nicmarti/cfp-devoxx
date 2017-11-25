@@ -404,9 +404,10 @@ object CFPAdmin extends SecureCFPController {
       val dir = new File("./public/speakers")
       FileUtils.forceMkdir(dir)
 
-      val file = new File(dir, "speakersDevoxxBE2016.csv")
+      val conferenceNameSpaces = Messages("CONF.title").replaceAll(" ", "")
+      val file = new File(dir, s"speakers${conferenceNameSpaces}.csv")
 
-      val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"), true)
+      val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), true)
 
       allSpeakers.sortBy(_.email).foreach {
         s =>
@@ -417,23 +418,30 @@ object CFPAdmin extends SecureCFPController {
 
             writer.print(s.email.toLowerCase)
             writer.print(",")
+            writer.print(s.cleanTwitter.getOrElse("").toLowerCase)
+            writer.print(",")
             writer.print(s.firstName.getOrElse("?").capitalize)
             writer.print(",")
             writer.print(s.name.getOrElse("?").capitalize)
             writer.print(",")
 
-            Proposal.allAcceptedForSpeaker(s.uuid).foreach { p =>
+            proposals.foreach { p =>
+              val proposalUrl = "http://" + ConferenceDescriptor.current().conferenceUrls.cfpHostname +
+                routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)
+
               ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map { slot =>
                 writer.print(Messages(p.talkType.id))
                 writer.print(": \"" + p.title.replaceAll(",", " ") + "\"")
+                writer.print("\", ")
+                writer.print("\"" + proposalUrl + "\", ")
                 writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
-                writer.print(s"from ${slot.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")} to ${slot.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")}")
+                writer.print(s"from ${slot.from.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm")} to ${slot.to.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm")}")
               }.getOrElse {
                 writer.print("\"")
                 writer.print(p.title.replaceAll(",", " "))
-                writer.print("\"")
-                writer.print(s" ${p.talkType.label}}] not yet scheduled")
-
+                writer.print("\", ")
+                writer.print("\"" + proposalUrl + "\", ")
+                writer.print(s" ${Messages(p.talkType.label)} not yet scheduled")
               }
 
               writer.print(",")
@@ -449,6 +457,43 @@ object CFPAdmin extends SecureCFPController {
   def allSpeakers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Ok(views.html.CFPAdmin.allSpeakersHome())
+  }
+
+  def duplicateSpeakers() = SecuredAction(IsMemberOf("cfp")) {
+    var uniqueSpeakers = scala.collection.mutable.Set[Speaker]()
+
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val allApprovedSpeakers = ApprovedProposal.allApprovedSpeakers()
+      val allRefusedSpeakers = ApprovedProposal.allRefusedSpeakers()
+      val allSpeakers = allApprovedSpeakers ++ allRefusedSpeakers
+
+      val speakersSortedByUUID = allSpeakers.toList
+        .sortBy(_.uuid)
+        .groupBy(_.uuid)
+        .filter(_._2.size == 1)
+        .flatMap { uuid => uuid._2}
+
+      val uniqueSpeakersSortedByName = speakersSortedByUUID.toList
+        .sortBy(_.cleanName)
+        .groupBy(_.cleanName)
+        .filter(_._2.size != 1)
+        .flatMap { name => name._2}
+
+      val speakersSortedByEmail = allSpeakers.toList
+        .sortBy(_.email)
+        .groupBy(_.email)
+        .filter(_._2.size != 1)
+        .flatMap { email => email._2}
+
+      val uniqueSpeakersSortedByEmail = speakersSortedByEmail.toList
+        .sortBy(_.email)
+        .groupBy(_.email)
+        .filter(_._2.size != 1)
+        .flatMap { email => email._2}
+
+      val combinedList = uniqueSpeakersSortedByName.toList ++ uniqueSpeakersSortedByEmail.toList
+
+      Ok(views.html.CFPAdmin.duplicateSpeakers(combinedList))
   }
 
   def allDevoxxians() = SecuredAction(IsMemberOf("admin")) {

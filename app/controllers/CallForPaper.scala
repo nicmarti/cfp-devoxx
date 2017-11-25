@@ -198,11 +198,11 @@ object CallForPaper extends SecureCFPController {
                   Review.archiveAllVotesOnProposal(proposal.id)
                   Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                 }
-                Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+                Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
               } else {
                 Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
-                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state [" + existingProposal.state.code + "]"))
+                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state '" + existingProposal.state.code + "'"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
               }
             case other =>
@@ -210,7 +210,7 @@ object CallForPaper extends SecureCFPController {
               if (Proposal.isNew(proposal.id)) {
                 // This is a "create new" operation
                 Proposal.save(uuid, proposal, ProposalState.DRAFT)
-                Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " with title " + StringUtils.abbreviate(proposal.title, 80)))
+                Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
                 Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
               } else {
                 // Maybe someone tried to edit someone's else proposal...
@@ -224,7 +224,6 @@ object CallForPaper extends SecureCFPController {
 
   def autoCompleteTag(term: String) = SecuredAction {
     implicit request => {
-
       val tagsFound = Tag.allTags()
         .filter(tag => tag.value.toLowerCase.contains(term.toLowerCase))
         .sortBy(f => f.value)
@@ -344,7 +343,11 @@ object CallForPaper extends SecureCFPController {
     implicit request =>
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraft(uuid, proposalId)
+      val currentSubmitted: Int = Proposal.countSubmittedAccepted(uuid)
+
       maybeProposal match {
+        case _ if currentSubmitted >= ConferenceDescriptor.maxProposals() =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("cfp.maxProposals.reached", ConferenceDescriptor.maxProposals()))
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
           if (ConferenceDescriptor.notifyProposalSubmitted) {
@@ -371,7 +374,7 @@ object CallForPaper extends SecureCFPController {
       }
   }
 
-  def sendMessageToCommitte(proposalId: String) = SecuredAction {
+  def sendMessageToCommittee(proposalId: String) = SecuredAction {
     implicit request =>
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findProposal(uuid, proposalId).filterNot(_.state == ProposalState.DELETED)
@@ -429,12 +432,12 @@ object CallForPaper extends SecureCFPController {
           Future.successful {
             val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
             if (ConferenceDescriptor.isTwilioSMSActive()) {
-                TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code)) match {
-                  case Success(reason)=>
-                    Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
-                  case Failure(exception)=>
-                    InternalServerError(views.html.CallForPaper.invalidPhoneNumber(exception)).as(HTML)
-                }
+              TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code)) match {
+                case Success(reason) =>
+                  Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
+                case Failure(exception) =>
+                  InternalServerError(views.html.CallForPaper.invalidPhoneNumber(exception)).as(HTML)
+              }
             } else {
               val webuser = request.webuser
               Speaker.updatePhone(webuser.uuid, validPhone, request.acceptLanguages.headOption)

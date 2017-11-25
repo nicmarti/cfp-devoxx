@@ -107,8 +107,8 @@ object Favorites extends UserCFPController {
     * @return JSON list of proposal IDs
     */
 
-  def scheduledProposals(uuid: String) = BasicAuthentication(Webuser.gluonUser) {
-    Action { implicit request =>
+  def scheduledProposals(uuid: String) = BasicAuthentication {
+    request =>
 
       val scheduledProposals = ScheduleTalk.allForUser(uuid)
 
@@ -132,9 +132,8 @@ object Favorites extends UserCFPController {
 
         ifNoneMatch match {
           case Some(someEtag) if someEtag == eTag => NotModified
-          case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
-            "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
-        }
+        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
+          // "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
       }
   }
 
@@ -145,8 +144,8 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def scheduleProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.gluonUser) {
-    Action { implicit request =>
+  def scheduleProposal(uuid: String, proposalId: String) = BasicAuthentication {
+    request =>
       if (Webuser.findByUUID(uuid).isDefined &&
         Proposal.findById(proposalId).isDefined) {
         ScheduleTalk.scheduleTalk(proposalId, uuid)
@@ -155,7 +154,6 @@ object Favorites extends UserCFPController {
         BadRequest
       }
     }
-  }
 
   /**
     * Remove a scheduled proposal for user.
@@ -163,8 +161,8 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeScheduledProposal(uuid: String, proposalId: String)  = BasicAuthentication(Webuser.gluonUser) {
-    Action { implicit request =>
+  def removeScheduledProposal(uuid: String, proposalId: String)  = BasicAuthentication {
+    request =>
       if (ScheduleTalk.isScheduledByThisUser(proposalId, uuid)) {
         ScheduleTalk.unscheduleTalk(proposalId, uuid)
         Gone
@@ -172,6 +170,36 @@ object Favorites extends UserCFPController {
         BadRequest("Not scheduled by user")
       }
     }
+
+  /**
+    * Return all the favorites (talk ID and #favs counter).
+    *
+    * @return All favs JSON
+    */
+  def allFavorites() = BasicAuthentication {
+    request =>
+      val allFavorites = FavoriteTalk.all().toList.sortBy(_._2).reverse
+
+      val ifNoneMatch = request.headers.get(IF_NONE_MATCH)
+      val toReturn = allFavorites.map {
+        entry =>
+          Json.toJson {
+            Map("id" -> Json.toJson(entry._1.id), "favs" -> Json.toJson(entry._2))
+          }
+      }
+
+      val jsonObject = Json.toJson(
+        Map(
+          "favorites" -> Json.toJson(toReturn)
+        )
+      )
+
+      val eTag = toReturn.hashCode().toString
+
+      ifNoneMatch match {
+        case Some(someEtag) if someEtag == eTag => NotModified
+        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
+      }
   }
 
   /**
@@ -179,8 +207,8 @@ object Favorites extends UserCFPController {
     *
     * @param uuid the user identifier
     */
-  def favoredProposals(uuid: String)  = BasicAuthentication(Webuser.gluonUser) {
-    Action { implicit request =>
+  def favoredProposals(uuid: String) = BasicAuthentication {
+    request =>
 
       val favoriteProposals = FavoriteTalk.allForUser(uuid)
 
@@ -204,9 +232,8 @@ object Favorites extends UserCFPController {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
-        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag,
-          "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
-      }
+        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
+          // "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
     }
   }
 
@@ -217,8 +244,8 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def favorProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.gluonUser) {
-    Action { implicit request =>
+  def favorProposal(uuid: String, proposalId: String) = BasicAuthentication {
+    request =>
       if (Webuser.findByUUID(uuid).isDefined &&
         Proposal.findById(proposalId).isDefined) {
         FavoriteTalk.favTalk(proposalId, uuid)
@@ -227,7 +254,6 @@ object Favorites extends UserCFPController {
         BadRequest
       }
     }
-  }
 
   /**
     * Remove a proposal favorite for given user.
@@ -235,8 +261,8 @@ object Favorites extends UserCFPController {
     * @param uuid the user identifier
     * @param proposalId the proposal identifier
     */
-  def removeFavoredProposal(uuid: String, proposalId: String) = BasicAuthentication(Webuser.gluonUser) {
-    Action { implicit request =>
+  def removeFavoredProposal(uuid: String, proposalId: String) = BasicAuthentication {
+    request =>
       if (FavoriteTalk.isFavByThisUser(proposalId, uuid)) {
         FavoriteTalk.unfavTalk(proposalId, uuid)
         Gone
@@ -245,4 +271,3 @@ object Favorites extends UserCFPController {
       }
     }
   }
-}

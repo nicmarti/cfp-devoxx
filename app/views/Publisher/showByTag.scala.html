@@ -1,0 +1,29 @@
+@(tagName: String, proposals: Iterable[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@views.html.Publisher.devoxxBE2016("Proposals by Tag") {
+  <div class="large-12">
+    <h3>@tags.renderMostProposals(proposals.size) found with tag '@tagName' </h3>
+    <p class="breadcrumb">
+      <a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt; by Tag
+    </p>
+  </div>
+
+  @proposals.groupBy(_.track).sliding(3,3).map { case oneRow =>
+    @oneRow.map{ case(track:Track, proposalsTrack:List[Proposal])=>
+    <div class="large-4 columns trackBox">
+      @tags.publisher.renderIconForTrack(track) @Messages(track.label)
+    <ul>
+    @proposalsTrack.sortBy(_.title).map { proposal: Proposal =>
+      <li>
+        <strong><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)" class="blackLink">@proposal.title</a></strong>
+        <br>
+        @proposal.allSpeakerUUIDs.map { speakerUUID =>
+          @tags.publisher.renderSpeaker(speakerUUID)
+        }
+      </li>
+    }
+    </ul>
+    </div>
+    }
+    <div class="clearfix"></div>
+  }
+}

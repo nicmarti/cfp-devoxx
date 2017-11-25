@@ -1,6 +1,7 @@
 package models
 
 import library.{Dress, Redis}
+import models.ProposalState.{ACCEPTED, APPROVED, BACKUP, DECLINED, DRAFT, REJECTED, SUBMITTED}
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import org.joda.time.Instant
 import play.api.data.Forms._
@@ -93,6 +94,16 @@ object ProposalState {
 
   val allButDeletedAndArchived = List(
     DRAFT,
+    SUBMITTED,
+    APPROVED,
+    REJECTED,
+    ACCEPTED,
+    DECLINED,
+    BACKUP
+  )
+
+  // Used to limit the number of proposals submitted per speaker
+  val allButDeletedArchivedDraft = List(
     SUBMITTED,
     APPROVED,
     REJECTED,
@@ -314,7 +325,7 @@ object Proposal {
   }
 
   def unapplyProposalForm(p: Proposal): Option[(Option[String], String, String, Option[String], List[String], String, String, String, String,
-    Boolean, String, Option[String], Option[Boolean], Option[String], Option[Seq[Tag]] )] = {
+    Boolean, String, Option[String], Option[Boolean], Option[String], Option[Seq[Tag]])] = {
     Option((
       Option(p.id),
       p.lang,
@@ -397,13 +408,8 @@ object Proposal {
           // Sync Tags:{tagId} Set for tags that have been removed
           val oldTags = oldProposal.get.tags
 
-          play.Logger.of("models.Proposal").info("oldTags:" + oldTags.toList.mkString(", "))
-          play.Logger.of("models.Proposal").info("newTags:" + newTags.toList.mkString(", "))
-
           if (oldTags.isDefined) {
             val diff = oldTags.get.diff(newTags.get)
-
-            play.Logger.of("models.Proposal").info("diff:" + diff.toList.mkString(", "))
 
             if (diff.nonEmpty) {
               diff.map(oldTag => {
@@ -414,22 +420,14 @@ object Proposal {
         }
 
         // Add proposal id for new tags
-        newTags.get.foreach( tag => {
-
-          play.Logger.of("models.Proposal").info("tag:" + tag.value)
+        newTags.get.foreach(tag => {
           if (tag.value.nonEmpty) {
             // Only allow tags that exist
             if (Tag.doesTagValueExist(tag.value)) {
-              play.Logger.of("models.Proposal").info("tag " + tag.value + " exists")
-
               client.sadd("Tags:" + tag.id, proposal.id)
-            } else {
-              play.Logger.of("models.Proposal").info("tag " + tag.value + " DOES NOT exist")
             }
-          } else {
-            play.Logger.of("models.Proposal").info("tag is empty")
           }
-        } )
+        })
       }
   }
 
@@ -539,6 +537,10 @@ object Proposal {
     implicit client =>
       val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}")
       allProposalIds.size
+  }
+
+  def countSubmittedAccepted(uuid: String): Int = {
+    ProposalState.allButDeletedArchivedDraft.map(s => countByProposalState(uuid, s)).sum
   }
 
   def findProposal(uuid: String, proposalId: String): Option[Proposal] = {

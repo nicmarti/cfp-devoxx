@@ -16,8 +16,8 @@
 
             <div class="panel-body">
                 <div class="button-group">
-                    <a href="@routes.LeaderboardController.leaderBoard()" class="btn btn-sm btn-primary"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a>
-                    <a href="@routes.GoldenTicketAdminController.showStats()" class="btn btn-sm btn-success">Golden Tickets Stats</a>
+                    <a href="@routes.LeaderboardController.leaderBoard()" class="btn btn-sm btn-success"><i class="icon-trophy"></i> @Messages("admin.btn.leaderboard")</a>
+                    <a href="@routes.GoldenTicketAdminController.showStats()" class="btn btn-sm btn-success"><i class="icon-trophy"></i> Golden Tickets Stats</a>
                     <a href="@routes.CFPAdmin.allMyVotes()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> @Messages("admin.btn.myvotes")</a>
                     <a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(None)" class="btn btn-sm btn-primary"><i class="icon-circle-arrow-right"></i> @Messages("admin.btn.otherReviewer")</a>
                     <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i class="icon-dollar"></i> @Messages("admin.btn.sponsortalks")</a>
@@ -55,9 +55,9 @@
                     <i class="icon-filter"></i> @Messages("cfp.filter.on")
                     @Track.allIDs.map{idTrack=>
                         @if(track.isDefined && track.get == idTrack) {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@idTrack</a>
+                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@Html(Messages(idTrack + ".label"))</a>
                         }else {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
+                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Html(Messages(idTrack+".label"))</a>
                         }
                     }
                 - <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn btn-default btn-sm"><i class="icon-remove"></i>@Messages("cfp.filter.off")</a>
@@ -82,7 +82,7 @@
                                         @proposal.title
                                         @if(proposal.tags.isDefined) {
                                             <br><br>
-                                            @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag))
+                                            @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag, cfpAdmin = true))
                                         }
                                     </td>
                                     <td>
@@ -148,7 +148,7 @@
                         @events.map { event: Event =>
                             <tr>
                                 <td class="text-center">
-                                    <small>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("dd/MM HH:mm"))</small>
+                                    <small>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Paris")).toString("dd/MM HH:mm"))</small>
                                 </td>
                                 <td class="text-center">
                                 @tags.renderGravatar(event.uuid,showName = false)

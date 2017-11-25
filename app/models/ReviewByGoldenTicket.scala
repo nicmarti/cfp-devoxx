@@ -26,7 +26,9 @@ package models
 import library.{ComputeVotesAndScore, Redis, Stats, ZapActor}
 import models.Review._
 import org.joda.time.{DateTime, Instant}
+import play.api.i18n.Messages
 
+import scala.collection.immutable.Set
 import scala.math.BigDecimal.RoundingMode
 
 /**
@@ -52,16 +54,20 @@ object ReviewByGoldenTicket {
       ZapActor.actor ! ComputeVotesAndScore()
   }
 
-  def totalGoldenTickets():Int=Redis.pool.withClient {
+  def allGoldenTicketReviewerUUIDs(): Set[String] = Redis.pool.withClient {
     implicit client =>
-       client.smembers("Webuser:gticket").size
+      client.smembers("Webuser:gticket")
+  }
+
+  def totalGoldenTickets(): Long = Redis.pool.withClient {
+    implicit client =>
+      client.scard("Webuser:gticket")
   }
 
   def countVotesForAllUsers():List[(String,Long)]=Redis.pool.withClient{
     implicit client=>
-      val allGoldenTicketUUID:Set[String] = client.smembers("Webuser:gticket")
-
-      val votesPerReviewers = allGoldenTicketUUID.map{
+      val allReviewerUUIDs: Set[String] = allGoldenTicketReviewerUUIDs()
+      val votesPerReviewers = allReviewerUUIDs.map {
         reviewerUUID:String=>
           val totalVotes = client.scard(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID")
           (reviewerUUID, totalVotes)
@@ -109,6 +115,8 @@ object ReviewByGoldenTicket {
 
   def deleteVoteForProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
+      val votesOnThisProposal = totalVoteFor(proposalId)
+
       val allAuthors = client.smembers(s"ReviewGT:Reviewed:ByProposal:$proposalId")
       val tx = client.multi()
       allAuthors.foreach {
@@ -119,6 +127,8 @@ object ReviewByGoldenTicket {
       tx.del(s"ReviewGT:Votes:$proposalId")
       tx.del(s"ReviewGT:Dates:$proposalId")
       tx.exec()
+
+      play.Logger.info(s"${Messages("cfp.goldenTicket")} review details for proposal $proposalId has been deleted, the proposal had $votesOnThisProposal vote(s) before deletion.")
   }
 
   val ReviewerAndVote = "(\\w+)__(\\d+)".r
@@ -344,7 +354,7 @@ object ReviewByGoldenTicket {
         """.stripMargin
 
       val sha1script = client.scriptLoad(script)
-      play.Logger.of("models.ReviewByGoldenTicket").info("Uploaded LUA script for Golden ticket to Redis " + sha1script)
+      play.Logger.of("models.ReviewByGoldenTicket").info(s"Uploaded LUA script for ${Messages("cfp.goldenTicket")} to Redis " + sha1script)
       sha1script
   }
 

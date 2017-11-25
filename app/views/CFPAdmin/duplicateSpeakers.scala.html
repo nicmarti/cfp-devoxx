@@ -1,0 +1,94 @@
+@(speakers:List[Speaker])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Speakers") {
+<link href="@routes.Assets.at(path="/public",file="css/jquery.dataTables.min.css")" rel="stylesheet" id="theme">
+<script src="@routes.Assets.at(path="/public",file="js/jquery.dataTables.min.js")" type="text/javascript"></script>
+
+<div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+        <div class="alert alert-danger alert-dismissable col-md-12">
+            <strong>Error :</strong>
+            @flash.get("error").get
+        </div>
+    }
+    @if(flash.get("success").isDefined){
+        <div class="alert alert-success alert-dismissable col-md-12">
+            @flash.get("success").get
+        </div>
+    }
+
+    <div class="col-md-12">
+        <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Duplicate speakers</h3>
+            <h4></h4>
+            <span class="label label-info">@speakers.size users</span>
+        </div>
+        <div class="panel-body">
+
+            @if(speakers.nonEmpty){
+            <table id="speakersTable" class="table table-bordered table-strippted">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Lang</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @speakers.map{ speaker: Speaker =>
+                    <tr>
+                       <td>
+                            @tags.renderGravatar(speaker.uuid, showName=true, showPhoto=false)
+                       </td>
+                        <td>
+                            @speaker.cleanLang
+                        </td>
+                        <td>
+                            @speaker.company.getOrElse("")
+                        </td>
+                        <td>
+                            <small>@speaker.email</small>
+                        </td>
+                        <td>
+                            <a href="@routes.Backoffice.deleteSpeaker(speaker.uuid)" class="btn btn-sm btn-danger" ><i class="icon-lock"></i> @Messages("sp.deleteSpeaker")</a>
+                        </td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+            }else{
+                <P>There are no duplicate speakers.</P>
+            }
+        </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('#speakersTable').dataTable({
+        "aaSorting": [[ 0, "asc" ]],
+        "iDisplayLength": 50,
+        "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        "bStateSave": true,
+        "aoColumns": [
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"},
+        { "sType": "string"}
+        ]
+    });
+} );
+</script>
+}

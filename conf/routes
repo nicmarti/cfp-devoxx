@@ -44,6 +44,9 @@ POST           /cfp/profile/phoneNumber/confirm                                 
 
 # Email Digests
 POST          /cfp/profile/digest                                               controllers.DigestController.update()
+DELETE        /cfp/profile/digestTrack                                          controllers.DigestController.removeFilter()
+POST          /cfp/profile/digestTrack                                          controllers.DigestController.addFilter()
+GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
 
 # proposal
@@ -59,7 +62,7 @@ GET           /cfp/proposal/delete/:proposalId                                  
 GET           /cfp/proposal/undelete/:proposalId                                controllers.CallForPaper.undeleteProposal(proposalId:String)
 GET           /cfp/proposal/submit/:proposalId                                  controllers.CallForPaper.submitProposal(proposalId:String)
 GET           /cfp/comment/:proposalId                                          controllers.CallForPaper.showCommentForProposal(proposalId:String)
-POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommitte(proposalId:String)
+POST          /cfp/comment/:proposalId                                          controllers.CallForPaper.sendMessageToCommittee(proposalId:String)
 
 # Password
 GET           /forget                                                           controllers.Authentication.forgetPassword
@@ -103,6 +106,8 @@ POST          /cfpadmin/cfpWebusers/trackLeaders                                
 GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
 
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
+GET           /cfpadmin/duplicateSpeakers                                       controllers.CFPAdmin.duplicateSpeakers()
+GET           /cfpadmin/allDevoxxians                                           controllers.CFPAdmin.allDevoxxians()
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/devoxxians/all                                          controllers.CFPAdmin.allDevoxxians()
 GET           /cfpadmin/devoxxians/invalids                                     controllers.CFPAdmin.invalidDevoxxians()
@@ -176,6 +181,8 @@ POST          /admin/tag/delete/:uuid                                           
 GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
+# Push notification message to "My Devoxx" mobile app
+POST          /admin/push/message                                               controllers.Backoffice.pushNotifications()
 
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
@@ -213,8 +220,10 @@ GET           /cloudtags                                                        
 GET           /2018/speakers.html                                               controllers.Publisher.showAllSpeakers()
 GET           /2018/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
 GET           /2018/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
+GET           /2018/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
 GET           /2018/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2018/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
+GET           /2017/talks                                                       controllers.Publisher.homePublisher()
 GET           /2018/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2018/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2018/byday/:day                                                  controllers.Publisher.showByDay(day:String)
@@ -262,18 +271,19 @@ GET           /api/conferences/:eventCode/tracks                                
 
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
 
-# API for Search engine
-GET           /api/search/talks                                                 controllers.SearchAPI.index()
-POST          /api/search/talks                                                 controllers.SearchAPI.searchTalks()
-
 # New My Devoxx and PWA REST endpoints
 POST          /api/account/verify                                               controllers.RestAPI.verifyAccount()
 GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
 DELETE        /api/proposals/:uuid/scheduled/:proposalId                        controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)
 POST          /api/proposals/:uuid/schedule/:proposalId                         controllers.Favorites.scheduleProposal(uuid:String, proposalId:String)
+GET           /api/proposals/favorites                                          controllers.Favorites.allFavorites()
 GET           /api/proposals/:uuid/favored                                      controllers.Favorites.favoredProposals(uuid:String)
 DELETE        /api/proposals/:uuid/favored/:proposalId                          controllers.Favorites.removeFavoredProposal(uuid:String, proposalId:String)
 POST          /api/proposals/:uuid/favor/:proposalId                            controllers.Favorites.favorProposal(uuid:String, proposalId:String)
+
+# API for Search engine
+GET           /api/search/talks                                                 controllers.SearchAPI.index()
+POST          /api/search/talks                                                 controllers.SearchAPI.searchTalks()
 
 # API for AngularJS
 GET           /schedulling/slots                                                controllers.SchedullingController.slots(confType:String)
@@ -328,6 +338,7 @@ POST          /admin/goldenTickets/newTicket/importGroupOfGT                    
 POST          /admin/goldenTickets/newTicket/bulkImport                         controllers.GoldenTicketAdminController.bulkImport()
 GET           /admin/goldenTickets/votes                                        controllers.GoldenTicketAdminController.showGoldenTicketVotes()
 GET           /admin/goldenTickets/stats                                        controllers.GoldenTicketAdminController.showStats()
+GET           /admin/goldenTickets/repairStatsAfterGTArchivingAction            controllers.GoldenTicketAdminController.repairStatsAfterGTArchivingAction()
 POST          /admin/goldenTickets/:id/unactivate                               controllers.GoldenTicketAdminController.unactivateGoldenTicket(id:String)
 POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    controllers.GoldenTicketAdminController.sendEmail(goldenTicketId:String)
 
@@ -360,8 +371,8 @@ GET           /toptalks                                                         
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                                     controllers.Assets.at(path="/public", file)
 
-GET           /bp/exportAgenda                                                  controllers.Backoffice.exportAgenda()
-GET           /admin/ç                                   controllers.Backoffice.checkInvalidWebuserForAllSpeakers()
+# TODO NMA
+GET           /admin/checkInvalidWebuserForAllSpeakers                          controllers.Backoffice.checkInvalidWebuserForAllSpeakers()
 
 # SMS
 GET           /sms/speakers                                                     controllers.SMSController.allSpeakers()
@@ -369,6 +380,8 @@ GET           /sms/talks                                                        
 GET           /sms/welcome                                                      controllers.SMSController.sendWelcomeMessage(phoneNumber:String)
 GET           /sms/callback                                                     controllers.SMSController.testCallback()
 POST          /sms/callback                                                     controllers.SMSController.callback()
+
+GET           /bp/fullAgenda                                                  controllers.Backoffice.exportAgenda()
 
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()
