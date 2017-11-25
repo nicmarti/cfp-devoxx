@@ -32,7 +32,7 @@ index.txt2=Use one of the following social service, this is simpler and you won'
 company=Your company
 bio=A short bio
 twitter=Your twitter handle
-email.digest.label=Email Digest
+email.digest.label=Email Digest (CFP member only)
 email.digest.description=Receive new proposals notifications via a digest email.
 email.digest.realtime.description=Interval is every 5 minutes.
 email.digest.daily.description=Expect your daily digest at {0} GMT.
@@ -949,4 +949,5 @@ admin.btn.devoxxians=All Devoxxians
 
 cfp.maxProposals.reached=Warning, you cannot submit more than {0} proposals. We had to limit the number of submission.
 
-cfp.goldenTicket=Golden Tickets
+
+cfp.member=CFP Member

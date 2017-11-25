@@ -858,3 +858,19 @@ tag.placeholder5=Tag de la mort, le dernier
 title.maxLength=125 caractères max.
 
 demoLevel.help=Slides, atelier, ou démonstration en direct... à vous de préciser. Cette information n''est utile que pour le comité de sélection.
+
+email.digest.label=Résumé par email (CFP seulement)
+email.digest.description=En tant que membre du CFP, vous pouvez demander à recevoir ici automatiquement un résumé des soumissions postées chaque jour, par les autres orateurs. Cette fonction n''est accessible que parce que votre profil appartient au groupe "CFP".
+email.digest.realtime.description=Interval is every 5 minutes.
+email.digest.daily.description=Expect your daily digest at {0} GMT.
+email.digest.weekly.description=Expect your weekly digest at {0} GMT on {1}.
+email.digest.never.description=Digest turned off. Don't be a stranger!
+email.digest.day.1=Monday
+email.digest.day.2=Tuesday
+email.digest.day.3=Wednesday
+email.digest.day.4=Thursday
+email.digest.day.5=Friday
+email.digest.day.6=Saturday
+email.digest.day.7=Sunday
+
+cfp.member=Membre du CFP

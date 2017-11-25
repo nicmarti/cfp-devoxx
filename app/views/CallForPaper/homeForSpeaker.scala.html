@@ -7,11 +7,19 @@
 @import org.apache.commons.lang3.StringUtils
 @main(Messages("cfp.title")){
     <div class="row">
-        <div class="col-md-4">
-            <h3><i class="icon-magic"></i> @Messages("your.profile")</h3>
-
+        <div class="col-md-4 col-lg-3 col-xs-12">
             <div class="panel panel-default">
-                <div class="panel-heading"><p>@speaker.cleanName</p><small>@webuser.email</small></div>
+                <div class="panel-heading">
+                    <h3><i class="icon-magic"></i> @Messages("your.profile")</h3>
+                </div>
+
+            <div class="panel-body">
+                <div class="panel-heading">
+                    <p>@speaker.cleanName</p><small>@webuser.email</small>
+                @if(Webuser.isMember(webuser.uuid, "cfp")){
+                    <span class="label label-success">@Messages("cfp.member")</span>
+                }
+                </div>
                 <table class="table">
                     <tbody>
                         <tr>
@@ -105,11 +113,10 @@
                     </tbody>
                 </table>
 
-
-                <div class="panel-footer">
-                    <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary">@Html(Messages("edit.profile"))</a>
-                </div>
-
+            </div>
+            <div class="panel-footer">
+                <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary">@Html(Messages("edit.profile"))</a>
+            </div>
             </div>
 
             @if(ConferenceDescriptor.isTwilioSMSActive() && myProposals.exists(p => p.state == ProposalState.ACCEPTED ||  p.state == ProposalState.APPROVED )) {
@@ -128,58 +135,15 @@
                     </div>
                 </div>
             }
-
-            @if(Webuser.isMember(webuser.uuid, "cfp")){
-                <div class="digestMessage">
-                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>@Messages("email.digest.description")<br>
-                                    <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
-                                <td>
-                                    <select id="digest">
-                                    @Digest.allDigests.map { digest =>
-                                        @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
-                                            <option value='@digest.value' selected>
-                                        }else {
-                                            <option value='@digest.value'>
-                                            }
-                                        @digest.value
-                                    </option>
-                                    }
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    Filter your digest for selected track(s). Uncheck all tracks to disable filter.<br><br>
-                                    <div class="filterTracks">
-                                    @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
-                                        @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
-                                            @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
-                                                <input type="checkbox" id="@track.id" checked/>
-                                            } else {
-                                                <input type="checkbox" id="@track.id"/>
-                                            }
-                                        } else {
-                                            <input type="checkbox" id="@track.id"/>
-                                        }
-                                        &nbsp;@Html(Messages(track.label))<br>
-                                    }
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            }
-
         </div>
 
-        <div class="col-md-8">
-            <h3><i class="icon-tasks"></i> @Messages("your.submission")</h3>
+        <div class="col-md-8 col-lg-9 col-xs-12">
 
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3><i class="icon-tasks"></i> @Messages("your.submission")</h3>
+                </div>
+                <div class="panel-body">
             @if(flash.get("error").isDefined) {
                  <div class="alert alert-danger alert-dismissable">
                      <strong>Error :</strong>
@@ -216,7 +180,6 @@
                 @Messages("no.proposal")
                 </div>
             } else {
-
 
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -357,8 +320,67 @@
                 </table>
             </div>
         }
-
+    </div>
 </div>
+
+
+
+    </div>
+    <div class="row">
+            @if(Webuser.isMember(webuser.uuid, "cfp")){
+                <div class="col-md-8 col-lg-9 col-xs-12 col-lg-offset-3 col-md-offset-4">
+                    <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+                    </div>
+                    <div class="panel panel-default">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>@Messages("email.digest.description") <br>
+                                        <span id="digestMsg">@Digest.message(webuser.uuid)</span></td>
+                                    <td>
+                                        <select label="Frequency" id="digest">
+                                        @Digest.allDigests.map { digest =>
+                                            @if(Digest.retrieve(webuser.uuid).equals(digest.value)) {
+                                                <option value='@digest.value' selected>
+                                            } else {
+                                                <option value='@digest.value'>
+                                                }
+                                            @digest.value
+                                        </option>
+                                        }
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        Filter your digest for selected track(s). Uncheck all tracks to disable filter.<br><br>
+                                        <div class="filterTracks">
+                                        @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
+                                            @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
+                                                @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
+                                                    <input type="checkbox" id="@track.id" checked/>
+                                                } else {
+                                                    <input type="checkbox" id="@track.id"/>
+                                                }
+                                            } else {
+                                                <input type="checkbox" id="@track.id"/>
+                                            }
+                                            &nbsp;
+                                            @Html(Messages(track.label)) <br>
+                                        }
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+
+    </div>
 <script language="JavaScript">
 
     $('#digest').change(function(){
