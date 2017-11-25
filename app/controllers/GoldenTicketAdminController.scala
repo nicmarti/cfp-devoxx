@@ -29,6 +29,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.i18n.Messages
 
 /**
   * A controller for Admin, to moderate or to add Golden Ticket.
@@ -68,7 +69,7 @@ object GoldenTicketAdminController extends SecureCFPController {
         },
         validTicket => {
           if (GoldenTicket.hasTicket(webuserUUID = validTicket.webuserUUID)) {
-            BadRequest(views.html.GoldenTicketAdmin.newGoldenTicket(goldenTicketForm.fill(validTicket).withError("Error", "This webuser has already a Golden Ticket. Only one ticket per user is allowed.")))
+            BadRequest(views.html.GoldenTicketAdmin.newGoldenTicket(goldenTicketForm.fill(validTicket).withError("Error", s"This webuser has already a ${Messages("cfp.goldenTicket")}. Only one ticket per user is allowed.")))
           } else {
             GoldenTicket.save(validTicket)
             ZapActor.actor ! NotifyGoldenTicket(validTicket)
@@ -125,7 +126,7 @@ object GoldenTicketAdminController extends SecureCFPController {
               val gt = GoldenTicket.importTicket(ticket)
               ZapActor.actor ! NotifyGoldenTicket(gt)
           }
-          Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> s"Successfully created ${validForm.tickets.length} golden tickets")
+          Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> s"Successfully created ${validForm.tickets.length} ${Messages("cfp.goldenTickets")}")
         }
       )
   }
@@ -144,8 +145,8 @@ object GoldenTicketAdminController extends SecureCFPController {
       GoldenTicket.findById(id) match {
         case Some(goldenTicket) =>
           GoldenTicket.delete(id)
-          Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> "Deleted golden ticket")
-        case _ => Redirect(routes.GoldenTicketAdminController.showAll()).flashing("error" -> "No golden ticket with this id")
+          Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> s"Deleted ${Messages("cfp.goldenTicket")}")
+        case _ => Redirect(routes.GoldenTicketAdminController.showAll()).flashing("error" -> s"No ${Messages("cfp.goldenTicket")} with this id")
       }
   }
 
@@ -173,6 +174,31 @@ object GoldenTicketAdminController extends SecureCFPController {
       }.sortBy(_._2._4.n).reverse
 
       Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals))
+  }
+
+  def repairStatsAfterGTArchivingAction() = SecuredAction(IsMemberOf("admin")) {
+    def doesNotExist(reviewerUuid: String, allGoldenTicketsWithTheirReviewer: List[(GoldenTicket, Webuser)]): Boolean = {
+      ! allGoldenTicketsWithTheirReviewer.exists(_._2.uuid.equals(reviewerUuid))
+    }
+
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val allVotes: Set[(String, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev))] = ReviewByGoldenTicket.allVotes()
+      val allVotesReversedSorted = allVotes.toList.sortBy(_._2._1.s).reverse
+      val allProposalIDs = allVotesReversedSorted.map(_._1)
+
+      allProposalIDs.foreach(
+        proposalId => ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
+      )
+
+      val allGoldenTicketReviewerUUIDs: Set[String] = ReviewByGoldenTicket.allGoldenTicketReviewerUUIDs()
+
+      val allGoldenTicketsWithTheirReviewer: List[(GoldenTicket, Webuser)] = GoldenTicket.allWithWebuser()
+
+      allGoldenTicketReviewerUUIDs
+        .filter(reviewerUuid => doesNotExist(reviewerUuid, allGoldenTicketsWithTheirReviewer))
+        .foreach(reviewerUuid => Webuser.removeFromGoldenTicket(reviewerUuid))
+
+      Redirect(routes.GoldenTicketAdminController.showAll()).flashing("success" -> s"Repaired ${Messages("cfp.goldenTickets")} stats after Archiving action.")
   }
 
   def showStats() = SecuredAction(IsMemberOf("cfp")) {
