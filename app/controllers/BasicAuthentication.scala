@@ -1,33 +1,46 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
-import sun.misc.BASE64Decoder
-import scala.util.control.Exception._
-import scala.concurrent.Future
+import AuthenticationHelpers._
+import models.ConferenceDescriptor
+import play.api.mvc.Results._
+import play.api.mvc.Security.AuthenticatedBuilder
 
-/**
-  * @author Stephan Janssen
-  */
-object BasicAuthentication extends Controller {
+object BasicAuthentication extends AuthenticatedBuilder(
+  _.headers.get("Authorization")
+    .flatMap(parseAuthHeader)
+    .flatMap(validateUser),
+  onUnauthorized = { _ =>
+    Unauthorized(views.html.defaultpages.unauthorized())
+      .withHeaders("WWW-Authenticate" -> """Basic realm="Secured"""")
+  }
+)
 
-  def apply[A](userExists: (String, String) => Boolean)(action: Action[A]): Action[A] =
+object AuthenticationHelpers {
 
-    Action.async(action.parser) { request =>
+  val validCredentials = Set(
+    Credentials(User(ConferenceDescriptor.gluonUsername()), Password(ConferenceDescriptor.gluonPassword()))
+  )
 
-      request.headers.get("Authorization").map { authorization =>
-        val decoder = new BASE64Decoder()
-        authorization.split(" ").drop(1).headOption.filter { encoded =>
-          val authInfo = new String(new BASE64Decoder().decodeBuffer(encoded)).split(":").toList
+  def authHeaderValue(credentials: Credentials): String =
+    "Basic " + org.apache.commons.codec.binary.Base64.encodeBase64(s"${credentials.user.value}:${credentials.password.value}".getBytes)
 
-          allCatch.opt {
-            val (email, password) = (authInfo.head, authInfo(1))
-            val exists = userExists(email, password)
-            play.Logger.of("controllers.BasicAuthentication").info(s"$email:$password=$exists")
-            exists
-          } getOrElse false
+  def parseAuthHeader(authHeader: String): Option[Credentials] =
+    authHeader.split("""\s""") match {
+      case Array("Basic", userAndPass) =>
+        new String(org.apache.commons.codec.binary.Base64.decodeBase64(userAndPass), "UTF-8").split(":") match {
+          case Array(user, password) => Some(Credentials(User(user), Password(password)))
+          case _                     => None
         }
-      }.map(_ => action(request)).getOrElse {
-        Future.successful(Unauthorized("Authentication Failed"))
+      case _ => None
       }
+
+  def validateUser(c: Credentials): Option[User] =
+    if (validCredentials.contains(c))
+      Some(c.user)
+    else
+      None
     }
-}
+
+case class Credentials(user: User, password: Password)
+case class User(value: String) extends AnyVal
+case class Password(value: String) extends AnyVal
