@@ -177,7 +177,7 @@ GET           /admin/tags/import                                                
 GET           /admin/tags/export                                                controllers.Backoffice.exportTags()
 POST          /admin/tag/save                                                   controllers.Backoffice.saveTag()
 POST          /admin/tags/saveAll                                               controllers.Backoffice.saveImportTags()
-POST          /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
+DELETE        /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
 GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 

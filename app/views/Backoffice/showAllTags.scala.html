@@ -44,7 +44,7 @@
               </thead>
               <tbody>
               @tags.map{ tag =>
-                <tr>
+                <tr id="@tag.id">
                   <td>
                       @tag.value
                   </td>
@@ -54,9 +54,7 @@
                     </form>
                   </td>
                   <td>
-                    <form action="@routes.Backoffice.deleteTag(tag.id)" method="POST">
-                      <button type="submit" value="unactivate" class="btn btn-warning btn-small"><i class="icon-trash"></i></button>
-                    </form>
+                      <button type="button" data-url="@routes.Backoffice.deleteTag(tag.id)" data-id="@tag.id" class="deleteBtn btn btn-warning btn-small"><i class="icon-trash"></i></button>
                   </td>
                 </tr>
               }
@@ -70,7 +68,27 @@
     </div>
   </div>
   <script type="text/javascript">
+    function delete_tag(){
+        var urlToDelete = $(this).attr('data-url');
+        var tagId = $(this).attr('data-id');
+
+        $.ajax({
+        url: urlToDelete,
+        type: 'DELETE',
+        success: function(data) {
+            var rowToDelete = $('#tags').find('tr#'+tagId);
+            if(rowToDelete !== null){
+                rowToDelete.fadeIn().remove();
+            }
+        }
+    });
+    }
+
           $(document).ready(function() {
+
+
+
+              $('.deleteBtn').click(delete_tag);
 
             $('#tags').dataTable({
               "aaSorting": [[ 1, "desc" ]],
