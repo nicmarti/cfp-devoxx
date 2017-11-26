@@ -711,7 +711,7 @@ object ConferenceDescriptor {
       datesFr = "du 18 au 20 avril 2018",
       datesEn = "from 18th to 20th of April, 2018",
       cfpOpenedOn = DateTime.parse("2017-11-28T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2018-01-30T23:59:00+02:00"),
+      cfpClosedOn = DateTime.parse("2018-01-14T23:59:00+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2018-02-15T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
