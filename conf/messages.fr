@@ -124,7 +124,7 @@ track=Thème principal de la présentation
 summary.preview=Aperçu de votre présentation
 preview.warn=Votre proposition est à l''état DRAFT. N''oubliez pas de soumettre la proposition avec l''icône
 preview.warn2=dans le tableau de la page d''accueil.
-presubmit.reminder=Lorsque vous êtes prêt à soumettre votre proposition, n''oubliez pas de cliquer sur l''enveloppe orange sur l''écran principal (
+presubmit.reminder=Lorsque vous êtes prêt à envoyer votre proposition, n''oubliez pas d''utiliser le bouton "Soumettre"
 
 # Proposal type
 key.label=Keynote, 20mn, jeudi et vendredi matin
@@ -143,6 +143,9 @@ ignite.label=Conférence Ignite, 5mn, jeudi et vendredi de 13h à 14h
 Issue.report=Notifier l''équipe
 btn.send=Envoyer
 msg=Votre message
+
+
+cfp.msg.sendMsg=Envoyer votre message au comité
  
 # Home
 appel.conf=Appel aux conférenciers
@@ -874,3 +877,5 @@ email.digest.day.6=Saturday
 email.digest.day.7=Sunday
 
 cfp.member=Membre du CFP
+
+golden.welcome.txt=Bienvenue sur l''espace Golden Ticket. Achetez une place Golden Ticket sur le site de {0} et participez à la revue des sujets, votez, et donnez votre avis !

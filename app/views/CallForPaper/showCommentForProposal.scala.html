@@ -46,8 +46,9 @@
                 <div class="panel-body">
                 @helper.form(action = routes.CallForPaper.sendMessageToCommittee(proposal.id)) {
                     @helper.textarea(msgToCommitte("msg"), 'class -> "form-control input-xs")
-                    <button type="submit" class="btb btn-xs btn-primary">Send your message</button>
+                    <button type="submit" class="btn btn-sm btn-success">@Messages("cfp.msg.sendMsg")</button>
                 }
+                    <a class="btn btn-primary btn-sm">@Messages("ar.goBackHome")</a>
                 </div>
 
                 <div class="panel-body">

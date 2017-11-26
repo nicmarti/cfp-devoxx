@@ -447,6 +447,8 @@ sw.company=Company
 sw.talkType=All talks
 sw.details=See details
 
+cfp.msg.sendMsg=Send your message
+
 conf=Conference
 uni=University
 tia=Tools-in-Action
@@ -716,7 +718,7 @@ approved=Speaker approved
 cstory=Session de live coding Code-story
 day-jeudi=Thursday
 declined=Speaker declined
-presubmit.reminder=When you are ready, do not forget to submit your proposal from the main screen (click on
+presubmit.reminder=When you are ready, do not forget to submit your proposal from the main screen.
 
 wl.action=Action
 wl.lm=Last modified
@@ -948,6 +950,6 @@ invalid.phone.txt=Invalid phone number or permission to send an SMS has not been
 admin.btn.devoxxians=All Devoxxians
 
 cfp.maxProposals.reached=Warning, you cannot submit more than {0} proposals. We had to limit the number of submission.
-
-
 cfp.member=CFP Member
+
+golden.welcome.txt=Welcome to the Golden Ticket private section. Buy a Golden Ticket on {0} web site, and get access to proposals! Be part of the team that review and select talks for {0}.
