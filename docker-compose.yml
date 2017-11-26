@@ -9,7 +9,9 @@ services:
    expose:
      - 6379
   play:
-    image: ifinavet/playframework:2.2.3
+    build:
+      context: .
+      dockerfile: play.dockerfile
     volumes:
       - .:/app:rw
     ports:
