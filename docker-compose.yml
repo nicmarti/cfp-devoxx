@@ -9,7 +9,9 @@ services:
    expose:
      - 6379
   play:
-    image: alexproca/play:2.2.3
+    build:
+      context: .
+      dockerfile: play.dockerfile
     volumes:
       - .:/app:rw
     ports:
