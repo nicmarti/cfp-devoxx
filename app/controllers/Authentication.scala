@@ -536,7 +536,6 @@ object Authentication extends Controller {
                 result =>
                   result.status match {
                     case 200 =>
-                      val b = result.body
                       val googleToken = Json.parse(result.body).as[GoogleToken]
                       Redirect(routes.Authentication.createFromGoogle()).withSession("google_token" -> googleToken.access_token)
                     case _ =>
@@ -590,7 +589,7 @@ object Authentication extends Controller {
                   }
                 case other =>
                   play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                  BadRequest("Unable to complete the Github User API call")
+                  BadRequest("Unable to complete the Google User API call due to "+result.status)
               }
           }
       }.getOrElse {
