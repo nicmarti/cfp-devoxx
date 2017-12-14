@@ -533,11 +533,10 @@ object Backoffice extends SecureCFPController {
   def fixForInvalidSpeakers(speakerUUID: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
-     val result = Speaker.fixAndRestoreOldWebuser(speakerUUID)
+      //Speaker.findBuggedSpeakers
 
-      Ok("Result: " +result)
-
-
+      val result = Speaker.fixAndRestoreOldWebuser(speakerUUID)
+      Ok("Result: " + result)
   }
 
 }

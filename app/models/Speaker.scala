@@ -284,42 +284,60 @@ object Speaker {
     speakers.sortBy(_.name.getOrElse(""))
   }
 
-  def fixAndRestoreOldWebuser(speakerUUID:String):String = Redis.pool.withClient {
+  def fixAndRestoreOldWebuser(speakerUUID: String): String = Redis.pool.withClient {
     implicit client =>
 
-        Speaker.findByUUID(speakerUUID).map {
+      Speaker.findByUUID(speakerUUID).map {
         speaker =>
-          val badWebuser = Webuser.findByEmail(speaker.email).get
+
           if (Webuser.findByEmail(speaker.email).exists(w => w.uuid != speaker.uuid)) {
 
-              // Try to retrieve the old Webuser
+            // Try to retrieve the old Webuser
             val oldWebuser = Webuser.findByUUID(speakerUUID)
 
-            if(oldWebuser.isDefined){
+            if (oldWebuser.isDefined) {
               // Update the Webuser:Email:<speaker email>
               client.set("Webuser:Email:" + speaker.email, oldWebuser.get.uuid)
-
-              val tx = client.multi()
-              tx.hdel("Webuser", badWebuser.uuid)
-              tx.del("Webuser:UUID:" + badWebuser.uuid)
-              tx.srem("Webuser:speaker", badWebuser.uuid)
-              tx.srem("Webuser:cfp", badWebuser.uuid)
-              tx.srem("Webuser:admin", badWebuser.uuid)
-              tx.srem("Webuser:visitor", badWebuser.uuid)
-              tx.srem("Webuser:gticket", badWebuser.uuid)
-              tx.srem("Webuser:devoxxian", badWebuser.uuid)
-              tx.exec()
+              val badWebuser = Webuser.findByEmail(speaker.email)
+              if(badWebuser.isDefined) {
+                val tx = client.multi()
+                tx.hdel("Webuser", badWebuser.get.uuid)
+                tx.del("Webuser:UUID:" + badWebuser.get.uuid)
+                tx.srem("Webuser:speaker", badWebuser.get.uuid)
+                tx.srem("Webuser:cfp", badWebuser.get.uuid)
+                tx.srem("Webuser:admin", badWebuser.get.uuid)
+                tx.srem("Webuser:visitor", badWebuser.get.uuid)
+                tx.srem("Webuser:gticket", badWebuser.get.uuid)
+                tx.srem("Webuser:devoxxian", badWebuser.get.uuid)
+                tx.exec()
+              }
 
               "Done. Speaker should now be able to authenticate and to reload its old profile. New profile has been deleted."
-            }else{
+            } else {
               "Old web user not found : I can't restore the profile :-/"
             }
-
-
-          } else{
+          } else {
             "This profile is OK and does not need to be updated"
           }
       }.getOrElse("Speaker not found")
+  }
 
- }
+  def findBuggedSpeakers() = Redis.pool.withClient {
+    implicit client =>
+
+      client.hkeys("Speaker").foreach {
+        speakerUUID: String =>
+          Speaker.findByUUID(speakerUUID).map {
+            speaker =>
+              Webuser.findByEmail(speaker.email).map{
+                badWebuser=>
+                if (Webuser.findByEmail(speaker.email).exists(w => w.uuid != speaker.uuid)) {
+                  println("Speaker BUG "+speaker.email +" webuser rattaché "+badWebuser.uuid)
+                }
+              }
+          }
+
+      }
+
+  }
 }
