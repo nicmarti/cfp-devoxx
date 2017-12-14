@@ -381,7 +381,10 @@ GET           /sms/welcome                                                      
 GET           /sms/callback                                                     controllers.SMSController.testCallback()
 POST          /sms/callback                                                     controllers.SMSController.callback()
 
-GET           /bp/fullAgenda                                                  controllers.Backoffice.exportAgenda()
+GET           /bp/fullAgenda                                                    controllers.Backoffice.exportAgenda()
+
+# Fix for Speakers that loose their Webuser profile
+GET           /cfpadmin/fixForInvalidSpeakers                                   controllers.Backoffice.fixForInvalidSpeakers(speakerUUID:String)
 
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()

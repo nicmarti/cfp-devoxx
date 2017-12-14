@@ -241,7 +241,7 @@ object Backoffice extends SecureCFPController {
 
       // Speaker that do a presentation with same TimeSlot (which is obviously not possible)
       val allWithConflicts: Set[(Speaker, Map[DateTime, Iterable[Slot]])] =
-        for (speakerId <- specialSpeakers ; speaker <- Speaker.findByUUID(speakerId)) yield {
+        for (speakerId <- specialSpeakers; speaker <- Speaker.findByUUID(speakerId)) yield {
           val proposalsPresentedByThisSpeaker: List[Slot] = approvedOrAccepted.filter(_.proposal.get.allSpeakerUUIDs.contains(speakerId))
           val groupedByDate = proposalsPresentedByThisSpeaker.groupBy(_.from)
           val conflict = groupedByDate.filter(_._2.size > 1)
@@ -269,16 +269,16 @@ object Backoffice extends SecureCFPController {
       import scala.concurrent.duration._
       implicit val timeout = Timeout(15 seconds)
 
-      val futureMessages:Future[Any] = ZapActor.actor  ? CheckSchedules
+      val futureMessages: Future[Any] = ZapActor.actor ? CheckSchedules
 
       futureMessages.map {
-        case s: List[(Proposal,String,String,String)] =>
+        case s: List[(Proposal, String, String, String)] =>
           Ok(views.html.Backoffice.refreshSchedules(s))
         case other => Ok("unknown return type from Akka")
       }
   }
 
-  def confirmPublicationChange(talkType:String, proposalId:String) = SecuredAction(IsMemberOf("admin")) {
+  def confirmPublicationChange(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       ZapActor.actor ! UpdateSchedule(talkType, proposalId)
       Redirect(routes.Backoffice.refreshSchedules())
@@ -475,57 +475,67 @@ object Backoffice extends SecureCFPController {
       request.body.asJson.map {
         json =>
           val message = json.\("stringField").as[String]
-
           ZapActor.actor ! NotifyMobileApps(message)
-
           Ok(message)
       }.getOrElse {
         BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
       }
   }
 
-  def deleteWebuser(uuid:String)=SecuredAction(IsMemberOf("admin")) {
-    implicit request=>
-      Webuser.findByUUID(uuid) match{
+  def deleteWebuser(uuid: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Webuser.findByUUID(uuid) match {
         case Some(w) =>
           Webuser.delete(w)
           Speaker.delete(uuid)
           FavoriteTalk.deleteAllForWebuser(uuid)
           ScheduleTalk.deleteAllForWebuser(uuid)
-          Ok("Deleted Webuser and deleted speaker, favorite talks and scheduleTalk. Webuser="+w)
+          Ok("Deleted Webuser and deleted speaker, favorite talks and scheduleTalk. Webuser=" + w)
         case None => NotFound("Webuser not found")
       }
   }
 
-  def checkInvalidWebuserForAllSpeakers()=SecuredAction(IsMemberOf("admin")) {
+  def checkInvalidWebuserForAllSpeakers() = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      Speaker.allSpeakersUUID().foreach{
-        uuid=>
+      Speaker.allSpeakersUUID().foreach {
+        uuid =>
           Webuser.findByUUID(uuid) match {
-            case None=>
-               val s = Speaker.findByUUID(uuid)
-              play.Logger.info("Missing Webuser for Speaker "+uuid+" "+s.map(_.cleanName))
-            case other=>
+            case None =>
+              val s = Speaker.findByUUID(uuid)
+              play.Logger.info("Missing Webuser for Speaker " + uuid + " " + s.map(_.cleanName))
+            case other =>
           }
 
           Webuser.isSpeaker(uuid) match {
             case false =>
               val s = Speaker.findByUUID(uuid)
-              play.Logger.info("Missing group for speaker "+uuid+" "+s.map(_.cleanName))
-            case other=>
+              play.Logger.info("Missing group for speaker " + uuid + " " + s.map(_.cleanName))
+            case other =>
           }
-          Speaker.findByUUID(uuid).foreach{
-            speaker=>
+          Speaker.findByUUID(uuid).foreach {
+            speaker =>
               Webuser.isEmailRegistered(speaker.email) match {
                 case false =>
                   play.Logger.error(s"Speaker's email is not stored in Webuser:Email => BUG ${speaker.email}")
-                  Webuser.fixMissingEmail(speaker.email,speaker.uuid)
-                case other=>
+                  Webuser.fixMissingEmail(speaker.email, speaker.uuid)
+                case other =>
               }
           }
 
       }
       Ok("voir la console")
+  }
+
+  /**
+    * Due to a stupid bug, some speakers are not linked to their Webuser anymore. As such, we could not reload their profile.
+    * This fix will delete the "new invalid" Webuser, update the existing collections to link the speaker UUID to the old Webuser UUID
+    */
+  def fixForInvalidSpeakers(speakerUUID: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+
+     val result = Speaker.fixAndRestoreOldWebuser(speakerUUID)
+
+      Ok("Result: " +result)
 
 
   }

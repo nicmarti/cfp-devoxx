@@ -49,13 +49,13 @@ object Webuser {
 
   val Internal =
     Webuser("internal",
-            ConferenceDescriptor.current().fromEmail,
-            "CFP",
-            "Program Committee",
-            RandomStringUtils.random(64),
-            "visitor",
-            None,
-            None)
+      ConferenceDescriptor.current().fromEmail,
+      "CFP",
+      "Program Committee",
+      RandomStringUtils.random(64),
+      "visitor",
+      None,
+      None)
 
   def gravatarHash(email: String): String = {
     val cleanEmail = email.trim().toLowerCase()
@@ -70,39 +70,39 @@ object Webuser {
                     firstName: String,
                     lastName: String): Webuser = {
     Webuser(generateUUID(email),
-            email,
-            firstName,
-            lastName,
-            RandomStringUtils.randomAlphabetic(7),
-            "speaker",
-            None,
-            None)
+      email,
+      firstName,
+      lastName,
+      RandomStringUtils.randomAlphabetic(7),
+      "speaker",
+      None,
+      None)
   }
 
   def createVisitor(email: String,
                     firstName: String,
                     lastName: String): Webuser = {
     Webuser(generateUUID(email),
-            email,
-            firstName,
-            lastName,
-            RandomStringUtils.randomAlphabetic(7),
-            "visitor",
-            None,
-            None)
+      email,
+      firstName,
+      lastName,
+      RandomStringUtils.randomAlphabetic(7),
+      "visitor",
+      None,
+      None)
   }
 
   def createDevoxxian(email: String,
                       networkType: Option[String],
                       networkId: Option[String]): Webuser = {
     Webuser(generateUUID(email),
-            email,
-            "Devoxx",
-            "CFP",
-            RandomStringUtils.randomAlphabetic(7),
-            "devoxxian",
-            networkId,
-            networkType)
+      email,
+      "Devoxx",
+      "CFP",
+      RandomStringUtils.randomAlphabetic(7),
+      "devoxxian",
+      networkId,
+      networkType)
   }
 
   def unapplyForm(webuser: Webuser): Option[(String, String, String)] = {
@@ -130,15 +130,17 @@ object Webuser {
 
   def saveAndValidateWebuser(webuser: Webuser): String = Redis.pool.withClient {
     client =>
-      val cleanEmail =  StringUtils.trimToEmpty(webuser.email.toLowerCase)
-      val cleanWebuser = webuser.copy(email =cleanEmail)
+      val cleanEmail = StringUtils.trimToEmpty(webuser.email.toLowerCase)
+      // This is a protection against external UUID that should not be set
+      val cleanUuid = generateUUID(cleanEmail)
+      val cleanWebuser = webuser.copy(email = cleanEmail, uuid = cleanUuid)
       val json = Json.toJson(cleanWebuser).toString
 
       val tx = client.multi()
       tx.hset("Webuser", cleanWebuser.uuid, json)
-      tx.set("Webuser:UUID:" + cleanWebuser.uuid, webuser.email)
-      tx.set("Webuser:Email:" + cleanEmail, webuser.uuid)
-      tx.sadd("Webuser:" + cleanWebuser.profile, webuser.uuid)
+      tx.set("Webuser:UUID:" + cleanWebuser.uuid, cleanWebuser.email)
+      tx.set("Webuser:Email:" + cleanEmail, cleanWebuser.uuid)
+      tx.sadd("Webuser:" + cleanWebuser.profile, cleanWebuser.uuid)
       tx.hdel("Webuser:New", cleanEmail)
       tx.exec()
       cleanWebuser.uuid
@@ -150,8 +152,8 @@ object Webuser {
       client.exists("Webuser:Email:" + cleanEmail)
   }
 
-  def fixMissingEmail(email:String, uuid:String)=Redis.pool.withClient{
-    implicit client=>
+  def fixMissingEmail(email: String, uuid: String) = Redis.pool.withClient {
+    implicit client =>
       val cleanEmail = StringUtils.trimToEmpty(email.toLowerCase)
       client.set("Webuser:Email:" + cleanEmail, uuid)
   }
@@ -206,7 +208,7 @@ object Webuser {
   // The My Devoxx Gluon mobile app will use the following hard coded credentials to basic authenticate.
   def gluonUser(email: String, password: String): Boolean = {
     email.equals("gluon@devoxx.com") &&
-    password.equals(ConferenceDescriptor.gluonPassword())
+      password.equals(ConferenceDescriptor.gluonPassword())
   }
 
   def delete(webuser: Webuser) = Redis.pool.withClient {
@@ -302,7 +304,7 @@ object Webuser {
     client =>
       client.srem("Webuser:gticket", uuid)
 
-    play.Logger.info(s"${Messages("cfp.goldenTicket")} reviewer $uuid has been deleted from the ${Messages("cfp.goldenTicket")} reviewers list.")
+      play.Logger.info(s"${Messages("cfp.goldenTicket")} reviewer $uuid has been deleted from the ${Messages("cfp.goldenTicket")} reviewers list.")
   }
 
   def noBackofficeAdmin() = Redis.pool.withClient {

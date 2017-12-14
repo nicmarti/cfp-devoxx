@@ -50,7 +50,7 @@ case class Speaker(uuid: String
                    , blog: Option[String]
                    , firstName: Option[String]
                    , qualifications: Option[String]
-                   , phoneNumber:Option[String]
+                   , phoneNumber: Option[String]
                   ) {
 
   def cleanName: String = {
@@ -112,8 +112,8 @@ object Speaker {
 
   def createSpeaker(webuserUUID: String, email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
                     avatarUrl: Option[String], company: Option[String], blog: Option[String], firstName: String,
-                    qualifications: String, phoneNumber:Option[String]): Speaker = {
-    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications),phoneNumber)
+                    qualifications: String, phoneNumber: Option[String]): Speaker = {
+    Speaker(webuserUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Some(firstName), Option(qualifications), phoneNumber)
   }
 
   def createOrEditSpeaker(uuid: Option[String], email: String, name: String, bio: String, lang: Option[String], twitter: Option[String],
@@ -126,20 +126,20 @@ object Speaker {
         } else {
           refuseTerms(newUUID)
         }
-        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications),None)
+        Speaker(newUUID, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications), None)
       case Some(validUuid) =>
         if (acceptTerms) {
           doAcceptTerms(validUuid)
         } else {
           refuseTerms(validUuid)
         }
-        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications),None)
+        Speaker(validUuid, email.trim().toLowerCase, Option(name), bio, lang, twitter, avatarUrl, company, blog, Option(firstName), Option(qualifications), None)
     }
 
   }
 
   def unapplyForm(s: Speaker): Option[(String, String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, String, Option[String])] = {
-    Some("xxx",s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.phoneNumber)
+    Some("xxx", s.email, s.name.getOrElse(""), s.bio, s.lang, s.twitter, s.avatarUrl, s.company, s.blog, s.firstName.getOrElse(""), s.qualifications.getOrElse("No experience"), s.phoneNumber)
   }
 
   def unapplyFormEdit(s: Speaker): Option[(Option[String], String, String, String, Option[String], Option[String], Option[String], Option[String], Option[String], String, Boolean, String)] = {
@@ -158,12 +158,12 @@ object Speaker {
       client.hset("Speaker", uuid, jsonSpeaker)
   }
 
-    def updatePhone(uuid: String, thePhone: String, maybeLang:Option[Lang]) = {
-      for(speaker <- findByUUID(uuid)){
-        val speakerLang = maybeLang.map(_.code).getOrElse("en")
-        Speaker.update(uuid,speaker.copy(phoneNumber = Option(thePhone), lang=Option(speakerLang)))
-      }
+  def updatePhone(uuid: String, thePhone: String, maybeLang: Option[Lang]) = {
+    for (speaker <- findByUUID(uuid)) {
+      val speakerLang = maybeLang.map(_.code).getOrElse("en")
+      Speaker.update(uuid, speaker.copy(phoneNumber = Option(thePhone), lang = Option(speakerLang)))
     }
+  }
 
   def updateName(uuid: String, firstName: String, lastName: String) = {
     findByUUID(uuid).map {
@@ -283,4 +283,43 @@ object Speaker {
     val speakers: List[Speaker] = loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
     speakers.sortBy(_.name.getOrElse(""))
   }
+
+  def fixAndRestoreOldWebuser(speakerUUID:String):String = Redis.pool.withClient {
+    implicit client =>
+
+        Speaker.findByUUID(speakerUUID).map {
+        speaker =>
+          val badWebuser = Webuser.findByEmail(speaker.email).get
+          if (Webuser.findByEmail(speaker.email).exists(w => w.uuid != speaker.uuid)) {
+
+              // Try to retrieve the old Webuser
+            val oldWebuser = Webuser.findByUUID(speakerUUID)
+
+            if(oldWebuser.isDefined){
+              // Update the Webuser:Email:<speaker email>
+              client.set("Webuser:Email:" + speaker.email, oldWebuser.get.uuid)
+
+              val tx = client.multi()
+              tx.hdel("Webuser", badWebuser.uuid)
+              tx.del("Webuser:UUID:" + badWebuser.uuid)
+              tx.srem("Webuser:speaker", badWebuser.uuid)
+              tx.srem("Webuser:cfp", badWebuser.uuid)
+              tx.srem("Webuser:admin", badWebuser.uuid)
+              tx.srem("Webuser:visitor", badWebuser.uuid)
+              tx.srem("Webuser:gticket", badWebuser.uuid)
+              tx.srem("Webuser:devoxxian", badWebuser.uuid)
+              tx.exec()
+
+              "Done. Speaker should now be able to authenticate and to reload its old profile. New profile has been deleted."
+            }else{
+              "Old web user not found : I can't restore the profile :-/"
+            }
+
+
+          } else{
+            "This profile is OK and does not need to be updated"
+          }
+      }.getOrElse("Speaker not found")
+
+ }
 }

@@ -55,6 +55,16 @@
                             }
                             </td>
                         </tr>
+                        @if(SecureCFPController.hasAccessToCFPAdmin(req)) {
+                            <tr>
+                                <td><i class="icon-mail-reply"></i> Email </td>
+                                <td>@speaker.email</td>
+                            </tr>
+                            <tr>
+                                <td><i class="icon-apple"></i> UUID </td>
+                                <td>@speaker.uuid</td>
+                            </tr>
+                        }
 
                         <tr>
                             <td><i class="icon-adjust"></i> Bio</td><td>@Html(speaker.bioAsHtml)</td>
@@ -91,7 +101,7 @@
 @if(SecureCFPController.hasAccessToCFPAdmin(req)){
     <div class="col-md-12">
         <div class="panel-heading">
-            <h3><i class="icon-bullhorn"></i> Talks test</h3>
+            <h3><i class="icon-bullhorn"></i> Talks</h3>
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
@@ -99,6 +109,35 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-12">
+        <div class="panel">
+            <Div class="panel-heading">
+                <H3><i class="icon-ambulance"></i> Safety check </H3>
+        </div>
+            <div class="panel-body">
+                <p>Some Webuser have been corrupted by invalid UUID. Consequence is that a Speaker cannot reload its profile, and will create a new one.</p>
+
+                <p>UUID should be = @Webuser.generateUUID(speaker.email)</p>
+                <p>Speaker find by UUID ? @Speaker.findByUUID(speaker.uuid).isDefined</p>
+                <p>Webuser find by UUID works ?  @if(Webuser.findByUUID(speaker.uuid).isDefined){ <label class="label label-success">YES</label> } else { <label class="label label-danger">No</label> }</p>
+                <p>Webuser find by Email ?  @if(Webuser.findByEmail(speaker.email).isDefined){ <label class="label label-success">YES</label> } else { <label class="label label-danger">No</label> }</p>
+                <p>Webuser ID and Speaker ID are identicals ?
+                    @if(Webuser.findByEmail(speaker.email).exists(w => w.uuid == speaker.uuid)){
+                        <label class="label label-success">YES</label> that's normal.
+                    }else{
+                         <label class="label label-danger">No</label>
+                        <div class="panel panel-danger">
+                            <div class="panel-body">Webuser and Speaker have different UUID => this will generate bugs and duplicate profiles.<br>
+                                <a class="btn btn-warning" href="@routes.Backoffice.fixForInvalidSpeakers(speaker.uuid)">Fix and re-create Webuser for this Speaker</a>
+                        </div>
+                        </div>
+                    }
+                </p>
+                <p>Webuser find from Speaker's email works ?  @if(Webuser.findByEmail(speaker.email).isDefined){ <label class="label label-success">YES</label> } else { <label class="label label-danger">No</label> }</p>
+            </div>
+    </div>
+
 }
 @if(SecureCFPController.hasAccessToAdmin(req)){
     <div class="col-md-12">
