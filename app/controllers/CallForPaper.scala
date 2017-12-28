@@ -124,6 +124,9 @@ object CallForPaper extends SecureCFPController {
         invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm, uuid)).flashing("error" -> "Invalid form, please check and correct errors. "),
         updatedSpeaker => {
           Speaker.update(uuid, updatedSpeaker)
+          val firstName: String = updatedSpeaker.firstName.getOrElse(request.webuser.firstName)
+          val lastName: String = updatedSpeaker.name.getOrElse(request.webuser.lastName)
+          Webuser.updateNames(uuid, newFirstName = firstName, newLastName = lastName)
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
         }
       )

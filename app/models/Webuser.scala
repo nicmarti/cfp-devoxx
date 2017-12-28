@@ -132,6 +132,8 @@ object Webuser {
     client =>
       val cleanEmail = StringUtils.trimToEmpty(webuser.email.toLowerCase)
       // This is a protection against external UUID that should not be set
+      // It also means that we cannot change email for an existing Webuser.
+      // A Webuser is an Entity where the ID = the clean email address
       val cleanUuid = generateUUID(cleanEmail)
       val cleanWebuser = webuser.copy(email = cleanEmail, uuid = cleanUuid)
       val json = Json.toJson(cleanWebuser).toString
