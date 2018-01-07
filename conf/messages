@@ -97,7 +97,7 @@ summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
 phoneNumber=cell phone number
-lang.help=25% of talks at Devoxx FR are in English, the others are in French. If you speaker French, please do present in French. If you are not sure, ask the question in the 'Message for program committee' textarea.
+lang.help=25% of talks at Devoxx FR are in English, the others are in French. If you speak French, please do present in French. If you are not sure, ask the question in the 'Message for program committee' textarea.
 track.help=Tracks are the main topics of the conference.
 
 mainSpeaker=Main speaker
@@ -121,7 +121,7 @@ sponsorTalk=Is this a sponsor presentation?
 videoLinkMessage=Related video link
 videoLinkMessage.help=Share with the program committee a link to one of your related online videos on YouTube or Vimeo
 sponsorTalk.help.title=Sponsor talk
-sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinium only.
+sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinum only.
 sponsorTalk.help=Platinum, Gold and Silver sponsors can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
@@ -188,7 +188,7 @@ appel.conf.dates=Devoxx France 2018, 18th-20th April
 # Tracks
 
 track.java.title=Java, JVM, Javas SE/EE
-track.java.desc=Everything aroung Java, the JVM, Java SE, Java EE.
+track.java.desc=Everything around Java, the JVM, Java SE, Java EE.
 java.label=Java, JVM, Javas SE/EE
 java.leaderboard=Java, JVM, Javas SE/EE
 
@@ -466,7 +466,7 @@ amd=Après-midi des Décideurs
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
 
-sw.talkType.warn=List of talks approved by the program committe and accepted by each speaker
+sw.talkType.warn=List of talks approved by the program committee and accepted by each speaker
 sw.showDetails=See details
 sw.home=Home
 sw.all.uni=All Universities
@@ -503,7 +503,7 @@ sp.editName=Edit name
 sw.hackatons=Hackatons
 sw.hackatons.describe=Coding events, hacking day, organized during the conference
 sw.faq=See our FAQ for more details about each format
-calendar.pref=Speaker''s preferences for schedulling
+calendar.pref=Speaker''s preferences for scheduling
 calendar.pref.wednesday=Wednesday
 calendar.pref.thursday=Thursday
 calendar.pref.friday=Friday
@@ -841,7 +841,7 @@ svp.noshow=Sorry, votes for your talk are hidden.
 svp.voted=voted
 svp.goldenTicket.title=Golden Ticket votes
 svp.gt.novotes=No vote yet from any Golden ticket
-svp.split=Diff between GT score and Comittee score
+svp.split=Diff between GT score and Committee score
 
 gt.admin.sp.privateMessage=Private message for the program committee
 
