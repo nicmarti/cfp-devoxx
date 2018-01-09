@@ -51,7 +51,7 @@ class LeaderboardSpecs extends PlaySpecification {
 
       // WHEN
       val speaker = Speaker("uuid", "email@test.fr", Some("Nic"), "bio", None, Some("@nmartignole"), None, 
-        Some("Innoteria"), Some("http://www.touilleur-express.fr"), Some("Nicolas"), Some("Developpeur"))
+        Some("Innoteria"), Some("http://www.touilleur-express.fr"), Some("Nicolas"), Some("Developpeur"), Some("+3314710203040"))
       Speaker.save(speaker)
 
       Leaderboard.computeStats()

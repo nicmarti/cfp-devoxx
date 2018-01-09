@@ -28,7 +28,9 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
 
 /**
-  * Tests for archive Proposal
+  * Tests for archive Proposal.
+  * Those integration tests relies on a Redis server. Remember : Redis IS an in-memory cache thus it makes no sense
+  * to mock its behavior here. Just start a simple Redis server on port 6364 and we will use active DB 1.
   *
   * @author created by N.Martignole, Innoteria, on 19/08/2014.
   */
@@ -367,7 +369,7 @@ class ArchivedProposalSpecs extends PlaySpecification {
     val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
     Webuser.saveAndValidateWebuser(webuser)
     val uuid = webuser.uuid
-    val speaker = Speaker.createSpeaker(uuid, email, "j", "bio", None, Some("Twitter"), None, Some("company"), Some("blog"), "john", "newbie")
+    val speaker = Speaker.createSpeaker(uuid, email, "j", "bio", None, Some("Twitter"), None, Some("company"), Some("blog"), "john", "newbie", Some("3314722102030"))
     Speaker.save(speaker)
     uuid
   }
