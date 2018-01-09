@@ -169,7 +169,7 @@ object GoldenTicketController extends SecureCFPController {
   }
 
   // From SecureCFPController
-  override def notAuthenticatedResult[A](implicit request: Request[A]): Future[SimpleResult] = {
+  override def notAuthenticatedResult[A](implicit request: Request[A]): Future[Result] = {
     Future.successful {
       Redirect(routes.GoldenTicketController.authenticate())
     }
