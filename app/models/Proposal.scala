@@ -1031,3 +1031,11 @@ object Proposal {
     }
   }
 }
+
+/*
+ * Advanced types used by ZapActor and Backoffice for validation of proposals.
+ */
+case class ProposalAndRelatedError(p:Proposal, errMsg:String, initialValue:String, newValue:String)
+
+case class ProposalsWithErrors(value:List[ProposalAndRelatedError])
+

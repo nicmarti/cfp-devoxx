@@ -25,10 +25,10 @@ package library.search
 
 import akka.actor._
 import models._
-import org.apache.commons.lang3.{StringEscapeUtils, StringUtils}
-import org.joda.time.{DateMidnight, DateTime, DateTimeZone}
+import org.apache.commons.lang3.StringEscapeUtils
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -42,8 +42,8 @@ import scala.util.{Failure, Success, Try}
   */
 object ElasticSearchActor {
   val system = ActorSystem("ElasticSearch")
-  val masterActor = system.actorOf(Props[IndexMaster], "masterActorIndex")
-  val reaperActor = system.actorOf(Props[Reaper], "reaperActor")
+  val masterActor: ActorRef = system.actorOf(Props[IndexMaster], "masterActorIndex")
+  val reaperActor: ActorRef = system.actorOf(Props[Reaper], "reaperActor")
 }
 
 // Messages
@@ -63,24 +63,24 @@ case class ESSpeaker(speaker: Speaker) extends ESType {
 
   import models.Speaker.speakerFormat
 
-  def toJson = Json.toJson(speaker)
+  def toJson: JsValue = Json.toJson(speaker)
 
   def path = "/speakers/speaker"
 
-  def id = speaker.uuid
+  def id: String = speaker.uuid
 
-  override def label = speaker.cleanName
+  override def label: String = speaker.cleanName
 }
 
 case class ESProposal(proposal: Proposal) extends ESType {
 
   import models.Proposal.proposalFormat
 
-  def toJson = Json.toJson(proposal)
+  def toJson: JsValue = Json.toJson(proposal)
 
   def path = "/proposals/proposal"
 
-  def id = proposal.id
+  def id: String = proposal.id
 }
 
 case class DoIndexProposal(proposal: Proposal)
@@ -109,14 +109,14 @@ trait ESActor extends Actor {
 
   import scala.language.implicitConversions
 
-  implicit def SpeakerToESSpeaker(speaker: Speaker) = ESSpeaker(speaker)
+  implicit def SpeakerToESSpeaker(speaker: Speaker): ESSpeaker = ESSpeaker(speaker)
 
-  implicit def ProposalToESProposal(proposal: Proposal) = ESProposal(proposal)
+  implicit def ProposalToESProposal(proposal: Proposal): ESProposal = ESProposal(proposal)
 }
 
 // Main actor for dispatching
 class IndexMaster extends ESActor {
-  def receive = {
+  def receive: PartialFunction[Any, Unit] = {
     case DoIndexSpeaker(speaker: Speaker) => doIndexSpeaker(speaker)
     case DoIndexAllSpeakers => doIndexAllSpeakers()
     case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
@@ -248,7 +248,7 @@ class IndexMaster extends ESActor {
   }
 
   // Create an ES index with the agenda
-  def doIndexSchedule() = {
+  def doIndexSchedule(): Unit = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots).filterNot(_.break.isDefined)
     val indexName = "schedule_" + ConferenceDescriptor.current().confUrlCode
@@ -312,9 +312,9 @@ class IndexMaster extends ESActor {
 
     ElasticSearch.indexBulk(sb.toString(), indexName).map {
       case Success(ok) =>
-        play.Logger.of("application.IndexMaster").debug(s"Indexed ${slots.size} to ${indexName}")
+        play.Logger.of("application.IndexMaster").debug(s"Indexed ${slots.size} to $indexName")
       case Failure(ex) =>
-        play.Logger.of("application.IndexMaster").error(s"Could not indexed ${slots.size} to ${indexName} due to ${ex.getMessage}", ex)
+        play.Logger.of("application.IndexMaster").error(s"Could not indexed ${slots.size} to $indexName due to ${ex.getMessage}", ex)
     }
 
     play.Logger.of("application.IndexMaster").debug(s"Done indexing schedule to index $indexName")
@@ -360,7 +360,9 @@ class IndexMaster extends ESActor {
 
     HitView.allStoredURL().foreach {
       url =>
-        val hits = HitView.loadHitViews(url, new DateMidnight().toDateTime(DateTimeZone.forID("Europe/Brussels")).minusDays(1).toDateTime, new DateTime().toDateTime(DateTimeZone.forID("Europe/Brussels")))
+        val todayMidnight:DateTime = DateTime.now(DateTimeZone.forID("Europe/Brussels")).withTimeAtStartOfDay()
+        val yesterdayMidnight:DateTime = todayMidnight.minusDays(1)
+        val hits = HitView.loadHitViews(url, yesterdayMidnight, todayMidnight)
 
         val sb = new StringBuilder
         hits.foreach {
@@ -379,7 +381,7 @@ class IndexMaster extends ESActor {
     }
   }
 
-  def doCreateConfigureIndex() = {
+  def doCreateConfigureIndex(): Future[Unit] = {
     _createConfigureIndex("proposals", settingsFrench).map {
       case r if r.isSuccess =>
         play.Logger.of("library.ElasticSearch").info(s"Configured indexes on ES for speaker and proposal. Result : " + r.get)
@@ -404,9 +406,9 @@ class IndexMaster extends ESActor {
 
     _createConfigureIndex(scheduleIndexName, settingsAgenda).map {
       case Success(r) =>
-        play.Logger.of("library.ElasticSearch").info(s"Configured indexes ${scheduleIndexName} on ES for speaker and proposal. Result : " + r)
+        play.Logger.of("library.ElasticSearch").info(s"Configured indexes $scheduleIndexName on ES for speaker and proposal. Result : " + r)
       case Failure(ex) =>
-        play.Logger.of("library.ElasticSearch").warn(s"Error with index ${scheduleIndexName} $ex", ex)
+        play.Logger.of("library.ElasticSearch").warn(s"Error with index $scheduleIndexName $ex", ex)
     }
 
 
@@ -630,7 +632,7 @@ class IndexMaster extends ESActor {
 
   // This is important for French content
   // Leave it, even if your CFP is in English
-  def settingsFrench =
+  def settingsFrench: String =
   """
     |    {
     |    	"settings" : {
@@ -671,7 +673,7 @@ class IndexMaster extends ESActor {
     | }
   """.stripMargin
 
-  def settingsProposalsEnglish =
+  def settingsProposalsEnglish: String =
     s"""
        |{
        |    "mappings": {
@@ -711,7 +713,7 @@ class IndexMaster extends ESActor {
        |}
       """.stripMargin
 
-  def settingsSpeakersEnglish =
+  def settingsSpeakersEnglish: String =
     s"""
        |{
        |    "mappings": {
@@ -747,7 +749,7 @@ class IndexMaster extends ESActor {
        |}
       """.stripMargin
 
-  def settingsAgenda = settingsFrench
+  def settingsAgenda: String = settingsFrench
 
   private def _createConfigureIndex(zeIndexName: String, settings: String): Future[Try[String]] = {
 
@@ -777,7 +779,7 @@ class IndexMaster extends ESActor {
 
 // Actor that is in charge of Indexing content
 class Reaper extends ESActor {
-  def receive = {
+  def receive: PartialFunction[Any, Unit] = {
     case Index(obj: ESType) => doIndex(obj)
     case other => play.Logger.of("application.Reaper").warn("unknown message received " + other)
   }
@@ -785,13 +787,13 @@ class Reaper extends ESActor {
   import scala.concurrent.Future
   import scala.util.Try
 
-  def doIndex(obj: ESType) =
+  def doIndex(obj: ESType): Future[Unit] =
     logResult(obj, sendRequest(obj))
 
   def sendRequest(obj: ESType): Future[Try[String]] =
     ElasticSearch.index(obj.path + "/" + obj.id, Json.stringify(obj.toJson))
 
-  def logResult(obj: ESType, maybeSuccess: Future[Try[String]]) =
+  def logResult(obj: ESType, maybeSuccess: Future[Try[String]]): Future[Unit] =
     maybeSuccess.map {
       case r if r.isSuccess =>
         play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")

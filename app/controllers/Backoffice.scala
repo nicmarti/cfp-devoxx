@@ -272,10 +272,13 @@ object Backoffice extends SecureCFPController {
       val futureMessages: Future[Any] = ZapActor.actor ? CheckSchedules
 
       futureMessages.map {
-        case s: List[(Proposal, String, String, String)] =>
-          Ok(views.html.Backoffice.refreshSchedules(s))
-        case other => Ok("unknown return type from Akka")
+        case util.Success(result:ProposalsWithErrors) =>
+          Ok(views.html.Backoffice.refreshSchedules(result))
+        case util.Failure(ex)=>
+          play.Logger.error("refreshSchedules error with Akka",ex)
+          InternalServerError(s"Unable to refresh schedule, exception was raised from Akka Actor ${ex.getMessage}")
       }
+
   }
 
   def confirmPublicationChange(talkType: String, proposalId: String) = SecuredAction(IsMemberOf("admin")) {
@@ -313,7 +316,6 @@ object Backoffice extends SecureCFPController {
         newListOfSlots =>
           val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
           ScheduleConfiguration.publishConf(newID, talkType)
-
           Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
       }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")

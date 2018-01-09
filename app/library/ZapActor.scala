@@ -26,18 +26,17 @@ package library
 import java.util
 
 import akka.actor._
-import controllers.{CFPAdmin, LeaderboardController}
+import controllers.LeaderboardController
 import models._
 import notifiers.Mails
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.HttpPost
-import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicNameValuePair
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
 
-import scala.Predef._
 import play.api.Play.current
 
 /**
@@ -90,16 +89,16 @@ case class EmailDigests(digest: Digest)
 
 case object CheckSchedules
 
-case class UpdateSchedule(talkType:String, proposalId:String)
+case class UpdateSchedule(talkType: String, proposalId: String)
 
 
 // Defines an actor (no failover strategy here)
 object ZapActor {
-  val actor = Akka.system.actorOf(Props[ZapActor])
+  val actor: ActorRef = Akka.system.actorOf(Props[ZapActor])
 }
 
 class ZapActor extends Actor {
-  def receive = {
+  def receive: PartialFunction[Any, Unit] = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
     case SendMessageToCommitte(reporterUUID, proposal, msg) => sendMessageToCommitte(reporterUUID, proposal, msg)
@@ -120,7 +119,7 @@ class ZapActor extends Actor {
     case NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]) => doNotifyMobileApps(message, scheduleUpdate)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case CheckSchedules => doCheckSchedules()
-    case UpdateSchedule(talkType:String, proposalId:String) => doUpdateProposal(talkType:String, proposalId:String)
+    case UpdateSchedule(talkType: String, proposalId: String) => doUpdateProposal(talkType: String, proposalId: String)
     case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
   }
 
@@ -175,14 +174,13 @@ class ZapActor extends Actor {
   def sendDraftReminder() {
     val allProposalBySpeaker = Proposal.allDrafts().groupBy(_.mainSpeaker)
     allProposalBySpeaker.foreach {
-      case (speaker: String, draftProposals: List[Proposal]) => {
+      case (speaker: String, draftProposals: List[Proposal]) =>
         Webuser.findByUUID(speaker).map {
           speakerUser =>
             Mails.sendReminderForDraft(speakerUser, draftProposals)
         }.getOrElse {
           play.Logger.warn("User not found")
         }
-      }
     }
   }
 
@@ -197,7 +195,7 @@ class ZapActor extends Actor {
 
   // Delete votes if a proposal was deleted
   def doRemoveVotesForDeletedProposal() {
-    Proposal.allProposalIDsDeleted.map {
+    Proposal.allProposalIDsDeleted.foreach {
       proposalId =>
         Review.deleteVoteForProposal(proposalId)
         ReviewByGoldenTicket.deleteVoteForProposal(proposalId)
@@ -302,31 +300,37 @@ class ZapActor extends Actor {
     *   - targetType: ALL_DEVICES or SINGLE_DEVICE
     *   - targetDeviceToken: the device token where to push the notification, only in combination with targetType=SINGLE_DEVICE
     *   - invisible: true or false
-    *   authenticatie: Authorization header with value: "Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
+    * authenticatie: Authorization header with value: "Gluon YjJmM2..."
     *
     * Example silent push
     *
     * curl https://cloud.gluonhq.com/3/push/enterprise/notification -i -X POST
-    *   -H "Authorization: Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj"
-    *   -d "title=update"
-    *   -d "body=update"
-    *   -d "deliveryDate=0"
-    *   -d "priority=HIGH"
-    *   -d "expirationType=DAYS"
-    *   -d "expirationAmount=1"
-    *   -d "targetType=ALL_DEVICES"
-    *   -d "invisible=true"
+    * -H "Authorization: Gluon Security_HEADER_HERE"
+    * -d "title=update"
+    * -d "body=update"
+    * -d "deliveryDate=0"
+    * -d "priority=HIGH"
+    * -d "expirationType=DAYS"
+    * -d "expirationAmount=1"
+    * -d "targetType=ALL_DEVICES"
+    * -d "invisible=true"
     *
-    *
-    * @param message the notification message
+    * @param message        the notification message
     * @param scheduleUpdate true = invisible message
     */
-  def doNotifyMobileApps(message:String, scheduleUpdate: Option[Boolean]): Unit = {
+  def doNotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]): Unit = {
 
     play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
 
+    // TODO the Gluon Auth token must be a configuration parameter for obvious security reasons.
+    val securityGluonHeader: String = current.configuration.getString("gluon.auth.token").getOrElse("??? Please configure gluon.auth.token")
+
+    if (securityGluonHeader == "??? Please configure gluon.auth.token") {
+      play.Logger.warn("Please configure the GLUON HTTP Security header. Set an environment variable to GLUON_AUTH_TOKEN=Yy...  and restart the application")
+    }
+
     val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
-    post.addHeader("Authorization","Gluon YjJmM2YzNWVmNWU4MTFlNjkyNGEwYTkyZWYxNjBjZTNiMmYzZjM2M2Y1ZTgxMWU2OTI0YTBhOTJlZjE2MGNlM2IyZjNmMzY1ZjVlODExZTY5MjRhMGE5MmVmMTYwY2UzYjJmM2YzNjhmNWU4MTFlNjkyNGEwYTkyZWYxNjBj")
+    post.addHeader("Authorization", s"Gluon $securityGluonHeader")
 
     val urlParameters = new util.ArrayList[BasicNameValuePair]()
     urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
@@ -346,7 +350,7 @@ class ZapActor extends Actor {
     urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
 
     post.setEntity(new UrlEncodedFormEntity(urlParameters))
-    val client = new DefaultHttpClient
+    val client = HttpClientBuilder.create().setUserAgent("Devoxx CFP").build()
     client.execute(post)
   }
 
@@ -389,7 +393,7 @@ class ZapActor extends Actor {
         }
 
         // Handle the digest users that have a track filter
-        trackDigestUsersIDs.map{uuid =>
+        trackDigestUsersIDs.map { uuid =>
 
           // Filter the proposals based on digest tracks
           val trackFilterIDs = Digest.getTrackFilters(uuid)
@@ -415,7 +419,7 @@ class ZapActor extends Actor {
     }
   }
 
-  def doCheckSchedules() = {
+  def doCheckSchedules(): Unit = {
 
     import scalaz._
     import Scalaz._
@@ -425,50 +429,44 @@ class ZapActor extends Actor {
 
     val publishedProposalIDs: Set[String] = approvedOrAccepted.map(_.proposal.get.id).toSet
 
-    // Build the list of Speakers
-//    val allSpeakersUUID: Set[String] = approvedOrAccepted.flatMap(_.proposal.get.allSpeakerUUIDs).toSet
-//    val allSpeakers = Speaker.loadSpeakersFromSpeakerIDs(allSpeakersUUID)
-
     val allValidProposals = Proposal.loadAndParseProposals(publishedProposalIDs)
 
-    type ProposalAndError=(Proposal, String, String,String)
-
-    def checkSameTitle: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+    def checkSameTitle: (Proposal, Proposal) => ValidationNel[ProposalAndRelatedError, String] = (p1, p2) => {
       if (p1.title == p2.title) "Same title".successNel
-      else (p1, "Title was changed",p1.title, p2.title).failureNel
+      else ProposalAndRelatedError(p1, "Title was changed", p1.title, p2.title).failureNel
     }
 
-    def checkSameSummary: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+    def checkSameSummary: (Proposal, Proposal) => ValidationNel[ProposalAndRelatedError, String] = (p1, p2) => {
       if (p1.summary == p2.summary) "Same summary".successNel
-      else (p1,"Summary was changed",p1.summary, p2.summary).failureNel
+      else ProposalAndRelatedError(p1, "Summary was changed", p1.summary, p2.summary).failureNel
     }
 
-    def checkSameMainSpeaker: (Proposal, Proposal) =>ValidationNel[ProposalAndError, String] = (p1,p2) => {
+    def checkSameMainSpeaker: (Proposal, Proposal) => ValidationNel[ProposalAndRelatedError, String] = (p1, p2) => {
       if (p1.mainSpeaker == p2.mainSpeaker) "Same main speaker".successNel
-      else (p1, "Main speaker was changed", p1.mainSpeaker, p2.mainSpeaker).failureNel
+      else ProposalAndRelatedError(p1, "Main speaker was changed", p1.mainSpeaker, p2.mainSpeaker).failureNel
     }
 
-    def checkSameSecondSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+    def checkSameSecondSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndRelatedError, String] = (p1, p2) => {
       if (p1.secondarySpeaker == p2.secondarySpeaker) "Same secondary speaker".successNel
-      else (p1,"Secondary speaker was changed",p1.secondarySpeaker.getOrElse("?"), p2.secondarySpeaker.getOrElse("?")).failureNel
+      else ProposalAndRelatedError(p1, "Secondary speaker was changed", p1.secondarySpeaker.getOrElse("?"), p2.secondarySpeaker.getOrElse("?")).failureNel
     }
 
-    def checkSameOtherSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndError, String] = (p1,p2) => {
+    def checkSameOtherSpeakers: (Proposal, Proposal) => ValidationNel[ProposalAndRelatedError, String] = (p1, p2) => {
       if (p1.otherSpeakers == p2.otherSpeakers) "Same other speaker".successNel
-      else (p1, "Other speaker was changed", p1.otherSpeakers.mkString("/") , p2.otherSpeakers.mkString("/")).failureNel
+      else ProposalAndRelatedError(p1, "Other speaker was changed", p1.otherSpeakers.mkString("/"), p2.otherSpeakers.mkString("/")).failureNel
     }
 
-    val validateProposals= for {
+    val validateProposals = for {
       a <- checkSameTitle
       b <- checkSameSummary
       c <- checkSameMainSpeaker
       d <- checkSameSecondSpeakers
       e <- checkSameOtherSpeakers
-    } yield( a |@| b |@| c |@| d |@| e ) // |@| is an Applicative Builder -> it accumulates the combined result as a tuple
+    } yield a |@| b |@| c |@| d |@| e // |@| is an Applicative Builder -> it accumulates the combined result as a tuple
 
-    def doNothing(p1:String, p2:String, p3:String,p4:String, p5:String) = s"$p1 $p2 $p3 $p4 $p5"
+    def doNothing(p1: String, p2: String, p3: String, p4: String, p5: String) = s"$p1 $p2 $p3 $p4 $p5"
 
-   val messages:List[ValidationNel[ProposalAndError,String]]= allPublishedSlots.map {
+    val messages: List[ValidationNel[ProposalAndRelatedError, String]] = allPublishedSlots.map {
       s: Slot =>
         val publishedProposal = s.proposal.get
         // cause we did a filter where proposal is Defined
@@ -476,35 +474,33 @@ class ZapActor extends Actor {
         validateProposals(publishedProposal, fromCFPProposal)(doNothing)
     }
 
-    val onlyErrors= messages.filter(_.isFailure).flatMap { f: Validation[NonEmptyList[ProposalAndError], String] =>
+    val onlyErrors: List[ProposalAndRelatedError] = messages.filter(_.isFailure).flatMap { f: Validation[NonEmptyList[ProposalAndRelatedError], String] =>
       val noEmpty = f.toEither.left.get
       noEmpty.toList
     }
 
-
     sender() ! onlyErrors
-
   }
 
-  def doUpdateProposal(confType:String, proposalId:String)={
-    play.Logger.debug("Update published Schedule for proposal Id "+proposalId)
+  def doUpdateProposal(confType: String, proposalId: String): Unit = {
+    play.Logger.debug("Update published Schedule for proposal Id " + proposalId)
 
-    ScheduleConfiguration.findSlotForConfType(confType,proposalId).foreach{
-      slot=>
+    ScheduleConfiguration.findSlotForConfType(confType, proposalId).foreach {
+      slot =>
         val proposal = slot.proposal.get
-        ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id).foreach{
-          id=>
-            ScheduleConfiguration.loadScheduledConfiguration(id).foreach{ p=>
-              val newSlots = p.slots.map{
-                s:Slot=>
+        ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id).foreach {
+          id =>
+            ScheduleConfiguration.loadScheduledConfiguration(id).foreach { p =>
+              val newSlots = p.slots.map {
+                s: Slot =>
                   s match {
-                    case e if e.proposal.isDefined && e.proposal.get.id==proposalId =>
-                      e.copy(proposal=Proposal.findById(proposalId))
+                    case e if e.proposal.isDefined && e.proposal.get.id == proposalId =>
+                      e.copy(proposal = Proposal.findById(proposalId))
                     case other => other
                   }
               }
               val newID = ScheduleConfiguration.persist(confType, newSlots, Webuser.Internal)
-              ScheduleConfiguration.publishConf(newID,confType)
+              ScheduleConfiguration.publishConf(newID, confType)
             }
 
         }

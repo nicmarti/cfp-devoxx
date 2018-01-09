@@ -1,5 +1,6 @@
-@(errors: List[(Proposal, String, String, String)])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-
+@(errors: models.ProposalsWithErrors)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@import models.ProposalAndRelatedError
+@import models.ProposalsWithErrors
 @main("CFP Admin - Backoffice") {
 
     <div class="row" xmlns="http://www.w3.org/1999/html">
@@ -19,25 +20,25 @@
 
                 <div class="panel-body">
 
-                @errors.map { err =>
+                @errors.value.map { case err =>
                     <div class="col-md-12">
-                        <h4>@err._1.id @err._1.title <em>@Messages(err._1.talkType.id)</em>
-                        <a href="@routes.CFPAdmin.openForReview(err._1.id)">see details</a> </h4>
-                        <strong>@err._2</strong>
+                        <h4>@err.p.id @err.p.title <em>@Messages(err.p.talkType.id)</em>
+                        <a href="@routes.CFPAdmin.openForReview(err.p.id)">see details</a> </h4>
+                        <strong>@err.errMsg</strong>
                         <div class="panel">
                             <div class="panel-heading">Before</div>
                             <div class="panel-body">
-                                <pre>@err._3</pre>
+                                <pre>@err.initialValue</pre>
                             </div>
 
                             <div class="panel-heading">After</div>
                             <div class="panel-body">
-                                <pre>@err._4</pre>
+                                <pre>@err.newValue</pre>
                             </div>
 
                             <div class="panel-footer">
-                                <a href="@routes.Backoffice.confirmPublicationChange(err._1.talkType.id, err._1.id)" class="btn btn-sm btn-success">
-                                    Confirm and update the Agenda for @err._1.id</a>
+                                <a href="@routes.Backoffice.confirmPublicationChange(err.p.talkType.id, err.p.id)" class="btn btn-sm btn-success">
+                                    Confirm and update the Agenda for @err.p.id</a>
                             </div>
                         </div>
                     </div>
