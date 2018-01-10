@@ -191,23 +191,23 @@ object ApproveOrRefuse extends SecureCFPController {
                       Proposal.accept(request.webuser.uuid, proposalId)
                       val validMsg = "Speaker has set the status of this proposal to ACCEPTED"
                       Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
-                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
+                      ZapActor.actor ! SendBotMessageToCommittee(request.webuser.uuid, p, validMsg)
                     } else {
-                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
+                      ZapActor.actor ! SendBotMessageToCommittee(request.webuser.uuid, p, "Un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
                     }
                   case "decline" =>
                     if (List(ProposalState.APPROVED, ProposalState.BACKUP, ProposalState.ACCEPTED, p.state == ProposalState.DECLINED).contains(p.state)) {
                       Proposal.decline(request.webuser.uuid, proposalId)
                       val validMsg = "Speaker has set the status of this proposal to DECLINED"
                       Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
-                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
+                      ZapActor.actor ! SendBotMessageToCommittee(request.webuser.uuid, p, validMsg)
                     } else {
-                      ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
+                      ZapActor.actor ! SendBotMessageToCommittee(request.webuser.uuid, p, "un utilisateur a essayé de changer le status de son talk... User:" + request.webuser.cleanName + " talk:" + p.id + " state:" + p.state.code)
                     }
                   case "backup" =>
                     val validMsg = "Speaker has set the status of this proposal to BACKUP"
                     Comment.saveCommentForSpeaker(proposalId, request.webuser.uuid, validMsg)
-                    ZapActor.actor ! SendMessageToCommitte(request.webuser.uuid, p, validMsg)
+                    ZapActor.actor ! SendBotMessageToCommittee(request.webuser.uuid, p, validMsg)
                     Proposal.backup(request.webuser.uuid, proposalId)
                   case other => play.Logger.error("Invalid choice for ApproveOrRefuse doAcceptOrRefuseTalk for proposalId " + proposalId + " choice=" + choice)
                 }

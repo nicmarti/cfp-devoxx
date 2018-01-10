@@ -28,6 +28,7 @@ import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.mailer.{Email, MailerPlugin}
 import controllers.LeaderBoardParams
+import play.api.Play
 
 /**
   * Sends all emails
@@ -40,6 +41,11 @@ object Mails {
 
   val fromSender: String = ConferenceDescriptor.current().fromEmail
   val committeeEmail: String = ConferenceDescriptor.current().committeeEmail
+
+  // FIXME : I did not want to break the ConferenceDescriptor object... so I use the configuration directly
+  // This mail on GMail can be the targer group alias (such as program@devoxx.fr) on which we add +notifications
+  // Doing that ease the classification in GMail
+  val botNotificationEmail: String = Play.current.configuration.getString("mail.notification.email").getOrElse("program+notifications@devoxx.fr")
   val bugReportRecipient: String = ConferenceDescriptor.current().bugReportRecipient
   val bccEmail: Option[String] = ConferenceDescriptor.current().bccEmail
 
@@ -109,6 +115,28 @@ object Mails {
     MailerPlugin.send(email) // returns the message-ID
   }
 
+   def sendBotMessageToCommittee(fromWebuser: Webuser, proposal: Proposal, msg: String, inReplyTo: Option[String]): String = {
+    val listOfOtherSpeakersEmail = extractOtherEmails(proposal)
+
+    val inReplyHeaders: Seq[(String, String)] = inReplyTo.map {
+      replyId: String =>
+        Seq("In-Reply-To" -> replyId)
+    }.getOrElse(Seq.empty[(String, String)])
+
+    val email = Email(
+      subject = s"[${proposal.id}] ${proposal.title}", // please keep a generic subject => perfect for Mail Thread
+      from = fromSender,
+      to = Seq(botNotificationEmail),
+      cc = listOfOtherSpeakersEmail,
+      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
+      bodyText = Some(views.txt.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
+      bodyHtml = Some(views.html.Mails.sendMessageToCommitte(fromWebuser.cleanName, proposal, msg).toString()),
+      charset = Some("utf-8"),
+      headers = inReplyHeaders
+    )
+    MailerPlugin.send(email) // returns the message-ID
+  }
+
   def sendNotifyProposalSubmitted(fromWebuser: Webuser, proposal: Proposal) = {
     val listOfOtherSpeakersEmail = extractOtherEmails(proposal)
     val subjectEmail: String = Messages("mail.notify_proposal.subject", fromWebuser.cleanName, proposal.title)
@@ -116,7 +144,7 @@ object Mails {
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
-      to = Seq(committeeEmail),
+      to = Seq(botNotificationEmail),
       cc = listOfOtherSpeakersEmail,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
       bodyText = Some(views.txt.Mails.sendNotifyProposalSubmitted(fromWebuser.cleanName, proposal.id, proposal.title, Messages(proposal.track.label), Messages(proposal.talkType.id)).toString()),

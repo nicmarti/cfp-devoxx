@@ -53,7 +53,9 @@ case class SendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: S
 
 case class SendQuestionToSpeaker(visitorEmail: String, visitorName: String, proposal: Proposal, msg: String)
 
-case class SendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String)
+case class SendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String)
+
+case class SendBotMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String)
 
 case class SendMessageInternal(reporterUUID: String, proposal: Proposal, msg: String)
 
@@ -101,7 +103,8 @@ class ZapActor extends Actor {
   def receive: PartialFunction[Any, Unit] = {
     case ReportIssue(issue) => publishBugReport(issue)
     case SendMessageToSpeaker(reporterUUID, proposal, msg) => sendMessageToSpeaker(reporterUUID, proposal, msg)
-    case SendMessageToCommitte(reporterUUID, proposal, msg) => sendMessageToCommitte(reporterUUID, proposal, msg)
+    case SendMessageToCommittee(reporterUUID, proposal, msg) => sendMessageToCommittee(reporterUUID, proposal, msg)
+    case SendBotMessageToCommittee(reporterUUID, proposal, msg) => sendBotMessageToCommittee(reporterUUID, proposal, msg)
     case SendMessageInternal(reporterUUID, proposal, msg) => postInternalMessage(reporterUUID, proposal, msg)
     case DraftReminder() => sendDraftReminder()
     case ComputeLeaderboard() => doComputeLeaderboard()
@@ -144,7 +147,7 @@ class ZapActor extends Actor {
     }
   }
 
-  def sendMessageToCommitte(reporterUUID: String, proposal: Proposal, msg: String) {
+  def sendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
@@ -156,6 +159,20 @@ class ZapActor extends Actor {
       play.Logger.error("User not found with uuid " + reporterUUID)
     }
   }
+
+  def sendBotMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
+    Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
+    Webuser.findByUUID(reporterUUID).map {
+      reporterWebuser: Webuser =>
+        val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
+        val newMessageID = Mails.sendBotMessageToCommittee(reporterWebuser, proposal, msg, maybeMessageID)
+        // Overwrite the messageID for the next email (to set the In-Reply-To)
+        Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
+    }.getOrElse {
+      play.Logger.error("User not found with uuid " + reporterUUID)
+    }
+  }
+
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message for ${proposal.id} ${proposal.title}"))
@@ -388,7 +405,6 @@ class ZapActor extends Actor {
 
         // Mail digest to users who have no track filter set
         if (noTrackDigestUsersIDs.nonEmpty) {
-
           Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
         }
 
