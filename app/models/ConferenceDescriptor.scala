@@ -686,7 +686,7 @@ object ConferenceDescriptor {
     confUrlCode = "devoxxfr2018",
     frLangEnabled = true,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.fr"),
-    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.fr"),
+    committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program+notifications@devoxx.fr"),
     bccEmail = Play.current.configuration.getString("mail.bcc"),
     bugReportRecipient = Play.current.configuration.getString("mail.bugreport.recipient").getOrElse("nicolas.martignole@devoxx.fr"),
     conferenceUrls = ConferenceUrls(
