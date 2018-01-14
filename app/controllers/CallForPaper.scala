@@ -151,7 +151,7 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Load a proposal
-  def editProposal(proposalId: String) =CSRFCheck {
+  def editProposal(proposalId: String) = CSRFAddToken {
     SecuredAction {
       implicit request =>
         val uuid = request.webuser.uuid
