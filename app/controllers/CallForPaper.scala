@@ -211,10 +211,17 @@ object CallForPaper extends SecureCFPController {
                 val updatedProposalWithSpeakers:Proposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
 
                 // Then if userGroup boolean flag is set to null we must save false
-                val updatedProposal:Proposal = if(proposal.userGroup.isEmpty){
+                val updatedProposal2:Proposal = if(proposal.userGroup.isEmpty){
                   updatedProposalWithSpeakers.copy(userGroup=Some(false))
                 }else{
                   updatedProposalWithSpeakers
+                }
+
+                 // Remove the sponsor flag if the ProposalType is not a Conference (specific to Devoxx : we want only Conference format as sponsor talk)
+                val updatedProposal:Proposal = if(proposal.sponsorTalk && proposal.talkType != ConferenceDescriptor.current().conferenceSponsor.sponsorProposalType){
+                  updatedProposal2.copy(sponsorTalk = false)
+                }else{
+                  updatedProposal2
                 }
 
                 // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
