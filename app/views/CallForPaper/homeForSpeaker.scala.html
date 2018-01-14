@@ -80,7 +80,7 @@
                         </div>
                     } else {
 
-                        @myProposals.map{proposal=>
+                        @myProposals.toList.sortBy(_.id).map{proposal=>
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
@@ -119,6 +119,11 @@
                                         }
                                     </div>
                                     <div class="col-lg-9">
+
+                                        @if(proposal.state.code == "draft") {
+                                            <span class="label label-danger"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</span>
+                                        }
+
                                         <ul>
                                             <li><a href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.edit")</a></li>
                                      <li><a href="@routes.CallForPaper.editOtherSpeakers(proposal.id)"  title="@Messages("table.speaker.addremove")"> @Messages("table.speaker.addremove")</a></li>
