@@ -151,32 +151,31 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Load a proposal
-  def editProposal(proposalId: String) =CSRFCheck {
-    SecuredAction {
-      implicit request =>
-        val uuid = request.webuser.uuid
-        val maybeProposal = Proposal.findProposal(uuid, proposalId)
-        maybeProposal match {
-          case Some(proposal) =>
-            if (proposal.mainSpeaker == uuid) {
-              val proposalForm = Proposal.proposalForm.fill(proposal)
-              Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
-            } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
-              // Switch the mainSpeaker and the other Speakers
-              val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-              Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
-            } else if (proposal.otherSpeakers.contains(uuid)) {
-              // Switch the secondary speaker and this speaker
-              val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-              Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
-            } else {
-              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
-            }
-          case None =>
-            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
-        }
-    }
+  def editProposal(proposalId: String) = SecuredAction {
+    implicit request =>
+      val uuid = request.webuser.uuid
+      val maybeProposal = Proposal.findProposal(uuid, proposalId)
+      maybeProposal match {
+        case Some(proposal) =>
+          if (proposal.mainSpeaker == uuid) {
+            val proposalForm = Proposal.proposalForm.fill(proposal)
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+          } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
+            // Switch the mainSpeaker and the other Speakers
+            val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+          } else if (proposal.otherSpeakers.contains(uuid)) {
+            // Switch the secondary speaker and this speaker
+            val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
+            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+          } else {
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
+          }
+        case None =>
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
+      }
   }
+
 
   // Prerender the proposal, but do not persist
   def previewProposal() = CSRFAddToken{
