@@ -259,7 +259,7 @@ object Proposal {
     "sponsorTalk" -> boolean,
     "track" -> nonEmptyText,
     "demoLevel" -> optional(text),
-    "userGroup" -> optional(boolean),
+    "userGroup" -> optional(boolean), // This is Golden Ticket yes/no
     "videoLink" -> optional(text),
     "tags" -> optional(seq(
       mapping(

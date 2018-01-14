@@ -1,5 +1,5 @@
 @(newProposal: Form[models.Proposal])(implicit flash: Flash, lang: Lang, req: RequestHeader)
-
+@import helper.CSRF
 @main("New proposal") {
     <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
 
@@ -36,7 +36,7 @@
             </div>
         }
 
-        @helper.form(action = routes.CallForPaper.previewProposal()) {
+        @helper.form(CSRF(routes.CallForPaper.previewProposal())) {
             <input type="hidden" name="id" value="@newProposal("id").value">
 
             <div class="row cfp-row">
@@ -145,7 +145,7 @@
                         <p>@Html(Messages("goldenTicket.help.txt", Messages("shortYearlyName")))</p>
                     </div>
                     <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-                    @tags.checkboxI18N(newProposal("userGroup"), 'text -> "userGroup.checkbox", 'checked -> "true")
+                    @tags.checkboxI18N(newProposal("userGroup"), 'text -> "userGroup.checkbox")
                     </div>
                 </div>
             }

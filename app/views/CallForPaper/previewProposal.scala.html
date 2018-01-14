@@ -2,7 +2,7 @@
   privateMessage:String,
   newProposal: Form[models.Proposal],
   currentUser:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
-
+@import helper.CSRF
 @main(newProposal("id").value.map(id => "Edit " + id + " " + newProposal("title").value.getOrElse("")).getOrElse("New proposal preview")) {
     <div class="row">
         <div class="col-md-12">
@@ -14,7 +14,7 @@
             <hr>
         </div>
         <div class="col-md-23">
-        @helper.form(action = routes.CallForPaper.saveProposal()) {
+        @helper.form(CSRF(routes.CallForPaper.saveProposal())) {
             <input type="hidden" name="lang" value="@newProposal("lang").value">
             <input type="hidden" name="title" value="@newProposal("title").value">
             <input type="hidden" name="mainSpeaker" value="@newProposal("mainSpeaker").value">

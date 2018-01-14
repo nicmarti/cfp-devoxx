@@ -142,96 +142,111 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Load a new proposal form
-  def newProposal() = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(request.session + ("token" -> Crypto.sign(uuid)))
+  def newProposal() = CSRFAddToken{
+    SecuredAction {
+      implicit request =>
+        val uuid = request.webuser.uuid
+        Ok(views.html.CallForPaper.newProposal(Proposal.proposalForm)).withSession(request.session + ("token" -> Crypto.sign(uuid)))
+    }
   }
 
   // Load a proposal
-  def editProposal(proposalId: String) = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      val maybeProposal = Proposal.findProposal(uuid, proposalId)
-      maybeProposal match {
-        case Some(proposal) =>
-          if (proposal.mainSpeaker == uuid) {
-            val proposalForm = Proposal.proposalForm.fill(proposal)
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
-          } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
-            // Switch the mainSpeaker and the other Speakers
-            val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
-          } else if (proposal.otherSpeakers.contains(uuid)) {
-            // Switch the secondary speaker and this speaker
-            val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
-            Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
-          } else {
-            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
-          }
-        case None =>
-          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
-      }
+  def editProposal(proposalId: String) =CSRFCheck {
+    SecuredAction {
+      implicit request =>
+        val uuid = request.webuser.uuid
+        val maybeProposal = Proposal.findProposal(uuid, proposalId)
+        maybeProposal match {
+          case Some(proposal) =>
+            if (proposal.mainSpeaker == uuid) {
+              val proposalForm = Proposal.proposalForm.fill(proposal)
+              Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+            } else if (proposal.secondarySpeaker.isDefined && proposal.secondarySpeaker.get == uuid) {
+              // Switch the mainSpeaker and the other Speakers
+              val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
+              Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+            } else if (proposal.otherSpeakers.contains(uuid)) {
+              // Switch the secondary speaker and this speaker
+              val proposalForm = Proposal.proposalForm.fill(Proposal.setMainSpeaker(proposal, uuid))
+              Ok(views.html.CallForPaper.newProposal(proposalForm)).withSession(request.session + ("token" -> Crypto.sign(proposalId)))
+            } else {
+              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "Invalid state")
+            }
+          case None =>
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
+        }
+    }
   }
 
   // Prerender the proposal, but do not persist
-  def previewProposal() = SecuredAction {
-    implicit request =>
-      Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
-        validProposal => {
-          val summary = validProposal.summaryAsHtml
-          // markdown to HTML
-          val privateMessage = validProposal.privateMessageAsHtml // markdown to HTML
-          Ok(views.html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
-        }
-      )
+  def previewProposal() = CSRFAddToken{
+    SecuredAction {
+      implicit request =>
+        Proposal.proposalForm.bindFromRequest.fold(
+          hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)).flashing("error" -> "invalid.form"),
+          validProposal => {
+            val summary = validProposal.summaryAsHtml
+            // markdown to HTML
+            val privateMessage = validProposal.privateMessageAsHtml // markdown to HTML
+            Ok(views.html.CallForPaper.previewProposal(summary, privateMessage, Proposal.proposalForm.fill(validProposal), request.webuser.uuid))
+          }
+        )
+    }
   }
 
   // Revalidate to avoid CrossSite forgery and save the proposal
-  def saveProposal() = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
+  def saveProposal() = CSRFCheck {
+    SecuredAction {
+      implicit request =>
+        val uuid = request.webuser.uuid
 
-      Proposal.proposalForm.bindFromRequest.fold(
-        hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
-        proposal => {
-          // If the editor is not the owner then findProposal returns None
-          Proposal.findProposal(uuid, proposal.id) match {
-            case Some(existingProposal) =>
-              // This is an edit operation
-              // First we try to reset the speaker's, we do not take the values from the FORM for security reason
-              val updatedProposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
+        Proposal.proposalForm.bindFromRequest.fold(
+          hasErrors => BadRequest(views.html.CallForPaper.newProposal(hasErrors)),
+          proposal => {
+            // If the editor is not the owner then findProposal returns None
+            Proposal.findProposal(uuid, proposal.id) match {
+              case Some(existingProposal) =>
+                // This is an edit operation
+                // First we try to reset the speaker's, we do not take the values from the FORM for security reason
+                val updatedProposalWithSpeakers:Proposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
 
-              // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
-              if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
-                Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
-                if (ConferenceDescriptor.isResetVotesForSubmitted) {
-                  Review.archiveAllVotesOnProposal(proposal.id)
-                  Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
+                // Then if userGroup boolean flag is set to null we must save false
+                val updatedProposal:Proposal = if(proposal.userGroup.isEmpty){
+                  updatedProposalWithSpeakers.copy(userGroup=Some(false))
+                }else{
+                  updatedProposalWithSpeakers
                 }
-                Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
-                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
-              } else {
-                Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
-                Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state '" + existingProposal.state.code + "'"))
-                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
-              }
-            case other =>
-              // Check that this is really a new id and that it does not exist
-              if (Proposal.isNew(proposal.id)) {
-                // This is a "create new" operation
-                Proposal.save(uuid, proposal, ProposalState.DRAFT)
-                Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
-                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
-              } else {
-                // Maybe someone tried to edit someone's else proposal...
-                Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
-                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
-              }
+
+                // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
+                if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
+                  Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
+                  if (ConferenceDescriptor.isResetVotesForSubmitted) {
+                    Review.archiveAllVotesOnProposal(proposal.id)
+                    Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
+                  }
+                  Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
+                  Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
+                } else {
+                  Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
+                  Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state '" + existingProposal.state.code + "'"))
+                  Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
+                }
+              case other =>
+                // Check that this is really a new id and that it does not exist
+                if (Proposal.isNew(proposal.id)) {
+                  // This is a "create new" operation
+                  Proposal.save(uuid, proposal, ProposalState.DRAFT)
+                  Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
+                  Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
+                } else {
+                  // Maybe someone tried to edit someone's else proposal...
+                  Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
+                  Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
+                }
+            }
           }
-        }
-      )
+        )
+    }
   }
 
   def autoCompleteTag(term: String) = SecuredAction {
