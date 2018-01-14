@@ -107,31 +107,36 @@
                                         }
                                     </div>
                                     <Div class="panel-body">
-                                    <div class="col-lg-3">
-                                        @tags.renderGravatar(proposal.mainSpeaker, showName = true)
-                                        @proposal.secondarySpeaker.map { secondarySpeakerUUID =>
-                                            @tags.renderGravatar(secondarySpeakerUUID, showName = true)
-                                        }
-                                        @proposal.otherSpeakers.map { listOfUUID =>
-                                            @listOfUUID.split(",").map { suid =>
-                                                @tags.renderGravatar(suid, showName = true)
+                                        <div class="col-lg-3">
+                                            @tags.renderGravatar(proposal.mainSpeaker, showName = true)
+                                            @proposal.secondarySpeaker.map { secondarySpeakerUUID =>
+                                                @tags.renderGravatar(secondarySpeakerUUID, showName = true)
                                             }
-                                        }
-                                    </div>
-                                    <div class="col-lg-9">
+                                            @proposal.otherSpeakers.map { listOfUUID =>
+                                                @listOfUUID.split(",").map { suid =>
+                                                    @tags.renderGravatar(suid, showName = true)
+                                                }
+                                            }
+                                        </div>
+                                        <div class="col-lg-9">
 
-                                        @if(proposal.state.code == "draft") {
-                                            <span class="label label-danger"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</span>
-                                        }
+                                            @if(proposal.state.code == "draft") {
+                                                <span class="label label-danger"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</span>
+                                            }
 
-                                        <ul>
-                                            <li><a href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.edit")</a></li>
-                                     <li><a href="@routes.CallForPaper.editOtherSpeakers(proposal.id)"  title="@Messages("table.speaker.addremove")"> @Messages("table.speaker.addremove")</a></li>
-                                     <li><a href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a></li>
-                                     <li><a href="@routes.CallForPaper.showCommentForProposal(proposal.id)">Messages <span class="badge">@models.Comment.countComments(proposal.id)</span></a></li>
-                                     <li><a href="@routes.CallForPaper.deleteProposal(proposal.id)" title="@Messages("table.pres.delete")">@Messages("table.pres.delete")</a></li>
+                                            <ul>
+                                                <li><a href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.edit")</a></li>
+                                                <li><a href="@routes.CallForPaper.editOtherSpeakers(proposal.id)" title="@Messages("table.speaker.addremove")"> @Messages("table.speaker.addremove")</a></li>
+                                                <li><a href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a></li>
+                                                <li><a href="@routes.CallForPaper.showCommentForProposal(proposal.id)">
+                                                    Messages <span class="badge">@models.Comment.countComments(proposal.id)</span></a></li>
+                                                <li><a href="@routes.CallForPaper.deleteProposal(proposal.id)" title="@Messages("table.pres.delete")">@Messages("table.pres.delete")</a></li>
                                             </ul>
-                                    </div>
+
+                                            @if(proposal.sponsorTalk){
+                                                <span class="label label-success"><i class="icon-screenshot"></i> Sponsor talk</span>
+                                            }
+                                        </div>
                                     </Div>
                                 </div>
                             </div>
