@@ -1,4 +1,5 @@
 @(speakerForm: Form[Speaker], readOnlyUUID:String)(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@import helper.CSRF
 @main("Edit your profile") {
 <div class="row">
     <div class="col-md-8 page-header">
@@ -19,21 +20,20 @@
           </div>
         }
 
-        @helper.form(action = routes.CallForPaper.saveProfile) {
+        @helper.form(CSRF(routes.CallForPaper.saveProfile())) {
             <input type="hidden" name="email" value="@speakerForm("email").value.get">
             @helper.inputText(speakerForm("firstName"), 'size->80)
             @helper.inputText(speakerForm("lastName"), 'size->80)
             @helper.inputText(speakerForm("avatarUrl"), 'size->80)
             @helper.inputText(speakerForm("company"))
             @helper.textarea(speakerForm("bio"), 'cols -> 70, 'rows -> 5)
-            <i class="icon-text-width"></i> : <span id="charsremain"></span>
+            <i class="icon-text-width"></i> : <span id="charsremain"></span> <br><i>Carriage return + new line => 2 chars.</i>
             @helper.inputText(speakerForm("twitter"), 'placeholder -> "@nickname")
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
             @helper.textarea(speakerForm("qualifications"), 'cols -> 70, 'rows -> 5)
+            <i class="icon-text-width"></i> : <span id="charsremain2"></span>
             @helper.inputText(speakerForm("phoneNumber"))
-
-             @tags.selectI18N(field = speakerForm("lang"), options=Seq(("en","English"),("fr","French")),  'class->"form-control")
-
+            @tags.selectI18N(field = speakerForm("lang"), options=Seq(("en","English"),("fr","French")),  'class->"form-control")
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
     <hr>
@@ -45,6 +45,7 @@
 <script type="text/javascript">
 $(document).ready(function($){
     setformfieldsize($('#bio'), 750, 'charsremain');
+    setformfieldsize($('#qualifications'), 750, 'charsremain2');
 });
 </script>
 }
