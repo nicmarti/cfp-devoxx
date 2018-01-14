@@ -27,11 +27,11 @@ function setformfieldsize($fields, optsize, optoutputdiv){
 }
 
 setformfieldsize.restrict=function($field, e){
-	var keyunicode=e.charCode || e.keyCode
+	var keyunicode=e.charCode || e.keyCode;
 	if (!uncheckedkeycodes.test(keyunicode)){
 		if ($field.val().length >= $field.data('maxsize')){ //if characters entered exceed allowed
 			if (e.preventDefault)
-				e.preventDefault()
+				e.preventDefault();
 			return false
 		}
 	}

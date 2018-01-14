@@ -14,7 +14,8 @@ resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repos
 
 libraryDependencies ++= Seq(
   cache,
-  ws
+  ws,
+  filters
 )
 
 val jacksonV = "2.4.3"

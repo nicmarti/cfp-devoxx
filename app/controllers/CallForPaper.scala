@@ -35,6 +35,7 @@ import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsFormUrlEncoded
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -97,39 +98,47 @@ object CallForPaper extends SecureCFPController {
     "uuid" -> ignored("xxx"),
     "email" -> (email verifying nonEmpty),
     "lastName" -> nonEmptyText(maxLength = 25),
-    "bio" -> nonEmptyText(maxLength = 750),
+    "bio" -> nonEmptyText(maxLength = 850), // We set a soft limit in the UX at 750 and a hard limit at 850
     "lang" -> optional(text),
     "twitter" -> optional(text),
     "avatarUrl" -> optional(text),
     "company" -> optional(text),
     "blog" -> optional(text),
     "firstName" -> nonEmptyText(maxLength = 25),
-    "qualifications" -> nonEmptyText(maxLength = 750),
+    "qualifications" -> nonEmptyText(maxLength = 850), // We set a soft limit in the UX at 750 and a hard limit at 850
     "phoneNumber" -> optional(text)
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
-  def editProfile = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      Speaker.findByUUID(uuid).map {
-        speaker =>
-          Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker), uuid))
-      }.getOrElse(Unauthorized("User not found"))
+
+  import play.filters.csrf._
+
+  def editProfile = CSRFAddToken {
+    SecuredAction {
+      implicit request =>
+        val uuid = request.webuser.uuid
+        Speaker.findByUUID(uuid).map {
+          speaker =>
+            Ok(views.html.CallForPaper.editProfile(speakerForm.fill(speaker), uuid))
+        }.getOrElse(Unauthorized("User not found"))
+    }
   }
 
-  def saveProfile = SecuredAction {
-    implicit request =>
-      val uuid = request.webuser.uuid
-      speakerForm.bindFromRequest.fold(
-        invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm, uuid)).flashing("error" -> "Invalid form, please check and correct errors. "),
-        updatedSpeaker => {
-          Speaker.update(uuid, updatedSpeaker)
-          val firstName: String = updatedSpeaker.firstName.getOrElse(request.webuser.firstName)
-          val lastName: String = updatedSpeaker.name.getOrElse(request.webuser.lastName)
-          Webuser.updateNames(uuid, newFirstName = firstName, newLastName = lastName)
-          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
-        }
-      )
+  // See CSRF https://playframework.com/documentation/2.3.x/ScalaCsrf
+  def saveProfile =  CSRFCheck {
+    SecuredAction {
+      implicit request =>
+        val uuid = request.webuser.uuid
+        speakerForm.bindFromRequest.fold(
+          invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm, uuid)),
+          updatedSpeaker => {
+            Speaker.update(uuid, updatedSpeaker)
+            val firstName: String = updatedSpeaker.firstName.getOrElse(request.webuser.firstName)
+            val lastName: String = updatedSpeaker.name.getOrElse(request.webuser.lastName)
+            Webuser.updateNames(uuid, newFirstName = firstName, newLastName = lastName)
+            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
+          }
+        )
+    }
   }
 
   // Load a new proposal form
