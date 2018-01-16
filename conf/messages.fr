@@ -719,7 +719,7 @@ gt.intro.1=Voici la liste complète des propositions que vous n''avez pas encore
 gt.intro.2=Si vous le souhaitez, vous pouvez aussi
 gt.reviewYourVotes=revoir et corriger vos votes
 gt.intro.3=tant que le CFP est ouvert.
-gt.special.need=Mise à jour du mardi 9 février : seules les Conférences peuvent désormais être évaluées. La sélection des autres formats est terminée
+gt.special.need=Vous pouvez voter jusqu'au 30 janvier 19h00.
 gt.todo=Votre liste de sujet à revoir :
 
 

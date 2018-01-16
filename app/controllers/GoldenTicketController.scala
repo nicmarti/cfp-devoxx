@@ -70,6 +70,8 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       val sorter = CFPAdmin.proposalSorter(sort)
       val orderer = CFPAdmin.proposalOrder(ascdesc)
+      val innerPage:Int = if(page<1){ 1 } else { page }
+      val pageSize:Int=30
 
       val allNotReviewed = if (ConferenceDescriptor.isCFPOpen) {
         ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
@@ -85,15 +87,25 @@ object GoldenTicketController extends SecureCFPController {
         case None => allNotReviewed
         case Some(trackLabel) => allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
       }
-      val allProposalsForReview = CFPAdmin.sortProposals(maybeFilteredProposals, sorter, orderer)
 
-      val etag = "gt2_" + allProposalsForReview.hashCode()
+      val totalToReview = maybeFilteredProposals.size
 
-      request.headers.get(IF_NONE_MATCH) match {
-        case Some(tag) if tag == etag.toString => NotModified
-        case _ => Ok(views.html.GoldenTicketController.showAllProposals(allProposalsForReview, page, sort, ascdesc, track)).withHeaders(ETAG -> etag.toString)
+      val totalPages = (totalToReview / pageSize) + (if (totalToReview % pageSize > 0) 1 else 0)
+      val currentPage = if(innerPage>totalPages){
+        totalPages
+      }else{
+        innerPage
       }
+      val allProposalsForReview = CFPAdmin.sortProposals(maybeFilteredProposals, sorter, orderer).slice(pageSize * (currentPage - 1), pageSize * (currentPage - 1) + pageSize)
+      Ok(views.html.GoldenTicketController.showAllProposalsGT(allProposalsForReview, currentPage, sort, ascdesc, track, totalToReview))
+  }
 
+  def pageCalc(page: Int, pageSize: Int, totalItems: Int) = {
+    val innerPage = if(page < 1 ) { 1 } else { page}
+    val from = ((innerPage - 1) * pageSize) + 1
+    val to = totalItems min (from + pageSize - 1)
+    val totalPages = (totalItems / pageSize) + (if (totalItems % pageSize > 0) 1 else 0)
+    (from, to, totalPages)
   }
 
   val voteForm: Form[Int] = Form("vote" -> number(min = 0, max = 10))
