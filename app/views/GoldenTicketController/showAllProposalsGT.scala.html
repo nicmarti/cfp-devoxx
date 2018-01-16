@@ -2,7 +2,9 @@
   page:Int,
   sort:Option[String],
   ascdesc:Option[String],
-  track:Option[String])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+  track:Option[String],
+  totalToReview:Int
+)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
     <div class="row">
@@ -41,11 +43,12 @@
 
                     @if(allProposalsForReview.nonEmpty) {
                         <i class="icon-filter"></i> Filter on
-                        @Track.allIDs.map{idTrack=>
+                        @Track.allIDs.filterNot(_ == Track.UNKNOWN.id).map{idTrack=>
                             <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
                         }
                         <br>
                         <br>
+
 
                         <table class="table table-bordered table-striped table-hover table-condensed">
                             <thead>
@@ -58,7 +61,8 @@
                                 </tr>
                                 <tr>
                                     <th colspan="5">
-                                       <small>@Messages("gt.todo") @allProposalsForReview.size</small>
+                                       <small>@Messages("gt.todo") @totalToReview - @defining(controllers.GoldenTicketController.pageCalc(page, 30, totalToReview)){toto=> From: @toto._1 to @toto._2 - Page @page / @toto._3}</small>
+                                        <small><a href="@routes.GoldenTicketController.showAllProposals(page-1, sort, ascdesc, track)">Previous page</a> - <a href="@routes.GoldenTicketController.showAllProposals(page+1, sort, ascdesc, track)">Next page</a> </small>
                                     </th>
                                 </tr>
                             </thead>
@@ -87,6 +91,14 @@
                                 </tr>
                             }
                             </tbody>
+                            <tfoot>
+                             <tr>
+                                    <th colspan="5">
+                                       <small>@Messages("gt.todo") @totalToReview - @defining(controllers.GoldenTicketController.pageCalc(page, 30, totalToReview)){toto=> From: @toto._1 to @toto._2 - Page @page / @toto._3}</small>
+                                        <small><a href="@routes.GoldenTicketController.showAllProposals(page-1, sort, ascdesc, track)">Previous page</a> - <a href="@routes.GoldenTicketController.showAllProposals(page+1, sort, ascdesc, track)">Next page</a> </small>
+                                    </th>
+                                </tr>
+                            </tfoot>
                         </table>
                     } else {
                         @if(track.isDefined){
