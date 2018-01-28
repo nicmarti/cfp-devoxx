@@ -180,6 +180,7 @@ POST          /admin/tag/save                                                   
 POST          /admin/tags/saveAll                                               controllers.Backoffice.saveImportTags()
 DELETE        /admin/tag/delete/:uuid                                           controllers.Backoffice.deleteTag(uuid : String)
 GET           /admin/tags                                                       controllers.Backoffice.getProposalsByTags()
+GET           /admin/tags/selection                                             controllers.Backoffice.getSelectionByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
 # Push notification message to "My Devoxx" mobile app
