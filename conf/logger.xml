@@ -22,7 +22,7 @@
     <logger name="library.ElasticSearch" level="ERROR"/>
     <logger name="library.sms.TwilioSender" level="INFO"/>
     <logger name="application" level="INFO"/>
-    <logger name="application.Benchmark" level="ERROR"/>
+    <logger name="application.Benchmark" level="DEBUG"/>
     <logger name="application.IndexMaster" level="ERROR"/>
     <logger name="application.Reaper" level="ERROR"/>
     <logger name="application.ApproveOrRefuse" level="INFO"/>

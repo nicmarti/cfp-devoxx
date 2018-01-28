@@ -64,11 +64,11 @@ object ReviewByGoldenTicket {
       client.scard("Webuser:gticket")
   }
 
-  def countVotesForAllUsers():List[(String,Long)]=Redis.pool.withClient{
-    implicit client=>
+  def countVotesForAllUsers(): List[(String, Long)] = Redis.pool.withClient {
+    implicit client =>
       val allReviewerUUIDs: Set[String] = allGoldenTicketReviewerUUIDs()
       val votesPerReviewers = allReviewerUUIDs.map {
-        reviewerUUID:String=>
+        reviewerUUID: String =>
           val totalVotes = client.scard(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID")
           (reviewerUUID, totalVotes)
       }.toList.sortBy(_._2).reverse
@@ -164,13 +164,39 @@ object ReviewByGoldenTicket {
   // If we remove those who voted "0" for a talk, how many votes do we have?
   def totalVoteCastFor(proposalId: String): Long = Redis.pool.withClient {
     implicit client =>
-      client.zcount(s"ReviewGT:Votes:$proposalId", 1, 10)
+      client.hget("GT:Computed:Voters", s"ReviewGT:Votes:$proposalId").map {
+        case "nan" => 0.toLong
+        case "-nan" => 0.toLong
+        case d => d.toLong
+      }.getOrElse(0.toLong)
+
+
   }
 
   def averageScore(proposalId: String): Double = Redis.pool.withClient {
     client =>
-      val allScores = client.zrangeByScoreWithScores(s"ReviewGT:Votes:$proposalId", 1, 10).map(_._2)
-      Stats.average(allScores)
+      client.hget("GT:Computed:Average", s"ReviewGT:Votes:$proposalId").map {
+        case "nan" => 0.toDouble
+        case "-nan" => 0.toDouble
+        case d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
+      }.getOrElse(0.toDouble)
+  }
+
+  def totalVotesAndAverageScoreFor(proposalId: String): (Long,Double) = Redis.pool.withClient {
+    client =>
+      val totalVote=client.hget("GT:Computed:Voters", s"ReviewGT:Votes:$proposalId").map {
+        case "nan" => 0.toLong
+        case "-nan" => 0.toLong
+        case d => d.toLong
+      }.getOrElse(-99.toLong)
+
+      val score=client.hget("GT:Computed:Average", s"ReviewGT:Votes:$proposalId").map {
+        case "nan" => 0.toDouble
+        case "-nan" => 0.toDouble
+        case d => BigDecimal(d.toDouble).setScale(3, RoundingMode.HALF_EVEN).toDouble
+      }.getOrElse(-99.toDouble)
+
+      (totalVote,score)
   }
 
   type ReviewerAndVote = (String, Double)

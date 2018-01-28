@@ -2,7 +2,7 @@ import java.util.concurrent.TimeUnit
 
 import library.search.{StopIndex, _}
 import library.{DraftReminder, _}
-import models.Digest
+import models.{Digest, Proposal}
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.{DateMidnight, DateTime, LocalTime}
 import play.api.Play.current
@@ -11,8 +11,8 @@ import play.api.libs.concurrent._
 import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
 import play.core.Router.Routes
-import scala.util.control.NonFatal
 
+import scala.util.control.NonFatal
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
@@ -37,29 +37,6 @@ object Global extends GlobalSettings {
     }
   }
 
-  /**
-    * Server error 500
-    */
-// override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
-//    def devError = views.html.defaultpages.devError(Option(System.getProperty("play.editor"))) _
-//    def prodError = views.html.cfpErrorPage.f // Devoxx Error page
-//    try {
-//      Future.successful(InternalServerError(Play.maybeApplication.map {
-//        case app if app.mode == Mode.Prod => prodError
-//        case app => devError
-//      }.getOrElse(devError) {
-//        ex match {
-//          case e: UsefulException => e
-//          case NonFatal(e) => UnexpectedException(unexpected = Some(e))
-//        }
-//      }))
-//    } catch {
-//      case NonFatal(e) => {
-//        Logger.error("Error while rendering default error page", e)
-//        Future.successful(InternalServerError)
-//      }
-//    }
-//  }
   /**
     * 404 custom page, for Prod mode only
     */

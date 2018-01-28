@@ -94,6 +94,7 @@ GET           /cfpadmin/proposals/byTag/:tagId                                  
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
+GET           /cfpadmin/allvotesV2/:confType                                    controllers.CFPAdmin.allVotesVersion2(confType:String, page:Int ?=0, resultats:Int ?=25)
 
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /cfpadmin/allSponsorTalks                                         controllers.CFPAdmin.allSponsorTalks

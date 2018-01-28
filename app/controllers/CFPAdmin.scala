@@ -58,7 +58,7 @@ object CFPAdmin extends SecureCFPController {
       val orderer = proposalOrder(ascdesc)
       val allNotReviewed = Review.allProposalsNotReviewed(uuid)
 
-      val totalReviewed=Review.totalNumberOfReviewedProposals(uuid)
+      val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
 
       val maybeFilteredProposals = track.map {
@@ -332,12 +332,16 @@ object CFPAdmin extends SecureCFPController {
   def allVotes(confType: String, track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
+      play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin allVotes for $confType and $track")
       val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Review.allVotes()
-      val totalApproved = ApprovedProposal.countApproved(confType)
 
-      val allProposals = Proposal.loadAndParseProposals(reviews.keySet)
+      val totalApproved = Benchmark.measure(
+        () => ApprovedProposal.countApproved(confType), "count approved talks"
+      )
 
-      val listOfProposals = reviews.flatMap {
+      val allProposals = Benchmark.measure(() => Proposal.loadAndParseProposals(reviews.keySet), "load and parse proposals")
+
+      val listOfProposals = Benchmark.measure(() => reviews.flatMap {
         case (proposalId, scoreAndVotes) =>
           val maybeProposal = allProposals.get(proposalId)
           maybeProposal match {
@@ -348,19 +352,58 @@ object CFPAdmin extends SecureCFPController {
               val gtVoteCast: Long = ReviewByGoldenTicket.totalVoteCastFor(p.id)
               Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast)
           }
-      }
+      }, "create list of Proposals")
 
-      val tempListToDisplay = confType match {
+      val tempListToDisplay = Benchmark.measure(() => confType match {
         case "all" => listOfProposals
         case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
-      }
-      val listToDisplay = track match {
+      }, "list to display")
+
+      val listToDisplay = Benchmark.measure(() => track match {
         case None => tempListToDisplay
         case Some(trackId) => tempListToDisplay.filter(_._1.track.id == trackId)
-      }
+      }, "filter by track")
 
-      val totalRemaining = ApprovedProposal.remainingSlots(confType)
+      val totalRemaining = Benchmark.measure(() => ApprovedProposal.remainingSlots(confType), "calculate remaining slots")
       Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
+  }
+
+  def allVotesVersion2(confType: String, page:Int=0, resultats:Int=25) =  SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin Version 2 for $confType")
+
+      val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Benchmark.measure(() => Review.allVotes(), "v2 - All votes")
+
+
+
+      val allProposals = Benchmark.measure(() => {
+        Proposal.loadAndParseProposals(reviews.keySet, ProposalType.parse(confType))
+      }, "v2 - Load and parse proposals for " + ProposalType.parse(confType))
+
+        val listOfProposals =
+          Benchmark.measure(() => reviews.flatMap {
+            case (proposalId, scoreAndVotes) =>
+              val maybeProposal = allProposals.get(proposalId)
+              maybeProposal match {
+                case Some(p) =>
+                  val(gtVoteCast,goldenTicketScore) = ReviewByGoldenTicket.totalVotesAndAverageScoreFor(p.id)
+                  Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast)
+                case None => // We ignore here cause Review loaded all Proposals.
+                  None
+              }
+          }, "v2 - Create list of Proposals")
+
+        val totalApproved =  ApprovedProposal.countApproved(confType)
+        val totalRemaining =ApprovedProposal.remainingSlots(confType)
+
+        val toSlide = listOfProposals.toList.sortBy{
+          case (_, voteAndTotalVotes, gtScore, _) =>library.Stats.average(List(gtScore, voteAndTotalVotes._4.n))
+        }.reverse
+        val sliced = toSlide.slice(page*resultats,(page+1)*resultats)
+
+        Ok(views.html.CFPAdmin.allVotesVersion2(sliced, totalApproved, totalRemaining, confType, page, resultats))
+
   }
 
   def removeSponsorTalkFlag(proposalId: String) = SecuredAction(IsMemberOf("admin")) {
@@ -471,25 +514,25 @@ object CFPAdmin extends SecureCFPController {
         .sortBy(_.uuid)
         .groupBy(_.uuid)
         .filter(_._2.size == 1)
-        .flatMap { uuid => uuid._2}
+        .flatMap { uuid => uuid._2 }
 
       val uniqueSpeakersSortedByName = speakersSortedByUUID.toList
         .sortBy(_.cleanName)
         .groupBy(_.cleanName)
         .filter(_._2.size != 1)
-        .flatMap { name => name._2}
+        .flatMap { name => name._2 }
 
       val speakersSortedByEmail = allSpeakers.toList
         .sortBy(_.email)
         .groupBy(_.email)
         .filter(_._2.size != 1)
-        .flatMap { email => email._2}
+        .flatMap { email => email._2 }
 
       val uniqueSpeakersSortedByEmail = speakersSortedByEmail.toList
         .sortBy(_.email)
         .groupBy(_.email)
         .filter(_._2.size != 1)
-        .flatMap { email => email._2}
+        .flatMap { email => email._2 }
 
       val combinedList = uniqueSpeakersSortedByName.toList ++ uniqueSpeakersSortedByEmail.toList
 
@@ -506,9 +549,8 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val devoxxians = Webuser.allDevoxxians().sortBy(_.email)
 
-      val duplicateEmails = devoxxians.groupBy(_.email).filter(_._2.size>1)
-
-      val removeNoEmails = duplicateEmails.filterNot(s=> s._1 == "no_email_defined")
+      val duplicateEmails = devoxxians.groupBy(_.email).filter(_._2.size > 1)
+      val removeNoEmails = duplicateEmails.filterNot(s => s._1 == "no_email_defined")
 
       Ok(views.html.Backoffice.invalidDevoxxians(removeNoEmails.values.flatten.toList))
   }
@@ -570,17 +612,17 @@ object CFPAdmin extends SecureCFPController {
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
             .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
           (speaker, onIfFirstOrSecondSpeaker)
-      }.filter(_._2.nonEmpty).map{
-        case (speaker,zeProposals)=>
-          val updated=zeProposals.filter{
-            proposal=>
+      }.filter(_._2.nonEmpty).map {
+        case (speaker, zeProposals) =>
+          val updated = zeProposals.filter {
+            proposal =>
               Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
           }
-          if(updated.size!=zeProposals.size){
+          if (updated.size != zeProposals.size) {
             play.Logger.debug(s"Removed rejected proposal for speaker ${speaker.cleanName}")
           }
 
-          (speaker,updated)
+          (speaker, updated)
       }.filter(_._2.nonEmpty)
 
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))

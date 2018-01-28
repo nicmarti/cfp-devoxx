@@ -23,19 +23,20 @@
 
 package models
 
-import library.{Stats, Redis}
-import org.joda.time.{Instant, DateTime}
+import library.{Redis, Stats}
+import org.joda.time.{DateTime, Instant}
+
 import scala.math.BigDecimal.RoundingMode
 
 /**
- * When a CFP admin checks or perform a review on a talk, we store this event.
- *
- * We use a SET to store which proposal was reviewed
- * We use a ZSET to store the score
- *
- * Author: nicolas martignole
- * Created: 11/11/2013 10:21
- */
+  * When a CFP admin checks or perform a review on a talk, we store this event.
+  *
+  * We use a SET to store which proposal was reviewed
+  * We use a ZSET to store the score
+  *
+  * Author: nicolas martignole
+  * Created: 11/11/2013 10:21
+  */
 case class Review(reviewer: String, proposalId: String, vote: Int, date: DateTime)
 
 object Review {
@@ -149,9 +150,9 @@ object Review {
       client.zcount(s"Proposals:Votes:$proposalId", 0, 10) // how many votes between 0 and 10 ?
   }
 
-  def standardDeviation(proposalId:String)=Redis.pool.withClient{
-    client=>
-      client.hget("Computed:StandardDeviation", s"Proposals:Votes:$proposalId"  )
+  def standardDeviation(proposalId: String) = Redis.pool.withClient {
+    client =>
+      client.hget("Computed:StandardDeviation", s"Proposals:Votes:$proposalId")
   }
 
   // If we remove those who voted "0" for a talk, how many votes do we have?
@@ -160,8 +161,8 @@ object Review {
       client.zcount(s"Proposals:Votes:$proposalId", 1, 10)
   }
 
-  def averageScore(proposalId:String):Double = Redis.pool.withClient{
-    client=>
+  def averageScore(proposalId: String): Double = Redis.pool.withClient {
+    client =>
       val allScores = client.zrangeByScoreWithScores(s"Proposals:Votes:$proposalId", 1, 10).map(_._2)
       Stats.average(allScores)
   }
@@ -256,9 +257,9 @@ object Review {
   def totalInternalCommentsPerProposal(): List[(String, Int)] = {
     val proposalsCommentsCount: List[(String, Int)] = {
       allProposalsAndReviews.map(proposal => (proposal._1, Comment.allInternalComments(proposal._1).size))
-                              .filter(_._2 > 2) // At least three comments
-                              .sortBy(_._2)
-                              .reverse.take(5)
+        .filter(_._2 > 2) // At least three comments
+        .sortBy(_._2)
+        .reverse.take(5)
     }
 
     proposalsCommentsCount
@@ -297,11 +298,15 @@ object Review {
       }
   }
 
-  class Score(val s:Double) extends AnyVal
-  class TotalVoter(val i:Int) extends AnyVal
-  class TotalAbst(val i:Int) extends AnyVal
-  class AverageNote(val n:Double) extends AnyVal
-  class StandardDev(val d:Double) extends AnyVal
+  class Score(val s: Double) extends AnyVal
+
+  class TotalVoter(val i: Int) extends AnyVal
+
+  class TotalAbst(val i: Int) extends AnyVal
+
+  class AverageNote(val n: Double) extends AnyVal
+
+  class StandardDev(val d: Double) extends AnyVal
 
 
   /**
@@ -316,8 +321,14 @@ object Review {
 
       val allProposalIDSToRemove = Proposal.allProposalIDsDeletedArchivedOrDraft()
 
-      client.hgetAll("Computed:Scores").map {
-        case (proposalKey: String, scores: String) if !allProposalIDSToRemove.contains(proposalKey)=>
+      val filteredList = client.hgetAll("Computed:Scores").filterNot{
+        case(proposalKey:String,_) =>
+          val propId = proposalKey.substring(proposalKey.lastIndexOf(":")+1)
+          allProposalIDSToRemove.contains(propId)
+      }
+
+      filteredList.map {
+        case (proposalKey: String, scores: String) =>
           val proposalId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
           (proposalId,
             (new Score(scores.toDouble),
@@ -437,11 +448,11 @@ object Review {
   def allReviewersAndStats(): List[(String, Int, Int)] = Redis.pool.withClient {
     client =>
       // Remove reviewer that are not any longer part of CFP
-      val validReviewers=client.smembers("Webuser:cfp")
+      val validReviewers = client.smembers("Webuser:cfp")
 
       val allVoted = client.hgetAll("Computed:Reviewer:Total").filter(uuidAndPoints => validReviewers.contains(uuidAndPoints._1)).map {
-        case ( uuid: String,totalPoints: String) =>
-          val nbrOfTalksReviewed = client.hget("Computed:Reviewer:NbTalkVoted",uuid).map(_.toInt).getOrElse(0)
+        case (uuid: String, totalPoints: String) =>
+          val nbrOfTalksReviewed = client.hget("Computed:Reviewer:NbTalkVoted", uuid).map(_.toInt).getOrElse(0)
           (uuid, totalPoints.toInt, nbrOfTalksReviewed)
       }
 
@@ -463,18 +474,18 @@ object Review {
 
   // Return the current number of Proposal for which the specified UUID voted between 1 to 10
   // This does not return the abstention votes.
-  def totalProposalsVotedForUser(uuid:String):Option[Int]=Redis.pool.withClient{
-    client=>
-      client.hget("Computed:Reviewer:NbTalkVoted",uuid).map(_.toInt)
+  def totalProposalsVotedForUser(uuid: String): Option[Int] = Redis.pool.withClient {
+    client =>
+      client.hget("Computed:Reviewer:NbTalkVoted", uuid).map(_.toInt)
   }
 
-  def totalNumberOfReviewedProposals(uuid:String):Long=Redis.pool.withClient{
-    client=>
+  def totalNumberOfReviewedProposals(uuid: String): Long = Redis.pool.withClient {
+    client =>
       client.scard(s"Proposals:Reviewed:ByAuthor:$uuid")
   }
 
-  def archiveAllReviews() = Redis.pool.withClient{
-    client=>
+  def archiveAllReviews() = Redis.pool.withClient {
+    client =>
       client.keys("Proposals:Reviewed:ByAuthor:*").foreach {
         reviewKey: String =>
           client.del(reviewKey)

@@ -1,6 +1,6 @@
 package models
 
-import library.{Dress, Redis}
+import library.{Benchmark, Dress, Redis}
 import models.ProposalState.{ACCEPTED, APPROVED, BACKUP, DECLINED, DRAFT, REJECTED, SUBMITTED}
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import org.joda.time.Instant
@@ -185,6 +185,7 @@ case class Proposal(id: String,
 
 object Proposal {
 
+
   implicit val proposalFormat = Json.format[Proposal]
 
   val langs = Seq(("en", "English"), ("fr", "Français"))
@@ -238,6 +239,8 @@ object Proposal {
       changeTrack(authorUUID, proposal)
 
       changeProposalState(authorUUID, proposal.id, proposalState)
+
+      changeProposalType(authorUUID, proposal.id, proposal.talkType)
 
       // Reflect any changes such as talkType or speaker to the list of accepted/refused talks.
       ApprovedProposal.reflectProposalChanges(proposal)
@@ -374,7 +377,7 @@ object Proposal {
 
   }
 
-  def changeProposalState(uuid: String, proposalId: String, newState: ProposalState) = Redis.pool.withClient {
+  def changeProposalState(uuid: String, proposalId: String, newState: ProposalState): Any = Redis.pool.withClient {
     client =>
       // Same kind of operation for the proposalState
       val maybeExistingState = for (state <- ProposalState.allAsCode if client.sismember("Proposals:ByState:" + state, proposalId)) yield state
@@ -397,7 +400,25 @@ object Proposal {
       }
   }
 
-  def changeTags(proposal: Proposal, newTags: Option[Seq[Tag]]) = Redis.pool.withClient {
+  private def changeProposalType(uuid: String, proposalId: String, newProposalType: ProposalType) = Redis.pool.withClient {
+    client =>
+      val maybeExistingType = for (t <- ProposalState.allAsCode if client.sismember("Proposals:ByType:" + t, proposalId)) yield t
+
+      // Do the operation on the ProposalState
+      maybeExistingType.filterNot(_ == newProposalType.id).foreach {
+        oldType: String =>
+          // SMOVE is also a O(1) so it is faster than a SREM and SADD
+          client.smove("Proposals:ByType:" + oldType, "Proposals:ByType:" + newProposalType.id, proposalId)
+          Event.storeEvent(Event(proposalId, uuid, s"Changed type of talk $proposalId from $oldType to ${newProposalType.id}"))
+      }
+      if (maybeExistingType.isEmpty) {
+        // SADD is O(N)
+        client.sadd("Proposals:ByType:" + newProposalType.id, proposalId)
+        Event.storeEvent(Event(proposalId, uuid, s"Posted new talk $proposalId with status ${newProposalType.id}"))
+      }
+  }
+
+  private def changeTags(proposal: Proposal, newTags: Option[Seq[Tag]]) = Redis.pool.withClient {
     implicit client =>
       if (newTags.isDefined) {
 
@@ -565,43 +586,47 @@ object Proposal {
   ))
 
   def findById(proposalId: String): Option[Proposal] = Redis.pool.withClient {
-    client =>
+    implicit client =>
       for (proposalJson <- client.hget("Proposals", proposalId);
            proposal <- Json.parse(proposalJson).asOpt[Proposal];
-           realState <- findProposalState(proposal.id)) yield {
+           realState <- _findProposalState(proposal.id)) yield {
         proposal.copy(state = realState)
       }
   }
 
   def findProposalState(proposalId: String): Option[ProposalState] = Redis.pool.withClient {
-    client =>
-      // I use a for-comprehension to check each of the Set (O(1) operation)
-      // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
-      // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
-      // Here I do the opposite for performance reasons. NMA.
-      // This code retrieves the proposalState in less than 20-30ms.
-      val thisProposalState = for (
-        isNotSubmitted <- checkIsNotMember(client, ProposalState.SUBMITTED, proposalId).toRight(ProposalState.SUBMITTED).right;
-        isNotDraft <- checkIsNotMember(client, ProposalState.DRAFT, proposalId).toRight(ProposalState.DRAFT).right;
-        isNotApproved <- checkIsNotMember(client, ProposalState.APPROVED, proposalId).toRight(ProposalState.APPROVED).right;
-        isNotAccepted <- checkIsNotMember(client, ProposalState.ACCEPTED, proposalId).toRight(ProposalState.ACCEPTED).right;
-        isNotDeleted <- checkIsNotMember(client, ProposalState.DELETED, proposalId).toRight(ProposalState.DELETED).right;
-        isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
-        isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
-        isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right;
-        isNotArchived <- checkIsNotMember(client, ProposalState.ARCHIVED, proposalId).toRight(ProposalState.ARCHIVED).right
-      ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
+    implicit client =>
+      _findProposalState(proposalId)
+  }
 
-      thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
-        play.Logger.warn(s"Could not find proposal state for $proposalId")
-        None
-      })
+  private def _findProposalState(proposalId: String)(implicit client: Dress.Wrap): Option[ProposalState] = {
+    // I use a for-comprehension to check each of the Set (O(1) operation)
+    // when I have found what is the current state, then I stop and I return a Left that here, indicates a success
+    // Note that the common behavioir for an Either is to indicate failure as a Left and Success as a Right,
+    // Here I do the opposite for performance reasons. NMA.
+    // This code retrieves the proposalState in less than 20-30ms.
+    val thisProposalState = for (
+      isNotSubmitted <- checkIsNotMember(client, ProposalState.SUBMITTED, proposalId).toRight(ProposalState.SUBMITTED).right;
+      isNotDraft <- checkIsNotMember(client, ProposalState.DRAFT, proposalId).toRight(ProposalState.DRAFT).right;
+      isNotApproved <- checkIsNotMember(client, ProposalState.APPROVED, proposalId).toRight(ProposalState.APPROVED).right;
+      isNotAccepted <- checkIsNotMember(client, ProposalState.ACCEPTED, proposalId).toRight(ProposalState.ACCEPTED).right;
+      isNotDeleted <- checkIsNotMember(client, ProposalState.DELETED, proposalId).toRight(ProposalState.DELETED).right;
+      isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
+      isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
+      isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right;
+      isNotArchived <- checkIsNotMember(client, ProposalState.ARCHIVED, proposalId).toRight(ProposalState.ARCHIVED).right
+    ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
+
+    thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
+      play.Logger.warn(s"Could not find proposal state for $proposalId")
+      None
+    })
   }
 
   private def checkIsNotMember(client: Dress.Wrap, state: ProposalState, proposalId: String): Option[Boolean] = {
     client.sismember("Proposals:ByState:" + state.code, proposalId) match {
       case java.lang.Boolean.FALSE => Option(true)
-      case other => None
+      case _ => None
     }
   }
 
@@ -739,6 +764,7 @@ object Proposal {
       val tx = client.multi()
       tx.srem(s"Proposals:ByAuthor:${proposal.mainSpeaker}", proposal.id)
       tx.srem(s"Proposals:ByState:${proposal.state.code}", proposal.id)
+      tx.srem(s"Proposals:ByType:${proposal.talkType.id}", proposal.id)
       tx.srem(s"Proposals:ByTrack:${proposal.track.id}", proposal.id)
       tx.hdel("Proposals:TrackForProposal", proposal.id)
       // 2nd speaker
@@ -842,13 +868,11 @@ object Proposal {
     */
   def allProposals(): List[Proposal] = Redis.pool.withClient {
     implicit client =>
-
       val allProposalIDsExceptArchived = client.hkeys("Proposals").diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
-
       client.hmget("Proposals", allProposalIDsExceptArchived).map {
         json =>
           val proposal = Json.parse(json).as[Proposal]
-          val proposalState = findProposalState(proposal.id)
+          val proposalState = _findProposalState(proposal.id)
           proposal.copy(state = proposalState.getOrElse(ProposalState.UNKNOWN))
       }
   }
@@ -876,22 +900,24 @@ object Proposal {
       val proposals = client.hmget("Proposals", listOfProposals).map {
         json: String =>
           val p = Json.parse(json).validate[Proposal].get
-          (p.id, p.copy(state = findProposalState(p.id).getOrElse(p.state)))
+          (p.id, p.copy(state = _findProposalState(p.id).getOrElse(p.state)))
       }
       proposals.toMap
   }
 
   def loadAndParseProposals(proposalIDs: Set[String], confType: ProposalType): Map[String, Proposal] = Redis.pool.withClient {
     implicit client =>
-      val listOfProposals = proposalIDs.toList
 
       // Updated code to use validate so that it throw an exception if the JSON parser could not load the Proposal
-      val proposals = client.hmget("Proposals", listOfProposals).map {
-        json: String =>
-          val p = Json.parse(json).validate[Proposal].get
-          (p.id, p.copy(state = findProposalState(p.id).getOrElse(p.state)))
-      }.filter(_._2.talkType.id == confType.id) // TODO I should create a separate collection for ProposalType and filter the Set proposalIds with this collection.
-      proposals.toMap
+      // This code tries to minimize the number of calls to Redis, and thus, dot not use the "Proposals:ByType:" collection
+      val proposals = client.hmget("Proposals", proposalIDs.toList).map {
+          json: String =>
+            Json.parse(json).validate[Proposal].get
+               }.filter(_.talkType.id == confType.id)
+
+      proposals.map{p=>
+        (p.id,p.copy(state = _findProposalState(p.id).getOrElse(p.state)))
+      }.toMap
   }
 
 
@@ -1030,12 +1056,27 @@ object Proposal {
       }
     }
   }
+
+  def allProposalIDsForProposalType(confType: ProposalType): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.smembers(s"Proposals:ByType:${confType.id}")
+  }
+
+  def allProposalsForProposalType(confType: ProposalType): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = client.smembers(s"Proposals:ByType:${confType.id}")
+      client.hmget("Proposals", allProposalIds).flatMap {
+        proposalId: String =>
+          findById(proposalId) // will also load and set proposalState
+      }
+  }
+
 }
 
 /*
  * Advanced types used by ZapActor and Backoffice for validation of proposals.
  */
-case class ProposalAndRelatedError(p:Proposal, errMsg:String, initialValue:String, newValue:String)
+case class ProposalAndRelatedError(p: Proposal, errMsg: String, initialValue: String, newValue: String)
 
-case class ProposalsWithErrors(value:List[ProposalAndRelatedError])
+case class ProposalsWithErrors(value: List[ProposalAndRelatedError])
 
