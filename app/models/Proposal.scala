@@ -705,6 +705,12 @@ object Proposal {
       loadAndParseProposals(allProposalIDs)
   }
 
+  def allSubmittedProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.sinter(s"Proposals:ByAuthor:$author", "Proposals:ByState:" + ProposalState.SUBMITTED.code)
+      loadAndParseProposals(allProposalIDs)
+  }
+
   def allApprovedProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDs = client.sinter(s"Proposals:ByAuthor:$author", "ApprovedById:")

@@ -517,7 +517,11 @@ object CFPAdmin extends SecureCFPController {
   def allSpeakersWithApprovedTalks() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = ApprovedProposal.allApprovedSpeakers()
-      Ok(views.html.CFPAdmin.allSpeakers(allSpeakers.toList.sortBy(_.cleanName)))
+      val toReturn = allSpeakers.map {
+        s =>
+          (s,Proposal.allSubmittedProposalsByAuthor(s.uuid))
+      }
+      Ok(views.html.CFPAdmin.allSpeakers(toReturn))
   }
 
   def allApprovedSpeakersByCompany(showQuickiesAndBof: Boolean) = SecuredAction(IsMemberOf("cfp")) {
