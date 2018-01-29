@@ -433,6 +433,13 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.showAllProposalsByTags(allProposalsByTags))
   }
 
+  def getSelectionByTags = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      val allProposalsByTags = Tags.allProposals()
+
+      Ok(views.html.Backoffice.showSelectionByTags(allProposalsByTags))
+  }
+
   def getCloudTag = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val termCounts = Tags.countProposalTags()

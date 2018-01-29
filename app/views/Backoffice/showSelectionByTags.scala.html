@@ -1,0 +1,94 @@
+@(tagProposalEntries:List[TagProposalEntry])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("CFP Admin - all proposals grouped by tags") {
+
+  <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+
+  <div class="row">
+    <div class="col-lg-offset-4 col-md-4">
+      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+    </div>
+    <div class="clearfix"></div>
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-danger alert-dismissable col-md-12">
+        <strong>Error :</strong>
+        @flash.get("error").get
+      </div>
+    }
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success alert-dismissable col-md-12">
+      @Html(flash.get("success").get)
+      </div>
+    }
+
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3>Proposals list by tags</h3>
+        </div>
+
+        <div class="panel-body">
+
+        @if(tagProposalEntries.nonEmpty){
+          <table id="tagsTable" class="table table-bordered table-striped table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Tag</th>
+                <th>Proposals</th>
+                <th>Approved</th>
+                <th>Proposals</th>
+              </tr>
+            </thead>
+            <tbody>
+            @tagProposalEntries.groupBy(_.tag).map{ case (tag, entries)  =>
+              <tr>
+                <td>@tags.renderProposalTag(tag)</td>
+                <td>@entries.map(_.proposal).length</td>
+                <td>@entries.map(_.proposal).count(proposal => ApprovedProposal.isApproved(proposal.id, proposal.talkType.id))</td>
+                <td>
+                  @entries.map(_.proposal).map{proposal:Proposal =>
+                    @if(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) {
+                      <span class="label label-approved">Approved</span>
+                    } else {
+                      @if(ApprovedProposal.isRefused(proposal.id, proposal.talkType.id)) {
+                        <span class="label label-refused">Refused</span>
+                      } else {
+                        <span class="label label-default">?</span>
+                      }
+                    }
+                  <strong>@Messages(proposal.talkType.simpleLabel)</strong>
+                    &nbsp;
+                  <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="@proposal.title" target="_blank">@proposal.title</a>
+                  <br/>
+                  }
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }else{
+          <P>There are no proposals available with tags.</P>
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+          $(document).ready(function() {
+            $('#tagsTable').DataTable({
+              "order": [[0, "asc"]],
+              "pageLength": 50,
+              "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+              "stateSave": true,
+              "columns": [
+                {"type": "html"},
+                {"type": "num"},
+                {"type": "num"},
+                {"orderable": false, "type": "html"}
+              ]
+            });
+          } );
+  </script>
+}
