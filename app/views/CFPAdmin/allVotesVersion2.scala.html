@@ -1,4 +1,4 @@
-@(allVotes: Iterable[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved: Long, totalRemaining: Long, confType: String, page:Int, resultats:Int)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(allVotes: Iterable[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long)], totalApproved: Long, totalRemaining: Long, confType: String, page:Int, resultats:Int, sortBy:String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
     @import models.Review.{AverageNote, TotalAbst, TotalVoter}
 
     @main("All votes") {
@@ -46,7 +46,9 @@
             <div class="col-md-12">
                 <small>All proposals with at least one vote, with state set to SUBMITTED/APPROVED/ACCEPTED/BACKUP</small>
                 <small>If you just created a proposal and it's not listed here : please add a vote.</small>
-
+                <br>
+                <a href="@routes.CFPAdmin.allVotesVersion2(confType,page,resultats,"gt_and_cfp")" class="btn btn-primary btn-sm"><i class="icin icon-sort-by-alphabet"></i> Sort by GT+CFP average score</a> -
+                <a href="@routes.CFPAdmin.allVotesVersion2(confType,page,resultats,"cfp")" class="btn btn-primary btn-sm"><i class="icin icon-sort-by-attributes"></i> Sort by CFP score</a>
                 <table id="allProposals" class="table table-condensed">
                     <thead>
                         <tr>
@@ -70,7 +72,7 @@
                             @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
                                 <tr class="preselected_@approved refused_@refused">
                                     <td class="number_table"/>
-                                     <td class="number_table">
+                                    <td class="number_table">
                                     @library.Stats.average(List(gtScore, voteAndTotalVotes._4.n))
                                     </td>
                                     <td class="average_table">

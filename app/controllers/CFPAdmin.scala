@@ -368,41 +368,40 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
   }
 
-  def allVotesVersion2(confType: String, page:Int=0, resultats:Int=25) =  SecuredAction(IsMemberOf("admin")) {
+  def allVotesVersion2(confType: String, page: Int = 0, resultats: Int = 25, sortBy: String = "gt_and_cfp") = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin Version 2 for $confType")
 
       val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Benchmark.measure(() => Review.allVotes(), "v2 - All votes")
 
-
-
       val allProposals = Benchmark.measure(() => {
         Proposal.loadAndParseProposals(reviews.keySet, ProposalType.parse(confType))
       }, "v2 - Load and parse proposals for " + ProposalType.parse(confType))
 
-        val listOfProposals =
-          Benchmark.measure(() => reviews.flatMap {
-            case (proposalId, scoreAndVotes) =>
-              val maybeProposal = allProposals.get(proposalId)
-              maybeProposal match {
-                case Some(p) =>
-                  val(gtVoteCast,goldenTicketScore) = ReviewByGoldenTicket.totalVotesAndAverageScoreFor(p.id)
-                  Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast)
-                case None => // We ignore here cause Review loaded all Proposals.
-                  None
-              }
-          }, "v2 - Create list of Proposals")
+      val listOfProposals =
+        Benchmark.measure(() => reviews.flatMap {
+          case (proposalId, scoreAndVotes) =>
+            val maybeProposal = allProposals.get(proposalId)
+            maybeProposal match {
+              case Some(p) =>
+                val (gtVoteCast, goldenTicketScore) = ReviewByGoldenTicket.totalVotesAndAverageScoreFor(p.id)
+                Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast)
+              case None => // We ignore here cause Review loaded all Proposals.
+                None
+            }
+        }, "v2 - Create list of Proposals")
 
-        val totalApproved =  ApprovedProposal.countApproved(confType)
-        val totalRemaining =ApprovedProposal.remainingSlots(confType)
+      val totalApproved = ApprovedProposal.countApproved(confType)
+      val totalRemaining = ApprovedProposal.remainingSlots(confType)
 
-        val toSlide = listOfProposals.toList.sortBy{
-          case (_, voteAndTotalVotes, gtScore, _) =>library.Stats.average(List(gtScore, voteAndTotalVotes._4.n))
-        }.reverse
-        val sliced = toSlide.slice(page*resultats,(page+1)*resultats)
+      val toSlide = listOfProposals.toList.sortBy {
+        case (_, voteAndTotalVotes, gtScore, _) if sortBy == "gt_and_cfp" => library.Stats.average(List(gtScore, voteAndTotalVotes._4.n))
+        case (_, voteAndTotalVotes, _, _) => voteAndTotalVotes._4.n
+      }.reverse
+      val sliced = toSlide.slice(page * resultats, (page + 1) * resultats)
 
-        Ok(views.html.CFPAdmin.allVotesVersion2(sliced, totalApproved, totalRemaining, confType, page, resultats))
+      Ok(views.html.CFPAdmin.allVotesVersion2(sliced, totalApproved, totalRemaining, confType, page, resultats, sortBy))
 
   }
 
@@ -561,7 +560,7 @@ object CFPAdmin extends SecureCFPController {
       val allSpeakers = ApprovedProposal.allApprovedSpeakers()
       val toReturn = allSpeakers.map {
         s =>
-          (s,Proposal.allSubmittedProposalsByAuthor(s.uuid))
+          (s, Proposal.allSubmittedProposalsByAuthor(s.uuid))
       }
       Ok(views.html.CFPAdmin.allSpeakers(toReturn))
   }
