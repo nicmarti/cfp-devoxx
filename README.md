@@ -48,7 +48,7 @@ The CFP is implemented with Scala and Play Framework v2.2.3. Redis 2.8 is used f
 - [Droidcon Paris](http://cfp.droidcon.fr/home/)
 - [Android Makers](http://cfp.androidmakers.fr)
 
-Send a message to (@nmartignole)[http://www.twitter.com/nmartignole) if you plan to use the CFP.
+Send a message to [@nmartignole](http://www.twitter.com/nmartignole) if you plan to use the CFP.
 
 ## How to set-up a local and friendly developer environment ?
 
