@@ -32,7 +32,7 @@ Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 We would like to thank you sincerely for your proposal.
 Hopefully we can still welcome you at @Messages("longYearlyName"), registration details
 You can still register using a dedicated page for you here :
-https://reg.devoxx.fr/speakers/welcome/@proposal.id/@emai
+https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email
 
 Kind regards,
 The @Messages("longYearlyName") team
