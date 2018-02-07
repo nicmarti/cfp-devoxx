@@ -655,7 +655,6 @@ bof.label.simple=Bird of a Feather
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
-mail.proposal_refused.subject=Votre proposition de sujet a été déclinée {0}
 mail.reset_password_link.subject=Vous avez demandé à ré-initialiser votre code d'accès speaker pour {1}
 msg_pub=Envoyer un message au présentateur
 qualifications2=Qualifications et expériences du présentateur
@@ -880,3 +879,7 @@ email.digest.day.7=Sunday
 cfp.member=Membre du CFP
 
 golden.welcome.txt=Bienvenue sur l''espace Golden Ticket. Achetez une place Golden Ticket sur le site de {0} et participez à la revue des sujets, votez, et donnez votre avis !
+
+
+l.proposal_approved.subject=Votre proposition a été approuvée {0}
+mail.proposal_refused.subject=Votre proposition a été refusée {0}
