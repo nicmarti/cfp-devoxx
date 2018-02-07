@@ -1,4 +1,4 @@
-@(proposal:models.Proposal)
+@(proposal:models.Proposal, email:String)
 --------------------------------------------------------------------
   Welcome to @Messages("longYearlyName")
 --------------------------------------------------------------------
@@ -22,23 +22,29 @@ Merci de valider dès maintenant en suivant ce lien dans votre navigateur :
 
 Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).
 
-
-@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-=========
-Attention
-=========
-Ce format de présentation à @Messages("longYearlyName") ne donne pas de badge speaker.
-Vous devez acheter une place à la conférence pour participer, si vous ne disposez pas par ailleurs d'un ticket.
-Si vous ne pouvez pas obtenir de place, nous ne pourrons malheureusement pas vous accueillir.
-Inscription en ligne sur le site :  @ConferenceDescriptor.current().conferenceUrls.registration
-} else {
-Votre badge speaker :
-=====================
-Ce type de présentation donne droit à un badge speaker, et vous permettra d'accéder à l'ensemble de la conférence,
-ainsi qu'au diner des speakers.
-Vous n'avez pas à vous inscrire, votre badge Speaker sera préparé pour vous à l'entrée de la conférence.
+if(proposal.talkType.id=="quick"){
+A titre exceptionnel, et si vous ne disposez pas, par ailleurs, d'un badge speaker, les organisateurs de Devoxx France 2018
+offre un pass 2 jours (jeudi et vendredi) aux personnes qui présentent un Quickie. Attention : ce badge ne donne pas
+accès au diner des speakers. Il vous permettra uniquement de participer le jeudi et le vendredi à Devoxx France.
+Par ailleurs, ce badge n'est pas cessible ni revendable. Il est lié à votre identifiant de sujet.
+Vous n'avez pas d'autres opérations à faire, les organisateurs de Devoxx France vont envoyer un email avec un code d'inscription début mars.
+Ce code d'inscription sera alors à utiliser sur le site https://reg.devoxx.fr/
+Cette offre n'est valable que pour les Quickies, pour 2 jours et n'est pas cessible à une autre personne.
 }
 
+@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType) && proposal.talkType.id!="quick") {
+=== Attention ===
+Ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas de badge speaker</strong>. Vous devez
+acheter une place à la conférence pour participer, si vous ne disposez pas, par ailleurs, d'un ticket.
+La conférence étant complète, vous pouvez encore vous inscrire via le lien suivant unique (et lié à votre soumission de sujet) :
+==> https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email
+
+}
+@if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)){
+Ce type de présentation donne droit à un badge speaker, et vous permettra d'accéder à l'ensemble de la conférence, ainsi qu'au diner des speakers.
+Vous n'avez pas à vous inscrire, votre badge Speaker sera préparé pour vous à l'entrée de la conférence. Ce badge est valable pour les 3 jours de la conférence.
+Le diner speaker aura lieu le mercredi soir dans le centre de Paris. Nous vous tiendrons informé par email.
+}
 
 Comment poser une question ?
 ----------------------------------------------------------------------------------------------------------------------

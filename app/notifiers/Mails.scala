@@ -214,8 +214,8 @@ object Mails {
       to = Seq(speaker.email),
       cc = otherSpeakers,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
-      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalApproved(proposal).toString()),
+      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalApproved(proposal,speaker.email).toString()),
+      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalApproved(proposal,speaker.email).toString()),
       charset = Some("utf-8")
     )
 
@@ -232,8 +232,8 @@ object Mails {
       to = Seq(speaker.email),
       cc = otherSpeakers,
       bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
-      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalRefused(proposal).toString()),
+      bodyText = Some(views.txt.Mails.acceptrefuse.sendProposalRefused(proposal,speaker.email).toString()),
+      bodyHtml = Some(views.html.Mails.acceptrefuse.sendProposalRefused(proposal,speaker.email).toString()),
       charset = Some("utf-8")
     )
 

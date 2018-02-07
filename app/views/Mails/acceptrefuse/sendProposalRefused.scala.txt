@@ -1,28 +1,38 @@
-@(proposal:models.Proposal)
+@(proposal:models.Proposal, email:String)
 
 @if(ConferenceDescriptor.current().frLangEnabled) {
 Bonjour,
 
 Nous avons le regret de vous informer que votre proposition @proposal.title au format @Messages(proposal.talkType.id) n'a pas été acceptée.
-Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.
 
-La sélection cette année a encore été difficile avec 913 sujets reçus pour 228 slots.
-Nous communiquerons sur notre site plus d'informations sur la sélection.
+Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.
+Si vous souhaitez vous inscrire, la conférence étant complète, nous avons mis en place un système d'inscription limité à deux places maximum
+sur le site de la conférence Devoxx France 2018 :
+
+https://reg.devoxx.fr/speakers/welcome/@proposal.id
+
+Si par ailleurs vous avez eu la chance d'avoir un autre sujet sélectionné et que ce sujet vous donne un badge speaker :
+ne partagez pas ce lien svp.
+Il est lié à votre présentation et il ne permet pas l'inscription d'autres personnes.
+
+La sélection cette année a encore été difficile avec plus de 945 sujets pour 234 slots.
 
 Merci pour votre proposition,
-
 L'équipe de sélection de la conférence @Messages("longYearlyName")
 
 ----------------------------------------------------------------------------------------------------------------
 }
 Hi,
 We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused,  keep in mind that
-we received close to 700+ proposals and the available slots are very limited.
+we received close to 945 proposals and the available slots are very limited.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
+
 We would like to thank you sincerely for your proposal.
 Hopefully we can still welcome you at @Messages("longYearlyName"), registration details
+You can still register using a dedicated page for you here :
+https://reg.devoxx.fr/speakers/welcome/@proposal.id/@proposal.talkType.id
 
 @ConferenceDescriptor.current().conferenceUrls.registration
 
