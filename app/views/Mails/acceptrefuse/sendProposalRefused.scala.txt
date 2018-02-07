@@ -9,7 +9,7 @@ Nous vous remercions cependant pour le temps que vous avez consacré à prépare
 Si vous souhaitez vous inscrire, la conférence étant complète, nous avons mis en place un système d'inscription limité à deux places maximum
 sur le site de la conférence Devoxx France 2018 :
 
-https://reg.devoxx.fr/speakers/welcome/@proposal.id
+https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email
 
 Si par ailleurs vous avez eu la chance d'avoir un autre sujet sélectionné et que ce sujet vous donne un badge speaker :
 ne partagez pas ce lien svp.
@@ -32,9 +32,7 @@ Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 We would like to thank you sincerely for your proposal.
 Hopefully we can still welcome you at @Messages("longYearlyName"), registration details
 You can still register using a dedicated page for you here :
-https://reg.devoxx.fr/speakers/welcome/@proposal.id/@proposal.talkType.id
-
-@ConferenceDescriptor.current().conferenceUrls.registration
+https://reg.devoxx.fr/speakers/welcome/@proposal.id/@emai
 
 Kind regards,
 The @Messages("longYearlyName") team
