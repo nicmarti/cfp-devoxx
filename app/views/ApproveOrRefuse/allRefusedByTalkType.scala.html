@@ -1,4 +1,4 @@
-@(allProposals:List[models.Proposal], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allProposals:List[(models.Proposal,Double)], confType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All refused talks") {
 
@@ -35,11 +35,11 @@
                     <h3>@defining(allProposals.size){refusedSize=>
                         @refusedSize proposal@if(refusedSize>1){s} refused</h3>
                     }
-                       <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
-                       <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
+                       <span class="label label-primary">@allProposals.count(s=> s._1.lang == "fr") FR</span>
+                       <span class="label label-default">@allProposals.count(s=> s._1.lang == "en") EN</span>
 
 
-                    @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
+                    @allProposals.groupBy(p=>p._1.track).map{case(track,listOfProps)=>
                         <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
                     }
 
@@ -49,6 +49,7 @@
                     <table id="allProposals" class="table table-bordered table-condensed">
                         <thead>
                             <tr>
+                                <th>Score</th>
                                 <th>Proposal title</th>
                                 <th>Proposal id</th>
                                 <th>All speakers</th>
@@ -58,8 +59,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @allProposals.map { proposal =>
+                            @allProposals.map { case(proposal,vote) =>
                                 <tr class="tr_@proposal.state.code">
+                                    <td>@vote</td>
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.title</a>
                                     </td>
@@ -100,6 +102,7 @@
     "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
     "bStateSave": true,
     "aoColumns": [
+        { "sType": "numeric"},
         { "sType": "string"},
         { "sType": "string"},
         { "sType": "string"},

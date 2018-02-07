@@ -265,14 +265,17 @@ object ApprovedProposal {
       allProposalWithVotes.values.toList
   }
 
-  def allRefusedByTalkType(talkType: String): List[Proposal] = Redis.pool.withClient {
+  def allRefusedByTalkType(talkType: String): List[(Proposal,Double)] = Redis.pool.withClient {
     implicit client =>
 
-      val allProposalIDs = client.smembers("Refused:" + talkType)
-        .diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
+      val allProposalIDs = client.smembers("Refused:" + talkType).diff(client.smembers(s"Proposals:ByState:${ProposalState.ARCHIVED.code}"))
 
-      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs)
-      allProposalWithVotes.values.toList
+      val allProposalWithVotes = Proposal.loadAndParseProposals(allProposalIDs).map{
+        case(proposalId,proposal)=>
+          (proposal,client.hget("Computed:Average",s"Proposals:Votes:$proposalId").map(_.toDouble).getOrElse(0.toDouble))
+      }.toList.sortBy(_._2)
+
+      allProposalWithVotes
   }
 
   /**
