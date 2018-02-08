@@ -19,7 +19,7 @@
                             </div>
 
                         @if(speaker.avatarUrl.isEmpty) {
-                            <img src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=75" class="img-circle circle-border m-b-md speaker-photo" alt="profile">
+                            <img src="//www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=75" class="img-circle circle-border m-b-md speaker-photo" alt="profile">
                         } else {
                             <img src="@speaker.avatarUrl.get" class="img-circle circle-border m-b-md speaker-photo" alt="profile">
                         }

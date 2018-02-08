@@ -12,7 +12,7 @@
                 </small>
                 <a class="cfp-gravatars pull-left" href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">
                 @if(speaker.avatarUrl.isEmpty) {
-                        <img class="media-object" width="35" src="http://www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+                        <img class="media-object" width="35" src="//www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
                 } else {
                         <img class="media-object" width="35" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName"/>
                 }
