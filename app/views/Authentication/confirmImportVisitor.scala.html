@@ -20,7 +20,7 @@
                 @if(formWebuser("avatarUrl").value.isEmpty){
                     <P>@Messages("avatarUrl.isEmpty") <a href="http://fr.gravatar.com/" title="Gravater web site" target="new">
                         Gravatar</a>
-                        <img width="120" src="http://www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))?s=150" alt="Gravatar" title="Update your profile on gravatar.com">
+                        <img width="120" src="//www.gravatar.com/avatar/@DigestUtils.md5Hex(formWebuser("email").value.map(_.trim().toLowerCase()).getOrElse(""))?s=150" alt="Gravatar" title="Update your profile on gravatar.com">
                     </P>
                 }else{
                     <p>@Messages("avatarUrl.defined")</p>
