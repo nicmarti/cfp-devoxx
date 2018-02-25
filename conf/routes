@@ -183,13 +183,8 @@ GET           /admin/tags                                                       
 GET           /admin/tags/selection                                             controllers.Backoffice.getSelectionByTags()
 GET           /admin/cloudTag                                                   controllers.Backoffice.getCloudTag()
 
-# Push notification message to "My Devoxx" mobile app
-POST          /admin/push/message                                               controllers.Backoffice.pushNotifications()
-
 # Favorites and starred talks
 GET           /admin/favorites                                                  controllers.Favorites.showAllForAdmin()
-
-
 
 # ApproveOrRefuse controller
 GET           /ar/preaccept/:proposalId                                         controllers.ApproveOrRefuse.doApprove(proposalId:String)

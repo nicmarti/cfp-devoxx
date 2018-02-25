@@ -45,7 +45,7 @@
                                 }
                             </td>
                             <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE")
-                                from @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") til @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
+                                @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
                         </tr>
                     }
                 }
@@ -55,6 +55,19 @@
                 </tr>
 
             </tbody>
+            @if(ConferenceDescriptor.isShowRoom) {
+                <tfoot>
+                    <tr>
+                        <th colspan="2">@Messages("publisher.room") @slot.map(_.room.name)</th>
+                    </tr>
+                </tfoot>
+            } else {
+                <tfoot>
+                    <tr>
+                        <th colspan="2">@Messages("publisher.proposal.roomHidden")</th>
+                    </tr>
+                </tfoot>
+            }
         </table>
     </div>
     <div class="row">

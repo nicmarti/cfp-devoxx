@@ -154,7 +154,7 @@ cfp.opening=Ouverture du CFP
 cfp.closing=Fermeture du CFP
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.program=Annonce du programme :
-cfp.program.date=à partir de la mi-février 2018
+cfp.program.date=à partir du 26 février 2018
 video.title=Vidéos des éditions précédentes
 video.tag=Retrouvez toutes les vidéos des éditions précédentes sur le site
 theme.title=Thèmes
@@ -883,3 +883,5 @@ golden.welcome.txt=Bienvenue sur l''espace Golden Ticket. Achetez une place Gold
 
 l.proposal_approved.subject=Votre proposition a été approuvée {0}
 mail.proposal_refused.subject=Votre proposition a été refusée {0}
+
+publisher.proposal.roomHidden=La salle sera affectée entre 24 et 72h avant la conférence

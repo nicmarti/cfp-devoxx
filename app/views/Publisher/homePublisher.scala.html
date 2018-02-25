@@ -1,9 +1,9 @@
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
-@views.html.Publisher.devoxxFR2017("Schedule", Some("Devoxx FR 2017 agenda")) {
+@views.html.Publisher.devoxxFR2018("Schedule", Some("Devoxx FR 2018 agenda")) {
 
     <div class="large-12 column">
-       <h3>Devoxx France 2017 <small>Mercredi 5 au vendredi 7 avril 2017</small></h3>
+       <h3>Devoxx France 2018 <small>Mercredi 18 au vendredi 20 avril 2018</small></h3>
 </div>
     <div class="small-12 medium-8 large-8 columns">
         <div class="input-wrap">
@@ -25,7 +25,6 @@
                 <tr>
                     <th class="scheduleHeader">&nbsp;</th>
                     <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed")">[Détails]</a> </th>
-
                     <th class="scheduleHeader">@Messages("day-thursday") <a href="@routes.Publisher.showByDay("thu")">[Détails]</a></th>
                     <th class="scheduleHeader">@Messages("day-friday") <a href="@routes.Publisher.showByDay("fri")">[Détails]</a></th>
                 </tr>
@@ -76,7 +75,7 @@
     <div class="small-12 medium-6 large-6 column">
         <h3>Keynotes</h3>
         <p>Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le jeudi à 9h précise.
-            Autour du thème de 2017  "Intelligence Artificielle", soyez prêt à être surpris.
+            Autour du thème de 2018  "Révolution ou Evolution", soyez prêt à être surpris. Plus d'informations seront sur le site Devoxx France.
         </p>
         <p><A href="@routes.Publisher.showByTalkType("key")">Liste des Keynotes</A></p>
 </div>
@@ -91,7 +90,7 @@
     <div class="small-12 medium-6 large-6 column">
         <h3>University</h3>
         <p>Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes.</p>
-        <p>A noter qu'il y aura 16 Universités pour 2017 au lieu de 8, ce format étant très demandé.</p>
+        <p>Il y a 16 sessions au format Université.</p>
         <p><A href="@routes.Publisher.showByTalkType("uni")">Liste des Universités</A></p>
 
 </div>
@@ -110,7 +109,7 @@
         <h3>Hands-on Labs</h3>
         <p>Session pratique de 3h, dans des salles de 25 à 60 personnes. Les Labs sont des sessions pratiques pendant les 3 jours qui permettent
             de découvrir ou d'approfondir un sujet. Il faut venir avec son ordinateur, les hands-on labs proposent un accès à Internet
-        via du Wifi. Nous avons prévu entre 28 et 30 Hands-on Lab pour 2017.</p>
+        via du Wifi. Nous avons prévu 30 Hands-on Lab pour 2018. Attention le nombre de places est très limité.</p>
         <p><A href="@routes.Publisher.showByTalkType("lab")">Liste des Hands-on Labs</A></p>
 </div>
     <div class="clearfix"></div>
