@@ -50,7 +50,7 @@ class SmsActor extends Actor {
   def sendWelcomeAndHelp(phoneNumber: String) {
     play.Logger.of("library.sms.SmsActor").debug(s"sendWelcomeAndHelp to $phoneNumber")
 
-    val welcomeMessage = "Welcome to Devoxx France 2017. \nSupported commands :\nTALK : send details about your talk(s)\nHELP + [txt msg] : send an emergency message to the team of volunteers (red coat)\n    \nSend STOP to unsubscribe."
+    val welcomeMessage = "Welcome to Devoxx France. \nSupported commands :\nTALK : send details about your talk(s)\nHELP + [txt msg] : send an emergency message to the team of volunteers (red coat)\n    \nSend STOP to unsubscribe."
 
     TwilioSender.send(phoneNumber, welcomeMessage)
 
@@ -79,9 +79,9 @@ class SmsActor extends Actor {
                 val day = slot.day
                 val hour = slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                 val room = slot.room.name
-                TwilioSender.send(phoneNumber, s"Devoxx FR 2017\nYour presentation [${theProposal.title}] is scheduled on ${day} at ${hour} in room [${room}].\n\nRoom might change until 2nd, April 2017")
+                TwilioSender.send(phoneNumber, s"Devoxx FR\nYour presentation [${theProposal.title}] is scheduled on ${day} at ${hour} in room [${room}].\n\nRoom might change until 15th, April 2018")
             }.getOrElse {
-              TwilioSender.send(phoneNumber, s"Devoxx FR 2017\nYour presentation [${theProposal.title}] is not yet scheduled.")
+              TwilioSender.send(phoneNumber, s"Devoxx FR\nYour presentation [${theProposal.title}] is not yet scheduled.")
             }
 
           case someTalks =>
@@ -98,11 +98,11 @@ class SmsActor extends Actor {
                 }
             }
             val message = shortMessage.mkString("\n")
-            TwilioSender.send(phoneNumber,"Devoxx FR 2017\n"+ message+"\n\nRooms might change until 2nd, April 2017.")
+            TwilioSender.send(phoneNumber,"Devoxx FR 2018\n"+ message+"\n\nRooms might change until 15th April 2018.")
         }
 
     }.getOrElse {
-      TwilioSender.send(phoneNumber, s"Devoxx FR 2017\nSorry, we cannot find your Speaker profile from your cell phone number. Check that you entered $phoneNumber on the Devoxx CFP and try again")
+      TwilioSender.send(phoneNumber, s"Devoxx FR 2018\nSorry, we cannot find your Speaker profile from your cell phone number. Check that you entered $phoneNumber on the Devoxx CFP and try again")
     }
 
   }
