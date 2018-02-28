@@ -30,9 +30,8 @@
         <table>
             <tbody>
                 <tr>
-                    <td colspan="2">
-                        @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
-                    </td>
+                    <td>@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
+                    <td class="text-right">@Messages(proposal.audienceLevel+".label")</td>
                 </tr>
                 @if(slot.isDefined) {
                     @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
