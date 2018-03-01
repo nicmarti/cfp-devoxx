@@ -1,7 +1,7 @@
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import org.joda.time.DateTimeZone
 
-@views.html.Publisher.devoxxFR2017(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
+@views.html.Publisher.devoxxFR2018(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
 
     <div class="large-12 columns">
 
@@ -30,9 +30,8 @@
         <table>
             <tbody>
                 <tr>
-                    <td colspan="2">
-                        @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
-                    </td>
+                    <td>@tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)</td>
+                    <td class="text-right">@Messages(proposal.audienceLevel+".label")</td>
                 </tr>
                 @if(slot.isDefined) {
                     @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
@@ -51,9 +50,13 @@
                 }
 
                 <tr>
-                    <td colspan="2">@Html(proposal.summaryAsHtml)</td>
+                    <td colspan="2" class="proposal">
+                    @Html(proposal.summaryAsHtml)
+                    @if(proposal.tags.isDefined) {
+                        @proposal.tags.get.filter(tag => tag.value.nonEmpty).map(tag => tags.renderProposalTag(tag, cfpAdmin = false))
+                    }
+                    </td>
                 </tr>
-
             </tbody>
             @if(ConferenceDescriptor.isShowRoom) {
                 <tfoot>

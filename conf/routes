@@ -220,7 +220,7 @@ GET           /2018/talks/:talkType                                             
 GET           /2018/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
 GET           /2018/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="")
 GET           /2018/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String)
-GET           /2017/talks                                                       controllers.Publisher.homePublisher()
+GET           /2018/talks                                                       controllers.Publisher.homePublisher()
 GET           /2018/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2018/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
 GET           /2018/byday/:day                                                  controllers.Publisher.showByDay(day:String)
