@@ -26,6 +26,7 @@ package models
 import library.Redis
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
+import org.joda.time.Instant
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.{Format, Json}
@@ -95,8 +96,9 @@ object Webuser {
   def createDevoxxian(email: String,
                       networkType: Option[String],
                       networkId: Option[String]): Webuser = {
-    Webuser(generateUUID(email),
-      email,
+    val cleanEmail = StringUtils.trimToEmpty(email).toLowerCase
+    Webuser(generateUUID(cleanEmail),
+      cleanEmail,
       "Devoxx",
       "CFP",
       RandomStringUtils.randomAlphabetic(7),
@@ -144,6 +146,8 @@ object Webuser {
       tx.set("Webuser:Email:" + cleanEmail, cleanWebuser.uuid)
       tx.sadd("Webuser:" + cleanWebuser.profile, cleanWebuser.uuid)
       tx.hdel("Webuser:New", cleanEmail)
+      val now = new Instant().getMillis
+      tx.zadd("Webuser:CreationDate", now ,cleanWebuser.uuid)
       tx.exec()
       cleanWebuser.uuid
   }

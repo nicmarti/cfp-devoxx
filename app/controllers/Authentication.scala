@@ -633,32 +633,19 @@ object Authentication extends Controller {
                 val firstName = (json \ "firstName").as[String]
                 val lastName = (json \ "lastName").as[String]
                 val uuid = (json \ "userId").as[String]
-                val email = (json \ "email").as[String]
-
+                val _email = (json \ "email").as[String]
 
                 // Check if the user is not already a speaker or a valid webuser
-                val maybeWebuserFromSpeaker = Speaker.allSpeakers().find(_.email == email).map{
-                  existingSpeaker =>
-                    Webuser(existingSpeaker.uuid,email,firstName,lastName,password = RandomStringUtils.randomAlphabetic(8),"speaker")
-                }
-                val existingWebuser = Webuser.findByEmail(email)
+                val maybeWebuser = Webuser.findByEmail(_email)
 
-                val (webuser:Webuser, newUUID:String) =(maybeWebuserFromSpeaker,existingWebuser) match {
-                  case (s,w) if s.isDefined =>
-                    play.Logger.warn(s"Existing speaker found, patch the Speaker ${s.get.uuid} ${s.get.email}")
-                    // fix for Speaker destroyed by the previous bug
-                    val fixSpeaker = Webuser(s.get.uuid,email, firstName, lastName, password = RandomStringUtils.randomAlphabetic(8),"speaker")
-                    Webuser.saveAndValidateWebuser(fixSpeaker)
-                    Webuser.addToDevoxxians(s.get.uuid)
-                    (maybeWebuserFromSpeaker.get, maybeWebuserFromSpeaker.get.uuid)
-                  case (s,w) if s.isEmpty && w.isDefined =>
-                    Webuser.addToDevoxxians(existingWebuser.get.uuid)
-                    (existingWebuser.get, existingWebuser.get.uuid)
+                val (webuser:Webuser, newUUID:String) = maybeWebuser match {
+                  case w if w.isDefined =>
+                    Webuser.addToDevoxxians(maybeWebuser.get.uuid)
+                    (maybeWebuser.get, maybeWebuser.get.uuid)
                   case other=>
-                    val webuser = Webuser.createDevoxxian(email, Some("MY_DEVOXX_FR"), Some("00000"))
+                    val webuser = Webuser.createDevoxxian(_email, Some("MY_DEVOXX_FR"), Some("00000"))
                     val newUUID = Webuser.saveAndValidateWebuser(webuser)
                     Webuser.addToDevoxxians(newUUID)
-
                     (webuser,newUUID)
                 }
 
@@ -668,7 +655,7 @@ object Authentication extends Controller {
                     request.headers.toSimpleMap.getOrElse(REFERER, routes.Publisher.homePublisher().absoluteURL(ConferenceDescriptor.isHTTPSEnabled))
                   ).flashing("success" -> Messages("mydevoxx.authenticated")).withSession("uuid" -> newUUID).withCookies(cookie)
                 )
-              case Failure(_) => Future.successful(Unauthorized("Not Authorised - token is invalid"))
+              case Failure(_) => Future.successful(Unauthorized("Not Authorized - token is invalid"))
             }
         }
       } else {

@@ -40,7 +40,8 @@
                 @speakers.sortBy(w=>Webuser.hasAccessToCFP(w.uuid)).reverse.map{ webuser: Webuser =>
                     <tr>
                         <td>
-                            @tags.renderGravatar(webuser.uuid, showName=true, showPhoto=false)
+                            <a href="@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)"><i class="icon-arrow-right"></i> @webuser.cleanName</a>
+                            <small>@Webuser.generateUUID(webuser.email)</small>
                         </td>
                          <td>
                              <small>@webuser.email</small>
