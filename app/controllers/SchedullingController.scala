@@ -94,7 +94,7 @@ object SchedullingController extends SecureCFPController {
                 case Some(proposal) =>
                   // Transform back speaker name to speaker UUID when we store the slots
                   slot.copy(proposal = Proposal.findById(proposal.id))
-                case other => slot
+                case _ => slot
               }
           }
 

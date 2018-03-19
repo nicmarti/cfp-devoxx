@@ -67,7 +67,7 @@ object Attic extends SecureCFPController {
               totalDraft =>
                 Redirect(routes.Attic.atticHome()).flashing(("success", s"$totalDraft Draft deleted"))
             }
-          case other =>
+          case _ =>
             Future.successful(Redirect(routes.Attic.atticHome()))
         }
       )

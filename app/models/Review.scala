@@ -280,7 +280,7 @@ object Review {
                 case ProposalState.REJECTED => None
                 case ProposalState.ARCHIVED => None
                 case ProposalState.UNKNOWN => None
-                case other => Option((proposalId, None))
+                case _ => Option((proposalId, None))
               }
             case Some(_) =>
               val state = Proposal.findProposalState(proposalId)
@@ -291,7 +291,7 @@ object Review {
                 case ProposalState.REJECTED => None
                 case ProposalState.ARCHIVED => None
                 case ProposalState.UNKNOWN => None
-                case other =>
+                case _ =>
                   Option((proposalId, score.map(_.toDouble)))
               }
           }

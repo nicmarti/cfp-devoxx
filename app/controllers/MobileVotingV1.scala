@@ -237,7 +237,7 @@ object MobileVotingV1 extends SecureCFPController {
           case d if Set("wed", "wednesday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, "wednesday")
           case d if Set("thu", "thursday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, "thursday")
           case d if Set("fri", "friday").contains(d) => publishedProposalsForOneDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, "friday")
-          case other => {
+          case _ => {
             play.Logger.of("MobileVotingV1").error(s"Received an invalid day value, got $specifiedDay but expected monday/tuesday/wednesday...")
             Nil
           }

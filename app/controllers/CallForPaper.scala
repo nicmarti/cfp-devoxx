@@ -65,7 +65,7 @@ object CallForPaper extends SecureCFPController {
 
           (hasApproved, hasAccepted) match {
             case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
-            case other =>
+            case _ =>
               val allProposals = Proposal.allMyProposals(uuid)
               val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
               val ratings = if (hasAccepted || hasApproved) {
@@ -239,7 +239,7 @@ object CallForPaper extends SecureCFPController {
                   Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state '" + existingProposal.state.code + "'"))
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
                 }
-              case other =>
+              case _ =>
                 // Check that this is really a new id and that it does not exist
                 if (Proposal.isNew(proposal.id)) {
                   // This is a "create new" operation

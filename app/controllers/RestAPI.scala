@@ -334,7 +334,7 @@ object RestAPI extends Controller {
         case Some(tag) if tag == eTag =>
           NotModified
 
-        case other =>
+        case _ =>
           val proposalsWithSpeaker = proposals.map {
             p: Proposal =>
               val mainWebuser = findByUUID(p.mainSpeaker)
@@ -404,7 +404,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
-        case other =>
+        case _ =>
           val jsonObject = Json.toJson(mapOfSchedules)
           Ok(jsonObject).as(JSON).withHeaders(ETAG -> newEtag, "Links" -> ("<" + routes.RestAPI.profile("schedules").absoluteURL() + ">; rel=\"profile\""))
       }
@@ -419,7 +419,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
-        case other =>
+        case _ =>
           val toReturn = finalListOfSlots.map {
             slot =>
               val upProposal = slot.proposal.map {
@@ -489,7 +489,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
-        case other =>
+        case _ =>
           val toReturn = finalListOfSlots.map {
             slot =>
               val upProposal = slot.proposal.map {
@@ -568,7 +568,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
-        case other =>
+        case _ =>
           val jsonObject = Json.toJson(
             Map(
               "content" -> Json.toJson("All types of proposal"),
@@ -599,7 +599,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
-        case other =>
+        case _ =>
           val jsonObject = Json.toJson(
             Map(
               "content" -> Json.toJson("All tracks"),
@@ -630,7 +630,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
-        case other =>
+        case _ =>
           val jsonObject = Json.toJson(
             Map(
               "content" -> Json.toJson("All rooms"),
@@ -654,7 +654,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
-        case other =>
+        case _ =>
           val toReturn = finalListOfSlots.filter(_.room.id == room).map {
             slot =>
               val upProposal = slot.proposal.map {
@@ -726,7 +726,7 @@ object RestAPI extends Controller {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == newEtag => NotModified
-        case other =>
+        case _ =>
           val toReturn = topFavedTalks.map {
             case (proposal, vote) =>
 

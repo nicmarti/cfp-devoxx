@@ -125,7 +125,7 @@ object ProposalState {
       case "declined" => DECLINED
       case "backup" => BACKUP
       case "ar" => ARCHIVED
-      case other => UNKNOWN
+      case _ => UNKNOWN
     }
   }
 }

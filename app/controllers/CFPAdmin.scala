@@ -301,7 +301,7 @@ object CFPAdmin extends SecureCFPController {
                   val name = (source \ "name").as[String]
                   val firstName = (source \ "firstName").as[String]
                   s"<p class='searchSpeakerResult'><i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a></p>"
-                case other => "Unknown format " + index
+                case _ => "Unknown format " + index
               }
           }
 

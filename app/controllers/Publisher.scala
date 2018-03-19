@@ -48,7 +48,7 @@ object Publisher extends Controller {
 
       maybeETag match {
         case Some(oldEtag) if oldEtag == eTag => NotModified
-        case other => Ok(result).withHeaders(ETAG -> eTag)
+        case _ => Ok(result).withHeaders(ETAG -> eTag)
       }
   }
 
@@ -64,7 +64,7 @@ object Publisher extends Controller {
         case Some(tag) if tag == eTag =>
           NotModified
 
-        case other =>
+        case _ =>
           val onlySpeakersThatAcceptedTerms: Set[String] = allSpeakersIDs.filterNot(uuid => Speaker.needsToAccept(uuid))
           val speakers = Speaker.loadSpeakersFromSpeakerIDs(onlySpeakersThatAcceptedTerms)
           Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
@@ -110,7 +110,7 @@ object Publisher extends Controller {
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(List(ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
             ConferenceDescriptor.ConferenceProposalTypes.CONF.id)), talkType))
 
-        case other =>
+        case _ =>
           Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(talkType), talkType))
       }
   }
@@ -201,7 +201,7 @@ object Publisher extends Controller {
         case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
         case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
         case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
-        case other => NotFound("Day not found")
+        case _ => NotFound("Day not found")
       }
   }
 

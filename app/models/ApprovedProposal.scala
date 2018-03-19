@@ -54,7 +54,7 @@ object ApprovedProposal {
         case null => 0
         case "all" =>
           client.scard("Approved:conf") + client.scard("Approved:lab") + client.scard("Approved:bof") + client.scard("Approved:key") + client.scard("Approved:tia") + client.scard("Approved:uni") + client.scard("Approved:quick")
-        case other =>
+        case _ =>
           client.scard(s"Approved:$talkType")
       }
   }
@@ -65,7 +65,7 @@ object ApprovedProposal {
         case null => 0
         case "all" =>
           client.scard("Refused:conf") + client.scard("Refused:lab") + client.scard("Refused:bof") + client.scard("Refused:tia") + client.scard("Refused:uni") + client.scard("Refused:quick")
-        case other =>
+        case _ =>
           client.scard(s"Refused:$talkType")
       }
   }

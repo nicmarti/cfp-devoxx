@@ -512,14 +512,14 @@ object Backoffice extends SecureCFPController {
             case None =>
               val s = Speaker.findByUUID(uuid)
               play.Logger.info("Missing Webuser for Speaker " + uuid + " " + s.map(_.cleanName))
-            case other =>
+            case _ =>
           }
 
           Webuser.isSpeaker(uuid) match {
             case false =>
               val s = Speaker.findByUUID(uuid)
               play.Logger.info("Missing group for speaker " + uuid + " " + s.map(_.cleanName))
-            case other =>
+            case _ =>
           }
           Speaker.findByUUID(uuid).foreach {
             speaker =>
@@ -527,7 +527,7 @@ object Backoffice extends SecureCFPController {
                 case false =>
                   play.Logger.error(s"Speaker's email is not stored in Webuser:Email => BUG ${speaker.email}")
                   Webuser.fixMissingEmail(speaker.email, speaker.uuid)
-                case other =>
+                case _ =>
               }
           }
 

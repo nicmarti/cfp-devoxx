@@ -132,7 +132,7 @@ object Favorites extends UserCFPController {
 
         ifNoneMatch match {
           case Some(someEtag) if someEtag == eTag => NotModified
-        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
+        case _ => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
           // "Links" -> ("<" + routes.Favorites.scheduledProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
       }
   }
@@ -198,7 +198,7 @@ object Favorites extends UserCFPController {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
-        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
+        case _ => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
       }
   }
 
@@ -232,7 +232,7 @@ object Favorites extends UserCFPController {
 
       ifNoneMatch match {
         case Some(someEtag) if someEtag == eTag => NotModified
-        case other => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
+        case _ => Ok(jsonObject).as(JSON).withHeaders(ETAG -> eTag)
           // "Links" -> ("<" + routes.Favorites.favoredProposals(uuid).absoluteURL() + ">; rel=\"profile\""))
     }
   }

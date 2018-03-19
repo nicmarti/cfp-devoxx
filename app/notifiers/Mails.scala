@@ -188,7 +188,7 @@ object Mails {
   def sendReminderForDraft(speaker: Webuser, proposals: List[Proposal]) = {
     val subjectEmail = proposals.size match {
       case x if x > 1 => Messages("mail.draft_multiple_reminder.subject", proposals.size, Messages("longYearlyName"))
-      case other => Messages("mail.draft_single_reminder.subject", Messages("longYearlyName"))
+      case _ => Messages("mail.draft_single_reminder.subject", Messages("longYearlyName"))
     }
 
     val email = Email(
