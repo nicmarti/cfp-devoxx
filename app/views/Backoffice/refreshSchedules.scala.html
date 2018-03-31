@@ -1,4 +1,4 @@
-@(errors: models.ProposalsWithErrors)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(errors: List[ProposalAndRelatedError])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @import models.ProposalAndRelatedError
 @import models.ProposalsWithErrors
 @main("CFP Admin - Backoffice") {
@@ -20,7 +20,7 @@
 
                 <div class="panel-body">
 
-                @errors.value.map { case err =>
+                @errors.map { case err =>
                     <div class="col-md-12">
                         <h4>@err.p.id @err.p.title <em>@Messages(err.p.talkType.id)</em>
                         <a href="@routes.CFPAdmin.openForReview(err.p.id)">see details</a> </h4>
@@ -43,6 +43,10 @@
                         </div>
                     </div>
                 }
+
+                    @if(errors.isEmpty){
+                        <p class="label label-success"><i class="icon-check-sign"></i> There is no diff/errors to report. Published Agenda = current version of the agenda.</p>
+                    }
 
                 </div>
             </div>

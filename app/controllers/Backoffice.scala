@@ -272,11 +272,11 @@ object Backoffice extends SecureCFPController {
       val futureMessages: Future[Any] = ZapActor.actor ? CheckSchedules
 
       futureMessages.map {
-        case util.Success(result:ProposalsWithErrors) =>
-          Ok(views.html.Backoffice.refreshSchedules(result))
-        case util.Failure(ex)=>
-          play.Logger.error("refreshSchedules error with Akka",ex)
-          InternalServerError(s"Unable to refresh schedule, exception was raised from Akka Actor ${ex.getMessage}")
+        case results:List[ProposalAndRelatedError]=>
+          Ok(views.html.Backoffice.refreshSchedules(results))
+        case _=>
+          play.Logger.error("refreshSchedules error with Akka")
+          InternalServerError(s"Unable to refresh schedule, exception was raised from Akka Actor")
       }
 
   }
