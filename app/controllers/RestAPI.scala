@@ -27,6 +27,7 @@ import controllers.Link.call2String
 import models.Speaker._
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
+import play.api.Play
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
@@ -69,19 +70,29 @@ object RestAPI extends Controller {
       <rss version="2.0">
         <channel>
           <title>Accepted proposals</title>
-          <link>{ ConferenceDescriptor.current().conferenceUrls.cfpHostname }</link>
-          <description>Accepted Proposals</description>
-          { Proposal.allAccepted().map { proposal =>
+          <link>
+            {ConferenceDescriptor.current().conferenceUrls.cfpHostname}
+          </link>
+          <description>Accepted Proposals</description>{Proposal.allAccepted().map { proposal =>
           <item>
-            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
-              { val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
-                if(speaker.cleanTwitter.nonEmpty) {
-                  "(" + speaker.cleanTwitter.get + ")"
-                }
-              }
+            <title>
+              {proposal.title}
+              by
+              {proposal.allSpeakers.map(_.cleanName).mkString(", ")}{val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
+            if (speaker.cleanTwitter.nonEmpty) {
+              "(" + speaker.cleanTwitter.get + ")"
+            }}
             </title>
-            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2018/talk/{proposal.id}</link>
-            <description>{ proposal.summary }</description>
+            <link>http
+              {if (ConferenceDescriptor.isHTTPSEnabled) "s"}
+              ://
+              {ConferenceDescriptor.current().conferenceUrls.cfpHostname}
+              /2018/talk/
+              {proposal.id}
+            </link>
+            <description>
+              {proposal.summary}
+            </description>
           </item>
         }}
         </channel>
@@ -125,32 +136,32 @@ object RestAPI extends Controller {
               val allProposalTypesIds = ConferenceDescriptor.ConferenceProposalTypes.ALL.map(_.id)
 
               val jsonObject = Json.toJson(conference).as[JsObject] ++ Json.obj(
-                  "days" -> ConferenceDescriptor.current().timing.days.map(_.toString("EEEE", ConferenceDescriptor.current().locale.head)).toSeq,
-                  "proposalTypesId" -> allProposalTypesIds,
-                  //TODO
+                "days" -> ConferenceDescriptor.current().timing.days.map(_.toString("EEEE", ConferenceDescriptor.current().locale.head)).toSeq,
+                "proposalTypesId" -> allProposalTypesIds,
+                //TODO
 
-                  "links" -> List(
-                    Link(
-                      routes.RestAPI.showSpeakers(conference.eventCode),
-                      routes.RestAPI.profile("list-of-speakers"),
-                      "See all speakers"
-                    ),
-                    Link(
-                      routes.RestAPI.showAllSchedules(conference.eventCode),
-                      routes.RestAPI.profile("schedules"),
-                      "See the whole agenda"
-                    ),
-                    Link(
-                      routes.RestAPI.showProposalTypes(conference.eventCode),
-                      routes.RestAPI.profile("proposalType"),
-                      "See the different kind of conferences"
-                    ),
-                    Link(
-                      routes.RestAPI.showTracks(conference.eventCode),
-                      routes.RestAPI.profile("track"),
-                      "See the different kind of tracks"
-                    )
+                "links" -> List(
+                  Link(
+                    routes.RestAPI.showSpeakers(conference.eventCode),
+                    routes.RestAPI.profile("list-of-speakers"),
+                    "See all speakers"
+                  ),
+                  Link(
+                    routes.RestAPI.showAllSchedules(conference.eventCode),
+                    routes.RestAPI.profile("schedules"),
+                    "See the whole agenda"
+                  ),
+                  Link(
+                    routes.RestAPI.showProposalTypes(conference.eventCode),
+                    routes.RestAPI.profile("proposalType"),
+                    "See the different kind of conferences"
+                  ),
+                  Link(
+                    routes.RestAPI.showTracks(conference.eventCode),
+                    routes.RestAPI.profile("track"),
+                    "See the different kind of tracks"
                   )
+                )
 
               )
               Ok(jsonObject).withHeaders(ETAG -> eTag,
@@ -326,7 +337,7 @@ object RestAPI extends Controller {
       // val proposals = ApprovedProposal.allApproved().filterNot(_.event==eventCode).toList.sortBy(_.title)
 
       val stupidEventCode = Messages("longYearlyName") // Because the value in the DB for Devoxx BE 2015 is not valid
-      val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
+    val proposals = ApprovedProposal.allApproved().filter(_.event == stupidEventCode).toList.sortBy(_.title)
 
       val eTag = proposals.hashCode.toString
 
@@ -798,39 +809,77 @@ object RestAPI extends Controller {
     *
     * @return
     */
-  val verifyAccountForm=Form(
+  val verifyAccountForm = Form(
     tuple(
-      "email"->email,
-      "networkId"->optional(text),
-      "networkType"->optional(text)
+      "email" -> email,
+      "networkId" -> optional(text),
+      "networkType" -> optional(text)
     )
   )
 
   def verifyAccount() = UserAgentActionAndAllowOrigin {
     implicit request =>
       verifyAccountForm.bindFromRequest().fold(
-        invalidForm=>{
+        invalidForm => {
           BadRequest(invalidForm.errorsAsJson).as(JSON)
         },
-        validTuple=>{
+        validTuple => {
           val email = validTuple._1
           val newNetworkType = validTuple._2
           val newNetworkId = validTuple._3
           Webuser.findByEmail(email) match {
-            case Some(foundUser)=>
-            // Update users social network credentials
-            Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
-            Ok(foundUser.uuid)
+            case Some(foundUser) =>
+              // Update users social network credentials
+              Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
+              Ok(foundUser.uuid)
 
-            case None=>
-            // User does not exist, lets create
-            val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
-            val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-            Webuser.addToDevoxxians(uuid)
-            Created(uuid)
+            case None =>
+              // User does not exist, lets create
+              val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
+              val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+              Webuser.addToDevoxxians(uuid)
+              Created(uuid)
           }
         }
       )
+  }
+
+  /**
+    * Verify user credentials with password, used by Mobile Gluon app.
+    *
+    * @return
+    */
+  val verifyCredentialsForm = Form(
+    tuple(
+      "email" -> email,
+      "password" -> text
+    )
+  )
+
+  def verifyCredentials() = UserAgentActionAndAllowOrigin {
+    implicit request =>
+      if (request.headers.get("X-Gluon").isEmpty) {
+        PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
+      } else {
+        if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonAuthorization()) {
+          Unauthorized("Invalid Gluon Authorization code")
+        } else {
+          verifyAccountForm.bindFromRequest().fold(
+            invalidForm => {
+              BadRequest(invalidForm.errorsAsJson).as(JSON)
+            }, validTuple => {
+              val email = validTuple._1
+              val password = validTuple._2.getOrElse("")
+              Webuser.checkPassword(email, password) match {
+                case Some(foundUser) =>
+                  Ok(foundUser.uuid)
+                case None =>
+                  NotFound("Webuser not found or invalid password.")
+              }
+            }
+          )
+        }
+      }
   }
 }
 
@@ -862,7 +911,8 @@ case class Link(href: String, rel: String, title: String)
 object Link {
 
   implicit val linkFormat = Json.format[Link]
-  implicit def call2String(c : Call)(implicit requestHeader: RequestHeader ):String =  c.absoluteURL()
+
+  implicit def call2String(c: Call)(implicit requestHeader: RequestHeader): String = c.absoluteURL()
 }
 
 case class Conference(eventCode: String, label: String, locale: List[String], localisation: String, link: Link)

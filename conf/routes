@@ -269,6 +269,7 @@ GET           /api/conferences/:eventCode/tracks                                
 GET           /api/profile/:docName                                             controllers.RestAPI.profile(docName:String)
 
 # New My Devoxx and PWA REST endpoints
+POST          /api/account/credentials                                          controllers.RestAPI.verifyCredentials()
 POST          /api/account/verify                                               controllers.RestAPI.verifyAccount()
 GET           /api/proposals/:uuid/scheduled                                    controllers.Favorites.scheduledProposals(uuid:String)
 DELETE        /api/proposals/:uuid/scheduled/:proposalId                        controllers.Favorites.removeScheduledProposal(uuid:String, proposalId:String)

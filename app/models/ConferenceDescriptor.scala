@@ -768,7 +768,7 @@ object ConferenceDescriptor {
 
   def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
 
-  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.authorization").getOrElse("")
+  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.auth.token").getOrElse("")
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
 
