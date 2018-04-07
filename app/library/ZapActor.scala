@@ -336,15 +336,7 @@ class ZapActor extends Actor {
     * @param scheduleUpdate true = invisible message
     */
   def doNotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]): Unit = {
-
-    play.Logger.debug(s"Notify mobile apps (schedule update: $scheduleUpdate)")
-
-    // TODO the Gluon Auth token must be a configuration parameter for obvious security reasons.
-    val securityGluonHeader: String = current.configuration.getString("gluon.auth.token").getOrElse("??? Please configure gluon.auth.token")
-
-    if (securityGluonHeader == "??? Please configure gluon.auth.token") {
-      play.Logger.warn("Please configure the GLUON HTTP Security header. Set an environment variable to GLUON_AUTH_TOKEN=Yy...  and restart the application")
-    }
+    val securityGluonHeader: String = ConferenceDescriptor.gluonAuthorization()
 
     val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
     post.addHeader("Authorization", s"Gluon $securityGluonHeader")

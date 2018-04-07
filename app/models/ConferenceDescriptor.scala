@@ -2,6 +2,7 @@ package models
 
 import java.util.Locale
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
 
@@ -768,9 +769,10 @@ object ConferenceDescriptor {
 
   def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
 
-  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.auth.token").getOrElse("")
+  def gluonAuthorization(): String = Play.current.configuration.getString("gluon.auth.token").getOrElse(RandomStringUtils.random(16))
+  def gluonInboundAuthorization(): String = Play.current.configuration.getString("gluon.inbound.token").getOrElse(RandomStringUtils.random(16))
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
-  def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse("")
+  def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse(RandomStringUtils.random(16))
 
   def maxProposals(): Int = Play.current.configuration.getInt("cfp.max.proposals").getOrElse(5)
 }

@@ -861,7 +861,7 @@ object RestAPI extends Controller {
       if (request.headers.get("X-Gluon").isEmpty) {
         PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
       } else {
-        if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonAuthorization()) {
+        if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
           Unauthorized("Invalid Gluon Authorization code")
         } else {
           verifyAccountForm.bindFromRequest().fold(
