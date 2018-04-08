@@ -83,8 +83,6 @@ case class NotifyProposalSubmitted(author: String, proposal: Proposal)
 
 case class NotifyGoldenTicket(goldenTicket: GoldenTicket)
 
-case class SendHeartbeat(apiKey: String, name: String)
-
 case class NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean] = None)
 
 case class EmailDigests(digest: Digest)
@@ -117,18 +115,17 @@ class ZapActor extends Actor {
     case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
-    case SendHeartbeat(apiKey: String, name: String) => doSendHeartbeat(apiKey, name)
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]) => doNotifyMobileApps(message, scheduleUpdate)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case CheckSchedules => doCheckSchedules()
     case UpdateSchedule(talkType: String, proposalId: String) => doUpdateProposal(talkType: String, proposalId: String)
-    case other => play.Logger.of("application.ZapActor").error("Received an invalid actor message: " + other)
+    case other => play.Logger.of("library.ZapActor").error("Received an invalid actor message: " + other)
   }
 
   def publishBugReport(issue: Issue) {
-    if (play.Logger.of("application.ZapActor").isDebugEnabled) {
-      play.Logger.of("application.ZapActor").debug(s"Posting a new bug report to Bitbucket")
+    if (play.Logger.of("library.ZapActor").isDebugEnabled) {
+      play.Logger.of("library.ZapActor").debug(s"Posting a new bug report to Bitbucket")
     }
     notifiers.TransactionalEmails.sendBugReport(issue)
 
@@ -156,7 +153,7 @@ class ZapActor extends Actor {
         // Overwrite the messageID for the next email (to set the In-Reply-To)
         Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
     }.getOrElse {
-      play.Logger.error("User not found with uuid " + reporterUUID)
+      play.Logger.of("library.ZapActor").error("User not found with uuid " + reporterUUID)
     }
   }
 
@@ -169,10 +166,9 @@ class ZapActor extends Actor {
         // Overwrite the messageID for the next email (to set the In-Reply-To)
         Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
     }.getOrElse {
-      play.Logger.error("User not found with uuid " + reporterUUID)
+      play.Logger.of("library.ZapActor").error("Cannot send message to committee, User not found with uuid " + reporterUUID)
     }
   }
-
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message for ${proposal.id} ${proposal.title}"))
@@ -184,7 +180,7 @@ class ZapActor extends Actor {
         // Overwrite the messageID for the next email (to set the In-Reply-To)
         Comment.storeLastMessageIDInternal(proposal.id, newMessageID)
     }.getOrElse {
-      play.Logger.error("Cannot post internal message, User not found with uuid " + reporterUUID)
+      play.Logger.of("library.ZapActor").error("Cannot post internal message, User not found with uuid " + reporterUUID)
     }
   }
 
@@ -196,7 +192,7 @@ class ZapActor extends Actor {
           speakerUser =>
             Mails.sendReminderForDraft(speakerUser, draftProposals)
         }.getOrElse {
-          play.Logger.warn("User not found")
+          play.Logger.of("library.ZapActor").warn("User not found, unable to send Draft reminder email")
         }
     }
   }
@@ -260,45 +256,17 @@ class ZapActor extends Actor {
       reporterWebuser: Webuser =>
         Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
     }.getOrElse {
-      play.Logger.error("User not found with uuid " + author)
-    }
-  }
-
-  def doSendHeartbeat(apikey: String, name: String): Unit = {
-    import scala.concurrent.ExecutionContext.Implicits.global
-
-    // Check if redis is up... will throw an Exception if unable to connect
-    Redis.checkIfConnected()
-
-    // Send a Heartbeat to opsgenie
-    val url = "https://api.opsgenie.com/v1/json/heartbeat/send"
-    val futureResult = WS.url(url).post(Map("apiKey" -> Seq(apikey), "name" -> Seq(name)))
-    futureResult.map {
-      result =>
-        result.status match {
-          case 200 =>
-            val json = Json.parse(result.body)
-            if (play.Logger.of("library.ZapActor").isDebugEnabled) {
-              play.Logger.of("library.ZapActor").debug(s"Got an ACK from OpsGenie $json")
-            }
-
-          case other =>
-            play.Logger.error(s"Unable to read response from OpsGenie server ${result.status} ${result.statusText}")
-            play.Logger.error(s"Response body ${result.body}")
-
-        }
+      play.Logger.of("library.ZapActor").error("User not found with uuid " + author)
     }
   }
 
   def doNotifyGoldenTicket(gt: GoldenTicket): Unit = {
-    play.Logger.debug(s"Notify golden ticket ${gt.ticketId} ${gt.webuserUUID}")
-
     Webuser.findByUUID(gt.webuserUUID).map {
       invitedWebuser: Webuser =>
         Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New golden ticket for user ${invitedWebuser.cleanName}"))
         Mails.sendGoldenTicketEmail(invitedWebuser, gt)
     }.getOrElse {
-      play.Logger.error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
+      play.Logger.of("library.ZapActor").error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
     }
   }
 
@@ -360,7 +328,11 @@ class ZapActor extends Actor {
 
     post.setEntity(new UrlEncodedFormEntity(urlParameters))
     val client = HttpClientBuilder.create().setUserAgent("Devoxx CFP").build()
-    client.execute(post)
+    val result = client.execute(post)
+
+    if(play.Logger.of("library.ZapActor").isDebugEnabled) {
+      play.Logger.of("library.ZapActor").debug(s"Gluon notify mobile result ${result}")
+    }
   }
 
   /**
@@ -370,7 +342,7 @@ class ZapActor extends Actor {
     */
   def doEmailDigests(digest: Digest) {
 
-    play.Logger.debug("doEmailDigests for " + digest.value)
+    play.Logger.of("library.ZapActor").debug("doEmailDigests for " + digest.value)
 
     // Retrieve new proposals for digest
     val newProposalsIds = Digest.pendingProposals(digest)
@@ -382,11 +354,10 @@ class ZapActor extends Actor {
         .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
         .map(userToNotify => userToNotify.uuid)
 
-      play.Logger.info(foundUsersIDs.size + " user(s) for digest " + digest.value)
 
       if (foundUsersIDs.nonEmpty) {
 
-        play.Logger.debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
+        play.Logger.of("library.ZapActor").debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
 
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
@@ -491,7 +462,7 @@ class ZapActor extends Actor {
   }
 
   def doUpdateProposal(confType: String, proposalId: String): Unit = {
-    play.Logger.debug("Update published Schedule for proposal Id " + proposalId)
+    play.Logger.of("library.ZapActor").debug("Update published Schedule for proposal Id " + proposalId)
 
     ScheduleConfiguration.findSlotForConfType(confType, proposalId).foreach {
       slot =>
@@ -510,7 +481,6 @@ class ZapActor extends Actor {
               val newID = ScheduleConfiguration.persist(confType, newSlots, Webuser.Internal)
               ScheduleConfiguration.publishConf(newID, confType)
             }
-
         }
     }
   }
