@@ -143,11 +143,5 @@ object CronTask {
     Akka.system.scheduler.schedule(1 minute, 5 minutes, ZapActor.actor, EmailDigests(Digest.REAL_TIME))
   }
 
-  def doSetupOpsGenie() = {
-    import library.Contexts.statsContext
-    for (apiKey <- Play.configuration.getString("opsgenie.apiKey");
-         name <- Play.configuration.getString("opsgenie.name")) {
-      Akka.system.scheduler.schedule(1 minute, 10 minutes, ZapActor.actor, SendHeartbeat(apiKey, name))
-    }
-  }
+  
 }
