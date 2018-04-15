@@ -240,9 +240,9 @@ object ConferenceDescriptor {
     val PARIS_221M_222M = Room("par221M-222M", "Paris 221M-222M Lab", 32, "classroom", "rien")
     val PARIS_224M_225M = Room("par224M-225M", "Paris 224M-225M Lab", 26, "classroom", "rien")
 
-    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213M Lab", 32, "classroom", "rien")
+    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213 Lab", 32, "classroom", "rien")
     val NEUILLY_231_232 = Room("neu_232_232", "Neuilly 231-232M Lab", 32, "classroom", "rien")
-    val NEUILLY_234_235 = Room("neu_234_235", "Neuilly 234_234M Lab", 32, "classroom", "rien")
+    val NEUILLY_234_235 = Room("neu_234_235", "Neuilly 234-235M Lab", 24, "classroom", "rien")
 
     val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien")
     val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien")
