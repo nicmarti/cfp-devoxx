@@ -819,29 +819,37 @@ object RestAPI extends Controller {
 
   def verifyAccount() = UserAgentActionAndAllowOrigin {
     implicit request =>
-      verifyAccountForm.bindFromRequest().fold(
-        invalidForm => {
-          BadRequest(invalidForm.errorsAsJson).as(JSON)
-        },
-        validTuple => {
-          val email = validTuple._1
-          val newNetworkType = validTuple._2
-          val newNetworkId = validTuple._3
-          Webuser.findByEmail(email) match {
-            case Some(foundUser) =>
-              // Update users social network credentials
-              Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
-              Ok(foundUser.uuid)
+      if (request.headers.get("X-Gluon").isEmpty) {
+        PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
+      } else {
+        if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
+          Unauthorized("Invalid Gluon Authorization code")
+        } else {
+          verifyAccountForm.bindFromRequest().fold(
+            invalidForm => {
+              BadRequest(invalidForm.errorsAsJson).as(JSON)
+            },
+            validTuple => {
+              val email = validTuple._1
+              val newNetworkType = validTuple._2
+              val newNetworkId = validTuple._3
+              Webuser.findByEmail(email) match {
+                case Some(foundUser) =>
+                  // Update users social network credentials
+                  Webuser.update(foundUser.copy(networkType = newNetworkType, networkId = newNetworkId))
+                  Ok(foundUser.uuid)
 
-            case None =>
-              // User does not exist, lets create
-              val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
-              val uuid = Webuser.saveAndValidateWebuser(devoxxian)
-              Webuser.addToDevoxxians(uuid)
-              Created(uuid)
-          }
+                case None =>
+                  // User does not exist, lets create
+                  val devoxxian = Webuser.createDevoxxian(email, newNetworkType, newNetworkId)
+                  val uuid = Webuser.saveAndValidateWebuser(devoxxian)
+                  Webuser.addToDevoxxians(uuid)
+                  Created(uuid)
+              }
+            }
+          )
         }
-      )
+      }
   }
 
   /**
