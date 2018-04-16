@@ -819,12 +819,6 @@ object RestAPI extends Controller {
 
   def verifyAccount() = UserAgentActionAndAllowOrigin {
     implicit request =>
-      if (request.headers.get("X-Gluon").isEmpty) {
-        PreconditionFailed("Header X-Gluon must be set with a valid shared secret for security reasons.")
-      } else {
-        if (request.headers.get("X-Gluon").get != ConferenceDescriptor.gluonInboundAuthorization()) {
-          Unauthorized("Invalid Gluon Authorization code")
-        } else {
           verifyAccountForm.bindFromRequest().fold(
             invalidForm => {
               BadRequest(invalidForm.errorsAsJson).as(JSON)
@@ -848,8 +842,6 @@ object RestAPI extends Controller {
               }
             }
           )
-        }
-      }
   }
 
   /**
