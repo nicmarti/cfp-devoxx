@@ -90,7 +90,8 @@ object Room {
     "neu_232_232",
     "neu_234_235",
     "neu_212_213",
-    "x_hall_a"
+    "x_hall_a",
+    "x_pitch"
   )
 
 }
