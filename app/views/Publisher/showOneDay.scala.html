@@ -47,12 +47,12 @@
                 </tr>
             }
             @if(ConferenceDescriptor.isShowRoom) {
-                <tr>
-                    <th><i class="icon-time"></i> @Messages("publisher.room")</th>
-                    @slots.groupBy(_.room).keys.toList.sorted.map { roomName: Room =>
-                        <td>@roomName.name</td>
-                    }
-                </tr>
+                  <tr>
+                     <th><i class="icon-time"></i> @Messages("publisher.room")</th>
+                     @rooms.sorted.map { roomName: Room =>
+                         <td>@roomName.name</td>
+                     }
+                 </tr>
             }
         </table>
     </div>
