@@ -478,12 +478,11 @@ object Backoffice extends SecureCFPController {
   }
 
 
-  def pushNotifications() = SecuredAction(IsMemberOf("admin")) {
+  def pushNotifications(message:String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
       request.body.asJson.map {
         json =>
-          val message = json.\("stringField").as[String]
           ZapActor.actor ! NotifyMobileApps(message)
           Ok(message)
       }.getOrElse {

@@ -168,7 +168,7 @@ GET           /admin/confirmPublicationChange                                   
 GET           /admin/reminder/trigger                                           controllers.Backoffice.sendDraftReminder()
 
 # Push notification message to "My Devoxx" mobile app
-POST          /admin/push/message                                               controllers.Backoffice.pushNotifications()
+POST          /admin/push/:message                                              controllers.Backoffice.pushNotifications(message:String)
 
 # Tags
 GET           /admin/tags/list                                                  controllers.Backoffice.showAllTags()
