@@ -776,6 +776,6 @@ object ConferenceDescriptor {
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse(RandomStringUtils.random(16))
 
-  def maxProposals(): Int = Play.current.configuration.getInt("cfp.max.proposals").getOrElse(15)
+  def maxProposals(): Int = 20
 }
 
