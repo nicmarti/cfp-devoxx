@@ -249,6 +249,8 @@ object ConferenceDescriptor {
 
     val ROOM_OTHER = Room("other_room", "Autres salles", 100, "classroom", "rien")
 
+    val PITCH = Room("pitch_startup", "Village des Startups", 100, "theatre", "rien")
+
     val allRooms = List(HALL_EXPO, HALL_A, AMPHI_BLEU, MAILLOT, PARIS_241, NEUILLY_251, NEUILLY_252AB,
       PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
       PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, PARIS_204, PARIS_201)
@@ -271,7 +273,7 @@ object ConferenceDescriptor {
 
     val keynoteRoom = List(AMPHI_BLEU)
 
-    val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
+    val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T, PITCH)
 
     val allRoomsConfFridayNight = List(AMPHI_BLEU, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
 
