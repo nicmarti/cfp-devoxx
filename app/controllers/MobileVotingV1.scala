@@ -51,7 +51,7 @@ object MobileVotingV1 extends SecureCFPController {
         mapping(
           "aspect" -> nonEmptyText(maxLength = 50),
           "rating" -> number(min = 1, max = 5),
-          "review" -> optional(text(maxLength = 200))
+          "review" -> optional(text(maxLength = 500))
         )(RatingDetail.apply)(RatingDetail.unapply)
       )
     )(Rating.createNew)(Rating.unapplyRating) verifying("Failed form constraints!", fields => fields match {

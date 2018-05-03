@@ -169,17 +169,24 @@
                             @ratings.map { case (prop: Proposal, allRatings: List[Rating]) =>
                             <tr>
                                 <td>
-                                    @StringUtils.abbreviate(prop.title, 50)</td>
+                                    @StringUtils.abbreviate(prop.title, 70)</td>
                                 <td>
                                     @library.Stats.average(allRatings.flatMap(_.details.map(_.rating.toDouble))) <br>
-                                    @allRatings.size votes
+                                    @allRatings.size vote(s)
                                 </td>
                                 <td>
+
                                 @allRatings.map { r: Rating =>
                                     @r.details.map { details =>
-                                        @details.rating @details.review.map { d =>
-                                        <strong>@details.aspect</strong> @d
-                                    } <br>
+                                            @if(details.review.isEmpty){
+                                                <span class="label label-success">Rating : </span> @details.rating
+                                            }else {
+                                                <span class="label label-success">Rating detailed : </span>
+                                                @details.review.map { d =>
+                                                    @details.aspect = @details.rating <em>@d</em>
+                                                }
+                                            }
+                                                <hr>
                                     }
                                 }
                             </td>
