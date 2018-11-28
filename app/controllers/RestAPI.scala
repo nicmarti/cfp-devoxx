@@ -70,29 +70,19 @@ object RestAPI extends Controller {
       <rss version="2.0">
         <channel>
           <title>Accepted proposals</title>
-          <link>
-            {ConferenceDescriptor.current().conferenceUrls.cfpHostname}
-          </link>
-          <description>Accepted Proposals</description>{Proposal.allAccepted().map { proposal =>
+          <link>{ ConferenceDescriptor.current().conferenceUrls.cfpHostname }</link>
+          <description>Accepted Proposals</description>
+          { Proposal.allAccepted().map { proposal =>
           <item>
-            <title>
-              {proposal.title}
-              by
-              {proposal.allSpeakers.map(_.cleanName).mkString(", ")}{val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
-            if (speaker.cleanTwitter.nonEmpty) {
-              "(" + speaker.cleanTwitter.get + ")"
-            }}
+            <title>{ proposal.title } by { proposal.allSpeakers.map(_.cleanName).mkString(", ")}
+              { val speaker = Speaker.findByUUID(proposal.mainSpeaker).get
+                if(speaker.cleanTwitter.nonEmpty) {
+                  "(" + speaker.cleanTwitter.get + ")"
+                }
+              }
             </title>
-            <link>http
-              {if (ConferenceDescriptor.isHTTPSEnabled) "s"}
-              ://
-              {ConferenceDescriptor.current().conferenceUrls.cfpHostname}
-              /2018/talk/
-              {proposal.id}
-            </link>
-            <description>
-              {proposal.summary}
-            </description>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2019/talk/{proposal.id}</link>
+            <description>{ proposal.summary }</description>
           </item>
         }}
         </channel>

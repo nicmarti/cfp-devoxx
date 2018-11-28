@@ -149,12 +149,12 @@ cfp.msg.sendMsg=Envoyer votre message au comité
  
 # Home
 appel.conf=Appel aux conférenciers
-appel.conf.dates=Call for Paper, Devoxx France 2018, 18 au 20 avril 2018
+appel.conf.dates=Call for Paper, Devoxx France, 17 au 19 avril 2019
 cfp.opening=Ouverture du CFP
 cfp.closing=Fermeture du CFP
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.program=Annonce du programme :
-cfp.program.date=à partir du 26 février 2018
+cfp.program.date=à partir de la mi-février 2019
 video.title=Vidéos des éditions précédentes
 video.tag=Retrouvez toutes les vidéos des éditions précédentes sur le site
 theme.title=Thèmes
@@ -223,7 +223,7 @@ created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos 
  
 # Prepare signup
 signup.title=Inscription orateur
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2018 :
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2019 :
 signup.txt2=Un email de validation est envoyé à l''adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
  
 # edit profile
@@ -477,7 +477,7 @@ confThursday=Conférences le Jeudi
 sw.otherEvents=Evénements spéciaux
 sw.allEvents=Voir tous les événements
 sw.all.key=Les Keynotes
-sw.all.cstory=Code-Story 2018
+sw.all.cstory=Code-Story
 cstory=Sessions de live coding Code-Story
 sw.all.amd=Présentations de l''Après-midi des Décideurs
 sw.agenda=Agenda
@@ -491,9 +491,9 @@ sw.agenda.friday=Vendredi
 sw.show.wed=Mercredi
 sw.show.thu=Jeudi
 sw.show.fri=Vendredi
-sw.show.title.wed=Journée du Mercredi 18 avril 2018
-sw.show.title.thu=Journée du Jeudi 19 avril 2018
-sw.show.title.fri=Journée du Vendredi 20 avril 2018
+sw.show.title.wed=Journée du Mercredi 17 avril 2019
+sw.show.title.thu=Journée du Jeudi 18 avril 2019
+sw.show.title.fri=Journée du Vendredi 19 avril 2019
  
  
 sw.horaires=Horaires
@@ -550,11 +550,11 @@ btn.saveAndSend=Sauver et envoyer au comité
 btn.saveDraft=Sauver comme Draft (Brouillon)
 cfp.reminder=Rappel
 cfp.reminder.proposals=pensez à soumettre votre brouillon au comité en cliquant sur "Envoyer"
-cfp.title=Devoxx France 2018
+cfp.title=Devoxx France 2019
 conf.label.simple=Conférence
 CONF.subtitle=FR
-CONF.title=Devoxx France 2018
-conference.dates=18 au 20 avril 2018
+CONF.title=Devoxx France 2019
+conference.dates=17 au 19 avril 2019
 contacted=Speaker contacté
 d1.label=Uniquement des slides
 d2.label=Slides et du code
@@ -578,11 +578,11 @@ code.label.simple=Codestory
 level1.label=Ouvert à tout niveau d''audience, débutant comme expert
 level2.label=Pour une audience intermédiaire, avec une connaissance sur le sujet
 level3.label=Pour un public d''expert ou de sénior sur ce sujet
-longName=Devoxx FR 2018 CFP
+longName=Devoxx FR 2019 CFP
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2018
+longSplittedName_whiteEnd=FR 2019
 longSplittedName_whiteStart=Devox
-longYearlyName=Devoxx France 2018
+longYearlyName=Devoxx France 2019
 mail.access_code.subject=Votre code d''accès présentateur pour {0}
 mail.account_created.subject=Bienvenue sur le CFP pour {0}
 mail.cfp_message_to_speaker.subject=[{1}] {0}
@@ -605,7 +605,7 @@ qualifications.otherproposals=Sujet(s) proposé(s) par le speaker
 quick.label.simple=Quickie
 remove.sponsorFlag=Retirer le flag sponsor de cette présentation
 shortName=Devoxx FR
-shortYearlyName=Devoxx FR 2018
+shortYearlyName=Devoxx FR 2019
 ssj.label=Server Side Java
 start=Startup presentation
 start.label=
