@@ -192,10 +192,10 @@ track.java.desc=Everything around Java, the JVM, Java SE, Java EE.
 java.label=Java, JVM, Javas SE/EE
 java.leaderboard=Java, JVM, Javas SE/EE
 
-track.mobile.title=Mobile & Internet of Things
-track.mobile.desc=Mobile, Java & Internet of Things
-mobile.label=Mobile, IoT
-mobile.leaderboard=Mobile, IoT
+track.mobile.title=Mobile, Internet of Things, Augmented Reality, ...
+track.mobile.desc=Mobile, Internet of Things, Augmented Reality, ...
+mobile.label=Mobile, IoT, AR
+mobile.leaderboard=Mobile, IoT, AR
 
 track.web.title=Web, JS, HTML5 & UX
 track.web.desc=Web, JS, user-experience, front-end and Web architecture
@@ -208,37 +208,32 @@ track.archisec.desc=Software architecture, performance, encryption and best prac
 archisec.label=Architecture, Performance and Security
 archisec.leaderboard=Architecture, Performance and Security
 
-track.agile_devops.title=DevOps, Agile, Methodology & Tests
+track.agile_devops.title=Agile, Methodology & Tests
 track.agile_devops.desc=Software development methods, TDD, BDD, xDD.
-agile_devops.label=DevOps, Agile, Methodology & Tests
-agTest.label=DevOps, Agile, Methodology & Tests
-agTest.leaderboard=DevOps, Agile, Methodology & Tests
+agile_devops.label=Agile, Methodology & Tests
+agTest.label=Agile, Methodology & Tests
+agTest.leaderboard=Agile, Methodology & Tests
 
-track.cloud.title=Cloud, container & Scaling
-track.cloud.desc=Cloud-computing, containers, resilient architectures.
-cloud.label=Cloud & Scaling
-cldops.label=Cloud & Scaling
-cldops.leaderboard=Cloud & Scaling
+track.cloud.title=Cloud, Containers & Infrastructure, DevOps
+track.cloud.desc=Cloud-computing, containers, resilient architectures, DevOps
+cloud.label=Cloud, Containers & Infrastructure, DevOps
+cldops.label=Cloud, Containers & Infrastructure, DevOps
+cldops.leaderboard=Cloud, Containers & Infrastructure, DevOps
 
-track.bigdata.title=Big Data, Machine Learning, I.A & Analytics
+track.bigdata.title=Big Data, Machine Learning, Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
-bigdata.label=Big Data, Machine Learning, IA & Analytics
-bigdata.leaderboard=Big Data & Analytics
-
-track.bigd.title=Big Data, Machine Learning, I.A & Analytics
-track.bigd.desc=From real-time analysis to massive prediction and cloud storage
-bigd.label=Big Data, Machine Learning, IA & Analytics
+bigd.label=Big Data, Machine Learning, Analytics
 bigd.leaderboard=Big Data & Analytics
 
-track.future.title=Future & Robotics
-track.future.desc=Developing for the Internet of Things, Arduino, Raspberry, etc.
-future.label=Future & Robotics
-future.leaderboard=Future & Robotics
+track.future.title=Mind the Geek
+track.future.desc=Developer candy: stuff we want to know about but dont (generally) at work, Robotics, biological computing, cybernetics, AI, new toys, tomorrows world
+future.label=Mind the Geek
+future.leaderboard=Mind the Geek
 
-track.lang.title=Alternate Languages
-track.lang.desc=Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, etc.
-lang.label=Alternate Languages
-lang.leaderboard=Alternate Languages
+track.lang.title=Programming languages (except Java)
+track.lang.desc=Kotlin, Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, ...
+lang.label=Languages
+lang.leaderboard=Languages
 
 # confirm import
 confirm.import.title=Create your Speaker''s profile
