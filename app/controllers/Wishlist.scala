@@ -28,6 +28,8 @@ import library.{EditRequestToTalk, NotifySpeakerRequestToTalk, ZapActor}
 import play.api.mvc.Action
 import views.html
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
  * Controller to handle the list of invited speakers.
  * A CFP Member can create a RequestToTalk, this will send an email to the speaker.
@@ -79,11 +81,11 @@ object Wishlist extends SecureCFPController {
 
           val actionType = request.body.asFormUrlEncoded.flatMap(_.get("actionBtn"))
           actionType match {
-            case Some(List("save")) =>
+            case Some(ArrayBuffer("save")) =>
               ZapActor.actor ! EditRequestToTalk(request.webuser.uuid, successForm)
               Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Request updated to status [" + successForm.status.code + "]"))
 
-            case Some(List("email")) =>
+            case Some(ArrayBuffer("email")) =>
               ZapActor.actor ! NotifySpeakerRequestToTalk(request.webuser.uuid, successForm)
               Redirect(routes.Wishlist.edit(successForm.id)).flashing("success" -> ("Speaker notified, request updated to status [" + successForm.status.code + "]"))
 
