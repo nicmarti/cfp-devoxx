@@ -169,45 +169,45 @@ track.java.desc=Tout sur Java, la JVM, Java SE, Java EE.
 java.label=Java, JVM, Javas SE/EE
 java.leaderboard=Java, JVM, Javas SE/EE
 
-track.mobile.title=Mobile et Internet of Things
-track.mobile.desc=Mobile, Java et l’internet des objets, la domotique et l’embarqué.
-mobile.label=Mobile, IoT
-mobile.leaderboard=Mobile, IoT
+track.mobile.title=Mobile, Internet of Things, Réalité Augmentée
+track.mobile.desc=Mobile, l’internet des objets, la réalité augmentée.
+mobile.label=Mobile, IoT, AR
+mobile.leaderboard=Mobile, IoT, AR
 
 track.web.title=Web, JS, HTML5 et UX
 track.web.desc=Web, JS, user-experience, front-end et architecture Webs.
 web.label=Web, JS, HTML5 et UX
 wm.leaderboard=Web, JS, HTML5 et UX
 
-track.cloud.title=Cloud, Container et Scalabilité
-track.cloud.desc=Cloud-computing, Container, Virtualisation, Architectures résilientes
-cloud.label=Cloud, Container et Scalabilité
-cldops.leaderboard=Cloud, Container et Scalabilité
+track.cloud.title=Cloud, Containers et Infrastructure, DevOps
+track.cloud.desc=Cloud-computing, Container, Virtualisation, Architectures résilientes, DevOps
+cloud.label=Cloud, Containers et Infrastructure, DevOps
+cldops.leaderboard=Cloud, Containers et Infrastructure, DevOps
 
 track.archisec.title=Architecture, Performance & Securité
 track.archisec.desc=Architecture, performance, chiffrement et meilleures pratiques pour développer un logiciel sécurisé.
 archisec.label=Architecture, Performance et Securité
 archisec.leaderboard=Architecture, Performance et Securité
 
-track.agile_devops.title=DevOps, Agilité, Méthodologie & Tests
+track.agile_devops.title=Agilité, Méthodologie & Tests
 track.agile_devops.desc=Méthodes et pratiques de développement / déploiement logiciel, TDD, BDD, xDD.
-agile_devops.label=DevOps, Agilité, Méthodologie & Tests
-agTest.leaderboard=DevOps, Agilité, Méthodologie & Tests
+agile_devops.label=Agilité, Méthodologie & Tests
+agTest.leaderboard=Agilité, Méthodologie & Tests
 
-track.bigdata.title=BigData, Machine-learning, Intelligence artificielle et Analytics
+track.bigdata.title=BigData, Machine-learning, Analytics
 track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
-bigd.label=BigData, ML, IA
-bigd.leaderboard=BigData, ML, IA
+bigd.label=Big Data, Machine Learning, Analytics
+bigd.leaderboard=Big Data & Analytics
 
-track.future.title=Future, Robotique
-track.future.desc=La robotique et l''informatique de demain
-future.label=Future, Robotique
-future.leaderboard=Future, Robotique
+track.future.title=Mind the Geek
+track.future.desc=Gourmandise pour développeur: choses que nous voulons savoir mais que nous ne faisons pas (généralement) au travail, robotique, informatique biologique, cybernétique, intelligence artificielle, nouveaux jouets, monde de demain
+future.label=Mind the Geek
+future.leaderboard=Mind the Geek
 
-track.lang.title=Langages alternatifs
-track.lang.desc=Tous les langages alternatifs à Java
-lang.label=Langages alternatifs
-lang.leaderboard=Langages alternatifs
+track.lang.title=Langages de programmation (hors Java)
+track.lang.desc=Kotlin, Groovy, Scala, Go, Javascript, Clojure, Haskell, Ceylon, ...
+lang.label=Langages
+lang.leaderboard=Langages
 
 # Confirm import
 confirm.import.title=Créer votre profil de présentateur Devoxx France
