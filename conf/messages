@@ -222,6 +222,7 @@ cldops.leaderboard=Cloud, Containers & Infrastructure, DevOps
 
 track.bigdata.title=Big Data, Machine Learning, Analytics
 track.bigdata.desc=From real-time analysis to massive prediction and cloud storage
+bigdata.label=Big Data, Machine Learning, Analytics
 bigd.label=Big Data, Machine Learning, Analytics
 bigd.leaderboard=Big Data & Analytics
 

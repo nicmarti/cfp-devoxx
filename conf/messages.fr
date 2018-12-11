@@ -196,6 +196,7 @@ agTest.leaderboard=Agilité, Méthodologie & Tests
 
 track.bigdata.title=BigData, Machine-learning, Analytics
 track.bigdata.desc=Stocker, analyser les données et revoir la gestion de la data.
+bigdata.label=Big Data, Machine Learning, Analytics
 bigd.label=Big Data, Machine Learning, Analytics
 bigd.leaderboard=Big Data & Analytics
 
