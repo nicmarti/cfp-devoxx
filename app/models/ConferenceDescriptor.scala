@@ -108,7 +108,6 @@ case class ConferenceDescriptor(eventCode: String,
 object ConferenceDescriptor {
 
 
-
   /**
     * TODO configure here the kind of talks you will propose
     */
@@ -255,7 +254,7 @@ object ConferenceDescriptor {
       PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
       PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, PARIS_204, PARIS_201)
 
-    val allRoomsAsIdsAndLabels:Seq[(String,String)] = allRooms.map(a=>(a.id,a.name)).sorted
+    val allRoomsAsIdsAndLabels: Seq[(String, String)] = allRooms.map(a => (a.id, a.name)).sorted
 
     val allRoomsUni = List(AMPHI_BLEU, MAILLOT, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
@@ -697,10 +696,10 @@ object ConferenceDescriptor {
       registration = "https://reg.devoxx.fr",
       confWebsite = "http://www.devoxx.fr/",
       cfpHostname = {
-        val h=Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
-        if(h.endsWith("/")){
-          h.substring(0,h.length - 1)
-        }else{
+        val h = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
+        if (h.endsWith("/")) {
+          h.substring(0, h.length - 1)
+        } else {
           h
         }
       }
@@ -748,34 +747,37 @@ object ConferenceDescriptor {
   def notifyProposalSubmitted = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
 
   // For practical reason we want to hide the room and the time slot until the full agenda is published
-  def isShowRoomAndTimeslot:Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
+  def isShowRoomAndTimeslot: Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
 
-  def isShowRoom:Boolean = Play.current.configuration.getBoolean("cfp.showRoom").getOrElse(false)
+  def isShowRoom: Boolean = Play.current.configuration.getBoolean("cfp.showRoom").getOrElse(false)
 
   // My Devoxx is an OAuth provider on which a user can register
-  def isMyDevoxxActive:Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)
+  def isMyDevoxxActive: Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)
 
-  def myDevoxxURL():String = Play.current.configuration.getString("mydevoxx.url").getOrElse("https://my.devoxx.fr")
+  def myDevoxxURL(): String = Play.current.configuration.getString("mydevoxx.url").getOrElse("https://my.devoxx.fr")
 
   // This is a JWT String shared secret that needs to be configured as a global environment variable
-  def jwtSharedSecret() : String = Play.current.configuration.getString("mydevoxx.jwtSharedSecret").getOrElse("change me please")
+  def jwtSharedSecret(): String = Play.current.configuration.getString("mydevoxx.jwtSharedSecret").getOrElse("change me please")
 
   // Use Twilio (SMS service) to send notification to all speakers and to recieve also commands
-  def isTwilioSMSActive():Boolean = Play.current.configuration.getBoolean("cfp.twilioSMS.active").getOrElse(false)
+  def isTwilioSMSActive(): Boolean = Play.current.configuration.getBoolean("cfp.twilioSMS.active").getOrElse(false)
 
-  def twilioAccountSid:String =  Play.current.configuration.getString("cfp.twilioSMS.accountSid").getOrElse("")
+  def twilioAccountSid: String = Play.current.configuration.getString("cfp.twilioSMS.accountSid").getOrElse("")
 
-  def twilioAuthToken:String =  Play.current.configuration.getString("cfp.twilioSMS.authToken").getOrElse("")
+  def twilioAuthToken: String = Play.current.configuration.getString("cfp.twilioSMS.authToken").getOrElse("")
 
-  def twilioSenderNumber:String =  Play.current.configuration.getString("cfp.twilioSMS.senderNumber").getOrElse("")
+  def twilioSenderNumber: String = Play.current.configuration.getString("cfp.twilioSMS.senderNumber").getOrElse("")
 
-  def twilioMockSMS:Boolean =  Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
+  def twilioMockSMS: Boolean = Play.current.configuration.getBoolean("cfp.twilioSMS.mock").getOrElse(true)
 
   def gluonAuthorization(): String = Play.current.configuration.getString("gluon.auth.token").getOrElse(RandomStringUtils.random(16))
+
   def gluonInboundAuthorization(): String = Play.current.configuration.getString("gluon.inbound.token").getOrElse(RandomStringUtils.random(16))
+
   def gluonUsername(): String = Play.current.configuration.getString("gluon.username").getOrElse("")
+
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse(RandomStringUtils.random(16))
 
-  def maxProposals(): Int = 20
+  def maxProposals(): Int = Play.current.configuration.getInt("cfp.max.proposals").getOrElse(5)
 }
 
