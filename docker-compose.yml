@@ -1,10 +1,11 @@
 version: '2'
 services:
   elasticsearch:
-   image: elasticsearch
+   image: elasticsearch:6.5.4
    expose:
      - 9200
   redis:
+   container_name: cfp-devoxx_redis
    image : redis:2.8.21
    expose:
      - 6379
@@ -24,3 +25,5 @@ services:
     env_file:
       - run.env
     command: play run
+
+    
