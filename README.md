@@ -72,7 +72,17 @@ A docker compose file is provided with Redis and Elastic Search configuration.
 
 To connect to your local Redis Cli, you can use this command line as an example :
 
-```docker run -it --link cfpdevoxx_redis_1:redis --rm redis sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'``
+```sudo docker exec -it cfp-devoxx_redis redis-cli```
+
+Note: The vm.max_map_count kernel setting needs to be set to at least 262144.
+ - On linux: `sudo sysctl -w vm.max_map_count=262144`
+ - On Mac OS: `sysctl -w vm.max_map_count=262144`
+ - On Windows and MacOS with docker toolbox:
+ ```
+ docker-machine ssh
+ sudo sysctl -w vm.max_map_count=262144
+ ```
+ See [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode) for more details.
 
 ## Here's what you need to configure:
 
