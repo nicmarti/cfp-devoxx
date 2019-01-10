@@ -41,7 +41,6 @@ case class Review(reviewer: String, proposalId: String, vote: Int, date: DateTim
 
 object Review {
 
-
   // We use 4 different Redis objects
   // 1) a SET to keep an history of all proposals we voted for
   // 2) a SET to keep an history of all voters for a proposal
