@@ -146,13 +146,20 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
+            // The Reviewer leaderboard
+            val bestReviewers:List[(String, Int, Int)] = Review.allReviewersAndStats().filterNot(br => br._3 < 1).sortBy(_._3)
+
+            // Sort the list of reviewers, find the current user, the user that is before, and the one that is after
+            val listOfReviewers: Iterator[List[(String, Int, Int)]] = bestReviewers.sliding(3).filter(subList => subList.exists(_._1 == uuid))
+            val meAndMyFollowers: Option[List[(String, Int, Int)]] = listOfReviewers.drop(1).toList.headOption
+
             // If Golden Ticket is active
             if (ConferenceDescriptor.isGoldenTicketActive) {
               val averageScoreGT = ReviewByGoldenTicket.averageScore(proposalId)
               val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT))
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT,meAndMyFollowers))
             } else {
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None))
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None,meAndMyFollowers))
             }
           case None => NotFound("Proposal not found").as("text/html")
         }
