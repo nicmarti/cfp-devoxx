@@ -146,12 +146,39 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            // The Reviewer leaderboard
+            // The Reviewer leaderboard, remove if the user did not vote for any talks and sort by number of talks reviewed
             val bestReviewers:List[(String, Int, Int)] = Review.allReviewersAndStats().filterNot(br => br._3 < 1).sortBy(_._3)
 
-            // Sort the list of reviewers, find the current user, the user that is before, and the one that is after
-            val listOfReviewers: Iterator[List[(String, Int, Int)]] = bestReviewers.sliding(3).filter(subList => subList.exists(_._1 == uuid))
-            val meAndMyFollowers: Option[List[(String, Int, Int)]] = listOfReviewers.drop(1).toList.headOption
+            // Find the current authenticated user (with uuid), the user that is before, and the one that is after
+            val listOfReviewers: Iterator[List[(String, Int, Int)]] = bestReviewers
+              .sliding(3) // This iterate the list 3 by 3
+              .filter(subList => subList.exists(_._1 == uuid)) // we are only intersted if the element 1 is our uuid.
+
+            // So now, listOfReviewers should have 3 elements  :
+
+            // Element 1 =>
+            // (mike, 1, 20)
+            // (bob, 1, 100)
+            // (nic, 1, 200)
+
+            // Element 2 =>
+            // (bob, 1, 100)
+            // (nic, 1, 200)
+            // (theBoss, 1, 300)
+
+            // Element 3 =>
+            // (nic, 1, 200)
+            // (theBoss, 1, 300)
+            // (theKing, 1, 500)
+
+            // We take the 2 first element (or the only element if we're first or second in the list of reviewers order by nb of reviews)
+            // Because this list might be empty we use headOption
+            val maybeTwoFirstTuples =  listOfReviewers.take(2)
+            val meAndMyFollowers: Option[List[(String, Int, Int)]] = maybeTwoFirstTuples.size match {
+              case 1 => maybeTwoFirstTuples.toList.headOption
+              case other => maybeTwoFirstTuples.drop(1).toList.headOption
+            }
+
 
             // If Golden Ticket is active
             if (ConferenceDescriptor.isGoldenTicketActive) {
