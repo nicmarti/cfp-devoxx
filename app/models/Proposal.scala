@@ -1086,3 +1086,27 @@ case class ProposalAndRelatedError(p: Proposal, errMsg: String, initialValue: St
 
 case class ProposalsWithErrors(value: List[ProposalAndRelatedError])
 
+
+object ProposalUtil {
+  def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]): List[Proposal] =
+    sorter match {
+      case None => ps
+      case Some(s) => ps.sortBy(s)(orderer)
+    }
+
+  def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
+    sort match {
+      case Some("title") => Some(_.title)
+      case Some("mainSpeaker") => Some(_.mainSpeaker)
+      case Some("track") => Some(_.track.label)
+      case Some("talkType") => Some(_.talkType.label)
+      case _ => None
+    }
+  }
+
+  def proposalOrder(ascdesc: Option[String]): Ordering[String] = ascdesc match {
+    case Some("desc") => Ordering[String].reverse
+    case _ => Ordering[String]
+  }
+
+}

@@ -6,7 +6,8 @@
  ascdesc:Option[String],
  track:Option[String],
  totalReviewed:Long,
- totalVoted:Option[Int]
+ totalVoted:Option[Int],
+ pageReview:Int
 )(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
@@ -46,8 +47,7 @@
 
                 <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") <small>@Messages("cfpadmin.toreview", allProposalsForReview.size)</small>
-                            </h3>
+                            <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") </h3>
                             @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0))
                         </div>
                     </div>
@@ -55,12 +55,12 @@
                     <i class="icon-filter"></i> @Messages("cfp.filter.on")
                     @Track.allIDs.map{idTrack=>
                         @if(track.isDefined && track.get == idTrack) {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@Html(Messages(idTrack + ".label"))</a>
+                            <a href="@routes.CFPAdmin.index(page, pageReview, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-success">@Html(Messages(idTrack + ".label"))</a>
                         }else {
-                            <a href="@routes.CFPAdmin.index(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Html(Messages(idTrack+".label"))</a>
+                            <a href="@routes.CFPAdmin.index(page, pageReview, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@Html(Messages(idTrack+".label"))</a>
                         }
                     }
-                - <a href="@routes.CFPAdmin.index(page, sort, ascdesc, None)" class="btn btn-default btn-sm"><i class="icon-remove"></i>@Messages("cfp.filter.off")</a>
+                - <a href="@routes.CFPAdmin.index(page, pageReview, sort, ascdesc, None)" class="btn btn-default btn-sm"><i class="icon-remove"></i>@Messages("cfp.filter.off")</a>
 
                     @if(allProposalsForReview.nonEmpty) {
                         <br>
@@ -69,9 +69,9 @@
                             <thead>
                                 <tr>
                                     <th>Title</th>
-                                    <th>@tags.renderThTag("track", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("track", page, sort, ascdesc, pageReview)</th>
                                     <th>Speakers</th>
-                                    <th>@tags.renderThTag("talkType", page, sort, ascdesc)</th>
+                                    <th>@tags.renderThTag("talkType", page, sort, ascdesc, pageReview)</th>
                                     <th>@Messages("admin.proposals.th.action")</th>
                                 </tr>
                             </thead>
@@ -135,10 +135,10 @@
                                     <small>
                                     @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
                                     @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1,sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
+                                      <a href="@routes.CFPAdmin.index(page-1, pageReview, sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
                                     }
                                     @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1,sort,ascdesc,track)">@Messages("next.page") &gt;</a>
+                                      <a href="@routes.CFPAdmin.index(page+1, pageReview, sort,ascdesc,track)">@Messages("next.page") &gt;</a>
                                     }</small>
                                 </td>
                             </tr>
@@ -166,10 +166,10 @@
                                     <small>
                                     @Messages("admin.cfp.totalEvents"): @totalEvents - Page @page/@(totalEvents/20)
                                     @if(page > 0){
-                                      <a href="@routes.CFPAdmin.index(page-1,sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
+                                      <a href="@routes.CFPAdmin.index(page-1, pageReview, sort,ascdesc,track)">&lt; @Messages("previous.page")</a> -
                                     }
                                     @if(page < totalEvents/20){
-                                      <a href="@routes.CFPAdmin.index(page+1,sort,ascdesc,track)">@Messages("next.page") &gt;</a>
+                                      <a href="@routes.CFPAdmin.index(page+1, pageReview, sort,ascdesc,track)">@Messages("next.page") &gt;</a>
                                     }
                                     </small>
                                 </td>

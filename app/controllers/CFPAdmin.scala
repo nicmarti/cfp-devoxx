@@ -14,6 +14,7 @@ import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{Action, AnyContent}
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -48,24 +49,19 @@ object CFPAdmin extends SecureCFPController {
   )(Speaker.createOrEditSpeaker)(Speaker.unapplyFormEdit))
 
   def index(page: Int,
+            pageReview: Int,
             sort: Option[String],
             ascdesc: Option[String],
-            track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+            track: Option[String]): Action[AnyContent] = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       val uuid = request.webuser.uuid
-      val sorter = proposalSorter(sort)
-      val orderer = proposalOrder(ascdesc)
-      val allNotReviewed = Review.allProposalsNotReviewed(uuid)
-
+      val sorter = ProposalUtil.proposalSorter(sort)
+      val orderer = ProposalUtil.proposalOrder(ascdesc)
+      val allNotReviewed = Review.allProposalsNotReviewed(uuid, pageReview, 25, track)
       val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
-
-      val maybeFilteredProposals = track.map {
-        trackValue: String =>
-          allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackValue)))
-      }.getOrElse(allNotReviewed)
-      val allProposalsForReview = sortProposals(maybeFilteredProposals, sorter, orderer)
+      val allProposalsForReview = ProposalUtil.sortProposals(allNotReviewed, sorter, orderer)
 
       val twentyEvents = Event.loadEvents(20, page)
 
@@ -73,34 +69,13 @@ object CFPAdmin extends SecureCFPController {
 
       track.map {
         trackValue: String =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted))
+          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, pageReview))
             .withHeaders("ETag" -> etag)
       }.getOrElse {
-        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted))
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted, pageReview))
           .withHeaders("ETag" -> etag)
       }
 
-  }
-
-  def sortProposals(ps: List[Proposal], sorter: Option[Proposal => String], orderer: Ordering[String]) =
-    sorter match {
-      case None => ps
-      case Some(s) => ps.sortBy(s)(orderer)
-    }
-
-  def proposalSorter(sort: Option[String]): Option[Proposal => String] = {
-    sort match {
-      case Some("title") => Some(_.title)
-      case Some("mainSpeaker") => Some(_.mainSpeaker)
-      case Some("track") => Some(_.track.label)
-      case Some("talkType") => Some(_.talkType.label)
-      case _ => None
-    }
-  }
-
-  def proposalOrder(ascdesc: Option[String]) = ascdesc match {
-    case Some("desc") => Ordering[String].reverse
-    case _ => Ordering[String]
   }
 
   def openForReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -147,7 +122,7 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
             // The Reviewer leaderboard, remove if the user did not vote for any talks and sort by number of talks reviewed
-            val bestReviewers:List[(String, Int, Int)] = Review.allReviewersAndStats().filterNot(br => br._3 < 1).sortBy(_._3)
+            val bestReviewers: List[(String, Int, Int)] = Review.allReviewersAndStats().filterNot(br => br._3 < 1).sortBy(_._3)
 
             // Find the current authenticated user (with uuid), the user that is before, and the one that is after
             val listOfReviewers: Iterator[List[(String, Int, Int)]] = bestReviewers
@@ -173,7 +148,7 @@ object CFPAdmin extends SecureCFPController {
 
             // We take the 2 first element (or the only element if we're first or second in the list of reviewers order by nb of reviews)
             // Because this list might be empty we use headOption
-            val maybeTwoFirstTuples =  listOfReviewers.take(2)
+            val maybeTwoFirstTuples = listOfReviewers.take(2)
             val meAndMyFollowers: Option[List[(String, Int, Int)]] = maybeTwoFirstTuples.size match {
               case 1 => maybeTwoFirstTuples.toList.headOption
               case other => maybeTwoFirstTuples.drop(1).toList.headOption
@@ -184,9 +159,9 @@ object CFPAdmin extends SecureCFPController {
             if (ConferenceDescriptor.isGoldenTicketActive) {
               val averageScoreGT = ReviewByGoldenTicket.averageScore(proposalId)
               val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT,meAndMyFollowers))
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT, meAndMyFollowers))
             } else {
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None,meAndMyFollowers))
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None, meAndMyFollowers))
             }
           case None => NotFound("Proposal not found").as("text/html")
         }
