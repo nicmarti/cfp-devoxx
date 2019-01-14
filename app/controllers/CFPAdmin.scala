@@ -149,10 +149,12 @@ object CFPAdmin extends SecureCFPController {
             // The Reviewer leaderboard, remove if the user did not vote for any talks and sort by number of talks reviewed
             val bestReviewers:List[(String, Int, Int)] = Review.allReviewersAndStats().filterNot(br => br._3 < 1).sortBy(_._3)
 
+
             // Find the current authenticated user (with uuid), the user that is before, and the one that is after
-            val listOfReviewers: Iterator[List[(String, Int, Int)]] = bestReviewers
+            val listOfReviewers: List[List[(String, Int, Int)]] = bestReviewers
               .sliding(3) // This iterate the list 3 by 3
               .filter(subList => subList.exists(_._1 == uuid)) // we are only intersted if the element 1 is our uuid.
+              .toList // else since it's an iterator... we won't be able to apply methods
 
             // So now, listOfReviewers should have 3 elements  :
 
@@ -174,11 +176,11 @@ object CFPAdmin extends SecureCFPController {
             // We take the 2 first element (or the only element if we're first or second in the list of reviewers order by nb of reviews)
             // Because this list might be empty we use headOption
             val maybeTwoFirstTuples =  listOfReviewers.take(2)
-            val meAndMyFollowers: Option[List[(String, Int, Int)]] = maybeTwoFirstTuples.size match {
-              case 1 => maybeTwoFirstTuples.toList.headOption
-              case other => maybeTwoFirstTuples.drop(1).toList.headOption
-            }
 
+            val meAndMyFollowers: Option[List[(String, Int, Int)]] = maybeTwoFirstTuples.size match {
+              case 1 => maybeTwoFirstTuples.headOption
+              case other => maybeTwoFirstTuples.drop(1).headOption
+            }
 
             // If Golden Ticket is active
             if (ConferenceDescriptor.isGoldenTicketActive) {
