@@ -98,6 +98,14 @@ object Review {
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
+  def countProposalNotReviewed(reviewerUUID: String): Int = Redis.pool.withClient {
+    implicit client =>
+      // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "ApprovedById:",
+        "RefusedById:", s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
+      allProposalIDsForReview.size
+  }
+
 
   def allProposalsNotReviewed(reviewerUUID: String, page:Int, pageSize:Int, track:Option[String]): List[Proposal] = Redis.pool.withClient {
     implicit client =>

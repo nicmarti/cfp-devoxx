@@ -7,6 +7,7 @@
  track:Option[String],
  totalReviewed:Long,
  totalVoted:Option[Int],
+ totalToReview:Int,
  pageReview:Int
 )(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
@@ -48,7 +49,7 @@
                 <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3><i class="icon-ok-circle"></i> @Messages("admin.proposals.todolist.title") </h3>
-                            @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0))
+                            @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0)) / @Messages("cfpadmin.totalToReview",totalToReview)
                         </div>
                     </div>
 
@@ -105,6 +106,9 @@
                             }
                             </tbody>
                         </table>
+
+                        @tags.renderTablePaginator(req, "pageReview", pageReview, totalToReview)
+
                     } else {
                         @if(track.isDefined){
                             <h4>@Messages("admin.cfp.empty.track", Messages(track.get +".leaderboard"))</h4>

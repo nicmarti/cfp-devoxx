@@ -7,7 +7,6 @@ import library.{SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
 import models._
 import org.apache.commons.io.FileUtils
-import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTimeZone
 import play.api.data.Forms._
 import play.api.data._
@@ -67,12 +66,14 @@ object CFPAdmin extends SecureCFPController {
 
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
+      val totalToReview = Review.countProposalNotReviewed(uuid)
+
       track.map {
         trackValue: String =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, pageReview))
+          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, pageReview))
             .withHeaders("ETag" -> etag)
       }.getOrElse {
-        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted, pageReview))
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted,totalToReview, pageReview))
           .withHeaders("ETag" -> etag)
       }
 
