@@ -98,6 +98,42 @@ object Review {
       Proposal.loadProposalByIDs(allProposalIDsForReview, ProposalState.SUBMITTED)
   }
 
+  def countProposalNotReviewed(reviewerUUID: String): Int = Redis.pool.withClient {
+    implicit client =>
+      // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
+      val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", "ApprovedById:",
+        "RefusedById:", s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
+      allProposalIDsForReview.size
+  }
+
+
+  def allProposalsNotReviewed(reviewerUUID: String, page:Int, pageSize:Int, track:Option[String]): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
+      val allProposalIDsForReview: List[String] = track match {
+        case None => client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
+        "ApprovedById:", // Remove approved
+        "RefusedById:",  // Remove Refused
+        s"Proposals:Reviewed:ByAuthor:$reviewerUUID").toList.slice(page*pageSize,(page+1)*pageSize) // Remove already reviewerd
+        case Some(t) => {
+
+          val allProposalsForThisTrack: Set[String] = client.sunion(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:ByTrack:${t.toLowerCase}")
+
+          println(client.scard("Proposals:ByState:submitted"))
+          println(client.scard(s"Proposals:ByTrack:${t.toLowerCase}"))
+
+          println("All proposals for track "+allProposalsForThisTrack.size)
+          val allProposalsNotReviewed = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
+            "ApprovedById:", // Remove approved
+            "RefusedById:",  // Remove Refused
+            s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
+          allProposalsForThisTrack.union(allProposalsNotReviewed).toList.slice(page*pageSize,(page+1)*pageSize)
+        }
+      }
+      Proposal.loadProposalByIDs(allProposalIDsForReview.toSet, ProposalState.SUBMITTED)
+  }
+
+
   def deleteVoteForProposal(proposalId: String) = Redis.pool.withClient {
     implicit client =>
       play.Logger.of("proposal.Review").debug(s"Deleting vote for proposal $proposalId")

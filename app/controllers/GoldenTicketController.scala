@@ -68,8 +68,8 @@ object GoldenTicketController extends SecureCFPController {
   def showAllProposals(page: Int, sort: Option[String], ascdesc: Option[String], track: Option[String]) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
-      val sorter = CFPAdmin.proposalSorter(sort)
-      val orderer = CFPAdmin.proposalOrder(ascdesc)
+      val sorter = ProposalUtil.proposalSorter(sort)
+      val orderer = ProposalUtil.proposalOrder(ascdesc)
       val innerPage:Int = if(page<1){ 1 } else { page }
       val pageSize:Int=30
 
@@ -96,7 +96,7 @@ object GoldenTicketController extends SecureCFPController {
       }else{
         innerPage
       }
-      val allProposalsForReview = CFPAdmin.sortProposals(maybeFilteredProposals, sorter, orderer).slice(pageSize * (currentPage - 1), pageSize * (currentPage - 1) + pageSize)
+      val allProposalsForReview = ProposalUtil.sortProposals(maybeFilteredProposals, sorter, orderer).slice(pageSize * (currentPage - 1), pageSize * (currentPage - 1) + pageSize)
       Ok(views.html.GoldenTicketController.showAllProposalsGT(allProposalsForReview, currentPage, sort, ascdesc, track, totalToReview))
   }
 
