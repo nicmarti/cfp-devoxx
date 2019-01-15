@@ -135,7 +135,7 @@ quick.label=Quickie, 15mn, jeudi et vendredi midi
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
 other.label=Autre type de présentation
-lab.label=Hands-on Lab, 3h, mercredi uniquement
+lab.label=Hands-on Lab, 3h, mercredi, jeud et vendredi
 hack.label=Hackaton (événement spécial)
 ignite.label=Conférence Ignite, 5mn, jeudi et vendredi de 13h à 14h
  
