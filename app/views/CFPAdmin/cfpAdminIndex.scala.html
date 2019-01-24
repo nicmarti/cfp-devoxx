@@ -8,7 +8,8 @@
  totalReviewed:Long,
  totalVoted:Option[Int],
  totalToReview:Int,
- pageReview:Int
+ pageReview:Int,
+ totalToReviewFiltered:Int
 )(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
@@ -107,7 +108,7 @@
                             </tbody>
                         </table>
 
-                        @tags.renderTablePaginator(req, "pageReview", pageReview, totalToReview)
+                        @tags.renderTablePaginator(req, "pageReview", pageReview, totalToReviewFiltered)
 
                     } else {
                         @if(track.isDefined){

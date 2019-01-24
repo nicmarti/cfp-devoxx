@@ -107,30 +107,34 @@ object Review {
   }
 
 
-  def allProposalsNotReviewed(reviewerUUID: String, page:Int, pageSize:Int, track:Option[String]): List[Proposal] = Redis.pool.withClient {
+  def allProposalsNotReviewed(reviewerUUID: String, page: Int, pageSize: Int, track: Option[String]): (Int,List[Proposal]) = Redis.pool.withClient {
     implicit client =>
       // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
-      val allProposalIDsForReview: List[String] = track match {
-        case None => client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
-        "ApprovedById:", // Remove approved
-        "RefusedById:",  // Remove Refused
-        s"Proposals:Reviewed:ByAuthor:$reviewerUUID").toList.slice(page*pageSize,(page+1)*pageSize) // Remove already reviewerd
-        case Some(t) => {
+      val listOfIds = track match {
+        case None =>
+          val listOfIds = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
+            "ApprovedById:", // Remove approved
+            "RefusedById:", // Remove Refused
+            s"Proposals:Reviewed:ByAuthor:$reviewerUUID").toList
 
-          val allProposalsForThisTrack: Set[String] = client.sunion(s"Proposals:ByState:${ProposalState.SUBMITTED.code}", s"Proposals:ByTrack:${t.toLowerCase}")
+          listOfIds
 
-          println(client.scard("Proposals:ByState:submitted"))
-          println(client.scard(s"Proposals:ByTrack:${t.toLowerCase}"))
-
-          println("All proposals for track "+allProposalsForThisTrack.size)
+        case Some(t) =>
+          val allProposalsForThisTrack: Set[String] = client.sinter(s"Proposals:ByTrack:$t", s"Proposals:ByState:${ProposalState.SUBMITTED.code}")
           val allProposalsNotReviewed = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
             "ApprovedById:", // Remove approved
-            "RefusedById:",  // Remove Refused
+            "ApprovedById:", // Remove approved
+            "RefusedById:", // Remove Refused
             s"Proposals:Reviewed:ByAuthor:$reviewerUUID")
-          allProposalsForThisTrack.union(allProposalsNotReviewed).toList.slice(page*pageSize,(page+1)*pageSize)
-        }
+          val listOfIds = allProposalsForThisTrack.intersect(allProposalsNotReviewed).toList
+          listOfIds
+
       }
-      Proposal.loadProposalByIDs(allProposalIDsForReview.toSet, ProposalState.SUBMITTED)
+      //listOfIds.slice(page*pageSize,(page+1)*pageSize))
+
+      val sublistForThisPage = listOfIds.slice(page * pageSize, ( page + 1) * pageSize)
+
+      (listOfIds.size, Proposal.loadProposalByIDs(sublistForThisPage.toSet, ProposalState.SUBMITTED))
   }
 
 
@@ -356,9 +360,9 @@ object Review {
 
       val allProposalIDSToRemove = Proposal.allProposalIDsDeletedArchivedOrDraft()
 
-      val filteredList = client.hgetAll("Computed:Scores").filterNot{
-        case(proposalKey:String,_) =>
-          val propId = proposalKey.substring(proposalKey.lastIndexOf(":")+1)
+      val filteredList = client.hgetAll("Computed:Scores").filterNot {
+        case (proposalKey: String, _) =>
+          val propId = proposalKey.substring(proposalKey.lastIndexOf(":") + 1)
           allProposalIDSToRemove.contains(propId)
       }
 

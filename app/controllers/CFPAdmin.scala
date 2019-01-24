@@ -57,7 +57,8 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       val sorter = ProposalUtil.proposalSorter(sort)
       val orderer = ProposalUtil.proposalOrder(ascdesc)
-      val allNotReviewed = Review.allProposalsNotReviewed(uuid, pageReview, 25, track)
+      val (totalToReviewFiltered,allNotReviewed) = Review.allProposalsNotReviewed(uuid, pageReview, 25, track)
+
       val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
       val allProposalsForReview = ProposalUtil.sortProposals(allNotReviewed, sorter, orderer)
@@ -70,10 +71,10 @@ object CFPAdmin extends SecureCFPController {
 
       track.map {
         trackValue: String =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, pageReview))
+          Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, pageReview, totalToReviewFiltered))
             .withHeaders("ETag" -> etag)
       }.getOrElse {
-        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted,totalToReview, pageReview))
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted,totalToReview, pageReview, totalToReviewFiltered))
           .withHeaders("ETag" -> etag)
       }
 
