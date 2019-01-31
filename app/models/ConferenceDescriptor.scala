@@ -427,32 +427,22 @@ object ConferenceDescriptor {
       val quickiesThursdayLunch1 = ConferenceRooms.allRoomsQuickiesThu.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday",
-            new DateTime(s"${secondDay}T12:05:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime(s"${secondDay}T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(s"${secondDay}T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+            new DateTime(s"${secondDay}T12:35:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
       }
-      val quickiesThursdayLunch2 = ConferenceRooms.allRoomsQuickiesThu.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "thursday",
-            new DateTime(s"${secondDay}T12:25:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime(s"${secondDay}T12:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
-      }
-      quickiesThursdayLunch1 ++ quickiesThursdayLunch2
+
+      quickiesThursdayLunch1
     }
 
     val quickiesSlotsFriday: List[Slot] = {
       val quickFriday1 = ConferenceRooms.allRoomsQuickiesFriday.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.QUICK.id, "friday",
-            new DateTime(s"${thirdDay}T12:05:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime(s"${thirdDay}T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+            new DateTime(s"${thirdDay}T12:20:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+            new DateTime(s"${thirdDay}T12:35:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
       }
-      val quickFriday2 = ConferenceRooms.allRoomsQuickiesFriday.map {
-        r2 =>
-          SlotBuilder(ConferenceProposalTypes.QUICK.id, "friday",
-            new DateTime(s"${thirdDay}T12:25:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime(s"${thirdDay}T12:40:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r2)
-      }
-      quickFriday1 ++ quickFriday2
+
+      quickFriday1
     }
 
     // CONFERENCE KEYNOTES
