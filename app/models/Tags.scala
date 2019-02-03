@@ -61,8 +61,10 @@ object Tags {
 
         // Create TagProposalEntries
         proposals.foreach(proposalId => {
-          foundTags.add(createTagProposalEntry(Tag.findById(tagId).get,
-                                               Proposal.findById(proposalId).get))
+          val proposalOpt = Proposal.findById(proposalId)
+          if(proposalOpt.isDefined){
+            foundTags.add(createTagProposalEntry(Tag.findById(tagId).get, proposalOpt.get))
+          }
         })
       })
 
