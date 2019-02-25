@@ -228,7 +228,10 @@ class ZapActor extends Actor {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Refused"))
-      Mails.sendProposalRefused(speaker, proposal)
+
+      if(ConferenceDescriptor.isSendProposalRefusedEmail()) {
+        Mails.sendProposalRefused(speaker, proposal)
+      }
       Proposal.reject(reporterUUID, proposal.id)
     }
   }

@@ -754,5 +754,7 @@ object ConferenceDescriptor {
   def gluonPassword(): String = Play.current.configuration.getString("gluon.password").getOrElse(RandomStringUtils.random(16))
 
   def maxProposals(): Int = Play.current.configuration.getInt("cfp.max.proposals").getOrElse(5)
+
+  def isSendProposalRefusedEmail():Boolean = Play.current.configuration.getBoolean("cfp.sendProposalRefusedEmail").getOrElse(true)
 }
 
