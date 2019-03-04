@@ -39,8 +39,8 @@
                         <th>Company</th>
                         <th>Email</th>
                         <th>Nb Appr</th>
+                        <th>Nb Acc</th>
                         <th>Submitted Talks</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,29 +59,16 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>@proposals.values.count(proposal => ApprovedProposal.isApproved(proposal.id, proposal.talkType.id))</td>
+                        <td>@proposals.values.count(proposal => ApprovedProposal.isAccepted(proposal.id, proposal.talkType.id))</td>
                         <td>
                         @proposals.values.map { proposal: Proposal =>
-                            @if(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) {
-                                <span class="label label-approved">Approved</span>
-                            } else {
-                                @if(ApprovedProposal.isRefused(proposal.id, proposal.talkType.id)) {
-                                    <span class="label label-refused">Refused</span>
-                                } else {
-                                    <span class="label label-default">?</span>
-                                }
-                            }
-                        <strong>@Messages(proposal.talkType.simpleLabel)</strong>
+                            <span class="label label-@proposal.state.code">@proposal.state.code</span>
+                            <strong>@Messages(proposal.talkType.simpleLabel)</strong>
                             &nbsp;
-                        <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="@proposal.title" target="_blank">@proposal.title</a>
+                            <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="@proposal.title" target="_blank">@proposal.title</a>
                             <br/>
                         }
                         </td>
-                        <td>
-                            <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
-                            <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i>
-                                @Messages("sp.authenticateAs")</a>
-                        </td>
-
                     </tr>
                 }
                 </tbody>
@@ -108,7 +95,7 @@ $(document).ready(function() {
             {"type": "string"},
             {"type": "string"},
             {"type": "num"},
-            {"orderable": false, "type": "string"},
+            {"type": "num"},
             {"orderable": false, "type": "string"}
         ]
     });

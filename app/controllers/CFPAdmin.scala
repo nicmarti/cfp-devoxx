@@ -573,7 +573,7 @@ object CFPAdmin extends SecureCFPController {
       val allSpeakers = ApprovedProposal.allApprovedSpeakers()
       val toReturn = allSpeakers.map {
         s =>
-          (s, Proposal.allSubmittedProposalsByAuthor(s.uuid))
+          (s, Proposal.allNonArchivedProposalsByAuthor(s.uuid))
       }
       Ok(views.html.CFPAdmin.allSpeakers(toReturn))
   }
