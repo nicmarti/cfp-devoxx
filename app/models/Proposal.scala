@@ -742,6 +742,12 @@ object Proposal {
       loadAndParseProposals(allProposalIDs)
   }
 
+  def allNonArchivedProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIDs = client.smembers(s"Proposals:ByAuthor:$author").diff(client.smembers("Proposals:ByState:" + ProposalState.ARCHIVED.code))
+      loadAndParseProposals(allProposalIDs)
+  }
+
   def allApprovedAndAcceptedProposalsByAuthor(author: String): Map[String, Proposal] = Redis.pool.withClient {
     implicit client =>
       val allApproved = client.sinter(s"Proposals:ByAuthor:$author", "ApprovedById:")

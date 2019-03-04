@@ -127,6 +127,10 @@ object ApprovedProposal {
       client.sismember(s"Approved:$talkType", proposalId)
   }
 
+  def isAccepted(proposalId: String, talkType: String): Boolean = {
+    Proposal.findById(proposalId).exists(_.state == ProposalState.ACCEPTED)
+  }
+
   // This is only for Attic controller, to fix an old bug on data (bug #159)
   // The bug was that a conference is approved, but then the speaker changes the
   // format to quickie, then the Approved:conf collection is not updated correctly
