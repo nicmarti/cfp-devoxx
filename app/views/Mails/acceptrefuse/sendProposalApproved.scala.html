@@ -20,7 +20,7 @@
     <br>
 <br>
     @if(proposal.talkType.id=="quick"){
-        <p>A titre exceptionnel, et si vous ne disposez pas par ailleurs d'un badge speaker, les organisateurs de Devoxx France 2018
+        <p>A titre exceptionnel, et si vous ne disposez pas par ailleurs d'un badge speaker, les organisateurs de Devoxx France 2019
         offre un pass 2 jours (jeudi et vendredi) aux personnes qui présentent un Quickie. Attention : ce badge ne donne pas
         accès au diner des speakers. Il vous permettra uniquement de participer le jeudi et le vendredi à Devoxx France. Par ailleurs,
         ce badge n'est pas cessible ni revendable. Il est lié à votre identifiant de sujet.</p>
@@ -62,7 +62,7 @@
 
     @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType) && proposal.talkType.id!="quick") {
     <p>This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
-    Registration details <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">register Devoxx FR 2018</a></p>
+    Registration details <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">register Devoxx FR 2019</a></p>
 } else {
     <p>As a confirmed speaker you'll receive, a couple of weeks before the event takes place, a discount code for a Devoxx Combi pass (full week).</p>
     <p>You'll also receive an invite for the exclusive speakers reception.</p>

@@ -7,7 +7,7 @@ Nous avons le regret de vous informer que votre proposition @proposal.title au f
 
 Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.
 Si vous souhaitez vous inscrire, la conférence étant complète, nous avons mis en place un système d'inscription limité à deux places maximum
-sur le site de la conférence Devoxx France 2018 :
+sur le site de la conférence Devoxx France 2019 :
 
 https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email
 
