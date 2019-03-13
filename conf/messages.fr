@@ -220,7 +220,7 @@ avatarUrl.defined=Votre photo (largeur recommandée 120px)
 created.title=Demande d''inscription enregistrée
 created.text1=Nous allons vous envoyer un courrier électronique de validation dans quelques minutes.
 created.text2=Validez votre adresse pour terminer votre enregistrement, votre code d''accès vous sera donné lorsque vous validerez votre email.
-created.text3=Vous pourrez alors vous authentifier et commencer à proposer vos sujets pour Devoxx France.
+created.text3=Vous pourrez alors vous authentifier et accéder au site.
  
 # Prepare signup
 signup.title=Inscription orateur
@@ -819,11 +819,6 @@ fav.day.5=Vendredi
 
 mydevoxx.authenticated=Vous êtes authentifié via MyDevoxx. Vous pouvez sélectionner les sessions que vous souhaitez voir, et les ajouter dans votre agenda.
 
-visitor.welcome.title=Bienvenue {0}
-visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vous pouvez marquer vos sujets favoris dans l''agenda de {0} et recharger cet agenda plus tard, via cette page.
-visitor.welcome.profile=Liste des sujets marqués comme favoris
-visitor.welcome.publisher=Parcourir l''agenda des conférences
-
 sms.text1=Vous souhaitez être notifié par SMS de l''heure de passage ? En cas de changement de salle de votre présentation ? Renseignez votre numéro de téléphone :
 sms.explanation=Numéro de téléphone au format international (exemple : +33661708090)
 confirm.phone=Confirmer votre numéro de téléphone
@@ -887,3 +882,24 @@ l.proposal_approved.subject=Votre proposition a été approuvée {0}
 mail.proposal_refused.subject=Votre proposition a été refusée {0}
 
 publisher.proposal.roomHidden=La salle sera affectée entre 24 et 72h avant la conférence
+
+# prepareSignupVisitor
+visitor.registration.title=Devoxx France
+visitor.signup.txt1=Inscrivez-vous pour sauvegarder votre agenda pour la conférence {0} :
+visitor.signup.txt2=Un courrier électronique de validation sera envoyé à votre adresse. Votre profil sera activé, une fois l'email validé. Nous ne vous enverrons aucun autre courrier électronique, cette inscrition ne concerne que l''agenda.
+
+# homeVisitor
+home.visitor.header=Accès visiteur à la conférence
+home.visitor.title=Inscrivez-vous
+home.welcome.txt=Bienvenue à {0}, merci de vous authentifier ou de créer un profil.
+visitor.signin=Connexion
+visitor.register=S''enregistrer
+visitor.index.signup2=Inscrivez-vous comme visiteur, et sauvegardez votre agenda, vos sujets préférés à revoir plus tard.
+
+# welcomeVisitor
+visitor.welcome.title=Bienvenue {0}
+visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vous pouvez marquer vos sujets favoris dans l''agenda de {0} et recharger cet agenda plus tard, via cette page.
+visitor.welcome.profile=Liste des sujets marqués comme favoris
+visitor.welcome.publisher=Parcourir l''agenda des conférences
+
+

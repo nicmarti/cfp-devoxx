@@ -116,6 +116,9 @@ a.speakerTwitter, a.blackLink {
     color: #222222;
     text-decoration: none;
 }
+.arrow-right:before {
+     content: '\25ba';
+}
 
 .trackBox {
     min-height: 288px;
