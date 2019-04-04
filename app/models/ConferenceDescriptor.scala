@@ -606,7 +606,7 @@ object ConferenceDescriptor {
         new DateTime(s"${secondDay}T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
         new DateTime(s"${secondDay}T10:15:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime(s"${secondDay}T11:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
+        new DateTime(s"${secondDay}T10:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T12:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
         new DateTime(s"${secondDay}T13:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
@@ -618,16 +618,16 @@ object ConferenceDescriptor {
     val fridayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.petitDej, "friday",
         new DateTime(s"${thirdDay}T08:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime(s"${thirdDay}T09:00:00.000+02:00"))
+        new DateTime(s"${thirdDay}T09:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime(s"${thirdDay}T10:15:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime(s"${thirdDay}T10:45:00.000+02:00"))
+        new DateTime(s"${thirdDay}T10:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
         new DateTime(s"${thirdDay}T12:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime(s"${thirdDay}T13:30:00.000+02:00"))
+        new DateTime(s"${thirdDay}T13:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime(s"${thirdDay}T16:15:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-        new DateTime(s"${thirdDay}T16:45:00.000+02:00"))
+        new DateTime(s"${thirdDay}T16:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")))
     )
 
     val mondaySchedule: List[Slot] = List.empty[Slot]
