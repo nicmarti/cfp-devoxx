@@ -68,6 +68,7 @@ object Room {
   }
 
   val fixedOrderForRoom = IndexedSeq("a_hall",
+    "lobby_neuilly",
     "b_amphi",
     "c_maillot",
     "d_par241",
@@ -90,8 +91,7 @@ object Room {
     "neu_232_232",
     "neu_234_235",
     "neu_212_213",
-    "x_hall_a",
-    "x_pitch"
+    "x_hall_a"
   )
 
 }
