@@ -1,4 +1,4 @@
-@(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader)
+@(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader, flash:Flash)
 
 <!DOCTYPE html>
 <html lang="en-US">
@@ -8,10 +8,11 @@
 <meta name="Robots" content="index,follow" />
 <meta name="description" content="@description" />
 
-<title>@title &infin; Devoxx</title>
+<title>@title - Devoxx France 2020</title>
 <!-- Custom style for CFP by Nicolas -->
 <link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/dvfr2015.css")' type='text/css' media='all' />
 <link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/schedule.css")' type='text/css' media='all' />
+<link href="@routes.Assets.at(path="/public",file="css/font-awesome.min.css")" rel="stylesheet">
 <script type='text/javascript' src='https://devoxx.be/wp-includes/js/jquery/jquery.js?ver=1.11.0'></script>
 <script type='text/javascript' src='https://www.devoxx.be/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
 <script type='text/javascript' src='https://www.devoxx.be/wp-content/plugins/easy-foundation-shortcodes/js/5/vendor/custom.modernizr.js?ver=3.9.2'></script>
@@ -32,7 +33,7 @@
         @if(UserCFPController.findAuthenticator.isDefined){
          <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; Mon Agenda</a></li>
         }
-        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="https://www.devoxx.fr/sponsors/2017">Sponsors</a></li>
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="https://www.devoxx.fr/sponsors/2019">Sponsors</a></li>
         <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="https://www.devoxx.fr/faq">FAQ</a></li>
         <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="https://reg.devoxx.fr">Inscription</a></li>
     </ul>
@@ -54,10 +55,10 @@
 
 @if(ConferenceDescriptor.isFavoritesSystemActive) {
     @if(UserCFPController.findAuthenticator.isDefined) {
-        <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; My Schedule</a></li>
+        <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; Mon Agenda</a></li>
     }
 }
-        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="http://www.devoxx.fr/sponsors/2017">Sponsors</a></li>
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="http://www.devoxx.fr/sponsors/2019">Sponsors</a></li>
         <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://www.devoxx.fr/faq">FAQ</a></li>
         <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="http://reg.devoxx.fr">Inscription</a></li>
                     </ul>
@@ -72,10 +73,25 @@
 	    <div class="row blog-post single-blog-post">
 	        <div class="large-12 large-centered columns single-page">
 	            <div class="single-content single-content-page row">
+
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable">
+                @flash.get("success").get
+                </div>
+            }
 <!-- ************** Begin generated content by Play ************************ //-->
 @content
 <!--  ************* End generated content by Play ************************** //-->
 	            </div>
+                <div>
+                    <small>TBA : To be announced / Salle non affectée</small>
+                </div>
 	        </div>
 	    </div>
 	</section>
@@ -85,7 +101,7 @@
     <a href="#" class="go-top"></a>
     <div class="row">
         <div class="large-6 columns">
-            <p>Devoxx France, Tous droits réservés (C) 2012-2016<br>Evénement organisé par Quantixx SARL</p>
+            <p>Devoxx France, Tous droits réservés (C) 2012-2020<br>Evénement organisé par Quantixx SARL</p>
         </div>
         <div class="large-6 columns">
 <!-- place holder sponsors -->
@@ -129,4 +145,3 @@
 }
 </body>
 </html>
-

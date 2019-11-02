@@ -1,5 +1,5 @@
 @(tagName: String, proposals: Iterable[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-@views.html.Publisher.devoxxBE2016("Proposals by Tag") {
+@views.html.Publisher.devoxxFR2019("Proposals by Tag") {
   <div class="large-12">
     <h3>@tags.renderMostProposals(proposals.size) found with tag '@tagName' </h3>
     <p class="breadcrumb">
