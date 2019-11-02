@@ -59,7 +59,7 @@ object TwilioSender {
       } catch {
         case ex: com.twilio.exception.ApiException =>
           Failure(ex)
-        case other =>
+        case other:Throwable =>
           play.Logger.error("Unknown Twilio Exception", other)
           Failure(other)
       }

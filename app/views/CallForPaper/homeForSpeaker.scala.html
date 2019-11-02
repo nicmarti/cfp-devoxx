@@ -202,7 +202,7 @@
 
     <div class="row">
         <div class="col-12">
-            @if(ConferenceDescriptor.isTwilioSMSActive() && myProposals.exists(p => p.state == ProposalState.ACCEPTED || p.state == ProposalState.APPROVED)) {
+            @if(ConferenceDescriptor.isTwilioSMSActive && myProposals.exists(p => p.state == ProposalState.ACCEPTED || p.state == ProposalState.APPROVED)) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3><i class="icon-phone"></i> SMS </h3>

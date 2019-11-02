@@ -466,7 +466,7 @@ object CallForPaper extends SecureCFPController {
         validPhone => {
           Future.successful {
             val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
-            if (ConferenceDescriptor.isTwilioSMSActive()) {
+            if (ConferenceDescriptor.isTwilioSMSActive) {
               TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code)) match {
                 case Success(reason) =>
                   Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
