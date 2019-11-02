@@ -81,7 +81,7 @@ object RestAPI extends Controller {
                 }
               }
             </title>
-            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2019/talk/{proposal.id}</link>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2020/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
         }}
@@ -128,7 +128,6 @@ object RestAPI extends Controller {
               val jsonObject = Json.toJson(conference).as[JsObject] ++ Json.obj(
                 "days" -> ConferenceDescriptor.current().timing.days.map(_.toString("EEEE", ConferenceDescriptor.current().locale.head)).toSeq,
                 "proposalTypesId" -> allProposalTypesIds,
-                //TODO
 
                 "links" -> List(
                   Link(

@@ -79,7 +79,7 @@ class SmsActor extends Actor {
                 val day = slot.day
                 val hour = slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                 val room = slot.room.name
-                TwilioSender.send(phoneNumber, s"Devoxx FR\nYour presentation [${theProposal.title}] is scheduled on ${day} at ${hour} in room [${room}].\n\nRoom might change until 15th, April 2018")
+                TwilioSender.send(phoneNumber, s"Devoxx FR\nYour presentation [${theProposal.title}] is scheduled on ${day} at ${hour} in room [${room}].\n\nRoom might change until 13th, April 2020")
             }.getOrElse {
               TwilioSender.send(phoneNumber, s"Devoxx FR\nYour presentation [${theProposal.title}] is not yet scheduled.")
             }
@@ -98,11 +98,11 @@ class SmsActor extends Actor {
                 }
             }
             val message = shortMessage.mkString("\n")
-            TwilioSender.send(phoneNumber,"Devoxx FR 2018\n"+ message+"\n\nRooms might change until 15th April 2018.")
+            TwilioSender.send(phoneNumber,"Devoxx FR 2020\n"+ message+"\n\nRooms might change until April, 13th 2020.")
         }
 
     }.getOrElse {
-      TwilioSender.send(phoneNumber, s"Devoxx FR 2018\nSorry, we cannot find your Speaker profile from your cell phone number. Check that you entered $phoneNumber on the Devoxx CFP and try again")
+      TwilioSender.send(phoneNumber, s"Devoxx FR 2020\nSorry, we cannot find your Speaker profile from your cell phone number. Check that you entered $phoneNumber on the Devoxx CFP and try again")
     }
 
   }
