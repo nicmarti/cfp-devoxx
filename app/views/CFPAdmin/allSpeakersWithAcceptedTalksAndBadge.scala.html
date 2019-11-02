@@ -36,8 +36,8 @@ Removed also Proposals with state != Accepted. Thus, a speaker with approved pro
             </div>
         </div>
 <pre>
-"#QRCode","lastName","firstName","email","company","twitter" @speakersAndProposals.sortBy(_._1.name.map(_.capitalize)).map{case(speaker,props)=>
-"@speaker.uuid::@speaker.cleanLastName::@speaker.cleanFirstName::@speaker.company::@speaker.email","@speaker.name.map(_.toUpperCase)","@speaker.firstName.get","@speaker.email.trim","@speaker.company.getOrElse("")","@speaker.cleanTwitter.map(_.drop(1))" }
+firstName,lastName,email,lang,reference,company @speakersAndProposals.sortBy(_._1.name.map(_.capitalize)).map{case(speaker,props)=>
+@speaker.firstName.get,@speaker.name.map(_.toUpperCase),@speaker.email.trim,@props.map(p=>p.lang).headOption.getOrElse("en"),@speaker.uuid,@speaker.company.map(_.trim).getOrElse(" ")ç}
 </pre>
     </div>
 }

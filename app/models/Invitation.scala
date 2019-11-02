@@ -35,7 +35,8 @@ object Invitation {
 
   private val redisInvitation = "Invitations"
 
-  def inviteSpeaker(speakerId: String, invitedBy: String) = Redis.pool.withClient {
+  def inviteSpeaker(speakerId: String,
+                    invitedBy: String): Long = Redis.pool.withClient {
     implicit client =>
       client.hset(redisInvitation, speakerId, invitedBy)
   }
@@ -50,17 +51,17 @@ object Invitation {
       client.hget(redisInvitation, speakerId)
   }
 
-  def all=Redis.pool.withClient{
+  def all: Set[String] =Redis.pool.withClient{
     implicit client=>
       client.hkeys(redisInvitation)
   }
 
-  def removeInvitation(speakerId:String)=Redis.pool.withClient {
+  def removeInvitation(speakerId:String): Long =Redis.pool.withClient {
     implicit client =>
       client.hdel(redisInvitation, speakerId)
   }
 
-  def deleteAll()=Redis.pool.withClient{
+  def deleteAll(): Long =Redis.pool.withClient{
     implicit client=>
     client.del(redisInvitation)
   }
