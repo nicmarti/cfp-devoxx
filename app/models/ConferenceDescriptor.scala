@@ -64,13 +64,13 @@ object ProposalConfiguration {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
   }
 
-  def totalSlotsCount = ConferenceDescriptor.ConferenceProposalConfigurations.ALL.map(_.slotsCount).sum
+  def totalSlotsCount: Int = ConferenceDescriptor.ConferenceProposalConfigurations.ALL.map(_.slotsCount).sum
 
   def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
   }
 
-  def getProposalsImplyingATrackSelection = {
+  def getProposalsImplyingATrackSelection: List[ProposalConfiguration] = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.impliedSelectedTrack.nonEmpty)
   }
 
@@ -274,9 +274,9 @@ object ConferenceDescriptor {
 
     val allRoomsConfFridayNight = List(PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
 
-    val allRoomsQuickiesThu = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id)
+    val allRoomsQuickiesThu: List[Room] = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id)
 
-    val allRoomsQuickiesFriday = allRoomsQuickiesThu
+    val allRoomsQuickiesFriday: List[Room] = allRoomsQuickiesThu
   }
 
   // TODO if you want to use the Scheduler, you can configure the breaks
@@ -293,9 +293,9 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    val firstDay = "2019-04-17"
-    val secondDay = "2019-04-18"
-    val thirdDay = "2019-04-19"
+    val firstDay = "2020-04-15"
+    val secondDay = "2020-04-16"
+    val thirdDay = "2020-04-17"
 
     // UNIVERSITY
     val universitySlotsWednesday: List[Slot] = {
@@ -653,14 +653,14 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2019).withMonthOfYear(4).withDayOfMonth(17)
-  val toDay = new DateTime().withYear(2019).withMonthOfYear(4).withDayOfMonth(19)
+  val fromDay = new DateTime().withYear(2020).withMonthOfYear(4).withDayOfMonth(15)
+  val toDay = new DateTime().withYear(2020).withMonthOfYear(4).withDayOfMonth(17)
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxFR2019",
+    eventCode = "DevoxxFR2020",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxfr2019",
+    confUrlCode = "devoxxfr2020",
     frLangEnabled = true,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.fr"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.fr"),
@@ -669,7 +669,7 @@ object ConferenceDescriptor {
     conferenceUrls = ConferenceUrls(
       faq = "http://www.devoxx.fr/faq",
       registration = "https://reg.devoxx.fr",
-      confWebsite = "http://www.devoxx.fr/",
+      confWebsite = "https://www.devoxx.fr/",
       cfpHostname = {
         val h = Play.current.configuration.getString("cfp.hostname").getOrElse("cfp.devoxx.fr")
         if (h.endsWith("/")) {
@@ -680,16 +680,16 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "17 au 19 avril 2019",
+      datesI18nKey = "15 au 17 avril 2020",
       speakersPassDuration = 5,
       preferredDayEnabled = true,
-      firstDayFr = "17 avril",
-      firstDayEn = "april 17th",
-      datesFr = "du 17 au 19 avril 2019",
-      datesEn = "from 17th to 19th of April, 2019",
-      cfpOpenedOn = DateTime.parse("2018-12-01T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2019-01-14T23:59:00+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2019-02-15T00:00:00+02:00"),
+      firstDayFr = "15 avril",
+      firstDayEn = "april 15th",
+      datesFr = "du 15 au 17 avril 2020",
+      datesEn = "from 15th to 17th of April, 2020",
+      cfpOpenedOn = DateTime.parse("2019-12-01T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2020-01-16T23:59:00+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2020-02-15T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
@@ -711,15 +711,15 @@ object ConferenceDescriptor {
 
   def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
 
-  def isHTTPSEnabled = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+  def isHTTPSEnabled: Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
 
   // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
   // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
-  def isResetVotesForSubmitted = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
+  def isResetVotesForSubmitted: Boolean = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
 
   // Set this to true temporarily
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
-  def notifyProposalSubmitted = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
+  def notifyProposalSubmitted: Boolean = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
 
   // For practical reason we want to hide the room and the time slot until the full agenda is published
   def isShowRoomAndTimeslot: Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
@@ -735,7 +735,7 @@ object ConferenceDescriptor {
   def jwtSharedSecret(): String = Play.current.configuration.getString("mydevoxx.jwtSharedSecret").getOrElse("change me please")
 
   // Use Twilio (SMS service) to send notification to all speakers and to recieve also commands
-  def isTwilioSMSActive(): Boolean = Play.current.configuration.getBoolean("cfp.twilioSMS.active").getOrElse(false)
+  def isTwilioSMSActive: Boolean = Play.current.configuration.getBoolean("cfp.twilioSMS.active").getOrElse(false)
 
   def twilioAccountSid: String = Play.current.configuration.getString("cfp.twilioSMS.accountSid").getOrElse("")
 
@@ -755,6 +755,6 @@ object ConferenceDescriptor {
 
   def maxProposals(): Int = Play.current.configuration.getInt("cfp.max.proposals").getOrElse(5)
 
-  def isSendProposalRefusedEmail():Boolean = Play.current.configuration.getBoolean("cfp.sendProposalRefusedEmail").getOrElse(true)
+  def isSendProposalRefusedEmail:Boolean = Play.current.configuration.getBoolean("cfp.sendProposalRefusedEmail").getOrElse(true)
 }
 

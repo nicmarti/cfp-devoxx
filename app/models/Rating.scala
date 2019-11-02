@@ -146,7 +146,7 @@ object Rating {
 
   def findForUserIdAndProposalId(userId: String, talkId: String): Option[Rating] = Redis.pool.withClient {
     client =>
-      client.hmget("Rating:2018", client.smembers("Rating:2018:ByTalkId:" + talkId)).map {
+      client.hmget("Rating:2020", client.smembers("Rating:2020:ByTalkId:" + talkId)).map {
         json: String =>
           Json.parse(json).as[Rating]
       }.find(rating => rating.user == userId)
@@ -155,15 +155,15 @@ object Rating {
   def saveNewRating(newRating: Rating) = Redis.pool.withClient {
     client =>
       val tx = client.multi
-      tx.hset("Rating:2018", newRating.id(), Json.toJson(newRating).toString())
-      tx.sadd("Rating:2018:ByTalkId:" + newRating.talkId, newRating.id())
+      tx.hset("Rating:2020", newRating.id(), Json.toJson(newRating).toString())
+      tx.sadd("Rating:2020:ByTalkId:" + newRating.talkId, newRating.id())
       tx.exec()
   }
 
   def allRatingsForSpecificTalkId(talkId: String): List[Rating] = Redis.pool.withClient {
     client =>
-      val ratingIDs = client.smembers("Rating:2018:ByTalkId:" + talkId)
-      client.hmget("Rating:2018", ratingIDs).map {
+      val ratingIDs = client.smembers("Rating:2020:ByTalkId:" + talkId)
+      client.hmget("Rating:2020", ratingIDs).map {
         json =>
           Json.parse(json).as[Rating]
       }
@@ -176,7 +176,7 @@ object Rating {
 
   def allRatings(): List[Rating] = Redis.pool.withClient {
     client =>
-      client.hvals("Rating:2018").map {
+      client.hvals("Rating:2020").map {
         json =>
           Json.parse(json).as[Rating]
       }
@@ -202,9 +202,8 @@ object Rating {
 
   def attic() = Redis.pool.withClient {
     implicit client =>
-      client.del("Rating:2016")
-
-      val allKeys = client.keys("Rating:2016:ByTalkId:*")
+      client.del("Rating:2018") // In 2019 I forget to store in a separate collection. No real impact except on stats
+      val allKeys = client.keys("Rating:2018:ByTalkId:*")
       val tx = client.multi()
       allKeys.foreach { key: String => tx.del(key) }
       tx.exec()
