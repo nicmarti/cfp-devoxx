@@ -1,3 +1,5 @@
+# For single quote value, each value needs to be double escaped
+# http://stackoverflow.com/questions/12070093/how-to-use-single-quotes-in-i18n-in-playframework2
 login.error=Email inconnu ou code d''accès invalide
 menu.home=Accueil
 email=Adresse email
@@ -13,8 +15,6 @@ signup=S''inscrire
 signup.long=S''inscrire en tant qu''orateur pour Devoxx France
  
 index.method1=S''authentifier
-# For single quote, you need to double escape
-# http://stackoverflow.com/questions/12070093/how-to-use-single-quotes-in-i18n-in-playframework2
 index.welcome=Déjà inscrit ? Authentifiez-vous avec votre code d''accès :
  
 index.method2=Authentifiez-vous avec OpenId
@@ -149,12 +149,10 @@ cfp.msg.sendMsg=Envoyer votre message au comité
  
 # Home
 appel.conf=Appel aux conférenciers
-appel.conf.dates=Call for Paper, Devoxx France, 17 au 19 avril 2019
 cfp.opening=Ouverture du CFP
 cfp.closing=Fermeture du CFP
 cfp.closing.date=pensez à accepter ou décliner les sujets approuvés par le comité.
 cfp.program=Annonce du programme :
-cfp.program.date=à partir de la mi-février 2019
 video.title=Vidéos des éditions précédentes
 video.tag=Retrouvez toutes les vidéos des éditions précédentes sur le site
 theme.title=Thèmes
@@ -224,7 +222,6 @@ created.text3=Vous pourrez alors vous authentifier et accéder au site.
  
 # Prepare signup
 signup.title=Inscription orateur
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2019 :
 signup.txt2=Un email de validation est envoyé à l''adresse indiquée. Votre profil ne sera actif une fois que votre adresse de courrier électronique sera validée.
  
 # edit profile
@@ -492,11 +489,6 @@ sw.agenda.friday=Vendredi
 sw.show.wed=Mercredi
 sw.show.thu=Jeudi
 sw.show.fri=Vendredi
-sw.show.title.wed=Journée du Mercredi 17 avril 2019
-sw.show.title.thu=Journée du Jeudi 18 avril 2019
-sw.show.title.fri=Journée du Vendredi 19 avril 2019
- 
- 
 sw.horaires=Horaires
 sw.breakfast=Accueil et petit-déjeuner
 sw.mainEvents=Evénements principaux
@@ -551,11 +543,6 @@ btn.saveAndSend=Sauver et envoyer au comité
 btn.saveDraft=Sauver comme Draft (Brouillon)
 cfp.reminder=Rappel
 cfp.reminder.proposals=pensez à soumettre votre brouillon au comité en cliquant sur "Envoyer"
-cfp.title=Devoxx France 2019
-conf.label.simple=Conférence
-CONF.subtitle=FR
-CONF.title=Devoxx France 2019
-conference.dates=17 au 19 avril 2019
 contacted=Speaker contacté
 d1.label=Uniquement des slides
 d2.label=Slides et du code
@@ -579,11 +566,8 @@ code.label.simple=Codestory
 level1.label=Ouvert à tout niveau d''audience, débutant comme expert
 level2.label=Pour une audience intermédiaire, avec une connaissance sur le sujet
 level3.label=Pour un public d''expert ou de sénior sur ce sujet
-longName=Devoxx FR 2019 CFP
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2019
 longSplittedName_whiteStart=Devox
-longYearlyName=Devoxx France 2019
 mail.access_code.subject=Votre code d''accès présentateur pour {0}
 mail.account_created.subject=Bienvenue sur le CFP pour {0}
 mail.cfp_message_to_speaker.subject=[{1}] {0}
@@ -606,7 +590,6 @@ qualifications.otherproposals=Sujet(s) proposé(s) par le speaker
 quick.label.simple=Quickie
 remove.sponsorFlag=Retirer le flag sponsor de cette présentation
 shortName=Devoxx FR
-shortYearlyName=Devoxx FR 2019
 ssj.label=Server Side Java
 start=Startup presentation
 start.label=
@@ -652,10 +635,10 @@ wl_travel.checkbox=Oui, inclure le remboursement
 wl_unknown=Inconnu
 admin.btn.speakersInvited=Tous les speakers invités
 
-bof.label.simple=Bird of a Feather
 mail.email_validation.subject=Bienvenue à {0}, merci de valider votre adresse email
 mail.issue_reported.subject=Nouvel incident reporté sur le site du CFP
 mail.proposal_approved.subject=Votre proposition de sujet a été approuvée {0}
+mail.proposal_refused.subject=Votre proposition a été refusée {0}
 mail.reset_password_link.subject=Vous avez demandé à ré-initialiser votre code d'accès speaker pour {1}
 msg_pub=Envoyer un message au présentateur
 qualifications2=Qualifications et expériences du présentateur
@@ -877,10 +860,6 @@ cfp.member=Membre du CFP
 
 golden.welcome.txt=Bienvenue sur l''espace Golden Ticket. Achetez une place Golden Ticket sur le site de {0} et participez à la revue des sujets, votez, et donnez votre avis !
 
-
-l.proposal_approved.subject=Votre proposition a été approuvée {0}
-mail.proposal_refused.subject=Votre proposition a été refusée {0}
-
 publisher.proposal.roomHidden=La salle sera affectée entre 24 et 72h avant la conférence
 
 # prepareSignupVisitor
@@ -902,4 +881,23 @@ visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vou
 visitor.welcome.profile=Liste des sujets marqués comme favoris
 visitor.welcome.publisher=Parcourir l''agenda des conférences
 
+# What needs to be updated each year :
+# ------------------------------------
+# We prefer to update one property file, so that string interpolation is faster, rather than
+# to try to use the ConferenceDescriptor for some static part of the web site.
+appel.conf.dates=Call for Paper, Devoxx France, 15 au 17 avril 2020
+cfp.program.date=à partir de la mi-février 2020
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2020 :
+sw.show.title.wed=Journée du Mercredi 15 avril 2020
+sw.show.title.thu=Journée du Jeudi 16 avril 2020
+sw.show.title.fri=Journée du Vendredi 17 avril 2020
+cfp.title=Devoxx France 2020
+conf.label.simple=Conférence
+CONF.subtitle=FR
+CONF.title=Devoxx France 2020
+conference.dates=15 au 17 avril 2020
+longName=Devoxx FR 2020 CFP
+longSplittedName_whiteEnd=FR 2020
+longYearlyName=Devoxx France 2020
+shortYearlyName=Devoxx FR 2020
 
