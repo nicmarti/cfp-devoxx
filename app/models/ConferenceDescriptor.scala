@@ -164,7 +164,7 @@ object ConferenceDescriptor {
       chosablePreferredDay = true)
     val IGNITE = ProposalConfiguration(id = "ignite", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.IGNITE.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       chosablePreferredDay = false)
-    val OTHER = ProposalConfiguration(id = "other", slotsCount = 5, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
+    val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
       hiddenInCombo = true, chosablePreferredDay = false)
 
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, IGNITE, OTHER)
@@ -217,6 +217,7 @@ object ConferenceDescriptor {
     // Do not change the ID's once the program is published
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "")
     val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special", "")
+    val LOBBY_NEUILLY = Room("lobby_neuilly", "Lobby Neuilly", 100, "special", "")
 
     val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera")
     val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre", "camera")
@@ -267,6 +268,8 @@ object ConferenceDescriptor {
     val allRoomsLabFriday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
 
     val allRoomsBOF = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+
+    val allRoomsOthersFriday = List(LOBBY_NEUILLY)
 
     val keynoteRoom = List(AMPHI_BLEU)
 
@@ -396,6 +399,18 @@ object ConferenceDescriptor {
             new DateTime(s"${thirdDay}T14:15:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
       }
       labsFridayMorning
+    }
+
+    // OTHERS
+
+    val othersSlotsFriday: List[Slot] = {
+      val cafePhilo = ConferenceRooms.allRoomsOthersFriday.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.OTHER.id, "friday",
+            new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+            new DateTime(s"${thirdDay}T14:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r1)
+      }
+      cafePhilo
     }
 
     // BOFS
@@ -643,7 +658,7 @@ object ConferenceDescriptor {
     }
 
     val fridaySchedule: List[Slot] = {
-      fridayBreaks ++ keynoteSlotsFriday ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ labsSlotsFriday
+      fridayBreaks ++ keynoteSlotsFriday ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ labsSlotsFriday  ++ othersSlotsFriday
     }
 
     def all: List[Slot] = {

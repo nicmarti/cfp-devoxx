@@ -625,7 +625,7 @@ object CFPAdmin extends SecureCFPController {
       val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
-          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker == Some(speaker.uuid))
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
             .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
           (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty).map {
