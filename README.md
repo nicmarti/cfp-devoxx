@@ -311,6 +311,13 @@ reference GitHub issues that this commit **Closes**.
 
 A detailed explanation can be found in the [AngularJS Git commit documentation](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit).
 
+# CSS and Bootstrap theme
+
+We migrated to [Bootstrap 4.3](https://getbootstrap.com/docs/4.3/getting-started/introduction/) with the Bootswatch Theme 
+[Flatly](https://bootswatch.com/flatly/)
+
+Please report any issues or CSS errors on Github issues. 
+
 
 Call for Paper application for Devoxx
 =============

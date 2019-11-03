@@ -1,0 +1,74 @@
+@(proposal: Proposal)
+
+ <div class="card mb-3">
+    <div class="card-header">
+        <h5 class="card-title">@Messages(proposal.talkType.id)</h5>
+    </div>
+            <div class="card-body">
+                <h6 class="card-subtitle">@proposal.title</h6>
+            </div>
+             <div class="card-body">
+                 @tags.renderGravatar(proposal.mainSpeaker, showName = true)
+                 @proposal.secondarySpeaker.map { secondarySpeakerUUID =>
+                     @tags.renderGravatar(secondarySpeakerUUID, showName = true)
+                 }
+                 @proposal.otherSpeakers.map { listOfUUID =>
+                     @listOfUUID.split(",").map { suid =>
+                         @tags.renderGravatar(suid, showName = true)
+                     }
+                 }
+             </div>
+     <div class="card-body">
+          @if(proposal.state.code == "draft") {
+                    <div class="alert alert-warning">
+                        <p class="card-text"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</p>
+                    </div>
+                }
+                @if(proposal.sponsorTalk) {
+                    <div class="alert alert-success">
+                        <p class="card-text"><i class="icon-screenshot"></i> Sponsor talk</p>
+                    </div>
+                }
+     </div>
+
+                 <ul class="list-group list-group-flush">
+                        <li class="list-group-item" ><a class="card-link" href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.edit")</a></li>
+                        <li class="list-group-item"><a class="card-link" href="@routes.CallForPaper.editOtherSpeakers(proposal.id)" title="@Messages("table.speaker.addremove")"> @Messages("table.speaker.addremove")</a></li>
+                        <li class="list-group-item"><a class="card-link" href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a></li>
+                        <li class="list-group-item">
+                            @defining(models.Comment.countComments(proposal.id)) { msgProposals =>
+                              @if(msgProposals > 0){
+                                <a class="card-link" href="@routes.CallForPaper.showCommentForProposal(proposal.id)"> Messages <span class="badge badge-success">@models.Comment.countComments(proposal.id)</span></a>
+                              }
+                              @if(msgProposals <= 0){
+                                <a class="card-link" href="@routes.CallForPaper.showCommentForProposal(proposal.id)"> Messages <span class="badge badge-light">0</span></a>
+                              }
+                            }
+
+                        </li>
+                        <li class="list-group-item"><a class="card-link" href="@routes.CallForPaper.deleteProposal(proposal.id)" title="@Messages("table.pres.delete")">@Messages("table.pres.delete")</a></li>
+                    </ul>
+
+            <div class="card-footer text-muted">
+                <strong>Status:</strong>
+                @if(proposal.state.code == "accepted" || proposal.state.code == "approved") {
+                    <span class="label label-success">@proposal.state.code</span>
+                }
+                @if(proposal.state.code == "declined" || proposal.state.code == "rejected" || proposal.state.code == "deleted") {
+                    <span class="label label-danger">@proposal.state.code</span>
+                }
+                @if(proposal.state.code == "draft") {
+                    <span class="label label-warning">@proposal.state.code</span>
+                }
+                @if(proposal.state.code == "submitted") {
+                    <span class="label label-info">@proposal.state.code</span>
+                }
+                @if(proposal.state.code == "backup") {
+                    <span class="label label-warning">@proposal.state.code</span>
+                }
+                @if(proposal.state.code == "archived") {
+                    <span class="label label-default">@proposal.state.code</span>
+                }
+
+            </div>
+</div>
