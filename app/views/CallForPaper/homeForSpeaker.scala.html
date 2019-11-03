@@ -25,7 +25,7 @@
                         }
                         </div>
                     <div class="widget-footer text-center">
-                        <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-default">@Html(Messages("edit.profile"))</a>
+                        <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary"><i class="icon-edit-sign"></i> @Html(Messages("edit.profile"))</a>
                     </div>
                 </div>
                 <div class="col-8">
@@ -35,11 +35,60 @@
                     </div>
                 </div>
 
-    <div class="w-100"></div>
+    <div class="h-25"></div>
 
 
     <div class="col-12 mb-5">
           <h3><i class="icon-tasks"></i> @Messages("your.submission")</h3>
+
+            @flash.get("error").map { errorMsg =>
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @errorMsg
+                </div>
+            }
+
+            @flash.get("success").map { successMsg =>
+                <div class="alert alert-success alert-dismissable">
+                @successMsg
+                </div>
+            }
+
+            @flash.get("warning").map { warnMsg =>
+                <div class="alert alert-warning alert-dismissable">
+                @warnMsg
+                </div>
+            }
+            @flash.get("deleted").map { proposalId =>
+                <div class="alert alert-warning">
+                    @Messages("talk.deleted") <br>
+                    <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
+                </div>
+            }
+
+            @if(needsToAcceptTermAndCondition) {
+                <div class="alert alert-warning alert-dismissable">
+                    <strong>Warning :</strong> You have not yet accepted the Devoxx's Terms & Conditions.
+                    <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">Accept Terms & Conditions</a>
+                </div>
+            }
+
+            @if(myProposals.isEmpty) {
+                <div class="alert alert-info">
+                @Messages("no.proposal")
+                </div>
+            }
+
+            @if(ConferenceDescriptor.isCFPOpen) {
+                <div class="mb-3">
+                    <a href="@routes.CallForPaper.newProposal" class="btn btn-primary"><i class="icon-lightbulb"></i> @Html(Messages("new.proposal"))</a>
+                </div>
+            } else {
+                <div class="panel panel-success">
+                    <div class="panel-heading">Information</div>
+                    <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
+                </div>
+            }
 
         <div class="row">
         @myProposals.sortBy(_.id).map{proposal=>
@@ -48,61 +97,10 @@
             </div>
         }
         </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    @if(flash.get("error").isDefined) {
-                        <div class="alert alert-danger alert-dismissable">
-                            <strong>Error :</strong>
-                            @flash.get("error").get
-                        </div>
-                    }
-                    @if(flash.get("success").isDefined) {
-                        <div class="alert alert-success alert-dismissable">
-                        @flash.get("success").get
-                        </div>
-                    }
-                    @if(flash.get("warning").isDefined) {
-                        <div class="alert alert-warning alert-dismissable">
-                        @flash.get("warning").get
-                        </div>
-                    }
-                    @if(flash.get("deleted").isDefined) {
-                        <div class="alert alert-warning">
-                            @Messages("talk.deleted") <br>
-                            @flash.get("deleted").map { proposalId: String =>
-                                <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
-                            }
-                        </div>
-                    }
-                    @if(needsToAcceptTermAndCondition) {
-                        <div class="alert alert-warning alert-dismissable">
-                            <strong>Warning :</strong> You have not yet accepted the Devoxx's Terms & Conditions.
-                            <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">Accept Terms & Conditions</a>
-                        </div>
-                    }
 
-                    @if(myProposals.isEmpty) {
-                        <div class="info">
-                        @Messages("no.proposal")
-                        </div>
-                    } else {
-
-
-                    }
-                    <div class="clearfix"></div>
-                    @if(ConferenceDescriptor.isCFPOpen) {
-                        <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
-                    } else {
-                        <div class="panel panel-success">
-                            <div class="panel-heading">Information</div>
-                            <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
-                        </div>
-                    }
-                </div>
-
-                @if(ratings.nonEmpty) {
-                    <div class="clearfix"></div>
-                    <div class="col-md-12">
+        <div class="row">
+             @if(ratings.nonEmpty) {
+                    <div class="col-12">
                         <h3><i class="icon-bar-chart"></i> @Messages("hfspk.rating.title")</h3>
                         <p>@Messages("hfspk.rating.desc")</p>
                         <table class="table table-bordered table-striped">
@@ -144,7 +142,8 @@
                         </table>
                     </div>
                 }
-            </div>
+        </div>
+
     </div>
 
     @if(Webuser.isMember(webuser.uuid, "cfp")) {
