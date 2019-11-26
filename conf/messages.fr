@@ -901,3 +901,6 @@ longSplittedName_whiteEnd=FR 2020
 longYearlyName=Devoxx France 2020
 shortYearlyName=Devoxx FR 2020
 
+your.reviewer.rank=Votre classement
+reviewed=sujets revus
+no.more.talk=Vous avez revu l''intégralité des propositions soumises

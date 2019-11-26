@@ -12,7 +12,7 @@
 
     @main("Votes for " + proposal.id + "/" + proposal.title) {
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-12 mt-2">
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="icon-stackexchange"></i> @proposal.title</h3>
@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4 col-sm-12">
+            <div class="col-md-6 col-lg-4 col-sm-12 mt-2">
                 <div class="card">
                     <div class="card-header">
                         <h3>@currentAverageScore <small>@Messages("svp.score")</small></h3>
@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4 col-sm-6">
+            <div class="col-md-6 col-lg-4 col-sm-6 mt-2">
                 <div class="card">
                     <div class="card-header">
                         <h3>@Messages("svp.allVotes")</h3>
@@ -100,7 +100,7 @@
             </div>
 
             @if(ConferenceDescriptor.isGoldenTicketActive) {
-                <div class="col-md4 col-lg-4 col-sm-6">
+                <div class="col-md4 col-lg-4 col-sm-6 mt-2">
                     <div class="card">
                         <div class="card-header">
                             <h3>@averageScoreGT <small>@Messages("svp.goldenTicket.title")</small></h3>
@@ -130,10 +130,10 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-12 mt-2">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Your reviewer rank</h3>
+                        <h3>@Messages("your.reviewer.rank")</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -151,7 +151,7 @@
                                         }
                                     }
                                 }
-                             @totalReviewed reviewed<br>
+                             @totalReviewed @Messages("reviewed")<br>
                             </div>
                         }
                     }
@@ -170,7 +170,7 @@
 
                         @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty) {
                             <a class="btn btn-primary" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i>
-                                There is no more talk to review</a>
+                                @Messages("no.more.talk")</a>
                         }
                         <br>
                         @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.nonEmpty) {
