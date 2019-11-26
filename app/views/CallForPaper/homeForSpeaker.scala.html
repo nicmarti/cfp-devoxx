@@ -83,6 +83,10 @@
                 <div class="mb-3">
                     <a href="@routes.CallForPaper.newProposal" class="btn btn-primary"><i class="icon-lightbulb"></i> @Html(Messages("new.proposal"))</a>
                 </div>
+
+                <div class="alert alert-info">
+                  @Messages("proposal.limit", ConferenceDescriptor.maxProposals())
+                </div>
             } else {
                 <div class="panel panel-success">
                     <div class="card-header">Information</div>

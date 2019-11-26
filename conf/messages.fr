@@ -242,6 +242,8 @@ table.pres.delete=Mettre à la poubelle
 table.pres.action=Actions
 table.pres.doSubmit=Soumettre
 table.pres.doDelete=Effacer
+
+proposal.limit=La limite est de {0} sujets proposés par speaker.
 proposal.draft.reminder=N''oubliez pas de soumettre ce sujet
  
 total.draft={0} propositions

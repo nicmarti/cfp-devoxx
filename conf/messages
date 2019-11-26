@@ -267,6 +267,7 @@ table.pres.action=Actions
 table.pres.doSubmit=Submit
 table.pres.doDelete=Delete
 
+proposal.limit=The limit is {0} maximum allowed proposals per speaker.
 proposal.draft.reminder=Do not forget to submit your talk
 
 total.draft={0} proposals
