@@ -88,7 +88,7 @@
                 <div class="row cfp-row">
                     <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
                         <h4>@Messages("lang")</h4>
-                        <p>@Messages("lang.help")</p>
+                        <p>@Messages("lang.help")<br/><strong>@Messages("lang.important")</strong></p>
                     </div>
                     <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
                     @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
