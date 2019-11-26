@@ -128,7 +128,7 @@ preview.warn2=dans le tableau de la page d''accueil.
 presubmit.reminder=Lorsque vous êtes prêt à envoyer votre proposition, n''oubliez pas d''utiliser le bouton "Soumettre"
 
 # Proposal type
-key.label=Keynote, 20mn, jeudi et vendredi matin
+key.label=Keynote, 20mn, jeudi et vendredi matin - ⛔️ Uniquement sur invitation de l'équipe du CFP
 conf.label=Conference, 45mn, jeudi et vendredi
 uni.label=University, 3h, mercredi uniquement
 tia.label=Tools in Action, 30mn, mercredi/jeudi

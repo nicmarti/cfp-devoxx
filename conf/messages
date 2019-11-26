@@ -142,7 +142,7 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Thursday and Friday
+key.label=Keynote, 20mn, Thursday and Friday - ⛔️ Only on the invitation of the CFP Team.
 key.label.simple=Keynote
 conf.label=Conference, 45mn, Thursday and Friday
 conf.label.simple=Conference
