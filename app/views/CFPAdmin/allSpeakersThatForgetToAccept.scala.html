@@ -19,8 +19,8 @@
             </div>
         }
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3>All speakers</h3>
                     <em>Talk that we approved, for which the speaker did not accept to present yet</em>
                     <span class="label label-info">@proposals.size speakers</span>
@@ -32,12 +32,12 @@
         </div>
         @proposals.map{case(speaker,props)=>
         <div class="col-xs-12 col-md-12 col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                            <small><a class="cfp-gravatars" href="@routes.CFPAdmin.showSpeakerAndTalks(speaker.uuid)"><img class="media-object" src="//www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=35" alt="@speaker.name" title="@speaker.name"/> @speaker.cleanName</a></small>
                             <br> @tags.checkInvited(speaker.uuid)
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                         @props.map{p:Proposal=>
                           <p><span class="label label-primary">@p.state.code</span> @p.title</p>
                         }

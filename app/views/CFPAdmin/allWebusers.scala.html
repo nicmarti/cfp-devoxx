@@ -19,13 +19,13 @@
         </div>
     }
     <div class="col-md-12">
-        <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="card">
+        <div class="card-header">
             <h3>All speakers</h3>
             <span class="label label-info">@speakers.size users</span>
             <span class="label label-info">@speakers.count(w => Webuser.hasAccessToCFP(w.uuid)) CFP users</span>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
             @if(speakers.nonEmpty){
             <table class="table table-bordered table-strippted">
                 <thead>

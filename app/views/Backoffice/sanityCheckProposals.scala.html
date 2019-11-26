@@ -21,13 +21,13 @@
     }
 
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <h3><i class="icon-medkit"></i> Sanity check</h3>
                 <p>Try to load all Proposals, detect any JSON parsing errors</p>
             </div>
 
-            <div class="panel-body">
+            <div class="card-body">
                 @proposals.foreach{p=>
                    Invalid proposal : @p<br>
                 }

@@ -353,7 +353,7 @@ admin.draft.warning3=Etat actuel de cette proposition :
  
 newProposal.maxLength=Maximum 1200 caractères. Possibilité d''utiliser Markdown
 preview.txt=Aperçu de votre présentation dans le programme papier
-tags.renderComment.postedBy=Posté par {0} - {1}
+tags.renderComment.postedBy=Posté le {0} à {1}
 admin.btn.sponsor=Voir comme un sponsor
 leaderboard.compute=Calcul des stats en cours...
  
@@ -814,7 +814,7 @@ invalid.confirmation.code=Code de confirmation incorrect, ou ayant expiré. Merc
 invalid.phone=Numéro de téléphone invalide, il doit respecter le format international. Pour la France, les numéros de téléphones sont de la forme +3366....
 sms.confirmationTxt=Code de confirmation Devoxx à saisir sur le site du CFP : {0}
 
-phoneNumber=Numéro de téléphone portable
+phoneNumber=Numéro de téléphone portable (en cas d''urgence seulement)
 invalid.phoneNumber=Numéro de téléphone non valide
 invalid.phone.txt=Votre numéro de téléphone n''est pas valide ou n''est pas autorisé par notre plate-forme. Contactez l''équipe pour que nous puissions autoriser le pays de votre numéro de portable, ou corrigez le numéro.
 
@@ -823,7 +823,7 @@ admin.btn.devoxxians=Tous les Devoxxians
 cfp.maxProposals.reached=Attention, vous ne pouvez pas soumettre plus de {0} sujets. Nous limitons le nombre de soumissions volontairement.
 videoLinkMessage=Lien vers une vidéo
 videoLinkMessage.help=Vous pouvez partager un lien vers une vidéo où vous avez été orateur ou une vidéo en rapport avec votre proposition de sujet. Indiquez l''URL complète YouTube ou autre.
-videoLink=Vidéo relative à votre proposition 
+videoLink=Vidéo relative à votre proposition
 tag.title=Merci de sélectionner au moins 3 Tags pour décrire votre proposition de sujet
 tag.help.title=A propos des Tags
 tag.help.txt=Vous avez la possibilité de sélectionner entre 3 et 5 mots clés (tag) pour décrire votre proposition. Il n''est pas possible de créer ses propres tags. Ces tags seront utilisés pour le programme du conférencier. Les tags sont en Anglais uniquement. Commencez à saisir les premières lettres, puis sélectionnez ensuite le tag voulu.
@@ -901,3 +901,6 @@ longSplittedName_whiteEnd=FR 2020
 longYearlyName=Devoxx France 2020
 shortYearlyName=Devoxx FR 2020
 
+your.reviewer.rank=Votre classement
+reviewed=sujets revus
+no.more.talk=Vous avez revu l''intégralité des propositions soumises

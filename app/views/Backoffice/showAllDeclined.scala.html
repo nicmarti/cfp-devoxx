@@ -25,12 +25,12 @@
     }
 
     <div class="col-md-12">
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             <h3>All Declined Proposals</h3>
         </div>
 
-        <div class="panel-body">
+        <div class="card-body">
 
             @if(proposals.nonEmpty){
             <table id="allProposals" class="table table-bordered table-hover table-condensed">
@@ -63,7 +63,7 @@
                                 <td>
                                     <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.SUBMITTED.code)" class="btn btn-sm btn-success">
                                         Submitted</a> </small>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.APPROVED.code)" class="btn btn-sm btn-default">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.APPROVED.code)" class="btn btn-sm btn-primary">
                                         Approved</a> </small>
                                     <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.BACKUP.code)" class="btn btn-sm btn-warning">
                                         Backup</a> </small>

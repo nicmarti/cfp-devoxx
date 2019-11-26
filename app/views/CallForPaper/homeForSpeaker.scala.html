@@ -7,8 +7,8 @@
 @import org.apache.commons.lang3.StringUtils
 @main(Messages("cfp.title")) {
 
-    <div class="row">
-                <div class="col-lg-4">
+<div class="row">
+                <div class="col-4">
                         <div class="widget-head-color-box navy-bg p-lg text-center">
                             <div class="m-b-md">
                             <h2 class="font-bold no-margins">
@@ -25,136 +25,82 @@
                         }
                         </div>
                     <div class="widget-footer text-center">
-                        <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-default">@Html(Messages("edit.profile"))</a>
+                        <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary"><i class="icon-edit-sign"></i> @Html(Messages("edit.profile"))</a>
                     </div>
                 </div>
-                <div class="col-lg-8">
+                <div class="col-8">
                     <div class="widget-text-box">
                         <h4 class="media-heading">@webuser.cleanName</h4>
                         <div class="speaker-bio-quote">@Html(speaker.bioAsHtml)</div>
                     </div>
                 </div>
+
+    <div class="h-25"></div>
+
+
+    <div class="col-12 mb-5">
+          <h3><i class="icon-tasks"></i> @Messages("your.submission")</h3>
+
+            @flash.get("error").map { errorMsg =>
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @errorMsg
+                </div>
+            }
+
+            @flash.get("success").map { successMsg =>
+                <div class="alert alert-success alert-dismissable">
+                @successMsg
+                </div>
+            }
+
+            @flash.get("warning").map { warnMsg =>
+                <div class="alert alert-warning alert-dismissable">
+                @warnMsg
+                </div>
+            }
+            @flash.get("deleted").map { proposalId =>
+                <div class="alert alert-warning">
+                    @Messages("talk.deleted") <br>
+                    <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-primary btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
+                </div>
+            }
+
+            @if(needsToAcceptTermAndCondition) {
+                <div class="alert alert-warning alert-dismissable">
+                    <strong>Warning :</strong> You have not yet accepted the Devoxx's Terms & Conditions.
+                    <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">Accept Terms & Conditions</a>
+                </div>
+            }
+
+            @if(myProposals.isEmpty) {
+                <div class="alert alert-info">
+                @Messages("no.proposal")
+                </div>
+            }
+
+            @if(ConferenceDescriptor.isCFPOpen) {
+                <div class="mb-3">
+                    <a href="@routes.CallForPaper.newProposal" class="btn btn-primary"><i class="icon-lightbulb"></i> @Html(Messages("new.proposal"))</a>
+                </div>
+            } else {
+                <div class="panel panel-success">
+                    <div class="card-header">Information</div>
+                    <div class="card-body">@Messages("cfp.isClosed.expl")</div>
+                </div>
+            }
+
+        <div class="row">
+        @myProposals.sortBy(_.id).map{proposal=>
+            <div class="col-xs-12 col-md-4 col-lg-4">
+                @tags.callForPaper.showProposal(proposal)
             </div>
+        }
+        </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3><i class="icon-tasks"></i> @Messages("your.submission")</h3>
-                </div>
-                <div class="panel-body">
-                    @if(flash.get("error").isDefined) {
-                        <div class="alert alert-danger alert-dismissable">
-                            <strong>Error :</strong>
-                            @flash.get("error").get
-                        </div>
-                    }
-                    @if(flash.get("success").isDefined) {
-                        <div class="alert alert-success alert-dismissable">
-                        @flash.get("success").get
-                        </div>
-                    }
-                    @if(flash.get("warning").isDefined) {
-                        <div class="alert alert-warning alert-dismissable">
-                        @flash.get("warning").get
-                        </div>
-                    }
-                    @if(flash.get("deleted").isDefined) {
-                        <div class="alert alert-warning">
-                            @Messages("talk.deleted") <br>
-                            @flash.get("deleted").map { proposalId: String =>
-                                <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-default btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
-                            }
-                        </div>
-                    }
-                    @if(needsToAcceptTermAndCondition) {
-                        <div class="alert alert-warning alert-dismissable">
-                            <strong>Warning :</strong> You have not yet accepted the Devoxx's Terms & Conditions.
-                            <a href="@routes.ApproveOrRefuse.acceptTermsAndConditions()">Accept Terms & Conditions</a>
-                        </div>
-                    }
-
-                    @if(myProposals.isEmpty) {
-                        <div class="info">
-                        @Messages("no.proposal")
-                        </div>
-                    } else {
-
-                        @myProposals.toList.sortBy(_.id).map{proposal=>
-                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <span class="text-right">@Messages(proposal.talkType.id)</span>
-                                        <h4>@proposal.title</h4>
-                                    <strong>Status:</strong>
-                                         @if(proposal.state.code == "accepted" || proposal.state.code == "approved") {
-                                            <span class="label label-success">@proposal.state.code</span>
-                                        }
-                                        @if(proposal.state.code == "declined" || proposal.state.code == "rejected" || proposal.state.code == "deleted") {
-                                            <span class="label label-danger">@proposal.state.code</span>
-                                        }
-                                        @if(proposal.state.code == "draft") {
-                                            <span class="label label-warning">@proposal.state.code</span>
-                                        }
-                                        @if(proposal.state.code == "submitted") {
-                                            <span class="label label-info">@proposal.state.code</span>
-                                        }
-                                        @if(proposal.state.code == "backup") {
-                                            <span class="label label-warning">@proposal.state.code</span>
-                                        }
-                                        @if(proposal.state.code == "archived") {
-                                            <span class="label label-default">@proposal.state.code</span>
-                                        }
-                                    </div>
-                                    <Div class="panel-body">
-                                        <div class="col-lg-3">
-                                            @tags.renderGravatar(proposal.mainSpeaker, showName = true)
-                                            @proposal.secondarySpeaker.map { secondarySpeakerUUID =>
-                                                @tags.renderGravatar(secondarySpeakerUUID, showName = true)
-                                            }
-                                            @proposal.otherSpeakers.map { listOfUUID =>
-                                                @listOfUUID.split(",").map { suid =>
-                                                    @tags.renderGravatar(suid, showName = true)
-                                                }
-                                            }
-                                        </div>
-                                        <div class="col-lg-9">
-
-                                            @if(proposal.state.code == "draft") {
-                                                <span class="label label-danger"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</span>
-                                            }
-
-                                            <ul>
-                                                <li><a href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.edit")</a></li>
-                                                <li><a href="@routes.CallForPaper.editOtherSpeakers(proposal.id)" title="@Messages("table.speaker.addremove")"> @Messages("table.speaker.addremove")</a></li>
-                                                <li><a href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a></li>
-                                                <li><a href="@routes.CallForPaper.showCommentForProposal(proposal.id)">
-                                                    Messages <span class="badge">@models.Comment.countComments(proposal.id)</span></a></li>
-                                                <li><a href="@routes.CallForPaper.deleteProposal(proposal.id)" title="@Messages("table.pres.delete")">@Messages("table.pres.delete")</a></li>
-                                            </ul>
-
-                                            @if(proposal.sponsorTalk){
-                                                <span class="label label-success"><i class="icon-screenshot"></i> Sponsor talk</span>
-                                            }
-                                        </div>
-                                    </Div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    <div class="clearfix"></div>
-                    @if(ConferenceDescriptor.isCFPOpen) {
-                        <a href="@routes.CallForPaper.newProposal" class="btn btn-primary">@Html(Messages("new.proposal"))</a>
-                    } else {
-                        <div class="panel panel-success">
-                            <div class="panel-heading">Information</div>
-                            <div class="panel-body">@Messages("cfp.isClosed.expl")</div>
-                        </div>
-                    }
-                </div>
-                @if(ratings.nonEmpty) {
-                    <div class="clearfix"></div>
-                    <div class="col-md-12">
+        <div class="row">
+             @if(ratings.nonEmpty) {
+                    <div class="col-12">
                         <h3><i class="icon-bar-chart"></i> @Messages("hfspk.rating.title")</h3>
                         <p>@Messages("hfspk.rating.desc")</p>
                         <table class="table table-bordered table-striped">
@@ -196,39 +142,17 @@
                         </table>
                     </div>
                 }
-            </div>
         </div>
+
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            @if(ConferenceDescriptor.isTwilioSMSActive && myProposals.exists(p => p.state == ProposalState.ACCEPTED || p.state == ProposalState.APPROVED)) {
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3><i class="icon-phone"></i> SMS </h3>
-                    </div>
-                    <div class="panel-body">
-                        <p>@Messages("sms.text1")</p>
-                        <form action="@routes.CallForPaper.updatePhoneNumber" method="POST" class="form form-inline">
-                            <label for="phoneNumber">@Messages("sms.explanation")
-                                <input type="tel" id="phoneNumber" name="phoneNumber" value="@speaker.phoneNumber.getOrElse("")" placeholder="+33661708090"/>
-                                <input type="submit" value="Ok">
-                            </label>
-                        </form>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="row">
     @if(Webuser.isMember(webuser.uuid, "cfp")) {
-        <div class="col-lg-10 col-lg-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
                     <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
                 </div>
-                <div class="panel panel-default">
+                <div class="card">
                     <table class="table">
                         <tbody>
                             <tr>
@@ -272,12 +196,9 @@
                     </table>
                 </div>
             </div>
-            }
 
-
-    </div>
-        <script language="JavaScript">
-
+        </div>
+        <script>
                 $('#digest').change(function () {
                     $.ajax({
                         type: "POST",
@@ -304,6 +225,7 @@
                     }
                 });
         </script>
-            <!-- @speaker.uuid -->
-            <!-- @webuser.uuid -->
+        }
+</div><!-- row -->
+
 }

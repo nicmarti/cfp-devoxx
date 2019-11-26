@@ -8,17 +8,17 @@
         <div class="clearfix"></div>
 
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h4>Vote for a talk</h4>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p>Send one vote</p>
 
     @if(ratingForm.hasErrors){
         <div class="panel panel-warning">
-            <div class="panel-heading"><h4>Erreur de saisie</h4></div>
-            <div class="panel-body">
+            <div class="card-header"><h4>Erreur de saisie</h4></div>
+            <div class="card-body">
             <p>Erreurs :</p>
                 @ratingForm.errors.map{err =>
                     <strong>@Messages(err.key)</strong> : @Messages(err.message)<br>
@@ -35,10 +35,10 @@
     @helper.repeat(ratingForm("details"), min = 1) { ratingDetail =>
         <div class="col-md-6 ticket">
             <div class="panel panel-default @if(ratingDetail("aspect").hasErrors) { panel-warning } @if(ratingDetail("rating").hasErrors) { panel-warning } @if(ratingDetail("review").hasErrors) { panel-warning } ">
-                <div class="panel-heading">
+                <div class="card-header">
                     <p>Detail</p>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     @helper.inputText(ratingDetail("aspect"), '_label -> Messages("form.aspect"))
                     @helper.inputText(ratingDetail("rating"), '_label -> Messages("form.rating"))
                     @helper.inputText(ratingDetail("review"), '_label -> Messages("form.review"))

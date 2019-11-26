@@ -28,11 +28,11 @@
                 </div>
             }
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <p><small>@Messages("gt.disclaimer")</small></P>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <p>@Messages("gt.intro.1")</p>
                     <p>@Messages("gt.intro.2") <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()">@Messages("gt.reviewYourVotes")</a> @Messages("gt.intro.3")</p>
 
@@ -44,7 +44,7 @@
                     @if(allProposalsForReview.nonEmpty) {
                         <i class="icon-filter"></i> Filter on
                         @Track.allIDs.filterNot(_ == Track.UNKNOWN.id).map{idTrack=>
-                            <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-default btn-sm">@idTrack</a>
+                            <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-primary btn-sm">@idTrack</a>
                         }
                         <br>
                         <br>

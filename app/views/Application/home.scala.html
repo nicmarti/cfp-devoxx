@@ -3,15 +3,15 @@
 @import helper.twitterBootstrap._
 
 @main(Messages("cfp.title")){
-            <div class="bs-docs-section clearfix">
-                <div class="row">
-                    <div class="col-md-12">
+<div class="row">
+                    <div class="col-12">
                         <div class="page-header">
                             <h2><i class="icon-comment-alt"></i> @Messages("appel.conf")<br> <small>
                             @Messages("longYearlyName"), @Messages(ConferenceDescriptor.current().timing.datesI18nKey)</small></h2>
                         </div>
                     </div>
-                    <div class="col-md-12">
+    
+                    <div class="col-12">
                         @if(flash.get("error").isDefined) {
                             <div class="alert alert-danger alert-dismissable">
                                 <strong>Error :</strong>
@@ -24,50 +24,51 @@
                             </div>
                         }
                     </div>
+    
                     <div class="col-md-6">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
+                        <div class="card">
+                            <div class="card-header">
                                 <h3><i class="icon-signin"></i> @Html(Messages("index.method1"))</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                                 @helper.form(action = routes.Authentication.login(visitor=false)) {
                                     @helper.inputText(loginForm("email"))
                                     @helper.inputPassword(loginForm("password"))
-                                    <button class="btn btn-default" type="submit">@Messages("btn.login")</button>
+                                    <button class="btn btn-primary" type="submit">@Messages("btn.login")</button>
                                     <a href="@routes.Authentication.forgetPassword()">@Messages("forget.password")</a>
                                 }
+                                <p class="mb-3"></p>
 
                                 <h4><i class="icon-external-link-sign"></i> @Html(Messages("index.method2"))</h4>
                                 <p>@Html(Messages("index.txt2"))</p>
-                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-primary" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
                                     Github</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
                                         Google</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.linkedinLogin()" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin()" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
                                         LinkedIn</a>
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                            <div class="panel panel-default">
-                            <div class="panel-heading">
+                            <div class="card">
+                            <div class="card-header">
                                 <h3><i class="icon-user"></i> @Html(Messages("index.signupTitle"))</h3>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                                 <p>@Html(Messages("index.signup2", Messages("longName")))</p>
-                                <a class="btn btn-default" href="@routes.Authentication.prepareSignup()">@Messages("index.signup.btn")</a>
+                                <a class="btn btn-primary" href="@routes.Authentication.prepareSignup()">@Messages("index.signup.btn")</a>
                                 <p>@Html(Messages("index.signup3"))</p>
-                                <p><a class="btn btn-default" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-primary" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
                                     Github</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
                                         Google</a>
-                                    <a class="btn btn-default" href="@routes.Authentication.linkedinLogin()" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin()" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
                                         LinkedIn</a>
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 }

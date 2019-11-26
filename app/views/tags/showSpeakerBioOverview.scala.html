@@ -2,11 +2,11 @@
 
 @models.Speaker.findByUUID(speakerId).map{speaker:Speaker=>
 <div class="panel-group">
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="card">
+        <div class="card-header">
             @tags.showSpeakerTag(speaker.uuid)
         </div>
-        <div class="panel-body">
+        <div class="card-body">
             @tags.checkInvited(speaker.uuid)
              <p>@speaker.bio</p>
              <h4>@Messages("qualifications.label")</h4>

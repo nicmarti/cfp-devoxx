@@ -2,14 +2,14 @@
 
 @models.Speaker.findByUUID(speakerId).map{speaker:Speaker=>
 <div class="panel-group">
- <div class="panel panel-default">
-    <div class="panel-heading">
+ <div class="card">
+    <div class="card-header">
                 @speaker.company.map{company=>
                     @tags.gticket.showSpeakerTag(speaker.uuid)
         }
     </div>
 
-     <div class="panel-body">
+     <div class="card-body">
          <p>@speaker.bio</p>
          <h4>@Messages("qualifications.label")</h4>
          @speaker.qualifications.map { q =>

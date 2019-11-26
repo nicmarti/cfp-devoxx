@@ -9,13 +9,13 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h1 class="panel-title"><i class="icon-bar-chart"></i> All submitted proposals for type : <span class="label label-primary">@confType</span> </h1>
                 </div>
 
-                <div class="panel-body">
-                    <div class="panel-body">
+                <div class="card-body">
+                    <div class="card-body">
                         <div class="col-md-12">
                         @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                             <a href="@routes.CFPAdmin.allProposalsByType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>

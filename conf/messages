@@ -96,7 +96,7 @@ title.help=Think carefully and try to create a title that is descriptive enough.
 summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
-phoneNumber=cell phone number
+phoneNumber=cell phone number (for emergency use only)
 lang.help=25% of talks at Devoxx FR are in English, the others are in French. If you speak French, please do present in French. If you are not sure, ask the question in the 'Message for program committee' textarea.
 track.help=Tracks are the main topics of the conference.
 
@@ -381,7 +381,7 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
-tags.renderComment.postedBy=Posted by {0} on {1} at {2}
+tags.renderComment.postedBy=Posted on {0} at {1}
 
 admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
@@ -954,3 +954,6 @@ cfp.member=CFP Member
 golden.welcome.txt=Welcome to the Golden Ticket private section. Buy a Golden Ticket on {0} web site, and get access to proposals! Be part of the team that review and select talks for {0}.
 
 publisher.proposal.roomHidden=Room name is available few days before the conference.
+your.reviewer.rank=Your reviewer rank
+reviewed=reviewed
+no.more.talk=There is no more talk to review

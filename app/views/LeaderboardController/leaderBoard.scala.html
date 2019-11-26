@@ -4,14 +4,14 @@
 @main("Leaderboard") {
     <div class="row">
         <div class="col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h1 class="panel-title"><i class="icon-trophy"></i> Leaderboard</h1>
                     <small>Stats are computed every 10 minutes</small><br>
                     <small><a href="@routes.LeaderboardController.doComputeLeaderBoard()" class="btn btn-sm btn-primary"><i class="icon-compass"></i> Trigger a refresh now</a></small>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     <div class="col-md-3">
                         <h1>@params.totalSpeakers</h1>
                         <small><i class="icon-user"></i> speakers</small>
