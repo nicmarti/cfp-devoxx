@@ -15,6 +15,8 @@ services:
       dockerfile: play.dockerfile
     volumes:
       - .:/app:rw
+      - ./target/.coursier:/root/.coursier
+      - ./target/.sbt:/root/.sbt
     ports:
       - "9000:9000"
     links:
