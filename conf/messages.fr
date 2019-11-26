@@ -275,6 +275,7 @@ freepass=Oui
 no.freepass=Non
 speakers.updated=Liste des présentateurs mises à jour
 noOther.speaker=---- Pas d''autre présentateur ----
+proposal.noOtherSpeakers=Votre type de proposition ne permet pas d'ajouter d'autre présentateur.
  
 # short talk
 conf=Conference

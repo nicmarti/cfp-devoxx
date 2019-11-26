@@ -303,6 +303,7 @@ freepass=Yes
 no.freepass=No
 speakers.updated=Speakers''s list updated
 noOther.speaker=---- No other speaker ----
+proposal.noOtherSpeakers=Your proposal type doesn't allow other speakers.
 
 # CFPadmin
 msgSpeaker=Your message

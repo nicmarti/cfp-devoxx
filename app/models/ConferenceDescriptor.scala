@@ -53,7 +53,8 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
                                  htmlClass: String,
                                  hiddenInCombo: Boolean = false,
                                  chosablePreferredDay: Boolean = false,
-                                 impliedSelectedTrack: Option[Track] = None)
+                                 impliedSelectedTrack: Option[Track] = None,
+                                 allowOtherSpeaker: Boolean = true)
 
 object ProposalConfiguration {
 
@@ -84,6 +85,10 @@ object ProposalConfiguration {
 
   def doesProposalTypeGiveSpeakerFreeEntrance(pt: ProposalType): Boolean = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.givesSpeakerFreeEntrance).headOption.getOrElse(false)
+  }
+
+  def doesProposalTypeAllowOtherSpeaker(pt: ProposalType): Boolean = {
+    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.allowOtherSpeaker).headOption.getOrElse(true)
   }
 }
 
@@ -157,7 +162,7 @@ object ConferenceDescriptor {
     val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "icon-beaker",
       chosablePreferredDay = true)
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-fast-forward",
-      chosablePreferredDay = true)
+      chosablePreferredDay = true, allowOtherSpeaker = false)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "icon-group",
       chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.KEY.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "icon-microphone",
