@@ -3,11 +3,11 @@
 @main("Speaker " + speaker.cleanName) {
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <h3><i class="icon-user"></i> @speaker.cleanName</h3>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
         @if(flash.get("error").isDefined){
           <div class="alert alert-danger alert-dismissable">
               <strong>Error :</strong>
@@ -100,11 +100,11 @@
     </div>
 @if(SecureCFPController.hasAccessToCFPAdmin(req)){
     <div class="col-md-12">
-        <div class="panel-heading">
+        <div class="card-header">
             <h3><i class="icon-bullhorn"></i> Talks</h3>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
                 @tags.renderProposals(proposals, currentUser)
             </div>
         </div>
@@ -112,10 +112,10 @@
 
     <div class="col-md-12">
         <div class="panel">
-            <Div class="panel-heading">
+            <Div class="card-header">
                 <H3><i class="icon-ambulance"></i> Safety check </H3>
         </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <p>Some Webuser have been corrupted by invalid UUID. Consequence is that a Speaker cannot reload its profile, and will create a new one.</p>
 
                 <p>UUID should be = @Webuser.generateUUID(speaker.email)</p>
@@ -128,7 +128,7 @@
                     }else{
                          <label class="label label-danger">No</label>
                         <div class="panel panel-danger">
-                            <div class="panel-body">Webuser and Speaker have different UUID => this will generate bugs and duplicate profiles.<br>
+                            <div class="card-body">Webuser and Speaker have different UUID => this will generate bugs and duplicate profiles.<br>
                                 <a class="btn btn-warning" href="@routes.Backoffice.fixForInvalidSpeakers(speaker.uuid)">Fix and re-create Webuser for this Speaker</a>
                         </div>
                         </div>
@@ -141,8 +141,8 @@
 }
 @if(SecureCFPController.hasAccessToAdmin(req)){
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
                 <form action="@routes.Backoffice.deleteSpeaker(speaker.uuid)" method="POST">
                     <h3>Trash</h3>
                     <small>Please enter DEL in this input box and click on the button <input type="text" name="secu" value="" placeholder="type here DEL"></small>

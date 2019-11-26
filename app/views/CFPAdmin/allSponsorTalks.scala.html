@@ -7,8 +7,8 @@
     <div class="clearfix"></div>
 
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <h1 class="panel-title"><i class="icon-bar-chart"></i> Proposals from Sponsor or Exhibitor</h1>
                 @proposals.size talks
             </div>
@@ -16,8 +16,8 @@
     </div>
     @proposals.map { proposal =>
             <div class="col-md-12">
-                <div class="panel panel-default">
-                <div class="panel-body">
+                <div class="card">
+                <div class="card-body">
                     <h3>@proposal.title</h3>
                     <h4>@Messages(proposal.track.label) - @Messages(proposal.talkType.id)</h4>
                     <p><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a> </p>

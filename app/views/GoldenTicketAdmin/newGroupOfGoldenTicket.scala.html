@@ -7,8 +7,8 @@
         </div>
         <div class="clearfix"></div>
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3>Create a group of golden ticket</h3>
                 </div>
                 <p><strong>Experimental !</strong> </p>
@@ -16,7 +16,7 @@
                     delimited bloc text to automatically create Golden Ticket.</p>
                 <p>A confirmation screen is shown for validation on the next screen.</p>
 
-                <div class="panel-body">
+                <div class="card-body">
                     <form action="@routes.GoldenTicketAdminController.importGroupOfGT()" method="post" enctype="application/x-www-form-urlencoded" accept-charset="UTF-8">
                         <p><small>Format is <em>ticketId,firstname,lastname,email,conf|combi|uni</em></small></p>
                         <label>Copy/paste =>

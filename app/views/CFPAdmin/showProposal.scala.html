@@ -2,13 +2,13 @@
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+        <div class="col-12 mt-2 mb-2">
+            <div class="card">
+                <div class="card-header">
                     <h3><i class="icon-signin"></i> @Messages("admin.proposal")</h3>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     <table class="table table-bordered table-stripped">
                         <thead>
                             <tr>
@@ -95,9 +95,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+        <div class="col-md-12 mb-2">
+            <div class="card">
+                <div class="card-header">
                     <h3><i class="icon-user"></i>
                         @if(proposal.secondarySpeaker.isDefined) {
                             @Messages("admin.sp.speakers")
@@ -106,7 +106,7 @@
                         }
                     </h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <table class="table">
                         <thead>
                             <tr>
@@ -143,7 +143,7 @@
         </div>
 
         @if(flash.get("error").isDefined) {
-            <div class="col-md-12">
+            <div class="col-12">
                 <div class="alert alert-danger alert-dismissable">
                     <strong>Error :</strong>
                     @flash.get("error").get
@@ -157,28 +157,28 @@
                 </div>
             </div>
         }
-        <div class="col-md-12">
-            <div class="panel panel-default">
+        <div class="col-md-12 mb-3">
+            <div class="card">
             @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
                 @if(approved) {
-                    <div class="panel-heading">
+                    <div class="card-header">
                         <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
                         @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
                             @if(maybeMyVote.isDefined && maybeMyVote.get.vote == 0) {
                                 <button name="vote" value="0" class="btn btn-sm btn-warning">Vote 0</button>
                             } else {
-                                <button name="vote" value="0" class="btn btn-sm btn-default">Vote 0</button>
+                                <button name="vote" value="0" class="btn btn-sm btn-primary">Vote 0</button>
                             }
                         }
                     </div>
                 } else {
-                    <div class="panel-heading">
+                    <div class="card-header">
                         <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary">@Messages("btn.showVotes")</a>
 
                         @Event.loadEventsForObjRef(proposal.id).find(_.msg.contains("draft to submitted")).map { event =>
@@ -198,28 +198,28 @@
                             <a href="@routes.CFPAdmin.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
                             }
                             <div class="btn-block">
-                                @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
-                                    @if(maybeMyVote.isDefined && maybeMyVote.get.vote == 0) {
-                                        <button name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
-                                    } else {
-                                        <button name="vote" value="0" class="btn btn-lg btn-default">@Messages("Abs")</button>
-                                    }
-                                    @for(i <- 1 to 10) {
-                                        @maybeMyVote.map { review: Review =>
-                                            @if(review.vote == i) {
-                                                <button name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
-                                            } else {
-                                                <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
-                                            }
-                                        }
-                                        @if(maybeMyVote.isEmpty) {
+                            @helper.form(action = routes.CFPAdmin.voteForProposal(proposal.id)) {
+                                @if(maybeMyVote.isDefined && maybeMyVote.get.vote == 0) {
+                                    <button name="vote" value="0" class="btn btn-lg btn-warning">@Messages("Abs")</button>
+                                } else {
+                                    <button name="vote" value="0" class="btn btn-lg btn-primary">@Messages("Abs")</button>
+                                }
+                                @for(i <- 1 to 10) {
+                                    @maybeMyVote.map { review: Review =>
+                                        @if(review.vote == i) {
+                                            <button name="vote" value="@i" class="btn btn-lg btn-vote" accesskey="@i">@i</button>
+                                        } else {
                                             <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
                                         }
                                     }
+                                    @if(maybeMyVote.isEmpty) {
+                                        <button name="vote" value="@i" class="btn btn-lg btn-color-@i" accesskey="@i">@i</button>
+                                    }
                                 }
                             }
-                    </div>
-                    </div>
+                            </div><!-- btn block -->
+                        }
+                    </div><!-- card body -->
                     @if(flash.get("vote").isDefined) {
                         <div class="alert alert-success alert-dismissable">
                         @flash.get("vote").get
@@ -227,74 +227,77 @@
                     }
                 }
             }
-            </div>
-            <div class="col-sm-12 col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+            </div><!-- 230 -->
+        </div><!-- 231 -->
+
+            <div class="col-12 mb-1" id="discussion">
+                <div class="card">
+                    <div class="card-header">
                         <h3><i class="icon-tasks"></i> @Messages("admin.sp.discussion")</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h4><i class="icon-comments-alt"></i> @Messages("admin.sp.committee_speaker")</h4>
+
+            <div class="col-md-6 col-sm-12 col-lg-6 mb-2">
+                <div class="card">
+                    <div class="card-header alert-danger">
+                        <h4 class="text-light"><i class="icon-comments-alt"></i> @Messages("admin.sp.committee_speaker")</h4>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                     @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
                         @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
                         <button type="submit" class="btb btn-xs btn-danger">@Messages("admin.btn.sendMessage")</button>
                     }
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                     @tags.renderComments(speakerComments)
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-12 col-lg-6 mb-2">
                 @* FIXME : Better variabilize week days by replacing the preferredDayEnabled flag *@
                 @if(ConferenceDescriptor.current().timing.preferredDayEnabled) {
                     @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
+                        <div class="card mb-1">
+                            <div class="card-header">
                                 <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                             @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
                                 @if(preferredDay == Some("Wed")) {
                                     <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.wednesday")</a>
                                 } else {
-                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Wed")" class="btn btn-sm btn-default">@Messages("calendar.pref.wednesday")</a>
+                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Wed")" class="btn btn-sm btn-primary">@Messages("calendar.pref.wednesday")</a>
                                 }
                                 @if(preferredDay == Some("Thu")) {
                                     <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.thursday")</a>
                                 } else {
-                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Thu")" class="btn btn-sm btn-default">@Messages("calendar.pref.thursday")</a>
+                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Thu")" class="btn btn-sm btn-primary">@Messages("calendar.pref.thursday")</a>
                                 }
                                 @if(preferredDay == Some("Fri")) {
                                     <a href="#" class="btn btn-sm btn-success">@Messages("calendar.pref.friday")</a>
                                 } else {
-                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Fri")" class="btn btn-sm btn-default">@Messages("calendar.pref.friday")</a>
+                                    <a href="@routes.CFPAdmin.setPreferredDay(proposal.id, "Fri")" class="btn btn-sm btn-primary">@Messages("calendar.pref.friday")</a>
                                 }
                                 @if(preferredDay.isDefined) {
-                                    <a href="@routes.CFPAdmin.resetPreferredDay(proposal.id)" class="btn btn-sm btn-default">@Messages("calendar.pref.reset")</a>
+                                    <a href="@routes.CFPAdmin.resetPreferredDay(proposal.id)" class="btn btn-sm btn-primary">@Messages("calendar.pref.reset")</a>
                                 }
                             }
                             </div>
                         </div>
                     }
                 }
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card">
+                    <div class="card-header">
                         <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                     @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id)) {
                         @helper.textarea(msgInternalForm("msg"), 'class -> "form-control input-xs")
                         <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
                     }
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                     @tags.renderComments(internalComments)
                     </div>
                 </div>

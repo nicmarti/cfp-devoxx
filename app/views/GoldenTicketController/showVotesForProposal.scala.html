@@ -2,8 +2,8 @@
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3><i class="icon-stackexchange"></i> Proposal @proposal.title</h3>
                 </div>
 
@@ -25,8 +25,8 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="card">
+                <div class="card-body">
 
                     <h3>@Messages("gt.vote.ok")</h3>
 
@@ -40,7 +40,7 @@
 <a class="btn btn-warning btn-sm" accesskey="r" href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="icon-backward"></i>@Messages("gt.showVotes.review")</a><br>
 <a class="btn btn-primary btn-sm" accesskey="h" href="@routes.GoldenTicketController.showAllProposals()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i> @Messages("gt.home")</a><br>
                 @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty){
- <a class="btn btn-default btn-sm" href="@routes.GoldenTicketController.showAllProposals()"><i class="icon-trophy"></i> @Messages("gt.nomore")</a><br>
+ <a class="btn btn-primary btn-sm" href="@routes.GoldenTicketController.showAllProposals()"><i class="icon-trophy"></i> @Messages("gt.nomore")</a><br>
                 }
                 @if(nextToBeReviewedSameTrack.nonEmpty && nextToBeReviewedSameFormat.nonEmpty){
                      @if(nextToBeReviewedSameTrack.head.track.id ==  proposal.track.id ) {

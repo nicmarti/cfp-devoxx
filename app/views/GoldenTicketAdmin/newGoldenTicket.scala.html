@@ -27,11 +27,11 @@
             </div>
         }
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3>New golden ticket</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
 
                     @helper.form(action = routes.GoldenTicketAdminController.saveGoldenTicket(), 'class->"form-inline") {
                             @helper.inputText(formTicket("ticketId"), '_label -> "EventBrite ID or Ticket id", 'size -> 40)

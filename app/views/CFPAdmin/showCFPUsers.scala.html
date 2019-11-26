@@ -6,12 +6,12 @@
 @main("Diff between you and another reviewer"){
 <div class="row">
     <div class="col-sm-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <h3><i class="icon-user-md"></i> Configure track leader</h3>
             </div>
 
-            <div class="panel-body">
+            <div class="card-body">
             @if(flash.get("error").isDefined) {
             <div class="alert alert-danger alert-dismissable">
             <strong>Error :</strong>
@@ -50,7 +50,7 @@
                 </tbody>
             </table>
 <button value="save" type="submit" class="btn btn-success"><i class="icon-save"></i> Save the full list</button><br>
-<a href="@routes.Backoffice.homeBackoffice()" class="btn btn-default">Go back to Backoffice</a>
+<a href="@routes.Backoffice.homeBackoffice()" class="btn btn-primary">Go back to Backoffice</a>
 }
 
             </div>

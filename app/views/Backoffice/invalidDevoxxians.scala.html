@@ -19,12 +19,12 @@
       </div>
     }
     <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="card">
+        <div class="card-header">
           <h3>@devoxxians.size Devoxxians</h3>
           <p>Those are invalid and duplicate profiles</p>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
         @if(devoxxians.nonEmpty){
           <a href="@routes.CFPAdmin.allDevoxxians()" class="btn btn-warning">Show all Devoxxians</a>
           <table class="table table-bordered table-strippted">

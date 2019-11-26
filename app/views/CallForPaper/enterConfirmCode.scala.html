@@ -3,11 +3,11 @@
 @main(Messages("cfp.title")) {
     <div class="row">
         <div class="col-md-8 col-xs-12 col-lg-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3><i class="icon-phone-sign"></i> @Messages("confirm.phone")</h3>
                 </div>
-                <Div class="panel-body">
+                <Div class="card-body">
                     @if(confirmPhone.hasErrors) {
                         <div class="alert alert-danger">
                             <p>@Messages("confirm.phone.error")</p>

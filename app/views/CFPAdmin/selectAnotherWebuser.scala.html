@@ -3,12 +3,12 @@
 @main("Diff between you and another reviewer"){
 <div class="row">
     <div class="col-sm-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <h3><i class="icon-list"></i> Select another user to compare with:</h3>
             </div>
 
-            <div class="panel-body">
+            <div class="card-body">
     @webusers.filterNot(_.uuid==SecureCFPController.getCurrentUser(req).get.uuid).sortBy(_.firstName).map{webuser=>
         <p><a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(Some(webuser.uuid))">@webuser.cleanName</a></p>
     }

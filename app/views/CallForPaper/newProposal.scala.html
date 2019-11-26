@@ -5,8 +5,8 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     @if(newProposal("id").value.isDefined) {
                         <h2>@Messages("Edit.proposal")</h2>
                     } else {
@@ -195,8 +195,8 @@
             }
             <div class="row">
                 <div class="col-12">
-                    <div class="panel panel-default">
-                        <Div class="panel-body">
+                    <div class="card">
+                        <Div class="card-body">
                             <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
                             <button id="preview" type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
                         </Div>

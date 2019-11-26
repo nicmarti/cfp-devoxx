@@ -23,11 +23,11 @@
         </div>
 
         <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3><i class="icon-stackexchange"></i> @Messages("wishList.createRequest")</h3>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                 @helper.form(action = routes.Wishlist.saveNewRequestToTalk) {
                     @helper.inputText(newRequestToTalkForm("wl_speakerName"), 'class->"form-control")
                     @helper.inputText(newRequestToTalkForm("wl_company"), 'class->"form-control")

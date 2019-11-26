@@ -15,7 +15,7 @@
                 <br>
                 <i class="icon-filter"></i> Show only:
                 @Track.allIDs.map { idTrack =>
-                    <a href="@routes.CFPAdmin.allVotes(confType, Some(idTrack))" class="btn btn-default btn-sm">@idTrack
+                    <a href="@routes.CFPAdmin.allVotes(confType, Some(idTrack))" class="btn btn-primary btn-sm">@idTrack
                         - @confType</a>
                 }
                 <br>

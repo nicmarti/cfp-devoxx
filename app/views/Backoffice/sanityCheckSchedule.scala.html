@@ -27,8 +27,8 @@
     }
 
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <h3><i class="icon-medkit"></i> Sanity check</h3>
                 <p>This screen loads all Scheduled configuration. For each configuration, it checks the current proposal state.
                    If a speaker declines a talk after it has been published, you will have to update the Schedule configuration with the AngularJS app.
@@ -36,7 +36,7 @@
                 </p>
             </div>
 
-            <div class="panel-body">
+            <div class="card-body">
                 <h3>List of talks with status "Approved"</h3>
                 @if(approved.nonEmpty) {
                     <p>You need to check and to confirm "Accepted" talks, remove "Declined" talks since the agenda has been published.
@@ -45,13 +45,13 @@
 
                     @approved.map{slot=>
                         <div class="panel panel-warning">
-                            <div class="panel-heading">
+                            <div class="card-header">
                                 <h4>@slot.name @slot.id</h4>
                                 <p>@slot.proposal.get.id - @slot.proposal.get.title</p>
                                 <p>Presented by @slot.proposal.get.allSpeakers.map(_.cleanName).mkString(", ")</p>
                             </div>
 
-                            <div class="panel-body">
+                            <div class="card-body">
                                 @defining(Proposal.findProposalState(slot.proposal.get.id).get){currentState:ProposalState=>
                                     <p>Proposal state on the published Agenda: <span class="alert alert-danger">@Messages(slot.proposal.get.state.code)</span></p>
                                     <p>Current state on Redis: @Messages(currentState.code)</p>
@@ -90,12 +90,12 @@
 
                     @declined.map{slot=>
                         <div class="panel panel-info">
-                            <div class="panel-heading">
+                            <div class="card-header">
                                 <h4 class="panel-header"> @slot.name @slot.id</h4>
                                 <p><a href="@routes.CFPAdmin.openForReview(slot.proposal.get.id)">@slot.proposal.get.id - @slot.proposal.get.title</a></p>
                                 <p>Presented by @slot.proposal.get.allSpeakers.map(_.cleanName).mkString(", ")</p>
                             </div>
-                            <div class="panel-body">
+                            <div class="card-body">
                                 <i class="icon-info-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
                             </div>
                         </div>
@@ -114,12 +114,12 @@
 
                     @acceptedThenChangedToOtherState.map{slot=>
                         <div class="panel panel-info">
-                            <div class="panel-heading">
+                            <div class="card-header">
                         <h4 class="panel-header"> @slot.name @slot.id</h4>
                         <p><a href="@routes.CFPAdmin.openForReview(slot.proposal.get.id)">@slot.proposal.get.id - @slot.proposal.get.title</a></p>
                         <p>Presented by @slot.proposal.get.allSpeakers.map(_.cleanName).mkString(", ")</p>
                                 </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="alert alert-info">
                                 <i class="icon-info-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
                             </div>
@@ -154,17 +154,17 @@
     @if(conflicts.nonEmpty) {
         <div class="col-md-12">
             <div class="panel panel-danger">
-                <div class="panel-heading">
+                <div class="card-header">
                     <h2>Conflicts</h2>
                 </div>
             </div>
             <p>The following talks are scheduled on the same day, same time slot, for the same speaker : </p>
             @conflicts.map{case(speaker,timeSlots)=>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card">
+                    <div class="card-header">
                         <h4>@speaker.cleanName</h4>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
 
                 @timeSlots.map{case(time:org.joda.time.DateTime,slots)=>
                     <b>Conflict on @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE HH:mm")</b><br>

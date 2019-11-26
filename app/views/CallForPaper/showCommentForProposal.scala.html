@@ -3,12 +3,12 @@
 @main("Comments for proposal " + proposal.id) {
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3><i class="icon-bullhorn"></i> @Messages("comment.proposal")</h3>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     <table class="table table-bordered table-strippted">
                         <thead>
                             <tr>
@@ -43,7 +43,7 @@
                     </table>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                 @helper.form(action = routes.CallForPaper.sendMessageToCommittee(proposal.id)) {
                     @helper.textarea(msgToCommitte("msg"), 'class -> "form-control input-xs")
                     <button type="submit" class="btn btn-sm btn-success">@Messages("cfp.msg.sendMsg")</button>
@@ -51,7 +51,7 @@
                     <a class="btn btn-primary btn-sm">@Messages("ar.goBackHome")</a>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                 @tags.renderComments(comments)
                 </div>
             </div>

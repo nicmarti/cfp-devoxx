@@ -1,12 +1,12 @@
 @(total:Int, results:Seq[String], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 <div class="panel">
-    <div class="panel-heading">
+    <div class="card-header">
         <h3 class="panel-title">@Messages("search.result" , total)</h3>
     </div>
 </div>
 <div class="panel">
     <div class="col-lg-4 col-lg-offset-8">
-        @Messages("search.showOnly")  <a href="#" id="onlySpeakers" class="btn btn-sm btn-success">@Messages("search.onlySpeakers")</a> <a href="#" id="onlyProposals" class="btn btn-sm btn-default">@Messages("search.onlyProposals")</a>
+        @Messages("search.showOnly")  <a href="#" id="onlySpeakers" class="btn btn-sm btn-success">@Messages("search.onlySpeakers")</a> <a href="#" id="onlyProposals" class="btn btn-sm btn-primary">@Messages("search.onlyProposals")</a>
         <a href="#" id="closeSearch" class="btn btn-sm btn-primary"><i class="icon-remove"></i> @Messages("search.close")</a>
     </div>
 </div>

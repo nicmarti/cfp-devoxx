@@ -10,15 +10,15 @@
         <div class="clearfix"></div>
 
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h3>Published talks</h3>
 
                     <p>Show the list of talks which have been edited compared to the published version on the Program.</p>
                     <p>Review and confirm each update, to update the published agenda.</p>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
 
                 @errors.map { case err =>
                     <div class="col-md-12">
@@ -26,13 +26,13 @@
                         <a href="@routes.CFPAdmin.openForReview(err.p.id)">see details</a> </h4>
                         <strong>@err.errMsg</strong>
                         <div class="panel">
-                            <div class="panel-heading">Before</div>
-                            <div class="panel-body">
+                            <div class="card-header">Before</div>
+                            <div class="card-body">
                                 <pre>@err.initialValue</pre>
                             </div>
 
-                            <div class="panel-heading">After</div>
-                            <div class="panel-body">
+                            <div class="card-header">After</div>
+                            <div class="card-body">
                                 <pre>@err.newValue</pre>
                             </div>
 

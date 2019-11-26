@@ -13,8 +13,8 @@
     @main("Votes for " + proposal.id + "/" + proposal.title) {
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card">
+                    <div class="card-header">
                         <h3><i class="icon-stackexchange"></i> @proposal.title</h3>
                     </div>
 
@@ -33,11 +33,11 @@
             </div>
 
             <div class="col-md-6 col-lg-4 col-sm-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card">
+                    <div class="card-header">
                         <h3>@currentAverageScore <small>@Messages("svp.score")</small></h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                             <div class="progress" style="height: 50px">
                                 <div class="progress-bar progress-bar-success" style="width: @Math.round(currentAverageScore*10)%">
                                     <span> @currentAverageScore by @totalVotesCast Commitee</span>
@@ -77,11 +77,11 @@
             </div>
 
             <div class="col-md-6 col-lg-4 col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card">
+                    <div class="card-header">
                         <h3>@Messages("svp.allVotes")</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
 
                     @if(proposal.mainSpeaker == currentUser || proposal.secondarySpeaker.contains(currentUser) || proposal.otherSpeakers.contains(currentUser)) {
                         <em>@Messages("svp.noshow")</em>
@@ -101,11 +101,11 @@
 
             @if(ConferenceDescriptor.isGoldenTicketActive) {
                 <div class="col-md4 col-lg-4 col-sm-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                    <div class="card">
+                        <div class="card-header">
                             <h3>@averageScoreGT <small>@Messages("svp.goldenTicket.title")</small></h3>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
 
                         @if(countVotesCastGT.isEmpty) {
                             @Messages("svp.gt.novotes")
@@ -131,11 +131,11 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card">
+                    <div class="card-header">
                         <h3>Your reviewer rank</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <div class="row">
                     @bestReviewers.map { subList =>
                         @subList.map{ case(uuid, pts, totalReviewed)=>
@@ -163,13 +163,13 @@
 
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="icon-backward"></i> @Messages("gt.showVotes.review")</a>
                         <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i> @Messages("gt.home")</a>
 
                         @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty) {
-                            <a class="btn btn-default" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i>
+                            <a class="btn btn-primary" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i>
                                 There is no more talk to review</a>
                         }
                         <br>
