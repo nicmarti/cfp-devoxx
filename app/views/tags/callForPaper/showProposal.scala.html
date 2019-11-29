@@ -19,11 +19,6 @@
                  }
              </div>
      <div class="card-body">
-          @if(proposal.state.code == "draft") {
-                    <div class="alert alert-warning">
-                        <p class="card-text"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</p>
-                    </div>
-                }
                 @if(proposal.sponsorTalk) {
                     <div class="alert alert-success">
                         <p class="card-text"><i class="icon-screenshot"></i> Sponsor talk</p>
@@ -32,9 +27,16 @@
      </div>
 
                  <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                          <a class="card-link" href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a>
+                          @if(proposal.state.code == "draft") {
+                            <div class="btn btn-warning">
+                              <p class="card-text"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</p>
+                            </div>
+                          }
+                        </li>
                         <li class="list-group-item" ><a class="card-link" href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.edit")</a></li>
                         <li class="list-group-item"><a class="card-link" href="@routes.CallForPaper.editOtherSpeakers(proposal.id)" title="@Messages("table.speaker.addremove")"> @Messages("table.speaker.addremove")</a></li>
-                        <li class="list-group-item"><a class="card-link" href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a></li>
                         <li class="list-group-item">
                             @defining(models.Comment.countComments(proposal.id)) { msgProposals =>
                               @if(msgProposals > 0){
