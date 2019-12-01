@@ -702,9 +702,9 @@ object ConferenceDescriptor {
       firstDayEn = "april 15th",
       datesFr = "du 15 au 17 avril 2020",
       datesEn = "from 15th to 17th of April, 2020",
-      cfpOpenedOn = DateTime.parse("2019-12-01T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2020-01-16T23:59:00+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2020-02-15T00:00:00+02:00"),
+      cfpOpenedOn = DateTime.parse("2019-12-02T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2020-01-12T23:59:59+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2020-03-01T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
