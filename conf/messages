@@ -116,8 +116,9 @@ demoLevel.help=
 title.maxLength=125 char max.
 
 
-privateMessage=Message for the program committee, motivation for your presentation
-privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk for example on Parleys.com.
+privateMessage=Message for the program committee
+privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk.
+privateMessage.help.important=If you have any doubt about your proposal, don't hesitate to tell us and we will help you to improve it.
 sponsorTalk=Is this a sponsor presentation?
 videoLinkMessage=Related video link
 videoLinkMessage.help=Share with the program committee a link to one of your related online videos on YouTube or Vimeo
