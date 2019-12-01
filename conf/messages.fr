@@ -138,8 +138,7 @@ bof.label=Bird of a Feather, 1h, jeudi soir uniquement
 other.label=Autre type de présentation
 lab.label=Hands-on Lab, 3h, mercredi, jeud et vendredi
 hack.label=Hackaton (événement spécial)
-ignite.label=Conférence Ignite, 5mn, jeudi et vendredi de 13h à 14h
- 
+
 # Bug report
 Issue.report=Notifier l''équipe
 btn.send=Envoyer

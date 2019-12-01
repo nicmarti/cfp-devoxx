@@ -160,8 +160,6 @@ other.label=Other event
 other.label.simple=Other
 start.label=Startup Talk, 25 min, Wednesday to Friday
 start.label.simple=Startup
-ignite.label=Ignite Sessions, 5 min, Wednesday to Thursday early afternoon
-ignite.label.simple=Ignite
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
@@ -461,7 +459,6 @@ key=Keynote
 other=Other format
 all=All
 start=Startup presentation
-ignite=Ignite Sessions
 amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
@@ -476,7 +473,6 @@ sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.start=All Startup''s talks
-sw.all.ignite=All Ignite Sessions
 sw.all.tia=All Tools in Action
 sw.speakers=Devoxxians
 sw.intro=The agenda is published every day.
