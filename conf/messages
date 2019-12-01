@@ -156,7 +156,7 @@ bof.label=Bird of a Feather, 1h, Thursday evening only
 bof.label.simple=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Wednesday, Thursday and Friday
 lab.label.simple=Hands-on Lab
-other.label=Other event
+other.label=Other event - ⛔️ Only on invitation.
 other.label.simple=Other
 
 hack.label.simple=Hackatons
