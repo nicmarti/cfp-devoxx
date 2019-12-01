@@ -696,7 +696,7 @@ object ConferenceDescriptor {
     ),
     timing = ConferenceTiming(
       datesI18nKey = "15 au 17 avril 2020",
-      speakersPassDuration = 5,
+      speakersPassDuration = 3,
       preferredDayEnabled = true,
       firstDayFr = "15 avril",
       firstDayEn = "april 15th",
