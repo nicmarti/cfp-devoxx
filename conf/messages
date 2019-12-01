@@ -158,8 +158,6 @@ lab.label=Hands-on Labs, 3h, Wednesday, Thursday and Friday
 lab.label.simple=Hands-on Lab
 other.label=Other event
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Friday
-start.label.simple=Startup
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
@@ -458,8 +456,6 @@ hack=Hackaton
 key=Keynote
 other=Other format
 all=All
-start=Startup presentation
-amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
@@ -472,7 +468,6 @@ sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
-sw.all.start=All Startup''s talks
 sw.all.tia=All Tools in Action
 sw.speakers=Devoxxians
 sw.intro=The agenda is published every day.
