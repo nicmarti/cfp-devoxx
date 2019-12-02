@@ -97,7 +97,8 @@ summary=Summary of your presentation, for the attendee
 summary.help=Describe your proposal as it will appear on our website and mobile apps. You can use Markdown syntax.
 lang=Main language
 phoneNumber=cell phone number (for emergency use only)
-lang.help=25% of talks at Devoxx FR are in English, the others are in French. If you speak French, please do present in French. If you are not sure, ask the question in the 'Message for program committee' textarea.
+lang.help=25% of talks at Devoxx FR are in English, the others are in French. If you are not sure, ask the question in the 'Message for program committee' textarea.
+lang.important=If you speak French, please do present in French. 
 track.help=Tracks are the main topics of the conference.
 
 mainSpeaker=Main speaker
@@ -115,14 +116,15 @@ demoLevel.help=
 title.maxLength=125 char max.
 
 
-privateMessage=Message for the program committee, motivation for your presentation
-privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk for example on Parleys.com.
+privateMessage=Message for the program committee
+privateMessage.help=Write here any important details about your presentation, that the program committee should know. You can also set here the URL to your slides, or a link to an existing online talk.
+privateMessage.help.important=If you have any doubt about your proposal, don't hesitate to tell us and we will help you to improve it.
 sponsorTalk=Is this a sponsor presentation?
 videoLinkMessage=Related video link
-videoLinkMessage.help=Share with the program committee a link to one of your related online videos on YouTube or Vimeo
+videoLinkMessage.help=Share with the program committee a link to one of your related online videos. Use the full URL on YouTube or other.
 sponsorTalk.help.title=Sponsor talk
 sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinum only.
-sponsorTalk.help=Platinum and Gold sponsors at Devoxx France can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
+sponsorTalk.help=Diamond and Platinum sponsors at Devoxx France can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
 helpAndTips=More info
@@ -141,7 +143,7 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Thursday and Friday
+key.label=Keynote, 20mn, Thursday and Friday - ⛔️ Only on the invitation of the CFP Team.
 key.label.simple=Keynote
 conf.label=Conference, 45mn, Thursday and Friday
 conf.label.simple=Conference
@@ -155,12 +157,8 @@ bof.label=Bird of a Feather, 1h, Thursday evening only
 bof.label.simple=Bird of a Feather
 lab.label=Hands-on Labs, 3h, Wednesday, Thursday and Friday
 lab.label.simple=Hands-on Lab
-other.label=Other event
+other.label=Other event - ⛔️ Only on invitation.
 other.label.simple=Other
-start.label=Startup Talk, 25 min, Wednesday to Friday
-start.label.simple=Startup
-ignite.label=Ignite Sessions, 5 min, Wednesday to Thursday early afternoon
-ignite.label.simple=Ignite
 
 hack.label.simple=Hackatons
 code.label.simple=Codestory
@@ -266,6 +264,7 @@ table.pres.action=Actions
 table.pres.doSubmit=Submit
 table.pres.doDelete=Delete
 
+proposal.limit=The limit is {0} maximum allowed proposals per speaker.
 proposal.draft.reminder=Do not forget to submit your talk
 
 total.draft={0} proposals
@@ -302,6 +301,7 @@ freepass=Yes
 no.freepass=No
 speakers.updated=Speakers''s list updated
 noOther.speaker=---- No other speaker ----
+proposal.noOtherSpeakers=Your proposal type doesn't allow other speakers.
 
 # CFPadmin
 msgSpeaker=Your message
@@ -381,7 +381,7 @@ admin.draft.warning3=Current proposal state :
 
 newProposal.maxLength=Max size is 1200 characters (including Markdown characters, if you want to use it)
 preview.txt=Preview Conference guide (sample page)
-tags.renderComment.postedBy=Posted on {0} at {1}
+tags.renderComment.postedBy=Posted by {0} on {1} at {2}
 
 admin.btn.sponsor=VIP view on proposals
 leaderboard.compute=Computing stats
@@ -457,9 +457,6 @@ hack=Hackaton
 key=Keynote
 other=Other format
 all=All
-start=Startup presentation
-ignite=Ignite Sessions
-amd=Après-midi des Décideurs
 
 sw.proposal.speaker=Presented by
 admin.btn.changeState=Change one proposal state
@@ -472,8 +469,6 @@ sw.all.conf=All Conferences
 sw.all.lab=All Hands-on labs
 sw.all.quick=All Quickies
 sw.all.bof=All BOFs
-sw.all.start=All Startup''s talks
-sw.all.ignite=All Ignite Sessions
 sw.all.tia=All Tools in Action
 sw.speakers=Devoxxians
 sw.intro=The agenda is published every day.
@@ -954,6 +949,3 @@ cfp.member=CFP Member
 golden.welcome.txt=Welcome to the Golden Ticket private section. Buy a Golden Ticket on {0} web site, and get access to proposals! Be part of the team that review and select talks for {0}.
 
 publisher.proposal.roomHidden=Room name is available few days before the conference.
-your.reviewer.rank=Your reviewer rank
-reviewed=reviewed
-no.more.talk=There is no more talk to review

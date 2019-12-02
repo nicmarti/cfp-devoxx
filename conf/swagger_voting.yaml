@@ -84,7 +84,7 @@ paths:
         - name: talkType
           in: query
           type: string
-          description: Proposal type (conf, uni, tia, labs, key, ignite...)
+          description: Proposal type (conf, uni, tia, labs, key...)
           required: false
         - name: track
           in: query

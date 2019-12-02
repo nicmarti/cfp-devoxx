@@ -96,7 +96,8 @@ title.help=Proposez un titre simple, clair, qui résume ce que le participant va
 summary=Résumé de votre présentation pour le participant
 summary.help=Décrivez votre proposition, telle que le conférencier la lira. Vous pouvez utiliser la syntaxe <a href="http://daringfireball.net/projects/markdown/syntax/" target="_blank">Markdown</a>.
 lang=Langue
-lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais. Si vous êtes francophone, merci de présenter en Français.
+lang.help=75% des présentations à Devoxx France doivent être en Français, 25% en Anglais.
+lang.important=Si vous êtes francophone, merci de présenter en Français.
 mainSpeaker=Présentateur principal
 mainSpeaker.help=Vous avez la possibilité d''ajouter d''autres présentateurs une fois que la proposition est créé. Nous offrons une entrée 3 jours à Devoxx France uniquement pour les formats de présentation suivants : Conference, University, Hands-on-Labs et Tools-in-Action.
 talkType.help=Chaque type de conférence est détaillé sur la page <a href="http://www.devoxx.fr/faq" target="new">FAQ</a> du site Devoxx France.
@@ -106,8 +107,9 @@ talkType=Type de présentation
 audienceLevel=Niveau de la présentation
 privateMessage=Message pour le comité de sélection
 privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation, l''ensemble des éléments qui doivent nous faire choisir votre proposition de sujet. Vous pouvez inclure l''URL vers vos diapositives si vous le souhaitez.
+privateMessage.help.important=Si vous avez des doutes sur votre proposition, n'hésitez pas à nous le dire et nous vous aiderons à l'améliorer.
 sponsorTalk=Merci de cocher cette case s''il s''agit de la présentation "exposant/sponsor" lié au sponsoring
-sponsorTalk.help=Les sponsors Gold et Platinium peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée. Ne cochez pas cette case si votre société est sponsor alors que vous souhaitez simplement proposer un sujet.
+sponsorTalk.help=Les sponsors Diamond et Platinum peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée. Ne cochez pas cette case si votre société est sponsor alors que vous souhaitez simplement proposer un sujet.
 sponsorTalk.help.title=Talk sponsor
 sponsor.name.plz=Merci d''indiquer le nom de votre société dans le champ "Message privé pour le comité"
 sponsorTalk.checkbox=Présentation sponsor/exposant
@@ -127,18 +129,17 @@ preview.warn2=dans le tableau de la page d''accueil.
 presubmit.reminder=Lorsque vous êtes prêt à envoyer votre proposition, n''oubliez pas d''utiliser le bouton "Soumettre"
 
 # Proposal type
-key.label=Keynote, 20mn, jeudi et vendredi matin
+key.label=Keynote, 20mn, jeudi et vendredi matin - ⛔️ Uniquement sur invitation de l'équipe du CFP
 conf.label=Conference, 45mn, jeudi et vendredi
 uni.label=University, 3h, mercredi uniquement
 tia.label=Tools in Action, 30mn, mercredi/jeudi
 quick.label=Quickie, 15mn, jeudi et vendredi midi
 amd.label=Après-midi des Décideurs, 30mn, jeudi après-midi
 bof.label=Bird of a Feather, 1h, jeudi soir uniquement
-other.label=Autre type de présentation
+other.label=Autre type de présentation - ⛔️ Uniquement sur invitation.
 lab.label=Hands-on Lab, 3h, mercredi, jeud et vendredi
 hack.label=Hackaton (événement spécial)
-ignite.label=Conférence Ignite, 5mn, jeudi et vendredi de 13h à 14h
- 
+
 # Bug report
 Issue.report=Notifier l''équipe
 btn.send=Envoyer
@@ -241,6 +242,8 @@ table.pres.delete=Mettre à la poubelle
 table.pres.action=Actions
 table.pres.doSubmit=Soumettre
 table.pres.doDelete=Effacer
+
+proposal.limit=La limite est de {0} sujets proposés par speaker.
 proposal.draft.reminder=N''oubliez pas de soumettre ce sujet
  
 total.draft={0} propositions
@@ -269,11 +272,12 @@ secondarySpeaker=Présentateur adjoint (optionnel)
 select.secondarySpeaker=Sélectionnez un speaker
 proposal.otherSpeakers=Autres présentateurs
 otherSpeakers=Autres présentateurs
-proposal.buyPass=Entrée 3 jours "speaker" inclus ?
+proposal.buyPass=Entrée {0} jours "speaker" inclus?
 freepass=Oui
 no.freepass=Non
 speakers.updated=Liste des présentateurs mises à jour
 noOther.speaker=---- Pas d''autre présentateur ----
+proposal.noOtherSpeakers=Votre type de proposition ne permet pas d'ajouter d'autre présentateur.
  
 # short talk
 conf=Conference
@@ -591,9 +595,6 @@ quick.label.simple=Quickie
 remove.sponsorFlag=Retirer le flag sponsor de cette présentation
 shortName=Devoxx FR
 ssj.label=Server Side Java
-start=Startup presentation
-start.label=
-start.label.simple=
 sw.hackatons=Hackatons
 table.pres.trash=Effacer cette proposition
 tia.label.simple=Tools in Action

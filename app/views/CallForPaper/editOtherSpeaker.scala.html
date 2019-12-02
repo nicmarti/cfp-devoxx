@@ -48,26 +48,34 @@
                         }
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control")
+                    @if(ProposalConfiguration.doesProposalTypeAllowOtherSpeaker(proposal.talkType)) {
+                      <tr>
+                          <td>
+                              @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control")
+                          </td>
+                          <td>
+                            @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
+                              <span class="label label-success">@Messages("freepass")</span>
+                            } else {
+                              <span class="label label-warning">@Messages("no.freepass")</span>
+                            }
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                              @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control-cfp", 'multiple->"true" )
+                          </td>
+                          <td>
+                              <span class="label label-warning">@Messages("no.freepass")</span>
+                          </td>
+                      </tr>
+                    } else {
+                      <tr>
+                        <td colspan="2">
+                          <span class="label label-warning">@Messages("proposal.noOtherSpeakers")</span>
                         </td>
-                        <td>
-                          @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
-                            <span class="label label-success">@Messages("freepass")</span>
-                          } else {
-                            <span class="label label-warning">@Messages("no.freepass")</span>
-                          }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control-cfp", 'multiple->"true" )
-                        </td>
-                        <td>
-                            <span class="label label-warning">@Messages("no.freepass")</span>
-                        </td>
-                    </tr>
+                      </tr>
+                    }
                 </tbody>
                     <tfoot>
                         <tr>
