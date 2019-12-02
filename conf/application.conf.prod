@@ -104,6 +104,7 @@ play {
 }
 
 # Set to false will close the CFP for speakers
+cfp.isOpen=false
 cfp.isOpen=${CFP_IS_OPEN}
 
 akka.jvm-exit-on-fatal-error=false
@@ -118,10 +119,6 @@ ws.useragent="Play2 Scala WS for Devoxx"
 
 akka.log-dead-letters-during-shutdown=false
 
-bitbucket.issues.url=${BITBUCKET_URL}
-bitbucket.username=${BITBUCKET_USERNAME}
-bitbucket.password=${BITBUCKET_PASSWORD}
-
 # Set to true if you want to show Golden Ticket votes in the show vote view
 goldenTicket.active=${ACTIVATE_GOLDEN_TICKET}
 
@@ -132,6 +129,7 @@ cfp.activateHTTPS=${ACTIVATE_HTTPS}
 trustxforwarded=true
 
 # ACtivate or not the "Favorites / MySchedule" system on the CFP
+cfp.activateFavorites=false
 cfp.activateFavorites=${ACTIVATE_FAVORITES}
 
 # Bucket name that stores static HTML pages from previous edition
@@ -140,12 +138,8 @@ cfp.activateFavorites=${ACTIVATE_FAVORITES}
 bucket.rootFolder=${BUCKET_ROOTFOLDER}
 
 # open or close the votes for talks from mobile app
+mobile.vote.isActive=false
 mobile.vote.isActive=${ACTIVATE_VOTE}
-
-# AWS Credentials
-aws.key=${AWS_KEY}
-aws.secret=${AWS_SECRET}
-aws.region=${AWS_REGION}
 
 # Email Digest
 # Daily is a 24h time setting, for example "08:00" or "17:00"
