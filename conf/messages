@@ -143,7 +143,7 @@ preview.warn2=in the main CFP screen.
 next.action=Select next action:
 
 # Proposal type
-key.label=Keynote, 20mn, Thursday and Friday - ⛔️ Only on the invitation of the CFP Team.
+key.label=Keynote, 20mn, Thursday and Friday - ⛔️ Only on invitation.
 key.label.simple=Keynote
 conf.label=Conference, 45mn, Thursday and Friday
 conf.label.simple=Conference
@@ -301,7 +301,7 @@ freepass=Yes
 no.freepass=No
 speakers.updated=Speakers''s list updated
 noOther.speaker=---- No other speaker ----
-proposal.noOtherSpeakers=Your proposal type doesn't allow other speakers.
+proposal.noOtherSpeakers=Your proposal type doesn't allow to add another speaker.
 
 # CFPadmin
 msgSpeaker=Your message
