@@ -6,7 +6,7 @@ services:
      - 9200
   redis:
    container_name: cfp-devoxx_redis
-   image : redis:2.8.21
+   image : redis:5.0.3
    expose:
      - 6379
   play:

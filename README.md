@@ -142,11 +142,10 @@ Use WGET and download all pages from your Publisher controller. This will save s
 
 ## Can you help me with Redis 2.8.x ?
 
-Downloading redis...tag.gz from http://download.redis.io/releases/redis-2.8.21.tar.gz
+Downloading redis...tag.gz from http://download.redis.io/releases/redis-5.0.3.tar.gz
 
-The CFP has been tested with Redis from version 2.8.4 to 2.8.19. Always check that your version is up-to-date in term
-of security [here](https://raw.githubusercontent.com/antirez/redis/2.8/00-RELEASENOTES). I plan to upgrade and to check 
-that the CFP code is OK with Redis 3.x before Devoxx France 2016.
+The CFP has been tested with Redis 5.0.3. Always check that your version is up-to-date in term
+of security [here](https://raw.githubusercontent.com/antirez/redis/2.8/00-RELEASENOTES). 
 
 Unpack the archive
 
@@ -356,11 +355,11 @@ Pré-requis : Java 7 fortement conseillé pour des raisons de performances.
 - Décompressez dans un répertoire, ajouter le répertoire à votre PATH
 - Placez-vous dans un nouveau répertoire et vérifiez que Play2 est bien installé avec la commande "play"
 
-## Installation de Redis  2.8.4
+## Installation de Redis 5.0.3
 
 Pré-requis : les utilitaires make, gcc correctement installés via XCode ou brew.
 
-- Téléchargez http://download.redis.io/releases/redis-2.8.4.tar.gz
+- Téléchargez http://download.redis.io/releases/redis-5.0.3.tar.gz
 - Décompressez, et suivez les inscrutions du fichier README, pour compiler Redis
 - Effectuez un "make install" en tant que root afin d'installer Redis
 
