@@ -949,3 +949,8 @@ cfp.member=CFP Member
 golden.welcome.txt=Welcome to the Golden Ticket private section. Buy a Golden Ticket on {0} web site, and get access to proposals! Be part of the team that review and select talks for {0}.
 
 publisher.proposal.roomHidden=Room name is available few days before the conference.
+
+your.reviewer.rank=Your rank
+reviewed=reviewed proposals
+no.more.talk=You reviewed all submitted proposals
+
