@@ -86,14 +86,10 @@
                     @if(proposal.mainSpeaker == currentUser || proposal.secondarySpeaker.contains(currentUser) || proposal.otherSpeakers.contains(currentUser)) {
                         <em>@Messages("svp.noshow")</em>
                     } else {
-
-                        <div class="media">
                         @allVotes.sortBy(_._2).map { case (author, vote) =>
-                        <div class="media-body">
-                            <span class="pull-left">@tags.renderGravatar(author, showName = false)</span> &nbsp; <h5 class="media-heading">@Messages("svp.voted") @tags.renderVote(vote.toInt) </h5>
-                        </div>
+                        @tags.renderGravatar(author, showName = true)&nbsp;<span class="card-text">@Messages("svp.voted") @tags.renderVote(vote.toInt)</span>
+
                         }
-                        </div>
                     }
                     </div>
                 </div>
