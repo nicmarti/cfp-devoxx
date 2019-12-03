@@ -275,8 +275,6 @@ object ConferenceDescriptor {
 
     val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
 
-    val allRoomsConfFridayNight = List(PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251, PARIS_243_T, NEUILLY_253_T)
-
     val allRoomsQuickiesThu: List[Room] = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id)
 
     val allRoomsQuickiesFriday: List[Room] = allRoomsQuickiesThu
@@ -584,22 +582,16 @@ object ConferenceDescriptor {
             new DateTime(s"${thirdDay}T16:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
             new DateTime(s"${thirdDay}T17:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r6)
       }
-      val conferenceFridaySlot7 = ConferenceRooms.allRoomsConfFridayNight.map {
-        r7 =>
-          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-            new DateTime(s"${thirdDay}T17:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime(s"${thirdDay}T18:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), r7)
-      }
 
       // Castcodeurs
-      val conferenceFridaySlot8 = List(ConferenceRooms.NEUILLY_252AB).map {
+      val conferenceFridaySlot7 = List(ConferenceRooms.NEUILLY_252AB).map {
         rcc =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-            new DateTime(s"${thirdDay}T18:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
-            new DateTime(s"${thirdDay}T19:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), rcc)
+            new DateTime(s"${thirdDay}T17:45:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")),
+            new DateTime(s"${thirdDay}T18:30:00.000+02:00").toDateTime(DateTimeZone.forID("Europe/Paris")), rcc)
       }
 
-      conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++ conferenceFridaySlot5 ++ conferenceFridaySlot6 ++ conferenceFridaySlot7 ++ conferenceFridaySlot8
+      conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++ conferenceFridaySlot5 ++ conferenceFridaySlot6 ++ conferenceFridaySlot7
     }
 
     // Registration, coffee break, lunch etc
