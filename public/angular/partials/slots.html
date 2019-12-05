@@ -18,16 +18,16 @@
                  drag="talk" dragStyle="columnDrag"
                  dropStyle="columnDrop" title="{{talk.state.code}}">
                 <span class="proposalTitle">{{talk.title}}</span>
-                <span class="label label-default">{{talk.id}}</span>
+                <span class="badge badge-secondary">{{talk.id}}</span>
 
-                <div class="label label-warning">{{talk.track.id}}</div>
-                <div class="label label-{{talk.lang}}">{{talk.lang}}</div>
-                <div class="label label-success">{{talk.mainSpeaker}}</div>
-                <div class="label label-success btn-sm">{{talk.secondarySpeaker}}</div>
-                <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="label label-success btn-sm">
+                <div class="badge badge-warning">{{talk.track.id}}</div>
+                <div class="badge badge-{{talk.lang}}">{{talk.lang}}</div>
+                <div class="badge badge-success">{{talk.mainSpeaker}}</div>
+                <div class="badge badge-success btn-sm">{{talk.secondarySpeaker}}</div>
+                <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="badge badge-success btn-sm">
                     {{otherSpeaker}}
                 </div>
-                <div class="label label-danger" ng-show="talk.privateMessage">
+                <div class="badge badge-danger" ng-show="talk.privateMessage">
                     {{talk.privateMessage}}
                 </div>
             </div>
@@ -42,19 +42,19 @@
     </div>
     <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
         <div ng-hide="slot.proposal">
-            <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
+            <span class="badge badge-secondary">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
             <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
         </div>
         <div  ng-hide="showEmpty">
             <div ng-show="slot.proposal">
-                <span class="label label-default">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
+                <span class="badge badge-secondary">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
                     <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
                     <button class="btn-remove btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> </button>
                 <br>
                 <span class="proposalTitle">{{slot.proposal.title}}</span>
-                <div class="label label-success">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}} </div>
-                <span class="label label-warning">{{slot.proposal.track.id}}</span>
-                <span class="label label-{{slot.proposal.lang}}">{{slot.proposal.lang}}</span>
+                <div class="badge badge-success">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}} </div>
+                <span class="badge badge-warning">{{slot.proposal.track.id}}</span>
+                <span class="badge badge-{{slot.proposal.lang}}">{{slot.proposal.lang}}</span>
                 <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
                     <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
                 </div>

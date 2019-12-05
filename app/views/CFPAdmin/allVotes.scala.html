@@ -38,13 +38,13 @@
                 }
                 <br>
                 @defining(allVotes.count(_._1.state == ProposalState.DECLINED)) { declinedTotal =>
-                    <span class="label label-success">@totalApproved approved</span> <span class="label label-declined">
-                        - @declinedTotal declined</span> <span class="label label-warning">
+                    <span class="badge badge-success">@totalApproved approved</span> <span class="badge badge-declined">
+                        - @declinedTotal declined</span> <span class="badge badge-warning">
                         = @(totalRemaining + declinedTotal) remaining</span>
                 }
                 <br>
-                <span class="label label-primary">@allVotes.map(_._1).count(_.lang == "fr")
-                    FR</span> <span class="label label-default">@allVotes.map(_._1).count(_.lang == "en") EN</span>
+                <span class="badge badge-primary">@allVotes.map(_._1).count(_.lang == "fr")
+                    FR</span> <span class="badge badge-secondary">@allVotes.map(_._1).count(_.lang == "en") EN</span>
 
             </div>
 
@@ -102,17 +102,17 @@
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id"><small>@proposal.title
                                             @if(proposal.sponsorTalk) {
-                                                &nbsp;<label class="label label-info"><i class="icon-dollar"></i> sponsor</label>
+                                                &nbsp;<label class="badge badge-info"><i class="icon-dollar"></i> sponsor</label>
                                             }
                                         </small></a>
                                     </td>
                                     <td>
                                     @proposal.allSpeakers.map { s: Speaker =>
                                         @if(models.Invitation.isInvited(s.uuid)) {
-                                            <span class="label label-warning">♥ @s.cleanName <small>
+                                            <span class="badge badge-warning">♥ @s.cleanName <small>
                                                 [@s.company.map(_.toLowerCase.capitalize)]</small></span>
                                         } else {
-                                            <span class="label label-default">@s.cleanName <small>
+                                            <span class="badge badge-secondary">@s.cleanName <small>
                                                 [@s.company.map(_.toLowerCase.capitalize)]</small></span>
                                         }
                                     }
@@ -147,7 +147,7 @@
                                             }
                                         }
                                         <br>
-                                        <span class="label label-@proposal.state.code">@proposal.state.code</span>
+                                        <span class="badge badge-@proposal.state.code">@proposal.state.code</span>
                                         @if(refused && proposal.state.code == ProposalState.ACCEPTED.code) {
                                             <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-check"></i>
                                                 Remove from refused list</a>

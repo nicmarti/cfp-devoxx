@@ -78,7 +78,7 @@
                             @if(proposal.sponsorTalk) {
                                 <tr>
                                     <th class="proposalCol">@Messages("admin.sp.sponsorTalk")</th>
-                                    <td><span class="label label-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
+                                    <td><span class="badge badge-success">@Messages("admin.sp.sponsorTalk.label")</span></td>
                                 </tr>
                             }
                             @if(proposal.videoLink.nonEmpty) {
@@ -162,7 +162,7 @@
             @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
                 @if(approved) {
                     <div class="card-header">
-                        <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="label label-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
+                        <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="badge badge-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
                     </div>
                     <div class="card-body">
                         <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>

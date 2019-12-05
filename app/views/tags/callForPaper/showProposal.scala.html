@@ -54,22 +54,22 @@
             <div class="card-footer text-muted">
                 <strong>Status:</strong>
                 @if(proposal.state.code == "accepted" || proposal.state.code == "approved") {
-                    <span class="label label-success">@proposal.state.code</span>
+                    <span class="badge badge-success">@proposal.state.code</span>
                 }
                 @if(proposal.state.code == "declined" || proposal.state.code == "rejected" || proposal.state.code == "deleted") {
-                    <span class="label label-danger">@proposal.state.code</span>
+                    <span class="badge badge-danger">@proposal.state.code</span>
                 }
                 @if(proposal.state.code == "draft") {
-                    <span class="label label-warning">@proposal.state.code</span>
+                    <span class="badge badge-warning">@proposal.state.code</span>
                 }
                 @if(proposal.state.code == "submitted") {
-                    <span class="label label-info">@proposal.state.code</span>
+                    <span class="badge badge-info">@proposal.state.code</span>
                 }
                 @if(proposal.state.code == "backup") {
-                    <span class="label label-warning">@proposal.state.code</span>
+                    <span class="badge badge-warning">@proposal.state.code</span>
                 }
                 @if(proposal.state.code == "archived") {
-                    <span class="label label-default">@proposal.state.code</span>
+                    <span class="badge badge-secondary">@proposal.state.code</span>
                 }
 
             </div>

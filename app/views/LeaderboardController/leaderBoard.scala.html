@@ -190,7 +190,7 @@
                         <h3>Submitted by Track</h3>
                             @defining(params.totalSubmittedByTrack.values.max){maxValue=>
                             @params.totalSubmittedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
+                                <span class="badge badge-info">@total</span> @Messages(track+".label") <a href="@routes.CFPAdmin.allProposalsByTrack(track)"><i class="icon-arrow-right"></i></a>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -218,11 +218,11 @@
                             <tbody>
                                 <tr>
                                     <th>@Messages(propType) <a href="@routes.CFPAdmin.allProposalsByType(propType)"><i class="icon-arrow-right"></i></a></th>
-                                    <td><span class="label label-warning">@total</span></td>
-                                    <td><span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span></td>
+                                    <td><span class="badge badge-warning">@total</span></td>
+                                    <td><span class="badge badge-success">@params.totalSlotsToAllocate.get(propType+".label")</span></td>
                             @defining(models.ApprovedProposal.countApproved(propType)) { approvedTotal =>
-                                       <td><span class="label label-primary">@approvedTotal</span> </td>
-                                       <td><span class="label label-danger">@(params.totalSlotsToAllocate.get(propType+".label").map(s=>s-approvedTotal))</span> </td>
+                                       <td><span class="badge badge-primary">@approvedTotal</span> </td>
+                                       <td><span class="badge badge-danger">@(params.totalSlotsToAllocate.get(propType+".label").map(s=>s-approvedTotal))</span> </td>
                             }
                                 </tr>
                             </tbody>
@@ -237,7 +237,7 @@
                         <h3>Approved by Track (total @params.allApprovedByTrack.size)</h3>
                         @defining(params.allApprovedByTrack.values.max){maxValue=>
                             @params.allApprovedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track)
+                                <span class="badge badge-info">@total</span> @Messages(track)
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -253,8 +253,8 @@
                             <h3>Approved by Type</h3>
 
                             @params.allApprovedByTalkType.map { case (propType, total) =>
-                                @Messages(propType) : <span class="label label-warning">@total</span>
-                                approved submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType + ".label")</span> slots<br>
+                                @Messages(propType) : <span class="badge badge-warning">@total</span>
+                                approved submissions for <span class="badge badge-success">@params.totalSlotsToAllocate.get(propType + ".label")</span> slots<br>
                             }
                         </div>
                         <div class="clearfix"></div>
@@ -266,7 +266,7 @@
                         <h3>Accepted by Track</h3>
                             @defining(params.totalAcceptedByTrack.values.max){maxValue=>
                             @params.totalAcceptedByTrack.map{case(track,total)=>
-                                <span class="label label-info">@total</span> @Messages(track)
+                                <span class="badge badge-info">@total</span> @Messages(track)
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="@((total*100)/maxValue)" aria-valuemin="0" aria-valuemax="100" style="width:@((total*100)/maxValue)%;">
                                         <span class="sr-only">@Messages(track)</span>
@@ -282,8 +282,8 @@
                         <h3>Accepted by Type</h3>
                         <p>Talk accepted by a speaker</p>
                         @params.totalAcceptedByType.map { case (propType, total) =>
-                                @Messages(propType) : <span class="label label-warning">@total</span>
-                                accepted submissions for <span class="label label-success">@params.totalSlotsToAllocate.get(propType+".label")</span> slots<br>
+                                @Messages(propType) : <span class="badge badge-warning">@total</span>
+                                accepted submissions for <span class="badge badge-success">@params.totalSlotsToAllocate.get(propType+".label")</span> slots<br>
                             }
                     </div>
                     <div class="clearfix"></div>

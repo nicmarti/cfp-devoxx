@@ -11,15 +11,15 @@
         <div class="card">
         <div class="card-header">
             <h3>All proposals grouped by Company</h3>
-            <span class="label label-info">@companiesAndProposals.size companies</span>
+            <span class="badge badge-info">@companiesAndProposals.size companies</span>
             <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
         </div>
         <div class="card-body">
             @companiesAndProposals.map {case (company:String, props:Set[Proposal]) =>
             <h3>@company.capitalize </h3>
-                <label class="label label-submitted">@props.filter(p=> p.state==ProposalState.SUBMITTED).size submitted</label>
-                <label class="label label-approved">@props.filter(p=> p.state==ProposalState.APPROVED).size approved</label>
-                <label class="label label-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED ).size accepted</label>
+                <label class="badge badge-submitted">@props.filter(p=> p.state==ProposalState.SUBMITTED).size submitted</label>
+                <label class="badge badge-approved">@props.filter(p=> p.state==ProposalState.APPROVED).size approved</label>
+                <label class="badge badge-accepted">@props.filter(p=> p.state == ProposalState.ACCEPTED ).size accepted</label>
                 <br>
 
                 @props.toList.sortBy(_.talkType.id).map {proposal:Proposal=>
@@ -32,7 +32,7 @@
                       }
                     }
                     -
-                    <span class="label @Messages("label-" + proposal.state.code)">@Messages(proposal.state.code)</span>
+                    <span class="badge @Messages("badge-" + proposal.state.code)">@Messages(proposal.state.code)</span>
                     <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A>
                     <br>
                 }
@@ -40,7 +40,7 @@
                 @defining(props.map(_.allSpeakers.toSet).flatten){ speakers:Set[Speaker] =>
                         <h4>Speakers from @company : </h4>
                         @defining(speakers.filter(_.company.map(_.toUpperCase.trim)==Some(company)).toList.sortBy(_.name)) { filterSpeakers =>
-                                <span class="label label-primary">@filterSpeakers.size speakers</span>
+                                <span class="badge badge-primary">@filterSpeakers.size speakers</span>
                             @filterSpeakers.map(_.cleanName).mkString(", ")<br>
                         }
                         <h4>Speakers from other companies : </h4>

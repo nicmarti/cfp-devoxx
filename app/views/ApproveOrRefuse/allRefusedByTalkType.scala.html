@@ -35,12 +35,12 @@
                     <h3>@defining(allProposals.size){refusedSize=>
                         @refusedSize proposal@if(refusedSize>1){s} refused</h3>
                     }
-                       <span class="label label-primary">@allProposals.count(s=> s._1.lang == "fr") FR</span>
-                       <span class="label label-default">@allProposals.count(s=> s._1.lang == "en") EN</span>
+                       <span class="badge badge-primary">@allProposals.count(s=> s._1.lang == "fr") FR</span>
+                       <span class="badge badge-secondary">@allProposals.count(s=> s._1.lang == "en") EN</span>
 
 
                     @allProposals.groupBy(p=>p._1.track).map{case(track,listOfProps)=>
-                        <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
+                        <span class="badge badge-info">@listOfProps.size @Messages(track.label)</span>
                     }
 
                     <br>
@@ -82,7 +82,7 @@
                                         @Messages(proposal.state.code)
                                     </td>
                                     <td>
-                                        <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="label label-danger"><i class="icon-warning-sign"></i> Notify refused</a>
+                                        <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="badge badge-danger"><i class="icon-warning-sign"></i> Notify refused</a>
                                     </td>
                                 </tr>
                             }

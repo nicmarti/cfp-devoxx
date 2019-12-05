@@ -58,7 +58,7 @@
                                 @tags.renderGravatar(proposal.mainSpeaker, showPhoto = false)
                                 </td>
                                 <td>
-                                    <span class="label label-@proposal.state.code">@proposal.state.code</span>
+                                    <span class="badge badge-@proposal.state.code">@proposal.state.code</span>
                                 </td>
                                 <td>
                                     <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.SUBMITTED.code)" class="btn btn-sm btn-success">

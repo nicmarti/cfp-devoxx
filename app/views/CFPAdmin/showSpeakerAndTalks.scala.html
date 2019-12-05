@@ -120,13 +120,13 @@
 
                 <p>UUID should be = @Webuser.generateUUID(speaker.email)</p>
                 <p>Speaker find by UUID ? @Speaker.findByUUID(speaker.uuid).isDefined</p>
-                <p>Webuser find by UUID works ?  @if(Webuser.findByUUID(speaker.uuid).isDefined){ <label class="label label-success">YES</label> } else { <label class="label label-danger">No</label> }</p>
-                <p>Webuser find by Email ?  @if(Webuser.findByEmail(speaker.email).isDefined){ <label class="label label-success">YES</label> } else { <label class="label label-danger">No</label> }</p>
+                <p>Webuser find by UUID works ?  @if(Webuser.findByUUID(speaker.uuid).isDefined){ <label class="badge badge-success">YES</label> } else { <label class="badge badge-danger">No</label> }</p>
+                <p>Webuser find by Email ?  @if(Webuser.findByEmail(speaker.email).isDefined){ <label class="badge badge-success">YES</label> } else { <label class="badge badge-danger">No</label> }</p>
                 <p>Webuser ID and Speaker ID are identicals ?
                     @if(Webuser.findByEmail(speaker.email).exists(w => w.uuid == speaker.uuid)){
-                        <label class="label label-success">YES</label> that's normal.
+                        <label class="badge badge-success">YES</label> that's normal.
                     }else{
-                         <label class="label label-danger">No</label>
+                         <label class="badge badge-danger">No</label>
                         <div class="panel panel-danger">
                             <div class="card-body">Webuser and Speaker have different UUID => this will generate bugs and duplicate profiles.<br>
                                 <a class="btn btn-warning" href="@routes.Backoffice.fixForInvalidSpeakers(speaker.uuid)">Fix and re-create Webuser for this Speaker</a>
@@ -134,7 +134,7 @@
                         </div>
                     }
                 </p>
-                <p>Webuser find from Speaker's email works ?  @if(Webuser.findByEmail(speaker.email).isDefined){ <label class="label label-success">YES</label> } else { <label class="label label-danger">No</label> }</p>
+                <p>Webuser find from Speaker's email works ?  @if(Webuser.findByEmail(speaker.email).isDefined){ <label class="badge badge-success">YES</label> } else { <label class="badge badge-danger">No</label> }</p>
             </div>
     </div>
 
