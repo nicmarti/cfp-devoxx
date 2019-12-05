@@ -50,12 +50,12 @@
                 <td>
                   @entries.map(_.proposal).map{proposal:Proposal =>
                     @if(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) {
-                      <span class="label label-approved">Approved</span>
+                      <span class="badge badge-approved">Approved</span>
                     } else {
                       @if(ApprovedProposal.isRefused(proposal.id, proposal.talkType.id)) {
-                        <span class="label label-refused">Refused</span>
+                        <span class="badge badge-refused">Refused</span>
                       } else {
-                        <span class="label label-default">?</span>
+                        <span class="badge badge-secondary">?</span>
                       }
                     }
                   <strong>@Messages(proposal.talkType.simpleLabel)</strong>

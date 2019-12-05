@@ -32,12 +32,12 @@
 
                     <div class="col-md-12">
                         <h3>@allProposals.size proposals approved</h3>
-                           <span class="label label-primary">@allProposals.count(_.lang == "fr") FR</span>
-                           <span class="label label-default">@allProposals.count(_.lang == "en") EN</span>
+                           <span class="badge badge-primary">@allProposals.count(_.lang == "fr") FR</span>
+                           <span class="badge badge-secondary">@allProposals.count(_.lang == "en") EN</span>
 
 
                         @allProposals.groupBy(_.track).map{case(track,listOfProps)=>
-                            <span class="label label-info">@listOfProps.size @Messages(track.label)</span>
+                            <span class="badge badge-info">@listOfProps.size @Messages(track.label)</span>
                         }
 
                         <br>
@@ -79,7 +79,7 @@
                                             @if(proposal.state.code=="accepted"){
                                                 <small>Speaker has accepted</small>
                                             }else {
-                                                <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="label label-success"><i class="icon-envelope"></i>
+                                                <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="badge badge-success"><i class="icon-envelope"></i>
                                                 @if(proposal.state.code=="approved"){
                                                  Notify again
                                                 } else{

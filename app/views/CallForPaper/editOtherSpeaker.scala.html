@@ -42,9 +42,9 @@
                         </td>
                         <td>
                         @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
-                            <span class="label label-success">@Messages("freepass")</span>
+                            <span class="badge badge-success">@Messages("freepass")</span>
                         } else {
-                            <span class="label label-warning">@Messages("no.freepass")</span>
+                            <span class="badge badge-warning">@Messages("no.freepass")</span>
                         }
                         </td>
                     </tr>
@@ -55,9 +55,9 @@
                           </td>
                           <td>
                             @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
-                              <span class="label label-success">@Messages("freepass")</span>
+                              <span class="badge badge-success">@Messages("freepass")</span>
                             } else {
-                              <span class="label label-warning">@Messages("no.freepass")</span>
+                              <span class="badge badge-warning">@Messages("no.freepass")</span>
                             }
                           </td>
                       </tr>
@@ -66,13 +66,13 @@
                               @helper.select(field=speakerForm("otherSpeakers"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control-cfp", 'multiple->"true" )
                           </td>
                           <td>
-                              <span class="label label-warning">@Messages("no.freepass")</span>
+                              <span class="badge badge-warning">@Messages("no.freepass")</span>
                           </td>
                       </tr>
                     } else {
                       <tr>
                         <td colspan="2">
-                          <span class="label label-warning">@Messages("proposal.noOtherSpeakers")</span>
+                          <span class="badge badge-warning">@Messages("proposal.noOtherSpeakers")</span>
                         </td>
                       </tr>
                     }

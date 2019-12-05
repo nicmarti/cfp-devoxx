@@ -26,7 +26,7 @@
         <div class="card">
         <div class="card-header">
             <h3>All speakers</h3>
-            <span class="label label-info">@speakers.size users</span>
+            <span class="badge badge-info">@speakers.size users</span>
         </div>
         <div class="card-body">
 
@@ -62,7 +62,7 @@
                         <td>@proposals.values.count(proposal => ApprovedProposal.isAccepted(proposal.id, proposal.talkType.id))</td>
                         <td>
                         @proposals.values.map { proposal: Proposal =>
-                            <span class="label label-@proposal.state.code">@proposal.state.code</span>
+                            <span class="badge badge-@proposal.state.code">@proposal.state.code</span>
                             <strong>@Messages(proposal.talkType.simpleLabel)</strong>
                             &nbsp;
                             <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="@proposal.title" target="_blank">@proposal.title</a>

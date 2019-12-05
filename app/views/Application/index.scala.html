@@ -31,9 +31,9 @@
                         <p class="card-text"><strong>@Messages("cfp.opening") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpOpenedOn, lang)</p>
                         <p class="card-text"><strong>@Messages("cfp.closing") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpClosedOn, lang)</p>
                         @if(ConferenceDescriptor.isCFPOpen){
-                            <p class="card-text"><strong>@Messages("cfp.reminder") :</strong> <span class="label label-warning">@Messages("cfp.reminder.proposals")</span> </p>
+                            <p class="card-text"><strong>@Messages("cfp.reminder") :</strong> <span class="badge badge-warning">@Messages("cfp.reminder.proposals")</span> </p>
                         }else{
-                            <p class="card-text"><strong>@Messages("cfp.reminder") :</strong> <span class="label label-danger">@Messages("cfp.isClosed")</span> </p>
+                            <p class="card-text"><strong>@Messages("cfp.reminder") :</strong> <span class="badge badge-danger">@Messages("cfp.isClosed")</span> </p>
                         }
                         <p class="card-text"><strong>@Messages("cfp.program")</strong> @Messages("cfp.program.date", FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.scheduleAnnouncedOn, lang))</p>
                     </div>

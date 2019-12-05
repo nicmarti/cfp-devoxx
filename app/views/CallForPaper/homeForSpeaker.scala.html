@@ -129,9 +129,9 @@
                                 @allRatings.map { r: Rating =>
                                     @r.details.map { details =>
                                             @if(details.review.isEmpty){
-                                                <span class="label label-success">Rating : </span> @details.rating
+                                                <span class="badge badge-success">Rating : </span> @details.rating
                                             }else {
-                                                <span class="label label-success">Rating detailed : </span>
+                                                <span class="badge badge-success">Rating detailed : </span>
                                                 @details.review.map { d =>
                                                     @details.aspect = @details.rating <em>@d</em>
                                                 }
