@@ -163,10 +163,10 @@ track.help=Les Tracks permettent d''indiquer le thème principal de votre prése
 track.title=Titre
 track.description=Description
 
-track.java.title=Java, JVM, Javas SE/EE
-track.java.desc=Tout sur Java, la JVM, Java SE, Java EE.
-java.label=Java, JVM, Javas SE/EE
-java.leaderboard=Java, JVM, Javas SE/EE
+track.java.title=Java, JVM
+track.java.desc=Tout sur Java et la JVM.
+java.label=Java, JVM
+java.leaderboard=Java, JVM
 
 track.mobile.title=Mobile, Internet of Things, Réalité Augmentée
 track.mobile.desc=Mobile, l’internet des objets, la réalité augmentée.
