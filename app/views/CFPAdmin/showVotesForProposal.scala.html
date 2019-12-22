@@ -172,10 +172,10 @@
                         @if(nextToBeReviewedSameTrack.nonEmpty) {
                             @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
                                 <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                                    @Messages("gt.nextTalkTrack" , Messages(nextToBeReviewedSameTrack.head.track.label))</a>
+                                    @Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a>
                             } else {
                                 <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
-                                    @Messages("gt.nextTalk")</a>
+                                    @Messages("gt.nextTalkDifferentTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a>
                             }
                         }
                         @if(nextToBeReviewedSameFormat.nonEmpty) {
@@ -184,7 +184,7 @@
                                     @Messages("gt.nextTalkType", Messages(proposal.talkType.id))</a>
                             } else {
                                 <a class="btn btn-success" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
-                                    @Messages("gt.nextTalk")</a>
+                                    @Messages("gt.nextTalkDifferentType", Messages(nextToBeReviewedSameTrack.head.talkType.id))</a>
                             }
                         }
                     </div>
