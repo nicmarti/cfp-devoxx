@@ -168,13 +168,17 @@ object GoldenTicketController extends SecureCFPController {
           case Some(proposal) =>
             // The next proposal I should review
             val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
+            val (sameTrackAndFormats, otherTracksOrFormats) = allNotReviewed.partition(p => p.track.id == proposal.track.id && p.talkType.id == proposal.talkType.id)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
             val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
 
+            // Note: not appending otherTracksOrFormats here, as we want to show the button in the
+            // template only if there are some remaining talks to be reviewed for same track & talkType
+            val nextToBeReviewedSameTrackAndFormat = (sameTrackAndFormats.sortBy(_.track.id)).headOption
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            Ok(views.html.GoldenTicketController.showVotesForProposal(uuid, proposal, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
+            Ok(views.html.GoldenTicketController.showVotesForProposal(uuid, proposal, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
           case None => NotFound("Proposal not found").as("text/html")
         }
       }

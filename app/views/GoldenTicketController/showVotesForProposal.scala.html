@@ -1,4 +1,4 @@
-@(currentUser:String, proposal: models.Proposal, nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(currentUser:String, proposal: models.Proposal, nextToBeReviewedSameTrackAndFormat:Option[Proposal], nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
         <div class="col-md-12">
@@ -43,6 +43,10 @@
                       <a class="btn btn-primary btn-sm" href="@routes.GoldenTicketController.showAllProposals()"><i class="icon-trophy"></i> @Messages("gt.nomore")</a><br>
                     }
 
+                  @if(nextToBeReviewedSameTrackAndFormat.nonEmpty && nextToBeReviewedSameTrackAndFormat.head.track.id == proposal.track.id) {
+                    <a class="btn btn-success btn-sm" accesskey="s" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrackAndFormat.head.id)" title="Shortcut: Ctrl-Option-S"><i class="icon-forward"></i>
+                      @Messages("gt.nextTalkTrackAndType" , Messages(proposal.talkType.id), Messages(proposal.track.label))</a>
+                  }
                   @if(nextToBeReviewedSameTrack.nonEmpty) {
                     @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
                       <a class="btn btn-success btn-sm" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
