@@ -180,10 +180,10 @@
                         }
                         @if(nextToBeReviewedSameFormat.nonEmpty) {
                             @if(nextToBeReviewedSameFormat.head.talkType.id == proposal.talkType.id) {
-                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                <a class="btn btn-success" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
                                     @Messages("gt.nextTalkType", Messages(proposal.talkType.id))</a>
                             } else {
-                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                <a class="btn btn-success" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
                                     @Messages("gt.nextTalk")</a>
                             }
                         }
