@@ -811,11 +811,11 @@ gt.home=Go back to home
 gt.vote.ok=Your vote has been recorded.
 gt.youcan=You can now:
 gt.nomore=There is no more talk to review, congratulation you did it!
-gt.nextTalkTrackAndType=Continue and evaluate another {0} for track {1}
-gt.nextTalkType=Continue and evaluate another {0}
-gt.nextTalkDifferentType=Continue and evaluate next talk of different type : {0}
-gt.nextTalkTrack=Continue and evaluate next talk for track {0}
-gt.nextTalkDifferentTrack=Continue and evaluate next talk of different track : {0}
+gt.nextTalkTrackAndType=Continue and evaluate another [{0}] for track [{1}]
+gt.nextTalkType=Continue and evaluate another [{0}]
+gt.nextTalkDifferentType=Continue and evaluate next talk of different type : [{0}]
+gt.nextTalkTrack=Continue and evaluate next talk for track [{0}]
+gt.nextTalkDifferentTrack=Continue and evaluate next talk of different track : [{0}]
 
 gtAdmin.totalGT=Total number of person with a Golden Ticket: {0}
 gtAdmin.top5=Top 5 by score
