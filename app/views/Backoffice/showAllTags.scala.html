@@ -8,7 +8,7 @@
 
   <div class="row">
     <div class="col-lg-offset-4 col-md-4">
-      <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+      <h2><i class="fas fa-thumbs-up"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
 
@@ -27,7 +27,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <h3><i class="icon-tags"></i> All Tags (@tags.length)</h3>
+          <h3><i class="fas fa-tags"></i> All Tags (@tags.length)</h3>
         </div>
 
         <div class="card-body">
@@ -50,11 +50,11 @@
                   </td>
                   <td>
                     <form action="@routes.Backoffice.editTag(tag.id)" method="POST">
-                      <button type="submit" value="unactivate" class="btn btn-success btn-small"><i class="icon-edit"></i></button>
+                      <button type="submit" value="unactivate" class="btn btn-success btn-small"><i class="fas fa-edit"></i></button>
                     </form>
                   </td>
                   <td>
-                      <button type="button" data-url="@routes.Backoffice.deleteTag(tag.id)" data-id="@tag.id" class="deleteBtn btn btn-warning btn-small"><i class="icon-trash"></i></button>
+                      <button type="button" data-url="@routes.Backoffice.deleteTag(tag.id)" data-id="@tag.id" class="deleteBtn btn btn-warning btn-small"><i class="fas fa-trash"></i></button>
                   </td>
                 </tr>
               }

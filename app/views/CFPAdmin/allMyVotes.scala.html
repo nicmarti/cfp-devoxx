@@ -5,12 +5,12 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h1 class="panel-title"><i class="icon-bar-chart"></i> Your votes</h1>
+                <h1 class="panel-title"><i class="fas fa-chart-bar"></i> Your votes</h1>
             </div>
 
             <div class="card-body">
                 <div class="col-md-12">
-                    <h3><i class="icon-beaker"></i> Your personnal leaderboard</h3>
+                    <h3><i class="fas fa-flask"></i> Your personnal leaderboard</h3>
                     @if(allMyVotes.nonEmpty){
                         You have voted for @allMyVotes.filter(_._2.isDefined).size talks<br>
                         @defining(allMyVotes.filter(_._2.isDefined).map(_._2.get)){ allScores =>
@@ -29,7 +29,7 @@
                 </div>
                 @if(allMyVotes.nonEmpty){
                     <div class="col-md-12 col-lg-12">
-                        <h3><i class="icon-bar-chart"></i> Proposals of type @Messages(talkType) for which you voted</h3>
+                        <h3><i class="fas fa-chart-bar"></i> Proposals of type @Messages(talkType) for which you voted</h3>
                         <table id="tableMyVotes" class="table table-bordered">
                             <thead>
                                 <tr>
@@ -90,7 +90,7 @@ $( document ).ready(function() {
                 '<button class="btn btn-xs btn-color-' + newScore +
                 '">' + newScore +
                 '</button>' +
-                '<a href="@routes.CFPAdmin.allMyVotes(talkType)" class="btn btn-xs btn-primary"><i class="icon-refresh"></i></a>' +
+                '<a href="@routes.CFPAdmin.allMyVotes(talkType)" class="btn btn-xs btn-primary"><i class="fas fa-sync"></i></a>' +
                 '</div></td>';
 
     }

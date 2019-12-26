@@ -3,7 +3,7 @@
 @main("CFP Speakers") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
-        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        <h2><i class="fas fa-thumbs-up"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
 
@@ -12,7 +12,7 @@
         <div class="card-header">
             <h3>All proposals grouped by Company</h3>
             <span class="badge badge-info">@companiesAndProposals.size companies</span>
-            <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="icon-bar-chart"></i> View Bubble Chart</a>
+            <a href="@routes.LeaderboardController.allProposalsByCompanyAsGraph()" class="btn btn-sm btn-primary"><i class="fas fa-chart-bar"></i> View Bubble Chart</a>
         </div>
         <div class="card-body">
             @companiesAndProposals.map {case (company:String, props:Set[Proposal]) =>
@@ -33,7 +33,7 @@
                     }
                     -
                     <span class="badge @Messages("badge-" + proposal.state.code)">@Messages(proposal.state.code)</span>
-                    <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon icon-arrow-right"></i> @proposal.id</A>
+                    <A href="@routes.CFPAdmin.openForReview(proposal.id)"><i class="icon fas fa-arrow-right"></i> @proposal.id</A>
                     <br>
                 }
 

@@ -4,7 +4,7 @@
 @main(Messages("cfp.title")){
 <div class="container">
     <div class="jumbotron">
-        <h1 class="display-3"><i class="icon-comment-alt"></i> @Messages("appel.conf")</h1>
+        <h1 class="display-3"><i class="far fa-comment"></i> @Messages("appel.conf")</h1>
         <p class="lead">@Messages("appel.conf.dates")</p>
         <hr class="my-4">
     </div>
@@ -26,7 +26,7 @@
                 }
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="card mb-3">
-                    <h3 class="card-header"><i class="icon-calendar"></i> Agenda</h3>
+                    <h3 class="card-header"><i class="far fa-calendar-alt"></i> Agenda</h3>
                     <div class="card-body">
                         <p class="card-text"><strong>@Messages("cfp.opening") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpOpenedOn, lang)</p>
                         <p class="card-text"><strong>@Messages("cfp.closing") :</strong>  @FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpClosedOn, lang)</p>
@@ -42,9 +42,9 @@
 
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="card mb-3">
-                    <h3 class="card-header"><i class="icon-youtube-play"></i> @Messages("video.title")</h3>
+                    <h3 class="card-header"><i class="fab fa-youtube"></i> @Messages("video.title")</h3>
                     <div class="card-body">
-                        <p class="card-text"><i class="icon-youtube-sign"></i> @Messages("video.tag") <a href="https://www.youtube.com/channel/UCsVPQfo5RZErDL41LoWvk0A" target="new">YouTube channel</a> </p>
+                        <p class="card-text">@Messages("video.tag") <a href="https://www.youtube.com/channel/UCsVPQfo5RZErDL41LoWvk0A" target="new">YouTube channel</a> </p>
                     </div>
                 </div>
             </div>
@@ -52,9 +52,9 @@
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="card mb-3">
                     @if(ConferenceDescriptor.isCFPOpen){
-                        <h3 class="card-header"><i class="icon-bullhorn"></i> @Messages("cfp.isOpen")</h3>
+                        <h3 class="card-header"><i class="fas fa-bullhorn"></i> @Messages("cfp.isOpen")</h3>
                     }else{
-                        <h3 class="card-header"><i class="icon-bullhorn"></i> @Messages("cfp.isClosed")</h3>
+                        <h3 class="card-header"><i class="fas fa-bullhorn"></i> @Messages("cfp.isClosed")</h3>
                     }
                     <div class="card-body">
                     @if(ConferenceDescriptor.isCFPOpen) {
@@ -70,7 +70,7 @@
             @if(ConferenceDescriptor.isGoldenTicketActive) {
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="card mb-3">
-                        <h3 class="card-header"><i class="icon-ticket"></i> @Messages("cfp.goldenTicket")</h3>
+                        <h3 class="card-header"><i class="fas fa-ticket-alt"></i> @Messages("cfp.goldenTicket")</h3>
                         <div class="card-body">
                             <p class="card-text"><a href="@routes.GoldenTicketController.authenticate()" class="btn btn-primary">@Messages("cfp.gt.enter")</a></p>
                         </div>
@@ -81,7 +81,7 @@
             @if(ConferenceDescriptor.isFavoritesSystemActive){
                 <div class="col-12">
                     <div class="card mb-3">
-                        <h3 class="card-header"><i class="icon-calendar"></i> @Messages("cfp.showAgenda.title")</h3>
+                        <h3 class="card-header"><i class="far fa-calendar-alt"></i> @Messages("cfp.showAgenda.title")</h3>
                         <div class="card-body">
                             <p class="card-text"><A href="@routes.Publisher.homePublisher()" class="btn btn-primary" title="See the conference agenda">@Messages("cfp.showAgenda.txt")</A> </p>
                         </div>
@@ -93,7 +93,7 @@
 
             <div class="col-12">
                 <div class="card mb-1">
-                    <h3 class="card-header"><i class="icon-book"></i> @Messages("theme.title")</h3>
+                    <h3 class="card-header"><i class="fas fa-books"></i> @Messages("theme.title")</h3>
                     <div class="card-body">
                     <p class="card-text">@Messages("theme.track")</p>
                     <table class="table table-bordered table-striped">

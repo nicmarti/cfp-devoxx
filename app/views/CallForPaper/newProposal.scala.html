@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
                     @helper.textarea(newProposal("summary"), 'cols -> 60, 'rows -> 6, 'class -> "form-control")
-                    <i class="icon-text-width"></i> : <span id="charsremain"></span>
+                    <i class="fas fa-text-width"></i> : <span id="charsremain"></span>
                     <small>@Messages("newProposal.maxLength")</small>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
                     @helper.textarea(newProposal("privateMessage"), 'cols -> 60, 'rows -> 10, 'class -> "form-control")
-                    <i class="icon-text-width"></i> : <span id="charsremain2"></span>
+                    <i class="fas fa-text-width"></i> : <span id="charsremain2"></span>
                 </div>
             </div>
 
@@ -199,8 +199,8 @@
                 <div class="col-12">
                     <div class="card">
                         <Div class="card-body">
-                            <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="icon-arrow-left"></i> @Messages("btn.home")</a>
-                            <button id="preview" type="submit" class="btn btn-success btn-lg"><i class="icon-arrow-right"></i> @Messages("btn.save")</button>
+                            <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="fas fa-arrow-left"></i> @Messages("btn.home")</a>
+                            <button id="preview" type="submit" class="btn btn-success btn-lg"><i class="fas fa-arrow-right"></i> @Messages("btn.save")</button>
                         </Div>
                     </div>
                 </div>

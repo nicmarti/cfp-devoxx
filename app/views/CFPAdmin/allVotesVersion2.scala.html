@@ -4,16 +4,16 @@
     @main("All votes") {
         <div class="row">
             <div class="col-md-12">
-                <a href="@routes.CFPAdmin.allVotesVersion2("all", 0,25)" class="btn btn-primary btn-sm"><i class="icon-adjust"></i>
+                <a href="@routes.CFPAdmin.allVotesVersion2("all", 0,25)" class="btn btn-primary btn-sm"><i class="fas fa-adjust"></i>
                     All</a>
                 @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                     <a href="@routes.CFPAdmin.allVotesVersion2(proposalType.id, page, resultats)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label + ".simple")</a>
                 }
                 <br>
                 <br>
-                <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="icon-compass"></i>
+                <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="fas fa-compass"></i>
                     Recompute total and votes</a> -
-                <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany(false)" class="btn btn-danger btn-sm"><i class="icon-double-angle-down"></i>
+                <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany(false)" class="btn btn-danger btn-sm"><i class="fas fa-angle-double-down"></i>
                     All talks by company</a>
                 <br>
 
@@ -47,8 +47,8 @@
                 <small>All proposals with at least one vote, with state set to SUBMITTED/APPROVED/ACCEPTED/BACKUP</small>
                 <small>If you just created a proposal and it's not listed here : please add a vote.</small>
                 <br>
-                <a href="@routes.CFPAdmin.allVotesVersion2(confType,page,resultats,"gt_and_cfp")" class="btn btn-primary btn-sm"><i class="icin icon-sort-by-alphabet"></i> Sort by GT+CFP average score</a> -
-                <a href="@routes.CFPAdmin.allVotesVersion2(confType,page,resultats,"cfp")" class="btn btn-primary btn-sm"><i class="icin icon-sort-by-attributes"></i> Sort by CFP score</a>
+                <a href="@routes.CFPAdmin.allVotesVersion2(confType,page,resultats,"gt_and_cfp")" class="btn btn-primary btn-sm"><i class="icin fas fa-sort-numeric-down"></i> Sort by GT+CFP average score</a> -
+                <a href="@routes.CFPAdmin.allVotesVersion2(confType,page,resultats,"cfp")" class="btn btn-primary btn-sm"><i class="icin fas fa-sort-numeric-down"></i> Sort by CFP score</a>
                 <table id="allProposals" class="table table-condensed">
                     <thead>
                         <tr>
@@ -63,7 +63,7 @@
                             <th>Type</th>
                             <th>Track</th>
                             <th>Lang</th>
-                            <th><i class="icon-thumbs-up"></i> / <i class="icon-thumbs-down"></i></th>
+                            <th><i class="fas fa-thumbs-up"></i> / <i class="fas fa-thumbs-down"></i></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,7 +81,7 @@
                                     }
                                     </td>
                                     <td>
-                                        <small>@gtScore by @gtVoteCast <i class="icon-user"></i></small>
+                                        <small>@gtScore by @gtVoteCast <i class="fas fa-user"></i></small>
                                     </td>
                                     <td class="number_table">
                                     @defining(voteAndTotalVotes._2) { totalVoters: TotalVoter =>
@@ -97,7 +97,7 @@
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id"><small>@proposal.title
                                             @if(proposal.sponsorTalk) {
-                                                &nbsp;<label class="badge badge-info"><i class="icon-dollar"></i> sponsor</label>
+                                                &nbsp;<label class="badge badge-info"><i class="fas fa-dollar-sign"></i> sponsor</label>
                                             }
                                         </small></a>
                                     </td>
@@ -124,19 +124,19 @@
                                     <td>
                                         @if(proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP) {
                                             @if(approved) {
-                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
+                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
                                                     Cancel approve</a>
                                             } else {
                                                 @if(refused) {
-                                                    <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
+                                                    <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
                                                         Cancel refuse</a>
                                                 } else {
                                                     @if(proposal.state == ProposalState.BACKUP) {
-                                                        <i class="icon-exclamation-sign"></i> Backup
+                                                        <i class="fas fa-exclamation-sign"></i> Backup
                                                     }
-                                                    <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-sm btn-success"><i class="icon-thumbs-up"></i>
+                                                    <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-sm btn-success"><i class="fas fa-thumbs-up"></i>
                                                         Approve</a>
-                                                    <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-sm btn-danger"><i class="icon-thumbs-down"></i>
+                                                    <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-sm btn-danger"><i class="fas fa-thumbs-down"></i>
                                                         Refuse</a>
                                                 }
                                             }
@@ -144,11 +144,11 @@
                                         <br>
                                         <span class="badge badge-@proposal.state.code">@proposal.state.code</span>
                                         @if(refused && proposal.state.code == ProposalState.ACCEPTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="icon-check"></i>
+                                            <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
                                                 Remove from refused list</a>
                                         }
                                         @if(approved && proposal.state.code == ProposalState.REJECTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="icon-remove"></i>
+                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
                                                 Cancel approve</a>
                                         }
                                     </td>

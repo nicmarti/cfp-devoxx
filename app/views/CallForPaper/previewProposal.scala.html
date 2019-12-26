@@ -34,7 +34,7 @@
             <input type="hidden" name="tags[3].value" value="@newProposal("tags[3].value").value">
             <input type="hidden" name="tags[4].value" value="@newProposal("tags[4].value").value">
             <input type="hidden" name="id" value="@newProposal("id").value">
-            <div class="alert alert-info"><i class="icon-warning-sign"></i> @Messages("not.saved")</div>
+            <div class="alert alert-info"><i class="fas fa-exclamation-triangle"></i> @Messages("not.saved")</div>
         </div>
 
         <div class="col-12">
@@ -60,8 +60,8 @@
             <div class="card">
                 <div class="card-body">
                     <h4>@Messages("next.action")</h4>
-                    <a href="javascript:history.back()" class="btn btn-primary"><i class="icon-arrow-left"></i> @Messages("validate.summary3")</a>
-                    <button class="btn btn-success" name="a" value="saveDraft"><i class="icon-file-text"></i> @Messages("btn.saveDraft")</button>
+                    <a href="javascript:history.back()" class="btn btn-primary"><i class="fas fa-arrow-left"></i> @Messages("validate.summary3")</a>
+                    <button class="btn btn-success" name="a" value="saveDraft"><i class="fas fa-file-alt"></i> @Messages("btn.saveDraft")</button>
 <p>@Messages("presubmit.reminder")</p>
                         }
                 </div>

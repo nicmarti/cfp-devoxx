@@ -3,12 +3,12 @@
 @mainVisitor("Welcome"){
     <div class="row">
         <div class="col-md-12 page-header">
-            <h3><i class="icon-user"></i> @Messages("visitor.welcome.title",webuser.firstName)</h3>
+            <h3><i class="fas fa-user"></i> @Messages("visitor.welcome.title",webuser.firstName)</h3>
         </div>
         <div class="col-md-12">
             <p>@Messages("visitor.welcome.text1",Messages("longYearlyName"))</p>
-            <p><a href="@routes.Publisher.homePublisher()" class="btn btn-primary"><i class="icon-calendar"></i> @Messages("visitor.welcome.publisher")</a> </p>
-            <p><a href="@routes.Favorites.home()" class="btn btn-primary"><i class="icon-star"></i> @Messages("visitor.welcome.profile")</a> </p>
+            <p><a href="@routes.Publisher.homePublisher()" class="btn btn-primary"><i class="far fa-calendar-alt"></i> @Messages("visitor.welcome.publisher")</a> </p>
+            <p><a href="@routes.Favorites.home()" class="btn btn-primary"><i class="fas fa-star"></i> @Messages("visitor.welcome.profile")</a> </p>
 
         </div>
     </div>

@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="icon-bullhorn"></i> @Messages("acceptedProposals.title", Messages("longName"))</h3>
+                    <h3><i class="fas fa-bullhorn"></i> @Messages("acceptedProposals.title", Messages("longName"))</h3>
                 </div>
                 <div class="card-body">
 
@@ -26,7 +26,7 @@
                         }
 
 
-                            <h3><i class="icon-play-circle"></i> @Messages("ar.approved")</h3>
+                            <h3><i class="fas fa-play-circle"></i> @Messages("ar.approved")</h3>
                             @if(approvedProposals.isEmpty){
                                 @Messages("ar.noneApproved")
                             }else{
@@ -63,7 +63,7 @@
                                             </tr>
                                             <tr>
                                                 <th>&nbsp;</th>
-                                                <td><a href="@routes.CallForPaper.showCommentForProposal(proposal.id)" class="btn  btn-sm btn-primary" target="new"><i class="icon-question-sign"></i> @Messages("showProposal.comment.ar")</a></td>
+                                                <td><a href="@routes.CallForPaper.showCommentForProposal(proposal.id)" class="btn  btn-sm btn-primary" target="new"><i class="fas fa-question-circle"></i> @Messages("showProposal.comment.ar")</a></td>
                                             </tr>
                                         </tbody>
 
@@ -94,14 +94,14 @@
                                             }
 
                                             @if(proposal.state==ProposalState.APPROVED) {
-                                                <td colspan="2"><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button> </td>
+                                                <td colspan="2"><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="fas fa-exclamation-triangle"></i> @Messages("ar.IDecline")</button> </td>
                                             }
                                             @if(proposal.state==ProposalState.ACCEPTED) {
                                                 <td><small>Warning: this talk has been accepted. Please contact the CFP team before you decline</small><br>
-                                                <button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button> </td>
+                                                <button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="fas fa-exclamation-triangle"></i> @Messages("ar.IDecline")</button> </td>
                                             }
                                             @if(proposal.state==ProposalState.BACKUP) {
-                                                <td><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("ar.IDecline")</button></td>
+                                                <td><button name="dec" value="decline" class="btn btn-sm btn-danger"><i class="fas fa-exclamation-triangle"></i> @Messages("ar.IDecline")</button></td>
                                             }
                                             @if(proposal.state==ProposalState.DECLINED) {
                                                 <td colspan="2"><button name="dec" value="" disabled class="btn btn-sm btn-danger"> Declined </button> </td>
@@ -122,7 +122,7 @@
 
                         @if(rejectedProposals.nonEmpty){
                         <div class="col-md-12">
-                              <h3><i class="icon-stop"></i> @Messages("ar.rejected")</h3>
+                              <h3><i class="fas fa-stop"></i> @Messages("ar.rejected")</h3>
                           @rejectedProposals.map{proposal=>
                             <div class="panel panel-danger">
                                 <div class="card-header">

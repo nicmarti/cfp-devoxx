@@ -16,7 +16,7 @@
             <div class="col-12 mt-2">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="icon-stackexchange"></i> @proposal.title</h3>
+                        <h3><i class="fab fa-stack-overflow"></i> @proposal.title</h3>
                     </div>
 
                     @if(flash.get("error").isDefined) {
@@ -162,33 +162,33 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="icon-backward"></i> @Messages("gt.showVotes.review")</a>
-                        <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="icon-home"></i> @Messages("gt.home")</a>
+                        <a class="btn btn-warning" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="fas fa-backward"></i> @Messages("gt.showVotes.review")</a>
+                        <a class="btn btn-primary" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="fas fa-home"></i> @Messages("gt.home")</a>
 
                         @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty) {
-                            <a class="btn btn-primary" href="@routes.CFPAdmin.index()"><i class="icon-trophy"></i>
+                            <a class="btn btn-primary" href="@routes.CFPAdmin.index()"><i class="fas fa-trophy"></i>
                                 @Messages("no.more.talk")</a>
                         }
                         <br>
                         @if(nextToBeReviewedSameTrackAndFormat.nonEmpty && nextToBeReviewedSameTrackAndFormat.head.track.id == proposal.track.id) {
-                            <a class="btn btn-success" accesskey="s" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrackAndFormat.head.id)" title="Shortcut: Ctrl-Option-S"><i class="icon-forward"></i>
+                            <a class="btn btn-success" accesskey="s" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrackAndFormat.head.id)" title="Shortcut: Ctrl-Option-S"><i class="fas fa-forward"></i>
                                 @Messages("gt.nextTalkTrackAndType", Messages(proposal.talkType.id), Messages(proposal.track.label))</a>
                         }
                         @if(nextToBeReviewedSameTrack.nonEmpty) {
                             @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
-                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="fas fa-forward"></i>
                                     @Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a>
                             } else {
-                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="icon-forward"></i>
+                                <a class="btn btn-success" accesskey="n" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="fas fa-forward"></i>
                                     @Messages("gt.nextTalkDifferentTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a>
                             }
                         }
                         @if(nextToBeReviewedSameFormat.nonEmpty) {
                             @if(nextToBeReviewedSameFormat.head.talkType.id == proposal.talkType.id) {
-                                <a class="btn btn-success" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                <a class="btn btn-success" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="fas fa-forward"></i>
                                     @Messages("gt.nextTalkType", Messages(proposal.talkType.id))</a>
                             } else {
-                                <a class="btn btn-success" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                                <a class="btn btn-success" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="fas fa-forward"></i>
                                     @Messages("gt.nextTalkDifferentType", Messages(nextToBeReviewedSameTrack.head.talkType.id))</a>
                             }
                         }

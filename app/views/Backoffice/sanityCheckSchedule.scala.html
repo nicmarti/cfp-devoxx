@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
-        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        <h2><i class="fas fa-thumbs-up"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
 
@@ -29,7 +29,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3><i class="icon-medkit"></i> Sanity check</h3>
+                <h3><i class="fas fa-medkit"></i> Sanity check</h3>
                 <p>This screen loads all Scheduled configuration. For each configuration, it checks the current proposal state.
                    If a speaker declines a talk after it has been published, you will have to update the Schedule configuration with the AngularJS app.
                     We have to do so, since we can schedule "approved" talks and not only accepted ones.
@@ -58,7 +58,7 @@
 
                                     @if(currentState.code=="accepted"){
                                         <div class="alert">
-                                        <a href="@routes.Backoffice.fixToAccepted(slot.id, slot.proposal.get.id, slot.proposal.get.talkType.id)" class="btn btn-small btn-success"><i class="icon-info-sign"></i> Set the status to 'accepted'</a>
+                                        <a href="@routes.Backoffice.fixToAccepted(slot.id, slot.proposal.get.id, slot.proposal.get.talkType.id)" class="btn btn-small btn-success"><i class="fas fa-info-circle"></i> Set the status to 'accepted'</a>
                                         <br>
                                         @slot.proposal.get.allSpeakers.filter(s=>Speaker.needsToAccept(s.uuid)).map{s:Speaker=>
                                             @s.cleanName needs to accept "Terms&Conditions" : <a href="@routes.CFPAdmin.newOrEditSpeaker(Some(s.uuid))">Edit speaker and accept T&C</a>
@@ -68,7 +68,7 @@
 
                                     @if(currentState.code=="declined"){
                                         <div class="alert alert-danger">
-                                            <i class="icon-warning-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                                            <i class="fas fa-exclamation-triangle"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
                                         </div>
                                     }
                                 }
@@ -96,7 +96,7 @@
                                 <p>Presented by @slot.proposal.get.allSpeakers.map(_.cleanName).mkString(", ")</p>
                             </div>
                             <div class="card-body">
-                                <i class="icon-info-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                                <i class="fas fa-info-circle"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
                             </div>
                         </div>
                     }
@@ -121,7 +121,7 @@
                                 </div>
                         <div class="card-body">
                             <div class="alert alert-info">
-                                <i class="icon-info-sign"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
+                                <i class="fas fa-info-circle"></i> Update @slot.id slot on AngularJS App and remove this talk - <a href="/assets/angular/index.html#/saved">Open in AngularJS</a>
                             </div>
                         </div>
                     }
@@ -170,7 +170,7 @@
                     <b>Conflict on @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE HH:mm")</b><br>
                     @slots.map{slot:Slot=>
                         @slot.proposal.map {p:Proposal=>
-                          <i class="icon-warning-sign"></i> <b>@p.id</b> @Messages(p.talkType.id): @p.title<br>
+                          <i class="fas fa-exclamation-triangle"></i> <b>@p.id</b> @Messages(p.talkType.id): @p.title<br>
                         }
                     }
                 }

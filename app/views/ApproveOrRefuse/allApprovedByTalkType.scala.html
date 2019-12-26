@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h1><i class="icon-bar-chart"></i> @Messages(confType)</h1>
+                <h1><i class="fas fa-chart-bar"></i> @Messages(confType)</h1>
             </div>
 
             <div class="card-body">
@@ -79,7 +79,7 @@
                                             @if(proposal.state.code=="accepted"){
                                                 <small>Speaker has accepted</small>
                                             }else {
-                                                <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="badge badge-success"><i class="icon-envelope"></i>
+                                                <a href="@routes.ApproveOrRefuse.notifyApprove(confType, proposal.id)" class="badge badge-success"><i class="fas fa-envelope"></i>
                                                 @if(proposal.state.code=="approved"){
                                                  Notify again
                                                 } else{

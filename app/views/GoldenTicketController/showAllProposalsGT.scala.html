@@ -37,12 +37,12 @@
                     <p>@Messages("gt.intro.2") <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()">@Messages("gt.reviewYourVotes")</a> @Messages("gt.intro.3")</p>
 
                     @if(ConferenceDescriptor.isCFPOpen == false) {
-                        <p><label class="badge badge-success"><i class="icon-lightbulb"></i> @Messages("gt.special.need")</label></p>
+                        <p><label class="badge badge-success"><i class="fas fa-lightbulb"></i> @Messages("gt.special.need")</label></p>
                     }
                         <br>
 
                     @if(allProposalsForReview.nonEmpty) {
-                        <i class="icon-filter"></i> Filter on
+                        <i class="fas fa-filter"></i> Filter on
                         @Track.allIDs.filterNot(_ == Track.UNKNOWN.id).map{idTrack=>
                             <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-primary btn-sm">@idTrack</a>
                         }
