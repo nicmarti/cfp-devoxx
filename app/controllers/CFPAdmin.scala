@@ -117,9 +117,13 @@ object CFPAdmin extends SecureCFPController {
 
             // The next proposal I should review
             val allNotReviewed = Review.allProposalsNotReviewed(uuid)
+            val (sameTrackAndFormats, otherTracksOrFormats) = allNotReviewed.partition(p => p.track.id == proposal.track.id && p.talkType.id == proposal.talkType.id)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
             val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
 
+            // Note: not appending otherTracksOrFormats here, as we want to show the button in the
+            // template only if there are some remaining talks to be reviewed for same track & talkType
+            val nextToBeReviewedSameTrackAndFormat = (sameTrackAndFormats.sortBy(_.track.id)).headOption
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
@@ -163,9 +167,9 @@ object CFPAdmin extends SecureCFPController {
             if (ConferenceDescriptor.isGoldenTicketActive) {
               val averageScoreGT = ReviewByGoldenTicket.averageScore(proposalId)
               val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT, meAndMyFollowers))
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT, meAndMyFollowers))
             } else {
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None, meAndMyFollowers))
+              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None, meAndMyFollowers))
             }
           case None => NotFound("Proposal not found").as("text/html")
         }
