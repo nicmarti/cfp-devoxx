@@ -12,59 +12,64 @@
                 </div>
 
                 <div class="card-body">
-                    <div class="col-md-3">
+                    <div class="row mt-5">
+                        <div class="col-md-3">
                         <h1>@params.totalSpeakers</h1>
                         <small><i class="icon-user"></i> speakers</small>
                     </div>
 
-                      <div class="col-md-3">
+                        <div class="col-md-3">
                         <h1>@params.totalApprovedSpeakers</h1>
                         <small><i class="icon-user"></i> approved speakers</small><br>
                     </div>
 
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                         <h1>@params.totalRefusedSpeakers</h1>
                         <small><i class="icon-user"></i> refused speakers</small><br>
                     </div>
 
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                         <h1>@params.totalWithTickets</h1>
                         <small><i class="icon-user"></i> with a @Messages("shortName") Pass</small><br>
                     </div>
-
-                    <div class="col-md-3">
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-3">
                         <h1>@params.totalProposals</h1>
                         <small><i class="icon-book"></i> proposals</small>
                     </div>
 
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                         <h1>@params.totalWithVotes</h1>
                         <small><i class="icon-eye-open"></i> proposals with vote</small>
                     </div>
 
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                         <h1><a href="@routes.CFPAdmin.showProposalsWithNoVotes()">@params.totalNoVotes</a></h1>
                         <small><i class="icon-eye-close"></i> proposals with no vote (incl. Draft)</small>
                     </div>
 
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                         <h1>@params.totalVotes</h1>
                         <small><i class="icon-camera-retro"></i> reviews</small>
                     </div>
-                    <div class="clearfix"></div>
+                    </div>
+                    <div class="row mt-5">
 
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                         <br>
                         <small><a href="@routes.LeaderboardController.allProposalsByCompany()" class="btn btn-sm btn-warning">All Proposals by Company</a></small>
                     </div>
 
-                    <div class="col-md-3">
+                        <div class="col-md-3">
                         <br>
                         <small><a href="@routes.CFPAdmin.allApprovedSpeakersByCompany()" class="btn btn-sm btn-success">Approved Speakers by Company</a></small>
                     </div>
-                    <div class="clearfix"></div>
 
-                    <div class="col-md-4">
+                    </div>
+                    <div class="row mt-5">
+
+                        <div class="col-md-4">
                         <h3><i class="icon-star"></i> Most Votes</h3>
                         @params.mostReviewed.map { mr =>
                             @tags.renderGravatarByProposal(mr._1)
@@ -73,23 +78,25 @@
                         <br><br><small><a href='@routes.CFPAdmin.allVotes("all", None)' class="btn btn-sm btn-primary">See all Votes</a></small>
                     </div>
 
-                    <div class="col-md-4">
+                        <div class="col-md-4">
                         <h3><i class="icon-bell"></i> Eager Speakers</h3>
                         @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
                             @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
                         }
                     </div>
-                    <div class="col-md-4">
+                        <div class="col-md-4">
                         <h3><i class="icon-comments"></i> Most Debatable</h3>
                         @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
                             @tags.renderGravatarByProposal(tc._1)
                             <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments
                         }
                     </div>
-                    <div class="clearfix"></div>
 
-                    <div class="col-md-4">
+                    </div>
+                    <div class="row mt-5">
+
+                        <div class="col-md-4">
                         <h3><i class="icon-trophy"></i> Top Reviewers</h3>
                         @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
@@ -98,14 +105,14 @@
                         <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small>
                     </div>
 
-                    <div class="col-md-4">
+                        <div class="col-md-4">
                         <h3><i class="icon-ambulance"></i> The Lazy One's</h3>
                         @params.lazyOnes.filter(_._2.toInt < 5).map { wr =>
                             @tags.renderGravatar(wr._1)
                             @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
                         }
                     </div>
-                    <div class="col-md-4">
+                        <div class="col-md-4">
                         <h3><i class="icon-heart"></i> Generous One's</h3>
                         @params.generousVoters.sortBy(_._2).reverse.take(5).map { wr =>
                             @tags.renderGravatar(wr._1)
@@ -113,11 +120,14 @@
                         }
                     </div>
 
-                    <div class="clearfix"></div>
+                    </div>
+                    <div class="row mt-5">
 
                     @if(golden.stats.nonEmpty) {
-                        <div class="goldenticket">
+                        <div class="col-md-12 goldenticket">
                             <h3><i class="icon-ticket"></i> Golden Ticket Stats</h3>
+
+                            <div class="row mt-5">
 
                             <div class="col-md-3">
                                 <h1>@golden.totalTickets</h1>
@@ -138,16 +148,16 @@
                                 <h1>@golden.stats.map(st => st._3).sum</h1>
                                 <small><i class="icon-ticket"></i> Proposals Reviewed</small>
                             </div>
-                            <div class="clearfix"></div>
+                            </div>
 
                             @if(golden.stats.size > 4) {
-                                <br>
+                                <div class="row mt-5">
                                 <div class="col-md-4">
                                     @golden.stats.sortBy(_._3).reverse.take(5).map { gt =>
                                         @tags.renderTotalWithLabel(gt._3, "review", "reviews")
                                         by @Webuser.findByUUID(gt._1).map(_.cleanName)<br>
                                     }
-                            </div>
+                                </div>
 
                                 @if(golden.stats.size > 9) {
                                     <div class="col-md-4">
@@ -166,9 +176,10 @@
                                         </div>
                                     }
                                 }
+                                </div>
                             }
 
-                            <div class="clearfix"></div>
+                            <div class="row">
 
                             <div class="col-md-4">
                                 <br>
@@ -180,11 +191,13 @@
 
                             <div class="col-md-4">
                             </div>
-                            <div class="clearfix"></div>
+                            </div>
                         </div>
                     }
 
 
+                    </div>
+                    <div class="row mt-5">
                     @if(params.totalSubmittedByTrack.nonEmpty){
                     <div class="col-md-6">
                         <h3>Submitted by Track</h3>
@@ -229,8 +242,10 @@
                         }
                         </table>
                     </div>
-                    <div class="clearfix"></div>
                     }
+
+                    </div>
+                    <div class="row mt-5">
 
                     @if(params.allApprovedByTrack.nonEmpty) {
                         <div class="col-md-6">
@@ -257,11 +272,11 @@
                                 approved submissions for <span class="badge badge-success">@params.totalSlotsToAllocate.get(propType + ".label")</span> slots<br>
                             }
                         </div>
-                        <div class="clearfix"></div>
                     }
 
+                    </div>
+                    <div class="row mt-5">
                     @if(params.totalAcceptedByTrack.nonEmpty){
-                        <div class="clearfix"></div>
                      <div class="col-md-6">
                         <h3>Accepted by Track</h3>
                             @defining(params.totalAcceptedByTrack.values.max){maxValue=>
@@ -286,8 +301,8 @@
                                 accepted submissions for <span class="badge badge-success">@params.totalSlotsToAllocate.get(propType+".label")</span> slots<br>
                             }
                     </div>
-                    <div class="clearfix"></div>
                     }
+                    </div>
                 </div>
             </div>
         </div>
