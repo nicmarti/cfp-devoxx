@@ -651,6 +651,7 @@ wishList.newWishList=Create new Wishlist
 
 contacted=Speaker has been contacted
 unknown=Unknown
+unknown.label=Unknown
 
 # The abstention button
 Abs=Abs
