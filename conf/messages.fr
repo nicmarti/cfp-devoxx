@@ -600,6 +600,7 @@ table.pres.trash=Effacer cette proposition
 tia.label.simple=Tools in Action
 uni.label.simple=University
 unknown=Inconnu
+unknown.label=Inconnu
 wishlist.cancelEdit=Retourner à votre liste de requêtes
 wishlist.createRequest=Créer une requête
 wishlist.editRequest=Editer une requête
