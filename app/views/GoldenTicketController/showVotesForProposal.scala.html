@@ -50,10 +50,10 @@
                   @if(nextToBeReviewedSameFormat.nonEmpty) {
                     @if(nextToBeReviewedSameFormat.head.talkType.id == proposal.talkType.id) {
                       <a class="btn btn-success btn-sm" accesskey="l" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
-                        @Messages("gt.nextTalkType", Messages(proposal.talkType.id))</a><br>
+                        @Messages("gt.nextTalkType", Messages(nextToBeReviewedSameFormat.head.talkType.id))</a><br>
                     } else {
-                      <a class="btn btn-success btn-sm" accesskey="l" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
-                        @Messages("gt.nextTalkDifferentType", Messages(nextToBeReviewedSameTrack.head.talkType.id))</a><br>
+                      <a class="btn btn-success btn-sm" accesskey="l" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="icon-forward"></i>
+                        @Messages("gt.nextTalkDifferentType", Messages(nextToBeReviewedSameFormat.head.talkType.id))</a><br>
                     }
                   }
                   @if(nextToBeReviewedSameTrack.nonEmpty) {
