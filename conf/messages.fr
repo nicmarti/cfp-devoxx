@@ -723,9 +723,9 @@ gt.youcan=Vous pouvez maintenant :
 gt.nomore=Vous n''avez plus de sujets à revoir pour l''instant, revenez plus tard lorsque d''autres speakers auront proposé des sujets.
 gt.nextTalkTrackAndType=Continuer et évaluer un autre sujet du type [{0}] dans la track [{1}]
 gt.nextTalkType=Continuer et évaluer un autre sujet du type [{0}]
-gt.nextTalkDifferentType=Continuer et évaluer un autre sujet d'un type différent : [{0}]
+gt.nextTalkDifferentType=Continuer et évaluer un autre sujet d''un type différent : [{0}]
 gt.nextTalkTrack=Continuer et évaluer une proposition dans la track [{0}]
-gt.nextTalkDifferentTrack=Continuer et évaluer un autre sujet d'une track différente : [{0}]
+gt.nextTalkDifferentTrack=Continuer et évaluer un autre sujet d''une track différente : [{0}]
 
 
 gtAdmin.totalGT=Nombre de personnes avec un Golden Ticket : {0}
