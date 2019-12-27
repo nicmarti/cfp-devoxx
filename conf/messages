@@ -123,7 +123,7 @@ sponsorTalk=Is this a sponsor presentation?
 videoLinkMessage=Related video link
 videoLinkMessage.help=Share with the program committee a link to one of your related online videos. Use the full URL on YouTube or other.
 sponsorTalk.help.title=Sponsor talk
-sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea. This is valid for Silver and Platinum only.
+sponsor.name.plz=Please, specify your company/exhibitor name in the private message textarea.
 sponsorTalk.help=Diamond and Platinum sponsors at Devoxx France can submit one Conference talk, that is automatically accepted and scheduled. Do not tick this checkbox if your company is an exhibitor, and you just want to submit a normal proposal.
 sponsorTalk.checkbox=Yes, this is a sponsor/exhibitor talk
 
