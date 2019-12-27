@@ -5,7 +5,7 @@
 @main(Messages("longYearlyName")+ " - " + Messages("signup.title")) {
 <div class="row">
     <div class="col-md-12 page-header">
-        <h1><i class="icon-signin"></i> @Messages("signup.title")</h1>
+        <h1><i class="fas fa-sign-in-alt"></i> @Messages("signup.title")</h1>
     </div>
     <div class="col-md-8">
 
@@ -29,11 +29,11 @@
     </div>
 
     <div class="col-md-4">
-        <h3><i class="icon-external-link-sign"></i> @Html(Messages("register.withopenid"))</h3>
+        <h3><i class="fas fa-external-link-alt"></i> @Html(Messages("register.withopenid"))</h3>
         <p>@Html(Messages("home.txt2"))</p>
-        <a class="btn btn-primary" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i> Github</a>
-        <a class="btn btn-primary" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i> Google</a>
-        <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin()" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-google-plus-sign"></i> LinkedIn</a>
+        <a class="btn btn-primary" href="@routes.Authentication.githubLogin()" title="Sign-in with your Github profile to @Messages("shortName")"><i class="fab fa-github"></i> Github</a>
+        <a class="btn btn-primary" href="@routes.Authentication.googleLogin()" title="Sign-in with your Google account to @Messages("shortName")"><i class="fab fa-google"></i> Google</a>
+        <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin()" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="fab fa-google"></i> LinkedIn</a>
     </div>
 </div>
 }

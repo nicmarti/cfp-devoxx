@@ -21,7 +21,7 @@
      <div class="card-body">
                 @if(proposal.sponsorTalk) {
                     <div class="alert alert-success">
-                        <p class="card-text"><i class="icon-screenshot"></i> Sponsor talk</p>
+                        <p class="card-text"><i class="fas fa-stamp"></i> Sponsor talk</p>
                     </div>
                 }
      </div>
@@ -31,7 +31,7 @@
                           <a class="card-link" href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a>
                           @if(proposal.state.code == "draft") {
                             <div class="btn btn-warning">
-                              <p class="card-text"><i class="icon-warning-sign"></i> @Messages("proposal.draft.reminder")</p>
+                              <p class="card-text"><i class="fas fa-exclamation-triangle"></i> @Messages("proposal.draft.reminder")</p>
                             </div>
                           }
                         </li>

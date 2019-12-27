@@ -312,12 +312,12 @@ object CFPAdmin extends SecureCFPController {
                   val talkType = Messages((source \ "talkType" \ "id").as[String])
                   val code = (source \ "state" \ "code").as[String]
                   val mainSpeaker = (source \ "mainSpeaker").as[String]
-                  s"<p class='searchProposalResult'><i class='icon-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - by $mainSpeaker - $talkType</p>"
+                  s"<p class='searchProposalResult'><i class='fas fa-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - by $mainSpeaker - $talkType</p>"
                 case "speakers" =>
                   val uuid = (source \ "uuid").as[String]
                   val name = (source \ "name").as[String]
                   val firstName = (source \ "firstName").as[String]
-                  s"<p class='searchSpeakerResult'><i class='icon-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a></p>"
+                  s"<p class='searchSpeakerResult'><i class='fas fa-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a></p>"
                 case _ => "Unknown format " + index
               }
           }

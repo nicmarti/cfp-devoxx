@@ -9,7 +9,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h1 class="panel-title"><i class="icon-bar-chart"></i> Proposals from Sponsor or Exhibitor</h1>
+                <h1 class="panel-title"><i class="fas fa-dollar-sign"></i> Proposals from Sponsor or Exhibitor</h1>
                 @proposals.size talks
             </div>
         </div>
@@ -33,7 +33,7 @@
                         @Html(proposal.privateMessageAsHtml)
                     </small>
 
-                    <a href="@routes.CFPAdmin.removeSponsorTalkFlag(proposal.id)" class="btn btn-sm btn-danger"><i class="icon-warning-sign"></i> @Messages("remove.sponsorFlag")</a>
+                    <a href="@routes.CFPAdmin.removeSponsorTalkFlag(proposal.id)" class="btn btn-sm btn-danger"><i class="fas fa-exclamation-triangle"></i> @Messages("remove.sponsorFlag")</a>
                 </div>
                 </div>
             </div>

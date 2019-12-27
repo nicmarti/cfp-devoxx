@@ -21,7 +21,7 @@
         <table class="agendaTable">
              @if(ConferenceDescriptor.isShowRoom) {
                  <tr>
-                     <th><i class="icon-time"></i> @Messages("publisher.room")</th>
+                     <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { roomName: Room =>
                          <td>@roomName.name</td>
                      }
@@ -48,7 +48,7 @@
             }
             @if(ConferenceDescriptor.isShowRoom) {
                   <tr>
-                     <th><i class="icon-time"></i> @Messages("publisher.room")</th>
+                     <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { roomName: Room =>
                          <td>@roomName.name</td>
                      }

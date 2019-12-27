@@ -24,7 +24,7 @@
                         <p>@tags.linkToProposal(proposalIdRef)</p>
                     }
                     @models.Proposal.HttpUrl.findAllIn(message).map { test =>
-                        <p><a href="@test" target="_blank"><i class="icon-external-link"></i> @test</a></p>
+                        <p><a href="@test" target="_blank"><i class="fas fa-external-link"></i> @test</a></p>
                     }
                 }
             </div>

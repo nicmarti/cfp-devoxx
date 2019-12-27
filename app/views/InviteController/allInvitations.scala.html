@@ -3,7 +3,7 @@
 @main("All invited speakers"){
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
-        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        <h2><i class="fas fa-thumbs-up"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
 
@@ -58,7 +58,7 @@
                         </td>
                         <td>
                            <a href="@routes.CFPAdmin.newOrEditSpeaker(Option(speaker.uuid))" class="btn btn-sm btn-primary">@Messages("sp.editSpeaker")</a>
-                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="icon-lock"></i> @Messages("sp.authenticateAs")</a>
+                           <a href="@routes.Backoffice.authenticateAs(speaker.uuid)" class="btn btn-sm btn-warning" ><i class="fas fa-lock"></i> @Messages("sp.authenticateAs")</a>
                         </td>
 
                     </tr>

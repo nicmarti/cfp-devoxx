@@ -3,7 +3,7 @@
 @main("CFP Admin webuser") {
 <div class="row">
     <div class="col-lg-offset-4 col-md-4">
-        <h2><i class="icon-thumbs-up-alt"></i> CFP Admin</h2>
+        <h2><i class="fas fa-thumbs-up"></i> CFP Admin</h2>
     </div>
     <div class="clearfix"></div>
 
@@ -40,7 +40,7 @@
                 @speakers.sortBy(w=>Webuser.hasAccessToCFP(w.uuid)).reverse.map{ webuser: Webuser =>
                     <tr>
                         <td>
-                            <a href="@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)"><i class="icon-arrow-right"></i> @webuser.cleanName</a>
+                            <a href="@routes.CFPAdmin.showSpeakerAndTalks(webuser.uuid)"><i class="fas fa-arrow-right"></i> @webuser.cleanName</a>
                             <small>@Webuser.generateUUID(webuser.email)</small>
                         </td>
                          <td>
@@ -54,7 +54,7 @@
                         }
                         </td>
                         <td>
-                            <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="icon-lock"></i> Authenticate</a>
+                            <a class="btn btn-sm btn-warning" href="@routes.Backoffice.authenticateAs(webuser.uuid)"><i class="fas fa-lock"></i> Authenticate</a>
                            @if(SecureCFPController.hasAccessToAdmin(req)){
                                 @if(Webuser.hasAccessToCFP(webuser.uuid)){
                                     <a class="btn btn-sm btn-danger" href="@routes.Backoffice.switchCFPAdmin(webuser.uuid)">Remove from CFP</a>

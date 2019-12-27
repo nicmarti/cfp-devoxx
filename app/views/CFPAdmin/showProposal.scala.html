@@ -5,7 +5,7 @@
         <div class="col-12 mt-2 mb-2">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="icon-signin"></i> @Messages("admin.proposal")</h3>
+                    <h3><i class="fas fa-sign-in-alt"></i> @Messages("admin.proposal")</h3>
                 </div>
 
                 <div class="card-body">
@@ -15,11 +15,11 @@
                                 <th class="proposalTitle">@Messages("admin.proposals.th.title")</th>
                                 <th>
                                     @Messages("admin.proposals.th.track")
-                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" title="See all proposals by track"><i class="icon-arrow-right"></i> </a></small>
+                                    <small><a href="@routes.CFPAdmin.allProposalsByTrack(proposal.track.id)" title="See all proposals by track"><i class="fas fa-arrow-right"></i> </a></small>
                                 </th>
 
                                 <th>@Messages("admin.proposals.th.talkType")
-                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" title="See all proposals by type"><i class="icon-arrow-right"></i> </a></small>
+                                    <small><a href="@routes.CFPAdmin.allProposalsByType(proposal.talkType.id)" title="See all proposals by type"><i class="fas fa-arrow-right"></i> </a></small>
                                 </th>
                                 <th>Proposal ID</th>
                             </tr>
@@ -86,7 +86,7 @@
                                     <th class="proposalCol">Related Video</th>
                                     <td>
                                     @tags.renderVideoLink(proposal.videoLink.get)
-                                    <br><small>Video link: <a href="@proposal.videoLink.get" target="_blank"><i class="icon-arrow-right"></i> @proposal.videoLink.get</a> </small>
+                                    <br><small>Video link: <a href="@proposal.videoLink.get" target="_blank"><i class="fas fa-arrow-right"></i> @proposal.videoLink.get</a> </small>
                                     </td>
                                 </tr>
                             }
@@ -98,7 +98,7 @@
         <div class="col-md-12 mb-2">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="icon-user"></i>
+                    <h3><i class="fas fa-user"></i>
                         @if(proposal.secondarySpeaker.isDefined) {
                             @Messages("admin.sp.speakers")
                         } else {
@@ -162,7 +162,7 @@
             @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
                 @if(approved) {
                     <div class="card-header">
-                        <h3><i class="icon-check"></i> @Messages("proposal.approved.noVotes") <span class="badge badge-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
+                        <h3><i class="fas fa-check"></i> @Messages("proposal.approved.noVotes") <span class="badge badge-@proposal.state.code">@Messages(proposal.state.code)</span> </h3>
                     </div>
                     <div class="card-body">
                         <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-small btn-primary">@Messages("btn.showVotes")</a>
@@ -176,7 +176,7 @@
                     </div>
                 } else {
                     <div class="card-header">
-                        <h3><i class="icon-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
+                        <h3><i class="fas fa-thumbs-up"></i> @Messages("admin.sp.evaluate")</h3>
                     </div>
                     <div class="card-body">
                         <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary">@Messages("btn.showVotes")</a>
@@ -193,7 +193,7 @@
                             </div>
                         } else {
                             @maybeMyVote.map { review: Review =>
-                                <i class="icon-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote.toInt)
+                                <i class="fas fa-trophy"></i> @Messages("admin.sp.voted") @tags.renderVote(review.vote.toInt)
                                 - @review.date.toString("EEEE d MMM YYYY HH:mm")
                             <a href="@routes.CFPAdmin.clearVoteForProposal(proposal.id)" class="btn btn-sm btn-danger">@Messages("admin.sp.deleteMyVote")</a>
                             }
@@ -233,7 +233,7 @@
             <div class="col-12 mb-1" id="discussion">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="icon-tasks"></i> @Messages("admin.sp.discussion")</h3>
+                        <h3><i class="far fa-comment"></i> @Messages("admin.sp.discussion")</h3>
                     </div>
                 </div>
             </div>
@@ -241,7 +241,7 @@
             <div class="col-md-6 col-sm-12 col-lg-6 mb-2">
                 <div class="card">
                     <div class="card-header alert-danger">
-                        <h4 class="text-light"><i class="icon-comments-alt"></i> @Messages("admin.sp.committee_speaker")</h4>
+                        <h4 class="text-light"><i class="far fa-comments"></i> @Messages("admin.sp.committee_speaker")</h4>
                     </div>
                     <div class="card-body">
                     @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
@@ -260,7 +260,7 @@
                     @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
                         <div class="card mb-1">
                             <div class="card-header">
-                                <h4><i class="icon-calendar"></i> @Messages("calendar.pref")</h4>
+                                <h4><i class="far fa-calendar-alt"></i> @Messages("calendar.pref")</h4>
                             </div>
                             <div class="card-body">
                             @defining(Proposal.getPreferredDay(proposal.id)) { preferredDay: Option[String] =>
@@ -289,7 +289,7 @@
                 }
                 <div class="card">
                     <div class="card-header">
-                        <h4><i class="icon-comments"></i> @Messages("admin.sp.internal")</h4>
+                        <h4><i class="fas fa-comments"></i> @Messages("admin.sp.internal")</h4>
                     </div>
                     <div class="card-body">
                     @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id)) {

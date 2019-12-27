@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h1><i class="icon-bar-chart"></i> @Messages(confType)</h1>
+                <h1><i class="fas fa-chart-bar"></i> @Messages(confType)</h1>
             </div>
 
             <div class="card-body">
@@ -82,7 +82,7 @@
                                         @Messages(proposal.state.code)
                                     </td>
                                     <td>
-                                        <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="badge badge-danger"><i class="icon-warning-sign"></i> Notify refused</a>
+                                        <a href="@routes.ApproveOrRefuse.notifyRefused(confType, proposal.id)" title="Send an email and change the state to REJECTED (Async)" class="badge badge-danger"><i class="fas fa-exclamation-triangle"></i> Notify refused</a>
                                     </td>
                                 </tr>
                             }

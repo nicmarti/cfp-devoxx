@@ -18,7 +18,7 @@
         <table class="agendaTable">
              @if(ConferenceDescriptor.isShowRoom) {
                  <tr>
-                     <th><i class="icon-time"></i> Room</th>
+                     <th><i class="far fa-calendar-alt-check"></i> Room</th>
                      @rooms.sorted.map { roomName: Room =>
                          <td>@roomName.name</td>
                      }

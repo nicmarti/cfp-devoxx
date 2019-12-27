@@ -7,12 +7,12 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h1 class="panel-title"><i class="icon-bar-chart"></i> @Messages("gt.yourVotes")</h1>
+                <h1 class="panel-title"><i class="fas fa-chart-bar"></i> @Messages("gt.yourVotes")</h1>
             </div>
 
             <div class="card-body">
                 <div class="col-md-12">
-                    <h3><i class="icon-beaker"></i> @Messages("gt.personnal")</h3>
+                    <h3><i class="fas fa-flask"></i> @Messages("gt.personnal")</h3>
                     @if(allMyVotes.nonEmpty){
                         @Messages("gt.youReviewed", allMyVotes.count(_._2.isDefined))<br>
 
@@ -31,7 +31,7 @@
                 </div>
                 @if(allMyVotes.nonEmpty){
                     <div class="col-md-12">
-                       <h3><i class="icon-bar-chart"></i> @Messages("gt.myvotes", Messages(talkType))</h3>
+                       <h3><i class="fas fa-chart-bar"></i> @Messages("gt.myvotes", Messages(talkType))</h3>
 
                         <table id="tableMyVotes" class="table table-bordered">
                             <thead>
@@ -92,7 +92,7 @@ $( document ).ready(function() {
                 '<button class="btn btn-xs btn-color-' + newScore +
                 '">' + newScore +
                 '</button>' +
-                '<a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType)" class="btn btn-xs btn-primary"><i class="icon-refresh"></i></a>' +
+                '<a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType)" class="btn btn-xs btn-primary"><i class="fas fa-sync"></i></a>' +
                 '</div></td>';
 
     }

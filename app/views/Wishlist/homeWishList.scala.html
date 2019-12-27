@@ -8,7 +8,7 @@
 
     <div class="row">
         <div class="col-lg-offset-4 col-md-4">
-            <h2><i class="icon-sort-by-attributes-alt"></i> @Messages("wishList.title")</h2>
+            <h2><i class="fas fa-sort-amount-down"></i> @Messages("wishList.title")</h2>
         </div>
 
         <div class="clearfix"></div>
@@ -16,7 +16,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="icon-stackexchange"></i> @Messages("wishList.recentEvents")</h3>
+                    <h3><i class="fab fa-stack-overflow"></i> @Messages("wishList.recentEvents")</h3>
                 </div>
 
                 <div class="card-body">
@@ -51,17 +51,17 @@
 @requests.map { case(request: RequestToTalk,maybePersonInCharge:Option[Webuser]) =>
     <tr>
         <td>
-            <a href="@routes.Wishlist.edit(request.id)" class="btn btn-sm btn-primary"><i class="icon-edit"></i></a>
-            <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-sm btn-danger"><i class="icon-trash"></i></a>
+            <a href="@routes.Wishlist.edit(request.id)" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
+            <a href="@routes.Wishlist.deleteRequest(request.id)" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
         </td>
         <td>@models.RequestToTalkStatus.lastEvent(request.id).map(_.date.toString("EEE, d MMM YYYY, HH:mm"))</td>
         <td>@request.speakerName</td>
         <td>
            @maybePersonInCharge.map{webuser=>
                 @webuser.cleanName<br>
-                <a href="@routes.Wishlist.unsetPersonInCharge(request.id)" class="btn btn-sm btn-danger"><i class="icon-minus-sign-alt"></i></a>
+                <a href="@routes.Wishlist.unsetPersonInCharge(request.id)" class="btn btn-sm btn-danger"><i class="fas fa-minus-sign-alt"></i></a>
            }.getOrElse{
-               <a href="@routes.Wishlist.selectPersonInCharge(request.id, request.speakerName)" class="btn btn-sm btn-success"><i class="icon-plus-sign"></i> </a>
+               <a href="@routes.Wishlist.selectPersonInCharge(request.id, request.speakerName)" class="btn btn-sm btn-success"><i class="fas fa-plus-sign"></i> </a>
            }
         </td>
         <td>@request.company</td>

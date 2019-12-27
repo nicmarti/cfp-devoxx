@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="page-header">
-                            <h2><i class="icon-user"></i> @Messages("home.visitor.title")<br> <small>
+                            <h2><i class="fas fa-user"></i> @Messages("home.visitor.title")<br> <small>
                             @Messages("longYearlyName"), @Messages(ConferenceDescriptor.current().timing.datesI18nKey)</small></h2>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
-                                <h3><i class="icon-signin"></i> @Html(Messages("visitor.signin"))</h3>
+                                <h3><i class="fas fa-sign-in-alt"></i> @Html(Messages("visitor.signin"))</h3>
                             </div>
                             <div class="card-body">
                                 @helper.form(action = routes.Authentication.login(visitor=true)) {
@@ -39,13 +39,13 @@
                                     <a href="@routes.Authentication.forgetPassword()">@Messages("forget.password")</a>
                                 }
 
-                                <h4><i class="icon-external-link-sign"></i> @Html(Messages("index.method2"))</h4>
+                                <h4><i class="fas fa-external-link-alt"></i> @Html(Messages("index.method2"))</h4>
                                 <p>@Html(Messages("index.txt2"))</p>
-                                <p><a class="btn btn-primary" href="@routes.Authentication.githubLogin(visitor=true)" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-primary" href="@routes.Authentication.githubLogin(visitor=true)" title="Sign-in with your Github profile to @Messages("shortName")"><i class="fab fa-github"></i>
                                     Github</a>
-                                    <a class="btn btn-primary" href="@routes.Authentication.googleLogin(visitor=true)" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.googleLogin(visitor=true)" title="Sign-in with your Google account to @Messages("shortName")"><i class="fab fa-google"></i>
                                         Google</a>
-                                    <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin(visitor=true)" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin(visitor=true)" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="fab fa-linkedin"></i>
                                         LinkedIn</a>
                                 </p>
                             </div>
@@ -54,17 +54,17 @@
                     <div class="col-md-6">
                             <div class="card">
                             <div class="card-header">
-                                <h3><i class="icon-user"></i> @Html(Messages("visitor.register"))</h3>
+                                <h3><i class="fas fa-user"></i> @Html(Messages("visitor.register"))</h3>
                             </div>
                             <div class="card-body">
                                 <p>@Html(Messages("visitor.index.signup2", Messages("longName")))</p>
                                 <a class="btn btn-primary" href="@routes.Authentication.prepareSignup(visitor=true)">@Messages("index.signup.btn")</a>
                                 <p>@Html(Messages("index.signup3"))</p>
-                                <p><a class="btn btn-primary" href="@routes.Authentication.githubLogin(visitor=true)" title="Sign-in with your Github profile to @Messages("shortName")"><i class="icon-github-sign"></i>
+                                <p><a class="btn btn-primary" href="@routes.Authentication.githubLogin(visitor=true)" title="Sign-in with your Github profile to @Messages("shortName")"><i class="fab fa-github"></i>
                                     Github</a>
-                                    <a class="btn btn-primary" href="@routes.Authentication.googleLogin(visitor=true)" title="Sign-in with your Google account to @Messages("shortName")"><i class="icon-google-plus-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.googleLogin(visitor=true)" title="Sign-in with your Google account to @Messages("shortName")"><i class="fab fa-google"></i>
                                         Google</a>
-                                    <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin(visitor=true)" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="icon-linkedin-sign"></i>
+                                    <a class="btn btn-primary" href="@routes.Authentication.linkedinLogin(visitor=true)" title="Sign-in with your LinkedIn profile to @Messages("shortName")"><i class="fab fa-linkedin"></i>
                                         LinkedIn</a>
                                 </p>
                             </div>

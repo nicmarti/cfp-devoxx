@@ -25,7 +25,7 @@
                         }
                         </div>
                     <div class="widget-footer text-center">
-                        <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary"><i class="icon-edit-sign"></i> @Html(Messages("edit.profile"))</a>
+                        <a href="@routes.CallForPaper.editProfile()" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> @Html(Messages("edit.profile"))</a>
                     </div>
                 </div>
                 <div class="col-8">
@@ -39,7 +39,7 @@
 
 
     <div class="col-12 mb-5">
-          <h3><i class="icon-tasks"></i> @Messages("your.submission")</h3>
+          <h3><i class="fas fa-tasks"></i> @Messages("your.submission")</h3>
 
             @flash.get("error").map { errorMsg =>
                 <div class="alert alert-danger alert-dismissable">
@@ -62,7 +62,7 @@
             @flash.get("deleted").map { proposalId =>
                 <div class="alert alert-warning">
                     @Messages("talk.deleted") <br>
-                    <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-primary btn-sm"><i class="icon-undo"></i> @Messages("talk.deleted2") @proposalId</a>
+                    <a href="@routes.CallForPaper.undeleteProposal(proposalId)" class="btn btn-primary btn-sm"><i class="fas fa-undo"></i> @Messages("talk.deleted2") @proposalId</a>
                 </div>
             }
 
@@ -81,7 +81,7 @@
 
             @if(ConferenceDescriptor.isCFPOpen) {
                 <div class="mb-3">
-                    <a href="@routes.CallForPaper.newProposal" class="btn btn-primary"><i class="icon-lightbulb"></i> @Html(Messages("new.proposal"))</a>
+                    <a href="@routes.CallForPaper.newProposal" class="btn btn-primary"><i class="fas fa-lightbulb"></i> @Html(Messages("new.proposal"))</a>
                 </div>
 
                 <div class="alert alert-info">
@@ -105,7 +105,7 @@
         <div class="row">
              @if(ratings.nonEmpty) {
                     <div class="col-12">
-                        <h3><i class="icon-bar-chart"></i> @Messages("hfspk.rating.title")</h3>
+                        <h3><i class="fas fa-chart-bar"></i> @Messages("hfspk.rating.title")</h3>
                         <p>@Messages("hfspk.rating.desc")</p>
                         <table class="table table-bordered table-striped">
                             <thead>
@@ -154,7 +154,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="icon-envelope"></i> @Messages("email.digest.label")</h3>
+                    <h3><i class="fas fa-envelope"></i> @Messages("email.digest.label")</h3>
                 </div>
                 <div class="card">
                     <table class="table">
