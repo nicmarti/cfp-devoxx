@@ -13,6 +13,11 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> @Messages("gt.personnal")</h3>
+                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                      <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
+                    }
+                    <br/>
+
                     @if(allMyVotes.nonEmpty){
                         @Messages("gt.youReviewed", proposalsNotReviewedCount + allMyVotes.size, allMyVotes.size, proposalsNotReviewedCount)
                         @if(firstProposalNotReviewed.isDefined){
@@ -26,11 +31,6 @@
                         }
                     }else{
                         @Messages("gt.noVotes")
-                    }
-
-                    <br>
-                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
-                        <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
                     }
                 </div>
                 @if(allMyVotes.nonEmpty){

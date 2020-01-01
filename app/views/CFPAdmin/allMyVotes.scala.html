@@ -11,6 +11,11 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> Your personnal leaderboard</h3>
+                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                        <a href="@routes.CFPAdmin.allMyVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
+                    }
+                    <br/>
+
                     @if(allMyVotesExcludingAbst.nonEmpty){
                         Out of @(proposalsNotReviewedCount + allMyVotes.size) talks, you have reviewed @allMyVotes.size talks and @proposalsNotReviewedCount reviews remain.
                         @if(firstProposalNotReviewed.isDefined){
@@ -26,11 +31,6 @@
                     }else{
                         You haven't voted for any proposal so far.
                     }
-
-                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
-                        <a href="@routes.CFPAdmin.allMyVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
-                    }
-
                 </div>
                 @if(allMyVotes.nonEmpty){
                     <div class="col-md-12 col-lg-12">
