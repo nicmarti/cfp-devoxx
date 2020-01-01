@@ -103,6 +103,18 @@ object ReviewByGoldenTicket {
       ReviewByGoldenTicket.computeAndGenerateVotes()
   }
 
+  def allAllowedProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
+    return if (ConferenceDescriptor.isCFPOpen) {
+      ReviewByGoldenTicket.allProposalsNotReviewed(reviewerUUID)
+        .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
+        .filterNot(_.sponsorTalk)
+    } else {
+      ReviewByGoldenTicket.allProposalsNotReviewed(reviewerUUID)
+        .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.TIA || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.LAB || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.QUICK || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.UNI)
+        .filterNot(_.sponsorTalk)
+    }
+  }
+
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
