@@ -1,4 +1,4 @@
-@(allMyVotes:List[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allMyVotes:List[(String,Double)], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
     <div class="row">
@@ -12,8 +12,8 @@
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> Your personnal leaderboard</h3>
                     @if(allMyVotes.nonEmpty){
-                        You have voted for @allMyVotes.filter(_._2.isDefined).size talks<br>
-                        @defining(allMyVotes.filter(_._2.isDefined).map(_._2.get)){ allScores =>
+                        You have voted for @allMyVotes.size talks<br>
+                        @defining(allMyVotes.map(_._2)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Your average vote is @library.Stats.average(allScores)<br>
                             Standard deviation for your vote is @library.Stats.standardDeviation(allScores)<br>
@@ -43,8 +43,8 @@
                             </thead>
                             <tbody>
 
-                                @allMyVotes.map { case (proposalId, maybeVote) =>
-                                    @defining(Math.round(maybeVote.get)) { score =>
+                                @allMyVotes.map { case (proposalId, vote) =>
+                                    @defining(Math.round(vote)) { score =>
                                         <tr>
                                             <td style="width: 82px" class="score" data-score="@score" data-pid="@proposalId">
                                             <div class="btn-group-xs">

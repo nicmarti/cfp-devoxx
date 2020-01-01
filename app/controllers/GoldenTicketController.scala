@@ -195,7 +195,9 @@ object GoldenTicketController extends SecureCFPController {
           val allProposalsIdsProposalType = allProposalsForProposalType.keySet
           val allMyVotesForSpecificProposalType = allMyVotes.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(allMyVotesForSpecificProposalType, allProposalsForProposalType, talkType))
+          val sortedAllMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesForSpecificProposalType.toList.sortBy(_._2).reverse
+
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

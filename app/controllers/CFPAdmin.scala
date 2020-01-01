@@ -275,10 +275,7 @@ object CFPAdmin extends SecureCFPController {
             pid: String => (pid, Review.averageScore(pid))
           }.toMap
 
-          val sortedListOfProposals = allMyVotesForSpecificProposalType.toList.sortBy {
-            case (proposalID, maybeScore) =>
-              maybeScore.getOrElse(0.toDouble)
-          }.reverse
+          val sortedListOfProposals = allMyVotesForSpecificProposalType.toList.sortBy(_._2).reverse
 
           Ok(views.html.CFPAdmin.allMyVotes(sortedListOfProposals, allProposalsForProposalType, talkType, allScoresForProposals))
       }.getOrElse {

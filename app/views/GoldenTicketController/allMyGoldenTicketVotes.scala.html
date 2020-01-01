@@ -1,4 +1,4 @@
-@(allMyVotes:Set[(String,Option[Double])], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allMyVotes:List[(String,Double)], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 
 @main("All my votes") {
@@ -14,10 +14,10 @@
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> @Messages("gt.personnal")</h3>
                     @if(allMyVotes.nonEmpty){
-                        @Messages("gt.youReviewed", allMyVotes.count(_._2.isDefined))<br>
+                        @Messages("gt.youReviewed", allMyVotes.size)<br>
 
-                        @defining(allMyVotes.filter(_._2.isDefined).filterNot(_._2 == Some(0)).toList.map(_._2.get)){allScores=>
-                            @Messages("gt.youVoted", allMyVotes.count(s => s._2.isDefined && s._2 != Some(0)))<br>
+                        @defining(allMyVotes.filterNot(_._2 == 0).map(_._2)){allScores=>
+                            @Messages("gt.youVoted", allScores.size)<br>
                             @Messages("gt.averageVote", library.Stats.average(allScores))
                         }
                     }else{
@@ -45,8 +45,8 @@
                             </thead>
                             <tbody>
 
-                                @allMyVotes.filter(_._2.isDefined).toList.sortBy(_._2).reverse.map { case (proposalId, maybeVote) =>
-                                     @defining(Math.round(maybeVote.get)){ score =>
+                                @allMyVotes.map { case (proposalId, vote) =>
+                                     @defining(Math.round(vote)){ score =>
                                 <tr>
                                         <td style="width: 82px" class="score" data-score="@score" data-pid="@proposalId">
                                             <Div class="btn-group btn-group-xs">
