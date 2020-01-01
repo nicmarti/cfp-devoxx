@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> @Messages("gt.personnal")</h3>
-                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
+                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.filter(models.ConferenceDescriptor.ConferenceProposalConfigurations.accessibleTypeToGoldenTicketReviews(_)).map{confType=>
                       <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(confType.id)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
                     }
                     <br/>
