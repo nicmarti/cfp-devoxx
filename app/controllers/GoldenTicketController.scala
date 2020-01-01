@@ -159,7 +159,7 @@ object GoldenTicketController extends SecureCFPController {
         Proposal.findById(proposalId) match {
           case Some(proposal) =>
             // The next proposal I should review
-            val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
+            val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid)
             val (sameTrackAndFormats, otherTracksOrFormats) = allNotReviewed.partition(p => p.track.id == proposal.track.id && p.talkType.id == proposal.talkType.id)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
             val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
