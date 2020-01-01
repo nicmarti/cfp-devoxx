@@ -1,4 +1,4 @@
-@(allMyVotes:List[(String,Double)], allMyVotesExcludingAbst:List[(String,Double)], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allMyVotes:List[(String,Double)], allMyVotesExcludingAbst:List[(String,Double)], relatedProposals:Map[String,Proposal], talkType:String, allScoresForProposals:Map[String,Double], proposalsNotReviewedCount: Int, firstProposalNotReviewed: Option[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
     <div class="row">
@@ -12,7 +12,11 @@
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> Your personnal leaderboard</h3>
                     @if(allMyVotesExcludingAbst.nonEmpty){
-                        You have voted for @allMyVotes.size talks<br>
+                        Out of @(proposalsNotReviewedCount + allMyVotes.size) talks, you have reviewed @allMyVotes.size talks and @proposalsNotReviewedCount reviews remain.
+                        @if(firstProposalNotReviewed.isDefined){
+                            <a href="@routes.CFPAdmin.openForReview(firstProposalNotReviewed.get.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                        }
+                        <br>
                         @defining(allMyVotesExcludingAbst.map(_._2)){ allScores =>
                             Sum of all your points: @Math.round(allScores.sum)<br>
                             Number of abstentions: @(allMyVotes.size - allScores.size)<br>

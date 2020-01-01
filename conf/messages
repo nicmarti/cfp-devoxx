@@ -801,7 +801,7 @@ gt.todo=Your todo list size:
 
 gt.yourVotes=Your votes
 gt.personnal=Your personnal leaderboard
-gt.youReviewed=You reviewed {0} talk(s)
+gt.youReviewed=Out of {0} talks, you have reviewed {1} talks and {2} reviews remain.
 gt.youVoted=You have voted for {0} talk(s)
 gt.averageVote=Your average vote is {0}
 gt.noVotes=You haven''t vote for any proposal so far.

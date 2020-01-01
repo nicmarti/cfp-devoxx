@@ -710,7 +710,7 @@ gt.todo=Votre liste de sujet à revoir :
 
 gt.yourVotes=Vos votes
 gt.personnal=Vos statistiques personnelles
-gt.youReviewed=Vous avez revu {0} sujet(s)
+gt.youReviewed=Sur {0} sujet(s), vous avez revu {1} sujet(s) et {2} revue(s) reste(nt) à faire.
 gt.youVoted=Vous avez donné une note pour {0} sujet(s)
 gt.averageVote=Votre note moyenne est {0}
 gt.noVotes=Vous n''avez pas encore commencé à revoir les sujets. Ne perdez pas de temps car cela peut prendre beaucoup de temps.

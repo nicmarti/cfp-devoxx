@@ -196,10 +196,14 @@ object GoldenTicketController extends SecureCFPController {
 
           val allMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
 
+          val proposalsNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).filter(_.talkType == pType)
+          val proposalsNotReviewedCount = proposalsNotReviewed.size
+          val firstProposalNotReviewed = proposalsNotReviewed.headOption
+
           val sortedAllMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentionsForCurrentProposalType.toList.sortBy(_._2).reverse
           val sortedAllMyVotesExcludingAbstentionsForCurrentProposalType = sortedAllMyVotesIncludingAbstentionsForCurrentProposalType.filter(_._2 != 0)
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, sortedAllMyVotesExcludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType))
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, sortedAllMyVotesExcludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType, proposalsNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
