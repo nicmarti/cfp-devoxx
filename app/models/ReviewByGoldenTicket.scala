@@ -107,9 +107,8 @@ object ReviewByGoldenTicket {
     return ReviewByGoldenTicket.allProposalsNotReviewed(reviewerUUID)
       .filter(p =>
         !p.sponsorTalk
-          && p.talkType != ConferenceDescriptor.ConferenceProposalTypes.KEY
-          && p.talkType != ConferenceDescriptor.ConferenceProposalTypes.OTHER
-          && (ConferenceDescriptor.isCFPOpen || p.talkType != ConferenceDescriptor.ConferenceProposalTypes.BOF))
+          && ConferenceDescriptor.ConferenceProposalConfigurations.accessibleTypeToGoldenTicketReviews(p.talkType)
+      )
   }
 
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
