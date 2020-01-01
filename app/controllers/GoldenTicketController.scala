@@ -189,15 +189,17 @@ object GoldenTicketController extends SecureCFPController {
       ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
         pType =>
           val uuid = request.webuser.uuid
-          val allMyVotes = ReviewByGoldenTicket.allVotesFromUser(uuid)
-          val allProposalIDs = allMyVotes.map(_._1)
+          val allMyVotesIncludingAbstentions = ReviewByGoldenTicket.allVotesFromUser(uuid)
+          val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
           val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
           val allProposalsIdsProposalType = allProposalsForProposalType.keySet
-          val allMyVotesForSpecificProposalType = allMyVotes.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
 
-          val sortedAllMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesForSpecificProposalType.toList.sortBy(_._2).reverse
+          val allMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType))
+          val sortedAllMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentionsForCurrentProposalType.toList.sortBy(_._2).reverse
+          val sortedAllMyVotesExcludingAbstentionsForCurrentProposalType = sortedAllMyVotesIncludingAbstentionsForCurrentProposalType.filter(_._2 != 0)
+
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, sortedAllMyVotesExcludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

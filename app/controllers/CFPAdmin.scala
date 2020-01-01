@@ -262,12 +262,12 @@ object CFPAdmin extends SecureCFPController {
       ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
         pType =>
           val uuid = request.webuser.uuid
-          val allMyVotes = Review.allVotesFromUser(uuid)
-          val allProposalIDs = allMyVotes.map(_._1)
+          val allMyVotesIncludingAbstentions = Review.allVotesFromUser(uuid)
+          val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
           val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
           val allProposalsIdsProposalType = allProposalsForProposalType.keySet
 
-          val allMyVotesForSpecificProposalType = allMyVotes.filter {
+          val allMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentions.filter {
             proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1)
           }
 
@@ -275,9 +275,10 @@ object CFPAdmin extends SecureCFPController {
             pid: String => (pid, Review.averageScore(pid))
           }.toMap
 
-          val sortedListOfProposals = allMyVotesForSpecificProposalType.toList.sortBy(_._2).reverse
+          val sortedAllMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentionsForCurrentProposalType.toList.sortBy(_._2).reverse
+          val sortedAllMyVotesExcludingAbstentionsForCurrentProposalType = sortedAllMyVotesIncludingAbstentionsForCurrentProposalType.filter(_._2 != 0)
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedListOfProposals, allProposalsForProposalType, talkType, allScoresForProposals))
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, sortedAllMyVotesExcludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType, allScoresForProposals))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

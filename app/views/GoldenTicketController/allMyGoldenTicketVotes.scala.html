@@ -1,4 +1,4 @@
-@(allMyVotes:List[(String,Double)], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allMyVotes:List[(String,Double)], allMyVotesExcludingAbst:List[(String,Double)], relatedProposals:Map[String,Proposal], talkType:String)(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 
 @main("All my votes") {
@@ -16,7 +16,7 @@
                     @if(allMyVotes.nonEmpty){
                         @Messages("gt.youReviewed", allMyVotes.size)<br>
 
-                        @defining(allMyVotes.filterNot(_._2 == 0).map(_._2)){allScores=>
+                        @defining(allMyVotesExcludingAbst.map(_._2)){allScores=>
                             @Messages("gt.youVoted", allScores.size)<br>
                             @Messages("gt.averageVote", library.Stats.average(allScores))
                         }
