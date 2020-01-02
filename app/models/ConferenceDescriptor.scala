@@ -58,42 +58,6 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
                                  concernedByCountQuotaRestriction: Boolean = true,
                                  allowOtherSpeaker: Boolean = true)
 
-object ProposalConfiguration {
-
-  val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
-    concernedByCountQuotaRestriction = false, htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false, accessibleTypeToGoldenTicketReviews = () => false)
-
-  def parse(propConf: String): ProposalConfiguration = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
-  }
-
-  def totalSlotsCount: Int = ConferenceDescriptor.ConferenceProposalConfigurations.ALL.map(_.slotsCount).sum
-
-  def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
-  }
-
-  def getProposalsImplyingATrackSelection: List[ProposalConfiguration] = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.impliedSelectedTrack.nonEmpty)
-  }
-
-  def getHTMLClassFor(pt: ProposalType): String = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.htmlClass).headOption.getOrElse("unknown")
-  }
-
-  def isChosablePreferredDaysProposals(pt: ProposalType): Boolean = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.chosablePreferredDay).headOption.getOrElse(false)
-  }
-
-  def doesProposalTypeGiveSpeakerFreeEntrance(pt: ProposalType): Boolean = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.givesSpeakerFreeEntrance).headOption.getOrElse(false)
-  }
-
-  def doesProposalTypeAllowOtherSpeaker(pt: ProposalType): Boolean = {
-    ConferenceDescriptor.ConferenceProposalConfigurations.ALL.filter(p => p.id == pt.id).map(_.allowOtherSpeaker).headOption.getOrElse(true)
-  }
-}
-
 case class ConferenceDescriptor(eventCode: String,
                                 confUrlCode: String,
                                 frLangEnabled: Boolean,
@@ -168,9 +132,34 @@ object ConferenceDescriptor {
       concernedByCountQuotaRestriction = false, chosablePreferredDay = true, accessibleTypeToGoldenTicketReviews = () => false)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "fas fa-microphone-alt",
       hiddenInCombo = true, chosablePreferredDay = false, accessibleTypeToGoldenTicketReviews = () => false)
+    val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
+      concernedByCountQuotaRestriction = false, htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false, accessibleTypeToGoldenTicketReviews = () => false)
 
+    // UNKNOWN is not there : it's dont on purpose !
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
 
+    def parse(propConf: String): ProposalConfiguration = {
+      ALL.find(p => p.id == propConf).getOrElse(ConferenceDescriptor.ConferenceProposalConfigurations.UNKNOWN)
+    }
+    def totalSlotsCount: Int = ALL.map(_.slotsCount).sum
+    def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
+      ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
+    }
+    def getProposalsImplyingATrackSelection: List[ProposalConfiguration] = {
+      ALL.filter(p => p.impliedSelectedTrack.nonEmpty)
+    }
+    def getHTMLClassFor(pt: ProposalType): String = {
+      ALL.filter(p => p.id == pt.id).map(_.htmlClass).headOption.getOrElse("unknown")
+    }
+    def isChosablePreferredDaysProposals(pt: ProposalType): Boolean = {
+      ALL.filter(p => p.id == pt.id).map(_.chosablePreferredDay).headOption.getOrElse(false)
+    }
+    def doesProposalTypeGiveSpeakerFreeEntrance(pt: ProposalType): Boolean = {
+      ALL.filter(p => p.id == pt.id).map(_.givesSpeakerFreeEntrance).headOption.getOrElse(false)
+    }
+    def doesProposalTypeAllowOtherSpeaker(pt: ProposalType): Boolean = {
+      ALL.filter(p => p.id == pt.id).map(_.allowOtherSpeaker).headOption.getOrElse(true)
+    }
     def concernedByCountQuotaRestriction: List[ProposalConfiguration] = {
       ALL.filter(_.concernedByCountQuotaRestriction)
     }

@@ -149,9 +149,9 @@ object ApprovedProposal {
   }
 
   def remainingSlots(talkType: String): Long = {
-    var propType = ProposalConfiguration.parse(talkType)
-    if (propType == ProposalConfiguration.UNKNOWN) {
-      ProposalConfiguration.totalSlotsCount - countApproved("all")
+    var propType = ConferenceDescriptor.ConferenceProposalConfigurations.parse(talkType)
+    if (propType == ConferenceDescriptor.ConferenceProposalConfigurations.UNKNOWN) {
+      ConferenceDescriptor.ConferenceProposalConfigurations.totalSlotsCount - countApproved("all")
     } else {
       propType.slotsCount - countApproved(talkType)
     }

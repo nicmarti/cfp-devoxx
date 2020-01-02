@@ -10,7 +10,7 @@
                 <a href="@routes.CFPAdmin.allVotes("all", None)" class="btn btn-primary btn-sm"><i class="fas fa-adjust"></i>
                     All</a>
                 @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                    <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label + ".simple")</a>
+                    <a href="@routes.CFPAdmin.allVotes(proposalType.id, None)" class="btn btn-primary btn-sm"><i class="@ConferenceDescriptor.ConferenceProposalConfigurations.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label + ".simple")</a>
                 }
                 <br>
                 <i class="fas fa-filter"></i> Show only:

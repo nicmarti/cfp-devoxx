@@ -29,11 +29,11 @@
             <h4><i class="fas fa-check"></i> Accepted talks notification service</h4>
             <p>This service lets you search for a talk, then send a notification to the speaker</p>
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
+                <a href="@routes.ApproveOrRefuse.allApprovedByTalkType(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ConferenceDescriptor.ConferenceProposalConfigurations.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
             <h4><i class="fas fa-ban"></i> Refused talks notification service</h4>
             @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                <a href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ProposalConfiguration.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
+                <a href="@routes.ApproveOrRefuse.allRefusedByTalkType(proposalType.id)" class="btn btn-danger btn-sm"><i class="@ConferenceDescriptor.ConferenceProposalConfigurations.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label+".simple")</a>
             }
 
             <h4><i class="fas fa-ban"></i> Mass refuse system</h4>

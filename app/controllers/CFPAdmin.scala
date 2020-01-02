@@ -632,7 +632,7 @@ object CFPAdmin extends SecureCFPController {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
-            .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+            .filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
           (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty).map {
         case (speaker, zeProposals) =>

@@ -41,20 +41,20 @@
                             @currentUser
                         </td>
                         <td>
-                        @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
+                        @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
                             <span class="badge badge-success">@Messages("freepass")</span>
                         } else {
                             <span class="badge badge-warning">@Messages("no.freepass")</span>
                         }
                         </td>
                     </tr>
-                    @if(ProposalConfiguration.doesProposalTypeAllowOtherSpeaker(proposal.talkType)) {
+                    @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeAllowOtherSpeaker(proposal.talkType)) {
                       <tr>
                           <td>
                               @helper.select(field=speakerForm("secondarySpeaker"), options=Webuser.allSecondarySpeakersAsOption.filterNot(_._1==currentUser),  'class->"form-control")
                           </td>
                           <td>
-                            @if(ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
+                            @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeGiveSpeakerFreeEntrance(proposal.talkType)) {
                               <span class="badge badge-success">@Messages("freepass")</span>
                             } else {
                               <span class="badge badge-warning">@Messages("no.freepass")</span>
