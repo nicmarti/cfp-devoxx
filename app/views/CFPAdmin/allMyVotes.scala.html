@@ -38,7 +38,7 @@
                         <table id="tableMyVotes" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>You voted</th>
+                                    <th style="width: 145px">You voted</th>
                                     <th>Current score</th>
                                     <th>Id</th>
                                     <th>Title</th>
@@ -51,7 +51,7 @@
                                 @allMyVotes.map { case (proposalId, vote) =>
                                     @defining(Math.round(vote)) { score =>
                                         <tr>
-                                            <td style="width: 82px" class="score" data-score="@score" data-pid="@proposalId">
+                                            <td class="score" data-score="@score" data-pid="@proposalId">
                                             <div class="btn-group-xs">
                                                     <button class="btn btn-xs btn-color-@score">@score</button>
                                                     <button data-score="@Math.min(10,score+1)" data-id="@proposalId" class="btn plus btn-xs btn-color-8">+</button>
