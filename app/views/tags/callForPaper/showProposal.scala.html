@@ -1,76 +1,59 @@
 @(proposal: Proposal)
 
  <div class="card mb-3">
-    <div class="card-header">
-        <h5 class="card-title">@Messages(proposal.talkType.id)</h5>
-    </div>
-            <div class="card-body">
-                <h6 class="card-subtitle">@proposal.title</h6>
-            </div>
-             <div class="card-body">
-                 @tags.renderGravatar(proposal.mainSpeaker, showName = true)
-                 @proposal.secondarySpeaker.map { secondarySpeakerUUID =>
-                     @tags.renderGravatar(secondarySpeakerUUID, showName = true)
-                 }
-                 @proposal.otherSpeakers.map { listOfUUID =>
-                     @listOfUUID.split(",").map { suid =>
-                         @tags.renderGravatar(suid, showName = true)
-                     }
-                 }
-             </div>
-     <div class="card-body">
-                @if(proposal.sponsorTalk) {
-                    <div class="alert alert-success">
-                        <p class="card-text"><i class="fas fa-stamp"></i> Sponsor talk</p>
-                    </div>
-                }
+     <div class="card-header">
+         <h4>@Messages(proposal.talkType.id)
+             @if(proposal.sponsorTalk) {
+                 <span class="badge badge-primary badge-pill"><i class="fas fa-medal"></i> Sponsor talk</span>
+             }
+         </h4>
+         @if(proposal.state.code == "accepted" || proposal.state.code == "approved") {
+             <span class="badge badge-success">@proposal.state.code</span>
+         }
+         @if(proposal.state.code == "declined" || proposal.state.code == "rejected" || proposal.state.code == "deleted") {
+             <span class="badge badge-danger">@proposal.state.code</span>
+         }
+         @if(proposal.state.code == "draft") {
+             <span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> @proposal.state.code - @Messages("proposal.draft.reminder")</span>
+         }
+         @if(proposal.state.code == "submitted") {
+             <span class="badge badge-info">@proposal.state.code</span>
+         }
+         @if(proposal.state.code == "backup") {
+             <span class="badge badge-warning">@proposal.state.code</span>
+         }
+         @if(proposal.state.code == "archived") {
+             <span class="badge badge-secondary">@proposal.state.code</span>
+         }
      </div>
-
-                 <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                          <a class="card-link" href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.submit")</a>
-                          @if(proposal.state.code == "draft") {
-                            <div class="btn btn-warning">
-                              <p class="card-text"><i class="fas fa-exclamation-triangle"></i> @Messages("proposal.draft.reminder")</p>
-                            </div>
-                          }
-                        </li>
-                        <li class="list-group-item" ><a class="card-link" href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")">@Messages("table.pres.edit")</a></li>
-                        <li class="list-group-item"><a class="card-link" href="@routes.CallForPaper.editOtherSpeakers(proposal.id)" title="@Messages("table.speaker.addremove")"> @Messages("table.speaker.addremove")</a></li>
-                        <li class="list-group-item">
-                            @defining(models.Comment.countComments(proposal.id)) { msgProposals =>
-                              @if(msgProposals > 0){
-                                <a class="card-link" href="@routes.CallForPaper.showCommentForProposal(proposal.id)"> Messages <span class="badge badge-success">@models.Comment.countComments(proposal.id)</span></a>
-                              }
-                              @if(msgProposals <= 0){
-                                <a class="card-link" href="@routes.CallForPaper.showCommentForProposal(proposal.id)"> Messages <span class="badge badge-light">0</span></a>
-                              }
-                            }
-
-                        </li>
-                        <li class="list-group-item"><a class="card-link" href="@routes.CallForPaper.deleteProposal(proposal.id)" title="@Messages("table.pres.delete")">@Messages("table.pres.delete")</a></li>
-                    </ul>
-
-            <div class="card-footer text-muted">
-                <strong>Status:</strong>
-                @if(proposal.state.code == "accepted" || proposal.state.code == "approved") {
-                    <span class="badge badge-success">@proposal.state.code</span>
-                }
-                @if(proposal.state.code == "declined" || proposal.state.code == "rejected" || proposal.state.code == "deleted") {
-                    <span class="badge badge-danger">@proposal.state.code</span>
-                }
-                @if(proposal.state.code == "draft") {
-                    <span class="badge badge-warning">@proposal.state.code</span>
-                }
-                @if(proposal.state.code == "submitted") {
-                    <span class="badge badge-info">@proposal.state.code</span>
-                }
-                @if(proposal.state.code == "backup") {
-                    <span class="badge badge-warning">@proposal.state.code</span>
-                }
-                @if(proposal.state.code == "archived") {
-                    <span class="badge badge-secondary">@proposal.state.code</span>
-                }
-
-            </div>
+     <div class="card-body">
+         <h4 class="card-title">@proposal.title</h4>
+         @tags.renderGravatar(proposal.mainSpeaker, showName = true)
+         @proposal.secondarySpeaker.map { secondarySpeakerUUID =>
+             @tags.renderGravatar(secondarySpeakerUUID, showName = true)
+         }
+         @proposal.otherSpeakers.map { listOfUUID =>
+             @listOfUUID.split(",").map { suid =>
+                 @tags.renderGravatar(suid, showName = true)
+             }
+         }
+     </div>
+     <ul class="list-group list-group-flush">
+         <li class="list-group-item">
+             <a class="btn btn-block btn-primary" href="@routes.CallForPaper.editProposal(proposal.id)" title="@Messages("table.pres.edit")"><i class="fas fa-edit"></i> @Messages("table.pres.edit")</a>
+             <a class="btn btn-block btn-secondary" href="@routes.CallForPaper.editOtherSpeakers(proposal.id)" title="@Messages("table.speaker.addremove")"><i class="fas fa-users-cog"></i> @Messages("table.speaker.addremove")</a>
+             <a class="btn btn-block btn-success @if(proposal.state.code != "draft"){disabled}" href="@routes.CallForPaper.submitProposal(proposal.id)" title="@Messages("table.pres.submit")"><i class="fas fa-paper-plane"></i> @Messages("table.pres.submit")</a>
+         </li>
+        <li class="list-group-item">
+            @defining(models.Comment.countComments(proposal.id)) { msgProposals =>
+              @if(msgProposals > 0){
+                <a class="btn btn-block btn-info" href="@routes.CallForPaper.showCommentForProposal(proposal.id)"><i class="fas fa-envelope"></i> Messages <span class="badge badge-pill badge-warning">@models.Comment.countComments(proposal.id)</span></a>
+              }
+              @if(msgProposals <= 0){
+                <a class="btn btn-block btn-info" href="@routes.CallForPaper.showCommentForProposal(proposal.id)"><i class="fas fa-envelope"></i> Messages <span class="badge badge-pill badge-light">0</span></a>
+              }
+            }
+        </li>
+        <li class="list-group-item"><a class="btn btn-block btn-sm btn-danger @if(proposal.state.code == "deleted"){disabled}" href="@routes.CallForPaper.deleteProposal(proposal.id)" title="@Messages("table.pres.delete")"><i class="fas fa-trash"></i> @Messages("table.pres.delete")</a></li>
+    </ul>
 </div>
