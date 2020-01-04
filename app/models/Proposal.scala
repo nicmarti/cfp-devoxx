@@ -38,6 +38,10 @@ object ProposalType {
     finalFormat
   }
 
+  def byProposalConfig(pc: ProposalConfiguration): ProposalType = {
+    all.find(_.id == pc.id).get
+  }
+
   def allIDsOnly = allAsId.map(_._1)
 
 

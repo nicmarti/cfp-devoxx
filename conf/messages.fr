@@ -243,7 +243,7 @@ table.pres.action=Actions
 table.pres.doSubmit=Soumettre
 table.pres.doDelete=Effacer
 
-proposal.limit=La limite est de {0} sujets proposés par speaker.
+proposal.limit=En tant que speaker, vous pouvez proposer un maximum de {0} propositions parmi les types: {1}
 proposal.draft.reminder=N''oubliez pas de soumettre ce sujet
  
 total.draft={0} propositions
@@ -825,7 +825,7 @@ invalid.phone.txt=Votre numéro de téléphone n''est pas valide ou n''est pas a
 
 admin.btn.devoxxians=Tous les Devoxxians
 
-cfp.maxProposals.reached=Attention, vous ne pouvez pas soumettre plus de {0} sujets. Nous limitons le nombre de soumissions volontairement.
+cfp.maxProposals.reached=Votre proposition n''a pas été soumise. En tant que speaker, vous pouvez proposer un maximum de {0} propositions parmi les types: {1}
 videoLinkMessage=Lien vers une vidéo
 videoLinkMessage.help=Vous pouvez partager un lien vers une vidéo où vous avez été orateur ou une vidéo en rapport avec votre proposition de sujet. Indiquez l''URL complète YouTube ou autre.
 videoLink=Vidéo relative à votre proposition

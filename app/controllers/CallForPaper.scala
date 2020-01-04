@@ -383,7 +383,11 @@ object CallForPaper extends SecureCFPController {
 
       maybeProposal match {
         case _ if currentlySubmittedConcernedByQuota + additionnalConcernedByQuota > ConferenceDescriptor.maxProposals() =>
-          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("cfp.maxProposals.reached", ConferenceDescriptor.maxProposals()))
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing(
+            "error" -> Messages("cfp.maxProposals.reached",
+                ConferenceDescriptor.maxProposals(),
+                ConferenceDescriptor.ConferenceProposalConfigurations.concernedByCountQuotaRestrictionAndNotHidden.map(pc => Messages(ProposalType.byProposalConfig(pc).simpleLabel)).mkString(", ")
+            ))
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
           if (ConferenceDescriptor.notifyProposalSubmitted) {

@@ -173,6 +173,9 @@ object ConferenceDescriptor {
     def concernedByCountQuotaRestriction: List[ProposalConfiguration] = {
       ALL.filter(_.concernedByCountQuotaRestriction)
     }
+    def concernedByCountQuotaRestrictionAndNotHidden: List[ProposalConfiguration] = {
+      ALL.filter(p => p.concernedByCountQuotaRestriction && !p.hiddenInCombo)
+    }
     def isConcernedByCountRestriction(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.concernedByCountQuotaRestriction)
     }
