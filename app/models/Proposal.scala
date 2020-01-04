@@ -456,6 +456,25 @@ object Proposal {
       }
   }
 
+  def ensureProposaleHasState(proposalId: String, expectedProposalState: ProposalState): Long = Redis.pool.withClient {
+    implicit client =>
+      ProposalState.allAsCode.filter(_ != expectedProposalState.code).map(unexpectedStateCode =>
+        client.srem(s"Proposals:ByState:${unexpectedStateCode}", proposalId)
+      ).sum
+  }
+  def ensureProposaleHasType(proposalId: String, expectedProposalType: ProposalType): Long = Redis.pool.withClient {
+    implicit client =>
+      ConferenceDescriptor.ConferenceProposalTypes.ALL.filter(_.id != expectedProposalType.id).map(unexpectedType =>
+        client.srem(s"Proposals:ByType:${unexpectedType.id}", proposalId)
+      ).sum
+  }
+  def ensureProposaleHasTrack(proposalId: String, expectedProposalTrackId: String): Long = Redis.pool.withClient {
+    implicit client =>
+      Track.allIDs.filter(_ != expectedProposalTrackId).map(unexpectedTrackId =>
+        client.srem(s"Proposals:ByTrack:${unexpectedTrackId}", proposalId)
+      ).sum
+  }
+
   def getSubmissionDate(proposalId: String): Option[Long] = Redis.pool.withClient {
     implicit client =>
       client.hget("Proposal:SubmittedDate", proposalId).map {
