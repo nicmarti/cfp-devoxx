@@ -402,7 +402,7 @@ object Proposal {
 
   private def changeProposalType(uuid: String, proposalId: String, newProposalType: ProposalType) = Redis.pool.withClient {
     client =>
-      val maybeExistingType = for (t <- ProposalState.allAsCode if client.sismember("Proposals:ByType:" + t, proposalId)) yield t
+      val maybeExistingType = for (t <- ProposalType.allAsId.map(_._1) if client.sismember("Proposals:ByType:" + t, proposalId)) yield t
 
       // Do the operation on the ProposalState
       maybeExistingType.filterNot(_ == newProposalType.id).foreach {
