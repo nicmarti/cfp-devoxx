@@ -1,3 +1,4 @@
+@import java.util.Locale
 @(firstName:String, proposals:List[Proposal])
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <strong>(English version below)</strong><br>
@@ -5,7 +6,7 @@
 
     <p>Cher(e) @firstName</p>
     <br>
-    <p><strong>Le CFP sera fermé le @ConferenceDescriptor.current().timing.cfpClosedOn.toString("EEEE dd/MM/YYYY HH:mm")</strong></p>
+    <p><strong>Le CFP sera fermé le @ConferenceDescriptor.current().timing.cfpClosedOn.toString("EEEE dd/MM/YYYY HH:mm",Locale.FRENCH)</strong></p>
     <p>Nous vous informons que vous avez @proposals.size proposition@if(proposals.size>1){s} de sujet en attente, avec le status "Draft" (Brouillon).
     Pour que le comité puisse évaluer votre proposition, n'oubliez pas de les soumettre, sur la page principale de
     votre interface, dans le résumé de vos propositions.</p>
@@ -26,7 +27,7 @@
 }
 <p>Dear @firstName</p>
 <br>
-<p><strong>CFP will be closed on @ConferenceDescriptor.current().timing.cfpClosedOn.toString("EEEE dd/MM/YYYY HH:mm")</strong></p>
+<p><strong>CFP will be closed on @ConferenceDescriptor.current().timing.cfpClosedOn.toString("EEEE dd/MM/YYYY HH:mm",Locale.ENGLISH)</strong></p>
 <p>We'd like to inform you that you have @proposals.size proposal@if(proposals.size>1){s} with status set to "Draft" on @Messages("longName") CFP.
 You must submit a talk for review on your private CFP section, so that the program committee can review and vote for your proposal.</p>
 
