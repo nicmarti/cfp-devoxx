@@ -378,10 +378,11 @@ object CallForPaper extends SecureCFPController {
     implicit request =>
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraft(uuid, proposalId)
-      val currentSubmitted: Int = Proposal.countSubmittedAccepted(uuid)
+      val currentlySubmittedConcernedByQuota: Int = Proposal.countSubmittedAcceptedConcernedByQuota(uuid)
+      val additionnalConcernedByQuota: Int = if (maybeProposal.map(p => ConferenceDescriptor.ConferenceProposalConfigurations.isConcernedByCountRestriction(p.talkType)).getOrElse(false)) 1 else 0
 
       maybeProposal match {
-        case _ if currentSubmitted >= ConferenceDescriptor.maxProposals() =>
+        case _ if currentlySubmittedConcernedByQuota + additionnalConcernedByQuota > ConferenceDescriptor.maxProposals() =>
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("cfp.maxProposals.reached", ConferenceDescriptor.maxProposals()))
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)

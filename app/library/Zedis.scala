@@ -160,6 +160,13 @@ trait Dress {
       j.sinter(setA, setB).asScala.toSet
     }
 
+    def sinter(setA: String, setB: String, setC: String): Set[String] = {
+      if (play.Logger.of("library.Zedis").isDebugEnabled) {
+        play.Logger.of("library.Zedis").debug(s"sinter $setA $setB $setC")
+      }
+      j.sinter(setA, setB, setC).asScala.toSet
+    }
+
     def srandmember(key: String): Option[String] = {
       if (play.Logger.of("library.Zedis").isDebugEnabled) {
         play.Logger.of("library.Zedis").debug(s"srandmember $key")

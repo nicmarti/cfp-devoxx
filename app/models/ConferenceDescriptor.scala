@@ -54,12 +54,13 @@ case class ProposalConfiguration(id: String, slotsCount: Int,
                                  hiddenInCombo: Boolean = false,
                                  chosablePreferredDay: Boolean = false,
                                  impliedSelectedTrack: Option[Track] = None,
+                                 concernedByCountQuotaRestriction: Boolean = true,
                                  allowOtherSpeaker: Boolean = true)
 
 object ProposalConfiguration {
 
   val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
-    htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false)
+    concernedByCountQuotaRestriction = false, htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false)
 
   def parse(propConf: String): ProposalConfiguration = {
     ConferenceDescriptor.ConferenceProposalConfigurations.ALL.find(p => p.id == propConf).getOrElse(ProposalConfiguration.UNKNOWN)
@@ -153,7 +154,7 @@ object ConferenceDescriptor {
     val CONF = ProposalConfiguration(id = "conf", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.CONF.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "fas fa-bullhorn",
       chosablePreferredDay = true)
     val UNI = ProposalConfiguration(id = "uni", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.UNI.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "fas fa-laptop",
-      chosablePreferredDay = false)
+      concernedByCountQuotaRestriction = false, chosablePreferredDay = false)
     val TIA = ProposalConfiguration(id = "tia", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.TIA.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "fas fa-tools",
       chosablePreferredDay = true)
     val LAB = ProposalConfiguration(id = "lab", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.LAB.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "fas fa-flask",
@@ -161,14 +162,20 @@ object ConferenceDescriptor {
     val QUICK = ProposalConfiguration(id = "quick", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.QUICK.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = true, htmlClass = "fas fa-fast-forward",
       chosablePreferredDay = true, allowOtherSpeaker = false)
     val BOF = ProposalConfiguration(id = "bof", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.BOF.id)), givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "fas fa-users",
-      chosablePreferredDay = false)
+      concernedByCountQuotaRestriction = false, chosablePreferredDay = false)
     val KEY = ProposalConfiguration(id = "key", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.KEY.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "fas fa-microphone",
-      chosablePreferredDay = true)
+      concernedByCountQuotaRestriction = false, chosablePreferredDay = true)
     val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "fas fa-microphone-alt",
       hiddenInCombo = true, chosablePreferredDay = false)
 
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
 
+    def concernedByCountQuotaRestriction: List[ProposalConfiguration] = {
+      ALL.filter(_.concernedByCountQuotaRestriction)
+    }
+    def isConcernedByCountRestriction(proposalType: ProposalType): Boolean = {
+      ALL.filter(_.id == proposalType.id).exists(_.concernedByCountQuotaRestriction)
+    }
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
     }

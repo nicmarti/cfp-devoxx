@@ -560,8 +560,16 @@ object Proposal {
       allProposalIds.size
   }
 
-  def countSubmittedAccepted(uuid: String): Int = {
-    ProposalState.allButDeletedArchivedDraft.map(s => countByProposalState(uuid, s)).sum
+  def countByProposalStateAndType(uuid: String, proposalState: ProposalState, proposalTypeId: String): Int = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}", s"Proposals:ByType:${proposalTypeId}")
+      allProposalIds.size
+  }
+
+  def countSubmittedAcceptedConcernedByQuota(uuid: String): Int = {
+    ProposalState.allButDeletedArchivedDraft.map(s =>
+      ConferenceDescriptor.ConferenceProposalConfigurations.concernedByCountQuotaRestriction.map(t => countByProposalStateAndType(uuid, s, t.id)).sum
+    ).sum
   }
 
   def findProposal(uuid: String, proposalId: String): Option[Proposal] = {
