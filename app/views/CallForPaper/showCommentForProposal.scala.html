@@ -43,12 +43,12 @@
                     </table>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body text-right">
                 @helper.form(action = routes.CallForPaper.sendMessageToCommittee(proposal.id)) {
                     @helper.textarea(msgToCommitte("msg"), 'class -> "form-control input-xs")
-                    <button type="submit" class="btn btn-sm btn-success">@Messages("cfp.msg.sendMsg")</button>
+                    <a class="btn btn-outline-danger" href="@routes.CallForPaper.homeForSpeaker"><i class="fas fa-home"></i> @Messages("btn.home")</a>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i>  @Messages("cfp.msg.sendMsg")</button>
                 }
-                    <a class="btn btn-primary btn-sm">@Messages("ar.goBackHome")</a>
                 </div>
 
                 <div class="card-body">
