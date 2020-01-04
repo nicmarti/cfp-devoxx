@@ -1,25 +1,18 @@
 @(proposals: List[Proposal])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 @main("All sponsors's talks") {
-<div class="row">
-    <div class="col-lg-offset-4 col-md-4">
-        <h2>Sponsors talks</h2>
+<div class="card">
+    <div class="card-header">
+        <h1 class="panel-title"><i class="fas fa-medal"></i> Proposals from Sponsor or Exhibitor</h1>
     </div>
-    <div class="clearfix"></div>
-
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h1 class="panel-title"><i class="fas fa-medal"></i> Proposals from Sponsor or Exhibitor</h1>
-                @proposals.size talks
-            </div>
-        </div>
-    </div>
-    @proposals.map { proposal =>
-            <div class="col-md-12">
-                <div class="card">
-                <div class="card-body">
+    <div class="card-body">
+        <p>For now there are <span class="badge badge-pill badge-info">@proposals.size talks</span> registred as sponsor talk</p>
+        @proposals.map { proposal =>
+            <div class="card">
+                <div class="card-header">
                     <h3>@proposal.title</h3>
                     <h4>@Messages(proposal.track.label) - @Messages(proposal.talkType.id)</h4>
+                </div>
+                <div class="card-body">
                     <p><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a> </p>
                     @tags.renderGravatar(proposal.mainSpeaker)
                     @proposal.secondarySpeaker.map { sc =>
@@ -30,13 +23,12 @@
                     }
                     <h4>Private message</h4>
                     <small>
-                        @Html(proposal.privateMessageAsHtml)
+                    @Html(proposal.privateMessageAsHtml)
                     </small>
-
                     <a href="@routes.CFPAdmin.removeSponsorTalkFlag(proposal.id)" class="btn btn-sm btn-danger"><i class="fas fa-exclamation-triangle"></i> @Messages("remove.sponsorFlag")</a>
                 </div>
-                </div>
             </div>
-    }
+        }
+    </div>
 </div>
 }
