@@ -30,10 +30,10 @@ object Slacks {
     sendSlackNotification(
       target = COMITEE_ONLY_SLACK,
       msg = s":writing_hand:*${proposal.allSpeakers.map(s => s.cleanName).mkString(", ")}* " +
-          s"created a new draft of type *${Messages(proposal.talkType.label)}* in " +
+          s"created a new draft of type *${Messages(proposal.talkType.simpleLabel)}* in " +
           s"track *${Messages(proposal.track.label)}* :\n" +
-        s"*[${proposal.id}]* ${proposal.title}\n" +
-        s"=> ${proposalUrl(proposal)} :writing_hand::writing_hand::writing_hand:",
+        s"```[${proposal.id}] - ${proposal.title}```\n" +
+        s"=> ${proposalUrl(proposal)}",
       channels = List("#cfp-new-drafts", s"#cfp-${proposal.talkType.id}-new-drafts"))
   }
 
@@ -41,10 +41,10 @@ object Slacks {
     sendSlackNotification(
       target = ALL_SLACKS,
       msg = s":writing_hand:*${proposal.allSpeakers.map(s => s.cleanName).mkString(", ")}* " +
-          s"submitted new proposal of type *${Messages(proposal.talkType.label)}* in " +
+          s"submitted new proposal of type *${Messages(proposal.talkType.simpleLabel)}* in " +
           s"track *${Messages(proposal.track.label)}* :\n" +
-        s"*[${proposal.id}]* ${proposal.title}\n" +
-        s"=> ${proposalUrl(proposal)} :writing_hand::writing_hand::writing_hand:",
+        s"```[${proposal.id}] - ${proposal.title}```\n" +
+        s"=> ${proposalUrl(proposal)}",
       channels = List("#cfp-new-proposals", s"#cfp-${proposal.talkType.id}-new-proposals"))
   }
 
@@ -54,8 +54,8 @@ object Slacks {
       msg = s":large_blue_circle:*Jury ${reporter.firstName} ${reporter.lastName}* published " +
           s"a new *:large_blue_circle:public comment:large_blue_circle:* on proposal " +
           s"*[${proposal.id}] ${proposal.title}* :\n" +
-        s"${message}\n" +
-        s"=> ${proposalUrl(proposal)} :large_blue_circle::large_blue_circle::large_blue_circle:",
+        s"```${message}```" +
+        s"=> ${proposalUrl(proposal)}",
       channels = List("#cfp-comments", s"#cfp-${proposal.talkType.id}-comments"))
   }
 
@@ -65,8 +65,8 @@ object Slacks {
       msg = s":large_blue_circle:*Speaker ${reporter.firstName} ${reporter.lastName}* published " +
           s"a new *:large_blue_circle:public comment:large_blue_circle:* on proposal " +
           s"*[${proposal.id}] ${proposal.title}* :\n" +
-        s"${message}\n" +
-        s"=> ${proposalUrl(proposal)} :large_blue_circle::large_blue_circle::large_blue_circle:",
+        s"```${message}```" +
+        s"=> ${proposalUrl(proposal)}",
       channels = List("#cfp-comments", s"#cfp-${proposal.talkType.id}-comments"))
   }
 
@@ -75,8 +75,8 @@ object Slacks {
       target = COMITEE_ONLY_SLACK,
       msg = s":red_circle:*${reporter.firstName} ${reporter.lastName}* published a new " +
           s"*:red_circle:private message:red_circle:* on proposal *[${proposal.id}] ${proposal.title}* :\n" +
-        s"${message}\n" +
-        s"=> ${proposalUrl(proposal)} :red_circle::red_circle::red_circle:",
+        s"```${message}```" +
+        s"=> ${proposalUrl(proposal)}",
       channels = List("#cfp-comments", s"#cfp-${proposal.talkType.id}-comments"))
   }
 
@@ -85,8 +85,8 @@ object Slacks {
       target = COMITEE_ONLY_SLACK,
       msg = s":writing_hand:*${reporter.firstName} ${reporter.lastName}* modified his proposal " +
         s"*[${proposal.id}] ${proposal.title}* :\n" +
-        s"${proposalEdits.map(edit => s"- ${edit.message}\n").mkString("")}" +
-        s"=> ${proposalUrl(proposal)} :writing_hand::writing_hand::writing_hand:",
+        s"```${proposalEdits.map(edit => s"- ${edit.message}\n").mkString("")}```" +
+        s"=> ${proposalUrl(proposal)}",
       channels = List("#cfp-proposal-edits", s"#cfp-${proposal.talkType.id}-proposal-edits"))
   }
 
