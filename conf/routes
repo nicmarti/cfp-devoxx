@@ -92,7 +92,7 @@ GET           /cfpadmin/proposals/byTrack/:track                                
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
 GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
 
-GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf")
+GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
 GET           /cfpadmin/allvotesV2/:confType                                    controllers.CFPAdmin.allVotesVersion2(confType:String, page:Int ?=0, resultats:Int ?=25, sortBy:String ?="gt_and_cfp")
 
@@ -345,7 +345,7 @@ POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    
 
 # Golden ticket webuser side
 GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
-GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf")
+GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
 GET           /cfp/goldenticket                                                  controllers.GoldenTicketController.authenticate()
 POST          /cfp/goldenticket                                                  controllers.GoldenTicketController.doAuthenticate()
 

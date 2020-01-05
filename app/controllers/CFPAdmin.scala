@@ -256,7 +256,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def allMyVotes(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
+  def allMyVotes(talkType: String, selectedTrack: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
@@ -264,7 +264,8 @@ object CFPAdmin extends SecureCFPController {
           val uuid = request.webuser.uuid
           val allMyVotesIncludingAbstentions = Review.allVotesFromUser(uuid)
           val allProposalIDsWhereIVoted = allMyVotesIncludingAbstentions.map(_._1)
-          val allProposalsMatchingCriteriaWhereIVoted = Proposal.loadAndParseProposals(allProposalIDsWhereIVoted).filter(_._2.talkType == pType)
+          val allProposalsMatchingCriteriaWhereIVoted = Proposal.loadAndParseProposals(allProposalIDsWhereIVoted)
+            .filter(p => p._2.talkType == pType && selectedTrack.map(p._2.track.id == _).getOrElse(true))
           val allProposalsIdsMatchingCriteriaWhereIVoted = allProposalsMatchingCriteriaWhereIVoted.keySet
 
           val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter {
@@ -281,7 +282,7 @@ object CFPAdmin extends SecureCFPController {
           val proposalsNotReviewedCount = proposalsNotReviewed.size
           val firstProposalNotReviewed = proposalsNotReviewed.headOption
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, allScoresForProposals, proposalsNotReviewedCount, firstProposalNotReviewed))
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalsNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

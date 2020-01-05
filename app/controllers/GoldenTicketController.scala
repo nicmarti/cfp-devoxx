@@ -183,7 +183,7 @@ object GoldenTicketController extends SecureCFPController {
     }
   }
 
-  def allMyGoldenTicketVotes(talkType: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+  def allMyGoldenTicketVotes(talkType: String, selectedTrack:Option[String]) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
@@ -191,7 +191,8 @@ object GoldenTicketController extends SecureCFPController {
           val uuid = request.webuser.uuid
           val allMyVotesIncludingAbstentions = ReviewByGoldenTicket.allVotesFromUser(uuid)
           val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
-          val allProposalsMatchingCriteria = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
+          val allProposalsMatchingCriteria = Proposal.loadAndParseProposals(allProposalIDs)
+            .filter(p => p._2.talkType == pType && selectedTrack.map(p._2.track.id == _).getOrElse(true))
           val allProposalsIdsMatchingCriteria = allProposalsMatchingCriteria.keySet
 
           val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsMatchingCriteria.contains(proposalIdAndVotes._1))
@@ -203,7 +204,7 @@ object GoldenTicketController extends SecureCFPController {
           val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
           val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, proposalsNotReviewedCount, firstProposalNotReviewed))
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, proposalsNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
