@@ -63,7 +63,7 @@
                                 <tr>
                                         <td class="score" data-score="@score" data-pid="@proposalId">
                                             <Div class="btn-group btn-group-xs">
-                                                    <button class="btn btn-xs btn-color-@score">@score</button>
+                                                    <button class="btn btn-xs btn-color-@score">@if(score==0){ @Messages("Abs") } else { @score }</button>
                                                     <button data-score="@Math.min(10,score+1)" data-id="@proposalId" class="btn plus btn-xs btn-color-8" style="margin-left:3px; margin-right: 3px;">+</button>
                                                     <button data-score="@Math.max(0,score-1)" data-id="@proposalId" class="btn minus btn-xs btn-color-1" style="margin-left:3px; margin-right: 3px;">-</button>
                                                 </Div>
