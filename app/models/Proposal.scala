@@ -38,6 +38,10 @@ object ProposalType {
     finalFormat
   }
 
+  def byProposalConfig(pc: ProposalConfiguration): ProposalType = {
+    all.find(_.id == pc.id).get
+  }
+
   def allIDsOnly = allAsId.map(_._1)
 
 
@@ -402,7 +406,7 @@ object Proposal {
 
   private def changeProposalType(uuid: String, proposalId: String, newProposalType: ProposalType) = Redis.pool.withClient {
     client =>
-      val maybeExistingType = for (t <- ProposalState.allAsCode if client.sismember("Proposals:ByType:" + t, proposalId)) yield t
+      val maybeExistingType = for (t <- ProposalType.allAsId.map(_._1) if client.sismember("Proposals:ByType:" + t, proposalId)) yield t
 
       // Do the operation on the ProposalState
       maybeExistingType.filterNot(_ == newProposalType.id).foreach {
@@ -450,6 +454,25 @@ object Proposal {
           }
         })
       }
+  }
+
+  def ensureProposaleHasState(proposalId: String, expectedProposalState: ProposalState): Long = Redis.pool.withClient {
+    implicit client =>
+      ProposalState.allAsCode.filter(_ != expectedProposalState.code).map(unexpectedStateCode =>
+        client.srem(s"Proposals:ByState:${unexpectedStateCode}", proposalId)
+      ).sum
+  }
+  def ensureProposaleHasType(proposalId: String, expectedProposalType: ProposalType): Long = Redis.pool.withClient {
+    implicit client =>
+      ConferenceDescriptor.ConferenceProposalTypes.ALL.filter(_.id != expectedProposalType.id).map(unexpectedType =>
+        client.srem(s"Proposals:ByType:${unexpectedType.id}", proposalId)
+      ).sum
+  }
+  def ensureProposaleHasTrack(proposalId: String, expectedProposalTrackId: String): Long = Redis.pool.withClient {
+    implicit client =>
+      Track.allIDs.filter(_ != expectedProposalTrackId).map(unexpectedTrackId =>
+        client.srem(s"Proposals:ByTrack:${unexpectedTrackId}", proposalId)
+      ).sum
   }
 
   def getSubmissionDate(proposalId: String): Option[Long] = Redis.pool.withClient {
@@ -560,8 +583,16 @@ object Proposal {
       allProposalIds.size
   }
 
-  def countSubmittedAccepted(uuid: String): Int = {
-    ProposalState.allButDeletedArchivedDraft.map(s => countByProposalState(uuid, s)).sum
+  def countByProposalStateAndType(uuid: String, proposalState: ProposalState, proposalTypeId: String): Int = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.sinter(s"Proposals:ByAuthor:$uuid", s"Proposals:ByState:${proposalState.code}", s"Proposals:ByType:${proposalTypeId}")
+      allProposalIds.size
+  }
+
+  def countSubmittedAcceptedConcernedByQuota(uuid: String): Int = {
+    ProposalState.allButDeletedArchivedDraft.map(s =>
+      ConferenceDescriptor.ConferenceProposalConfigurations.concernedByCountQuotaRestriction.map(t => countByProposalStateAndType(uuid, s, t.id)).sum
+    ).sum
   }
 
   def findProposal(uuid: String, proposalId: String): Option[Proposal] = {

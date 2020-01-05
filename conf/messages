@@ -264,7 +264,7 @@ table.pres.action=Actions
 table.pres.doSubmit=Submit
 table.pres.doDelete=Delete
 
-proposal.limit=The limit is {0} maximum allowed proposals per speaker.
+proposal.limit=As a speaker you can propose a maximum of {0} proposals amongst types: {1}
 proposal.draft.reminder=Do not forget to submit your talk
 
 total.draft={0} proposals
@@ -946,7 +946,7 @@ invalid.phone.txt=Invalid phone number or permission to send an SMS has not been
 
 admin.btn.devoxxians=All Devoxxians
 
-cfp.maxProposals.reached=Warning, you cannot submit more than {0} proposals. We had to limit the number of submission.
+cfp.maxProposals.reached=Your proposal wasn''t submitted. As a speaker you can propose a maximum of {0} proposals amongst types: {1}
 cfp.member=CFP Member
 
 golden.welcome.txt=Welcome to the Golden Ticket private section. Buy a Golden Ticket on {0} web site, and get access to proposals! Be part of the team that review and select talks for {0}.

@@ -547,4 +547,26 @@ object Backoffice extends SecureCFPController {
       Ok("Result: " + result)
   }
 
+  def fixRedisDataConsistency() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      var summary = new StringBuilder
+
+      Proposal.allProposals().foreach(proposal => {
+        val removedStates = Proposal.ensureProposaleHasState(proposal.id, proposal.state)
+        if(removedStates != 0) {
+          summary ++= s"Removed ${removedStates} invalid states for proposal ${proposal.id} (valid state: ${proposal.state.code})\n"
+        }
+        val removedTypes = Proposal.ensureProposaleHasType(proposal.id, proposal.talkType)
+        if(removedTypes != 0) {
+          summary ++= s"Removed ${removedTypes} invalid types for proposal ${proposal.id} (valid type: ${proposal.talkType.id})\n"
+        }
+        val removeTracks = Proposal.ensureProposaleHasTrack(proposal.id, proposal.track.id)
+        if(removeTracks != 0) {
+          summary ++= s"Removed ${removeTracks} invalid tracks for proposal ${proposal.id} (valid track: ${proposal.track.id})\n"
+        }
+      })
+
+      Ok(summary.toString)
+  }
+
 }

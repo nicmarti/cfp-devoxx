@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="alert alert-info">
-                  @Messages("proposal.limit", ConferenceDescriptor.maxProposals())
+                  @Messages("proposal.limit", ConferenceDescriptor.maxProposals(), ConferenceDescriptor.ConferenceProposalConfigurations.concernedByCountQuotaRestrictionAndNotHidden.map(pc => Messages(ProposalType.byProposalConfig(pc).simpleLabel)).mkString(", "))
                 </div>
             } else {
                 <div class="panel panel-success">
