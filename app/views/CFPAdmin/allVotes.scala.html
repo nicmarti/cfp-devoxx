@@ -102,7 +102,7 @@
                                     <td>
                                         <a href="@routes.CFPAdmin.openForReview(proposal.id)" target="@proposal.id"><small>@proposal.title
                                             @if(proposal.sponsorTalk) {
-                                                &nbsp;<label class="badge badge-info"><i class="fas fa-dollar-sign"></i> sponsor</label>
+                                                &nbsp;<label class="badge badge-info"><i class="fas fa-medal"></i> sponsor</label>
                                             }
                                         </small></a>
                                     </td>
@@ -127,37 +127,22 @@
                                         [@proposal.lang]
                                     </td>
                                     <td>
-                                        @if(proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP) {
+                                        <div class="btn-group" role="group">
                                             @if(approved) {
-                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
-                                                    Cancel approve</a>
-                                            } else {
-                                                @if(refused) {
-                                                    <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
-                                                        Cancel refuse</a>
-                                                } else {
-                                                    @if(proposal.state == ProposalState.BACKUP) {
-                                                        <i class="fas fa-exclamation-sign"></i> Backup
-                                                    }
-                                                    <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-sm btn-success"><i class="fas fa-thumbs-up"></i>
-                                                        Approve</a>
-                                                    <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-sm btn-danger"><i class="fas fa-thumbs-down"></i>
-                                                        Refuse</a>
-                                                }
+                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-danger" title="Cancel Pre-Approve"><i class="fas fa-undo"></i></a>
                                             }
-                                        }
+                                            @if(refused) {
+                                                <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-danger" title="Cancel Pre-Refuse"><i class="fas fa-undo"></i></a>
+                                            }
+                                            @if(!approved && !refused) {
+                                                <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-success" title="Pre-Approve"><i class="fas fa-thumbs-up"></i></a>
+                                                <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-danger" title="Pre-Refuse"><i class="fas fa-thumbs-down"></i></a>
+                                            }
+                                        </div>
                                         <br>
-                                        <span class="badge badge-@proposal.state.code">@proposal.state.code</span>
-                                        @if(refused && proposal.state.code == ProposalState.ACCEPTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
-                                                Remove from refused list</a>
-                                        }
-                                        @if(approved && proposal.state.code == ProposalState.REJECTED.code) {
-                                            <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-sm btn-danger"><i class="fas fa-undo"></i>
-                                                Cancel approve</a>
-                                        }
-
-
+                                        <span class="badge badge-pill badge-@proposal.state.code">@proposal.state.code</span>
+                                        @if(approved && (proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP)) {<span class="badge badge-pill badge-success"><i class="fas fa-thumbs-up"></i> pre-approved</span>}
+                                        @if(refused && (proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP)) {<span class="badge badge-pill badge-danger"><i class="fas fa-thumbs-down"></i> pre-refused</span>}
                                     </td>
                                 </tr>
                             }

@@ -97,9 +97,11 @@
             }
 
             <hr>
-            <button type="submit" class="btn btn-success"><i class="fas fa-arrow-right"></i> @Messages("btn.enregistrer")</button>&nbsp;
+            <div class="text-right">
+                <a class="btn btn-outline-danger" href="@routes.CallForPaper.homeForSpeaker"><i class="fas fa-home"></i> @Messages("btn.home")</a>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> @Messages("btn.enregistrer")</button>&nbsp;
+            </div>
 }
-            <a href="@routes.CallForPaper.homeForSpeaker" class="btn btn-primary">@Messages("cancel.goBackHome")</a>
         </div>
     </div>
 

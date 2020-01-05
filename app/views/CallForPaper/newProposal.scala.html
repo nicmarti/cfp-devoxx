@@ -3,7 +3,6 @@
 @main("New proposal") {
     <link rel="stylesheet" href="/assets/js/select2-3.4.5/select2.css"/>
     <link rel="stylesheet" href="/assets/css/jquery-ui.min.css"/>
-
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -13,199 +12,200 @@
                     } else {
                         <h2>@Messages("New.proposal")</h2>
                     }
+                </div>
+                <div class="card-body">
                     @if(!ConferenceDescriptor.isCFPOpen) {
-                        <div class="alert alert-info">
-                        @Messages("cfp.closed.restrictions")
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                            @Messages("cfp.closed.restrictions")
+                            </div>
                         </div>
                     }
-                </div>
-            </div>
-        </div>
 
-        @if(flash.get("error").isDefined) {
-            <div class="col-12">
-                <div class="alert alert-danger alert-dismissable">
-                @flash.get("error").get
-                </div>
-            </div>
-        }
-        @if(flash.get("success").isDefined) {
-            <div class="col-12">
-                <div class="alert alert-success alert-dismissable">
-                @flash.get("success").get
-                </div>
-            </div>
-        }
-
-        @helper.form(CSRF(routes.CallForPaper.previewProposal())) {
-            <input type="hidden" name="id" value="@newProposal("id").value">
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("title")</h4>
-                    <p>@Messages("title.help")</p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                    @helper.inputText(newProposal("title"), 'class -> "form-control")
-                    <small>@Messages("title.maxLength")</small>
-                </div>
-            </div>
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("summary")</h4>
-                    <p>@Html(Messages("summary.help"))</p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                    @helper.textarea(newProposal("summary"), 'cols -> 60, 'rows -> 6, 'class -> "form-control")
-                    <i class="fas fa-text-width"></i> : <span id="charsremain"></span>
-                    <small>@Messages("newProposal.maxLength")</small>
-                </div>
-            </div>
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("privateMessage")</h4>
-                    <p>@Messages("privateMessage.help")</p>
-                    <p><strong>@Messages("privateMessage.help.important")</strong></p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                    @helper.textarea(newProposal("privateMessage"), 'cols -> 60, 'rows -> 10, 'class -> "form-control")
-                    <i class="fas fa-text-width"></i> : <span id="charsremain2"></span>
-                </div>
-            </div>
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("videoLinkMessage")</h4>
-                    <p>@Messages("videoLinkMessage.help")</p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                @helper.inputText(newProposal("videoLink"), 'class -> "form-control")
-                </div>
-            </div>
-
-
-            @if(ConferenceDescriptor.current().frLangEnabled) {
-                <div class="row cfp-row">
-                    <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                        <h4>@Messages("lang")</h4>
-                        <p>@Messages("lang.help")<br/><strong>@Messages("lang.important")</strong></p>
-                    </div>
-                    <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                    @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
-                    </div>
-                </div>
-            } else {
-                <input type="hidden" name="lang" value="en">
-            }
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("talkType")</h4>
-                    <p>@Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                @tags.selectI18N(field = newProposal("talkType"), options = ProposalType.allForCombos, '_default -> "--- Please select ---", 'class -> "form-control")
-                </div>
-            </div>
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("track")</h4>
-                    <p>@Messages("track.help")</p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                @tags.selectI18N(field = newProposal("track"), options = Track.allAsIdsAndLabels.filterNot(_._1 == Track.UNKNOWN.id), '_default -> "--- Please select ---", 'class -> "form-control")
-                </div>
-            </div>
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("audienceLevel")</h4>
-                    <p>@Html(Messages("audienceLevel.help"))</p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                @tags.selectI18N(field = newProposal("audienceLevel"), options = ProposalType.audienceLevels, '_default -> "--- Please select ---", 'class -> "form-control")
-                </div>
-            </div>
-
-            <div class="row cfp-row">
-                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                    <h4>@Messages("demoLevel")</h4>
-                    <p>@Messages("demoLevel.help")</p>
-                </div>
-                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                @tags.selectI18N(field = newProposal("demoLevel"), options = ProposalType.demoLevels, '_default -> "--- Please select ---", 'class -> "form-control")
-                </div>
-            </div>
-
-            @if(ConferenceDescriptor.isGoldenTicketActive) {
-                <div class="row cfp-row">
-                    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-                        <h4>@Messages("goldenTicket.help.title")</h4>
-                        <p>@Html(Messages("goldenTicket.help.txt", Messages("shortYearlyName")))</p>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-                    @tags.checkboxI18N(newProposal("userGroup"), 'text -> "userGroup.checkbox")
-                    </div>
-                </div>
-            }
-
-            @if(ConferenceDescriptor.isTagSystemActive) {
-                <div class="row cfp-row">
-                    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-                        <h4>@Messages("tag.help.title")</h4>
-                        <p>@Messages("tag.help.txt")</p>
-                    </div>
-                    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-                        <label for="tag1">@Messages("tag.title")</label><br>
-
-                        @views.html.bootstrap3.input(newProposal("tags[0].value"),
-                            placeholder = Messages("tag.placeholder1"))
-
-                        @views.html.bootstrap3.input(newProposal("tags[1].value"),
-                            placeholder = Messages("tag.placeholder2"))
-
-                        @views.html.bootstrap3.input(newProposal("tags[2].value"),
-                            placeholder = Messages("tag.placeholder3"))
-
-                        @views.html.bootstrap3.input(newProposal("tags[3].value"),
-                            placeholder = Messages("tag.placeholder4"))
-
-                        @views.html.bootstrap3.input(newProposal("tags[4].value"),
-                            placeholder = Messages("tag.placeholder5"))
-
-                    </div>
-                </div>
-            }
-
-            @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
-                <div class="row cfp-row">
-                    <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
-                        <h4>@Messages("sponsorTalk.help.title")</h4>
-                        <p>@Messages("sponsorTalk.help")</p>
-                    </div>
-                    <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
-                        @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
-                        <div id="sponsorTalkMsg" class="alert alert-info">
-                            <p>@Messages("sponsorTalk.help")</p>
-                            <p>@Messages("sponsor.name.plz")</p>
+                    @if(flash.get("error").isDefined) {
+                        <div class="col-12">
+                            <div class="alert alert-danger alert-dismissable">
+                            @flash.get("error").get
+                            </div>
                         </div>
-                    </div>
-                </div>
-            }
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <Div class="card-body">
-                            <a class="btn btn-primary btn-sm" href="@routes.CallForPaper.homeForSpeaker()"><i class="fas fa-arrow-left"></i> @Messages("btn.home")</a>
-                            <button id="preview" type="submit" class="btn btn-success btn-lg"><i class="fas fa-arrow-right"></i> @Messages("btn.save")</button>
-                        </Div>
-                    </div>
-                </div>
-            </div>
-        }
+                    }
+                    @if(flash.get("success").isDefined) {
+                        <div class="col-12">
+                            <div class="alert alert-success alert-dismissable">
+                            @flash.get("success").get
+                            </div>
+                        </div>
+                    }
+
+                    @helper.form(CSRF(routes.CallForPaper.previewProposal())) {
+                        <input type="hidden" name="id" value="@newProposal("id").value">
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("title")</h4>
+                                <p>@Messages("title.help")</p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                                @helper.inputText(newProposal("title"), 'class -> "form-control")
+                                <small>@Messages("title.maxLength")</small>
+                            </div>
+                        </div>
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("summary")</h4>
+                                <p>@Html(Messages("summary.help"))</p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                                @helper.textarea(newProposal("summary"), 'cols -> 60, 'rows -> 6, 'class -> "form-control")
+                                <i class="fas fa-text-width"></i> : <span id="charsremain"></span>
+                                <small>@Messages("newProposal.maxLength")</small>
+                            </div>
+                        </div>
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("privateMessage")</h4>
+                                <p>@Messages("privateMessage.help")</p>
+                                <p><strong>@Messages("privateMessage.help.important")</strong></p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                                @helper.textarea(newProposal("privateMessage"), 'cols -> 60, 'rows -> 10, 'class -> "form-control")
+                                <i class="fas fa-text-width"></i> : <span id="charsremain2"></span>
+                            </div>
+                        </div>
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("videoLinkMessage")</h4>
+                                <p>@Messages("videoLinkMessage.help")</p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                            @helper.inputText(newProposal("videoLink"), 'class -> "form-control")
+                            </div>
+                        </div>
+
+
+                        @if(ConferenceDescriptor.current().frLangEnabled) {
+                            <div class="row cfp-row pt-3">
+                                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                    <h4>@Messages("lang")</h4>
+                                    <p>@Messages("lang.help")<br/><strong>@Messages("lang.important")</strong></p>
+                                </div>
+                                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                                @helper.select(field = newProposal("lang"), options = Proposal.langs, 'class -> "form-control")
+                                </div>
+                            </div>
+                        } else {
+                            <input type="hidden" name="lang" value="en">
+                        }
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("talkType")</h4>
+                                <p>@Html(Messages("talkType.help", ConferenceDescriptor.current().conferenceUrls.faq))</p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                            @tags.selectI18N(field = newProposal("talkType"), options = ProposalType.allForCombos, '_default -> "--- Please select ---", 'class -> "form-control")
+                            </div>
+                        </div>
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("track")</h4>
+                                <p>@Messages("track.help")</p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                            @tags.selectI18N(field = newProposal("track"), options = Track.allAsIdsAndLabels.filterNot(_._1 == Track.UNKNOWN.id), '_default -> "--- Please select ---", 'class -> "form-control")
+                            </div>
+                        </div>
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("audienceLevel")</h4>
+                                <p>@Html(Messages("audienceLevel.help"))</p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                            @tags.selectI18N(field = newProposal("audienceLevel"), options = ProposalType.audienceLevels, '_default -> "--- Please select ---", 'class -> "form-control")
+                            </div>
+                        </div>
+
+                        <div class="row cfp-row pt-3">
+                            <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                <h4>@Messages("demoLevel")</h4>
+                                <p>@Messages("demoLevel.help")</p>
+                            </div>
+                            <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                            @tags.selectI18N(field = newProposal("demoLevel"), options = ProposalType.demoLevels, '_default -> "--- Please select ---", 'class -> "form-control")
+                            </div>
+                        </div>
+
+                        @if(ConferenceDescriptor.isGoldenTicketActive) {
+                            <div class="row cfp-row pt-3">
+                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                    <h4>@Messages("goldenTicket.help.title")</h4>
+                                    <p>@Html(Messages("goldenTicket.help.txt", Messages("shortYearlyName")))</p>
+                                </div>
+                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                @tags.checkboxI18N(newProposal("userGroup"), 'text -> "userGroup.checkbox")
+                                </div>
+                            </div>
+                        }
+
+                        @if(ConferenceDescriptor.isTagSystemActive) {
+                            <div class="row cfp-row pt-3">
+                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                    <h4>@Messages("tag.help.title")</h4>
+                                    <p>@Messages("tag.help.txt")</p>
+                                </div>
+                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                    <label for="tag1">@Messages("tag.title")</label><br>
+
+                                    @views.html.bootstrap3.input(newProposal("tags[0].value"),
+                                        placeholder = Messages("tag.placeholder1"))
+
+                                    @views.html.bootstrap3.input(newProposal("tags[1].value"),
+                                        placeholder = Messages("tag.placeholder2"))
+
+                                    @views.html.bootstrap3.input(newProposal("tags[2].value"),
+                                        placeholder = Messages("tag.placeholder3"))
+
+                                    @views.html.bootstrap3.input(newProposal("tags[3].value"),
+                                        placeholder = Messages("tag.placeholder4"))
+
+                                    @views.html.bootstrap3.input(newProposal("tags[4].value"),
+                                        placeholder = Messages("tag.placeholder5"))
+
+                                </div>
+                            </div>
+                        }
+
+                        @if(ConferenceDescriptor.current().conferenceSponsor.showSponsorProposalCheckbox) {
+                            <div class="row cfp-row pt-3">
+                                <div class="col-md-5 col-lg-4 col-sm-12 col-xs-12">
+                                    <h4>@Messages("sponsorTalk.help.title")</h4>
+                                    <p>@Messages("sponsorTalk.help")</p>
+                                </div>
+                                <div class="col-md-7 col-lg-8 col-sm-12 col-xs-12">
+                                    @tags.checkboxI18N(newProposal("sponsorTalk"), 'text -> "sponsorTalk.checkbox")
+                                    <div id="sponsorTalkMsg" class="alert alert-info">
+                                        <p>@Messages("sponsorTalk.help")</p>
+                                        <p>@Messages("sponsor.name.plz")</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="row cfp-row p-3">
+                            <div class="col-12 text-right">
+                                <a class="btn btn-outline-danger" href="@routes.CallForPaper.homeForSpeaker()"><i class="fas fa-home"></i> @Messages("btn.home")</a>
+                                <button id="preview" type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> @Messages("btn.save")</button>
+                            </div>
+                        </div>
+                    }
+
+                </div> <!-- card-body -->
+            </div> <!-- card -->
+        </div>
 
     </div>
 
