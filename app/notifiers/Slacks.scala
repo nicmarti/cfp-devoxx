@@ -95,7 +95,7 @@ object Slacks {
 
   def sendSlackNotification(target: List[SlackConfig], msg: String, channels: List[String]) = {
     target.foreach(slackConfig => {
-      slackConfig.maybeSlackBotHookUrl.foreach(hookUrl => {
+      if(slackConfig.maybeSlackBotHookUrl.isDefined && !slackConfig.maybeSlackBotHookUrl.get.isEmpty) {
         channels.foreach(channel => {
           val payload = Json.obj(
             "channel" -> channel,
@@ -103,7 +103,7 @@ object Slacks {
             "text" -> msg,
             "icon_emoji" -> slackbotEmoji
           )
-          WS.url(hookUrl)
+          WS.url(slackConfig.maybeSlackBotHookUrl.get)
             .post(payload)
             .map {
               result =>
@@ -113,7 +113,7 @@ object Slacks {
                   }
                   case _ => {
                     play.Logger.error("Slack message sending error : "+Json.obj(
-                      "hookUrl" -> hookUrl,
+                      "hookUrl" -> slackConfig.maybeSlackBotHookUrl.get,
                       "payload" -> payload,
                       "resultStatus" -> result.status,
                       "resultBody" -> result.body
@@ -122,7 +122,7 @@ object Slacks {
                 }
             }
         })
-      })
+      }
     })
   }
 }
