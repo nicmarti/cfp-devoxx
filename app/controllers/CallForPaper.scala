@@ -235,8 +235,12 @@ object CallForPaper extends SecureCFPController {
                     Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                   }
                   Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
-                  Webuser.findByUUID(uuid).map {
-                    reporter => Slacks.proposalEditDetected(proposal, ProposalEdits.from(existingProposal, proposalToPersist), reporter)
+                  // It is interesting to track modifications only when the proposal goes from SUBMITTED => DRAFT
+                  // (no need to notify anyone when modifications are made during the DRAFT status)
+                  if(existingProposal.state == ProposalState.SUBMITTED) {
+                    Webuser.findByUUID(uuid).map {
+                      reporter => Slacks.proposalEditDetected(proposal, ProposalEdits.from(existingProposal, proposalToPersist), reporter)
+                    }
                   }
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
                 } else {
