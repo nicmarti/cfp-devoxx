@@ -146,3 +146,9 @@ mobile.vote.isActive=${ACTIVATE_VOTE}
 digest.daily=${DIGEST_DAILY}
 # Day of the week, Monday = 1, etc.
 digest.weekly=${DIGEST_WEEKLY}
+
+# Slack integration
+slackbot.comitee.hook.url=${? SLACKBOT_COMITEE_HOOK_URL}
+slackbot.gt.hook.url=${? SLACKBOT_GT_HOOK_URL}
+slackbot.username="devoxx-bot"
+slackbot.emoji=":dart:"

@@ -27,6 +27,7 @@ import library.search.ElasticSearch
 import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import library._
 import models._
+import notifiers.Slacks
 import org.apache.commons.lang3.StringUtils
 import play.api.cache.Cache
 import play.api.data.Forms._
@@ -227,12 +228,16 @@ object CallForPaper extends SecureCFPController {
 
                 // Then because the editor becomes mainSpeaker, we have to update the secondary and otherSpeaker
                 if (existingProposal.state == ProposalState.DRAFT || existingProposal.state == ProposalState.SUBMITTED) {
-                  Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
+                  val proposalToPersist = Proposal.setMainSpeaker(updatedProposal, uuid)
+                  Proposal.save(uuid, proposalToPersist, ProposalState.DRAFT)
                   if (ConferenceDescriptor.isResetVotesForSubmitted) {
                     Review.archiveAllVotesOnProposal(proposal.id)
                     Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                   }
                   Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
+                  Webuser.findByUUID(uuid).map {
+                    reporter => Slacks.proposalEditDetected(proposal, ProposalEdits.from(existingProposal, proposalToPersist), reporter)
+                  }
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
                 } else {
                   Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
@@ -245,6 +250,12 @@ object CallForPaper extends SecureCFPController {
                   // This is a "create new" operation
                   Proposal.save(uuid, proposal, ProposalState.DRAFT)
                   Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
+
+                  // Fetching proposal from db in order to fill speakers needed in slack message
+                  Proposal.findById(proposal.id).foreach(dbProposal => {
+                    Slacks.newDraftSubmitted(dbProposal)
+                  })
+
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
                 } else {
                   // Maybe someone tried to edit someone's else proposal...
@@ -394,6 +405,7 @@ object CallForPaper extends SecureCFPController {
             // This generates too many emails for France and is useless
             ZapActor.actor ! NotifyProposalSubmitted(uuid, proposal)
           }
+          Slacks.newProposalSubmitted(proposal)
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
         case None =>
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.proposal"))
@@ -427,6 +439,9 @@ object CallForPaper extends SecureCFPController {
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg)
               ZapActor.actor ! SendMessageToCommittee(uuid, proposal, validMsg)
+              Webuser.findByUUID(uuid).map {
+                reporter => Slacks.newMessageSentToComitee(proposal, reporter, validMsg)
+              }
               Redirect(routes.CallForPaper.showCommentForProposal(proposalId)).flashing("success" -> "Message was sent")
             }
           )

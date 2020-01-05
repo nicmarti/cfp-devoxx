@@ -134,6 +134,32 @@ object ProposalState {
   }
 }
 
+case class ProposalEdit(message: String, fieldExtractor: Function[Proposal, Any])
+
+object ProposalEdits {
+  val TITLE_CHANGE = ProposalEdit("Title change", _.title)
+  val ABSTRACT_CHANGE = ProposalEdit("Abstract change", _.summary)
+  val COMITEE_MESSAGE_CHANGE = ProposalEdit("Comitee message change", _.privateMessage)
+  val RELATED_VIDEO_CHANGE = ProposalEdit("Related video change", _.videoLink)
+  val MAIN_LANGUAGE_CHANGE = ProposalEdit("Main language change", _.lang)
+  val AUDIENCE_CHANGE = ProposalEdit("Audience change", _.audienceLevel)
+  val TYPE_CHANGE = ProposalEdit("Type change", _.talkType)
+  val TRACK_CHANGE = ProposalEdit("Track change", _.track)
+  val SPEAKERS_CHANGE = ProposalEdit("Speakers change", p => p.secondarySpeaker ++ p.otherSpeakers)
+
+  val ALL = List(TITLE_CHANGE, ABSTRACT_CHANGE, COMITEE_MESSAGE_CHANGE, RELATED_VIDEO_CHANGE, MAIN_LANGUAGE_CHANGE, AUDIENCE_CHANGE, TYPE_CHANGE, TRACK_CHANGE, SPEAKERS_CHANGE)
+
+  def from(existingProposal: Proposal, updatedProposal: Proposal): List[ProposalEdit] = {
+    ALL.flatMap(edit => {
+      if(edit.fieldExtractor(existingProposal) != edit.fieldExtractor(updatedProposal)) {
+        Some(edit)
+      } else {
+        None
+      }
+    })
+  }
+}
+
 import com.github.rjeschke.txtmark._
 
 // A proposal
