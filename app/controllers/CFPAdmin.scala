@@ -263,26 +263,25 @@ object CFPAdmin extends SecureCFPController {
         pType =>
           val uuid = request.webuser.uuid
           val allMyVotesIncludingAbstentions = Review.allVotesFromUser(uuid)
-          val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
-          val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
-          val allProposalsIdsProposalType = allProposalsForProposalType.keySet
+          val allProposalIDsWhereIVoted = allMyVotesIncludingAbstentions.map(_._1)
+          val allProposalsMatchingCriteriaWhereIVoted = Proposal.loadAndParseProposals(allProposalIDsWhereIVoted).filter(_._2.talkType == pType)
+          val allProposalsIdsMatchingCriteriaWhereIVoted = allProposalsMatchingCriteriaWhereIVoted.keySet
+
+          val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter {
+            proposalIdAndVotes => allProposalsIdsMatchingCriteriaWhereIVoted.contains(proposalIdAndVotes._1)
+          }
+          val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
+          val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
+
+          val allScoresForProposals: Map[String, Double] = allProposalsIdsMatchingCriteriaWhereIVoted.map {
+            pid: String => (pid, Review.averageScore(pid))
+          }.toMap
 
           val proposalsNotReviewed = Review.allProposalsNotReviewed(uuid).filter(_.talkType == pType)
           val proposalsNotReviewedCount = proposalsNotReviewed.size
           val firstProposalNotReviewed = proposalsNotReviewed.headOption
 
-          val allMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentions.filter {
-            proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1)
-          }
-
-          val allScoresForProposals: Map[String, Double] = allProposalsIdsProposalType.map {
-            pid: String => (pid, Review.averageScore(pid))
-          }.toMap
-
-          val sortedAllMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentionsForCurrentProposalType.toList.sortBy(_._2).reverse
-          val sortedAllMyVotesExcludingAbstentionsForCurrentProposalType = sortedAllMyVotesIncludingAbstentionsForCurrentProposalType.filter(_._2 != 0)
-
-          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, sortedAllMyVotesExcludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType, allScoresForProposals, proposalsNotReviewedCount, firstProposalNotReviewed))
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, allScoresForProposals, proposalsNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

@@ -191,19 +191,19 @@ object GoldenTicketController extends SecureCFPController {
           val uuid = request.webuser.uuid
           val allMyVotesIncludingAbstentions = ReviewByGoldenTicket.allVotesFromUser(uuid)
           val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
-          val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
-          val allProposalsIdsProposalType = allProposalsForProposalType.keySet
+          val allProposalsMatchingCriteria = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
+          val allProposalsIdsMatchingCriteria = allProposalsMatchingCriteria.keySet
 
-          val allMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
+          val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsMatchingCriteria.contains(proposalIdAndVotes._1))
 
           val proposalsNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).filter(_.talkType == pType)
           val proposalsNotReviewedCount = proposalsNotReviewed.size
           val firstProposalNotReviewed = proposalsNotReviewed.headOption
 
-          val sortedAllMyVotesIncludingAbstentionsForCurrentProposalType = allMyVotesIncludingAbstentionsForCurrentProposalType.toList.sortBy(_._2).reverse
-          val sortedAllMyVotesExcludingAbstentionsForCurrentProposalType = sortedAllMyVotesIncludingAbstentionsForCurrentProposalType.filter(_._2 != 0)
+          val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
+          val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsForCurrentProposalType, sortedAllMyVotesExcludingAbstentionsForCurrentProposalType, allProposalsForProposalType, talkType, proposalsNotReviewedCount, firstProposalNotReviewed))
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, proposalsNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
