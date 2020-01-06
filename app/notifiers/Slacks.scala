@@ -82,7 +82,7 @@ object Slacks {
 
   def proposalEditDetected(proposal: Proposal, proposalEdits: List[ProposalEdit], reporter: Webuser): Unit = {
     sendSlackNotification(
-      target = COMITEE_ONLY_SLACK,
+      target = ALL_SLACKS,
       msg = s":writing_hand:*${reporter.firstName} ${reporter.lastName}* modified his proposal " +
         s"*[${proposal.id}] ${proposal.title}* :\n" +
         s"```${proposalEdits.map(edit => s"- ${edit.message}\n").mkString("")}```" +
