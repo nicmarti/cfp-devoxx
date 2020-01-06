@@ -374,7 +374,8 @@ GET           /assets/*file                                                     
 
 # TODO NMA
 GET           /admin/checkInvalidWebuserForAllSpeakers                          controllers.Backoffice.checkInvalidWebuserForAllSpeakers()
-GET           /admin/fixRedisDataConsistency                                     controllers.Backoffice.fixRedisDataConsistency()
+# Commented, see https://github.com/nicmarti/cfp-devoxx/pull/196#issuecomment-570945312
+# GET           /admin/fixRedisDataConsistency                                     controllers.Backoffice.fixRedisDataConsistency()
 
 # SMS
 GET           /sms/speakers                                                     controllers.SMSController.allSpeakers()
