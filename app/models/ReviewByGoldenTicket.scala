@@ -103,6 +103,14 @@ object ReviewByGoldenTicket {
       ReviewByGoldenTicket.computeAndGenerateVotes()
   }
 
+  def allAllowedProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
+    return ReviewByGoldenTicket.allProposalsNotReviewed(reviewerUUID)
+      .filter(p =>
+        !p.sponsorTalk
+          && ConferenceDescriptor.ConferenceProposalConfigurations.accessibleTypeToGoldenTicketReviews(p.talkType)
+      )
+  }
+
   def allProposalsNotReviewed(reviewerUUID: String): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIDsForReview = client.sdiff(s"Proposals:ByState:${ProposalState.SUBMITTED.code}",
@@ -262,35 +270,20 @@ object ReviewByGoldenTicket {
       }
   }
 
-  def allVotesFromUser(reviewerUUID: String): Set[(String, Option[Double])] = Redis.pool.withClient {
+  def allVotesFromUser(reviewerUUID: String): Set[(String, Double)] = Redis.pool.withClient {
     implicit client =>
       client.smembers(s"ReviewGT:Reviewed:ByAuthor:$reviewerUUID").flatMap {
         proposalId: String =>
           val score = Option(client.zscore(s"ReviewGT:Votes:$proposalId", reviewerUUID))
-          score match {
-            case None =>
-              val state = Proposal.findProposalState(proposalId)
-              state.flatMap {
-                case ProposalState.DRAFT => None
-                case ProposalState.DECLINED => None
-                case ProposalState.DELETED => None
-                case ProposalState.REJECTED => None
-                case ProposalState.ARCHIVED => None
-                case ProposalState.UNKNOWN => None
-                case _ => Option((proposalId, None))
-              }
-            case Some(_) =>
-              val state = Proposal.findProposalState(proposalId)
-              state.flatMap {
-                case ProposalState.DRAFT => None
-                case ProposalState.DECLINED => None
-                case ProposalState.DELETED => None
-                case ProposalState.REJECTED => None
-                case ProposalState.ARCHIVED => None
-                case ProposalState.UNKNOWN => None
-                case _ =>
-                  Option((proposalId, score.map(_.toDouble)))
-              }
+          val state = Proposal.findProposalState(proposalId)
+          state.flatMap {
+            case ProposalState.DRAFT => None
+            case ProposalState.DECLINED => None
+            case ProposalState.DELETED => None
+            case ProposalState.REJECTED => None
+            case ProposalState.ARCHIVED => None
+            case ProposalState.UNKNOWN => None
+            case _ => Option((proposalId, score.map(_.toDouble).getOrElse(0.toDouble)))
           }
       }
   }

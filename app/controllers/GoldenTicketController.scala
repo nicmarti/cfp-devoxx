@@ -73,15 +73,7 @@ object GoldenTicketController extends SecureCFPController {
       val innerPage:Int = if(page<1){ 1 } else { page }
       val pageSize:Int=30
 
-      val allNotReviewed = if (ConferenceDescriptor.isCFPOpen) {
-        ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-          .filterNot(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.KEY || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.OTHER)
-          .filterNot(_.sponsorTalk)
-      } else {
-        ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
-          .filter(p => p.talkType == ConferenceDescriptor.ConferenceProposalTypes.CONF || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.TIA || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.LAB || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.QUICK || p.talkType == ConferenceDescriptor.ConferenceProposalTypes.UNI)
-          .filterNot(_.sponsorTalk)
-      }
+      val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid)
 
       val maybeFilteredProposals = track match {
         case None => allNotReviewed
@@ -167,7 +159,7 @@ object GoldenTicketController extends SecureCFPController {
         Proposal.findById(proposalId) match {
           case Some(proposal) =>
             // The next proposal I should review
-            val allNotReviewed = ReviewByGoldenTicket.allProposalsNotReviewed(uuid)
+            val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid)
             val (sameTrackAndFormats, otherTracksOrFormats) = allNotReviewed.partition(p => p.track.id == proposal.track.id && p.talkType.id == proposal.talkType.id)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
             val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
@@ -191,19 +183,28 @@ object GoldenTicketController extends SecureCFPController {
     }
   }
 
-  def allMyGoldenTicketVotes(talkType: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+  def allMyGoldenTicketVotes(talkType: String, selectedTrack:Option[String]) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
         pType =>
           val uuid = request.webuser.uuid
-          val allMyVotes = ReviewByGoldenTicket.allVotesFromUser(uuid)
-          val allProposalIDs = allMyVotes.map(_._1)
-          val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
-          val allProposalsIdsProposalType = allProposalsForProposalType.keySet
-          val allMyVotesForSpecificProposalType = allMyVotes.filter(proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1))
+          val allMyVotesIncludingAbstentions = ReviewByGoldenTicket.allVotesFromUser(uuid)
+          val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
+          val allProposalsMatchingCriteria = Proposal.loadAndParseProposals(allProposalIDs)
+            .filter(p => p._2.talkType == pType && selectedTrack.map(p._2.track.id == _).getOrElse(true))
+          val allProposalsIdsMatchingCriteria = allProposalsMatchingCriteria.keySet
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(allMyVotesForSpecificProposalType, allProposalsForProposalType, talkType))
+          val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsMatchingCriteria.contains(proposalIdAndVotes._1))
+
+          val proposalsNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).filter(_.talkType == pType)
+          val proposalsNotReviewedCount = proposalsNotReviewed.size
+          val firstProposalNotReviewed = proposalsNotReviewed.headOption
+
+          val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
+          val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
+
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, proposalsNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

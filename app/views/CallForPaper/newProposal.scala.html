@@ -265,7 +265,7 @@
                 $talkType.change(function () {
                     var talkTypeId = $(this).val();
 
-                    @ProposalConfiguration.getProposalsImplyingATrackSelection.map { proposalConf=>
+                    @ConferenceDescriptor.ConferenceProposalConfigurations.getProposalsImplyingATrackSelection.map { proposalConf=>
                     @Html( "if(talkTypeId==\"" + proposalConf.id + "\") {" + "" )
                     @Html( "    $('#track option[value=\"" + proposalConf.impliedSelectedTrack.map(_.id).getOrElse(proposalConf.id) + "\"]').prop('selected', true);" + "" )
                     @Html( "}" )

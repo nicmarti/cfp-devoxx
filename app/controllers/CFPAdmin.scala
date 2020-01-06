@@ -256,31 +256,33 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def allMyVotes(talkType: String) = SecuredAction(IsMemberOf("cfp")) {
+  def allMyVotes(talkType: String, selectedTrack: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType).map {
         pType =>
           val uuid = request.webuser.uuid
-          val allMyVotes = Review.allVotesFromUser(uuid)
-          val allProposalIDs = allMyVotes.map(_._1)
-          val allProposalsForProposalType = Proposal.loadAndParseProposals(allProposalIDs).filter(_._2.talkType == pType)
-          val allProposalsIdsProposalType = allProposalsForProposalType.keySet
+          val allMyVotesIncludingAbstentions = Review.allVotesFromUser(uuid)
+          val allProposalIDsWhereIVoted = allMyVotesIncludingAbstentions.map(_._1)
+          val allProposalsMatchingCriteriaWhereIVoted = Proposal.loadAndParseProposals(allProposalIDsWhereIVoted)
+            .filter(p => p._2.talkType == pType && selectedTrack.map(p._2.track.id == _).getOrElse(true))
+          val allProposalsIdsMatchingCriteriaWhereIVoted = allProposalsMatchingCriteriaWhereIVoted.keySet
 
-          val allMyVotesForSpecificProposalType = allMyVotes.filter {
-            proposalIdAndVotes => allProposalsIdsProposalType.contains(proposalIdAndVotes._1)
+          val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter {
+            proposalIdAndVotes => allProposalsIdsMatchingCriteriaWhereIVoted.contains(proposalIdAndVotes._1)
           }
+          val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
+          val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
 
-          val allScoresForProposals: Map[String, Double] = allProposalsIdsProposalType.map {
+          val allScoresForProposals: Map[String, Double] = allProposalsIdsMatchingCriteriaWhereIVoted.map {
             pid: String => (pid, Review.averageScore(pid))
           }.toMap
 
-          val sortedListOfProposals = allMyVotesForSpecificProposalType.toList.sortBy {
-            case (proposalID, maybeScore) =>
-              maybeScore.getOrElse(0.toDouble)
-          }.reverse
+          val proposalsNotReviewed = Review.allProposalsNotReviewed(uuid).filter(_.talkType == pType)
+          val proposalsNotReviewedCount = proposalsNotReviewed.size
+          val firstProposalNotReviewed = proposalsNotReviewed.headOption
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedListOfProposals, allProposalsForProposalType, talkType, allScoresForProposals))
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalsNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
@@ -630,7 +632,7 @@ object CFPAdmin extends SecureCFPController {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
-            .filter(p => ProposalConfiguration.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+            .filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
           (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty).map {
         case (speaker, zeProposals) =>

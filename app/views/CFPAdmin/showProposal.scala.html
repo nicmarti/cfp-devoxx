@@ -257,7 +257,7 @@
             <div class="col-md-6 col-sm-12 col-lg-6 mb-2">
                 @* FIXME : Better variabilize week days by replacing the preferredDayEnabled flag *@
                 @if(ConferenceDescriptor.current().timing.preferredDayEnabled) {
-                    @if(ProposalConfiguration.isChosablePreferredDaysProposals(proposal.talkType)) {
+                    @if(ConferenceDescriptor.ConferenceProposalConfigurations.isChosablePreferredDaysProposals(proposal.talkType)) {
                         <div class="card mb-1">
                             <div class="card-header">
                                 <h4><i class="far fa-calendar-alt"></i> @Messages("calendar.pref")</h4>
