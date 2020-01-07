@@ -246,7 +246,7 @@
                     <div class="card-body">
                     @helper.form(action = routes.CFPAdmin.sendMessageToSpeaker(proposal.id)) {
                         @helper.textarea(msgToSpeakerForm("msg"), 'class -> "form-control input-xs")
-                        <button type="submit" class="btb btn-xs btn-danger">@Messages("admin.btn.sendMessage")</button>
+                        <button type="submit" class="btb btn-sm btn-danger">@Messages("admin.btn.sendMessage")</button>
                     }
                     </div>
                     <div class="card-body">
@@ -294,7 +294,7 @@
                     <div class="card-body">
                     @helper.form(action = routes.CFPAdmin.postInternalMessage(proposal.id)) {
                         @helper.textarea(msgInternalForm("msg"), 'class -> "form-control input-xs")
-                        <button type="submit" class="btb btn-xs btn-primary">@Messages("admin.btn.sendMessage")</button>
+                        <button type="submit" class="btb btn-sm btn-primary">@Messages("admin.btn.sendMessage")</button>
                     }
                     </div>
                     <div class="card-body">
