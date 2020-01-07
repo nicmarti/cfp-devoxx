@@ -20,10 +20,16 @@ import play.api.Play
 
 case class ConferenceUrls(faq: String, registration: String, confWebsite: String, cfpHostname: String) {
   def cfpURL(): String = {
+    val cleanCfpHostname = cfpHostname match {
+      case null => "http://cfp.devoxx.fr"
+      case ""  => "http://cfp.devoxx.fr"
+      case x if x.endsWith("/") => x.substring(0,x.length - 1)
+      case _ => cfpHostname
+    }
     if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
-      s"https://$cfpHostname"
+      s"https://$cleanCfpHostname"
     } else {
-      s"http://$cfpHostname"
+      s"http://$cleanCfpHostname"
     }
   }
 
