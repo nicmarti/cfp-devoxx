@@ -47,7 +47,7 @@
                         <table id="tableMyVotes" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th style="width: 150px">You voted</th>
+                                    <th style="width: 100px">You voted</th>
                                     <th>Current score</th>
                                     <th>Id</th>
                                     <th>Title</th>
@@ -60,13 +60,13 @@
                                 @allMyVotes.map { case (proposalId, vote) =>
                                     @defining(Math.round(vote)) { score =>
                                         <tr>
-                                            <td class="score" data-score="@score" data-pid="@proposalId">
-                                            <div class="btn-group-xs">
-                                                    <button class="btn btn-xs btn-color-@score">@if(score==0){ @Messages("Abs") } else { @score }</button>
-                                                    <button data-score="@Math.min(10,score+1)" data-id="@proposalId" class="btn plus btn-xs btn-color-8">+</button>
-                                                    <button data-score="@Math.max(0,score-1)" data-id="@proposalId" class="btn minus btn-xs btn-color-1">-</button>
-                                            </div>
-                                        </td>
+                                            <td class="score text-right" data-score="@score" data-pid="@proposalId">
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <button class="btn btn-sm btn-color-@score">@if(score==0){ @Messages("Abs") } else { @score }</button>
+                                                    <button data-score="@Math.max(0,score-1)" data-id="@proposalId" class="btn minus btn-sm btn-color-1">-</button>
+                                                    <button data-score="@Math.min(10,score+1)" data-id="@proposalId" class="btn plus btn-sm btn-color-8">+</button>
+                                                </div>
+                                            </td>
 
                                          <td>@allScoresForProposals.get(proposalId)</td>
                                     <td><a href="@routes.CFPAdmin.openForReview(proposalId)" class="btn btn-sm btn-primary">@proposalId</a></td>
@@ -98,13 +98,13 @@
 <script type="text/javascript">
 $( document ).ready(function() {
     function generateCell(newScore, pid){
-        return '<td style="width: 82px" class="score" data-score="' + newScore + '" data-pid="' + pid +
+        return '<td class="score text-right" data-score="' + newScore + '" data-pid="' + pid +
                 '">' +
-        '<div class="btn-group btn-group-xs">' +
-                '<button class="btn btn-xs btn-color-' + newScore +
+        '<div class="btn-group btn-group-sm" role="group">' +
+                '<button class="btn btn-sm btn-color-' + newScore +
                 '">' + newScore +
                 '</button>' +
-                '<a href="@routes.CFPAdmin.allMyVotes(talkType)" class="btn btn-xs btn-primary"><i class="fas fa-sync"></i></a>' +
+                '<a href="@routes.CFPAdmin.allMyVotes(talkType)" class="btn btn-sm btn-primary"><i class="fas fa-sync"></i></a>' +
                 '</div></td>';
 
     }
