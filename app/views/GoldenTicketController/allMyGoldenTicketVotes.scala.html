@@ -56,13 +56,14 @@
 
                                 @allMyVotes.map { case (proposalId, vote) =>
                                      @defining(Math.round(vote)){ score =>
-                                <tr>
-                                        <td class="score" data-score="@score" data-pid="@proposalId">
-                                            <Div class="btn-group btn-group-xs">
-                                                    <button data-score="@Math.max(0,score-1)" data-id="@proposalId" class="btn minus btn-xs btn-color-1" style="margin-left:3px; margin-right: 3px;">-</button>
-                                                    <button class="btn btn-xs btn-color-@score">@if(score==0){ @Messages("Abs") } else { @score }</button>
-                                                    <button data-score="@Math.min(10,score+1)" data-id="@proposalId" class="btn plus btn-xs btn-color-8" style="margin-left:3px; margin-right: 3px;">+</button>
-                                                </Div>
+                                    <tr>
+                                        <td class="score" data-score-updated="false" data-initial-score="@score" data-score="@score" data-pid="@proposalId">
+                                            <div class="btn-group btn-group-xs">
+                                                <button class="btn minus btn-xs" style="margin-left:3px; margin-right: 3px; width: 34px">-</button>
+                                                <button class="btn btn-xs displayed-score"><span class="abs-score">@Messages("Abs")</span><span class="regular-score">@score</span></button>
+                                                <button class="btn plus btn-xs" style="margin-left:3px; margin-right: 3px; width: 34px;">+</button>
+                                                <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType, selectedTrack)" class="btn btn-xs btn-primary refresh"><i class="fas fa-sync"></i></a>
+                                            </div>
                                         </td>
 
                                     <td><a href="@routes.GoldenTicketController.openForReview(proposalId)" class="btn btn-sm btn-primary">@proposalId</a></td>
@@ -92,44 +93,30 @@
 </div>
 
 <script type="text/javascript">
-
 $( document ).ready(function() {
-    function generateCell(newScore, pid){
-        return '<td style="width: 82px" class="score" data-score="' + newScore + '" data-pid="' + pid +
-                '">' +
-        '<div class="btn-group btn-group-xs">' +
-                '<button class="btn btn-xs btn-color-' + newScore +
-                '">' + newScore +
-                '</button>' +
-                '<a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType)" class="btn btn-xs btn-primary"><i class="fas fa-sync"></i></a>' +
-                '</div></td>';
-
-    }
-
-    function handleVote(){
-        $('#tableMyVotes').find('.btn.plus, .btn.minus').on('click', function(event) {
+    function handleVote(selector, updateVoteCallback){
+        $('#tableMyVotes').find(selector).on('click', function(event) {
             var $btnClicked = $(event.currentTarget);
             var $cell = $btnClicked.parents('td');
-            var $row = $cell.parents('tr');
-            $row.addClass('myVotesRowUpdated');
 
-            var newScore = Number($btnClicked.attr('data-score'));
-            var proposalId = $btnClicked.attr('data-id');
+            var newScore = updateVoteCallback(Number($cell.attr('data-score')));
+            var proposalId = $cell.attr('data-pid');
 
             $.ajax({
                 url: '/cfp/goldenticket/proposals/'+proposalId+'/vote?vote='+newScore,
                 cache: false
             }).then(function(){
+                $cell.find('.regular-score').text(newScore);
+                $cell.attr('data-score', newScore);
+                $cell.attr('data-score-updated', ''+newScore !== $cell.attr('data-initial-score'));
                 console.log('Vote '+proposalId+' set to '+newScore);
-                $row.find('td').eq(0).after(generateCell(newScore, proposalId));
-                $cell.remove();
             });
         });
     }
 
-    handleVote();
+    handleVote('.btn.plus', function(score) { return score+1; });
+    handleVote('.btn.minus', function(score) { return score-1; });
 });
-
 </script>
 
 }
