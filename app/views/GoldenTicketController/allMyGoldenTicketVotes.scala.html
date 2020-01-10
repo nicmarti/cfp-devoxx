@@ -27,19 +27,15 @@
                     </div>
                     <br/>
 
-                    @if(allMyVotes.nonEmpty){
-                        @Messages("gt.youReviewed", proposalsNotReviewedCount + allMyVotes.size, allMyVotes.size, proposalsNotReviewedCount)
-                        @if(firstProposalNotReviewed.isDefined){
-                            <a href="@routes.GoldenTicketController.openForReview(firstProposalNotReviewed.get.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
-                        }
-                        <br>
+                    @Messages("gt.youReviewed", proposalsNotReviewedCount + allMyVotes.size, allMyVotes.size, proposalsNotReviewedCount)
+                    @if(firstProposalNotReviewed.isDefined){
+                        <a href="@routes.GoldenTicketController.openForReview(firstProposalNotReviewed.get.id)" title="Open for review" class="btn btn-primary btn-sm">@Messages("admin.btn.review")</a>
+                    }
+                    <br>
 
-                        @defining(allMyVotesExcludingAbst.map(_._2)){allScores=>
-                            @Messages("gt.youVoted", allScores.size)<br>
-                            @Messages("gt.averageVote", library.Stats.average(allScores))
-                        }
-                    }else{
-                        @Messages("gt.noVotes")
+                    @defining(allMyVotesExcludingAbst.map(_._2)){allScores=>
+                        @Messages("gt.youVoted", allScores.size)<br>
+                        @Messages("gt.averageVote", library.Stats.average(allScores))
                     }
                 </div>
                 @if(allMyVotes.nonEmpty){
