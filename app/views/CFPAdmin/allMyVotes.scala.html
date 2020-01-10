@@ -12,12 +12,14 @@
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> Your personnal leaderboard</h3>
                     <div style="margin: 3px 0px">
+                    <i class="fas fa-filter"></i> @Messages("ar.proposalType") :
                     @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
                         <a href="@routes.CFPAdmin.allMyVotes(confType.id, selectedTrack)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">@Messages(confType.id)</a>
                     }
                     </div>
                     <br/>
                     <div style="margin: 3px 0px">
+                        <i class="fas fa-filter"></i> @Messages("cfp.filter.on") :
                         <a href="@routes.CFPAdmin.allMyVotes(talkType, None)" class="btn btn-sm @if(selectedTrack==None) { btn-success } else { btn-primary }">All tracks</a>
                         @models.ConferenceDescriptor.ConferenceTracks.ALL.map{track =>
                             <a href="@routes.CFPAdmin.allMyVotes(talkType, Some(track.id))" class="btn btn-sm @if(selectedTrack==Some(track.id)) { btn-success } else { btn-primary }">@Messages(track.label)</a>
