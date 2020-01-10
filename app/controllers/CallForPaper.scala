@@ -23,11 +23,13 @@
 
 package controllers
 
+import controllers.Application.{MovedPermanently, Ok}
 import library.search.ElasticSearch
 import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import library._
 import models._
 import org.apache.commons.lang3.StringUtils
+import play.api.Play
 import play.api.cache.Cache
 import play.api.data.Forms._
 import play.api.data._
@@ -36,6 +38,7 @@ import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsFormUrlEncoded
+import views.html
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -52,37 +55,41 @@ object CallForPaper extends SecureCFPController {
     implicit request =>
       val uuid = request.webuser.uuid
 
-      Speaker.findByUUID(uuid).map {
-        speaker: Speaker =>
-          // BUG
-          if (Webuser.isSpeaker(uuid) == false) {
-            play.Logger.error(s"****** Speaker ${speaker.cleanName} was not in the SPEAKER Webuser group")
-            Webuser.addToSpeaker(uuid)
-          }
-          val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
-          val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
-          val needsToAcceptTermAndCondition = Speaker.needsToAccept(uuid) && (hasAccepted || hasApproved)
+      if (request.headers.get("X-Forwarded-Proto").getOrElse("http") != "https" && Play.current.mode == play.api.Mode.Prod) {
+        MovedPermanently(ConferenceDescriptor.current().conferenceUrls.cfpHostname + "/cfp/home")
+      }else{
+        Speaker.findByUUID(uuid).map {
+          speaker: Speaker =>
+            // BUG
+            if (!Webuser.isSpeaker(uuid)) {
+              play.Logger.error(s"****** Speaker ${speaker.cleanName} was not in the SPEAKER Webuser group")
+              Webuser.addToSpeaker(uuid)
+            }
+            val hasApproved = Proposal.countByProposalState(uuid, ProposalState.APPROVED) > 0
+            val hasAccepted = Proposal.countByProposalState(uuid, ProposalState.ACCEPTED) > 0
+            val needsToAcceptTermAndCondition = Speaker.needsToAccept(uuid) && (hasAccepted || hasApproved)
 
-          (hasApproved, hasAccepted) match {
-            case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
-            case _ =>
-              val allProposals = Proposal.allMyProposals(uuid)
-              val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
-              val ratings = if (hasAccepted || hasApproved) {
-                Rating.allRatingsForTalks(allProposals)
-              } else {
-                Map.empty[Proposal, List[Rating]]
-              }
-              Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
+            (hasApproved, hasAccepted) match {
+              case (true, _) => Redirect(routes.ApproveOrRefuse.doAcceptOrRefuseTalk()).flashing("success" -> Messages("please.check.approved"))
+              case _ =>
+                val allProposals = Proposal.allMyProposals(uuid)
+                val totalArchived = Proposal.countByProposalState(uuid, ProposalState.ARCHIVED)
+                val ratings = if (hasAccepted || hasApproved) {
+                  Rating.allRatingsForTalks(allProposals)
+                } else {
+                  Map.empty[Proposal, List[Rating]]
+                }
+                Ok(views.html.CallForPaper.homeForSpeaker(speaker, request.webuser, allProposals, totalArchived, ratings, needsToAcceptTermAndCondition))
+            }
+        }.getOrElse {
+          val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
+            Messages("callforpaper.gt.create.profile")
+          } else {
+            Messages("callforpaper.import.profile")
           }
-      }.getOrElse {
-        val flashMessage = if (Webuser.hasAccessToGoldenTicket(request.webuser.uuid)) {
-          Messages("callforpaper.gt.create.profile")
-        } else {
-          Messages("callforpaper.import.profile")
+          //We have a Webuser but no associated Speaker profile v
+          Redirect(routes.CallForPaper.newSpeakerForExistingWebuser()).flashing("success" -> flashMessage)
         }
-        //We have a Webuser but no associated Speaker profile v
-        Redirect(routes.CallForPaper.newSpeakerForExistingWebuser()).flashing("success" -> flashMessage)
       }
   }
 
