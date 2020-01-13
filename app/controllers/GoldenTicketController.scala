@@ -197,14 +197,17 @@ object GoldenTicketController extends SecureCFPController {
 
           val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsMatchingCriteria.contains(proposalIdAndVotes._1))
 
-          val proposalsMatchingCriteriaNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).filter(p => p.talkType == pType && selectedTrack.map(p.track.id == _).getOrElse(true))
-          val proposalsMatchingCriteriaNotReviewedCount = proposalsMatchingCriteriaNotReviewed.size
-          val firstProposalNotReviewed = proposalsMatchingCriteriaNotReviewed.headOption
+          val proposalsNotReviewedByType = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).groupBy(_.talkType.id)
+          val proposalNotReviewedCountByType = proposalsNotReviewedByType.mapValues(_.size)
+          val proposalsNotReviewedForCurrentType = proposalsNotReviewedByType.get(pType.id).getOrElse(List())
+          val proposalNotReviewedCountForCurrentTypeByTrack = proposalsNotReviewedForCurrentType.groupBy(_.track.id).mapValues(_.size)
+          val proposalsMatchingCriteriaNotReviewed = proposalsNotReviewedForCurrentType.filter(p => selectedTrack.map(p.track.id == _).getOrElse(true))
+          val firstProposalNotReviewedAndMatchingCriteria = proposalsMatchingCriteriaNotReviewed.headOption
 
           val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
           val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, proposalsMatchingCriteriaNotReviewedCount, firstProposalNotReviewed))
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
