@@ -52,7 +52,7 @@
                     @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0)) / @Messages("cfpadmin.totalToReview",totalToReview)
                 </div>
                 <div class="card-body">
-                    <i class="fas fa-filter"></i> @Messages("cfp.filter.on")
+                    <i class="fas fa-filter"></i> @Messages("cfp.filter.on") :
                     @Track.allIDs.map{idTrack=>
                         @if(track.isDefined && track.get == idTrack) {
                             <a href="@routes.CFPAdmin.index(page, pageReview, sort, ascdesc, Option(idTrack))" class="btn btn-sm btn-success">@Html(Messages(idTrack + ".label"))</a>
