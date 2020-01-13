@@ -278,11 +278,11 @@ object CFPAdmin extends SecureCFPController {
             pid: String => (pid, Review.averageScore(pid))
           }.toMap
 
-          val proposalsNotReviewed = Review.allProposalsNotReviewed(uuid).filter(_.talkType == pType)
-          val proposalsNotReviewedCount = proposalsNotReviewed.size
-          val firstProposalNotReviewed = proposalsNotReviewed.headOption
+          val proposalsMatchingCriteriaNotReviewed = Review.allProposalsNotReviewed(uuid).filter(p => p.talkType == pType && selectedTrack.map(p.track.id == _).getOrElse(true))
+          val proposalsMatchingCriteriaNotReviewedCount = proposalsMatchingCriteriaNotReviewed.size
+          val firstProposalNotReviewed = proposalsMatchingCriteriaNotReviewed.headOption
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalsNotReviewedCount, firstProposalNotReviewed))
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalsMatchingCriteriaNotReviewedCount, firstProposalNotReviewed))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
