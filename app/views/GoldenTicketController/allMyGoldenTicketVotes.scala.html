@@ -21,7 +21,7 @@
                                 <i class="fas fa-trophy"></i>
                             }
                             @Messages(confType.id)
-                            (@{proposalNotReviewedCountByType.get(confType.id).getOrElse(0) })
+                            <span class="badge badge-pill badge-light">@{proposalNotReviewedCountByType.get(confType.id).getOrElse(0) }</span>
                         </a>
                     }
                     </div>
@@ -33,7 +33,7 @@
                                 <i class="fas fa-trophy"></i>
                             }
                             All tracks
-                            (@{proposalNotReviewedCountByType.get(talkType).getOrElse(0) })
+                            <span class="badge badge-pill badge-light">@{proposalNotReviewedCountByType.get(talkType).getOrElse(0) }</span>
                         </a>
                         @models.ConferenceDescriptor.ConferenceTracks.ALL.map{track =>
                             <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType, Some(track.id))" class="btn btn-sm @if(selectedTrack==Some(track.id)) { btn-success } else { btn-primary }">
@@ -41,7 +41,7 @@
                                     <i class="fas fa-trophy"></i>
                                 }
                                 @Messages(track.label)
-                                (@{proposalNotReviewedCountForCurrentTypeByTrack.get(track.id).getOrElse(0) })
+                                <span class="badge badge-pill badge-light">@{proposalNotReviewedCountForCurrentTypeByTrack.get(track.id).getOrElse(0) }</span>
                             </a>
                         }
                     </div>
