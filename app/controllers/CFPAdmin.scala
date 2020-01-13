@@ -278,7 +278,7 @@ object CFPAdmin extends SecureCFPController {
             pid: String => (pid, Review.averageScore(pid))
           }.toMap
 
-          val proposalsNotReviewedByType = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).groupBy(_.talkType.id)
+          val proposalsNotReviewedByType = Review.allProposalsNotReviewed(uuid).groupBy(_.talkType.id)
           val proposalNotReviewedCountByType = proposalsNotReviewedByType.mapValues(_.size)
           val proposalsNotReviewedForCurrentType = proposalsNotReviewedByType.get(pType.id).getOrElse(List())
           val proposalNotReviewedCountForCurrentTypeByTrack = proposalsNotReviewedForCurrentType.groupBy(_.track.id).mapValues(_.size)
