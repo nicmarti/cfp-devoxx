@@ -278,11 +278,14 @@ object CFPAdmin extends SecureCFPController {
             pid: String => (pid, Review.averageScore(pid))
           }.toMap
 
-          val proposalsNotReviewed = Review.allProposalsNotReviewed(uuid).filter(_.talkType == pType)
-          val proposalsNotReviewedCount = proposalsNotReviewed.size
-          val firstProposalNotReviewed = proposalsNotReviewed.headOption
+          val proposalsNotReviewedByType = Review.allProposalsNotReviewed(uuid).groupBy(_.talkType.id)
+          val proposalNotReviewedCountByType = proposalsNotReviewedByType.mapValues(_.size)
+          val proposalsNotReviewedForCurrentType = proposalsNotReviewedByType.get(pType.id).getOrElse(List())
+          val proposalNotReviewedCountForCurrentTypeByTrack = proposalsNotReviewedForCurrentType.groupBy(_.track.id).mapValues(_.size)
+          val proposalsMatchingCriteriaNotReviewed = proposalsNotReviewedForCurrentType.filter(p => selectedTrack.map(p.track.id == _).getOrElse(true))
+          val firstProposalNotReviewedAndMatchingCriteria = proposalsMatchingCriteriaNotReviewed.headOption
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalsNotReviewedCount, firstProposalNotReviewed))
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

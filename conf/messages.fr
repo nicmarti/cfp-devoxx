@@ -663,7 +663,7 @@ wl_keynote=Speaker keynote
 wl_keynote.checkbox=Oui, cela serait un speaker keynote
 
 showProposal.comment.ar=Poser une question à l''équipe à propos de cette présentation
-ar.proposalType=Type de présentation :
+ar.proposalType=Type de présentation
 ar.proposalId=Identifiant de la présentation :
 
 tag.proposal.title=Titre
@@ -781,7 +781,7 @@ refused.termsConditions=Attention, vous avez refusé les Terms & Conditions Devo
 
 admin.cfp.empty.track=Il n''y a pas de nouvelles propositions de sujets dans la track {0} pour l''instant.
 
-cfp.filter.on=Filtrer par Track :
+cfp.filter.on=Filtrer par Track
 cfp.filter.off=Pas de filtre
 
 cfpadmin.totalReviewed={0} revus

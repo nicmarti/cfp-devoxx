@@ -731,7 +731,7 @@ wl_keynote=Keynote
 wl_keynote.checkbox=Yes, this could be a keynote speaker
 
 showProposal.comment.ar=Ask a question about this talk to the team
-ar.proposalType=Proposal type:
+ar.proposalType=Proposal type
 ar.proposalId=Proposal ID:
 
 tag.proposal.title=Title
@@ -903,7 +903,7 @@ wl_travel=Travel & hotel
 wl_travel.checkbox=Yes, cover travel expenses
 wl_unknown=Unknown
 
-cfp.filter.on=Filter on :
+cfp.filter.on=Filter on
 cfp.filter.off=Remove filter
 
 cfpadmin.totalReviewed={0} reviewed
