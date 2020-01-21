@@ -118,7 +118,7 @@ object LeaderboardController extends SecureCFPController {
             webuser =>
               val webuserNick = webuser.firstName.take(1).toUpperCase + webuser.lastName.replaceAll(" ", "").take(2).toUpperCase()
               val reviewer = webuser.firstName + " " + webuser.lastName
-              s"{c:[{v:'$webuserNick'},{v:$nbReview},{v:$average},{v:'$reviewer'},{v:$totalPoints}]}"
+              s"{c:[{v:'$webuserNick'},{v:$nbReview},{v:$average},{v:'$reviewer'},{v:$nbAbstentions}]}"
           }
       }.mkString("[", ",", "]")
 
@@ -128,7 +128,7 @@ object LeaderboardController extends SecureCFPController {
            |reqId:'0',
            |status:'ok',sig:'5982206968295329967',
            |table:{
-           |cols:[{label:'ID',type:'string'},{label:'Number of Review (incl. Abs)',type:'number'},{label:'Average Rate',type:'number'},{label:'Reviewer',type:'string'},{label:'Points',type:'number'}],
+           |cols:[{label:'ID',type:'string'},{label:'Number of Review (incl. Abs)',type:'number'},{label:'Average Rate',type:'number'},{label:'Reviewer',type:'string'},{label:'Number of abstentions',type:'number'}],
            |rows:$data
            |}});
         """.stripMargin
