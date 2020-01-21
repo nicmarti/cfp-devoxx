@@ -378,6 +378,7 @@ object Review {
           |redis.call("DEL", "Computed:Reviewer:Total")
           |redis.call("DEL", "Computed:Reviewer:NbTalkVoted")
           |redis.call("DEL", "Computed:Reviewer:ReviewedOne")
+          |redis.call("DEL", "Computed:Reviewer:Abstentions")
           |redis.call("DEL", "Computed:Scores")
           |redis.call("DEL", "Computed:Voters")
           |redis.call("DEL", "Computed:Average")
@@ -414,6 +415,13 @@ object Review {
           |      redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
           |      redis.call("HINCRBY", "Computed:Reviewer:NbTalkVoted", uuidAndScores[j], 1)
           |      redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
+          |    end
+          |
+          |    local uuidAndAbstentionScoreValue = redis.call("ZRANGEBYSCORE", proposals[i], 0, 1, "WITHSCORES")
+          |
+          |    for j=1,#uuidAndAbstentionScoreValue,2 do
+          |      redis.log(redis.LOG_DEBUG, "uuid:" ..  uuidAndAbstentionScoreValue[j] .. " => abstention on :" .. proposals[i])
+          |      redis.call("HINCRBY", "Computed:Reviewer:Abstentions", uuidAndAbstentionScoreValue[j], 1)
           |    end
           |  end
           |
