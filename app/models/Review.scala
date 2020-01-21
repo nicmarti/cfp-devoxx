@@ -407,17 +407,17 @@ object Review {
           |    redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
           |  end
           |
-          |redis.call("HDEL", "Computed:Median", proposals[i])
+          |  redis.call("HDEL", "Computed:Median", proposals[i])
           |
-          | local count = redis.call("HGET", "Computed:Voters", proposals[i])
-          | local total = redis.call("HGET", "Computed:Scores", proposals[i])
-          | local avg = 0
-          |   if (count and total) then
-          |        avg = tonumber(total)/tonumber(count)
-          |        redis.call("HSET", "Computed:Average", proposals[i], avg)
-          |   end
+          |  local count = redis.call("HGET", "Computed:Voters", proposals[i])
+          |  local total = redis.call("HGET", "Computed:Scores", proposals[i])
+          |  local avg = 0
+          |  if (count and total) then
+          |       avg = tonumber(total)/tonumber(count)
+          |       redis.call("HSET", "Computed:Average", proposals[i], avg)
+          |  end
           |
-          | redis.log(redis.LOG_DEBUG, "Average: " .. avg)
+          |  redis.log(redis.LOG_DEBUG, "Average: " .. avg)
           |
           |  local vm = 0
           |  local sum2 = 0
@@ -430,25 +430,25 @@ object Review {
           |      count2 = count2 + 1
           |  end
           |
-          | redis.log(redis.LOG_DEBUG, "Standard Deviation sum2: " .. sum2)
-          | redis.log(redis.LOG_DEBUG, "Standard Deviation count2: " .. count2)
-          | if  sum2 < 1  then
-          |  standardDev = 0
-          | else
-          |  if(count2>1) then
-          |     standardDev = math.sqrt(sum2 / (count2-1))
+          |  redis.log(redis.LOG_DEBUG, "Standard Deviation sum2: " .. sum2)
+          |  redis.log(redis.LOG_DEBUG, "Standard Deviation count2: " .. count2)
+          |  if  sum2 < 1  then
+          |   standardDev = 0
           |  else
-          |    standardDev = 0
+          |   if(count2>1) then
+          |      standardDev = math.sqrt(sum2 / (count2-1))
+          |   else
+          |     standardDev = 0
+          |   end
           |  end
-          | end
           |
           |  redis.log(redis.LOG_DEBUG, "Standard Deviation: " .. standardDev)
           |  redis.call("HSET", "Computed:StandardDeviation" , proposals[i], standardDev)
           |
-          | local countAbstention = redis.call("ZCOUNT", proposals[i], 0, 0)
-          | if(countAbstention>0) then
-          |    redis.call("HSET", "Computed:VotersAbstention" , proposals[i], countAbstention)
-          | end
+          |  local countAbstention = redis.call("ZCOUNT", proposals[i], 0, 0)
+          |  if(countAbstention>0) then
+          |     redis.call("HSET", "Computed:VotersAbstention" , proposals[i], countAbstention)
+          |  end
           |end
           |return #proposals
         """.stripMargin
@@ -467,7 +467,7 @@ object Review {
       }
   }
 
-  // Warning : this returns also the vote with Abstention
+  // Warning : this doesn't return votes with Abstention
   // It cannot be used to compute "generous one" for instance.
   def allReviewersAndStats(): List[(String, Int, Int)] = Redis.pool.withClient {
     client =>
