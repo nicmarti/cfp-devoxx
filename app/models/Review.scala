@@ -387,6 +387,11 @@ object Review {
           |redis.call("DEL", "Computed:Median")
           |
           |for i = 1, #proposals do
+          |  local chunks = {}
+          |  for chunk in string.gmatch(proposals[i], '([^:]+)') do
+          |    table.insert(chunks, chunk)
+          |  end
+          |  local proposalId = chunks[3]
           |  redis.log(redis.LOG_DEBUG, "----------------- " .. proposals[i])
           |
           |  redis.call("HSET", "Computed:Scores", proposals[i], 0)
@@ -398,13 +403,18 @@ object Review {
           |
           |  local uuidAndScores = redis.call("ZRANGEBYSCORE", proposals[i], 1, 11, "WITHSCORES")
           |
-          |  for j=1,#uuidAndScores,2 do
-          |    redis.log(redis.LOG_DEBUG, "uuid:" ..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
-          |    redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
-          |    redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
-          |    redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
-          |    redis.call("HINCRBY", "Computed:Reviewer:NbTalkVoted", uuidAndScores[j], 1)
-          |    redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
+          |  local isDraft = redis.call("SISMEMBER", "Proposals:ByState:draft", proposalId)
+          |  local isDeleted = redis.call("SISMEMBER", "Proposals:ByState:deleted", proposalId)
+          |  local isArchived = redis.call("SISMEMBER", "Proposals:ByState:archived", proposalId)
+          |  if (isDraft + isDeleted + isArchived == 0 ) then
+          |    for j=1,#uuidAndScores,2 do
+          |      redis.log(redis.LOG_DEBUG, "uuid:" ..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
+          |      redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
+          |      redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
+          |      redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
+          |      redis.call("HINCRBY", "Computed:Reviewer:NbTalkVoted", uuidAndScores[j], 1)
+          |      redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
+          |    end
           |  end
           |
           |  redis.call("HDEL", "Computed:Median", proposals[i])
