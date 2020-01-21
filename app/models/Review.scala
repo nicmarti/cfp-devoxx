@@ -485,7 +485,7 @@ object Review {
       }
   }
 
-  // Warning : this doesn't return votes with Abstention
+  // Warning : this returns also the vote with Abstention, number of abstentions and average score
   // It cannot be used to compute "generous one" for instance.
   def allReviewersAndStats(): List[(String, Int, Int, Int, BigDecimal)] = Redis.pool.withClient {
     client =>
