@@ -69,7 +69,7 @@ object LeaderboardController extends SecureCFPController {
     // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
     def generousVoters: List[(String, BigDecimal)] =
       bestReviewers.filter(_._3 > 0)
-        .map(b => (b._1, BigDecimal(b._2.toDouble / b._3.toDouble).round(new java.math.MathContext(3))))
+        .map(b => (b._1, b._5))
 
     def proposalsBySpeakers: List[(String, Int)] =
       Speaker.allSpeakers()
@@ -113,16 +113,11 @@ object LeaderboardController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       // Do not keep someone that did zero review
       val data = Review.allReviewersAndStats().filterNot(_._3 == 0).flatMap {
-        case (uuid, totalPoints, nbReview) =>
+        case (uuid, totalPoints, nbReview, nbAbstentions, average) =>
           Webuser.findByUUID(uuid).map {
             webuser =>
               val webuserNick = webuser.firstName.take(1).toUpperCase + webuser.lastName.replaceAll(" ", "").take(2).toUpperCase()
               val reviewer = webuser.firstName + " " + webuser.lastName
-              val average = if (nbReview > 0) {
-                BigDecimal(totalPoints.toDouble./(nbReview.toDouble)).round(new java.math.MathContext(3))
-              } else {
-                0
-              }
               s"{c:[{v:'$webuserNick'},{v:$nbReview},{v:$average},{v:'$reviewer'},{v:$totalPoints}]}"
           }
       }.mkString("[", ",", "]")
@@ -133,7 +128,7 @@ object LeaderboardController extends SecureCFPController {
            |reqId:'0',
            |status:'ok',sig:'5982206968295329967',
            |table:{
-           |cols:[{label:'ID',type:'string'},{label:'Number of Review',type:'number'},{label:'Average Rate',type:'number'},{label:'Reviewer',type:'string'},{label:'Points',type:'number'}],
+           |cols:[{label:'ID',type:'string'},{label:'Number of Review (incl. Abs)',type:'number'},{label:'Average Rate',type:'number'},{label:'Reviewer',type:'string'},{label:'Points',type:'number'}],
            |rows:$data
            |}});
         """.stripMargin
@@ -267,7 +262,7 @@ case class LeaderBoardParams(
                               totalProposals: Long,
                               totalVotes: Long,
                               mostReviewed: List[(String, Int)],
-                              bestReviewers: List[(String, Int, Int)],
+                              bestReviewers: List[(String, Int, Int, Int, BigDecimal)],
                               lazyOnes: Map[String, String],
                               generousVoters: List[(String, BigDecimal)],
                               proposalsBySpeakers: List[(String, Int)],

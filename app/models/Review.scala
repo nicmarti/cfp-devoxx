@@ -487,20 +487,27 @@ object Review {
 
   // Warning : this doesn't return votes with Abstention
   // It cannot be used to compute "generous one" for instance.
-  def allReviewersAndStats(): List[(String, Int, Int)] = Redis.pool.withClient {
+  def allReviewersAndStats(): List[(String, Int, Int, Int, BigDecimal)] = Redis.pool.withClient {
     client =>
       // Remove reviewer that are not any longer part of CFP
       val validReviewers = client.smembers("Webuser:cfp")
 
       val allVoted = client.hgetAll("Computed:Reviewer:Total").filter(uuidAndPoints => validReviewers.contains(uuidAndPoints._1)).map {
         case (uuid: String, totalPoints: String) =>
-          val nbrOfTalksReviewed = client.hget("Computed:Reviewer:NbTalkVoted", uuid).map(_.toInt).getOrElse(0)
-          (uuid, totalPoints.toInt, nbrOfTalksReviewed)
+          val nbrOfTalksVoted = client.hget("Computed:Reviewer:NbTalkVoted", uuid).map(_.toInt).getOrElse(0)
+          val nbrOfAbstentions = client.hget("Computed:Reviewer:Abstentions", uuid).map(_.toInt).getOrElse(0)
+          val nbrOfTalksReviewed = nbrOfTalksVoted + nbrOfAbstentions
+          val average = if (nbrOfTalksVoted > 0) {
+            BigDecimal(totalPoints.toDouble / nbrOfTalksVoted.toDouble).round(new java.math.MathContext(3))
+          } else {
+            BigDecimal(0)
+          }
+          (uuid, totalPoints.toInt, nbrOfTalksReviewed, nbrOfAbstentions, average)
       }
 
       val noReviews = client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne")
       val noReviewsAndNote = noReviews.map(uuid =>
-        (uuid, 0, 0)
+        (uuid, 0, 0, 0, BigDecimal(0))
       )
       allVoted.toList ++ noReviewsAndNote.toList
   }
