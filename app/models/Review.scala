@@ -378,6 +378,7 @@ object Review {
           |redis.call("DEL", "Computed:Reviewer:Total")
           |redis.call("DEL", "Computed:Reviewer:NbTalkVoted")
           |redis.call("DEL", "Computed:Reviewer:ReviewedOne")
+          |redis.call("DEL", "Computed:Reviewer:Abstentions")
           |redis.call("DEL", "Computed:Scores")
           |redis.call("DEL", "Computed:Voters")
           |redis.call("DEL", "Computed:Average")
@@ -387,6 +388,11 @@ object Review {
           |redis.call("DEL", "Computed:Median")
           |
           |for i = 1, #proposals do
+          |  local chunks = {}
+          |  for chunk in string.gmatch(proposals[i], '([^:]+)') do
+          |    table.insert(chunks, chunk)
+          |  end
+          |  local proposalId = chunks[3]
           |  redis.log(redis.LOG_DEBUG, "----------------- " .. proposals[i])
           |
           |  redis.call("HSET", "Computed:Scores", proposals[i], 0)
@@ -398,26 +404,38 @@ object Review {
           |
           |  local uuidAndScores = redis.call("ZRANGEBYSCORE", proposals[i], 1, 11, "WITHSCORES")
           |
-          |  for j=1,#uuidAndScores,2 do
-          |    redis.log(redis.LOG_DEBUG, "uuid:" ..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
-          |    redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
-          |    redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
-          |    redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
-          |    redis.call("HINCRBY", "Computed:Reviewer:NbTalkVoted", uuidAndScores[j], 1)
-          |    redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
+          |  local isDraft = redis.call("SISMEMBER", "Proposals:ByState:draft", proposalId)
+          |  local isDeleted = redis.call("SISMEMBER", "Proposals:ByState:deleted", proposalId)
+          |  local isArchived = redis.call("SISMEMBER", "Proposals:ByState:archived", proposalId)
+          |  if (isDraft + isDeleted + isArchived == 0 ) then
+          |    for j=1,#uuidAndScores,2 do
+          |      redis.log(redis.LOG_DEBUG, "uuid:" ..  uuidAndScores[j] .. " score:" .. uuidAndScores[j + 1])
+          |      redis.call("HINCRBY", "Computed:Scores", proposals[i], uuidAndScores[j + 1])
+          |      redis.call("HINCRBY", "Computed:Voters", proposals[i], 1)
+          |      redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
+          |      redis.call("HINCRBY", "Computed:Reviewer:NbTalkVoted", uuidAndScores[j], 1)
+          |      redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
+          |    end
+          |
+          |    local uuidAndAbstentionScoreValue = redis.call("ZRANGEBYSCORE", proposals[i], 0, 1, "WITHSCORES")
+          |
+          |    for j=1,#uuidAndAbstentionScoreValue,2 do
+          |      redis.log(redis.LOG_DEBUG, "uuid:" ..  uuidAndAbstentionScoreValue[j] .. " => abstention on :" .. proposals[i])
+          |      redis.call("HINCRBY", "Computed:Reviewer:Abstentions", uuidAndAbstentionScoreValue[j], 1)
+          |    end
           |  end
           |
-          |redis.call("HDEL", "Computed:Median", proposals[i])
+          |  redis.call("HDEL", "Computed:Median", proposals[i])
           |
-          | local count = redis.call("HGET", "Computed:Voters", proposals[i])
-          | local total = redis.call("HGET", "Computed:Scores", proposals[i])
-          | local avg = 0
-          |   if (count and total) then
-          |        avg = tonumber(total)/tonumber(count)
-          |        redis.call("HSET", "Computed:Average", proposals[i], avg)
-          |   end
+          |  local count = redis.call("HGET", "Computed:Voters", proposals[i])
+          |  local total = redis.call("HGET", "Computed:Scores", proposals[i])
+          |  local avg = 0
+          |  if (count and total) then
+          |       avg = tonumber(total)/tonumber(count)
+          |       redis.call("HSET", "Computed:Average", proposals[i], avg)
+          |  end
           |
-          | redis.log(redis.LOG_DEBUG, "Average: " .. avg)
+          |  redis.log(redis.LOG_DEBUG, "Average: " .. avg)
           |
           |  local vm = 0
           |  local sum2 = 0
@@ -430,25 +448,25 @@ object Review {
           |      count2 = count2 + 1
           |  end
           |
-          | redis.log(redis.LOG_DEBUG, "Standard Deviation sum2: " .. sum2)
-          | redis.log(redis.LOG_DEBUG, "Standard Deviation count2: " .. count2)
-          | if  sum2 < 1  then
-          |  standardDev = 0
-          | else
-          |  if(count2>1) then
-          |     standardDev = math.sqrt(sum2 / (count2-1))
+          |  redis.log(redis.LOG_DEBUG, "Standard Deviation sum2: " .. sum2)
+          |  redis.log(redis.LOG_DEBUG, "Standard Deviation count2: " .. count2)
+          |  if  sum2 < 1  then
+          |   standardDev = 0
           |  else
-          |    standardDev = 0
+          |   if(count2>1) then
+          |      standardDev = math.sqrt(sum2 / (count2-1))
+          |   else
+          |     standardDev = 0
+          |   end
           |  end
-          | end
           |
           |  redis.log(redis.LOG_DEBUG, "Standard Deviation: " .. standardDev)
           |  redis.call("HSET", "Computed:StandardDeviation" , proposals[i], standardDev)
           |
-          | local countAbstention = redis.call("ZCOUNT", proposals[i], 0, 0)
-          | if(countAbstention>0) then
-          |    redis.call("HSET", "Computed:VotersAbstention" , proposals[i], countAbstention)
-          | end
+          |  local countAbstention = redis.call("ZCOUNT", proposals[i], 0, 0)
+          |  if(countAbstention>0) then
+          |     redis.call("HSET", "Computed:VotersAbstention" , proposals[i], countAbstention)
+          |  end
           |end
           |return #proposals
         """.stripMargin
@@ -467,22 +485,29 @@ object Review {
       }
   }
 
-  // Warning : this returns also the vote with Abstention
+  // Warning : this returns also the vote with Abstention, number of abstentions and average score
   // It cannot be used to compute "generous one" for instance.
-  def allReviewersAndStats(): List[(String, Int, Int)] = Redis.pool.withClient {
+  def allReviewersAndStats(): List[(String, Int, Int, Int, BigDecimal)] = Redis.pool.withClient {
     client =>
       // Remove reviewer that are not any longer part of CFP
       val validReviewers = client.smembers("Webuser:cfp")
 
       val allVoted = client.hgetAll("Computed:Reviewer:Total").filter(uuidAndPoints => validReviewers.contains(uuidAndPoints._1)).map {
         case (uuid: String, totalPoints: String) =>
-          val nbrOfTalksReviewed = client.hget("Computed:Reviewer:NbTalkVoted", uuid).map(_.toInt).getOrElse(0)
-          (uuid, totalPoints.toInt, nbrOfTalksReviewed)
+          val nbrOfTalksVoted = client.hget("Computed:Reviewer:NbTalkVoted", uuid).map(_.toInt).getOrElse(0)
+          val nbrOfAbstentions = client.hget("Computed:Reviewer:Abstentions", uuid).map(_.toInt).getOrElse(0)
+          val nbrOfTalksReviewed = nbrOfTalksVoted + nbrOfAbstentions
+          val average = if (nbrOfTalksVoted > 0) {
+            BigDecimal(totalPoints.toDouble / nbrOfTalksVoted.toDouble).round(new java.math.MathContext(3))
+          } else {
+            BigDecimal(0)
+          }
+          (uuid, totalPoints.toInt, nbrOfTalksReviewed, nbrOfAbstentions, average)
       }
 
       val noReviews = client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne")
       val noReviewsAndNote = noReviews.map(uuid =>
-        (uuid, 0, 0)
+        (uuid, 0, 0, 0, BigDecimal(0))
       )
       allVoted.toList ++ noReviewsAndNote.toList
   }

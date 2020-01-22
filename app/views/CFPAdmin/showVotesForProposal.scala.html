@@ -9,7 +9,7 @@
         nextToBeReviewedSameFormat: Option[Proposal],
         averageScoreGT: Double,
         countVotesCastGT: Option[Long],
-        bestReviewers:Option[List[(String, Int, Int)]])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+        bestReviewers:Option[List[(String, Int, Int, Int, BigDecimal)]])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
     @main("Votes for " + proposal.id + "/" + proposal.title) {
         <div class="row">
@@ -135,7 +135,7 @@
                     <div class="card-body">
                         <div class="row">
                     @bestReviewers.map { subList =>
-                        @subList.map{ case(uuid, pts, totalReviewed)=>
+                        @subList.map{ case(uuid, pts, totalReviewed, nbAbst, average)=>
                             <div class="col-lg-4">
                                 @models.Speaker.findByUUID(uuid).map { speaker =>
                                     @models.Webuser.findByUUID(uuid).map { webuser =>
@@ -179,7 +179,7 @@
                                 <a class="btn btn-success" style="filter: brightness(115%); margin: 2px 0px" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="fas fa-forward"></i>
                                     @Messages("gt.nextTalkType", Messages(nextToBeReviewedSameFormat.head.talkType.id))</a><br/>
                             } else {
-                                <a class="btn btn-success" style="filter: brightness(115%); margin: 2px 0px" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="fas fa-forward"></i>
+                                <a class="btn btn-secondary" style="margin: 2px 0px" accesskey="l" href="@routes.CFPAdmin.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="fas fa-forward"></i>
                                     @Messages("gt.nextTalkDifferentType", Messages(nextToBeReviewedSameFormat.head.talkType.id))</a><br/>
                             }
                         }
