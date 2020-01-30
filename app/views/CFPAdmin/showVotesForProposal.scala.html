@@ -141,7 +141,7 @@
                                     @models.Webuser.findByUUID(uuid).map { webuser =>
                                         @if(speaker.avatarUrl.isEmpty) {
                                             <img width="35" src="//www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
-                                            <@webuser.cleanName
+                                            @webuser.cleanName
                                         } else {
                                             <img  width="35" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName"/>
                                             @webuser.cleanName
