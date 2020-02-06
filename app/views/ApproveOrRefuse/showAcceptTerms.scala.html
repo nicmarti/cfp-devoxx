@@ -28,11 +28,10 @@
                             </div>
                         }
 
-                        <div class="col-md-8 col-lg-offset-2">
+                        <div class="col-md-12">
 
                             <p>Please read and accept Devoxx France Terms & Conditions :</p>
 
-                            <div class="input-group">
 <h3>English version</h3>
 
 <textarea class="form-control" cols="70" rows="15">
@@ -53,6 +52,7 @@ I undertake in each of my presentations to strictly comply with the principles o
 (4) confirm that no further consents or permissions are required by Devoxx in order to use the Presentation Materials.
 
 </textarea>
+
 <h3>Version en Français</h3>
 
 <textarea class="form-control" cols="70" rows="15">
@@ -72,13 +72,11 @@ tout manquement aux principes énoncés ci-dessus entrainera mon exclusion de la
 (4) Je confirme qu'aucune autre permission n'est nécessaire pour que Devoxx France puisse utiliser mes éléments de présentation.
 
 </textarea>
-                            </div>
                             @helper.form(routes.ApproveOrRefuse.acceptTermsAndConditions()) {
                                 @helper.checkbox(formAccept("accept.chk"))
                                 <input type="submit" value="Validate" class="btn btn-lg btn-success">
                                 <a href="@routes.ApproveOrRefuse.declineTermsAndConditions()" class="btn btn-lg btn-danger">Decline</a>
                             }
-
 
                         </div>
                     </div>
