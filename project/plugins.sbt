@@ -3,6 +3,8 @@
 
 // The Typesafe repository
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+// Provided https repo because repo1.maven.org doesn't allow non-https connection now...
+resolvers += "Maven central HTTPs" at "https://repo1.maven.org/maven2"
 
 dependencyOverrides += "org.scala-sbt" % "sbt" % "0.13.13"
 
