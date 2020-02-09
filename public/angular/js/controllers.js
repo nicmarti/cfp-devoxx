@@ -50,6 +50,7 @@ mainController.controller('MainController', function MainController($rootScope, 
             });
         } else {
             console.log("No schedule configuration loaded");
+            $rootScope.available = $scope.slots.length;
         }
     });
 
@@ -67,6 +68,8 @@ mainController.controller('MainController', function MainController($rootScope, 
 
                 // Remove from left
                  maybeSlot2.proposal=undefined;
+            } else {
+                $rootScope.available--
             }
 
             // Update the slot
@@ -94,11 +97,12 @@ mainController.controller('MainController', function MainController($rootScope, 
         } else {
             var talk=maybeSlot.proposal ;
 
-            // Remove from left
+            // Remove from right
             maybeSlot.proposal=undefined;
 
-            // Add back to right
+            // Add back to left
             $scope.approvedTalks = $scope.approvedTalks.concat(talk);
+            $rootScope.available++
         }
     };
 
