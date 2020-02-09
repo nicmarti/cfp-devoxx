@@ -1,65 +1,70 @@
-<div class="col-lg-12">
-    <h3>All slots</h3>
-    <button class="btn btn-success" ng-click="saveAllocation()">Save allocation</button>
-    <flash-messages/>
-    <p>Note : Please, use full-screen for best experience. Slots are also filtered by preferred day.</p>
+<div class="row">
+    <div class="col-lg-12">
+        <h3>{{title}}</h3>
+        <button class="btn btn-success" ng-click="saveAllocation()">Save allocation</button>
+        <flash-messages/>
+        <p>Note : Please, use full-screen for best experience. Slots are also filtered by preferred day.</p>
+    </div>
 </div>
 
-<div class="col-lg-12">
-    <h3>Filter</h3>
-</div>
+<div class="row">
+    <div class="col-lg-6 panel_talks">
+        <small>Proposals: {{approvedTalks.length}}</small><br/>
+        <input type="search" ng-model="filterTalk" placeholder="Filter Talks..."/>
 
-<div class="col-lg-3 panel_talks">
-    <input type="search" ng-model="filterTalk" placeholder="Filter Talks..."/><br>
-    <small>Proposals: {{approvedTalks.length}}</small>
+        <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
+             class="{{talk.state.code}}"
+             drag="talk" dragStyle="columnDrag"
+             dropStyle="columnDrop" title="{{talk.state.code}}">
+            <span class="proposalTitle">{{talk.title}}</span>
+            <span class="badge badge-secondary">{{talk.id}}</span>
 
-            <div ng-repeat="talk in approvedTalks | filter:filterTalk track by talk.id"
-                 class="{{talk.state.code}}"
-                 drag="talk" dragStyle="columnDrag"
-                 dropStyle="columnDrop" title="{{talk.state.code}}">
-                <span class="proposalTitle">{{talk.title}}</span>
-                <span class="badge badge-secondary">{{talk.id}}</span>
-
-                <div class="badge badge-warning">{{talk.track.id}}</div>
-                <div class="badge badge-{{talk.lang}}">{{talk.lang}}</div>
-                <div class="badge badge-success">{{talk.mainSpeaker}}</div>
-                <div class="badge badge-success btn-sm">{{talk.secondarySpeaker}}</div>
-                <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="badge badge-success btn-sm">
-                    {{otherSpeaker}}
-                </div>
-                <div class="badge badge-danger" ng-show="talk.privateMessage">
-                    {{talk.privateMessage}}
-                </div>
+            <div class="badge badge-warning">{{talk.track.id}}</div>
+            <div class="badge badge-{{talk.lang}}">{{talk.lang}}</div>
+            <div class="badge badge-success">{{talk.mainSpeaker}}</div>
+            <div class="badge badge-success btn-sm">{{talk.secondarySpeaker}}</div>
+            <div ng-repeat="otherSpeaker in talk.otherSpeakers" class="badge badge-success btn-sm">
+                {{otherSpeaker}}
+            </div>
+            <div class="badge badge-danger" ng-show="talk.privateMessage">
+                {{talk.privateMessage}}
             </div>
         </div>
-</div>
-
-<div class="col-lg-9 panel_slots">
-    <small>Available: {{available}} / {{slots.length}}</small>
-    <div class="col-lg-9">
-        <input type="search" ng-model="q" placeholder="Filter Slots..."/>
-        <input type="checkbox" name="chShow" ng-model="showEmpty" value="true" checked> Collapse allocated slots
     </div>
-    <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-lg-5 slot" drop="slot" dropStyle="columnDrop">
-        <div ng-hide="slot.proposal">
-            <span class="badge badge-secondary">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
-            <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
+
+    <div class="col-lg-6 panel_slots">
+        <small>Available: {{available}} / {{slots.length}}</small>
+        <div>
+            <input type="search" ng-model="q" placeholder="Filter Slots..."/>
+            <input type="checkbox" name="chShow" ng-model="showEmpty" value="true" checked> Collapse allocated slots
         </div>
-        <div  ng-hide="showEmpty">
-            <div ng-show="slot.proposal">
+        <div ng-repeat="slot in slots | filter:q track by slot.id" class="col-md-12 slot" drop="slot" dropStyle="columnDrop">
+            <div ng-hide="slot.proposal">
                 <span class="badge badge-secondary">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
+                <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
+            </div>
+            <div  ng-hide="showEmpty">
+                <div ng-show="slot.proposal">
+                    <span class="badge badge-secondary">{{slot.day}} {{slot.from | date:'H:mm'}} {{slot.to| date:'H:mm'}}</span>
                     <small>{{slot.room.name}} ({{slot.room.capacity}})</small>
-                    <button class="btn-remove btn-danger" ng-click="unallocate(slot.id)"><i class="icon-remove"></i> </button>
-                <br>
-                <span class="proposalTitle">{{slot.proposal.title}}</span>
-                <div class="badge badge-success">{{slot.proposal.mainSpeaker}} {{slot.proposal.secondarySpeaker}} </div>
-                <span class="badge badge-warning">{{slot.proposal.track.id}}</span>
-                <span class="badge badge-{{slot.proposal.lang}}">{{slot.proposal.lang}}</span>
-                <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
-                    <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
+                    <button class="btn-remove btn-danger" ng-click="unallocate(slot.id)"><i class="fas fa-times"></i> </button>
+                    <br>
+                    <span class="proposalTitle">{{slot.proposal.title}}</span>
+                    <span class="badge badge-secondary">{{slot.proposal.id}}</span>
+
+                    <span class="badge badge-warning">{{slot.proposal.track.id}}</span>
+                    <span class="badge badge-{{slot.proposal.lang}}">{{slot.proposal.lang}}</span>
+                    <div class="badge badge-success">{{slot.proposal.mainSpeaker}}</div>
+                    <div class="badge badge-success btn-sm">{{slot.proposal.secondarySpeaker}}</div>
+                    <div ng-repeat="otherSpeaker in slot.proposal.otherSpeakers" class="badge badge-success btn-sm">
+                        {{otherSpeaker}}
+                    </div>
+
+                    <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
+                        <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
