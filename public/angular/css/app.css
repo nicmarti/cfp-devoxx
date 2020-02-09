@@ -50,9 +50,11 @@ body {
 
 .badge-en{
     background-color: darkblue;
+    color: white;
 }
 .badge-fr{
     background-color: #87840b;
+    color: white;
 }
 
 .slot {

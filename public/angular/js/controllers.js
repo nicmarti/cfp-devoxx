@@ -29,6 +29,7 @@ mainController.controller('MainController', function MainController($rootScope, 
         } else {
             console.log("No schedule configuration loaded");
             $scope.approvedTalks =  allApproved["approvedTalks"].talks ;
+            $rootScope.title = "Create a new " + $routeParams.confType + " schedule from scratch"
         }
     });
 
@@ -50,6 +51,7 @@ mainController.controller('MainController', function MainController($rootScope, 
             });
         } else {
             console.log("No schedule configuration loaded");
+            $rootScope.available = $scope.slots.length;
         }
     });
 
@@ -67,6 +69,8 @@ mainController.controller('MainController', function MainController($rootScope, 
 
                 // Remove from left
                  maybeSlot2.proposal=undefined;
+            } else {
+                $rootScope.available--
             }
 
             // Update the slot
@@ -94,11 +98,12 @@ mainController.controller('MainController', function MainController($rootScope, 
         } else {
             var talk=maybeSlot.proposal ;
 
-            // Remove from left
+            // Remove from right
             maybeSlot.proposal=undefined;
 
-            // Add back to right
+            // Add back to left
             $scope.approvedTalks = $scope.approvedTalks.concat(talk);
+            $rootScope.available++
         }
     };
 
@@ -125,7 +130,7 @@ reloadScheduleConfController.controller('ReloadScheduleConfController', function
                     $rootScope.available++;
                 }
             });
-
+            $rootScope.title = "Create a new " + $scope.loadedScheduledConfiguration.confType + " schedule from " + $routeParams.id
             $location.path('/slots').search({confType: newConfType}).replace();
         }
     });
