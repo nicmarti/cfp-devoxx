@@ -59,6 +59,9 @@
                     <div ng-repeat="otherSpeaker in slot.proposal.otherSpeakers" class="badge badge-success btn-sm">
                         {{otherSpeaker}}
                     </div>
+                    <div class="badge badge-danger" ng-show="slot.proposal.privateMessage">
+                        {{slot.proposal.privateMessage}}
+                    </div>
 
                     <div ng-show="slot.proposal.title.substring(0,4)=='[Not'">
                         <div class="alert alert-danger alert-block"><i class="icon-warning-sign"></i> This talk was not approved</div>
