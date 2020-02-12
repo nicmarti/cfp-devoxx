@@ -25,6 +25,6 @@
             </td>
         }
     }
-    @if(!subSlots.exists(_.room.id == room.id)) {
+    @if(!subSlots.exists(_.room.id == room.id) && !subSlots.exists(_.break.isDefined)) {
         <td>&nbsp;</td>
     }
