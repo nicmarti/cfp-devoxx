@@ -6,14 +6,14 @@
     <div class="large-12 columns">
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
-        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+        <p class="breadcrumb hide-on-print"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByDay("wed", secretPublishKey)">@Messages("sw.agenda.wed")</a> /
             <a href="@routes.Publisher.showByDay("thu", secretPublishKey)">@Messages("sw.agenda.thu")</a> /
             <a href="@routes.Publisher.showByDay("fri", secretPublishKey)">@Messages("sw.agenda.fri")</a>
         </p>
 
         @if(ConferenceDescriptor.isShowRoom) {
-            <p>@Messages("publisher.room.disclaimer")</p>
+            <p class="hide-on-print">@Messages("publisher.room.disclaimer")</p>
         }
     </div>
 
