@@ -18231,6 +18231,10 @@ blockquote p {
     .show-for-print {
         display: inherit !important;
     }
+
+    .nowrap-if-print {
+        white-space: nowrap;
+    }
 }
 
 .text-left {
