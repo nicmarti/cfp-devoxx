@@ -7,7 +7,7 @@
         @zeSlot.proposal.map { p: Proposal =>
             <td class="room @room.id @zeSlot.id">
                 <span class="proposalType">@Messages(p.talkType.id)</span>
-                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
+                <span class="title"><a class="skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                     @tags.publisher.renderSpeaker(speakerUUID)
                 }</span>
@@ -20,7 +20,7 @@
             </td>
         }
         @if(zeSlot.break.isDefined) {
-            <td class="break @room.id" colspan="@roomSize">
+            <td class="break skip-print-defaults @room.id" colspan="@roomSize">
             @Messages(s"sw.${zeSlot.break.get.id}")
             </td>
         }

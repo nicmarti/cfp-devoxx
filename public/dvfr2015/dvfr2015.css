@@ -5999,18 +5999,18 @@ blockquote, blockquote p {
 }
 
 @media print {
-    * {
+    *:not(.skip-print-defaults) {
         background: transparent !important;
         color: #000 !important;
         box-shadow: none !important;
-        text-shadow: none !important
+        text-shadow: none !important;
     }
 
     a, a:visited {
         text-decoration: underline
     }
 
-    a[href]:after {
+    a[href]:not(.skip-print-defaults):after {
         content: " (" attr(href) ")"
     }
 
@@ -18153,7 +18153,7 @@ blockquote p {
 }
 
 @media print {
-    * {
+    *:not(.skip-print-defaults) {
         background: transparent !important;
         color: #000 !important;
         /* Black prints faster: h5bp.com/s */
@@ -18161,12 +18161,12 @@ blockquote p {
         text-shadow: none !important;
     }
 
-    a,
-    a:visited {
+    a:not(.skip-print-defaults),
+    a:not(.skip-print-defaults):visited {
         text-decoration: underline;
     }
 
-    a[href]:after {
+    a[href]:not(.skip-print-defaults):after {
         content: " (" attr(href) ")";
     }
 

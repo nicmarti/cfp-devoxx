@@ -28,7 +28,7 @@
                  </tr>
              }
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
-                <tr >
+                <tr class="skip-print-defaults">
                     <th class="timeSlot">
                         @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                         @if(subSlots.map(_.to).toSet.size>1){
