@@ -5998,77 +5998,6 @@ blockquote, blockquote p {
     display: none !important
 }
 
-@media print {
-    *:not(.skip-print-defaults) {
-        background: transparent !important;
-        color: #000 !important;
-        box-shadow: none !important;
-        text-shadow: none !important;
-    }
-
-    a, a:visited {
-        text-decoration: underline
-    }
-
-    a[href]:not(.skip-print-defaults):after {
-        content: " (" attr(href) ")"
-    }
-
-    abbr[title]:after {
-        content: " (" attr(title) ")"
-    }
-
-    .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
-        content: ""
-    }
-
-    pre, blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid
-    }
-
-    thead {
-        display: table-header-group
-    }
-
-    tr, img {
-        page-break-inside: avoid
-    }
-
-    img {
-        max-width: 100% !important
-    }
-
-    @page {
-        margin: 0.5cm
-    }
-
-    p, h2, h3 {
-        orphans: 3;
-        widows: 3
-    }
-
-    h2, h3 {
-        page-break-after: avoid
-    }
-
-    .hide-on-print {
-        display: none !important
-    }
-
-    .print-only {
-        display: block !important
-    }
-
-    .hide-for-print {
-        display: none !important
-    }
-
-    .show-for-print {
-        display: inherit !important
-    }
-}
-
 .split.button {
     position: relative;
     padding-right: 5.0625rem
@@ -6285,12 +6214,6 @@ blockquote, blockquote p {
     .reveal-modal.xlarge {
         margin-left: -47.5%;
         width: 95%
-    }
-}
-
-@media print {
-    .reveal-modal {
-        background: #fff !important
     }
 }
 
@@ -16338,12 +16261,6 @@ dialog[open] {
     }
 }
 
-@media print {
-    dialog, .reveal-modal {
-        background: #fff !important;
-    }
-}
-
 .side-nav {
     display: block;
     margin: 0;
@@ -18220,20 +18137,16 @@ blockquote p {
         display: none !important;
     }
 
-    .print-only {
-        display: block !important;
-    }
-
-    .hide-for-print {
-        display: none !important;
-    }
-
     .show-for-print {
         display: inherit !important;
     }
 
     .nowrap-if-print {
         white-space: nowrap;
+    }
+
+    dialog, .reveal-modal {
+        background: #fff !important
     }
 }
 
