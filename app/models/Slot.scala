@@ -26,6 +26,7 @@ package models
 import models.ConferenceDescriptor.ConferenceProposalTypes
 import org.joda.time.DateTime
 import play.api.libs.json.Json
+import scala.collection.mutable.ListBuffer
 
 /**
   * Time slots and Room are defined as static file.
@@ -104,9 +105,9 @@ object SlotBreak {
 }
 
 case class Slot(id: String, name: String, day: String, from: DateTime, to: DateTime, room: Room,
-                proposal: Option[Proposal], break: Option[SlotBreak]) {
+                proposal: Option[Proposal], break: Option[SlotBreak], fillerForSlotId: Option[String]) {
   override def toString: String = {
-    s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined}"
+    s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined} isFiller=${isFiller}"
   }
 
   def parleysId: String = {
@@ -117,28 +118,37 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
     break.isEmpty && proposal.isEmpty
   }
 
+  def isFiller: Boolean = { fillerForSlotId.isDefined }
+
 }
 
 object SlotBuilder {
 
   def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, name, day, from, to, room, None, None)
+    Slot(id, name, day, from, to, room, None, None, None)
   }
 
   def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room, proposal: Option[Proposal]): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, name, day, from, to, room, proposal, None)
+    Slot(id, name, day, from, to, room, proposal, None, None)
   }
 
   def apply(slotBreak: SlotBreak, day: String, from: DateTime, to: DateTime): Slot = {
     val id = slotBreak.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, slotBreak.nameEN, day, from, to, slotBreak.room, None, Some(slotBreak))
+    Slot(id, slotBreak.nameEN, day, from, to, slotBreak.room, None, Some(slotBreak), None)
+  }
+
+  def apply(fillerForSlot: Slot, fillerIndex: Int, from: DateTime, to: DateTime): Slot = {
+    Slot(fillerForSlot.id.replace(fillerForSlot.proposal.map(_.talkType.id).getOrElse(""), s"filler${fillerIndex}"), "filler", fillerForSlot.day, from, to, fillerForSlot.room, fillerForSlot.proposal, None, Option(fillerForSlot.id));
   }
 }
 
 // See https://groups.google.com/forum/#!topic/play-framework/ENlcpDzLZo8
 object Slot {
+  implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
+  implicit val slotFormat = Json.format[Slot]
+
   def keepDeletableSlotIdsFrom(slotIds: List[String]): List[String] = {
     val programSchedules = ProgramSchedule.allProgramSchedulesForCurrentEvent()
     val programSchedulesPerConfScheduleId = ConferenceProposalTypes.slottableTypes.foldLeft(Map.empty[String, List[ProgramSchedule]].withDefaultValue(List())) { (perConfScheduleIdPrograms, proposalType) =>
@@ -154,9 +164,37 @@ object Slot {
     slotIds.filter(id => programSchedulesPerConfScheduleId.get(id).map(_.isEmpty).getOrElse(true))
   }
 
-  implicit val slotFormat = Json.format[Slot]
-
   def byType(proposalType: ProposalType): Seq[Slot] = {
     ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id)
+  }
+
+  def fillWithFillers(slots: List[Slot]): List[Slot] = {
+    val fillers = new ListBuffer[Slot];
+
+    val atomicTimeSlots = slots
+      .groupBy(_.from)
+      .mapValues(slots => slots.map(_.to).distinct.min(dateTimeOrdering))
+      .map(fromTo => (fromTo._1, fromTo._2))
+      .toArray
+      .sortBy(_._1);
+
+    // I'm pretty sure this can be achieved with some Scala API magic here, but am too noob
+    // for this :-)
+    for ( (startingTime: DateTime, slotsSharingSameStartingTime: List[Slot]) <- slots.groupBy(_.from)) {
+      val atomicTimeSlot = atomicTimeSlots.find(atomicTimeSlot => atomicTimeSlot._1.equals(startingTime)).get
+      val atomicTimeSlotIndex = atomicTimeSlots.indexOf(atomicTimeSlot)
+      slotsSharingSameStartingTime.foreach(slot => {
+        if(!slot.to.equals(atomicTimeSlot._2)) {
+          var fillerIndex = 1
+          var fillerAtomicTimeSlot = atomicTimeSlots(atomicTimeSlotIndex + fillerIndex)
+          while(!fillerAtomicTimeSlot._1.isAfter(slot.to)) {
+            fillers += SlotBuilder(slot, fillerIndex, fillerAtomicTimeSlot._1, fillerAtomicTimeSlot._2)
+            fillerIndex += 1
+            fillerAtomicTimeSlot = atomicTimeSlots(atomicTimeSlotIndex + fillerIndex)
+          }
+        }
+      })
+    }
+    (slots ::: fillers.toList).sortBy(_.from)
   }
 }

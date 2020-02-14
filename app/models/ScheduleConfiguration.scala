@@ -108,9 +108,24 @@ object ScheduleConfiguration {
             play.Logger.of("models.ScheduledConfiguration").warn("Unable to reload a SlotConfiguration due to JSON error")
             play.Logger.of("models.ScheduledConfiguration").warn(s"Got error : ${library.ZapJson.showError(errors)} ")
             None
-          }
-            , someConf => Option(someConf)
-          )
+          }, scheduleConfig => {
+            Option(scheduleConfig.copy(
+              // Replacing every slots/timeslots to convert them to current conf timezone, as we're generally
+              // using local time everywhere in the code, whereas after JSON deserialization, it's UTC-based
+              slots = scheduleConfig.slots.map(slot => {
+                slot.copy(
+                  from = slot.from.toDateTime(ConferenceDescriptor.current().timezone),
+                  to = slot.to.toDateTime(ConferenceDescriptor.current().timezone)
+                )
+              }),
+              timeSlots = scheduleConfig.timeSlots.map(timeSlot => {
+                timeSlot.copy(
+                  start = timeSlot.start.toDateTime(ConferenceDescriptor.current().timezone),
+                  end = timeSlot.end.toDateTime(ConferenceDescriptor.current().timezone)
+                )
+              })
+            ))
+          })
       }
   }
 

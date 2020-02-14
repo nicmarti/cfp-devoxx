@@ -191,7 +191,7 @@ object Publisher extends Controller {
 
       def _showDay(slots: List[Slot], day: String) = {
         val rooms = slots.groupBy(_.room).keys.toList
-        val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey)
+        val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
         Ok(views.html.Publisher.showOneDay(allSlots, rooms, day, secretPublishKey))
       }
 
