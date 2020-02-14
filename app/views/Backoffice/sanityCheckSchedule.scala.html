@@ -175,7 +175,7 @@
                     <div class="card-body">
 
                 @timeSlots.map{case(time:org.joda.time.DateTime,slots)=>
-                    <b>Conflict on @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE HH:mm")</b><br>
+                    <b>Conflict on @time.toDateTime(ConferenceDescriptor.current().timezone).toString("EEEE HH:mm")</b><br>
                     @slots.map{slot:Slot=>
                         @slot.proposal.map {p:Proposal=>
                           <i class="fas fa-exclamation-triangle"></i> <b>@p.id</b> @Messages(p.talkType.id): @p.title<br>

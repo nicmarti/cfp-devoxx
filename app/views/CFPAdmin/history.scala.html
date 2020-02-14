@@ -11,7 +11,7 @@
                 <div class="card-body">
                 <div class="card-body">
                     @Event.loadEventsForObjRef(proposal.id).sortBy(_.date.map(_.getMillis).getOrElse(0L)).map { event =>
-                     <small><strong>@event.date.map(s=>s.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("EEE dd/MM HH:mm")):</strong> @event.msg</small><br>
+                     <small><strong>@event.date.map(s=>s.toDateTime(ConferenceDescriptor.current().timezone).toString("EEE dd/MM HH:mm")):</strong> @event.msg</small><br>
                     }
                 </div>
             </div>

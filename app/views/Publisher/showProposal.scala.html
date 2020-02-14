@@ -43,8 +43,8 @@
                                     &nbsp;
                                 }
                             </td>
-                            <td style="text-align: right">@slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("EEEE")
-                                @slot.get.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slot.get.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
+                            <td style="text-align: right">@slot.get.from.toDateTime(ConferenceDescriptor.current().timezone).toString("EEEE")
+                                @slot.get.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @slot.get.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</td>
                         </tr>
                     }
                 }

@@ -30,10 +30,10 @@
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                 <tr class="skip-print-defaults">
                     <th class="timeSlot nowrap-if-print">
-                        @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                         @if(subSlots.map(_.to).toSet.size>1){
                             @subSlots.map(_.to).toSet.map { s:org.joda.time.DateTime =>
-                              <small>@s.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</small>
+                              <small>@s.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</small>
                             }
                         }
                     </th>

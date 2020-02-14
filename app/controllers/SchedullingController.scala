@@ -122,7 +122,7 @@ object SchedullingController extends SecureCFPController {
           case (savedSchedule, dateAsDouble) =>
             Map(
               "key" -> Json.toJson(savedSchedule),
-              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels"))),
+              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(ConferenceDescriptor.current().timezone)),
               "deletable" -> JsBoolean(deletableSlotIds.contains(savedSchedule.id))
             )
         })

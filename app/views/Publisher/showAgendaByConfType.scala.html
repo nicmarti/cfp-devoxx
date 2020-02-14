@@ -49,7 +49,7 @@
                 @schedule.slots.groupBy(_.from).toList.sortBy(_._1.toDate.getTime).map { case (time: org.joda.time.DateTime, slots) =>
                 <tr>
                     <th class="timeSlot">
-                        @time.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @slots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                        @time.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @slots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
                     @slots.sortBy(_.room).zipWithIndex.map { case(slot,index) =>
 
