@@ -153,9 +153,7 @@ object SchedullingController extends SecureCFPController {
                 "lastModifiedByName" -> JsString(programSchedule.lastModifiedByName),
                 "lastModified" -> Json.toJson(programSchedule.lastModified),
                 "scheduleConfigurations" -> Json.toJson(programSchedule.scheduleConfigurations.map {
-                  case (proposalType, scheduleConfigurationId) =>
-                    val scheduleConfigMap = scheduleConfigurationMapByUUID(scheduleConfigurationId)
-                    (proposalType.id) -> Json.toJson(scheduleConfigMap)
+                  case (proposalType, scheduleConfigurationId) => (proposalType.id) -> JsString(scheduleConfigurationId)
                 })
               )
             }

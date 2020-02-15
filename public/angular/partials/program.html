@@ -51,8 +51,8 @@
           <td ng-repeat="type in slottableProposalTypes track by type.id">
             <em ng-if="!programSchedule.scheduleConfigurations[type.id]">None</em>
             <span ng-if="programSchedule.scheduleConfigurations[type.id]">
-              <span class="badge badge-warning" title="created by {{programSchedule.scheduleConfigurations[type.id].createdBy}} on {{programSchedule.scheduleConfigurations[type.id].latestModification | date:'short'}}">
-                {{programSchedule.scheduleConfigurations[type.id].id}}
+              <span class="badge badge-warning" title="created by {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).createdBy}} on {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).latestModification | date:'short'}}">
+                {{programSchedule.scheduleConfigurations[type.id]}}
               </span>
             </span>
           </td>

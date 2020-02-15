@@ -48,6 +48,10 @@ programController.controller('ProgramController', function ProgramController($ro
         });
     };
 
+    $scope.scheduleConfigById = function(scheduleConfigId) {
+        return $scope.savedConfigurations.find(config => config.id === scheduleConfigId);
+    };
+
     $scope.refresh();
 });
 
