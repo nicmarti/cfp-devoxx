@@ -1,7 +1,11 @@
 package models
 
+import java.util.UUID
+
 import library.Redis
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import org.joda.time.DateTime
+import play.api.libs.json.Json
 
 case class ProgramSchedule(
         id: String,
@@ -9,22 +13,35 @@ case class ProgramSchedule(
         name: String,
         lastModifiedByName: String,
         lastModified: DateTime,
-        scheduleConfigurations: Map[ProposalType, String],
+        scheduleConfigurationsPerProposalType: Map[String, String],
         isTheOnePublished: Boolean,
-        isEditable: Boolean)
+        isEditable: Boolean) {
+
+  def scheduleConfigurations: Map[ProposalType, String] = {
+    scheduleConfigurationsPerProposalType.map {
+      case(proposalTypeStr, scheduleConfigId) => (ConferenceProposalTypes.valueOf(proposalTypeStr), scheduleConfigId)
+    }
+  }
+}
 
 object ProgramSchedule {
+  implicit val programScheduleFormat = Json.format[ProgramSchedule]
+
   def allProgramSchedulesForCurrentEvent(): List[ProgramSchedule] = Redis.pool.withClient {
     implicit client =>
-      // Temporary impl, waiting for proper Redis storage for this data class
-      List(
-        ProgramSchedule(
-          "a4c5b5c9-5ab9-4c07-a2f3-5f0c491e46aa", ConferenceDescriptor.current().eventCode, "Empty schedule", "Fred", DateTime.parse("2020-02-15T08:05:30Z"), Map(), true, false),
-        ProgramSchedule(
-          "4b939288-3958-44f4-90cc-831dd24a12d1", ConferenceDescriptor.current().eventCode, "Test schedule", "Fred", DateTime.parse("2020-02-15T11:25:30Z"), Map(
-          ConferenceDescriptor.ConferenceProposalTypes.LAB -> "lab-tza-22",
-          ConferenceDescriptor.ConferenceProposalTypes.QUICK -> "quick-rah-03"
-        ), false, true)
+      client.hgetAll(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}").map {
+        case(id, json) => (id, Json.parse(json).as[ProgramSchedule])
+      }.values.toList.sortBy(_.lastModified.getMillis)
+  }
+
+  def createAndPublishEmptyProgramSchedule(creator: Webuser) = Redis.pool.withClient {
+    implicit client =>
+      val uuid = UUID.randomUUID().toString
+      val emptySchedule = ProgramSchedule(
+        uuid, ConferenceDescriptor.current().eventCode, "Empty schedule", s"${creator.firstName} ${creator.lastName}",
+        DateTime.now(), Map(), true, false
       )
+      client.hset(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid, Json.stringify(Json.toJson(emptySchedule)))
+      emptySchedule
   }
 }

@@ -170,6 +170,14 @@ object SchedullingController extends SecureCFPController {
       Ok(Json.stringify(json)).as("application/json")
   }
 
+  def createAndPublishEmptyProgramSchedule() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      ProgramSchedule.createAndPublishEmptyProgramSchedule(request.webuser);
+
+      Ok("{\"status\":\"success\"}").as("application/json")
+  }
+
   def loadScheduledConfiguration(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleConfFormat
