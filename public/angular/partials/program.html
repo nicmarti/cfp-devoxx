@@ -36,31 +36,31 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="config in programSchedules track by config.id" ng-class="{'published-program': config.isTheOnePublished}">
+        <tr ng-repeat="programSchedule in programSchedules track by programSchedule.id" ng-class="{'published-program': programSchedule.isTheOnePublished}">
           <td>
-            <span class="badge badge-primary">{{config.id}}</span>
-            <div ng-if="!config.isTheOnePublished" style="font-size: 0.6rem">
+            <span class="badge badge-primary">{{programSchedule.id}}</span>
+            <div ng-if="!programSchedule.isTheOnePublished" style="font-size: 0.6rem">
               Private schedule :
               <button class="btn btn-primary" style="padding: 0.3rem">Wednesday</button>
               <button class="btn btn-primary" style="padding: 0.3rem">Thursday</button>
               <button class="btn btn-primary" style="padding: 0.3rem">Friday</button>
             </div>
           </td>
-          <td>{{config.name}}</td>
-          <td>{{config.lastModified|date:'short'}} by {{config.lastModifiedByName}}</td>
+          <td>{{programSchedule.name}}</td>
+          <td>{{programSchedule.lastModified|date:'short'}} by {{programSchedule.lastModifiedByName}}</td>
           <td ng-repeat="type in slottableProposalTypes track by type.id">
-            <em ng-if="!config.scheduleConfigurations[type.id]">None</em>
-            <span ng-if="config.scheduleConfigurations[type.id]">
-              <span class="badge badge-warning" title="created by {{config.scheduleConfigurations[type.id].createdBy}} on {{config.scheduleConfigurations[type.id].latestModification | date:'short'}}">
-                {{config.scheduleConfigurations[type.id].id}}
+            <em ng-if="!programSchedule.scheduleConfigurations[type.id]">None</em>
+            <span ng-if="programSchedule.scheduleConfigurations[type.id]">
+              <span class="badge badge-warning" title="created by {{programSchedule.scheduleConfigurations[type.id].createdBy}} on {{programSchedule.scheduleConfigurations[type.id].latestModification | date:'short'}}">
+                {{programSchedule.scheduleConfigurations[type.id].id}}
               </span>
             </span>
           </td>
           <td>
-            <button ng-if="config.isEditable" class="btn btn-sm btn-primary">
+            <button ng-if="programSchedule.isEditable" class="btn btn-sm btn-primary">
               <i class="fas fa-tools"></i> Edit
             </button>
-            <button ng-if="!config.isTheOnePublished" class="btn btn-sm btn-success">
+            <button ng-if="!programSchedule.isTheOnePublished" class="btn btn-sm btn-success">
               <i class="fas fa-camera"></i> Publish
             </button>
           </td>
