@@ -32,6 +32,14 @@ programController.controller('ProgramController', function ProgramController($ro
         return !!$scope.programSchedules.filter(s => !s.isEditable).length;
     };
 
+    $scope.atLeastOnePublishedProgramSchedule = function() {
+        if(!$scope.programSchedules) {
+            return false;
+        }
+
+        return !!$scope.programSchedules.filter(s => s.isTheOnePublished).length;
+    };
+
     $scope.createAndPublishEmptyProgramSchedule = function() {
         $scope.createAndPublishEmptyProgramScheduleInProgress = true;
         CreateAndPublishEmptyProgramSchedule.save(function () {

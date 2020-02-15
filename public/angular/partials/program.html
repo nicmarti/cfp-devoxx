@@ -13,6 +13,15 @@
       </p>
     </div>
   </div>
+  <div class="card text-white bg-warning" ng-if="!atLeastOnePublishedProgramSchedule()">
+    <div class="card-body">
+      <p class="card-text">
+        It seems like you don't have any published program schedule.
+        It means that you're going to have a default (non editable) schedule displayed currently on the website.
+        To workaround this, create at least one program schedule and publish it.
+      </p>
+    </div>
+  </div>
   <div ng-if="atLeastOneReadonlyProgramSchedule()">
     <table class="table table-bordered table-striped">
       <thead>
