@@ -15,12 +15,32 @@ homeController.controller('HomeController', function HomeController($rootScope, 
     });
 });
 
-programController.controller('ProgramController', function ProgramController($rootScope, $scope, $routeParams, ProgramScheduleConfiguration) {
-    ProgramScheduleConfiguration.get(function(result) {
-        $scope.programSchedules = result.programSchedules;
-        $scope.savedConfigurations = result.savedConfigurations;
-        $scope.slottableProposalTypes = result.slottableProposalTypes;
-    });
+programController.controller('ProgramController', function ProgramController($rootScope, $scope, $routeParams, flash, ProgramScheduleConfiguration, CreateAndPublishEmptyProgramSchedule) {
+    $scope.refresh = function() {
+        ProgramScheduleConfiguration.get(function(result) {
+            $scope.programSchedules = result.programSchedules;
+            $scope.savedConfigurations = result.savedConfigurations;
+            $scope.slottableProposalTypes = result.slottableProposalTypes;
+        });
+    };
+
+    $scope.atLeastOneReadonlyProgramSchedule = function() {
+        if(!$scope.programSchedules) {
+            return false;
+        }
+
+        return !!$scope.programSchedules.filter(s => !s.isEditable).length;
+    };
+
+    $scope.createAndPublishEmptyProgramSchedule = function() {
+        $scope.createAndPublishEmptyProgramScheduleInProgress = true;
+        CreateAndPublishEmptyProgramSchedule.save(function () {
+            $scope.createAndPublishEmptyProgramScheduleInProgress = false;
+            $scope.refresh();
+        });
+    };
+
+    $scope.refresh();
 });
 
 mainController.controller('MainController', function MainController($rootScope, $scope, $routeParams, SlotService, ApprovedTalksService, flash) {

@@ -1,47 +1,62 @@
 <div class="col-lg-12">
   <h3>Program schedules</h3>
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Last modification</th>
-        <th ng-repeat="type in slottableProposalTypes track by type.id">
-          {{type.label}}
-        </th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="config in programSchedules track by config.id" ng-class="{'published-program': config.isTheOnePublished}">
-        <td>
-          <span class="badge badge-primary">{{config.id}}</span>
-          <div ng-if="!config.isTheOnePublished" style="font-size: 0.6rem">
-            Private schedule :
-            <button class="btn btn-primary" style="padding: 0.3rem">Wednesday</button>
-            <button class="btn btn-primary" style="padding: 0.3rem">Thursday</button>
-            <button class="btn btn-primary" style="padding: 0.3rem">Friday</button>
-          </div>
-        </td>
-        <td>{{config.name}}</td>
-        <td>{{config.lastModified|date:'short'}} by {{config.lastModifiedByName}}</td>
-        <td ng-repeat="type in slottableProposalTypes track by type.id">
-          <em ng-if="!config.scheduleConfigurations[type.id]">None</em>
-          <span ng-if="config.scheduleConfigurations[type.id]">
-            <span class="badge badge-warning" title="created by {{config.scheduleConfigurations[type.id].createdBy}} on {{config.scheduleConfigurations[type.id].latestModification | date:'short'}}">
-              {{config.scheduleConfigurations[type.id].id}}
+  <div class="card text-white bg-info" ng-if="!atLeastOneReadonlyProgramSchedule()">
+    <div class="card-body">
+      <p class="card-text">
+        It seems like you don't have any read-only program schedule.
+        It's generally advised to have one :
+        <button class="btn btn-primary btn-sm" ng-click="createAndPublishEmptyProgramSchedule()" ng-disabled="createAndPublishEmptyProgramScheduleInProgress">
+          <i class="fas fa-plus" ng-show="!createAndPublishEmptyProgramScheduleInProgress"></i>
+          <i class="fa fa-spinner fa-spin" ng-show="createAndPublishEmptyProgramScheduleInProgress"></i>
+          Create and publish it
+        </button>
+      </p>
+    </div>
+  </div>
+  <div ng-if="atLeastOneReadonlyProgramSchedule()">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Last modification</th>
+          <th ng-repeat="type in slottableProposalTypes track by type.id">
+            {{type.label}}
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="config in programSchedules track by config.id" ng-class="{'published-program': config.isTheOnePublished}">
+          <td>
+            <span class="badge badge-primary">{{config.id}}</span>
+            <div ng-if="!config.isTheOnePublished" style="font-size: 0.6rem">
+              Private schedule :
+              <button class="btn btn-primary" style="padding: 0.3rem">Wednesday</button>
+              <button class="btn btn-primary" style="padding: 0.3rem">Thursday</button>
+              <button class="btn btn-primary" style="padding: 0.3rem">Friday</button>
+            </div>
+          </td>
+          <td>{{config.name}}</td>
+          <td>{{config.lastModified|date:'short'}} by {{config.lastModifiedByName}}</td>
+          <td ng-repeat="type in slottableProposalTypes track by type.id">
+            <em ng-if="!config.scheduleConfigurations[type.id]">None</em>
+            <span ng-if="config.scheduleConfigurations[type.id]">
+              <span class="badge badge-warning" title="created by {{config.scheduleConfigurations[type.id].createdBy}} on {{config.scheduleConfigurations[type.id].latestModification | date:'short'}}">
+                {{config.scheduleConfigurations[type.id].id}}
+              </span>
             </span>
-          </span>
-        </td>
-        <td>
-          <button ng-if="config.isEditable" class="btn btn-sm btn-primary">
-            <i class="fas fa-tools"></i> Edit
-          </button>
-          <button ng-if="!config.isTheOnePublished" class="btn btn-sm btn-success">
-            <i class="fas fa-camera"></i> Publish
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+          <td>
+            <button ng-if="config.isEditable" class="btn btn-sm btn-primary">
+              <i class="fas fa-tools"></i> Edit
+            </button>
+            <button ng-if="!config.isTheOnePublished" class="btn btn-sm btn-success">
+              <i class="fas fa-camera"></i> Publish
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
