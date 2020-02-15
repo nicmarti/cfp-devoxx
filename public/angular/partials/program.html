@@ -44,9 +44,9 @@
             <span class="badge badge-primary">{{programSchedule.id}}</span>
             <div ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
               Private schedule :
-              <button class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem">Wednesday</button>
-              <button class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem">Thursday</button>
-              <button class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem">Friday</button>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem" href="/2020/byday/wed?secretPublishKey={{programSchedule.id}}" target="_blank">Wednesday</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem" href="/2020/byday/thu?secretPublishKey={{programSchedule.id}}" target="_blank">Thursday</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem" href="/2020/byday/fri?secretPublishKey={{programSchedule.id}}" target="_blank">Friday</a>
             </div>
           </td>
           <td>

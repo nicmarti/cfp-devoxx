@@ -1,4 +1,4 @@
-@(slots: List[Slot], rooms: List[Room], day: String)(implicit lang: Lang, req: RequestHeader, flash:Flash)
+@(slots: List[Slot], rooms: List[Room], day: String, secretPublishKey: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
 @import org.joda.time.DateTimeZone
 
 
@@ -7,9 +7,9 @@
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            <a href="@routes.Publisher.showByDay("wed")">@Messages("sw.agenda.wed")</a> /
-            <a href="@routes.Publisher.showByDay("thu")">@Messages("sw.agenda.thu")</a> /
-            <a href="@routes.Publisher.showByDay("fri")">@Messages("sw.agenda.fri")</a>
+            <a href="@routes.Publisher.showByDay("wed", secretPublishKey)">@Messages("sw.agenda.wed")</a> /
+            <a href="@routes.Publisher.showByDay("thu", secretPublishKey)">@Messages("sw.agenda.thu")</a> /
+            <a href="@routes.Publisher.showByDay("fri", secretPublishKey)">@Messages("sw.agenda.fri")</a>
         </p>
 
         @if(ConferenceDescriptor.isShowRoom) {

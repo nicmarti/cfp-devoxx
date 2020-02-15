@@ -118,17 +118,24 @@ object ScheduleConfiguration {
     implicit client => client.hset("Published:Schedule", confType, id)
   }
 
-  def getPublishedSchedule(confType: String): Option[String] = Redis.pool.withClient {
+  def getPublishedSchedule(confType: String): Option[String] = getPublishedSchedule(confType, None)
+  def getPublishedSchedule(confType: String, secretPublishKey: Option[String]): Option[String] = Redis.pool.withClient {
     implicit client =>
-      ProgramSchedule.publishedProgramSchedule().flatMap { publishedProgramSchedule =>
-        publishedProgramSchedule.scheduleConfigurations.get(ConferenceProposalTypes.valueOf(confType))
+      val maybeProgramSchedule = secretPublishKey match {
+        case Some(secretKey) => ProgramSchedule.findById(secretKey)
+        case None => ProgramSchedule.publishedProgramSchedule()
+      }
+
+      maybeProgramSchedule.flatMap { programSchedule =>
+        programSchedule.scheduleConfigurations.get(ConferenceProposalTypes.valueOf(confType))
       }
   }
 
-  def getPublishedScheduleByDay(day: String): List[Slot] = {
+  def getPublishedScheduleByDay(day: String): List[Slot] = getPublishedScheduleByDay(day, None)
+  def getPublishedScheduleByDay(day: String, secretPublishKey: Option[String]): List[Slot] = {
 
     def extractSlot(allSlots: List[Slot], day: String) = {
-      val configured = loadSlots().filter(_.day == day)
+      val configured = loadSlots(secretPublishKey).filter(_.day == day)
       val configuredIDs = configured.map(_.id)
       val filtered = allSlots.filterNot(s => configuredIDs.contains(s.id))
       configured ++ filtered
@@ -153,14 +160,15 @@ object ScheduleConfiguration {
     listOfSlots.sortBy(_.from.getMillis)
   }
 
-  def loadSlots(): List[Slot] = {
+  def loadSlots(secretPublishKey: Option[String]): List[Slot] = {
     ConferenceDescriptor.ConferenceProposalTypes.ALL.flatMap {
-      t: ProposalType => loadSlotsForConfType(t.id)
+      t: ProposalType => loadSlotsForConfType(t.id, secretPublishKey)
     }
   }
 
-  def loadSlotsForConfType(confType: String): List[Slot] = {
-    getPublishedSchedule(confType).flatMap {
+  def loadSlotsForConfType(confType: String): List[Slot] = loadSlotsForConfType(confType, None)
+  def loadSlotsForConfType(confType: String, secretPublishKey: Option[String]): List[Slot] = {
+    getPublishedSchedule(confType, secretPublishKey).flatMap {
       id: String =>
         loadScheduledConfiguration(id).map {
           scheduledConf => scheduledConf.slots
