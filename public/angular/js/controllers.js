@@ -78,6 +78,16 @@ programController.controller('ProgramController', function ProgramController($ro
         });
     };
 
+    $scope.deleteProgramSchedule = function(programSchedule) {
+      if(confirm("Do you really want to delete this Program schedule ?")) {
+        programSchedule._deleteProgramScheduleInProgress = true;
+        ProgramScheduleResource.delete({ id: programSchedule.id }, function() {
+          programSchedule._deleteProgramScheduleInProgress = true;
+          $scope.refresh();
+        });
+      }
+    };
+
     $scope.refresh();
 });
 

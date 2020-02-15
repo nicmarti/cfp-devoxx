@@ -213,6 +213,19 @@ object SchedullingController extends SecureCFPController {
       }
   }
 
+  def deleteProgramSchedule(uuid: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ProgramSchedule.persistedProgramScheduleFormat
+
+      ProgramSchedule.findById(uuid) match {
+        case None => NotFound
+        case Some(dbProgramSchedule) => {
+          ProgramSchedule.deleteProgramSchedule(uuid)
+          Ok("{\"status\":\"success\"}").as("application/json")
+        }
+      }
+  }
+
   def loadScheduledConfiguration(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleConfFormat

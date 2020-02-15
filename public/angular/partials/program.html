@@ -81,6 +81,11 @@
             <button ng-if="programSchedule.isEditable && !programSchedule._isEdited" class="btn btn-sm btn-primary" ng-click="programSchedule._isEdited = true">
               <i class="fas fa-tools"></i> Edit
             </button>
+            <button ng-if="programSchedule.isEditable && !programSchedule._isEdited && !programSchedule.isTheOnePublished" class="btn btn-sm btn-danger" ng-click="deleteProgramSchedule(programSchedule)" ng-disabled="programSchedule._deleteProgramScheduleInProgress">
+              <i class="fas fa-trash" ng-show="!programSchedule._deleteProgramScheduleInProgress"></i>
+              <i class="fa fa-spinner fa-spin" ng-show="programSchedule._deleteProgramScheduleInProgress"></i>
+              Delete
+            </button>
             <button ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" class="btn btn-sm btn-success">
               <i class="fas fa-camera"></i> Publish
             </button>

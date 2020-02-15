@@ -84,6 +84,16 @@ object ProgramSchedule {
       persistProgramSchedule(uuid, programSchedule, creator)
   }
 
+  def deleteProgramSchedule(uuid: String)  = Redis.pool.withClient {
+    implicit client =>
+      client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").map { selectedProgramScheduleId =>
+        // We shouldn't be able to delete published schedule
+        if(selectedProgramScheduleId != uuid) {
+          client.hdel(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid)
+        }
+      }
+  }
+
   def persistProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
     implicit client =>
       val persistedProgramSchedule = programSchedule.copy(
