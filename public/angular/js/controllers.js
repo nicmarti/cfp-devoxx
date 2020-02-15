@@ -20,6 +20,7 @@ programController.controller('ProgramController', function ProgramController($ro
         ProgramScheduleResource.get(function(result) {
             $scope.programSchedules = result.programSchedules;
             $scope.savedConfigurations = result.savedConfigurations;
+            $scope.savedConfigurations.sort((c1, c2) => c2.latestModification - c1.latestModification);
             $scope.slottableProposalTypes = result.slottableProposalTypes;
         });
     };
