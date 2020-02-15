@@ -94,6 +94,12 @@ object ProgramSchedule {
       }
   }
 
+  def publishProgramSchedule(uuid: String)  = Redis.pool.withClient {
+    implicit client =>
+      client.set(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published", uuid)
+  }
+
+
   def persistProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
     implicit client =>
       val persistedProgramSchedule = programSchedule.copy(

@@ -36,5 +36,9 @@ remoteServices.factory('CreateAndPublishEmptyProgramSchedule', ['$resource', fun
   return $resource('/schedulling/createAndPublishEmptyProgramSchedule', null, {'save': { method:'POST'}});
 }]);
 remoteServices.factory('ProgramScheduleResource', ['$resource', function($resource){
-  return $resource('/schedulling/programSchedules/:id', {id: '@id'}, {'update': { method:'PUT'}, 'save': { method:'POST'}});
+  return $resource('/schedulling/programSchedules/:id', {id: '@id'}, {
+    'update': { method:'PUT'},
+    'save': { method:'POST'},
+    'publish': { method: 'PUT', url: '/schedulling/programSchedules/:id/publish' }
+  });
 }]);

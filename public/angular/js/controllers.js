@@ -88,6 +88,14 @@ programController.controller('ProgramController', function ProgramController($ro
       }
     };
 
+    $scope.publishProgramSchedule = function(programSchedule) {
+        programSchedule._publishProgramScheduleInProgress = true;
+        ProgramScheduleResource.publish({id: programSchedule.id}, function(){
+            programSchedule._publishProgramScheduleInProgress = true;
+            $scope.refresh();
+        });
+    };
+
     $scope.refresh();
 });
 

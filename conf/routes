@@ -293,6 +293,7 @@ GET           /schedulling/programSchedules                                     
 POST          /schedulling/programSchedules                                     controllers.SchedullingController.createProgramSchedule()
 PUT           /schedulling/programSchedules/:id                                 controllers.SchedullingController.updateProgramSchedule(id:String)
 DELETE        /schedulling/programSchedules/:id                                 controllers.SchedullingController.deleteProgramSchedule(id:String)
+PUT           /schedulling/programSchedules/:id/publish                         controllers.SchedullingController.publishProgramSchedule(id:String)
 GET           /schedulling/scheduledConfigurations                              controllers.SchedullingController.allScheduledConfiguration()
 GET           /schedulling/loadScheduledConfiguration                           controllers.SchedullingController.loadScheduledConfiguration(id:String)
 POST          /schedulling/slots                                                controllers.SchedullingController.saveSlots(confType:String)

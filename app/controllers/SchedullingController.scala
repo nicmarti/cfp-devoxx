@@ -226,6 +226,23 @@ object SchedullingController extends SecureCFPController {
       }
   }
 
+  def publishProgramSchedule(uuid: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ProgramSchedule.persistedProgramScheduleFormat
+
+      ProgramSchedule.findById(uuid) match {
+        case None => NotFound
+        case Some(dbProgramSchedule) => {
+          ProgramSchedule.publishProgramSchedule(uuid)
+
+          // Notify the mobile apps via Gluon that a new schedule has been published
+          ZapActor.actor ! NotifyMobileApps("refresh", Some(true))
+
+          Ok("{\"status\":\"success\"}").as("application/json")
+        }
+      }
+  }
+
   def loadScheduledConfiguration(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleConfFormat

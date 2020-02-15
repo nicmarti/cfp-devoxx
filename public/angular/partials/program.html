@@ -86,8 +86,10 @@
               <i class="fa fa-spinner fa-spin" ng-show="programSchedule._deleteProgramScheduleInProgress"></i>
               Delete
             </button>
-            <button ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" class="btn btn-sm btn-success">
-              <i class="fas fa-camera"></i> Publish
+            <button ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" class="btn btn-sm btn-success" ng-disabled="programSchedule._publishProgramScheduleInProgress" ng-click="publishProgramSchedule(programSchedule)">
+              <i class="fas fa-camera" ng-show="!programSchedule._publishProgramScheduleInProgress"></i>
+              <i class="fa fa-spinner fa-spin" ng-show="programSchedule._publishProgramScheduleInProgress"></i>
+              Publish
             </button>
           </td>
         </tr>
