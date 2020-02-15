@@ -76,10 +76,10 @@ object ProgramSchedule {
   def createProgramSchedule(programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
     implicit client =>
       val uuid = UUID.randomUUID().toString
-      persistProgramSchedule(uuid, programSchedule, creator)
+      persistProgramSchedule(uuid, programSchedule, Some(creator))
   }
 
-  def updateProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
+  def updateProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Option[Webuser]) = Redis.pool.withClient {
     implicit client =>
       persistProgramSchedule(uuid, programSchedule, creator)
   }
@@ -104,12 +104,12 @@ object ProgramSchedule {
       client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").flatMap(findById(_))
   }
 
-  def persistProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
+  def persistProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Option[Webuser]) = Redis.pool.withClient {
     implicit client =>
       val persistedProgramSchedule = programSchedule.copy(
         id = uuid,
         eventCode = ConferenceDescriptor.current().eventCode,
-        lastModifiedByName = s"${creator.firstName} ${creator.lastName}",
+        lastModifiedByName = creator.map(u => s"${u.firstName} ${u.lastName}").getOrElse("SYSTEM"),
         lastModified = DateTime.now(),
         isEditable = true
       )

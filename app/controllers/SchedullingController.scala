@@ -203,7 +203,7 @@ object SchedullingController extends SecureCFPController {
             json =>
               val programSchedule = json.as[PersistedProgramSchedule]
 
-              val persistedProgramSchedule = ProgramSchedule.updateProgramSchedule(uuid, programSchedule, request.webuser)
+              val persistedProgramSchedule = ProgramSchedule.updateProgramSchedule(uuid, programSchedule, Some(request.webuser))
 
               Ok(Json.toJson(persistedProgramSchedule)).as("application/json")
           }.getOrElse {
