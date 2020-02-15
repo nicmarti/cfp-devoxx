@@ -27,7 +27,7 @@ import library.{NotifyMobileApps, SaveSlots, ZapActor}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
-import play.api.libs.json.{JsNumber, JsString, Json}
+import play.api.libs.json.{JsBoolean, JsNumber, JsString, JsValue, Json}
 import play.api.mvc.Action
 
 /**
@@ -120,6 +120,52 @@ object SchedullingController extends SecureCFPController {
             )
         })
       )
+      )
+      Ok(Json.stringify(json)).as("application/json")
+  }
+
+  def allProgramSchedules() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ScheduleConfiguration.scheduleSavedFormat
+
+      val programSchedules = ProgramSchedule.allProgramSchedulesForCurrentEvent();
+      val scheduleConfigurationMapByUUID = ScheduleConfiguration.allScheduledConfigurationWithLastModified()
+        .map {
+          case(scheduleSavedStr, dateAsDouble) =>
+            val scheduleSaved = Json.parse(scheduleSavedStr).as[ScheduleSaved]
+            (scheduleSaved.id, Map(
+              "id" -> JsString(scheduleSaved.id),
+              "confType" -> JsString(scheduleSaved.confType),
+              "createdBy" -> JsString(scheduleSaved.createdBy),
+              "latestModification" -> JsNumber(dateAsDouble.toLong * 1000)
+            ))
+        }.toMap
+
+      val json = Json.toJson(
+        Map(
+          "programSchedules" -> Json.toJson(
+            programSchedules.map { programSchedule =>
+              Map(
+                "id" -> JsString(programSchedule.id),
+                "name" -> JsString(programSchedule.name),
+                "isEditable" -> JsBoolean(programSchedule.isEditable),
+                "isTheOnePublished" -> JsBoolean(programSchedule.isTheOnePublished),
+                "lastModifiedByName" -> JsString(programSchedule.lastModifiedByName),
+                "lastModified" -> Json.toJson(programSchedule.lastModified),
+                "scheduleConfigurations" -> Json.toJson(programSchedule.scheduleConfigurations.map {
+                  case (proposalType, scheduleConfigurationId) =>
+                    val scheduleConfigMap = scheduleConfigurationMapByUUID(scheduleConfigurationId)
+                    (proposalType.id) -> Json.toJson(scheduleConfigMap)
+                })
+              )
+            }
+          ),
+          "savedConfigurations" -> Json.toJson(scheduleConfigurationMapByUUID.values),
+          "slottableProposalTypes" -> Json.toJson(ConferenceDescriptor.ConferenceProposalTypes.slottableTypes.map { t => Map(
+            "id" -> t.id,
+            "label" -> Messages(t.simpleLabel)
+          )})
+        )
       )
       Ok(Json.stringify(json)).as("application/json")
   }
