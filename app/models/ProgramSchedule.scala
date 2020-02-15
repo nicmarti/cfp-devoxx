@@ -39,9 +39,9 @@ object ProgramSchedule {
 
   def allProgramSchedulesForCurrentEvent(): List[ProgramSchedule] = Redis.pool.withClient {
     implicit client =>
-      val selectedProgramScheduleId = client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").getOrElse("")
+      val publishedProgramScheduleId = client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").getOrElse("")
       client.hgetAll(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}").map {
-        case(id, json) => (id, parsePersistedProgramSchedule(json, selectedProgramScheduleId))
+        case(id, json) => (id, parsePersistedProgramSchedule(json, publishedProgramScheduleId))
       }.values.toList.sortBy(_.lastModified.getMillis).reverse
   }
 
@@ -57,21 +57,21 @@ object ProgramSchedule {
       emptySchedule
   }
 
-  def fromPersisted(s: PersistedProgramSchedule, selectedProgramScheduleId: String): ProgramSchedule = {
+  def fromPersisted(s: PersistedProgramSchedule, publishedProgramScheduleId: String): ProgramSchedule = {
     ProgramSchedule(s.id, s.eventCode, s.name, s.lastModifiedByName, s.lastModified, s.scheduleConfigurations.map {
       case (proposalTypeId, scheduleConfigId) => (ConferenceProposalTypes.valueOf(proposalTypeId), scheduleConfigId)
-    }, s.id == selectedProgramScheduleId, s.isEditable)
+    }, s.id == publishedProgramScheduleId, s.isEditable)
   }
 
   def findById(uuid: String) = Redis.pool.withClient {
     implicit client =>
-      val selectedProgramScheduleId = client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").getOrElse("")
+      val publishedProgramScheduleId = client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").getOrElse("")
       client.hget(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid).map { json =>
-        parsePersistedProgramSchedule(json, selectedProgramScheduleId)
+        parsePersistedProgramSchedule(json, publishedProgramScheduleId)
       }
   }
 
-  def parsePersistedProgramSchedule(json: String, selectedProgramScheduleId: String) = fromPersisted(Json.parse(json).as[PersistedProgramSchedule], selectedProgramScheduleId)
+  def parsePersistedProgramSchedule(json: String, publishedProgramScheduleId: String) = fromPersisted(Json.parse(json).as[PersistedProgramSchedule], publishedProgramScheduleId)
 
   def createProgramSchedule(programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
     implicit client =>
@@ -86,9 +86,9 @@ object ProgramSchedule {
 
   def deleteProgramSchedule(uuid: String)  = Redis.pool.withClient {
     implicit client =>
-      client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").map { selectedProgramScheduleId =>
+      client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").map { publishedProgramScheduleId =>
         // We shouldn't be able to delete published schedule
-        if(selectedProgramScheduleId != uuid) {
+        if(publishedProgramScheduleId != uuid) {
           client.hdel(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid)
         }
       }
