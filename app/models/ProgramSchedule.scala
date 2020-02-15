@@ -13,25 +13,36 @@ case class ProgramSchedule(
         name: String,
         lastModifiedByName: String,
         lastModified: DateTime,
-        scheduleConfigurationsPerProposalType: Map[String, String],
-        isTheOnePublished: Boolean,
+        scheduleConfigurations: Map[ProposalType, String],
+        isTheOnePublished: Boolean, // will not be persisted
         isEditable: Boolean) {
 
-  def scheduleConfigurations: Map[ProposalType, String] = {
-    scheduleConfigurationsPerProposalType.map {
-      case(proposalTypeStr, scheduleConfigId) => (ConferenceProposalTypes.valueOf(proposalTypeStr), scheduleConfigId)
-    }
+  def toPersistedProgramSchedule: PersistedProgramSchedule = {
+    PersistedProgramSchedule(id, eventCode, name, lastModifiedByName, lastModified, scheduleConfigurations.map {
+      case(proposalType, scheduleConfigId) => (proposalType.id, scheduleConfigId)
+    }, isEditable)
   }
 }
 
+case class PersistedProgramSchedule(
+        id: String,
+        eventCode: String,
+        name: String,
+        lastModifiedByName: String,
+        lastModified: DateTime,
+        scheduleConfigurations: Map[String, String],
+        isEditable: Boolean)
+
+
 object ProgramSchedule {
-  implicit val programScheduleFormat = Json.format[ProgramSchedule]
+  implicit val persistedProgramScheduleFormat = Json.format[PersistedProgramSchedule]
 
   def allProgramSchedulesForCurrentEvent(): List[ProgramSchedule] = Redis.pool.withClient {
     implicit client =>
+      val selectedProgramScheduleId = client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").getOrElse("")
       client.hgetAll(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}").map {
-        case(id, json) => (id, Json.parse(json).as[ProgramSchedule])
-      }.values.toList.sortBy(_.lastModified.getMillis)
+        case(id, json) => (id, parsePersistedProgramSchedule(json, selectedProgramScheduleId))
+      }.values.toList.sortBy(_.lastModified.getMillis).reverse
   }
 
   def createAndPublishEmptyProgramSchedule(creator: Webuser) = Redis.pool.withClient {
@@ -41,7 +52,17 @@ object ProgramSchedule {
         uuid, ConferenceDescriptor.current().eventCode, "Empty schedule", s"${creator.firstName} ${creator.lastName}",
         DateTime.now(), Map(), true, false
       )
-      client.hset(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid, Json.stringify(Json.toJson(emptySchedule)))
+      client.hset(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid, Json.stringify(Json.toJson(emptySchedule.toPersistedProgramSchedule)))
+      client.set(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published", uuid)
       emptySchedule
   }
+
+  def fromPersisted(s: PersistedProgramSchedule, selectedProgramScheduleId: String): ProgramSchedule = {
+    ProgramSchedule(s.id, s.eventCode, s.name, s.lastModifiedByName, s.lastModified, s.scheduleConfigurations.map {
+      case (proposalTypeId, scheduleConfigId) => (ConferenceProposalTypes.valueOf(proposalTypeId), scheduleConfigId)
+    }, s.id == selectedProgramScheduleId, s.isEditable)
+  }
+
+  def parsePersistedProgramSchedule(json: String, selectedProgramScheduleId: String) = fromPersisted(Json.parse(json).as[PersistedProgramSchedule], selectedProgramScheduleId)
+
 }
