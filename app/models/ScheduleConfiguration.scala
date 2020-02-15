@@ -24,6 +24,7 @@
 package models
 
 import library.Redis
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 
@@ -118,7 +119,10 @@ object ScheduleConfiguration {
   }
 
   def getPublishedSchedule(confType: String): Option[String] = Redis.pool.withClient {
-    implicit client => client.hget("Published:Schedule", confType)
+    implicit client =>
+      ProgramSchedule.publishedProgramSchedule().flatMap { publishedProgramSchedule =>
+        publishedProgramSchedule.scheduleConfigurations.get(ConferenceProposalTypes.valueOf(confType))
+      }
   }
 
   def getPublishedScheduleByDay(day: String): List[Slot] = {

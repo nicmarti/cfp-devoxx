@@ -99,6 +99,10 @@ object ProgramSchedule {
       client.set(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published", uuid)
   }
 
+  def publishedProgramSchedule()  = Redis.pool.withClient {
+    implicit client =>
+      client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").flatMap(findById(_))
+  }
 
   def persistProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
     implicit client =>
