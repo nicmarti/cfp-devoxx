@@ -35,7 +35,6 @@ remoteServices.factory('PublishScheduledConfiguration', ['$resource', function($
 remoteServices.factory('CreateAndPublishEmptyProgramSchedule', ['$resource', function($resource){
   return $resource('/schedulling/createAndPublishEmptyProgramSchedule', null, {'save': { method:'POST'}});
 }]);
-
-remoteServices.factory('ProgramScheduleConfiguration', ['$resource', function($resource) {
-  return $resource('/schedulling/programSchedules', null, {'query': {method: 'GET', isArray: true, responseType: 'json'}});
+remoteServices.factory('ProgramScheduleResource', ['$resource', function($resource){
+  return $resource('/schedulling/programSchedules/:id', {id: '@id'}, {'update': { method:'PUT'}, 'save': { method:'POST'}});
 }]);

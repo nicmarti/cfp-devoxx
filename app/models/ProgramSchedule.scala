@@ -63,6 +63,40 @@ object ProgramSchedule {
     }, s.id == selectedProgramScheduleId, s.isEditable)
   }
 
+  def findById(uuid: String) = Redis.pool.withClient {
+    implicit client =>
+      val selectedProgramScheduleId = client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").getOrElse("")
+      client.hget(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid).map { json =>
+        parsePersistedProgramSchedule(json, selectedProgramScheduleId)
+      }
+  }
+
   def parsePersistedProgramSchedule(json: String, selectedProgramScheduleId: String) = fromPersisted(Json.parse(json).as[PersistedProgramSchedule], selectedProgramScheduleId)
+
+  def createProgramSchedule(programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
+    implicit client =>
+      val uuid = UUID.randomUUID().toString
+      persistProgramSchedule(uuid, programSchedule, creator)
+  }
+
+  def updateProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
+    implicit client =>
+      persistProgramSchedule(uuid, programSchedule, creator)
+  }
+
+  def persistProgramSchedule(uuid: String, programSchedule: PersistedProgramSchedule, creator: Webuser) = Redis.pool.withClient {
+    implicit client =>
+      val persistedProgramSchedule = programSchedule.copy(
+        id = uuid,
+        eventCode = ConferenceDescriptor.current().eventCode,
+        lastModifiedByName = s"${creator.firstName} ${creator.lastName}",
+        lastModified = DateTime.now(),
+        isEditable = true
+      )
+
+      client.hset(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid, Json.stringify(Json.toJson(persistedProgramSchedule)))
+
+      persistedProgramSchedule
+  }
 
 }

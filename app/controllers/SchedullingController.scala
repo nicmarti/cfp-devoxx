@@ -176,6 +176,43 @@ object SchedullingController extends SecureCFPController {
       Ok("{\"status\":\"success\"}").as("application/json")
   }
 
+  def createProgramSchedule() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ProgramSchedule.persistedProgramScheduleFormat
+
+      request.body.asJson.map {
+        json =>
+          val programSchedule = json.as[PersistedProgramSchedule]
+
+          val persistedProgramSchedule = ProgramSchedule.createProgramSchedule(programSchedule, request.webuser)
+
+          Ok(Json.toJson(persistedProgramSchedule)).as("application/json")
+      }.getOrElse {
+        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+      }
+  }
+
+  def updateProgramSchedule(uuid: String) = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ProgramSchedule.persistedProgramScheduleFormat
+
+      ProgramSchedule.findById(uuid) match {
+        case None => NotFound
+        case Some(dbProgramSchedule) => {
+          request.body.asJson.map {
+            json =>
+              val programSchedule = json.as[PersistedProgramSchedule]
+
+              val persistedProgramSchedule = ProgramSchedule.updateProgramSchedule(uuid, programSchedule, request.webuser)
+
+              Ok(Json.toJson(persistedProgramSchedule)).as("application/json")
+          }.getOrElse {
+            BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
+          }
+        }
+      }
+  }
+
   def loadScheduledConfiguration(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleConfFormat

@@ -15,9 +15,9 @@ homeController.controller('HomeController', function HomeController($rootScope, 
     });
 });
 
-programController.controller('ProgramController', function ProgramController($rootScope, $scope, $routeParams, flash, ProgramScheduleConfiguration, CreateAndPublishEmptyProgramSchedule) {
+programController.controller('ProgramController', function ProgramController($rootScope, $scope, $routeParams, flash, ProgramScheduleResource, CreateAndPublishEmptyProgramSchedule) {
     $scope.refresh = function() {
-        ProgramScheduleConfiguration.get(function(result) {
+        ProgramScheduleResource.get(function(result) {
             $scope.programSchedules = result.programSchedules;
             $scope.savedConfigurations = result.savedConfigurations;
             $scope.slottableProposalTypes = result.slottableProposalTypes;
@@ -50,6 +50,32 @@ programController.controller('ProgramController', function ProgramController($ro
 
     $scope.scheduleConfigById = function(scheduleConfigId) {
         return $scope.savedConfigurations.find(config => config.id === scheduleConfigId);
+    };
+
+    $scope.availableConfigsForType = function(confType) {
+        return $scope.savedConfigurations.filter(config => config.confType === confType);
+    };
+
+    $scope.createNewProgramSchedule = function() {
+        $scope.programSchedules.unshift({
+            id: "",
+            name: "",
+            lastModifiedByName: "Me",
+            lastModified: Date.now(),
+            isEditable: true,
+            isTheOnePublished: false,
+            scheduleConfigurations: {},
+            _isEdited: true
+        });
+    };
+
+    $scope.saveProgramSchedule = function(programSchedule) {
+        programSchedule._saveProgramScheduleInProgress = true;
+        var operation = programSchedule.id?"update":"save";
+        ProgramScheduleResource[operation]({ ...programSchedule, eventCode: "" }, function(persistedProgramSchedule){
+            programSchedule._saveProgramScheduleInProgress = false;
+            $scope.refresh();
+        });
     };
 
     $scope.refresh();
