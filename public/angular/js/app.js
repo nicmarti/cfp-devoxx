@@ -36,10 +36,6 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
         templateUrl: 'partials/savedSlots.html',
         controller: 'DeleteSlotController'
     });
-    $routeProvider.when('/publish', {
-        templateUrl: 'partials/savedSlots.html',
-        controller: 'PublishController'
-    });
 
     $routeProvider.otherwise({redirectTo: '/'});
 }]);

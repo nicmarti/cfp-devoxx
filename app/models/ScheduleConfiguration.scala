@@ -114,10 +114,6 @@ object ScheduleConfiguration {
       }
   }
 
-  def publishConf(id: String, confType: String) = Redis.pool.withClient {
-    implicit client => client.hset("Published:Schedule", confType, id)
-  }
-
   def getPublishedSchedule(confType: String): Option[String] = getPublishedSchedule(confType, None)
   def getPublishedSchedule(confType: String, secretPublishKey: Option[String]): Option[String] = Redis.pool.withClient {
     implicit client =>

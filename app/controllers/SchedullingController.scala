@@ -298,25 +298,6 @@ object SchedullingController extends SecureCFPController {
       Ok("{\"status\":\"deleted\"}").as("application/json")
   }
 
-  def publishScheduleConfiguration() = SecuredAction(IsMemberOf("admin")) {
-    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-
-      request.body.asJson.map {
-        json =>
-          val id = json.\("id").as[String]
-          val confType = json.\("confType").as[String]
-
-          ScheduleConfiguration.publishConf(id, confType)
-
-          // Notify the mobile apps via Gluon that a new schedule has been published
-          ZapActor.actor ! NotifyMobileApps("refresh", Some(true))
-
-          Ok("{\"status\":\"success\"}").as("application/json")
-      }.getOrElse {
-        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
-      }
-  }
-
   def getPublishedSchedule(confType: String, day: Option[String]) = Action {
     implicit request =>
       ScheduleConfiguration.getPublishedSchedule(confType) match {

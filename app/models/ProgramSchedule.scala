@@ -84,6 +84,19 @@ object ProgramSchedule {
       persistProgramSchedule(uuid, programSchedule, creator)
   }
 
+  def updatePublishedScheduleConfiguration(oldScheduleConfigId: String, updatedScheduleConfigId: String, proposalType: ProposalType, issuer: Option[Webuser]) = Redis.pool.withClient {
+    implicit client =>
+      for(
+        publishedProgram <- publishedProgramSchedule();
+        existingScheduleConfigId <- publishedProgram.scheduleConfigurations.get(proposalType)
+      ) yield {
+        if(existingScheduleConfigId == oldScheduleConfigId) {
+          val updatedProgram = publishedProgram.copy(scheduleConfigurations = publishedProgram.scheduleConfigurations + (proposalType -> updatedScheduleConfigId))
+          ProgramSchedule.updateProgramSchedule(updatedProgram.id, updatedProgram.toPersistedProgramSchedule, issuer)
+        }
+      }
+  }
+
   def deleteProgramSchedule(uuid: String)  = Redis.pool.withClient {
     implicit client =>
       client.get(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published").map { publishedProgramScheduleId =>

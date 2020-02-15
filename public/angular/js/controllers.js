@@ -227,9 +227,3 @@ deleteSlotController.controller('DeleteSlotController', function DeleteSlotContr
         flash("Deleted configuration");
     });
 });
-
-publishController.controller('PublishController', function PublishController($routeParams,$location, PublishScheduledConfiguration, flash ){
-    PublishScheduledConfiguration.save({id: $routeParams.id, confType: $routeParams.confType}, function (){
-        flash("Configuration published");
-    });
-});

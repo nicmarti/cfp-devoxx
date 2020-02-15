@@ -2,6 +2,7 @@ package controllers
 
 import library.search.{DoIndexProposal, _}
 import library._
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import models.{Tag, _}
 import org.joda.time.{DateTime, Instant}
 import play.api.Play
@@ -309,13 +310,15 @@ object Backoffice extends SecureCFPController {
         val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
         val updatedSlot = slot.copy(proposal = Some(updatedProposal))
         val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
-        newListOfSlots
+        val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
+
+        // Automatically updating published program behind the scenes
+        ProgramSchedule.updatePublishedScheduleConfiguration(scheduleId, newID, ConferenceProposalTypes.valueOf(talkType), None)
+        newID
       }
 
       maybeUpdated.map {
-        newListOfSlots =>
-          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
-          ScheduleConfiguration.publishConf(newID, talkType)
+        newID =>
           Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
       }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")
