@@ -3,6 +3,7 @@
 /* Controllers */
 var mainController = angular.module('mainController', []);
 var homeController = angular.module('homeController', []);
+var programController = angular.module('programController', []);
 var reloadScheduleConfController = angular.module('reloadScheduleConfController', []);
 var deleteSlotController = angular.module('deleteSlotController', []);
 var publishController = angular.module('publishController', []);
@@ -11,6 +12,14 @@ var publishController = angular.module('publishController', []);
 homeController.controller('HomeController', function HomeController($rootScope, $scope, $routeParams, AllScheduledConfiguration) {
     AllScheduledConfiguration.get(function(jsonArray){
        $scope.allScheduledConfiguration = jsonArray["scheduledConfigurations"];
+    });
+});
+
+programController.controller('ProgramController', function ProgramController($rootScope, $scope, $routeParams, ProgramScheduleConfiguration) {
+    ProgramScheduleConfiguration.get(function(result) {
+        $scope.programSchedules = result.programSchedules;
+        $scope.savedConfigurations = result.savedConfigurations;
+        $scope.slottableProposalTypes = result.slottableProposalTypes;
     });
 });
 
