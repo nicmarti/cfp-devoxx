@@ -23,6 +23,7 @@
 
 package models
 
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 
@@ -138,6 +139,21 @@ object SlotBuilder {
 
 // See https://groups.google.com/forum/#!topic/play-framework/ENlcpDzLZo8
 object Slot {
+  def keepDeletableSlotIdsFrom(slotIds: List[String]): List[String] = {
+    val programSchedules = ProgramSchedule.allProgramSchedulesForCurrentEvent()
+    val programSchedulesPerConfScheduleId = ConferenceProposalTypes.slottableTypes.foldLeft(Map.empty[String, List[ProgramSchedule]].withDefaultValue(List())) { (perConfScheduleIdPrograms, proposalType) =>
+      val programSchedulesPerConfScheduleIdForCurrentProposalType = programSchedules.flatMap { ps =>
+        ps.scheduleConfigurations.get(proposalType) match {
+          case None => None
+          case Some(configScheduleId) => Some(configScheduleId, ps)
+        }
+      }.groupBy(_._1).mapValues(programSchedules => programSchedules.map(_._2))
+      perConfScheduleIdPrograms ++ programSchedulesPerConfScheduleIdForCurrentProposalType
+    }
+
+    slotIds.filter(id => programSchedulesPerConfScheduleId.get(id).map(_.isEmpty).getOrElse(true))
+  }
+
   implicit val slotFormat = Json.format[Slot]
 
   def byType(proposalType: ProposalType): Seq[Slot] = {

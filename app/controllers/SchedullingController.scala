@@ -294,7 +294,12 @@ object SchedullingController extends SecureCFPController {
 
   def deleteScheduleConfiguration(id: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      ScheduleConfiguration.delete(id)
-      Ok("{\"status\":\"deleted\"}").as("application/json")
+      Slot.keepDeletableSlotIdsFrom(List(id)).contains(id) match {
+        case true => {
+          ScheduleConfiguration.delete(id)
+          Ok("{\"status\":\"deleted\"}").as("application/json")
+        }
+        case false => NotFound
+      }
   }
 }
