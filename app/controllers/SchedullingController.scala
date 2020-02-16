@@ -110,13 +110,20 @@ object SchedullingController extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import ScheduleConfiguration.scheduleSavedFormat
 
-      val scheduledSlotsKey = ScheduleConfiguration.allScheduledConfigurationWithLastModified()
+      val scheduledSlots = ScheduleConfiguration.allScheduledConfigurationWithLastModified().map {
+        case (key, dateAsDouble) =>
+          val savedSchedule = Json.parse(key).as[ScheduleSaved]
+          (savedSchedule, dateAsDouble)
+      }
+
+      val deletableSlotIds = Slot.keepDeletableSlotIdsFrom(scheduledSlots.map(_._1.id))
       val json = Json.toJson(Map("scheduledConfigurations" -> Json.toJson(
-        scheduledSlotsKey.map {
-          case (key, dateAsDouble) =>
-            val scheduledSaved = Json.parse(key).as[ScheduleSaved]
-            Map("key" -> Json.toJson(scheduledSaved),
-              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels")))
+        scheduledSlots.map {
+          case (savedSchedule, dateAsDouble) =>
+            Map(
+              "key" -> Json.toJson(savedSchedule),
+              "date" -> Json.toJson(new DateTime(dateAsDouble.toLong * 1000).toDateTime(DateTimeZone.forID("Europe/Brussels"))),
+              "deletable" -> JsBoolean(deletableSlotIds.contains(savedSchedule.id))
             )
         })
       )
