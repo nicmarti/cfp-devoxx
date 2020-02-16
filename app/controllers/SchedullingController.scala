@@ -222,11 +222,17 @@ object SchedullingController extends SecureCFPController {
 
   def deleteProgramSchedule(uuid: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      import ProgramSchedule.persistedProgramScheduleFormat
+      val mayTargetProgramScheduleBePublished = for(
+        dbProgramSchedule <- ProgramSchedule.findById(uuid);
+        publishedSchedule <- ProgramSchedule.publishedProgramSchedule()
+      ) yield {
+        dbProgramSchedule.id == publishedSchedule.id
+      }
 
-      ProgramSchedule.findById(uuid) match {
+      mayTargetProgramScheduleBePublished match {
         case None => NotFound
-        case Some(dbProgramSchedule) => {
+        case Some(true) => NotFound
+        case Some(false) => {
           ProgramSchedule.deleteProgramSchedule(uuid)
           Ok("{\"status\":\"success\"}").as("application/json")
         }
