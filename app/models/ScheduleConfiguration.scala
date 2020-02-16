@@ -177,17 +177,17 @@ object ScheduleConfiguration {
     loadSlotsForConfType(confType).filter(_.proposal.isDefined).find(_.proposal.get.id == proposalId)
   }
 
-  def loadAllConfigurations() = {
+  def loadAllConfigurations(secretPublishKey: Option[String] = None) = {
     val allConfs = for (confType <- ProposalType.allIDsOnly;
-                        slotId <- ScheduleConfiguration.getPublishedSchedule(confType);
+                        slotId <- ScheduleConfiguration.getPublishedSchedule(confType, secretPublishKey);
                         configuration <- ScheduleConfiguration.loadScheduledConfiguration(slotId)
     ) yield configuration
 
     allConfs
   }
 
-  def loadAllPublishedSlots():List[Slot]={
-    loadAllConfigurations().flatMap {
+  def loadAllPublishedSlots(secretPublishKey: Option[String] = None):List[Slot]={
+    loadAllConfigurations(secretPublishKey).flatMap {
       sc => sc.slots
     }
   }

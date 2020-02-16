@@ -208,9 +208,9 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
+  def sanityCheckSchedule(programScheduleId: Option[String]) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots(programScheduleId).filter(_.proposal.isDefined)
       val publishedTalksExceptBOF = allPublishedProposals.filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
 
       val declined = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.DECLINED)
@@ -255,7 +255,10 @@ object Backoffice extends SecureCFPController {
           approved,
           acceptedThenChangedToOtherState,
           allSpeakers,
-          allWithConflicts.filter(_._2.nonEmpty)
+          allWithConflicts.filter(_._2.nonEmpty),
+          ProgramSchedule.allProgramSchedulesForCurrentEvent(),
+          programScheduleId
+
         )
       )
 
@@ -300,10 +303,10 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def fixToAccepted(slotId: String, proposalId: String, talkType: String) = SecuredAction(IsMemberOf("admin")) {
+  def fixToAccepted(slotId: String, proposalId: String, talkType: String, programScheduleId: Option[String] = None) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val maybeUpdated = for (
-        scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType);
+        scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType, programScheduleId);
         scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
         slot <- scheduleConf.slots.find(_.id == slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId)
       ) yield {

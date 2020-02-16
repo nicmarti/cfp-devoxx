@@ -158,8 +158,8 @@ GET           /admin/elastic/reset                                              
 GET           /admin/elastic/index                                              controllers.Backoffice.doIndexElasticSearch()
 
 # Warning the sanitycheck and refreshschedule URLs are hard-coded in index.html in Angular
-GET           /admin/sanitycheck                                                controllers.Backoffice.sanityCheckSchedule()
-GET           /admin/sanitycheck/fix                                            controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String)
+GET           /admin/sanitycheck                                                controllers.Backoffice.sanityCheckSchedule(programScheduleId:Option[String] ?=None)
+GET           /admin/sanitycheck/fix                                            controllers.Backoffice.fixToAccepted(slotId:String, proposalId:String, talkType:String, programScheduleId:Option[String] ?=None)
 GET           /admin/sanitycheck/proposals                                      controllers.Backoffice.sanityCheckProposals()
 GET           /admin/refreshSchedules                                           controllers.Backoffice.refreshSchedules()
 GET           /admin/confirmPublicationChange                                   controllers.Backoffice.confirmPublicationChange(talkType:String, proposalId:String)
