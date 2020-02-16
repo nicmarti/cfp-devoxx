@@ -114,8 +114,7 @@ object ScheduleConfiguration {
       }
   }
 
-  def getPublishedSchedule(confType: String): Option[String] = getPublishedSchedule(confType, None)
-  def getPublishedSchedule(confType: String, secretPublishKey: Option[String]): Option[String] = Redis.pool.withClient {
+  def getPublishedSchedule(confType: String, secretPublishKey: Option[String] = None): Option[String] = Redis.pool.withClient {
     implicit client =>
       val maybeProgramSchedule = secretPublishKey match {
         case Some(secretKey) => ProgramSchedule.findById(secretKey)
@@ -127,8 +126,7 @@ object ScheduleConfiguration {
       }
   }
 
-  def getPublishedScheduleByDay(day: String): List[Slot] = getPublishedScheduleByDay(day, None)
-  def getPublishedScheduleByDay(day: String, secretPublishKey: Option[String]): List[Slot] = {
+  def getPublishedScheduleByDay(day: String, secretPublishKey: Option[String] = None): List[Slot] = {
 
     def extractSlot(allSlots: List[Slot], day: String) = {
       val configured = loadSlots(secretPublishKey).filter(_.day == day)
@@ -162,8 +160,7 @@ object ScheduleConfiguration {
     }
   }
 
-  def loadSlotsForConfType(confType: String): List[Slot] = loadSlotsForConfType(confType, None)
-  def loadSlotsForConfType(confType: String, secretPublishKey: Option[String]): List[Slot] = {
+  def loadSlotsForConfType(confType: String, secretPublishKey: Option[String] = None): List[Slot] = {
     getPublishedSchedule(confType, secretPublishKey).flatMap {
       id: String =>
         loadScheduledConfiguration(id).map {
