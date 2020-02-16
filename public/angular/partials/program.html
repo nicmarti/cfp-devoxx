@@ -61,6 +61,7 @@
               <em ng-if="!programSchedule.scheduleConfigurations[type.id]">None</em>
               <span ng-if="programSchedule.scheduleConfigurations[type.id]">
               <span class="badge badge-warning" title="created by {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).createdBy}} on {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).latestModification | date:'short'}}">
+                <i class="fas fa-exclamation-triangle" ng-show="programSchedule.scheduleConfigurations[type.id] != availableConfigsForType(type.id)[0].id"></i>
                 {{programSchedule.scheduleConfigurations[type.id]}}
               </span>
             </span>
