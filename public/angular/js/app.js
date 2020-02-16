@@ -32,10 +32,6 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
         templateUrl: 'partials/loadSlot.html',
         controller: 'ReloadScheduleConfController'
     });
-    $routeProvider.when('/deleteSchedule', {
-        templateUrl: 'partials/savedSlots.html',
-        controller: 'DeleteSlotController'
-    });
 
     $routeProvider.otherwise({redirectTo: '/'});
 }]);

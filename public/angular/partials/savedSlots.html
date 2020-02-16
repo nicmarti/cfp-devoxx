@@ -17,8 +17,13 @@
             on
             <em>{{savedConf.date|date:'EEE d MMMM HH:mm:ss'}}</em>
             <br>
-            <a class="btn btn-sm btn-primary" href="#/slots/{{savedConf.key.id}}"><i class="icon-edit-sign"></i> Edit {{savedConf.key.id}}</a>
-            <a class="btn btn-sm btn-danger" href="#/deleteSchedule?id={{savedConf.key.id}}"><i class="icon-trash"></i> Delete</a><br>
+            <a class="btn btn-sm btn-primary" href="#/slots/{{savedConf.key.id}}"><i class="fas fa-edit"></i> Edit {{savedConf.key.id}}</a>
+            <button class="btn btn-sm btn-danger" ng-disabled="savedConf._deleteSavedScheduleInProgress" ng-click="deleteConfig(savedConf)">
+                <i class="fas fa-trash" ng-show="!savedConf._deleteSavedScheduleInProgress"></i>
+                <i class="fa fa-spinner fa-spin" ng-show="savedConf._deleteSavedScheduleInProgress"></i>
+                <span>Delete</span>
+            </button>
+            <br>
         </li>
     </ul>
 </div>

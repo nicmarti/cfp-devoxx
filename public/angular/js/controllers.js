@@ -9,10 +9,24 @@ var deleteSlotController = angular.module('deleteSlotController', []);
 var publishController = angular.module('publishController', []);
 
 
-homeController.controller('HomeController', function HomeController($rootScope, $scope, $routeParams, AllScheduledConfiguration) {
-    AllScheduledConfiguration.get(function(jsonArray){
-       $scope.allScheduledConfiguration = jsonArray["scheduledConfigurations"];
-    });
+homeController.controller('HomeController', function HomeController($rootScope, $scope, $routeParams, AllScheduledConfiguration, DeleteScheduledConfiguration) {
+    $scope.refresh = function() {
+        AllScheduledConfiguration.get(function(jsonArray){
+            $scope.allScheduledConfiguration = jsonArray["scheduledConfigurations"];
+        });
+    };
+
+    $scope.deleteConfig = function(savedConf) {
+        if(confirm("Are you sure to delete this slots configuration ?")) {
+            savedConf._deleteSavedScheduleInProgress = true;
+            DeleteScheduledConfiguration.delete({id: savedConf.key.id}, function () {
+                savedConf._deleteSavedScheduleInProgress = false;
+                $scope.refresh();
+            });
+        }
+    };
+
+    $scope.refresh();
 });
 
 programController.controller('ProgramController', function ProgramController($rootScope, $scope, $routeParams, flash, ProgramScheduleResource, CreateAndPublishEmptyProgramSchedule) {
@@ -219,12 +233,5 @@ reloadScheduleConfController.controller('ReloadScheduleConfController', function
             $rootScope.title = "Create a new " + $scope.loadedScheduledConfiguration.confType + " schedule from " + $routeParams.id
             $location.path('/slots').search({confType: newConfType}).replace();
         }
-    });
-
-});
-
-deleteSlotController.controller('DeleteSlotController', function DeleteSlotController($routeParams,$location, DeleteScheduledConfiguration,flash ){
-    DeleteScheduledConfiguration.delete({id: $routeParams.id}, function () {
-        flash("Deleted configuration");
     });
 });
