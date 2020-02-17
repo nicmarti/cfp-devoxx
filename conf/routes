@@ -223,7 +223,7 @@ GET           /2020/talk/:proposalId/:proposalTitle                             
 GET           /2020/talks                                                       controllers.Publisher.homePublisher()
 GET           /2020/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2020/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET           /2020/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None)
+GET           /2020/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None, hideUselessRooms:Boolean ?=false)
 GET           /2020/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 
 # Archive folder

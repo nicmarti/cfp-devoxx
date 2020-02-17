@@ -186,21 +186,24 @@ object Publisher extends Controller {
       }
   }
 
-  def showByDay(day: String, secretPublishKey: Option[String]) = Action {
+  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = false) = Action {
     implicit request =>
 
-      def _showDay(slots: List[Slot], day: String) = {
-        val rooms = slots.groupBy(_.room).keys.toList
+      def _showDay(day: String) = {
         val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
-        Ok(views.html.Publisher.showOneDay(allSlots, rooms, day, secretPublishKey))
+        val rooms = allSlots.groupBy(_.room).filter { entry =>
+          val result = !hideUselessRooms || entry._2.count(_.proposal.isDefined) > 0
+          result
+        }.keys.toList
+        Ok(views.html.Publisher.showOneDay(allSlots, rooms, day, secretPublishKey, hideUselessRooms))
       }
 
       day match {
-        case d if Set("mon", monday, "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.mondaySchedule, monday)
-        case d if Set("tue", tuesday, "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesdaySchedule, tuesday)
-        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
-        case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
-        case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
+        case d if Set("mon", monday, "lundi").contains(d) => _showDay(monday)
+        case d if Set("tue", tuesday, "mardi").contains(d) => _showDay(tuesday)
+        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(wednesday)
+        case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(thursday)
+        case d if Set("fri", friday, "vendredi").contains(d) => _showDay(friday)
         case _ => NotFound("Day not found")
       }
   }

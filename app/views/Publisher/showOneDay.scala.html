@@ -1,15 +1,12 @@
-@(slots: List[Slot], rooms: List[Room], day: String, secretPublishKey: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
-@import org.joda.time.DateTimeZone
-
-
+@(slots: List[Slot], rooms: List[Room], day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean)(implicit lang: Lang, req: RequestHeader, flash:Flash)
     @views.html.Publisher.devoxxFR2020(Messages(s"sw.show.$day")) {
     <div class="large-12 columns">
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
 
         <p class="breadcrumb hide-on-print"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            <a href="@routes.Publisher.showByDay("wed", secretPublishKey)">@Messages("sw.agenda.wed")</a> /
-            <a href="@routes.Publisher.showByDay("thu", secretPublishKey)">@Messages("sw.agenda.thu")</a> /
-            <a href="@routes.Publisher.showByDay("fri", secretPublishKey)">@Messages("sw.agenda.fri")</a>
+            <a href="@routes.Publisher.showByDay("wed", secretPublishKey, hideUselessRooms)">@Messages("sw.agenda.wed")</a> /
+            <a href="@routes.Publisher.showByDay("thu", secretPublishKey, hideUselessRooms)">@Messages("sw.agenda.thu")</a> /
+            <a href="@routes.Publisher.showByDay("fri", secretPublishKey, hideUselessRooms)">@Messages("sw.agenda.fri")</a>
         </p>
 
         @if(ConferenceDescriptor.isShowRoom) {
