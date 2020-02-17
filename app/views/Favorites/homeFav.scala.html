@@ -31,8 +31,8 @@
                     @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                 </th>
-                @rooms.sorted.map { room =>
-                    @tags.publisher.tagRenderRow(subSlots, room, rooms.size, slots, showEndTime=true, None)
+                @rooms.sorted.zipWithIndex.map { case(room, index) =>
+                    @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=true, None)
                 }
             </tr>
             }

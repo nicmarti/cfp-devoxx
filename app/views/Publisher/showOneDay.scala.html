@@ -19,8 +19,8 @@
              @if(ConferenceDescriptor.isShowRoom) {
                  <tr>
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
-                     @rooms.sorted.map { roomName: Room =>
-                         <td>@roomName.name</td>
+                     @rooms.sorted.map { room: Room =>
+                         <td>@room.name</td>
                      }
                  </tr>
              }
@@ -29,16 +29,16 @@
                     <th class="timeSlot nowrap-if-print">
                         @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
-                    @rooms.sorted.map { room =>
-                        @tags.publisher.tagRenderRow(subSlots, room, rooms.size, slots, showEndTime=false, secretPublishKey)
+                    @rooms.sorted.zipWithIndex.map { case (room, index) =>
+                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=false, secretPublishKey)
                     }
                 </tr>
             }
             @if(ConferenceDescriptor.isShowRoom) {
                   <tr>
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
-                     @rooms.sorted.map { roomName: Room =>
-                         <td>@roomName.name</td>
+                     @rooms.sorted.map { room: Room =>
+                         <td>@room.name</td>
                      }
                  </tr>
             }

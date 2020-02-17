@@ -295,13 +295,13 @@ object ConferenceDescriptor {
 
   // TODO if you want to use the Scheduler, you can configure the breaks
   object ConferenceSlotBreaks {
-    val registration = SlotBreak("reg", "Registration", "Accueil", ConferenceRooms.HALL_EXPO)
-    val petitDej = SlotBreak("dej", "Breakfast", "Accueil et petit-déjeuner", ConferenceRooms.HALL_EXPO)
-    val coffee = SlotBreak("coffee", "Coffee Break", "Pause café", ConferenceRooms.HALL_EXPO)
-    val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner", ConferenceRooms.HALL_EXPO)
-    val shortBreak = SlotBreak("chgt", "Break", "Pause courte", ConferenceRooms.HALL_EXPO)
-    val exhibition = SlotBreak("exhib", "Exhibition", "Exhibition", ConferenceRooms.HALL_EXPO)
-    val meetAndGreet = SlotBreak("meet", "Meet & Greet", "Exhibition", ConferenceRooms.HALL_EXPO)
+    val registration = SlotBreak("reg", "Registration", "Accueil")
+    val petitDej = SlotBreak("dej", "Breakfast", "Accueil et petit-déjeuner")
+    val coffee = SlotBreak("coffee", "Coffee Break", "Pause café")
+    val lunch = SlotBreak("lunch", "Lunch", "Pause déjeuner")
+    val shortBreak = SlotBreak("chgt", "Break", "Pause courte")
+    val exhibition = SlotBreak("exhib", "Exhibition", "Exhibition")
+    val meetAndGreet = SlotBreak("meet", "Meet & Greet", "Exhibition")
   }
 
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
@@ -619,7 +619,7 @@ object ConferenceDescriptor {
       , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
         new DateTime(s"${firstDay}T16:30:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${firstDay}T17:00:00.000+02:00").toDateTime(confTimezone))
-    )
+    ).flatten
 
     val thursdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "thursday",
@@ -634,7 +634,7 @@ object ConferenceDescriptor {
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime(s"${secondDay}T16:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T16:45:00.000+02:00").toDateTime(confTimezone))
-    )
+    ).flatten
 
     val fridayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.petitDej, "friday",
@@ -649,7 +649,7 @@ object ConferenceDescriptor {
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime(s"${thirdDay}T16:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${thirdDay}T16:45:00.000+02:00").toDateTime(confTimezone))
-    )
+    ).flatten
 
     val mondaySchedule: List[Slot] = List.empty[Slot]
 

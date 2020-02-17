@@ -98,7 +98,7 @@ object Room {
 
 }
 
-case class SlotBreak(id: String, nameEN: String, nameFR: String, room: Room)
+case class SlotBreak(id: String, nameEN: String, nameFR: String)
 
 object SlotBreak {
   implicit val slotBreakFormat = Json.format[SlotBreak]
@@ -134,9 +134,9 @@ object SlotBuilder {
     Slot(id, name, day, from, to, room, proposal, None, None)
   }
 
-  def apply(slotBreak: SlotBreak, day: String, from: DateTime, to: DateTime): Slot = {
+  def apply(slotBreak: SlotBreak, day: String, from: DateTime, to: DateTime): List[Slot] = {
     val id = slotBreak.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, slotBreak.nameEN, day, from, to, slotBreak.room, None, Some(slotBreak), None)
+    ConferenceDescriptor.ConferenceRooms.allRooms.map(room => Slot(id, slotBreak.nameEN, day, from, to, room, None, Some(slotBreak), None))
   }
 
   def apply(fillerForSlot: Slot, fillerIndex: Int, from: DateTime, to: DateTime): Slot = {
