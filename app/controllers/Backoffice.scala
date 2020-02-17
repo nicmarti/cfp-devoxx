@@ -2,6 +2,7 @@ package controllers
 
 import library.search.{DoIndexProposal, _}
 import library._
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import models.{Tag, _}
 import org.joda.time.{DateTime, Instant}
 import play.api.Play
@@ -207,9 +208,9 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def sanityCheckSchedule() = SecuredAction(IsMemberOf("admin")) {
+  def sanityCheckSchedule(programScheduleId: Option[String]) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots().filter(_.proposal.isDefined)
+      val allPublishedProposals = ScheduleConfiguration.loadAllPublishedSlots(programScheduleId).filter(_.proposal.isDefined)
       val publishedTalksExceptBOF = allPublishedProposals.filterNot(_.proposal.get.talkType == ConferenceDescriptor.ConferenceProposalTypes.BOF)
 
       val declined = publishedTalksExceptBOF.filter(_.proposal.get.state == ProposalState.DECLINED)
@@ -254,7 +255,10 @@ object Backoffice extends SecureCFPController {
           approved,
           acceptedThenChangedToOtherState,
           allSpeakers,
-          allWithConflicts.filter(_._2.nonEmpty)
+          allWithConflicts.filter(_._2.nonEmpty),
+          ProgramSchedule.allProgramSchedulesForCurrentEvent(),
+          programScheduleId
+
         )
       )
 
@@ -299,23 +303,25 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def fixToAccepted(slotId: String, proposalId: String, talkType: String) = SecuredAction(IsMemberOf("admin")) {
+  def fixToAccepted(slotId: String, proposalId: String, talkType: String, programScheduleId: Option[String] = None) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val maybeUpdated = for (
-        scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType);
+        scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType, programScheduleId);
         scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
         slot <- scheduleConf.slots.find(_.id == slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId)
       ) yield {
         val updatedProposal = slot.proposal.get.copy(state = ProposalState.ACCEPTED)
         val updatedSlot = slot.copy(proposal = Some(updatedProposal))
         val newListOfSlots = updatedSlot :: scheduleConf.slots.filterNot(_.id == slotId)
-        newListOfSlots
+        val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
+
+        // Automatically updating published program behind the scenes
+        ProgramSchedule.updatePublishedScheduleConfiguration(scheduleId, newID, ConferenceProposalTypes.valueOf(talkType), None)
+        newID
       }
 
       maybeUpdated.map {
-        newListOfSlots =>
-          val newID = ScheduleConfiguration.persist(talkType, newListOfSlots, request.webuser)
-          ScheduleConfiguration.publishConf(newID, talkType)
+        newID =>
           Redirect(routes.Backoffice.sanityCheckSchedule()).flashing("success" -> s"Created a new scheduleConfiguration ($newID) and published a new agenda.")
       }.getOrElse {
         NotFound("Unable to update Schedule configuration, did not find the slot, the proposal or the scheduleConfiguraiton")

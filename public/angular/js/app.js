@@ -8,6 +8,7 @@ var cfpApp = angular.module('cfpApp', [
     'remoteServices',
     'mainController',
     'homeController',
+    'programController',
     'reloadScheduleConfController',
     'deleteSlotController',
     'publishController',
@@ -19,6 +20,10 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
         templateUrl: 'partials/slots.html',
         controller: 'MainController'
     });
+    $routeProvider.when('/program', {
+        templateUrl: 'partials/program.html',
+        controller: 'ProgramController'
+    });
     $routeProvider.when('/saved', {
         templateUrl: 'partials/savedSlots.html',
         controller: 'HomeController'
@@ -26,14 +31,6 @@ cfpApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/slots/:id', {
         templateUrl: 'partials/loadSlot.html',
         controller: 'ReloadScheduleConfController'
-    });
-    $routeProvider.when('/deleteSchedule', {
-        templateUrl: 'partials/savedSlots.html',
-        controller: 'DeleteSlotController'
-    });
-    $routeProvider.when('/publish', {
-        templateUrl: 'partials/savedSlots.html',
-        controller: 'PublishController'
     });
 
     $routeProvider.otherwise({redirectTo: '/'});

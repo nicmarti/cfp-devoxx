@@ -24,6 +24,7 @@
 package models
 
 import library.Redis
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import play.api.libs.json.Json
 import org.apache.commons.lang3.RandomStringUtils
 
@@ -113,18 +114,22 @@ object ScheduleConfiguration {
       }
   }
 
-  def publishConf(id: String, confType: String) = Redis.pool.withClient {
-    implicit client => client.hset("Published:Schedule", confType, id)
+  def getPublishedSchedule(confType: String, secretPublishKey: Option[String] = None): Option[String] = Redis.pool.withClient {
+    implicit client =>
+      val maybeProgramSchedule = secretPublishKey match {
+        case Some(secretKey) => ProgramSchedule.findById(secretKey)
+        case None => ProgramSchedule.publishedProgramSchedule()
+      }
+
+      maybeProgramSchedule.flatMap { programSchedule =>
+        programSchedule.scheduleConfigurations.get(ConferenceProposalTypes.valueOf(confType))
+      }
   }
 
-  def getPublishedSchedule(confType: String): Option[String] = Redis.pool.withClient {
-    implicit client => client.hget("Published:Schedule", confType)
-  }
-
-  def getPublishedScheduleByDay(day: String): List[Slot] = {
+  def getPublishedScheduleByDay(day: String, secretPublishKey: Option[String] = None): List[Slot] = {
 
     def extractSlot(allSlots: List[Slot], day: String) = {
-      val configured = loadSlots().filter(_.day == day)
+      val configured = loadSlots(secretPublishKey).filter(_.day == day)
       val configuredIDs = configured.map(_.id)
       val filtered = allSlots.filterNot(s => configuredIDs.contains(s.id))
       configured ++ filtered
@@ -149,14 +154,14 @@ object ScheduleConfiguration {
     listOfSlots.sortBy(_.from.getMillis)
   }
 
-  def loadSlots(): List[Slot] = {
+  def loadSlots(secretPublishKey: Option[String]): List[Slot] = {
     ConferenceDescriptor.ConferenceProposalTypes.ALL.flatMap {
-      t: ProposalType => loadSlotsForConfType(t.id)
+      t: ProposalType => loadSlotsForConfType(t.id, secretPublishKey)
     }
   }
 
-  def loadSlotsForConfType(confType: String): List[Slot] = {
-    getPublishedSchedule(confType).flatMap {
+  def loadSlotsForConfType(confType: String, secretPublishKey: Option[String] = None): List[Slot] = {
+    getPublishedSchedule(confType, secretPublishKey).flatMap {
       id: String =>
         loadScheduledConfiguration(id).map {
           scheduledConf => scheduledConf.slots
@@ -169,17 +174,17 @@ object ScheduleConfiguration {
     loadSlotsForConfType(confType).filter(_.proposal.isDefined).find(_.proposal.get.id == proposalId)
   }
 
-  def loadAllConfigurations() = {
+  def loadAllConfigurations(secretPublishKey: Option[String] = None) = {
     val allConfs = for (confType <- ProposalType.allIDsOnly;
-                        slotId <- ScheduleConfiguration.getPublishedSchedule(confType);
+                        slotId <- ScheduleConfiguration.getPublishedSchedule(confType, secretPublishKey);
                         configuration <- ScheduleConfiguration.loadScheduledConfiguration(slotId)
     ) yield configuration
 
     allConfs
   }
 
-  def loadAllPublishedSlots():List[Slot]={
-    loadAllConfigurations().flatMap {
+  def loadAllPublishedSlots(secretPublishKey: Option[String] = None):List[Slot]={
+    loadAllConfigurations(secretPublishKey).flatMap {
       sc => sc.slots
     }
   }

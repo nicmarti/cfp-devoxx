@@ -174,3 +174,6 @@ body {
     font-size: 10px;
     line-height: 0.5;
 }
+tr.published-program {
+    background-color: #4abbc4 !important;
+}

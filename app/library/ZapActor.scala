@@ -27,6 +27,7 @@ import java.util
 
 import akka.actor._
 import controllers.LeaderboardController
+import models.ConferenceDescriptor.ConferenceProposalTypes
 import models._
 import notifiers.Mails
 import org.apache.http.client.entity.UrlEncodedFormEntity
@@ -36,7 +37,6 @@ import org.apache.http.message.BasicNameValuePair
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
 import play.libs.Akka
-
 import play.api.Play.current
 
 /**
@@ -482,7 +482,7 @@ class ZapActor extends Actor {
                   }
               }
               val newID = ScheduleConfiguration.persist(confType, newSlots, Webuser.Internal)
-              ScheduleConfiguration.publishConf(newID, confType)
+              ProgramSchedule.updatePublishedScheduleConfiguration(id, newID, ConferenceProposalTypes.valueOf(confType), None)
             }
         }
     }

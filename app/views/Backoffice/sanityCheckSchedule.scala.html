@@ -3,7 +3,9 @@
         approved:List[Slot],
         acceptedThenChangedToOtherState:List[Slot],
         speakers:List[Speaker],
-        conflicts:Set[(Speaker, Map[org.joda.time.DateTime, Iterable[Slot]])]
+        conflicts:Set[(Speaker, Map[org.joda.time.DateTime, Iterable[Slot]])],
+        programSchedules: List[ProgramSchedule],
+        programScheduleId: Option[String]
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin sanity check") {
@@ -35,6 +37,12 @@
                     We have to do so, since we can schedule "approved" talks and not only accepted ones.
                 </p>
             </div>
+            <div class="card-header">
+                Program schedule :
+                @programSchedules.map { programSchedule =>
+                    <a href="@routes.Backoffice.sanityCheckSchedule(Some(programSchedule.id))" class="btn @if((programScheduleId == None && programSchedule.isTheOnePublished) || (programScheduleId == Some(programSchedule.id)) ) { btn-success } else { btn-primary } btn-sm">@programSchedule.name @if(programSchedule.isTheOnePublished){ (Published) }</a>
+                }
+            </div>
 
             <div class="card-body">
                 <h3>List of talks with status "Approved"</h3>
@@ -58,7 +66,7 @@
 
                                     @if(currentState.code=="accepted"){
                                         <div class="alert">
-                                        <a href="@routes.Backoffice.fixToAccepted(slot.id, slot.proposal.get.id, slot.proposal.get.talkType.id)" class="btn btn-small btn-success"><i class="fas fa-info-circle"></i> Set the status to 'accepted'</a>
+                                        <a href="@routes.Backoffice.fixToAccepted(slot.id, slot.proposal.get.id, slot.proposal.get.talkType.id, programScheduleId)" class="btn btn-small btn-success"><i class="fas fa-info-circle"></i> Set the status to 'accepted'</a>
                                         <br>
                                         @slot.proposal.get.allSpeakers.filter(s=>Speaker.needsToAccept(s.uuid)).map{s:Speaker=>
                                             @s.cleanName needs to accept "Terms&Conditions" : <a href="@routes.CFPAdmin.newOrEditSpeaker(Some(s.uuid))">Edit speaker and accept T&C</a>

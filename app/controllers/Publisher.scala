@@ -186,13 +186,13 @@ object Publisher extends Controller {
       }
   }
 
-  def showByDay(day: String) = Action {
+  def showByDay(day: String, secretPublishKey: Option[String]) = Action {
     implicit request =>
 
       def _showDay(slots: List[Slot], day: String) = {
         val rooms = slots.groupBy(_.room).keys.toList
-        val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day)
-        Ok(views.html.Publisher.showOneDay(allSlots, rooms, day))
+        val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey)
+        Ok(views.html.Publisher.showOneDay(allSlots, rooms, day, secretPublishKey))
       }
 
       day match {

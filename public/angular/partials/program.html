@@ -1,0 +1,106 @@
+<div class="col-lg-12">
+  <h3>Program schedules</h3>
+  <div class="card text-white bg-info" ng-if="!atLeastOneReadonlyProgramSchedule()">
+    <div class="card-body">
+      <p class="card-text">
+        It seems like you don't have any read-only program schedule.
+        It's generally advised to have one :
+        <button class="btn btn-primary btn-sm" ng-click="createAndPublishEmptyProgramSchedule()" ng-disabled="createAndPublishEmptyProgramScheduleInProgress">
+          <i class="fas fa-plus" ng-show="!createAndPublishEmptyProgramScheduleInProgress"></i>
+          <i class="fa fa-spinner fa-spin" ng-show="createAndPublishEmptyProgramScheduleInProgress"></i>
+          Create and publish it
+        </button>
+      </p>
+    </div>
+  </div>
+  <div class="card text-white bg-warning" ng-if="!atLeastOnePublishedProgramSchedule()">
+    <div class="card-body">
+      <p class="card-text">
+        It seems like you don't have any published program schedule.
+        It means that you're going to have a default (non editable) schedule displayed currently on the website.
+        To workaround this, create at least one program schedule and publish it.
+      </p>
+    </div>
+  </div>
+  <div ng-if="atLeastOneReadonlyProgramSchedule()">
+    <button class="btn btn-primary mb-2" ng-click="createNewProgramSchedule()">
+      <i class="fas fa-plus"></i> Create a new Program Schedule
+    </button>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Last modification</th>
+          <th ng-repeat="type in slottableProposalTypes track by type.id">
+            {{type.label}}
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="programSchedule in programSchedules track by programSchedule.id" ng-class="{'published-program': programSchedule.isTheOnePublished}">
+          <td>
+            <span class="badge badge-primary">{{programSchedule.id}}</span>
+            <div ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
+              <strong>Private</strong> schedule :
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed?secretPublishKey={{programSchedule.id}}" target="_blank">Wed</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu?secretPublishKey={{programSchedule.id}}" target="_blank">Thu</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri?secretPublishKey={{programSchedule.id}}" target="_blank">Fri</a>
+            </div>
+            <div ng-if="programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
+              <strong>Public</strong> schedule :
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed" target="_blank">Wed</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu" target="_blank">Thu</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri" target="_blank">Fri</a>
+            </div>
+          </td>
+          <td>
+            <span ng-show="!programSchedule._isEdited">{{programSchedule.name}}</span>
+            <div ng-show="programSchedule._isEdited">
+              <input type="text" ng-model="programSchedule.name" />
+            </div>
+          </td>
+          <td>{{programSchedule.lastModified|date:'short'}} by {{programSchedule.lastModifiedByName}}</td>
+          <td ng-repeat="type in slottableProposalTypes track by type.id">
+            <div ng-show="!programSchedule._isEdited">
+              <em ng-if="!programSchedule.scheduleConfigurations[type.id]">None</em>
+              <span ng-if="programSchedule.scheduleConfigurations[type.id]">
+              <span class="badge badge-warning" title="created by {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).createdBy}} on {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).latestModification | date:'short'}}">
+                <i class="fas fa-exclamation-triangle" ng-show="programSchedule.scheduleConfigurations[type.id] != availableConfigsForType(type.id)[0].id"></i>
+                {{programSchedule.scheduleConfigurations[type.id]}}
+              </span>
+            </span>
+            </div>
+            <div ng-show="programSchedule._isEdited">
+              <select ng-model="programSchedule.scheduleConfigurations[type.id]">
+                <option value=""><em>None</em></option>
+                <option ng-repeat="config in availableConfigsForType(type.id) track by config.id" value="{{config.id}}" ng-selected="config.id==programSchedule.scheduleConfigurations[type.id]">{{config.id}} ({{config.latestModification|date:'short'}})</option>
+              </select>
+            </div>
+          </td>
+          <td>
+            <button ng-if="programSchedule._isEdited" class="btn btn-sm btn-success" ng-click="saveProgramSchedule(programSchedule)" ng-disabled="programSchedule._saveProgramScheduleInProgress">
+              <i class="fas fa-floppy-o" ng-show="!programSchedule._saveProgramScheduleInProgress"></i>
+              <i class="fa fa-spinner fa-spin" ng-show="programSchedule._saveProgramScheduleInProgress"></i>
+              Save
+            </button>
+            <button ng-if="programSchedule.isEditable && !programSchedule._isEdited" class="btn btn-sm btn-primary" ng-click="programSchedule._isEdited = true">
+              <i class="fas fa-tools"></i> Edit
+            </button>
+            <button ng-if="programSchedule.isEditable && !programSchedule._isEdited && !programSchedule.isTheOnePublished" class="btn btn-sm btn-danger" ng-click="deleteProgramSchedule(programSchedule)" ng-disabled="programSchedule._deleteProgramScheduleInProgress">
+              <i class="fas fa-trash" ng-show="!programSchedule._deleteProgramScheduleInProgress"></i>
+              <i class="fa fa-spinner fa-spin" ng-show="programSchedule._deleteProgramScheduleInProgress"></i>
+              Delete
+            </button>
+            <button ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" class="btn btn-sm btn-success" ng-disabled="programSchedule._publishProgramScheduleInProgress" ng-click="publishProgramSchedule(programSchedule)">
+              <i class="fas fa-camera" ng-show="!programSchedule._publishProgramScheduleInProgress"></i>
+              <i class="fa fa-spinner fa-spin" ng-show="programSchedule._publishProgramScheduleInProgress"></i>
+              Publish
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

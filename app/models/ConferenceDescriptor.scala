@@ -118,6 +118,9 @@ object ConferenceDescriptor {
       case "other" => OTHER
     }
 
+    def slottableTypes: List[ProposalType] = {
+      ALL.filter(t => !Slot.byType(t).isEmpty)
+    }
   }
 
   // TODO Configure here the slot, with the number of slots available, if it gives a free ticket to the speaker, some CSS icons
