@@ -14,17 +14,22 @@
         } else {
             @zeSlot.proposal.map { p: Proposal =>
                 <td class="proposal room @room.id @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
-                    <span class="proposalType">@Messages(p.talkType.id)</span>
-                    <span class="title"><a class="blackLink skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
-                    <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                        @tags.publisher.renderSpeaker(speakerUUID)
-                    }</span>
-                    <span class="track"> @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
+                    <div class="content">
+                        <span class="title"><a class="blackLink skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a></span>
+                        <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                            @tags.publisher.renderSpeaker(speakerUUID)
+                        }</span>
 
-                    @if(showEndTime){
-                        <span class="endTime"> @zeSlot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @zeSlot.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</span>
-                    }
-
+                        @if(showEndTime){
+                            <span class="endTime"> @zeSlot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @zeSlot.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</span>
+                        }
+                    </div>
+                    <div class="bottom_aligner"></div>
+                    <div class="footer_badges">
+                        <span class="hide-on-print cfp-fav">@tags.publisher.renderFavorite(p.id)</span>
+                        <i class="proposal_badge track"></i>
+                        @if(p.lang!="fr"){ <i class="proposal_badge en_badge"></i> }
+                    </div>
                 </td>
             }
         }
