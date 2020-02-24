@@ -72,7 +72,7 @@
 	    <!-- Blog Post -->
 	    <div class="row blog-post single-blog-post skip-ml-on-print">
 	        <div class="large-12 large-centered columns single-page">
-	            <div class="single-content single-content-page row">
+	            <div class="single-content single-content-page row skip-pt-on-print">
 
             @if(flash.get("error").isDefined) {
                 <div class="alert alert-danger alert-dismissable">
@@ -94,7 +94,7 @@
 	</section>
 
 <!-- Footer -->
-<footer >
+<footer class="hide-on-print">
     <a href="#" class="go-top"></a>
     <div class="row">
         <div class="large-6 columns">

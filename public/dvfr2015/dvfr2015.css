@@ -18153,6 +18153,9 @@ blockquote p {
     .skip-ml-on-print {
         margin-left: 0px !important;
     }
+    .skip-pt-on-print {
+        padding-top: 0px !important;
+    }
 
     dialog, .reveal-modal {
         background: #fff !important
