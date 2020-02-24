@@ -44,18 +44,24 @@
 }
 
 .agendaTable th.timeSlot {
-    width: 6%;
+    font-size: 0.7rem;
+    padding: 5px 4px;
 }
 
 .agendaTable .title {
     padding-bottom: 5px;
     display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: normal;
 }
 
 .agendaTable .speaker {
     font-style: italic;
-    font-weight: lighter;
     display: block;
+    font-size: 0.65rem;
+    font-weight: 400;
+    line-height: normal;
 }
 
 .agendaTable .iconTrack {

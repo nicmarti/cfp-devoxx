@@ -15,7 +15,7 @@
             @zeSlot.proposal.map { p: Proposal =>
                 <td class="room @room.id @zeSlot.id" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
                     <span class="proposalType">@Messages(p.talkType.id)</span>
-                    <span class="title"><a class="skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
+                    <span class="title"><a class="blackLink skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
                     <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                         @tags.publisher.renderSpeaker(speakerUUID)
                     }</span>
