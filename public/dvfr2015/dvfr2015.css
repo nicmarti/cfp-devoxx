@@ -18145,6 +18145,10 @@ blockquote p {
         white-space: nowrap;
     }
 
+    .skip-ml-on-print {
+        margin-left: 0px !important;
+    }
+
     dialog, .reveal-modal {
         background: #fff !important
     }
