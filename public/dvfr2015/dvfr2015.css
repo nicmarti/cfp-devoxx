@@ -18070,6 +18070,11 @@ blockquote p {
 }
 
 @media print {
+    body {
+        /* Printing background colors on webkit */
+        -webkit-print-color-adjust:exact;
+    }
+
     *:not(.skip-print-defaults) {
          /*background: transparent !important;*/
          /*color: #000 !important;*/
