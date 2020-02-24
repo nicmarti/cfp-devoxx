@@ -25,7 +25,7 @@
                  </tr>
              }
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
-                <tr class="skip-print-defaults">
+                <tr>
                     <th class="timeSlot nowrap-if-print">
                         @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
