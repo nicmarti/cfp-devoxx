@@ -1,4 +1,4 @@
-@(subSlots: List[Slot], room: Room, roomSize: Int, showEndTime:Boolean)(implicit req:RequestHeader)
+@(subSlots: List[Slot], room: Room, roomSize: Int, showEndTime:Boolean, secretPublishKey: Option[String])(implicit req:RequestHeader)
 @import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated) {
@@ -7,7 +7,7 @@
         @zeSlot.proposal.map { p: Proposal =>
             <td class="room @room.id @zeSlot.id">
                 <span class="proposalType">@Messages(p.talkType.id)</span>
-                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
+                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
                 <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
                     @tags.publisher.renderSpeaker(speakerUUID)
                 }</span>

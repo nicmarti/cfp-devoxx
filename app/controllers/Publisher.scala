@@ -206,14 +206,14 @@ object Publisher extends Controller {
   }
 
 
-  def showDetailsForProposal(proposalId: String, proposalTitle: String) =
+  def showDetailsForProposal(proposalId: String, proposalTitle: String, secretPublishKey: Option[String]=None) =
     Action {
     implicit request =>
       Proposal.findById(proposalId) match {
         case None => NotFound("Proposal not found")
         case Some(proposal) =>
           if(proposal.state == ProposalState.ACCEPTED) {
-            val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id)
+            val publishedConfiguration = ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id, secretPublishKey)
             val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
 
             ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)

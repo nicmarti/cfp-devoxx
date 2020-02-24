@@ -39,9 +39,9 @@
                     </th>
                     @rooms.sorted.map { room =>
                             @if(subSlots.map(_.to).toSet.size>1){
-                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, true)
+                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, true, secretPublishKey)
                             }else {
-                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, false)
+                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, false, secretPublishKey)
                             }
                     }
                 </tr>

@@ -32,7 +32,7 @@
                     - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
                 </th>
                 @rooms.sorted.map { room =>
-                    @tags.publisher.tagRenderRow(subSlots, room, rooms.size,showEndTime=true)
+                    @tags.publisher.tagRenderRow(subSlots, room, rooms.size,showEndTime=true, None)
                 }
             </tr>
             }
