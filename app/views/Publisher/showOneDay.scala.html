@@ -20,7 +20,7 @@
                  <tr>
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
-                         <td>@room.name</td>
+                         <td class="nowrap-if-print">@room.name</td>
                      }
                  </tr>
              }
