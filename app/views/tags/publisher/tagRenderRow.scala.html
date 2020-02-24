@@ -2,7 +2,7 @@
 @import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated && !zeSlot.isFiller) {
-            <td rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">TBA</td>
+            <td class="proposal tba" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">TBA</td>
         }
         @if(zeSlot.break.isDefined && roomIndex == 0) {
             <td class="break skip-print-defaults @room.id" colspan="@(roomSize - subSlots.filter(s => s.isFiller).size)">
@@ -13,7 +13,7 @@
             @* nothing to do.. we're on a filler *@
         } else {
             @zeSlot.proposal.map { p: Proposal =>
-                <td class="room @room.id @zeSlot.id" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
+                <td class="proposal room @room.id @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
                     <span class="proposalType">@Messages(p.talkType.id)</span>
                     <span class="title"><a class="blackLink skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
                     <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
@@ -30,5 +30,5 @@
         }
     }
     @if(!subSlots.exists(_.room.id == room.id) && !subSlots.exists(_.break.isDefined)) {
-        <td>&nbsp;</td>
+        <td class="room-closed">&nbsp;</td>
     }

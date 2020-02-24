@@ -99,6 +99,17 @@
     text-align: center;
 }
 
+.agendaTable .proposal.proposal_type_is_uni { background-color: #ccfecc; }
+.agendaTable .proposal.proposal_type_is_lab { background-color: #ffc6c6; }
+.agendaTable .proposal.proposal_type_is_conf { background-color: #ccfecc; }
+.agendaTable .proposal.proposal_type_is_tia { background-color: #daeff4; }
+.agendaTable .proposal.proposal_type_is_quick { background-color: #fffec3; }
+.agendaTable .proposal.proposal_type_is_bof { background-color: #dee3f6; }
+.agendaTable .proposal.proposal_type_is_key { background-color: #ccfecc; }
+.agendaTable .proposal.proposal_type_is_other { background-color: #dee3f6; }
+.agendaTable .proposal.tba { background-color: #eeeeee; padding: 2px; }
+.agendaTable .room-closed { background-color: #bbbbbb; padding: 2px; }
+
 .agendaTable .talkType{
     display: block;
     background-color: #1f1f1f;
