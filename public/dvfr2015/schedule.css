@@ -132,39 +132,37 @@
     border: 4px orange solid;
 }
 
-.bottom_aligner {
-    display: inline-block;
-    height: 100%;
-    vertical-align: bottom;
-    width: 0px;
+.agendaTable .proposal .badges {
+    width: 100%;
+    height: 20px;
+    text-align: center;
 }
 
-.agendaTable .proposal .footer_badges {
-    width: 100%;
-    height: 24px;
-    text-align: center;
+.agendaTable .proposal .cfp-fav {
+    line-height: 1.3;
+    font-size: 1.1em;
 }
 
 .agendaTable .proposal i.proposal_badge {
     position: absolute;
-    bottom: 0px;
+    top: 0px;
     background-repeat: no-repeat;
     margin: 2px;
     z-index: 0;
 }
 .agendaTable .proposal i.proposal_badge.track {
-    right: 0px;
-    width: 24px;
-    height: 24px;
-    background-size: 24px 24px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background-size: 16px 16px;
 }
 .agendaTable .proposal i.proposal_badge.en_badge {
-    left: 0px;
-    width: 20px;
-    height: 16px;
-    background-size: 20px 16px;
+    right: 2px;
+    width: 14px;
+    height: 11px;
+    background-size: 14px 11px;
     background-image: url('/assets/images/en_highres.png');
-    margin-bottom: 6px;
+    margin-top: 4px;
 }
 
 .agendaTable .proposal.proposal_track_is_java i.proposal_badge.track { background-image: url('images/icon_javase.png'); }

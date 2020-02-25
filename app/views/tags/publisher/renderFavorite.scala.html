@@ -5,7 +5,7 @@
         @maybeUuid.map { uuid:String =>
             <i id="fav_@proposalId"
                class="@if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) { fas } else { far } fa-star cfp-fav hide-on-print"
-               style="font-size: 1.5em" data-proposal-id="@proposalId" title="Add this talk to your agenda"></i>
+               data-proposal-id="@proposalId" title="Add this talk to your agenda"></i>
         }.getOrElse {
                 <a class="hide-on-print" href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda">
                     <i id="fav_@proposalId" class="far fa-star hide-on-print" style="font-size: 1.5em" data-proposal-id="@proposalId"></i>
