@@ -15,12 +15,12 @@
     </div>
 
     <div class="columns large-12 woocommerce">
-        <table class="agendaTable">
+        <table class="agendaTable for_day_@day">
              @if(ConferenceDescriptor.isShowRoom) {
-                 <tr>
+                 <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
-                         <td class="room">
+                         <td class="room room_is_@room.cssId">
                              <div class="main-title nowrap-if-print">@room.scheduleMainTitle</div>
                              @room.scheduleSecondaryTitle.map { secondaryTitle: String => <div class="secondary-title">@secondaryTitle</div> }
                          </td>
@@ -38,7 +38,7 @@
                 </tr>
             }
             @if(ConferenceDescriptor.isShowRoom) {
-                  <tr>
+                  <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
                          <td class="room">

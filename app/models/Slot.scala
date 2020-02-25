@@ -56,6 +56,8 @@ case class Room(id: String, name: String, capacity: Int, setup: String, recorded
     }
     return 0
   }
+
+  def cssId: String = id.replace("-", "_")
 }
 
 object Room {
