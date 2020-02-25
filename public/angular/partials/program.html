@@ -35,6 +35,7 @@
           <th ng-repeat="type in slottableProposalTypes track by type.id">
             {{type.label}}
           </th>
+          <th>CSS Specific snippet</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -44,9 +45,9 @@
             <span class="badge badge-primary">{{programSchedule.id}}</span>
             <div ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
               <strong>Private</strong> schedule :
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed?secretPublishKey={{programSchedule.id}}" target="_blank">Wed</a>
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu?secretPublishKey={{programSchedule.id}}" target="_blank">Thu</a>
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri?secretPublishKey={{programSchedule.id}}" target="_blank">Fri</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&showScheduleMode=HideBOFs" target="_blank">Wed</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&showScheduleMode=HideBOFs" target="_blank">Thu</a>
+              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&showScheduleMode=HideBOFs" target="_blank">Fri</a>
             </div>
             <div ng-if="programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
               <strong>Public</strong> schedule :
@@ -77,6 +78,14 @@
                 <option value=""><em>None</em></option>
                 <option ng-repeat="config in availableConfigsForType(type.id) track by config.id" value="{{config.id}}" ng-selected="config.id==programSchedule.scheduleConfigurations[type.id]">{{config.id}} ({{config.latestModification|date:'short'}})</option>
               </select>
+            </div>
+          </td>
+          <td>
+            <div ng-show="!programSchedule._isEdited">
+              <pre>{{programSchedule.specificScheduleCSSSnippet}}</pre>
+            </div>
+            <div ng-show="programSchedule._isEdited">
+              <textarea cols="80" rows="5" ng-model="programSchedule.specificScheduleCSSSnippet"></textarea>
             </div>
           </td>
           <td>

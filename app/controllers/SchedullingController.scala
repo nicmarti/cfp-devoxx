@@ -160,6 +160,7 @@ object SchedullingController extends SecureCFPController {
                 "isTheOnePublished" -> JsBoolean(programSchedule.isTheOnePublished),
                 "lastModifiedByName" -> JsString(programSchedule.lastModifiedByName),
                 "lastModified" -> Json.toJson(programSchedule.lastModified),
+                "specificScheduleCSSSnippet" -> Json.toJson(programSchedule.specificScheduleCSSSnippet.getOrElse("")),
                 "scheduleConfigurations" -> Json.toJson(programSchedule.scheduleConfigurations.map {
                   case (proposalType, scheduleConfigurationId) => (proposalType.id) -> JsString(scheduleConfigurationId)
                 })

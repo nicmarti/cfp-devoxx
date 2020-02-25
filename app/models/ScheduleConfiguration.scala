@@ -131,11 +131,7 @@ object ScheduleConfiguration {
 
   def getPublishedSchedule(confType: String, secretPublishKey: Option[String] = None): Option[String] = Redis.pool.withClient {
     implicit client =>
-      val maybeProgramSchedule = secretPublishKey match {
-        case Some(secretKey) => ProgramSchedule.findById(secretKey)
-        case None => ProgramSchedule.publishedProgramSchedule()
-      }
-
+      val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
       maybeProgramSchedule.flatMap { programSchedule =>
         programSchedule.scheduleConfigurations.get(ConferenceProposalTypes.valueOf(confType))
       }

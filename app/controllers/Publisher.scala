@@ -188,6 +188,7 @@ object Publisher extends Controller {
     implicit request =>
 
       def _showDay(day: String) = {
+        val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
         val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
         val allSlotsWithBofMaybeFiltered = allSlots.filter(s => {
           val isBof = s.name == ConferenceProposalTypes.BOF.id
@@ -201,7 +202,7 @@ object Publisher extends Controller {
           val result = !hideUselessRooms || entry._2.count(_.proposal.isDefined) > 0
           result
         }.keys.toList
-        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, secretPublishKey, hideUselessRooms, showScheduleMode))
+        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse(""), secretPublishKey, hideUselessRooms, showScheduleMode))
       }
 
       day match {
