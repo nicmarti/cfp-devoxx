@@ -120,6 +120,14 @@
 .agendaTable .proposal.tba { background-color: #eeeeee; padding: 2px; }
 .agendaTable .room-closed { background-color: #bbbbbb; padding: 2px; }
 
+/* Only used for debug purposes */
+.agendaTable .max-cell-height {
+    border: 4px red solid;
+}
+.agendaTable .warning-cell-height {
+    border: 4px orange solid;
+}
+
 .bottom_aligner {
     display: inline-block;
     height: 100%;
