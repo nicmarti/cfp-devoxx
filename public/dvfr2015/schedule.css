@@ -57,6 +57,10 @@
     line-height: normal;
 }
 
+.agendaTable .title {
+    margin-bottom: 8px;
+}
+
 .agendaTable .speaker, .agendaTable .room .secondary-title {
     font-style: italic;
     display: block;
