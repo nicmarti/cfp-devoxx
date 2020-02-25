@@ -54,7 +54,7 @@
 .agendaTable .title, .agendaTable .room .main-title {
     padding-bottom: 5px;
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.55rem;
     font-weight: 600;
     line-height: normal;
 }
@@ -66,7 +66,7 @@
 .agendaTable .speaker, .agendaTable .room .secondary-title {
     font-style: italic;
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.45rem;
     font-weight: 400;
     line-height: normal;
 }
@@ -184,9 +184,6 @@
     color:white;
     padding: 2px;
     text-align: center;
-}
-.agendaTable .speaker{
-    font-size: 0.9em;
 }
 
 .speakerDetail {

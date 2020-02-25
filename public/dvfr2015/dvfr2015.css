@@ -18126,6 +18126,10 @@ blockquote p {
         margin: 0.5cm;
     }
 
+    h1 {
+        font-size: 1.3rem;
+    }
+
     p,
     h2,
     h3 {
