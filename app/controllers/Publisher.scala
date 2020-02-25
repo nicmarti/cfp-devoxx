@@ -27,12 +27,10 @@ import akka.util.Crypt
 import library.search.ElasticSearch
 import play.api.libs.json.{JsObject, Json}
 import library.{LogURL, ZapActor}
-import models._
-import play.api.cache.Cache
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.validation.Constraints._
+import models.ConferenceDescriptor.ConferenceProposalTypes
+import models.{ConferenceDescriptor, _}
 import play.api.mvc._
+
 
 /**
  * Publisher is the controller responsible for the Web content of your conference Program.
@@ -186,16 +184,24 @@ object Publisher extends Controller {
       }
   }
 
-  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = false) = Action {
+  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = false, showScheduleMode: String = "ShowAll") = Action {
     implicit request =>
 
       def _showDay(day: String) = {
         val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
-        val rooms = allSlots.groupBy(_.room).filter { entry =>
+        val allSlotsWithBofMaybeFiltered = allSlots.filter(s => {
+          val isBof = s.name == ConferenceProposalTypes.BOF.id
+          showScheduleMode match {
+            case "ShowAll" => true
+            case "HideBOFs" => !isBof
+            case "ShowOnlyBOFs" => isBof
+          }
+        })
+        val rooms = allSlotsWithBofMaybeFiltered.groupBy(_.room).filter { entry =>
           val result = !hideUselessRooms || entry._2.count(_.proposal.isDefined) > 0
           result
         }.keys.toList
-        Ok(views.html.Publisher.showOneDay(allSlots, rooms, day, secretPublishKey, hideUselessRooms))
+        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, secretPublishKey, hideUselessRooms, showScheduleMode))
       }
 
       day match {
