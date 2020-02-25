@@ -398,9 +398,17 @@ object ConferenceDescriptor {
       }
       val labsThursdayAfternoon = ConferenceRooms.allRoomsLabThursday.map {
         r2 =>
-          SlotBuilder(ConferenceProposalTypes.LAB.id, "thursday",
+          // Temporary workaround in order to not change slot id in Prod Schedule
+          // FIXME: remove this and replace it with commented SlotBuilder() call in 2021
+          Slot(
+            s"${ConferenceProposalTypes.LAB.id}_${r2.id}_thursday_16_15h30_18h30", ConferenceProposalTypes.LAB.id, "thursday",
             new DateTime(s"${secondDay}T15:30:00.000+02:00").toDateTime(confTimezone),
-            new DateTime(s"${secondDay}T18:30:00.000+02:00").toDateTime(confTimezone), r2)
+            new DateTime(s"${secondDay}T18:15:00.000+02:00").toDateTime(confTimezone),
+            r2.id, None, None, None
+          )
+//          SlotBuilder(ConferenceProposalTypes.LAB.id, "thursday",
+//            new DateTime(s"${secondDay}T15:30:00.000+02:00").toDateTime(confTimezone),
+//            new DateTime(s"${secondDay}T18:15:00.000+02:00").toDateTime(confTimezone), r2)
       }
       labsThursdayMorning ++ labsThursdayAfternoon
     }
