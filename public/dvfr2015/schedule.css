@@ -34,6 +34,7 @@
 .agendaTable td.room {
     width: 14%;
     vertical-align: top;
+    text-align: center;
 }
 
 .agendaTable td.keynotes {
@@ -48,7 +49,7 @@
     padding: 5px 4px;
 }
 
-.agendaTable .title {
+.agendaTable .title, .agendaTable .room .main-title {
     padding-bottom: 5px;
     display: block;
     font-size: 0.75rem;
@@ -56,7 +57,7 @@
     line-height: normal;
 }
 
-.agendaTable .speaker {
+.agendaTable .speaker, .agendaTable .room .secondary-title {
     font-style: italic;
     display: block;
     font-size: 0.65rem;

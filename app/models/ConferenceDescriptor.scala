@@ -228,39 +228,39 @@ object ConferenceDescriptor {
     // the first column on the HTML Table
 
     // Do not change the ID's once the program is published
-    val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "")
-    val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special", "")
-    val LOBBY_NEUILLY = Room("lobby_neuilly", "Lobby Neuilly", 100, "special", "")
+    val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "", "Hall", None)
+    val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special", "", "Hall Maillot A", None)
+    val LOBBY_NEUILLY = Room("lobby_neuilly", "Lobby Neuilly", 100, "special", "", "Lobby Neuilly", None)
 
-    val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera")
-    val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre", "camera")
-    val NEUILLY_251 = Room("f_neu251", "Neuilly 251", 220, "theatre", "camera")
-    val NEUILLY_252AB = Room("e_neu252", "Neuilly 252 AB", 380, "theatre", "camera")
-    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom", "rien")
-    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253", 120, "theatre", "son")
+    val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera", "Amphi Bleu", None)
+    val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre", "camera", "Amphi Maillot", Some("Hall"))
+    val NEUILLY_251 = Room("f_neu251", "Neuilly 251", 220, "theatre", "camera", "251", Some("Neuilly"))
+    val NEUILLY_252AB = Room("e_neu252", "Neuilly 252 AB", 380, "theatre", "camera", "252AB", Some("Neuilly"))
+    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom", "rien", "253", Some("Neuilly"))
+    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253", 120, "theatre", "son", "253", Some("Neuilly"))
 
-    val PARIS_241 = Room("d_par241", "Paris 241", 220, "theatre", "camera")
-    val PARIS_242AB_T = Room("par242AB", "Paris 242 AB", 280, "theatre", "camera")
-    val PARIS_242A = Room("par242A", "Paris 242 A", 60, "classroom", "rien")
-    val PARIS_242B = Room("par242B", "Paris 242 B", 60, "classroom", "rien")
-    val PARIS_242A_T = Room("par242AT", "Paris 242 A", 120, "theatre", "rien")
-    val PARIS_242B_T = Room("par242BT", "Paris 242 B", 120, "theatre", "rien")
+    val PARIS_241 = Room("d_par241", "Paris 241", 220, "theatre", "camera", "241", Some("Paris"))
+    val PARIS_242AB_T = Room("par242AB", "Paris 242 AB", 280, "theatre", "camera", "242AB", Some("Paris"))
+    val PARIS_242A = Room("par242A", "Paris 242 A", 60, "classroom", "rien", "242A", Some("Paris"))
+    val PARIS_242B = Room("par242B", "Paris 242 B", 60, "classroom", "rien", "242B", Some("Paris"))
+    val PARIS_242A_T = Room("par242AT", "Paris 242 A", 120, "theatre", "rien", "242A", Some("Paris"))
+    val PARIS_242B_T = Room("par242BT", "Paris 242 B", 120, "theatre", "rien", "242B", Some("Paris"))
 
-    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom", "rien")
-    val PARIS_243_T = Room("par243_t", "Paris 243", 120, "theatre", "son")
+    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom", "rien", "243", Some("Paris"))
+    val PARIS_243_T = Room("par243_t", "Paris 243", 120, "theatre", "son", "243", Some("Paris"))
 
-    val PARIS_202_203 = Room("par202_203", "Paris 202-203", 32, "classroom", "rien")
-    val PARIS_221M_222M = Room("par221M-222M", "Paris 221M-222M", 32, "classroom", "rien")
-    val PARIS_224M_225M = Room("par224M-225M", "Paris 224M-225M", 26, "classroom", "rien")
+    val PARIS_202_203 = Room("par202_203", "Paris 202-203", 32, "classroom", "rien", "202+203", Some("Hall/RdC Sud Paris"))
+    val PARIS_221M_222M = Room("par221M-222M", "Paris 221M-222M", 32, "classroom", "rien", "221+222M", Some("Mezzanine Sud Paris"))
+    val PARIS_224M_225M = Room("par224M-225M", "Paris 224M-225M", 26, "classroom", "rien", "224+225M", Some("Messanine Sud Paris"))
 
-    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213", 32, "classroom", "rien")
-    val NEUILLY_231_232 = Room("neu_232_232", "Neuilly 231M-232M", 32, "classroom", "rien")
-    val NEUILLY_234_235 = Room("neu_234_235", "Neuilly 234M-235M", 24, "classroom", "rien")
+    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213", 32, "classroom", "rien", "212+213", Some("RdC/Droite Vestiaire"))
+    val NEUILLY_231_232 = Room("neu_232_232", "Neuilly 231M-232M", 32, "classroom", "rien", "231+232M", Some("Mezzanine Sud Neuilly"))
+    val NEUILLY_234_235 = Room("neu_234_235", "Neuilly 234M-235M", 24, "classroom", "rien", "234+235M", Some("Mezzanine Sud Neuilly"))
 
-    val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien")
-    val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien")
+    val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien", "204", None)
+    val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien", "201", None)
 
-    val ROOM_OTHER = Room("other_room", "Autres salles", 100, "classroom", "rien")
+    val ROOM_OTHER = Room("other_room", "Autres salles", 100, "classroom", "rien", "Autre salle", None)
 
     val allRoomsUni = List(AMPHI_BLEU, MAILLOT, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 

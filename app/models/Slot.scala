@@ -36,7 +36,7 @@ import scala.collection.mutable.ListBuffer
   * Frederic Camblor added ConferenceDescriptor 07/06/2014
   */
 
-case class Room(id: String, name: String, capacity: Int, setup: String, recorded: String) extends Ordered[Room] {
+case class Room(id: String, name: String, capacity: Int, setup: String, recorded: String, scheduleMainTitle: String, scheduleSecondaryTitle: Option[String]) extends Ordered[Room] {
 
   def index: Int = {
     val regexp = "[\\D\\s]+(\\d+)".r
@@ -61,7 +61,7 @@ case class Room(id: String, name: String, capacity: Int, setup: String, recorded
 object Room {
   implicit val roomFormat = Json.format[Room]
 
-  val OTHER = Room("other_room", "Other room", 100, "sans objet", "")
+  val OTHER = Room("other_room", "Other room", 100, "sans objet", "", "", None)
 
   val allAsId = ConferenceDescriptor.ConferenceRooms.allRooms.map(a => (a.id, a.name)).toSeq.sorted
 

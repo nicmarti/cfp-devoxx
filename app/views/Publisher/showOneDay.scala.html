@@ -20,7 +20,10 @@
                  <tr>
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
-                         <td class="nowrap-if-print">@room.name</td>
+                         <td class="room">
+                             <div class="main-title nowrap-if-print">@room.scheduleMainTitle</div>
+                             @room.scheduleSecondaryTitle.map { secondaryTitle: String => <div class="secondary-title">@secondaryTitle</div> }
+                         </td>
                      }
                  </tr>
              }
@@ -38,7 +41,10 @@
                   <tr>
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
-                         <td>@room.name</td>
+                         <td class="room">
+                             <div class="main-title nowrap-if-print">@room.scheduleMainTitle</div>
+                             @room.scheduleSecondaryTitle.map { secondaryTitle: String => <div class="secondary-title">@secondaryTitle</div> }
+                         </td>
                      }
                  </tr>
             }
