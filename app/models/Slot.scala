@@ -104,14 +104,21 @@ object SlotBreak {
   implicit val slotBreakFormat = Json.format[SlotBreak]
 }
 
-case class Slot(id: String, name: String, day: String, from: DateTime, to: DateTime, room: Room,
+case class SlotWithRoom(id: String, name: String, day: String, from: DateTime, to: DateTime, room: Room,
+                   proposal: Option[Proposal], break: Option[SlotBreak], fillerForSlotId: Option[String]) {
+  def toRawSlot(): Slot = {
+    Slot(id, name, day, from, to, room.id, proposal, break, fillerForSlotId)
+  }
+}
+
+case class Slot(id: String, name: String, day: String, from: DateTime, to: DateTime, roomId: String,
                 proposal: Option[Proposal], break: Option[SlotBreak], fillerForSlotId: Option[String]) {
   override def toString: String = {
     s"Slot[$id] hasProposal=${proposal.isDefined} isBreak=${break.isDefined} isFiller=${isFiller}"
   }
 
   def parleysId: String = {
-    ConferenceDescriptor.current().eventCode + "_" + from.toString("dd") + "_" + room.id + "_" + from.toString("HHmm")
+    ConferenceDescriptor.current().eventCode + "_" + from.toString("dd") + "_" + roomId + "_" + from.toString("HHmm")
   }
 
   def notAllocated: Boolean = {
@@ -120,27 +127,30 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
 
   def isFiller: Boolean = { fillerForSlotId.isDefined }
 
+  def room: Room = Room.parse(roomId)
+
+  def toSlowWithRoom: SlotWithRoom = SlotWithRoom(id, name, day, from, to, room, proposal, break, fillerForSlotId)
 }
 
 object SlotBuilder {
 
   def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, name, day, from, to, room, None, None, None)
+    Slot(id, name, day, from, to, room.id, None, None, None)
   }
 
   def apply(name: String, day: String, from: DateTime, to: DateTime, room: Room, proposal: Option[Proposal]): Slot = {
     val id = name + "_" + room.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    Slot(id, name, day, from, to, room, proposal, None, None)
+    Slot(id, name, day, from, to, room.id, proposal, None, None)
   }
 
   def apply(slotBreak: SlotBreak, day: String, from: DateTime, to: DateTime): List[Slot] = {
     val id = slotBreak.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    ConferenceDescriptor.ConferenceRooms.allRooms.map(room => Slot(id, slotBreak.nameEN, day, from, to, room, None, Some(slotBreak), None))
+    ConferenceDescriptor.ConferenceRooms.allRooms.map(room => Slot(id, slotBreak.nameEN, day, from, to, room.id, None, Some(slotBreak), None))
   }
 
   def apply(fillerForSlot: Slot, fillerIndex: Int, from: DateTime, to: DateTime): Slot = {
-    Slot(fillerForSlot.id.replace(fillerForSlot.proposal.map(_.talkType.id).getOrElse(""), s"filler${fillerIndex}"), "filler", fillerForSlot.day, from, to, fillerForSlot.room, fillerForSlot.proposal, None, Option(fillerForSlot.id));
+    Slot(fillerForSlot.id.replace(fillerForSlot.proposal.map(_.talkType.id).getOrElse(""), s"filler${fillerIndex}"), "filler", fillerForSlot.day, from, to, fillerForSlot.room.id, fillerForSlot.proposal, None, Option(fillerForSlot.id));
   }
 }
 
@@ -148,6 +158,7 @@ object SlotBuilder {
 object Slot {
   implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
   implicit val slotFormat = Json.format[Slot]
+  implicit val slotWithRoomFormat = Json.format[SlotWithRoom]
 
   def keepDeletableSlotIdsFrom(slotIds: List[String]): List[String] = {
     val programSchedules = ProgramSchedule.allProgramSchedulesForCurrentEvent()

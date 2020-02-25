@@ -262,12 +262,6 @@ object ConferenceDescriptor {
 
     val ROOM_OTHER = Room("other_room", "Autres salles", 100, "classroom", "rien")
 
-    val allRooms = List(HALL_EXPO, HALL_A, AMPHI_BLEU, MAILLOT, PARIS_241, NEUILLY_251, NEUILLY_252AB,
-      PARIS_242A, PARIS_242B, PARIS_243, PARIS_243_T, NEUILLY_253, NEUILLY_253_T,
-      PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, PARIS_204, PARIS_201)
-
-    val allRoomsAsIdsAndLabels: Seq[(String, String)] = allRooms.map(a => (a.id, a.name)).sorted
-
     val allRoomsUni = List(AMPHI_BLEU, MAILLOT, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
     val allRoomsTIAWed = List(AMPHI_BLEU, MAILLOT, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
@@ -291,6 +285,14 @@ object ConferenceDescriptor {
     val allRoomsQuickiesThu: List[Room] = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id)
 
     val allRoomsQuickiesFriday: List[Room] = allRoomsQuickiesThu
+
+    val allRooms = (List(
+                      HALL_EXPO, HALL_A, PARIS_242A, PARIS_242B, PARIS_243, NEUILLY_253, PARIS_204, PARIS_201
+                  ) ++ allRoomsUni ++ allRoomsTIAWed ++ allRoomsTIAThu ++ allRoomsLabsWednesday ++
+                  allRoomsLabThursday ++ allRoomsLabFriday ++ allRoomsBOF ++ allRoomsOthersFriday ++
+                  keynoteRoom ++ allRoomsConf ++ allRoomsQuickiesThu ++ allRoomsQuickiesFriday).distinct
+
+    val allRoomsAsIdsAndLabels: Seq[(String, String)] = allRooms.map(a => (a.id, a.name)).sorted
   }
 
   // TODO if you want to use the Scheduler, you can configure the breaks

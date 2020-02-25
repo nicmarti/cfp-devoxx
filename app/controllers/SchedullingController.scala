@@ -38,9 +38,9 @@ import play.api.mvc.Action
 object SchedullingController extends SecureCFPController {
   def slots(confType: String) = Action {
     implicit request =>
-      import Slot.slotFormat
+      import Slot.slotWithRoomFormat
 
-      val jsSlots = Json.toJson(Slot.byType(ProposalType.parse(confType)))
+      val jsSlots = Json.toJson(Slot.byType(ProposalType.parse(confType)).map(_.toSlowWithRoom))
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 
@@ -84,17 +84,18 @@ object SchedullingController extends SecureCFPController {
 
   def saveSlots(confType: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import Slot.slotWithRoomFormat
 
       request.body.asJson.map {
         json =>
-          val newSlots = json.as[List[Slot]]
+          val newSlots = json.as[List[SlotWithRoom]]
           val saveSlotsWithSpeakerUUIDs = newSlots.map {
-            slot: Slot =>
+            slot: SlotWithRoom =>
               slot.proposal match {
                 case Some(proposal) =>
                   // Transform back speaker name to speaker UUID when we store the slots
-                  slot.copy(proposal = Proposal.findById(proposal.id))
-                case _ => slot
+                  slot.copy(proposal = Proposal.findById(proposal.id)).toRawSlot()
+                case _ => slot.toRawSlot()
               }
           }
 
@@ -314,5 +315,12 @@ object SchedullingController extends SecureCFPController {
         }
         case false => NotFound
       }
+  }
+
+  // TODO: This is only a temporary endpoint
+  // Remove it once migration occured
+  def migrateConfigs() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Ok(Json.toJson(OldScheduleConfiguration.migrateScheduleConfigurations())).as(JSON)
   }
 }

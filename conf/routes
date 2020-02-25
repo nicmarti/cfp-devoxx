@@ -299,6 +299,7 @@ GET           /schedulling/loadScheduledConfiguration                           
 POST          /schedulling/slots                                                controllers.SchedullingController.saveSlots(confType:String)
 POST          /schedulling/createAndPublishEmptyProgramSchedule                 controllers.SchedullingController.createAndPublishEmptyProgramSchedule()
 DELETE        /schedulling/deletescheduledConfigurations                        controllers.SchedullingController.deleteScheduleConfiguration(id:String)
+GET           /schedulling/admin/migrateConfigs                                  controllers.SchedullingController.migrateConfigs()
 
 # WishList
 GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishList()
