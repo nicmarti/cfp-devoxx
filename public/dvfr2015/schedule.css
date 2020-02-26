@@ -24,8 +24,7 @@
 
 .agendaTable {
     border: 1px solid #ffd297;
-    width: min-content;
-}
+} @media print { .agendaTable { width: min-content; } }
 
 .agendaTable th {
     background-color: #211c1b;
@@ -47,28 +46,25 @@
 }
 
 .agendaTable .timeSlot {
-    font-size: 0.7rem;
     padding: 5px 4px;
     white-space: nowrap;
-}
+} @media print { .agendaTable .timeSlot { font-size: 0.7rem; } }
 
 .agendaTable .title, .agendaTable .room .main-title {
     padding-bottom: 5px;
     display: block;
-    font-size: 0.55rem;
     font-weight: 600;
     line-height: normal;
-}
+} @media print { .agendaTable .title, .agendaTable .room .main-title { font-size: 0.55rem; } }
 
 .agendaTable .room .main-title {
     white-space: nowrap;
 }
 
 .schedule-legend li {
-    font-size: 0.65rem;
     font-weight: 600;
     line-height: normal;
-}
+} @media print { .schedule-legend li { font-size: 0.65rem; } }
 
 .agendaTable .title {
     margin-bottom: 8px;
@@ -77,10 +73,9 @@
 .agendaTable .speaker, .agendaTable .room .secondary-title {
     font-style: italic;
     display: block;
-    font-size: 0.45rem;
     font-weight: 400;
     line-height: normal;
-}
+} @media print { .agendaTable .speaker, .agendaTable .room .secondary-title { font-size: 0.45rem; } }
 
 .agendaTable .iconTrack {
     display: block;
@@ -95,26 +90,23 @@
 
 .agendaTable .track {
     display: block;
-    font-size: 0.8em;
-}
+} @media print { .agendaTable .track { font-size: 0.8em; } }
 
 .agendaTable .endTime{
     display: block;
     background-color: #f4b787;
     color:white;
-    font-size: 0.8em;
     padding: 2px;
     text-align: center;
-}
+} @media print { .agendaTable .endTime { font-size: 0.8em; } }
 
 .agendaTable .proposalType {
     display: block;
     background-color: #f4882d;
     color:white;
-    font-size: 0.8em;
     padding: 2px;
     text-align: center;
-}
+} @media print { .agendaTable .proposalType { font-size: 0.8em; } }
 
 .schedule-legend {
     width: 100%;
@@ -166,8 +158,8 @@
 
 .agendaTable .proposal .cfp-fav {
     line-height: 1.3;
-    font-size: 1.1em;
-}
+} @media print { .agendaTable .proposal .cfp-fav { font-size: 1.1em; } }
+
 
 i.proposal_badge {
     position: absolute;
@@ -252,9 +244,8 @@ td.break {
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
-    padding-top: 2px;
-    padding-bottom: 2px;
-}
+    padding: 0px;
+} @media print { td.break { font-size: 0.55rem; } }
 
 td.notAllocated {
     text-align: center;
