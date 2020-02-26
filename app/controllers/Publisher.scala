@@ -184,7 +184,7 @@ object Publisher extends Controller {
       }
   }
 
-  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = false, showScheduleMode: String = "ShowAll") = Action {
+  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = true, showScheduleMode: String = "ShowAll") = Action {
     implicit request =>
 
       def _showDay(day: String) = {
