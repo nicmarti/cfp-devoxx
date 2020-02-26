@@ -18164,10 +18164,6 @@ blockquote p {
         padding-top: 0px !important;
     }
 
-    .skip-max-width-on-print {
-        max-width: none;
-    }
-
     dialog, .reveal-modal {
         background: #fff !important
     }

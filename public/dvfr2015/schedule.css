@@ -46,9 +46,10 @@
     line-height: 55px;
 }
 
-.agendaTable th.timeSlot {
+.agendaTable .timeSlot {
     font-size: 0.7rem;
     padding: 5px 4px;
+    white-space: nowrap;
 }
 
 .agendaTable .title, .agendaTable .room .main-title {
@@ -57,6 +58,10 @@
     font-size: 0.55rem;
     font-weight: 600;
     line-height: normal;
+}
+
+.agendaTable .room .main-title {
+    white-space: nowrap;
 }
 
 .schedule-legend li {

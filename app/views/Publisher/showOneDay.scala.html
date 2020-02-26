@@ -24,7 +24,7 @@
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
                          <td class="room room_is_@room.cssId">
-                             <div class="main-title nowrap-if-print">@room.scheduleMainTitle</div>
+                             <div class="main-title">@room.scheduleMainTitle</div>
                              @room.scheduleSecondaryTitle.map { secondaryTitle: String => <div class="secondary-title">@secondaryTitle</div> }
                          </td>
                      }
@@ -32,7 +32,7 @@
              }
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
                 <tr>
-                    <th class="timeSlot nowrap-if-print">
+                    <th class="timeSlot">
                         @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
                     @rooms.sorted.zipWithIndex.map { case (room, index) =>
@@ -45,7 +45,7 @@
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
                          <td class="room">
-                             <div class="main-title nowrap-if-print">@room.scheduleMainTitle</div>
+                             <div class="main-title">@room.scheduleMainTitle</div>
                              @room.scheduleSecondaryTitle.map { secondaryTitle: String => <div class="secondary-title">@secondaryTitle</div> }
                          </td>
                      }
