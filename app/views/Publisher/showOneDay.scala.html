@@ -1,7 +1,13 @@
 @(slots: List[Slot], rooms: List[Room], day: String, specificScheduleCSSSnippet: String, secretPublishKey: Option[String], hideUselessRooms: Boolean, showScheduleMode: String)(implicit lang: Lang, req: RequestHeader, flash:Flash)
     @views.html.Publisher.devoxxFR2020(Messages(s"sw.show.$day")) {
     <style>
-    @specificScheduleCSSSnippet
+    @@media print {
+        /** BEGINNING BLOCK OF PROGRAM SCHEDULE'S PRINT CSS SNIPPET SPECIFITIES **/
+
+        @specificScheduleCSSSnippet
+
+        /** END BLOCK OF PROGRAM SCHEDULE'S PRINT CSS SNIPPET SPECIFITIES **/
+    }
     </style>
 
     <div class="large-12 columns">
