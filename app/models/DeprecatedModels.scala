@@ -1,11 +1,12 @@
 package models
 
 import library.Redis
-import play.api.libs.json.{Json}
+import org.joda.time.DateTime
+import play.api.libs.json.Json
 
 // TODO: Remove this file in next version
 
-case class OldScheduleConfiguration(confType: String, slots: List[SlotWithRoom], timeSlots: List[TimeSlot]) {
+case class OldScheduleConfiguration(confType: String, slots: List[OldSlotWithRoom], timeSlots: List[TimeSlot]) {
   def toNewSchedule(): ScheduleConfiguration = {
     ScheduleConfiguration(confType, slots.map(_.toRawSlot()), timeSlots)
   }
@@ -13,7 +14,7 @@ case class OldScheduleConfiguration(confType: String, slots: List[SlotWithRoom],
 
 object OldScheduleConfiguration {
   implicit val oldRoomFormat = Json.format[OldRoom]
-  implicit val oldSlotFormat = Json.format[SlotWithRoom]
+  implicit val oldSlotFormat = Json.format[OldSlotWithRoom]
   implicit val timeSlotFormat = Json.format[TimeSlot]
   implicit val oldScheduleConfFormat = Json.format[OldScheduleConfiguration]
 
@@ -38,6 +39,13 @@ object OldScheduleConfiguration {
             Option(newSchedule)
           })
         }.toList
+  }
+}
+
+case class OldSlotWithRoom(id: String, name: String, day: String, from: DateTime, to: DateTime, room: OldRoom,
+                        proposal: Option[Proposal], break: Option[SlotBreak], fillerForSlotId: Option[String]) {
+  def toRawSlot(): Slot = {
+    Slot(id, name, day, from, to, room.id, proposal, break, fillerForSlotId)
   }
 }
 
