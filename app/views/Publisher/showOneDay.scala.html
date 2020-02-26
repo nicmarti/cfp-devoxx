@@ -6,7 +6,6 @@
 
     <div class="large-12 columns">
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
-
         <p class="breadcrumb hide-on-print"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByDay("wed", secretPublishKey, hideUselessRooms, showScheduleMode)">@Messages("sw.agenda.wed")</a> /
             <a href="@routes.Publisher.showByDay("thu", secretPublishKey, hideUselessRooms, showScheduleMode)">@Messages("sw.agenda.thu")</a> /
@@ -19,7 +18,7 @@
     </div>
 
     <div class="columns large-12 woocommerce">
-        <table class="agendaTable for_day_@day">
+        <table class="agendaTable for_day_@day skip-mb-on-print">
              @if(ConferenceDescriptor.isShowRoom) {
                  <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
@@ -54,4 +53,12 @@
             }
         </table>
     </div>
+    <ul class="schedule-legend">
+        @slots.flatMap(s => s.proposal.map(_.talkType)).distinct.map { proposalType =>
+            <li class="proposalType proposal_type_is_@proposalType.id">@Messages(proposalType.simpleLabel)</li>
+        }
+        @slots.flatMap(s => s.proposal.map(_.track)).distinct.map { track =>
+            <li class="track proposal_track_is_@track.id"><i class="proposal_badge track"></i> @Messages(track.label)</li>
+        }
+    </ul>
 }

@@ -59,6 +59,12 @@
     line-height: normal;
 }
 
+.schedule-legend li {
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: normal;
+}
+
 .agendaTable .title {
     margin-bottom: 8px;
 }
@@ -105,6 +111,20 @@
     padding: 2px;
     text-align: center;
 }
+
+.schedule-legend {
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.schedule-legend .proposalType, .schedule-legend .track {
+    display: inline-block;
+    padding: 5px;
+    position: relative;
+}
+
 .agendaTable td.proposal {
     padding: 0px;
     text-align: center;
@@ -115,14 +135,14 @@
     padding: 4px;
 }
 
-.agendaTable .proposal.proposal_type_is_uni { background-color: #ccfecc; }
-.agendaTable .proposal.proposal_type_is_lab { background-color: #ffc6c6; }
-.agendaTable .proposal.proposal_type_is_conf { background-color: #ccfecc; }
-.agendaTable .proposal.proposal_type_is_tia { background-color: #daeff4; }
-.agendaTable .proposal.proposal_type_is_quick { background-color: #fffec3; }
-.agendaTable .proposal.proposal_type_is_bof { background-color: #dee3f6; }
-.agendaTable .proposal.proposal_type_is_key { background-color: #ccfecc; }
-.agendaTable .proposal.proposal_type_is_other { background-color: #dee3f6; }
+.proposal_type_is_uni { background-color: #ccfecc; }
+.proposal_type_is_lab { background-color: #ffc6c6; }
+.proposal_type_is_conf { background-color: #ccfecc; }
+.proposal_type_is_tia { background-color: #daeff4; }
+.proposal_type_is_quick { background-color: #fffec3; }
+.proposal_type_is_bof { background-color: #dee3f6; }
+.proposal_type_is_key { background-color: #ccfecc; }
+.proposal_type_is_other { background-color: #dee3f6; }
 .agendaTable .proposal.tba { background-color: #eeeeee; padding: 2px; }
 .agendaTable .room-closed { background-color: #bbbbbb; padding: 2px; }
 
@@ -145,20 +165,27 @@
     font-size: 1.1em;
 }
 
-.agendaTable .proposal i.proposal_badge {
+i.proposal_badge {
     position: absolute;
-    top: 0px;
     background-repeat: no-repeat;
     margin: 2px;
     z-index: 0;
 }
-.agendaTable .proposal i.proposal_badge.track {
+
+.agendaTable .proposal i.proposal_badge {
+    top: 0px;
+}
+.schedule-legend i.proposal_badge {
+    top: 5px;
+}
+
+i.proposal_badge.track {
     left: 2px;
     width: 16px;
     height: 16px;
     background-size: 16px 16px;
 }
-.agendaTable .proposal i.proposal_badge.en_badge {
+i.proposal_badge.en_badge {
     right: 2px;
     width: 14px;
     height: 11px;
@@ -167,16 +194,16 @@
     margin-top: 4px;
 }
 
-.agendaTable .proposal.proposal_track_is_java i.proposal_badge.track { background-image: url('images/icon_javase.png'); }
-.agendaTable .proposal.proposal_track_is_mobile i.proposal_badge.track { background-image: url('images/icon_mobile.png'); }
-.agendaTable .proposal.proposal_track_is_wm i.proposal_badge.track { background-image: url('images/icon_web.png'); }
-.agendaTable .proposal.proposal_track_is_archisec i.proposal_badge.track { background-image: url('images/icon_architecture.png'); }
-.agendaTable .proposal.proposal_track_is_cldops i.proposal_badge.track { background-image: url('images/icon_cloud.png'); }
-.agendaTable .proposal.proposal_track_is_agTest i.proposal_badge.track { background-image: url('images/icon_methodology.png'); }
-.agendaTable .proposal.proposal_track_is_bigd i.proposal_badge.track { background-image: url('images/icon_startup.png'); }
-.agendaTable .proposal.proposal_track_is_future i.proposal_badge.track { background-image: url('images/icon_future.png'); }
-.agendaTable .proposal.proposal_track_is_lang i.proposal_badge.track { background-image: url('images/icon_alternative.png'); }
-.agendaTable .proposal.proposal_track_is_unknown i.proposal_badge.track { background-image: url('images/icon_javaee.png'); }
+.proposal_track_is_java i.proposal_badge.track { background-image: url('images/icon_javase.png'); }
+.proposal_track_is_mobile i.proposal_badge.track { background-image: url('images/icon_mobile.png'); }
+.proposal_track_is_wm i.proposal_badge.track { background-image: url('images/icon_web.png'); }
+.proposal_track_is_archisec i.proposal_badge.track { background-image: url('images/icon_architecture.png'); }
+.proposal_track_is_cldops i.proposal_badge.track { background-image: url('images/icon_cloud.png'); }
+.proposal_track_is_agTest i.proposal_badge.track { background-image: url('images/icon_methodology.png'); }
+.proposal_track_is_bigd i.proposal_badge.track { background-image: url('images/icon_startup.png'); }
+.proposal_track_is_future i.proposal_badge.track { background-image: url('images/icon_future.png'); }
+.proposal_track_is_lang i.proposal_badge.track { background-image: url('images/icon_alternative.png'); }
+.proposal_track_is_unknown i.proposal_badge.track { background-image: url('images/icon_javaee.png'); }
 
 .agendaTable .talkType{
     display: block;

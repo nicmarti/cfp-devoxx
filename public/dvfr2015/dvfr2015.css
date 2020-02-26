@@ -18157,8 +18157,17 @@ blockquote p {
     .skip-ml-on-print {
         margin-left: 0px !important;
     }
+
+    .skip-mb-on-print {
+        margin-bottom: 0px;
+    }
+
     .skip-pt-on-print {
         padding-top: 0px !important;
+    }
+
+    .skip-max-width-on-print {
+        max-width: none;
     }
 
     dialog, .reveal-modal {
