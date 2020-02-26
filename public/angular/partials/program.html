@@ -86,6 +86,7 @@
             </div>
             <div ng-show="programSchedule._isEdited">
               <textarea cols="80" rows="5" ng-model="programSchedule.specificScheduleCSSSnippet"></textarea>
+              <button ng-click="fillCSSSnippetWithDefault(programSchedule)" class="btn btn-sm btn-warning">Fill snippet with defaults</button>
             </div>
           </td>
           <td>
