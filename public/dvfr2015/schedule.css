@@ -24,6 +24,7 @@
 
 .agendaTable {
     border: 1px solid #ffd297;
+    width: min-content;
 }
 
 .agendaTable th {
@@ -32,7 +33,6 @@
 }
 
 .agendaTable td.room {
-    width: 14%;
     vertical-align: top;
     text-align: center;
     padding-top: 2px;
@@ -84,7 +84,6 @@
 }
 
 .agendaTable .room {
-    max-width: 16%;
     vertical-align: top;
     border: 1px solid #ffd297;
 }
