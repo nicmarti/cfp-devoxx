@@ -194,16 +194,16 @@ i.proposal_badge.en_badge {
     margin-top: 4px;
 }
 
-.proposal_track_is_java i.proposal_badge.track { background-image: url('images/icon_javase.png'); }
+.proposal_track_is_java i.proposal_badge.track { background-image: url('images/track-icons/java.png'); }
 .proposal_track_is_mobile i.proposal_badge.track { background-image: url('images/icon_mobile.png'); }
-.proposal_track_is_wm i.proposal_badge.track { background-image: url('images/icon_web.png'); }
-.proposal_track_is_archisec i.proposal_badge.track { background-image: url('images/icon_architecture.png'); }
-.proposal_track_is_cldops i.proposal_badge.track { background-image: url('images/icon_cloud.png'); }
-.proposal_track_is_agTest i.proposal_badge.track { background-image: url('images/icon_methodology.png'); }
-.proposal_track_is_bigd i.proposal_badge.track { background-image: url('images/icon_startup.png'); }
-.proposal_track_is_future i.proposal_badge.track { background-image: url('images/icon_future.png'); }
-.proposal_track_is_lang i.proposal_badge.track { background-image: url('images/icon_alternative.png'); }
-.proposal_track_is_unknown i.proposal_badge.track { background-image: url('images/icon_javaee.png'); }
+.proposal_track_is_wm i.proposal_badge.track { background-image: url('images/track-icons/front.png'); }
+.proposal_track_is_archisec i.proposal_badge.track { background-image: url('images/track-icons/arch.png'); }
+.proposal_track_is_cldops i.proposal_badge.track { background-image: url('images/track-icons/cloud.png'); }
+.proposal_track_is_agTest i.proposal_badge.track { background-image: url('images/track-icons/method.png'); }
+.proposal_track_is_bigd i.proposal_badge.track { background-image: url('images/track-icons/bigd.png'); }
+.proposal_track_is_future i.proposal_badge.track { background-image: url('images/track-icons/mind.png'); }
+.proposal_track_is_lang i.proposal_badge.track { background-image: url('images/track-icons/langs.png'); }
+.proposal_track_is_unknown i.proposal_badge.track { background-image: url('images/track-icons/server.png'); }
 
 .agendaTable .talkType{
     display: block;
