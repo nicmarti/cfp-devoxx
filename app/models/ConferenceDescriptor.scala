@@ -627,7 +627,7 @@ object ConferenceDescriptor {
       SlotBuilder(ConferenceSlotBreaks.registration, "thursday",
         new DateTime(s"${secondDay}T07:30:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T09:00:00.000+02:00").toDateTime(confTimezone))
-      , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
+      , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime(s"${secondDay}T10:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T10:45:00.000+02:00").toDateTime(confTimezone))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
