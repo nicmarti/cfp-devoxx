@@ -200,7 +200,7 @@ object Slot {
         if(!slot.to.equals(atomicTimeSlot._2)) {
           var fillerIndex = 1
           var fillerAtomicTimeSlot = atomicTimeSlots(atomicTimeSlotIndex + fillerIndex)
-          while(!fillerAtomicTimeSlot._1.isAfter(slot.to)) {
+          while(fillerAtomicTimeSlot._1.isBefore(slot.to)) {
             fillers += SlotBuilder(slot, fillerIndex, fillerAtomicTimeSlot._1, fillerAtomicTimeSlot._2)
             fillerIndex += 1
             fillerAtomicTimeSlot = atomicTimeSlots(atomicTimeSlotIndex + fillerIndex)
