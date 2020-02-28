@@ -17,7 +17,7 @@
              drag="talk" dragStyle="columnDrag"
              dropStyle="columnDrop" title="{{talk.state.code}}">
             <span class="proposalTitle">{{talk.title}}</span>
-            <span class="badge badge-secondary">{{talk.id}}</span>
+            <a class="badge badge-secondary" href="/cfpadmin/proposal/{{talk.id}}" target="_blank">{{talk.id}}&nbsp;<i class="fas fa-external-link-alt"></i></a>
 
             <div class="badge badge-warning">{{talk.track.id}}</div>
             <div class="badge badge-{{talk.lang}}">{{talk.lang}}</div>
@@ -50,7 +50,7 @@
                     <button class="btn-remove btn-danger" ng-click="unallocate(slot.id)"><i class="fas fa-times"></i> </button>
                     <br>
                     <span class="proposalTitle">{{slot.proposal.title}}</span>
-                    <span class="badge badge-secondary">{{slot.proposal.id}}</span>
+                    <a class="badge badge-secondary" href="/cfpadmin/proposal/{{slot.proposal.track.id}}" target="_blank">{{slot.proposal.id}}&nbsp;<i class="fas fa-external-link-alt"></i></a>
 
                     <span class="badge badge-warning">{{slot.proposal.track.id}}</span>
                     <span class="badge badge-{{slot.proposal.lang}}">{{slot.proposal.lang}}</span>
