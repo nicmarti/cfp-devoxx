@@ -165,9 +165,12 @@
     text-align: center;
 }
 
+.agendaTable .proposal_actions {
+} @media print { .agendaTable .proposal_actions { display: none; } }
+
 .agendaTable .proposal .cfp-fav {
     line-height: 1.3;
-} @media print { .agendaTable .proposal .cfp-fav { font-size: 1.1em; } }
+}
 
 
 i.proposal_badge {
