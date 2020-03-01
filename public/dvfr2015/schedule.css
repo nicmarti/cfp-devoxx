@@ -26,6 +26,15 @@
     border: 1px solid #ffd297;
 } @media print { .agendaTable { width: min-content; } }
 
+.agendaTable .button.secondary, .agendaTable .button.secondary:focus {
+    background: #2C3E50;
+    color: gold;
+}
+.agendaTable .button.secondary:hover {
+    background: white;
+    color: #f54f36;
+}
+
 .agendaTable th {
     background-color: #211c1b;
     color: white;

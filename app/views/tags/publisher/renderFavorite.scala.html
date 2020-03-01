@@ -3,13 +3,15 @@
 @if(ConferenceDescriptor.isFavoritesSystemActive){
     @defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
         @maybeUuid.map { uuid:String =>
+          <button class="button secondary cfp-fav" data-proposal-id="@proposalId">
             <i id="fav_@proposalId"
-               class="@if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) { fas } else { far } fa-star cfp-fav hide-on-print"
-               data-proposal-id="@proposalId" title="Add this talk to your agenda"></i>
+               class="@if(FavoriteTalk.isFavByThisUser(proposalId = proposalId, webuserId = uuid)) { fas } else { far } fa-star hide-on-print"
+               title="Add this talk to your agenda"></i>
+          </button>
         }.getOrElse {
-                <a class="hide-on-print" href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda">
-                    <i id="fav_@proposalId" class="far fa-star hide-on-print" style="font-size: 1.5em" data-proposal-id="@proposalId"></i>
-                </a>
+            <a data-proposal-id="@proposalId" class="button secondary hide-on-print" href="@routes.Authentication.prepareSignup(visitor = true)" title="Click here to add this talk to your agenda">
+                <i id="fav_@proposalId" class="far fa-star hide-on-print"></i>
+            </a>
         }
     }
 }

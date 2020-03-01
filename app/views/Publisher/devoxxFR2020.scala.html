@@ -115,22 +115,23 @@
                     $('.cfp-fav').on("click",function(event) {
                         var maybePropoposalId = $(this).data('proposal-id');
                         var clickedElement=$(this);
+                        var $star = clickedElement.find(".fa-star")
 
                         console.log("--> Sending "+maybePropoposalId);
                         if(typeof maybePropoposalId != 'undefined'){
                             event.preventDefault();
 
-                            $(clickedElement).removeClass("fa-star far").addClass("fas fa-spinner fa-spin")
+                            $($star).removeClass("fa-star far").addClass("fas fa-spinner fa-spin")
                             // This works only if you are authenticated with a signed cookie and a valid play2 session
                             $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
                                 function( jsonResponse ) {
                                   if(jsonResponse.status=="unfav"){
                                     console.log("<-- Unfav ok");
-                                    $(clickedElement).addClass("far fa-star").removeClass("fas fa-spinner fa-spin")
+                                    $($star).addClass("far fa-star").removeClass("fas fa-spinner fa-spin")
                                   }
                                   if(jsonResponse.status=="fav"){
                                     console.log("<-- Fav ok");
-                                    $(clickedElement).addClass("fa-star").removeClass("far fa-spinner fa-spin")
+                                    $($star).addClass("fa-star").removeClass("far fa-spinner fa-spin")
                                   }
                                 },"json");
                         }else{
