@@ -184,25 +184,20 @@ object Publisher extends Controller {
       }
   }
 
-  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = true, showScheduleMode: String = "ShowAll") = Action {
+  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = true, includeTypes: Option[String], excludeTypes: Option[String] = Some("bof")) = Action {
     implicit request =>
 
       def _showDay(day: String) = {
         val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
         val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
         val allSlotsWithBofMaybeFiltered = allSlots.filter(s => {
-          val isBof = s.name == ConferenceProposalTypes.BOF.id
-          showScheduleMode match {
-            case "ShowAll" => true
-            case "HideBOFs" => !isBof
-            case "ShowOnlyBOFs" => isBof
-          }
+          (includeTypes.isEmpty || includeTypes.get.split(",").contains(s.name)) && (excludeTypes.isEmpty || !excludeTypes.get.split(",").contains(s.name))
         })
         val rooms = allSlotsWithBofMaybeFiltered.groupBy(_.room).filter { entry =>
           val result = !hideUselessRooms || entry._2.count(_.proposal.isDefined) > 0
           result
         }.keys.toList
-        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse(""), secretPublishKey, hideUselessRooms, showScheduleMode))
+        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse(""), secretPublishKey, hideUselessRooms, includeTypes, excludeTypes))
       }
 
       day match {

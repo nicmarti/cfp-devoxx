@@ -1,4 +1,4 @@
-@(slots: List[Slot], rooms: List[Room], day: String, specificScheduleCSSSnippet: String, secretPublishKey: Option[String], hideUselessRooms: Boolean, showScheduleMode: String)(implicit lang: Lang, req: RequestHeader, flash:Flash)
+@(slots: List[Slot], rooms: List[Room], day: String, specificScheduleCSSSnippet: String, secretPublishKey: Option[String], hideUselessRooms: Boolean, includeTypes: Option[String], excludeTypes: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
     @views.html.Publisher.devoxxFR2020(Messages(s"sw.show.$day")) {
     <style>
     @@media print {
@@ -13,9 +13,9 @@
     <div class="large-12 columns">
         <h1 class="entry-title">@Messages(s"day-$day")</h1>
         <p class="breadcrumb hide-on-print"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            <a href="@routes.Publisher.showByDay("wed", secretPublishKey, hideUselessRooms, showScheduleMode)">@Messages("sw.agenda.wed")</a> /
-            <a href="@routes.Publisher.showByDay("thu", secretPublishKey, hideUselessRooms, showScheduleMode)">@Messages("sw.agenda.thu")</a> /
-            <a href="@routes.Publisher.showByDay("fri", secretPublishKey, hideUselessRooms, showScheduleMode)">@Messages("sw.agenda.fri")</a>
+            <a href="@routes.Publisher.showByDay("wed", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.wed")</a> /
+            <a href="@routes.Publisher.showByDay("thu", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.thu")</a> /
+            <a href="@routes.Publisher.showByDay("fri", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.fri")</a>
         </p>
 
         @if(ConferenceDescriptor.isShowRoom) {
