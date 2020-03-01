@@ -13,11 +13,17 @@
             @* nothing to do.. we're on a filler *@
         } else {
             @zeSlot.proposal.map { p: Proposal =>
-                <td class="proposal room room_is_@room.cssId @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
+                <td class="skip-max-width-on-divs ribbon-wrapper proposal room room_is_@room.cssId @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
                     <div class="badges">
                         <span class="hide-on-print cfp-fav">@tags.publisher.renderFavorite(p.id)</span>
                         <i class="proposal_badge track"></i>
-                        @if(p.lang!="fr"){ <i class="proposal_badge en_badge"></i> }
+                        @if(p.lang!="fr"){
+                            <div class="ribbon-wrapper-white">
+                                <div class="ribbon-white">
+                                    <i class="en_badge"></i>
+                                </div>
+                            </div>
+                        }
                     </div>
                     <div class="content">
                         <span class="title"><a class="blackLink skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a></span>
