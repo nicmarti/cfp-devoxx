@@ -200,7 +200,7 @@ i.en_badge {
     width: 18px;
     height: 15px;
     background-repeat: no-repeat;
-}
+} @media print { i.en_badge {background-size: 10px 8px; width: 10px; height: 8px;}}
 
 .proposal_track_is_java i.proposal_badge.track { background-image: url('images/track-icons/java.png'); }
 .proposal_track_is_mobile i.proposal_badge.track { background-image: url('images/icon_mobile.png'); }
@@ -349,15 +349,13 @@ input.cfp-fav:checked + label.cfp-lab {
 .ribbon-wrapper {
     margin: 50px auto;
     width: 280px;
-    height: 370px;
-    /* background: white; */
     border-radius: 10px;
     -webkit-box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
     -moz-box-shadow:    0px 0px 8px rgba(0,0,0,0.3);
     box-shadow:         0px 0px 8px rgba(0,0,0,0.3);
     position: relative;
     z-index: 90;
-}
+} @media print { .ribbon-wrapper {font-size: 0.5rem;border-radius: 8px;}}
 
 .ribbon-wrapper-white {
     width: 50px;
@@ -366,17 +364,17 @@ input.cfp-fav:checked + label.cfp-lab {
     position: absolute;
     top: -3px;
     right: -3px;
-}
+} @media print { .ribbon-wrapper-white {width: 40px;height: 35px;top: 0px;right: -12px;}}
 
 .ribbon-white {
     font: bold 10px Sans-Serif;
     color: #333;
     text-align: center;
-    text-shadow: rgba(255,255,255,0.5) 0px 1px 0px;
+    text-shadow: rgba(255, 255, 255, 0.5) 0px 1px 0px;
     -webkit-transform: rotate(45deg);
-    -moz-transform:    rotate(45deg);
-    -ms-transform:     rotate(45deg);
-    -o-transform:      rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
     position: relative;
     padding: 4px 12px 17px 0px;
     left: -5px;
@@ -385,13 +383,22 @@ input.cfp-fav:checked + label.cfp-lab {
     background-color: white;
     background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#CECECE));
     background-image: -webkit-linear-gradient(top, white, #CECECE);
-    background-image:    -moz-linear-gradient(top, white, #CECECE);
-    background-image:     -ms-linear-gradient(top, white, #CECECE);
-    background-image:      -o-linear-gradient(top, white, #CECECE);
+    background-image: -moz-linear-gradient(top, white, #CECECE);
+    background-image: -ms-linear-gradient(top, white, #CECECE);
+    background-image: -o-linear-gradient(top, white, #CECECE);
     color: #6a6340;
-    -webkit-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
-    -moz-box-shadow:    0px 0px 3px rgba(0,0,0,0.3);
-    box-shadow:         0px 0px 3px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+}  @media print { .ribbon-white {
+    padding-top: 2px;
+    padding-right: 10px;
+    padding-left: 0px;
+    padding-bottom: 10px;
+    top: 4px;
+    left: -5px;
+    width: 50px;
+    }
 }
 
 .ribbon-white:before, .ribbon-white:after {
@@ -401,7 +408,7 @@ input.cfp-fav:checked + label.cfp-lab {
     border-right: 3px solid transparent;
     position:absolute;
     bottom: -3px;
-}
+} @media print { .ribbon-white:before, .ribbon-white:after {border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;bottom: 0px;}}
 
 .ribbon-white:before {
     left: 0;
