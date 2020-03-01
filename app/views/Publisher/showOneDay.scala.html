@@ -11,7 +11,9 @@
     </style>
 
     <div class="large-12 columns">
-        <h1 class="entry-title">@Messages(s"day-$day")</h1>
+        <h1 class="entry-title">@Messages(s"day-$day") @includeTypes.map(types => {
+            s"(${types.split(",").map { typeId => Messages(typeId) }.mkString(", ")})"
+        } )</h1>
         <p class="breadcrumb hide-on-print"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByDay("wed", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.wed")</a> /
             <a href="@routes.Publisher.showByDay("thu", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.thu")</a> /

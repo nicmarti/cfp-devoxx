@@ -11,7 +11,7 @@
             @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
                 <a href="@routes.Publisher.showByDay(slot.get.day, None, includeTypes = None, excludeTypes = None)">@Messages(s"sw.agenda.${slot.get.day}")</a> &gt;
             }
-            <a href="@routes.Publisher.showAgendaByConfType(proposal.talkType.id, publishedConfiguration, slot.map(_.day).getOrElse("wednesday"))">@Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) @Messages("sw.agenda."+ slot.map(_.day).getOrElse("sw.agenda.wed"))</a>
+            <a href="@routes.Publisher.showByDay(slot.map(_.day).getOrElse("wednesday"), includeTypes = Some(proposal.talkType.id))">@Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) @Messages("sw.agenda."+ slot.map(_.day).getOrElse("sw.agenda.wed"))</a>
 
         </p>
     } else {
