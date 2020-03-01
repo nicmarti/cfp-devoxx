@@ -7,7 +7,7 @@
             <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
         </div>
 
-    <div class="row">
+    <div class="row centered-section">
         @speakers.sortBy(_.cleanName).sliding(4, 4).map { fourSpeakers: List[Speaker] =>
             @fourSpeakers.map { speaker: Speaker =>
                <div class="large-3 medium-3 columns">

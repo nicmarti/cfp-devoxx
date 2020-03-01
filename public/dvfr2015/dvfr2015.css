@@ -29216,6 +29216,11 @@ div.speakerCard span.twitter {
     margin-bottom: 15px;
 }
 
+.row .centered-section {
+    margin-left: 15rem;
+    width: 65rem;
+}
+
 img.speakerRound {
     max-width: 128px;
     float: left;
