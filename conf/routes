@@ -112,7 +112,7 @@ GET           /cfpadmin/allDevoxxians                                           
 GET           /cfpadmin/allSpeakersExport                                       controllers.CFPAdmin.allSpeakersExport()
 GET           /cfpadmin/devoxxians/all                                          controllers.CFPAdmin.allDevoxxians()
 GET           /cfpadmin/devoxxians/invalids                                     controllers.CFPAdmin.invalidDevoxxians()
-GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks()
+GET           /cfpadmin/allSpeakers/approvedTalks                               controllers.CFPAdmin.allSpeakersWithApprovedTalks(filterDeclinedRejected:Boolean ?=true)
 GET           /cfpadmin/allSpeakers/approvedTalks/byCompany                     controllers.CFPAdmin.allApprovedSpeakersByCompany(showQuickiesAndBof:Boolean ?=false)
 
 GET           /admin/webusers/delete                                            controllers.Backoffice.deleteWebuser(uuid:String)

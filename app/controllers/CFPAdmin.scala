@@ -576,13 +576,18 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.Backoffice.invalidDevoxxians(removeNoEmails.values.flatten.toList))
   }
 
-
-  def allSpeakersWithApprovedTalks() = SecuredAction(IsMemberOf("cfp")) {
+  def allSpeakersWithApprovedTalks(filterDeclinedRejected: Boolean) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = ApprovedProposal.allApprovedSpeakers()
-      val toReturn = allSpeakers.map {
-        s =>
-          (s, Proposal.allNonArchivedProposalsByAuthor(s.uuid))
+
+      val toReturn = if (filterDeclinedRejected) {
+        allSpeakers.map(s => (s, Proposal
+          .allNonArchivedProposalsByAuthor(s.uuid)
+          .filterNot(t => t._2.state == ProposalState.REJECTED || t._2.state == ProposalState.DECLINED)
+        )
+        ).filterNot(s => s._2.isEmpty)
+      } else {
+        allSpeakers.map(s => (s, Proposal.allNonArchivedProposalsByAuthor(s.uuid)))
       }
       Ok(views.html.CFPAdmin.allSpeakers(toReturn))
   }
