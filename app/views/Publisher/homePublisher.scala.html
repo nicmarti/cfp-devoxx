@@ -1,3 +1,4 @@
+@import models.ConferenceDescriptor.ConferenceProposalTypes
 @()(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @views.html.Publisher.devoxxFR2020("Schedule", Some("Devoxx FR 2020 agenda")) {
@@ -24,9 +25,9 @@
             <thead>
                 <tr>
                     <th class="scheduleHeader">&nbsp;</th>
-                    <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed")">[Détails]</a> </th>
-                    <th class="scheduleHeader">@Messages("day-thursday") <a href="@routes.Publisher.showByDay("thu")">[Détails]</a></th>
-                    <th class="scheduleHeader">@Messages("day-friday") <a href="@routes.Publisher.showByDay("fri")">[Détails]</a></th>
+                    <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">[Détails]</a> </th>
+                    <th class="scheduleHeader">@Messages("day-thursday") <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">[Détails]</a></th>
+                    <th class="scheduleHeader">@Messages("day-friday") <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">[Détails]</a></th>
                 </tr>
             </thead>
             <tbody>

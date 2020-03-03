@@ -1,59 +1,72 @@
-@(slots: List[Slot], rooms: List[Room], day: String, secretPublishKey: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
-@import org.joda.time.DateTimeZone
-
-
+@(slots: List[Slot], rooms: List[Room], day: String, specificScheduleCSSSnippet: String, secretPublishKey: Option[String], hideUselessRooms: Boolean, includeTypes: Option[String], excludeTypes: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
     @views.html.Publisher.devoxxFR2020(Messages(s"sw.show.$day")) {
-    <div class="large-12 columns">
-        <h1 class="entry-title">@Messages(s"day-$day")</h1>
+    <style>
+    @@media print {
+        /** BEGINNING BLOCK OF PROGRAM SCHEDULE'S PRINT CSS SNIPPET SPECIFITIES **/
 
-        <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
-            <a href="@routes.Publisher.showByDay("wed", secretPublishKey)">@Messages("sw.agenda.wed")</a> /
-            <a href="@routes.Publisher.showByDay("thu", secretPublishKey)">@Messages("sw.agenda.thu")</a> /
-            <a href="@routes.Publisher.showByDay("fri", secretPublishKey)">@Messages("sw.agenda.fri")</a>
+        @specificScheduleCSSSnippet
+
+        /** END BLOCK OF PROGRAM SCHEDULE'S PRINT CSS SNIPPET SPECIFITIES **/
+    }
+    </style>
+
+    <div class="large-12 columns">
+        <h1 class="entry-title">@Messages(s"day-$day") @includeTypes.map(types => {
+            s"(${types.split(",").map { typeId => Messages(typeId) }.mkString(", ")})"
+        } )</h1>
+        <p class="breadcrumb hide-on-print"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+            <a href="@routes.Publisher.showByDay("wed", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.wed")</a> /
+            <a href="@routes.Publisher.showByDay("thu", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.thu")</a> /
+            <a href="@routes.Publisher.showByDay("fri", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.fri")</a>
         </p>
 
         @if(ConferenceDescriptor.isShowRoom) {
-            <p>@Messages("publisher.room.disclaimer")</p>
+            <p class="hide-on-print">@Messages("publisher.room.disclaimer")</p>
         }
     </div>
 
     <div class="columns large-12 woocommerce">
-        <table class="agendaTable">
+        <table class="agendaTable for_day_@day skip-mb-on-print">
              @if(ConferenceDescriptor.isShowRoom) {
-                 <tr>
+                 <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
-                     @rooms.sorted.map { roomName: Room =>
-                         <td>@roomName.name</td>
+                     @rooms.sorted.map { room: Room =>
+                         <td class="room room_is_@room.cssId">
+                             <div class="main-title">@room.scheduleMainTitle</div>
+                             @room.scheduleSecondaryTitle.map { secondaryTitle: String => <div class="secondary-title">@secondaryTitle</div> }
+                         </td>
                      }
                  </tr>
              }
             @slots.groupBy(s=> s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
-                <tr >
+                <tr>
                     <th class="timeSlot">
-                        @subSlots.head.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @subSlots.head.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
-                        @if(subSlots.map(_.to).toSet.size>1){
-                            @subSlots.map(_.to).toSet.map { s:org.joda.time.DateTime =>
-                              <small>@s.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</small>
-                            }
-                        }
+                        @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
-                    @rooms.sorted.map { room =>
-                            @if(subSlots.map(_.to).toSet.size>1){
-                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, true, secretPublishKey)
-                            }else {
-                                @tags.publisher.tagRenderRow(subSlots, room, rooms.size, false, secretPublishKey)
-                            }
+                    @rooms.sorted.zipWithIndex.map { case (room, index) =>
+                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=false, secretPublishKey)
                     }
                 </tr>
             }
             @if(ConferenceDescriptor.isShowRoom) {
-                  <tr>
+                  <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
-                     @rooms.sorted.map { roomName: Room =>
-                         <td>@roomName.name</td>
+                     @rooms.sorted.map { room: Room =>
+                         <td class="room">
+                             <div class="main-title">@room.scheduleMainTitle</div>
+                             @room.scheduleSecondaryTitle.map { secondaryTitle: String => <div class="secondary-title">@secondaryTitle</div> }
+                         </td>
                      }
                  </tr>
             }
         </table>
     </div>
+    <ul class="schedule-legend">
+        @slots.flatMap(s => s.proposal.map(_.talkType)).distinct.map { proposalType =>
+            <li class="proposalType proposal_type_is_@proposalType.id">@Messages(proposalType.simpleLabel)</li>
+        }
+        @slots.flatMap(s => s.proposal.map(_.track)).distinct.map { track =>
+            <li class="track proposal_track_is_@track.id"><i class="proposal_badge track"></i> @Messages(track.label)</li>
+        }
+    </ul>
 }

@@ -40,7 +40,7 @@
 </div>
 
         <!-- Image Top Container -->
-    <section id="top-image" class="blog-page">
+    <section id="top-image" class="blog-page hide-on-print">
             <!-- Header Menu -->
         <header id="top-header">
             <div class="row">
@@ -72,7 +72,7 @@
 	    <!-- Blog Post -->
 	    <div class="row blog-post single-blog-post">
 	        <div class="large-12 large-centered columns single-page">
-	            <div class="single-content single-content-page row">
+	            <div class="single-content single-content-page row skip-pt-on-print">
 
             @if(flash.get("error").isDefined) {
                 <div class="alert alert-danger alert-dismissable">
@@ -94,7 +94,7 @@
 	</section>
 
 <!-- Footer -->
-<footer >
+<footer class="hide-on-print">
     <a href="#" class="go-top"></a>
     <div class="row">
         <div class="large-6 columns">
@@ -113,24 +113,27 @@
                 $(document).ready(function() {
 
                     $('.cfp-fav').on("click",function(event) {
-                        var maybePropoposalId = $(this).val();
+                        var maybePropoposalId = $(this).data('proposal-id');
                         var clickedElement=$(this);
+                        var $star = clickedElement.find(".fa-star")
 
                         console.log("--> Sending "+maybePropoposalId);
                         if(typeof maybePropoposalId != 'undefined'){
                             event.preventDefault();
+
+                            $($star).removeClass("fa-star far").addClass("fas fa-spinner fa-spin")
                             // This works only if you are authenticated with a signed cookie and a valid play2 session
                             $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
-                                    function( jsonResponse ) {
-                                        if(jsonResponse.status=="unfav"){
-                                            console.log("<-- Unfav ok");
-                                            $(clickedElement).attr("checked",false);
-                                        }
-                                        if(jsonResponse.status=="fav"){
-                                            console.log("<-- Fav ok");
-                                            $(clickedElement).attr("checked",true);
-                                        }
-                                    },"json");
+                                function( jsonResponse ) {
+                                  if(jsonResponse.status=="unfav"){
+                                    console.log("<-- Unfav ok");
+                                    $($star).addClass("far fa-star").removeClass("fas fa-spinner fa-spin")
+                                  }
+                                  if(jsonResponse.status=="fav"){
+                                    console.log("<-- Fav ok");
+                                    $($star).addClass("fa-star").removeClass("far fa-spinner fa-spin")
+                                  }
+                                },"json");
                         }else{
                             console.log("No valid proposalId. Please help me to debug, report your web browser version and platform.");
                         }

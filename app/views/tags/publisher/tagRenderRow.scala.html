@@ -1,30 +1,46 @@
-@(subSlots: List[Slot], room: Room, roomSize: Int, showEndTime:Boolean, secretPublishKey: Option[String])(implicit req:RequestHeader)
+@(subSlots: List[Slot], room: Room, roomIndex: Int, roomSize: Int, overallSlots: List[Slot], showEndTime:Boolean, secretPublishKey: Option[String])(implicit req:RequestHeader)
 @import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
-        @if(zeSlot.notAllocated) {
-            <td>TBA</td>
+        @if(zeSlot.notAllocated && !zeSlot.isFiller) {
+            <td class="proposal tba room_is_@room.cssId" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">TBA</td>
         }
-        @zeSlot.proposal.map { p: Proposal =>
-            <td class="room @room.id @zeSlot.id">
-                <span class="proposalType">@Messages(p.talkType.id)</span>
-                <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a> @if(p.lang!="fr"){ <img src="@routes.Assets.at(path="/public", file="images/en.png")"/> }</span>
-                <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
-                    @tags.publisher.renderSpeaker(speakerUUID)
-                }</span>
-                <span class="track"> @Messages(p.track.label) @tags.publisher.renderFavorite(p.id)</span>
-
-                @if(showEndTime){
-                    <span class="endTime"> @zeSlot.from.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm") - @zeSlot.to.toDateTime(DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</span>
-                }
-
-            </td>
-        }
-        @if(zeSlot.break.isDefined) {
-            <td class="break @room.id" colspan="@roomSize">
+        @if(zeSlot.break.isDefined && roomIndex == 0) {
+            <td class="break skip-print-defaults room_is_@room.cssId" colspan="@(roomSize - subSlots.filter(s => s.isFiller).size)">
             @Messages(s"sw.${zeSlot.break.get.id}")
             </td>
         }
+        @if(zeSlot.isFiller) {
+            @* nothing to do.. we're on a filler *@
+        } else {
+            @zeSlot.proposal.map { p: Proposal =>
+                <td class="skip-max-width-on-divs ribbon-wrapper proposal room room_is_@room.cssId @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
+                    <div class="badges">
+                        <i class="proposal_badge track"></i>
+                        @if(p.lang!="fr"){
+                            <div class="ribbon-wrapper-white">
+                                <div class="ribbon-white">
+                                    <i class="en_badge"></i>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="content">
+                        <span class="title"><a class="blackLink skip-print-defaults" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle, secretPublishKey)">@p.title</a></span>
+                        <span class="speaker"> @p.allSpeakerUUIDs.map { speakerUUID =>
+                            @tags.publisher.renderSpeaker(speakerUUID)
+                        }</span>
+
+                        @if(showEndTime){
+                            <span class="endTime"> @zeSlot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @zeSlot.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</span>
+                        }
+                    </div>
+                    <div class="proposal_actions">
+                        @tags.publisher.renderFavorite(p.id)
+                    </div>
+                </td>
+            }
+        }
     }
-    @if(!subSlots.exists(_.room.id == room.id)) {
-        <td>&nbsp;</td>
+    @if(!subSlots.exists(_.room.id == room.id) && !subSlots.exists(_.break.isDefined)) {
+        <td class="room-closed room_is_@room.cssId">&nbsp;</td>
     }

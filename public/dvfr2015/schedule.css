@@ -24,6 +24,15 @@
 
 .agendaTable {
     border: 1px solid #ffd297;
+} @media print { .agendaTable { width: min-content; } }
+
+.agendaTable .button.secondary, .agendaTable .button.secondary:focus {
+    background: #2C3E50;
+    color: gold;
+}
+.agendaTable .button.secondary:hover {
+    background: white;
+    color: #f54f36;
 }
 
 .agendaTable th {
@@ -32,8 +41,10 @@
 }
 
 .agendaTable td.room {
-    width: 14%;
     vertical-align: top;
+    text-align: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .agendaTable td.keynotes {
@@ -43,20 +54,37 @@
     line-height: 55px;
 }
 
-.agendaTable th.timeSlot {
-    width: 6%;
-}
+.agendaTable .timeSlot {
+    padding: 5px 4px;
+    white-space: nowrap;
+} @media print { .agendaTable .timeSlot { font-size: 0.7rem; } }
 
-.agendaTable .title {
+.agendaTable .title, .agendaTable .room .main-title {
     padding-bottom: 5px;
     display: block;
+    font-weight: 600;
+    line-height: normal;
+} @media print { .agendaTable .title, .agendaTable .room .main-title { font-size: 0.55rem; } }
+
+.agendaTable .room .main-title {
+    white-space: nowrap;
 }
 
-.agendaTable .speaker {
-    font-style: italic;
-    font-weight: lighter;
-    display: block;
+.schedule-legend li {
+    font-weight: 600;
+    line-height: normal;
+} @media print { .schedule-legend li { font-size: 0.65rem; } }
+
+.agendaTable .title {
+    margin-bottom: 8px;
 }
+
+.agendaTable .speaker, .agendaTable .room .secondary-title {
+    font-style: italic;
+    display: block;
+    font-weight: 400;
+    line-height: normal;
+} @media print { .agendaTable .speaker, .agendaTable .room .secondary-title { font-size: 0.45rem; } }
 
 .agendaTable .iconTrack {
     display: block;
@@ -65,33 +93,125 @@
 }
 
 .agendaTable .room {
-    max-width: 16%;
     vertical-align: top;
     border: 1px solid #ffd297;
 }
 
 .agendaTable .track {
     display: block;
-    font-size: 0.8em;
-}
+} @media print { .agendaTable .track { font-size: 0.8em; } }
 
 .agendaTable .endTime{
     display: block;
     background-color: #f4b787;
     color:white;
-    font-size: 0.8em;
     padding: 2px;
     text-align: center;
-}
+} @media print { .agendaTable .endTime { font-size: 0.8em; } }
 
 .agendaTable .proposalType {
     display: block;
     background-color: #f4882d;
     color:white;
-    font-size: 0.8em;
     padding: 2px;
     text-align: center;
+} @media print { .agendaTable .proposalType { font-size: 0.8em; } }
+
+.schedule-legend {
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
+
+.schedule-legend .proposalType, .schedule-legend .track {
+    display: inline-block;
+    padding: 5px;
+    position: relative;
+}
+
+.agendaTable td.proposal {
+    padding: 0px;
+    text-align: center;
+    position: relative
+}
+
+.agendaTable td.proposal .content {
+    padding: 4px;
+}
+
+.proposal_type_is_uni { background-color: #ccfecc; }
+.proposal_type_is_lab { background-color: #ffc6c6; }
+.proposal_type_is_conf { background-color: #ccfecc; }
+.proposal_type_is_tia { background-color: #daeff4; }
+.proposal_type_is_quick { background-color: #fffec3; }
+.proposal_type_is_bof { background-color: #dee3f6; }
+.proposal_type_is_key { background-color: #ccfecc; }
+.proposal_type_is_other { background-color: #dee3f6; }
+.agendaTable .proposal.tba { background-color: #eeeeee; padding: 2px; }
+.agendaTable .room-closed { background-color: #bbbbbb; padding: 2px; }
+
+/* Only used for debug purposes */
+.agendaTable .max-cell-height {
+    border: 4px red solid;
+}
+.agendaTable .warning-cell-height {
+    border: 4px orange solid;
+}
+
+.agendaTable .proposal .badges {
+    width: 100%;
+    height: 20px;
+    text-align: center;
+}
+
+.agendaTable .proposal_actions {
+} @media print { .agendaTable .proposal_actions { display: none; } }
+
+.agendaTable .proposal .cfp-fav {
+    line-height: 1.3;
+}
+
+
+i.proposal_badge {
+    position: absolute;
+    background-repeat: no-repeat;
+    margin: 2px;
+    z-index: 0;
+}
+
+.agendaTable .proposal i.proposal_badge {
+    top: 0px;
+}
+.schedule-legend i.proposal_badge {
+    top: 5px;
+}
+
+i.proposal_badge.track {
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background-size: 16px 16px;
+}
+i.en_badge {
+    position: absolute;
+    background-image: url('/assets/images/en_highres.png');
+    background-size: 18px 15px;
+    width: 18px;
+    height: 15px;
+    background-repeat: no-repeat;
+} @media print { i.en_badge {background-size: 10px 8px; width: 10px; height: 8px;}}
+
+.proposal_track_is_java i.proposal_badge.track { background-image: url('images/track-icons/java.png'); }
+.proposal_track_is_mobile i.proposal_badge.track { background-image: url('images/icon_mobile.png'); }
+.proposal_track_is_wm i.proposal_badge.track { background-image: url('images/track-icons/front.png'); }
+.proposal_track_is_archisec i.proposal_badge.track { background-image: url('images/track-icons/arch.png'); }
+.proposal_track_is_cldops i.proposal_badge.track { background-image: url('images/track-icons/cloud.png'); }
+.proposal_track_is_agTest i.proposal_badge.track { background-image: url('images/track-icons/method.png'); }
+.proposal_track_is_bigd i.proposal_badge.track { background-image: url('images/track-icons/bigd.png'); }
+.proposal_track_is_future i.proposal_badge.track { background-image: url('images/track-icons/mind.png'); }
+.proposal_track_is_lang i.proposal_badge.track { background-image: url('images/track-icons/langs.png'); }
+.proposal_track_is_unknown i.proposal_badge.track { background-image: url('images/track-icons/server.png'); }
 
 .agendaTable .talkType{
     display: block;
@@ -99,9 +219,6 @@
     color:white;
     padding: 2px;
     text-align: center;
-}
-.agendaTable .speaker{
-    font-size: 0.9em;
 }
 
 .speakerDetail {
@@ -139,7 +256,8 @@ td.break {
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
-}
+    padding: 0px;
+} @media print { td.break { font-size: 0.55rem; } }
 
 td.notAllocated {
     text-align: center;
@@ -222,4 +340,79 @@ input.cfp-fav:checked + label.cfp-lab {
     padding-right: 4px;
     border-radius: 6px;
     padding-bottom: 2px;
+}
+
+.single-content.row .skip-max-width-on-divs div {
+    max-width: none;
+}
+
+.ribbon-wrapper {
+    margin: 50px auto;
+    width: 280px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+    -moz-box-shadow:    0px 0px 8px rgba(0,0,0,0.3);
+    box-shadow:         0px 0px 8px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 90;
+} @media print { .ribbon-wrapper {font-size: 0.5rem;border-radius: 8px;}}
+
+.ribbon-wrapper-white {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+} @media print { .ribbon-wrapper-white {width: 40px;height: 35px;top: 0px;right: -12px;}}
+
+.ribbon-white {
+    font: bold 10px Sans-Serif;
+    color: #333;
+    text-align: center;
+    text-shadow: rgba(255, 255, 255, 0.5) 0px 1px 0px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    position: relative;
+    padding: 4px 12px 17px 0px;
+    left: -5px;
+    top: 3px;
+    width: 75px;
+    background-color: white;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#CECECE));
+    background-image: -webkit-linear-gradient(top, white, #CECECE);
+    background-image: -moz-linear-gradient(top, white, #CECECE);
+    background-image: -ms-linear-gradient(top, white, #CECECE);
+    background-image: -o-linear-gradient(top, white, #CECECE);
+    color: #6a6340;
+    -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+}  @media print { .ribbon-white {
+    padding-top: 2px;
+    padding-right: 10px;
+    padding-left: 0px;
+    padding-bottom: 10px;
+    top: 4px;
+    left: -5px;
+    width: 50px;
+    }
+}
+
+.ribbon-white:before, .ribbon-white:after {
+    content: "";
+    border-top: 3px solid #6e8900;
+    border-left:  3px solid transparent;
+    border-right: 3px solid transparent;
+    position:absolute;
+    bottom: -3px;
+} @media print { .ribbon-white:before, .ribbon-white:after {border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;bottom: 0px;}}
+
+.ribbon-white:before {
+    left: 0;
+}
+.ribbon-white:after {
+    right: 0;
 }

@@ -452,8 +452,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
@@ -522,8 +522,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
@@ -689,8 +689,8 @@ object RestAPI extends Controller {
                   updatedProposal
               }
 
-              val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
-              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+              val fromDate = new DateTime(slot.from.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
+              val slotToDate = new DateTime(slot.to.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
 
               Map(
                 "slotId" -> Json.toJson(slot.id)
@@ -756,8 +756,8 @@ object RestAPI extends Controller {
               val maybeSlot = {
                 ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id).map {
                   slot =>
-                    val fromDate = new DateTime(slot.from.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
-                    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(DateTimeZone.forID("Europe/Brussels"))
+                    val fromDate = new DateTime(slot.from.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
+                    val slotToDate = new DateTime(slot.to.getMillis).toDateTime(ConferenceDescriptor.current().timezone)
 
                     Map(
                       "slotId" -> Json.toJson(slot.id)

@@ -1,7 +1,7 @@
 @(uuid: String, renderPhoto:Boolean=false)
 @models.Speaker.findByUUID(uuid).map { speaker =>
 <div class="speaker">
-<a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" title="@speaker.cleanName" alt="@speaker.urlName">
+<a class="blackLink skip-print-defaults" href="@routes.Publisher.showSpeakerByName(speaker.urlName)" title="@speaker.cleanName" alt="@speaker.urlName">
 @if(renderPhoto){
 @speaker.avatarUrl.map{url=>
  <img width="32" height="32" src="@url" alt="@speaker.cleanName" title="@speaker.cleanName"/>

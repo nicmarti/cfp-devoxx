@@ -33,9 +33,9 @@
             @slots.map { slot: Slot =>
               <tr>
                   <td>@slot.proposal.map(p=> p.talkType.id)</td>
-                  <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("EEEE")</td>
-                  <td>@slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
-                  <td>@slot.to.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")</td>
+                  <td>@slot.from.toDateTime(models.ConferenceDescriptor.current().timezone).toString("EEEE")</td>
+                  <td>@slot.from.toDateTime(models.ConferenceDescriptor.current().timezone).toString("HH:mm")</td>
+                  <td>@slot.to.toDateTime(models.ConferenceDescriptor.current().timezone).toString("HH:mm")</td>
                   <td>@slot.room.name</td>
                   <td>@slot.proposal.map(_.title)</td>
                   <td>@slot.proposal.map(_.lang)</td>

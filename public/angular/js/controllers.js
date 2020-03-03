@@ -111,6 +111,55 @@ programController.controller('ProgramController', function ProgramController($ro
         });
     };
 
+    $scope.fillCSSSnippetWithDefault = function(programSchedule) {
+        programSchedule.specificScheduleCSSSnippet = `
+.agendaTable.for_day_wednesday td.room.room_is_b_amphi {min-width: 100px;}
+.agendaTable.for_day_wednesday td.room.room_is_c_maillot {min-width: 100px;}
+.agendaTable.for_day_wednesday td.room.room_is_d_par241 {min-width: 100px;}
+.agendaTable.for_day_wednesday td.room.room_is_f_neu251 {min-width: 100px;}
+.agendaTable.for_day_wednesday td.room.room_is_e_neu252 {min-width: 100px; }
+.agendaTable.for_day_wednesday td.room.room_is_par242AB {min-width: 100px; }
+.agendaTable.for_day_wednesday td.room.room_is_neu253_t {min-width: 100px;}
+.agendaTable.for_day_wednesday td.room.room_is_par243_t {min-width: 100px;}
+.agendaTable.for_day_wednesday td.room.room_is_par202_203 {min-width: 100px; }
+.agendaTable.for_day_wednesday td.room.room_is_par221M_222M {min-width: 100px; }
+.agendaTable.for_day_wednesday td.room.room_is_par224M_225M {min-width: 100px; }
+.agendaTable.for_day_wednesday td.room.room_is_neu_232_232 {min-width: 100px; }
+.agendaTable.for_day_wednesday td.room.room_is_neu_234_235 {min-width: 100px; }
+.agendaTable.for_day_wednesday td.room.room_is_neu_212_213 {min-width: 100px; }
+
+.agendaTable.for_day_thursday td.room.room_is_b_amphi {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_c_maillot {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_d_par241 {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_f_neu251 {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_e_neu252 {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_par242AB {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_neu253_t {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_par243_t {min-width: 100px;}
+.agendaTable.for_day_thursday td.room.room_is_par202_203 {min-width: 80px;}
+.agendaTable.for_day_thursday td.room.room_is_par221M_222M {min-width: 80px;}
+.agendaTable.for_day_thursday td.room.room_is_par224M_225M {min-width: 80px;}
+.agendaTable.for_day_thursday td.room.room_is_neu_232_232 {min-width: 80px;}
+.agendaTable.for_day_thursday td.room.room_is_neu_234_235 {min-width: 80px;}
+.agendaTable.for_day_thursday td.room.room_is_neu_212_213 {min-width: 80px;}
+
+.agendaTable.for_day_friday td.room.room_is_b_amphi {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_c_maillot {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_d_par241 {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_f_neu251 {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_e_neu252 {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_par242AB {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_neu253_t {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_par243_t {min-width: 100px;}
+.agendaTable.for_day_friday td.room.room_is_par202_203 {min-width: 80px;}
+.agendaTable.for_day_friday td.room.room_is_par221M_222M {min-width: 80px;}
+.agendaTable.for_day_friday td.room.room_is_par224M_225M {min-width: 80px;}
+.agendaTable.for_day_friday td.room.room_is_neu_232_232 {min-width: 80px;}
+.agendaTable.for_day_friday td.room.room_is_neu_234_235 {min-width: 80px;}
+.agendaTable.for_day_friday td.room.room_is_neu_212_213 {min-width: 80px;}        
+        `;
+    }
+
     $scope.refresh();
 });
 

@@ -15,12 +15,14 @@ case class ProgramSchedule(
         lastModified: DateTime,
         scheduleConfigurations: Map[ProposalType, String],
         isTheOnePublished: Boolean, // will not be persisted
-        isEditable: Boolean) {
+        isEditable: Boolean,
+        specificScheduleCSSSnippet: Option[String] = None
+) {
 
   def toPersistedProgramSchedule: PersistedProgramSchedule = {
     PersistedProgramSchedule(id, eventCode, name, lastModifiedByName, lastModified, scheduleConfigurations.map {
       case(proposalType, scheduleConfigId) => (proposalType.id, scheduleConfigId)
-    }, isEditable)
+    }, isEditable, specificScheduleCSSSnippet)
   }
 }
 
@@ -31,7 +33,9 @@ case class PersistedProgramSchedule(
         lastModifiedByName: String,
         lastModified: DateTime,
         scheduleConfigurations: Map[String, String],
-        isEditable: Boolean)
+        isEditable: Boolean,
+        specificScheduleCSSSnippet: Option[String] = None
+)
 
 
 object ProgramSchedule {
@@ -50,7 +54,7 @@ object ProgramSchedule {
       val uuid = UUID.randomUUID().toString
       val emptySchedule = ProgramSchedule(
         uuid, ConferenceDescriptor.current().eventCode, "Empty schedule", s"${creator.firstName} ${creator.lastName}",
-        DateTime.now(), Map(), true, false
+        DateTime.now(), Map(), true, false, None
       )
       client.hset(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid, Json.stringify(Json.toJson(emptySchedule.toPersistedProgramSchedule)))
       client.set(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published", uuid)
@@ -60,7 +64,14 @@ object ProgramSchedule {
   def fromPersisted(s: PersistedProgramSchedule, publishedProgramScheduleId: String): ProgramSchedule = {
     ProgramSchedule(s.id, s.eventCode, s.name, s.lastModifiedByName, s.lastModified, s.scheduleConfigurations.map {
       case (proposalTypeId, scheduleConfigId) => (ConferenceProposalTypes.valueOf(proposalTypeId), scheduleConfigId)
-    }, s.id == publishedProgramScheduleId, s.isEditable)
+    }, s.id == publishedProgramScheduleId, s.isEditable, s.specificScheduleCSSSnippet)
+  }
+
+  def findByPublishKey(secretPublishKey: Option[String]) = {
+    secretPublishKey match {
+      case Some(key) => ProgramSchedule.findById(key)
+      case None => ProgramSchedule.publishedProgramSchedule()
+    }
   }
 
   def findById(uuid: String) = Redis.pool.withClient {

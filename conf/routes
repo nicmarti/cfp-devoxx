@@ -222,8 +222,7 @@ GET           /2020/talk/:proposalId                                            
 GET           /2020/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String, secretPublishKey:Option[String] ?=None)
 GET           /2020/talks                                                       controllers.Publisher.homePublisher()
 GET           /2020/index.html                                                  controllers.Publisher.homePublisher()
-GET           /2020/agenda/:confType/:day                                       controllers.Publisher.showAgendaByConfType(confType:String, slotId:Option[String], day:String)
-GET           /2020/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None)
+GET           /2020/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None, hideUselessRooms:Boolean ?=true, includeTypes:Option[String] ?=None, excludeTypes:Option[String] ?=Some("bof"))
 GET           /2020/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 
 # Archive folder
@@ -299,6 +298,7 @@ GET           /schedulling/loadScheduledConfiguration                           
 POST          /schedulling/slots                                                controllers.SchedullingController.saveSlots(confType:String)
 POST          /schedulling/createAndPublishEmptyProgramSchedule                 controllers.SchedullingController.createAndPublishEmptyProgramSchedule()
 DELETE        /schedulling/deletescheduledConfigurations                        controllers.SchedullingController.deleteScheduleConfiguration(id:String)
+GET           /schedulling/admin/migrateConfigs                                  controllers.SchedullingController.migrateConfigs()
 
 # WishList
 GET           /cfpadmin/wishlist/home                                           controllers.Wishlist.homeWishList()

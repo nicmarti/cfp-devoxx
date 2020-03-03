@@ -108,19 +108,30 @@ object ScheduleConfiguration {
             play.Logger.of("models.ScheduledConfiguration").warn("Unable to reload a SlotConfiguration due to JSON error")
             play.Logger.of("models.ScheduledConfiguration").warn(s"Got error : ${library.ZapJson.showError(errors)} ")
             None
-          }
-            , someConf => Option(someConf)
-          )
+          }, scheduleConfig => {
+            Option(scheduleConfig.copy(
+              // Replacing every slots/timeslots to convert them to current conf timezone, as we're generally
+              // using local time everywhere in the code, whereas after JSON deserialization, it's UTC-based
+              slots = scheduleConfig.slots.map(slot => {
+                slot.copy(
+                  from = slot.from.toDateTime(ConferenceDescriptor.current().timezone),
+                  to = slot.to.toDateTime(ConferenceDescriptor.current().timezone)
+                )
+              }),
+              timeSlots = scheduleConfig.timeSlots.map(timeSlot => {
+                timeSlot.copy(
+                  start = timeSlot.start.toDateTime(ConferenceDescriptor.current().timezone),
+                  end = timeSlot.end.toDateTime(ConferenceDescriptor.current().timezone)
+                )
+              })
+            ))
+          })
       }
   }
 
   def getPublishedSchedule(confType: String, secretPublishKey: Option[String] = None): Option[String] = Redis.pool.withClient {
     implicit client =>
-      val maybeProgramSchedule = secretPublishKey match {
-        case Some(secretKey) => ProgramSchedule.findById(secretKey)
-        case None => ProgramSchedule.publishedProgramSchedule()
-      }
-
+      val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
       maybeProgramSchedule.flatMap { programSchedule =>
         programSchedule.scheduleConfigurations.get(ConferenceProposalTypes.valueOf(confType))
       }
@@ -192,7 +203,7 @@ object ScheduleConfiguration {
   def loadNextTalks() = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots)
-    Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(DateTimeZone.forID("Europe/Paris")))).sortBy(_.from.toDate.getTime).take(10))
+    Option(slots.filter(_.from.isAfter(new DateTime().toDateTime(ConferenceDescriptor.current().timezone))).sortBy(_.from.toDate.getTime).take(10))
   }
 
   def loadRandomTalks() = {

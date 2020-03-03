@@ -500,7 +500,7 @@ sw.lunch=Déjeuner
 
 sw.reg=Accueil et petit déjeuner
 sw.dej=Accueil et petit déjeuner
-sw.chgt=Pause café
+sw.chgt=Pause courte
 sw.coffee=Pause café
 sw.coffee.break=Pause café
 sw.endOfDay=Fin de la journée, fermeture de l''espace d''exposition

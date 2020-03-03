@@ -27,12 +27,10 @@ import akka.util.Crypt
 import library.search.ElasticSearch
 import play.api.libs.json.{JsObject, Json}
 import library.{LogURL, ZapActor}
-import models._
-import play.api.cache.Cache
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.validation.Constraints._
+import models.ConferenceDescriptor.ConferenceProposalTypes
+import models.{ConferenceDescriptor, _}
 import play.api.mvc._
+
 
 /**
  * Publisher is the controller responsible for the Web content of your conference Program.
@@ -132,75 +130,28 @@ object Publisher extends Controller {
   private val thursday: String = "thursday"
   private val friday: String = "friday"
 
-  def showAgendaByConfType(confType: String, slotId: Option[String], day: String = wednesday) = Action {
-    implicit request =>
-      val realSlotId = slotId.orElse {
-        ScheduleConfiguration.getPublishedSchedule(confType)
-      }
-      if (realSlotId.isEmpty) {
-        // Show the accepted talks instead
-        Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
-      } else {
-        val maybeScheduledConfiguration = ScheduleConfiguration.loadScheduledConfiguration(realSlotId.get)
-        maybeScheduledConfiguration match {
-          case Some(slotConfig) if day == null =>
-            val updatedConf = slotConfig.copy(slots = slotConfig.slots)
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, wednesday))
-
-          case Some(slotConfig) if day == monday =>
-            val updatedConf = slotConfig.copy(slots = slotConfig.slots.filter(_.day == monday)
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 1))
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, monday))
-
-          case Some(slotConfig) if day == tuesday =>
-            val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == tuesday)
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 2)
-            )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, tuesday))
-
-          case Some(slotConfig) if day == wednesday =>
-            val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == wednesday)
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 3)
-            )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, wednesday))
-
-          case Some(slotConfig) if day == thursday =>
-            val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == thursday)
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 4)
-            )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, thursday))
-
-          case Some(slotConfig) if day == friday =>
-            val updatedConf = slotConfig.copy(
-              slots = slotConfig.slots.filter(_.day == friday)
-              , timeSlots = slotConfig.timeSlots.filter(_.start.getDayOfWeek == 5)
-            )
-            Ok(views.html.Publisher.showAgendaByConfType(updatedConf, confType, friday))
-
-          case None => Ok(views.html.Publisher.showByTalkType(Proposal.allAcceptedByTalkType(confType), confType))
-            // NotFound(views.html.Publisher.agendaNotYetPublished())
-        }
-      }
-  }
-
-  def showByDay(day: String, secretPublishKey: Option[String]) = Action {
+  def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = true, includeTypes: Option[String], excludeTypes: Option[String] = Some("bof")) = Action {
     implicit request =>
 
-      def _showDay(slots: List[Slot], day: String) = {
-        val rooms = slots.groupBy(_.room).keys.toList
-        val allSlots = ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey)
-        Ok(views.html.Publisher.showOneDay(allSlots, rooms, day, secretPublishKey))
+      def _showDay(day: String) = {
+        val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
+        val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
+        val allSlotsWithBofMaybeFiltered = allSlots.filter(s => {
+          (includeTypes.isEmpty || includeTypes.get.split(",").contains(s.name)) && (excludeTypes.isEmpty || !excludeTypes.get.split(",").contains(s.name))
+        })
+        val rooms = allSlotsWithBofMaybeFiltered.groupBy(_.room).filter { entry =>
+          val result = !hideUselessRooms || entry._2.count(_.proposal.isDefined) > 0
+          result
+        }.keys.toList
+        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse(""), secretPublishKey, hideUselessRooms, includeTypes, excludeTypes))
       }
 
       day match {
-        case d if Set("mon", monday, "lundi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.mondaySchedule, monday)
-        case d if Set("tue", tuesday, "mardi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.tuesdaySchedule, tuesday)
-        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.wednesdaySchedule, wednesday)
-        case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.thursdaySchedule, thursday)
-        case d if Set("fri", friday, "vendredi").contains(d) => _showDay(models.ConferenceDescriptor.ConferenceSlots.fridaySchedule, friday)
+        case d if Set("mon", monday, "lundi").contains(d) => _showDay(monday)
+        case d if Set("tue", tuesday, "mardi").contains(d) => _showDay(tuesday)
+        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(wednesday)
+        case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(thursday)
+        case d if Set("fri", friday, "vendredi").contains(d) => _showDay(friday)
         case _ => NotFound("Day not found")
       }
   }

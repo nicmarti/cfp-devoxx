@@ -77,7 +77,7 @@ class SmsActor extends Actor {
             ScheduleConfiguration.findSlotForConfType(theProposal.talkType.id, theProposal.id).map {
               slot =>
                 val day = slot.day
-                val hour = slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                val hour = slot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                 val room = slot.room.name
                 TwilioSender.send(phoneNumber, s"Devoxx FR\nYour presentation [${theProposal.title}] is scheduled on ${day} at ${hour} in room [${room}].\n\nRoom might change until 13th, April 2020")
             }.getOrElse {
@@ -90,7 +90,7 @@ class SmsActor extends Actor {
                 ScheduleConfiguration.findSlotForConfType(theProposal.talkType.id, theProposal.id).map {
                   slot =>
                     val day = slot.day
-                    val hour = slot.from.toDateTime(org.joda.time.DateTimeZone.forID("Europe/Brussels")).toString("HH:mm")
+                    val hour = slot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     val room = slot.room.name
                     s"- presentation [${theProposal.title}] is scheduled on ${day} at ${hour} in room [${room}]"
                 }.getOrElse {
