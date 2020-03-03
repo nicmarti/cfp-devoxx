@@ -185,6 +185,8 @@ case class Proposal(id: String,
     val processedMarkdownTest = Processor.process(StringUtils.trimToEmpty(privateMessage).trim()) // Then do markdown processing
     processedMarkdownTest
   }
+
+  def cssId: String = id.replace("-", "_")
 }
 
 object Proposal {
