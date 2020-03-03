@@ -64,8 +64,15 @@ case class Speaker(uuid: String
     firstName.getOrElse("").capitalize
   }
 
-  def cleanLastName: String = {
-    name.map(s=> s.toLowerCase.replaceAll("é","e")).getOrElse("").toUpperCase
+  def cleanLastName: String = { cleanLastName() }
+  def cleanLastName(removeAccents: Boolean = true): String = {
+    name.map(s => {
+      var result = s.toLowerCase
+      if(removeAccents) {
+        result = result.replaceAll("é","e")
+      }
+      result
+    }).getOrElse("").toUpperCase
   }
 
   def urlName: String = {
