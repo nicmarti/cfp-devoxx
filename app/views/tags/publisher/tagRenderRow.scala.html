@@ -5,7 +5,7 @@
             <td class="proposal tba" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">TBA</td>
         }
         @if(zeSlot.break.isDefined && roomIndex == 0) {
-            <td class="break skip-print-defaults" colspan="@(roomSize - subSlots.filter(s => s.isFiller).size)">
+            <td class="break skip-print-defaults" colspan="@(roomSize - subSlots.filter(s => !s.break.isDefined).size)">
             @Messages(s"sw.${zeSlot.break.get.id}")
             </td>
         }
