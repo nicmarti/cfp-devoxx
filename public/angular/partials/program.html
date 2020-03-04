@@ -32,9 +32,7 @@
           <th>ID</th>
           <th>Name</th>
           <th>Last modification</th>
-          <th ng-repeat="type in slottableProposalTypes track by type.id">
-            {{type.label}}
-          </th>
+          <th style="width:220px;">Slot Configurations</th>
           <th>CSS Specific snippet</th>
           <th>Actions</th>
         </tr>
@@ -63,21 +61,24 @@
             </div>
           </td>
           <td>{{programSchedule.lastModified|date:'short'}} by {{programSchedule.lastModifiedByName}}</td>
-          <td ng-repeat="type in slottableProposalTypes track by type.id">
-            <div ng-show="!programSchedule._isEdited">
-              <em ng-if="!programSchedule.scheduleConfigurations[type.id]">None</em>
-              <span ng-if="programSchedule.scheduleConfigurations[type.id]">
-              <span class="badge badge-warning" title="created by {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).createdBy}} on {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).latestModification | date:'short'}}">
-                <i class="fas fa-exclamation-triangle" ng-show="programSchedule.scheduleConfigurations[type.id] != availableConfigsForType(type.id)[0].id"></i>
-                {{programSchedule.scheduleConfigurations[type.id]}}
+          <td>
+            <div ng-repeat="type in slottableProposalTypes track by type.id">
+              {{type.label}} :
+              <span ng-show="!programSchedule._isEdited">
+                <em ng-if="!programSchedule.scheduleConfigurations[type.id]">None</em>
+                <span ng-if="programSchedule.scheduleConfigurations[type.id]">
+                  <span class="badge badge-warning" title="created by {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).createdBy}} on {{scheduleConfigById(programSchedule.scheduleConfigurations[type.id]).latestModification | date:'short'}}">
+                    <i class="fas fa-exclamation-triangle" ng-show="programSchedule.scheduleConfigurations[type.id] != availableConfigsForType(type.id)[0].id"></i>
+                    {{programSchedule.scheduleConfigurations[type.id]}}
+                  </span>
+                </span>
               </span>
-            </span>
-            </div>
-            <div ng-show="programSchedule._isEdited">
-              <select ng-model="programSchedule.scheduleConfigurations[type.id]">
-                <option value=""><em>None</em></option>
-                <option ng-repeat="config in availableConfigsForType(type.id) track by config.id" value="{{config.id}}" ng-selected="config.id==programSchedule.scheduleConfigurations[type.id]">{{config.id}} ({{config.latestModification|date:'short'}})</option>
-              </select>
+              <span ng-show="programSchedule._isEdited">
+                <select ng-model="programSchedule.scheduleConfigurations[type.id]">
+                  <option value=""><em>None</em></option>
+                  <option ng-repeat="config in availableConfigsForType(type.id) track by config.id" value="{{config.id}}" ng-selected="config.id==programSchedule.scheduleConfigurations[type.id]">{{config.id}} ({{config.latestModification|date:'short'}})</option>
+                </select>
+              </span>
             </div>
           </td>
           <td>
