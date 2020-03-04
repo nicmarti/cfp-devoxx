@@ -79,9 +79,16 @@
     margin-bottom: 8px;
 }
 
+.agendaTable .proposal.lang_is_en .title {
+    /* Adding some extra padding because of top-right ribbon */
+    padding-top: 12px;
+    padding-right: 12px;
+}
+
 .lang_is_fr .ribbon-wrapper-white {
     display: none;
 }
+
 
 .agendaTable .speaker, .agendaTable .room .secondary-title {
     font-style: italic;
