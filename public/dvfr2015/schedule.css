@@ -79,6 +79,10 @@
     margin-bottom: 8px;
 }
 
+.lang_is_fr .ribbon-wrapper-white {
+    display: none;
+}
+
 .agendaTable .speaker, .agendaTable .room .secondary-title {
     font-style: italic;
     display: block;
