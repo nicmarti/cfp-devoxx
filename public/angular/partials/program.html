@@ -33,6 +33,7 @@
           <th>Name</th>
           <th>Last modification</th>
           <th style="width:220px;">Slot Configurations</th>
+          <th>Schedule Configuration</th>
           <th>CSS Specific snippet</th>
           <th>Actions</th>
         </tr>
@@ -80,6 +81,11 @@
                 </select>
               </span>
             </div>
+          </td>
+          <td>
+            <div><input type="checkbox" ng-model="programSchedule.showSchedule" ng-disabled="!programSchedule._isEdited" /> Schedule shown <em>(including timeslot shown on proposal)</em></div>
+            <div><input type="checkbox" ng-model="programSchedule.showRooms" ng-disabled="!programSchedule._isEdited" /> Rooms shown</div>
+            <div><input type="checkbox" ng-model="programSchedule.favoritesActivated" ng-disabled="!programSchedule._isEdited" /> Favorites activated</div>
           </td>
           <td>
             <div ng-show="!programSchedule._isEdited">

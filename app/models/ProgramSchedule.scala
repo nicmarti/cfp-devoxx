@@ -16,13 +16,17 @@ case class ProgramSchedule(
         scheduleConfigurations: Map[ProposalType, String],
         isTheOnePublished: Boolean, // will not be persisted
         isEditable: Boolean,
-        specificScheduleCSSSnippet: Option[String] = None
+        specificScheduleCSSSnippet: Option[String] = None,
+        // Activate or not the "Favorites / MySchedule" system on the CFP
+        favoritesActivated: Boolean,
+        showSchedule: Boolean,
+        showRooms: Boolean
 ) {
 
   def toPersistedProgramSchedule: PersistedProgramSchedule = {
     PersistedProgramSchedule(id, eventCode, name, lastModifiedByName, lastModified, scheduleConfigurations.map {
       case(proposalType, scheduleConfigId) => (proposalType.id, scheduleConfigId)
-    }, isEditable, specificScheduleCSSSnippet)
+    }, isEditable, specificScheduleCSSSnippet, favoritesActivated, showSchedule, showRooms)
   }
 }
 
@@ -34,9 +38,12 @@ case class PersistedProgramSchedule(
         lastModified: DateTime,
         scheduleConfigurations: Map[String, String],
         isEditable: Boolean,
-        specificScheduleCSSSnippet: Option[String] = None
+        specificScheduleCSSSnippet: Option[String] = None,
+        // Activate or not the "Favorites / MySchedule" system on the CFP
+        favoritesActivated: Boolean,
+        showSchedule: Boolean,
+        showRooms: Boolean
 )
-
 
 object ProgramSchedule {
   implicit val persistedProgramScheduleFormat = Json.format[PersistedProgramSchedule]
@@ -54,7 +61,7 @@ object ProgramSchedule {
       val uuid = UUID.randomUUID().toString
       val emptySchedule = ProgramSchedule(
         uuid, ConferenceDescriptor.current().eventCode, "Empty schedule", s"${creator.firstName} ${creator.lastName}",
-        DateTime.now(), Map(), true, false, None
+        DateTime.now(), Map(), true, false, None, false, false, false
       )
       client.hset(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}", uuid, Json.stringify(Json.toJson(emptySchedule.toPersistedProgramSchedule)))
       client.set(s"ProgramSchedules:${ConferenceDescriptor.current().eventCode}:Published", uuid)
@@ -64,7 +71,7 @@ object ProgramSchedule {
   def fromPersisted(s: PersistedProgramSchedule, publishedProgramScheduleId: String): ProgramSchedule = {
     ProgramSchedule(s.id, s.eventCode, s.name, s.lastModifiedByName, s.lastModified, s.scheduleConfigurations.map {
       case (proposalTypeId, scheduleConfigId) => (ConferenceProposalTypes.valueOf(proposalTypeId), scheduleConfigId)
-    }, s.id == publishedProgramScheduleId, s.isEditable, s.specificScheduleCSSSnippet)
+    }, s.id == publishedProgramScheduleId, s.isEditable, s.specificScheduleCSSSnippet, s.favoritesActivated, s.showSchedule, s.showRooms)
   }
 
   def findByPublishKey(secretPublishKey: Option[String]) = {
