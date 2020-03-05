@@ -133,8 +133,8 @@ object Publisher extends Controller {
   def showByDay(day: String, secretPublishKey: Option[String], hideUselessRooms: Boolean = true, includeTypes: Option[String], excludeTypes: Option[String] = Some("bof")) = Action {
     implicit request =>
 
+      val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
       def _showDay(day: String) = {
-        val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
         val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
         val allSlotsWithBofMaybeFiltered = allSlots.filter(s => {
           (includeTypes.isEmpty || includeTypes.get.split(",").contains(s.name)) && (excludeTypes.isEmpty || !excludeTypes.get.split(",").contains(s.name))
@@ -143,16 +143,16 @@ object Publisher extends Controller {
           val result = !hideUselessRooms || entry._2.count(_.proposal.isDefined) > 0
           result
         }.keys.toList
-        val favoritesActivated = maybeProgramSchedule.map(_.favoritesActivated).getOrElse(false)
-        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse(""), secretPublishKey, hideUselessRooms, includeTypes, excludeTypes, favoritesActivated))
+        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule, secretPublishKey, hideUselessRooms, includeTypes, excludeTypes))
       }
 
-      day match {
-        case d if Set("mon", monday, "lundi").contains(d) => _showDay(monday)
-        case d if Set("tue", tuesday, "mardi").contains(d) => _showDay(tuesday)
-        case d if Set("wed", wednesday, "mercredi").contains(d) => _showDay(wednesday)
-        case d if Set("thu", thursday, "jeudi").contains(d) => _showDay(thursday)
-        case d if Set("fri", friday, "vendredi").contains(d) => _showDay(friday)
+      (maybeProgramSchedule.map(_.showSchedule).getOrElse(false), day) match {
+        case (false, _) => NotFound("Schedule not published yet")
+        case (true, d) if Set("mon", monday, "lundi").contains(d) => _showDay(monday)
+        case (true, d) if Set("tue", tuesday, "mardi").contains(d) => _showDay(tuesday)
+        case (true, d) if Set("wed", wednesday, "mercredi").contains(d) => _showDay(wednesday)
+        case (true, d) if Set("thu", thursday, "jeudi").contains(d) => _showDay(thursday)
+        case (true, d) if Set("fri", friday, "vendredi").contains(d) => _showDay(friday)
         case _ => NotFound("Day not found")
       }
   }
