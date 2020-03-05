@@ -143,7 +143,8 @@ object Publisher extends Controller {
           val result = !hideUselessRooms || entry._2.count(_.proposal.isDefined) > 0
           result
         }.keys.toList
-        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse(""), secretPublishKey, hideUselessRooms, includeTypes, excludeTypes))
+        val favoritesActivated = maybeProgramSchedule.map(_.favoritesActivated).getOrElse(false)
+        Ok(views.html.Publisher.showOneDay(allSlotsWithBofMaybeFiltered, rooms, day, maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse(""), secretPublishKey, hideUselessRooms, includeTypes, excludeTypes, favoritesActivated))
       }
 
       day match {
