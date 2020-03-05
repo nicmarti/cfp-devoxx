@@ -141,8 +141,7 @@ object ScheduleConfiguration {
 
     def extractSlot(allSlots: List[Slot], day: String) = {
       val configured = loadSlots(secretPublishKey).filter(_.day == day)
-      val configuredIDs = configured.map(_.id)
-      val filtered = allSlots.filterNot(s => configuredIDs.contains(s.id))
+      val filtered = allSlots.filterNot(s => s.isAllocatableSlot)
       configured ++ filtered
     }
 

@@ -132,6 +132,8 @@ case class Slot(id: String, name: String, day: String, from: DateTime, to: DateT
   def room: Room = Room.parse(roomId)
 
   def toSlotWithRoom: SlotWithRoom = SlotWithRoom(id, name, day, from, to, room, proposal, break, fillerForSlotId)
+
+  def isAllocatableSlot: Boolean = !break.isDefined
 }
 
 object SlotBuilder {
