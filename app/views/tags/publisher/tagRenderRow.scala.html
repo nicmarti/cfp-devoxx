@@ -2,7 +2,7 @@
 @import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated && !zeSlot.isFiller) {
-            <td class="proposal tba" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">TBA</td>
+            <td class="proposal tba" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">&nbsp;</td>
         }
         @if(zeSlot.break.isDefined && roomIndex == 0) {
             <td class="break skip-print-defaults" colspan="@(roomSize - subSlots.filter(s => !s.break.isDefined).size)">
