@@ -19,6 +19,7 @@ case class ProgramSchedule(
         specificScheduleCSSSnippet: Option[String] = None,
         // Activate or not the "Favorites / MySchedule" system on the CFP
         favoritesActivated: Boolean,
+        // For practical reason we want to hide the room and the time slot until the full agenda is published
         showSchedule: Boolean,
         showRooms: Boolean
 ) {
@@ -41,6 +42,7 @@ case class PersistedProgramSchedule(
         specificScheduleCSSSnippet: Option[String] = None,
         // Activate or not the "Favorites / MySchedule" system on the CFP
         favoritesActivated: Boolean,
+        // For practical reason we want to hide the room and the time slot until the full agenda is published
         showSchedule: Boolean,
         showRooms: Boolean
 )

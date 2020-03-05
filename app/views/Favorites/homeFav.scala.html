@@ -16,7 +16,7 @@
     <h2>@Messages("fav.day."+day)</h2>
     <div class="columns large-12 woocommerce">
         <table class="agendaTable">
-             @if(ConferenceDescriptor.isShowRoom) {
+             @if(ProgramSchedule.publishedProgramSchedule().map(_.showRooms).getOrElse(false)) {
                  <tr>
                      <th><i class="far fa-calendar-alt-check"></i> Room</th>
                      @rooms.sorted.map { roomName: Room =>
