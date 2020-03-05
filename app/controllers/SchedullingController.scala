@@ -323,8 +323,10 @@ object SchedullingController extends SecureCFPController {
 
   // TODO: This is only a temporary endpoint
   // Remove it once migration occured
-  def migrateConfigs() = SecuredAction(IsMemberOf("admin")) {
+  def migratePrograms() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(Json.toJson(OldScheduleConfiguration.migrateScheduleConfigurations())).as(JSON)
+      import ProgramSchedule.persistedProgramScheduleFormat
+
+      Ok(Json.toJson(OldPersistedProgramSchedule.migrateProgramSchedules())).as(JSON)
   }
 }
