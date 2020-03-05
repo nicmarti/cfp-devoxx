@@ -40,7 +40,7 @@ object SchedullingController extends SecureCFPController {
     implicit request =>
       import Slot.slotWithRoomFormat
 
-      val jsSlots = Json.toJson(Slot.byType(ProposalType.parse(confType)).map(_.toSlowWithRoom))
+      val jsSlots = Json.toJson(Slot.byType(ProposalType.parse(confType)).map(_.toSlotWithRoom))
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 
