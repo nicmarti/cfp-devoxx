@@ -129,7 +129,7 @@ object ScheduleConfiguration {
       }
   }
 
-  def getPublishedSchedule(confType: String, secretPublishKey: Option[String] = None): Option[String] = Redis.pool.withClient {
+  def getPublishedScheduleSlotConfigurationId(confType: String, secretPublishKey: Option[String] = None): Option[String] = Redis.pool.withClient {
     implicit client =>
       val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
       maybeProgramSchedule.flatMap { programSchedule =>
@@ -172,7 +172,7 @@ object ScheduleConfiguration {
   }
 
   def loadSlotsForConfType(confType: String, secretPublishKey: Option[String] = None): List[Slot] = {
-    getPublishedSchedule(confType, secretPublishKey).flatMap {
+    getPublishedScheduleSlotConfigurationId(confType, secretPublishKey).flatMap {
       id: String =>
         loadScheduledConfiguration(id).map {
           scheduledConf => scheduledConf.slots
@@ -187,7 +187,7 @@ object ScheduleConfiguration {
 
   def loadAllConfigurations(secretPublishKey: Option[String] = None) = {
     val allConfs = for (confType <- ProposalType.allIDsOnly;
-                        slotId <- ScheduleConfiguration.getPublishedSchedule(confType, secretPublishKey);
+                        slotId <- ScheduleConfiguration.getPublishedScheduleSlotConfigurationId(confType, secretPublishKey);
                         configuration <- ScheduleConfiguration.loadScheduledConfiguration(slotId)
     ) yield configuration
 

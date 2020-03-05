@@ -306,7 +306,7 @@ object Backoffice extends SecureCFPController {
   def fixToAccepted(slotId: String, proposalId: String, talkType: String, programScheduleId: Option[String] = None) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val maybeUpdated = for (
-        scheduleId <- ScheduleConfiguration.getPublishedSchedule(talkType, programScheduleId);
+        scheduleId <- ScheduleConfiguration.getPublishedScheduleSlotConfigurationId(talkType, programScheduleId);
         scheduleConf <- ScheduleConfiguration.loadScheduledConfiguration(scheduleId);
         slot <- scheduleConf.slots.find(_.id == slotId).filter(_.proposal.isDefined).filter(_.proposal.get.id == proposalId)
       ) yield {
