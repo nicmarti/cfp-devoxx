@@ -1,4 +1,4 @@
-@(subSlots: List[Slot], room: Room, roomIndex: Int, roomSize: Int, overallSlots: List[Slot], showEndTime:Boolean, secretPublishKey: Option[String])(implicit req:RequestHeader)
+@(subSlots: List[Slot], room: Room, roomIndex: Int, roomSize: Int, overallSlots: List[Slot], showEndTime:Boolean, secretPublishKey: Option[String], favoritesActivated: Boolean = false)(implicit req:RequestHeader)
 @import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated && !zeSlot.isFiller) {
@@ -31,7 +31,7 @@
                         }
                     </div>
                     <div class="proposal_actions">
-                        @tags.publisher.renderFavorite(p.id)
+                        @tags.publisher.renderFavorite(p.id, favoritesActivated)
                     </div>
                 </td>
             }

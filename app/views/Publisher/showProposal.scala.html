@@ -1,5 +1,5 @@
 @import models.ConferenceDescriptor.ConferenceProposalTypes
-@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], maybeProgramSchedule: Option[ProgramSchedule])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @views.html.Publisher.devoxxFR2020(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
 
@@ -8,7 +8,7 @@
     @if(slot.isDefined && publishedConfiguration.isDefined) {
         <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
             <a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages("sw.all." + proposal.talkType.id)</a>  &gt;
-            @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
+            @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false) && maybeProgramSchedule.map(_.showSchedule).getOrElse(false)) {
                 <a href="@routes.Publisher.showByDay(slot.get.day, None, includeTypes = None, excludeTypes = None)">@Messages(s"sw.agenda.${slot.get.day}")</a> &gt;
             }
             <a href="@routes.Publisher.showByDay(slot.map(_.day).getOrElse("wednesday"), includeTypes = Some(proposal.talkType.id))">@Messages(slot.get.proposal.map(_.talkType.id).getOrElse("conf")) @Messages("sw.agenda."+ slot.map(_.day).getOrElse("sw.agenda.wed"))</a>
@@ -34,10 +34,10 @@
                     <td class="text-right">@Messages(proposal.audienceLevel+".label")</td>
                 </tr>
                 @if(slot.isDefined) {
-                    @if(ConferenceDescriptor.isShowRoomAndTimeslot) {
+                    @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false) && maybeProgramSchedule.map(_.showSchedule).getOrElse(false)) {
                         <tr>
                             <td>
-                                @if(ConferenceDescriptor.isShowRoom) {
+                                @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
                                     <h4 style="padding-top: 10px;">@slot.map(_.room.name)</h4>
                                 }else{
                                     &nbsp;
@@ -58,7 +58,7 @@
                     </td>
                 </tr>
             </tbody>
-            @if(ConferenceDescriptor.isShowRoom) {
+            @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
                 <tfoot>
                     <tr>
                         <th colspan="2">@Messages("publisher.room") @slot.map(_.room.name)</th>

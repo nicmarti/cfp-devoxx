@@ -78,7 +78,7 @@
                 </div>
             }
 
-            @if(ConferenceDescriptor.isFavoritesSystemActive){
+            @if(ProgramSchedule.publishedProgramSchedule().map(_.favoritesActivated).getOrElse(false)){
                 <div class="col-12">
                     <div class="card mb-3">
                         <h3 class="card-header"><i class="far fa-calendar-alt"></i> @Messages("cfp.showAgenda.title")</h3>

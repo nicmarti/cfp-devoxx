@@ -470,7 +470,7 @@ class ZapActor extends Actor {
     ScheduleConfiguration.findSlotForConfType(confType, proposalId).foreach {
       slot =>
         val proposal = slot.proposal.get
-        ScheduleConfiguration.getPublishedSchedule(proposal.talkType.id).foreach {
+        ScheduleConfiguration.getPublishedScheduleSlotConfigurationId(proposal.talkType.id).foreach {
           id =>
             ScheduleConfiguration.loadScheduledConfiguration(id).foreach { p =>
               val newSlots = p.slots.map {

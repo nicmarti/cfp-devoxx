@@ -1,10 +1,10 @@
-@(slots: List[Slot], rooms: List[Room], day: String, specificScheduleCSSSnippet: String, secretPublishKey: Option[String], hideUselessRooms: Boolean, includeTypes: Option[String], excludeTypes: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
+@(slots: List[Slot], rooms: List[Room], day: String, maybeProgramSchedule: Option[ProgramSchedule], secretPublishKey: Option[String], hideUselessRooms: Boolean, includeTypes: Option[String], excludeTypes: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
     @views.html.Publisher.devoxxFR2020(Messages(s"sw.show.$day")) {
     <style>
 @*    @@media print {*@
     /** BEGINNING BLOCK OF PROGRAM SCHEDULE'S PRINT CSS SNIPPET SPECIFITIES **/
 
-    @specificScheduleCSSSnippet
+    @maybeProgramSchedule.flatMap(_.specificScheduleCSSSnippet).getOrElse("")
 
     /** END BLOCK OF PROGRAM SCHEDULE'S PRINT CSS SNIPPET SPECIFITIES **/
 @*    } *@
@@ -20,14 +20,14 @@
             <a href="@routes.Publisher.showByDay("fri", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.fri")</a>
         </p>
 
-        @if(ConferenceDescriptor.isShowRoom) {
+        @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
             <p class="hide-on-print">@Messages("publisher.room.disclaimer")</p>
         }
     </div>
 
     <div class="columns large-12 woocommerce">
         <table class="agendaTable for_day_@day skip-mb-on-print">
-             @if(ConferenceDescriptor.isShowRoom) {
+             @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
                  <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
@@ -44,11 +44,11 @@
                         @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
                     @rooms.sorted.zipWithIndex.map { case (room, index) =>
-                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=false, secretPublishKey)
+                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=false, secretPublishKey, maybeProgramSchedule.map(_.favoritesActivated).getOrElse(false))
                     }
                 </tr>
             }
-            @if(ConferenceDescriptor.isShowRoom) {
+            @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
                   <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
@@ -69,4 +69,42 @@
             <li class="track proposal_track_is_@track.id"><i class="proposal_badge track"></i> @Messages(track.label)</li>
         }
     </ul>
+
+    @if(maybeProgramSchedule.map(_.favoritesActivated).getOrElse(false)) {
+            <!-- *** Javascript for Favorite talk *** //-->
+        <script type="text/javascript">
+            (function($) {
+                $(document).ready(function() {
+
+                    $('.cfp-fav').on("click",function(event) {
+                        var maybePropoposalId = $(this).data('proposal-id');
+                        var clickedElement=$(this);
+                        var $star = clickedElement.find(".fa-star")
+
+                        console.log("--> Sending "+maybePropoposalId);
+                        if(typeof maybePropoposalId != 'undefined'){
+                            event.preventDefault();
+
+                            $($star).removeClass("fa-star far").addClass("fas fa-spinner fa-spin")
+                            // This works only if you are authenticated with a signed cookie and a valid play2 session
+                            $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
+                                function( jsonResponse ) {
+                                    if(jsonResponse.status=="unfav"){
+                                        console.log("<-- Unfav ok");
+                                        $($star).addClass("far fa-star").removeClass("fas fa-spinner fa-spin")
+                                    }
+                                    if(jsonResponse.status=="fav"){
+                                        console.log("<-- Fav ok");
+                                        $($star).addClass("fa-star").removeClass("far fa-spinner fa-spin")
+                                    }
+                                },"json");
+                        }else{
+                            console.log("No valid proposalId. Please help me to debug, report your web browser version and platform.");
+                        }
+                    });
+
+                });
+            })(jQuery);
+        </script>
+    }
 }

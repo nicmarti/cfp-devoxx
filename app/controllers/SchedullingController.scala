@@ -40,7 +40,7 @@ object SchedullingController extends SecureCFPController {
     implicit request =>
       import Slot.slotWithRoomFormat
 
-      val jsSlots = Json.toJson(Slot.byType(ProposalType.parse(confType)).map(_.toSlowWithRoom))
+      val jsSlots = Json.toJson(Slot.byType(ProposalType.parse(confType)).map(_.toSlotWithRoom))
       Ok(Json.stringify(Json.toJson(Map("allSlots" -> jsSlots)))).as("application/json")
   }
 
@@ -157,6 +157,9 @@ object SchedullingController extends SecureCFPController {
                 "id" -> JsString(programSchedule.id),
                 "name" -> JsString(programSchedule.name),
                 "isEditable" -> JsBoolean(programSchedule.isEditable),
+                "favoritesActivated" -> JsBoolean(programSchedule.favoritesActivated),
+                "showSchedule" -> JsBoolean(programSchedule.showSchedule),
+                "showRooms" -> JsBoolean(programSchedule.showRooms),
                 "isTheOnePublished" -> JsBoolean(programSchedule.isTheOnePublished),
                 "lastModifiedByName" -> JsString(programSchedule.lastModifiedByName),
                 "lastModified" -> Json.toJson(programSchedule.lastModified),
@@ -320,8 +323,10 @@ object SchedullingController extends SecureCFPController {
 
   // TODO: This is only a temporary endpoint
   // Remove it once migration occured
-  def migrateConfigs() = SecuredAction(IsMemberOf("admin")) {
+  def migratePrograms() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(Json.toJson(OldScheduleConfiguration.migrateScheduleConfigurations())).as(JSON)
+      import ProgramSchedule.persistedProgramScheduleFormat
+
+      Ok(Json.toJson(OldPersistedProgramSchedule.migrateProgramSchedules())).as(JSON)
   }
 }
