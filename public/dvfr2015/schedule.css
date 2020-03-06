@@ -79,6 +79,17 @@
     margin-bottom: 8px;
 }
 
+.agendaTable .proposal.lang_is_en .title {
+    /* Adding some extra padding because of top-right ribbon */
+    padding-top: 12px;
+    padding-right: 12px;
+}
+
+.lang_is_fr .ribbon-wrapper {
+    display: none;
+}
+
+
 .agendaTable .speaker, .agendaTable .room .secondary-title {
     font-style: italic;
     display: block;
@@ -93,6 +104,11 @@
 }
 
 .agendaTable .room {
+    vertical-align: top;
+    border: 1px solid #ffd297;
+}
+
+.agendaTable .proposal {
     vertical-align: top;
     border: 1px solid #ffd297;
 }
@@ -159,12 +175,6 @@
     border: 4px orange solid;
 }
 
-.agendaTable .proposal .badges {
-    width: 100%;
-    height: 20px;
-    text-align: center;
-}
-
 .agendaTable .proposal_actions {
 } @media print { .agendaTable .proposal_actions { display: none; } }
 
@@ -174,15 +184,17 @@
 
 
 i.proposal_badge {
-    position: absolute;
     background-repeat: no-repeat;
     margin: 2px;
     z-index: 0;
 }
 
-.agendaTable .proposal i.proposal_badge {
-    top: 0px;
+.proposal_badge.track {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
 }
+
 .schedule-legend i.proposal_badge {
     top: 5px;
 }
@@ -347,24 +359,13 @@ input.cfp-fav:checked + label.cfp-lab {
 }
 
 .ribbon-wrapper {
-    margin: 50px auto;
-    width: 280px;
-    border-radius: 10px;
-    -webkit-box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
-    -moz-box-shadow:    0px 0px 8px rgba(0,0,0,0.3);
-    box-shadow:         0px 0px 8px rgba(0,0,0,0.3);
-    position: relative;
-    z-index: 90;
-} @media print { .ribbon-wrapper {font-size: 0.5rem;border-radius: 8px;}}
-
-.ribbon-wrapper-white {
     width: 50px;
     height: 50px;
     overflow: hidden;
     position: absolute;
-    top: -3px;
-    right: -3px;
-} @media print { .ribbon-wrapper-white {width: 40px;height: 35px;top: 0px;right: -12px;}}
+    top: -1px;
+    right: -1px;
+} @media print { .ribbon-wrapper {width: 28px;height: 28px;top: -1px;right: -1px;}}
 
 .ribbon-white {
     font: bold 10px Sans-Serif;
@@ -377,7 +378,7 @@ input.cfp-fav:checked + label.cfp-lab {
     -o-transform: rotate(45deg);
     position: relative;
     padding: 4px 12px 17px 0px;
-    left: -5px;
+    left: -6px;
     top: 3px;
     width: 75px;
     background-color: white;
@@ -397,22 +398,6 @@ input.cfp-fav:checked + label.cfp-lab {
     padding-bottom: 10px;
     top: 4px;
     left: -5px;
-    width: 50px;
+    width: 45px;
     }
-}
-
-.ribbon-white:before, .ribbon-white:after {
-    content: "";
-    border-top: 3px solid #6e8900;
-    border-left:  3px solid transparent;
-    border-right: 3px solid transparent;
-    position:absolute;
-    bottom: -3px;
-} @media print { .ribbon-white:before, .ribbon-white:after {border-top-width: 0px;border-left-width: 0px;border-right-width: 0px;bottom: 0px;}}
-
-.ribbon-white:before {
-    left: 0;
-}
-.ribbon-white:after {
-    right: 0;
 }

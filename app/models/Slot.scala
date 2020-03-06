@@ -23,9 +23,10 @@
 
 package models
 
-import models.ConferenceDescriptor.ConferenceProposalTypes
+import models.ConferenceDescriptor.{ConferenceProposalTypes, ConferenceRooms}
 import org.joda.time.DateTime
 import play.api.libs.json.Json
+
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -148,9 +149,9 @@ object SlotBuilder {
     Slot(id, name, day, from, to, room.id, proposal, None, None)
   }
 
-  def apply(slotBreak: SlotBreak, day: String, from: DateTime, to: DateTime): List[Slot] = {
+  def apply(slotBreak: SlotBreak, day: String, from: DateTime, to: DateTime, rooms: List[Room] = ConferenceRooms.allRooms): List[Slot] = {
     val id = slotBreak.id + "_" + day + "_" + from.getDayOfMonth + "_" + from.getHourOfDay + "h" + from.getMinuteOfHour + "_" + to.getHourOfDay + "h" + to.getMinuteOfHour
-    ConferenceDescriptor.ConferenceRooms.allRooms.map(room => Slot(id, slotBreak.nameEN, day, from, to, room.id, None, Some(slotBreak), None))
+    rooms.map(room => Slot(id, slotBreak.nameEN, day, from, to, room.id, None, Some(slotBreak), None))
   }
 
   def apply(fillerForSlot: Slot, fillerIndex: Int, from: DateTime, to: DateTime): Slot = {

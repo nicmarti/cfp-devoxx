@@ -632,7 +632,11 @@ object ConferenceDescriptor {
         new DateTime(s"${secondDay}T10:45:00.000+02:00").toDateTime(confTimezone))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T12:30:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T13:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
+        new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T13:30:00.000+02:00").toDateTime(confTimezone),
+        List(ConferenceRooms.AMPHI_BLEU))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime(s"${secondDay}T16:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T16:45:00.000+02:00").toDateTime(confTimezone))
@@ -650,7 +654,11 @@ object ConferenceDescriptor {
         new DateTime(s"${thirdDay}T10:45:00.000+02:00").toDateTime(confTimezone))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
         new DateTime(s"${thirdDay}T12:30:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${thirdDay}T13:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
+        new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${thirdDay}T13:15:00.000+02:00").toDateTime(confTimezone),
+        List(ConferenceRooms.AMPHI_BLEU))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime(s"${thirdDay}T16:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${thirdDay}T16:45:00.000+02:00").toDateTime(confTimezone))

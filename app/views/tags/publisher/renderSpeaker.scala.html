@@ -1,13 +1,13 @@
 @(uuid: String, renderPhoto:Boolean=false)
 @models.Speaker.findByUUID(uuid).map { speaker =>
 <div class="speaker">
-<a class="blackLink skip-print-defaults" href="@routes.Publisher.showSpeakerByName(speaker.urlName)" title="@speaker.cleanName" alt="@speaker.urlName">
+<a class="blackLink skip-print-defaults" href="@routes.Publisher.showSpeakerByName(speaker.urlName)" title="@speaker.cleanFirstName @speaker.cleanLastName(false)" alt="@speaker.urlName">
 @if(renderPhoto){
 @speaker.avatarUrl.map{url=>
- <img width="32" height="32" src="@url" alt="@speaker.cleanName" title="@speaker.cleanName"/>
+ <img width="32" height="32" src="@url" alt="@speaker.cleanFirstName @speaker.cleanLastName(false)" title="@speaker.cleanFirstName @speaker.cleanLastName(false)"/>
 }
 }
-@speaker.cleanName
+@speaker.cleanFirstName @speaker.cleanLastName(false)
 </a>
 </div>
 }
