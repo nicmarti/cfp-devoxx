@@ -189,10 +189,10 @@ i.proposal_badge {
     z-index: 0;
 }
 
-.proposal_badge.track {
+.proposal .proposal_badge.track {
     position: absolute;
     bottom: 0px;
-    left: 0px;
+    left: 2px;
 }
 
 .schedule-legend i.proposal_badge {
@@ -200,7 +200,6 @@ i.proposal_badge {
 }
 
 i.proposal_badge.track {
-    left: 2px;
     width: 16px;
     height: 16px;
     background-size: 16px 16px;

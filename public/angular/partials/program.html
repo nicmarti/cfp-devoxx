@@ -42,17 +42,19 @@
         <tr ng-repeat="programSchedule in programSchedules track by programSchedule.id" ng-class="{'published-program': programSchedule.isTheOnePublished}">
           <td>
             <span class="badge badge-primary">{{programSchedule.id}}</span>
-            <div ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
-              <strong>Private</strong> schedule :
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&excludeTypes=bof" target="_blank">Wed</a>
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&excludeTypes=bof" target="_blank">Thu</a>
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&excludeTypes=bof" target="_blank">Fri</a>
-            </div>
-            <div ng-if="programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
-              <strong>Public</strong> schedule :
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed" target="_blank">Wed</a>
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu" target="_blank">Thu</a>
-              <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri" target="_blank">Fri</a>
+            <div ng-if="programSchedule.showSchedule">
+              <div ng-if="!programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
+                <strong>Private</strong> schedule :
+                <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&excludeTypes=bof" target="_blank">Wed</a>
+                <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&excludeTypes=bof" target="_blank">Thu</a>
+                <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri?secretPublishKey={{programSchedule.id}}&hideUselessRooms=true&excludeTypes=bof" target="_blank">Fri</a>
+              </div>
+              <div ng-if="programSchedule.isTheOnePublished && !programSchedule._isEdited" style="font-size: 0.6rem">
+                <strong>Public</strong> schedule :
+                <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/wed" target="_blank">Wed</a>
+                <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/thu" target="_blank">Thu</a>
+                <a class="btn btn-primary" style="font-size: 0.6rem; padding: 0.3rem; min-width: 40px" href="/2020/byday/fri" target="_blank">Fri</a>
+              </div>
             </div>
           </td>
           <td>
