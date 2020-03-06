@@ -80,6 +80,10 @@ programController.controller('ProgramController', function ProgramController($ro
             isEditable: true,
             isTheOnePublished: false,
             scheduleConfigurations: {},
+            specificScheduleCSSSnippet: "",
+            showSchedule: false,
+            showRooms: false,
+            favoritesActivated: false,
             _isEdited: true
         });
     };
