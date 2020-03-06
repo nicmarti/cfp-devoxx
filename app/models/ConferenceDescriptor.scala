@@ -736,8 +736,6 @@ object ConferenceDescriptor {
 
   def isTagSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.tags.active").getOrElse(false)
 
-  def isFavoritesSystemActive: Boolean = Play.current.configuration.getBoolean("cfp.activateFavorites").getOrElse(false)
-
   def isHTTPSEnabled: Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
 
   // Reset all votes when a Proposal with state=SUBMITTED (or DRAFT) is updated
@@ -747,11 +745,6 @@ object ConferenceDescriptor {
   // Set this to true temporarily
   // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
   def notifyProposalSubmitted: Boolean = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
-
-  // For practical reason we want to hide the room and the time slot until the full agenda is published
-  def isShowRoomAndTimeslot: Boolean = Play.current.configuration.getBoolean("cfp.showRoomAndTimeslot").getOrElse(false)
-
-  def isShowRoom: Boolean = Play.current.configuration.getBoolean("cfp.showRoom").getOrElse(false)
 
   // My Devoxx is an OAuth provider on which a user can register
   def isMyDevoxxActive: Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)

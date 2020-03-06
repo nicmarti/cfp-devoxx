@@ -1,6 +1,6 @@
-@(proposalId: String)(implicit req: RequestHeader)
+@(proposalId: String, favoritesActivated: Boolean)(implicit req: RequestHeader)
 
-@if(ConferenceDescriptor.isFavoritesSystemActive){
+@if(favoritesActivated){
     @defining(UserCFPController.findAuthenticator) { maybeUuid:Option[String] =>
         @maybeUuid.map { uuid:String =>
           <button class="button secondary cfp-fav" data-proposal-id="@proposalId">
