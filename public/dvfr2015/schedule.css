@@ -358,13 +358,6 @@ input.cfp-fav:checked + label.cfp-lab {
     max-width: none;
 }
 
-.ribbon-wrapper {
-    margin: 50px auto;
-    width: 280px;
-    position: relative;
-    z-index: 90;
-} @media print { .ribbon-wrapper {font-size: 0.5rem;}}
-
 .ribbon-wrapper-white {
     width: 50px;
     height: 50px;
