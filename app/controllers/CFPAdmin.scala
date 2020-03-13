@@ -6,6 +6,7 @@ import library.search.ElasticSearch
 import library.{SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
 import models._
+import notifiers.Slacks
 import org.apache.commons.io.FileUtils
 import org.joda.time.DateTimeZone
 import play.api.data.Forms._
@@ -192,6 +193,9 @@ object CFPAdmin extends SecureCFPController {
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
               ZapActor.actor ! SendMessageToSpeaker(uuid, proposal, validMsg)
+              Webuser.findByUUID(uuid).map {
+                reporter => Slacks.newMessageSentToSpeaker(proposal, reporter, validMsg)
+              }
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to speaker.")
             }
           )
@@ -216,6 +220,9 @@ object CFPAdmin extends SecureCFPController {
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
               ZapActor.actor ! SendMessageInternal(uuid, proposal, validMsg)
+              Webuser.findByUUID(uuid).map {
+                reporter => Slacks.newInternalMessagePosted(proposal, reporter, validMsg)
+              }
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to program committee.")
             }
           )
