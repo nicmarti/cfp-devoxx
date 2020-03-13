@@ -890,17 +890,17 @@ visitor.welcome.publisher=Parcourir l''agenda des conférences
 # ------------------------------------
 # We prefer to update one property file, so that string interpolation is faster, rather than
 # to try to use the ConferenceDescriptor for some static part of the web site.
-appel.conf.dates=Call for Paper, Devoxx France, 15 au 17 avril 2020
+appel.conf.dates=Call for Paper, Devoxx France, 1 au 3 juillet 2020
 cfp.program.date=à partir de la mi-février 2020
 signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2020 :
-sw.show.title.wed=Journée du Mercredi 15 avril 2020
-sw.show.title.thu=Journée du Jeudi 16 avril 2020
-sw.show.title.fri=Journée du Vendredi 17 avril 2020
+sw.show.title.wed=Journée du Mercredi 1 juillet 2020
+sw.show.title.thu=Journée du Jeudi 2 juillet 2020
+sw.show.title.fri=Journée du Vendredi 3 juillet 2020
 cfp.title=Devoxx France 2020
 conf.label.simple=Conférence
 CONF.subtitle=FR
 CONF.title=Devoxx France 2020
-conference.dates=15 au 17 avril 2020
+conference.dates=1 au 3 juillet 2020
 longName=Devoxx FR 2020 CFP
 longSplittedName_whiteEnd=FR 2020
 longYearlyName=Devoxx France 2020

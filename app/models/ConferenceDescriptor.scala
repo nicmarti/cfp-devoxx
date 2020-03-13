@@ -309,9 +309,9 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    val firstDay = "2020-04-15"
-    val secondDay = "2020-04-16"
-    val thirdDay = "2020-04-17"
+    val firstDay = "2020-07-01"
+    val secondDay = "2020-07-02"
+    val thirdDay = "2020-07-03"
     val confTimezone = ConferenceDescriptor.current().timezone
 
     // UNIVERSITY
@@ -687,8 +687,8 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2020).withMonthOfYear(4).withDayOfMonth(15)
-  val toDay = new DateTime().withYear(2020).withMonthOfYear(4).withDayOfMonth(17)
+  val fromDay = new DateTime().withYear(2020).withMonthOfYear(7).withDayOfMonth(1)
+  val toDay = new DateTime().withYear(2020).withMonthOfYear(7).withDayOfMonth(3)
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
@@ -714,16 +714,16 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "15 au 17 avril 2020",
+      datesI18nKey = "1 au 3 juillet 2020",
       speakersPassDuration = 3,
       preferredDayEnabled = true,
-      firstDayFr = "15 avril",
-      firstDayEn = "april 15th",
-      datesFr = "du 15 au 17 avril 2020",
-      datesEn = "from 15th to 17th of April, 2020",
+      firstDayFr = "1 juillet",
+      firstDayEn = "july 1st",
+      datesFr = "du 1 au 3 juillet 2020",
+      datesEn = "from 1st to 3rd of July, 2020",
       cfpOpenedOn = DateTime.parse("2019-12-02T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2020-01-12T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2020-03-01T00:00:00+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2020-06-01T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
