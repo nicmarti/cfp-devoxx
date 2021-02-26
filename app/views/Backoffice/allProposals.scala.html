@@ -70,19 +70,19 @@
                                     <span class="badge badge-@proposal.state.code">@proposal.state.code</span>
                                 </td>
                                 <td>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.SUBMITTED.code)" class="btn btn-sm btn-info">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.SUBMITTED.code, filterByStatus)" class="btn btn-sm btn-info">
                                         Submitted</a> </small>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.APPROVED.code)" class="btn btn-sm btn-warning">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.APPROVED.code, filterByStatus)" class="btn btn-sm btn-warning">
                                         Approved</a> </small>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.ACCEPTED.code)" class="btn btn-sm btn-success">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.ACCEPTED.code, filterByStatus)" class="btn btn-sm btn-success">
                                         Accepted</a> </small>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.BACKUP.code)" class="btn btn-sm btn-dark">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.BACKUP.code, filterByStatus)" class="btn btn-sm btn-dark">
                                         Backup</a> </small>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.DECLINED.code)" class="btn btn-sm btn-danger">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.DECLINED.code, filterByStatus)" class="btn btn-sm btn-danger">
                                         Declined</a> </small>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.REJECTED.code)" class="btn btn-sm btn-danger">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.REJECTED.code, filterByStatus)" class="btn btn-sm btn-danger">
                                         Rejected</a> </small>
-                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.CANCELLED.code)" class="btn btn-sm btn-dark">
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.CANCELLED.code, filterByStatus)" class="btn btn-sm btn-dark">
                                         Cancelled</a> </small>
 
                                 </td>
