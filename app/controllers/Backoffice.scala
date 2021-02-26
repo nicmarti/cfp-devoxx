@@ -1,7 +1,7 @@
 package controllers
 
-import library.search.{DoIndexProposal, _}
 import library._
+import library.search.{DoIndexProposal, _}
 import models.ConferenceDescriptor.ConferenceProposalTypes
 import models.{Tag, _}
 import org.joda.time.{DateTime, Instant}
@@ -66,19 +66,22 @@ object Backoffice extends SecureCFPController {
       }
   }
 
-  def allProposals(proposalId: Option[String]) = SecuredAction(IsMemberOf("admin")) {
+  def allProposals(proposalId: Option[String], filterByStatus: Option[String]) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      proposalId match {
-        case Some(id) =>
+      (proposalId, filterByStatus) match {
+        case (Some(id), _) =>
           val proposal = Proposal.findById(id)
           proposal match {
             case None => NotFound("Proposal not found")
-            case Some(pr) => Ok(views.html.Backoffice.allProposals(List(pr)))
+            case Some(pr) => Ok(views.html.Backoffice.allProposals(List(pr), None))
           }
-        case None =>
+        case (None, None) =>
           val proposals = Proposal.allProposals().sortBy(_.state.code)
-          Ok(views.html.Backoffice.allProposals(proposals))
+          Ok(views.html.Backoffice.allProposals(proposals, filterByStatus))
+        case (None, Some(filter)) =>
+          val proposals = Proposal.allProposals().filter(_.state == ProposalState.parse(filter)).sortBy(_.state.code)
+          Ok(views.html.Backoffice.allProposals(proposals, filterByStatus))
       }
 
 
@@ -276,9 +279,9 @@ object Backoffice extends SecureCFPController {
       val futureMessages: Future[Any] = ZapActor.actor ? CheckSchedules
 
       futureMessages.map {
-        case results:List[ProposalAndRelatedError]=>
+        case results: List[ProposalAndRelatedError] =>
           Ok(views.html.Backoffice.refreshSchedules(results))
-        case _=>
+        case _ =>
           play.Logger.error("refreshSchedules error with Akka")
           InternalServerError(s"Unable to refresh schedule, exception was raised from Akka Actor")
       }
@@ -484,7 +487,7 @@ object Backoffice extends SecureCFPController {
   }
 
 
-  def pushNotifications(message:String) = SecuredAction(IsMemberOf("admin")) {
+  def pushNotifications(message: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
 
       request.body.asJson.map {
@@ -559,15 +562,15 @@ object Backoffice extends SecureCFPController {
 
       Proposal.allProposals().foreach(proposal => {
         val removedStates = Proposal.ensureProposaleHasState(proposal.id, proposal.state)
-        if(removedStates != 0) {
+        if (removedStates != 0) {
           summary ++= s"Removed ${removedStates} invalid states for proposal ${proposal.id} (valid state: ${proposal.state.code})\n"
         }
         val removedTypes = Proposal.ensureProposaleHasType(proposal.id, proposal.talkType)
-        if(removedTypes != 0) {
+        if (removedTypes != 0) {
           summary ++= s"Removed ${removedTypes} invalid types for proposal ${proposal.id} (valid type: ${proposal.talkType.id})\n"
         }
         val removeTracks = Proposal.ensureProposaleHasTrack(proposal.id, proposal.track.id)
-        if(removeTracks != 0) {
+        if (removeTracks != 0) {
           summary ++= s"Removed ${removeTracks} invalid tracks for proposal ${proposal.id} (valid track: ${proposal.track.id})\n"
         }
       })
