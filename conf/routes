@@ -143,7 +143,7 @@ GET           /admin                                                            
 GET           /admin/webusers/switch                                            controllers.Backoffice.switchCFPAdmin(uuid:String)
 GET           /admin/proposals/all                                              controllers.Backoffice.allProposals(proposalId:Option[String] ?=None, filterByStatus:Option[String] ?=None)
 GET           /admin/proposals/declined                                         controllers.Backoffice.showAllDeclined()
-GET           /admin/proposals/changeState/:proposalId                          controllers.Backoffice.changeProposalState(proposalId:String,state:String)
+GET           /admin/proposals/changeState/:proposalId                          controllers.Backoffice.changeProposalState(proposalId:String,state:String, filterByStatus:Option[String] ?= None)
 
 POST          /admin/deleteSpeaker/:speakerUUIDToDelete                         controllers.Backoffice.deleteSpeaker(speakerUUIDToDelete:String)
 GET           /admin/cleanUpVotesIfUserWasDeleted                               controllers.Backoffice.cleanUpVotesIfUserWasDeleted

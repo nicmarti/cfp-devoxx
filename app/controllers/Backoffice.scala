@@ -106,7 +106,7 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.homeBackoffice())
   }
 
-  def changeProposalState(proposalId: String, state: String) = SecuredAction(IsMemberOf("admin")) {
+  def changeProposalState(proposalId: String, state: String, filterByStatus: Option[String]) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.changeProposalState(request.webuser.uuid, proposalId, ProposalState.parse(state))
       if (state == ProposalState.ACCEPTED.code) {
@@ -123,7 +123,11 @@ object Backoffice extends SecureCFPController {
             ElasticSearchActor.masterActor ! DoIndexProposal(proposal.copy(state = ProposalState.DECLINED))
         }
       }
-      Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
+      filterByStatus match {
+        case None => Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
+        case Some(proposalState) => Redirect(routes.Backoffice.allProposals(None, filterByStatus)).flashing("success" -> ("Changed state to " + state))
+      }
+
   }
 
   val formSecu = Form("secu" -> nonEmptyText())
