@@ -124,8 +124,8 @@ object Backoffice extends SecureCFPController {
         }
       }
       filterByStatus match {
-        case None => Redirect(routes.Backoffice.allProposals()).flashing("success" -> ("Changed state to " + state))
-        case Some(proposalState) => Redirect(routes.Backoffice.allProposals(None, filterByStatus)).flashing("success" -> ("Changed state to " + state))
+        case None => Redirect(routes.Backoffice.allProposals()).flashing("success" -> (s"Changed state for proposal [$proposalId ] to $state"))
+        case Some(proposalState) => Redirect(routes.Backoffice.allProposals(None, filterByStatus)).flashing("success" -> (s"Changed state for proposal [$proposalId ] to $state"))
       }
 
   }
