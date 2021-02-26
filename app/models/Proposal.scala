@@ -1,14 +1,14 @@
 package models
 
 import library.{Benchmark, Dress, Redis}
-import models.ProposalState.{ACCEPTED, APPROVED, BACKUP, DECLINED, DRAFT, REJECTED, SUBMITTED}
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
 import org.joda.time.Instant
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 import play.api.templates.HtmlFormat
+
 
 /**
   * Proposal is the main and maybe the most important object for a CFP.
@@ -70,18 +70,19 @@ case class ProposalState(code: String)
 
 object ProposalState {
 
-  implicit val proposalStateFormat = Json.format[ProposalState]
+  implicit val proposalStateFormat: Format[ProposalState] = Json.format[ProposalState]
 
-  val DRAFT = ProposalState("draft")
-  val SUBMITTED = ProposalState("submitted")
-  val DELETED = ProposalState("deleted")
-  val APPROVED = ProposalState("approved")
-  val REJECTED = ProposalState("rejected")
-  val ACCEPTED = ProposalState("accepted")
-  val DECLINED = ProposalState("declined")
-  val BACKUP = ProposalState("backup")
-  val ARCHIVED = ProposalState("archived")
-  val UNKNOWN = ProposalState("unknown")
+  val DRAFT: ProposalState = ProposalState("draft")
+  val SUBMITTED: ProposalState = ProposalState("submitted")
+  val DELETED: ProposalState = ProposalState("deleted")
+  val APPROVED: ProposalState = ProposalState("approved")
+  val REJECTED: ProposalState = ProposalState("rejected")
+  val ACCEPTED: ProposalState = ProposalState("accepted")
+  val DECLINED: ProposalState = ProposalState("declined")
+  val BACKUP: ProposalState = ProposalState("backup")
+  val ARCHIVED: ProposalState = ProposalState("archived")
+  val CANCELLED: ProposalState = ProposalState("cancelled")
+  val UNKNOWN: ProposalState = ProposalState("unknown")
 
   val all = List(
     DRAFT,
@@ -93,7 +94,8 @@ object ProposalState {
     DECLINED,
     BACKUP,
     ARCHIVED,
-    UNKNOWN
+    UNKNOWN,
+    CANCELLED
   )
 
   val allButDeletedAndArchived = List(
@@ -103,7 +105,8 @@ object ProposalState {
     REJECTED,
     ACCEPTED,
     DECLINED,
-    BACKUP
+    BACKUP,
+    CANCELLED
   )
 
   // Used to limit the number of proposals submitted per speaker
@@ -113,10 +116,11 @@ object ProposalState {
     REJECTED,
     ACCEPTED,
     DECLINED,
-    BACKUP
+    BACKUP,
+    CANCELLED
   )
 
-  val allAsCode = all.map(_.code)
+  lazy val allAsCode: List[String] = all.map(_.code).sorted
 
   def parse(state: String): ProposalState = {
     state match {
@@ -129,6 +133,7 @@ object ProposalState {
       case "declined" => DECLINED
       case "backup" => BACKUP
       case "ar" => ARCHIVED
+      case "cancelled" => CANCELLED
       case _ => UNKNOWN
     }
   }
@@ -191,8 +196,7 @@ case class Proposal(id: String,
 
 object Proposal {
 
-
-  implicit val proposalFormat = Json.format[Proposal]
+  implicit val proposalFormat: Format[Proposal] = Json.format[Proposal]
 
   val langs = Seq(("en", "🇬🇧 English"), ("fr", "🇫🇷 Français"))
 
@@ -254,7 +258,7 @@ object Proposal {
       proposalId
   }
 
-  val proposalForm = Form(mapping(
+  val proposalForm: Form[Proposal] = Form(mapping(
     "id" -> optional(text),
     "lang" -> text,
     "title" -> nonEmptyText(maxLength = 125),
@@ -464,12 +468,14 @@ object Proposal {
         client.srem(s"Proposals:ByState:${unexpectedStateCode}", proposalId)
       ).sum
   }
+
   def ensureProposaleHasType(proposalId: String, expectedProposalType: ProposalType): Long = Redis.pool.withClient {
     implicit client =>
       ConferenceDescriptor.ConferenceProposalTypes.ALL.filter(_.id != expectedProposalType.id).map(unexpectedType =>
         client.srem(s"Proposals:ByType:${unexpectedType.id}", proposalId)
       ).sum
   }
+
   def ensureProposaleHasTrack(proposalId: String, expectedProposalTrackId: String): Long = Redis.pool.withClient {
     implicit client =>
       Track.allIDs.filter(_ != expectedProposalTrackId).map(unexpectedTrackId =>
@@ -534,6 +540,10 @@ object Proposal {
 
   def archive(uuid: String, proposalId: String) = {
     changeProposalState(uuid, proposalId, ProposalState.ARCHIVED)
+  }
+
+  def cancel(uuid: String, proposalId: String) = {
+    changeProposalState(uuid, proposalId, ProposalState.CANCELLED)
   }
 
   private def loadProposalsByState(uuid: String, proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
@@ -647,11 +657,12 @@ object Proposal {
       isNotDeclined <- checkIsNotMember(client, ProposalState.DECLINED, proposalId).toRight(ProposalState.DECLINED).right;
       isNotRejected <- checkIsNotMember(client, ProposalState.REJECTED, proposalId).toRight(ProposalState.REJECTED).right;
       isNotBackup <- checkIsNotMember(client, ProposalState.BACKUP, proposalId).toRight(ProposalState.BACKUP).right;
+      isNotCancelled <- checkIsNotMember(client, ProposalState.CANCELLED, proposalId).toRight(ProposalState.CANCELLED).right;
       isNotArchived <- checkIsNotMember(client, ProposalState.ARCHIVED, proposalId).toRight(ProposalState.ARCHIVED).right
     ) yield ProposalState.UNKNOWN // If we reach this code, we could not find what was the proposal state
 
     thisProposalState.fold(foundProposalState => Some(foundProposalState), notFound => {
-      play.Logger.warn(s"Could not find proposal state for $proposalId")
+      play.Logger.warn(s"Could not find proposal state ($notFound) for $proposalId")
       None
     })
   }

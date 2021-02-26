@@ -1,4 +1,4 @@
-@(proposals:List[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposals:List[Proposal], filterByStatus:Option[String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin - all talks") {
 
@@ -28,8 +28,14 @@
     <div class="card">
         <div class="card-header">
             <h3>All Proposals</h3>
-            <div class="alert alert-danger">
+            <div class="alert alert-warning">
                 This screen lets you to search and to update any proposal current state. Use with caution.
+            </div>
+            <div>
+                Show only :
+                @models.ProposalState.allAsCode.map { code =>
+                    <a href="@routes.Backoffice.allProposals(None,Some(code))">@code</a> -
+                }
             </div>
         </div>
 
@@ -76,6 +82,9 @@
                                         Declined</a> </small>
                                     <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.REJECTED.code)" class="btn btn-sm btn-danger">
                                         Rejected</a> </small>
+                                    <small><a href="@routes.Backoffice.changeProposalState(proposal.id, ProposalState.CANCELLED.code)" class="btn btn-sm btn-dark">
+                                        Cancelled</a> </small>
+
                                 </td>
                             </tr>
                         }
@@ -84,7 +93,7 @@
                 </tbody>
             </table>
             }else{
-                <P>There is no proposal with status != Archived</P>
+                <P>There is no proposal with status @filterByStatus</P>
             }
         </div>
     </div>

@@ -170,7 +170,7 @@ object GoldenTicketAdminController extends SecureCFPController {
           }
       }.filterNot {
         case (proposal, _) =>
-          proposal.state == ProposalState.DRAFT || proposal.state == ProposalState.ARCHIVED || proposal.state == ProposalState.DELETED
+          proposal.state == ProposalState.DRAFT || proposal.state == ProposalState.ARCHIVED || proposal.state == ProposalState.DELETED || proposal.state == ProposalState.CANCELLED
       }.sortBy(_._2._4.n).reverse
 
       Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals))

@@ -141,7 +141,7 @@ POST          /cfpadmin/saveNewSpeaker                                          
 
 GET           /admin                                                            controllers.Backoffice.homeBackoffice()
 GET           /admin/webusers/switch                                            controllers.Backoffice.switchCFPAdmin(uuid:String)
-GET           /admin/proposals/all                                              controllers.Backoffice.allProposals(proposalId:Option[String] ?=None)
+GET           /admin/proposals/all                                              controllers.Backoffice.allProposals(proposalId:Option[String] ?=None, filterByStatus:Option[String] ?=None)
 GET           /admin/proposals/declined                                         controllers.Backoffice.showAllDeclined()
 GET           /admin/proposals/changeState/:proposalId                          controllers.Backoffice.changeProposalState(proposalId:String,state:String)
 
