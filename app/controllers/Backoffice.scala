@@ -80,7 +80,7 @@ object Backoffice extends SecureCFPController {
           val proposals = Proposal.allProposals().sortBy(_.state.code)
           Ok(views.html.Backoffice.allProposals(proposals, filterByStatus))
         case (None, Some(filter)) =>
-          val proposals = Proposal.allProposals().filter(_.state == ProposalState.parse(filter)).sortBy(_.state.code)
+          val proposals = Proposal.allFromProposalState(ProposalState.parse(filter)).sortBy(_.state.code)
           Ok(views.html.Backoffice.allProposals(proposals, filterByStatus))
       }
 

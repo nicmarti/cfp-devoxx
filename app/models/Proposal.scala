@@ -1127,6 +1127,12 @@ object Proposal {
       }
   }
 
+  def allFromProposalState(proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds: Set[String] = client.smembers(s"Proposals:ByState:${proposalState.code}")
+      loadProposalByIDs(allProposalIds, proposalState)
+  }
+
 }
 
 /*
