@@ -84,7 +84,8 @@
         <div class="col-lg-12">
             <h3>Votes par utilisateur</h3>
             @ReviewByGoldenTicket.countVotesForAllUsers().map { uuidAndVotes =>
-              @uuidAndVotes._2 @Webuser.findByUUID(uuidAndVotes._1).map(_.cleanName)<br>
+              @uuidAndVotes._2 @Webuser.findByUUID(uuidAndVotes._1).map {user =>
+                @user.cleanName &lt;@user.email&gt;<br>}
             }
         </div>
     </div>
