@@ -23,7 +23,6 @@
 
 package controllers
 
-import controllers.Application.{MovedPermanently, Ok}
 import library.search.ElasticSearch
 import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import library._

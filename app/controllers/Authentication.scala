@@ -22,15 +22,14 @@
   */
 package controllers
 
-import java.math.BigInteger
-import java.security.SecureRandom
-
+import com.google.api.services.oauth2.Oauth2
+import com.google.api.services.oauth2.model.{Tokeninfo, Userinfoplus}
 import models._
 import notifiers.TransactionalEmails
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
-import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
-import org.joda.time.{DateTime, DateTimeZone}
+import org.apache.commons.lang3.StringUtils
+import org.joda.time.DateTime
 import pdi.jwt.{Jwt, JwtAlgorithm}
 import play.api.Play
 import play.api.Play.current
@@ -43,6 +42,8 @@ import play.api.libs.json.Json
 import play.api.libs.ws._
 import play.api.mvc._
 
+import java.math.BigInteger
+import java.security.SecureRandom
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -139,15 +140,16 @@ object Authentication extends Controller {
   }
 
   //POST https://github.com/login/oauth/access_token
-  val oauthForm = Form(tuple("code" -> text, "state" -> text))
+  val oauthForm = Form(tuple("code" -> text, "state" -> text, "error" -> optional(text)))
   val accessTokenForm = Form("access_token" -> text)
 
   def callbackGithub(visitor: Boolean) = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        Future.successful(BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form"))
+        // code and state are missing or not valid
+        Future.successful(InternalServerError("Internal error with the return from Github"))
       }, {
-        case (code, state) if state == Crypto.sign("ok") =>
+        case (code, state, _) if state == Crypto.sign("ok") =>
           val auth = for (clientId <- Play.current.configuration.getString("github.client_id");
                           clientSecret <- Play.current.configuration.getString("github.client_secret")) yield (clientId, clientSecret)
           auth.map {
@@ -325,7 +327,7 @@ object Authentication extends Controller {
           webuser =>
             val uuid = Webuser.saveAndValidateWebuser(webuser) // it is generated
             val someLang = request.acceptLanguages.headOption.map(_.code)
-            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang,None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience",None))
+            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience", None))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -420,11 +422,10 @@ object Authentication extends Controller {
   def callbackLinkedin = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        Future.successful {
-          BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
-        }
+        // there is no code or state from the OAuth2 redirect... this might be an error from LinkedIn
+        Future.successful(InternalServerError("Invalid redirect form sent by LinkedIn"))
       }, {
-        case (code, state) if state == Crypto.sign(request.session.get("state").getOrElse("")) =>
+        case (code, state, _) if state == Crypto.sign(request.session.get("state").getOrElse("")) =>
           val auth = for (clientId <- Play.current.configuration.getString("linkedin.client_id");
                           clientSecret <- Play.current.configuration.getString("linkedin.client_secret")) yield (clientId, clientSecret)
           auth.map {
@@ -508,94 +509,95 @@ object Authentication extends Controller {
         clientId: String =>
           val redirectUri = routes.Authentication.callbackGoogle().absoluteURL()
           val state = new BigInteger(130, new SecureRandom()).toString(32)
-          val gitUrl = "https://accounts.google.com/o/oauth2/auth?client_id=" + clientId + "&scope=openid%20email%20profile&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
-          Redirect(gitUrl).withSession("state" -> state)
+          val theUrl = "https://accounts.google.com/o/oauth2/auth?client_id=" + clientId +
+            "&scope=openid%20email%20profile" +
+            "&state=" + Crypto.sign(state) +
+            "&redirect_uri=" + redirectUri +
+            "&response_type=code"
+          Redirect(theUrl).withSession("state" -> state)
       }.getOrElse {
-        InternalServerError("google.client_id is not set in application.conf")
+        InternalServerError("google.client_id is not set in application.conf or GOOGLE_ID environment variable is not set.")
       }
   }
 
   implicit val googleFormat = Json.format[GoogleToken]
 
-  def callbackGoogle = Action.async {
+  val googleURL = "https://oauth2.googleapis.com/token"
+
+  import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeTokenRequest, GoogleCredential, GoogleTokenResponse}
+  import com.google.api.client.http.javanet.NetHttpTransport
+  import com.google.api.client.json.jackson2.JacksonFactory
+
+  private val transport: NetHttpTransport = new NetHttpTransport()
+  private val jsonFactory: JacksonFactory = new JacksonFactory()
+
+  val clientId:String = Play.current.configuration.getString("google.client_id").getOrElse("")
+  val clientSecret:String = Play.current.configuration.getString("google.client_secret").getOrElse("")
+
+  def callbackGoogle = Action {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        Future.successful {
-          BadRequest(views.html.Application.home(invalidForm)).flashing("error" -> "Invalid form")
-        }
-      }, {
-        case (code, state) if state == Crypto.sign(request.session.get("state").getOrElse("")) =>
-          val auth = for (clientId <- Play.current.configuration.getString("google.client_id");
-                          clientSecret <- Play.current.configuration.getString("google.client_secret")) yield (clientId, clientSecret)
-          auth.map {
-            case (clientId, clientSecret) =>
-              val url = "https://accounts.google.com/o/oauth2/token"
-              val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
-              val wsCall = WS.url(url).withHeaders("Accept" -> "application/json", "User-Agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname)).post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
-              wsCall.map {
-                result =>
-                  result.status match {
-                    case 200 =>
-                      val googleToken = Json.parse(result.body).as[GoogleToken]
-                      Redirect(routes.Authentication.createFromGoogle()).withSession("google_token" -> googleToken.access_token)
-                    case _ =>
-                      Redirect(routes.Application.index()).flashing("error" -> ("error with Google OAuth2.0 : got HTTP response " + result.status + " " + result.body))
-                  }
-              }
-          }.getOrElse {
-            Future.successful {
-              InternalServerError("google.client_id is not configured in application.conf")
-            }
+        play.Logger.debug(s"Callback eror with google $invalidForm")
+        InternalServerError("Unable to read Google Token")
+      },{
+        case(code,state, _) => {
+          if(state != Crypto.sign(request.session.get("state").getOrElse("?"))){
+            BadRequest("Invalid request, state is not valid")
+          }else {
+            val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL()
+
+            val tokenResponse: GoogleTokenResponse = new GoogleAuthorizationCodeTokenRequest(
+              transport, jsonFactory, clientId, clientSecret, code, redirect_uri
+            ).execute()
+
+            val credential = new GoogleCredential.Builder()
+              .setJsonFactory(jsonFactory)
+              .setTransport(transport)
+              .setClientSecrets(clientId, clientSecret).build()
+              .setFromTokenResponse(tokenResponse)
+
+            Redirect(routes.Authentication.createFromGoogle()).withSession("google_token" -> credential.getAccessToken)
           }
-        case other => Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
+        }
       })
   }
 
-  def createFromGoogle = Action.async {
+  def createFromGoogle = Action {
     implicit request =>
       request.session.get("google_token").map {
-        access_token =>
-          //for Google account
-          val url = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + access_token
+        accessToken =>
 
-          // For Google+ profile
-          //val url = "https://www.googleapis.com/plus/v1/people/me?access_token=" + access_token+"&"
-          val futureResult = WS.url(url).withHeaders(
-            "User-agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname),
-            "Accept" -> "application/json"
-          ).get()
+          val credential: GoogleCredential = new GoogleCredential.Builder()
+            .setJsonFactory(jsonFactory)
+            .setTransport(transport)
+            .setClientSecrets(clientId, clientSecret).build()
+            .setAccessToken(accessToken)
 
-          futureResult.map {
-            result =>
-              result.status match {
-                case 200 =>
-                  //Ok(result.body).as("application/json")
-                  val json = Json.parse(result.body)
+          val oauth2: Oauth2 = new Oauth2.Builder(
+            transport, jsonFactory, credential).setApplicationName("Lunatech Google Openconnect").build()
 
-                  val email = json.\("email").as[String]
-                  val firstName = json.\("given_name").asOpt[String]
-                  val lastName = json.\("family_name").asOpt[String]
-                  val blog = json.\("profile").asOpt[String]
-                  val photo = json.\("picture").asOpt[String]
+          val tokenInfo: Tokeninfo = oauth2.tokeninfo().setAccessToken(credential.getAccessToken).execute()
+          val userInfo: Userinfoplus = oauth2.userinfo().get().execute()
 
-                  // Try to lookup the speaker
-                  Webuser.findByEmail(email).map {
-                    w =>
-                      val cookie = createCookie(w)
-                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
-                  }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), "", None, None, blog, photo, "No experience")
-                    Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
-                  }
-                case other =>
-                  play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                  BadRequest("Unable to complete the Google User API call due to "+result.status)
-              }
+          if (tokenInfo.containsKey("error")) {
+            play.Logger.error(s"Unable to decrypt Google token, tokenInfo=$tokenInfo")
+            InternalServerError("Error with Google Token")
+          } else {
+            val email = userInfo.getEmail
+            val firstName = userInfo.getGivenName
+            val lastName = userInfo.getFamilyName
+            val photo = userInfo.getPicture
+            Webuser.findByEmail(email).map {
+              w =>
+                val cookie = createCookie(w)
+                Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
+            }.getOrElse {
+              val defaultValues = (email, firstName, lastName, "", None, None, None, Option(photo), "No experience")
+              Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+            }
           }
       }.getOrElse {
-        Future.successful {
-          Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
-        }
+        Redirect(routes.Application.index()).flashing("error" -> "Your Google Access token has expired, please reauthenticate")
       }
   }
 
@@ -627,7 +629,7 @@ object Authentication extends Controller {
             Future.successful(Unauthorized("No JWT Token"))
           case Some(jwtToken) =>
 
-              Jwt.decode(jwtToken, ConferenceDescriptor.jwtSharedSecret(), Seq(JwtAlgorithm.HS256)) match {
+            Jwt.decode(jwtToken, ConferenceDescriptor.jwtSharedSecret(), Seq(JwtAlgorithm.HS256)) match {
               case Success(decodedString) =>
                 val json = Json.parse(decodedString)
                 val firstName = (json \ "firstName").as[String]
@@ -638,15 +640,15 @@ object Authentication extends Controller {
                 // Check if the user is not already a speaker or a valid webuser
                 val maybeWebuser = Webuser.findByEmail(_email)
 
-                val (webuser:Webuser, newUUID:String) = maybeWebuser match {
+                val (webuser: Webuser, newUUID: String) = maybeWebuser match {
                   case w if w.isDefined =>
                     Webuser.addToDevoxxians(maybeWebuser.get.uuid)
                     (maybeWebuser.get, maybeWebuser.get.uuid)
-                  case other=>
+                  case other =>
                     val webuser = Webuser.createDevoxxian(_email, Some("MY_DEVOXX_FR"), Some("00000"))
                     val newUUID = Webuser.saveAndValidateWebuser(webuser)
                     Webuser.addToDevoxxians(newUUID)
-                    (webuser,newUUID)
+                    (webuser, newUUID)
                 }
 
                 val cookie = createCookie(webuser)

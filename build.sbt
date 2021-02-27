@@ -30,7 +30,7 @@ libraryDependencies ++= Seq(
   , "com.typesafe.play" %% "play-mailer" % "2.4.1"
   , "org.apache.commons" % "commons-lang3" % "3.5"
   , "commons-io" % "commons-io" % "2.4"
-  , "commons-codec" % "commons-codec" % "1.7" // for new Base64 that has support for String
+  , "commons-codec" % "commons-codec" % "1.9" // for new Base64 that has support for String
   , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
   , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
   //, "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
@@ -39,4 +39,6 @@ libraryDependencies ++= Seq(
   , "com.pauldijou" %% "jwt-core" % "0.9.2" // JWT for MyDevoxx
   , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
   , "org.scalaz" %% "scalaz-core" % "7.2.10"
+  , "com.google.api-client" % "google-api-client" % "1.30.7"
+  , "com.google.apis" % "google-api-services-oauth2" % "v2-rev20190313-1.30.1"
 )
