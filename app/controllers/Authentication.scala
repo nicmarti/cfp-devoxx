@@ -22,6 +22,9 @@
   */
 package controllers
 
+import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeTokenRequest, GoogleCredential, GoogleTokenResponse}
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.oauth2.Oauth2
 import com.google.api.services.oauth2.model.{Tokeninfo, Userinfoplus}
 import models._
@@ -38,7 +41,7 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws._
 import play.api.mvc._
 
@@ -64,7 +67,7 @@ object Authentication extends Controller {
 
   val emailForm = Form("email" -> (email verifying(nonEmpty, maxLength(50))))
 
-  val isSecure:Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
+  val isSecure: Boolean = Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)
 
   def doForgetPassword() = Action {
     implicit request =>
@@ -134,7 +137,7 @@ object Authentication extends Controller {
       Play.current.configuration.getString("github.client_id").map {
         clientId: String =>
           val redirectUri = routes.Authentication.callbackGithub(visitor).absoluteURL(isSecure)
-          val gitUrl = "https://github.com/login/oauth/authorize?scope=user:email&client_id=" + clientId + "&state=" + Crypto.sign("ok") + "&redirect_uri=" + redirectUri
+          val gitUrl = "https://github.com/login/oauth/authorize?scope=user:email&client_id=" + clientId + "&state=" + Crypto.sign("ok32") + "&redirect_uri=" + redirectUri
           Redirect(gitUrl)
       }.getOrElse {
         InternalServerError("github.client_id is not set in application.conf")
@@ -142,16 +145,16 @@ object Authentication extends Controller {
   }
 
   //POST https://github.com/login/oauth/access_token
-  val oauthForm = Form(tuple("code" -> text, "state" -> text, "error" -> optional(text)))
+  val oauthForm = Form(tuple("code" -> text, "state" -> text, "error" -> optional(text), "error_description" -> optional(text)))
   val accessTokenForm = Form("access_token" -> text)
 
   def callbackGithub(visitor: Boolean) = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
         // code and state are missing or not valid
-        Future.successful(InternalServerError("Internal error with the return from Github"))
+        Future.successful(InternalServerError(s"Internal error with the return from Github. Error=${invalidForm("error")} Description=${invalidForm("error_description")}"))
       }, {
-        case (code, state, _) if state == Crypto.sign("ok") =>
+        case (code, state, _, _) if state == Crypto.sign("ok32") =>
           val auth = for (clientId <- Play.current.configuration.getString("github.client_id");
                           clientSecret <- Play.current.configuration.getString("github.client_secret")) yield (clientId, clientSecret)
           auth.map {
@@ -177,7 +180,7 @@ object Authentication extends Controller {
           }.getOrElse {
             Future.successful(InternalServerError("github.client_secret is not configured in application.conf"))
           }
-        case other => Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
+        case _ => Future.successful(BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code"))
       })
   }
 
@@ -239,8 +242,16 @@ object Authentication extends Controller {
   def createFromGithub(visitor: Boolean) = Action.async {
     implicit request =>
 
-      val url = "https://api.github.com/user?access_token=" + request.session.get("access_token").getOrElse("")
-      val futureResult = WS.url(url).withHeaders("User-agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname), "Accept" -> "application/json").get()
+      // Fix https://developer.github.com/changes/2020-02-10-deprecating-auth-through-query-param/
+      val url = "https://api.github.com/user"
+      val futureResult = WS
+        .url(url)
+        .withHeaders(
+          "User-agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname),
+          "Accept" -> "application/json",
+          "Authorization" -> s"token ${request.session.get("access_token").getOrElse("?")}"
+        )
+        .get()
       futureResult.map {
         result =>
           result.status match {
@@ -280,10 +291,8 @@ object Authentication extends Controller {
                     if (visitor) {
                       val newWebuser = Webuser.createVisitor(emailS, firstName, lastName)
                       Ok(views.html.Authentication.confirmImportVisitor(newWebuserForm.fill(newWebuser)))
-
                     } else {
                       val defaultValues = (emailS, firstName, lastName, StringUtils.abbreviate(bioS, 750), company, None, blog, avatarUrl, "No experience")
-
                       Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
                     }
                   }
@@ -414,7 +423,7 @@ object Authentication extends Controller {
         clientId: String =>
           val redirectUri = routes.Authentication.callbackLinkedin().absoluteURL(isSecure)
           val state = new BigInteger(130, new SecureRandom()).toString(32)
-          val gitUrl = "https://www.linkedin.com/uas/oauth2/authorization?client_id=" + clientId + "&scope=r_basicprofile%20r_emailaddress&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
+          val gitUrl = "https://www.linkedin.com/oauth/v2/authorization?client_id=" + clientId + "&scope=r_liteprofile%20r_emailaddress&state=" + Crypto.sign(state) + "&redirect_uri=" + redirectUri + "&response_type=code"
           Redirect(gitUrl).withSession("state" -> state)
       }.getOrElse {
         InternalServerError("linkedin.client_id is not set in application.conf")
@@ -424,15 +433,17 @@ object Authentication extends Controller {
   def callbackLinkedin = Action.async {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        // there is no code or state from the OAuth2 redirect... this might be an error from LinkedIn
-        Future.successful(InternalServerError("Invalid redirect form sent by LinkedIn"))
+        val error = invalidForm("error").value.getOrElse("?")
+        val errorDesc = invalidForm("error_description").value.getOrElse("")
+        play.Logger.error(s"OAuth2 Error with LinkedIn due to $error / $errorDesc")
+        Future.successful(InternalServerError(s"Internal error with the return from LinkedIn OAuth2. Error=${error} Description=${errorDesc}"))
       }, {
-        case (code, state, _) if state == Crypto.sign(request.session.get("state").getOrElse("")) =>
+        case (code, state, _, _) if state == Crypto.sign(request.session.get("state").getOrElse("")) =>
           val auth = for (clientId <- Play.current.configuration.getString("linkedin.client_id");
                           clientSecret <- Play.current.configuration.getString("linkedin.client_secret")) yield (clientId, clientSecret)
           auth.map {
             case (clientId, clientSecret) =>
-              val url = "https://www.linkedin.com/uas/oauth2/accessToken"
+              val url = "https://www.linkedin.com/oauth/v2/accessToken"
               val redirect_uri = routes.Authentication.callbackLinkedin().absoluteURL(isSecure)
               val wsCall = WS.url(url).withHeaders("Accept" -> "application/json", "Content-Type" -> "application/x-www-form-urlencoded")
                 .post(Map("client_id" -> Seq(clientId), "client_secret" -> Seq(clientSecret), "code" -> Seq(code), "grant_type" -> Seq("authorization_code"), "redirect_uri" -> Seq(redirect_uri)))
@@ -440,7 +451,6 @@ object Authentication extends Controller {
                 result =>
                   result.status match {
                     case 200 =>
-                      val b = result.body
                       val json = Json.parse(result.body)
                       val token = json.\("access_token").as[String]
                       Redirect(routes.Authentication.createFromLinkedin()).withSession("linkedin_token" -> token)
@@ -454,7 +464,8 @@ object Authentication extends Controller {
             }
           }
         case other => Future.successful {
-          BadRequest(views.html.Application.home(loginForm)).flashing("error" -> "Invalid state code")
+          play.Logger.error("LinkedIn error in callback. Form details=" + other)
+          Redirect(routes.Application.index()).flashing("error" -> "Unable to authenticate or to import your profile from LinkedIn. The session has expired, try again.")
         }
       })
   }
@@ -463,44 +474,78 @@ object Authentication extends Controller {
     implicit request =>
       request.session.get("linkedin_token").map {
         access_token =>
-          //for Linkedin profile
-          val url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,picture-url,summary)?format=json&oauth2_access_token=" + access_token
-
-          val futureResult = WS.url(url).withHeaders(
-            "User-agent" -> ("CFP " + ConferenceDescriptor.current().conferenceUrls.cfpHostname),
-            "Accept" -> "application/json"
+          val urlForEmail = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))"
+          val futureResult = WS.url(urlForEmail).withHeaders(
+            "User-agent" -> ("CFP v2 " + ConferenceDescriptor.current().conferenceUrls.cfpHostname),
+            "Accept" -> "application/json",
+            "Authorization" -> s"Bearer ${access_token}"
           ).get()
 
-          futureResult.map {
+          futureResult.flatMap {
             result =>
               result.status match {
                 case 200 =>
                   val json = Json.parse(result.body)
-                  val email = json.\("emailAddress").as[String]
-                  val firstName = json.\("firstName").asOpt[String]
-                  val lastName = json.\("lastName").asOpt[String]
-                  val photo = json.\("pictureUrl").asOpt[String]
-                  val summary = json.\("summary").asOpt[String]
+                  val jsValueForEmail: Option[String] = json.\\("elements").seq.headOption
+                    .flatMap(j => j.\\("handle~").headOption.map(j2 => j2.\("emailAddress").as[String]))
 
-                  // Try to lookup the speaker
-                  Webuser.findByEmail(email).map {
-                    w =>
-                      val cookie = createCookie(w)
-                      Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie)
-                  }.getOrElse {
-                    val defaultValues = (email, firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience")
-                    Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                  jsValueForEmail match {
+                    case Some(email) => {
+                      // Try to lookup the speaker
+                      Webuser.findByEmail(email).map {
+                        w =>
+                          val cookie = createCookie(w)
+                          Future.successful(Redirect(routes.CallForPaper.homeForSpeaker()).flashing("warning" -> Messages("cfp.reminder.proposals")).withSession("uuid" -> w.uuid).withCookies(cookie))
+                      }.getOrElse {
+                        val urlForProfile = "https://api.linkedin.com/v2/me"
+                        val futureResult2 = WS.url(urlForProfile).withHeaders(
+                          "User-agent" -> ("CFP v2 " + ConferenceDescriptor.current().conferenceUrls.cfpHostname),
+                          "Accept" -> "application/json",
+                          "Authorization" -> s"Bearer ${access_token}"
+                        ).get()
+
+                        val resultFinal: Future[Result] = futureResult2.map {
+                          r2 =>
+                            r2.status match {
+                              case 200 =>
+                                val json2 = Json.parse(r2.body)
+                                val firstName = json2.\("localizedFirstName").asOpt[String]
+                                val lastName = json2.\("localizedLastName").asOpt[String]
+                                val photo = json2.\("pictureUrl").asOpt[String]
+                                val summary = json2.\("summary").asOpt[String]
+
+                                val defaultValues = (email.toString(), firstName.getOrElse("?"), lastName.getOrElse("?"), summary.getOrElse("?"), None, None, None, photo, "No experience")
+                                Ok(views.html.Authentication.confirmImport(importSpeakerForm.fill(defaultValues)))
+                              case _ =>
+                                Redirect(routes.Application.index()).flashing("error" -> "Unable to extract your details from your LinkedIn profile. Please use another OAuth2 provider.")
+                            }
+                        }
+                        resultFinal
+                      }
+                    }
+                    case None => Future.successful(Redirect(routes.Application.index()).flashing("error" -> "Unable to extract your email address from your LinkedIn profile. Please use another OAuth2 provider."))
                   }
-
-                case other =>
-                  play.Logger.error("Unable to complete call " + result.status + " " + result.statusText + " " + result.body)
-                  BadRequest("Unable to complete the LinkedIn User API call")
+                case _ =>
+                  play.Logger.error("Unable to complete call " + result.status + " " + result.statusText)
+                  Future.successful(BadRequest("Unable to complete the LinkedIn User API call"))
               }
           }
       }.getOrElse {
         Future.successful {
           Redirect(routes.Application.index()).flashing("error" -> "Your LinkedIn Access token has expired, please reauthenticate")
         }
+      }
+  }
+
+  def testJson = Action {
+    implicit request =>
+      val jsonSrc: String = "{\"elements\":[{\"handle~\":{\"emailAddress\":\"nicolas@martignole.net\"},\"handle\":\"urn:li:emailAddress:497367\"}]}"
+      val json = Json.parse(jsonSrc)
+      val jsValue: Option[JsValue] = json.\\("elements").seq.headOption.map(j => j.\\("handle~").headOption.map(j2 => j2.\("emailAddress"))).flatten
+
+      jsValue match {
+        case Some(email) => Ok("email = " + email)
+        case None => NotFound("Email not found")
       }
   }
 
@@ -526,26 +571,29 @@ object Authentication extends Controller {
 
   val googleURL = "https://oauth2.googleapis.com/token"
 
-  import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeTokenRequest, GoogleCredential, GoogleTokenResponse}
-  import com.google.api.client.http.javanet.NetHttpTransport
-  import com.google.api.client.json.jackson2.JacksonFactory
-
   private val transport: NetHttpTransport = new NetHttpTransport()
   private val jsonFactory: JacksonFactory = new JacksonFactory()
 
-  val clientId:String = Play.current.configuration.getString("google.client_id").getOrElse("")
-  val clientSecret:String = Play.current.configuration.getString("google.client_secret").getOrElse("")
+  val clientId: String = Play.current.configuration.getString("google.client_id").getOrElse("")
+  val clientSecret: String = Play.current.configuration.getString("google.client_secret").getOrElse("")
 
   def callbackGoogle = Action {
     implicit request =>
       oauthForm.bindFromRequest.fold(invalidForm => {
-        play.Logger.debug(s"Callback eror with google $invalidForm")
-        InternalServerError("Unable to read Google Token")
-      },{
-        case(code,state, _) => {
-          if(state != Crypto.sign(request.session.get("state").getOrElse("?"))){
+        play.Logger.error(s"Callback eror with google oauth $invalidForm")
+        val error: Option[String] = invalidForm.error("error").map(_.message)
+        val errorDesc: Option[String] = invalidForm.error("error_description").map(_.message)
+        InternalServerError(s"Internal error with the return from Google OAuth2. Error=${
+          error
+        } Description=${
+          errorDesc
+        }")
+
+      }, {
+        case (code, state, _, _) => {
+          if (state != Crypto.sign(request.session.get("state").getOrElse("?"))) {
             BadRequest("Invalid request, state is not valid")
-          }else {
+          } else {
             val redirect_uri = routes.Authentication.callbackGoogle().absoluteURL(isSecure)
 
             val tokenResponse: GoogleTokenResponse = new GoogleAuthorizationCodeTokenRequest(
