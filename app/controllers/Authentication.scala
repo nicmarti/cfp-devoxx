@@ -537,18 +537,6 @@ object Authentication extends Controller {
       }
   }
 
-  def testJson = Action {
-    implicit request =>
-      val jsonSrc: String = "{\"elements\":[{\"handle~\":{\"emailAddress\":\"nicolas@martignole.net\"},\"handle\":\"urn:li:emailAddress:497367\"}]}"
-      val json = Json.parse(jsonSrc)
-      val jsValue: Option[JsValue] = json.\\("elements").seq.headOption.map(j => j.\\("handle~").headOption.map(j2 => j2.\("emailAddress"))).flatten
-
-      jsValue match {
-        case Some(email) => Ok("email = " + email)
-        case None => NotFound("Email not found")
-      }
-  }
-
   // See Google documentation https://developers.google.com/accounts/docs/OAuth2Login
   def googleLogin(visitor: Boolean) = Action {
     implicit request =>
