@@ -309,9 +309,9 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    val firstDay = "2020-04-15"
-    val secondDay = "2020-04-16"
-    val thirdDay = "2020-04-17"
+    val firstDay = "2021-06-30"
+    val secondDay = "2021-07-01"
+    val thirdDay = "2021-07-02"
     val confTimezone = ConferenceDescriptor.current().timezone
 
     // UNIVERSITY
@@ -687,14 +687,14 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2020).withMonthOfYear(4).withDayOfMonth(15)
-  val toDay = new DateTime().withYear(2020).withMonthOfYear(4).withDayOfMonth(17)
+  val fromDay = new DateTime().withYear(2021).withMonthOfYear(6).withDayOfMonth(30)
+  val toDay = new DateTime().withYear(2021).withMonthOfYear(7).withDayOfMonth(2)
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxFR2020",
+    eventCode = "DevoxxFR2021",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxfr2020",
+    confUrlCode = "devoxxfr2010",
     frLangEnabled = true,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.fr"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.fr"),
@@ -714,16 +714,16 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "15 au 17 avril 2020",
+      datesI18nKey = "30 juin au 2 juillet 2021",
       speakersPassDuration = 3,
       preferredDayEnabled = true,
-      firstDayFr = "15 avril",
-      firstDayEn = "april 15th",
-      datesFr = "du 15 au 17 avril 2020",
-      datesEn = "from 15th to 17th of April, 2020",
+      firstDayFr = "30 juin",
+      firstDayEn = "June, 30th",
+      datesFr = "du 30 juin au 2 juillet 2021",
+      datesEn = "from June, 30th till July, 2nd, 2021",
       cfpOpenedOn = DateTime.parse("2019-12-02T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2020-01-12T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2020-03-01T00:00:00+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2021-05-15T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",

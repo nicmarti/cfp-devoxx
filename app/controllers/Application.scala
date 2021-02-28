@@ -58,11 +58,7 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
-      if (request.headers.get("X-Forwarded-Proto").getOrElse("http") != "https" && Play.current.mode == play.api.Mode.Prod) {
-        MovedPermanently("https://cfp.devoxx.fr")
-      } else {
-        Ok(html.Application.index())
-      }
+      Ok(html.Application.index())
   }
 
   def bugReport = Action {
