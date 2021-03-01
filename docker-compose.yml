@@ -1,31 +1,13 @@
 version: '2'
 services:
   elasticsearch:
-   image: elasticsearch:6.5.4
-   expose:
-     - 9200
+   image: bitnami/elasticsearch:7.10.0
+   container_name: es_devoxx_cfp
+   ports:
+     - 9200:9200
+     - 9300:9300
   redis:
    container_name: cfp-devoxx_redis
    image : redis:5.0.3
-   expose:
-     - 6379
-  play:
-    build:
-      context: .
-      dockerfile: play.dockerfile
-    volumes:
-      - .:/app:rw
-      - ./target/.coursier:/root/.coursier
-      - ./target/.sbt:/root/.sbt
-    ports:
-      - "9000:9000"
-    links:
-      - elasticsearch
-      - redis
-    working_dir: /app
-    stdin_open: true
-    env_file:
-      - run.env
-    command: play run
-
-    
+   ports:
+     - 6379:6379
