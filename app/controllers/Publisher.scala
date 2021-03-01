@@ -191,9 +191,7 @@ object Publisher extends Controller {
 
           val results = hitContents.map {
             jsvalue =>
-              val index = (jsvalue \ "_index").as[String]
               val source = jsvalue \ "_source"
-              val id = (source \ "id").as[String]
               val proposal = source.as[Proposal]
               proposal
           }

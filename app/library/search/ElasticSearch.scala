@@ -67,7 +67,7 @@ object ElasticSearch {
 
   def indexBulk(indexName: String, json: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-      play.Logger.of("library.ElasticSearch").debug(s"Bulk index $indexName started to $host")
+      play.Logger.of("library.ElasticSearch").debug(s"Bulk index $indexName started")
     }
 
     val futureResponse = WS.url(s"$host/$indexName/_bulk")
@@ -79,12 +79,12 @@ object ElasticSearch {
         response.status match {
           case 201 =>
             if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-              play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
+              play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] done")
             }
             Success(response.body)
           case 200 =>
             if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-              play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] created")
+              play.Logger.of("library.ElasticSearch").debug(s"Bulk index [$indexName] done")
             }
             Success(response.body)
           case other => Failure(new RuntimeException(s"Unable to bulk import [$indexName], HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
@@ -172,7 +172,6 @@ object ElasticSearch {
           case _ => Failure(new RuntimeException("Unable to delete index, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
         }
     }
-
   }
 
   def doSearch(query: String): Future[Try[String]] = {
@@ -233,7 +232,7 @@ object ElasticSearch {
   }
 
   def doPublisherSearch(query: Option[String], p: Option[Int]) = {
-    val index = "proposals"
+    val index = ApprovedProposal.elasticSearchIndex()
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
     val zeQuery = someQuery.map(_.toLowerCase).map { q =>
       s"""

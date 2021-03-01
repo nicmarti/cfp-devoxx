@@ -155,7 +155,8 @@ object Backoffice extends SecureCFPController {
   def doIndexElasticSearch() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       ElasticSearchActor.masterActor ! DoIndexAllSpeakers
-      ElasticSearchActor.masterActor ! DoIndexAllProposals
+      ElasticSearchActor.masterActor ! DoIndexAllProposals // This is for internal CFP team
+      ElasticSearchActor.masterActor ! DoIndexAllAccepted // This is for the public program
       ElasticSearchActor.masterActor ! DoIndexAllHitViews
       ElasticSearchActor.masterActor ! DoIndexSchedule
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Elastic search actor started...")
