@@ -1,7 +1,5 @@
 package controllers
 
-import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
-
 import library.search.ElasticSearch
 import library.{SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
@@ -14,6 +12,8 @@ import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
+
+import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
 
 /**
   * The backoffice controller for the CFP technical committee.
@@ -296,10 +296,10 @@ object CFPAdmin extends SecureCFPController {
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-      ElasticSearch.doAdvancedSearch("speakers,proposals", q, p).map {
+      ElasticSearch.doAdvancedSearch(ElasticSearch.indexNames, q, p).map {
         case r if r.isSuccess =>
           val json = Json.parse(r.get)
-          val total = (json \ "hits" \ "total").as[Int]
+          val total = (json \ "hits" \ "total" \ "value").as[Int] // Upgraded to ES 7.1
           val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
           val results = hitContents.sortBy {
@@ -317,7 +317,7 @@ object CFPAdmin extends SecureCFPController {
                   val talkType = Messages((source \ "talkType" \ "id").as[String])
                   val code = (source \ "state" \ "code").as[String]
                   val mainSpeaker = (source \ "mainSpeaker").as[String]
-                  s"<p class='searchProposalResult'><i class='fas fa-folder-open'></i> Proposal <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - by $mainSpeaker - $talkType</p>"
+                  s"<p class='searchProposalResult'><i class='fas fa-folder-open'></i> Proposal $id <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - by $mainSpeaker - $talkType</p>"
                 case "speakers" =>
                   val uuid = (source \ "uuid").as[String]
                   val name = (source \ "name").as[String]

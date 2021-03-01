@@ -32,10 +32,6 @@ import models.ConferenceDescriptor.ConferenceProposalConfigurations
  */
 object ApprovedProposal {
 
-  def elasticSearchIndex():String={
-    "proposals_"+ConferenceDescriptor.current().confUrlCode
-  }
-
   val getTotal: Map[String, Int] = Map(
     ("conf.label", ConferenceProposalConfigurations.CONF.slotsCount)
     , ("uni.label", ConferenceProposalConfigurations.UNI.slotsCount)
