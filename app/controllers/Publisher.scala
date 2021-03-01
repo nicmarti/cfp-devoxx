@@ -186,7 +186,7 @@ object Publisher extends Controller {
       ElasticSearch.doPublisherSearch(q, p).map {
         case r if r.isSuccess =>
           val json = Json.parse(r.get)
-          val total = (json \ "hits" \ "total").as[Int]
+          val total = (json \ "hits" \ "total" \ "value").as[Int]
           val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
 
           val results = hitContents.map {

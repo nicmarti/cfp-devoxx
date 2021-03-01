@@ -19,12 +19,12 @@
     <logger name="library.ZapActor" level="DEBUG"/>
     <logger name="library.Zedis" level="INFO"/>
     <logger name="library.Zedis.client" level="INFO"/>
-    <logger name="library.ElasticSearch" level="ERROR"/>
+    <logger name="library.ElasticSearch" level="DEBUG"/>
     <logger name="library.sms.TwilioSender" level="INFO"/>
     <logger name="application" level="INFO"/>
     <logger name="application.Benchmark" level="DEBUG"/>
-    <logger name="application.IndexMaster" level="ERROR"/>
-    <logger name="application.Reaper" level="ERROR"/>
+    <logger name="application.IndexMaster" level="DEBUG"/>
+    <logger name="application.Reaper" level="DEBUG"/>
     <logger name="application.ApproveOrRefuse" level="INFO"/>
 
     <logger name="net.sf.ehcache.sizeof.verboseDebugLogging" level="INFO"/>

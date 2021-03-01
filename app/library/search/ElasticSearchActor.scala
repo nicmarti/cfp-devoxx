@@ -26,7 +26,7 @@ package library.search
 import akka.actor._
 import models._
 import org.apache.commons.lang3.StringEscapeUtils
-import org.joda.time.{DateTime, DateTimeZone}
+import org.joda.time.DateTime
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsValue, Json}
 
@@ -93,8 +93,6 @@ case class DoIndexSpeaker(speaker: Speaker)
 
 case object DoIndexAllSpeakers
 
-case object DoIndexAllAccepted
-
 case object DoIndexAllHitViews
 
 case object DoIndexSchedule
@@ -121,7 +119,6 @@ class IndexMaster extends ESActor {
     case DoIndexAllSpeakers => doIndexAllSpeakers()
     case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
     case DoIndexAllProposals => doIndexAllProposals()
-    case DoIndexAllAccepted => doIndexAllAccepted()
     case DoIndexAllHitViews => doIndexAllHitViews()
     case DoIndexSchedule => doIndexSchedule()
     case StopIndex => stopIndex()
@@ -135,29 +132,26 @@ class IndexMaster extends ESActor {
 
   def doIndexSpeaker(speaker: Speaker) {
     play.Logger.of("application.IndexMaster").debug("Do index speaker")
-
     ElasticSearchActor.reaperActor ! Index(speaker)
-
     play.Logger.of("application.IndexMaster").debug("Done indexing speaker")
   }
 
-
   def doIndexAllSpeakers() {
     play.Logger.of("application.IndexMaster").debug("Do index speaker")
-
     val speakers = Speaker.allSpeakers()
 
     val sb = new StringBuilder
     speakers.foreach {
       speaker: Speaker =>
-        sb.append("{\"index\":{\"_index\":\"speakers\",\"_type\":\"speaker\",\"_id\":\"" + speaker.uuid + "\"}}")
-        sb.append("\n")
+        sb.append("{\"index\":{\"_index\":\"speakers\",\"_type\":\"speaker\",\"_id\":\"")
+        sb.append(speaker.uuid)
+        sb.append("\"}}\n")
         sb.append(Json.toJson(speaker))
         sb.append("\n")
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), "speakers")
+    ElasticSearch.indexBulk( "speakers",sb.toString())
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all speakers")
   }
@@ -170,24 +164,32 @@ class IndexMaster extends ESActor {
   }
 
   def doIndexAllProposals() {
-    play.Logger.of("application.IndexMaster").debug("Do index all proposals")
+    play.Logger.of("application.IndexMaster").debug("Do index all [submitted/accepted/approved] proposals")
 
-    val allAccepted = Proposal.allAccepted()
     val allSubmitted = Proposal.allSubmitted()
+    val allApproved = Proposal.allApproved()
+    val allAccepted = Proposal.allAccepted()
 
     if (play.Logger.of("application.IndexMaster").isDebugEnabled) {
-      play.Logger.of("application.IndexMaster").debug(s"Indexing ${allAccepted.size} accepted proposals")
       play.Logger.of("application.IndexMaster").debug(s"Indexing ${allSubmitted.size} submitted proposals")
+      play.Logger.of("application.IndexMaster").debug(s"Indexing ${allApproved.size} approved proposals")
+      play.Logger.of("application.IndexMaster").debug(s"Indexing ${allAccepted.size} accepted proposals")
     }
+
+    val indexName = "proposals"
 
     // We cannot index all proposals, if the size > 1mb then Elasticsearch on clevercloud
     // returns a 413 Entity too large
     allAccepted.sliding(200, 200).foreach { gop =>
-      indexProposalsToElasticSearch(gop)
+      indexProposalsToElasticSearch( indexName, gop)
     }
 
-    allSubmitted.sliding(200, 200).foreach { groupOfProposals =>
-      indexProposalsToElasticSearch(groupOfProposals)
+    allSubmitted.sliding(200, 200).foreach { gop =>
+      indexProposalsToElasticSearch( indexName, gop)
+    }
+
+    allApproved.sliding(200, 200).foreach { gop =>
+      indexProposalsToElasticSearch( indexName, gop)
     }
 
     ElasticSearch.refresh()
@@ -195,15 +197,15 @@ class IndexMaster extends ESActor {
     play.Logger.of("application.IndexMaster").debug("Indexed all proposals")
   }
 
-  private def indexProposalsToElasticSearch(proposals: List[Proposal]) = {
-    if (play.Logger.of("application.IndexMaster").isDebugEnabled) {
-      play.Logger.of("application.IndexMaster").debug("Indexing proposals " + proposals.size)
-    }
+  private def indexProposalsToElasticSearch(indexName:String, proposals: List[Proposal]) = {
     val sb = new StringBuilder
     proposals.foreach {
       proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"proposals\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
-        sb.append("\n")
+        sb.append("{\"index\":{\"_index\":\"")
+        sb.append(indexName)
+        sb.append("\",\"_type\":\"proposal\",\"_id\":\"")
+        sb.append(proposal.id)
+        sb.append("\"}}\n")
         sb.append(Json.toJson(
           proposal.copy(privateMessage = "",
             mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
@@ -216,109 +218,80 @@ class IndexMaster extends ESActor {
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), "proposals")
+    ElasticSearch.indexBulk(indexName,sb.toString())
   }
 
-  def doIndexAllAccepted() {
-    val proposals = Proposal.allApproved() ++ Proposal.allAccepted()
-
-    val indexName = ApprovedProposal.elasticSearchIndex()
-    play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size} to index $indexName")
-
-    val sb = new StringBuilder
-    proposals.foreach {
-      proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"")
-        sb.append(indexName)
-        sb.append("\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
-        sb.append("\n")
-        sb.append(Json.toJson(proposal.copy(
-          privateMessage = "",
-          mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
-          secondarySpeaker = proposal.secondarySpeaker.flatMap(s => Speaker.findByUUID(s).map(_.cleanName)),
-          otherSpeakers = proposal.otherSpeakers.flatMap(s => Speaker.findByUUID(s).map(_.cleanName))
-        )))
-        sb.append("\n")
-    }
-    sb.append("\n")
-
-    ElasticSearch.indexBulk(sb.toString(), indexName)
-
-    play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
-  }
-
-  // Create an ES index with the agenda
+    // Create an ES index with the agenda
   def doIndexSchedule(): Unit = {
     val allAgendas = ScheduleConfiguration.loadAllConfigurations()
     val slots = allAgendas.flatMap(_.slots).filterNot(_.break.isDefined)
     val indexName = "schedule_" + ConferenceDescriptor.current().confUrlCode
 
-    play.Logger.of("application.IndexMaster").debug(s"Send to index [$indexName] ${slots.size} slots for schedule")
-    val sb = new StringBuilder
-    slots.foreach {
-      slot: Slot =>
+    if (slots.isEmpty) {
+      play.Logger.of("application.IndexMaster").warn("There is no published schedule to index")
+    } else {
 
-        val secondarySpeaker: Option[String] = slot.proposal.flatMap {
-          p =>
-            p.secondarySpeaker.flatMap {
-              uuid: String =>
-                Speaker.findByUUID(uuid).map {
-                  speaker =>
-                   speaker.cleanName
-                }
-            }
-        }
-        val otherSpeakers: Option[String] = slot.proposal.map {
-          p =>
-            p.otherSpeakers.map {
-              uuid: String =>
-                Speaker.findByUUID(uuid).map {
-                  speaker =>
-                    speaker.cleanName
-                }
-            }.mkString(",")
-        }
+      play.Logger.of("application.IndexMaster").debug(s"Send to index [$indexName] ${slots.size} slots for schedule")
+      val sb = new StringBuilder
+      slots.foreach {
+        slot: Slot =>
 
-        sb.append("{\"index\":{\"_index\":\"")
-        sb.append(indexName)
-        sb.append("\",\"_type\":\"schedule\",\"_id\":\"" + slot.id + "\"}}")
-        sb.append("\n")
-        sb.append(
-          s"""{
-             | "name":"${slot.name}",
-             | "day":"${slot.day}",
-             | "from":"${slot.from}",
-             | "to":"${slot.to}",
-             | "room":"${slot.room.name}",
-             | "title":"${StringEscapeUtils.escapeJson(slot.proposal.map(_.title).getOrElse(""))}",
-             | "summary":"${StringEscapeUtils.escapeJson(slot.proposal.map(_.summary.replaceAll("\r\n", "")).getOrElse(""))}",
-             | "track":${slot.proposal.map(p => Json.toJson(p.track).toString).getOrElse("")},
-             | "talkType":${slot.proposal.map(p => Json.toJson(p.talkType).toString).getOrElse("")},
-             | "mainSpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.mainSpeaker).map(s => "\"" + s.cleanName + "\"")).getOrElse("")},
-             | "secondarySpeaker": "${secondarySpeaker.getOrElse("")}",
-             | "otherSpeakers": "${otherSpeakers.getOrElse("")}",
-             | "company": "${slot.proposal.map(p => p.allSpeakers.map(s =>  s.company.getOrElse("") ).mkString(", ")).getOrElse("")}"
-             |}
+          val secondarySpeaker: Option[String] = slot.proposal.flatMap {
+            p =>
+              p.secondarySpeaker.flatMap {
+                uuid: String =>
+                  Speaker.findByUUID(uuid).map {
+                    speaker =>
+                      speaker.cleanName
+                  }
+              }
+          }
+          val otherSpeakers: Option[String] = slot.proposal.map {
+            p =>
+              p.otherSpeakers.map {
+                uuid: String =>
+                  Speaker.findByUUID(uuid).map {
+                    speaker =>
+                      speaker.cleanName
+                  }
+              }.mkString(",")
+          }
+
+          sb.append("{\"index\":{\"_index\":\"")
+          sb.append(indexName)
+          sb.append("\",\"_type\":\"schedule\",\"_id\":\"")
+          sb.append(slot.id)
+          sb.append("\"}}")
+          sb.append("\n")
+          sb.append(
+            s"""{
+               | "name":"${slot.name}",
+               | "day":"${slot.day}",
+               | "from":"${slot.from}",
+               | "to":"${slot.to}",
+               | "room":"${slot.room.name}",
+               | "title":"${StringEscapeUtils.escapeJson(slot.proposal.map(_.title).getOrElse(""))}",
+               | "summary":"${StringEscapeUtils.escapeJson(slot.proposal.map(_.summary.replaceAll("\r\n", "")).getOrElse(""))}",
+               | "track":${slot.proposal.map(p => Json.toJson(p.track).toString).getOrElse("")},
+               | "talkType":${slot.proposal.map(p => Json.toJson(p.talkType).toString).getOrElse("")},
+               | "mainSpeaker":${slot.proposal.flatMap(p => Speaker.findByUUID(p.mainSpeaker).map(s => "\"" + s.cleanName + "\"")).getOrElse("")},
+               | "secondarySpeaker": "${secondarySpeaker.getOrElse("")}",
+               | "otherSpeakers": "${otherSpeakers.getOrElse("")}",
+               | "company": "${slot.proposal.map(p => p.allSpeakers.map(s => s.company.getOrElse("")).mkString(", ")).getOrElse("")}"
+               |}
           """.stripMargin.replaceAll("\n", ""))
-        sb.append("\n")
+          sb.append("\n")
+      }
+      sb.append("\n")
+      ElasticSearch.indexBulk(indexName,sb.toString()).map {
+        case Success(ok) =>
+          play.Logger.of("application.IndexMaster").debug(s"Indexed ${slots.size} to $indexName")
+        case Failure(ex) =>
+          play.Logger.of("application.IndexMaster").error(s"Could not indexed ${slots.size} to $indexName due to ${ex.getMessage}", ex)
+      }
+
+      play.Logger.of("application.IndexMaster").debug(s"Done indexing schedule to index $indexName")
     }
-    sb.append("\n")
-
-     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-       play.Logger.of("library.ElasticSearch").debug("---------------- ES Actor")
-       play.Logger.of("library.ElasticSearch").debug(sb.toString())
-       play.Logger.of("library.ElasticSearch").debug("---------------- ES Actor")
-     }
-
-    ElasticSearch.indexBulk(sb.toString(), indexName).map {
-      case Success(ok) =>
-        play.Logger.of("application.IndexMaster").debug(s"Indexed ${slots.size} to $indexName")
-      case Failure(ex) =>
-        play.Logger.of("application.IndexMaster").error(s"Could not indexed ${slots.size} to $indexName due to ${ex.getMessage}", ex)
-    }
-
-    play.Logger.of("application.IndexMaster").debug(s"Done indexing schedule to index $indexName")
-
   }
 
   def doIndexAllReviews() {
@@ -331,7 +304,9 @@ class IndexMaster extends ESActor {
       case (proposalId, reviewAndVotes) =>
         Proposal.findById(proposalId).map {
           proposal =>
-            sb.append("{\"index\":{\"_index\":\"reviews\",\"_type\":\"review\",\"_id\":\"" + proposalId + "\"}}")
+            sb.append("{\"index\":{\"_index\":\"reviews\",\"_type\":\"review\",\"_id\":\"")
+            sb.append(proposalId)
+            sb.append("\"}}")
             sb.append("\n")
             sb.append("{")
             sb.append("\"totalVoters\": " + reviewAndVotes._2 + ", ")
@@ -349,7 +324,7 @@ class IndexMaster extends ESActor {
     }
     sb.append("\n")
 
-    ElasticSearch.indexBulk(sb.toString(), "reviews")
+    ElasticSearch.indexBulk("reviews",sb.toString())
 
     play.Logger.of("application.IndexMaster").debug("Done indexing all reviews")
   }
@@ -360,8 +335,8 @@ class IndexMaster extends ESActor {
 
     HitView.allStoredURL().foreach {
       url =>
-        val todayMidnight:DateTime = DateTime.now(ConferenceDescriptor.current().timezone).withTimeAtStartOfDay()
-        val yesterdayMidnight:DateTime = todayMidnight.minusDays(1)
+        val todayMidnight: DateTime = DateTime.now(ConferenceDescriptor.current().timezone).withTimeAtStartOfDay()
+        val yesterdayMidnight: DateTime = todayMidnight.minusDays(1)
         val hits = HitView.loadHitViews(url, yesterdayMidnight, todayMidnight)
 
         val sb = new StringBuilder
@@ -376,24 +351,17 @@ class IndexMaster extends ESActor {
         }
         sb.append("\n")
 
-        ElasticSearch.indexBulk(sb.toString(), "hitviews")
+        ElasticSearch.indexBulk("hitviews",sb.toString())
 
     }
   }
 
   def doCreateConfigureIndex(): Future[Unit] = {
-    _createConfigureIndex("proposals", settingsFrench).map {
-      case r if r.isSuccess =>
-        play.Logger.of("library.ElasticSearch").info(s"Configured indexes on ES for speaker and proposal. Result : " + r.get)
-      case r if r.isFailure =>
-        play.Logger.of("library.ElasticSearch").warn(s"Error $r")
-    }
-
-    _createConfigureIndex(ApprovedProposal.elasticSearchIndex(), settingsFrench).map {
+    _createConfigureIndex("proposals",  settingsFrench).map {
       case Success(r) =>
-        play.Logger.of("library.ElasticSearch").info(s"Configured indexes ${ApprovedProposal.elasticSearchIndex()} on ES for speaker and proposal. Result : " + r)
+        play.Logger.of("library.ElasticSearch").info(s"Configured indexes [proposals] on ES for speaker and proposal. Result : " + r)
       case Failure(ex) =>
-        play.Logger.of("library.ElasticSearch").warn(s"Error with index ${ApprovedProposal.elasticSearchIndex()} $ex", ex)
+        play.Logger.of("library.ElasticSearch").warn(s"Error with index [proposals]} $ex", ex)
     }
     _createConfigureIndex("speakers", settingsFrench).map {
       case Success(r) =>
@@ -410,7 +378,6 @@ class IndexMaster extends ESActor {
       case Failure(ex) =>
         play.Logger.of("library.ElasticSearch").warn(s"Error with index $scheduleIndexName $ex", ex)
     }
-
 
   }
 
@@ -633,44 +600,44 @@ class IndexMaster extends ESActor {
   // This is important for French content
   // Leave it, even if your CFP is in English
   def settingsFrench: String =
-  """
-    |    {
-    |    	"settings" : {
-    |    		"index":{
-    |    			"analysis":{
-    |    				"analyzer":{
-    |              "analyzer_keyword":{
-    |                 "tokenizer":"keyword",
-    |                 "filter":"lowercase"
-    |              },
-    |              "analyzer_startswith":{
-    |                      "tokenizer":"keyword",
-    |                      "filter":"lowercase"
-    |             },
-    |    					"francais":{
-    |    						"type":"custom",
-    |    						"tokenizer":"standard",
-    |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
-    |    					}
-    |    				},
-    |    				"filter":{
-    |    					"stop_francais":{
-    |    						"type":"stop",
-    |    						"stopwords":["_french_"]
-    |    					},
-    |    					"fr_stemmer" : {
-    |    						"type" : "stemmer",
-    |    						"name" : "french"
-    |    					},
-    |    					"elision" : {
-    |    						"type" : "elision",
-    |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
-    |    					}
-    |    				}
-    |    			}
-    |    		}
-    |    	}
-    | }
+    """
+      |    {
+      |    	"settings" : {
+      |    		"index":{
+      |    			"analysis":{
+      |    				"analyzer":{
+      |              "analyzer_keyword":{
+      |                 "tokenizer":"keyword",
+      |                 "filter":"lowercase"
+      |              },
+      |              "analyzer_startswith":{
+      |                      "tokenizer":"keyword",
+      |                      "filter":"lowercase"
+      |             },
+      |    					"francais":{
+      |    						"type":"custom",
+      |    						"tokenizer":"standard",
+      |    						"filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
+      |    					}
+      |    				},
+      |    				"filter":{
+      |    					"stop_francais":{
+      |    						"type":"stop",
+      |    						"stopwords":["_french_"]
+      |    					},
+      |    					"fr_stemmer" : {
+      |    						"type" : "stemmer",
+      |    						"name" : "french"
+      |    					},
+      |    					"elision" : {
+      |    						"type" : "elision",
+      |    						"articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
+      |    					}
+      |    				}
+      |    			}
+      |    		}
+      |    	}
+      | }
   """.stripMargin
 
   def settingsProposalsEnglish: String =
@@ -757,7 +724,7 @@ class IndexMaster extends ESActor {
     // res2 is executed when res1 is done
     val resFinal = for (res1 <- ElasticSearch.deleteIndex(zeIndexName);
                         res2 <- ElasticSearch.createIndexWithSettings(zeIndexName, settings)
-    ) yield {
+                        ) yield {
       res1 match {
         case Failure(ex) =>
           play.Logger.of("library.ElasticSearch").warn(s"Unable to delete index $zeIndexName due to ${ex.getMessage}")
@@ -798,6 +765,6 @@ class Reaper extends ESActor {
       case r if r.isSuccess =>
         play.Logger.of("application.Reaper").debug(s"Indexed ${obj.getClass.getSimpleName} ${obj.label}")
       case r if r.isFailure =>
-        play.Logger.of("application.Reaper").warn(s"Could not index speaker $obj due to $r")
+        play.Logger.of("application.Reaper").warn(s"Could not index $obj due to $r")
     }
 }
