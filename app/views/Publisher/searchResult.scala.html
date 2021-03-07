@@ -1,46 +1,52 @@
-@(total:Int, results:List[Proposal], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(total:Long, results:IndexedSeq[library.search.ProposalSearchResult], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@views.html.Publisher.devoxxFR2020("Search result"){
-  <div class="large-12 columns">
-<h2 class="entry-title">
-@if(total==0){
-    <strong>No result</strong>
-}
-@if(total==1){
-    <strong>One result</strong>
-}
-@if(total>1){
-    <strong>@total results</strong>
-}
-</h2>
-<small><a href="@routes.Publisher.homePublisher()">Home</a></small>
-  </div>
-    <div class="large-3 columns">
-        <div class="input-wrap">
-            <form name="search" action="@routes.Publisher.search(None,None)" method="GET"><br>
-            <input type="search" name="q" value="" placeholder="Search by title, keyword or speaker" class="wpcf7-form-control wpcf7-text" autofocus>
-        </form>
+@views.html.Publisher.devoxxFR("Search result"){
+
+    <section class="bg-white border-b py-8">
+        <div class="container max-w-5xl mx-auto m-8">
+            <h1 class="w-full my-2 text-2xl font-bold leading-tight text-center text-gray-800">
+               Résultat de la recherche
+            </h1>
         </div>
-    </div>
-<div class="large-12 columns">
-    <table class="agendaTable">
+        <div class="w-full mb-4">
+            <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+        </div>
+    </section>
 
-@results.zipWithIndex.map{ case(p:Proposal,idx:Int)=>
-                <tr>
-                    <td class="room">
-                        <span class="track">
-                            @tags.publisher.renderIconForTrack(p.track) @Messages(p.track.label)
-                        </span>
-                        <br>
-                        <span class="title"><a href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">@p.title</a> (@Messages(p.talkType.id))</span>
-                        <span class="speaker">
-                            by @p.mainSpeaker @p.secondarySpeaker.map(s=>", "+s) @p.otherSpeakers.map(o=> ", "+o)
-                        </span>
-                    </td>
-                </tr>
-            }
-    </table>
-@tags.renderPaginator(req, p.getOrElse(1), total)
+    <section  class="flex-1 w-full mx-auto max-w-sm content-center py-8 px-4">
 
-</div>
+    </section>
+
+    <section class="bg-white">
+        <div class="container mx-auto flex flex-wrap pt-4 pb-12">
+            <h2 class="w-full text-xl font-bold text-left text-gray-800">
+                @if(total==0){
+                    No result
+                }
+                @if(total==1){
+                    One result
+                }
+                @if(total>1){
+                    @total results
+                }
+            </h2>
+
+
+        <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink text-body text-black">
+        @results.zipWithIndex.map{ case(p:library.search.ProposalSearchResult,idx:Int)=>
+        <a class="flex flex-wrap no-underline hover:no-underline" href="@routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)">
+            <div class="w-full font-bold text-xl px-6">@p.title</div>
+            <div class="w-full text-body px-6 text-black mb-4">
+                <span class="text-gray-800">@Messages(p.talkType)</span>
+                <span class="text-yellow-600">@Messages(p.trackLabel)</span>
+                <span class="text-gray-80">by @p.mainSpeaker @p.secondarySpeaker.map(s=>", "+s) @p.otherSpeakers.map(o=> ", "+o)</span>
+            </div>
+        </a>
+        }
+        </div>
+        <div class="w-full bg-gray-200 text-black px-4 py-2">
+            @tags.renderPaginator(req, p.getOrElse(1), total.toInt)
+        </div>
+        </div>
+    </section>
 }

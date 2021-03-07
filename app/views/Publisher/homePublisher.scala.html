@@ -1,23 +1,27 @@
 @import models.ConferenceDescriptor.ConferenceProposalTypes
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@()(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@views.html.Publisher.devoxxFR2020("Schedule", Some("Devoxx FR 2020 agenda")) {
+@views.html.Publisher.devoxxFR("Schedule", Some("Devoxx FR 2021 agenda")) {
+    <section class="bg-white border-b py-8">
+        <div class="container max-w-5xl mx-auto m-8">
+            <h1 class="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
+                Devoxx France 2021<br>
+                <span class="text-2xl font-bold text-center">Mercredi 30 juin 2021 au vendredi 2 juillet 2021</span>
+            </h1>
 
-    <div class="large-12 column">
-       <h3>Devoxx France 2020 <small>Mercredi 15 au vendredi 17 avril 2020</small></h3>
-</div>
-    <div class="small-12 medium-8 large-8 columns">
-        <div class="input-wrap">
-            <form name="search" action="@routes.Publisher.search(None, None)" method="GET">
-                <label for="search">
-                    Trouver un sujet ou un présentateur : </label> <input type="search" name="q" value="" placeholder="title, keyword or speaker" class="wpcf7-form-control wpcf7-text" >
-        </form>
         </div>
-    </div>
+        <div class="w-full mb-4">
+            <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+        </div>
+    </section>
 
-    <div class="large-3 columns right">
-        <a href="https://itunes.apple.com/us/app/my-devoxx/id1094805620" target="_blank"><img src="https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/AppStore.jpg"></a>
-        <a href="https://play.google.com/store/apps/details?id=com.devoxx" target="_blank"><img src="https://s3-eu-west-1.amazonaws.com/cfpdevoxx/images/GooglePlay.jpg"></a>
+    <!-- ********************** Search box ************************* -->
+    <div class="flex-1 w-full mx-auto max-w-sm content-center py-8 px-4">
+        <form name="search" action="@routes.Publisher.search(None, None)" method="GET">
+            <label for="search">Trouver un sujet ou un présentateur : </label>
+            <input id="search" type="search" name="q" placeholder="title, keyword or speaker"
+            class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 appearance-none leading-normal">
+        </form>
     </div>
 
     @if(ProgramSchedule.publishedProgramSchedule().map(_.showSchedule).getOrElse(false)) {
@@ -83,64 +87,141 @@
         </div>
     }
 
-    <div class="small-12 medium-6 large-6 column">
-        <h3>Keynotes</h3>
-        <p>Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le jeudi à 9h précise.
-            Autour du thème de 2020 "Informatique pour le bien ou pour le mal?", soyez prêt à être surpris. Plus d'informations seront sur le site Devoxx France.
-        </p>
-        <p><A href="@routes.Publisher.showByTalkType("key")">Liste des Keynotes</A></p>
-</div>
+    <section class="bg-white">
+        <div class="container mx-auto flex flex-wrap pt-4 pb-12">
 
-    <div class="small-12 medium-6 large-6 column">
-        <h3>Conference</h3>
-        <p>Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 100 conférences
-            pendant 2 jours. Toutes les sessions sont filmées, ce qui vous permet de revoir plus tard les conférences.</p>
-        <p><A href="@routes.Publisher.showByTalkType("conf")">Liste des Conférences</A></p>
-</div>
+            <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
+                <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                    <a href="#" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                            Conferences
+                        </div>
+                        <p class="text-gray-800 text-base px-6 mb-5">
+                            Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 100 conférences
+                            pendant 2 jours. Toutes les sessions sont filmées, ce qui vous permet de revoir plus tard les conférences sur Youtube, sur la chaîne Devoxx France.
+                        </p>
+                    </a>
+                </div>
+                <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
+                    <div class="flex items-center justify-start">
+                        <a href="@routes.Publisher.showByTalkType("conf")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                            Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <div class="small-12 medium-6 large-6 column">
-        <h3>University</h3>
-        <p>Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes.</p>
-        <p>Il y a 16 sessions au format Université.</p>
-        <p><A href="@routes.Publisher.showByTalkType("uni")">Liste des Universités</A></p>
+            <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
+                <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                    <a href="#" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                            University
+                        </div>
+                        <p class="text-gray-800 text-base px-6 mb-5">Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes.</p>
+                    </a>
+                </div>
+                <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
+                    <div class="flex items-center justify-start">
+                        <a href="@routes.Publisher.showByTalkType("uni")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                            Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-</div>
+            <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
+                <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                    <a href="@routes.Publisher.showByTalkType("tia")" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                            TIA (Tools in Action)
+                        </div>
+                        <p class="text-gray-800 text-base px-6 mb-5">Les TIA (Tools-in-Action) sont des sessions courtes de 30mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
+                        <p class="text-gray-800 text-base px-6 mb-5">Les TIA ont lieu le mercredi et le jeudi en fin de journée.</p>
+                    </a>
+                </div>
+                <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
+                    <div class="flex items-center justify-start">
+                        <a href="@routes.Publisher.showByTalkType("tia")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                            Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <div class="clearfix"></div>
+            <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
+                <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                    <a href="@routes.Publisher.showByTalkType("quick")" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                            Quickies
+                        </div>
+                        <p class="text-gray-800 text-base px-6 mb-5">Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner jeudi et vendredi. C'est LE format
+                        dédié aux débutants. Le format simple et rapide permet de découvrir un projet ou une idée pendant l'heure du repas.</p>
+                    </a>
+                </div>
+                <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
+                    <div class="flex items-center justify-start">
+                        <a href="@routes.Publisher.showByTalkType("quick")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                            Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="small-12 medium-6 large-6 column">
-        <h3>Tools in Action</h3>
-        <p>Les TIA (Tools-in-Action) sont des sessions courtes de 30mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
-        <p>Les TIA ont lieu le mercredi et le jeudi en fin de journée. Il y a 40 TIA au total.</p>
-        <p><A href="@routes.Publisher.showByTalkType("tia")">Liste des Tools in Action</A></p>
-</div>
+        <!-- Covid -->
+    <section class="bg-gray-100 py-8">
+        <div class="container mx-auto px-2 pt-4 pb-12 text-gray-800">
+            <h1 class="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
+                Evénements non organisés en 2021
+            </h1>
+            <div class="w-full mb-4">
+                <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+                <p class="text-center text-gray-500 text-base px-6 mt-1">Selon l'évolution des conditions sanitaires liées à la crise de la COVID-19, certaines
+                présentations de Devoxx France 2021 pourront être déprogrammées.</p>
+                <p class="text-center text-gray-500 text-base px-6 mb-5">Dernière mise à jour : mars 2021</p>
+            </div>
 
-    <div class="small-12 medium-6 large-6 column">
-        <h3>Hands-on Labs</h3>
-        <p>Session pratique de 3h, dans des salles de 30 personnes environ. Les Labs sont des sessions pratiques pendant les 3 jours qui permettent
-            de découvrir ou d'approfondir un sujet. Il faut venir avec son ordinateur, les hands-on labs proposent un accès à Internet
-        via du Wifi. Il y a 30 Hands-on Lab. Attention le nombre de places est très limité, pensez à arriver en avance.</p>
-        <p><A href="@routes.Publisher.showByTalkType("lab")">Liste des Hands-on Labs</A></p>
-</div>
-    <div class="clearfix"></div>
+            <div class="container mx-auto flex flex-wrap pt-4 pb-12">
+                <div class="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
+                    <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                        <a href="#" class="flex flex-wrap no-underline hover:no-underline">
+                            <div class="w-full font-bold text-xl text-gray-800 px-6">
+                                Keynotes
+                            </div>
+                            <p class="text-gray-800 text-base px-6 mb-5">
+                                Les plénières d'ouverture (keynote) de l'édition 2020 ont été annulée. Pour l'instant, l'équipe programme de Devoxx France
+                                ne prévoit pas de keynote pour 2021.
+                            </p>
+                        </a>
+                    </div>
+                </div>
 
-    <div class="small-12 medium-6 large-6 column">
-    <h3>Quickies</h3>
-        <p>Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner jeudi et vendredi. C'est LE format
-            dédié aux débutants. Le format simple et rapide permet de découvrir un projet ou une idée pendant l'heure du repas. 
-            14 Quickies animeront les journées du jeudi et du vendredi.</p>
-        <p><A href="@routes.Publisher.showByTalkType("quick")">Liste des Quickies</A></p>
-</div>
+                <div class="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
+                    <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                        <a href="#" class="flex flex-wrap no-underline hover:no-underline">
+                            <div class="w-full font-bold text-xl text-gray-800 px-6">
+                                BOFs (Bird of a Feather)
+                            </div>
+                            <p class="text-gray-800 text-base px-6 mb-5">La soirée du jeudi soir n'est pas maintenue, et donc les sessions de B.O.F sont annulées pour 2021.</p>
+                        </a>
+                    </div>
+                </div>
 
-    <div class="small-12 medium-6 large-6 column">
-        <h3>BOF</h3>
-        <p>Les <a href="http://en.wikipedia.org/wiki/Birds_of_a_feather_%28computing%29">BOF (Bird of a feather)</a>
-            sont des sessions mythiques de Devoxx France, à partir de 20h le jeudi soir.
-            C'est LE point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés.
-            Les BOFs se déroulent le soir de la soirée Meet-and-Greet.</p>
+                <div class="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
+                    <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                        <a href="#" class="flex flex-wrap no-underline hover:no-underline">
+                            <div class="w-full font-bold text-xl text-gray-800 px-6">
+                                Hands-on Lab
+                            </div>
+                            <p class="text-gray-800 text-base px-6 mb-5">Ces sessions pratiques se déroulent en principe dans des petites salles de classe.
+                            Au vue des conditions sanitaires, l'équipe a préféré ne pas maintenir les Hands-on Labs pour 2021.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-        <p><A href="@routes.Publisher.showByTalkType("bof")">Liste des B.O.Fs</A></p>
-    </div>
+        </div>
+    </section>
 
-    <div class="clearfix"></div>
 }
