@@ -49,6 +49,7 @@ object ElasticSearchV2 {
 
   val host = Play.current.configuration.getString("elasticsearch.host").getOrElse("http://localhost")
   val port = Play.current.configuration.getString("elasticsearch.port").getOrElse("9200")
+  val isHttps = Play.current.configuration.getString("elasticsearch.isHTTPS").getOrElse(true)
   val username = Play.current.configuration.getString("elasticsearch.username").getOrElse("")
   val password = Play.current.configuration.getString("elasticsearch.password").getOrElse("")
   val cfpLang: Option[String] = Play.current.configuration.getString("application.langs")
@@ -63,6 +64,13 @@ object ElasticSearchV2 {
     }
   }
 
+  lazy val elasaticURI = isHttps match {
+    case false =>
+      "http://" + host + ":" + port
+    case _ =>
+      "https://" + host + ":" + port
+  }
+
   def doPublisherSearch(query: Option[String], p: Option[Int]): Future[Either[RequestFailure, SearchResponse]] = {
     val indexName = ApprovedProposal.elasticSearchIndex()
     val someQuery: Option[String] = query.filterNot(_ == "").filterNot(_ == "*")
@@ -73,7 +81,7 @@ object ElasticSearchV2 {
     // 1. it needs a port number, else it assumes default port is 9200 (and not 443)
     // 2. the username:password should be removed, else you get a connection error / hostname invalid
     val client = ElasticClient(
-      JavaClient(ElasticProperties(host + ":" + port),
+      JavaClient(ElasticProperties(elasaticURI),
         requestConfigCallback = NoOpRequestConfigCallback,
         httpClientConfigCallback = callback)
     )
@@ -109,7 +117,7 @@ object ElasticSearchV2 {
   }
 
   def createConfigureIndex(): Unit = {
-    val client = ElasticClient(JavaClient(ElasticProperties(host + ":" + port), requestConfigCallback = NoOpRequestConfigCallback, httpClientConfigCallback = callback))
+    val client = ElasticClient(JavaClient(ElasticProperties(elasaticURI), requestConfigCallback = NoOpRequestConfigCallback, httpClientConfigCallback = callback))
 
     client.execute(
       deleteIndex(ApprovedProposal.elasticSearchIndex())
@@ -174,7 +182,7 @@ object ElasticSearchV2 {
           .id(p.id)
     }
 
-    val client = ElasticClient(JavaClient(ElasticProperties(host + ":" + port), requestConfigCallback = NoOpRequestConfigCallback, httpClientConfigCallback = callback))
+    val client = ElasticClient(JavaClient(ElasticProperties(elasaticURI), requestConfigCallback = NoOpRequestConfigCallback, httpClientConfigCallback = callback))
 
     client.execute(
       bulk(requests)
