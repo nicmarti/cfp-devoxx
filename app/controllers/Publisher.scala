@@ -23,19 +23,15 @@
 
 package controllers
 
-import akka.util.Crypt
-import library.search.ElasticSearch
-import play.api.libs.json.{JsObject, Json}
-import library.{LogURL, ZapActor}
-import models.ConferenceDescriptor.ConferenceProposalTypes
+import library.search.{ElasticSearchV2, ProposalSearchResult}
+import library.{Crypt, LogURL, ZapActor}
 import models.{ConferenceDescriptor, _}
 import play.api.mvc._
 
-
 /**
- * Publisher is the controller responsible for the Web content of your conference Program.
- * Created by nicolas on 12/02/2014.
- */
+  * Publisher is the controller responsible for the Web content of your conference Program.
+  * Created by nicolas on 12/02/2014.
+  */
 object Publisher extends Controller {
 
   def homePublisher = Action {
@@ -71,12 +67,12 @@ object Publisher extends Controller {
 
   def showSpeakerByName(name: String) = Action {
     implicit request =>
-      import play.api.Play.current
+
       val speakers = Speaker.allSpeakersWithAcceptedTerms()
       val speakerNameAndUUID = speakers.map {
-          speaker => (speaker.urlName, speaker.uuid)
-        }.toMap
-      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => speakers.find(_.uuid==id))
+        speaker => (speaker.urlName, speaker.uuid)
+      }.toMap
+      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => speakers.find(_.uuid == id))
       maybeSpeaker match {
         case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
@@ -134,6 +130,7 @@ object Publisher extends Controller {
     implicit request =>
 
       val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
+
       def _showDay(day: String) = {
         val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByDay(day, secretPublishKey))
         val allSlotsWithBofMaybeFiltered = allSlots.filter(s => {
@@ -157,49 +154,39 @@ object Publisher extends Controller {
       }
   }
 
-
-  def showDetailsForProposal(proposalId: String, proposalTitle: String, secretPublishKey: Option[String]=None) =
+  def showDetailsForProposal(proposalId: String, proposalTitle: String, secretPublishKey: Option[String] = None) =
     Action {
-    implicit request =>
-      Proposal.findById(proposalId) match {
-        case None => NotFound("Proposal not found")
-        case Some(proposal) =>
-          if(proposal.state == ProposalState.ACCEPTED) {
-            val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
-            val publishedConfiguration = ScheduleConfiguration.getPublishedScheduleSlotConfigurationId(proposal.talkType.id, secretPublishKey)
-            val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
+      implicit request =>
+        Proposal.findById(proposalId) match {
+          case None => NotFound("Proposal not found")
+          case Some(proposal) =>
+            if (proposal.state == ProposalState.ACCEPTED) {
+              val maybeProgramSchedule = ProgramSchedule.findByPublishKey(secretPublishKey)
+              val publishedConfiguration = ScheduleConfiguration.getPublishedScheduleSlotConfigurationId(proposal.talkType.id, secretPublishKey)
+              val maybeSlot = ScheduleConfiguration.findSlotForConfType(proposal.talkType.id, proposal.id)
 
-            ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
+              ZapActor.actor ! LogURL("showTalk", proposalId, proposalTitle)
 
-            Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, maybeProgramSchedule))
-          } else {
-            NotFound("Proposal not found")
-          }
-      }
-  }
+              Ok(views.html.Publisher.showProposal(proposal, publishedConfiguration, maybeSlot, maybeProgramSchedule))
+            } else {
+              NotFound("Proposal not found")
+            }
+        }
+    }
 
   def search(q: Option[String] = None, p: Option[Int] = None) = Action.async {
     implicit request =>
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-      ElasticSearch.doPublisherSearch(q, p).map {
-        case r if r.isSuccess =>
-          val json = Json.parse(r.get)
-          val total = (json \ "hits" \ "total" \ "value").as[Int]
-          val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
+      ElasticSearchV2.doPublisherSearch(q, p).map{
+        case Left(failure) => InternalServerError("Unable to search on ElasticSearch " + failure.error)
+        case Right(results) =>
+          import library.search.ProposalSearchResult.ProposalHitReader
 
-          val results = hitContents.map {
-            jsvalue =>
-              val source = jsvalue \ "_source"
-              val proposal = source.as[Proposal]
-              proposal
-          }
-
-          Ok(views.html.Publisher.searchResult(total, results, q, p)).as("text/html")
-
-        case r if r.isFailure =>
-          InternalServerError(r.get)
+          val total=results.totalHits
+          Ok(views.html.Publisher.searchResult(total, results.to[ProposalSearchResult], q, p)).as("text/html")
       }
   }
+
 }

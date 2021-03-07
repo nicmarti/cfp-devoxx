@@ -437,6 +437,7 @@ sw.programme=Programme
 sw.presentations=Présentations
 sw.events=Evénements spéciaux
 sw.allSpeakers=Liste des présentateurs
+sw.allSpeakers.alt={0} oratrices et orateurs
 sw.proposal.presentedWith=Présenté avec
 admin.btn.webuser=Webusers
 editSpeakerName=Editer le nom et le prénom du speaker
