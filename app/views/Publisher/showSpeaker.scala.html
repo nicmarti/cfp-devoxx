@@ -1,57 +1,70 @@
 @(speaker:Speaker, acceptedProposals:Iterable[Proposal])(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@views.html.Publisher.devoxxFR2020(speaker.cleanName,Some(s"${speaker.cleanName} Devoxx France 2020")){
-<section id="speaker">
-  <div class="columns large-12">
-    <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> - <a href="@routes.Publisher.showAllSpeakers()">@Messages("sw.speakers")</a> </p>
-    <div class="centered-section team-member row fadeInUp animated">
-          <h1 class="entry-title">
-               @speaker.avatarUrl.map{url=>
-                  <img class="speakerRound"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName"><br>
-              }
-              @speaker.cleanTwitter.map{tw=>
-              <a href="https://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">
-              }
-              @speaker.cleanName
-              @speaker.twitter.map{_=>
-                  <img alt="Twitter" src="/assets/images/twitter.png" style="vertical-align: top"></a>
-              }
-          </h1>
-          @speaker.company.map{cp=>
-          <h4>From @cp</h4>
-          }
-          <div class="speakerbio">
-          @Html(speaker.bioAsHtml)
-          </div>
+@views.html.Publisher.devoxxFR(speaker.cleanName,Some(s"${speaker.cleanName} Devoxx France")){
 
-          @speaker.blog.map{blog=>
-                  @if(blog.toLowerCase.startsWith("http://") || blog.toLowerCase.startsWith("https://"))  {
-                      <p>Blog: <a href="@blog" rel="no-follow">@blog</a></p>
-                  } else{
-                      <p>Blog: <a href="http://@blog" rel="no-follow">@blog</a></p>
-                  }
-          }
-      </div>
-
-      <div class="clearfix"></div>
-
-@if(acceptedProposals.nonEmpty){
-    @acceptedProposals.map {  proposal=>
-        <div class="divider"></div>
-        <div class="columns large-12 team-member row centered-section">
-              @tags.publisher.renderIconForTrack(proposal.track) @Messages(proposal.track.label)
-              <h4 class="speakerTitle"><a href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">@proposal.title</a></h4>
-              <p><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></p>
-              @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)){
-                @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
-                     @tags.publisher.renderSpeaker(uuid,renderPhoto = true)
-                }
-              }
-              @Html(proposal.summaryAsHtml)
-
+    <section class="bg-white border-b py-2 pt-20">
+        <div class="w-full mb-4">
+            <div class="h-2 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
         </div>
-        <div class="clearfix"></div>
+
+        <div class="container max-w-5xl mx-auto m-8">
+            <Div class="flex flex-wrap space-x-2">
+                <div class="flex-shrink-0 w-1/5 sm:w-full md:w-2/5 ">
+                @speaker.avatarUrl.map{url=>
+                    <img class="rounded w-15 l-16"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName">
+                }
+                </div>
+                <div class="flex-1 w-4/5 sm:w-full md:w-3/5">
+                    <div class="align-middle">
+                        <h3 class="my-2 text-2xl lg:text-3xl text-left text-gray-800">
+                        @speaker.cleanName
+                        </h3>
+                        <p class="my-2 text-xl text-left text-gray-800">@speaker.company</p>
+                        <p class="text-black">@Html(speaker.bioAsHtml)</p>
+                        @speaker.cleanTwitter.map{tw=>
+                        <p class="text-gray-600 text-sm">Twitter : <a class="text-yellow-500 text-sm" href="https://www.twitter.com/@tw" rel="no-follow" class="speakerTwitter">@tw</a></p>
+                        }
+                        @speaker.blog.map{blog=>
+                            @if(blog.toLowerCase.startsWith("http://") || blog.toLowerCase.startsWith("https://"))  {
+                                <p class="text-gray-600 text-sm">Blog: <a href="@blog" rel="no-follow">@blog</a></p>
+                            } else{
+                                <p class="text-gray-600 text-sm">Blog: <a href="http://@blog" rel="no-follow">@blog</a></p>
+                            }
+                        }
+                    </div>
+                </div>
+            </Div>
+        </div>
+
+    </section>
+
+    <section>
+    @if(acceptedProposals.nonEmpty){
+        <div class="container mx-auto">
+        @acceptedProposals.map {  proposal=>
+            <div class="bg-white w-full m-3 p-4 flex flex-row rounded">
+                <div class="w-2/5">
+                  @tags.publisher.renderIconForTrack(proposal.track)
+                    <p class="text-gray-800"><span class="text-bold">Track :</span> @Messages(proposal.track.label)</p>
+                    <p class="text-gray-800"><span class="text-bold">Type de présentation :</span> <a class="text-yellow-600" href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></p>
+                </div>
+                <div class="w-3/5">
+                  <h4 class="text-3xl text-gray-800 text-bold">
+                      <a class="hover:text-underline hover:text-yellow-600"
+                      href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">
+                      <span class="text-4xl text-yellow-600 text-bold">&gt;&nbsp;</span>
+                      @proposal.title</a>
+                  </h4>
+
+                  @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)){
+                    @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
+                         @tags.publisher.renderSpeaker(uuid,renderPhoto = true)
+                    }
+                  }
+                  <div class="w-full text-gray-700 mt-2 mb-3">@Html(proposal.summaryAsHtml)</div>
+                </div>
+            </div>
+        }
+        </div>
     }
-}
-    </div>
-</section>
+    </section>
 }

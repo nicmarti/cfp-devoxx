@@ -23,7 +23,7 @@
 
 package library.search
 
-import models.{ApprovedProposal, ConferenceDescriptor, ProposalType, Track}
+import models.{ConferenceDescriptor, ProposalType, Track}
 import org.joda.time.DateTime
 import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
@@ -44,9 +44,10 @@ object ElasticSearch {
 
   val indexNames:String = "speakers,proposals"
 
-  val host = Play.current.configuration.getString("elasticsearch.host").getOrElse("http://localhost:9200")
+  val port = Play.current.configuration.getString("elasticsearch.port").getOrElse("9200")
   val username = Play.current.configuration.getString("elasticsearch.username").getOrElse("")
   val password = Play.current.configuration.getString("elasticsearch.password").getOrElse("")
+  val host = Play.current.configuration.getString("elasticsearch.host").map(s => s + ":" + port).getOrElse("http://localhost:9200")
 
   def index(index: String, json: String) = {
     if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
@@ -190,6 +191,13 @@ object ElasticSearch {
 
   def doAdvancedSearch(index: String, query: Option[String], p: Option[Int]) = {
 
+    println("doAdvancedSearch")
+    println("Java version : ")
+    println(System.getProperty("java.runtime.version"))
+    println("-----------------------------")
+    println("jsse.enableSNIExtension=" + System.getProperty("jsse.enableSNIExtension"))
+    println("-----------------------------")
+
     val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
     val zeQuery = someQuery.map { q => "\"query_string\" : { \"query\": \"" + q + "\"}"}.getOrElse("\"match_all\" : { }")
     val pageSize = 25
@@ -210,12 +218,6 @@ object ElasticSearch {
         |}
       """.stripMargin
 
-    if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-      play.Logger.of("library.ElasticSearch").debug(s"Page $p")
-      play.Logger.of("library.ElasticSearch").debug(s"$pageUpdated")
-      play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch query $json")
-    }
-
     val futureResponse = WS.url(host + "/" + index + "/_search")
       .withFollowRedirects(true)
       .withRequestTimeout(4000)
@@ -231,61 +233,6 @@ object ElasticSearch {
     }
   }
 
-  def doPublisherSearch(query: Option[String], p: Option[Int]) = {
-    val index = ApprovedProposal.elasticSearchIndex()
-    val someQuery = query.filterNot(_ == "").filterNot(_ == "*")
-    val zeQuery = someQuery.map(_.toLowerCase).map { q =>
-      s"""
-        |"dis_max": {
-        |   "queries": [
-        |                { "match": { "title":"$q"}},
-        |                { "match": { "mainSpeaker":"$q"}},
-        |                { "match": { "secondarySpeaker":"$q"}},
-        |                { "match": { "summary":"$q"}},
-        |                { "match": { "otherSpeakers":"$q" }},
-        |                { "match": { "id":"$q"}}
-        |            ]
-        |}
-      """.stripMargin
-
-    }.getOrElse("\"match_all\":{}")
-    val pageSize = 25
-    val pageUpdated: Int = p match {
-      case None => 0
-      case Some(page) if page <= 0 => 0
-      case Some(other) => (other - 1) * 25
-    }
-
-    val json: String = s"""
-        |{
-        | "from" : $pageUpdated,
-        | "size" : $pageSize,
-        | "query" : {
-        |   $zeQuery
-        | }
-        |}
-      """.stripMargin
-
-    if (play.Logger.of("library.ElasticSearch").isDebugEnabled) {
-      play.Logger.of("library.ElasticSearch").debug(s"Page $p")
-      play.Logger.of("library.ElasticSearch").debug(s"$pageUpdated")
-      play.Logger.of("library.ElasticSearch").debug(s"Elasticsearch query $json")
-    }
-
-    val futureResponse = WS.url(host + "/" + index + "/_search")
-      .withFollowRedirects(true)
-      .withRequestTimeout(4000)
-      .withAuth(username, password,BASIC)
-      .withHeaders("Content-Type" -> "application/x-ndjson")
-      .post(json)
-    futureResponse.map {
-      response =>
-        response.status match {
-          case 200 => Success(response.body)
-          case _ => Failure(new RuntimeException("Unable to perform search, HTTP Code " + response.status + ", ElasticSearch responded " + response.body))
-        }
-    }
-  }
 
   // This is interesting if you want to build a cloud of Words.
   def getTag(index: String) = {

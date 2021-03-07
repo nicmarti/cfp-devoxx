@@ -20,9 +20,7 @@ libraryDependencies ++= Seq(
 
 val jacksonV = "2.4.3"
 
-val elastic4sV = "1.3.2"
-
-val elasticSearchV = "1.3.2"
+val elastic4sVersion = "7.1.0"
 
 // Coursier
 libraryDependencies ++= Seq(
@@ -33,12 +31,11 @@ libraryDependencies ++= Seq(
   , "commons-codec" % "commons-codec" % "1.9" // for new Base64 that has support for String
   , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
   , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
-  //, "org.scalamock" %% "scalamock-specs2-support" % "3.0.1" % "test"
-  , "com.sksamuel.elastic4s" %% "elastic4s" % elastic4sV
-  , "org.elasticsearch" % "elasticsearch" % elasticSearchV
   , "com.pauldijou" %% "jwt-core" % "0.9.2" // JWT for MyDevoxx
   , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
   , "org.scalaz" %% "scalaz-core" % "7.2.10"
   , "com.google.api-client" % "google-api-client" % "1.30.7"
   , "com.google.apis" % "google-api-services-oauth2" % "v2-rev20190313-1.30.1"
+  , "com.sksamuel.elastic4s" %% "elastic4s-client-esjava" % elastic4sVersion
+
 )

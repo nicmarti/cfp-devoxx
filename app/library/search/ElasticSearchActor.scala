@@ -117,15 +117,30 @@ trait ESActor extends Actor {
 // Main actor for dispatching
 class IndexMaster extends ESActor {
   def receive: PartialFunction[Any, Unit] = {
-    case DoIndexSpeaker(speaker: Speaker) => doIndexSpeaker(speaker)
-    case DoIndexAllSpeakers => doIndexAllSpeakers()
-    case DoIndexProposal(proposal: Proposal) => doIndexProposal(proposal)
-    case DoIndexAllProposals => doIndexAllProposals()
-    case DoIndexAllAccepted => doIndexAllAccepted()
-    case DoIndexAllHitViews => doIndexAllHitViews()
-    case DoIndexSchedule => doIndexSchedule()
+    case DoIndexSpeaker(speaker: Speaker) =>
+      println("Deprecated index speaker")
+      //doIndexSpeaker(speaker)
+    case DoIndexAllSpeakers =>
+      println("Deprecated index all speakers")
+      //doIndexAllSpeakers()
+    case DoIndexProposal(proposal: Proposal) =>
+      println("Deprecated index proposal")
+      //doIndexProposal(proposal)
+    case DoIndexAllProposals =>
+      //doIndexAllProposals()
+      println("Deprecated all proposals")
+    case DoIndexAllAccepted => ElasticSearchV2.doIndexAllAccepted()
+    case DoIndexAllHitViews =>
+      println("Deprecated hit view")
+      // doIndexAllHitViews()
+    case DoIndexSchedule =>
+      println("Deprecated schedule")
+      // doIndexSchedule()
     case StopIndex => stopIndex()
-    case DoCreateConfigureIndex => doCreateConfigureIndex()
+    case DoCreateConfigureIndex => {
+      //doCreateConfigureIndex()
+      ElasticSearchV2.createConfigureIndex()
+    }
     case other => play.Logger.of("application.IndexMaster").error("Received an invalid actor message: " + other)
   }
 
@@ -225,33 +240,6 @@ class IndexMaster extends ESActor {
   }
 
 
-  def doIndexAllAccepted() {
-    val proposals = Proposal.allAccepted()
-
-    val indexName = ApprovedProposal.elasticSearchIndex()
-    play.Logger.of("application.IndexMaster").debug(s"Do index all accepted ${proposals.size} to index $indexName")
-
-    val sb = new StringBuilder
-    proposals.foreach {
-      proposal: Proposal =>
-        sb.append("{\"index\":{\"_index\":\"")
-        sb.append(indexName)
-        sb.append("\",\"_type\":\"proposal\",\"_id\":\"" + proposal.id + "\"}}")
-        sb.append("\n")
-        sb.append(Json.toJson(proposal.copy(
-          privateMessage = "",
-          mainSpeaker = Speaker.findByUUID(proposal.mainSpeaker).map(_.cleanName).getOrElse(proposal.mainSpeaker),
-          secondarySpeaker = proposal.secondarySpeaker.flatMap(s => Speaker.findByUUID(s).map(_.cleanName)),
-          otherSpeakers = proposal.otherSpeakers.flatMap(s => Speaker.findByUUID(s).map(_.cleanName))
-        )))
-        sb.append("\n")
-    }
-    sb.append("\n")
-
-    ElasticSearch.indexBulk(indexName,sb.toString())
-
-    play.Logger.of("application.IndexMaster").debug("Done indexing all acceptedproposals")
-  }
 
     // Create an ES index with the agenda
   def doIndexSchedule(): Unit = {
@@ -388,22 +376,15 @@ class IndexMaster extends ESActor {
     }
   }
 
-  def doCreateConfigureIndex(): Future[Unit] = {
-    _createConfigureIndex("proposals",  settingsFrench).map {
+  def doCreateConfigureIndex() = {
+    val resProposals: Future[Unit] = _createConfigureIndex("proposals",  settingsFrench).map {
       case Success(r) =>
         play.Logger.of("library.ElasticSearch").info(s"Configured indexes [proposals] on ES for speaker and proposal. Result : " + r)
       case Failure(ex) =>
         play.Logger.of("library.ElasticSearch").warn(s"Error with index [proposals]} $ex", ex)
     }
 
-    _createConfigureIndex(ApprovedProposal.elasticSearchIndex(), settingsFrench).map {
-      case Success(r) =>
-        play.Logger.of("library.ElasticSearch").info(s"Configured indexes ${ApprovedProposal.elasticSearchIndex()} on ES for speaker and proposal. Result : " + r)
-      case Failure(ex) =>
-        play.Logger.of("library.ElasticSearch").warn(s"Error with index ${ApprovedProposal.elasticSearchIndex()} $ex", ex)
-    }
-
-    _createConfigureIndex("speakers", settingsFrench).map {
+    val resSpeakers = _createConfigureIndex("speakers", settingsFrench).map {
       case Success(r) =>
         play.Logger.of("library.ElasticSearch").info(s"Configured indexes speakers on ES for speaker and proposal. Result : " + r)
       case Failure(ex) =>
@@ -412,11 +393,15 @@ class IndexMaster extends ESActor {
 
     val scheduleIndexName = "schedule_" + ConferenceDescriptor.current().confUrlCode
 
-    _createConfigureIndex(scheduleIndexName, settingsAgenda).map {
+    val resSchedule2 = _createConfigureIndex(scheduleIndexName, settingsAgenda).map {
       case Success(r) =>
         play.Logger.of("library.ElasticSearch").info(s"Configured indexes $scheduleIndexName on ES for speaker and proposal. Result : " + r)
       case Failure(ex) =>
         play.Logger.of("library.ElasticSearch").warn(s"Error with index $scheduleIndexName $ex", ex)
+    }
+
+    for(_ <- resProposals ;_ <- resSpeakers ; _ <-resSchedule2){
+      println("Waiting for index creation...")
     }
 
   }

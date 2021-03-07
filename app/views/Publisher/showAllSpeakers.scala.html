@@ -1,29 +1,45 @@
 @(speakers: List[Speaker])(implicit lang: Lang, flash: Flash, req: RequestHeader)
-    @views.html.Publisher.devoxxFR2020("Speakers",Some("All Devoxx speakers")) {
-        <div class="large-12 columns">
-            <h1 class="entry-title">@Messages("sw.speakers")</h1>
-            <p>@speakers.size @Messages("sw.allSpeakers")</p>
+    @views.html.Publisher.devoxxFR("Speakers",Some("All Devoxx speakers")) {
 
-            <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
-        </div>
+        <section class="bg-white border-b py-8">
+            <div class="container max-w-5xl mx-auto m-8">
+                <h1 class="w-full my-2 text-2xl font-bold leading-tight text-center text-gray-800">
+                @Messages("sw.speakers")
+                </h1>
+                <h3 class="w-full my-2 text-xl leading-tight text-center text-gray-800">@Messages("sw.allSpeakers.alt", speakers.size)</h3>
+            </div>
+            <div class="w-full mb-4">
+                <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+            </div>
+        </section>
 
-    <div class="row centered-section">
-        @speakers.sortBy(_.cleanName).sliding(4, 4).map { fourSpeakers: List[Speaker] =>
-            @fourSpeakers.map { speaker: Speaker =>
-               <div class="large-3 medium-3 columns">
-                <div class="speakerCard">
-                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="speakerURL">
-                        @speaker.avatarUrl.map { url =>
-                            <img src="@url" class="speakerPhoto" alt="@speaker.cleanName" title="@speaker.cleanName">
-                        }
-                        <br>
-                        <span class="name">@speaker.cleanName</span></a><br>
-                        <span class="company">@speaker.company</span><br>
-                        <span class="twitter">@speaker.cleanTwitter</span>
-                </div>
-              </div>
+        <section  class="flex-1 w-full mx-auto max-w-sm content-center py-8 px-4">
+
+        </section>
+
+        <section class="bg-white">
+            <div class="container mx-auto flex flex-wrap pt-4 pb-12">
+            @speakers.sortBy(_.cleanName).map { speaker: Speaker =>
+                    <div class="w-full mb-5 md:w-1/4 lg:w-1/5 sm:w-1/2 p-6 flex flex-col flex-grow flex-shrink text-body text-black">
+                        <div class="bg-gray-100 p-3 rounded-md">
+                            <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)"
+                            class="flex flex-wrap no-underline hover:no-underline">
+                                @speaker.avatarUrl.map { url =>
+                                    <img src="@url" class="w-full p-4 bg-gray-200 h-full" alt="@speaker.cleanName" title="@speaker.cleanName">
+                                }
+                            <span class="mt-2 text-sm text-gray-800 block">@speaker.cleanName</span>
+                            </a>
+                            <span class="mt-2 text-sm text-gray-600 block">@speaker.company</span>
+                            @speaker.cleanTwitter.map { tw =>
+                                <a href="https://www.twitter.com/@tw" target="new" class="mt-2 text-sm text-gray-600 block hover:underline text-yellow-700">@tw</a>
+                            }
+                        </div>
+                    </div>
             }
-            <div class="clearfix"></div>
-        }
-    </div>
+            </div>
+        </section>
+
+
+
+
 }

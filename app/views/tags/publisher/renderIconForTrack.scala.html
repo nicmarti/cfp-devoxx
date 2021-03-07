@@ -1,4 +1,4 @@
 @(track:Track)(implicit lang: Lang)
 @defining(ConferenceDescriptor.ConferenceTracksDescription.findTrackDescFor(track)){trackDesc=>
-<img src="@trackDesc.imgSrc" class="publisher-icon" alt="@track.id" title="@Messages(trackDesc.i18nTitleProp)">
+<img src="@trackDesc.imgSrc" class="w-16 l-16" alt="@track.id" title="@Messages(trackDesc.i18nTitleProp)">
 }
