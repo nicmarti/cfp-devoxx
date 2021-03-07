@@ -214,16 +214,16 @@ GET           /cloudtags                                                        
 # Keep the .html in each URL if you want to save your program (with wget for instance)
 # Each year I do a backup with WGET :
 # wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2019/index.html
-GET           /2020/speakers.html                                               controllers.Publisher.showAllSpeakers()
-GET           /2020/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
-GET           /2020/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
-GET           /2020/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
-GET           /2020/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="", secretPublishKey:Option[String] ?=None)
-GET           /2020/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String, secretPublishKey:Option[String] ?=None)
-GET           /2020/talks                                                       controllers.Publisher.homePublisher()
-GET           /2020/index.html                                                  controllers.Publisher.homePublisher()
-GET           /2020/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None, hideUselessRooms:Boolean ?=true, includeTypes:Option[String] ?=None, excludeTypes:Option[String] ?=Some("bof"))
-GET           /2020/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET           /2021/speakers.html                                               controllers.Publisher.showAllSpeakers()
+GET           /2021/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
+GET           /2021/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
+GET           /2021/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
+GET           /2021/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="", secretPublishKey:Option[String] ?=None)
+GET           /2021/talk/:proposalId/:proposalTitle                             controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String, secretPublishKey:Option[String] ?=None)
+GET           /2021/talks                                                       controllers.Publisher.homePublisher()
+GET           /2021/index.html                                                  controllers.Publisher.homePublisher()
+GET           /2021/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None, hideUselessRooms:Boolean ?=true, includeTypes:Option[String] ?=None, excludeTypes:Option[String] ?=Some("bof"))
+GET           /2021/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 
 # Archive folder
 # 1) download all web pages with wget
