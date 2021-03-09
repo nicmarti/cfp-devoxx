@@ -23,7 +23,7 @@
 
 package controllers
 
-import library.search.ElasticSearch
+import library.search.{DoIndexSpeaker, ElasticSearch, ElasticSearchActor}
 import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import library._
 import models._
@@ -129,7 +129,6 @@ object CallForPaper extends SecureCFPController {
     }
   }
 
-  // See CSRF https://playframework.com/documentation/2.3.x/ScalaCsrf
   def saveProfile =  CSRFCheck {
     SecuredAction {
       implicit request =>
@@ -137,10 +136,13 @@ object CallForPaper extends SecureCFPController {
         speakerForm.bindFromRequest.fold(
           invalidForm => BadRequest(views.html.CallForPaper.editProfile(invalidForm, uuid)),
           updatedSpeaker => {
-            Speaker.update(uuid, updatedSpeaker)
+            // The updatedSpeaker.uuid should be "xxx" as we do not trust the Form. Else, anyone could change the UUID.
             val firstName: String = updatedSpeaker.firstName.getOrElse(request.webuser.firstName)
             val lastName: String = updatedSpeaker.name.getOrElse(request.webuser.lastName)
+            Speaker.update(uuid, updatedSpeaker)
             Webuser.updateNames(uuid, newFirstName = firstName, newLastName = lastName)
+            // Index the Speaker, however reset correctly the speaker's uuid.
+            ElasticSearchActor.masterActor ! DoIndexSpeaker(updatedSpeaker.copy(uuid = uuid))
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> "Profile saved")
           }
         )
@@ -442,26 +444,6 @@ object CallForPaper extends SecureCFPController {
   }
 
   case class TermCount(term: String, count: Int)
-
-  def cloudTags() = SecuredAction.async {
-    implicit request =>
-      import play.api.Play.current
-      import play.api.libs.concurrent.Execution.Implicits.defaultContext
-
-      implicit val termCountFormat = Json.reads[TermCount]
-
-      Cache.getOrElse("elasticSearch", 3600) {
-        ElasticSearch.getTag("proposals/proposal").map {
-          case r if r.isSuccess =>
-            val json = Json.parse(r.get)
-            val tags = (json \ "facets" \ "tags" \ "terms").as[List[TermCount]]
-            Ok(views.html.CallForPaper.cloudTags(tags))
-          case r if r.isFailure =>
-            play.Logger.error(r.get)
-            InternalServerError
-        }
-      }
-  }
 
   val phoneForm = play.api.data.Form("phoneNumber" -> nonEmptyText(maxLength = 15))
   val phoneConfirmForm = play.api.data.Form(tuple(

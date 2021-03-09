@@ -1,4 +1,4 @@
-@(total:Int, results:Seq[String], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(total:Long, results:Seq[String], q:Option[String], p:Option[Int])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 <div class="panel">
     <div class="card-header">
         <h3 class="panel-title">@Messages("search.result" , total)</h3>

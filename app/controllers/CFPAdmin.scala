@@ -1,5 +1,6 @@
 package controllers
 
+import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchResponse}
 import library.search.ElasticSearch
 import library.{SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
@@ -297,39 +298,37 @@ object CFPAdmin extends SecureCFPController {
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
       ElasticSearch.doAdvancedSearch(ElasticSearch.indexNames, q, p).map {
-        case r if r.isSuccess =>
-          val json = Json.parse(r.get)
-          val total = (json \ "hits" \ "total" \ "value").as[Int] // Upgraded to ES 7.1
-          val hitContents = (json \ "hits" \ "hits").as[List[JsObject]]
+        case r if r.isRight =>
 
-          val results = hitContents.sortBy {
-            jsvalue =>
-              val index = (jsvalue \ "_index").as[String]
-              index
-          }.map {
-            jsvalue =>
-              val index = (jsvalue \ "_index").as[String]
-              val source = jsvalue \ "_source"
+          val searchResponse:SearchResponse = r.right.get
+          val total: Long = searchResponse.totalHits
+          val hitContents: Array[SearchHit] = searchResponse.hits.hits
+
+          val results = hitContents.map {
+            searchHit =>
+              val index = searchHit.index
+              val source = searchHit.sourceAsMap
               index match {
                 case "proposals" =>
-                  val id = (source \ "id").as[String]
-                  val title = (source \ "title").as[String]
-                  val talkType = Messages((source \ "talkType" \ "id").as[String])
-                  val code = (source \ "state" \ "code").as[String]
-                  val mainSpeaker = (source \ "mainSpeaker").as[String]
-                  s"<p class='searchProposalResult'><i class='fas fa-folder-open'></i> Proposal $id <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$code</strong> - by $mainSpeaker - $talkType</p>"
+                  val id: String = source("id").toString
+                  val title:String = source("title").toString
+                  val talkType = Messages(source("talkType").toString)
+                  val propState = source("state").toString
+                  val mainSpeaker:String = source("mainSpeaker").toString
+                  s"<p class='searchProposalResult'><i class='fas fa-folder-open'></i> Proposal $id <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$talkType</strong> - [$propState] - by $mainSpeaker</p>"
                 case "speakers" =>
-                  val uuid = (source \ "uuid").as[String]
-                  val name = (source \ "name").as[String]
-                  val firstName = (source \ "firstName").as[String]
-                  s"<p class='searchSpeakerResult'><i class='fas fa-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a></p>"
+                  val uuid:String = source("uuid").toString
+                  val name:String = source("name").toString
+                  val firstName:String = source("firstName").toString
+                  val company = source.get("company").filterNot(_ == null).map(s => s.toString).getOrElse("")
+                  s"<p class='searchSpeakerResult'><i class='fas fa-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a> <strong>$company</strong></p>"
                 case _ => "Unknown format " + index
               }
           }
 
           Ok(views.html.CFPAdmin.renderSearchResult(total, results, q, p)).as("text/html")
-        case r if r.isFailure =>
-          InternalServerError(r.get)
+        case r if r.isLeft =>
+          InternalServerError("Search engine error, check the console")
       }
   }
 
