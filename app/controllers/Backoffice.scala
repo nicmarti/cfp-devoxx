@@ -157,7 +157,6 @@ object Backoffice extends SecureCFPController {
       ElasticSearchActor.masterActor ! DoIndexAllSpeakers
       ElasticSearchActor.masterActor ! DoIndexAllProposals // This is for internal CFP team
       ElasticSearchActor.masterActor ! DoIndexAllAccepted // This is for the public program
-      ElasticSearchActor.masterActor ! DoIndexAllHitViews
       ElasticSearchActor.masterActor ! DoIndexSchedule
       Redirect(routes.Backoffice.homeBackoffice()).flashing("success" -> "Elastic search actor started...")
   }
@@ -283,7 +282,7 @@ object Backoffice extends SecureCFPController {
       val futureMessages: Future[Any] = ZapActor.actor ? CheckSchedules
 
       futureMessages.map {
-        case results: List[ProposalAndRelatedError] =>
+        case results:List[ProposalAndRelatedError] =>
           Ok(views.html.Backoffice.refreshSchedules(results))
         case _ =>
           play.Logger.error("refreshSchedules error with Akka")

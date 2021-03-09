@@ -26,7 +26,7 @@ package library
 /**
  * Timer utility that evaluates the time spent in a function.
  * Author: Nicolas MARTIGNOLE @nmartignole
- * Created: 04/02/2013 10:17
+ * Created: 14/12/2013
  */
 object Benchmark {
 

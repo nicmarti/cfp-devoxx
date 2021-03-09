@@ -23,7 +23,7 @@
 
 package controllers
 
-import library.search.{ElasticSearchV2, ProposalSearchResult}
+import library.search.{ElasticSearchPublisher, ProposalSearchResult}
 import library.{Crypt, LogURL, ZapActor}
 import models.{ConferenceDescriptor, _}
 import play.api.mvc._
@@ -179,7 +179,7 @@ object Publisher extends Controller {
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-      ElasticSearchV2.doPublisherSearch(q, p).map{
+      ElasticSearchPublisher.doPublisherSearch(q, p).map{
         case Left(failure) => InternalServerError("Unable to search on ElasticSearch " + failure.error)
         case Right(results) =>
           import library.search.ProposalSearchResult.ProposalHitReader
