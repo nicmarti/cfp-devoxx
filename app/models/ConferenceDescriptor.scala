@@ -714,15 +714,15 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "30 juin au 2 juillet 2021",
+      datesI18nKey = "29 septembre au 1er octobre 2021",
       speakersPassDuration = 3,
       preferredDayEnabled = true,
-      firstDayFr = "30 juin",
-      firstDayEn = "June, 30th",
-      datesFr = "du 30 juin au 2 juillet 2021",
-      datesEn = "from June, 30th till July, 2nd, 2021",
+      firstDayFr = "29 septembre",
+      firstDayEn = "September, 29th",
+      datesFr = "du 29 septembre au 1er octobre 2021",
+      datesEn = "from September, 29th till October 2nd 2021",
       cfpOpenedOn = DateTime.parse("2019-12-02T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2020-01-12T23:59:59+02:00"),
+      cfpClosedOn = DateTime.parse("2020-08-25T23:59:59+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2021-05-15T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),

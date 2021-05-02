@@ -891,17 +891,17 @@ visitor.welcome.publisher=Parcourir l''agenda des conférences
 # ------------------------------------
 # We prefer to update one property file, so that string interpolation is faster, rather than
 # to try to use the ConferenceDescriptor for some static part of the web site.
-appel.conf.dates=Call for Paper, Devoxx France, 30 juin au 2 juillet 2021
+appel.conf.dates=Call for Paper, Devoxx France, 29 septembre au 1er octobre 2021
 cfp.program.date=à partir de mai 2021
 signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2021 :
-sw.show.title.wed=Journée du Mercredi 30 juin 2021
+sw.show.title.wed=Journée du Mercredi 29 septembre 2021
 sw.show.title.thu=Journée du Jeudi 1er juillet 2021
 sw.show.title.fri=Journée du Vendredi 2 juillet 2021
 cfp.title=Devoxx France 2021
 conf.label.simple=Conférence
 CONF.subtitle=FR
 CONF.title=Devoxx France 2021
-conference.dates=30 juin au 2 juillet 2021
+conference.dates=29 septembre au 1er octobre 2021
 longName=Devoxx FR 2021 CFP
 longSplittedName_whiteEnd=FR 2021
 longYearlyName=Devoxx France 2021
