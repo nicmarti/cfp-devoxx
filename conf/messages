@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx France 2020
+CONF.title=Devoxx France 2021
 CONF.subtitle=FR
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx FR 2020
-longYearlyName=Devoxx France 2020
+shortYearlyName=Devoxx FR 2021
+longYearlyName=Devoxx France 2021
 shortName=Devoxx France
-longName=Devoxx FR 2020 CFP
+longName=Devoxx FR 2021 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2020
-conference.dates=15h to 17th April
+longSplittedName_whiteEnd=FR 2021
+conference.dates=September 29th to October 1st
 # -----------------
-cfp.title=Devoxx FR 2020 CFP
+cfp.title=Devoxx FR 2021 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -178,10 +178,10 @@ cfp.program.date=from {0}
 video.title=Videos
 video.tag=Review Devoxx FR''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx France 2020:
+theme.track=List of tracks for Devoxx France 2021:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx France 2020, 15th-17th April
+appel.conf.dates=Devoxx France 2021, Sept 29th - Oct 1st
 
 # Tracks
 
@@ -471,6 +471,7 @@ sw.all.quick=All Quickies
 sw.all.bof=All BOFs
 sw.all.tia=All Tools in Action
 sw.speakers=Devoxxians
+sw.allSpeakers.alt={0} speakers
 sw.intro=The agenda is published every day.
 sw.programme=Agenda
 sw.presentations=Talks
@@ -544,11 +545,9 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.mon=Monday, 13th April 2020
-sw.show.title.tue=Tuesday, 14th April 2020
-sw.show.title.wed=Wednesday, 15th April 2020
-sw.show.title.thu=Thursday, 16th April 2020
-sw.show.title.fri=Friday, 17th April 2020
+sw.show.title.wed=Wednesday, 29th September 2021
+sw.show.title.thu=Thursday, 30th September 2021
+sw.show.title.fri=Friday, 1st October 2021
 
 sw.details.wednesday=Wednesday
 sw.details.thursday=Thursday
