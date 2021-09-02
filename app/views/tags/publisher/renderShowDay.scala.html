@@ -1,4 +1,8 @@
-@(typeTalk:String,day:String,label:String)
-<a href="@routes.Publisher.showByDay(day.trim.toLowerCase, includeTypes = Some(typeTalk))" title="Show @typeTalk talks on @day.capitalize">
-@label
-</a>
+@(typeTalk:ProposalType,day:String,label:String)
+@if(Slot.byType(typeTalk).filter(s => s.day == day).isEmpty) {
+
+} else {
+  <a href="@routes.Publisher.showByDay(day.trim.toLowerCase, includeTypes = Some(typeTalk.id))" title="Show @typeTalk talks on @day.capitalize">
+  @label
+  </a>
+}

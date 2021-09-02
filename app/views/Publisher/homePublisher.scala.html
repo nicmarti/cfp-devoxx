@@ -38,47 +38,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "wednesday", "University")</td>
-                        <td class="scheduleRow">&nbsp;</td>
-                        <td class="scheduleRow">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "wednesday", "Tools-in-Action") </td>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("tia", "thursday", "Tools-in-Action")</td>
-                        <td class="scheduleRow">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "wednesday", "Hands-on Labs")</td>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "thursday", "Hands-on Labs")</td>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("lab", "friday", "Hands-on Labs")</td>
-                    </tr>
-                    <tr>
-                        <td class="scheduleRow">&nbsp;</td>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("bof", "thursday", "BOFs")</td>
-                        <td class="scheduleRow">&nbsp;</td>
-                    </tr>
-                        <!-- ******************************************************************* //-->
-                    <tr>
-                        <td class="scheduleRow">&nbsp;</td>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "thursday", "Quickies")</td>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("quick", "friday", "Quickies")</td>
-                    </tr>
-                        <!-- ******************************************************************* //-->
-                    <tr>
-                        <td class="scheduleRow">&nbsp;</td>
-                        <td class="scheduleRow">
-                        @tags.publisher.renderShowDay("conf", "thursday", "Conference")
-                        </td>
-                        <td class="scheduleRow">
-                        @tags.publisher.renderShowDay("conf", "friday", "Conference")
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="scheduleRow">&nbsp;</td>
-                        <td class="scheduleRow">&nbsp;</td>
-                        <td class="scheduleRow">@tags.publisher.renderShowDay("other", "friday", "Others")</td>
-                    </tr>
+                    @ConferenceProposalTypes.slottableTypes.map { proposalType =>
+                        @if(!models.ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id).isEmpty) {
+                            <tr>
+                                <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "wednesday", Messages(proposalType.simpleLabel)) </td>
+                                <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "thursday", Messages(proposalType.simpleLabel))</td>
+                                <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "friday", Messages(proposalType.simpleLabel))</td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
                 <!-- ******************************************************************* //-->
