@@ -15,18 +15,9 @@
         </div>
     </section>
 
-    <!-- ********************** Search box ************************* -->
-    <div class="flex-1 w-full mx-auto max-w-sm content-center py-8 px-4">
-        <form name="search" action="@routes.Publisher.search(None, None)" method="GET">
-            <label for="search">Trouver un sujet ou un présentateur : </label>
-            <input id="search" type="search" name="q" placeholder="title, keyword or speaker"
-            class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 appearance-none leading-normal">
-        </form>
-    </div>
-
     @if(ProgramSchedule.publishedProgramSchedule().map(_.showSchedule).getOrElse(false)) {
-        <div class="small-12 medium-12 large-12 column">
-            <table class="w-full mainSchedule mb-4">
+        <div class="small-12 medium-12 large-12 column mt-4">
+            <table class="w-full mainSchedule">
                 <thead>
                     <tr>
                         <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
@@ -52,6 +43,15 @@
                 <!-- ******************************************************************* //-->
         </div>
     }
+
+    <!-- ********************** Search box ************************* -->
+    <div class="flex-1 w-full mx-auto max-w-sm content-center py-8 px-4">
+        <form name="search" action="@routes.Publisher.search(None, None)" method="GET">
+            <label for="search">Trouver un sujet ou un présentateur : </label>
+            <input id="search" type="search" name="q" placeholder="title, keyword or speaker"
+            class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 appearance-none leading-normal">
+        </form>
+    </div>
 
     <section class="bg-white">
         <div class="container mx-auto flex flex-wrap pt-4 pb-12">
