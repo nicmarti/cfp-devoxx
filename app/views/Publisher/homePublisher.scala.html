@@ -26,7 +26,7 @@
 
     @if(ProgramSchedule.publishedProgramSchedule().map(_.showSchedule).getOrElse(false)) {
         <div class="small-12 medium-12 large-12 column">
-            <table class="mainSchedule">
+            <table class="w-full mainSchedule mb-4">
                 <thead>
                     <tr>
                         <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
