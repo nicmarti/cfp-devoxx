@@ -156,14 +156,14 @@
     padding: 4px;
 }
 
-.proposal_type_is_uni { background-color: #ccfecc; }
-.proposal_type_is_lab { background-color: #ffc6c6; }
+.proposal_type_is_uni { background-color: #deccfe; }
+.proposal_type_is_lab { background-color: #f87ef6; }
 .proposal_type_is_conf { background-color: #ccfecc; }
 .proposal_type_is_tia { background-color: #daeff4; }
 .proposal_type_is_quick { background-color: #fffec3; }
 .proposal_type_is_bof { background-color: #dee3f6; }
-.proposal_type_is_key { background-color: #ccfecc; }
-.proposal_type_is_other { background-color: #dee3f6; }
+.proposal_type_is_key { background-color: #ffcb9e; }
+.proposal_type_is_other { background-color: #e7ecfc; }
 .agendaTable .proposal.tba { background-color: #eeeeee; padding: 2px; }
 .agendaTable .room-closed { background-color: #bbbbbb; padding: 2px; }
 
