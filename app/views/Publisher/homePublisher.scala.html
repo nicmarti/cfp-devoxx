@@ -29,7 +29,6 @@
             <table class="mainSchedule">
                 <thead>
                     <tr>
-                        <th class="scheduleHeader">&nbsp;</th>
                         <th class="scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
                             [Détails]</a> </th>
                         <th class="scheduleHeader">@Messages("day-thursday") <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
@@ -40,7 +39,6 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td rowspan="7" class="scheduleHeader scheduleRight">&nbsp;</td>
                         <td class="scheduleRow">@tags.publisher.renderShowDay("uni", "wednesday", "University")</td>
                         <td class="scheduleRow">&nbsp;</td>
                         <td class="scheduleRow">&nbsp;</td>
