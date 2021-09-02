@@ -19,14 +19,27 @@
         <section class="bg-white pb-1">
             <div class="container mx-auto">
                 <table class="w-full table-fixed mainSchedule">
+                    <caption>Programme par jour et format de présentation</caption>
                     <thead>
                         <tr>
-                            <th class="w-1/3 scheduleHeader">@Messages("day-wednesday") <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
-                                [Détails]</a> </th>
-                            <th class="w-1/3 scheduleHeader">@Messages("day-thursday") <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
-                                [Détails]</a></th>
-                            <th class="w-1/3 scheduleHeader">@Messages("day-friday") <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
-                                [Détails]</a></th>
+                            <th class="w-1/3 scheduleHeader" scope="col">
+                                @Messages("day-wednesday")
+                                <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
+                                [Détails]
+                                </a>
+                            </th>
+                            <th class="w-1/3 scheduleHeader" scope="col">
+                                @Messages("day-thursday")
+                                <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
+                                [Détails]
+                                </a>
+                            </th>
+                            <th class="w-1/3 scheduleHeader" scope="col">
+                                @Messages("day-friday")
+                                <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
+                                [Détails]
+                                </a>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
