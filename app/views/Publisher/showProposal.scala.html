@@ -32,7 +32,7 @@
                     <p class="text-left"><span class="text-bold text-xl">Niveau de la présentation :</span> @Messages(proposal.audienceLevel + ".label")</p>
 
                 @if(slot.isDefined) {
-                    @if(maybeProgramSchedule.exists(_.showRooms) && maybeProgramSchedule.exists(_.showSchedule)) {
+                    @if(maybeProgramSchedule.exists(_.showSchedule)) {
                         @if(maybeProgramSchedule.exists(_.showRooms)) {
                             <p class="text-left"><span class="text-bold text-xl">Salle :</span> @slot.map(_.room.name)
                         }
