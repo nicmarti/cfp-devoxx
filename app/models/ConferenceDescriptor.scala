@@ -372,7 +372,7 @@ object ConferenceDescriptor {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
             new DateTime(s"${secondDay}T18:15:00.000+02:00").toDateTime(confTimezone),
-            new DateTime(s"${secondDay}T19:45:00.000+02:00").toDateTime(confTimezone), r1)
+            new DateTime(s"${secondDay}T18:45:00.000+02:00").toDateTime(confTimezone), r1)
       }
       toolsThursdayAfternoonSlot1 ++ toolsThursdayAfternoonSlot2
     }
