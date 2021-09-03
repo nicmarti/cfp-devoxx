@@ -68,7 +68,7 @@ object Publisher extends Controller {
   def showSpeakerByName(name: String) = Action {
     implicit request =>
 
-      val speakers = Speaker.allSpeakersWithAcceptedTerms()
+      val speakers = Speaker.withOneProposal(Speaker.allSpeakersWithAcceptedTerms())
       val speakerNameAndUUID = speakers.map {
         speaker => (speaker.urlName, speaker.uuid)
       }.toMap
