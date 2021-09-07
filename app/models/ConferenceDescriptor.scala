@@ -120,7 +120,7 @@ object ConferenceDescriptor {
     }
 
     def slottableTypes: List[ProposalType] = {
-      ALL.filter(t => !Slot.byType(t).isEmpty)
+      ALL.filter(t => Slot.byType(t).nonEmpty)
     }
   }
 
