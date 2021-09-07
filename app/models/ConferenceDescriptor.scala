@@ -597,70 +597,72 @@ object ConferenceDescriptor {
     }
 
     // Registration, coffee break, lunch etc
+    // The "first room" is kind of special in the schedule algorithm, as this is the room which is used
+    // to "start" break colspans
+    // This is preferable to generate only a single break slot (even on time slots with break on *multiple* rooms)
+    // as the devoxx mobile app doesn't like duplicated break slots (every breaks in the same time slots are displayed)
+    val firstRoomForBreaks = ConferenceRooms.AMPHI_BLEU;
     val wednesdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "wednesday",
         new DateTime(s"${firstDay}T08:30:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${firstDay}T09:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${firstDay}T09:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
         new DateTime(s"${firstDay}T09:50:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${firstDay}T10:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${firstDay}T10:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday",
         new DateTime(s"${firstDay}T11:15:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${firstDay}T12:00:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${firstDay}T12:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday",
         new DateTime(s"${firstDay}T12:00:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${firstDay}T12:30:00.000+02:00").toDateTime(confTimezone),
-        List(ConferenceRooms.AMPHI_BLEU))
+        new DateTime(s"${firstDay}T12:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "wednesday",
         new DateTime(s"${firstDay}T12:30:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${firstDay}T13:00:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${firstDay}T13:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "wednesday",
         new DateTime(s"${firstDay}T16:00:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${firstDay}T16:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${firstDay}T16:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
     ).flatten
 
     val thursdayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.registration, "thursday",
         new DateTime(s"${secondDay}T08:30:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T09:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${secondDay}T09:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime(s"${secondDay}T09:50:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T10:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${secondDay}T10:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T11:15:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T12:00:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${secondDay}T12:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T12:00:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T12:15:00.000+02:00").toDateTime(confTimezone),
-        List(ConferenceRooms.AMPHI_BLEU))
+        new DateTime(s"${secondDay}T12:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T12:15:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime(s"${secondDay}T16:00:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T16:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${secondDay}T16:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
     ).flatten
 
     val fridayBreaks = List(
       SlotBuilder(ConferenceSlotBreaks.petitDej, "friday",
         new DateTime(s"${thirdDay}T08:30:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${thirdDay}T09:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${thirdDay}T09:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime(s"${thirdDay}T09:50:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${thirdDay}T10:30:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${thirdDay}T10:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
         new DateTime(s"${thirdDay}T11:15:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${thirdDay}T12:00:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${thirdDay}T12:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
         new DateTime(s"${thirdDay}T12:00:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${thirdDay}T12:15:00.000+02:00").toDateTime(confTimezone),
-        List(ConferenceRooms.AMPHI_BLEU))
+        new DateTime(s"${thirdDay}T12:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
         new DateTime(s"${thirdDay}T12:15:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime(s"${thirdDay}T15:45:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${thirdDay}T16:15:00.000+02:00").toDateTime(confTimezone))
+        new DateTime(s"${thirdDay}T16:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
     ).flatten
 
     val mondaySchedule: List[Slot] = List.empty[Slot]
