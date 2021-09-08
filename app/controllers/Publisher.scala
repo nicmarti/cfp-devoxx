@@ -75,7 +75,7 @@ object Publisher extends Controller {
       val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => speakers.find(_.uuid == id))
       maybeSpeaker match {
         case Some(speaker) =>
-          val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
+          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
           // Log which speaker is hot or not
           ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
