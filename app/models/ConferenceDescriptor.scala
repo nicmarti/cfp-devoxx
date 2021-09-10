@@ -284,8 +284,6 @@ object ConferenceDescriptor {
 
     val allRoomsConf = List(AMPHI_BLEU, MAILLOT, PARIS_242AB_T, NEUILLY_252AB, PARIS_241, NEUILLY_251)
 
-    val allRoomsConfFridayEOD = allRoomsConf.filterNot(r => r.id == MAILLOT.id)
-
     val allRoomsQuickiesThu: List[Room] = allRoomsConf.filterNot(r => r.id == AMPHI_BLEU.id)
 
     val allRoomsQuickiesFriday: List[Room] = allRoomsQuickiesThu
@@ -578,20 +576,13 @@ object ConferenceDescriptor {
             new DateTime(s"${thirdDay}T16:15:00.000+02:00").toDateTime(confTimezone),
             new DateTime(s"${thirdDay}T17:00:00.000+02:00").toDateTime(confTimezone), r5)
       }
-      val conferenceFridaySlot6 = ConferenceRooms.allRoomsConfFridayEOD.map {
+      // Castcodeurs
+      val conferenceFridaySlot6 = List(ConferenceRooms.NEUILLY_252AB).map {
         r6 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
             new DateTime(s"${thirdDay}T17:15:00.000+02:00").toDateTime(confTimezone),
             new DateTime(s"${thirdDay}T18:00:00.000+02:00").toDateTime(confTimezone), r6)
       }
-
-//      // Castcodeurs
-//      val conferenceFridaySlot7 = List(ConferenceRooms.NEUILLY_252AB).map {
-//        rcc =>
-//          SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
-//            new DateTime(s"${thirdDay}T17:45:00.000+02:00").toDateTime(confTimezone),
-//            new DateTime(s"${thirdDay}T18:30:00.000+02:00").toDateTime(confTimezone), rcc)
-//      }
 
       conferenceFridaySlot1 ++ conferenceFridaySlot2 ++ conferenceFridaySlot3 ++ conferenceFridaySlot4 ++ conferenceFridaySlot5 ++ conferenceFridaySlot6
     }
