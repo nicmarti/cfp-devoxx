@@ -657,6 +657,32 @@ object CFPAdmin extends SecureCFPController {
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
   }
 
+  // All speakers without a speaker's badge
+  def allSpeakersWithAcceptedTalksAndNoBadge() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val speakers = ApprovedProposal.allApprovedSpeakers()
+      val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
+        speaker =>
+          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
+          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filterNot(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
+            .filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+          (speaker, onIfFirstOrSecondSpeaker)
+      }.filter(_._2.nonEmpty).map {
+        case (speaker, zeProposals) =>
+          val updated = zeProposals.filter {
+            proposal =>
+              Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
+          }
+          if (updated.size != zeProposals.size) {
+            play.Logger.debug(s"Removed rejected proposal for speaker ${speaker.cleanName}")
+          }
+
+          (speaker, updated)
+      }.filter(_._2.nonEmpty)
+
+      Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
+  }
+
   // All speakers with a speaker's badge
   def allSpeakersWithAcceptedTalks() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
