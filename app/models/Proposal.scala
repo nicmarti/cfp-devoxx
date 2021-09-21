@@ -802,7 +802,10 @@ object Proposal {
     implicit client =>
       val allApproved = client.sinter(s"Proposals:ByAuthor:$author", "ApprovedById:")
       val onlyAcceptedNotApproved = client.sdiff("Proposals:ByState:" + ProposalState.ACCEPTED.code, "Proposals:ByState:" + ProposalState.APPROVED.code)
-      val approvedAndNotAccepted = allApproved.diff(onlyAcceptedNotApproved).diff(client.smembers("Proposals:ByState:" + ProposalState.DECLINED.code))
+      val approvedAndNotAccepted = allApproved.diff(onlyAcceptedNotApproved)
+        .diff(client.smembers("Proposals:ByState:" + ProposalState.DECLINED.code))
+        .diff(client.smembers("Proposals:ByState:" + ProposalState.CANCELLED.code))
+        .diff(client.smembers("Proposals:ByState:" + ProposalState.REJECTED.code))
       loadAndParseProposals(approvedAndNotAccepted)
   }
 

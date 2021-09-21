@@ -11,7 +11,6 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
 
 import java.io.{File, FileOutputStream, OutputStreamWriter, PrintWriter}
@@ -58,7 +57,7 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       val sorter = ProposalUtil.proposalSorter(sort)
       val orderer = ProposalUtil.proposalOrder(ascdesc)
-      val (totalToReviewFiltered,allNotReviewed) = Review.allProposalsNotReviewed(uuid, pageReview, 25, track)
+      val (totalToReviewFiltered, allNotReviewed) = Review.allProposalsNotReviewed(uuid, pageReview, 25, track)
 
       val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
@@ -75,7 +74,7 @@ object CFPAdmin extends SecureCFPController {
           Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, pageReview, totalToReviewFiltered))
             .withHeaders("ETag" -> etag)
       }.getOrElse {
-        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted,totalToReview, pageReview, totalToReviewFiltered))
+        Ok(views.html.CFPAdmin.cfpAdminIndex(twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted, totalToReview, pageReview, totalToReviewFiltered))
           .withHeaders("ETag" -> etag)
       }
 
@@ -157,7 +156,7 @@ object CFPAdmin extends SecureCFPController {
 
             // We take the 2 first element (or the only element if we're first or second in the list of reviewers order by nb of reviews)
             // Because this list might be empty we use headOption
-            val maybeTwoFirstTuples =  listOfReviewers.take(2)
+            val maybeTwoFirstTuples = listOfReviewers.take(2)
 
             val meAndMyFollowers: Option[List[(String, Int, Int, Int, BigDecimal)]] = maybeTwoFirstTuples.size match {
               case 1 => maybeTwoFirstTuples.headOption
@@ -300,7 +299,7 @@ object CFPAdmin extends SecureCFPController {
       ElasticSearch.doAdvancedSearch(ElasticSearch.indexNames, q, p).map {
         case r if r.isRight =>
 
-          val searchResponse:SearchResponse = r.right.get
+          val searchResponse: SearchResponse = r.right.get
           val total: Long = searchResponse.totalHits
           val hitContents: Array[SearchHit] = searchResponse.hits.hits
 
@@ -311,15 +310,15 @@ object CFPAdmin extends SecureCFPController {
               index match {
                 case "proposals" =>
                   val id: String = source("id").toString
-                  val title:String = source("title").toString
+                  val title: String = source("title").toString
                   val talkType = Messages(source("talkType").toString)
                   val propState = source("state").toString
-                  val mainSpeaker:String = source("mainSpeaker").toString
+                  val mainSpeaker: String = source("mainSpeaker").toString
                   s"<p class='searchProposalResult'><i class='fas fa-folder-open'></i> Proposal $id <a href='${routes.CFPAdmin.openForReview(id)}'>$title</a> <strong>$talkType</strong> - [$propState] - by $mainSpeaker</p>"
                 case "speakers" =>
-                  val uuid:String = source("uuid").toString
-                  val name:String = source("name").toString
-                  val firstName:String = source("firstName").toString
+                  val uuid: String = source("uuid").toString
+                  val name: String = source("name").toString
+                  val firstName: String = source("firstName").toString
                   val company = source.get("company").filterNot(_ == null).map(s => s.toString).getOrElse("")
                   s"<p class='searchSpeakerResult'><i class='fas fa-user'></i> Speaker <a href='${routes.CFPAdmin.showSpeakerAndTalks(uuid)}'>$firstName $name</a> <strong>$company</strong></p>"
                 case _ => "Unknown format " + index
@@ -582,7 +581,7 @@ object CFPAdmin extends SecureCFPController {
       val toReturn = if (filterDeclinedRejected) {
         allSpeakers.map(s => (s, Proposal
           .allNonArchivedProposalsByAuthor(s.uuid)
-          .filterNot(t => t._2.state == ProposalState.REJECTED || t._2.state == ProposalState.DECLINED)
+          .filterNot(t => t._2.state == ProposalState.REJECTED || t._2.state == ProposalState.DECLINED || t._2.state == ProposalState.CANCELLED || t._2.state == ProposalState.DELETED)
         )
         ).filterNot(s => s._2.isEmpty)
       } else {
@@ -660,13 +659,21 @@ object CFPAdmin extends SecureCFPController {
   // All speakers without a speaker's badge
   def allSpeakersWithAcceptedTalksAndNoBadge() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      import ConferenceDescriptor.ConferenceProposalConfigurations._
       val speakers = ApprovedProposal.allApprovedSpeakers()
       val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
-          val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filterNot(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
-            .filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
-          (speaker, onIfFirstOrSecondSpeaker)
+            .filter(p => doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+
+          val hasOneSpeakerBadge = allProposalsForThisSpeaker.exists(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
+
+          val onlyIfNotFirstOrSecondSpeaker = hasOneSpeakerBadge match {
+            case true => Iterable.empty[Proposal]
+            case _ => allProposalsForThisSpeaker.filterNot(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
+          }
+
+          (speaker, onlyIfNotFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty).map {
         case (speaker, zeProposals) =>
           val updated = zeProposals.filter {
@@ -680,7 +687,7 @@ object CFPAdmin extends SecureCFPController {
           (speaker, updated)
       }.filter(_._2.nonEmpty)
 
-      Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndBadge(proposals))
+      Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndNoBadge(proposals))
   }
 
   // All speakers with a speaker's badge
