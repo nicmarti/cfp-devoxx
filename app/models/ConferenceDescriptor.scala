@@ -577,7 +577,7 @@ object ConferenceDescriptor {
             new DateTime(s"${thirdDay}T17:00:00.000+02:00").toDateTime(confTimezone), r5)
       }
       // Castcodeurs
-      val conferenceFridaySlot6 = List(ConferenceRooms.NEUILLY_252AB).map {
+      val conferenceFridaySlot6 = List(ConferenceRooms.AMPHI_BLEU).map {
         r6 =>
           SlotBuilder(ConferenceProposalTypes.CONF.id, "friday",
             new DateTime(s"${thirdDay}T17:15:00.000+02:00").toDateTime(confTimezone),
