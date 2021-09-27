@@ -24,21 +24,18 @@
                     <thead>
                         <tr>
                             <th class="w-1/3 scheduleHeader" scope="col">
-                                @Messages("day-wednesday")
                                 <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
-                                [Détails]
+                                <span class="text-xl underline">@Messages("day-wednesday")</span>&nbsp;<i class="far fa-calendar-alt"></i>
                                 </a>
                             </th>
                             <th class="w-1/3 scheduleHeader" scope="col">
-                                @Messages("day-thursday")
                                 <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
-                                [Détails]
+                                <span class="text-xl underline">@Messages("day-thursday")</span>&nbsp;<i class="far fa-calendar-alt"></i>
                                 </a>
                             </th>
                             <th class="w-1/3 scheduleHeader" scope="col">
-                                @Messages("day-friday")
                                 <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
-                                [Détails]
+                                <span class="text-xl underline">@Messages("day-friday")</span>&nbsp;<i class="far fa-calendar-alt"></i>
                                 </a>
                             </th>
                         </tr>
