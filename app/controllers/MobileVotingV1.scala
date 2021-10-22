@@ -181,7 +181,7 @@ object MobileVotingV1 extends SecureCFPController {
   }
 
   // Code written during Devoxx BE 2016. I could have used the HTTP header Accept but I didn't want to explode the TwitterWall
-  def topTalksAsHtml(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan: Int = 3) = Action {
+  def topTalksAsHtml(day: Option[String], talkTypeId: Option[String], trackId: Option[String], limit: Int = 10, floorPct: Int = 0, hideScoreLowerThan: Int = 3) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, talkTypeId, trackId)
 
@@ -190,28 +190,11 @@ object MobileVotingV1 extends SecureCFPController {
       val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= hideScoreLowerThan).take(limit)
 
       if (onlyXXXResults.isEmpty) {
-        NoContent
+        Ok(views.html.CFPAdmin.topTalksAsHtml(List.empty)).flashing("success" -> "No result")
       } else {
         Ok(views.html.CFPAdmin.topTalksAsHtml(onlyXXXResults))
       }
   }
-
-  // Public call for a simple Web page for Devoxx Belgium 2016
-  def topTalksForDevoxx(day: Option[String]) = Action {
-    implicit request =>
-      val allRatings: Map[Proposal, List[Rating]] = loadTopTalks(day, None, None)
-
-      val sortedRatings = sortByScoreAndKeepTopVotes(allRatings, floorPct = 0)
-
-      val onlyXXXResults: List[(Proposal, List[Rating])] = sortedRatings.filter(t => Rating.calculateScore(t._2) >= 3).take(100)
-
-      if (onlyXXXResults.isEmpty) {
-        NoContent
-      } else {
-        Ok(views.html.CFPAdmin.topTalksDevoxxBE2016(onlyXXXResults, day.getOrElse("wed")))
-      }
-  }
-
   private def loadTopTalks(day: Option[String], talkTypeId: Option[String], trackId: Option[String]): Map[Proposal, List[Rating]] = {
     // create a list of Proposals
     // Will try to filter either from the URL params (talkTypeID, trackId) or use the Rating
@@ -265,36 +248,19 @@ object MobileVotingV1 extends SecureCFPController {
   }
 
   def sortByScoreAndKeepTopVotes(ratings: Map[Proposal, List[Rating]], floorPct: Int): List[(Proposal, List[Rating])] = {
-
     val groupedByNumberOfVotes = ratings.groupBy(_._2.size).toList.sortBy(_._1).reverse
     val totalTalksEvaluated = groupedByNumberOfVotes.size
     val averageNumberOfVotes = if(totalTalksEvaluated>0){ groupedByNumberOfVotes.map(_._1).sum / totalTalksEvaluated} else { 0 }
-
-    // println(groupedByNumberOfVotes.map(_._1).sorted.reverse)
-
-    // println("averageNumber of votes " +averageNumberOfVotes)
-
-    // Keep only talks with number of votes > average
-
     val onlyWithEnoughVotes = groupedByNumberOfVotes.sortBy(_._1).reverse.takeWhile(_._1 >= averageNumberOfVotes - floorPct)
+    val onlyRatingsAndProposals = onlyWithEnoughVotes.flatMap(_._2)
 
-    // println("Got "+onlyWithEnoughVotes.map(_._1))
-
-    val onlyRatinsAndProposals = onlyWithEnoughVotes.flatMap(_._2)
-
-    val sortedByScore = onlyRatinsAndProposals.sortBy {
+    val sortedByScore = onlyRatingsAndProposals.sortBy {
       case (_, rt) =>
         Rating.calculateScore(rt)
     }.reverse
 
-    //    sortedByScore.foreach{
-    //      case(proposal,r)=>
-    //        println(s"${proposal.title} ${Rating.calculateScore(r)}")
-    //    }
-
     sortedByScore
   }
-
 
   def categories() = UserAgentActionAndAllowOrigin {
     implicit request =>

@@ -197,7 +197,7 @@ object Rating {
     } else {
       total / count
     }
-    score
+    BigDecimal(score).round(new java.math.MathContext(3)).toDouble
   }
 
   def attic() = Redis.pool.withClient {
@@ -207,7 +207,5 @@ object Rating {
       val tx = client.multi()
       allKeys.foreach { key: String => tx.del(key) }
       tx.exec()
-
-
   }
 }

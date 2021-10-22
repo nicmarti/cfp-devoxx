@@ -3,13 +3,13 @@
 @main("Top talks") {
 
     <h1>Top Talks</h1>
-    <p>@results.size</p>
-
+    <p>Results : @results.size</p>
 
     <ul>
     @results.map{case(proposal,ratings)=>
         <li>
-            "@proposal.title" par @proposal.allSpeakers.map(_.cleanName).mkString(", ")<br>
+            <strong>@proposal.title</strong><br>
+            @proposal.allSpeakers.map(_.cleanName).mkString(", ")<br>
         @Messages(proposal.talkType.id) @models.Rating.calculateScore(ratings) with @ratings.length votes<br>
     </li>
     }
@@ -18,7 +18,13 @@
 
     <hr>
     <p>For testing</p>
-    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("monday"),None,None,20,0,0)">Show 20 talks on Monday, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
-    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("monday"),None,None,10,0,4)">Show top ten on Monday, keep only talks with at least 50% of votes above the average, with score >= 4</a> <br>
-    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("monday"),None,None,10,10,3)">Show top ten on Monday, keep only talks with at least 40% of votes above the average with score >= 3</a> (returns more talks)
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("wednesday"),None,None,20,0,0)">Show all talks on Wednesday, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(None,Some("conf"),None,50,0,0)">Show all Conferences, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(None,Some("uni"),None,50,0,0)">Show all Uni, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(None,Some("tia"),None,50,0,0)">Show all TIA, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(None,Some("lab"),None,50,0,0)">Show all Hands-on Lab, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(None,Some("quick"),None,50,0,0)">Show all Quickies, keep only talks with at least 50% of votes above the average, whatever is the score</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("wednesday"),None,None,10,0,4)">Show top ten on Wednesday, keep only talks with at least 50% of votes above the average, with score >= 4</a> <br>
+    <a href="@routes.MobileVotingV1.topTalksAsHtml(Some("wednesday"),None,None,10,10,3)">Show top ten on Wednesday, keep only talks with at least 40% of votes above the average with score >= 3</a> (returns more talks)
+
 }
