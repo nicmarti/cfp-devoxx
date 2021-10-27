@@ -1,11 +1,12 @@
 package models
 
 import java.lang.Long
-
 import library.Redis
 import org.joda.time.DateTime
 import play.Play
 import play.api.i18n.Messages
+
+import java.util.function.Supplier
 
 /**
   * The email digest.
@@ -21,18 +22,19 @@ import play.api.i18n.Messages
   *
   * @author Stephan Janssen
   */
-case class Digest(value: String, storeProposals: Boolean) {
+case class Digest(value: String, labelI18nMessage: Function0[String], storeProposals: Boolean) {
 }
 
 object Digest {
 
-  val REAL_TIME = Digest("Realtime", storeProposals = true)    // Real time email updates
-  val DAILY = Digest("Daily", storeProposals = true)           // Daily email digest
-  val WEEKLY = Digest("Weekly", storeProposals = true)         // Weekly
-  val NEVER = Digest("Never", storeProposals = false)          // Never, means the CFP user will never receive proposal updates!
+  val REAL_TIME = Digest("Realtime", () => Messages("email.digest.realtime.description"), storeProposals = true)    // Real time email updates
+  val DAILY = Digest("Daily", () => Messages("email.digest.daily.description", getDayMoment), storeProposals = true)           // Daily email digest
+  val WEEKLY = Digest("Weekly", () => Messages("email.digest.weekly.description", getDayMoment, getWeekMoment), storeProposals = true)         // Weekly
+  val NEVER = Digest("Never", () => Messages("email.digest.never.description"), storeProposals = false)          // Never, means the CFP user will never receive proposal updates!
 
   // All the digest interval values
   val allDigests = List(REAL_TIME, DAILY, WEEKLY, NEVER)
+  val selectableDigests = List(REAL_TIME, DAILY, WEEKLY)
 
   private val digestRedisKey = "Digest:"
   private val digestUserRedisKey = digestRedisKey + "User:"

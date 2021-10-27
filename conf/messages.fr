@@ -848,12 +848,34 @@ title.maxLength=125 caractères max.
 
 demoLevel.help=Slides, atelier, ou démonstration en direct... à vous de préciser. Cette information n''est utile que pour le comité de sélection.
 
-email.digest.label=Résumé par email (CFP seulement)
+email.notifications.label=Notifications par email (CFP seulement)
+email.notifications.autowatch.title=Autowatch
+email.notifications.autowatch.desc1=L''autowatch permet de s''abonner à des notifications automatiquement à partir d''un certain évènement sur la proposition.
+email.notifications.autowatch.desc2=Une fois observateur d''une proposition, vous recevrez des notifications email lors de la survenue d''évènements sur la proposition (cf paramétrage dans la section suivante)
+email.notifications.autowatch.all-tracks=Quelque soit la Track
+email.notifications.autowatch.specific.to-track=Sur certaines Tracks uniquement
+
+email.notifications.as.watcher.title=Notifications en tant que Watcher
+email.notifications.frequency.label=Fréquence
+email.notifications.events.label=Événements
+
+autowatch.options.once.proposal.submitted=Dès que le talk est proposé par l''orateur
+autowatch.options.after.interaction=À partir du moment où j''interagis sur la proposition (je commente ou je vote dessus)
+autowatch.options.manual.watch.only=Aucun watch automatique, je souhaite gérer cela manuellement
+
+email.notifications.events.once.proposal.submitted=Dès que le talk est proposé par l''auteur
+email.notifications.events.once.proposal.content.updated=Modification du contenu (title, abstract, message au comité, track, type de proposition, langue...)
+email.notifications.events.once.proposal.is.submitted.again=Changement du statut de la proposition (remise en draft / re-submit)
+email.notifications.events.once.public.comment.submitted=Commentaire public
+email.notifications.events.once.internal.comment.submitted=Commentaire privé
+email.notifications.events.once.proposal.speakers.altered=Rajout / Suppression d''un speaker
+email.notifications.events.once.proposal.final.approval.provided=Acceptation / Refus de la proposition par les admins
+
 email.digest.description=En tant que membre du CFP, vous pouvez demander à recevoir ici automatiquement un résumé des soumissions postées chaque jour, par les autres orateurs. Cette fonction n''est accessible que parce que votre profil appartient au groupe "CFP".
-email.digest.realtime.description=Interval is every 5 minutes.
-email.digest.daily.description=Expect your daily digest at {0} GMT.
-email.digest.weekly.description=Expect your weekly digest at {0} GMT on {1}.
-email.digest.never.description=Digest turned off. Don't be a stranger!
+email.digest.realtime.description=Pseudo temps réel (délai max de 5min)
+email.digest.daily.description=Quotidien à {0} GMT.
+email.digest.weekly.description=Hebdomadaire à {0} GMT le {1}.
+email.digest.never.description=Jamais
 email.digest.day.1=Monday
 email.digest.day.2=Tuesday
 email.digest.day.3=Wednesday

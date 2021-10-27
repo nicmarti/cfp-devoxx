@@ -32,7 +32,30 @@ index.txt2=Use one of the following social service, this is simpler and you won'
 company=Your company
 bio=A short bio
 twitter=Your twitter handle
-email.digest.label=Email Digest (CFP member only)
+
+email.notifications.label=Email Notifications (CFP member only)
+email.notifications.autowatch.title=Autowatch
+email.notifications.autowatch.desc1=Autowatch allows to subscribe to notifications automatically after some events occuring on the proposal
+email.notifications.autowatch.desc2=Once you are a proposal watcher, you will receive email notifications when some events will be triggered on the proposal (see next section configuration)
+email.notifications.autowatch.all-tracks=For every Tracks
+email.notifications.autowatch.specific.to-track=On specific Tracks only
+
+email.notifications.as.watcher.title=Notifications as Watcher
+email.notifications.frequency.label=Frequency
+email.notifications.events.label=Events
+
+autowatch.options.once.proposal.submitted=Once the proposal is submitted by the author
+autowatch.options.after.interaction=As soon as I interact on the proposal (I put a comment, or I cast my vote)
+autowatch.options.manual.watch.only=No automatic watch, I will handle this manually
+
+email.notifications.events.once.proposal.submitted=Once talk is submitted by the author
+email.notifications.events.once.proposal.content.updated=Content updated (title, abstract, comitee message, track, proposal type, language...)
+email.notifications.events.once.proposal.is.submitted.again=Proposal status updated (back to draft, re-submitted)
+email.notifications.events.once.public.comment.submitted=Public comment
+email.notifications.events.once.internal.comment.submitted=Internal comment
+email.notifications.events.once.proposal.speakers.altered=Speaker added / removed
+email.notifications.events.once.proposal.final.approval.provided=Proposal accepted/refused by admins
+
 email.digest.description=Receive new proposals notifications via a digest email.
 email.digest.realtime.description=Interval is every 5 minutes.
 email.digest.daily.description=Expect your daily digest at {0} GMT.
