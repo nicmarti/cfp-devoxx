@@ -1,6 +1,7 @@
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsArray
 @import play.api.libs.json.JsString
+@import play.twirl.api.TemplateMagic.defining
 @(speaker: Speaker,
         webuser: Webuser,
         myProposals: List[Proposal],
@@ -157,12 +158,14 @@
     </div>
 
     @if(Webuser.isMember(webuser.uuid, "cfp")) {
+        @defining(NotificationUserPreference.load(webuser.uuid)) { notificationUserPref =>
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-envelope"></i> @Messages("email.notifications.label")</h3>
                 </div>
                 <div class="card">
+                @helper.form(routes.CallForPaper.saveNotificationPreferences()) {
                     <table class="table">
                         <tbody>
                             <tr>
@@ -175,28 +178,22 @@
                                     <hr class="borderless"/>
 
                                     <label for="autoWatchKind">@Messages("email.notifications.autowatch.title")</label>
-                                    <select id="autoWatchKind" class="chosen" onchange="autoWatchUpdatedTo(this.value)">
+                                    <select id="autoWatchKind" name="autowatchId" class="chosen" onchange="autoWatchUpdatedTo(this.value)">
                                         <option></option>
                                         @AutoWatch.allAutowatches.map { autowatch =>
-                                            <option value="@autowatch.id">@Messages(autowatch.labelI18nKey)</option>
+                                            <option value="@autowatch.id" @if(notificationUserPref.autowatchId==autowatch.id){ selected="true" }>@Messages(autowatch.labelI18nKey)</option>
                                         }
                                     </select>
                                     <hr class="borderless"/>
-                                    <input type="radio" name="autoWatchTracks" id="autoWatchAllTracks" value="autoWatchAllTracks" /><label style="margin-left: 7px; display:inline-block" for="autoWatchAllTracks">@Messages("email.notifications.autowatch.all-tracks")</label>
+                                    <input type="radio" name="autoWatchTracks" id="autoWatchAllTracks" onchange="autoWatchAllTracksSelected()" value="autoWatchAllTracks" @if(notificationUserPref.autowatchFilterForTrackIds.isEmpty){ checked="true" }>
+                                    <label style="margin-left: 7px; display: inline-block" for="autoWatchAllTracks">@Messages("email.notifications.autowatch.all-tracks")</label>
                                     <br/>
-                                    <input type="radio" name="autoWatchTracks" id="autoWatchFilteredTracks" value="autoWatchFilteredTracks" /><label style="margin-left: 7px; display:inline-block" for="autoWatchFilteredTracks">@Messages("email.notifications.autowatch.specific.to-track")</label> :
-                                    <select class="chosen" style="width: 500px" multiple>
-                                        @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
-                                            @if(Digest.getTrackFilters(webuser.uuid).nonEmpty) {
-                                                @if(Digest.getTrackFilters(webuser.uuid).contains(track.id)) {
-                                                    <option value="@track.id" selected>@Messages(track.label)</option>
-                                                } else {
-                                                    <option value="@track.id">@Messages(track.label)</option>
-                                                }
-                                            } else {
-                                                <option value="@track.id">@Messages(track.label)</option>
-                                            }
-                                        }
+                                    <input type="radio" name="autoWatchTracks" id="autoWatchFilteredTracks" onchange="autoWatchPerTracksSelected()" value="autoWatchFilteredTracks" @if(notificationUserPref.autowatchFilterForTrackIds.isDefined){ checked="true" }>
+                                    <label style="margin-left: 7px; display: inline-block" for="autoWatchFilteredTracks">@Messages("email.notifications.autowatch.specific.to-track")</label> :
+                                    <select class="chosen" id="autowatchFilterForTrackIds" name="autowatchFilterForTrackIds[]" style="width: 500px" multiple>
+                                    @ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
+                                        <option value="@track.id" @if(notificationUserPref.autowatchFilterForTrackIds.getOrElse(List()).contains(track.id)){ selected="true" }>@Messages(track.label)</option>
+                                    }
                                     </select>
                                 </td>
                             </tr>
@@ -204,25 +201,27 @@
                                 <td colspan="2">
                                     <h4>@Messages("email.notifications.as.watcher.title")</h4>
                                     <label for="notificationFrequency">@Messages("email.notifications.frequency.label")</label>
-                                    <select id="notificationFrequency" class="chosen">
+                                    <select id="notificationFrequency" name="digestFrequency" class="chosen">
                                         <option></option>
                                         @Digest.selectableDigests.map { digest =>
-                                            <option value="@digest.value">@digest.labelI18nMessage()</option>
+                                            <option value="@digest.value" @if(notificationUserPref.digestFrequency==digest.value){ selected="true" }>@digest.labelI18nMessage()</option>
                                         }
                                     </select>
                                     <hr class="borderless"/>
                                     <label for="notificationEvents">@Messages("email.notifications.events.label")</label>
-                                    <select id="notificationEvents" class="chosen" multiple>
-                                        @NotificationEvent.allNotificationEvents.map { notificationEvent =>
-                                            @if(notificationEvent.applicableTo(webuser)) {
-                                                <option value="@notificationEvent.id">@Messages(notificationEvent.labelI18nKey)</option>
-                                            }
+                                    <select id="notificationEvents" name="eventIds[]" class="chosen" multiple>
+                                    @NotificationEvent.allNotificationEvents.map { notificationEvent =>
+                                        @if(notificationEvent.applicableTo(webuser)) {
+                                            <option value="@notificationEvent.id" @if(notificationUserPref.eventIds.contains(notificationEvent.id)){ selected="true" }>@Messages(notificationEvent.labelI18nKey)</option>
                                         }
+                                    }
                                     </select>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <button class="btn btn-success" type="submit">@Messages("email.notifications.save")</button>
+                }
                 </div>
             </div>
 
@@ -254,8 +253,21 @@
                 })
                 $notificationEvents.trigger("chosen:updated");
             }
+            function autoWatchAllTracksSelected() {
+                const $autowatchFilterForTrackIds = $("#autowatchFilterForTrackIds");
+                $autowatchFilterForTrackIds.find("option").each((_, optionEl) => $(optionEl).prop('selected', false))
+
+                $autowatchFilterForTrackIds.prop('disabled', true);
+                $autowatchFilterForTrackIds.trigger("chosen:updated");
+            }
+            function autoWatchPerTracksSelected() {
+                const $autowatchFilterForTrackIds = $("#autowatchFilterForTrackIds");
+                $autowatchFilterForTrackIds.prop('disabled', false);
+                $autowatchFilterForTrackIds.trigger("chosen:updated");
+            }
         </script>
-        }
+       }
+    }
 </div><!-- row -->
 
 }

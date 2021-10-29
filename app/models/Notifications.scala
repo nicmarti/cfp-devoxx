@@ -1,6 +1,7 @@
 package models
 
-import play.api.libs.json.{JsArray, JsString, JsValue, Json}
+import library.Redis
+import play.api.libs.json.{Json}
 
 case class AutoWatch(id: String, labelI18nKey: String){}
 
@@ -32,4 +33,31 @@ object NotificationEvent {
     PROPOSAL_PUBLIC_COMMENT_SUBMITTED, PROPOSAL_INTERNAL_COMMENT_SUBMITTED,
     PROPOSAL_SPEAKERS_LIST_ALTERED, PROPOSAL_FINAL_APPROVAL_SUBMITTED
   )
+}
+
+case class NotificationUserPreference(autowatchId: String, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: String, eventIds: List[String]){}
+object NotificationUserPreference {
+  implicit val notifUserPrefFormat = Json.format[NotificationUserPreference]
+
+  val DEFAULT_FALLBACK_PREFERENCES = NotificationUserPreference(AutoWatch.MANUAL_WATCH_ONLY.id, None, Digest.NEVER.value, List())
+
+  def applyForm(autowatchId: String, autowatchPerTrack: String, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: String, eventIds: List[String]): NotificationUserPreference = {
+    NotificationUserPreference(autowatchId, autowatchFilterForTrackIds, digestFrequency, eventIds)
+  }
+
+  def unapplyForm(notifUserPref: NotificationUserPreference): Option[(String, String, Option[List[String]], String, List[String])] = {
+    Some(notifUserPref.autowatchId, notifUserPref.autowatchFilterForTrackIds.map{_ => "autoWatchFilteredTracks"}.getOrElse("autoWatchAllTracks"), notifUserPref.autowatchFilterForTrackIds, notifUserPref.digestFrequency, notifUserPref.eventIds)
+  }
+
+  def save(webUserId: String, notifUserPref: NotificationUserPreference): String = Redis.pool.withClient {
+    implicit client =>
+      val json = Json.toJson(notifUserPref).toString()
+      client.set("NotificationUserPreference:" + webUserId, json)
+  }
+
+  def load(webUserId: String): NotificationUserPreference = Redis.pool.withClient {
+    implicit client =>
+      val json = client.get("NotificationUserPreference:" + webUserId)
+      json.map { Json.parse(_).as[NotificationUserPreference] }.getOrElse(DEFAULT_FALLBACK_PREFERENCES)
+  }
 }

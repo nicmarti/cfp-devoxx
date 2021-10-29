@@ -29,15 +29,12 @@ import library._
 import models._
 import org.apache.commons.lang3.StringUtils
 import play.api.Play
-import play.api.cache.Cache
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.Crypto
 import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsFormUrlEncoded
-import views.html
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -494,6 +491,26 @@ object CallForPaper extends SecureCFPController {
             Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code"))
           }
 
+        }
+      )
+  }
+
+  val notificationPreferencesForm = play.api.data.Form(mapping(
+    "autowatchId" -> nonEmptyText(),
+    "autoWatchTracks" -> nonEmptyText(),
+    "autowatchFilterForTrackIds" -> optional(list(text)),
+    "digestFrequency" -> nonEmptyText(),
+    "eventIds" -> list(text)
+  )(NotificationUserPreference.applyForm)(NotificationUserPreference.unapplyForm))
+
+  def saveNotificationPreferences() = SecuredAction {
+    implicit request =>
+      notificationPreferencesForm.bindFromRequest().fold(
+        hasErrors => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("email.notifications.invalid")),
+        notificationPrefs => {
+          Digest.update(request.webuser.uuid, notificationPrefs.digestFrequency)
+          NotificationUserPreference.save(request.webuser.uuid, notificationPrefs)
+          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("email.notifications.success"))
         }
       )
   }

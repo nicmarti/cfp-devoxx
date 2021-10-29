@@ -43,6 +43,9 @@ email.notifications.autowatch.specific.to-track=On specific Tracks only
 email.notifications.as.watcher.title=Notifications as Watcher
 email.notifications.frequency.label=Frequency
 email.notifications.events.label=Events
+email.notifications.save=Save
+email.notifications.invalid=Errors in your notification preferences
+email.notifications.success=Notification preferences successfully updated !
 
 autowatch.options.once.proposal.submitted=Once the proposal is submitted by the author
 autowatch.options.after.interaction=As soon as I interact on the proposal (I put a comment, or I cast my vote)

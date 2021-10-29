@@ -858,6 +858,9 @@ email.notifications.autowatch.specific.to-track=Sur certaines Tracks uniquement
 email.notifications.as.watcher.title=Notifications en tant que Watcher
 email.notifications.frequency.label=Fréquence
 email.notifications.events.label=Événements
+email.notifications.save=Enregistrer
+email.notifications.invalid=Il existe des erreurs dans vos préférences de notifications
+email.notifications.success=Préférences de notifications mises à jour avec succès !
 
 autowatch.options.once.proposal.submitted=Dès que le talk est proposé par l''orateur
 autowatch.options.after.interaction=À partir du moment où j''interagis sur la proposition (je commente ou je vote dessus)
