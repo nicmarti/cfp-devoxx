@@ -22,10 +22,10 @@ import java.util.function.Supplier
   *
   * @author Stephan Janssen
   */
-case class Digest(value: String, labelI18nMessage: Function0[String], storeProposals: Boolean) {
-}
+case class Digest(value: Digest.Frequency, labelI18nMessage: Function0[String], storeProposals: Boolean) {}
 
 object Digest {
+  type Frequency = String
 
   val REAL_TIME = Digest("Realtime", () => Messages("email.digest.realtime.description"), storeProposals = true)    // Real time email updates
   val DAILY = Digest("Daily", () => Messages("email.digest.daily.description", getDayMoment), storeProposals = true)           // Daily email digest

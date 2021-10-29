@@ -1,11 +1,12 @@
 package models
 
 import library.Redis
-import play.api.libs.json.{Json}
+import play.api.libs.json.Json
 
-case class AutoWatch(id: String, labelI18nKey: String){}
+case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: String){}
 
 object AutoWatch {
+  type AutoWatchId = String
 
   val ONCE_PROPOSAL_SUBMITTED = AutoWatch("ONCE_PROPOSAL_SUBMITTED", "autowatch.options.once.proposal.submitted")
   val AFTER_INTERACTION = AutoWatch("AFTER_INTERACTION", "autowatch.options.after.interaction")
@@ -15,10 +16,11 @@ object AutoWatch {
 
 }
 
-case class NotificationEvent(id: String, labelI18nKey: String, applicableTo: Function[Webuser, Boolean], onlyForAutoWatches: Option[List[AutoWatch]]=None){
+case class NotificationEvent(id: NotificationEvent.NotificationEventId, labelI18nKey: String, applicableTo: Function[Webuser, Boolean], onlyForAutoWatches: Option[List[AutoWatch]]=None){
 }
 
 object NotificationEvent {
+  type NotificationEventId = String
 
   val ONCE_PROPOSAL_SUBMITTED = NotificationEvent("ONCE_PROPOSAL_SUBMITTED", "email.notifications.events.once.proposal.submitted", _ => true, Option(List(AutoWatch.ONCE_PROPOSAL_SUBMITTED)))
   val PROPOSAL_CONTENT_UPDATED = NotificationEvent("PROPOSAL_CONTENT_UPDATED", "email.notifications.events.once.proposal.content.updated", _ => true)
@@ -35,17 +37,17 @@ object NotificationEvent {
   )
 }
 
-case class NotificationUserPreference(autowatchId: String, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: String, eventIds: List[String]){}
+case class NotificationUserPreference(autowatchId: AutoWatch.AutoWatchId, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: Digest.Frequency, eventIds: List[NotificationEvent.NotificationEventId]){}
 object NotificationUserPreference {
   implicit val notifUserPrefFormat = Json.format[NotificationUserPreference]
 
   val DEFAULT_FALLBACK_PREFERENCES = NotificationUserPreference(AutoWatch.MANUAL_WATCH_ONLY.id, None, Digest.NEVER.value, List())
 
-  def applyForm(autowatchId: String, autowatchPerTrack: String, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: String, eventIds: List[String]): NotificationUserPreference = {
+  def applyForm(autowatchId: AutoWatch.AutoWatchId, autowatchPerTrack: String, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: Digest.Frequency, eventIds: List[NotificationEvent.NotificationEventId]): NotificationUserPreference = {
     NotificationUserPreference(autowatchId, autowatchFilterForTrackIds, digestFrequency, eventIds)
   }
 
-  def unapplyForm(notifUserPref: NotificationUserPreference): Option[(String, String, Option[List[String]], String, List[String])] = {
+  def unapplyForm(notifUserPref: NotificationUserPreference): Option[(AutoWatch.AutoWatchId, String, Option[List[String]], Digest.Frequency, List[NotificationEvent.NotificationEventId])] = {
     Some(notifUserPref.autowatchId, notifUserPref.autowatchFilterForTrackIds.map{_ => "autoWatchFilteredTracks"}.getOrElse("autoWatchAllTracks"), notifUserPref.autowatchFilterForTrackIds, notifUserPref.digestFrequency, notifUserPref.eventIds)
   }
 
