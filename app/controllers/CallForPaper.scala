@@ -508,7 +508,6 @@ object CallForPaper extends SecureCFPController {
       notificationPreferencesForm.bindFromRequest().fold(
         hasErrors => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("email.notifications.invalid")),
         notificationPrefs => {
-          Digest.update(request.webuser.uuid, notificationPrefs.digestFrequency)
           NotificationUserPreference.save(request.webuser.uuid, notificationPrefs)
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("email.notifications.success"))
         }

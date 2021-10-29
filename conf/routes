@@ -44,10 +44,6 @@ POST          /cfp/profile/phoneNumber/confirm                                  
 POST          /cfp/profile/notificationsPreferences                              controllers.CallForPaper.saveNotificationPreferences()
 
 # Email Digests
-POST          /cfp/profile/digest                                               controllers.DigestController.update()
-DELETE        /cfp/profile/digestTrack                                          controllers.DigestController.removeFilter()
-POST          /cfp/profile/digestTrack                                          controllers.DigestController.addFilter()
-GET           /cfp/profile/digestTracks                                         controllers.DigestController.getFilter()
 GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
 
 # proposal

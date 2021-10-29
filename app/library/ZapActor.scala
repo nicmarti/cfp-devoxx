@@ -34,10 +34,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicNameValuePair
-import play.api.libs.json.Json
-import play.api.libs.ws.WS
 import play.libs.Akka
-import play.api.Play.current
 
 /**
   * Akka actor that is in charge to process batch operations and long running queries
@@ -353,10 +350,11 @@ class ZapActor extends Actor {
     if (newProposalsIds.nonEmpty) {
 
       // Filter CFP users on given digest
-      val foundUsersIDs = Webuser.allCFPWebusers()
-        .filter(webUser => Digest.retrieve(webUser.uuid).equals(digest.value))
-        .map(userToNotify => userToNotify.uuid)
-
+      val notificationPrefsByFoundUsersIDs = Webuser.allCFPWebusers()
+        .map{ webUser => (webUser.uuid, NotificationUserPreference.load(webUser.uuid)) }
+        .filter{ _._2.digestFrequency.equals(digest.value) }
+        .toMap
+      val foundUsersIDs = notificationPrefsByFoundUsersIDs.keySet
 
       if (foundUsersIDs.nonEmpty) {
 
@@ -365,20 +363,20 @@ class ZapActor extends Actor {
         val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
 
         // Check which users have digest track filters
-        val trackDigestUsersIDs = foundUsersIDs.filter(uuid => Digest.getTrackFilters(uuid).nonEmpty)
+        val trackDigestUsersIDs = notificationPrefsByFoundUsersIDs.filter{ _._2.autowatchFilterForTrackIds.isDefined }.keySet
 
         val noTrackDigestUsersIDs = trackDigestUsersIDs.diff(foundUsersIDs)
 
         // Mail digest to users who have no track filter set
         if (noTrackDigestUsersIDs.nonEmpty) {
-          Mails.sendDigest(digest, noTrackDigestUsersIDs, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
+          Mails.sendDigest(digest, noTrackDigestUsersIDs.toList, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
         }
 
         // Handle the digest users that have a track filter
         trackDigestUsersIDs.map { uuid =>
 
           // Filter the proposals based on digest tracks
-          val trackFilterIDs = Digest.getTrackFilters(uuid)
+          val trackFilterIDs = notificationPrefsByFoundUsersIDs.get(uuid).flatMap(_.autowatchFilterForTrackIds).getOrElse(List())
 
           val trackFilterProposals =
             proposals.filter(proposal => trackFilterIDs.contains(proposal.track.id))
