@@ -494,23 +494,4 @@ object CallForPaper extends SecureCFPController {
         }
       )
   }
-
-  val notificationPreferencesForm = play.api.data.Form(mapping(
-    "autowatchId" -> nonEmptyText(),
-    "autoWatchTracks" -> nonEmptyText(),
-    "autowatchFilterForTrackIds" -> optional(list(text)),
-    "digestFrequency" -> nonEmptyText(),
-    "eventIds" -> list(text)
-  )(NotificationUserPreference.applyForm)(NotificationUserPreference.unapplyForm))
-
-  def saveNotificationPreferences() = SecuredAction {
-    implicit request =>
-      notificationPreferencesForm.bindFromRequest().fold(
-        hasErrors => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("email.notifications.invalid")),
-        notificationPrefs => {
-          NotificationUserPreference.save(request.webuser.uuid, notificationPrefs)
-          Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("email.notifications.success"))
-        }
-      )
-  }
 }

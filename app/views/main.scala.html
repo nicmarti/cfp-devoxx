@@ -38,9 +38,11 @@
                 @if(SecureCFPController.hasAccessToGoldenTicket(req)){
                     <li class="nav-item"><a class="nav-link" href="@routes.GoldenTicketController.showAllProposals()"><i class="fas fa-ticket-alt"></i> @Messages("gt.nav.home")</a></li>
                     <li class="nav-item"><a class="nav-link" href="@routes.GoldenTicketController.allMyGoldenTicketVotes()"><i class="fas fa-chart-bar"></i> All your votes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@routes.CFPPreferencesController.index()"><i class="fas fa-mail-bulk"></i> Preferences</a></li>
                 }
                 @if(SecureCFPController.hasAccessToCFPAdmin(req)){
                     <li class="nav-item"><a class="nav-link" href="@routes.CFPAdmin.index()"><i class="fas fa-flask"></i> Admin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@routes.CFPPreferencesController.index()"><i class="fas fa-mail-bulk"></i> Preferences</a></li>
                     <li class="nav-item"><a class="nav-link" href="@routes.Wishlist.homeWishList()"><i class="fas fa-sort-amount-down"></i> Wishlist</a></li>
                 }
                 @if(SecureCFPController.hasAccessToAdmin(req)){

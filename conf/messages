@@ -33,7 +33,7 @@ company=Your company
 bio=A short bio
 twitter=Your twitter handle
 
-email.notifications.label=Email Notifications (CFP member only)
+email.notifications.label=Email Notifications Policies
 email.notifications.autowatch.title=Autowatch
 email.notifications.autowatch.desc1=Autowatch allows to subscribe to notifications automatically after some events occuring on the proposal
 email.notifications.autowatch.desc2=Once you are a proposal watcher, you will receive email notifications when some events will be triggered on the proposal (see next section configuration)
