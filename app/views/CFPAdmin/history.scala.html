@@ -10,8 +10,8 @@
 
                 <div class="card-body">
                 <div class="card-body">
-                    @Event.loadEventsForObjRef(proposal.id).sortBy(_.date.map(_.getMillis).getOrElse(0L)).map { event =>
-                     <small><strong>@event.date.map(s=>s.toDateTime(ConferenceDescriptor.current().timezone).toString("EEE dd/MM HH:mm")):</strong> @event.msg</small><br>
+                    @Event.loadEventsForObjRef(proposal.id).sortBy(_.timezonedDate().getMillis).map { event =>
+                     <small><strong>@event.timezonedDate().toString("EEE dd/MM HH:mm"):</strong> @event.message()</small><br>
                     }
                 </div>
             </div>

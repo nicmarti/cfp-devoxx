@@ -235,13 +235,13 @@ object CallForPaper extends SecureCFPController {
                   Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), ProposalState.DRAFT)
                   if (ConferenceDescriptor.isResetVotesForSubmitted) {
                     Review.archiveAllVotesOnProposal(proposal.id)
-                    Event.storeEvent(Event(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
+                    Event.storeEvent(LegacyEvent(proposal.id, uuid, s"Reset all votes on ${proposal.id}"))
                   }
-                  Event.storeEvent(Event(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
+                  Event.storeEvent(LegacyEvent(proposal.id, uuid, "Updated proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved1"))
                 } else {
                   Proposal.save(uuid, Proposal.setMainSpeaker(updatedProposal, uuid), existingProposal.state)
-                  Event.storeEvent(Event(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state '" + existingProposal.state.code + "'"))
+                  Event.storeEvent(LegacyEvent(proposal.id, uuid, "Edited proposal " + proposal.id + " with current state '" + existingProposal.state.code + "'"))
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved2"))
                 }
               case _ =>
@@ -249,11 +249,11 @@ object CallForPaper extends SecureCFPController {
                 if (Proposal.isNew(proposal.id)) {
                   // This is a "create new" operation
                   Proposal.save(uuid, proposal, ProposalState.DRAFT)
-                  Event.storeEvent(Event(proposal.id, uuid, "Created a new proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
+                  Event.storeEvent(LegacyEvent(proposal.id, uuid, "Created a new proposal " + proposal.id + " : '" + StringUtils.abbreviate(proposal.title, 80) + "'"))
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("saved"))
                 } else {
                   // Maybe someone tried to edit someone's else proposal...
-                  Event.storeEvent(Event(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
+                  Event.storeEvent(LegacyEvent(proposal.id, uuid, "Tried to edit this talk but he is not the owner."))
                   Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> "You are trying to edit a proposal that is not yours. This event has been logged.")
                 }
             }
@@ -317,7 +317,7 @@ object CallForPaper extends SecureCFPController {
                   if (proposal.state != ProposalState.DRAFT) {
                     ZapActor.actor ! SendBotMessageToCommittee(uuid, proposal, validMsg)
                   }
-                  Event.storeEvent(Event(proposal.id, uuid, validMsg))
+                  Event.storeEvent(LegacyEvent(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, None, Some(newSecondarySpeaker))
                 case (Some(oldSpeakerUUID), Some(newSecondarySpeaker)) if oldSpeakerUUID != newSecondarySpeaker =>
                   val oldSpeaker = Speaker.findByUUID(oldSpeakerUUID)
@@ -326,7 +326,7 @@ object CallForPaper extends SecureCFPController {
                   if (proposal.state != ProposalState.DRAFT) {
                     ZapActor.actor ! SendBotMessageToCommittee(uuid, proposal, validMsg)
                   }
-                  Event.storeEvent(Event(proposal.id, uuid, validMsg))
+                  Event.storeEvent(LegacyEvent(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), Some(newSecondarySpeaker))
                 case (Some(oldSpeakerUUID), None) =>
                   val oldSpeaker = Speaker.findByUUID(oldSpeakerUUID)
@@ -334,7 +334,7 @@ object CallForPaper extends SecureCFPController {
                   if (proposal.state != ProposalState.DRAFT) {
                     ZapActor.actor ! SendBotMessageToCommittee(uuid, proposal, validMsg)
                   }
-                  Event.storeEvent(Event(proposal.id, uuid, validMsg))
+                  Event.storeEvent(LegacyEvent(proposal.id, uuid, validMsg))
                   Proposal.updateSecondarySpeaker(uuid, proposalId, Some(oldSpeakerUUID), None)
                 case (Some(oldSpeakerUUID), Some(newSecondarySpeaker)) if oldSpeakerUUID == newSecondarySpeaker =>
                 // We kept the 2nd speaker, maybe updated or added a 3rd speaker
@@ -343,7 +343,7 @@ object CallForPaper extends SecureCFPController {
               }
 
               Proposal.updateOtherSpeakers(uuid, proposalId, proposal.otherSpeakers, validNewSpeakers._2)
-              Event.storeEvent(Event(proposal.id, uuid, "Updated speakers list for proposal " + StringUtils.abbreviate(proposal.title, 80)))
+              Event.storeEvent(LegacyEvent(proposal.id, uuid, "Updated speakers list for proposal " + StringUtils.abbreviate(proposal.title, 80)))
 
               Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("speakers.updated"))
             }

@@ -133,7 +133,7 @@ class ZapActor extends Actor {
   def sendMessageToSpeaker(reporterUUID: String, proposal: Proposal, msg: String) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.title}"))
+      Event.storeEvent(LegacyEvent(proposal.id, reporterUUID, s"Sending a message to ${speaker.cleanName} about ${proposal.title}"))
       val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
       val newMessageID = Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg, maybeMessageID)
       // Overwrite the messageID for the next email (to set the In-Reply-To)
@@ -142,7 +142,7 @@ class ZapActor extends Actor {
   }
 
   def sendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(LegacyEvent(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
@@ -155,7 +155,7 @@ class ZapActor extends Actor {
   }
 
   def sendBotMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(LegacyEvent(proposal.id, reporterUUID, s"Sending a message to committee about ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
@@ -168,7 +168,7 @@ class ZapActor extends Actor {
   }
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
-    Event.storeEvent(Event(proposal.id, reporterUUID, s"Posted an internal message for ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(LegacyEvent(proposal.id, reporterUUID, s"Posted an internal message for ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         // try to load the last Message ID that was sent
@@ -215,7 +215,7 @@ class ZapActor extends Actor {
   def doProposalApproved(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Approved"))
+      Event.storeEvent(LegacyEvent(proposal.id, reporterUUID, "Sent proposal Approved"))
       Mails.sendProposalApproved(speaker, proposal)
       Proposal.approve(reporterUUID, proposal.id)
     }
@@ -224,7 +224,7 @@ class ZapActor extends Actor {
   def doProposalRefused(reporterUUID: String, proposal: Proposal) {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
-      Event.storeEvent(Event(proposal.id, reporterUUID, "Sent proposal Refused"))
+      Event.storeEvent(LegacyEvent(proposal.id, reporterUUID, "Sent proposal Refused"))
 
       if(ConferenceDescriptor.isSendProposalRefusedEmail) {
         Mails.sendProposalRefused(speaker, proposal)
@@ -251,7 +251,7 @@ class ZapActor extends Actor {
   }
 
   def doNotifyProposalSubmitted(author: String, proposal: Proposal) {
-    Event.storeEvent(Event(proposal.id, author, s"Submitted a proposal ${proposal.id} ${proposal.title}"))
+    Event.storeEvent(LegacyEvent(proposal.id, author, s"Submitted a proposal ${proposal.id} ${proposal.title}"))
     Webuser.findByUUID(author).map {
       reporterWebuser: Webuser =>
         Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
@@ -263,7 +263,7 @@ class ZapActor extends Actor {
   def doNotifyGoldenTicket(gt: GoldenTicket): Unit = {
     Webuser.findByUUID(gt.webuserUUID).map {
       invitedWebuser: Webuser =>
-        Event.storeEvent(Event(gt.ticketId, gt.webuserUUID, s"New golden ticket for user ${invitedWebuser.cleanName}"))
+        Event.storeEvent(LegacyEvent(gt.ticketId, gt.webuserUUID, s"New golden ticket for user ${invitedWebuser.cleanName}"))
         Mails.sendGoldenTicketEmail(invitedWebuser, gt)
     }.getOrElse {
       play.Logger.of("library.ZapActor").error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
