@@ -82,7 +82,46 @@ case class WishlistLink(requestId: String) extends EventLink {
   include = JsonTypeInfo.As.PROPERTY,
   property = "kind")
 @JsonSubTypes(Array(
-  new Type(value = classOf[LegacyEvent], name = "Legacy")
+  new Type(value = classOf[NewSpeakerEvent], name = "NewSpeaker"),
+  new Type(value = classOf[UpdatedSpeakerEvent], name = "UpdatedSpeaker"),
+  new Type(value = classOf[GoldenTicketUserCreatedEvent], name = "GoldenTicketUserCreated"),
+  new Type(value = classOf[SpeakerRefusedTermsAndConditionsEvent], name = "SpeakerRefusedTermsAndConditions"),
+  new Type(value = classOf[SpeakerAcceptedTermsAndConditionsEvent], name = "SpeakerAcceptedTermsAndConditions"),
+  new Type(value = classOf[DeletedWebuserEvent], name = "DeletedWebuser"),
+  new Type(value = classOf[WebuserAddedToCFPGroupEvent], name = "WebuserAddedToCFPGroup"),
+  new Type(value = classOf[WebuserRemovedFromCFPGroupEvent], name = "WebuserRemovedFromCFPGroup"),
+  new Type(value = classOf[NewProposalCreatedEvent], name = "NewProposalCreated"),
+  new Type(value = classOf[NewProposalPostedByTypeEvent], name = "NewProposalPostedByType"),
+  new Type(value = classOf[NewProposalPostedByStateEvent], name = "NewProposalPostedByState"),
+  new Type(value = classOf[NewProposalPostedByTrackEvent], name = "NewProposalPostedByTrack"),
+  new Type(value = classOf[ChangedTypeOfProposalEvent], name = "ChangedTypeOfProposal"),
+  new Type(value = classOf[ChangedStateOfProposalEvent], name = "ChangedStateOfProposal"),
+  new Type(value = classOf[ChangedTrackOfProposalEvent], name = "ChangedTrackOfProposal"),
+  new Type(value = classOf[EditAttemptOnSomeoneElseProposalEvent], name = "EditAttemptOnSomeoneElseProposal"),
+  new Type(value = classOf[ProposalSubmissionEvent], name = "ProposalSubmission"),
+  new Type(value = classOf[UpdatedDraftProposalEvent], name = "UpdatedDraftProposal"),
+  new Type(value = classOf[UpdatedSubmittedProposalEvent], name = "UpdatedSubmittedProposal"),
+  new Type(value = classOf[DeletedProposalEvent], name = "DeletedProposal"),
+  new Type(value = classOf[RemovedProposalSponsoredFlagEvent], name = "RemovedProposalSponsoredFlag"),
+  new Type(value = classOf[VoteForProposalEvent], name = "VoteForProposal"),
+  new Type(value = classOf[RemovedProposalVoteEvent], name = "RemovedProposalVote"),
+  new Type(value = classOf[AllProposalVotesResettedEvent], name = "AllProposalVotesResetted"),
+  new Type(value = classOf[ProposalPublicCommentSentBySpeakerEvent], name = "ProposalPublicCommentSentBySpeaker"),
+  new Type(value = classOf[ProposalPublicCommentSentByReviewersEvent], name = "ProposalPublicCommentSentByReviewers"),
+  new Type(value = classOf[ProposalPrivateCommentSentByComiteeEvent], name = "ProposalPrivateCommentSentByComitee"),
+  new Type(value = classOf[ProposalPrivateAutomaticCommentSentEvent], name = "ProposalPrivateAutomaticCommentSent"),
+  new Type(value = classOf[UpdatedProposalSpeakersListEvent], name = "UpdatedProposalSpeakersList"),
+  new Type(value = classOf[AddedSecondarySpeakerToProposalEvent], name = "AddedSecondarySpeakerToProposal"),
+  new Type(value = classOf[RemovedSecondarySpeakerFromProposalEvent], name = "RemovedSecondarySpeakerFromProposal"),
+  new Type(value = classOf[ReplacedProposalSecondarySpeakerEvent], name = "ReplacedProposalSecondarySpeaker"),
+  new Type(value = classOf[SentProposalApprovedEvent], name = "SentProposalApproved"),
+  new Type(value = classOf[SentProposalRefusedEvent], name = "SentProposalRefused"),
+  new Type(value = classOf[TalkRemovedFromRefuseListEvent], name = "TalkRemovedFromRefuseList"),
+  new Type(value = classOf[TalkRemovedFromApprovedListEvent], name = "TalkRemovedFromApprovedList"),
+  new Type(value = classOf[TalkRefusedEvent], name = "TalkRefused"),
+  new Type(value = classOf[RefuseProposalEvent], name = "RefuseProposal"),
+  new Type(value = classOf[ApprovedProposalEvent], name = "ApprovedProposal"),
+  new Type(value = classOf[WishlistItemStatusUpdateEvent], name = "WishlistItemStatusUpdate")
 ))
 abstract class Event {
   def creator: String
@@ -93,10 +132,119 @@ abstract class Event {
   def timezonedDate(): DateTime = date.toDateTime(ConferenceDescriptor.current().timezone)
 }
 
-case class LegacyEvent(objRef: String, creator: String, msg: String)
-  extends Event {
-  override def message(): String = msg
+abstract class ProposalEvent extends Event {
+  def proposalId: String
+
+  override def linksFor(webuser: Webuser): Seq[EventLink] = Seq(ProposalLink(proposalId, webuser))
 }
+
+abstract class SpeakerEvent extends Event {
+  def webuserId: String
+  def webUsername: String
+
+  override def linksFor(webuser: Webuser): Seq[EventLink] = if(Webuser.isMember(webuser.uuid, "cfp")){ Seq(SpeakerLink(webuserId, webUsername)) } else { Seq() }
+}
+
+// User management (speakers/gts) events
+case class NewSpeakerEvent(creator: String, webuserId: String, webUsername: String)
+  extends SpeakerEvent { def message() = Messages("events.NewSpeaker", webuserId) }
+case class UpdatedSpeakerEvent(creator: String, webuserId: String, webUsername: String)
+  extends SpeakerEvent { def message() = Messages("events.UpdatedSpeaker", webuserId) }
+case class GoldenTicketUserCreatedEvent(creator: String, webuserId: String, webUsername: String)
+  extends SpeakerEvent { def message() = Messages("events.GoldenTicketUserCreated", webUsername) }
+
+case class SpeakerRefusedTermsAndConditionsEvent(creator: String)
+  extends Event { def message() = Messages("events.SpeakerRefusedTermsAndConditions") }
+case class SpeakerAcceptedTermsAndConditionsEvent(creator: String)
+  extends Event { def message() = Messages("events.SpeakerAcceptedTermsAndConditions") }
+
+case class DeletedWebuserEvent(creator: String, webuserId: String, webUsername: String)
+  extends Event { def message() = Messages("events.DeletedWebuser", webuserId, webUsername) }
+case class WebuserAddedToCFPGroupEvent(creator: String, webuserId: String, webUsername: String)
+  extends SpeakerEvent { def message() = Messages("events.WebuserAddedToCFPGroup", webuserId, webUsername) }
+case class WebuserRemovedFromCFPGroupEvent(creator: String, webuserId: String, webUsername: String)
+  extends SpeakerEvent { def message() = Messages("events.WebuserRemovedFromCFPGroup", webuserId, webUsername) }
+
+// Proposal events
+case class NewProposalCreatedEvent(creator: String, proposalId: String, proposalTitle: String)
+  extends ProposalEvent { def message() = Messages("events.NewProposalCreated", proposalId, proposalTitle) }
+case class NewProposalPostedByTypeEvent(creator: String, proposalId: String, proposalType: String)
+  extends ProposalEvent { def message() = Messages("events.NewProposalPostedByType", proposalId, proposalType) }
+case class NewProposalPostedByStateEvent(creator: String, proposalId: String, proposalState: String)
+  extends ProposalEvent { def message() = Messages("events.NewProposalPostedByState", proposalId, proposalState) }
+case class NewProposalPostedByTrackEvent(creator: String, proposalId: String, proposalTitle: String, proposalTrackId: String)
+  extends ProposalEvent { def message() = Messages("events.NewProposalPostedByTrack", proposalId, proposalTitle, Messages(proposalTrackId)) }
+case class ChangedTypeOfProposalEvent(creator: String, proposalId: String, oldProposalType: String, newProposalType: String)
+  extends ProposalEvent { def message() = Messages("events.ChangedTypeOfProposal", proposalId, oldProposalType, newProposalType) }
+case class ChangedStateOfProposalEvent(creator: String, proposalId: String, oldProposalState: String, newProposalState: String)
+  extends ProposalEvent { def message() = Messages("events.ChangedStateOfProposal", proposalId, oldProposalState, newProposalState) }
+case class ChangedTrackOfProposalEvent(creator: String, proposalId: String, proposalTitle: String, oldProposalTrackId: String, newProposalTrackId: String)
+  extends ProposalEvent { def message() = Messages("events.ChangedTrackOfProposal", proposalId, proposalTitle, Messages(oldProposalTrackId), Messages(newProposalTrackId)) }
+case class EditAttemptOnSomeoneElseProposalEvent(creator: String, proposalId: String)
+  extends ProposalEvent { def message() = Messages("events.EditAttemptOnSomeoneElseProposal", proposalId) }
+
+// Proposal statuses
+case class ProposalSubmissionEvent(creator: String, proposalId: String, proposalTitle: String)
+  extends ProposalEvent { def message() = Messages("events.ProposalSubmission", proposalId, proposalTitle) }
+case class UpdatedDraftProposalEvent(creator: String, proposalId: String, proposalTitle: String)
+  extends ProposalEvent { def message() = Messages("events.UpdatedDraftProposal", proposalId, proposalTitle) }
+case class UpdatedSubmittedProposalEvent(creator: String, proposalId: String, proposalTitle: String, proposalStateCode: String)
+  extends ProposalEvent { def message() = Messages("events.UpdatedSubmittedProposal", proposalId, proposalTitle, proposalStateCode) }
+case class DeletedProposalEvent(creator: String, proposalId: String)
+  extends Event { def message() = Messages("events.DeletedProposal", proposalId) }
+case class RemovedProposalSponsoredFlagEvent(creator: String, proposalId: String, proposalTitle: String)
+  extends ProposalEvent { def message() = Messages("events.RemovedProposalSponsoredFlag", proposalId, proposalTitle) }
+
+// Proposal votes
+case class VoteForProposalEvent(creator: String, proposalId: String, vote: Int)
+  extends ProposalEvent { def message() = Messages("events.VoteForProposal", vote, proposalId) }
+case class RemovedProposalVoteEvent(creator: String, proposalId: String)
+  extends ProposalEvent { def message() = Messages("events.RemovedProposalVote", proposalId) }
+case class AllProposalVotesResettedEvent(creator: String, proposalId: String)
+  extends ProposalEvent { def message() = Messages("events.AllProposalVotesResetted", proposalId) }
+
+// Proposal comments events
+case class ProposalPublicCommentSentBySpeakerEvent(creator: String, proposalId: String, proposalTitle: String, comment: String)
+  extends ProposalEvent { def message() = Messages("events.ProposalPublicCommentSentBySpeaker", proposalId, proposalTitle) }
+case class ProposalPublicCommentSentByReviewersEvent(creator: String, proposalId: String, proposalTitle: String, speakerName: String, comment: String)
+  extends ProposalEvent { def message() = Messages("events.ProposalPublicCommentSentByReviewers", speakerName, proposalId, proposalTitle) }
+case class ProposalPrivateCommentSentByComiteeEvent(creator: String, proposalId: String, proposalTitle: String, comment: String)
+  extends ProposalEvent { def message() = Messages("events.ProposalPrivateCommentSentByComitee", proposalId, proposalTitle) }
+case class ProposalPrivateAutomaticCommentSentEvent(creator: String, proposalId: String, proposalTitle: String, comment: String)
+  extends ProposalEvent { def message() = Messages("events.ProposalPrivateAutomaticCommentSent", proposalId, proposalTitle) }
+
+// Proposal secondary speakers events
+case class UpdatedProposalSpeakersListEvent(creator: String, proposalId: String, proposalTitle: String)
+  extends ProposalEvent { def message() = Messages("events.UpdatedProposalSpeakersList", proposalId, proposalTitle) }
+case class AddedSecondarySpeakerToProposalEvent(creator: String, proposalId: String, proposalTitle: String, newSecondarySpeakerName: String)
+  extends ProposalEvent { def message() = Messages("events.AddedSecondarySpeakerToProposal", proposalId, proposalTitle, newSecondarySpeakerName) }
+case class RemovedSecondarySpeakerFromProposalEvent(creator: String, proposalId: String, proposalTitle: String, oldSecondarySpeakerName: String)
+  extends ProposalEvent { def message() = Messages("events.RemovedSecondarySpeakerFromProposal", proposalId, proposalTitle, oldSecondarySpeakerName) }
+case class ReplacedProposalSecondarySpeakerEvent(creator: String, proposalId: String, proposalTitle: String, oldSecondarySpeakerName: String, newSecondarySpeakerName: String)
+  extends ProposalEvent { def message() = Messages("events.ReplacedProposalSecondarySpeaker", proposalId, proposalTitle, oldSecondarySpeakerName, newSecondarySpeakerName) }
+
+// Proposal Approval/Rejection process events
+case class SentProposalApprovedEvent(creator: String, proposalId: String)
+  extends ProposalEvent { def message() = Messages("events.SentProposalApproved", proposalId) }
+case class SentProposalRefusedEvent(creator: String, proposalId: String)
+  extends ProposalEvent { def message() = Messages("events.SentProposalRefused", proposalId) }
+case class TalkRemovedFromRefuseListEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
+  extends ProposalEvent { def message() = Messages("events.TalkRemovedFromRefuseList", Messages(talkTypeId), proposalTitle, Messages(trackId)) }
+case class TalkRemovedFromApprovedListEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
+  extends ProposalEvent { def message() = Messages("events.TalkRemovedFromApprovedList", Messages(talkTypeId), proposalTitle, Messages(trackId)) }
+case class TalkRefusedEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
+  extends ProposalEvent { def message() = Messages("events.TalkRefused", Messages(talkTypeId), proposalTitle, Messages(trackId)) }
+case class RefuseProposalEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
+  extends ProposalEvent { def message() = Messages("events.RefuseProposal", Messages(talkTypeId), proposalTitle, Messages(trackId)) }
+case class ApprovedProposalEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
+  extends ProposalEvent { def message() = Messages("events.ApprovedProposal", Messages(talkTypeId), proposalTitle, Messages(trackId)) }
+
+// Misc events
+case class WishlistItemStatusUpdateEvent(creator: String, requestId: String, statusCode: String)
+  extends Event {
+    def message() = Messages("events.WishlistItemStatusUpdate", statusCode)
+    override def linksFor(webuser: Webuser): Seq[EventLink] = Seq(WishlistLink(requestId))
+  }
 
 
 object Event {

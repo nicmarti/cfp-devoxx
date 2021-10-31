@@ -86,7 +86,7 @@ object RequestToTalkStatus {
       // trim to 100 last elements
       tx.ltrim("RequestsToTalk:History:" + requestId, 0, 100)
       tx.exec()
-      Event.storeEvent(LegacyEvent(requestId, authorName, s"Updated status of a wishlist item to [$statusCode]"))
+      Event.storeEvent(WishlistItemStatusUpdateEvent(authorName, requestId, statusCode))
 
   }
 

@@ -373,7 +373,7 @@ object Proposal {
           client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
           // And we are able to track this event
-          Event.storeEvent(LegacyEvent(proposal.id, uuid, s"Changed talk's track  with id $proposalId  from $oldTrackId to ${proposal.track.id}"))
+          Event.storeEvent(ChangedTrackOfProposalEvent(uuid, proposal.id, proposal.title, oldTrackId, proposal.track.id))
         case oldTrackId if oldTrackId == proposal.track.id =>
         // Same track
       }
@@ -382,7 +382,7 @@ object Proposal {
         client.sadd("Proposals:ByTrack:" + proposal.track.id, proposalId)
         client.hset("Proposals:TrackForProposal", proposalId, proposal.track.id)
 
-        Event.storeEvent(LegacyEvent(proposal.id, uuid, s"Posted a new talk ($proposalId) to ${proposal.track.id}"))
+        Event.storeEvent(NewProposalPostedByTrackEvent(uuid, proposal.id, proposal.title, proposal.track.id))
       }
 
   }
@@ -397,7 +397,7 @@ object Proposal {
         stateOld: String =>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByState:" + stateOld, "Proposals:ByState:" + newState.code, proposalId)
-          Event.storeEvent(LegacyEvent(proposalId, uuid, s"Changed status of talk $proposalId from $stateOld to ${newState.code}"))
+          Event.storeEvent(ChangedStateOfProposalEvent(uuid, proposalId, stateOld, newState.code))
 
           if (newState == ProposalState.SUBMITTED) {
             client.hset("Proposal:SubmittedDate", proposalId, new Instant().getMillis.toString)
@@ -406,7 +406,7 @@ object Proposal {
       if (maybeExistingState.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByState:" + newState.code, proposalId)
-        Event.storeEvent(LegacyEvent(proposalId, uuid, s"Posted new talk $proposalId with status ${newState.code}"))
+        Event.storeEvent(NewProposalPostedByStateEvent(uuid, proposalId, newState.code))
       }
   }
 
@@ -419,12 +419,12 @@ object Proposal {
         oldType: String =>
           // SMOVE is also a O(1) so it is faster than a SREM and SADD
           client.smove("Proposals:ByType:" + oldType, "Proposals:ByType:" + newProposalType.id, proposalId)
-          Event.storeEvent(LegacyEvent(proposalId, uuid, s"Changed type of talk $proposalId from $oldType to ${newProposalType.id}"))
+          Event.storeEvent(ChangedTypeOfProposalEvent(uuid, proposalId, oldType, newProposalType.id))
       }
       if (maybeExistingType.isEmpty) {
         // SADD is O(N)
         client.sadd("Proposals:ByType:" + newProposalType.id, proposalId)
-        Event.storeEvent(LegacyEvent(proposalId, uuid, s"Posted new talk $proposalId with status ${newProposalType.id}"))
+        Event.storeEvent(NewProposalPostedByTypeEvent(uuid, proposalId, newProposalType.id))
       }
   }
 
@@ -492,7 +492,7 @@ object Proposal {
   }
 
   def delete(uuid: String, proposalId: String) {
-    Event.storeEvent(LegacyEvent(proposalId, uuid, s"Deleted proposal $proposalId"))
+    Event.storeEvent(DeletedProposalEvent(uuid, proposalId))
     Proposal.findById(proposalId).map {
       proposal =>
         ApprovedProposal.cancelApprove(proposal)
@@ -983,7 +983,7 @@ object Proposal {
   def removeSponsorTalkFlag(authorUUID: String, proposalId: String) = {
     Proposal.findById(proposalId).filter(_.sponsorTalk == true).map {
       proposal =>
-        Event.storeEvent(LegacyEvent(proposal.id, authorUUID, "Removed [sponsorTalkFlag] on proposal " + proposal.title))
+        Event.storeEvent(RemovedProposalSponsoredFlagEvent(authorUUID, proposal.id, proposal.title))
         Proposal.save(proposal.mainSpeaker, proposal.copy(sponsorTalk = false), proposal.state)
     }
   }

@@ -912,6 +912,48 @@ visitor.welcome.text1=Vous êtes maintenant authentifié comme visiteur {0}. Vou
 visitor.welcome.profile=Liste des sujets marqués comme favoris
 visitor.welcome.publisher=Parcourir l''agenda des conférences
 
+#Events
+events.NewSpeaker=Speaker créé [{0}]
+events.UpdatedSpeaker=Speaker mis à jour [{0}]
+events.VoteForProposal=A voté {0} sur {1}
+events.WishlistItemStatusUpdate=Statut de la liste de souhait modifié à [{0}]
+events.TalkRemovedFromRefuseList=Annulation refusée sur {0} [{1}] dans la track [{2}]
+events.TalkRemovedFromApprovedList=Annulation approuvée sur {0} [{1}] dans la track [{2}]
+events.TalkRefused=Refus sur {0} [{1}] dans la track [{2}]
+events.ChangedTypeOfProposal=Nouveau talk posté {0} avec le type {1}
+events.ChangedTypeOfProposal=Mise à jour du type du talk {0} de {1} à {2}
+events.NewProposalPostedByState=Nouveau talk posté {0} avec le statut {1}
+events.ChangedStateOfProposal=Mise à jour du statut du talk {0} de {1} à {2}
+events.NewProposalCreated=Nouvelle proposition créée {0} : {1}
+events.SentProposalApproved=Proposition envoyée {0} Approuvée
+events.SentProposalRefused=Proposition envoyée {0} Refusée
+events.ProposalPublicCommentSentBySpeaker=Commentaire public envoyé par le speaker aux reviewers sur {0} ${1}
+events.ProposalPublicCommentSentByReviewers=Commentaire public envoyé au speaker {0} sur {1} {2}
+events.ProposalPrivateCommentSentByComitee=Commentaire interne envoyé au comité sur {0} {1}
+events.ProposalPrivateAutomaticCommentSent=Commentaire interne automatique envoyé au comité sur {0} ${1}
+events.GoldenTicketUserCreated=Nouveau golden ticket pour l''utilisateur {0}
+events.AllProposalVotesResetted=Votes réinitialisés sur {0}
+events.EditAttemptOnSomeoneElseProposal=Tentative d''édition du talk {0} sans en être le propriétaire.
+events.UpdatedDraftProposal=Proposition brouillon mise à jour {0} : {1}
+events.UpdatedSubmittedProposal=Proposition {0} {1} modifiée (statut: {2})
+events.DeletedProposal=Proposition supprimée {0}
+events.SpeakerRefusedTermsAndConditions=Le Speaker a REFUSÉ les Termes & Conditions
+events.SpeakerAcceptedTermsAndConditions=Le Speaker a ACCEPTÉ les Termes & Conditions
+events.RefuseProposal=Refus de la proposition {0} [{1}] dans la track [{2}]
+events.RemovedProposalVote=A supprimé son vote sur la proposition {0}
+events.DeletedWebuser=Utilisateur supprimé {1} ({0})
+events.ApprovedProposal=Acceptation de la proposition {0} [{1}] dans la track [{2}]
+events.WebuserAddedToCFPGroup=Utilisateur {1} ajouté au groupe CFP
+events.WebuserRemovedFromCFPGroup=Utilisateur {1} supprimé du groupe CFP
+events.UpdatedProposalSpeakersList=Mise à jour de la liste des speakers sur la proposition {0} {1}
+events.AddedSecondarySpeakerToProposal={2} ajouté en second speaker sur {0} {1}
+events.RemovedSecondarySpeakerFromProposal={2} supprimé en second speaker sur {0} {1}
+events.ReplacedProposalSecondarySpeaker={2} remplacé par {3} en second speaker sur {0} {1}
+events.ProposalSubmission=A soumis une proposition {0} {1}
+events.NewProposalPostedByTrack=A posté un nouveau talk ({0}) dans la track {2}
+events.ChangedTrackOfProposal=Track du talk {0} mis à jour de {2} à {3}
+events.RemovedProposalSponsoredFlag=Suppression du flag [sponsorTalkFlag] sur la proposition {0} {1}
+
 # What needs to be updated each year :
 # ------------------------------------
 # We prefer to update one property file, so that string interpolation is faster, rather than

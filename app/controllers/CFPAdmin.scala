@@ -788,14 +788,14 @@ object CFPAdmin extends SecureCFPController {
                 play.Logger.warn("Created missing webuser " + newUUID)
               }
               Speaker.save(validSpeaker)
-              Event.storeEvent(LegacyEvent(validSpeaker.cleanName, request.webuser.uuid, "updated a speaker [" + validSpeaker.uuid + "]"))
+              Event.storeEvent(NewSpeakerEvent(request.webuser.uuid, validSpeaker.uuid, validSpeaker.cleanName))
               Redirect(routes.CFPAdmin.showSpeakerAndTalks(existingUUID)).flashing("success" -> "Profile updated")
             case None =>
               val webuser = Webuser.createSpeaker(validSpeaker.email, validSpeaker.firstName.getOrElse("Firstname"), validSpeaker.name.getOrElse("Lastname"))
               Webuser.saveNewWebuserEmailNotValidated(webuser)
               val newUUID = Webuser.saveAndValidateWebuser(webuser)
               Speaker.save(validSpeaker.copy(uuid = newUUID))
-              Event.storeEvent(LegacyEvent(validSpeaker.cleanName, request.webuser.uuid, "created a speaker [" + validSpeaker.uuid + "]"))
+              Event.storeEvent(UpdatedSpeakerEvent(request.webuser.uuid, validSpeaker.uuid, validSpeaker.cleanName))
               Redirect(routes.CFPAdmin.showSpeakerAndTalks(newUUID)).flashing("success" -> "Profile saved")
           }
         }
