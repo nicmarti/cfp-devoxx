@@ -126,8 +126,10 @@ case class WishlistLink(requestId: String) extends EventLink {
 ))
 abstract class Event {
   val creator: String
+
   val date: DateTime = new DateTime().toDateTime(ConferenceDescriptor.current().timezone)
 
+  def objRef(): Option[String] = None
   def message(): String
   def linksFor(webuser: Webuser): Seq[EventLink] = Seq()
   def timezonedDate(): DateTime = date.toDateTime(ConferenceDescriptor.current().timezone)
@@ -136,6 +138,7 @@ abstract class Event {
 abstract class ProposalEvent extends Event {
   val proposalId: String
 
+  override def objRef(): Option[String] = Some(proposalId)
   override def linksFor(webuser: Webuser): Seq[EventLink] = Seq(ProposalLink(proposalId, webuser))
 }
 
@@ -143,6 +146,7 @@ abstract class SpeakerEvent extends Event {
   val webuserId: String
   val webUsername: String
 
+  override def objRef(): Option[String] = Some(webuserId)
   override def linksFor(webuser: Webuser): Seq[EventLink] = if(Webuser.isMember(webuser.uuid, "cfp")){ Seq(SpeakerLink(webuserId, webUsername)) } else { Seq() }
 }
 
@@ -244,6 +248,7 @@ case class ApprovedProposalEvent(creator: String, proposalId: String, proposalTi
 case class WishlistItemStatusUpdateEvent(creator: String, requestId: String, statusCode: String)
   extends Event {
     def message() = Messages("events.WishlistItemStatusUpdate", statusCode)
+    override def objRef(): Option[String] = Some(requestId)
     override def linksFor(webuser: Webuser): Seq[EventLink] = Seq(WishlistLink(requestId))
   }
 
@@ -258,6 +263,10 @@ object Event {
       val jsEvent = mapper.writeValueAsString(event)
       val tx = client.multi()
       tx.zadd("Events:V3", event.date.getMillis, jsEvent)
+      event.objRef().map { objRef =>
+        tx.sadd("Events:V3:" + objRef, jsEvent)
+        tx.set("Events:LastUpdated:" + objRef, new Instant().getMillis.toString)
+      }
       tx.exec()
   }
 
@@ -291,11 +300,20 @@ object Event {
     def compare(o1: DateTime, o2: DateTime) = o1.compareTo(o2)
   }
 
+  def loadLatestProposalSubmittedEvent(proposalId: String): Option[Event] = {
+    loadEventsForObjRef(proposalId).find { e =>
+      e match {
+        case ChangedStateOfProposalEvent(_, _, oldState, newState) if(oldState == "draft" && newState == "submitted") => true
+        case _ => false
+      }
+    }
+  }
+
   def loadEventsForObjRef(objRef: String): List[Event] = Redis.pool.withClient {
     client =>
-      client.smembers(s"Events:V2:$objRef").flatMap {
+      client.smembers(s"Events:V3:$objRef").map {
         json: String =>
-          Json.parse(json).asOpt[Event]
+          mapper.readValue(json, classOf[Event])
       }.toList
   }
 
