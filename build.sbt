@@ -37,5 +37,6 @@ libraryDependencies ++= Seq(
   , "com.google.api-client" % "google-api-client" % "1.30.7"
   , "com.google.apis" % "google-api-services-oauth2" % "v2-rev20190313-1.30.1"
   , "com.sksamuel.elastic4s" %% "elastic4s-client-esjava" % elastic4sVersion
+  , "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % jacksonV
 
 )

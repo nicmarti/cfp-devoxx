@@ -24,8 +24,9 @@
 package models
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
-import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo}
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
+import com.fasterxml.jackson.datatype.joda.JodaModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import controllers.{Link, routes}
 import library.Redis
@@ -124,8 +125,8 @@ case class WishlistLink(requestId: String) extends EventLink {
   new Type(value = classOf[WishlistItemStatusUpdateEvent], name = "WishlistItemStatusUpdate")
 ))
 abstract class Event {
-  def creator: String
-  def date: DateTime = new DateTime().toDateTime(ConferenceDescriptor.current().timezone)
+  val creator: String
+  val date: DateTime = new DateTime().toDateTime(ConferenceDescriptor.current().timezone)
 
   def message(): String
   def linksFor(webuser: Webuser): Seq[EventLink] = Seq()
@@ -133,14 +134,14 @@ abstract class Event {
 }
 
 abstract class ProposalEvent extends Event {
-  def proposalId: String
+  val proposalId: String
 
   override def linksFor(webuser: Webuser): Seq[EventLink] = Seq(ProposalLink(proposalId, webuser))
 }
 
 abstract class SpeakerEvent extends Event {
-  def webuserId: String
-  def webUsername: String
+  val webuserId: String
+  val webUsername: String
 
   override def linksFor(webuser: Webuser): Seq[EventLink] = if(Webuser.isMember(webuser.uuid, "cfp")){ Seq(SpeakerLink(webuserId, webUsername)) } else { Seq() }
 }
@@ -248,7 +249,9 @@ case class WishlistItemStatusUpdateEvent(creator: String, requestId: String, sta
 
 
 object Event {
-  val mapper = new ObjectMapper().registerModule(DefaultScalaModule)
+  val mapper = new ObjectMapper()
+          .registerModules(DefaultScalaModule, new JodaModule())
+          .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
   def storeEvent(event: Event) = Redis.pool.withClient {
     client =>
