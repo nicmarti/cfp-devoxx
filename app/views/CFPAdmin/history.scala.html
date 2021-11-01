@@ -11,7 +11,14 @@
                 <div class="card-body">
                 <div class="card-body">
                     @Event.loadEventsForObjRef(proposal.id).sortBy(_.timezonedDate().getMillis).map { event =>
-                     <small><strong>@event.timezonedDate().toString("EEE dd/MM HH:mm"):</strong> @event.message()</small><br>
+                     <small>
+                         <strong>
+                             @event.timezonedDate().toString("EEE dd/MM HH:mm")
+                             (@models.Webuser.findByUUID(event.creator).map(_.cleanName).getOrElse(""))
+                             :
+                         </strong>
+                         @event.message()
+                     </small><br>
                     }
                 </div>
             </div>
