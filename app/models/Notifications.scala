@@ -54,12 +54,12 @@ object NotificationUserPreference {
   def save(webUserId: String, notifUserPref: NotificationUserPreference): String = Redis.pool.withClient {
     implicit client =>
       val json = Json.toJson(notifUserPref).toString()
-      client.set("NotificationUserPreference:" + webUserId, json)
+      client.set(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""", json)
   }
 
   def load(webUserId: String): NotificationUserPreference = Redis.pool.withClient {
     implicit client =>
-      val json = client.get("NotificationUserPreference:" + webUserId)
+      val json = client.get(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
       json.map { Json.parse(_).as[NotificationUserPreference] }.getOrElse(DEFAULT_FALLBACK_PREFERENCES)
   }
 }
