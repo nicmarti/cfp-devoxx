@@ -135,10 +135,10 @@
                     <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th style="width: 100px">@Messages("admin.cfp.date")</th>
-                                <th style="width: 75px">@Messages("admin.cfp.author")</th>
-                                <th style="width: 200px">@Messages("admin.cfp.propId")</th>
-                                <th>@Messages("admin.cfp.msg")</th>
+                                <th scope="col" style="width: 100px">@Messages("admin.cfp.date")</th>
+                                <th scope="col" style="width: 75px">@Messages("admin.cfp.author")</th>
+                                <th scope="col" style="width: 200px">@Messages("admin.cfp.propId")</th>
+                                <th scope="col">@Messages("admin.cfp.msg")</th>
                             </tr>
                             <tr>
                                 <td colspan="4">
@@ -152,7 +152,6 @@
                                     }</small>
                                 </td>
                             </tr>
-
                         </thead>
                         <tbody>
                         @events.map { event: Event =>
@@ -165,7 +164,7 @@
                                 </td>
                                 <td class="text-center">
                                     @event.linksFor(webuser).map { link =>
-                                        <a href="@link.href" class="btn btn-sm btn-block btn-primary"><i class="fas @link.icon"></i> @link.title</a>
+                                        <a href="@link.href" class="btn btn-sm btn-block btn-primary"><i class="fas @link.icon" aria-hidden="true"></i> @link.title</a>
                                     }
                                 </td>
                                 <td><small>@event.message()</small></td>
