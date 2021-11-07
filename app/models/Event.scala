@@ -254,6 +254,8 @@ case class WishlistItemStatusUpdateEvent(creator: String, requestId: String, sta
 
 
 object Event {
+  private val EVENTS_REDIS_KEY = "Events:V3"
+
   val mapper = new ObjectMapper()
           .registerModules(DefaultScalaModule, new JodaModule())
           .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -262,17 +264,17 @@ object Event {
     client =>
       val jsEvent = mapper.writeValueAsString(event)
       val tx = client.multi()
-      tx.zadd("Events:V3", event.date.getMillis, jsEvent)
+      tx.zadd(EVENTS_REDIS_KEY, event.date.getMillis, jsEvent)
       event.objRef().map { objRef =>
-        tx.sadd("Events:V3:" + objRef, jsEvent)
-        tx.set("Events:LastUpdated:" + objRef, new Instant().getMillis.toString)
+        tx.sadd(s"""Events:V3:${objRef}""", jsEvent)
+        tx.set(s"""Events:LastUpdated:${objRef}""", new Instant().getMillis.toString)
       }
       tx.exec()
   }
 
   def loadEvents(items: Int, page: Int): List[Event] = Redis.pool.withClient {
     client =>
-      client.zrevrangeWithScores("Events:V3", page * items, (page + 1) * items).map {
+      client.zrevrangeWithScores(EVENTS_REDIS_KEY, page * items, (page + 1) * items).map {
         case (json: String, date: Double) =>
           val event = mapper.readValue(json, classOf[Event])
           event
@@ -282,12 +284,12 @@ object Event {
   // Very fast O(1) operation
   def totalEvents() = Redis.pool.withClient {
     client =>
-      client.zcard("Events:V3")
+      client.zcard(EVENTS_REDIS_KEY)
   }
 
   def resetEvents() = Redis.pool.withClient{
     client=>
-      client.del("Events:V3")
+      client.del(EVENTS_REDIS_KEY)
       val allEvents = client.keys("Events:*")
       val tx=client.multi()
       allEvents.foreach{k:String=>
@@ -319,7 +321,7 @@ object Event {
 
   def getMostRecentDateFor(objRef: String): Option[DateTime] = Redis.pool.withClient {
     client =>
-      client.get("Events:LastUpdated:" + objRef).map {
+      client.get(s"""Events:LastUpdated:${objRef}""").map {
         s =>
           new Instant().withMillis(s.toLong).toDateTime
       }
