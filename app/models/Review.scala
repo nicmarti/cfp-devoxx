@@ -515,10 +515,6 @@ object Review {
       val noReviews = client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne")
       val noReviewsAndNote = noReviews.map(ReviewerStats.noReviewStats)
 
-    println("Code de merde ")
-    println(allVoted.head)
-
-
       allVoted.toList ++ noReviewsAndNote.toList
   }
 
