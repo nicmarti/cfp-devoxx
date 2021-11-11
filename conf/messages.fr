@@ -349,7 +349,11 @@ admin.btn.sendMessage=Envoyer votre message
 admin.sp.internal=Discussions internes et privées
 admin.sp.deleteMyVote=Annuler mon vote
 admin.btn.allvotes=Tous les votes
- 
+admin.proposals.watch=Observer
+admin.proposals.watch.suggestion=Cliquer ici pour activer l''observation sur les évènements de la proposition
+admin.proposals.unwatch=Ignorer
+admin.proposals.unwatch.suggestion=Cliquer ici pour désactiver l''observation sur les évènements de la proposition
+
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
 admin.draft.warning=Attention
 admin.draft.warning2=Cette proposition n''est pas à l''état SUBMITTED. Vous ne pouvez pas voter.

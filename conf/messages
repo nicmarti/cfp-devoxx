@@ -399,6 +399,11 @@ admin.btn.sendMessage=Post your message
 admin.sp.internal=Private discussions
 admin.sp.deleteMyVote=Delete my vote
 admin.btn.allvotes=All votes
+admin.proposals.watch=Watch
+admin.proposals.watch.suggestion=Click here to enable watch on following proposal events
+admin.proposals.unwatch=Unwatch
+admin.proposals.unwatch.suggestion=Click here to disable watch on proposal events
+
 
 speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.
 admin.draft.warning=Warning

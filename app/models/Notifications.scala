@@ -63,3 +63,31 @@ object NotificationUserPreference {
       json.map { Json.parse(_).as[NotificationUserPreference] }.getOrElse(DEFAULT_FALLBACK_PREFERENCES)
   }
 }
+
+case class ProposalUserWatchPreference(proposalId: String, webUserId: String, isWatcher: Boolean, watchingEvents: List[NotificationEvent])
+object ProposalUserWatchPreference {
+
+  def proposalWatchers(proposalId: String): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.smembers(s"""Watchers:${proposalId}""")
+  }
+
+  def addProposalWatcher(proposalId: String, webUserId: String) = Redis.pool.withClient {
+    implicit client =>
+      client.sadd(s"""Watchers:${proposalId}""", webUserId)
+  }
+
+  def removeProposalWatcher(proposalId: String, webUserId: String) = Redis.pool.withClient {
+    implicit client =>
+      client.del(s"""Watchers:${proposalId}""", webUserId)
+  }
+
+  def proposalUserWatchPreference(proposalId: String, webUserId: String): ProposalUserWatchPreference = {
+      val userPrefs = NotificationUserPreference.load(webUserId)
+      val watchers = this.proposalWatchers(proposalId)
+      ProposalUserWatchPreference(proposalId, webUserId, isWatcher = watchers.contains(webUserId), userPrefs.eventIds.map{
+        eventId => NotificationEvent.allNotificationEvents.find(_.id == eventId).get
+      })
+  }
+
+}
