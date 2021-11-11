@@ -46,8 +46,8 @@ object LeaderboardController extends SecureCFPController {
     val totalVotes = Leaderboard.totalVotes()
     val totalWithVotes = Leaderboard.totalWithVotes()
     val totalNoVotes = Leaderboard.totalNoVotes()
-    val mostReviewed = Leaderboard.mostReviewed().map { case (k, v) => (k.toString, v) }.toList
-    val bestReviewers = Review.allReviewersAndStats().filterNot(br => br._3 < 1)
+    val mostReviewed = Leaderboard.mostReviewed().toList
+    val bestReviewers = Review.allReviewersAndStatsWithOneReviewAtLeast()
     val lazyOnes = Leaderboard.lazyOnes()
 
     val totalSubmittedByTrack = Leaderboard.totalSubmittedByTrack()
@@ -68,22 +68,27 @@ object LeaderboardController extends SecureCFPController {
 
     // TODO Would it be better to have the following two statements in the Leaderboard.computeStats method instead?
     def generousVoters: List[(String, BigDecimal)] =
-      bestReviewers.filter(_._3 > 0)
-        .map(b => (b._1, b._5))
+      bestReviewers.filter(_.totalTalksReviewed > 0)
+        .map(b => (b.uuid, b.average))
 
     def proposalsBySpeakers: List[(String, Int)] =
       Speaker.allSpeakers()
         .map(speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
         .filter(_._2 > 0)
 
-    LeaderBoardParams(totalSpeakers, totalProposals, totalVotes,
+    LeaderBoardParams(totalSpeakers,
+      totalProposals,
+      totalVotes,
       mostReviewed,
       bestReviewers,
-      lazyOnes, generousVoters,
+      lazyOnes,
+      generousVoters,
       proposalsBySpeakers,
-      totalSubmittedByTrack, totalSubmittedByType,
+      totalSubmittedByTrack,
+      totalSubmittedByType,
       totalCommentsPerProposal,
-      totalAcceptedByTrack, totalAcceptedByType,
+      totalAcceptedByTrack,
+      totalAcceptedByType,
       totalSlotsToAllocate,
       totalApprovedSpeakers,
       totalWithTickets,
@@ -112,8 +117,8 @@ object LeaderboardController extends SecureCFPController {
   def dataForAllReviewersAndStats = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       // Do not keep someone that did zero review
-      val data = Review.allReviewersAndStats().filterNot(_._3 == 0).flatMap {
-        case (uuid, totalPoints, nbReview, nbAbstentions, average) =>
+      val data = Review.allReviewersAndStats().filterNot(_.totalTalksReviewed == 0).flatMap {
+        case ReviewerStats(uuid, totalPoints, nbReview, nbAbstentions, average) =>
           Webuser.findByUUID(uuid).map {
             webuser =>
               val webuserNick = webuser.firstName.take(1).toUpperCase + webuser.lastName.replaceAll(" ", "").take(2).toUpperCase()
@@ -262,7 +267,7 @@ case class LeaderBoardParams(
                               totalProposals: Long,
                               totalVotes: Long,
                               mostReviewed: List[(String, Int)],
-                              bestReviewers: List[(String, Int, Int, Int, BigDecimal)],
+                              bestReviewers: List[ReviewerStats],
                               lazyOnes: Map[String, String],
                               generousVoters: List[(String, BigDecimal)],
                               proposalsBySpeakers: List[(String, Int)],

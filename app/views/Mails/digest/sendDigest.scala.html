@@ -53,9 +53,9 @@
         </td>
         <td width="50%">
             <h3>Top Reviewers</h3>
-            @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
-                @tags.renderGravatar(br._1)
-                @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
+            @params.bestReviewers.reverse.take(5).map { br =>
+                @tags.renderGravatar(br.uuid)
+                @tags.renderTotalWithLabel(br.totalTalksReviewed, "talk reviewed", "talks reviewed")
                 <br>
             }
         </td>

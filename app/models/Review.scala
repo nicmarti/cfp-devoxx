@@ -24,6 +24,7 @@
 package models
 
 import library.{Redis, Stats}
+import models.ReviewerStats.noReviewStats
 import org.joda.time.{DateTime, Instant}
 
 import scala.math.BigDecimal.RoundingMode
@@ -38,6 +39,12 @@ import scala.math.BigDecimal.RoundingMode
   * Created: 11/11/2013 10:21
   */
 case class Review(reviewer: String, proposalId: String, vote: Int, date: DateTime)
+
+case class ReviewerStats(uuid:String, totalPoints:Int, totalTalksReviewed:Int, totalTalksAbstention:Int, average:BigDecimal)
+
+object ReviewerStats {
+  def noReviewStats(uuid:String):ReviewerStats=ReviewerStats(uuid,0,0,0,BigDecimal(0))
+}
 
 object Review {
 
@@ -487,7 +494,7 @@ object Review {
 
   // Warning : this returns also the vote with Abstention, number of abstentions and average score
   // It cannot be used to compute "generous one" for instance.
-  def allReviewersAndStats(): List[(String, Int, Int, Int, BigDecimal)] = Redis.pool.withClient {
+  def allReviewersAndStats(): List[ReviewerStats] = Redis.pool.withClient {
     client =>
       // Remove reviewer that are not any longer part of CFP
       val validReviewers = client.smembers("Webuser:cfp")
@@ -502,15 +509,20 @@ object Review {
           } else {
             BigDecimal(0)
           }
-          (uuid, totalPoints.toInt, nbrOfTalksReviewed, nbrOfAbstentions, average)
+          ReviewerStats(uuid, totalPoints.toInt, nbrOfTalksReviewed, nbrOfAbstentions, average)
       }
 
       val noReviews = client.sdiff("Webuser:cfp", "Computed:Reviewer:ReviewedOne")
-      val noReviewsAndNote = noReviews.map(uuid =>
-        (uuid, 0, 0, 0, BigDecimal(0))
-      )
+      val noReviewsAndNote = noReviews.map(ReviewerStats.noReviewStats)
+
+    println("Code de merde ")
+    println(allVoted.head)
+
+
       allVoted.toList ++ noReviewsAndNote.toList
   }
+
+  def allReviewersAndStatsWithOneReviewAtLeast(): List[ReviewerStats] = allReviewersAndStats().filter(br => br.totalTalksReviewed > 0).sortBy(_.totalTalksReviewed)
 
   def diffReviewBetween(firstUUID: String, secondUUID: String): Set[String] = Redis.pool.withClient {
     client =>

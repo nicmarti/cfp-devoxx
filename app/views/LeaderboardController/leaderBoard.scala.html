@@ -98,9 +98,9 @@
 
                         <div class="col-md-4">
                         <h3><i class="fas fa-trophy"></i> Top Reviewers</h3>
-                        @params.bestReviewers.sortBy(_._3).reverse.take(5).map { br =>
-                            @tags.renderGravatar(br._1)
-                            @tags.renderTotalWithLabel(br._3, "talk reviewed", "talks reviewed")
+                        @params.bestReviewers.reverse.take(5).map { br =>
+                            @tags.renderGravatar(br.uuid)
+                            @tags.renderTotalWithLabel(br.totalTalksReviewed, "talk reviewed", "talks reviewed")
                         }
                         <br><br><small><a href="@routes.LeaderboardController.allReviewersAndStats()" class="btn btn-sm btn-primary">See all reviewers</a></small>
                     </div>

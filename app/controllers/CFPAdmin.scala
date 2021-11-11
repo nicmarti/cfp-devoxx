@@ -128,13 +128,12 @@ object CFPAdmin extends SecureCFPController {
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
             // The Reviewer leaderboard, remove if the user did not vote for any talks and sort by number of talks reviewed
-            val bestReviewers: List[(String, Int, Int, Int, BigDecimal)] = Review.allReviewersAndStats().filterNot(br => br._3 < 1).sortBy(_._3)
-
+            val bestReviewers: List[ReviewerStats] = Review.allReviewersAndStatsWithOneReviewAtLeast()
 
             // Find the current authenticated user (with uuid), the user that is before, and the one that is after
-            val listOfReviewers: List[List[(String, Int, Int, Int, BigDecimal)]] = bestReviewers
+            val listOfReviewers: List[List[(ReviewerStats)]] = bestReviewers
               .sliding(3) // This iterate the list 3 by 3
-              .filter(subList => subList.exists(_._1 == uuid)) // we are only intersted if the element 1 is our uuid.
+              .filter(subList => subList.exists(_.uuid == uuid)) // we are only interested if the element 1 is our uuid.
               .toList // else since it's an iterator... we won't be able to apply methods
 
             // So now, listOfReviewers should have 3 elements  :
@@ -158,9 +157,9 @@ object CFPAdmin extends SecureCFPController {
             // Because this list might be empty we use headOption
             val maybeTwoFirstTuples = listOfReviewers.take(2)
 
-            val meAndMyFollowers: Option[List[(String, Int, Int, Int, BigDecimal)]] = maybeTwoFirstTuples.size match {
+            val meAndMyFollowers: Option[List[(ReviewerStats)]] = maybeTwoFirstTuples.size match {
               case 1 => maybeTwoFirstTuples.headOption
-              case other => maybeTwoFirstTuples.drop(1).headOption
+              case _ => maybeTwoFirstTuples.drop(1).headOption
             }
 
             // If Golden Ticket is active
