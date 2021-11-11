@@ -958,21 +958,21 @@ events.RemovedProposalSponsoredFlag=Suppression du flag [sponsorTalkFlag] sur la
 # ------------------------------------
 # We prefer to update one property file, so that string interpolation is faster, rather than
 # to try to use the ConferenceDescriptor for some static part of the web site.
-appel.conf.dates=Call for Paper, Devoxx France, 29 Septembre au 1er Octobre 2021
-cfp.program.date=à partir de septembre 2021
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2021 :
-sw.show.title.wed=Journée du Mercredi 29 Septembre 2021
-sw.show.title.thu=Journée du Jeudi 30 Septembre 2021
-sw.show.title.fri=Journée du Vendredi 1er Octobre 2021
-cfp.title=Devoxx France 2021
+appel.conf.dates=Devoxx France 10ème édition, 20 au 22 avril 2022
+cfp.program.date=fin février 2022
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2022 :
+sw.show.title.wed=Journée du Mercredi 20 avril 2022
+sw.show.title.thu=Journée du Jeudi 21 avril 2022
+sw.show.title.fri=Journée du Vendredi 22 avril 2022
+cfp.title=Devoxx France 2022
 conf.label.simple=Conférence
 CONF.subtitle=FR
-CONF.title=Devoxx France 2021
-conference.dates=29 Septembre au 1er Octobre 2021
-longName=Devoxx FR 2021 CFP
-longSplittedName_whiteEnd=FR 2021
-longYearlyName=Devoxx France 2021
-shortYearlyName=Devoxx FR 2021
+CONF.title=Devoxx France 2022
+conference.dates=20 au 22 avril 2022
+longName=Devoxx FR 2022 CFP
+longSplittedName_whiteEnd=FR 2022
+longYearlyName=Devoxx France 2022
+shortYearlyName=Devoxx FR 2022
 
 your.reviewer.rank=Votre classement
 reviewed=sujets revus

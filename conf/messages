@@ -1,19 +1,19 @@
 # -----------------
 # Main conference details
-CONF.title=Devoxx France 2021
+CONF.title=Devoxx France 2022
 CONF.subtitle=FR
 
 # Equivalent to ConferenceNaming
-shortYearlyName=Devoxx FR 2021
-longYearlyName=Devoxx France 2021
+shortYearlyName=Devoxx FR 2022
+longYearlyName=Devoxx France 2022
 shortName=Devoxx France
-longName=Devoxx FR 2021 CFP
+longName=Devoxx FR 2022 CFP
 longSplittedName_whiteStart=Devox
 longSplittedName_colored=x
-longSplittedName_whiteEnd=FR 2021
-conference.dates=September 29th to October 1st
+longSplittedName_whiteEnd=FR 2022
+conference.dates=April 2022, 20th - 22nd
 # -----------------
-cfp.title=Devoxx FR 2021 CFP
+cfp.title=Devoxx FR 2022 CFP
 login.error=Invalid email or password
 menu.home=Home
 menu.register=Sign-in
@@ -204,10 +204,10 @@ cfp.program.date=from {0}
 video.title=Videos
 video.tag=Review Devoxx FR''s videos on
 theme.title=Tracks
-theme.track=List of tracks for Devoxx France 2021:
+theme.track=List of tracks for Devoxx France 2022:
 track.title=Title
 track.description=Description
-appel.conf.dates=Devoxx France 2021, Sept 29th - Oct 1st
+appel.conf.dates=Devoxx France 2022, April, 20th-22nd
 
 # Tracks
 
@@ -540,9 +540,9 @@ day-confFriday=Friday
 day-bof=Thursday, 19h30
 day-monday=Monday, 27th September
 day-tuesday=Tuesday, 28th September
-day-wednesday=Wednesday, 29th September
-day-thursday=Thursday, 30th September
-day-friday=Friday, 1st October
+day-wednesday=Wednesday, 20th April
+day-thursday=Thursday, 21st April
+day-friday=Friday, 22nd April
 
 sw.all.confThursday=Conferences on Thursday
 confThursday=Conferences on Thursday
@@ -571,9 +571,9 @@ sw.show.thu=Thursday
 sw.show.thursday=Thursday
 sw.show.fri=Friday
 sw.show.friday=Friday
-sw.show.title.wed=Wednesday, 29th September 2021
-sw.show.title.thu=Thursday, 30th September 2021
-sw.show.title.fri=Friday, 1st October 2021
+sw.show.title.wed=Wednesday, April 2022, 20th
+sw.show.title.thu=Thursday, April 2022, 21st
+sw.show.title.fri=Friday, April 2022, 22nd
 
 sw.details.wednesday=Wednesday
 sw.details.thursday=Thursday

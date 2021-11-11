@@ -145,7 +145,7 @@ object ConferenceDescriptor {
     val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
       concernedByCountQuotaRestriction = false, htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false, accessibleTypeToGoldenTicketReviews = () => false)
 
-    // UNKNOWN is not there : it's dont on purpose !
+    // UNKNOWN is not there : it's not on purpose !
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
 
     def parse(propConf: String): ProposalConfiguration = {
@@ -310,10 +310,10 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    val firstDay = "2021-09-29"
-    val secondDay = "2021-09-30"
-    val thirdDay = "2021-10-01"
-    val confTimezone = ConferenceDescriptor.current().timezone
+    val firstDay = "2022-04-20"
+    val secondDay = "2022-04-21"
+    val thirdDay = "2022-04-22"
+    lazy val confTimezone: DateTimeZone = ConferenceDescriptor.current().timezone
 
     // UNIVERSITY
     val universitySlotsWednesday: List[Slot] = {
@@ -679,14 +679,14 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2021).withMonthOfYear(9).withDayOfMonth(29)
-  val toDay = new DateTime().withYear(2021).withMonthOfYear(10).withDayOfMonth(1)
+  val fromDay = new DateTime().withYear(2022).withMonthOfYear(4).withDayOfMonth(20)
+  val toDay = new DateTime().withYear(2022).withMonthOfYear(4).withDayOfMonth(22)
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxFR2021",
+    eventCode = "DevoxxFR2022",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxfr2021",
+    confUrlCode = "devoxxfr2022",
     frLangEnabled = true,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.fr"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.fr"),
@@ -706,16 +706,16 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "29 Septembre au 1er Octobre 2021",
+      datesI18nKey = "20 avril au 22 avril 2022",
       speakersPassDuration = 3,
       preferredDayEnabled = true,
-      firstDayFr = "29 Septembre",
-      firstDayEn = "September, 29th",
-      datesFr = "du 29 Septembre au 1er Octobre 2021",
-      datesEn = "from September, 29th till October 2nd 2021",
-      cfpOpenedOn = DateTime.parse("2019-12-02T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2020-08-25T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2021-09-01T00:00:00+02:00"),
+      firstDayFr = "20 avril",
+      firstDayEn = "April, 20th",
+      datesFr = "du 20 avril au 22 avril 2022",
+      datesEn = "April, 20th - 22nd 2022",
+      cfpOpenedOn = DateTime.parse("2021-11-29T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2022-01-09T23:59:59+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2022-02-28T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
