@@ -200,12 +200,4 @@ object Rating {
     BigDecimal(score).round(new java.math.MathContext(3)).toDouble
   }
 
-  def attic() = Redis.pool.withClient {
-    implicit client =>
-      client.del("Rating:2020") // In 2019 I forget to store in a separate collection. No real impact except on stats
-      val allKeys = client.keys("Rating:2020:ByTalkId:*")
-      val tx = client.multi()
-      allKeys.foreach { key: String => tx.del(key) }
-      tx.exec()
-  }
 }
