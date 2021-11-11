@@ -138,7 +138,7 @@ When you want to update your local branch (for instance, dev-poland) you should 
   
 Use WGET and download all pages from your Publisher controller. This will save speakers, talks, schedule, etc.
 
-```wget --no-clobber --convert-links -r -p -E -e robots=off http://localhost:9000/2016/index.html```
+```wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html```
 
 ## Can you help me with Redis 2.8.x ?
 

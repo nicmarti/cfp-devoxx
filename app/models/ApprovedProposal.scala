@@ -190,27 +190,21 @@ object ApprovedProposal {
   def cancelApprove(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
       val tx = client.multi()
-      tx.srem("ApprovedById:", proposal.id.toString)
-      tx.srem("Approved:" + proposal.talkType.id, proposal.id.toString)
-      // Buggy without a 'S'
-      tx.srem("ApprovedSpeaker:" + proposal.mainSpeaker, proposal.id.toString)
+      tx.srem("ApprovedById:", proposal.id)
+      tx.srem("Approved:" + proposal.talkType.id, proposal.id)
       // Correct
-      tx.srem("ApprovedSpeakers:" + proposal.mainSpeaker, proposal.id.toString)
+      tx.srem("ApprovedSpeakers:" + proposal.mainSpeaker, proposal.id)
 
       proposal.secondarySpeaker.map {
         secondarySpeaker: String =>
-          // Buggy without a 'S'
-          tx.srem("ApprovedSpeaker:" + secondarySpeaker, proposal.id.toString)
           // Correct
-          tx.srem("ApprovedSpeakers:" + secondarySpeaker, proposal.id.toString)
+          tx.srem("ApprovedSpeakers:" + secondarySpeaker, proposal.id)
       }
 
       proposal.otherSpeakers.foreach {
         otherSpeaker: String =>
-          // Buggy without a 'S'
-          tx.srem("ApprovedSpeaker:" + otherSpeaker, proposal.id.toString)
           // and the correct one
-          tx.srem("ApprovedSpeakers:" + otherSpeaker, proposal.id.toString)
+          tx.srem("ApprovedSpeakers:" + otherSpeaker, proposal.id)
       }
       tx.exec()
   }

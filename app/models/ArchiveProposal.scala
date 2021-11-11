@@ -48,20 +48,24 @@ object ArchiveProposal {
   }
 
   def archiveAll(proposalTypeId: String):Int = {
+    play.Logger.debug(s"archiveAll for proposalType ${proposalTypeId}")
     val ids=Proposal.allProposalIDsNotArchived
     val proposals = Proposal.loadAndParseProposals(ids).values
+    play.Logger.debug(s"archiveAll : loaded proposals")
 
     // First, check that the approval category is ok (bug #159 on old talks)
     // Rely on the current proposal talkType
     proposals.foreach(p=> ApprovedProposal.changeTalkType(p.id,p.talkType.id))
+    play.Logger.debug(s"archiveAll : updated talk type")
 
     // Then filter and execute archive
     val onlySameType = proposals.filter(_.talkType.id == proposalTypeId)
+    play.Logger.debug(s"archiveAll : starting archive...")
     onlySameType.foreach(p2 => archive(p2))
-
-    // TODO delete or archive all Reviews Proposals:Reviewed:ByAuthor:*
+    play.Logger.debug(s"archiveAll : archive done")
 
     Review.archiveAllReviews()
+    play.Logger.debug(s"archiveAll : reviews deleted")
 
     onlySameType.size
   }
@@ -69,12 +73,15 @@ object ArchiveProposal {
   private def archive(proposal: Proposal) = {
     val proposalId = proposal.id
 
+    play.Logger.debug(s"archiveAll : archive proposalId ${proposalId}")
+
     // Then
     Some(proposal).filter(ApprovedProposal.isApproved).map {
       approvedProposal: Proposal =>
         archiveApprovedProposal(approvedProposal)
         ApprovedProposal.cancelApprove(approvedProposal)
     }
+    play.Logger.debug(s"archiveAll : cancel approve")
 
     // Some talks with an original talkType of "conf" have been updated to "hack"
     // but the Approved list of talk was not updated, so I have to add this hack
@@ -84,21 +91,24 @@ object ArchiveProposal {
         archiveApprovedProposal(proposal)
         ApprovedProposal.cancelApprove(proposal)
     }
+    play.Logger.debug(s"archiveAll : cancel hack")
 
     Some(proposal).filter(ApprovedProposal.isRefused).map {
       approvedProposal: Proposal =>
         ApprovedProposal.cancelRefuse(approvedProposal)
     }
+    play.Logger.debug(s"archiveAll : cancel refused")
 
     //Delete all comments
     Comment.deleteAllComments(proposalId)
+    play.Logger.debug(s"archiveAll : comments deleted")
 
     // Remove votes for this talk
     Review.archiveAllVotesOnProposal(proposalId)
+    play.Logger.debug(s"archiveAll : all votes archived")
 
     Proposal.changeProposalState("system", proposalId, ProposalState.ARCHIVED)
   }
-
 
   private def archiveApprovedProposal(proposal: Proposal) = Redis.pool.withClient {
     implicit client =>
