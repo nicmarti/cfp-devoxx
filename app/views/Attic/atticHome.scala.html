@@ -44,6 +44,9 @@
                                 <input type="hidden" name="opType" value="draft"/>
                                 <button type="submit" class="btn btn-primary">Prune draft proposals</button>
                             </form>
+                            <form action="@routes.Attic.doProposalTypeReAssign()" method="POST">
+                                <button type="submit" class="btn btn-primary">Check all proposals (approved or refused) anf fix proposalType if needed</button>
+                            </form>
                             <form action="@routes.Attic.doArchive()" method="POST">
                                 <input type="hidden" name="proposalType" value="@ConferenceDescriptor.ConferenceProposalTypes.UNI.id"/>
                                 <button type="submit" class="btn btn-primary">Archive all University</button>

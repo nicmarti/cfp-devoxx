@@ -26,9 +26,10 @@ package models
 import library.Redis
 
 /**
- * An Entity to represent archived proposal
- * @author created by Nicolas Martignole, on 19/10/2014.
- */
+  * An Entity to represent archived proposal
+  *
+  * @author created by Nicolas Martignole, on 19/10/2014.
+  */
 
 object ArchiveProposal {
   def pruneAllDeleted(): Int = {
@@ -47,20 +48,24 @@ object ArchiveProposal {
     }
   }
 
-  def archiveAll(proposalTypeId: String):Int = {
-    play.Logger.debug(s"archiveAll for proposalType ${proposalTypeId}")
-    val ids=Proposal.allProposalIDsNotArchived
+  def precheck() = {
+    val ids = Proposal.allProposalIDsNotArchived
     val proposals = Proposal.loadAndParseProposals(ids).values
     play.Logger.debug(s"archiveAll : loaded proposals")
 
     // First, check that the approval category is ok (bug #159 on old talks)
     // Rely on the current proposal talkType
-    proposals.foreach(p=> ApprovedProposal.changeTalkType(p.id,p.talkType.id))
+    proposals.foreach(p => ApprovedProposal.changeTalkType(p.id, p.talkType.id))
     play.Logger.debug(s"archiveAll : updated talk type")
+  }
 
-    // Then filter and execute archive
-    val onlySameType = proposals.filter(_.talkType.id == proposalTypeId)
-    play.Logger.debug(s"archiveAll : starting archive...")
+  def archiveAll(proposalTypeId: String): Int = {
+    val proposalType = ProposalType.parse(proposalTypeId)
+    play.Logger.debug(s"archiveAll for proposalType ${proposalType}")
+    val onlySameType = Proposal.allProposalsForProposalType(proposalType).filterNot(_.state == ProposalState.ARCHIVED)
+
+    play.Logger.debug(s"archiveAll : total by status=>" + onlySameType.groupBy(_.state).map(curs => (curs._1,curs._2.size)))
+    play.Logger.debug(s"archiveAll : starting to archive ${onlySameType.size} proposals of type ${proposalType}")
     onlySameType.foreach(p2 => archive(p2))
     play.Logger.debug(s"archiveAll : archive done")
 
@@ -86,8 +91,8 @@ object ArchiveProposal {
     // Some talks with an original talkType of "conf" have been updated to "hack"
     // but the Approved list of talk was not updated, so I have to add this hack
     // in order to be sure to cleanup the Approved:* collections
-    ApprovedProposal._loadApprovedCategoriesForTalk(proposal).map{
-      talkType:String=>
+    ApprovedProposal._loadApprovedCategoriesForTalk(proposal).map {
+      talkType: String =>
         archiveApprovedProposal(proposal)
         ApprovedProposal.cancelApprove(proposal)
     }
@@ -123,7 +128,7 @@ object ArchiveProposal {
         otherSpeaker: String =>
           tx.sadd(s"ArchivedSpeakers:${conferenceCode}:" + otherSpeaker, proposal.id)
       }
-      tx.hdel("PreferredDay",proposal.id)
+      tx.hdel("PreferredDay", proposal.id)
       tx.exec()
   }
 

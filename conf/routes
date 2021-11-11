@@ -315,6 +315,7 @@ GET           /cfpadmin/invitations/cancel                                      
 # Please note that I removed the following links from the ADMIN Panel cause it is really something you do onle once a year.
 GET           /cfpadmin/attic/home                                              controllers.Attic.atticHome()
 POST          /cfpadmin/attic/pruneDraft                                        controllers.Attic.prune()
+POST          /cfpadmin/attic/doProposalTypeReAssign                            controllers.Attic.doProposalTypeReAssign()
 POST          /cfpadmin/attic/doArchive                                         controllers.Attic.doArchive()
 POST          /cfpadmin/attic/deleteInvitedSpeakers                             controllers.Attic.deleteInvitedSpeakers()
 POST          /cfpadmin/attic/resetNotified                                     controllers.Attic.resetNotified()

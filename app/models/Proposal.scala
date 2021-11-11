@@ -1124,10 +1124,9 @@ object Proposal {
   def allProposalsForProposalType(confType: ProposalType): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers(s"Proposals:ByType:${confType.id}")
-      client.hmget("Proposals", allProposalIds).flatMap {
-        proposalId: String =>
-          findById(proposalId) // will also load and set proposalState
-      }
+      allProposalIds.flatMap{ proposalId:String =>
+        findById(proposalId)
+      }.toList
   }
 
   def allFromProposalState(proposalState: ProposalState): List[Proposal] = Redis.pool.withClient {

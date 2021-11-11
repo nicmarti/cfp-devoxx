@@ -73,6 +73,12 @@ object Attic extends SecureCFPController {
       )
   }
 
+  def doProposalTypeReAssign() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      ArchiveProposal.precheck()
+      Redirect(routes.Attic.atticHome()).flashing(("success", s"All proposalType fixed, you can now execute archive for each type"))
+  }
+
   def doArchive() = SecuredAction(IsMemberOf("admin")).async {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       import scala.concurrent.ExecutionContext.Implicits.global
@@ -121,20 +127,20 @@ object Attic extends SecureCFPController {
       Redirect(routes.Attic.atticHome()).flashing(("success", s"${Messages("cfp.goldenTickets")} deleted"))
   }
 
-  def deleteWishlist()= SecuredAction(IsMemberOf("admin")) {
+  def deleteWishlist() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       RequestToTalk.attic()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted wishlisted"))
   }
 
-  def deleteFavoriteTalks()= SecuredAction(IsMemberOf("admin")) {
+  def deleteFavoriteTalks() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       FavoriteTalk.attic()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted favorite talks"))
   }
 
   // Mobile API
-  def deleteRatings()= SecuredAction(IsMemberOf("admin")) {
+  def deleteRatings() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Rating.attic()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted mobile votes"))
