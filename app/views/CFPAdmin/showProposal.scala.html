@@ -181,8 +181,8 @@
                     <div class="card-body">
                         <a href="@routes.CFPAdmin.showVotesForProposal(proposal.id)" class="btn btn-primary">@Messages("btn.showVotes")</a>
 
-                        @Event.loadEventsForObjRef(proposal.id).find(_.msg.contains("draft to submitted")).map { event =>
-                            @Messages("cfpAdmin.showWhenCreated", event.date.map(s => s.toDateTime(ConferenceDescriptor.current().timezone).toString("EEE dd/MM HH:mm")).getOrElse("???"))
+                        @Event.loadLatestProposalSubmittedEvent(proposal.id).map { event =>
+                            @Messages("cfpAdmin.showWhenCreated", event.timezonedDate().toString("EEE dd/MM HH:mm"))
                         }
                         <br>
                         @if(proposal.state != ProposalState.SUBMITTED) {

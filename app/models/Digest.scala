@@ -1,11 +1,12 @@
 package models
 
 import java.lang.Long
-
 import library.Redis
 import org.joda.time.DateTime
 import play.Play
 import play.api.i18n.Messages
+
+import java.util.function.Supplier
 
 /**
   * The email digest.
@@ -21,42 +22,25 @@ import play.api.i18n.Messages
   *
   * @author Stephan Janssen
   */
-case class Digest(value: String, storeProposals: Boolean) {
-}
+case class Digest(value: Digest.Frequency, labelI18nMessage: Function0[String], storeProposals: Boolean) {}
 
 object Digest {
+  type Frequency = String
 
-  val REAL_TIME = Digest("Realtime", storeProposals = true)    // Real time email updates
-  val DAILY = Digest("Daily", storeProposals = true)           // Daily email digest
-  val WEEKLY = Digest("Weekly", storeProposals = true)         // Weekly
-  val NEVER = Digest("Never", storeProposals = false)          // Never, means the CFP user will never receive proposal updates!
+  val REAL_TIME = Digest("Realtime", () => Messages("email.digest.realtime.description"), storeProposals = true)    // Real time email updates
+  val DAILY = Digest("Daily", () => Messages("email.digest.daily.description", getDayMoment), storeProposals = true)           // Daily email digest
+  val WEEKLY = Digest("Weekly", () => Messages("email.digest.weekly.description", getDayMoment, getWeekMoment), storeProposals = true)         // Weekly
+  val NEVER = Digest("Never", () => Messages("email.digest.never.description"), storeProposals = false)          // Never, means the CFP user will never receive proposal updates!
 
   // All the digest interval values
   val allDigests = List(REAL_TIME, DAILY, WEEKLY, NEVER)
+  val selectableDigests = List(REAL_TIME, DAILY, WEEKLY)
 
   private val digestRedisKey = "Digest:"
   private val digestUserRedisKey = digestRedisKey + "User:"
   private val digestFilterRedisKey = digestUserRedisKey + "Filter:"
 
   private val app = Play.application()
-
-  /**
-    * Construct the digest message.
-    *
-    * @param uuid the user id
-    * @return the I18N digest message for the UI view
-    */
-  def message(uuid: String): String = {
-    retrieve(uuid) match {
-      case DAILY.value => Messages("email.digest.daily.description", getDayMoment)
-
-      case WEEKLY.value => Messages("email.digest.weekly.description", getDayMoment, getWeekMoment)
-
-      case REAL_TIME.value => Messages("email.digest.realtime.description")
-
-      case NEVER.value => Messages("email.digest.never.description")
-    }
-  }
 
   def getDayMoment: String = {
     val daily = app.configuration().getString("digest.daily")
@@ -74,67 +58,6 @@ object Digest {
     } else {
       Messages("email.digest.day." + day)
     }
-  }
-
-  /**
-    * Update the email digest for the give web user id.
-    *
-    * @param webUserId  the web user id to update
-    * @param digest the new email digest setting
-    * @return
-    */
-  def update(webUserId: String, digest: String): String = Redis.pool.withClient {
-    implicit client =>
-        client.set(digestUserRedisKey + webUserId, digest)
-  }
-
-  /**
-    * Add a track digest filter for user.
-    *
-    * @param webUserId the web user uuid
-    * @param trackId the track ID to filter on
-    */
-  def addTrackFilter(webUserId: String, trackId: String): Long = Redis.pool.withClient {
-    implicit client =>
-      val now = DateTime.now().toString("d MMM yyyy HH:mm")
-      client.hset(digestFilterRedisKey + webUserId, trackId, now)
-  }
-
-  /**
-    * Remove a track digest filter for user.
-    *
-    * @param webUserId the web user uuid
-    * @param trackId the track ID to filter on
-    */
-  def delTrackFilter(webUserId: String, trackId: String): Long = Redis.pool.withClient {
-    implicit client =>
-      client.hdel(digestFilterRedisKey + webUserId, trackId)
-  }
-
-  /**
-    * Get the digest filter track identifiers.
-    *
-    * @param webUserId the web user uuid
-    * @return the track HTML entries
-    */
-  def getTrackFilters(webUserId: String): List[String] = Redis.pool.withClient {
-    implicit client =>
-      client.hkeys(digestFilterRedisKey + webUserId).toList
-  }
-
-  /**
-    * Retrieve the email digest setting for the web user UUID.
-    *
-    * @param webUserId  the web user UUID
-    * @return the email digest setting
-    */
-  def retrieve(webUserId: String) : String = Redis.pool.withClient {
-    implicit client =>
-      if (client.exists(digestUserRedisKey + webUserId)) {
-        client.get(digestUserRedisKey + webUserId).get
-      } else {
-        Digest.NEVER.value
-      }
   }
 
   /**

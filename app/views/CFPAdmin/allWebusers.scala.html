@@ -48,7 +48,7 @@
                         </td>
                         <td>
                         @if(Webuser.isMember(webuser.uuid, "cfp")) {
-                            @Digest.retrieve(webuser.uuid)
+                            @NotificationUserPreference.load(webuser.uuid).digestFrequency
                         }else {
                             N/A
                         }

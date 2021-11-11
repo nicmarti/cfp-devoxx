@@ -1,4 +1,5 @@
-@(events: List[Event],
+@(webuser: Webuser,
+ events: List[Event],
  allProposalsForReview: List[Proposal],
  totalEvents:Long,
  page:Int,
@@ -134,10 +135,10 @@
                     <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
                             <tr>
-                                <th>@Messages("admin.cfp.date")</th>
-                                <th>@Messages("admin.cfp.author")</th>
-                                <th>@Messages("admin.cfp.propId")</th>
-                                <th>@Messages("admin.cfp.msg")</th>
+                                <th scope="col" style="width: 100px">@Messages("admin.cfp.date")</th>
+                                <th scope="col" style="width: 75px">@Messages("admin.cfp.author")</th>
+                                <th scope="col" style="width: 200px">@Messages("admin.cfp.propId")</th>
+                                <th scope="col">@Messages("admin.cfp.msg")</th>
                             </tr>
                             <tr>
                                 <td colspan="4">
@@ -151,21 +152,22 @@
                                     }</small>
                                 </td>
                             </tr>
-
                         </thead>
                         <tbody>
                         @events.map { event: Event =>
                             <tr>
                                 <td class="text-center">
-                                    <small>@event.date.map(s=>s.toDateTime(ConferenceDescriptor.current().timezone).toString("dd/MM HH:mm"))</small>
+                                    <small>@event.timezonedDate().toString("dd/MM HH:mm")</small>
                                 </td>
                                 <td class="text-center">
-                                @tags.renderGravatar(event.uuid,showName = false)
+                                @tags.renderGravatar(event.creator,showName = false)
                                 </td>
                                 <td class="text-center">
-                                @tags.renderObjRef(event.objRef)
+                                    @event.linksFor(webuser).map { link =>
+                                        <a href="@link.href" class="btn btn-sm btn-block btn-primary"><i class="fas @link.icon" aria-hidden="true"></i> @link.title</a>
+                                    }
                                 </td>
-                                <td><small>@event.msg</small></td>
+                                <td><small>@event.message()</small></td>
                             </tr>
                         }
                         </tbody>

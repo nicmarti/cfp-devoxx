@@ -55,7 +55,7 @@ object Review {
       tx.zadd(s"Proposals:Votes:$proposalId", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zadd(s"Proposals:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
       tx.exec()
-      Event.storeEvent(Event(proposalId, reviewerUUID, s"Voted $vote"))
+      Event.storeEvent(VoteForProposalEvent(reviewerUUID, proposalId, vote))
   }
 
   def removeVoteForProposal(proposalId: String, reviewerUUID: String) = Redis.pool.withClient {
@@ -66,7 +66,7 @@ object Review {
       tx.zrem(s"Proposals:Votes:$proposalId", reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zrem(s"Proposals:Dates:$proposalId", reviewerUUID + "__DEL")
       tx.exec()
-      Event.storeEvent(Event(proposalId, reviewerUUID, s"Removed its vote on this talk"))
+      Event.storeEvent(RemovedProposalVoteEvent(reviewerUUID, proposalId))
   }
 
   def archiveAllVotesOnProposal(proposalId: String) = Redis.pool.withClient {

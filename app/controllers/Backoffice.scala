@@ -34,11 +34,11 @@ object Backoffice extends SecureCFPController {
       Webuser.findByUUID(uuidSpeaker).filterNot(_.uuid == "bd894205a7d579351609f8dcbde49b9ffc0fae13").map {
         webuser =>
           if (Webuser.hasAccessToCFP(uuidSpeaker)) {
-            Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"removed ${webuser.cleanName} from CFP group"))
+            Event.storeEvent(WebuserRemovedFromCFPGroupEvent(request.webuser.uuid, uuidSpeaker, webuser.cleanName))
             Webuser.removeFromCFPAdmin(uuidSpeaker)
           } else {
             Webuser.addToCFPAdmin(uuidSpeaker)
-            Event.storeEvent(Event(uuidSpeaker, request.webuser.uuid, s"added ${webuser.cleanName} to CFP group"))
+            Event.storeEvent(WebuserAddedToCFPGroupEvent(request.webuser.uuid, uuidSpeaker, webuser.cleanName))
           }
           Redirect(routes.CFPAdmin.allWebusers())
       }.getOrElse {
@@ -145,7 +145,7 @@ object Backoffice extends SecureCFPController {
           Webuser.findByUUID(speakerUUIDToDelete).foreach {
             w =>
               Webuser.delete(w)
-              Event.storeEvent(Event(speakerUUIDToDelete, uuid, s"Deleted webuser ${w.cleanName} ${w.uuid}"))
+              Event.storeEvent(DeletedWebuserEvent(uuid, speakerUUIDToDelete, w.cleanName))
           }
           Redirect(routes.CFPAdmin.index()).flashing("success" -> s"Speaker $speakerUUIDToDelete deleted")
         })
