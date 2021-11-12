@@ -72,13 +72,21 @@ object ProposalUserWatchPreference {
       client.smembers(s"""Watchers:${proposalId}""")
   }
 
-  def addProposalWatcher(proposalId: String, webUserId: String) = Redis.pool.withClient {
+  def addProposalWatcher(proposalId: String, webUserId: String, automatic: Boolean) = Redis.pool.withClient {
     implicit client =>
-      client.sadd(s"""Watchers:${proposalId}""", webUserId)
+      if(client.sadd(s"""Watchers:${proposalId}""", webUserId) == 1) {
+        val watchEvent = if(automatic) {
+          ProposalAutoWatchedEvent(webUserId, proposalId)
+        } else {
+          ProposalManuallyWatchedEvent(webUserId, proposalId)
+        }
+        Event.storeEvent(watchEvent)
+      }
   }
 
   def removeProposalWatcher(proposalId: String, webUserId: String) = Redis.pool.withClient {
     implicit client =>
+      Event.storeEvent(ProposalUnwatchedEvent(webUserId, proposalId))
       client.del(s"""Watchers:${proposalId}""", webUserId)
   }
 

@@ -127,6 +127,9 @@ case class WishlistLink(requestId: String) extends EventLink {
   new Type(value = classOf[VoteForProposalEvent], name = "VoteForProposal"),
   new Type(value = classOf[RemovedProposalVoteEvent], name = "RemovedProposalVote"),
   new Type(value = classOf[AllProposalVotesResettedEvent], name = "AllProposalVotesResetted"),
+  new Type(value = classOf[ProposalAutoWatchedEvent], name = "ProposalAutoWatched"),
+  new Type(value = classOf[ProposalManuallyWatchedEvent], name = "ProposalManuallyWatched"),
+  new Type(value = classOf[ProposalUnwatchedEvent], name = "ProposalUnwatched"),
   new Type(value = classOf[ProposalPublicCommentSentBySpeakerEvent], name = "ProposalPublicCommentSentBySpeaker"),
   new Type(value = classOf[ProposalPublicCommentSentByReviewersEvent], name = "ProposalPublicCommentSentByReviewers"),
   new Type(value = classOf[ProposalPrivateCommentSentByComiteeEvent], name = "ProposalPrivateCommentSentByComitee"),
@@ -306,6 +309,23 @@ case class AllProposalVotesResettedEvent(creator: String, proposalId: String)
   extends ProposalEvent {
   def message(): String = Messages("events.AllProposalVotesResetted", proposalId)
 }
+
+// Proposal watches
+case class ProposalAutoWatchedEvent(creator: String, proposalId: String)
+  extends ProposalEvent {
+  def message(): String = Messages("events.ProposalAutoWatched", proposalId)
+}
+
+case class ProposalManuallyWatchedEvent(creator: String, proposalId: String)
+  extends ProposalEvent {
+  def message(): String = Messages("events.ProposalManuallyWatched", proposalId)
+}
+
+case class ProposalUnwatchedEvent(creator: String, proposalId: String)
+  extends ProposalEvent {
+  def message(): String = Messages("events.ProposalUnwatched", proposalId)
+}
+
 
 // Proposal comments events
 case class ProposalPublicCommentSentBySpeakerEvent(creator: String, proposalId: String, proposalTitle: String, comment: String)

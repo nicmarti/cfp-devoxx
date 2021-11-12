@@ -120,7 +120,7 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
-          ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid)
+          ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
           val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(uuid, proposalId)
           val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
 
