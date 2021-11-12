@@ -64,12 +64,15 @@ case class Speaker(uuid: String
     firstName.getOrElse("").capitalize
   }
 
-  def cleanLastName: String = { cleanLastName() }
+  def cleanLastName: String = {
+    cleanLastName()
+  }
+
   def cleanLastName(removeAccents: Boolean = true): String = {
     name.map(s => {
       var result = s.toLowerCase
-      if(removeAccents) {
-        result = result.replaceAll("é","e")
+      if (removeAccents) {
+        result = result.replaceAll("é", "e")
       }
       result
     }).getOrElse("").toUpperCase
@@ -303,36 +306,43 @@ object Speaker {
 
       Speaker.findByUUID(speakerUUID).map {
         speaker =>
+          Webuser.findByEmail(speaker.email) match {
+            case None =>
+              play.Logger.debug(s"fix_user: speaker ${speakerUUID} does not have a Webuser for email ${speaker.email}")
+              client.set("Webuser:Email:" + speaker.email, speakerUUID)
+            case Some(webuser) if webuser.uuid != speaker.uuid => {
+              // Try to retrieve the old Webuser
+              val oldWebuser = Webuser.findByUUID(speakerUUID)
 
-          if (Webuser.findByEmail(speaker.email).exists(w => w.uuid != speaker.uuid)) {
+              if (oldWebuser.isDefined) {
+                // Update the Webuser:Email:<speaker email>
+                client.set("Webuser:Email:" + speaker.email, oldWebuser.get.uuid)
+                play.Logger.debug(s"fix_user: speaker set Webuser:Email:${speaker.email} to ${oldWebuser.get.uuid}")
+                val badWebuser = Webuser.findByEmail(speaker.email)
+                if (badWebuser.isDefined) {
+                  play.Logger.debug(s"fix_user: badWebuser updating...")
+                  val tx = client.multi()
+                  tx.hdel("Webuser", badWebuser.get.uuid)
+                  tx.del("Webuser:UUID:" + badWebuser.get.uuid)
+                  tx.srem("Webuser:speaker", badWebuser.get.uuid)
+                  tx.srem("Webuser:cfp", badWebuser.get.uuid)
+                  tx.srem("Webuser:admin", badWebuser.get.uuid)
+                  tx.srem("Webuser:visitor", badWebuser.get.uuid)
+                  tx.srem("Webuser:gticket", badWebuser.get.uuid)
+                  tx.srem("Webuser:devoxxian", badWebuser.get.uuid)
+                  tx.exec()
+                }
 
-            // Try to retrieve the old Webuser
-            val oldWebuser = Webuser.findByUUID(speakerUUID)
-
-            if (oldWebuser.isDefined) {
-              // Update the Webuser:Email:<speaker email>
-              client.set("Webuser:Email:" + speaker.email, oldWebuser.get.uuid)
-              val badWebuser = Webuser.findByEmail(speaker.email)
-              if(badWebuser.isDefined) {
-                val tx = client.multi()
-                tx.hdel("Webuser", badWebuser.get.uuid)
-                tx.del("Webuser:UUID:" + badWebuser.get.uuid)
-                tx.srem("Webuser:speaker", badWebuser.get.uuid)
-                tx.srem("Webuser:cfp", badWebuser.get.uuid)
-                tx.srem("Webuser:admin", badWebuser.get.uuid)
-                tx.srem("Webuser:visitor", badWebuser.get.uuid)
-                tx.srem("Webuser:gticket", badWebuser.get.uuid)
-                tx.srem("Webuser:devoxxian", badWebuser.get.uuid)
-                tx.exec()
+                "Done. Speaker should now be able to authenticate and to reload its old profile. New profile has been deleted."
+              } else {
+                "Old web user not found : I can't restore the profile :-/"
               }
-
-              "Done. Speaker should now be able to authenticate and to reload its old profile. New profile has been deleted."
-            } else {
-              "Old web user not found : I can't restore the profile :-/"
             }
-          } else {
-            "This profile is OK and does not need to be updated"
+            case _ =>
+              play.Logger.debug(s"Webuser and Speaker are OK for speaker email ${speaker.email}")
+              "Webuser and Speaker are OK for speaker email ${speaker.email}"
           }
+
       }.getOrElse("Speaker not found")
   }
 
@@ -343,11 +353,11 @@ object Speaker {
         speakerUUID: String =>
           Speaker.findByUUID(speakerUUID).map {
             speaker =>
-              Webuser.findByEmail(speaker.email).map{
-                badWebuser=>
-                if (Webuser.findByEmail(speaker.email).exists(w => w.uuid != speaker.uuid)) {
-                  println("Speaker BUG "+speaker.email +" webuser rattaché "+badWebuser.uuid)
-                }
+              Webuser.findByEmail(speaker.email).map {
+                badWebuser =>
+                  if (Webuser.findByEmail(speaker.email).exists(w => w.uuid != speaker.uuid)) {
+                    println("Speaker BUG " + speaker.email + " webuser rattaché " + badWebuser.uuid)
+                  }
               }
           }
 

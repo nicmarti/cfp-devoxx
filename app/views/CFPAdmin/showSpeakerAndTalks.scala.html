@@ -118,7 +118,7 @@
             <div class="card-body">
                 <p>Some Webuser have been corrupted by invalid UUID. Consequence is that a Speaker cannot reload its profile, and will create a new one.</p>
 
-                <p>UUID should be = @Webuser.generateUUID(speaker.email)</p>
+                <p>Webuser UUID should be = @Webuser.generateUUID(speaker.email) but we cannot update an existing speaker</p>
                 <p>Speaker find by UUID ? @Speaker.findByUUID(speaker.uuid).isDefined</p>
                 <p>Webuser find by UUID works ?  @if(Webuser.findByUUID(speaker.uuid).isDefined){ <label class="badge badge-success">YES</label> } else { <label class="badge badge-danger">No</label> }</p>
                 <p>Webuser find by Email ?  @if(Webuser.findByEmail(speaker.email).isDefined){ <label class="badge badge-success">YES</label> } else { <label class="badge badge-danger">No</label> }</p>
