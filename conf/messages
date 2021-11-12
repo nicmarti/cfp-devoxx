@@ -990,6 +990,7 @@ no.more.talk=You reviewed all submitted proposals
 #Events
 events.NewSpeaker=created a speaker [{0}]
 events.UpdatedSpeaker=updated a speaker [{0}]
+events.GTVoteForProposal=GT Voted {0} for {1}
 events.VoteForProposal=Voted {0} for {1}
 events.WishlistItemStatusUpdate=Updated status of a wishlist item to [{0}]
 events.TalkRemovedFromRefuseList=Cancel Refused on {0} [{1}] in track [{2}]

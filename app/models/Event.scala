@@ -123,6 +123,7 @@ case class WishlistLink(requestId: String) extends EventLink {
   new Type(value = classOf[UpdatedSubmittedProposalEvent], name = "UpdatedSubmittedProposal"),
   new Type(value = classOf[DeletedProposalEvent], name = "DeletedProposal"),
   new Type(value = classOf[RemovedProposalSponsoredFlagEvent], name = "RemovedProposalSponsoredFlag"),
+  new Type(value = classOf[GTVoteForProposalEvent], name = "GTVoteForProposal"),
   new Type(value = classOf[VoteForProposalEvent], name = "VoteForProposal"),
   new Type(value = classOf[RemovedProposalVoteEvent], name = "RemovedProposalVote"),
   new Type(value = classOf[AllProposalVotesResettedEvent], name = "AllProposalVotesResetted"),
@@ -287,6 +288,10 @@ case class RemovedProposalSponsoredFlagEvent(creator: String, proposalId: String
 }
 
 // Proposal votes
+case class GTVoteForProposalEvent(creator: String, proposalId: String, vote: Int)
+  extends ProposalEvent {
+  def message(): String = Messages("events.GTVoteForProposal", vote, proposalId)
+}
 case class VoteForProposalEvent(creator: String, proposalId: String, vote: Int)
   extends ProposalEvent {
   def message(): String = Messages("events.VoteForProposal", vote, proposalId)

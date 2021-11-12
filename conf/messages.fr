@@ -919,6 +919,7 @@ visitor.welcome.publisher=Parcourir l''agenda des conférences
 #Events
 events.NewSpeaker=Speaker créé [{0}]
 events.UpdatedSpeaker=Speaker mis à jour [{0}]
+events.GTVoteForProposal=GT a voté {0} sur {1}
 events.VoteForProposal=A voté {0} sur {1}
 events.WishlistItemStatusUpdate=Statut de la liste de souhait modifié à [{0}]
 events.TalkRemovedFromRefuseList=Annulation refusée sur {0} [{1}] dans la track [{2}]
