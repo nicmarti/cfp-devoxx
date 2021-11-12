@@ -84,51 +84,8 @@
                 <h4>SMS notification</h4>
                 <a href="@routes.SMSController.allSpeakers()" class="btn btn-primary btn-sm"><i class="fas fa-phone"></i> See the list of speakers with phoneNumber</a>
             }
-
-            <br><br>
-
-            <div class="panel panel-danger">
-                <div class="card-header"><h4><i class="fas fa-comment"></i> 'My Devoxx' Mobile Notifications</h4></div>
-                <div class="card-body">
-                    <form>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon">Push notification</span>
-                                <input id="pushMessage" type="text" class="form-control" placeholder="Message to push to all 'My Devoxx' mobile users, handle with care!">
-                            </div>
-                        </div>
-                    </form>
-                    <button id="pushMsg" class="btn btn-danger btn-sm"><i class="fas fa-exclamation-triangle"></i> Push Message</button>
-                </div>
-            </div>
-
         </div>
         </div>
     </div>
 </div>
-<script type="text/javascript">
-        $('#pushMsg').click(function(evt) {
-            var msg = $('#pushMessage').val();
-
-            var obj = {
-                stringField: msg
-            };
-
-            $.ajax({
-                type : 'POST',
-                url : "/admin/push/message",
-                data: JSON.stringify(obj),
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                success : function(data) {
-                    alert("Mobile users notified");
-                },
-                error : function(data) {
-                    setError('Push notification failed!');
-                }
-            });
-            return false;
-        });
-</script>
 }

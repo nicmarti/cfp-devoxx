@@ -80,8 +80,6 @@ case class NotifyProposalSubmitted(author: String, proposal: Proposal)
 
 case class NotifyGoldenTicket(goldenTicket: GoldenTicket)
 
-case class NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean] = None)
-
 case class EmailDigests(digest: Digest)
 
 case object CheckSchedules
@@ -113,7 +111,6 @@ class ZapActor extends Actor {
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
     case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
-    case NotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]) => doNotifyMobileApps(message, scheduleUpdate)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case CheckSchedules => doCheckSchedules()
     case UpdateSchedule(talkType: String, proposalId: String) => doUpdateProposal(talkType: String, proposalId: String)
@@ -267,71 +264,6 @@ class ZapActor extends Actor {
         Mails.sendGoldenTicketEmail(invitedWebuser, gt)
     }.getOrElse {
       play.Logger.of("library.ZapActor").error("Golden ticket error : user not found with uuid " + gt.webuserUUID)
-    }
-  }
-
-  /**
-    * Push mobile schedule notification via Gluon Link
-    *
-    * method: POST
-    * url: https://cloud.gluonhq.com/3/push/enterprise/notification
-    * form params:
-    *   - title: notification title
-    *   - body: notification body
-    *   - deliveryDate: when the push notification should be sent (not yet implemented, give 0 for now)
-    *   - priority: HIGH of NORMAL
-    *   - expirationType: WEEKS, DAYS, HOURS of MINUTES
-    *   - expirationAmount: number of units of expirationType: WEEKS [0,4], DAYS: [0,7], HOURS: [0,24], MINUTES: [0,60]
-    *   - targetType: ALL_DEVICES or SINGLE_DEVICE
-    *   - targetDeviceToken: the device token where to push the notification, only in combination with targetType=SINGLE_DEVICE
-    *   - invisible: true or false
-    * authenticatie: Authorization header with value: "Gluon YjJmM2..."
-    *
-    * Example silent push
-    *
-    * curl https://cloud.gluonhq.com/3/push/enterprise/notification -i -X POST
-    * -H "Authorization: Gluon Security_HEADER_HERE"
-    * -d "title=update"
-    * -d "body=update"
-    * -d "deliveryDate=0"
-    * -d "priority=HIGH"
-    * -d "expirationType=DAYS"
-    * -d "expirationAmount=1"
-    * -d "targetType=ALL_DEVICES"
-    * -d "invisible=true"
-    *
-    * @param message        the notification message
-    * @param scheduleUpdate true = invisible message
-    */
-  def doNotifyMobileApps(message: String, scheduleUpdate: Option[Boolean]): Unit = {
-    val securityGluonHeader: String = ConferenceDescriptor.gluonAuthorization()
-
-    val post = new HttpPost("https://cloud.gluonhq.com/3/push/enterprise/notification")
-    post.addHeader("Authorization", s"Gluon $securityGluonHeader")
-
-    val urlParameters = new util.ArrayList[BasicNameValuePair]()
-    urlParameters.add(new BasicNameValuePair("title", "My Devoxx"))
-
-    if (scheduleUpdate.getOrElse(false)) {
-      urlParameters.add(new BasicNameValuePair("body", ConferenceDescriptor.current().confUrlCode))
-    } else {
-      urlParameters.add(new BasicNameValuePair("body", message))
-    }
-
-    urlParameters.add(new BasicNameValuePair("deliveryDate", "0"))
-    urlParameters.add(new BasicNameValuePair("priority", "HIGH"))
-    urlParameters.add(new BasicNameValuePair("expirationType", "DAYS"))
-    urlParameters.add(new BasicNameValuePair("expirationAmount", "1"))
-    urlParameters.add(new BasicNameValuePair("targetTopic", ConferenceDescriptor.current().confUrlCode))
-    urlParameters.add(new BasicNameValuePair("targetType", "TOPIC"))
-    urlParameters.add(new BasicNameValuePair("invisible", scheduleUpdate.getOrElse(false).toString))
-
-    post.setEntity(new UrlEncodedFormEntity(urlParameters))
-    val client = HttpClientBuilder.create().setUserAgent("Devoxx CFP").build()
-    val result = client.execute(post)
-
-    if(play.Logger.of("library.ZapActor").isDebugEnabled) {
-      play.Logger.of("library.ZapActor").debug(s"Gluon notify mobile result ${result}")
     }
   }
 

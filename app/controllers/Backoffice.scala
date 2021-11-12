@@ -489,19 +489,6 @@ object Backoffice extends SecureCFPController {
       Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
   }
 
-
-  def pushNotifications(message: String) = SecuredAction(IsMemberOf("admin")) {
-    implicit request =>
-
-      request.body.asJson.map {
-        json =>
-          ZapActor.actor ! NotifyMobileApps(message)
-          Ok(message)
-      }.getOrElse {
-        BadRequest("{\"status\":\"expecting json data\"}").as("application/json")
-      }
-  }
-
   def deleteWebuser(uuid: String) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       Webuser.findByUUID(uuid) match {

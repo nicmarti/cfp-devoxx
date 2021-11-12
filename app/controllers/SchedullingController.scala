@@ -23,7 +23,7 @@
 
 package controllers
 
-import library.{NotifyMobileApps, SaveSlots, ZapActor}
+import library.{SaveSlots, ZapActor}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.i18n.Messages
@@ -252,10 +252,6 @@ object SchedullingController extends SecureCFPController {
         case None => NotFound
         case Some(dbProgramSchedule) => {
           ProgramSchedule.publishProgramSchedule(uuid)
-
-          // Notify the mobile apps via Gluon that a new schedule has been published
-          ZapActor.actor ! NotifyMobileApps("refresh", Some(true))
-
           Ok("{\"status\":\"success\"}").as("application/json")
         }
       }
