@@ -57,10 +57,21 @@ object NotificationUserPreference {
       client.set(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""", json)
   }
 
-  def load(webUserId: String): NotificationUserPreference = Redis.pool.withClient {
+  def load(webUserId: String): NotificationUserPreference =  {
+    loadKey(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
+  }
+
+  private def loadKey(key: String): NotificationUserPreference = Redis.pool.withClient {
     implicit client =>
-      val json = client.get(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
+      val json = client.get(key)
       json.map { Json.parse(_).as[NotificationUserPreference] }.getOrElse(DEFAULT_FALLBACK_PREFERENCES)
+  }
+
+  def loadAllForCurrentYear(): Set[Tuple2[String, NotificationUserPreference]] = Redis.pool.withClient {
+    implicit client =>
+      client.keys(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:*""").map { key =>
+        Tuple2(key.substring(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:""".length), loadKey(key))
+      }
   }
 }
 
@@ -98,4 +109,26 @@ object ProposalUserWatchPreference {
       })
   }
 
+  private def applyProposalUserPrefsAutowatch(userPreferences: Set[(String, NotificationUserPreference)], proposalId: String, havingAutowatch: AutoWatch) = Redis.pool.withClient {
+    implicit client =>
+      Proposal.findProposalTrack(proposalId).map { track =>
+        val allMatchingPreferences = userPreferences.filter{ prefAndKey =>
+          prefAndKey._2.autowatchId == havingAutowatch.id && (prefAndKey._2.autowatchFilterForTrackIds.isEmpty || prefAndKey._2.autowatchFilterForTrackIds.get.contains(track.id))
+        }
+
+        val tx = client.multi()
+        allMatchingPreferences.foreach{ prefAndKey =>
+          addProposalWatcher(proposalId, prefAndKey._1, true)
+        }
+        tx.exec()
+      }
+  }
+
+  def applyAllUserProposalAutowatch(proposalId: String, havingAutowatch: AutoWatch) {
+    applyProposalUserPrefsAutowatch(NotificationUserPreference.loadAllForCurrentYear(), proposalId, havingAutowatch)
+  }
+
+  def applyUserProposalAutowatch(webUserId: String, proposalId: String, havingAutowatch: AutoWatch) {
+    applyProposalUserPrefsAutowatch(Set((webUserId, NotificationUserPreference.load(webUserId))), proposalId, havingAutowatch)
+  }
 }

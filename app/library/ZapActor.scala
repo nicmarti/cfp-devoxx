@@ -131,6 +131,8 @@ class ZapActor extends Actor {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(ProposalPublicCommentSentByReviewersEvent(reporterUUID, proposal.id, proposal.title, speaker.cleanName, msg))
+      ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
+
       val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
       val newMessageID = Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg, maybeMessageID)
       // Overwrite the messageID for the next email (to set the In-Reply-To)
@@ -166,6 +168,8 @@ class ZapActor extends Actor {
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPrivateCommentSentByComiteeEvent(reporterUUID, proposal.id, proposal.title, msg))
+    ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
+
     Webuser.findByUUID(reporterUUID).map {
       reporterWebuser: Webuser =>
         // try to load the last Message ID that was sent
@@ -248,13 +252,8 @@ class ZapActor extends Actor {
   }
 
   def doNotifyProposalSubmitted(author: String, proposal: Proposal) {
+    ProposalUserWatchPreference.applyAllUserProposalAutowatch(proposal.id, AutoWatch.ONCE_PROPOSAL_SUBMITTED)
     Event.storeEvent(ProposalSubmissionEvent(author, proposal.id, proposal.title))
-    Webuser.findByUUID(author).map {
-      reporterWebuser: Webuser =>
-        Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("User not found with uuid " + author)
-    }
   }
 
   def doNotifyGoldenTicket(gt: GoldenTicket): Unit = {

@@ -51,6 +51,7 @@ object ReviewByGoldenTicket {
       tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + secureMaxVote) // Store when this user voted for this talk
       tx.exec()
 
+      ProposalUserWatchPreference.applyUserProposalAutowatch(reviewerUUID, proposalId, AutoWatch.AFTER_INTERACTION)
       Event.storeEvent(GTVoteForProposalEvent(reviewerUUID, proposalId, vote))
 
       ZapActor.actor ! ComputeVotesAndScore()
