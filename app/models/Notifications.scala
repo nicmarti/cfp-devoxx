@@ -2,6 +2,8 @@ package models
 
 import library.Redis
 import play.api.libs.json.Json
+import play.twirl.api.TxtFormat.raw
+import play.twirl.api.{Html, TxtFormat}
 
 case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: String){}
 
@@ -90,6 +92,22 @@ object NotificationEvent {
     PROPOSAL_PUBLIC_COMMENT_SUBMITTED, PROPOSAL_INTERNAL_COMMENT_SUBMITTED,
     PROPOSAL_SPEAKERS_LIST_ALTERED, PROPOSAL_FINAL_APPROVAL_SUBMITTED
   )
+
+  def valueOf(id: String) = {
+    allNotificationEvents.find(_.id == id)
+  }
+
+  def countEventsOfTypes(events: List[ProposalEvent], types: Iterable[Class[_]]) = {
+    types.foldLeft(0) { (total, eventType) => total + events.count(_.isOfSameTypeThan(eventType)) }
+  }
+
+  def countEventsOfType[T <: ProposalEvent](events: List[ProposalEvent]) = {
+    events.count { e => e.isInstanceOf[T] }
+  }
+
+  def hasEventOfTypes(events: List[ProposalEvent], types: Class[_]*) = {
+    countEventsOfTypes(events, types) > 0
+  }
 }
 
 case class NotificationUserPreference(autowatchId: AutoWatch.AutoWatchId, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: Digest.Frequency, eventIds: List[NotificationEvent.NotificationEventId]){}
@@ -185,5 +203,32 @@ object ProposalUserWatchPreference {
 
   def applyUserProposalAutowatch(webUserId: String, proposalId: String, havingAutowatch: AutoWatch) {
     applyProposalUserPrefsAutowatch(Set((webUserId, NotificationUserPreference.load(webUserId))), proposalId, havingAutowatch)
+  }
+}
+
+case class UserDigest(webuser: Webuser, digest: Digest, notificationUserPreference: NotificationUserPreference, events: List[ProposalEvent], proposalsById: Map[String, Proposal]) {
+  def concernedByEvents_html(notifEvents: NotificationEvent*)(eventsPartial: Function1[List[ProposalEvent], Html]): Html =
+    concernedByEvents(Html(""), notifEvents)(eventsPartial)
+  def concernedByEvents_txt(notifEvents: NotificationEvent*)(eventsPartial: Function1[List[ProposalEvent], TxtFormat.Appendable]): TxtFormat.Appendable =
+    concernedByEvents(raw(""), notifEvents)(eventsPartial)
+
+  private def concernedByEvents[CONTENT_TYPE](emptyContent: CONTENT_TYPE, notifEvents: Seq[NotificationEvent])(eventsPartial: Function1[List[ProposalEvent], CONTENT_TYPE]): CONTENT_TYPE = {
+    if(notificationUserPreference.eventIds.intersect(notifEvents.map(_.id)).nonEmpty) {
+      val applicableEventTypes = notifEvents.map(_.applicableEventTypes).flatten
+      val concernedEvents = events.filter{ event => applicableEventTypes.exists(event.isOfSameTypeThan(_)) }
+      if(concernedEvents.nonEmpty) {
+        eventsPartial.apply(concernedEvents)
+      } else {
+        emptyContent
+      }
+    } else {
+      emptyContent
+    }
+  }
+
+  def distinctProposalsOf[CONTENT_TYPE](events: List[ProposalEvent])(partial: Function3[Proposal, EventLink, List[ProposalEvent], CONTENT_TYPE]): List[CONTENT_TYPE] = {
+    // distinctBy is no available on collections before Scala 2.13 :'(
+    scala.reflect.internal.util.Collections.distinctBy(events.map{ e => (proposalsById.get(e.proposalId).get, e.linksFor(webuser).head) })(_._1)
+       .map{ case (proposal, link) => partial.apply(proposal, link, events.filter(_.proposalId == proposal.id)) }
   }
 }

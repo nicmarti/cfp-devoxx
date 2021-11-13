@@ -1,12 +1,14 @@
 package models
 
-import java.lang.Long
 import library.Redis
-import org.joda.time.DateTime
+import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
+import org.joda.time.{DateTime, Instant}
 import play.Play
 import play.api.i18n.Messages
+import play.twirl.api.Html
 
-import java.util.function.Supplier
+import java.util.concurrent.Callable
+import scala.collection.mutable
 
 /**
   * The email digest.
@@ -111,5 +113,73 @@ object Digest {
         case (key: String, value: String) =>
           (key, value)
       }
+  }
+
+  def saveLatestExecutionOf(digest: Digest, instant: Instant) = Redis.pool.withClient {
+    implicit client =>
+      client.set(s"""Digest:${digest.value}:LatestExecution""", ISODateTimeFormat.dateTime().print(instant))
+  }
+
+  def latestExecutionOf(digest: Digest): Option[Instant] = Redis.pool.withClient {
+    implicit client =>
+      client.get(s"""Digest:${digest.value}:LatestExecution""").map{ isoDateStr =>
+        ISODateTimeFormat.dateTime().parseDateTime(isoDateStr).toInstant
+      }
+  }
+  def processDigest[T](digest: Digest, webuserId: String)(call: Function4[Webuser, NotificationUserPreference, Html, String, T]): Option[T] = {
+    processDigest(digest, Some(List(webuserId)), false)(call).headOption
+  }
+
+  def processDigest[T](digest: Digest, maybeOnlyForUsers: Option[List[String]] = None, storeDigestExecuted: Boolean = true)(call: Function4[Webuser, NotificationUserPreference, Html, String, T]): List[T] = {
+    val startingRange = Digest.latestExecutionOf(digest).getOrElse(Instant.EPOCH)
+    val endingRange = Instant.now()
+
+    val digestedEvents = Event.loadDigestEventsBetween(startingRange, endingRange)
+    val proposalIds = digestedEvents.map(_.objRef().get).toSet
+
+    play.Logger.of("models.Digest").debug(s"""Digest [${digest.value}] => Found ${proposalIds.size} concerned proposal(s)""")
+
+    val proposalsByWatcherId = proposalIds
+      .map{ proposalId => ProposalUserWatchPreference.proposalWatchers(proposalId).map((proposalId, _)) }
+      .flatten
+      .groupBy(_._2)
+      .mapValues(_.map{ case (proposalId, _) => proposalId })
+
+    val concernedWatcherNotificationPreferences = proposalsByWatcherId.keys
+      // if maybeOnlyForUsers is set, filtering watchers based on this list
+      // otherwise keeping only watchers who subscribed to target digest frequency
+      .filter{ watcherId => maybeOnlyForUsers.map(_.contains(watcherId)).getOrElse(true) }
+      .map{ watcherId => Tuple2(watcherId, NotificationUserPreference.load(watcherId)) }
+      .filter{ notifUserPref => maybeOnlyForUsers.map{ _ => true }.getOrElse(notifUserPref._2.digestFrequency == digest.value)}
+      .toSet
+
+    val proposalsByConcernedWatcherId = proposalsByWatcherId.filterKeys{ watcherId => concernedWatcherNotificationPreferences.map(_._1).contains(watcherId) }
+
+    play.Logger.of("models.Digest").debug(s"""${proposalsByWatcherId.keys.size} watchers filtered to ${concernedWatcherNotificationPreferences.size} watchers""")
+
+    val proposalsById = Proposal.loadAndParseProposals(proposalsByConcernedWatcherId.values.flatten.toSet)
+
+    val result = concernedWatcherNotificationPreferences.toList.flatMap { case (watcherId, notifUserPrefs) =>
+      Webuser.findByUUID(watcherId).map { watcher =>
+        val userNotificationEvents = notifUserPrefs.eventIds.map(NotificationEvent.valueOf(_).get)
+        val events = digestedEvents
+          // Removing events where watcher is the initiator
+          .filterNot(_.creator == watcher.uuid)
+          // Removing events where user is not a watcher
+          .filter { event => proposalsByConcernedWatcherId.get(watcherId).get.contains(event.proposalId)}
+          // Removing events types not matching with user's prefs
+          .filter{ event => userNotificationEvents.map(_.applicableEventTypes).flatten.contains(event.getClass) }
+
+        val htmlContent = views.html.Mails.digest.sendDigest(UserDigest(watcher, digest, notifUserPrefs, events, proposalsById))
+        val textContent = views.txt.Mails.digest.sendDigest(UserDigest(watcher, digest, notifUserPrefs, events, proposalsById)).toString()
+        call(watcher, notifUserPrefs, htmlContent, textContent)
+      }
+    }
+
+    if(storeDigestExecuted) {
+      Digest.saveLatestExecutionOf(digest, endingRange)
+    }
+
+    result
   }
 }

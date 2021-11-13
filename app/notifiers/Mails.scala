@@ -29,6 +29,7 @@ import play.api.i18n.Messages
 import play.api.libs.mailer.{Email, MailerPlugin}
 import controllers.LeaderBoardParams
 import play.api.Play
+import play.twirl.api.Html
 
 /**
   * Sends all emails
@@ -242,28 +243,17 @@ object Mails {
 
   /**
     * Mail digest.
-    *
-    * @param userIDs the list of CFP uuids for given digest
-    * @param digest  List of speakers and their new proposals
-    * @return
     */
-  def sendDigest(digest: Digest,
-                 userIDs: List[String],
-                 proposals: List[Proposal],
-                 isDigestFilterOn: Boolean,
-                 leaderBoardParams: LeaderBoardParams): String = {
+  def sendDigest(digest: Digest, webuser: Webuser, bodyHtml: Html, bodyText: String): String = {
 
-  val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
-
-    val emails = userIDs.map(uuid => Webuser.findByUUID(uuid).get.email)
+    val subjectEmail: String = Messages("mail.digest.subject", digest.value, Messages("longYearlyName"))
 
     val email = Email(
       subject = subjectEmail,
       from = fromSender,
-      to = Seq("no-reply-digest@devoxx.com"),   // Use fake email because we use bcc instead
-      bcc = emails,
-      bodyText = Some(views.txt.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
-      bodyHtml = Some(views.html.Mails.digest.sendDigest(digest, proposals, isDigestFilterOn, leaderBoardParams).toString()),
+      to = Seq(webuser.email),
+      bodyText = Some(bodyText),
+      bodyHtml = Some(bodyHtml.toString()),
       charset = Some("utf-8")
     )
 

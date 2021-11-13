@@ -1,96 +1,60 @@
-@(digest: Digest,
-  proposals:List[Proposal],
-  isDigestFilterOn: Boolean,
-  params: controllers.LeaderBoardParams)
+@(userDigest: UserDigest)(implicit lang: Lang)
+<!DOCTYPE html>
+<html lang="en">
+    <head></head>
+    <body>
+        <h2>DevoxxFR Email Digest (@userDigest.digest.value)</h2>
 
-@if(ConferenceDescriptor.current().frLangEnabled) {
-    <h2>Nouvelles propositions depuis le dernier digest</h2>
-}else {
-    <h2>New proposals since last digest</h2>
-}
-@if(isDigestFilterOn) {
-    <P>Please note that this is a sublist based on your digest track(s) filter.</P>
-}
-<UL>
-@proposals.sortBy(_.track.label).map{proposal=>
-    <LI>
-        <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CFPAdmin.voteForProposal(proposal.id)">@proposal.title</a> by
-        @proposal.allSpeakers.map(speaker => speaker.cleanName).mkString(", ") -
-        (@Messages(proposal.track.label) / @Messages(proposal.talkType.simpleLabel))
-    </LI>
-}
-</UL>
+        @userDigest.concernedByEvents_html(NotificationEvent.ONCE_PROPOSAL_SUBMITTED) { events =>
+            <h3>New proposal submitted</h3>
+            <ul>
+                @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+                <li><a href="@{link.href}">@{proposal.id} - @{proposal.title}</a></li>
+                }
+            </ul>
+        }
 
-<HR>
+        @userDigest.concernedByEvents_html(NotificationEvent.PROPOSAL_RESUBMITTED, NotificationEvent.PROPOSAL_CONTENT_UPDATED, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED) { events =>
+            <h3>Changes on talks</h3>
+            <ul>
+                @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+                <li><a href="@{link.href}">@{proposal.id} - @{proposal.title}</a>: @{
+                    List.concat(
+                        if(NotificationEvent.hasEventOfTypes(proposalEvents, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
+                        if(NotificationEvent.hasEventOfTypes(proposalEvents, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
+                        if(NotificationEvent.hasEventOfTypes(proposalEvents, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
+                        if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
+                    ).mkString(", ")
+                }</li>
+                }
+            </ul>
+        }
 
-<h2>CFP Leader Board</h2>
+        @userDigest.concernedByEvents_html(NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED) { events =>
+            <h3>Activity on talks</h3>
+            <ul>
+                @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+                <li><a href="@{link.href}">@{proposal.id} - @{proposal.title}</a>: @{
+                    List.concat(
+                        if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+                            List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
+                        }else{ Nil },
+                        if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+                            List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
+                        }else{ Nil }
+                    ).mkString(", ")
+                }</li>
+                }
+            </ul>
+        }
 
-<table width="100%">
-    <tr>
-        <td width="50%">
-            <h3>Most Votes</h3>
-            @params.mostReviewed.map { mr =>
-                @tags.renderGravatarByProposal(mr._1)
-                <a href="@routes.CFPAdmin.showVotesForProposal(mr._1)">@mr._1</a> with @mr._2 votes<br>
-            }
-        </td>
-        <td width="50%">
-            <h3>Eager Speakers</h3>
-            @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
-                @tags.renderGravatar(br._1)
-                @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
-                <br>
-            }
-        </td>
-    </tr>
-    <tr>
-        <td width="50%">
-            <h3>Most Debatable</h3>
-            @params.totalCommentsPerProposal.sortBy(_._2).reverse.take(10).map { tc =>
-                @tags.renderGravatarByProposal(tc._1)
-                <a href="@routes.CFPAdmin.openForReview(tc._1)">@tc._1</a> with @tc._2 comments<br>
-            }
-        </td>
-        <td width="50%">
-            <h3>Top Reviewers</h3>
-            @params.bestReviewers.reverse.take(5).map { br =>
-                @tags.renderGravatar(br.uuid)
-                @tags.renderTotalWithLabel(br.totalTalksReviewed, "talk reviewed", "talks reviewed")
-                <br>
-            }
-        </td>
-    </tr>
-    <tr>
-        <td width="50%">
-            <h3>The Lazy One's</h3>
-            @params.lazyOnes.filter(_._2.toInt < 5).map { wr =>
-                @tags.renderGravatar(wr._1)
-                @tags.renderTotalWithLabel(wr._2.toInt, "talk reviewed", "talks reviewed")
-                <br>
-            }
-        </td>
-        <td width="50%">
-            <h3>Generous One's</h3>
-            @params.generousVoters.sortBy(_._2).reverse.take(5).map { wr =>
-                @tags.renderGravatar(wr._1)
-                <small>avg. rating of @wr._2</small>
-                <br>
-            }
-        </td>
-    </tr>
-</table>
-
-<br>
-@if(ConferenceDescriptor.current().frLangEnabled) {
-    <p>Vous pouvez toujours <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()"">mettre à jour</a> votre digest.</p>
-}else {
-    <p>You can always <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.homeForSpeaker()"">update</a> your digest.</p>
-}
-
-@if(ConferenceDescriptor.current().frLangEnabled) {
-    <p>Bonne évaluation</p>
-    <p>L'équipe CFP</p>
-}else {
-    <p>Happy rating!</p>
-    <p>The CFP Team</p>
-}
+        @userDigest.concernedByEvents_html(NotificationEvent.PROPOSAL_FINAL_APPROVAL_SUBMITTED) { events =>
+            <h3>Approved talks</h3>
+            <ul>
+                @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+                <li><a href="@{link.href}">@{proposal.id} - @{proposal.title}</a></li>
+                }
+            </ul>
+        }
+    </body>
+</html>

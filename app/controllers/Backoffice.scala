@@ -12,6 +12,7 @@ import play.api.data._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Action
+import play.twirl.api.Html
 
 import scala.concurrent.Future
 
@@ -464,29 +465,23 @@ object Backoffice extends SecureCFPController {
 
   def showDigests = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
+      val webusers = Webuser.allCFPWebusers().map(("Comitee", _)) ++ GoldenTicket.allWithWebuser().map { gt => ("GT", gt._2) }
+      val currentUser = request.webuser
 
-      // TODO Can this be condensed in Scala ?  (Stephan)
+      Ok(views.html.Backoffice.showDigests(currentUser, webusers))
+  }
 
-      val realTimeDigests = Digest.pendingProposals(Digest.REAL_TIME)
-      val dailyDigests = Digest.pendingProposals(Digest.DAILY)
-      val weeklyDigests = Digest.pendingProposals(Digest.WEEKLY)
+  def simulateDigest(frequency: Digest.Frequency, webuser: String, isHtml:Boolean = true) = SecuredAction(IsMemberOf("admin")) {
+    implicit request =>
+      Digest.selectableDigests.find(_.value == frequency).map { digest =>
+        val maybeContent = Digest.processDigest(digest, webuser) { case (watcher: Webuser, notificationUserPreference: NotificationUserPreference, htmlContent: Html, txtContent: String) =>
+          (htmlContent, txtContent)
+        }
 
-      val realTime = realTimeDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
-
-      val daily = dailyDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
-
-      val weekly = weeklyDigests.map {
-        case (key: String, value: String) =>
-          (Proposal.findById(key).get, value)
-      }
-
-      Ok(views.html.Backoffice.showDigests(realTime, daily, weekly))
+        maybeContent.map{ case(htmlContent, txtContent) =>
+          if(isHtml){ Ok(htmlContent) }else{ Ok(txtContent) }
+        }.getOrElse(BadRequest("No digest content generated for given user !"))
+      }.getOrElse(BadRequest("Unknown digest frequency !"))
   }
 
   def deleteWebuser(uuid: String) = SecuredAction(IsMemberOf("admin")) {

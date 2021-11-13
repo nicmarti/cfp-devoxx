@@ -1,36 +1,48 @@
-@(digest: Digest,
-  proposals:List[Proposal],
-  isDigestFilterOn: Boolean,
-  params: controllers.LeaderBoardParams)
+@(userDigest: UserDigest)(implicit lang: Lang)
 
-CFP '@digest.value' Digest
+DevoxxFR Email Digest (@userDigest.digest.value)
 
-@if(ConferenceDescriptor.current().frLangEnabled) {
-    Nouvelles propositions depuis le dernier digest
-}else {
-    New proposals since last digest
+@userDigest.concernedByEvents_txt(NotificationEvent.ONCE_PROPOSAL_SUBMITTED) { events =>
+  [[New proposal submitted]]
+  @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+    - @{proposal.id} - @{proposal.title} (@{link.href})
+  }
 }
 
-@if(isDigestFilterOn) {
-    Please note that this is a sublist based on your digest track(s) filter.
+@userDigest.concernedByEvents_txt(NotificationEvent.PROPOSAL_RESUBMITTED, NotificationEvent.PROPOSAL_CONTENT_UPDATED, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED) { events =>
+  [[Changes on talks]]
+  @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+    - @{proposal.id} - @{proposal.title} (@{link.href}): @{
+      List.concat(
+        if(NotificationEvent.hasEventOfTypes(proposalEvents, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
+        if(NotificationEvent.hasEventOfTypes(proposalEvents, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
+        if(NotificationEvent.hasEventOfTypes(proposalEvents, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
+        if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
+      ).mkString(", ")
+  }}
 }
 
-@proposals.map{proposal=>
-
-    - @proposal.title by @proposal.allSpeakers.map(speaker => speaker.cleanName).toList.mkString(", ") (@Messages(proposal.track.label) / @Messages(proposal.talkType.label))
-
+@userDigest.concernedByEvents_txt(NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED) { events =>
+  [[Activity on talks]]
+  @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+    - @{proposal.id} - @{proposal.title} (@{link.href}): @{
+      List.concat(
+        if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+          List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
+        }else{ Nil },
+        if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+          List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
+        }else{ Nil }
+      ).mkString(", ")
+  }}
 }
 
-@if(ConferenceDescriptor.current().frLangEnabled) {
-    Vous pouvez toujours mettre à jour votre digest.
-}else {
-    You can always update your digest.
+@userDigest.concernedByEvents_txt(NotificationEvent.PROPOSAL_FINAL_APPROVAL_SUBMITTED) { events =>
+  [[Approved talks]]
+    @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+      - @{proposal.id} - @{proposal.title} (@{link.href})
+    }
 }
 
-@if(ConferenceDescriptor.current().frLangEnabled) {
-    Bonne évaluation
-    L'équipe CFP
-}else {
-    Happy rating!
-    The CFP Team
-}
+Happy rating!
+The CFP Team

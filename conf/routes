@@ -43,7 +43,8 @@ POST          /cfp/profile/phoneNumber                                          
 POST          /cfp/profile/phoneNumber/confirm                                   controllers.CallForPaper.confirmPhone()
 
 # Email Digests
-GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
+GET           /cfp/backoffice/digests                                            controllers.Backoffice.showDigests()
+GET           /cfp/backoffice/simulateDigest                                     controllers.Backoffice.simulateDigest(frequency:models.Digest.Frequency,webuser:String,isHtml:Boolean ?=true)
 
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()

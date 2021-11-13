@@ -162,6 +162,12 @@ abstract class Event {
   def linksFor(webuser: Webuser): Seq[EventLink] = Seq()
 
   def timezonedDate(): DateTime = date.toDateTime(ConferenceDescriptor.current().timezone)
+  def isOfSameTypeThan(clazz: Class[_]) = {
+    // That's ugly, but I didn't found a better impl as getClass.isAssignableFrom(eventType)
+    // doesn't work sometimes, as clazz seems to be a generated scala class
+    // (companion object (maybe?) ending with '-$') while this is case class' type
+    getClass.getName.equals(clazz.getName.substring(0, clazz.getName.length-1)) || getClass.isAssignableFrom(clazz)
+  }
 }
 
 abstract class ProposalEvent extends Event {
