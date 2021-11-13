@@ -145,6 +145,7 @@ case class WishlistLink(requestId: String) extends EventLink {
   new Type(value = classOf[TalkRefusedEvent], name = "TalkRefused"),
   new Type(value = classOf[RefuseProposalEvent], name = "RefuseProposal"),
   new Type(value = classOf[ApprovedProposalEvent], name = "ApprovedProposal"),
+  new Type(value = classOf[SpeakerAcceptedPropositionApprovalEvent], name = "SpeakerAcceptedPropositionApproval"),
   new Type(value = classOf[WishlistItemStatusUpdateEvent], name = "WishlistItemStatusUpdate")
 ))
 abstract class Event {
@@ -403,6 +404,11 @@ case class RefuseProposalEvent(creator: String, proposalId: String, proposalTitl
 case class ApprovedProposalEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
   extends ProposalEvent {
   def message(): String = Messages("events.ApprovedProposal", Messages(talkTypeId), proposalTitle, Messages(trackId))
+}
+
+case class SpeakerAcceptedPropositionApprovalEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
+  extends ProposalEvent {
+  def message(): String = Messages("events.SpeakerAcceptedPropositionApproval", Messages(talkTypeId), proposalTitle, Messages(trackId))
 }
 
 // Misc events
