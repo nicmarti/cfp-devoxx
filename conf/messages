@@ -1030,6 +1030,7 @@ events.AddedSecondarySpeakerToProposal=Added {2} as a secondary speaker for {0} 
 events.RemovedSecondarySpeakerFromProposal=Removed {2} as secondary speaker for {0} {1}
 events.ReplacedProposalSecondarySpeaker=Replaced {2} by {3} as a secondary speaker for {0} {1}
 events.ProposalSubmission=Submitted a proposal {0} {1}
+events.ProposalResubmited=Submitted again a proposal {0} {1}
 events.NewProposalPostedByTrack=Posted a new talk ({0}) to track {2}
 events.ChangedTrackOfProposal=Changed talk''s track  with id {0} from {2} to {3}
 events.RemovedProposalSponsoredFlag=Removed [sponsorTalkFlag] on proposal {0} {1}

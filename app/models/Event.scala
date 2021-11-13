@@ -119,6 +119,7 @@ case class WishlistLink(requestId: String) extends EventLink {
   new Type(value = classOf[ChangedTrackOfProposalEvent], name = "ChangedTrackOfProposal"),
   new Type(value = classOf[EditAttemptOnSomeoneElseProposalEvent], name = "EditAttemptOnSomeoneElseProposal"),
   new Type(value = classOf[ProposalSubmissionEvent], name = "ProposalSubmission"),
+  new Type(value = classOf[ProposalResubmitedEvent], name = "ProposalResubmited"),
   new Type(value = classOf[UpdatedDraftProposalEvent], name = "UpdatedDraftProposal"),
   new Type(value = classOf[UpdatedSubmittedProposalEvent], name = "UpdatedSubmittedProposal"),
   new Type(value = classOf[DeletedProposalEvent], name = "DeletedProposal"),
@@ -269,6 +270,11 @@ case class EditAttemptOnSomeoneElseProposalEvent(creator: String, proposalId: St
 case class ProposalSubmissionEvent(creator: String, proposalId: String, proposalTitle: String)
   extends ProposalEvent {
   def message(): String = Messages("events.ProposalSubmission", proposalId, proposalTitle)
+}
+
+case class ProposalResubmitedEvent(creator: String, proposalId: String, proposalTitle: String)
+  extends ProposalEvent {
+  def message(): String = Messages("events.ProposalResubmited", proposalId, proposalTitle)
 }
 
 case class UpdatedDraftProposalEvent(creator: String, proposalId: String, proposalTitle: String)

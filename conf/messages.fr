@@ -959,6 +959,7 @@ events.AddedSecondarySpeakerToProposal={2} ajouté en second speaker sur {0} {1}
 events.RemovedSecondarySpeakerFromProposal={2} supprimé en second speaker sur {0} {1}
 events.ReplacedProposalSecondarySpeaker={2} remplacé par {3} en second speaker sur {0} {1}
 events.ProposalSubmission=A soumis une proposition {0} {1}
+events.ProposalResubmited=A soumis de nouveau une proposition {0} {1}
 events.NewProposalPostedByTrack=A posté un nouveau talk ({0}) dans la track {2}
 events.ChangedTrackOfProposal=Track du talk {0} mis à jour de {2} à {3}
 events.RemovedProposalSponsoredFlag=Suppression du flag [sponsorTalkFlag] sur la proposition {0} {1}

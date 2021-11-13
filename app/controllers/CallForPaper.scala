@@ -397,7 +397,11 @@ object CallForPaper extends SecureCFPController {
           Proposal.submit(uuid, proposalId)
 
           ProposalUserWatchPreference.applyAllUserProposalAutowatch(proposal.id, AutoWatch.ONCE_PROPOSAL_SUBMITTED)
-          Event.storeEvent(ProposalSubmissionEvent(uuid, proposal.id, proposal.title))
+          if(Event.loadEventsForObjRef(proposal.id).exists(_.isOfSameTypeThan(ProposalSubmissionEvent.getClass))) {
+            Event.storeEvent(ProposalResubmitedEvent(uuid, proposal.id, proposal.title))
+          } else {
+            Event.storeEvent(ProposalSubmissionEvent(uuid, proposal.id, proposal.title))
+          }
 
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("talk.submitted"))
         case None =>
