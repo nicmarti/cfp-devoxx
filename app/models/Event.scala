@@ -168,7 +168,6 @@ abstract class ProposalEvent extends Event {
 abstract class SpeakerEvent extends Event {
   val webuserId: String
   val webUsername: String
-  val message: String
 
   override def objRef(): Option[String] = Some(webuserId)
 
@@ -182,209 +181,209 @@ abstract class SpeakerEvent extends Event {
 // User management (speakers/gts) events
 case class NewSpeakerEvent(creator: String, webuserId: String, webUsername: String)
   extends SpeakerEvent {
-  val message: String = Messages("events.NewSpeaker", webuserId)
+  def message(): String = Messages("events.NewSpeaker", webuserId)
 }
 
 case class UpdatedSpeakerEvent(creator: String, webuserId: String, webUsername: String)
   extends SpeakerEvent {
-  lazy val message: String = Messages("events.UpdatedSpeaker", webuserId)
+  def message(): String = Messages("events.UpdatedSpeaker", webuserId)
 }
 
 case class GoldenTicketUserCreatedEvent(creator: String, webuserId: String, webUsername: String)
   extends Event {
-  lazy val message: String = Messages("events.GoldenTicketUserCreated", webUsername)
+  def message(): String = Messages("events.GoldenTicketUserCreated", webUsername)
 }
 
 case class SpeakerRefusedTermsAndConditionsEvent(creator: String)
   extends Event {
-  lazy val message: String = Messages("events.SpeakerRefusedTermsAndConditions")
+  def message(): String = Messages("events.SpeakerRefusedTermsAndConditions")
 }
 
 case class SpeakerAcceptedTermsAndConditionsEvent(creator: String)
   extends Event {
-  lazy val message: String = Messages("events.SpeakerAcceptedTermsAndConditions")
+  def message(): String = Messages("events.SpeakerAcceptedTermsAndConditions")
 }
 
 case class DeletedWebuserEvent(creator: String, webuserId: String, webUsername: String)
   extends Event {
-  lazy val message: String = Messages("events.DeletedWebuser", webuserId, webUsername)
+  def message(): String = Messages("events.DeletedWebuser", webuserId, webUsername)
 }
 
 case class WebuserAddedToCFPGroupEvent(creator: String, webuserId: String, webUsername: String)
   extends SpeakerEvent {
-  lazy val message: String = Messages("events.WebuserAddedToCFPGroup", webuserId, webUsername)
+  def message(): String = Messages("events.WebuserAddedToCFPGroup", webuserId, webUsername)
 }
 
 case class WebuserRemovedFromCFPGroupEvent(creator: String, webuserId: String, webUsername: String)
   extends SpeakerEvent {
-  lazy val message: String = Messages("events.WebuserRemovedFromCFPGroup", webuserId, webUsername)
+  def message(): String = Messages("events.WebuserRemovedFromCFPGroup", webuserId, webUsername)
 }
 
 // Proposal events
 case class NewProposalCreatedEvent(creator: String, proposalId: String, proposalTitle: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.NewProposalCreated", proposalId, proposalTitle)
+  def message(): String = Messages("events.NewProposalCreated", proposalId, proposalTitle)
 }
 
 case class NewProposalPostedByTypeEvent(creator: String, proposalId: String, proposalType: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.NewProposalPostedByType", proposalId, proposalType)
+  def message(): String = Messages("events.NewProposalPostedByType", proposalId, proposalType)
 }
 
 case class NewProposalPostedByStateEvent(creator: String, proposalId: String, proposalState: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.NewProposalPostedByState", proposalId, proposalState)
+  def message(): String = Messages("events.NewProposalPostedByState", proposalId, proposalState)
 }
 
 case class NewProposalPostedByTrackEvent(creator: String, proposalId: String, proposalTitle: String, proposalTrackId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.NewProposalPostedByTrack", proposalId, proposalTitle, Messages(proposalTrackId))
+  def message(): String = Messages("events.NewProposalPostedByTrack", proposalId, proposalTitle, Messages(proposalTrackId))
 }
 
 case class ChangedTypeOfProposalEvent(creator: String, proposalId: String, oldProposalType: String, newProposalType: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ChangedTypeOfProposal", proposalId, oldProposalType, newProposalType)
+  def message(): String = Messages("events.ChangedTypeOfProposal", proposalId, oldProposalType, newProposalType)
 }
 
 case class ChangedStateOfProposalEvent(creator: String, proposalId: String, oldProposalState: String, newProposalState: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ChangedStateOfProposal", proposalId, oldProposalState, newProposalState)
+  def message(): String = Messages("events.ChangedStateOfProposal", proposalId, oldProposalState, newProposalState)
 }
 
 case class ChangedTrackOfProposalEvent(creator: String, proposalId: String, proposalTitle: String, oldProposalTrackId: String, newProposalTrackId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ChangedTrackOfProposal", proposalId, proposalTitle, Messages(oldProposalTrackId), Messages(newProposalTrackId))
+  def message(): String = Messages("events.ChangedTrackOfProposal", proposalId, proposalTitle, Messages(oldProposalTrackId), Messages(newProposalTrackId))
 }
 
 case class EditAttemptOnSomeoneElseProposalEvent(creator: String, proposalId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.EditAttemptOnSomeoneElseProposal", proposalId)
+  def message(): String = Messages("events.EditAttemptOnSomeoneElseProposal", proposalId)
 }
 
 // Proposal statuses
 case class ProposalSubmissionEvent(creator: String, proposalId: String, proposalTitle: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ProposalSubmission", proposalId, proposalTitle)
+  def message(): String = Messages("events.ProposalSubmission", proposalId, proposalTitle)
 }
 
 case class UpdatedDraftProposalEvent(creator: String, proposalId: String, proposalTitle: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.UpdatedDraftProposal", proposalId, proposalTitle)
+  def message(): String = Messages("events.UpdatedDraftProposal", proposalId, proposalTitle)
 }
 
 case class UpdatedSubmittedProposalEvent(creator: String, proposalId: String, proposalTitle: String, proposalStateCode: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.UpdatedSubmittedProposal", proposalId, proposalTitle, proposalStateCode)
+  def message(): String = Messages("events.UpdatedSubmittedProposal", proposalId, proposalTitle, proposalStateCode)
 }
 
 case class DeletedProposalEvent(creator: String, proposalId: String)
   extends Event {
-  lazy val message: String = Messages("events.DeletedProposal", proposalId)
+  def message(): String = Messages("events.DeletedProposal", proposalId)
 }
 
 case class RemovedProposalSponsoredFlagEvent(creator: String, proposalId: String, proposalTitle: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.RemovedProposalSponsoredFlag", proposalId, proposalTitle)
+  def message(): String = Messages("events.RemovedProposalSponsoredFlag", proposalId, proposalTitle)
 }
 
 // Proposal votes
 case class VoteForProposalEvent(creator: String, proposalId: String, vote: Int)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.VoteForProposal", vote, proposalId)
+  def message(): String = Messages("events.VoteForProposal", vote, proposalId)
 }
 
 case class RemovedProposalVoteEvent(creator: String, proposalId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.RemovedProposalVote", proposalId)
+  def message(): String = Messages("events.RemovedProposalVote", proposalId)
 }
 
 case class AllProposalVotesResettedEvent(creator: String, proposalId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.AllProposalVotesResetted", proposalId)
+  def message(): String = Messages("events.AllProposalVotesResetted", proposalId)
 }
 
 // Proposal comments events
 case class ProposalPublicCommentSentBySpeakerEvent(creator: String, proposalId: String, proposalTitle: String, comment: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ProposalPublicCommentSentBySpeaker", proposalId, proposalTitle)
+  def message(): String = Messages("events.ProposalPublicCommentSentBySpeaker", proposalId, proposalTitle)
 }
 
 case class ProposalPublicCommentSentByReviewersEvent(creator: String, proposalId: String, proposalTitle: String, speakerName: String, comment: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ProposalPublicCommentSentByReviewers", speakerName, proposalId, proposalTitle)
+  def message(): String = Messages("events.ProposalPublicCommentSentByReviewers", speakerName, proposalId, proposalTitle)
 }
 
 case class ProposalPrivateCommentSentByComiteeEvent(creator: String, proposalId: String, proposalTitle: String, comment: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ProposalPrivateCommentSentByComitee", proposalId, proposalTitle)
+  def message(): String = Messages("events.ProposalPrivateCommentSentByComitee", proposalId, proposalTitle)
 }
 
 case class ProposalPrivateAutomaticCommentSentEvent(creator: String, proposalId: String, proposalTitle: String, comment: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ProposalPrivateAutomaticCommentSent", proposalId, proposalTitle)
+  def message(): String = Messages("events.ProposalPrivateAutomaticCommentSent", proposalId, proposalTitle)
 }
 
 // Proposal secondary speakers events
 case class UpdatedProposalSpeakersListEvent(creator: String, proposalId: String, proposalTitle: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.UpdatedProposalSpeakersList", proposalId, proposalTitle)
+  def message(): String = Messages("events.UpdatedProposalSpeakersList", proposalId, proposalTitle)
 }
 
 case class AddedSecondarySpeakerToProposalEvent(creator: String, proposalId: String, proposalTitle: String, newSecondarySpeakerName: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.AddedSecondarySpeakerToProposal", proposalId, proposalTitle, newSecondarySpeakerName)
+  def message(): String = Messages("events.AddedSecondarySpeakerToProposal", proposalId, proposalTitle, newSecondarySpeakerName)
 }
 
 case class RemovedSecondarySpeakerFromProposalEvent(creator: String, proposalId: String, proposalTitle: String, oldSecondarySpeakerName: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.RemovedSecondarySpeakerFromProposal", proposalId, proposalTitle, oldSecondarySpeakerName)
+  def message(): String = Messages("events.RemovedSecondarySpeakerFromProposal", proposalId, proposalTitle, oldSecondarySpeakerName)
 }
 
 case class ReplacedProposalSecondarySpeakerEvent(creator: String, proposalId: String, proposalTitle: String, oldSecondarySpeakerName: String, newSecondarySpeakerName: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ReplacedProposalSecondarySpeaker", proposalId, proposalTitle, oldSecondarySpeakerName, newSecondarySpeakerName)
+  def message(): String = Messages("events.ReplacedProposalSecondarySpeaker", proposalId, proposalTitle, oldSecondarySpeakerName, newSecondarySpeakerName)
 }
 
 // Proposal Approval/Rejection process events
 case class SentProposalApprovedEvent(creator: String, proposalId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.SentProposalApproved", proposalId)
+  def message(): String = Messages("events.SentProposalApproved", proposalId)
 }
 
 case class SentProposalRefusedEvent(creator: String, proposalId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.SentProposalRefused", proposalId)
+  def message(): String = Messages("events.SentProposalRefused", proposalId)
 }
 
 case class TalkRemovedFromRefuseListEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.TalkRemovedFromRefuseList", Messages(talkTypeId), proposalTitle, Messages(trackId))
+  def message(): String = Messages("events.TalkRemovedFromRefuseList", Messages(talkTypeId), proposalTitle, Messages(trackId))
 }
 
 case class TalkRemovedFromApprovedListEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.TalkRemovedFromApprovedList", Messages(talkTypeId), proposalTitle, Messages(trackId))
+  def message(): String = Messages("events.TalkRemovedFromApprovedList", Messages(talkTypeId), proposalTitle, Messages(trackId))
 }
 
 case class TalkRefusedEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.TalkRefused", Messages(talkTypeId), proposalTitle, Messages(trackId))
+  def message(): String = Messages("events.TalkRefused", Messages(talkTypeId), proposalTitle, Messages(trackId))
 }
 
 case class RefuseProposalEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.RefuseProposal", Messages(talkTypeId), proposalTitle, Messages(trackId))
+  def message(): String = Messages("events.RefuseProposal", Messages(talkTypeId), proposalTitle, Messages(trackId))
 }
 
 case class ApprovedProposalEvent(creator: String, proposalId: String, proposalTitle: String, talkTypeId: String, trackId: String)
   extends ProposalEvent {
-  lazy val message: String = Messages("events.ApprovedProposal", Messages(talkTypeId), proposalTitle, Messages(trackId))
+  def message(): String = Messages("events.ApprovedProposal", Messages(talkTypeId), proposalTitle, Messages(trackId))
 }
 
 // Misc events
 case class WishlistItemStatusUpdateEvent(creator: String, requestId: String, statusCode: String)
   extends Event {
-  lazy val message: String = Messages("events.WishlistItemStatusUpdate", statusCode)
+  def message(): String = Messages("events.WishlistItemStatusUpdate", statusCode)
 
   override def objRef(): Option[String] = Some(requestId)
 
