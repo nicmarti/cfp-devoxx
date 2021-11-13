@@ -109,7 +109,6 @@ class ZapActor extends Actor {
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
     case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
-    case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case CheckSchedules => doCheckSchedules()
@@ -249,11 +248,6 @@ class ZapActor extends Actor {
 
   def doEditRequestToTalk(authorUUID: String, rtt: RequestToTalk) {
     RequestToTalk.save(authorUUID, rtt)
-  }
-
-  def doNotifyProposalSubmitted(author: String, proposal: Proposal) {
-    ProposalUserWatchPreference.applyAllUserProposalAutowatch(proposal.id, AutoWatch.ONCE_PROPOSAL_SUBMITTED)
-    Event.storeEvent(ProposalSubmissionEvent(author, proposal.id, proposal.title))
   }
 
   def doNotifyGoldenTicket(gt: GoldenTicket): Unit = {
