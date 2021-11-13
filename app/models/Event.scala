@@ -191,7 +191,7 @@ case class UpdatedSpeakerEvent(creator: String, webuserId: String, webUsername: 
 }
 
 case class GoldenTicketUserCreatedEvent(creator: String, webuserId: String, webUsername: String)
-  extends SpeakerEvent {
+  extends Event {
   lazy val message: String = Messages("events.GoldenTicketUserCreated", webUsername)
 }
 
