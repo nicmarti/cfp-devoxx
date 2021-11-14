@@ -130,54 +130,20 @@ class ZapActor extends Actor {
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(ProposalPublicCommentSentByReviewersEvent(reporterUUID, proposal.id, proposal.title, speaker.cleanName, msg))
       ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
-
-      val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-      val newMessageID = Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg, maybeMessageID)
-      // Overwrite the messageID for the next email (to set the In-Reply-To)
-      Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
     }
   }
 
   def sendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPublicCommentSentBySpeakerEvent(reporterUUID, proposal.id, proposal.title, msg))
-    Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser: Webuser =>
-        val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-        val newMessageID = Mails.sendMessageToCommittee(reporterWebuser, proposal, msg, maybeMessageID)
-        // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("User not found with uuid " + reporterUUID)
-    }
   }
 
   def sendBotMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPrivateAutomaticCommentSentEvent(reporterUUID, proposal.id, proposal.title, msg))
-    Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser: Webuser =>
-        val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-        val newMessageID = Mails.sendBotMessageToCommittee(reporterWebuser, proposal, msg, maybeMessageID)
-        // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("Cannot send message to committee, User not found with uuid " + reporterUUID)
-    }
   }
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPrivateCommentSentByComiteeEvent(reporterUUID, proposal.id, proposal.title, msg))
     ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
-
-    Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser: Webuser =>
-        // try to load the last Message ID that was sent
-        val maybeMessageID = Comment.lastMessageIDInternal(proposal.id)
-        val newMessageID = Mails.postInternalMessage(reporterWebuser, proposal, msg, maybeMessageID)
-        // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDInternal(proposal.id, newMessageID)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("Cannot post internal message, User not found with uuid " + reporterUUID)
-    }
   }
 
   def sendDraftReminder() {
