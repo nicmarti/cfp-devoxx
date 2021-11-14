@@ -16,19 +16,74 @@ object AutoWatch {
 
 }
 
-case class NotificationEvent(id: NotificationEvent.NotificationEventId, labelI18nKey: String, applicableTo: Function[Webuser, Boolean], onlyForAutoWatches: Option[List[AutoWatch]]=None){
-}
+case class NotificationEvent(
+    id: NotificationEvent.NotificationEventId,
+    labelI18nKey: String,
+    applicableTo: Function[Webuser, Boolean],
+    onlyForAutoWatches: Option[List[AutoWatch]]=None,
+    // It is important to have ProposalEvent here (and not Event) as we need proposalId
+    // on event to resolve its watchers list during digesting
+    applicableEventTypes: List[Class[_ <: ProposalEvent]]
+){}
 
 object NotificationEvent {
   type NotificationEventId = String
 
-  val ONCE_PROPOSAL_SUBMITTED = NotificationEvent("ONCE_PROPOSAL_SUBMITTED", "email.notifications.events.once.proposal.submitted", _ => true, Option(List(AutoWatch.ONCE_PROPOSAL_SUBMITTED)))
-  val PROPOSAL_CONTENT_UPDATED = NotificationEvent("PROPOSAL_CONTENT_UPDATED", "email.notifications.events.once.proposal.content.updated", _ => true)
-  val PROPOSAL_RESUBMITTED = NotificationEvent("PROPOSAL_RESUBMITTED", "email.notifications.events.once.proposal.is.submitted.again", _ => true)
-  val PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent("PROPOSAL_GT_COMMENT_SUBMITTED", "email.notifications.events.once.public.comment.submitted", _ => true)
-  val PROPOSAL_INTERNAL_COMMENT_SUBMITTED = NotificationEvent("PROPOSAL_INTERNAL_COMMENT_SUBMITTED", "email.notifications.events.once.internal.comment.submitted", user => Webuser.isMember(user.uuid, "cfp"))
-  val PROPOSAL_SPEAKERS_LIST_ALTERED = NotificationEvent("PROPOSAL_SPEAKERS_LIST_ALTERED", "email.notifications.events.once.proposal.speakers.altered", user => Webuser.isMember(user.uuid, "cfp"))
-  val PROPOSAL_FINAL_APPROVAL_SUBMITTED = NotificationEvent("PROPOSAL_FINAL_APPROVAL_SUBMITTED", "email.notifications.events.once.proposal.final.approval.provided", user => Webuser.isMember(user.uuid, "cfp"))
+  val ONCE_PROPOSAL_SUBMITTED = NotificationEvent(
+    id="ONCE_PROPOSAL_SUBMITTED", labelI18nKey="email.notifications.events.once.proposal.submitted",
+    applicableTo = _ => true,
+    onlyForAutoWatches=Option(List(AutoWatch.ONCE_PROPOSAL_SUBMITTED)),
+    applicableEventTypes=List(
+      classOf[ProposalSubmissionEvent]
+    )
+  )
+  val PROPOSAL_CONTENT_UPDATED = NotificationEvent(
+    id="PROPOSAL_CONTENT_UPDATED", labelI18nKey="email.notifications.events.once.proposal.content.updated",
+    applicableTo = _ => true,
+    applicableEventTypes = List(
+      classOf[ChangedTypeOfProposalEvent],
+      classOf[UpdatedSubmittedProposalEvent]
+    )
+  )
+  val PROPOSAL_RESUBMITTED = NotificationEvent(
+    id="PROPOSAL_RESUBMITTED", labelI18nKey="email.notifications.events.once.proposal.is.submitted.again",
+    applicableTo = _ => true,
+    applicableEventTypes = List(
+      classOf[ProposalResubmitedEvent]
+    )
+  )
+  val PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent(
+    id="PROPOSAL_GT_COMMENT_SUBMITTED", labelI18nKey="email.notifications.events.once.public.comment.submitted",
+    applicableTo = _ => true,
+    applicableEventTypes = List(
+      classOf[ProposalPublicCommentSentBySpeakerEvent],
+      classOf[ProposalPublicCommentSentByReviewersEvent]
+    )
+  )
+  val PROPOSAL_INTERNAL_COMMENT_SUBMITTED = NotificationEvent(
+    id="PROPOSAL_INTERNAL_COMMENT_SUBMITTED", labelI18nKey="email.notifications.events.once.internal.comment.submitted",
+    applicableTo = user => Webuser.isMember(user.uuid, "cfp"),
+    applicableEventTypes = List(
+      classOf[ProposalPrivateCommentSentByComiteeEvent]
+    )
+  )
+  val PROPOSAL_SPEAKERS_LIST_ALTERED = NotificationEvent(
+    id="PROPOSAL_SPEAKERS_LIST_ALTERED", labelI18nKey="email.notifications.events.once.proposal.speakers.altered",
+    applicableTo = user => Webuser.isMember(user.uuid, "cfp"),
+    applicableEventTypes = List(
+      classOf[UpdatedProposalSpeakersListEvent],
+      classOf[AddedSecondarySpeakerToProposalEvent],
+      classOf[RemovedSecondarySpeakerFromProposalEvent],
+      classOf[ReplacedProposalSecondarySpeakerEvent]
+    )
+  )
+  val PROPOSAL_FINAL_APPROVAL_SUBMITTED = NotificationEvent(
+    id="PROPOSAL_FINAL_APPROVAL_SUBMITTED", labelI18nKey="email.notifications.events.once.proposal.final.approval.provided",
+    applicableTo = user => Webuser.isMember(user.uuid, "cfp"),
+    applicableEventTypes = List(
+      classOf[SpeakerAcceptedPropositionApprovalEvent]
+    )
+  )
 
   val allNotificationEvents = List(
     ONCE_PROPOSAL_SUBMITTED, PROPOSAL_CONTENT_UPDATED, PROPOSAL_RESUBMITTED,
