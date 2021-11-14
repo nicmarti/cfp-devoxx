@@ -55,7 +55,7 @@ abstract class EventLink {
 }
 
 case class ProposalLink(proposalId: String, webuser: Webuser) extends EventLink {
-  def href: String = (if (Webuser.isMember(webuser.uuid, "cfp")) {
+  def href: String = ConferenceDescriptor.current().conferenceUrls.cfpURL() + (if (Webuser.isMember(webuser.uuid, "cfp")) {
     routes.CFPAdmin.openForReview(proposalId)
   }
   else {
@@ -70,7 +70,7 @@ case class ProposalLink(proposalId: String, webuser: Webuser) extends EventLink 
 }
 
 case class SpeakerLink(speakerUuid: String, speakerName: String) extends EventLink {
-  def href: String = routes.CFPAdmin.showSpeakerAndTalks(speakerUuid).toString()
+  def href: String = ConferenceDescriptor.current().conferenceUrls.cfpURL() + routes.CFPAdmin.showSpeakerAndTalks(speakerUuid).toString()
 
   def rel: String = routes.RestAPI.profile("speaker").toString()
 
@@ -80,7 +80,7 @@ case class SpeakerLink(speakerUuid: String, speakerName: String) extends EventLi
 }
 
 case class WishlistLink(requestId: String) extends EventLink {
-  def href: String = routes.Wishlist.edit(requestId).toString()
+  def href: String = ConferenceDescriptor.current().conferenceUrls.cfpURL() + routes.Wishlist.edit(requestId).toString()
 
   def rel: String = routes.RestAPI.profile("wishlist").toString()
 
