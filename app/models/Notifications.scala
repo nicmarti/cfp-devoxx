@@ -1,9 +1,12 @@
 package models
 
 import library.Redis
+import org.joda.time.Instant
 import play.api.libs.json.Json
 import play.twirl.api.TxtFormat.raw
 import play.twirl.api.{Html, TxtFormat}
+
+import scala.collection.JavaConversions.iterableAsScalaIterable
 
 case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: String){}
 
@@ -148,17 +151,21 @@ object NotificationUserPreference {
   }
 }
 
+case class Watcher(webuserId: String, startedWatchingAt: Instant)
+
 case class ProposalUserWatchPreference(proposalId: String, webUserId: String, isWatcher: Boolean, watchingEvents: List[NotificationEvent])
 object ProposalUserWatchPreference {
 
-  def proposalWatchers(proposalId: String): Set[String] = Redis.pool.withClient {
+  def proposalWatchers(proposalId: String): List[Watcher] = Redis.pool.withClient {
     implicit client =>
-      client.smembers(s"""Watchers:${proposalId}""")
+      client.zrangeWithScores(s"""Watchers:${proposalId}""", 0, -1)
+        .toList
+        .map{ watcherWithScore => Watcher(watcherWithScore.getElement, new Instant(watcherWithScore.getScore.toLong)) }
   }
 
   def addProposalWatcher(proposalId: String, webUserId: String, automatic: Boolean) = Redis.pool.withClient {
     implicit client =>
-      if(client.sadd(s"""Watchers:${proposalId}""", webUserId) == 1) {
+      if(client.zadd(s"""Watchers:${proposalId}""", Instant.now().getMillis, webUserId) == 1) {
         val watchEvent = if(automatic) {
           ProposalAutoWatchedEvent(webUserId, proposalId)
         } else {
@@ -171,13 +178,13 @@ object ProposalUserWatchPreference {
   def removeProposalWatcher(proposalId: String, webUserId: String) = Redis.pool.withClient {
     implicit client =>
       Event.storeEvent(ProposalUnwatchedEvent(webUserId, proposalId))
-      client.del(s"""Watchers:${proposalId}""", webUserId)
+      client.zrem(s"""Watchers:${proposalId}""", webUserId)
   }
 
   def proposalUserWatchPreference(proposalId: String, webUserId: String): ProposalUserWatchPreference = {
       val userPrefs = NotificationUserPreference.load(webUserId)
       val watchers = this.proposalWatchers(proposalId)
-      ProposalUserWatchPreference(proposalId, webUserId, isWatcher = watchers.contains(webUserId), userPrefs.eventIds.map{
+      ProposalUserWatchPreference(proposalId, webUserId, isWatcher = watchers.map(_.webuserId).contains(webUserId), userPrefs.eventIds.map{
         eventId => NotificationEvent.allNotificationEvents.find(_.id == eventId).get
       })
   }

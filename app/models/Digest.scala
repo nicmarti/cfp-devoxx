@@ -142,8 +142,7 @@ object Digest {
     val proposalsByWatcherId = proposalIds
       .map{ proposalId => ProposalUserWatchPreference.proposalWatchers(proposalId).map((proposalId, _)) }
       .flatten
-      .groupBy(_._2)
-      .mapValues(_.map{ case (proposalId, _) => proposalId })
+      .groupBy(_._2.webuserId)
 
     val concernedWatcherNotificationPreferences = proposalsByWatcherId.keys
       // if maybeOnlyForUsers is set, filtering watchers based on this list
@@ -157,16 +156,25 @@ object Digest {
 
     play.Logger.of("models.Digest").debug(s"""${proposalsByWatcherId.keys.size} watchers filtered to ${concernedWatcherNotificationPreferences.size} watchers""")
 
-    val proposalsById = Proposal.loadAndParseProposals(proposalsByConcernedWatcherId.values.flatten.toSet)
+    val proposalsById = Proposal.loadAndParseProposals(proposalsByConcernedWatcherId.values.flatten.map(_._1).toSet)
 
     val result = concernedWatcherNotificationPreferences.toList.flatMap { case (watcherId, notifUserPrefs) =>
       Webuser.findByUUID(watcherId).map { watcher =>
         val userNotificationEvents = notifUserPrefs.eventIds.map(NotificationEvent.valueOf(_).get)
+        val watcherInfosByProposalId = proposalsByConcernedWatcherId
+          .get(watcherId).get
+          .groupBy(_._1)
+          .mapValues { proposalsAndWatcher => proposalsAndWatcher.map{ case (proposal, watcher) => watcher } }
+
         val events = digestedEvents
           // Removing events where watcher is the initiator
           .filterNot(_.creator == watcher.uuid)
           // Removing events where user is not a watcher
-          .filter { event => proposalsByConcernedWatcherId.get(watcherId).get.contains(event.proposalId)}
+          .filter { event =>
+            val watcherEntryForProposal = watcherInfosByProposalId.get(event.proposalId).get.find(_.webuserId == watcher.uuid).get
+            watcherInfosByProposalId.contains(event.proposalId) &&
+              event.date.isAfter(watcherEntryForProposal.startedWatchingAt)
+          }
           // Removing events types not matching with user's prefs
           .filter{ event => userNotificationEvents.map(_.applicableEventTypes).flatten.contains(event.getClass) }
 
