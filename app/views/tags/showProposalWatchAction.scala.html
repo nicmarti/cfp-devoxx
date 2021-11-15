@@ -2,7 +2,7 @@
 <div class="col-12 mb-1">
   @if(userWatchPref.isWatcher) {
     @helper.form(action = unwatchCall) {
-      <button type="submit" name="unwatch" value="" class="btn btn-primary btn-lg"><i class="far fa-eye-slash"></i> @Messages("admin.proposals.unwatch")</button>
+      <button type="submit" name="unwatch" value="" class="btn btn-primary btn-lg"><i class="far fa-eye-slash" aria-hidden="true"></i> @Messages("admin.proposals.unwatch")</button>
       <em>@Messages("admin.proposals.unwatch.suggestion")</em> :
       <ul>
       @userWatchPref.watchingEvents.map { event =>
@@ -12,7 +12,7 @@
     }
   } else {
     @helper.form(action = watchCall) {
-      <button type="submit" name="watch" value="" class="btn btn-primary btn-lg"><i class="far fa-eye"></i> @Messages("admin.proposals.watch")</button>
+      <button type="submit" name="watch" value="" class="btn btn-primary btn-lg"><i class="far fa-eye" aria-hidden="true"></i> @Messages("admin.proposals.watch")</button>
       <em>@Messages("admin.proposals.watch.suggestion")</em> :
       <ul>
       @userWatchPref.watchingEvents.map { event =>
