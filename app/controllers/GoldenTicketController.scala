@@ -108,8 +108,37 @@ object GoldenTicketController extends SecureCFPController {
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
           val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(uuid, proposalId)
-          Ok(views.html.GoldenTicketController.showProposal(proposal, voteForm, maybeMyVote))
+          val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+          Ok(views.html.GoldenTicketController.showProposal(proposal, voteForm, maybeMyVote, userWatchPref))
 
+        case None => NotFound("Proposal not found").as("text/html")
+      }
+  }
+
+  def watchProposal(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
+          val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(uuid, proposalId)
+          val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+
+          Ok(views.html.GoldenTicketController.showProposal(proposal, voteForm, maybeMyVote, userWatchPref)).flashing("success" -> "Started watching proposal")
+        case None => NotFound("Proposal not found").as("text/html")
+      }
+  }
+
+  def unwatchProposal(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          ProposalUserWatchPreference.removeProposalWatcher(proposal.id, uuid)
+          val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(uuid, proposalId)
+          val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+
+          Ok(views.html.GoldenTicketController.showProposal(proposal, voteForm, maybeMyVote, userWatchPref)).flashing("success" -> "Started unwatching proposal")
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
@@ -122,7 +151,8 @@ object GoldenTicketController extends SecureCFPController {
           voteForm.bindFromRequest.fold(
             hasErrors => {
               val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(uuid, proposalId)
-              BadRequest(views.html.GoldenTicketController.showProposal(proposal, hasErrors, maybeMyVote))
+              val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+              BadRequest(views.html.GoldenTicketController.showProposal(proposal, hasErrors, maybeMyVote, userWatchPref))
             },
             validVote => {
               if (Proposal.isSpeaker(proposalId, uuid)) {

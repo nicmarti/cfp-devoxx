@@ -753,10 +753,6 @@ object ConferenceDescriptor {
   // This is to reflect the fact that some speakers are eavluated, then they update the talk, and we should revote for it
   def isResetVotesForSubmitted: Boolean = Play.current.configuration.getBoolean("cfp.resetVotesForSubmitted").getOrElse(false)
 
-  // Set this to true temporarily
-  // I will implement a new feature where each CFP member can decide to receive one digest email per day or a big email
-  def notifyProposalSubmitted: Boolean = Play.current.configuration.getBoolean("cfp.notifyProposalSubmitted").getOrElse(false)
-
   // My Devoxx is an OAuth provider on which a user can register
   def isMyDevoxxActive: Boolean = Play.current.configuration.getBoolean("mydevoxx.active").getOrElse(false)
 

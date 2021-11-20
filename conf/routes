@@ -43,7 +43,8 @@ POST          /cfp/profile/phoneNumber                                          
 POST          /cfp/profile/phoneNumber/confirm                                   controllers.CallForPaper.confirmPhone()
 
 # Email Digests
-GET           /cfp/backoffice/digests                                           controllers.Backoffice.showDigests()
+GET           /cfp/backoffice/digests                                            controllers.Backoffice.showDigests()
+GET           /cfp/backoffice/simulateDigest                                     controllers.Backoffice.simulateDigest(frequency:models.Digest.Frequency,webuser:String,isHtml:Boolean ?=true)
 
 # proposal
 GET           /cfp/proposal/new                                                 controllers.CallForPaper.newProposal()
@@ -83,6 +84,8 @@ POST          /cfpadmin/proposal/:proposalId/postInternal                       
 GET           /cfpadmin/proposal/:proposalId/vote                               controllers.CFPAdmin.voteForProposal(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/clearVote                          controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/score                              controllers.CFPAdmin.showVotesForProposal(proposalId:String)
+POST          /cfpadmin/proposal/:proposalId/watch                              controllers.CFPAdmin.watchProposal(proposalId:String)
+POST          /cfpadmin/proposal/:proposalId/unwatch                            controllers.CFPAdmin.unwatchProposal(proposalId:String)
 GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
@@ -344,6 +347,8 @@ GET           /cfp/goldenticket/proposals/:proposalId                           
 GET           /cfp/goldenticket/proposals/:proposalId/vote                       controllers.GoldenTicketController.voteForProposal(proposalId:String)
 GET           /cfp/goldenticket/proposals/:proposalId/clearVote                  controllers.GoldenTicketController.clearVoteForProposal(proposalId:String)
 GET           /cfp/goldenticket/proposals/:proposalId/showvotes                  controllers.GoldenTicketController.showVotesForProposal(proposalId:String)
+POST          /cfp/goldenticket/proposals/:proposalId/watch                      controllers.GoldenTicketController.watchProposal(proposalId:String)
+POST          /cfp/goldenticket/proposals/:proposalId/unwatch                    controllers.GoldenTicketController.unwatchProposal(proposalId:String)
 
 # Rating system for mobile app
 GET           /cfpadmin/rating                                                   controllers.RatingController.homeRating()

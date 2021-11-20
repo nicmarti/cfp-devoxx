@@ -198,7 +198,6 @@ class ArchivedProposalSpecs extends PlaySpecification {
 
       // THEN
       Comment.countComments(proposalId) mustEqual 0
-      Comment.countInternalComments(proposalId) mustEqual 0
     }
 
     "move votes to attic when a talk is archived" in new WithApplication(app = appWithTestRedis()) {

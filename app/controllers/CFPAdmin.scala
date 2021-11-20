@@ -89,7 +89,8 @@ object CFPAdmin extends SecureCFPController {
           val internalDiscussion = Comment.allInternalComments(proposal.id)
           val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
           val proposalsByAuths = allProposalByProposal(proposal)
-          Ok(views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm, maybeMyVote, uuid))
+          val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+          Ok(views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm, maybeMyVote, uuid, userWatchPref))
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
@@ -186,7 +187,8 @@ object CFPAdmin extends SecureCFPController {
               val internalDiscussion = Comment.allInternalComments(proposal.id)
               val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
               val proposals = allProposalByProposal(proposal)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm, maybeMyVote, uuid))
+              val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm, maybeMyVote, uuid, userWatchPref))
             },
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
@@ -210,7 +212,8 @@ object CFPAdmin extends SecureCFPController {
               val internalDiscussion = Comment.allInternalComments(proposal.id)
               val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
               val proposals = allProposalByProposal(proposal)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm, maybeMyVote, uuid))
+              val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm, maybeMyVote, uuid, userWatchPref))
             },
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
@@ -220,6 +223,28 @@ object CFPAdmin extends SecureCFPController {
           )
         case None => NotFound("Proposal not found").as("text/html")
       }
+  }
+
+  def watchProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId).map {
+        proposal: Proposal =>
+          ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
+
+          Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started watching proposal")
+      }.getOrElse(NotFound("Proposal not found"))
+  }
+
+  def unwatchProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId).map {
+        proposal: Proposal =>
+          ProposalUserWatchPreference.removeProposalWatcher(proposal.id, uuid)
+
+          Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started unwatching proposal")
+      }.getOrElse(NotFound("Proposal not found"))
   }
 
   def voteForProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -233,7 +258,8 @@ object CFPAdmin extends SecureCFPController {
               val internalDiscussion = Comment.allInternalComments(proposal.id)
               val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
               val proposals = allProposalByProposal(proposal)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors, maybeMyVote, uuid))
+              val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
+              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors, maybeMyVote, uuid, userWatchPref))
             },
             validVote => {
               Review.voteForProposal(proposalId, uuid, validVote)

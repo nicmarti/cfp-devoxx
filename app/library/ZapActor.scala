@@ -24,9 +24,7 @@
 package library
 
 import java.util
-
 import akka.actor._
-import controllers.LeaderboardController
 import models.ConferenceDescriptor.ConferenceProposalTypes
 import models._
 import notifiers.Mails
@@ -35,6 +33,7 @@ import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicNameValuePair
 import play.libs.Akka
+import play.twirl.api.Html
 
 /**
   * Akka actor that is in charge to process batch operations and long running queries
@@ -109,7 +108,6 @@ class ZapActor extends Actor {
     case LogURL(url: String, objRef: String, objValue: String) => doLogURL(url: String, objRef: String, objValue: String)
     case NotifySpeakerRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doNotifySpeakerRequestToTalk(authorUUiD, rtt)
     case EditRequestToTalk(authorUUiD: String, rtt: RequestToTalk) => doEditRequestToTalk(authorUUiD, rtt)
-    case NotifyProposalSubmitted(author: String, proposal: Proposal) => doNotifyProposalSubmitted(author, proposal)
     case NotifyGoldenTicket(goldenTicket: GoldenTicket) => doNotifyGoldenTicket(goldenTicket)
     case EmailDigests(digest: Digest) => doEmailDigests(digest)
     case CheckSchedules => doCheckSchedules()
@@ -131,51 +129,21 @@ class ZapActor extends Actor {
     for (reporter <- Webuser.findByUUID(reporterUUID);
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(ProposalPublicCommentSentByReviewersEvent(reporterUUID, proposal.id, proposal.title, speaker.cleanName, msg))
-      val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-      val newMessageID = Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg, maybeMessageID)
-      // Overwrite the messageID for the next email (to set the In-Reply-To)
-      Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
+      ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
     }
   }
 
   def sendMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPublicCommentSentBySpeakerEvent(reporterUUID, proposal.id, proposal.title, msg))
-    Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser: Webuser =>
-        val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-        val newMessageID = Mails.sendMessageToCommittee(reporterWebuser, proposal, msg, maybeMessageID)
-        // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("User not found with uuid " + reporterUUID)
-    }
   }
 
   def sendBotMessageToCommittee(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPrivateAutomaticCommentSentEvent(reporterUUID, proposal.id, proposal.title, msg))
-    Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser: Webuser =>
-        val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
-        val newMessageID = Mails.sendBotMessageToCommittee(reporterWebuser, proposal, msg, maybeMessageID)
-        // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("Cannot send message to committee, User not found with uuid " + reporterUUID)
-    }
   }
 
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPrivateCommentSentByComiteeEvent(reporterUUID, proposal.id, proposal.title, msg))
-    Webuser.findByUUID(reporterUUID).map {
-      reporterWebuser: Webuser =>
-        // try to load the last Message ID that was sent
-        val maybeMessageID = Comment.lastMessageIDInternal(proposal.id)
-        val newMessageID = Mails.postInternalMessage(reporterWebuser, proposal, msg, maybeMessageID)
-        // Overwrite the messageID for the next email (to set the In-Reply-To)
-        Comment.storeLastMessageIDInternal(proposal.id, newMessageID)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("Cannot post internal message, User not found with uuid " + reporterUUID)
-    }
+    ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
   }
 
   def sendDraftReminder() {
@@ -247,16 +215,6 @@ class ZapActor extends Actor {
     RequestToTalk.save(authorUUID, rtt)
   }
 
-  def doNotifyProposalSubmitted(author: String, proposal: Proposal) {
-    Event.storeEvent(ProposalSubmissionEvent(author, proposal.id, proposal.title))
-    Webuser.findByUUID(author).map {
-      reporterWebuser: Webuser =>
-        Mails.sendNotifyProposalSubmitted(reporterWebuser, proposal)
-    }.getOrElse {
-      play.Logger.of("library.ZapActor").error("User not found with uuid " + author)
-    }
-  }
-
   def doNotifyGoldenTicket(gt: GoldenTicket): Unit = {
     Webuser.findByUUID(gt.webuserUUID).map {
       invitedWebuser: Webuser =>
@@ -275,59 +233,8 @@ class ZapActor extends Actor {
   def doEmailDigests(digest: Digest) {
 
     play.Logger.of("library.ZapActor").debug("doEmailDigests for " + digest.value)
-
-    // Retrieve new proposals for digest
-    val newProposalsIds = Digest.pendingProposals(digest)
-
-    if (newProposalsIds.nonEmpty) {
-
-      // Filter CFP users on given digest
-      val notificationPrefsByFoundUsersIDs = Webuser.allCFPWebusers()
-        .map{ webUser => (webUser.uuid, NotificationUserPreference.load(webUser.uuid)) }
-        .filter{ _._2.digestFrequency.equals(digest.value) }
-        .toMap
-      val foundUsersIDs = notificationPrefsByFoundUsersIDs.keySet
-
-      if (foundUsersIDs.nonEmpty) {
-
-        play.Logger.of("library.ZapActor").debug(s"${newProposalsIds.size} proposal(s) found for digest ${digest.value}")
-
-        val proposals = newProposalsIds.map(entry => Proposal.findById(entry._1).get).toList
-
-        // Check which users have digest track filters
-        val trackDigestUsersIDs = notificationPrefsByFoundUsersIDs.filter{ _._2.autowatchFilterForTrackIds.isDefined }.keySet
-
-        val noTrackDigestUsersIDs = trackDigestUsersIDs.diff(foundUsersIDs)
-
-        // Mail digest to users who have no track filter set
-        if (noTrackDigestUsersIDs.nonEmpty) {
-          Mails.sendDigest(digest, noTrackDigestUsersIDs.toList, proposals, isDigestFilterOn = false, LeaderboardController.getLeaderBoardParams)
-        }
-
-        // Handle the digest users that have a track filter
-        trackDigestUsersIDs.map { uuid =>
-
-          // Filter the proposals based on digest tracks
-          val trackFilterIDs = notificationPrefsByFoundUsersIDs.get(uuid).flatMap(_.autowatchFilterForTrackIds).getOrElse(List())
-
-          val trackFilterProposals =
-            proposals.filter(proposal => trackFilterIDs.contains(proposal.track.id))
-
-          // If proposals exist, then mail digest to user
-          if (trackFilterProposals.nonEmpty) {
-            Mails.sendDigest(digest, List(uuid), trackFilterProposals, isDigestFilterOn = true, LeaderboardController.getLeaderBoardParams)
-          }
-        }
-
-      } else {
-        play.Logger.debug("No users found for digest " + digest.value)
-      }
-
-      // Empty digest for next interval.
-      Digest.purge(digest)
-
-    } else {
-      play.Logger.debug("No new proposals found for digest " + digest.value)
+    Digest.processDigest(digest) { case (watcher: Webuser, notificationUserPreference: NotificationUserPreference, htmlContent: Html, txtContent: String) =>
+      Mails.sendDigest(digest, watcher, htmlContent, txtContent)
     }
   }
 

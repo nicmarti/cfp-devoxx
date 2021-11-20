@@ -1,4 +1,4 @@
-@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], currentUser: String)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], currentUser: String, userWatchPref: ProposalUserWatchPreference)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -229,6 +229,8 @@
             }
             </div><!-- 230 -->
         </div><!-- 231 -->
+
+            @tags.showProposalWatchAction(userWatchPref, watchCall = routes.CFPAdmin.watchProposal(proposal.id), unwatchCall = routes.CFPAdmin.unwatchProposal(proposal.id))
 
             <div class="col-12 mb-1" id="discussion">
                 <div class="card">

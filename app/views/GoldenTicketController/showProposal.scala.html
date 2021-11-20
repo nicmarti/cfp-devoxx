@@ -1,6 +1,7 @@
 @(proposal: Proposal,
   voteForm: Form[Int],
-  maybeMyVote: Option[ReviewByGoldenTicket])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+  maybeMyVote: Option[ReviewByGoldenTicket],
+  userWatchPref: ProposalUserWatchPreference)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("Golden Ticket - Show " + proposal.id) {
     <div class="row">
@@ -187,4 +188,5 @@
         }
         }
     </div>
+    @tags.showProposalWatchAction(userWatchPref, watchCall = routes.GoldenTicketController.watchProposal(proposal.id), unwatchCall = routes.GoldenTicketController.unwatchProposal(proposal.id))
 }
