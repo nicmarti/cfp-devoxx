@@ -23,9 +23,9 @@
 
 package controllers
 
-import library.search.{DoIndexSpeaker, ElasticSearch, ElasticSearchActor}
-import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import library._
+import library.search.{DoIndexSpeaker, ElasticSearchActor}
+import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import models._
 import org.apache.commons.lang3.StringUtils
 import play.api.Play
@@ -53,7 +53,7 @@ object CallForPaper extends SecureCFPController {
 
       if (request.headers.get("X-Forwarded-Proto").getOrElse("http") != "https" && Play.current.mode == play.api.Mode.Prod) {
         MovedPermanently(ConferenceDescriptor.current().conferenceUrls.cfpHostname + "/cfp/home")
-      }else{
+      } else {
         Speaker.findByUUID(uuid).map {
           speaker: Speaker =>
             // BUG
@@ -126,7 +126,7 @@ object CallForPaper extends SecureCFPController {
     }
   }
 
-  def saveProfile =  CSRFCheck {
+  def saveProfile = CSRFCheck {
     SecuredAction {
       implicit request =>
         val uuid = request.webuser.uuid
@@ -147,7 +147,7 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Load a new proposal form
-  def newProposal() = CSRFAddToken{
+  def newProposal() = CSRFAddToken {
     SecuredAction {
       implicit request =>
         val uuid = request.webuser.uuid
@@ -156,7 +156,7 @@ object CallForPaper extends SecureCFPController {
   }
 
   // Load a proposal
-  def editProposal(proposalId: String) = CSRFAddToken{
+  def editProposal(proposalId: String) = CSRFAddToken {
     SecuredAction {
       implicit request =>
         val uuid = request.webuser.uuid
@@ -185,7 +185,7 @@ object CallForPaper extends SecureCFPController {
 
 
   // Prerender the proposal, but do not persist
-  def previewProposal() = CSRFAddToken{
+  def previewProposal() = CSRFAddToken {
     SecuredAction {
       implicit request =>
         Proposal.proposalForm.bindFromRequest.fold(
@@ -214,19 +214,19 @@ object CallForPaper extends SecureCFPController {
               case Some(existingProposal) =>
                 // This is an edit operation
                 // First we try to reset the speaker's, we do not take the values from the FORM for security reason
-                val updatedProposalWithSpeakers:Proposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
+                val updatedProposalWithSpeakers: Proposal = proposal.copy(mainSpeaker = existingProposal.mainSpeaker, secondarySpeaker = existingProposal.secondarySpeaker, otherSpeakers = existingProposal.otherSpeakers)
 
                 // Then if userGroup boolean flag is set to null we must save false
-                val updatedProposal2:Proposal = if(proposal.userGroup.isEmpty){
-                  updatedProposalWithSpeakers.copy(userGroup=Some(false))
-                }else{
+                val updatedProposal2: Proposal = if (proposal.userGroup.isEmpty) {
+                  updatedProposalWithSpeakers.copy(userGroup = Some(false))
+                } else {
                   updatedProposalWithSpeakers
                 }
 
-                 // Remove the sponsor flag if the ProposalType is not a Conference (specific to Devoxx : we want only Conference format as sponsor talk)
-                val updatedProposal:Proposal = if(proposal.sponsorTalk && proposal.talkType != ConferenceDescriptor.current().conferenceSponsor.sponsorProposalType){
+                // Remove the sponsor flag if the ProposalType is not a Conference (specific to Devoxx : we want only Conference format as sponsor talk)
+                val updatedProposal: Proposal = if (proposal.sponsorTalk && proposal.talkType != ConferenceDescriptor.current().conferenceSponsor.sponsorProposalType) {
                   updatedProposal2.copy(sponsorTalk = false)
-                }else{
+                } else {
                   updatedProposal2
                 }
 
@@ -384,20 +384,24 @@ object CallForPaper extends SecureCFPController {
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraft(uuid, proposalId)
       val currentlySubmittedConcernedByQuota: Int = Proposal.countSubmittedAcceptedConcernedByQuota(uuid)
-      val additionnalConcernedByQuota: Int = if (maybeProposal.map(p => ConferenceDescriptor.ConferenceProposalConfigurations.isConcernedByCountRestriction(p.talkType)).getOrElse(false)) 1 else 0
+      val additionnalConcernedByQuota: Int = if (maybeProposal.exists(p => ConferenceDescriptor.ConferenceProposalConfigurations.isConcernedByCountRestriction(p.talkType))) 1 else 0
 
       maybeProposal match {
         case _ if currentlySubmittedConcernedByQuota + additionnalConcernedByQuota > ConferenceDescriptor.maxProposals() =>
           Redirect(routes.CallForPaper.homeForSpeaker()).flashing(
             "error" -> Messages("cfp.maxProposals.reached",
-                ConferenceDescriptor.maxProposals(),
-                ConferenceDescriptor.ConferenceProposalConfigurations.concernedByCountQuotaRestrictionAndNotHidden.map(pc => Messages(ProposalType.byProposalConfig(pc).simpleLabel)).mkString(", ")
+              ConferenceDescriptor.maxProposals(),
+              ConferenceDescriptor.ConferenceProposalConfigurations.concernedByCountQuotaRestrictionAndNotHidden.map(pc => Messages(ProposalType.byProposalConfig(pc).simpleLabel)).mkString(", ")
             ))
         case Some(proposal) =>
           Proposal.submit(uuid, proposalId)
 
           ProposalUserWatchPreference.applyAllUserProposalAutowatch(proposal.id, AutoWatch.ONCE_PROPOSAL_SUBMITTED)
-          if(Event.loadEventsForObjRef(proposal.id).exists(_.isOfSameTypeThan(ProposalSubmissionEvent.getClass))) {
+
+          if (Event.loadEventsForObjRef(proposal.id).exists {
+            case ProposalSubmissionEvent(_, _, _) => true
+            case _ => false
+          }) {
             Event.storeEvent(ProposalResubmitedEvent(uuid, proposal.id, proposal.title))
           } else {
             Event.storeEvent(ProposalSubmissionEvent(uuid, proposal.id, proposal.title))

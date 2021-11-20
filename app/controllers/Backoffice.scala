@@ -283,7 +283,7 @@ object Backoffice extends SecureCFPController {
       val futureMessages: Future[Any] = ZapActor.actor ? CheckSchedules
 
       futureMessages.map {
-        case results:List[ProposalAndRelatedError] =>
+        case results: List[ProposalAndRelatedError] =>
           Ok(views.html.Backoffice.refreshSchedules(results))
         case _ =>
           play.Logger.error("refreshSchedules error with Akka")
@@ -465,21 +465,23 @@ object Backoffice extends SecureCFPController {
 
   def showDigests = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
-      val webusers = Webuser.allCFPWebusers().map(("Comitee", _)) ++ GoldenTicket.allWithWebuser().map { gt => ("GT", gt._2) }
+      val webusers: Seq[(String, Webuser)] = Webuser.allCFPWebusers().map(("Commitee", _)) ++ GoldenTicket.allWithWebuser().map { gt => ("GT", gt._2) }
       val currentUser = request.webuser
 
       Ok(views.html.Backoffice.showDigests(currentUser, webusers))
   }
 
-  def simulateDigest(frequency: Digest.Frequency, webuser: String, isHtml:Boolean = true) = SecuredAction(IsMemberOf("admin")) {
+  def simulateDigest(frequency: Digest.Frequency, webuser: String, isHtml: Boolean = true) = SecuredAction(IsMemberOf("admin")) {
     implicit request =>
       Digest.selectableDigests.find(_.value == frequency).map { digest =>
         val maybeContent = Digest.processDigest(digest, webuser) { case (watcher: Webuser, notificationUserPreference: NotificationUserPreference, htmlContent: Html, txtContent: String) =>
           (htmlContent, txtContent)
         }
-
-        maybeContent.map{ case(htmlContent, txtContent) =>
-          if(isHtml){ Ok(htmlContent) }else{ Ok(txtContent) }
+        maybeContent.map {
+          case (htmlContent, _)  if isHtml=>
+            Ok(htmlContent).as("text/html")
+          case (_, txtContent) =>
+            Ok(txtContent).as("text/plain")
         }.getOrElse(BadRequest("No digest content generated for given user !"))
       }.getOrElse(BadRequest("Unknown digest frequency !"))
   }
@@ -508,19 +510,15 @@ object Backoffice extends SecureCFPController {
             case _ =>
           }
 
-          Webuser.isSpeaker(uuid) match {
-            case false =>
-              val s = Speaker.findByUUID(uuid)
-              play.Logger.info("Missing group for speaker " + uuid + " " + s.map(_.cleanName))
-            case _ =>
+          if (!Webuser.isSpeaker(uuid)) {
+            val s = Speaker.findByUUID(uuid)
+            play.Logger.info("Missing group for speaker " + uuid + " " + s.map(_.cleanName))
           }
           Speaker.findByUUID(uuid).foreach {
             speaker =>
-              Webuser.isEmailRegistered(speaker.email) match {
-                case false =>
-                  play.Logger.error(s"Speaker's email is not stored in Webuser:Email => BUG ${speaker.email}")
-                  Webuser.fixMissingEmail(speaker.email, speaker.uuid)
-                case _ =>
+              if (!Webuser.isEmailRegistered(speaker.email)) {
+                play.Logger.error(s"Speaker's email is not stored in Webuser:Email => BUG ${speaker.email}")
+                Webuser.fixMissingEmail(speaker.email, speaker.uuid)
               }
           }
 

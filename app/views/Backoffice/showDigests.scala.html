@@ -1,4 +1,4 @@
-@(currentUser: Webuser, webusers: List[(String, Webuser)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(currentUser: Webuser, webusers: Seq[(String, Webuser)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin - Email Digests Queue", additionalAssets = List(
   HtmlAsset("https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js", Javascript),

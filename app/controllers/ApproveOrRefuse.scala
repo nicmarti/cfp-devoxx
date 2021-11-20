@@ -190,7 +190,7 @@ object ApproveOrRefuse extends SecureCFPController {
                     if (List(ProposalState.APPROVED, ProposalState.BACKUP, ProposalState.ACCEPTED, p.state == ProposalState.DECLINED).contains(p.state)) {
                       Proposal.accept(request.webuser.uuid, proposalId)
 
-                      Proposal.findById(proposalId).map { proposal => {
+                      Proposal.findById(proposalId).foreach { proposal => {
                         Event.storeEvent(SpeakerAcceptedPropositionApprovalEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
                       }}
 
