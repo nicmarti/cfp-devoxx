@@ -174,7 +174,7 @@ object Digest {
           .filter { event =>
             val watcherEntryForProposal = watcherInfosByProposalId.get(event.proposalId).get.find(_.webuserId == watcher.uuid).get
             watcherInfosByProposalId.contains(event.proposalId) &&
-              event.date.isAfter(watcherEntryForProposal.startedWatchingAt)
+              (event.date.isAfter(watcherEntryForProposal.startedWatchingAt) || event.date.isEqual(watcherEntryForProposal.startedWatchingAt))
           }
           // Removing events types not matching with user's prefs
           .filter{ event => userNotificationEvents.map(_.applicableEventTypes).flatten.contains(event.getClass) }
