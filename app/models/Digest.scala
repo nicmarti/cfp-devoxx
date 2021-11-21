@@ -167,6 +167,7 @@ object Digest {
           .mapValues { proposalsAndWatcher => proposalsAndWatcher.map{ case (proposal, watcher) => watcher } }
 
         val events = digestedEvents
+          .filter{ event => watcherInfosByProposalId.contains(event.proposalId) }
           // Removing events where watcher is the initiator
           .filterNot(_.creator == watcher.uuid)
           // Removing events where user is not a watcher
