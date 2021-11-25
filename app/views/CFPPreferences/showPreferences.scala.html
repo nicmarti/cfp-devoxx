@@ -30,7 +30,7 @@
                         <select id="autoWatchKind" name="autowatchId" class="chosen" onchange="autoWatchUpdatedTo(this.value)">
                             <option></option>
                             @AutoWatch.allAutowatches.map { autowatch =>
-                                <option value="@autowatch.id" @if(notificationUserPref.autowatchId==autowatch.id){ selected="true" }>@Messages(autowatch.labelI18nKey)</option>
+                                <option value="@autowatch.id" @if(notificationUserPref.autowatchId==autowatch.id){ selected="true" }>@Messages(autowatch.labelI18nKey(webuser))</option>
                             }
                         </select>
                         <hr class="borderless"/>

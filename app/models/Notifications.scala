@@ -8,14 +8,14 @@ import play.twirl.api.{Html, TxtFormat}
 
 import scala.collection.JavaConversions.iterableAsScalaIterable
 
-case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: String){}
+case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: Function1[Webuser, String])
 
 object AutoWatch {
   type AutoWatchId = String
 
-  val ONCE_PROPOSAL_SUBMITTED = AutoWatch("ONCE_PROPOSAL_SUBMITTED", "autowatch.options.once.proposal.submitted")
-  val AFTER_INTERACTION = AutoWatch("AFTER_INTERACTION", "autowatch.options.after.interaction")
-  val MANUAL_WATCH_ONLY = AutoWatch("MANUAL_WATCH_ONLY", "autowatch.options.manual.watch.only")
+  val ONCE_PROPOSAL_SUBMITTED = AutoWatch("ONCE_PROPOSAL_SUBMITTED", (_) => "autowatch.options.once.proposal.submitted")
+  val AFTER_INTERACTION = AutoWatch("AFTER_INTERACTION", (webuser) => if(Webuser.isMember(webuser.uuid, "cfp")) { "autowatch.options.after.interaction" } else { "autowatch.options.after.gt-interaction" })
+  val MANUAL_WATCH_ONLY = AutoWatch("MANUAL_WATCH_ONLY", (_) => "autowatch.options.manual.watch.only")
 
   val allAutowatches = List(ONCE_PROPOSAL_SUBMITTED, AFTER_INTERACTION, MANUAL_WATCH_ONLY)
 

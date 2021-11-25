@@ -868,6 +868,7 @@ email.notifications.success=Préférences de notifications mises à jour avec su
 
 autowatch.options.once.proposal.submitted=Dès que le talk est proposé par l''orateur
 autowatch.options.after.interaction=À partir du moment où j''interagis sur la proposition (je commente ou je vote dessus)
+autowatch.options.after.gt-interaction=À partir du moment où je vote sur la proposition
 autowatch.options.manual.watch.only=Aucun watch automatique, je souhaite gérer cela manuellement
 
 email.notifications.events.once.proposal.submitted=Dès que le talk est proposé par l''auteur
