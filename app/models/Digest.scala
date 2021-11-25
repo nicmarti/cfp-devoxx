@@ -159,7 +159,7 @@ object Digest {
     val proposalsById = Proposal.loadAndParseProposals(proposalsByConcernedWatcherId.values.flatten.map(_._1).toSet)
 
     val result = concernedWatcherNotificationPreferences.toList.flatMap { case (watcherId, notifUserPrefs) =>
-      Webuser.findByUUID(watcherId).map { watcher =>
+      Webuser.findByUUID(watcherId).flatMap { watcher =>
         val userNotificationEvents = notifUserPrefs.eventIds.map(NotificationEvent.valueOf(_).get)
         val watcherInfosByProposalId = proposalsByConcernedWatcherId
           .get(watcherId).get
@@ -167,20 +167,25 @@ object Digest {
           .mapValues { proposalsAndWatcher => proposalsAndWatcher.map{ case (proposal, watcher) => watcher } }
 
         val events = digestedEvents
+          .filter{ event => watcherInfosByProposalId.contains(event.proposalId) }
           // Removing events where watcher is the initiator
           .filterNot(_.creator == watcher.uuid)
           // Removing events where user is not a watcher
           .filter { event =>
             val watcherEntryForProposal = watcherInfosByProposalId.get(event.proposalId).get.find(_.webuserId == watcher.uuid).get
             watcherInfosByProposalId.contains(event.proposalId) &&
-              event.date.isAfter(watcherEntryForProposal.startedWatchingAt)
+              (event.date.isAfter(watcherEntryForProposal.startedWatchingAt) || event.date.isEqual(watcherEntryForProposal.startedWatchingAt))
           }
           // Removing events types not matching with user's prefs
           .filter{ event => userNotificationEvents.map(_.applicableEventTypes).flatten.contains(event.getClass) }
 
-        val htmlContent = views.html.Mails.digest.sendDigest(UserDigest(watcher, digest, notifUserPrefs, events, proposalsById))
-        val textContent = views.txt.Mails.digest.sendDigest(UserDigest(watcher, digest, notifUserPrefs, events, proposalsById)).toString()
-        call(watcher, notifUserPrefs, htmlContent, textContent)
+        if(events.nonEmpty) {
+          val htmlContent = views.html.Mails.digest.sendDigest(UserDigest(watcher, digest, notifUserPrefs, events, proposalsById))
+          val textContent = views.txt.Mails.digest.sendDigest(UserDigest(watcher, digest, notifUserPrefs, events, proposalsById)).toString()
+          Some(call(watcher, notifUserPrefs, htmlContent, textContent))
+        } else {
+          None
+        }
       }
     }
 

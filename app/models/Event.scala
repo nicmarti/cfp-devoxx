@@ -461,7 +461,7 @@ object Event {
 
   def loadDigestEventsBetween(start: Instant, end: Instant): List[ProposalEvent] = Redis.pool.withClient {
     client =>
-      client.zrevrange(s"""${EVENTS_REDIS_KEY}:ForDigests""", start.getMillis, end.getMillis).toList.map { json =>
+      client.zrangeByScore(s"""${EVENTS_REDIS_KEY}:ForDigests""", start.getMillis, end.getMillis).toList.map { json =>
           mapper.readValue(json, classOf[ProposalEvent])
       }.sortBy(_.date.getMillis)
   }
