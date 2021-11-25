@@ -724,7 +724,7 @@ object ConferenceDescriptor {
       firstDayEn = "April, 20th",
       datesFr = "du 20 avril au 22 avril 2022",
       datesEn = "April, 20th - 22nd 2022",
-      cfpOpenedOn = DateTime.parse("2021-11-29T00:00:00+02:00"),
+      cfpOpenedOn = DateTime.parse("2021-11-25T00:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2022-01-09T23:59:59+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2022-02-28T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
