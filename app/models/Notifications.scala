@@ -58,9 +58,20 @@ object NotificationEvent {
       classOf[ProposalResubmitedEvent]
     )
   )
-  val PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent(
+
+  // Deprecated as GT don't have access to public comments
+  // I assume that we should bw able to remove this entry as no GT has created any notification pref as of Nov 25th 2021
+  val DEPRECATED_PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent(
     id="PROPOSAL_GT_COMMENT_SUBMITTED", labelI18nKey="email.notifications.events.once.public.comment.submitted",
-    applicableTo = _ => true,
+    applicableTo = _ => false,
+    applicableEventTypes = List(
+      classOf[ProposalPublicCommentSentBySpeakerEvent],
+      classOf[ProposalPublicCommentSentByReviewersEvent]
+    )
+  )
+  val PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent(
+    id="PROPOSAL_PUBLIC_COMMENT_SUBMITTED", labelI18nKey="email.notifications.events.once.public.comment.submitted",
+    applicableTo = user => Webuser.isMember(user.uuid, "cfp"),
     applicableEventTypes = List(
       classOf[ProposalPublicCommentSentBySpeakerEvent],
       classOf[ProposalPublicCommentSentByReviewersEvent]
@@ -93,6 +104,7 @@ object NotificationEvent {
 
   val allNotificationEvents = List(
     ONCE_PROPOSAL_SUBMITTED, PROPOSAL_CONTENT_UPDATED, PROPOSAL_RESUBMITTED,
+    DEPRECATED_PROPOSAL_PUBLIC_COMMENT_SUBMITTED,
     PROPOSAL_PUBLIC_COMMENT_SUBMITTED, PROPOSAL_INTERNAL_COMMENT_SUBMITTED,
     PROPOSAL_SPEAKERS_LIST_ALTERED, PROPOSAL_FINAL_APPROVAL_SUBMITTED
   )
