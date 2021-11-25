@@ -39,9 +39,6 @@ GET           /cfp/profile                                                      
 POST          /cfp/profile                                                      controllers.CallForPaper.saveProfile
 GET           /cfp/newSpeakerForExistingWebuser                                 controllers.CallForPaper.newSpeakerForExistingWebuser()
 
-POST          /cfp/profile/phoneNumber                                          controllers.CallForPaper.updatePhoneNumber()
-POST          /cfp/profile/phoneNumber/confirm                                   controllers.CallForPaper.confirmPhone()
-
 # Email Digests
 GET           /cfp/backoffice/digests                                            controllers.Backoffice.showDigests()
 GET           /cfp/backoffice/simulateDigest                                     controllers.Backoffice.simulateDigest(frequency:models.Digest.Frequency,webuser:String,isHtml:Boolean ?=true)
@@ -370,14 +367,7 @@ GET           /assets/*file                                                     
 
 # TODO NMA
 GET           /admin/checkInvalidWebuserForAllSpeakers                          controllers.Backoffice.checkInvalidWebuserForAllSpeakers()
-GET           /admin/fixRedisDataConsistency                                     controllers.Backoffice.fixRedisDataConsistency()
-
-# SMS
-GET           /sms/speakers                                                     controllers.SMSController.allSpeakers()
-GET           /sms/talks                                                        controllers.SMSController.sendTalksDetails(phoneNumber:String)
-GET           /sms/welcome                                                      controllers.SMSController.sendWelcomeMessage(phoneNumber:String)
-GET           /sms/callback                                                     controllers.SMSController.testCallback()
-POST          /sms/callback                                                     controllers.SMSController.callback()
+GET           /admin/fixRedisDataConsistency                                    controllers.Backoffice.fixRedisDataConsistency()
 
 GET           /bp/fullAgenda                                                    controllers.Backoffice.exportAgenda()
 

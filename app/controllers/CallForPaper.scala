@@ -25,7 +25,6 @@ package controllers
 
 import library._
 import library.search.{DoIndexSpeaker, ElasticSearchActor}
-import library.sms.{SendWelcomeAndHelp, SmsActor, TwilioSender}
 import models._
 import org.apache.commons.lang3.StringUtils
 import play.api.Play
@@ -450,56 +449,4 @@ object CallForPaper extends SecureCFPController {
 
   case class TermCount(term: String, count: Int)
 
-  val phoneForm = play.api.data.Form("phoneNumber" -> nonEmptyText(maxLength = 15))
-  val phoneConfirmForm = play.api.data.Form(tuple(
-    "phoneNumber" -> nonEmptyText(maxLength = 15),
-    "confirmation" -> nonEmptyText(maxLength = 15)
-  )
-  )
-
-  def updatePhoneNumber() = SecuredAction.async {
-    implicit request =>
-      phoneForm.bindFromRequest().fold(
-        invalidPhone => Future.successful(Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.phone"))),
-        validPhone => {
-          Future.successful {
-            val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
-            if (ConferenceDescriptor.isTwilioSMSActive) {
-              TwilioSender.send(validPhone, Messages("sms.confirmationTxt", code)) match {
-                case Success(reason) =>
-                  Ok(views.html.CallForPaper.enterConfirmCode(phoneConfirmForm.fill((validPhone, code))))
-                case Failure(exception) =>
-                  InternalServerError(views.html.CallForPaper.invalidPhoneNumber(exception)).as(HTML)
-              }
-            } else {
-              val webuser = request.webuser
-              Speaker.updatePhone(webuser.uuid, validPhone, request.acceptLanguages.headOption)
-              Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("phonenumber.updated.success"))
-            }
-
-          }
-        }
-      )
-  }
-
-  def confirmPhone() = SecuredAction {
-    implicit request =>
-      phoneConfirmForm.bindFromRequest().fold(
-        hasErrors => Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code")),
-        success => {
-          val thePhone = success._1
-          val theConfCode = success._2
-          val webuser = request.webuser
-          val code = StringUtils.left(request.webuser.uuid, 4) // Take the first 4 characters as the validation code
-          if (theConfCode == code) {
-            Speaker.updatePhone(webuser.uuid, thePhone, request.acceptLanguages.headOption)
-            SmsActor.actor ! SendWelcomeAndHelp(thePhone)
-            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("success" -> Messages("phonenumber.updated.success"))
-          } else {
-            Redirect(routes.CallForPaper.homeForSpeaker()).flashing("error" -> Messages("invalid.confirmation.code"))
-          }
-
-        }
-      )
-  }
 }

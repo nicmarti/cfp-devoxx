@@ -80,10 +80,6 @@
             <a href="@routes.Backoffice.doResetAndConfigureElasticSearch()" class="btn btn-warning btn-sm"><i class="fas fa-trash"></i> Delete Index</a>
             <a href="@routes.Backoffice.doIndexElasticSearch()" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Re-index</a><br>
 
-            @if(ConferenceDescriptor.isTwilioSMSActive){
-                <h4>SMS notification</h4>
-                <a href="@routes.SMSController.allSpeakers()" class="btn btn-primary btn-sm"><i class="fas fa-phone"></i> See the list of speakers with phoneNumber</a>
-            }
         </div>
         </div>
     </div>
