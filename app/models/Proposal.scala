@@ -1045,19 +1045,19 @@ object Proposal {
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {
-    implicit client => client.hset("PreferredDay:2021", proposalId, day)
+    implicit client => client.hset("PreferredDay:2022", proposalId, day)
   }
 
   def resetPreferredDay(proposalId: String) = Redis.pool.withClient {
-    implicit client => client.hdel("PreferredDay:2021", proposalId)
+    implicit client => client.hdel("PreferredDay:2022", proposalId)
   }
 
   def hasPreferredDay(proposalId: String): Boolean = Redis.pool.withClient {
-    implicit client => client.hexists("PreferredDay:2021", proposalId)
+    implicit client => client.hexists("PreferredDay:2022", proposalId)
   }
 
   def getPreferredDay(proposalId: String): Option[String] = Redis.pool.withClient {
-    implicit client => client.hget("PreferredDay:2021", proposalId)
+    implicit client => client.hget("PreferredDay:2022", proposalId)
   }
 
   def updateSecondarySpeaker(author: String, proposalId: String, oldSpeakerId: Option[String], newSpeakerId: Option[String]) = Redis.pool.withClient {
