@@ -23,10 +23,11 @@
 
 package library
 
-import org.joda.time.{Period, PeriodType, DateTime}
+import models.ConferenceDescriptor
+import org.joda.time.{DateTime, Period, PeriodType}
 import org.joda.time.format.{DateTimeFormat, PeriodFormat, PeriodFormatterBuilder}
 import org.ocpsoft.prettytime.PrettyTime
-import play.api.i18n.{Messages, Lang}
+import play.api.i18n.{Lang, Messages}
 
 /**
  * Small helper cause I did not want to add this code in template.
@@ -46,14 +47,14 @@ object FormatDate {
   }
 
   def jodaDateFormat(date: DateTime, lang: Lang): String = {
-    DateTimeFormat.forPattern("d MMM YY").withLocale(lang.toLocale).print(date)
+    DateTimeFormat.forPattern("d MMM YY").withLocale(lang.toLocale).withZone(ConferenceDescriptor.current().timezone).print(date)
   }
 
   def jodaTimeFormat(date: DateTime, lang: Lang): String = {
-    DateTimeFormat.forPattern("HH:mm").withLocale(lang.toLocale).print(date)
+    DateTimeFormat.forPattern("HH:mm").withLocale(lang.toLocale).withZone(ConferenceDescriptor.current().timezone).print(date)
   }
 
   def jodaFullDateFormat(date: DateTime, lang: Lang): String = {
-    DateTimeFormat.fullDate().withLocale(lang.toLocale).print(date)
+    DateTimeFormat.fullDate().withLocale(lang.toLocale).withZone(ConferenceDescriptor.current().timezone).print(date)
   }
 }
