@@ -164,10 +164,10 @@
                     <div class="card-body">
                         <a class="btn btn-warning" style="margin: 2px 0px" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="fas fa-backward"></i> @Messages("gt.showVotes.review")</a>
                         <a class="btn btn-primary" style="margin: 2px 0px" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="fas fa-home"></i> @Messages("gt.home")</a>
-                        <a class="btn btn-primary" style="margin: 2px 0px" accesskey="v" href="@routes.CFPAdmin.allMyVotes(proposal.talkType.id, Some(proposal.track.id))" title="Shortcut: Ctrl-Option-V"><i class="fas fa-chart-bar"></i>@Messages("admin.btn.myvotes")</a>
+                        <a class="btn btn-primary" style="margin: 2px 0px" accesskey="v" href="@routes.CFPAdmin.allMyVotes(proposal.talkType.id, Some(proposal.track.id))" title="Shortcut: Ctrl-Option-V"><i class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
 
                         @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty) {
-                            <a class="btn btn-primary" style="margin: 2px 0px" href="@routes.CFPAdmin.index()"><i class="fas fa-trophy"></i>@Messages("no.more.talk")</a>
+                            <a class="btn btn-primary" style="margin: 2px 0px" href="@routes.CFPAdmin.index()"><i class="fas fa-trophy"></i> @Messages("no.more.talk")</a>
                         }
                         <br>
                         @if(nextToBeReviewedSameTrackAndFormat.nonEmpty && nextToBeReviewedSameTrackAndFormat.head.track.id == proposal.track.id) {

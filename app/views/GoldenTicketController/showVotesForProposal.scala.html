@@ -37,9 +37,9 @@
                     }
 
                     <p>@Messages("gt.youcan")</p>
-                    <a class="btn btn-warning btn-sm" style="margin: 2px 0px" accesskey="r" href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="fas fa-backward"></i>@Messages("gt.showVotes.review")</a>
+                    <a class="btn btn-warning btn-sm" style="margin: 2px 0px" accesskey="r" href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="fas fa-backward"></i> @Messages("gt.showVotes.review")</a>
                     <a class="btn btn-primary btn-sm" style="margin: 2px 0px" accesskey="h" href="@routes.GoldenTicketController.showAllProposals()" title="Shortcut : Ctrl-Option-h"><i class="fas fa-home"></i> @Messages("gt.home")</a>
-                    <a class="btn btn-primary btn-sm" style="margin: 2px 0px" accesskey="v" href="@routes.GoldenTicketController.allMyGoldenTicketVotes(proposal.talkType.id, Some(proposal.track.id))" title="Shortcut: Ctrl-Option-V"><i class="fas fa-chart-bar"></i>@Messages("admin.btn.myvotes")</a>
+                    <a class="btn btn-primary btn-sm" style="margin: 2px 0px" accesskey="v" href="@routes.GoldenTicketController.allMyGoldenTicketVotes(proposal.talkType.id, Some(proposal.track.id))" title="Shortcut: Ctrl-Option-V"><i class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
                     @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty){
                       <a class="btn btn-primary btn-sm" href="@routes.GoldenTicketController.showAllProposals()"><i class="fas fa-trophy"></i> @Messages("gt.nomore")</a>
                     }
