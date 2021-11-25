@@ -29,7 +29,7 @@
                         <label for="autoWatchKind">@Messages("email.notifications.autowatch.title")</label>
                         <select id="autoWatchKind" name="autowatchId" class="chosen" onchange="autoWatchUpdatedTo(this.value)">
                             <option></option>
-                            @AutoWatch.allAutowatches.map { autowatch =>
+                            @AutoWatch.allAutowatches.filter(_.applicableTo(webuser)).map { autowatch =>
                                 <option value="@autowatch.id" @if(notificationUserPref.autowatchId==autowatch.id){ selected="true" }>@Messages(autowatch.labelI18nKey(webuser))</option>
                             }
                         </select>

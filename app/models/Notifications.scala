@@ -8,16 +8,17 @@ import play.twirl.api.{Html, TxtFormat}
 
 import scala.collection.JavaConversions.iterableAsScalaIterable
 
-case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: Function1[Webuser, String])
+case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: Function1[Webuser, String], applicableTo: Function[Webuser, Boolean] = (_) => true)
 
 object AutoWatch {
   type AutoWatchId = String
 
   val ONCE_PROPOSAL_SUBMITTED = AutoWatch("ONCE_PROPOSAL_SUBMITTED", (_) => "autowatch.options.once.proposal.submitted")
   val AFTER_INTERACTION = AutoWatch("AFTER_INTERACTION", (webuser) => if(Webuser.isMember(webuser.uuid, "cfp")) { "autowatch.options.after.interaction" } else { "autowatch.options.after.gt-interaction" })
+  val AFTER_COMMENT = AutoWatch("AFTER_COMMENT", (_) => "autowatch.options.after.comment", (user) => Webuser.isMember(user.uuid, "cfp"))
   val MANUAL_WATCH_ONLY = AutoWatch("MANUAL_WATCH_ONLY", (_) => "autowatch.options.manual.watch.only")
 
-  val allAutowatches = List(ONCE_PROPOSAL_SUBMITTED, AFTER_INTERACTION, MANUAL_WATCH_ONLY)
+  val allAutowatches = List(ONCE_PROPOSAL_SUBMITTED, AFTER_INTERACTION, AFTER_COMMENT, MANUAL_WATCH_ONLY)
 
 }
 
@@ -113,7 +114,9 @@ object NotificationEvent {
   }
 }
 
-case class NotificationUserPreference(autowatchId: AutoWatch.AutoWatchId, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: Digest.Frequency, eventIds: List[NotificationEvent.NotificationEventId]){}
+case class NotificationUserPreference(autowatchId: AutoWatch.AutoWatchId, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: Digest.Frequency, eventIds: List[NotificationEvent.NotificationEventId]){
+  val autoWatch = AutoWatch.allAutowatches.find(_.id == autowatchId)
+}
 object NotificationUserPreference {
   implicit val notifUserPrefFormat = Json.format[NotificationUserPreference]
 
