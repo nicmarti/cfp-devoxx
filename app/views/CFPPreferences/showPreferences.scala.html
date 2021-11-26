@@ -11,6 +11,21 @@
 )) {
     <h2><i class="fas fa-mail-bulk" aria-hidden="true"></i> Preferences</h2>
     <div class="row">
+        @if(flash.get("error").isDefined) {
+            <div class="col-12">
+                <div class="alert alert-danger alert-dismissable">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
+                </div>
+            </div>
+        }
+        @if(flash.get("success").isDefined) {
+            <div class="col-md-12">
+                <div class="alert alert-success alert-dismissable">
+                @flash.get("success").get
+                </div>
+            </div>
+        }
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
