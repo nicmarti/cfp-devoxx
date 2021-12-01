@@ -368,6 +368,7 @@ GET           /assets/*file                                                     
 # TODO NMA
 GET           /admin/checkInvalidWebuserForAllSpeakers                          controllers.Backoffice.checkInvalidWebuserForAllSpeakers()
 GET           /admin/fixRedisDataConsistency                                    controllers.Backoffice.fixRedisDataConsistency()
+GET           /admin/fixUnsentSpeakerEmailsAfterPublicComment                    controllers.Backoffice.fixUnsentSpeakerEmailsAfterPublicComment()
 
 GET           /bp/fullAgenda                                                    controllers.Backoffice.exportAgenda()
 
