@@ -312,6 +312,7 @@ case class GTVoteForProposalEvent(creator: String, proposalId: String, vote: Int
 case class VoteForProposalEvent(creator: String, proposalId: String, vote: Int)
   extends ProposalEvent {
   def message(): String = Messages("events.VoteForProposal", vote, proposalId)
+  def toReview(): Review = Review(creator, proposalId, vote, date)
 }
 
 case class RemovedProposalVoteEvent(creator: String, proposalId: String)

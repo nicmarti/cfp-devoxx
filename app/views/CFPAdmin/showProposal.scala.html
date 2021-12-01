@@ -1,4 +1,4 @@
-@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], currentUser: String, userWatchPref: ProposalUserWatchPreference)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], maybeMyPreviousVote: Option[Review], currentUser: String, userWatchPref: ProposalUserWatchPreference)(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -218,6 +218,11 @@
                                 }
                             }
                             </div><!-- btn block -->
+                            @maybeMyPreviousVote.map { previousReview =>
+                                <em>
+                                    @Html(Messages("admin.sp.previous.vote.after.votes.reset", tags.renderVote(previousReview.vote.toInt), previousReview.date.toString("EEEE d MMM YYYY HH:mm")))
+                                </em>
+                            }
                         }
                     </div><!-- card body -->
                     @if(flash.get("vote").isDefined) {

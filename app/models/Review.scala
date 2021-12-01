@@ -24,7 +24,7 @@
 package models
 
 import library.{Redis, Stats}
-import models.ReviewerStats.noReviewStats
+import models.Event.mostRecent
 import org.joda.time.{DateTime, Instant}
 
 import scala.math.BigDecimal.RoundingMode
@@ -302,6 +302,13 @@ object Review {
       } else {
         None
       }
+  }
+
+  def previouslyResettedVote(reviewerUUID: String, proposalId: String): Option[Review] = Redis.pool.withClient {
+    implicit client =>
+      Event.loadEventsForObjRef(proposalId).collect{
+        case voteEvent: VoteForProposalEvent if voteEvent.isInstanceOf[VoteForProposalEvent] => Some(voteEvent.toReview())
+      }.flatten.filter(_.reviewer==reviewerUUID).sortBy(_.date).lastOption
   }
 
   def totalInternalCommentsPerProposal(): List[(String, Int)] = {

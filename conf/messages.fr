@@ -348,6 +348,7 @@ admin.sp.committee_speaker=Entre le speaker et le comité
 admin.btn.sendMessage=Envoyer votre message
 admin.sp.internal=Discussions internes et privées
 admin.sp.deleteMyVote=Annuler mon vote
+admin.sp.previous.vote.after.votes.reset=Avant <u>la réinitialisation des votes</u>, vous aviez voté <strong>{0}</strong> le {1}
 admin.btn.allvotes=Tous les votes
 admin.proposals.watch=Observer
 admin.proposals.watch.suggestion=Cliquer ici pour activer l''observation sur les évènements de la proposition
