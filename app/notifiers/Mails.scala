@@ -77,20 +77,6 @@ object Mails {
     )
     val newMessageId = MailerPlugin.send(email) // returns the message-ID
 
-    // For Program committee
-    // The URL to the talk is different, thus we need another template.
-    val emailForCommittee = Email(
-      subject = s"[${proposal.id}] Message to a speaker - ${proposal.title}",
-      from = fromSender,
-      to = Seq(committeeEmail),
-      bcc = bccEmail.map(s => List(s)).getOrElse(Seq.empty[String]),
-      bodyText = Some(views.txt.Mails.sendMessageToSpeakerCommittee(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
-      bodyHtml = Some(views.html.Mails.sendMessageToSpeakerCommitte(fromWebuser.cleanName, toWebuser.cleanName, proposal, msg).toString()),
-      charset = Some("utf-8"),
-      headers = inReplyHeaders
-    )
-    MailerPlugin.send(emailForCommittee)
-
     newMessageId
   }
 

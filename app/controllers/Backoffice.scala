@@ -4,6 +4,7 @@ import library._
 import library.search.{DoIndexProposal, _}
 import models.ConferenceDescriptor.ConferenceProposalTypes
 import models.{Tag, _}
+import notifiers.Mails
 import org.joda.time.{DateTime, Instant}
 import play.api.Play
 import play.api.cache.EhCachePlugin
@@ -559,6 +560,59 @@ object Backoffice extends SecureCFPController {
       })
 
       Ok(summary.toString)
+  }
+
+  // Temporary: only here to workaround non-sent emails to speakers due to recent regression
+  val unsentSpeakerEmailsAfterPublicCommentForm = Form(mapping(
+    "start" -> jodaDate("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+    "end" -> jodaDate("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+    "sendEmail" -> boolean
+  )((start, end, sendEmail) => Tuple3(start, end, sendEmail))((range: Tuple3[DateTime, DateTime, Boolean]) => Some(range._1, range._2, range._3)))
+
+  def fixUnsentSpeakerEmailsAfterPublicComment() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      unsentSpeakerEmailsAfterPublicCommentForm.bindFromRequest.fold(hasError => {
+        BadRequest(s"Invalid query parameters : ${hasError}")
+      }, dateRange => {
+        Redis.pool.withClient { client =>
+          val commentsByProposalKeys = client.keys("Comments:ForSpeaker:*").filterNot(_.endsWith(":LastMessageId"))
+          val blah = commentsByProposalKeys.map{ proposalCommentsForSpeaker =>
+            val res = client.zrangeByScoreWithScores(proposalCommentsForSpeaker, dateRange._1.getMillis, dateRange._2.getMillis)
+            println(s"ZRANGEBYSCORE ${proposalCommentsForSpeaker} ${dateRange._1.getMillis} ${dateRange._2.getMillis} withscores => ${res.size}")
+            res
+          }.filter(_.nonEmpty)
+
+          val publicComments = blah.flatten.map {
+            case (json, timestamp) =>
+              val c = Json.parse(json).as[Comment]
+              if (c.eventDate.isEmpty) {
+                // This is for legacy comment without a datetime value
+                val date = new Instant(timestamp.toLong)
+                c.copy(eventDate = Option(date.toDateTime))
+              } else {
+                c
+              }
+          }
+
+          val proposals = Proposal.loadAndParseProposals(publicComments.map(_.proposalId))
+
+          val messages = publicComments.map{ publicComment =>
+            val proposal = proposals.get(publicComment.proposalId).get
+            val fromUser = Webuser.findByUUID(publicComment.uuidAuthor).get
+            val toUser = Webuser.findByUUID(proposal.mainSpeaker).get
+            if(dateRange._3) { // sendEmail=true
+              Mails.sendMessageToSpeakers(
+                fromUser,
+                toUser,
+                proposal, publicComment.msg, None)
+            }
+            s"""Email from=${fromUser.email} to=${toUser.email} for proposal=${proposal.id}:${proposal.title}:
+               |    ${publicComment.msg}""".stripMargin
+          }
+
+          Ok(messages.mkString("\n\n"))
+        }
+      })
   }
 
 }
