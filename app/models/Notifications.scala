@@ -94,6 +94,13 @@ object NotificationEvent {
       classOf[ReplacedProposalSecondarySpeakerEvent]
     )
   )
+  val PROPOSAL_COMITEE_VOTES_RESETTED = NotificationEvent(
+    id="PROPOSAL_COMITEE_VOTES_RESETTED", labelI18nKey="email.notifications.events.once.comitee.votes.resetted",
+    applicableTo = user => Webuser.isMember(user.uuid, "cfp"),
+    applicableEventTypes = List(
+      classOf[AllProposalVotesResettedEvent]
+    )
+  )
   val PROPOSAL_FINAL_APPROVAL_SUBMITTED = NotificationEvent(
     id="PROPOSAL_FINAL_APPROVAL_SUBMITTED", labelI18nKey="email.notifications.events.once.proposal.final.approval.provided",
     applicableTo = user => Webuser.isMember(user.uuid, "cfp"),
@@ -106,7 +113,8 @@ object NotificationEvent {
     ONCE_PROPOSAL_SUBMITTED, PROPOSAL_CONTENT_UPDATED, PROPOSAL_RESUBMITTED,
     DEPRECATED_PROPOSAL_PUBLIC_COMMENT_SUBMITTED,
     PROPOSAL_PUBLIC_COMMENT_SUBMITTED, PROPOSAL_INTERNAL_COMMENT_SUBMITTED,
-    PROPOSAL_SPEAKERS_LIST_ALTERED, PROPOSAL_FINAL_APPROVAL_SUBMITTED
+    PROPOSAL_SPEAKERS_LIST_ALTERED, PROPOSAL_COMITEE_VOTES_RESETTED,
+    PROPOSAL_FINAL_APPROVAL_SUBMITTED
   )
 
   def valueOf(id: String) = {

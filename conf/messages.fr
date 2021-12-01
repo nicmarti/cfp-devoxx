@@ -879,6 +879,7 @@ email.notifications.events.once.public.comment.submitted=Commentaire public
 email.notifications.events.once.internal.comment.submitted=Commentaire privé
 email.notifications.events.once.proposal.speakers.altered=Rajout / Suppression d''un speaker
 email.notifications.events.once.proposal.final.approval.provided=Acceptation / Refus de la proposition par les admins
+email.notifications.events.once.comitee.votes.resetted=Tous les votes ont été réinitialisés sur la proposition
 
 email.digest.description=En tant que membre du CFP, vous pouvez demander à recevoir ici automatiquement un résumé des soumissions postées chaque jour, par les autres orateurs. Cette fonction n''est accessible que parce que votre profil appartient au groupe "CFP".
 email.digest.realtime.description=Pseudo temps réel (délai max de 5min)
