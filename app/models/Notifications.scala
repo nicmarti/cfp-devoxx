@@ -8,16 +8,17 @@ import play.twirl.api.{Html, TxtFormat}
 
 import scala.collection.JavaConversions.iterableAsScalaIterable
 
-case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: String){}
+case class AutoWatch(id: AutoWatch.AutoWatchId, labelI18nKey: Function1[Webuser, String], applicableTo: Function[Webuser, Boolean] = (_) => true)
 
 object AutoWatch {
   type AutoWatchId = String
 
-  val ONCE_PROPOSAL_SUBMITTED = AutoWatch("ONCE_PROPOSAL_SUBMITTED", "autowatch.options.once.proposal.submitted")
-  val AFTER_INTERACTION = AutoWatch("AFTER_INTERACTION", "autowatch.options.after.interaction")
-  val MANUAL_WATCH_ONLY = AutoWatch("MANUAL_WATCH_ONLY", "autowatch.options.manual.watch.only")
+  val ONCE_PROPOSAL_SUBMITTED = AutoWatch("ONCE_PROPOSAL_SUBMITTED", (_) => "autowatch.options.once.proposal.submitted")
+  val AFTER_INTERACTION = AutoWatch("AFTER_INTERACTION", (webuser) => if(Webuser.isMember(webuser.uuid, "cfp")) { "autowatch.options.after.interaction" } else { "autowatch.options.after.gt-interaction" })
+  val AFTER_COMMENT = AutoWatch("AFTER_COMMENT", (_) => "autowatch.options.after.comment", (user) => Webuser.isMember(user.uuid, "cfp"))
+  val MANUAL_WATCH_ONLY = AutoWatch("MANUAL_WATCH_ONLY", (_) => "autowatch.options.manual.watch.only")
 
-  val allAutowatches = List(ONCE_PROPOSAL_SUBMITTED, AFTER_INTERACTION, MANUAL_WATCH_ONLY)
+  val allAutowatches = List(ONCE_PROPOSAL_SUBMITTED, AFTER_INTERACTION, AFTER_COMMENT, MANUAL_WATCH_ONLY)
 
 }
 
@@ -57,9 +58,20 @@ object NotificationEvent {
       classOf[ProposalResubmitedEvent]
     )
   )
-  val PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent(
+
+  // Deprecated as GT don't have access to public comments
+  // I assume that we should bw able to remove this entry as no GT has created any notification pref as of Nov 25th 2021
+  val DEPRECATED_PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent(
     id="PROPOSAL_GT_COMMENT_SUBMITTED", labelI18nKey="email.notifications.events.once.public.comment.submitted",
-    applicableTo = _ => true,
+    applicableTo = _ => false,
+    applicableEventTypes = List(
+      classOf[ProposalPublicCommentSentBySpeakerEvent],
+      classOf[ProposalPublicCommentSentByReviewersEvent]
+    )
+  )
+  val PROPOSAL_PUBLIC_COMMENT_SUBMITTED = NotificationEvent(
+    id="PROPOSAL_PUBLIC_COMMENT_SUBMITTED", labelI18nKey="email.notifications.events.once.public.comment.submitted",
+    applicableTo = user => Webuser.isMember(user.uuid, "cfp"),
     applicableEventTypes = List(
       classOf[ProposalPublicCommentSentBySpeakerEvent],
       classOf[ProposalPublicCommentSentByReviewersEvent]
@@ -92,6 +104,7 @@ object NotificationEvent {
 
   val allNotificationEvents = List(
     ONCE_PROPOSAL_SUBMITTED, PROPOSAL_CONTENT_UPDATED, PROPOSAL_RESUBMITTED,
+    DEPRECATED_PROPOSAL_PUBLIC_COMMENT_SUBMITTED,
     PROPOSAL_PUBLIC_COMMENT_SUBMITTED, PROPOSAL_INTERNAL_COMMENT_SUBMITTED,
     PROPOSAL_SPEAKERS_LIST_ALTERED, PROPOSAL_FINAL_APPROVAL_SUBMITTED
   )
@@ -113,7 +126,9 @@ object NotificationEvent {
   }
 }
 
-case class NotificationUserPreference(autowatchId: AutoWatch.AutoWatchId, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: Digest.Frequency, eventIds: List[NotificationEvent.NotificationEventId]){}
+case class NotificationUserPreference(autowatchId: AutoWatch.AutoWatchId, autowatchFilterForTrackIds: Option[List[String]], digestFrequency: Digest.Frequency, eventIds: List[NotificationEvent.NotificationEventId]){
+  val autoWatch = AutoWatch.allAutowatches.find(_.id == autowatchId)
+}
 object NotificationUserPreference {
   implicit val notifUserPrefFormat = Json.format[NotificationUserPreference]
 

@@ -130,6 +130,12 @@ class ZapActor extends Actor {
          speaker <- Webuser.findByUUID(proposal.mainSpeaker)) yield {
       Event.storeEvent(ProposalPublicCommentSentByReviewersEvent(reporterUUID, proposal.id, proposal.title, speaker.cleanName, msg))
       ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
+      ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_COMMENT)
+
+      val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
+      val newMessageID = Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg, maybeMessageID)
+      // Overwrite the messageID for the next email (to set the In-Reply-To)
+      Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
     }
   }
 
@@ -144,6 +150,7 @@ class ZapActor extends Actor {
   def postInternalMessage(reporterUUID: String, proposal: Proposal, msg: String) {
     Event.storeEvent(ProposalPrivateCommentSentByComiteeEvent(reporterUUID, proposal.id, proposal.title, msg))
     ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
+    ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_COMMENT)
   }
 
   def sendDraftReminder() {

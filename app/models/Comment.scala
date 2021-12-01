@@ -81,6 +81,16 @@ object Comment {
       tx.exec()
   }
 
+  def lastMessageIDForSpeaker(proposalId: String): Option[String] = Redis.pool.withClient {
+    client =>
+      client.get(s"Comments:ForSpeaker:$proposalId:LastMessageId")
+  }
+
+  def storeLastMessageIDForSpeaker(proposalId: String, messageId: String) = Redis.pool.withClient {
+    client =>
+      client.set(s"Comments:ForSpeaker:$proposalId:LastMessageId", messageId)
+  }
+
   private def saveComment(redisKey: String, proposalId: String, uuidAuthor: String, msg: String): Long = Redis.pool.withClient {
     client =>
       val comment = Comment(proposalId, uuidAuthor, msg, None)

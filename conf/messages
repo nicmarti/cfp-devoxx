@@ -49,6 +49,8 @@ email.notifications.success=Notification preferences successfully updated !
 
 autowatch.options.once.proposal.submitted=Once the proposal is submitted by the author
 autowatch.options.after.interaction=As soon as I interact on the proposal (I put a comment, or I cast my vote)
+autowatch.options.after.gt-interaction=As soon as I cast my vote on the proposal
+autowatch.options.after.comment=As soon as I comment on the proposal (no autowatch when I vote)
 autowatch.options.manual.watch.only=No automatic watch, I will handle this manually
 
 email.notifications.events.once.proposal.submitted=Once talk is submitted by the author
