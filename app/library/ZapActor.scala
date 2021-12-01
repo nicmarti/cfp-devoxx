@@ -131,6 +131,11 @@ class ZapActor extends Actor {
       Event.storeEvent(ProposalPublicCommentSentByReviewersEvent(reporterUUID, proposal.id, proposal.title, speaker.cleanName, msg))
       ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_INTERACTION)
       ProposalUserWatchPreference.applyUserProposalAutowatch(reporterUUID, proposal.id, AutoWatch.AFTER_COMMENT)
+
+      val maybeMessageID = Comment.lastMessageIDForSpeaker(proposal.id)
+      val newMessageID = Mails.sendMessageToSpeakers(reporter, speaker, proposal, msg, maybeMessageID)
+      // Overwrite the messageID for the next email (to set the In-Reply-To)
+      Comment.storeLastMessageIDForSpeaker(proposal.id, newMessageID)
     }
   }
 
