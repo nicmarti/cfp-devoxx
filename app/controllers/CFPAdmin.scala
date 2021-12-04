@@ -80,18 +80,21 @@ object CFPAdmin extends SecureCFPController {
 
   }
 
+  private def renderShowProposal(userId: String, proposal: Proposal, msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int])(implicit request: SecuredRequest[play.api.mvc.AnyContent]) = {
+    val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
+    val internalDiscussion = Comment.allInternalComments(proposal.id)
+    val maybeMyVote = Review.lastVoteByUserForOneProposal(userId, proposal.id)
+    val maybeMyPreviousVote = if (maybeMyVote.isEmpty) Review.previouslyResettedVote(userId, proposal.id) else None
+    val proposalsByAuths = allProposalByProposal(proposal)
+    val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposal.id, userId)
+    views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, msgToSpeakerForm, msgInternalForm, voteForm, maybeMyVote, maybeMyPreviousVote, userId, userWatchPref)
+  }
+
   def openForReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
-        case Some(proposal) =>
-          val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
-          val internalDiscussion = Comment.allInternalComments(proposal.id)
-          val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-          val maybeMyPreviousVote = if(maybeMyVote.isEmpty) Review.previouslyResettedVote(uuid, proposalId) else None
-          val proposalsByAuths = allProposalByProposal(proposal)
-          val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
-          Ok(views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, messageForm, messageForm, voteForm, maybeMyVote, maybeMyPreviousVote, uuid, userWatchPref))
+        case Some(proposal) => Ok(renderShowProposal(uuid, proposal, messageForm, messageForm, voteForm))
         case None => NotFound("Proposal not found").as("text/html")
       }
   }
@@ -183,15 +186,7 @@ object CFPAdmin extends SecureCFPController {
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
           messageForm.bindFromRequest.fold(
-            hasErrors => {
-              val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
-              val internalDiscussion = Comment.allInternalComments(proposal.id)
-              val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-              val maybeMyPreviousVote = if(maybeMyVote.isEmpty) Review.previouslyResettedVote(uuid, proposalId) else None
-              val proposals = allProposalByProposal(proposal)
-              val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, hasErrors, messageForm, voteForm, maybeMyVote, maybeMyPreviousVote, uuid, userWatchPref))
-            },
+            hasErrors => BadRequest(renderShowProposal(uuid, proposal, hasErrors, messageForm, voteForm)),
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
               ZapActor.actor ! SendMessageToSpeaker(uuid, proposal, validMsg)
@@ -209,15 +204,7 @@ object CFPAdmin extends SecureCFPController {
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
           messageForm.bindFromRequest.fold(
-            hasErrors => {
-              val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
-              val internalDiscussion = Comment.allInternalComments(proposal.id)
-              val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-              val maybeMyPreviousVote = if(maybeMyVote.isEmpty) Review.previouslyResettedVote(uuid, proposalId) else None
-              val proposals = allProposalByProposal(proposal)
-              val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, hasErrors, voteForm, maybeMyVote, maybeMyPreviousVote, uuid, userWatchPref))
-            },
+            hasErrors => BadRequest(renderShowProposal(uuid, proposal, messageForm, hasErrors, voteForm)),
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
               ZapActor.actor ! SendMessageInternal(uuid, proposal, validMsg)
@@ -254,15 +241,7 @@ object CFPAdmin extends SecureCFPController {
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
           voteForm.bindFromRequest.fold(
-            hasErrors => {
-              val speakerDiscussion = Comment.allSpeakerComments(proposal.id)
-              val internalDiscussion = Comment.allInternalComments(proposal.id)
-              val maybeMyVote = Review.lastVoteByUserForOneProposal(uuid, proposalId)
-              val maybeMyPreviousVote = if(maybeMyVote.isEmpty) Review.previouslyResettedVote(uuid, proposalId) else None
-              val proposals = allProposalByProposal(proposal)
-              val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposalId, uuid)
-              BadRequest(views.html.CFPAdmin.showProposal(proposal, proposals, speakerDiscussion, internalDiscussion, messageForm, messageForm, hasErrors, maybeMyVote, maybeMyPreviousVote, uuid, userWatchPref))
-            },
+            hasErrors => BadRequest(renderShowProposal(uuid, proposal, messageForm, messageForm, hasErrors)),
             validVote => {
               Review.voteForProposal(proposalId, uuid, validVote)
               Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Ok, vote submitted")
