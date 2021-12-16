@@ -37,11 +37,18 @@ DevoxxFR Email Digest (@userDigest.digest.value)
   }}
 }
 
+@userDigest.concernedByEvents_txt(NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED) { events =>
+  [[Resetted votes]]
+  @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+    - @{proposal.id} - @{proposal.title} (@{link.href})
+  }
+}
+
 @userDigest.concernedByEvents_txt(NotificationEvent.PROPOSAL_FINAL_APPROVAL_SUBMITTED) { events =>
   [[Approved talks]]
-    @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
-      - @{proposal.id} - @{proposal.title} (@{link.href})
-    }
+  @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+    - @{proposal.id} - @{proposal.title} (@{link.href})
+  }
 }
 
 Happy rating!

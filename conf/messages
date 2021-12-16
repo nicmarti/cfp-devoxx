@@ -60,6 +60,7 @@ email.notifications.events.once.public.comment.submitted=Public comment
 email.notifications.events.once.internal.comment.submitted=Internal comment
 email.notifications.events.once.proposal.speakers.altered=Speaker added / removed
 email.notifications.events.once.proposal.final.approval.provided=Proposal accepted/refused by admins
+email.notifications.events.once.comitee.votes.resetted=All votes resetted on proposal
 
 email.digest.description=Receive new proposals notifications via a digest email.
 email.digest.realtime.description=Interval is every 5 minutes.
@@ -400,6 +401,7 @@ admin.sp.committee_speaker=Between Committee & Speaker
 admin.btn.sendMessage=Post your message
 admin.sp.internal=Private discussions
 admin.sp.deleteMyVote=Delete my vote
+admin.sp.previous.vote.after.votes.reset=Prior to <u>vote reset</u>, you voted <strong>{0}</strong> on {1}
 admin.btn.allvotes=All votes
 admin.proposals.watch=Watch
 admin.proposals.watch.suggestion=Click here to enable watch on following proposal events

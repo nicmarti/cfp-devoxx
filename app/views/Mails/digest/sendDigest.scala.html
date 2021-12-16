@@ -50,6 +50,15 @@
             </ul>
         }
 
+        @userDigest.concernedByEvents_html(NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED) { events =>
+            <h3>Resetted votes</h3>
+            <ul>
+                @userDigest.distinctProposalsOf(events) { case (proposal, link, proposalEvents) =>
+                <li><a href="@{link.href}">@{proposal.id} - @{proposal.title}</a></li>
+                }
+            </ul>
+        }
+
         @userDigest.concernedByEvents_html(NotificationEvent.PROPOSAL_FINAL_APPROVAL_SUBMITTED) { events =>
             <h3>Approved talks</h3>
             <ul>
