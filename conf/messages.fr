@@ -798,6 +798,7 @@ cfp.filter.off=Pas de filtre
 
 cfpadmin.totalReviewed={0} revus
 cfpadmin.totalVoted={0} votés
+cfpadmin.totalDelayedReviews={0} temporisés
 cfpadmin.totalToReview={0} à revoir
 
 publisher.room.disclaimer=La salle est susceptible d''être changée jusqu''à 48h avant le début de Devoxx France.

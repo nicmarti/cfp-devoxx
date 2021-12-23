@@ -69,13 +69,14 @@ object CFPAdmin extends SecureCFPController {
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
       val totalToReview = Review.countProposalNotReviewed(uuid)
+      val totalDelayedReviews = Review.countDelayedReviews(uuid)
 
       track.map {
         trackValue: String =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, pageReview, totalToReviewFiltered))
+          Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, totalDelayedReviews, pageReview, totalToReviewFiltered))
             .withHeaders("ETag" -> etag)
       }.getOrElse {
-        Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted, totalToReview, pageReview, totalToReviewFiltered))
+        Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted, totalToReview, totalDelayedReviews, pageReview, totalToReviewFiltered))
           .withHeaders("ETag" -> etag)
       }
 

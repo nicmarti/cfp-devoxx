@@ -9,6 +9,7 @@
  totalReviewed:Long,
  totalVoted:Option[Int],
  totalToReview:Int,
+ totalDelayedReviews:Long,
  pageReview:Int,
  totalToReviewFiltered:Int
 )(implicit flash: Flash, lang: Lang, req:RequestHeader)
@@ -50,7 +51,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="far fa-check-circle"></i> @Messages("admin.proposals.todolist.title") </h3>
-                    @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0)) / @Messages("cfpadmin.totalToReview",totalToReview)
+                    @Messages("cfpadmin.totalReviewed",totalReviewed) / @Messages("cfpadmin.totalVoted",totalVoted.getOrElse(0)) / @Messages("cfpadmin.totalDelayedReviews",totalDelayedReviews) / @Messages("cfpadmin.totalToReview",totalToReview)
                 </div>
                 <div class="card-body">
                     <i class="fas fa-filter"></i> @Messages("cfp.filter.on") :

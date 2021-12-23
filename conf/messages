@@ -948,6 +948,7 @@ cfp.filter.off=Remove filter
 
 cfpadmin.totalReviewed={0} reviewed
 cfpadmin.totalVoted={0} voted
+cfpadmin.totalDelayedReviews={0} delayed
 cfpadmin.totalToReview={0} to review
 
 publisher.room.disclaimer=The designated room for a presentation can be changed 48 hours before the beginning of Devoxx.
