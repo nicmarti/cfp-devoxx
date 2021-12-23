@@ -230,12 +230,12 @@
                         @flash.get("vote").get
                         </div>
                     }
+
+                    @tags.showProposalWatchAction(userWatchPref, watchCall = routes.CFPAdmin.watchProposal(proposal.id), unwatchCall = routes.CFPAdmin.unwatchProposal(proposal.id))
                 }
             }
             </div><!-- 230 -->
         </div><!-- 231 -->
-
-            @tags.showProposalWatchAction(userWatchPref, watchCall = routes.CFPAdmin.watchProposal(proposal.id), unwatchCall = routes.CFPAdmin.unwatchProposal(proposal.id))
 
             <div class="col-12 mb-1" id="discussion">
                 <div class="card">

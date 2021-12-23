@@ -184,9 +184,9 @@
             @flash.get("vote").get
             </div>
         }
+        @tags.showProposalWatchAction(userWatchPref, watchCall = routes.GoldenTicketController.watchProposal(proposal.id), unwatchCall = routes.GoldenTicketController.unwatchProposal(proposal.id))
         </div>
         }
         }
     </div>
-    @tags.showProposalWatchAction(userWatchPref, watchCall = routes.GoldenTicketController.watchProposal(proposal.id), unwatchCall = routes.GoldenTicketController.unwatchProposal(proposal.id))
 }
