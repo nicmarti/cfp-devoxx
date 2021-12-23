@@ -49,6 +49,7 @@ object ReviewByGoldenTicket {
       tx.sadd(s"ReviewGT:Reviewed:ByProposal:$proposalId", reviewerUUID)
       tx.zadd(s"ReviewGT:Votes:$proposalId", secureMaxVote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zadd(s"ReviewGT:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + secureMaxVote) // Store when this user voted for this talk
+      tx.hdel(s"ReviewGT:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${reviewerUUID}", proposalId)
       tx.exec()
 
       if(vote != 0) {

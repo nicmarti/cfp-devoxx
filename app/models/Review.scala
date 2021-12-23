@@ -61,6 +61,7 @@ object Review {
       tx.sadd(s"Proposals:Reviewed:ByProposal:$proposalId", reviewerUUID)
       tx.zadd(s"Proposals:Votes:$proposalId", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zadd(s"Proposals:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
+      tx.hdel(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${reviewerUUID}", proposalId)
       tx.exec()
 
       if(vote != 0) {
