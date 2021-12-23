@@ -360,6 +360,7 @@ admin.proposals.delay-vote.title=Temporiser mon vote
 admin.proposals.delay-vote.comment.placeholder=Un rappel ici sur pourquoi j''ai temporisé mon vote
 admin.proposals.delay-vote.description=Les Propositions marquées comme "temporisées" n''apparaîtront plus dans votre todolist. Vous pouvez accéder à ces proposition sur l''écran "Toutes mes revues".
 admin.proposals.delay-vote.button.label=Temporiser mon vote
+admin.proposals.delay-vote.no-vote-shown=Désolé, les votes pour une revue temporisée sont masqués
 
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
 admin.draft.warning=Attention

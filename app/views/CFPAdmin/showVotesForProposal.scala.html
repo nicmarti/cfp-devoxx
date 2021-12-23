@@ -7,6 +7,7 @@
         nextToBeReviewedSameTrackAndFormat: Option[Proposal],
         nextToBeReviewedSameTrack: Option[Proposal],
         nextToBeReviewedSameFormat: Option[Proposal],
+        currentProposalReviewHasBeenDelayed: Boolean,
         averageScoreGT: Double,
         countVotesCastGT: Option[Long],
         bestReviewers:Option[List[(ReviewerStats)]])(implicit flash: Flash, lang: Lang, req: RequestHeader)
@@ -33,17 +34,18 @@
                 </div>
             </div>
 
+            @if(!currentProposalReviewHasBeenDelayed) {
             <div class="col-md-6 col-lg-4 col-sm-12 mt-2">
                 <div class="card">
                     <div class="card-header">
                         <h3>@currentAverageScore <small>@Messages("svp.score")</small></h3>
                     </div>
                     <div class="card-body">
-                            <div class="progress" style="height: 50px">
-                                <div class="progress-bar progress-bar-success" style="width: @Math.round(currentAverageScore*10)%">
-                                    <span> @currentAverageScore by @totalVotesCast Commitee</span>
-                                </div>
+                        <div class="progress" style="height: 50px">
+                            <div class="progress-bar progress-bar-success" style="width: @Math.round(currentAverageScore*10)%">
+                                <span> @currentAverageScore by @totalVotesCast Commitee</span>
                             </div>
+                        </div>
 
                         <table class="table">
                             <tbody>
@@ -76,6 +78,7 @@
                     </div>
                 </div>
             </div>
+            }
 
             <div class="col-md-6 col-lg-4 col-sm-6 mt-2">
                 <div class="card">
@@ -84,19 +87,20 @@
                     </div>
                     <div class="card-body">
 
-                    @if(proposal.mainSpeaker == currentUser || proposal.secondarySpeaker.contains(currentUser) || proposal.otherSpeakers.contains(currentUser)) {
-                        <em>@Messages("svp.noshow")</em>
-                    } else {
-                        @allVotes.sortBy(_._2).map { case (author, vote) =>
-                        @tags.renderGravatar(author, showName = true)&nbsp;<span class="card-text">@Messages("svp.voted") @tags.renderVote(vote.toInt)</span>
-
+                    @(List(proposal.otherSpeakers, List(proposal.mainSpeaker, proposal.secondarySpeaker)).flatten.contains(currentUser), currentProposalReviewHasBeenDelayed) match {
+                        case (true, _) => { <em>@Messages("svp.noshow")</em> }
+                        case (_, true) => { <em>@Messages("admin.proposals.delay-vote.no-vote-shown")</em> }
+                        case _ => {
+                            @allVotes.sortBy(_._2).map { case (author, vote) =>
+                                @tags.renderGravatar(author, showName = true)&nbsp;<span class="card-text">@Messages("svp.voted") @tags.renderVote(vote.toInt)</span>
+                            }
                         }
                     }
                     </div>
                 </div>
             </div>
 
-            @if(ConferenceDescriptor.isGoldenTicketActive) {
+            @if(ConferenceDescriptor.isGoldenTicketActive && !currentProposalReviewHasBeenDelayed) {
                 <div class="col-md4 col-lg-4 col-sm-6 mt-2">
                     <div class="card">
                         <div class="card-header">
