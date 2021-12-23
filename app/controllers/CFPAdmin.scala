@@ -125,6 +125,7 @@ object CFPAdmin extends SecureCFPController {
 
             val proposalIdsWithDelayedReview = Review.delayedReviewsReasons(uuid).keySet
             val currentProposalReviewHasBeenDelayed = proposalIdsWithDelayedReview.contains(proposal.id)
+            val delayedReviewsCount = proposalIdsWithDelayedReview.size
 
             // The next proposal I should review
             val allNotReviewed = Review.allProposalsNotReviewed(uuid).filterNot(p => proposalIdsWithDelayedReview.contains(p.id))
@@ -174,13 +175,9 @@ object CFPAdmin extends SecureCFPController {
             }
 
             // If Golden Ticket is active
-            if (ConferenceDescriptor.isGoldenTicketActive) {
-              val averageScoreGT = ReviewByGoldenTicket.averageScore(proposalId)
-              val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, currentProposalReviewHasBeenDelayed, averageScoreGT, countVotesCastGT, meAndMyFollowers))
-            } else {
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, currentProposalReviewHasBeenDelayed, 0, None, meAndMyFollowers))
-            }
+            val averageScoreGT = if (ConferenceDescriptor.isGoldenTicketActive) ReviewByGoldenTicket.averageScore(proposalId) else 0
+            val countVotesCastGT: Option[Long] = if (ConferenceDescriptor.isGoldenTicketActive) Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId)) else None
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, currentProposalReviewHasBeenDelayed, delayedReviewsCount, averageScoreGT, countVotesCastGT, meAndMyFollowers))
           case None => NotFound("Proposal not found").as("text/html")
         }
       }
@@ -313,10 +310,25 @@ object CFPAdmin extends SecureCFPController {
           val proposalsMatchingCriteriaNotReviewed = proposalsNotReviewedForCurrentType.filter(p => selectedTrack.map(p.track.id == _).getOrElse(true))
           val firstProposalNotReviewedAndMatchingCriteria = proposalsMatchingCriteriaNotReviewed.headOption
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria))
+          val delayedReviewsCount = Review.countDelayedReviews(uuid)
+
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria, delayedReviewsCount))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
+  }
+
+  def delayedReviews() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val uuid = request.webuser.uuid
+      val delayedReviewReasonByProposalId = Review.delayedReviewsReasons(uuid)
+
+      val delayedProposals = Proposal.loadAndParseProposals(delayedReviewReasonByProposalId.keySet)
+        .values.toList
+        .sortBy(p => s"${p.talkType}__${p.track}")
+
+      Ok(views.html.CFPAdmin.delayedReviews(delayedProposals, delayedReviewReasonByProposalId))
   }
 
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {

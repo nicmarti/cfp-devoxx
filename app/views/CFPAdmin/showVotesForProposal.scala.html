@@ -8,6 +8,7 @@
         nextToBeReviewedSameTrack: Option[Proposal],
         nextToBeReviewedSameFormat: Option[Proposal],
         currentProposalReviewHasBeenDelayed: Boolean,
+        delayedReviewsCount: Int,
         averageScoreGT: Double,
         countVotesCastGT: Option[Long],
         bestReviewers:Option[List[(ReviewerStats)]])(implicit flash: Flash, lang: Lang, req: RequestHeader)
@@ -168,6 +169,9 @@
                     <div class="card-body">
                         <a class="btn btn-warning" style="margin: 2px 0px" accesskey="r" href="@routes.CFPAdmin.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="fas fa-backward"></i> @Messages("gt.showVotes.review")</a>
                         <a class="btn btn-primary" style="margin: 2px 0px" accesskey="h" href="@routes.CFPAdmin.index()" title="Shortcut : Ctrl-Option-h"><i class="fas fa-home"></i> @Messages("gt.home")</a>
+                        @if(delayedReviewsCount > 0) {
+                            <a class="btn btn-primary" style="margin: 2px 0px" href="@routes.CFPAdmin.delayedReviews()"><i class="fas fa-clock"></i> @Messages("admin.btn.delayed-reviews-with-count", delayedReviewsCount)</a>
+                        }
                         <a class="btn btn-primary" style="margin: 2px 0px" accesskey="v" href="@routes.CFPAdmin.allMyVotes(proposal.talkType.id, Some(proposal.track.id))" title="Shortcut: Ctrl-Option-V"><i class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
 
                         @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty) {
