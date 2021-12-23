@@ -204,8 +204,10 @@ object GoldenTicketController extends SecureCFPController {
       scala.concurrent.Future {
         Proposal.findById(proposalId) match {
           case Some(proposal) =>
+            val proposalIdsWithDelayedReview = Review.delayedReviewsReasons(uuid).keySet
+
             // The next proposal I should review
-            val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid)
+            val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).filterNot(p => proposalIdsWithDelayedReview.contains(p.id))
             val (sameTrackAndFormats, otherTracksOrFormats) = allNotReviewed.partition(p => p.track.id == proposal.track.id && p.talkType.id == proposal.talkType.id)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
             val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
