@@ -404,9 +404,11 @@ admin.sp.deleteMyVote=Delete my vote
 admin.sp.previous.vote.after.votes.reset=Prior to <u>vote reset</u>, you voted <strong>{0}</strong> on {1}
 admin.btn.allvotes=All votes
 admin.proposals.watch=Watch
-admin.proposals.watch.suggestion=Click here to enable watch on following proposal events
+admin.proposals.watch.suggestion=Click here to enable watch on proposal events
 admin.proposals.unwatch=Unwatch
 admin.proposals.unwatch.suggestion=Click here to disable watch on proposal events
+admin.proposals.watch.concerned-events=Concerned events
+admin.proposals.watch.more-details=More details
 
 
 speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.

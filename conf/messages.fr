@@ -354,6 +354,8 @@ admin.proposals.watch=Observer
 admin.proposals.watch.suggestion=Cliquer ici pour activer l''observation sur les évènements de la proposition
 admin.proposals.unwatch=Ignorer
 admin.proposals.unwatch.suggestion=Cliquer ici pour désactiver l''observation sur les évènements de la proposition
+admin.proposals.watch.concerned-events=Évènements concernés
+admin.proposals.watch.more-details=Plus de détails
 
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
 admin.draft.warning=Attention

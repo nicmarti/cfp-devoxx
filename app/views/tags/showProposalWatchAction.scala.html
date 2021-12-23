@@ -1,24 +1,27 @@
 @(userWatchPref: ProposalUserWatchPreference, watchCall: Call, unwatchCall: Call)
 <div class="col-12 mb-1">
-  @if(userWatchPref.isWatcher) {
-    @helper.form(action = unwatchCall) {
+  @helper.form(action = if(userWatchPref.isWatcher) unwatchCall else watchCall) {
+    @if(userWatchPref.isWatcher) {
       <button type="submit" name="unwatch" value="" class="btn btn-primary btn-lg"><i class="far fa-eye-slash" aria-hidden="true"></i> @Messages("admin.proposals.unwatch")</button>
-      <em>@Messages("admin.proposals.unwatch.suggestion")</em> :
-      <ul>
-      @userWatchPref.watchingEvents.map { event =>
-        <li>@Messages(event.labelI18nKey)</li>
-      }
-      </ul>
-    }
-  } else {
-    @helper.form(action = watchCall) {
+      <em>@Messages("admin.proposals.unwatch.suggestion") .</em>
+    } else {
       <button type="submit" name="watch" value="" class="btn btn-primary btn-lg"><i class="far fa-eye" aria-hidden="true"></i> @Messages("admin.proposals.watch")</button>
-      <em>@Messages("admin.proposals.watch.suggestion")</em> :
-      <ul>
-      @userWatchPref.watchingEvents.map { event =>
-        <li>@Messages(event.labelI18nKey)</li>
-      }
-      </ul>
+      <em>@Messages("admin.proposals.watch.suggestion") .</em>
     }
+    <em id="moreDetailsLink"><a href="#moreDetailsLink" onclick="showWatchDetails()">@Messages("admin.proposals.watch.more-details")</a></em>
   }
+  <div id="moreDetailsSection" style="display: none">
+    <em>@Messages("admin.proposals.watch.concerned-events")</em> :
+    <ul>
+    @userWatchPref.watchingEvents.map { event =>
+      <li>@Messages(event.labelI18nKey)</li>
+    }
+    </ul>
+  </div>
+  <script type="text/javascript">
+    function showWatchDetails(){
+      document.getElementById('moreDetailsLink').style.display = 'none';
+      document.getElementById('moreDetailsSection').style.display = 'block';
+    }
+  </script>
 </div>
