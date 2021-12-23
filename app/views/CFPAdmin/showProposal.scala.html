@@ -1,4 +1,4 @@
-@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], maybeMyPreviousVote: Option[Review], currentUser: String, userWatchPref: ProposalUserWatchPreference)(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], maybeMyPreviousVote: Option[Review], currentUser: String, userWatchPref: ProposalUserWatchPreference, maybeVoteDelayedReason: Option[String])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -232,6 +232,7 @@
                     }
 
                     @tags.showProposalWatchAction(userWatchPref, watchCall = routes.CFPAdmin.watchProposal(proposal.id), unwatchCall = routes.CFPAdmin.unwatchProposal(proposal.id))
+                    @tags.showProposalDelayVote(formAction = routes.CFPAdmin.delayVote(proposal.id), maybeVoteDelayedReason)
                 }
             }
             </div><!-- 230 -->

@@ -100,12 +100,14 @@ object GoldenTicketController extends SecureCFPController {
     (from, to, totalPages)
   }
 
+  val delayedReviewForm: Form[String] = Form("delayedReviewReason" -> text(maxLength = 1000))
   val voteForm: Form[Int] = Form("vote" -> number(min = 0, max = 10))
 
   private def renderShowProposal(userId: String, proposal: Proposal, voteForm: Form[Int])(implicit request: SecuredRequest[play.api.mvc.AnyContent]) = {
     val maybeMyVote = ReviewByGoldenTicket.lastVoteByUserForOneProposal(proposal.id, userId)
     val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposal.id, userId)
-    views.html.GoldenTicketController.showProposal(proposal, voteForm, maybeMyVote, userWatchPref)
+    val maybeDelayedReviewReason = ReviewByGoldenTicket.proposalDelayedReviewReason(userId, proposal.id)
+    views.html.GoldenTicketController.showProposal(proposal, voteForm, maybeMyVote, userWatchPref, maybeDelayedReviewReason)
   }
 
   def openForReview(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
@@ -127,6 +129,22 @@ object GoldenTicketController extends SecureCFPController {
           ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
           Ok(renderShowProposal(uuid, proposal, voteForm)).flashing("success" -> "Started watching proposal")
         case None => NotFound("Proposal not found").as("text/html")
+      }
+  }
+
+  def delayVote(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          delayedReviewForm.bindFromRequest.fold(
+            hasErrors => BadRequest(renderShowProposal(uuid, proposal, voteForm)),
+            validMsg => {
+              ReviewByGoldenTicket.markProposalReviewAsDelayed(uuid, proposal.id, validMsg)
+              Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> "OK, review delayed for this proposal")
+            }
+          )
+        case None => NotFound("Proposal not found")
       }
   }
 

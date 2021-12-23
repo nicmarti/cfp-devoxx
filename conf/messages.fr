@@ -356,6 +356,10 @@ admin.proposals.unwatch=Ignorer
 admin.proposals.unwatch.suggestion=Cliquer ici pour désactiver l''observation sur les évènements de la proposition
 admin.proposals.watch.concerned-events=Évènements concernés
 admin.proposals.watch.more-details=Plus de détails
+admin.proposals.delay-vote.title=Temporiser mon vote
+admin.proposals.delay-vote.comment.placeholder=Un rappel ici sur pourquoi j''ai temporisé mon vote
+admin.proposals.delay-vote.description=Les Propositions marquées comme "temporisées" n''apparaîtront plus dans votre todolist. Vous pouvez accéder à ces proposition sur l''écran "Toutes mes revues".
+admin.proposals.delay-vote.button.label=Temporiser mon vote
 
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
 admin.draft.warning=Attention

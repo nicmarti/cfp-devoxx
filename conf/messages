@@ -409,6 +409,10 @@ admin.proposals.unwatch=Unwatch
 admin.proposals.unwatch.suggestion=Click here to disable watch on proposal events
 admin.proposals.watch.concerned-events=Concerned events
 admin.proposals.watch.more-details=More details
+admin.proposals.delay-vote.title=Delaying my vote
+admin.proposals.delay-vote.comment.placeholder=A reminder here about why I delayed my vote
+admin.proposals.delay-vote.description=Proposals marked as "delayed" will not appear anymore in your todolist. You can have a look at these proposals in the "All my reviews" screen.
+admin.proposals.delay-vote.button.label=Delay my vote
 
 
 speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.

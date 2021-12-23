@@ -25,6 +25,7 @@ object CFPAdmin extends SecureCFPController {
 
   val messageForm: Form[String] = Form("msg" -> nonEmptyText(maxLength = 1000))
   val voteForm: Form[Int] = Form("vote" -> number(min = 0, max = 10))
+  val delayedReviewForm: Form[String] = Form("delayedReviewReason" -> text(maxLength = 1000))
   val editSpeakerForm = Form(
     tuple(
       "uuid" -> text.verifying(nonEmpty, maxLength(50)),
@@ -87,7 +88,8 @@ object CFPAdmin extends SecureCFPController {
     val maybeMyPreviousVote = if (maybeMyVote.isEmpty) Review.previouslyResettedVote(userId, proposal.id) else None
     val proposalsByAuths = allProposalByProposal(proposal)
     val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposal.id, userId)
-    views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, msgToSpeakerForm, msgInternalForm, voteForm, maybeMyVote, maybeMyPreviousVote, userId, userWatchPref)
+    val maybeDelayedReviewReason = Review.proposalDelayedReviewReason(userId, proposal.id)
+    views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, msgToSpeakerForm, msgInternalForm, voteForm, maybeMyVote, maybeMyPreviousVote, userId, userWatchPref, maybeDelayedReviewReason)
   }
 
   def openForReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -223,6 +225,22 @@ object CFPAdmin extends SecureCFPController {
           ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
           Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started watching proposal")
       }.getOrElse(NotFound("Proposal not found"))
+  }
+
+  def delayVote(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          delayedReviewForm.bindFromRequest.fold(
+            hasErrors => BadRequest(renderShowProposal(uuid, proposal, hasErrors, messageForm, voteForm)),
+            validMsg => {
+              Review.markProposalReviewAsDelayed(uuid, proposal.id, validMsg)
+              Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "OK, review delayed for this proposal")
+            }
+          )
+        case None => NotFound("Proposal not found")
+      }
   }
 
   def unwatchProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {

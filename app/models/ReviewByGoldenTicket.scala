@@ -475,4 +475,24 @@ object ReviewByGoldenTicket {
       }
       tx2.exec()
   }
+
+  def markProposalReviewAsDelayed(uuid: String, proposalId: String, reason: String): Unit = Redis.pool.withClient {
+    client =>
+      client.hset(s"ReviewGT:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId, reason)
+  }
+
+  def proposalDelayedReviewReason(uuid: String, proposalId: String): Option[String] = Redis.pool.withClient {
+    client =>
+      client.hget(s"ReviewGT:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId)
+  }
+
+  def delayedReviewsReasons(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.hgetAll(s"ReviewGT:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
+  }
+
+  def countDelayedReviews(uuid: String) = Redis.pool.withClient {
+    client =>
+      client.hlen(s"ReviewGT:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
+  }
 }
