@@ -840,6 +840,9 @@ gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx. B
 
 gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.
 gt.intro.2=If needed, you can also
+gt.delayed-review.submission.ok=Your review has been marked as delayed
+gt.delayed-reviews.message=You have {0} delayed reviews pending..
+gt.btn.delayed-reviews=Delayed Reviews
 gt.reviewYourVotes=review your Votes
 gt.intro.3=while the CFP is open.
 gt.special.need=You can vote until Tuesday, january, 30th, 7:00pm

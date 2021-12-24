@@ -3,7 +3,8 @@
   sort:Option[String],
   ascdesc:Option[String],
   track:Option[String],
-  totalToReview:Int
+  totalToReview:Int,
+  totalDelayedReviews: Long
 )(implicit flash: Flash, lang: Lang, req:RequestHeader)
 
 @main("CFP Admin") {
@@ -35,6 +36,12 @@
                 <div class="card-body">
                     <p>@Messages("gt.intro.1")</p>
                     <p>@Messages("gt.intro.2") <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes()">@Messages("gt.reviewYourVotes")</a> @Messages("gt.intro.3")</p>
+                    @if(totalDelayedReviews > 0) {
+                        <p>
+                            @Messages("gt.delayed-reviews.message", totalDelayedReviews)
+                            <a href="@routes.GoldenTicketController.delayedReviews()" title="Show delayed reviews" class="btn btn-primary btn-sm"><i class="fas fa-clock"></i> @Messages("gt.btn.delayed-reviews")</a>
+                        </p>
+                    }
 
                     @if(ConferenceDescriptor.isCFPOpen == false) {
                         <p><label class="badge badge-success"><i class="fas fa-lightbulb"></i> @Messages("gt.special.need")</label></p>

@@ -83,6 +83,7 @@ object GoldenTicketController extends SecureCFPController {
       }).filterNot(prop => delayedReviewProposalIds.contains(prop.id))
 
       val totalToReview = maybeFilteredProposals.size
+      val totalDelayedReviews = delayedReviewProposalIds.size
 
       val totalPages = (totalToReview / pageSize) + (if (totalToReview % pageSize > 0) 1 else 0)
       val currentPage = if(innerPage>totalPages){
@@ -91,7 +92,7 @@ object GoldenTicketController extends SecureCFPController {
         innerPage
       }
       val allProposalsForReview = ProposalUtil.sortProposals(maybeFilteredProposals, sorter, orderer).slice(pageSize * (currentPage - 1), pageSize * (currentPage - 1) + pageSize)
-      Ok(views.html.GoldenTicketController.showAllProposalsGT(allProposalsForReview, currentPage, sort, ascdesc, track, totalToReview))
+      Ok(views.html.GoldenTicketController.showAllProposalsGT(allProposalsForReview, currentPage, sort, ascdesc, track, totalToReview, totalDelayedReviews))
   }
 
   def pageCalc(page: Int, pageSize: Int, totalItems: Int) = {
@@ -204,7 +205,9 @@ object GoldenTicketController extends SecureCFPController {
       scala.concurrent.Future {
         Proposal.findById(proposalId) match {
           case Some(proposal) =>
-            val proposalIdsWithDelayedReview = Review.delayedReviewsReasons(uuid).keySet
+            val proposalIdsWithDelayedReview = ReviewByGoldenTicket.delayedReviewsReasons(uuid).keySet
+            val currentProposalReviewHasBeenDelayed = proposalIdsWithDelayedReview.contains(proposal.id)
+            val delayedReviewsCount = proposalIdsWithDelayedReview.size
 
             // The next proposal I should review
             val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).filterNot(p => proposalIdsWithDelayedReview.contains(p.id))
@@ -218,7 +221,7 @@ object GoldenTicketController extends SecureCFPController {
             val nextToBeReviewedSameTrack = (sameTracks.sortBy(_.talkType.id) ++ otherTracks).headOption
             val nextToBeReviewedSameFormat = (sameTalkType.sortBy(_.track.id) ++ otherTalksType).headOption
 
-            Ok(views.html.GoldenTicketController.showVotesForProposal(uuid, proposal, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
+            Ok(views.html.GoldenTicketController.showVotesForProposal(uuid, proposal, currentProposalReviewHasBeenDelayed, delayedReviewsCount, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat))
           case None => NotFound("Proposal not found").as("text/html")
         }
       }
@@ -255,10 +258,25 @@ object GoldenTicketController extends SecureCFPController {
           val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
           val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria))
+          val delayedReviewsCount = ReviewByGoldenTicket.countDelayedReviews(uuid)
+
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, delayedReviewsCount, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
+  }
+
+  def delayedReviews() = SecuredAction(IsMemberOfGroups(securityGroups)) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val uuid = request.webuser.uuid
+      val delayedReviewReasonByProposalId = ReviewByGoldenTicket.delayedReviewsReasons(uuid)
+
+      val delayedProposals = Proposal.loadAndParseProposals(delayedReviewReasonByProposalId.keySet)
+        .values.toList
+        .sortBy(p => s"${p.talkType}__${p.track}")
+
+      Ok(views.html.GoldenTicketController.delayedReviews(delayedProposals, delayedReviewReasonByProposalId))
   }
 
   private def createCookie(webuser: Webuser) = {

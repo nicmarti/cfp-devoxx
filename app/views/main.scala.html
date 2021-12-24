@@ -38,6 +38,7 @@
                 @if(SecureCFPController.hasAccessToGoldenTicket(req)){
                     <li class="nav-item"><a class="nav-link" href="@routes.GoldenTicketController.showAllProposals()"><i class="fas fa-ticket-alt" aria-hidden="true"></i> @Messages("gt.nav.home")</a></li>
                     <li class="nav-item"><a class="nav-link" href="@routes.GoldenTicketController.allMyGoldenTicketVotes()"><i class="fas fa-chart-bar" aria-hidden="true"></i> All your votes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@routes.GoldenTicketController.delayedReviews()"><i class="fas fa-clock" aria-hidden="true"></i> Delayed reviews</a></li>
                     <li class="nav-item"><a class="nav-link" href="@routes.CFPPreferencesController.index()"><i class="fas fa-mail-bulk" aria-hidden="true"></i> Preferences</a></li>
                 }
                 @if(SecureCFPController.hasAccessToCFPAdmin(req)){
