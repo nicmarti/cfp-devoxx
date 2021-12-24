@@ -75,10 +75,12 @@ object GoldenTicketController extends SecureCFPController {
 
       val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid)
 
-      val maybeFilteredProposals = track match {
+      val delayedReviewProposalIds = ReviewByGoldenTicket.delayedReviewsReasons(uuid).keySet
+
+      val maybeFilteredProposals = (track match {
         case None => allNotReviewed
         case Some(trackLabel) => allNotReviewed.filter(_.track.id.equalsIgnoreCase(StringUtils.trimToEmpty(trackLabel)))
-      }
+      }).filterNot(prop => delayedReviewProposalIds.contains(prop.id))
 
       val totalToReview = maybeFilteredProposals.size
 
