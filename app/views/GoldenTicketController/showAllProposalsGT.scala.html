@@ -39,17 +39,17 @@
                     @if(totalDelayedReviews > 0) {
                         <p>
                             @Messages("gt.delayed-reviews.message", totalDelayedReviews)
-                            <a href="@routes.GoldenTicketController.delayedReviews()" title="Show delayed reviews" class="btn btn-primary btn-sm"><i class="fas fa-clock"></i> @Messages("gt.btn.delayed-reviews")</a>
+                            <a href="@routes.GoldenTicketController.delayedReviews()" title="Show delayed reviews" class="btn btn-primary btn-sm"><i aria-hidden="true" class="fas fa-clock"></i> @Messages("gt.btn.delayed-reviews")</a>
                         </p>
                     }
 
                     @if(ConferenceDescriptor.isCFPOpen == false) {
-                        <p><label class="badge badge-success"><i class="fas fa-lightbulb"></i> @Messages("gt.special.need")</label></p>
+                        <p><label class="badge badge-success"><i aria-hidden="true" class="fas fa-lightbulb"></i> @Messages("gt.special.need")</label></p>
                     }
                         <br>
 
                     @if(allProposalsForReview.nonEmpty) {
-                        <i class="fas fa-filter"></i> Filter on
+                        <i aria-hidden="true" class="fas fa-filter"></i> Filter on
                         @Track.allIDs.filterNot(_ == Track.UNKNOWN.id).map{idTrack=>
                             <a href="@routes.GoldenTicketController.showAllProposals(page, sort, ascdesc, Option(idTrack))" class="btn btn-primary btn-sm">@idTrack</a>
                         }

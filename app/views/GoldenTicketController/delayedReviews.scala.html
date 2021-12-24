@@ -1,53 +1,5 @@
 @(proposals: List[Proposal], delayedReviewReasonByProposalId: Map[String,String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my delayed reviews") {
-    <div class="row pt-3">
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="far fa-clock"></i> @Messages("admin.proposals.delayed-reviews.title") </h3>
-            </div>
-            <div class="card-body">
-                @if(proposals.isEmpty) {
-                    @Messages("admin.proposals.delayed-reviews.empty")
-                } else {
-                <table class="table table-bordered table-striped table-hover table-condensed">
-                    <thead>
-                        <tr>
-                            <th>@Messages("admin.proposals.th.title")</th>
-                            <th>@Messages("admin.proposals.th.talkType")</th>
-                            <th>@Messages("admin.proposals.th.track")</th>
-                            <th>@Messages("admin.proposals.th.speakers")</th>
-                            <th>@Messages("admin.proposals.th.comment")</th>
-                            <th>@Messages("admin.proposals.th.action")</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @proposals.map { proposal: Proposal =>
-                        <tr>
-                            <td>@proposal.title</td>
-                            <td>@Messages(proposal.talkType.id)</td>
-                            <td>@Messages(proposal.track.label)</td>
-                            <td>
-                                @tags.renderGravatar(proposal.mainSpeaker)
-                                @proposal.secondarySpeaker.map { sc =>
-                                    @tags.renderGravatar(sc)
-                                }
-                                @proposal.otherSpeakers.map { s =>
-                                    @tags.renderGravatar(s)
-                                }
-                            </td>
-                            <td>
-                                @delayedReviewReasonByProposalId.get(proposal.id).getOrElse("")
-                            </td>
-                            <td>
-                                <a href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Open for review" class="btn btn-block btn-primary btn-sm">@Messages("admin.btn.review")</a>
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-                }
-            </div>
-        </div>
-    </div>
+    @tags.renderDelayedReviews(openForReviewAction=(proposal) => routes.GoldenTicketController.openForReview(proposal.id), proposals, delayedReviewReasonByProposalId)
 }
