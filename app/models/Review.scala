@@ -571,12 +571,12 @@ object Review {
       client.hget(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId)
   }
 
-  def delayedReviewsReasons(uuid: String) = Redis.pool.withClient {
+  def delayedReviewsReasons(uuid: String): Map[String, String] = Redis.pool.withClient {
     client =>
       client.hgetAll(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
   }
 
-  def countDelayedReviews(uuid: String) = Redis.pool.withClient {
+  def countDelayedReviews(uuid: String): Long = Redis.pool.withClient {
     client =>
       client.hlen(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
   }
