@@ -123,7 +123,7 @@ object CFPAdmin extends SecureCFPController {
             val countVotes = Review.totalVoteFor(proposalId)
             val allVotes = Review.allVotesFor(proposalId)
 
-            val proposalIdsWithDelayedReview = Review.delayedReviewsReasons(uuid).keySet
+            val proposalIdsWithDelayedReview = Review.allProposalIdsHavingDelayedReviewsForUser(uuid)
             val currentProposalReviewHasBeenDelayed = proposalIdsWithDelayedReview.contains(proposal.id)
             val delayedReviewsCount = proposalIdsWithDelayedReview.size
 

@@ -75,7 +75,7 @@ object GoldenTicketController extends SecureCFPController {
 
       val allNotReviewed = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid)
 
-      val delayedReviewProposalIds = ReviewByGoldenTicket.delayedReviewsReasons(uuid).keySet
+      val delayedReviewProposalIds = ReviewByGoldenTicket.allProposalIdsHavingDelayedReviewsForUser(uuid)
 
       val maybeFilteredProposals = (track match {
         case None => allNotReviewed
@@ -205,7 +205,7 @@ object GoldenTicketController extends SecureCFPController {
       scala.concurrent.Future {
         Proposal.findById(proposalId) match {
           case Some(proposal) =>
-            val proposalIdsWithDelayedReview = ReviewByGoldenTicket.delayedReviewsReasons(uuid).keySet
+            val proposalIdsWithDelayedReview = ReviewByGoldenTicket.allProposalIdsHavingDelayedReviewsForUser(uuid)
             val currentProposalReviewHasBeenDelayed = proposalIdsWithDelayedReview.contains(proposal.id)
             val delayedReviewsCount = proposalIdsWithDelayedReview.size
 
