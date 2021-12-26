@@ -156,6 +156,14 @@ object NotificationUserPreference {
       client.set(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""", json)
   }
 
+  def loadAll(webUserIds: List[String]): Map[String, NotificationUserPreference] = Redis.pool.withClient { implicit client =>
+    val notifUserPrefsKeys = webUserIds.map(webUserId => s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
+    val notifPrefEntries = for ((webUserId, notificationPrefJSON) <- (webUserIds zip client.mget(notifUserPrefsKeys:_*)))
+      yield webUserId -> Json.parse(notificationPrefJSON).as[NotificationUserPreference]
+
+    notifPrefEntries.toMap
+  }
+
   def load(webUserId: String): NotificationUserPreference =  {
     loadKey(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
   }
@@ -233,6 +241,23 @@ object ProposalUserWatchPreference {
 
   def applyUserProposalAutowatch(webUserId: String, proposalId: String, havingAutowatch: AutoWatch) {
     applyProposalUserPrefsAutowatch(Set((webUserId, NotificationUserPreference.load(webUserId))), proposalId, havingAutowatch)
+  }
+
+  def watchersOnProposalEvent(proposalEvent: ProposalEvent, excludeEventInitiatorFromWatchers: Boolean = true): Seq[String] = {
+    val watchers = ProposalUserWatchPreference.proposalWatchers(proposalEvent.proposalId)
+      .filterNot(excludeEventInitiatorFromWatchers && proposalEvent.creator == _.webuserId)
+
+    val watchersById = NotificationUserPreference.loadAll(watchers.map(_.webuserId))
+
+    watchersById.toSeq.flatMap { case (watcherId, notificationPreferences) =>
+      val userNotificationEvents = notificationPreferences.eventIds.map(NotificationEvent.valueOf(_).get)
+      // Removing events types not matching with user's prefs
+      if(!userNotificationEvents.map(_.applicableEventTypes).flatten.contains(proposalEvent.getClass)) {
+        None
+      } else {
+        Some(watcherId)
+      }
+    }
   }
 }
 

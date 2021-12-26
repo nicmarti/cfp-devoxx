@@ -455,6 +455,13 @@ object Event {
       }
       if(isDigestableEvent) {
         tx.zadd(s"""${EVENTS_REDIS_KEY}:ForDigests""", event.date.getMillis, jsEvent)
+
+        event match {
+          case proposalEvent: ProposalEvent =>
+            ProposalUserWatchPreference.watchersOnProposalEvent(proposalEvent, true).foreach { watcherId =>
+              tx.sadd(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalEvent.proposalId}""", jsEvent)
+            }
+        }
       }
       tx.exec()
       event
