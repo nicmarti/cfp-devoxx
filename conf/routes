@@ -378,6 +378,8 @@ GET           /bp/fullAgenda                                                    
 
 # Fix for Speakers that loose their Webuser profile
 GET           /cfpadmin/fixForInvalidSpeakers                                   controllers.Backoffice.fixForInvalidSpeakers(speakerUUID:String)
+# Fix to initialize WatchedProposals:ByAuthor collection
+GET           /admin/initializeWatchingProposals                                controllers.Backoffice.initializeWatchingProposals()
 
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()

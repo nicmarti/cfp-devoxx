@@ -182,7 +182,34 @@ object NotificationUserPreference {
   }
 }
 
-case class Watcher(webuserId: String, startedWatchingAt: Instant)
+case class Watcher(webuserId: String, proposalId: String, startedWatchingAt: Instant)
+object Watcher {
+  def userWatchedProposals(webUserId: String): List[Watcher] = Redis.pool.withClient { client =>
+    client.zrangeWithScores(s"WatchedProposals:ByWatcher:${webUserId}", 0, -1)
+      .toList
+      .map { proposalWithScore => Watcher(webUserId, proposalWithScore.getElement, new Instant(proposalWithScore.getScore.toLong)) }
+  }
+
+  /**
+    * @deprecated for single use only
+    */
+  def initializeWatchingProposals(): Set[Watcher] = Redis.pool.withClient { client =>
+    val watchers = client.keys("Watchers:*").map { watcherKey =>
+      client.zrangeWithScores(watcherKey, 0, -1).map { watcherWithScore =>
+        val userId = watcherWithScore.getElement
+        val proposalId = watcherKey.substring("Watchers:".length)
+        Watcher(userId, proposalId, new Instant(watcherWithScore.getScore.toLong))
+      }
+    }.flatten
+
+    val tx = client.multi()
+    watchers.foreach { watcher =>
+      tx.zadd(s"WatchedProposals:ByWatcher:${watcher.webuserId}", watcher.startedWatchingAt.getMillis, watcher.proposalId)
+    }
+    tx.exec()
+    watchers
+  }
+}
 
 case class ProposalUserWatchPreference(proposalId: String, webUserId: String, isWatcher: Boolean, watchingEvents: List[NotificationEvent])
 object ProposalUserWatchPreference {
@@ -191,12 +218,14 @@ object ProposalUserWatchPreference {
     implicit client =>
       client.zrangeWithScores(s"""Watchers:${proposalId}""", 0, -1)
         .toList
-        .map{ watcherWithScore => Watcher(watcherWithScore.getElement, new Instant(watcherWithScore.getScore.toLong)) }
+        .map{ watcherWithScore => Watcher(watcherWithScore.getElement, proposalId, new Instant(watcherWithScore.getScore.toLong)) }
   }
 
-  def addProposalWatcher(proposalId: String, webUserId: String, automatic: Boolean) = Redis.pool.withClient {
+  def addProposalWatcher(proposalId: String, webUserId: String, automatic: Boolean): Unit = Redis.pool.withClient {
     implicit client =>
-      if(client.zadd(s"""Watchers:${proposalId}""", Instant.now().getMillis, webUserId) == 1) {
+      val tx = client.multi()
+      val now = Instant.now().getMillis
+      if(tx.zadd(s"""Watchers:${proposalId}""", now, webUserId) == 1) {
         val watchEvent = if(automatic) {
           ProposalAutoWatchedEvent(webUserId, proposalId)
         } else {
@@ -204,12 +233,17 @@ object ProposalUserWatchPreference {
         }
         Event.storeEvent(watchEvent)
       }
+      tx.zadd(s"WatchedProposals:ByWatcher:${webUserId}", now, proposalId)
+      tx.exec()
   }
 
-  def removeProposalWatcher(proposalId: String, webUserId: String) = Redis.pool.withClient {
+  def removeProposalWatcher(proposalId: String, webUserId: String): Unit = Redis.pool.withClient {
     implicit client =>
       Event.storeEvent(ProposalUnwatchedEvent(webUserId, proposalId))
-      client.zrem(s"""Watchers:${proposalId}""", webUserId)
+      val tx = client.multi()
+      tx.zrem(s"""Watchers:${proposalId}""", webUserId)
+      tx.zrem(s"WatchedProposals:ByWatcher:${webUserId}", proposalId)
+      tx.exec()
   }
 
   def proposalUserWatchPreference(proposalId: String, webUserId: String): ProposalUserWatchPreference = {
