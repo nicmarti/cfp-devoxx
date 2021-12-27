@@ -294,21 +294,9 @@ object CFPAdmin extends SecureCFPController {
           val proposalIdsByTrackForCurrentProposalType = Proposal.allProposalIdsByTrackForType(proposalType)
 
           val watcherEventsByProposalId = Event.loadProposalsWatcherEvents(uuid)
-          val displayedEventMessagesByProposalId = watcherEventsByProposalId.mapValues { proposalEvents =>
-            List.concat(
-              if(NotificationEvent.hasEventOfTypes(proposalEvents, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
-              if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
-                List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
-              }else{ Nil },
-              if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
-                List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
-              }else{ Nil },
-              if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED.applicableEventTypes:_*)){ List("comitee votes resetted") }else{ Nil },
-              if(NotificationEvent.hasEventOfTypes(proposalEvents, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
-              if(NotificationEvent.hasEventOfTypes(proposalEvents, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
-              if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
-            )
-          }.filter { entry => entry._2.nonEmpty }
+          val displayedEventMessagesByProposalId = watcherEventsByProposalId
+            .mapValues(ProposalEvent.generateAggregatedEventLabelsFor(_))
+            .filter { entry => entry._2.nonEmpty }
 
           val watchedProposals = Watcher.userWatchedProposals(uuid)
             .filter(watcher => !onlyProposalHavingEvents || displayedEventMessagesByProposalId.contains(watcher.proposalId))

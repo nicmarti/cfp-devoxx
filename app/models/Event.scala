@@ -177,6 +177,23 @@ abstract class ProposalEvent extends Event {
 
   override def linksFor(webuser: Webuser): Seq[EventLink] = Seq(ProposalLink(proposalId, webuser))
 }
+object ProposalEvent {
+  def generateAggregatedEventLabelsFor(proposalEvents: Iterable[ProposalEvent]): List[String] = {
+    List.concat(
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+        List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
+      }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+        List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
+      }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED.applicableEventTypes:_*)){ List("comitee votes resetted") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
+    )
+  }
+}
 
 abstract class SpeakerEvent extends Event {
   val webuserId: String
