@@ -47,9 +47,9 @@
                     <br/>
 
                 </div>
-                @if(watchedProposals.nonEmpty){
-                    <div class="col-md-12 col-lg-12">
-                        <h3><i class="fas fa-eye"></i> Watched Proposals of type @Messages(talkType)</h3>
+                <div class="col-md-12 col-lg-12">
+                    <h3><i class="fas fa-eye"></i> Watched Proposals of type @Messages(talkType)</h3>
+                    @if(watchedProposals.nonEmpty){
                         @if(onlyProposalHavingEvents) {
                             <em>You can flush new events appeared on the proposal by visiting the proposal for some time</em>
                         }
@@ -109,9 +109,10 @@
                                 }
                             </tbody>
                         </table>
-
-                    </div>
-                }
+                    } else {
+                        <em>No proposal found matching current criteria</em>
+                    }
+                </div>
             </div>
         </div>
     </div>
