@@ -467,6 +467,20 @@ object Event {
       event
   }
 
+  def resetWatcherEventsForProposal(watcherId: String, proposalId: String): Long = Redis.pool.withClient { client =>
+    val count = client.scard(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalId}""")
+    client.del(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalId}""")
+    count
+  }
+
+  def loadProposalsWatcherEvents(watcherId: String): Map[String, Seq[ProposalEvent]] = Redis.pool.withClient { client =>
+    val watcherProposalIds = client.keys(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:*""")
+    val jsonEvents: Iterable[String] = if(watcherProposalIds.nonEmpty) { client.sunion(watcherProposalIds.toSeq:_*) } else { Set() }
+    jsonEvents.map(mapper.readValue(_, classOf[ProposalEvent]))
+      .groupBy(_.proposalId)
+      .mapValues(pEvents => pEvents.toSeq.sortBy(_.date.getMillis))
+  }
+
   def loadDigestEventsBetween(start: Instant, end: Instant): List[ProposalEvent] = Redis.pool.withClient {
     client =>
       client.zrangeByScore(s"""${EVENTS_REDIS_KEY}:ForDigests""", start.getMillis, end.getMillis).toList.map { json =>

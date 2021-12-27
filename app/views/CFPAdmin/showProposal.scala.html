@@ -313,5 +313,12 @@
             </div>
         </div>
     </div>
-
+    <script type="text/javascript">
+        // Considering we visited the proposal after 15s
+        setTimeout(function(){
+            fetch("/cfpadmin/proposal/@{proposal.id}/markProposalAsVisited", {
+                method: "PUT"
+            })
+        }, 15000);
+    </script>
 }

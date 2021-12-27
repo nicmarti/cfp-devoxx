@@ -84,6 +84,7 @@ GET           /cfpadmin/proposal/:proposalId/score                              
 POST          /cfpadmin/proposal/:proposalId/watch                              controllers.CFPAdmin.watchProposal(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/delayVote                          controllers.CFPAdmin.delayVote(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/unwatch                            controllers.CFPAdmin.unwatchProposal(proposalId:String)
+PUT           /cfpadmin/proposal/:proposalId/markProposalAsVisited              controllers.CFPAdmin.markProposalAsVisited(proposalId:String)
 GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()

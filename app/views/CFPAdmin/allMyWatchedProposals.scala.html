@@ -1,3 +1,4 @@
+@import org.joda.time.DateTime
 @(watchedProposals: List[Watcher],
     proposalsById: Map[String, Proposal],
     talkType:String,
@@ -5,7 +6,8 @@
     proposalsCountByType: Map[String,Int],
     proposalsCountForCurrentTypeByTrack: Map[String,Int],
     allMyVotes: Map[String,Double],
-    watcherEventsByProposalId: Map[String, Seq[ProposalEvent]]
+    watcherEventsByProposalId: Map[String, Seq[ProposalEvent]],
+    proposalLastVisits: Map[String, DateTime]
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @main("All my watched proposals") {
     <div class="row">
@@ -62,7 +64,7 @@
                                         </td>
                                         <td>
                                             <small>
-                                            @library.FormatDate.jodaDatetimeFormat(watchedProposal.startedWatchingAt.toDateTime, lang)
+                                            @library.FormatDate.jodaDatetimeFormat(proposalLastVisits.get(watchedProposal.proposalId).getOrElse(watchedProposal.startedWatchingAt.toDateTime), lang)
                                             </small>
                                         </td>
                                         @allMyVotes.get(proposal.id).map{ score =>

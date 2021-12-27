@@ -2,7 +2,8 @@ package models
 
 import library.{Benchmark, Dress, Redis}
 import org.apache.commons.lang3.{RandomStringUtils, StringUtils}
-import org.joda.time.Instant
+import org.joda.time.{DateTime, Instant}
+import org.joda.time.format.ISODateTimeFormat
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
@@ -1148,6 +1149,14 @@ object Proposal {
       loadProposalByIDs(allProposalIds, proposalState)
   }
 
+  def markVisited(userId: String, proposalId: String): Unit = Redis.pool.withClient { client =>
+    client.hset(s"LastVisitsFor:${userId}", proposalId, ISODateTimeFormat.dateTime().print(Instant.now()))
+    Event.resetWatcherEventsForProposal(userId, proposalId)
+  }
+
+  def userProposalLastVisits(userId: String): Map[String, DateTime] = Redis.pool.withClient { client =>
+    client.hgetAll(s"LastVisitsFor:${userId}").mapValues(ISODateTimeFormat.dateTime().withZone(ConferenceDescriptor.current().timezone).parseDateTime(_))
+  }
 }
 
 /*
