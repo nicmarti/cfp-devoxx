@@ -4,7 +4,8 @@
     selectedTrack: Option[String],
     proposalsCountByType: Map[String,Int],
     proposalsCountForCurrentTypeByTrack: Map[String,Int],
-    allMyVotes: Map[String,Double]
+    allMyVotes: Map[String,Double],
+    watcherEventsByProposalId: Map[String, Seq[ProposalEvent]]
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @main("All my watched proposals") {
     <div class="row">
@@ -40,6 +41,7 @@
                                     <th>Speakers</th>
                                     <th>Since</th>
                                     <th style="width: 150px">You voted</th>
+                                    <th>Events since last visit</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,7 +61,9 @@
                                             <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
                                         </td>
                                         <td>
-                                            <small>@library.FormatDate.jodaDatetimeFormat(watchedProposal.startedWatchingAt.toDateTime, lang)</small>
+                                            <small>
+                                            @library.FormatDate.jodaDatetimeFormat(watchedProposal.startedWatchingAt.toDateTime, lang)
+                                            </small>
                                         </td>
                                         @allMyVotes.get(proposal.id).map{ score =>
                                             <td class="score" data-score="@Math.round(score)">
@@ -68,6 +72,29 @@
                                         }.getOrElse {
                                             <td>-</td>
                                         }
+                                        <td>
+                                            @watcherEventsByProposalId.get(proposal.id).map{ events =>
+                                                <ul class="list-unstyled">
+                                                    @defining(List.concat(
+                                                        if(NotificationEvent.hasEventOfTypes(events, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
+                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+                                                            List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
+                                                        }else{ Nil },
+                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+                                                            List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
+                                                        }else{ Nil },
+                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED.applicableEventTypes:_*)){ List("comitee votes resetted") }else{ Nil },
+                                                        if(NotificationEvent.hasEventOfTypes(events, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
+                                                        if(NotificationEvent.hasEventOfTypes(events, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
+                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
+                                                    )) { labels: List[String] =>
+                                                        @labels.map { label =>
+                                                            <li><small>@label</small></li>
+                                                        }
+                                                    }
+                                                </ul>
+                                            }
+                                        </td>
                                     }
                                 </tr>
                                 }

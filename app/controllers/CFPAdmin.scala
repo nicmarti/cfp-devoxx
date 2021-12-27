@@ -296,7 +296,7 @@ object CFPAdmin extends SecureCFPController {
           val watchedProposalMatchingTypeAndTrack = watchedProposals
             .filter(watcher => proposalIDsForType.contains(watcher.proposalId)
               && selectedTrack.map{ track => proposalIdsByTrackForCurrentProposalType.get(track).map(_.contains(watcher.proposalId)).getOrElse(false) }.getOrElse(true)
-            )
+            ).sortBy(watcher => -watcher.startedWatchingAt.toDateTime.getMillis)
           val proposalsById = Proposal.loadAndParseProposals(watchedProposalMatchingTypeAndTrack.map(_.proposalId).toSet, proposalType)
 
           val watchedProposalsCountsByProposalType = proposalIdsByProposalType.mapValues { proposalIdsForType =>
@@ -310,7 +310,9 @@ object CFPAdmin extends SecureCFPController {
             .filter { entry => entry._2.nonEmpty }
             .mapValues(_.get)
 
-          Ok(views.html.CFPAdmin.allMyWatchedProposals(watchedProposalMatchingTypeAndTrack, proposalsById, talkType, selectedTrack, watchedProposalsCountsByProposalType, watchedProposalsCountByTrackForCurrentProposalType, allMyVotesIncludingAbstentions))
+          val watcherEventsByProposalId = Event.loadProposalsWatcherEvents(uuid)
+
+          Ok(views.html.CFPAdmin.allMyWatchedProposals(watchedProposalMatchingTypeAndTrack, proposalsById, talkType, selectedTrack, watchedProposalsCountsByProposalType, watchedProposalsCountByTrackForCurrentProposalType, allMyVotesIncludingAbstentions, watcherEventsByProposalId))
         case _ => BadRequest("Invalid proposal type")
       }
   }

@@ -121,15 +121,15 @@ object NotificationEvent {
     allNotificationEvents.find(_.id == id)
   }
 
-  def countEventsOfTypes(events: List[ProposalEvent], types: Iterable[Class[_]]) = {
+  def countEventsOfTypes(events: Iterable[ProposalEvent], types: Iterable[Class[_]]): Int = {
     types.foldLeft(0) { (total, eventType) => total + events.count(_.isOfSameTypeThan(eventType)) }
   }
 
-  def countEventsOfType[T <: ProposalEvent](events: List[ProposalEvent]) = {
+  def countEventsOfType[T <: ProposalEvent](events: Iterable[ProposalEvent]): Int = {
     events.count { e => e.isInstanceOf[T] }
   }
 
-  def hasEventOfTypes(events: List[ProposalEvent], types: Class[_]*) = {
+  def hasEventOfTypes(events: Iterable[ProposalEvent], types: Class[_]*): Boolean = {
     countEventsOfTypes(events, types) > 0
   }
 }
@@ -222,13 +222,16 @@ object Watcher {
       tx.exec()
   }
 
-  def watchersOnProposalEvent(proposalEvent: ProposalEvent, excludeEventInitiatorFromWatchers: Boolean = true): Seq[String] = {
-    val watchers = Watcher.proposalWatchers(proposalEvent.proposalId)
-      .filterNot(excludeEventInitiatorFromWatchers && proposalEvent.creator == _.webuserId)
+  def watchersNotificationUserPreferencesFor(proposalId: String): Map[String, (NotificationUserPreference, Watcher)] = {
+    val watchers = Watcher.proposalWatchers(proposalId)
+    NotificationUserPreference.loadAll(watchers.map(_.webuserId))
+      .map{ entry =>
+        entry._1 -> (entry._2, watchers.find(_.webuserId == entry._1).get)
+      }
+  }
 
-    val watchersById = NotificationUserPreference.loadAll(watchers.map(_.webuserId))
-
-    watchersById.toSeq.flatMap { case (watcherId, notificationPreferences) =>
+  def eligibleWatchersForProposalEvent(proposalEvent: ProposalEvent, notifUserPreferenceByWatcherId: Map[String, NotificationUserPreference]) = {
+    notifUserPreferenceByWatcherId.toSeq.flatMap { case (watcherId, notificationPreferences) =>
       val userNotificationEvents = notificationPreferences.eventIds.map(NotificationEvent.valueOf(_).get)
       // Removing events types not matching with user's prefs
       if(!userNotificationEvents.map(_.applicableEventTypes).flatten.contains(proposalEvent.getClass)) {
@@ -237,6 +240,14 @@ object Watcher {
         Some(watcherId)
       }
     }
+  }
+
+  def watchersOnProposalEvent(proposalEvent: ProposalEvent, excludeEventInitiatorFromWatchers: Boolean = true): Seq[String] = {
+    val notifUserPreferenceByWatcherId = Watcher.watchersNotificationUserPreferencesFor(proposalEvent.proposalId)
+      .filterKeys(watcherId => !excludeEventInitiatorFromWatchers || proposalEvent.creator != watcherId)
+      .mapValues(_._1)
+
+    Watcher.eligibleWatchersForProposalEvent(proposalEvent, notifUserPreferenceByWatcherId)
   }
 
   /**
