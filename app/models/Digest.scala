@@ -140,7 +140,7 @@ object Digest {
     play.Logger.of("models.Digest").debug(s"""Digest [${digest.value}] => Found ${proposalIds.size} concerned proposal(s)""")
 
     val proposalsByWatcherId = proposalIds
-      .map{ proposalId => ProposalUserWatchPreference.proposalWatchers(proposalId).map((proposalId, _)) }
+      .map{ proposalId => Watcher.proposalWatchers(proposalId).map((proposalId, _)) }
       .flatten
       .groupBy(_._2.webuserId)
 

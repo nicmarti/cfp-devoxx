@@ -223,7 +223,7 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId).map {
         proposal: Proposal =>
-          ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
+          Watcher.addProposalWatcher(proposal.id, uuid, false)
           Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started watching proposal")
       }.getOrElse(NotFound("Proposal not found"))
   }
@@ -249,7 +249,7 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId).map {
         proposal: Proposal =>
-          ProposalUserWatchPreference.removeProposalWatcher(proposal.id, uuid)
+          Watcher.removeProposalWatcher(proposal.id, uuid)
           Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started unwatching proposal")
       }.getOrElse(NotFound("Proposal not found"))
   }

@@ -458,7 +458,7 @@ object Event {
 
         event match {
           case proposalEvent: ProposalEvent =>
-            ProposalUserWatchPreference.watchersOnProposalEvent(proposalEvent, true).foreach { watcherId =>
+            Watcher.watchersOnProposalEvent(proposalEvent, true).foreach { watcherId =>
               tx.sadd(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalEvent.proposalId}""", jsEvent)
             }
         }

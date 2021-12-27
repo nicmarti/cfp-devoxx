@@ -190,30 +190,6 @@ object Watcher {
       .map { proposalWithScore => Watcher(webUserId, proposalWithScore.getElement, new Instant(proposalWithScore.getScore.toLong)) }
   }
 
-  /**
-    * @deprecated for single use only
-    */
-  def initializeWatchingProposals(): Set[Watcher] = Redis.pool.withClient { client =>
-    val watchers = client.keys("Watchers:*").map { watcherKey =>
-      client.zrangeWithScores(watcherKey, 0, -1).map { watcherWithScore =>
-        val userId = watcherWithScore.getElement
-        val proposalId = watcherKey.substring("Watchers:".length)
-        Watcher(userId, proposalId, new Instant(watcherWithScore.getScore.toLong))
-      }
-    }.flatten
-
-    val tx = client.multi()
-    watchers.foreach { watcher =>
-      tx.zadd(s"WatchedProposals:ByWatcher:${watcher.webuserId}", watcher.startedWatchingAt.getMillis, watcher.proposalId)
-    }
-    tx.exec()
-    watchers
-  }
-}
-
-case class ProposalUserWatchPreference(proposalId: String, webUserId: String, isWatcher: Boolean, watchingEvents: List[NotificationEvent])
-object ProposalUserWatchPreference {
-
   def proposalWatchers(proposalId: String): List[Watcher] = Redis.pool.withClient {
     implicit client =>
       client.zrangeWithScores(s"""Watchers:${proposalId}""", 0, -1)
@@ -246,39 +222,8 @@ object ProposalUserWatchPreference {
       tx.exec()
   }
 
-  def proposalUserWatchPreference(proposalId: String, webUserId: String): ProposalUserWatchPreference = {
-      val userPrefs = NotificationUserPreference.load(webUserId)
-      val watchers = this.proposalWatchers(proposalId)
-      ProposalUserWatchPreference(proposalId, webUserId, isWatcher = watchers.map(_.webuserId).contains(webUserId), userPrefs.eventIds.map{
-        eventId => NotificationEvent.allNotificationEvents.find(_.id == eventId).get
-      })
-  }
-
-  private def applyProposalUserPrefsAutowatch(userPreferences: Set[(String, NotificationUserPreference)], proposalId: String, havingAutowatch: AutoWatch) = Redis.pool.withClient {
-    implicit client =>
-      Proposal.findProposalTrack(proposalId).map { track =>
-        val allMatchingPreferences = userPreferences.filter{ prefAndKey =>
-          prefAndKey._2.autowatchId == havingAutowatch.id && (prefAndKey._2.autowatchFilterForTrackIds.isEmpty || prefAndKey._2.autowatchFilterForTrackIds.get.contains(track.id))
-        }
-
-        val tx = client.multi()
-        allMatchingPreferences.foreach{ prefAndKey =>
-          addProposalWatcher(proposalId, prefAndKey._1, true)
-        }
-        tx.exec()
-      }
-  }
-
-  def applyAllUserProposalAutowatch(proposalId: String, havingAutowatch: AutoWatch) {
-    applyProposalUserPrefsAutowatch(NotificationUserPreference.loadAllForCurrentYear(), proposalId, havingAutowatch)
-  }
-
-  def applyUserProposalAutowatch(webUserId: String, proposalId: String, havingAutowatch: AutoWatch) {
-    applyProposalUserPrefsAutowatch(Set((webUserId, NotificationUserPreference.load(webUserId))), proposalId, havingAutowatch)
-  }
-
   def watchersOnProposalEvent(proposalEvent: ProposalEvent, excludeEventInitiatorFromWatchers: Boolean = true): Seq[String] = {
-    val watchers = ProposalUserWatchPreference.proposalWatchers(proposalEvent.proposalId)
+    val watchers = Watcher.proposalWatchers(proposalEvent.proposalId)
       .filterNot(excludeEventInitiatorFromWatchers && proposalEvent.creator == _.webuserId)
 
     val watchersById = NotificationUserPreference.loadAll(watchers.map(_.webuserId))
@@ -292,6 +237,59 @@ object ProposalUserWatchPreference {
         Some(watcherId)
       }
     }
+  }
+
+  /**
+    * @deprecated for single use only
+    */
+  def initializeWatchingProposals(): Set[Watcher] = Redis.pool.withClient { client =>
+    val watchers = client.keys("Watchers:*").map { watcherKey =>
+      client.zrangeWithScores(watcherKey, 0, -1).map { watcherWithScore =>
+        val userId = watcherWithScore.getElement
+        val proposalId = watcherKey.substring("Watchers:".length)
+        Watcher(userId, proposalId, new Instant(watcherWithScore.getScore.toLong))
+      }
+    }.flatten
+
+    val tx = client.multi()
+    watchers.foreach { watcher =>
+      tx.zadd(s"WatchedProposals:ByWatcher:${watcher.webuserId}", watcher.startedWatchingAt.getMillis, watcher.proposalId)
+    }
+    tx.exec()
+    watchers
+  }
+}
+
+case class ProposalUserWatchPreference(proposalId: String, webUserId: String, isWatcher: Boolean, watchingEvents: List[NotificationEvent])
+object ProposalUserWatchPreference {
+
+  def proposalUserWatchPreference(proposalId: String, webUserId: String): ProposalUserWatchPreference = {
+      val userPrefs = NotificationUserPreference.load(webUserId)
+      val watchers = Watcher.proposalWatchers(proposalId)
+      ProposalUserWatchPreference(proposalId, webUserId, isWatcher = watchers.map(_.webuserId).contains(webUserId), userPrefs.eventIds.map{
+        eventId => NotificationEvent.allNotificationEvents.find(_.id == eventId).get
+      })
+  }
+
+  private def applyProposalUserPrefsAutowatch(userPreferences: Set[(String, NotificationUserPreference)], proposalId: String, havingAutowatch: AutoWatch): Unit = Redis.pool.withClient {
+    implicit client =>
+      Proposal.findProposalTrack(proposalId).map { track =>
+        val allMatchingPreferences = userPreferences.filter{ prefAndKey =>
+          prefAndKey._2.autowatchId == havingAutowatch.id && (prefAndKey._2.autowatchFilterForTrackIds.isEmpty || prefAndKey._2.autowatchFilterForTrackIds.get.contains(track.id))
+        }
+
+        allMatchingPreferences.foreach{ prefAndKey =>
+          Watcher.addProposalWatcher(proposalId, prefAndKey._1, true)
+        }
+      }
+  }
+
+  def applyAllUserProposalAutowatch(proposalId: String, havingAutowatch: AutoWatch) {
+    applyProposalUserPrefsAutowatch(NotificationUserPreference.loadAllForCurrentYear(), proposalId, havingAutowatch)
+  }
+
+  def applyUserProposalAutowatch(webUserId: String, proposalId: String, havingAutowatch: AutoWatch) {
+    applyProposalUserPrefsAutowatch(Set((webUserId, NotificationUserPreference.load(webUserId))), proposalId, havingAutowatch)
   }
 }
 
