@@ -7,7 +7,7 @@
     proposalsCountByType: Map[String,Int],
     proposalsCountForCurrentTypeByTrack: Map[String,Int],
     allMyVotes: Map[String,Double],
-    watcherEventsByProposalId: Map[String, Seq[ProposalEvent]],
+    watcherEventMessagesByProposalId: Map[String, List[String]],
     proposalLastVisits: Map[String, DateTime]
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 @main("All my watched proposals") {
@@ -85,26 +85,12 @@
                                             <small>
                                                 <strong>Since @library.FormatDate.jodaDatetimeFormat(proposalLastVisits.get(watchedProposal.proposalId).getOrElse(watchedProposal.startedWatchingAt.toDateTime), lang) :</strong>
                                             </small>
-                                            @defining(watcherEventsByProposalId.get(proposal.id)) { maybeEvents: Option[Seq[ProposalEvent]] =>
-                                                @maybeEvents.map { events =>
+                                            @defining(watcherEventMessagesByProposalId.get(proposal.id)) { maybeEventMessages: Option[List[String]] =>
+                                                @maybeEventMessages.map { eventMessages =>
                                                     <ul class="list-unstyled">
-                                                        @defining(List.concat(
-                                                            if(NotificationEvent.hasEventOfTypes(events, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
-                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
-                                                                List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
-                                                            }else{ Nil },
-                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
-                                                                List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
-                                                            }else{ Nil },
-                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED.applicableEventTypes:_*)){ List("comitee votes resetted") }else{ Nil },
-                                                            if(NotificationEvent.hasEventOfTypes(events, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
-                                                            if(NotificationEvent.hasEventOfTypes(events, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
-                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
-                                                        )) { labels: List[String] =>
-                                                            @labels.map { label =>
-                                                                <li><small>- @label</small></li>
-                                                            }
-                                                        }
+                                                    @eventMessages.map { eventMessage =>
+                                                        <li><small>- @eventMessage</small></li>
+                                                    }
                                                     </ul>
                                                 }.getOrElse {
                                                     <small>✅ None</small>
