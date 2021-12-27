@@ -91,7 +91,7 @@ GET           /cfpadmin/proposals/withNoVotes                                   
 GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
-GET           /cfpadmin/myWatchedProposals                                      controllers.CFPAdmin.allMyWatchedProposals(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
+GET           /cfpadmin/myWatchedProposals                                      controllers.CFPAdmin.allMyWatchedProposals(talkType:String ?="conf", selectedTrack:Option[String] ?=None, onlyProposalHavingEvents:Boolean ?=true)
 GET           /cfpadmin/delayedReviews                                          controllers.CFPAdmin.delayedReviews()
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
 GET           /cfpadmin/allvotesV2/:confType                                    controllers.CFPAdmin.allVotesVersion2(confType:String, page:Int ?=0, resultats:Int ?=25, sortBy:String ?="gt_and_cfp")

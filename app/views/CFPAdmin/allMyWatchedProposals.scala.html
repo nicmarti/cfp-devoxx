@@ -3,6 +3,7 @@
     proposalsById: Map[String, Proposal],
     talkType:String,
     selectedTrack: Option[String],
+    onlyProposalHavingEvents: Boolean,
     proposalsCountByType: Map[String,Int],
     proposalsCountForCurrentTypeByTrack: Map[String,Int],
     allMyVotes: Map[String,Double],
@@ -21,17 +22,30 @@
                     <h3><i class="fas fa-flask"></i> Search criteria</h3>
 
                     @tags.renderMyReviewsSearchCriteria(
-                        refreshPathAction=(confType, selectedTrack) => routes.CFPAdmin.allMyWatchedProposals(confType, selectedTrack),
+                        refreshPathAction=(confType, selectedTrack) => routes.CFPAdmin.allMyWatchedProposals(confType, selectedTrack, onlyProposalHavingEvents),
                         availableTalkTypes=models.ConferenceDescriptor.ConferenceProposalTypes.ALL,
                         talkType, selectedTrack,
                         proposalsCountByType, proposalsCountForCurrentTypeByTrack
                     )
+                    <br/>
+                    <div style="margin: 3px 0px">
+                        <i aria-hidden="true" class="fas fa-filter"></i> Events :
+                        <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack, true)" class="btn btn-sm @if(onlyProposalHavingEvents) { btn-success } else { btn-primary }">
+                            Only watched proposals having events
+                        </a>
+                        <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack, false)" class="btn btn-sm @if(!onlyProposalHavingEvents) { btn-success } else { btn-primary }">
+                            Every watched proposals
+                        </a>
+                    </div>
                     <br/>
 
                 </div>
                 @if(watchedProposals.nonEmpty){
                     <div class="col-md-12 col-lg-12">
                         <h3><i class="fas fa-eye"></i> Watched Proposals of type @Messages(talkType)</h3>
+                        @if(onlyProposalHavingEvents) {
+                            <em>You can flush new events appeared on the proposal by visiting the proposal for some time</em>
+                        }
                         <table id="tableMyVotes" class="table table-bordered">
                             <caption>List of watched proposals</caption>
                             <thead>
@@ -68,29 +82,33 @@
                                             <td>-</td>
                                         }
                                         <td>
-                                            @watcherEventsByProposalId.get(proposal.id).map{ events =>
-                                                <small>
-                                                    <strong>Since @library.FormatDate.jodaDatetimeFormat(proposalLastVisits.get(watchedProposal.proposalId).getOrElse(watchedProposal.startedWatchingAt.toDateTime), lang) :</strong>
-                                                </small>
-                                                <ul class="list-unstyled">
-                                                    @defining(List.concat(
-                                                        if(NotificationEvent.hasEventOfTypes(events, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
-                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
-                                                            List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
-                                                        }else{ Nil },
-                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
-                                                            List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
-                                                        }else{ Nil },
-                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED.applicableEventTypes:_*)){ List("comitee votes resetted") }else{ Nil },
-                                                        if(NotificationEvent.hasEventOfTypes(events, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
-                                                        if(NotificationEvent.hasEventOfTypes(events, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
-                                                        if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
-                                                    )) { labels: List[String] =>
-                                                        @labels.map { label =>
-                                                            <li><small>- @label</small></li>
+                                            <small>
+                                                <strong>Since @library.FormatDate.jodaDatetimeFormat(proposalLastVisits.get(watchedProposal.proposalId).getOrElse(watchedProposal.startedWatchingAt.toDateTime), lang) :</strong>
+                                            </small>
+                                            @defining(watcherEventsByProposalId.get(proposal.id)) { maybeEvents: Option[Seq[ProposalEvent]] =>
+                                                @maybeEvents.map { events =>
+                                                    <ul class="list-unstyled">
+                                                        @defining(List.concat(
+                                                            if(NotificationEvent.hasEventOfTypes(events, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
+                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+                                                                List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
+                                                            }else{ Nil },
+                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+                                                                List(s"${NotificationEvent.countEventsOfTypes(events, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
+                                                            }else{ Nil },
+                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED.applicableEventTypes:_*)){ List("comitee votes resetted") }else{ Nil },
+                                                            if(NotificationEvent.hasEventOfTypes(events, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
+                                                            if(NotificationEvent.hasEventOfTypes(events, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
+                                                            if(NotificationEvent.hasEventOfTypes(events, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
+                                                        )) { labels: List[String] =>
+                                                            @labels.map { label =>
+                                                                <li><small>- @label</small></li>
+                                                            }
                                                         }
-                                                    }
-                                                </ul>
+                                                    </ul>
+                                                }.getOrElse {
+                                                    <small>✅ None</small>
+                                                }
                                             }
                                         </td>
                                     }

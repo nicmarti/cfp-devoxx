@@ -284,7 +284,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def allMyWatchedProposals(talkType: String, selectedTrack: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+  def allMyWatchedProposals(talkType: String, selectedTrack: Option[String], onlyProposalHavingEvents: Boolean) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val proposalIdsByProposalType = Proposal.allProposalIDsByProposalType()
 
@@ -293,7 +293,11 @@ object CFPAdmin extends SecureCFPController {
           val uuid = request.webuser.uuid
           val proposalIdsByTrackForCurrentProposalType = Proposal.allProposalIdsByTrackForType(proposalType)
 
-          val watchedProposals = Watcher.userWatchedProposals(uuid).sortBy(-_.startedWatchingAt.getMillis)
+          val watcherEventsByProposalId = Event.loadProposalsWatcherEvents(uuid)
+
+          val watchedProposals = Watcher.userWatchedProposals(uuid)
+            .filter(watcher => !onlyProposalHavingEvents || watcherEventsByProposalId.contains(watcher.proposalId))
+            .sortBy(-_.startedWatchingAt.getMillis)
           val watchedProposalIds = watchedProposals.map(_.proposalId).toSet
 
           val proposalLastVisits = Proposal.userProposalLastVisits(uuid)
@@ -315,9 +319,7 @@ object CFPAdmin extends SecureCFPController {
             .filter { entry => entry._2.nonEmpty }
             .mapValues(_.get)
 
-          val watcherEventsByProposalId = Event.loadProposalsWatcherEvents(uuid)
-
-          Ok(views.html.CFPAdmin.allMyWatchedProposals(watchedProposalMatchingTypeAndTrack, proposalsById, talkType, selectedTrack, watchedProposalsCountsByProposalType, watchedProposalsCountByTrackForCurrentProposalType, allMyVotesIncludingAbstentions, watcherEventsByProposalId, proposalLastVisits))
+          Ok(views.html.CFPAdmin.allMyWatchedProposals(watchedProposalMatchingTypeAndTrack, proposalsById, talkType, selectedTrack, onlyProposalHavingEvents, watchedProposalsCountsByProposalType, watchedProposalsCountByTrackForCurrentProposalType, allMyVotesIncludingAbstentions, watcherEventsByProposalId, proposalLastVisits))
         case _ => BadRequest("Invalid proposal type")
       }
   }
