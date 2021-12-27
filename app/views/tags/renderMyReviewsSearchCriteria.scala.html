@@ -3,13 +3,14 @@
     talkType:String,
     selectedTrack: Option[String],
     proposalsCountByType: Map[String,Int],
-    proposalsCountForCurrentTypeByTrack: Map[String,Int]
+    proposalsCountForCurrentTypeByTrack: Map[String,Int],
+    showTrophies: Boolean = true
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 <div style="margin: 3px 0px">
   <i aria-hidden="true" class="fas fa-filter"></i> @Messages("ar.proposalType") :
   @availableTalkTypes.map{confType=>
     <a href="@refreshPathAction(confType.id, selectedTrack)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">
-      @if(proposalsCountByType.get(confType.id).getOrElse(0) == 0){
+      @if(showTrophies && proposalsCountByType.get(confType.id).getOrElse(0) == 0){
         <i aria-hidden="true" class="fas fa-trophy"></i>
       }
       @Messages(confType.id)
@@ -21,7 +22,7 @@
 <div style="margin: 3px 0px">
   <i aria-hidden="true" class="fas fa-filter"></i> @Messages("cfp.filter.on") :
   <a href="@refreshPathAction(talkType, None)" class="btn btn-sm @if(selectedTrack==None) { btn-success } else { btn-primary }">
-    @if(proposalsCountByType.get(talkType).getOrElse(0) == 0) {
+    @if(showTrophies && proposalsCountByType.get(talkType).getOrElse(0) == 0) {
       <i aria-hidden="true" class="fas fa-trophy"></i>
     }
     All tracks
@@ -29,7 +30,7 @@
   </a>
   @models.ConferenceDescriptor.ConferenceTracks.ALL.map{track =>
     <a href="@refreshPathAction(talkType, Some(track.id))" class="btn btn-sm @if(selectedTrack==Some(track.id)) { btn-success } else { btn-primary }">
-      @if(proposalsCountForCurrentTypeByTrack.get(track.id).getOrElse(0) == 0){
+      @if(showTrophies && proposalsCountForCurrentTypeByTrack.get(track.id).getOrElse(0) == 0){
         <i aria-hidden="true" class="fas fa-trophy"></i>
       }
       @Messages(track.label)
