@@ -13,19 +13,19 @@
 @main("All my watched proposals") {
     <div class="row py-3">
         <div class="col-md-12 col-sm-12 col-lg-12">
-            <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack)" class="btn btn-sm btn-success"><i class="fas fa-eye"></i> @Messages("admin.btn.mywatches")</a>
-            <a href="@routes.CFPAdmin.allMyVotes(talkType, selectedTrack)" class="btn btn-sm btn-primary"><i class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
+            <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack)" class="btn btn-sm btn-success"><i aria-hidden="true" class="fas fa-eye"></i> @Messages("admin.btn.mywatches")</a>
+            <a href="@routes.CFPAdmin.allMyVotes(talkType, selectedTrack)" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
         </div>
     </div>
     <div class="row">
         <div class="card">
             <div class="card-header">
-                <h1 class="panel-title"><i class="fas fa-eye"></i> Your Watched Proposals</h1>
+                <h1 class="panel-title"><i aria-hidden="true" class="fas fa-eye"></i> Your Watched Proposals</h1>
             </div>
 
             <div class="card-body">
                 <div class="col-md-12">
-                    <h3><i class="fas fa-flask"></i> Search criteria</h3>
+                    <h3><i aria-hidden="true" class="fas fa-flask"></i> Search criteria</h3>
 
                     @tags.renderMyReviewsSearchCriteria(
                         refreshPathAction=(confType, selectedTrack) => routes.CFPAdmin.allMyWatchedProposals(confType, selectedTrack, onlyProposalHavingEvents),
@@ -48,7 +48,7 @@
 
                 </div>
                 <div class="col-md-12 col-lg-12">
-                    <h3><i class="fas fa-eye"></i> Watched Proposals of type @Messages(talkType)</h3>
+                    <h3><i aria-hidden="true" class="fas fa-eye"></i> Watched Proposals of type @Messages(talkType)</h3>
                     @if(watchedProposals.nonEmpty){
                         @if(onlyProposalHavingEvents) {
                             <em>You can flush new events appeared on the proposal by visiting the proposal for some time</em>
