@@ -1,0 +1,84 @@
+@(watchedProposals: List[Watcher],
+    proposalsById: Map[String, Proposal],
+    talkType:String,
+    selectedTrack: Option[String],
+    proposalsCountByType: Map[String,Int],
+    proposalsCountForCurrentTypeByTrack: Map[String,Int],
+    allMyVotes: Map[String,Double]
+)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@main("All my watched proposals") {
+    <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="panel-title"><i class="fas fa-eye"></i> Your Watched Proposals</h1>
+            </div>
+
+            <div class="card-body">
+                <div class="col-md-12">
+                    <h3><i class="fas fa-flask"></i> Search criteria</h3>
+
+                    @tags.renderMyReviewsSearchCriteria(
+                        refreshPathAction=(confType, selectedTrack) => routes.CFPAdmin.allMyWatchedProposals(confType, selectedTrack),
+                        availableTalkTypes=models.ConferenceDescriptor.ConferenceProposalTypes.ALL,
+                        talkType, selectedTrack,
+                        proposalsCountByType, proposalsCountForCurrentTypeByTrack
+                    )
+                    <br/>
+
+                </div>
+                @if(watchedProposals.nonEmpty){
+                    <div class="col-md-12 col-lg-12">
+                        <h3><i class="fas fa-eye"></i> Watched Proposals of type @Messages(talkType)</h3>
+                        <table id="tableMyVotes" class="table table-bordered">
+                            <caption>List of watched proposals</caption>
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Title</th>
+                                    <th>Track</th>
+                                    <th>Speakers</th>
+                                    <th>Since</th>
+                                    <th style="width: 150px">You voted</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @watchedProposals.map { watchedProposal =>
+                                        <tr>
+                                            <td><a href="@routes.CFPAdmin.openForReview(watchedProposal.proposalId)" class="btn btn-sm btn-primary">@watchedProposal.proposalId</a></td>
+                                    @proposalsById.get(watchedProposal.proposalId).map { proposal =>
+                                        <td>
+                                            <small>@proposal.title</small>
+                                        </td>
+
+                                        <td>
+                                            <small>@Messages(proposal.track.label)</small>
+                                        </td>
+                                        <td>
+                                            <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
+                                        </td>
+                                        <td>
+                                            <small>@library.FormatDate.jodaDatetimeFormat(watchedProposal.startedWatchingAt.toDateTime, lang)</small>
+                                        </td>
+                                        @allMyVotes.get(proposal.id).map{ score =>
+                                            <td class="score" data-score="@Math.round(score)">
+                                                <span class="btn displayed-score">@if(score==0) { @Messages("Abs") } else { @Math.round(score) }</span>
+                                            </td>
+                                        }.getOrElse {
+                                            <td>-</td>
+                                        }
+                                    }
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+}

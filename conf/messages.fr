@@ -318,6 +318,7 @@ admin.proposals.th.comment=Commentaire
 admin.proposals.th.action=Action
 admin.proposals.todolist.title=TODO List
 admin.btn.leaderboard=Voir les stats
+admin.btn.mywatches=Vos propositions observées
 admin.btn.delayed-reviews=Revues temporisées
 admin.btn.delayed-reviews-with-count={0} revues temporisées restantes
 admin.btn.myvotes=Vos votes

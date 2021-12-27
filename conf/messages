@@ -368,6 +368,7 @@ admin.proposals.th.comment=Comment
 admin.proposals.th.action=Action
 admin.proposals.todolist.title=Your TODO List
 admin.btn.leaderboard=See Leaderboard
+admin.btn.mywatches=My watched proposals
 admin.btn.delayed-reviews=Delayed Reviews
 admin.btn.delayed-reviews-with-count={0} Remaining delayed reviews
 admin.btn.myvotes=My votes

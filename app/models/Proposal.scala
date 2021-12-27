@@ -1121,6 +1121,19 @@ object Proposal {
       client.smembers(s"Proposals:ByType:${confType.id}")
   }
 
+  def allProposalIDsByProposalType(): Map[String,Set[String]] = Redis.pool.withClient { client =>
+    ConferenceDescriptor.ConferenceProposalTypes.ALL.map { proposalType =>
+      proposalType.id -> client.smembers(s"Proposals:ByType:${proposalType.id}")
+    }.toMap
+  }
+
+  def allProposalIdsByTrackForType(proposalType: ProposalType): Map[String, Set[String]] = Redis.pool.withClient { client =>
+    val proposalIds = Proposal.allProposalIDsForProposalType(proposalType)
+    ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
+      track.id -> client.smembers(s"Proposals:ByTrack:${track.id}").filter(proposalIds.contains(_))
+    }.toMap
+  }
+
   def allProposalsForProposalType(confType: ProposalType): List[Proposal] = Redis.pool.withClient {
     implicit client =>
       val allProposalIds = client.smembers(s"Proposals:ByType:${confType.id}")

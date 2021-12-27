@@ -281,6 +281,40 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
+  def allMyWatchedProposals(talkType: String, selectedTrack: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val proposalIdsByProposalType = Proposal.allProposalIDsByProposalType()
+
+      (proposalIdsByProposalType.get(talkType), ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType)) match {
+        case (Some(proposalIDsForType), Some(proposalType)) =>
+          val uuid = request.webuser.uuid
+          val proposalIdsByTrackForCurrentProposalType = Proposal.allProposalIdsByTrackForType(proposalType)
+
+          val watchedProposals = Watcher.userWatchedProposals(uuid).sortBy(-_.startedWatchingAt.getMillis)
+          val watchedProposalIds = watchedProposals.map(_.proposalId).toSet
+
+          val watchedProposalMatchingTypeAndTrack = watchedProposals
+            .filter(watcher => proposalIDsForType.contains(watcher.proposalId)
+              && selectedTrack.map{ track => proposalIdsByTrackForCurrentProposalType.get(track).map(_.contains(watcher.proposalId)).getOrElse(false) }.getOrElse(true)
+            )
+          val proposalsById = Proposal.loadAndParseProposals(watchedProposalMatchingTypeAndTrack.map(_.proposalId).toSet, proposalType)
+
+          val watchedProposalsCountsByProposalType = proposalIdsByProposalType.mapValues { proposalIdsForType =>
+            proposalIdsForType.intersect(watchedProposalIds).size
+          }
+          val watchedProposalsCountByTrackForCurrentProposalType = proposalIdsByTrackForCurrentProposalType.mapValues { proposalIdsForTrack =>
+            proposalIdsForTrack.intersect(watchedProposalIds).size
+          }
+
+          val allMyVotesIncludingAbstentions = Review.allVotesFromUserForProposalsRegardlessProposalStatus(uuid, watchedProposalIds)
+            .filter { entry => entry._2.nonEmpty }
+            .mapValues(_.get)
+
+          Ok(views.html.CFPAdmin.allMyWatchedProposals(watchedProposalMatchingTypeAndTrack, proposalsById, talkType, selectedTrack, watchedProposalsCountsByProposalType, watchedProposalsCountByTrackForCurrentProposalType, allMyVotesIncludingAbstentions))
+        case _ => BadRequest("Invalid proposal type")
+      }
+  }
+
   def allMyVotes(talkType: String, selectedTrack: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
