@@ -157,11 +157,15 @@ object NotificationUserPreference {
   }
 
   def loadAll(webUserIds: List[String]): Map[String, NotificationUserPreference] = Redis.pool.withClient { implicit client =>
-    val notifUserPrefsKeys = webUserIds.map(webUserId => s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
-    val notifPrefEntries = for ((webUserId, notificationPrefJSON) <- (webUserIds zip client.mget(notifUserPrefsKeys:_*)))
-      yield webUserId -> Json.parse(notificationPrefJSON).as[NotificationUserPreference]
+    if(webUserIds.isEmpty) {
+      Map()
+    } else {
+      val notifUserPrefsKeys = webUserIds.map(webUserId => s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
+      val notifPrefEntries = for ((webUserId, notificationPrefJSON) <- (webUserIds zip client.mget(notifUserPrefsKeys:_*).map(Option(_))))
+        yield webUserId -> notificationPrefJSON.map(Json.parse(_).as[NotificationUserPreference]).getOrElse(DEFAULT_FALLBACK_PREFERENCES)
 
-    notifPrefEntries.toMap
+      notifPrefEntries.toMap
+    }
   }
 
   def load(webUserId: String): NotificationUserPreference =  {
