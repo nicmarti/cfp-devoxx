@@ -1,0 +1,5 @@
+@(proposals: List[Proposal], delayedReviewReasonByProposalId: Map[String,String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@main("All my delayed reviews") {
+    @tags.renderDelayedReviews(openForReviewAction=(proposal) => routes.CFPAdmin.openForReview(proposal.id), proposals, delayedReviewReasonByProposalId)
+}

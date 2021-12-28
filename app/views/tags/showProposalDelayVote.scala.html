@@ -1,0 +1,13 @@
+@(formAction: Call, maybeVoteDelayedReason: Option[String])
+<div class="card-body">
+  @helper.form(action = formAction) {
+    <fieldset>
+      <legend>@Messages("admin.proposals.delay-vote.title")</legend>
+      <textarea name="delayedReviewReason" rows="4" style="width: 100%;" placeholder="@Messages("admin.proposals.delay-vote.comment.placeholder")">@maybeVoteDelayedReason.getOrElse("")</textarea>
+      <div>
+        <em>@Messages("admin.proposals.delay-vote.description")</em>
+      </div>
+      <button type="submit" name="voteLater" class="btn btn-primary btn-lg">@Messages("admin.proposals.delay-vote.button.label")</button>
+    </fieldset>
+  }
+</div>

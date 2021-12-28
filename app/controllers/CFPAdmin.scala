@@ -25,6 +25,7 @@ object CFPAdmin extends SecureCFPController {
 
   val messageForm: Form[String] = Form("msg" -> nonEmptyText(maxLength = 1000))
   val voteForm: Form[Int] = Form("vote" -> number(min = 0, max = 10))
+  val delayedReviewForm: Form[String] = Form("delayedReviewReason" -> text(maxLength = 1000))
   val editSpeakerForm = Form(
     tuple(
       "uuid" -> text.verifying(nonEmpty, maxLength(50)),
@@ -68,13 +69,14 @@ object CFPAdmin extends SecureCFPController {
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
       val totalToReview = Review.countProposalNotReviewed(uuid)
+      val totalDelayedReviews = Review.countDelayedReviews(uuid)
 
       track.map {
         trackValue: String =>
-          Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, pageReview, totalToReviewFiltered))
+          Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, Some(trackValue), totalReviewed, totalVoted, totalToReview, totalDelayedReviews, pageReview, totalToReviewFiltered))
             .withHeaders("ETag" -> etag)
       }.getOrElse {
-        Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted, totalToReview, pageReview, totalToReviewFiltered))
+        Ok(views.html.CFPAdmin.cfpAdminIndex(request.webuser, twentyEvents, allProposalsForReview, Event.totalEvents(), page, sort, ascdesc, None, totalReviewed, totalVoted, totalToReview, totalDelayedReviews, pageReview, totalToReviewFiltered))
           .withHeaders("ETag" -> etag)
       }
 
@@ -87,7 +89,8 @@ object CFPAdmin extends SecureCFPController {
     val maybeMyPreviousVote = if (maybeMyVote.isEmpty) Review.previouslyResettedVote(userId, proposal.id) else None
     val proposalsByAuths = allProposalByProposal(proposal)
     val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposal.id, userId)
-    views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, msgToSpeakerForm, msgInternalForm, voteForm, maybeMyVote, maybeMyPreviousVote, userId, userWatchPref)
+    val maybeDelayedReviewReason = Review.proposalDelayedReviewReason(userId, proposal.id)
+    views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, msgToSpeakerForm, msgInternalForm, voteForm, maybeMyVote, maybeMyPreviousVote, userId, userWatchPref, maybeDelayedReviewReason)
   }
 
   def openForReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -120,8 +123,12 @@ object CFPAdmin extends SecureCFPController {
             val countVotes = Review.totalVoteFor(proposalId)
             val allVotes = Review.allVotesFor(proposalId)
 
+            val proposalIdsWithDelayedReview = Review.allProposalIdsHavingDelayedReviewsForUser(uuid)
+            val currentProposalReviewHasBeenDelayed = proposalIdsWithDelayedReview.contains(proposal.id)
+            val delayedReviewsCount = proposalIdsWithDelayedReview.size
+
             // The next proposal I should review
-            val allNotReviewed = Review.allProposalsNotReviewed(uuid)
+            val allNotReviewed = Review.allProposalsNotReviewed(uuid).filterNot(p => proposalIdsWithDelayedReview.contains(p.id))
             val (sameTrackAndFormats, otherTracksOrFormats) = allNotReviewed.partition(p => p.track.id == proposal.track.id && p.talkType.id == proposal.talkType.id)
             val (sameTracks, otherTracks) = allNotReviewed.partition(_.track.id == proposal.track.id)
             val (sameTalkType, otherTalksType) = allNotReviewed.partition(_.talkType.id == proposal.talkType.id)
@@ -168,13 +175,9 @@ object CFPAdmin extends SecureCFPController {
             }
 
             // If Golden Ticket is active
-            if (ConferenceDescriptor.isGoldenTicketActive) {
-              val averageScoreGT = ReviewByGoldenTicket.averageScore(proposalId)
-              val countVotesCastGT: Option[Long] = Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId))
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, averageScoreGT, countVotesCastGT, meAndMyFollowers))
-            } else {
-              Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, 0, None, meAndMyFollowers))
-            }
+            val averageScoreGT = if (ConferenceDescriptor.isGoldenTicketActive) ReviewByGoldenTicket.averageScore(proposalId) else 0
+            val countVotesCastGT: Option[Long] = if (ConferenceDescriptor.isGoldenTicketActive) Option(ReviewByGoldenTicket.totalVoteCastFor(proposalId)) else None
+            Ok(views.html.CFPAdmin.showVotesForProposal(uuid, proposal, currentAverageScore, countVotesCast, countVotes, allVotes, nextToBeReviewedSameTrackAndFormat, nextToBeReviewedSameTrack, nextToBeReviewedSameFormat, currentProposalReviewHasBeenDelayed, delayedReviewsCount, averageScoreGT, countVotesCastGT, meAndMyFollowers))
           case None => NotFound("Proposal not found").as("text/html")
         }
       }
@@ -223,6 +226,22 @@ object CFPAdmin extends SecureCFPController {
           ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
           Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started watching proposal")
       }.getOrElse(NotFound("Proposal not found"))
+  }
+
+  def delayVote(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          delayedReviewForm.bindFromRequest.fold(
+            hasErrors => BadRequest(renderShowProposal(uuid, proposal, hasErrors, messageForm, voteForm)),
+            validMsg => {
+              Review.markProposalReviewAsDelayed(uuid, proposal.id, validMsg)
+              Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "OK, review delayed for this proposal")
+            }
+          )
+        case None => NotFound("Proposal not found")
+      }
   }
 
   def unwatchProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
@@ -291,10 +310,25 @@ object CFPAdmin extends SecureCFPController {
           val proposalsMatchingCriteriaNotReviewed = proposalsNotReviewedForCurrentType.filter(p => selectedTrack.map(p.track.id == _).getOrElse(true))
           val firstProposalNotReviewedAndMatchingCriteria = proposalsMatchingCriteriaNotReviewed.headOption
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria))
+          val delayedReviewsCount = Review.countDelayedReviews(uuid)
+
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria, delayedReviewsCount))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
+  }
+
+  def delayedReviews() = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+
+      val uuid = request.webuser.uuid
+      val delayedReviewReasonByProposalId = Review.delayedReviewsReasons(uuid)
+
+      val delayedProposals = Proposal.loadAndParseProposals(delayedReviewReasonByProposalId.keySet)
+        .values.toList
+        .sortBy(p => s"${p.talkType}__${p.track}")
+
+      Ok(views.html.CFPAdmin.delayedReviews(delayedProposals, delayedReviewReasonByProposalId))
   }
 
   def advancedSearch(q: Option[String] = None, p: Option[Int] = None) = SecuredAction(IsMemberOf("cfp")).async {

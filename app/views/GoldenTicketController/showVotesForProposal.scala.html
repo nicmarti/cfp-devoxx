@@ -1,4 +1,11 @@
-@(currentUser:String, proposal: models.Proposal, nextToBeReviewedSameTrackAndFormat:Option[Proposal], nextToBeReviewedSameTrack:Option[Proposal], nextToBeReviewedSameFormat:Option[Proposal])(implicit flash: Flash, lang: Lang, req:RequestHeader)
+@(currentUser:String,
+    proposal: models.Proposal,
+    currentProposalReviewHasBeenDelayed: Boolean,
+    delayedReviewsCount: Int,
+    nextToBeReviewedSameTrackAndFormat:Option[Proposal],
+    nextToBeReviewedSameTrack:Option[Proposal],
+    nextToBeReviewedSameFormat:Option[Proposal]
+)(implicit flash: Flash, lang: Lang, req:RequestHeader)
 @main("Votes for " + proposal.id + "/" + proposal.title) {
     <div class="row">
         <div class="col-md-12">
@@ -28,7 +35,11 @@
             <div class="card">
                 <div class="card-body">
 
-                    <h3>@Messages("gt.vote.ok")</h3>
+                    @if(currentProposalReviewHasBeenDelayed) {
+                      <h3>@Messages("gt.delayed-review.submission.ok")</h3>
+                    } else {
+                      <h3>@Messages("gt.vote.ok")</h3>
+                    }
 
                     @if(Proposal.isSpeaker(proposal.id,currentUser)){
                      <div class="alert alert-info col-md-12">
@@ -37,32 +48,35 @@
                     }
 
                     <p>@Messages("gt.youcan")</p>
-                    <a class="btn btn-warning btn-sm" style="margin: 2px 0px" accesskey="r" href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i class="fas fa-backward"></i> @Messages("gt.showVotes.review")</a>
-                    <a class="btn btn-primary btn-sm" style="margin: 2px 0px" accesskey="h" href="@routes.GoldenTicketController.showAllProposals()" title="Shortcut : Ctrl-Option-h"><i class="fas fa-home"></i> @Messages("gt.home")</a>
-                    <a class="btn btn-primary btn-sm" style="margin: 2px 0px" accesskey="v" href="@routes.GoldenTicketController.allMyGoldenTicketVotes(proposal.talkType.id, Some(proposal.track.id))" title="Shortcut: Ctrl-Option-V"><i class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
+                    <a class="btn btn-warning btn-sm" style="margin: 2px 0px" accesskey="r" href="@routes.GoldenTicketController.openForReview(proposal.id)" title="Shortcut : Ctrl-Option-r"><i aria-hidden="true" class="fas fa-backward"></i> @Messages("gt.showVotes.review")</a>
+                    <a class="btn btn-primary btn-sm" style="margin: 2px 0px" accesskey="h" href="@routes.GoldenTicketController.showAllProposals()" title="Shortcut : Ctrl-Option-h"><i aria-hidden="true" class="fas fa-home"></i> @Messages("gt.home")</a>
+                    @if(delayedReviewsCount > 0) {
+                      <a class="btn btn-primary btn-sm" style="margin: 2px 0px" href="@routes.GoldenTicketController.delayedReviews()"><i aria-hidden="true" class="fas fa-clock"></i> @Messages("admin.btn.delayed-reviews-with-count", delayedReviewsCount)</a>
+                    }
+                    <a class="btn btn-primary btn-sm" style="margin: 2px 0px" accesskey="v" href="@routes.GoldenTicketController.allMyGoldenTicketVotes(proposal.talkType.id, Some(proposal.track.id))" title="Shortcut: Ctrl-Option-V"><i aria-hidden="true" class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
                     @if(nextToBeReviewedSameTrack.isEmpty && nextToBeReviewedSameFormat.isEmpty){
-                      <a class="btn btn-primary btn-sm" href="@routes.GoldenTicketController.showAllProposals()"><i class="fas fa-trophy"></i> @Messages("gt.nomore")</a>
+                      <a class="btn btn-primary btn-sm" href="@routes.GoldenTicketController.showAllProposals()"><i aria-hidden="true" class="fas fa-trophy"></i> @Messages("gt.nomore")</a>
                     }
                     <br>
                     @if(nextToBeReviewedSameTrackAndFormat.nonEmpty && nextToBeReviewedSameTrackAndFormat.head.track.id == proposal.track.id) {
-                      <a class="btn btn-success btn-sm" style="margin: 2px 0px" accesskey="s" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrackAndFormat.head.id)" title="Shortcut: Ctrl-Option-S"><i class="fas fa-forward"></i>
+                      <a class="btn btn-success btn-sm" style="margin: 2px 0px" accesskey="s" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrackAndFormat.head.id)" title="Shortcut: Ctrl-Option-S"><i aria-hidden="true" class="fas fa-forward"></i>
                         @Messages("gt.nextTalkTrackAndType" , Messages(proposal.talkType.id), Messages(proposal.track.label))</a>
                     }
                     @if(nextToBeReviewedSameFormat.nonEmpty) {
                       @if(nextToBeReviewedSameFormat.head.talkType.id == proposal.talkType.id) {
-                        <a class="btn btn-success btn-sm" style="margin: 2px 0px; filter: brightness(115%)" accesskey="l" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="fas fa-forward"></i>
+                        <a class="btn btn-success btn-sm" style="margin: 2px 0px; filter: brightness(115%)" accesskey="l" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i aria-hidden="true" class="fas fa-forward"></i>
                           @Messages("gt.nextTalkType", Messages(nextToBeReviewedSameFormat.head.talkType.id))</a><br>
                       } else {
-                        <a class="btn btn-success btn-sm" style="margin: 2px 0px; filter: brightness(115%)" accesskey="l" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i class="fas fa-forward"></i>
+                        <a class="btn btn-success btn-sm" style="margin: 2px 0px; filter: brightness(115%)" accesskey="l" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameFormat.head.id)" title="Shortcut: Ctrl-Option-L"><i aria-hidden="true" class="fas fa-forward"></i>
                           @Messages("gt.nextTalkDifferentType", Messages(nextToBeReviewedSameFormat.head.talkType.id))</a><br>
                       }
                     }
                     @if(nextToBeReviewedSameTrack.nonEmpty) {
                       @if(nextToBeReviewedSameTrack.head.track.id == proposal.track.id) {
-                        <a class="btn btn-secondary btn-sm" style="margin: 2px 0px" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="fas fa-forward"></i>
+                        <a class="btn btn-secondary btn-sm" style="margin: 2px 0px" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i aria-hidden="true" class="fas fa-forward"></i>
                           @Messages("gt.nextTalkTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a><br>
                       } else {
-                        <a class="btn btn-secondary btn-sm" style="margin: 2px 0px" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i class="fas fa-forward"></i>
+                        <a class="btn btn-secondary btn-sm" style="margin: 2px 0px" accesskey="n" href="@routes.GoldenTicketController.openForReview(nextToBeReviewedSameTrack.head.id)" title="Shortcut: Ctrl-Option-N"><i aria-hidden="true" class="fas fa-forward"></i>
                           @Messages("gt.nextTalkDifferentTrack", Messages(nextToBeReviewedSameTrack.head.track.label))</a><br>
                       }
                     }

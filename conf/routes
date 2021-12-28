@@ -82,6 +82,7 @@ GET           /cfpadmin/proposal/:proposalId/vote                               
 GET           /cfpadmin/proposal/:proposalId/clearVote                          controllers.CFPAdmin.clearVoteForProposal(proposalId:String)
 GET           /cfpadmin/proposal/:proposalId/score                              controllers.CFPAdmin.showVotesForProposal(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/watch                              controllers.CFPAdmin.watchProposal(proposalId:String)
+POST          /cfpadmin/proposal/:proposalId/delayVote                          controllers.CFPAdmin.delayVote(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/unwatch                            controllers.CFPAdmin.unwatchProposal(proposalId:String)
 GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
@@ -89,6 +90,7 @@ GET           /cfpadmin/proposals/withNoVotes                                   
 GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
+GET           /cfpadmin/delayedReviews                                          controllers.CFPAdmin.delayedReviews()
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
 GET           /cfpadmin/allvotesV2/:confType                                    controllers.CFPAdmin.allVotesVersion2(confType:String, page:Int ?=0, resultats:Int ?=25, sortBy:String ?="gt_and_cfp")
 
@@ -337,11 +339,13 @@ POST          /admin/goldenTickets/:goldenTicketId/sendEmail                    
 # Golden ticket webuser side
 GET           /cfp/goldenticket/proposals                                        controllers.GoldenTicketController.showAllProposals(page:Int ?= 0, sort:Option[String] ?=None, ascdesc:Option[String] ?=None, track:Option[String] ?=None)
 GET           /cfp/goldenticket/myvotes                                          controllers.GoldenTicketController.allMyGoldenTicketVotes(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
+GET           /cfp/goldenticket/delayedReviews                                   controllers.GoldenTicketController.delayedReviews()
 GET           /cfp/goldenticket                                                  controllers.GoldenTicketController.authenticate()
 POST          /cfp/goldenticket                                                  controllers.GoldenTicketController.doAuthenticate()
 
 GET           /cfp/goldenticket/proposals/:proposalId                            controllers.GoldenTicketController.openForReview(proposalId:String)
 GET           /cfp/goldenticket/proposals/:proposalId/vote                       controllers.GoldenTicketController.voteForProposal(proposalId:String)
+POST          /cfp/goldenticket/proposals/:proposalId/delayReview                controllers.GoldenTicketController.delayVote(proposalId:String)
 GET           /cfp/goldenticket/proposals/:proposalId/clearVote                  controllers.GoldenTicketController.clearVoteForProposal(proposalId:String)
 GET           /cfp/goldenticket/proposals/:proposalId/showvotes                  controllers.GoldenTicketController.showVotesForProposal(proposalId:String)
 POST          /cfp/goldenticket/proposals/:proposalId/watch                      controllers.GoldenTicketController.watchProposal(proposalId:String)

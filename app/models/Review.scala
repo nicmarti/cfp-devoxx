@@ -61,6 +61,7 @@ object Review {
       tx.sadd(s"Proposals:Reviewed:ByProposal:$proposalId", reviewerUUID)
       tx.zadd(s"Proposals:Votes:$proposalId", vote, reviewerUUID) // if the vote does already exist, Redis updates the existing vote. reviewer is a discriminator on Redis.
       tx.zadd(s"Proposals:Dates:$proposalId", new Instant().getMillis, reviewerUUID + "__" + vote) // Store when this user voted for this talk
+      tx.hdel(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${reviewerUUID}", proposalId)
       tx.exec()
 
       if(vote != 0) {
@@ -558,5 +559,30 @@ object Review {
         reviewKey: String =>
           client.del(reviewKey)
       }
+  }
+
+  def markProposalReviewAsDelayed(uuid: String, proposalId: String, reason: String): Unit = Redis.pool.withClient {
+    client =>
+      client.hset(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId, reason)
+  }
+
+  def proposalDelayedReviewReason(uuid: String, proposalId: String): Option[String] = Redis.pool.withClient {
+    client =>
+      client.hget(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId)
+  }
+
+  def allProposalIdsHavingDelayedReviewsForUser(uuid: String): Set[String] = Redis.pool.withClient {
+    client =>
+      client.hkeys(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
+  }
+
+  def delayedReviewsReasons(uuid: String): Map[String, String] = Redis.pool.withClient {
+    client =>
+      client.hgetAll(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
+  }
+
+  def countDelayedReviews(uuid: String): Long = Redis.pool.withClient {
+    client =>
+      client.hlen(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
   }
 }

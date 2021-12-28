@@ -363,9 +363,13 @@ admin.proposals.th.title=Title
 admin.proposals.th.track=Track
 admin.proposals.th.mainSpeaker=Speaker
 admin.proposals.th.talkType=Type of talk
+admin.proposals.th.speakers=Speakers
+admin.proposals.th.comment=Comment
 admin.proposals.th.action=Action
 admin.proposals.todolist.title=Your TODO List
 admin.btn.leaderboard=See Leaderboard
+admin.btn.delayed-reviews=Delayed Reviews
+admin.btn.delayed-reviews-with-count={0} Remaining delayed reviews
 admin.btn.myvotes=My votes
 admin.btn.sponsortalks=Sponsor''s talks
 admin.btn.speakers=All speakers
@@ -404,10 +408,18 @@ admin.sp.deleteMyVote=Delete my vote
 admin.sp.previous.vote.after.votes.reset=Prior to <u>vote reset</u>, you voted <strong>{0}</strong> on {1}
 admin.btn.allvotes=All votes
 admin.proposals.watch=Watch
-admin.proposals.watch.suggestion=Click here to enable watch on following proposal events
+admin.proposals.watch.suggestion=Click here to enable watch on proposal events
 admin.proposals.unwatch=Unwatch
 admin.proposals.unwatch.suggestion=Click here to disable watch on proposal events
-
+admin.proposals.watch.concerned-events=Concerned events
+admin.proposals.watch.more-details=More details
+admin.proposals.delay-vote.title=Delaying my review
+admin.proposals.delay-vote.comment.placeholder=A reminder here about why I delayed my review
+admin.proposals.delay-vote.description=Reviews marked as "delayed" will not appear anymore in your todolist. You can have a look at these proposals in the "Delayed reviews" screen.
+admin.proposals.delay-vote.button.label=Delay my review
+admin.proposals.delay-vote.no-vote-shown=Sorry, no votes displayed for a delayed review
+admin.proposals.delayed-reviews.title=Delayed reviews
+admin.proposals.delayed-reviews.empty=No Delayed reviews
 
 speaker.other.error=You cannot change the speaker''s list if you are not one of the 2 main speakers.
 admin.draft.warning=Warning
@@ -828,6 +840,9 @@ gt.disclaimer=Please respect the privacy of people submitting talks to Devoxx. B
 
 gt.intro.1=This is the full list of Proposals. You can sort by Proposal title, by Speaker or type of Talk.
 gt.intro.2=If needed, you can also
+gt.delayed-review.submission.ok=Your review has been marked as delayed
+gt.delayed-reviews.message=You have {0} delayed reviews pending..
+gt.btn.delayed-reviews=Delayed Reviews
 gt.reviewYourVotes=review your Votes
 gt.intro.3=while the CFP is open.
 gt.special.need=You can vote until Tuesday, january, 30th, 7:00pm
@@ -942,6 +957,7 @@ cfp.filter.off=Remove filter
 
 cfpadmin.totalReviewed={0} reviewed
 cfpadmin.totalVoted={0} voted
+cfpadmin.totalDelayedReviews={0} delayed
 cfpadmin.totalToReview={0} to review
 
 publisher.room.disclaimer=The designated room for a presentation can be changed 48 hours before the beginning of Devoxx.

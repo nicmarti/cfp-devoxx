@@ -313,9 +313,13 @@ admin.proposals.th.title=Titre
 admin.proposals.th.track=Track
 admin.proposals.th.mainSpeaker=Speaker
 admin.proposals.th.talkType=Format
+admin.proposals.th.speakers=Speakers
+admin.proposals.th.comment=Commentaire
 admin.proposals.th.action=Action
 admin.proposals.todolist.title=TODO List
 admin.btn.leaderboard=Voir les stats
+admin.btn.delayed-reviews=Revues temporisées
+admin.btn.delayed-reviews-with-count={0} revues temporisées restantes
 admin.btn.myvotes=Vos votes
 admin.btn.sponsortalks=Talks sponsors
 admin.btn.speakers=Tous les speakers
@@ -354,6 +358,15 @@ admin.proposals.watch=Observer
 admin.proposals.watch.suggestion=Cliquer ici pour activer l''observation sur les évènements de la proposition
 admin.proposals.unwatch=Ignorer
 admin.proposals.unwatch.suggestion=Cliquer ici pour désactiver l''observation sur les évènements de la proposition
+admin.proposals.watch.concerned-events=Évènements concernés
+admin.proposals.watch.more-details=Plus de détails
+admin.proposals.delay-vote.title=Temporiser ma revue
+admin.proposals.delay-vote.comment.placeholder=Un rappel ici sur pourquoi j''ai temporisé ma revue
+admin.proposals.delay-vote.description=Les revues marquées comme "temporisées" n''apparaîtront plus dans votre todolist. Vous pouvez accéder à ces proposition sur l''écran "Revues temporisées".
+admin.proposals.delay-vote.button.label=Temporiser ma revue
+admin.proposals.delay-vote.no-vote-shown=Désolé, les votes pour une revue temporisée sont masqués
+admin.proposals.delayed-reviews.title=Revues temporisées
+admin.proposals.delayed-reviews.empty=Aucune revue temporisée
 
 speaker.other.error=Vous n''avez pas la possibilité de changer les speakers lorsque vous n''êtes pas l''un des 2 speakers principaux.
 admin.draft.warning=Attention
@@ -710,6 +723,9 @@ gt.intro.1=Voici la liste complète des propositions que vous n''avez pas encore
 gt.intro.2=Si vous le souhaitez, vous pouvez aussi
 gt.reviewYourVotes=revoir et corriger vos votes
 gt.intro.3=tant que le CFP est ouvert.
+gt.delayed-review.submission.ok=Votre revue a été marquée comme temporisée
+gt.delayed-reviews.message=Vous avez {0} revues temporisées..
+gt.btn.delayed-reviews=Revues Temporisées
 gt.special.need=Vous pouvez voter jusqu'au 30 janvier 19h00.
 gt.todo=Votre liste de sujet à revoir :
 
@@ -792,6 +808,7 @@ cfp.filter.off=Pas de filtre
 
 cfpadmin.totalReviewed={0} revus
 cfpadmin.totalVoted={0} votés
+cfpadmin.totalDelayedReviews={0} temporisés
 cfpadmin.totalToReview={0} à revoir
 
 publisher.room.disclaimer=La salle est susceptible d''être changée jusqu''à 48h avant le début de Devoxx France.
