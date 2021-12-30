@@ -782,12 +782,11 @@ object CFPAdmin extends SecureCFPController {
 
   def allCFPWebusers() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      Ok(views.html.CFPAdmin.showCFPUsers(Webuser.allCFPAdminUsers()))
+      Ok(views.html.CFPAdmin.showCFPUsers(Webuser.allCFPWebusers()))
   }
 
   def updateTrackLeaders() = SecuredAction(IsMemberOf("cfp")) {
     implicit req: SecuredRequest[play.api.mvc.AnyContent] =>
-
       req.request.body.asFormUrlEncoded.map {
         mapsByTrack =>
           TrackLeader.updateAllTracks(mapsByTrack)
@@ -795,6 +794,12 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse {
         Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("error" -> "No value received")
       }
+  }
+
+  def switchPublicVisibility(uuid:String)= SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Webuser.updatePublicVisibility(uuid)
+      Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("success" -> s"Updated user $uuid")
   }
 
   def newOrEditSpeaker(speakerUUID: Option[String]) = SecuredAction(IsMemberOf("cfp")) {

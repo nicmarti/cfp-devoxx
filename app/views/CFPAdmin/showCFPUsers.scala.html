@@ -1,14 +1,14 @@
-@(allTrackLeaders:Seq[(String, String)])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(allCFPWebusers:List[Webuser])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
-@main("Diff between you and another reviewer"){
+@main("CFP program committee"){
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-user-md"></i> Configure track leader</h3>
+                <h3><i class="fas fa-user-md"></i> @Messages("admin.btn.tracklead")</h3>
             </div>
 
             <div class="card-body">
@@ -23,36 +23,35 @@
             @flash.get("success").get
             </div>
             }
-@helper.form(action = routes.CFPAdmin.updateTrackLeaders()) {
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
                     <tr>
-                        <th>Track name</th>
-                        <th>Track leader</th>
+                        <th>@Messages("firstName") @Messages("lastName")</th>
+                        <th>@Messages("show.on.publisher.committee.page")</th>
+                        <th>@Messages("update.publisher.committee.page")</th>
+
                     </tr>
                 </thead>
+
                 <tbody>
-                        @ConferenceDescriptor.ConferenceTracks.ALL.map{track=>
+                    @allCFPWebusers.sortBy(_.cleanName).map{ webuser=>
                         <tr>
-                            <td>@Messages(track.label)</td>
+                            <td>@webuser.cleanName</td>
+                            <td>@if(Webuser.isPublicVisible(webuser.uuid)){
+                                    true
+                                } else {
+                                    false
+                                }
+                            </td>
                             <td>
-                            <div class="input">
-                                <select id="@track.id" name="@track.id">
-                                        <option value="no_track_lead">--- No Track Leader ---</option>
-                                         @allTrackLeaders.map { uuidAndName =>
-                                           <option @if(TrackLeader.isTrackLeader(track.id, uuidAndName._1)){ selected } value="@uuidAndName._1"> @uuidAndName._2 </option>
-                                         }
-                                </select>
-                            </div>
+                                <a href="@routes.CFPAdmin.switchPublicVisibility(webuser.uuid)">Switch</a>
                             </td>
                         </tr>
-                        }
+
+                    }
                 </tbody>
             </table>
-<button value="save" type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save the full list</button><br>
-<a href="@routes.Backoffice.homeBackoffice()" class="btn btn-primary">Go back to Backoffice</a>
-}
-
+            <a href="@routes.Backoffice.homeBackoffice()" class="btn btn-primary">Go back to Backoffice</a>
             </div>
         </div>
     </div>

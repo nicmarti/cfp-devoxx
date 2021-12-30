@@ -16,7 +16,7 @@
         <!-- Define your gradient here - use online tools to find a gradient matching your branding-->
     <style>
             .gradient {
-                background: linear-gradient(90deg, #06858c 0%, #54b587 100%);
+                background: linear-gradient(0deg, #06858c 0%, #54b587 100%);
             }
     </style>
     <link href="@routes.Assets.at(path="/public",file="fontawesome-5.12.0/css/all.min.css")" rel="stylesheet">
@@ -48,8 +48,11 @@
                         <a class="inline-block text-black no-underline hover:text-yellow-400 hover:text-underline py-2 px-4" href="@routes.Publisher.showAllSpeakers()">Speakers</a>
                     </li>
                     <li class="mr-3">
-                        <a class="inline-block text-black no-underline hover:text-yellow-400 hover:text-underline py-2 px-4" href="https://www.devoxx.fr/sponsors-2020-2/">Sponsors</a>
+                        <a class="inline-block text-black no-underline hover:text-yellow-400 hover:text-underline py-2 px-4" href="@routes.Publisher.committee()">Comité de sélection</a>
                     </li>
+@*                    <li class="mr-3">*@
+@*                        <a class="inline-block text-black no-underline hover:text-yellow-400 hover:text-underline py-2 px-4" href="https://www.devoxx.fr/sponsors-2020-2/">Sponsors</a>*@
+@*                    </li>*@
                     <li class="mr-3">
                         <a class="inline-block text-black no-underline hover:text-yellow-400 hover:text-underline py-2 px-4" href="https://reg.devoxx.fr">Registration</a>
                     </li>
