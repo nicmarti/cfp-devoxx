@@ -379,19 +379,26 @@ object Webuser {
       }
   }
 
-  /* Required for helper.options */
-  def allCFPAdminUsers(): Seq[(String, String)] = {
-    val cfpUsers = Webuser.allCFPWebusers().sortBy(_.cleanName)
-    val cfpUsersAndTracks = cfpUsers.flatMap {
-      w: Webuser =>
-        Seq((w.uuid, w.cleanName))
-    }
-    cfpUsersAndTracks
-  }
-
   def getEmailFromUUID(uuid: String): Option[String] = Redis.pool.withClient {
     client =>
       client.get("Webuser:UUID:" + uuid)
+  }
+
+  // Instead of doing a read then a write on a value, we do a single write redis atomic op
+  def updatePublicVisibility(uuid:String) = Redis.pool.withClient{
+    client =>
+      client.incr(s"Webuser:Publisher:IsVisible:${uuid}")
+  }
+
+  // If the key exists and the modulo 2 returns 0 then show the user
+  def isPublicVisible(uuid:String) = Redis.pool.withClient{
+    client =>
+      val score = client.get(s"Webuser:Publisher:IsVisible:${uuid}")
+      score match {
+        case None => true
+        case Some(x) if x.toInt > 0 => (x.toInt % 2) == 0
+        case _  => false
+      }
   }
 
   val DEFAULT_LABEL: (String, String) = ("", play.api.i18n.Messages("noOther.speaker"))

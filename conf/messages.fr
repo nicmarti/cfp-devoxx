@@ -557,7 +557,7 @@ day-wednesday=Mercredi
  
 showAgendaByRoom=Agenda par salle
 Abs=Abs
-admin.btn.tracklead=Track leader
+admin.btn.tracklead=Comité programme
 approved=Talk approuvé
 audienceLevel.help=Merci d''indiquer le niveau requis de votre audience pour ce sujet :
 
@@ -1008,3 +1008,8 @@ shortYearlyName=Devoxx FR 2022
 your.reviewer.rank=Votre classement
 reviewed=sujets revus
 no.more.talk=Vous avez revu l''intégralité des propositions soumises
+
+show.on.publisher.committee.page=Affiché sur la page publique du comité
+update.publisher.committee.page=Mettre à jour la visibilité ?
+speaker.bio.notfound=404 Not Found : orateur inconnu
+speaker.bio.explanation=Le profil de cette personne n''est pas disponible. Il est aussi possible que la personne n''a pas encore accepté les "termes et conditions" de présentation de la conférence. La fiche sera publiée lorsqu''elle aura validé son profil.

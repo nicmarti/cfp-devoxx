@@ -37,7 +37,7 @@ object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val eTag = Crypt.md5(result.toString() + "dvx").toString
+      val eTag:String = Crypt.md5(result.toString() + "dvx")
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
@@ -88,6 +88,8 @@ object Publisher extends Controller {
     implicit request =>
       val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
+        case Some(speaker) if Webuser.isPublicVisible(uuid) =>
+          Ok(views.html.Publisher.showSpeaker(speaker, List.empty))
         case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
           ZapActor.actor ! LogURL("showSpeaker", uuid, name)
@@ -189,4 +191,9 @@ object Publisher extends Controller {
       }
   }
 
+  def committee()= Action {
+    implicit request =>
+      val allMembers = Speaker.allCFPMembers()
+      Ok(views.html.Publisher.committee(allMembers))
+  }
 }

@@ -19,6 +19,12 @@
 
         <section class="bg-white">
             <div class="container mx-auto flex flex-wrap pt-4 pb-12">
+                @if(speakers.isEmpty){
+                    <div class="w-full mb-5 md:w-1/4 lg:w-1/5 sm:w-1/2 p-6 flex flex-col flex-grow flex-shrink text-body text-black">
+                        <h3 class="w-full text-xl text-center">Le programme n'est pas publié.</h3>
+                        <h3 class="w-full text-xl text-center">The agenda is not avalaible.</h3>
+                    </div>
+                }
             @speakers.sortBy(_.cleanName).map { speaker: Speaker =>
                     <div class="w-full mb-5 md:w-1/4 lg:w-1/5 sm:w-1/2 p-6 flex flex-col flex-grow flex-shrink text-body text-black">
                         <div class="bg-gray-100 p-3 rounded-md">

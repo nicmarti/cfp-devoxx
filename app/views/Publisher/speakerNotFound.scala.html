@@ -1,11 +1,26 @@
-@()(implicit lang: Lang, flash: Flash, req:RequestHeader)
-@views.html.Publisher.devoxxFR2020("Speaker not found"){
-<div class="columns large-offset-1 large-11">
-    <p class="breadcrumb"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a></p>
-    <h1 class="entry-title">
-        Speaker's bio not available
-    </h1>
-    <p>This speaker has not yet accepted the Terms & Conditions.</p>
-</div>
-<div class="clearfix"></div>
-}s
+@()(implicit lang: Lang, flash: Flash, req: RequestHeader)
+    @views.html.Publisher.devoxxFR("Speaker not found") {
+        <section class="bg-white py-8">
+            <div class="container max-w-5xl mx-auto m-8">
+                <h1 class="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
+                    <img src="@routes.Assets.at(path="/public",file="devoxx_fr_2022/frise_devoxx_fr.png")" alt="Devoxx FR frise" width="1000" height="274">
+                    Devoxx France 2022
+                </h1>
+
+            </div>
+            <div class="w-full mb-4">
+                <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container mx-auto">
+                <div class="bg-white w-full m-3 p-4">
+                    <h1 class="text-2xl">
+                       @Messages("speaker.bio.notfound")
+                    </h1>
+                    <p class="text text-left">@Messages("speaker.bio.explanation")</p>
+                </div>
+            </div>
+        </section>
+    }

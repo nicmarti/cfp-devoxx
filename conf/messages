@@ -528,7 +528,7 @@ sw.proposal.presentedWith=Presented also by
 admin.btn.webuser=Administer CFP users
 editSpeakerName=Edit Speaker name
 admin.btn.createNewspeaker=Create a new speaker
-admin.btn.tracklead=Track leaders
+admin.btn.tracklead=Program Committee
 
 newSpeaker.title=Create a new speaker
 avatarUrl2=URL of speaker''s photo
@@ -1054,3 +1054,8 @@ events.ProposalResubmited=Submitted again a proposal {0} {1}
 events.NewProposalPostedByTrack=Posted a new talk ({0}) to track {2}
 events.ChangedTrackOfProposal=Changed talk''s track  with id {0} from {2} to {3}
 events.RemovedProposalSponsoredFlag=Removed [sponsorTalkFlag] on proposal {0} {1}
+
+show.on.publisher.committee.page=Displayed on the program committee public web page
+update.publisher.committee.page=Update visibility?
+speaker.bio.notfound=404 Not found : speaker''s bio not available
+speaker.bio.explanation=Either the speaker has not yet accepted the Terms & Conditions or the speaker does not exist.

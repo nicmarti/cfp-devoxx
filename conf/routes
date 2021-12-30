@@ -100,9 +100,10 @@ GET           /cfpadmin/speaker/:uuidSpeaker                                    
 GET           /cfpadmin/sponsorTalk/remove/:proposalId                          controllers.CFPAdmin.removeSponsorTalkFlag(proposalId:String)
 GET           /cfpadmin/compareReviewer                                         controllers.CFPAdmin.showProposalsNotReviewedCompareTo(maybeReviewer:Option[String])
 
-GET           /cfpadmin/allWebusers                                             controllers.CFPAdmin.allWebusers()
+GET           /cfpadmin/webusers                                                controllers.CFPAdmin.allWebusers()
+GET           /cfpadmin/webusers/cfp                                            controllers.CFPAdmin.allCFPWebusers()
 POST          /cfpadmin/cfpWebusers/trackLeaders                                controllers.CFPAdmin.updateTrackLeaders()
-GET           /cfpadmin/allCFPWebusers                                          controllers.CFPAdmin.allCFPWebusers()
+GET           /cfpadmin/webusers/cfp/:uuid/switchVisibility                     controllers.CFPAdmin.switchPublicVisibility(uuid:String)
 
 GET           /cfpadmin/allSpeakers                                             controllers.CFPAdmin.allSpeakers()
 GET           /cfpadmin/duplicateSpeakers                                       controllers.CFPAdmin.duplicateSpeakers()
@@ -208,6 +209,7 @@ GET           /ar/doMassRefuseAndRedirect                                       
 # wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html
 GET           /2022/speakers.html                                               controllers.Publisher.showAllSpeakers()
 GET           /2022/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
+GET           /2022/speaker/:cleanName/:uuid                                    controllers.Publisher.showSpeaker(uuid:String, cleanName:String)
 GET           /2022/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
 GET           /2022/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
 GET           /2022/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="", secretPublishKey:Option[String] ?=None)
@@ -216,6 +218,7 @@ GET           /2022/talks                                                       
 GET           /2022/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2022/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None, hideUselessRooms:Boolean ?=true, includeTypes:Option[String] ?=None, excludeTypes:Option[String] ?=Some("bof"))
 GET           /2022/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
+GET           /2022/committee.html                                              controllers.Publisher.committee()
 
 # Archive folder
 # 1) download all web pages with wget
