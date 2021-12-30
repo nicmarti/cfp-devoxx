@@ -3,7 +3,7 @@
 @import helper.twitterBootstrap._
 @import org.apache.commons.lang3.StringUtils
 
-@main("Diff between you and another reviewer"){
+@main("CFP program committee"){
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -23,7 +23,6 @@
             @flash.get("success").get
             </div>
             }
-@helper.form(action = routes.CFPAdmin.updateTrackLeaders()) {
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
                     <tr>
@@ -52,10 +51,7 @@
                     }
                 </tbody>
             </table>
-            <button value="save" type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save the full list</button><br>
-}
             <a href="@routes.Backoffice.homeBackoffice()" class="btn btn-primary">Go back to Backoffice</a>
-
             </div>
         </div>
     </div>
