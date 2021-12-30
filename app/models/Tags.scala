@@ -44,7 +44,7 @@ object Tags {
 
       })
 
-      termCounts.toList
+      termCounts.toList.sortBy(- _.count)
   }
 
   def allProposals(): List[TagProposalEntry] = Redis.pool.withClient {
