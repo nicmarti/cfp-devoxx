@@ -588,21 +588,38 @@ object Event {
   def initializeWatcherEvents(): Long = Redis.pool.withClient { client =>
     val allProposalEvents = Event.loadDigestEventsBetween(Instant.EPOCH, Instant.now())
     val proposalIds = allProposalEvents.map(_.proposalId).toSet
-    val watcherNotifUserPrefsByProposalId = proposalIds.map { pId =>
-      pId -> Watcher.watchersNotificationUserPreferencesFor(pId)
+    val watcherNotifUserPrefsAndLatestInteractionByProposalId = proposalIds.map { pId =>
+      val watcherNotifUserPrefsAndLatestInteraction = Watcher.watchersNotificationUserPreferencesFor(pId).map { watcherAndUserNotifPrefs =>
+        val watcherInteractions = allProposalEvents.filter(propEvent =>
+          propEvent.creator == watcherAndUserNotifPrefs._2._2.webuserId
+            && propEvent.proposalId == watcherAndUserNotifPrefs._2._2.proposalId
+        )
+
+        // Considering last interaction (either a proposal event author or watch subscription) for each watcher
+        val lastInteractionTimestamp = List.concat(
+          watcherInteractions.map(_.date.getMillis),
+          List(watcherAndUserNotifPrefs._2._2.startedWatchingAt.getMillis)
+        ).max
+
+        (watcherAndUserNotifPrefs._2._1, watcherAndUserNotifPrefs._2._2, lastInteractionTimestamp)
+      }
+      pId -> watcherNotifUserPrefsAndLatestInteraction
     }.toMap
 
     var createdWatcherEvent = 0
     val tx = client.multi()
     allProposalEvents.foreach { proposalEvent =>
-      watcherNotifUserPrefsByProposalId.get(proposalEvent.proposalId).map { watcherAndUserNotifPrefs =>
-        // Migrating only event appeared after user's watch subscription
-        val eligibleWatcherAndUserNotifPrefs = watcherAndUserNotifPrefs.filter { entry =>
-          entry._2._2.startedWatchingAt.isBefore(proposalEvent.date)
-        }
-        if(eligibleWatcherAndUserNotifPrefs.nonEmpty) {
+      watcherNotifUserPrefsAndLatestInteractionByProposalId.get(proposalEvent.proposalId).map { watcherNotifUserPrefsAndLatestInteraction =>
+        // Migrating only event appeared after user's latest interaction on proposal
+        val eligibleWatcherNotifUserPrefs = watcherNotifUserPrefsAndLatestInteraction.filter { watcherNotifUserPrefsAndLatestInteraction =>
+          watcherNotifUserPrefsAndLatestInteraction._3 <= proposalEvent.date.getMillis
+        }.map { watcherNotifUserPrefsAndLatestInteraction =>
+          watcherNotifUserPrefsAndLatestInteraction._2.webuserId -> watcherNotifUserPrefsAndLatestInteraction._1
+        }.toMap
+
+        if(eligibleWatcherNotifUserPrefs.nonEmpty) {
           val jsEvent = mapper.writeValueAsString(proposalEvent)
-          val watcherIds = Watcher.eligibleWatchersForProposalEvent(proposalEvent, eligibleWatcherAndUserNotifPrefs.mapValues(_._1))
+          val watcherIds = Watcher.eligibleWatchersForProposalEvent(proposalEvent, eligibleWatcherNotifUserPrefs)
           watcherIds.foreach { watcherId =>
             tx.sadd(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalEvent.proposalId}""", jsEvent)
             createdWatcherEvent += 1
