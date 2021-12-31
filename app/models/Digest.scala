@@ -36,7 +36,7 @@ object Digest {
 
   // All the digest interval values
   val allDigests = List(REAL_TIME, DAILY, WEEKLY, NEVER)
-  val selectableDigests = List(REAL_TIME, DAILY, WEEKLY)
+  val selectableDigests = List(NEVER, REAL_TIME, DAILY, WEEKLY)
 
   private val digestRedisKey = "Digest:"
   private val digestUserRedisKey = digestRedisKey + "User:"
