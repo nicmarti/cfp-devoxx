@@ -21,13 +21,6 @@
 <br/>
 <div style="margin: 3px 0px">
   <i aria-hidden="true" class="fas fa-filter"></i> @Messages("cfp.filter.on") :
-  <a href="@refreshPathAction(talkType, None)" class="btn btn-sm @if(selectedTrack==None) { btn-success } else { btn-primary }">
-    @if(showTrophies && proposalsCountByType.get(talkType).getOrElse(0) == 0) {
-      <i aria-hidden="true" class="fas fa-trophy"></i>
-    }
-    All tracks
-  <span class="badge badge-pill badge-light">@{proposalsCountByType.get(talkType).getOrElse(0) }</span>
-  </a>
   @models.ConferenceDescriptor.ConferenceTracks.ALL.map{track =>
     <a href="@refreshPathAction(talkType, Some(track.id))" class="btn btn-sm @if(selectedTrack==Some(track.id)) { btn-success } else { btn-primary }">
       @if(showTrophies && proposalsCountForCurrentTypeByTrack.get(track.id).getOrElse(0) == 0){
@@ -37,4 +30,11 @@
       <span class="badge badge-pill badge-light">@{proposalsCountForCurrentTypeByTrack.get(track.id).getOrElse(0) }</span>
     </a>
   }
+  <a href="@refreshPathAction(talkType, None)" class="btn btn-sm @if(selectedTrack==None) { btn-success } else { btn-primary }">
+    @if(showTrophies && proposalsCountByType.get(talkType).getOrElse(0) == 0) {
+      <i aria-hidden="true" class="fas fa-trophy"></i>
+    }
+    All tracks
+  <span class="badge badge-pill badge-light">@{proposalsCountByType.get(talkType).getOrElse(0) }</span>
+  </a>
 </div>

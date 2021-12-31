@@ -43,7 +43,7 @@
                 }
                 @if(SecureCFPController.hasAccessToCFPAdmin(req)){
                     <li class="nav-item"><a class="nav-link" href="@routes.CFPAdmin.index()"><i class="fas fa-flask" aria-hidden="true"></i> Admin</a></li>
-                    <li class="nav-item"><a class="nav-link" href="@routes.CFPAdmin.allMyWatchedProposals()"><i class="fas fa-eye" aria-hidden="true"></i> @Messages("admin.btn.mywatches")</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@routes.CFPAdmin.allMyWatchedProposals(selectedTrack=Some(ConferenceDescriptor.ConferenceTracks.JAVA.id))"><i class="fas fa-eye" aria-hidden="true"></i> @Messages("admin.btn.mywatches")</a></li>
                     <li class="nav-item"><a class="nav-link" href="@routes.CFPPreferencesController.index()"><i class="fas fa-mail-bulk" aria-hidden="true"></i> Preferences</a></li>
                     <li class="nav-item"><a class="nav-link" href="@routes.Wishlist.homeWishList()"><i class="fas fa-sort-amount-down" aria-hidden="true"></i> Wishlist</a></li>
                 }
