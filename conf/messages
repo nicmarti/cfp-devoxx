@@ -42,7 +42,8 @@ email.notifications.autowatch.specific.to-track=On specific Tracks only
 
 email.notifications.as.watcher.title=Notifications as Watcher
 email.notifications.frequency.label=Frequency
-email.notifications.events.label=Events
+email.notifications.events.label=Watched events
+email.notifications.events.description=Those events will be both used to trigger a Digest AND to be shown on your Watched Proposals screen
 email.notifications.save=Save
 email.notifications.invalid=Errors in your notification preferences
 email.notifications.success=Notification preferences successfully updated !

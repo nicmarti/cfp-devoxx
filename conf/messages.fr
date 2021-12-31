@@ -880,7 +880,8 @@ email.notifications.autowatch.specific.to-track=Sur certaines Tracks uniquement
 
 email.notifications.as.watcher.title=Notifications en tant que Watcher
 email.notifications.frequency.label=Fréquence
-email.notifications.events.label=Événements
+email.notifications.events.label=Événements observés
+email.notifications.events.description=Ces évènements seront utilisés à la fois pour déclencher un Digest mais aussi seront ceux affichés sur l''écran des proposition observées
 email.notifications.save=Enregistrer
 email.notifications.invalid=Il existe des erreurs dans vos préférences de notifications
 email.notifications.success=Préférences de notifications mises à jour avec succès !
