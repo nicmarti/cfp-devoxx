@@ -58,7 +58,9 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       val sorter = ProposalUtil.proposalSorter(sort)
       val orderer = ProposalUtil.proposalOrder(ascdesc)
-      val (totalToReviewFiltered, allNotReviewed) = Review.allProposalsNotReviewed(uuid, pageReview, 25, track)
+
+      val delayedReviews = Review.allProposalIdsHavingDelayedReviewsForUser(uuid)
+      val (totalToReviewFiltered, allNotReviewed) = Review.allProposalsNotReviewed(uuid, pageReview, 25, track, delayedReviews)
 
       val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
@@ -69,7 +71,7 @@ object CFPAdmin extends SecureCFPController {
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
       val totalToReview = Review.countProposalNotReviewed(uuid)
-      val totalDelayedReviews = Review.countDelayedReviews(uuid)
+      val totalDelayedReviews = delayedReviews.size
 
       track.map {
         trackValue: String =>

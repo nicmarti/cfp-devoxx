@@ -119,7 +119,7 @@ object Review {
   }
 
 
-  def allProposalsNotReviewed(reviewerUUID: String, page: Int, pageSize: Int, track: Option[String]): (Int,List[Proposal]) = Redis.pool.withClient {
+  def allProposalsNotReviewed(reviewerUUID: String, page: Int, pageSize: Int, track: Option[String], excludedProposalIds: Set[String]): (Int,List[Proposal]) = Redis.pool.withClient {
     implicit client =>
       // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
       val listOfIds = track match {
@@ -144,7 +144,7 @@ object Review {
       }
       //listOfIds.slice(page*pageSize,(page+1)*pageSize))
 
-      val sublistForThisPage = listOfIds.slice(page * pageSize, ( page + 1) * pageSize)
+      val sublistForThisPage = listOfIds.filterNot(excludedProposalIds.contains(_)).slice(page * pageSize, ( page + 1) * pageSize)
 
       (listOfIds.size, Proposal.loadProposalByIDs(sublistForThisPage.toSet, ProposalState.SUBMITTED))
   }
