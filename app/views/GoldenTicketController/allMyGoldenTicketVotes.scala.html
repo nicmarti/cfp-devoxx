@@ -21,38 +21,12 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> @Messages("gt.personnal")</h3>
-                    <div style="3px 0px">
-                    <i class="fas fa-filter"></i> @Messages("ar.proposalType") :
-                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.filter(models.ConferenceDescriptor.ConferenceProposalConfigurations.accessibleTypeToGoldenTicketReviews(_)).map{confType=>
-                        <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(confType.id, selectedTrack)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">
-                            @if(proposalNotReviewedCountByType.get(confType.id).getOrElse(0) == 0){
-                                <i class="fas fa-trophy"></i>
-                            }
-                            @Messages(confType.id)
-                            <span class="badge badge-pill badge-light">@{proposalNotReviewedCountByType.get(confType.id).getOrElse(0) }</span>
-                        </a>
-                    }
-                    </div>
-                    <br/>
-                    <div style="3px 0px">
-                        <i class="fas fa-filter"></i> @Messages("cfp.filter.on") :
-                        <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType, None)" class="btn btn-sm @if(selectedTrack==None) { btn-success } else { btn-primary }">
-                            @if(proposalNotReviewedCountByType.get(talkType).getOrElse(0) == 0) {
-                                <i class="fas fa-trophy"></i>
-                            }
-                            All tracks
-                            <span class="badge badge-pill badge-light">@{proposalNotReviewedCountByType.get(talkType).getOrElse(0) }</span>
-                        </a>
-                        @models.ConferenceDescriptor.ConferenceTracks.ALL.map{track =>
-                            <a href="@routes.GoldenTicketController.allMyGoldenTicketVotes(talkType, Some(track.id))" class="btn btn-sm @if(selectedTrack==Some(track.id)) { btn-success } else { btn-primary }">
-                                @if(proposalNotReviewedCountForCurrentTypeByTrack.get(track.id).getOrElse(0) == 0){
-                                    <i class="fas fa-trophy"></i>
-                                }
-                                @Messages(track.label)
-                                <span class="badge badge-pill badge-light">@{proposalNotReviewedCountForCurrentTypeByTrack.get(track.id).getOrElse(0) }</span>
-                            </a>
-                        }
-                    </div>
+                    @tags.renderMyReviewsSearchCriteria(
+                        refreshPathAction=(confType, selectedTrack) => routes.GoldenTicketController.allMyGoldenTicketVotes(confType, selectedTrack),
+                        availableTalkTypes=models.ConferenceDescriptor.ConferenceProposalTypes.ALL.filter(models.ConferenceDescriptor.ConferenceProposalConfigurations.accessibleTypeToGoldenTicketReviews(_)),
+                        talkType, selectedTrack,
+                        proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack
+                    )
                     <br/>
 
                     @defining(selectedTrack.flatMap(track =>proposalNotReviewedCountForCurrentTypeByTrack.get(track)).getOrElse(proposalNotReviewedCountByType.get(talkType).getOrElse(0))){ (remainingReviews: Int) =>

@@ -71,6 +71,8 @@
                         </select>
                         <hr class="borderless"/>
                         <label for="notificationEvents">@Messages("email.notifications.events.label")</label>
+                        <em>@Messages("email.notifications.events.description")</em>
+                        <br/>
                         <select id="notificationEvents" name="eventIds[]" class="chosen" multiple>
                         @NotificationEvent.allNotificationEvents.map { notificationEvent =>
                             @if(notificationEvent.applicableTo(webuser)) {

@@ -323,6 +323,14 @@ object Review {
     proposalsCommentsCount
   }
 
+  // This is a quickier impl than allVotesFromUser() which doesn't take proposal state into
+  // consideration and targets only a limited set of (known) proposal ids
+  def allVotesFromUserForProposalsRegardlessProposalStatus(reviewerUUID: String, proposalIds: Set[String]): Map[String, Option[Double]] = Redis.pool.withClient { client =>
+    proposalIds.map { proposalId =>
+      proposalId -> Option(client.zscore(s"Proposals:Votes:$proposalId", reviewerUUID)).map(_.toDouble)
+    }.toMap
+  }
+
   def allVotesFromUser(reviewerUUID: String): Set[(String, Double)] = Redis.pool.withClient {
     implicit client =>
       client.smembers(s"Proposals:Reviewed:ByAuthor:$reviewerUUID").flatMap {

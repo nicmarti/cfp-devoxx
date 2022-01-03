@@ -129,7 +129,7 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
-          ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
+          Watcher.addProposalWatcher(proposal.id, uuid, false)
           Ok(renderShowProposal(uuid, proposal, voteForm)).flashing("success" -> "Started watching proposal")
         case None => NotFound("Proposal not found").as("text/html")
       }
@@ -156,7 +156,7 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
-          ProposalUserWatchPreference.removeProposalWatcher(proposal.id, uuid)
+          Watcher.removeProposalWatcher(proposal.id, uuid)
           Ok(renderShowProposal(uuid, proposal, voteForm)).flashing("success" -> "Started unwatching proposal")
         case None => NotFound("Proposal not found").as("text/html")
       }

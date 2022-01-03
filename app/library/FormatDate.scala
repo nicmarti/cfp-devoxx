@@ -54,6 +54,10 @@ object FormatDate {
     DateTimeFormat.forPattern("HH:mm").withLocale(lang.toLocale).withZone(ConferenceDescriptor.current().timezone).print(date)
   }
 
+  def jodaDatetimeFormat(date: DateTime, lang: Lang): String = {
+    DateTimeFormat.forPattern("d MMM YY @HH:mm").withLocale(lang.toLocale).withZone(ConferenceDescriptor.current().timezone).print(date)
+  }
+
   def jodaFullDateFormat(date: DateTime, lang: Lang): String = {
     DateTimeFormat.fullDate().withLocale(lang.toLocale).withZone(ConferenceDescriptor.current().timezone).print(date)
   }

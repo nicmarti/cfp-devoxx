@@ -36,7 +36,7 @@ object Digest {
 
   // All the digest interval values
   val allDigests = List(REAL_TIME, DAILY, WEEKLY, NEVER)
-  val selectableDigests = List(REAL_TIME, DAILY, WEEKLY)
+  val selectableDigests = List(NEVER, REAL_TIME, DAILY, WEEKLY)
 
   private val digestRedisKey = "Digest:"
   private val digestUserRedisKey = digestRedisKey + "User:"
@@ -140,7 +140,7 @@ object Digest {
     play.Logger.of("models.Digest").debug(s"""Digest [${digest.value}] => Found ${proposalIds.size} concerned proposal(s)""")
 
     val proposalsByWatcherId = proposalIds
-      .map{ proposalId => ProposalUserWatchPreference.proposalWatchers(proposalId).map((proposalId, _)) }
+      .map{ proposalId => Watcher.proposalWatchers(proposalId).map((proposalId, _)) }
       .flatten
       .groupBy(_._2.webuserId)
 

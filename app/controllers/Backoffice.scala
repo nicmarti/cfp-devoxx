@@ -562,6 +562,12 @@ object Backoffice extends SecureCFPController {
       Ok(summary.toString)
   }
 
+  def initializeWatchingProposals() = SecuredAction(IsMemberOf("admin")) { request: SecuredRequest[play.api.mvc.AnyContent] =>
+    val migratedWatchers = Watcher.initializeWatchingProposals()
+    val migratedEventsCount = Event.initializeWatcherEvents();
+    Ok(s"OK ! ${migratedWatchers.size} watcher entries + ${migratedEventsCount} events migrated !")
+  }
+
   // Temporary: only here to workaround non-sent emails to speakers due to recent regression
   val unsentSpeakerEmailsAfterPublicCommentForm = Form(mapping(
     "start" -> jodaDate("yyyy-MM-dd'T'HH:mm:ss'Z'"),

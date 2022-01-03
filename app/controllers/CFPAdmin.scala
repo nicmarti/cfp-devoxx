@@ -192,6 +192,7 @@ object CFPAdmin extends SecureCFPController {
             hasErrors => BadRequest(renderShowProposal(uuid, proposal, hasErrors, messageForm, voteForm)),
             validMsg => {
               Comment.saveCommentForSpeaker(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
+              Proposal.markVisited(uuid, proposalId)
               ZapActor.actor ! SendMessageToSpeaker(uuid, proposal, validMsg)
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to speaker.")
             }
@@ -210,6 +211,7 @@ object CFPAdmin extends SecureCFPController {
             hasErrors => BadRequest(renderShowProposal(uuid, proposal, messageForm, hasErrors, voteForm)),
             validMsg => {
               Comment.saveInternalComment(proposal.id, uuid, validMsg) // Save here so that it appears immediatly
+              Proposal.markVisited(uuid, proposalId)
               ZapActor.actor ! SendMessageInternal(uuid, proposal, validMsg)
               Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Message sent to program committee.")
             }
@@ -223,7 +225,7 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId).map {
         proposal: Proposal =>
-          ProposalUserWatchPreference.addProposalWatcher(proposal.id, uuid, false)
+          Watcher.addProposalWatcher(proposal.id, uuid, false)
           Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started watching proposal")
       }.getOrElse(NotFound("Proposal not found"))
   }
@@ -249,7 +251,7 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId).map {
         proposal: Proposal =>
-          ProposalUserWatchPreference.removeProposalWatcher(proposal.id, uuid)
+          Watcher.removeProposalWatcher(proposal.id, uuid)
           Redirect(routes.CFPAdmin.openForReview(proposalId)).flashing("success" -> "Started unwatching proposal")
       }.getOrElse(NotFound("Proposal not found"))
   }
@@ -263,6 +265,7 @@ object CFPAdmin extends SecureCFPController {
             hasErrors => BadRequest(renderShowProposal(uuid, proposal, messageForm, messageForm, hasErrors)),
             validVote => {
               Review.voteForProposal(proposalId, uuid, validVote)
+              Proposal.markVisited(uuid, proposalId)
               Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Ok, vote submitted")
             }
           )
@@ -279,6 +282,54 @@ object CFPAdmin extends SecureCFPController {
           Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "Removed your vote")
         case None => NotFound("Proposal not found").as("text/html")
       }
+  }
+
+  def allMyWatchedProposals(talkType: String, selectedTrack: Option[String], onlyProposalHavingEvents: Boolean) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val proposalIdsByProposalType = Proposal.allProposalIDsByProposalType()
+
+      (proposalIdsByProposalType.get(talkType), ConferenceDescriptor.ConferenceProposalTypes.ALL.find(_.id == talkType)) match {
+        case (Some(proposalIDsForType), Some(proposalType)) =>
+          val uuid = request.webuser.uuid
+          val proposalIdsByTrackForCurrentProposalType = Proposal.allProposalIdsByTrackForType(proposalType)
+
+          val watcherEventsByProposalId = Event.loadProposalsWatcherEvents(uuid)
+          val displayedEventMessagesByProposalId = watcherEventsByProposalId
+            .mapValues(ProposalEvent.generateAggregatedEventLabelsFor(_))
+            .filter { entry => entry._2.nonEmpty }
+
+          val watchedProposals = Watcher.userWatchedProposals(uuid)
+            .filter(watcher => !onlyProposalHavingEvents || displayedEventMessagesByProposalId.contains(watcher.proposalId))
+            .sortBy(-_.startedWatchingAt.getMillis)
+          val watchedProposalIds = watchedProposals.map(_.proposalId).toSet
+
+          val proposalLastVisits = Proposal.userProposalLastVisits(uuid)
+
+          val watchedProposalMatchingTypeAndTrack = watchedProposals
+            .filter(watcher => proposalIDsForType.contains(watcher.proposalId)
+              && selectedTrack.map{ track => proposalIdsByTrackForCurrentProposalType.get(track).map(_.contains(watcher.proposalId)).getOrElse(false) }.getOrElse(true)
+            ).sortBy(watcher => -proposalLastVisits.get(watcher.proposalId).getOrElse(watcher.startedWatchingAt.toDateTime).getMillis)
+          val proposalsById = Proposal.loadAndParseProposals(watchedProposalMatchingTypeAndTrack.map(_.proposalId).toSet, proposalType)
+
+          val watchedProposalsCountsByProposalType = proposalIdsByProposalType.mapValues { proposalIdsForType =>
+            proposalIdsForType.intersect(watchedProposalIds).size
+          }
+          val watchedProposalsCountByTrackForCurrentProposalType = proposalIdsByTrackForCurrentProposalType.mapValues { proposalIdsForTrack =>
+            proposalIdsForTrack.intersect(watchedProposalIds).size
+          }
+
+          val allMyVotesIncludingAbstentions = Review.allVotesFromUserForProposalsRegardlessProposalStatus(uuid, watchedProposalIds)
+            .filter { entry => entry._2.nonEmpty }
+            .mapValues(_.get)
+
+          Ok(views.html.CFPAdmin.allMyWatchedProposals(watchedProposalMatchingTypeAndTrack, proposalsById, talkType, selectedTrack, onlyProposalHavingEvents, watchedProposalsCountsByProposalType, watchedProposalsCountByTrackForCurrentProposalType, allMyVotesIncludingAbstentions, displayedEventMessagesByProposalId, proposalLastVisits))
+        case _ => BadRequest("Invalid proposal type")
+      }
+  }
+
+  def markProposalAsVisited(proposalId: String) = SecuredAction(IsMemberOf("cfp")) { implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+    val deletedEventsCount = Proposal.markVisited(request.webuser.uuid, proposalId)
+    Ok(s"Deleted ${deletedEventsCount} events")
   }
 
   def allMyVotes(talkType: String, selectedTrack: Option[String]) = SecuredAction(IsMemberOf("cfp")) {

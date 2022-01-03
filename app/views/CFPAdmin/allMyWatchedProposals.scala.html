@@ -1,0 +1,121 @@
+@import org.joda.time.DateTime
+@(watchedProposals: List[Watcher],
+    proposalsById: Map[String, Proposal],
+    talkType:String,
+    selectedTrack: Option[String],
+    onlyProposalHavingEvents: Boolean,
+    proposalsCountByType: Map[String,Int],
+    proposalsCountForCurrentTypeByTrack: Map[String,Int],
+    allMyVotes: Map[String,Double],
+    watcherEventMessagesByProposalId: Map[String, List[String]],
+    proposalLastVisits: Map[String, DateTime]
+)(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@main("All my watched proposals") {
+    <div class="row py-3">
+        <div class="col-md-12 col-sm-12 col-lg-12">
+            <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack)" class="btn btn-sm btn-success"><i aria-hidden="true" class="fas fa-eye"></i> @Messages("admin.btn.mywatches")</a>
+            <a href="@routes.CFPAdmin.delayedReviews()" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-clock"></i> @Messages("admin.btn.delayed-reviews")</a>
+            <a href="@routes.CFPAdmin.allMyVotes(talkType, selectedTrack)" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="panel-title"><i aria-hidden="true" class="fas fa-eye"></i> Your Watched Proposals</h1>
+            </div>
+
+            <div class="card-body">
+                <div class="col-md-12">
+                    <h3><i aria-hidden="true" class="fas fa-flask"></i> Search criteria</h3>
+
+                    @tags.renderMyReviewsSearchCriteria(
+                        refreshPathAction=(confType, selectedTrack) => routes.CFPAdmin.allMyWatchedProposals(confType, selectedTrack, onlyProposalHavingEvents),
+                        availableTalkTypes=models.ConferenceDescriptor.ConferenceProposalTypes.ALL,
+                        talkType, selectedTrack,
+                        proposalsCountByType, proposalsCountForCurrentTypeByTrack,
+                        showTrophies=false
+                    )
+                    <br/>
+                    <div style="margin: 3px 0px">
+                        <i aria-hidden="true" class="fas fa-filter"></i> Events :
+                        <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack, true)" class="btn btn-sm @if(onlyProposalHavingEvents) { btn-success } else { btn-primary }">
+                            Only watched proposals having events
+                        </a>
+                        <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack, false)" class="btn btn-sm @if(!onlyProposalHavingEvents) { btn-success } else { btn-primary }">
+                            Every watched proposals
+                        </a>
+                    </div>
+                    <br/>
+
+                </div>
+                <div class="col-md-12 col-lg-12">
+                    <h3><i aria-hidden="true" class="fas fa-eye"></i> Watched Proposals of type @Messages(talkType)</h3>
+                    @if(watchedProposals.nonEmpty){
+                        @if(onlyProposalHavingEvents) {
+                            <em>You can flush new events appeared on the proposal by visiting the proposal for some time</em>
+                        }
+                        <table id="tableMyVotes" class="table table-bordered">
+                            <caption>List of watched proposals</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 125px">Id</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col" style="width: 150px">Track</th>
+                                    <th scope="col" style="width: 175px">Speakers</th>
+                                    <th scope="col" style="width: 110px">You voted</th>
+                                    <th scope="col">Events</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @watchedProposals.map { watchedProposal =>
+                                        <tr>
+                                            <td><a href="@routes.CFPAdmin.openForReview(watchedProposal.proposalId)" class="btn btn-sm btn-primary">@watchedProposal.proposalId</a></td>
+                                    @proposalsById.get(watchedProposal.proposalId).map { proposal =>
+                                        <td>
+                                            <small>@proposal.title</small>
+                                        </td>
+
+                                        <td>
+                                            <small>@Messages(proposal.track.label)</small>
+                                        </td>
+                                        <td>
+                                            <small>@proposal.allSpeakers.map(_.cleanName).mkString(", ")</small>
+                                        </td>
+                                        @allMyVotes.get(proposal.id).map{ score =>
+                                            <td class="score" data-score="@Math.round(score)">
+                                                <span class="btn displayed-score">@if(score==0) { @Messages("Abs") } else { @Math.round(score) }</span>
+                                            </td>
+                                        }.getOrElse {
+                                            <td>-</td>
+                                        }
+                                        <td>
+                                            <small>
+                                                <strong>Since @library.FormatDate.jodaDatetimeFormat(proposalLastVisits.get(watchedProposal.proposalId).getOrElse(watchedProposal.startedWatchingAt.toDateTime), lang) :</strong>
+                                            </small>
+                                            @defining(watcherEventMessagesByProposalId.get(proposal.id)) { maybeEventMessages: Option[List[String]] =>
+                                                @maybeEventMessages.map { eventMessages =>
+                                                    <ul class="list-unstyled">
+                                                    @eventMessages.map { eventMessage =>
+                                                        <li><small>- @eventMessage</small></li>
+                                                    }
+                                                    </ul>
+                                                }.getOrElse {
+                                                    <small>✅ None</small>
+                                                }
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    } else {
+                        <em>No proposal found matching current criteria</em>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

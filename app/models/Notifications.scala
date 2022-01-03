@@ -121,15 +121,15 @@ object NotificationEvent {
     allNotificationEvents.find(_.id == id)
   }
 
-  def countEventsOfTypes(events: List[ProposalEvent], types: Iterable[Class[_]]) = {
+  def countEventsOfTypes(events: Iterable[ProposalEvent], types: Iterable[Class[_]]): Int = {
     types.foldLeft(0) { (total, eventType) => total + events.count(_.isOfSameTypeThan(eventType)) }
   }
 
-  def countEventsOfType[T <: ProposalEvent](events: List[ProposalEvent]) = {
+  def countEventsOfType[T <: ProposalEvent](events: Iterable[ProposalEvent]): Int = {
     events.count { e => e.isInstanceOf[T] }
   }
 
-  def hasEventOfTypes(events: List[ProposalEvent], types: Class[_]*) = {
+  def hasEventOfTypes(events: Iterable[ProposalEvent], types: Class[_]*): Boolean = {
     countEventsOfTypes(events, types) > 0
   }
 }
@@ -156,6 +156,18 @@ object NotificationUserPreference {
       client.set(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""", json)
   }
 
+  def loadAll(webUserIds: List[String]): Map[String, NotificationUserPreference] = Redis.pool.withClient { implicit client =>
+    if(webUserIds.isEmpty) {
+      Map()
+    } else {
+      val notifUserPrefsKeys = webUserIds.map(webUserId => s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
+      val notifPrefEntries = for ((webUserId, notificationPrefJSON) <- (webUserIds zip client.mget(notifUserPrefsKeys:_*).map(Option(_))))
+        yield webUserId -> notificationPrefJSON.map(Json.parse(_).as[NotificationUserPreference]).getOrElse(DEFAULT_FALLBACK_PREFERENCES)
+
+      notifPrefEntries.toMap
+    }
+  }
+
   def load(webUserId: String): NotificationUserPreference =  {
     loadKey(s"""NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:${webUserId}""")
   }
@@ -174,21 +186,26 @@ object NotificationUserPreference {
   }
 }
 
-case class Watcher(webuserId: String, startedWatchingAt: Instant)
-
-case class ProposalUserWatchPreference(proposalId: String, webUserId: String, isWatcher: Boolean, watchingEvents: List[NotificationEvent])
-object ProposalUserWatchPreference {
+case class Watcher(webuserId: String, proposalId: String, startedWatchingAt: Instant)
+object Watcher {
+  def userWatchedProposals(webUserId: String): List[Watcher] = Redis.pool.withClient { client =>
+    client.zrangeWithScores(s"WatchedProposals:ByWatcher:${webUserId}", 0, -1)
+      .toList
+      .map { proposalWithScore => Watcher(webUserId, proposalWithScore.getElement, new Instant(proposalWithScore.getScore.toLong)) }
+  }
 
   def proposalWatchers(proposalId: String): List[Watcher] = Redis.pool.withClient {
     implicit client =>
       client.zrangeWithScores(s"""Watchers:${proposalId}""", 0, -1)
         .toList
-        .map{ watcherWithScore => Watcher(watcherWithScore.getElement, new Instant(watcherWithScore.getScore.toLong)) }
+        .map{ watcherWithScore => Watcher(watcherWithScore.getElement, proposalId, new Instant(watcherWithScore.getScore.toLong)) }
   }
 
-  def addProposalWatcher(proposalId: String, webUserId: String, automatic: Boolean) = Redis.pool.withClient {
+  def addProposalWatcher(proposalId: String, webUserId: String, automatic: Boolean): Unit = Redis.pool.withClient {
     implicit client =>
-      if(client.zadd(s"""Watchers:${proposalId}""", Instant.now().getMillis, webUserId) == 1) {
+      val tx = client.multi()
+      val now = Instant.now().getMillis
+      if(tx.zadd(s"""Watchers:${proposalId}""", now, webUserId) == 1) {
         val watchEvent = if(automatic) {
           ProposalAutoWatchedEvent(webUserId, proposalId)
         } else {
@@ -196,34 +213,89 @@ object ProposalUserWatchPreference {
         }
         Event.storeEvent(watchEvent)
       }
+      tx.zadd(s"WatchedProposals:ByWatcher:${webUserId}", now, proposalId)
+      tx.exec()
   }
 
-  def removeProposalWatcher(proposalId: String, webUserId: String) = Redis.pool.withClient {
+  def removeProposalWatcher(proposalId: String, webUserId: String): Unit = Redis.pool.withClient {
     implicit client =>
       Event.storeEvent(ProposalUnwatchedEvent(webUserId, proposalId))
-      client.zrem(s"""Watchers:${proposalId}""", webUserId)
+      val tx = client.multi()
+      tx.zrem(s"""Watchers:${proposalId}""", webUserId)
+      tx.zrem(s"WatchedProposals:ByWatcher:${webUserId}", proposalId)
+      tx.exec()
   }
+
+  def watchersNotificationUserPreferencesFor(proposalId: String): Map[String, (NotificationUserPreference, Watcher)] = {
+    val watchers = Watcher.proposalWatchers(proposalId)
+    NotificationUserPreference.loadAll(watchers.map(_.webuserId))
+      .map{ entry =>
+        entry._1 -> (entry._2, watchers.find(_.webuserId == entry._1).get)
+      }
+  }
+
+  def eligibleWatchersForProposalEvent(proposalEvent: ProposalEvent, notifUserPreferenceByWatcherId: Map[String, NotificationUserPreference]) = {
+    notifUserPreferenceByWatcherId.toSeq.flatMap { case (watcherId, notificationPreferences) =>
+      val userNotificationEvents = notificationPreferences.eventIds.map(NotificationEvent.valueOf(_).get)
+      // Removing events types not matching with user's prefs
+      if(!userNotificationEvents.map(_.applicableEventTypes).flatten.contains(proposalEvent.getClass)) {
+        None
+      } else {
+        Some(watcherId)
+      }
+    }
+  }
+
+  def watchersOnProposalEvent(proposalEvent: ProposalEvent, excludeEventInitiatorFromWatchers: Boolean = true): Seq[String] = {
+    val notifUserPreferenceByWatcherId = Watcher.watchersNotificationUserPreferencesFor(proposalEvent.proposalId)
+      .filterKeys(watcherId => !excludeEventInitiatorFromWatchers || proposalEvent.creator != watcherId)
+      .mapValues(_._1)
+
+    Watcher.eligibleWatchersForProposalEvent(proposalEvent, notifUserPreferenceByWatcherId)
+  }
+
+  /**
+    * @deprecated for single use only
+    */
+  def initializeWatchingProposals(): Set[Watcher] = Redis.pool.withClient { client =>
+    val watchers = client.keys("Watchers:*").map { watcherKey =>
+      client.zrangeWithScores(watcherKey, 0, -1).map { watcherWithScore =>
+        val userId = watcherWithScore.getElement
+        val proposalId = watcherKey.substring("Watchers:".length)
+        Watcher(userId, proposalId, new Instant(watcherWithScore.getScore.toLong))
+      }
+    }.flatten
+
+    val tx = client.multi()
+    watchers.foreach { watcher =>
+      tx.zadd(s"WatchedProposals:ByWatcher:${watcher.webuserId}", watcher.startedWatchingAt.getMillis, watcher.proposalId)
+    }
+    tx.exec()
+    watchers
+  }
+}
+
+case class ProposalUserWatchPreference(proposalId: String, webUserId: String, isWatcher: Boolean, watchingEvents: List[NotificationEvent])
+object ProposalUserWatchPreference {
 
   def proposalUserWatchPreference(proposalId: String, webUserId: String): ProposalUserWatchPreference = {
       val userPrefs = NotificationUserPreference.load(webUserId)
-      val watchers = this.proposalWatchers(proposalId)
+      val watchers = Watcher.proposalWatchers(proposalId)
       ProposalUserWatchPreference(proposalId, webUserId, isWatcher = watchers.map(_.webuserId).contains(webUserId), userPrefs.eventIds.map{
         eventId => NotificationEvent.allNotificationEvents.find(_.id == eventId).get
       })
   }
 
-  private def applyProposalUserPrefsAutowatch(userPreferences: Set[(String, NotificationUserPreference)], proposalId: String, havingAutowatch: AutoWatch) = Redis.pool.withClient {
+  private def applyProposalUserPrefsAutowatch(userPreferences: Set[(String, NotificationUserPreference)], proposalId: String, havingAutowatch: AutoWatch): Unit = Redis.pool.withClient {
     implicit client =>
       Proposal.findProposalTrack(proposalId).map { track =>
         val allMatchingPreferences = userPreferences.filter{ prefAndKey =>
           prefAndKey._2.autowatchId == havingAutowatch.id && (prefAndKey._2.autowatchFilterForTrackIds.isEmpty || prefAndKey._2.autowatchFilterForTrackIds.get.contains(track.id))
         }
 
-        val tx = client.multi()
         allMatchingPreferences.foreach{ prefAndKey =>
-          addProposalWatcher(proposalId, prefAndKey._1, true)
+          Watcher.addProposalWatcher(proposalId, prefAndKey._1, true)
         }
-        tx.exec()
       }
   }
 

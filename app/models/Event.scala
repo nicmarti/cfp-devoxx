@@ -177,6 +177,23 @@ abstract class ProposalEvent extends Event {
 
   override def linksFor(webuser: Webuser): Seq[EventLink] = Seq(ProposalLink(proposalId, webuser))
 }
+object ProposalEvent {
+  def generateAggregatedEventLabelsFor(proposalEvents: Iterable[ProposalEvent]): List[String] = {
+    List.concat(
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, ProposalResubmitedEvent.getClass)){ List("proposal re-submitted") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+        List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_INTERNAL_COMMENT_SUBMITTED.applicableEventTypes)} internal comment(s)")
+      }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes:_*)){
+        List(s"${NotificationEvent.countEventsOfTypes(proposalEvents, NotificationEvent.PROPOSAL_PUBLIC_COMMENT_SUBMITTED.applicableEventTypes)} public comment(s)")
+      }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_COMITEE_VOTES_RESETTED.applicableEventTypes:_*)){ List("comitee votes resetted") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, UpdatedSubmittedProposalEvent.getClass)){ List("content updated") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, ChangedTypeOfProposalEvent.getClass)){ List("type updated") }else{ Nil },
+      if(NotificationEvent.hasEventOfTypes(proposalEvents, NotificationEvent.PROPOSAL_SPEAKERS_LIST_ALTERED.applicableEventTypes:_*)){ List("speakers updated") }else{ Nil }
+    )
+  }
+}
 
 abstract class SpeakerEvent extends Event {
   val webuserId: String
@@ -455,9 +472,30 @@ object Event {
       }
       if(isDigestableEvent) {
         tx.zadd(s"""${EVENTS_REDIS_KEY}:ForDigests""", event.date.getMillis, jsEvent)
+
+        event match {
+          case proposalEvent: ProposalEvent =>
+            Watcher.watchersOnProposalEvent(proposalEvent, true).foreach { watcherId =>
+              tx.sadd(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalEvent.proposalId}""", jsEvent)
+            }
+        }
       }
       tx.exec()
       event
+  }
+
+  def resetWatcherEventsForProposal(watcherId: String, proposalId: String): Long = Redis.pool.withClient { client =>
+    val count = client.scard(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalId}""")
+    client.del(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalId}""")
+    count
+  }
+
+  def loadProposalsWatcherEvents(watcherId: String): Map[String, Seq[ProposalEvent]] = Redis.pool.withClient { client =>
+    val watcherProposalIds = client.keys(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:*""")
+    val jsonEvents: Iterable[String] = if(watcherProposalIds.nonEmpty) { client.sunion(watcherProposalIds.toSeq:_*) } else { Set() }
+    jsonEvents.map(mapper.readValue(_, classOf[ProposalEvent]))
+      .groupBy(_.proposalId)
+      .mapValues(pEvents => pEvents.toSeq.sortBy(_.date.getMillis))
   }
 
   def loadDigestEventsBetween(start: Instant, end: Instant): List[ProposalEvent] = Redis.pool.withClient {
@@ -544,4 +582,52 @@ object Event {
       client.del("Notified:BackupSpeakers")
   }
 
+  /**
+    * @deprecated for single use only
+    */
+  def initializeWatcherEvents(): Long = Redis.pool.withClient { client =>
+    val allProposalEvents = Event.loadDigestEventsBetween(Instant.EPOCH, Instant.now())
+    val proposalIds = allProposalEvents.map(_.proposalId).toSet
+    val watcherNotifUserPrefsAndLatestInteractionByProposalId = proposalIds.map { pId =>
+      val watcherNotifUserPrefsAndLatestInteraction = Watcher.watchersNotificationUserPreferencesFor(pId).map { watcherAndUserNotifPrefs =>
+        val watcherInteractions = allProposalEvents.filter(propEvent =>
+          propEvent.creator == watcherAndUserNotifPrefs._2._2.webuserId
+            && propEvent.proposalId == watcherAndUserNotifPrefs._2._2.proposalId
+        )
+
+        // Considering last interaction (either a proposal event author or watch subscription) for each watcher
+        val lastInteractionTimestamp = List.concat(
+          watcherInteractions.map(_.date.getMillis),
+          List(watcherAndUserNotifPrefs._2._2.startedWatchingAt.getMillis)
+        ).max
+
+        (watcherAndUserNotifPrefs._2._1, watcherAndUserNotifPrefs._2._2, lastInteractionTimestamp)
+      }
+      pId -> watcherNotifUserPrefsAndLatestInteraction
+    }.toMap
+
+    var createdWatcherEvent = 0
+    val tx = client.multi()
+    allProposalEvents.foreach { proposalEvent =>
+      watcherNotifUserPrefsAndLatestInteractionByProposalId.get(proposalEvent.proposalId).map { watcherNotifUserPrefsAndLatestInteraction =>
+        // Migrating only event appeared after user's latest interaction on proposal
+        val eligibleWatcherNotifUserPrefs = watcherNotifUserPrefsAndLatestInteraction.filter { watcherNotifUserPrefsAndLatestInteraction =>
+          watcherNotifUserPrefsAndLatestInteraction._3 <= proposalEvent.date.getMillis
+        }.map { watcherNotifUserPrefsAndLatestInteraction =>
+          watcherNotifUserPrefsAndLatestInteraction._2.webuserId -> watcherNotifUserPrefsAndLatestInteraction._1
+        }.toMap
+
+        if(eligibleWatcherNotifUserPrefs.nonEmpty) {
+          val jsEvent = mapper.writeValueAsString(proposalEvent)
+          val watcherIds = Watcher.eligibleWatchersForProposalEvent(proposalEvent, eligibleWatcherNotifUserPrefs)
+          watcherIds.foreach { watcherId =>
+            tx.sadd(s"""${EVENTS_REDIS_KEY}:ByWatcher:${watcherId}:ForProposal:${proposalEvent.proposalId}""", jsEvent)
+            createdWatcherEvent += 1
+          }
+        }
+      }
+    }
+    tx.exec()
+    createdWatcherEvent
+  }
 }

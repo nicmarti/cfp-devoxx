@@ -11,6 +11,13 @@
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
+    <div class="row py-3">
+        <div class="col-md-12 col-sm-12 col-lg-12">
+            <a href="@routes.CFPAdmin.allMyWatchedProposals(talkType, selectedTrack)" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-eye"></i> @Messages("admin.btn.mywatches")</a>
+            <a href="@routes.CFPAdmin.delayedReviews()" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-clock"></i> @Messages("admin.btn.delayed-reviews")</a>
+            <a href="@routes.CFPAdmin.allMyVotes(talkType, selectedTrack)" class="btn btn-sm btn-success"><i aria-hidden="true" class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
+        </div>
+    </div>
     <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -21,38 +28,12 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> Your personnal leaderboard</h3>
-                    <div style="margin: 3px 0px">
-                    <i class="fas fa-filter"></i> @Messages("ar.proposalType") :
-                    @models.ConferenceDescriptor.ConferenceProposalTypes.ALL.map{confType=>
-                        <a href="@routes.CFPAdmin.allMyVotes(confType.id, selectedTrack)" class="btn btn-sm @if(confType.id==talkType) { btn-success } else { btn-primary }">
-                            @if(proposalNotReviewedCountByType.get(confType.id).getOrElse(0) == 0){
-                                <i class="fas fa-trophy"></i>
-                            }
-                            @Messages(confType.id)
-                            <span class="badge badge-pill badge-light">@{proposalNotReviewedCountByType.get(confType.id).getOrElse(0) }</span>
-                        </a>
-                    }
-                    </div>
-                    <br/>
-                    <div style="margin: 3px 0px">
-                        <i class="fas fa-filter"></i> @Messages("cfp.filter.on") :
-                        <a href="@routes.CFPAdmin.allMyVotes(talkType, None)" class="btn btn-sm @if(selectedTrack==None) { btn-success } else { btn-primary }">
-                            @if(proposalNotReviewedCountByType.get(talkType).getOrElse(0) == 0) {
-                                <i class="fas fa-trophy"></i>
-                            }
-                            All tracks
-                            <span class="badge badge-pill badge-light">@{proposalNotReviewedCountByType.get(talkType).getOrElse(0) }</span>
-                        </a>
-                        @models.ConferenceDescriptor.ConferenceTracks.ALL.map{track =>
-                            <a href="@routes.CFPAdmin.allMyVotes(talkType, Some(track.id))" class="btn btn-sm @if(selectedTrack==Some(track.id)) { btn-success } else { btn-primary }">
-                                @if(proposalNotReviewedCountForCurrentTypeByTrack.get(track.id).getOrElse(0) == 0){
-                                    <i class="fas fa-trophy"></i>
-                                }
-                                @Messages(track.label)
-                                <span class="badge badge-pill badge-light">@{proposalNotReviewedCountForCurrentTypeByTrack.get(track.id).getOrElse(0) }</span>
-                            </a>
-                        }
-                    </div>
+                    @tags.renderMyReviewsSearchCriteria(
+                        refreshPathAction=(confType, selectedTrack) => routes.CFPAdmin.allMyVotes(confType, selectedTrack),
+                        availableTalkTypes=models.ConferenceDescriptor.ConferenceProposalTypes.ALL,
+                        talkType, selectedTrack,
+                        proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack
+                    )
                     <br/>
 
                     @defining(selectedTrack.flatMap(track =>proposalNotReviewedCountForCurrentTypeByTrack.get(track)).getOrElse(proposalNotReviewedCountByType.get(talkType).getOrElse(0))){ (remainingReviews: Int) =>

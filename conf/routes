@@ -84,12 +84,14 @@ GET           /cfpadmin/proposal/:proposalId/score                              
 POST          /cfpadmin/proposal/:proposalId/watch                              controllers.CFPAdmin.watchProposal(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/delayVote                          controllers.CFPAdmin.delayVote(proposalId:String)
 POST          /cfpadmin/proposal/:proposalId/unwatch                            controllers.CFPAdmin.unwatchProposal(proposalId:String)
+PUT           /cfpadmin/proposal/:proposalId/markProposalAsVisited              controllers.CFPAdmin.markProposalAsVisited(proposalId:String)
 GET           /cfpadmin/proposals/byType/:confType                              controllers.CFPAdmin.allProposalsByType(confType:String)
 GET           /cfpadmin/proposals/byTrack/:track                                controllers.CFPAdmin.allProposalsByTrack(track:String)
 GET           /cfpadmin/proposals/withNoVotes                                   controllers.CFPAdmin.showProposalsWithNoVotes()
 GET           /cfpadmin/proposals/byTag/:tagId                                  controllers.CFPAdmin.showProposalsByTagId(tagId:String)
 
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
+GET           /cfpadmin/myWatchedProposals                                      controllers.CFPAdmin.allMyWatchedProposals(talkType:String ?="conf", selectedTrack:Option[String] ?=None, onlyProposalHavingEvents:Boolean ?=true)
 GET           /cfpadmin/delayedReviews                                          controllers.CFPAdmin.delayedReviews()
 GET           /cfpadmin/allvotes/:confType                                      controllers.CFPAdmin.allVotes(confType:String, track:Option[String])
 GET           /cfpadmin/allvotesV2/:confType                                    controllers.CFPAdmin.allVotesVersion2(confType:String, page:Int ?=0, resultats:Int ?=25, sortBy:String ?="gt_and_cfp")
@@ -382,6 +384,8 @@ GET           /bp/fullAgenda                                                    
 
 # Fix for Speakers that loose their Webuser profile
 GET           /cfpadmin/fixForInvalidSpeakers                                   controllers.Backoffice.fixForInvalidSpeakers(speakerUUID:String)
+# Fix to initialize WatchedProposals:ByAuthor collection
+GET           /admin/initializeWatchingProposals                                controllers.Backoffice.initializeWatchingProposals()
 
 # RSS Feed accepted talks
 GET           /rss/accepted                                                     controllers.RestAPI.RSSFeedAcceptedProposals()
