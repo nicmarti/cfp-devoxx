@@ -24,7 +24,9 @@
                         <a href="@routes.Publisher.showSpeaker(speaker.uuid, speaker.urlName)"
                         class="flex flex-wrap no-underline hover:no-underline">
                             @speaker.avatarUrl.map { url =>
-                                <img src="@url" class="w-32 h-32 p-4 bg-gray-200" alt="@speaker.cleanName" title="@speaker.cleanName">
+                                <img src="@url" class="w-32 p-4 bg-gray-200" alt="@speaker.cleanName" title="@speaker.cleanName">
+                            }.getOrElse {
+                                <img src="//www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=128" class="w-32 p-4 bg-gray-200" alt="@speaker.cleanName" title="@speaker.cleanName"/>
                             }
                             <p class="mt-2 text-sm text-gray-800 block">@speaker.cleanName</p>
                         </a>

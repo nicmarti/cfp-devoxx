@@ -10,7 +10,9 @@
             <Div class="flex flex-wrap space-x-2">
                 <div class="flex-shrink-0 w-1/5 sm:w-full md:w-2/5 ">
                 @speaker.avatarUrl.map{url=>
-                    <img class="rounded w-15 l-16"  src="@url"  alt="@speaker.cleanName" title="@speaker.cleanName">
+                    <img src="@url" class="rounded w-15" alt="@speaker.cleanName" title="@speaker.cleanName">
+                }.getOrElse {
+                    <img src="//www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=128" class="rounded w-15" alt="@speaker.cleanName" title="@speaker.cleanName"/>
                 }
                 </div>
                 <div class="flex-1 w-4/5 sm:w-full md:w-3/5">
