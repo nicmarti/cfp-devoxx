@@ -232,7 +232,7 @@
                     }
 
                     @tags.showProposalWatchAction(userWatchPref, watchCall = routes.CFPAdmin.watchProposal(proposal.id), unwatchCall = routes.CFPAdmin.unwatchProposal(proposal.id))
-                    @tags.showProposalDelayVote(formAction = routes.CFPAdmin.delayVote(proposal.id), maybeVoteDelayedReason)
+                    @tags.showProposalDelayVote(formAction = routes.CFPAdmin.delayReview(proposal.id), maybeVoteDelayedReason)
                 }
             }
             </div><!-- 230 -->

@@ -232,7 +232,7 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
-  def delayVote(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+  def delayReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {

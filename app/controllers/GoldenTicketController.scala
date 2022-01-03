@@ -135,7 +135,7 @@ object GoldenTicketController extends SecureCFPController {
       }
   }
 
-  def delayVote(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+  def delayReview(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
