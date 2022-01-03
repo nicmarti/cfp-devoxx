@@ -593,4 +593,9 @@ object Review {
     client =>
       client.hlen(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}")
   }
+
+  def removeProposalDelayedReview(uuid: String, proposalId: String): Long = Redis.pool.withClient {
+    client =>
+      client.hdel(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId)
+  }
 }

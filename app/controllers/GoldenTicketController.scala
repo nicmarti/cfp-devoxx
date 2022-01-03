@@ -151,6 +151,17 @@ object GoldenTicketController extends SecureCFPController {
       }
   }
 
+  def removeProposalDelayedReview(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          ReviewByGoldenTicket.removeProposalDelayedReview(uuid, proposalId)
+          Redirect(routes.GoldenTicketController.delayedReviews()).flashing("success" -> "OK, delayed review removed")
+        case None => NotFound("Proposal not found")
+      }
+  }
+
   def unwatchProposal(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid

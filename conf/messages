@@ -372,6 +372,7 @@ admin.btn.leaderboard=See Leaderboard
 admin.btn.mywatches=My watched proposals
 admin.btn.delayed-reviews=Delayed Reviews
 admin.btn.delayed-reviews-with-count={0} Remaining delayed reviews
+admin.btn.delayed-reviews.delete=Remove Delayed Review
 admin.btn.myvotes=My votes
 admin.btn.sponsortalks=Sponsor''s talks
 admin.btn.speakers=All speakers

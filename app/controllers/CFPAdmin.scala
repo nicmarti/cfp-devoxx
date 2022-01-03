@@ -248,6 +248,17 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
+  def removeProposalDelayedReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          Review.removeProposalDelayedReview(uuid, proposalId)
+          Redirect(routes.CFPAdmin.delayedReviews()).flashing("success" -> "OK, delayed review removed")
+        case None => NotFound("Proposal not found")
+      }
+  }
+
   def unwatchProposal(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
