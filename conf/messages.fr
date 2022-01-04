@@ -321,6 +321,7 @@ admin.btn.leaderboard=Voir les stats
 admin.btn.mywatches=Vos propositions observées
 admin.btn.delayed-reviews=Revues temporisées
 admin.btn.delayed-reviews-with-count={0} revues temporisées restantes
+admin.btn.delayed-reviews.delete=Supprimer la revue temporisée
 admin.btn.myvotes=Vos votes
 admin.btn.sponsortalks=Talks sponsors
 admin.btn.speakers=Tous les speakers

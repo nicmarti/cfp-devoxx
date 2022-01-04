@@ -135,7 +135,7 @@ object GoldenTicketController extends SecureCFPController {
       }
   }
 
-  def delayVote(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+  def delayReview(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
@@ -147,6 +147,17 @@ object GoldenTicketController extends SecureCFPController {
               Redirect(routes.GoldenTicketController.showVotesForProposal(proposalId)).flashing("vote" -> "OK, review delayed for this proposal")
             }
           )
+        case None => NotFound("Proposal not found")
+      }
+  }
+
+  def removeProposalDelayedReview(proposalId: String) = SecuredAction(IsMemberOfGroups(securityGroups)) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          ReviewByGoldenTicket.removeProposalDelayedReview(uuid, proposalId)
+          Redirect(routes.GoldenTicketController.delayedReviews()).flashing("success" -> "OK, delayed review removed")
         case None => NotFound("Proposal not found")
       }
   }

@@ -187,7 +187,7 @@
             </div>
         }
         @tags.showProposalWatchAction(userWatchPref, watchCall = routes.GoldenTicketController.watchProposal(proposal.id), unwatchCall = routes.GoldenTicketController.unwatchProposal(proposal.id))
-        @tags.showProposalDelayVote(formAction = routes.GoldenTicketController.delayVote(proposal.id), maybeDelayedReviewReason)
+        @tags.showProposalDelayVote(formAction = routes.GoldenTicketController.delayReview(proposal.id), maybeDelayedReviewReason)
         </div>
         }
         }

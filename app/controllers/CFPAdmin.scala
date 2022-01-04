@@ -58,7 +58,9 @@ object CFPAdmin extends SecureCFPController {
       val uuid = request.webuser.uuid
       val sorter = ProposalUtil.proposalSorter(sort)
       val orderer = ProposalUtil.proposalOrder(ascdesc)
-      val (totalToReviewFiltered, allNotReviewed) = Review.allProposalsNotReviewed(uuid, pageReview, 25, track)
+
+      val delayedReviews = Review.allProposalIdsHavingDelayedReviewsForUser(uuid)
+      val (totalToReviewFiltered, allNotReviewed) = Review.allProposalsNotReviewed(uuid, pageReview, 25, track, delayedReviews)
 
       val totalReviewed = Review.totalNumberOfReviewedProposals(uuid)
       val totalVoted = Review.totalProposalsVotedForUser(uuid)
@@ -69,7 +71,7 @@ object CFPAdmin extends SecureCFPController {
       val etag = allProposalsForReview.hashCode() + "_" + twentyEvents.hashCode()
 
       val totalToReview = Review.countProposalNotReviewed(uuid)
-      val totalDelayedReviews = Review.countDelayedReviews(uuid)
+      val totalDelayedReviews = delayedReviews.size
 
       track.map {
         trackValue: String =>
@@ -230,7 +232,7 @@ object CFPAdmin extends SecureCFPController {
       }.getOrElse(NotFound("Proposal not found"))
   }
 
-  def delayVote(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+  def delayReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
@@ -242,6 +244,17 @@ object CFPAdmin extends SecureCFPController {
               Redirect(routes.CFPAdmin.showVotesForProposal(proposalId)).flashing("vote" -> "OK, review delayed for this proposal")
             }
           )
+        case None => NotFound("Proposal not found")
+      }
+  }
+
+  def removeProposalDelayedReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      val uuid = request.webuser.uuid
+      Proposal.findById(proposalId) match {
+        case Some(proposal) =>
+          Review.removeProposalDelayedReview(uuid, proposalId)
+          Redirect(routes.CFPAdmin.delayedReviews()).flashing("success" -> "OK, delayed review removed")
         case None => NotFound("Proposal not found")
       }
   }

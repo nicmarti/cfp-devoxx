@@ -8,5 +8,9 @@
             <a href="@routes.CFPAdmin.allMyVotes(selectedTrack=Some(ConferenceDescriptor.ConferenceTracks.JAVA.id))" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
         </div>
     </div>
-    @tags.renderDelayedReviews(openForReviewAction=(proposal) => routes.CFPAdmin.openForReview(proposal.id), proposals, delayedReviewReasonByProposalId)
+    @tags.renderDelayedReviews(
+        openForReviewAction=(proposal) => routes.CFPAdmin.openForReview(proposal.id),
+        removeProposalDelayedReview=(proposal) => routes.CFPAdmin.removeProposalDelayedReview(proposal.id),
+        proposals, delayedReviewReasonByProposalId
+    )
 }

@@ -1,4 +1,12 @@
-@(openForReviewAction: Function[Proposal, Call], proposals: List[Proposal], delayedReviewReasonByProposalId: Map[String,String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(openForReviewAction: Function[Proposal, Call], removeProposalDelayedReview: Function[Proposal, Call], proposals: List[Proposal], delayedReviewReasonByProposalId: Map[String,String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+
+@if(flash.get("success").isDefined) {
+  <div class="col-md-12 mt-2">
+    <div class="alert alert-success alert-dismissable">
+    @flash.get("success").get
+    </div>
+  </div>
+}
 
 <div class="row pt-3">
   <div class="card">
@@ -13,12 +21,12 @@
         <caption>List of delayed reviews</caption>
         <thead>
           <tr>
-            <th scope="col">@Messages("admin.proposals.th.title")</th>
-            <th scope="col">@Messages("admin.proposals.th.talkType")</th>
-            <th scope="col">@Messages("admin.proposals.th.track")</th>
-            <th scope="col">@Messages("admin.proposals.th.speakers")</th>
-            <th scope="col">@Messages("admin.proposals.th.comment")</th>
-            <th scope="col">@Messages("admin.proposals.th.action")</th>
+            <th scope="col" style="width: 300px">@Messages("admin.proposals.th.title")</th>
+            <th scope="col" style="width: 120px">@Messages("admin.proposals.th.talkType")</th>
+            <th scope="col" style="width: 100px">@Messages("admin.proposals.th.track")</th>
+            <th scope="col" style="width: 200px">@Messages("admin.proposals.th.speakers")</th>
+            <th scope="col" style="width: 250px">@Messages("admin.proposals.th.comment")</th>
+            <th scope="col" style="width: 200px">@Messages("admin.proposals.th.action")</th>
           </tr>
         </thead>
         <tbody>
@@ -40,7 +48,10 @@
             @delayedReviewReasonByProposalId.get(proposal.id).getOrElse("")
             </td>
             <td>
-              <a href="@openForReviewAction(proposal)" title="Open for review" class="btn btn-block btn-primary btn-sm">@Messages("admin.btn.review")</a>
+              <a href="@openForReviewAction(proposal)" title="Open for review" class="btn btn-primary btn-sm btn-block my-1">@Messages("admin.btn.review")</a>
+              @helper.form(action = removeProposalDelayedReview(proposal)) {
+                <button type="submit" title="Remove delayed review" class="btn btn-danger btn-sm btn-block my-1">@Messages("admin.btn.delayed-reviews.delete")</button>
+              }
             </td>
           </tr>
         }
