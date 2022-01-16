@@ -257,6 +257,11 @@ object ConferenceDescriptor {
     val NEUILLY_231_232 = Room("neu_232_232", "Neuilly 231M-232M", 32, "classroom", "rien", "231+232M", Some("Mezzanine South Neuilly"))
     val NEUILLY_234_235 = Room("neu_234_235", "Neuilly 234M-235M", 24, "classroom", "rien", "234+235M", Some("Mezzanine South Neuilly"))
 
+    val NEUILLY_LAB1 = Room("lab1", "Neuilly LAB 1", 30, "classroom", "rien", "LAB 1", Some("Neuilly"))
+    val NEUILLY_LAB2 = Room("lab2", "Neuilly LAB 2", 30, "classroom", "rien", "LAB 2", Some("Neuilly"))
+    val PARIS_LAB3 = Room("lab3", "Paris LAB 3", 30, "classroom", "rien", "LAB 3", Some("Paris"))
+    val PARIS_LAB4 = Room("lab4", "Paris LAB 4", 30, "classroom", "rien", "LAB 4", Some("Paris"))
+
     val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien", "204", None)
     val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien", "201", None)
 
@@ -268,11 +273,11 @@ object ConferenceDescriptor {
 
     val allRoomsTIAThu = List(AMPHI_BLEU, MAILLOT, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
-    val allRoomsLabsWednesday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsLabsWednesday = List(NEUILLY_LAB1, NEUILLY_LAB2, PARIS_LAB3, PARIS_LAB4)
 
-    val allRoomsLabThursday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsLabThursday = List(NEUILLY_LAB1, NEUILLY_LAB2, PARIS_LAB3, PARIS_LAB4)
 
-    val allRoomsLabFriday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsLabFriday = List(NEUILLY_LAB1, NEUILLY_LAB2, PARIS_LAB3, PARIS_LAB4)
 
     val allRoomsBOF = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
 
