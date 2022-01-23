@@ -93,7 +93,7 @@ GET           /cfpadmin/proposals/byTag/:tagId                                  
 GET           /cfpadmin/myvotes                                                 controllers.CFPAdmin.allMyVotes(talkType:String ?="conf", selectedTrack:Option[String] ?=None)
 GET           /cfpadmin/myWatchedProposals                                      controllers.CFPAdmin.allMyWatchedProposals(talkType:String ?="conf", selectedTrack:Option[String] ?=None, onlyProposalHavingEvents:Boolean ?=true)
 GET           /cfpadmin/delayedReviews                                          controllers.CFPAdmin.delayedReviews()
-GET           /cfpadmin/allvotes                                                controllers.CFPAdmin.allVotes(confType:String ?=models.ConferenceDescriptor.ConferenceProposalTypes.DEFAULT_SEARCH_PROPOSAL_ID, track:String ?=models.ConferenceDescriptor.ConferenceTracks.DEFAULT_SEARCH_TRACK_ID)
+GET           /cfpadmin/allvotes                                                controllers.CFPAdmin.allVotes(confType:String ?=models.ConferenceDescriptor.ConferenceProposalTypes.DEFAULT_SEARCH_PROPOSAL_ID, track:String ?="all")
 GET           /cfpadmin/allvotesV2/:confType                                    controllers.CFPAdmin.allVotesVersion2(confType:String, page:Int ?=0, resultats:Int ?=25, sortBy:String ?="gt_and_cfp")
 
 GET           /cfpadmin/advancedsearch                                          controllers.CFPAdmin.advancedSearch(q:Option[String] ?=None,p:Option[Int] ?=None)

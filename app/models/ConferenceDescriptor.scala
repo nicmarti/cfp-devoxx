@@ -203,9 +203,6 @@ object ConferenceDescriptor {
     val LANG = Track("lang", "lang.label")
     val UNKNOWN = Track("unknown", "unknown track")
     val ALL = List(JAVA, MOBILE, WEB, ARCHISEC, AGILE_DEVOPS, CLOUD, BIGDATA, FUTURE, LANG, UNKNOWN)
-
-    // Used to define pre-selected track (to avoid searching for too much proposals on "all votes" screens)
-    val DEFAULT_SEARCH_TRACK_ID = ALL.head.id
   }
 
   // TODO configure the description for each Track
