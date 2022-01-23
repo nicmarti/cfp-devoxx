@@ -143,7 +143,7 @@
                                     <td class="number_table my-votes" style="display: none">
                                     @maybeMyVote.map { score =>
                                         <span class="score" data-score="@score.intValue()">
-                                            <span class="btn displayed-score"> @score.intValue() </span>
+                                            <span class="btn displayed-score"> @if(score.intValue()==0){ Abs } else { @score.intValue() } </span>
                                         </span>
                                     }.getOrElse { - }
                                     </td>
