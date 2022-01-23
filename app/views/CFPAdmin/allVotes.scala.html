@@ -5,19 +5,28 @@
         <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
 
-        <div class="row">
+        <div class="row mt-2">
             <div class="col-md-12">
-                <a href="@routes.CFPAdmin.allVotes("all")" class="btn btn-primary btn-sm"><i class="fas fa-adjust"></i>
-                    All</a>
                 @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
-                    <a href="@routes.CFPAdmin.allVotes(proposalType.id)" class="btn btn-primary btn-sm"><i class="@ConferenceDescriptor.ConferenceProposalConfigurations.getHTMLClassFor(proposalType)"></i> @Messages(proposalType.label + ".simple")</a>
+                    <a href="@routes.CFPAdmin.allVotes(proposalType.id, selectedTrack)" class="btn @if(proposalType.id == confType){ btn-success } else { btn-primary } btn-sm">
+                        <i class="@ConferenceDescriptor.ConferenceProposalConfigurations.getHTMLClassFor(proposalType)"></i>
+                        @Messages(proposalType.label + ".simple")
+                    </a>
                 }
+                <a href="@routes.CFPAdmin.allVotes("all", selectedTrack)" class="btn @if("all" == confType){ btn-success } else { btn-primary } btn-sm">
+                    <i class="fas fa-adjust"></i>
+                    All
+                </a>
                 <br>
                 <i class="fas fa-filter"></i> Show only:
-                @Track.allIDs.map { idTrack =>
-                    <a href="@routes.CFPAdmin.allVotes(confType, idTrack)" class="btn btn-primary btn-sm">@idTrack
-                        - @confType</a>
+                @Track.all.map { track =>
+                    <a href="@routes.CFPAdmin.allVotes(confType, track.id)" class="btn @if(selectedTrack == track.id){ btn-success } else { btn-primary } btn-sm">
+                        @Messages(track.label)
+                    </a>
                 }
+                <a href="@routes.CFPAdmin.allVotes(confType, "all")" class="btn @if("all" == selectedTrack){ btn-success } else { btn-primary } btn-sm">
+                    All
+                </a>
                 <br>
                 <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="fas fa-compass"></i>
                     Recompute total and votes</a> -
