@@ -119,7 +119,9 @@
                                     }
                                     </td>
                                     <td class="number_table gt-votes" style="display: none">
-                                    @library.Stats.average(List(gtScore, voteAndTotalVotes._4.n))
+                                        @defining(library.Stats.average(List(if(gtVoteCast>0){gtScore}else{voteAndTotalVotes._4.n}, voteAndTotalVotes._4.n))) { gtAndComiteeScore: Double =>
+                                            @gtAndComiteeScore
+                                        }
                                     </td>
                                     <td class="number_table my-votes" style="display: none">
                                     @maybeMyVote.map { score =>
