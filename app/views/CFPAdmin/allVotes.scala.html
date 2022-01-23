@@ -102,11 +102,18 @@
                                     <td class="number_table"/>
                                     <td class="average_table">
                                     @defining(voteAndTotalVotes._4) { average: AverageNote =>
-                                        @average.n
+                                        <span class="score" data-score="@average.n.round">
+                                            <span class="btn displayed-score"> @average.n</span>
+                                        </span>
                                     }
                                     </td>
                                     <td class="gt-votes" style="display: none">
-                                        <small>@gtScore by @gtVoteCast <i class="fas fa-user"></i></small>
+                                        <small>
+                                            <span class="score" data-score="@gtScore.round">
+                                                <span class="btn-sm displayed-score">@gtScore</span>
+                                            </span>
+                                            by @gtVoteCast <i class="fas fa-user"></i>
+                                        </small>
                                     </td>
                                     <td class="number_table">
                                     @defining(voteAndTotalVotes._2) { totalVoters: TotalVoter =>
@@ -120,7 +127,9 @@
                                     </td>
                                     <td class="number_table gt-votes" style="display: none">
                                         @defining(library.Stats.average(List(if(gtVoteCast>0){gtScore}else{voteAndTotalVotes._4.n}, voteAndTotalVotes._4.n))) { gtAndComiteeScore: Double =>
-                                            @gtAndComiteeScore
+                                            <span class="score" data-score="@gtAndComiteeScore.round">
+                                                <span class="btn displayed-score">@gtAndComiteeScore</span>
+                                            </span>
                                         }
                                     </td>
                                     <td class="number_table my-votes" style="display: none">
