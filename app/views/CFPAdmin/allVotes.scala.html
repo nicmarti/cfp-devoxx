@@ -89,15 +89,15 @@
                         <tr>
                             <th/>
                             <th>Avg</th>
-                            <th class="gt-votes" style="display: none">GT</th>
+                            <th class="gt-votes">GT</th>
                             <th>Votes</th>
                             <th>Abst.</th>
-                            <th class="gt-votes" style="display: none">GT & Committee</th>
-                            <th class="my-votes" style="display: none">Mine</th>
+                            <th class="gt-votes">GT & Committee</th>
+                            <th class="my-votes">Mine</th>
                             <th>Title</th>
                             <th>Speakers</th>
-                            <th class="prop-track-col" style="display: none">Track</th>
-                            <th class="prop-type-col" style="display: none">Type</th>
+                            <th class="prop-track-col">Track</th>
+                            <th class="prop-type-col">Type</th>
                             <th>Lang</th>
                             <th><i class="fas fa-thumbs-up"></i> / <i class="fas fa-thumbs-down"></i></th>
                         </tr>
@@ -115,7 +115,7 @@
                                         </span>
                                     }
                                     </td>
-                                    <td class="gt-votes" style="display: none">
+                                    <td class="gt-votes">
                                         <small>
                                             <span class="score" data-score="@gtScore.round">
                                                 <span class="btn-sm displayed-score">@gtScore</span>
@@ -133,7 +133,7 @@
                                         @totalAbstentions.i
                                     }
                                     </td>
-                                    <td class="number_table gt-votes" style="display: none">
+                                    <td class="number_table gt-votes">
                                         @defining(library.Stats.average(List(if(gtVoteCast>0){gtScore}else{voteAndTotalVotes._4.n}, voteAndTotalVotes._4.n))) { gtAndComiteeScore: Double =>
                                             <span class="score" data-score="@gtAndComiteeScore.round">
                                                 <span class="btn displayed-score">@gtAndComiteeScore</span>
@@ -141,13 +141,13 @@
                                         }
                                     </td>
                                     @maybeMyVote.map { score =>
-                                        <td class="number_table my-votes" style="display: none" data-order="@score.intValue()">
+                                        <td class="number_table my-votes" data-order="@score.intValue()">
                                             <span class="score" data-score="@score.intValue()">
                                                 <span class="btn displayed-score"> @if(score.intValue()==0){ Abs } else { @score.intValue() } </span>
                                             </span>
                                         </td>
                                     }.getOrElse {
-                                        <td class="number_table my-votes" style="display: none" data-order="-1">
+                                        <td class="number_table my-votes" data-order="-1">
                                             -
                                         </td>
                                     }
@@ -169,10 +169,10 @@
                                         }
                                     }
                                     </td>
-                                    <td class="prop-track-col" style="display: none">
+                                    <td class="prop-track-col">
                                         <small>@Messages(proposal.track.label)</small>
                                     </td>
-                                    <td class="prop-type-col" style="display: none">
+                                    <td class="prop-type-col">
                                         <small>@proposal.talkType.id</small>
                                     </td>
                                     <td>
@@ -300,14 +300,16 @@
                         });
                     });
 
-                    @if(confType=="all"){ $("#showProposalType").attr('checked', true); $("#showProposalType").change(); }
-                    @if(selectedTrack=="all"){ $("#showTrack").attr('checked', true); $("#showTrack").change(); }
+                    @if(confType=="all"){ $("#showProposalType").attr('checked', true); }
+                    @if(selectedTrack=="all"){ $("#showTrack").attr('checked', true); }
+
+                    ["#showProposalType", "#showTrack", "#showMyVotes", "#showGTVotes"].forEach(selector => $(selector).change());
                 });
 
-                function showMyVotes(show) { $(".my-votes")[show?'show':'hide']() }
-                function showGTVotes(show) { $(".gt-votes")[show?'show':'hide']() }
-                function showProposalType(show) { $(".prop-type-col")[show?'show':'hide']() }
-                function showTrack(show) { $(".prop-track-col")[show?'show':'hide']() }
+                function showMyVotes(show) { [6].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
+                function showGTVotes(show) { [2,5].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
+                function showProposalType(show) { [10].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
+                function showTrack(show) { [9].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
         </script>
 
     }
