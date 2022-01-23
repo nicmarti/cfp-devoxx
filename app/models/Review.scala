@@ -349,6 +349,11 @@ object Review {
       }
   }
 
+  def allPrecomputedVotesFromUser(reviewerUUID: String): Map[String, Double] = Redis.pool.withClient {
+    implicit client =>
+      client.hgetAll(s"Computed:ScoresForUser:${reviewerUUID}").mapValues(_.toDouble)
+  }
+
   class Score(val s: Double) extends AnyVal
 
   class TotalVoter(val i: Int) extends AnyVal
@@ -413,6 +418,10 @@ object Review {
           |redis.call("DEL", "Computed:StandardDeviation")
           |redis.call("DEL", "Computed:VotersAbstention")
           |redis.call("DEL", "Computed:Median")
+          |local computedScoresByVoterKeys = redis.call("KEYS", "Computed:ScoresForUser:*")
+          |for i = 1, #computedScoresByVoterKeys do
+          |  redis.call("DEL", computedScoresByVoterKeys[i])
+          |end
           |
           |for i = 1, #proposals do
           |  local chunks = {}
@@ -442,6 +451,7 @@ object Review {
           |      redis.call("HINCRBY", "Computed:Reviewer:Total", uuidAndScores[j], uuidAndScores[j + 1])
           |      redis.call("HINCRBY", "Computed:Reviewer:NbTalkVoted", uuidAndScores[j], 1)
           |      redis.call("SADD", "Computed:Reviewer:ReviewedOne",  uuidAndScores[j])
+          |      redis.call("HSET", "Computed:ScoresForUser:" .. uuidAndScores[j], proposalId, uuidAndScores[j + 1])
           |    end
           |
           |    local uuidAndAbstentionScoreValue = redis.call("ZRANGEBYSCORE", proposals[i], 0, 1, "WITHSCORES")
@@ -449,6 +459,7 @@ object Review {
           |    for j=1,#uuidAndAbstentionScoreValue,2 do
           |      redis.log(redis.LOG_DEBUG, "uuid:" ..  uuidAndAbstentionScoreValue[j] .. " => abstention on :" .. proposals[i])
           |      redis.call("HINCRBY", "Computed:Reviewer:Abstentions", uuidAndAbstentionScoreValue[j], 1)
+          |      redis.call("HSET", "Computed:ScoresForUser:" .. uuidAndAbstentionScoreValue[j], proposalId, 0)
           |    end
           |  end
           |
