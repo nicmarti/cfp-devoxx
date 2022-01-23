@@ -25,7 +25,7 @@
             <a href="@routes.CFPAdmin.allMyVotes(selectedTrack=Some(ConferenceDescriptor.ConferenceTracks.JAVA.id))" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-chart-bar"></i> @Messages("admin.btn.myvotes")</a>
             <a href="@routes.CFPAdmin.showProposalsNotReviewedCompareTo(None)" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-arrow-circle-right"></i> @Messages("admin.btn.otherReviewer")</a>
             <a href="@routes.CFPAdmin.allSponsorTalks()" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-medal"></i> @Messages("admin.btn.sponsortalks")</a>
-            <a href="@routes.CFPAdmin.allVotes("all",None)" class="btn btn-sm btn-warning"><i aria-hidden="true" class="fas fa-adjust"></i> @Messages("admin.btn.allvotes")</a>
+            <a href="@routes.CFPAdmin.allVotes()" class="btn btn-sm btn-warning"><i aria-hidden="true" class="fas fa-adjust"></i> @Messages("admin.btn.allvotes")</a>
             <a href="@routes.InviteController.allInvitations()" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-users"></i> @Messages("admin.btn.speakersInvited")</a>
             <a href="@routes.CFPAdmin.newOrEditSpeaker(None)" class="btn btn-sm btn-primary"><i aria-hidden="true" class="fas fa-umbrella"></i> @Messages("admin.btn.createNewspeaker")</a>
             @if(SecureCFPController.hasAccessToAdmin(req)){

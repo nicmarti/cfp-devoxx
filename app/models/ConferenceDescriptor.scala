@@ -108,6 +108,9 @@ object ConferenceDescriptor {
 
     val ALL = List(CONF, UNI, TIA, LAB, QUICK, BOF, KEY, OTHER)
 
+    // Used to define pre-selected proposal type (to avoid searching for too much proposals on "all votes" screens)
+    val DEFAULT_SEARCH_PROPOSAL_ID = UNI.id
+
     def valueOf(id: String): ProposalType = id match {
       case "conf" => CONF
       case "uni" => UNI
@@ -200,6 +203,9 @@ object ConferenceDescriptor {
     val LANG = Track("lang", "lang.label")
     val UNKNOWN = Track("unknown", "unknown track")
     val ALL = List(JAVA, MOBILE, WEB, ARCHISEC, AGILE_DEVOPS, CLOUD, BIGDATA, FUTURE, LANG, UNKNOWN)
+
+    // Used to define pre-selected track (to avoid searching for too much proposals on "all votes" screens)
+    val DEFAULT_SEARCH_TRACK_ID = ALL.head.id
   }
 
   // TODO configure the description for each Track

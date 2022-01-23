@@ -151,7 +151,7 @@ object LeaderboardController extends SecureCFPController {
   def doComputeVotesTotal() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       ZapActor.actor ! ComputeVotesAndScore()
-      Redirect(routes.CFPAdmin.allVotes("conf", None)).flashing("success" -> "Recomputing votes and scores...")
+      Redirect(routes.CFPAdmin.allVotes()).flashing("success" -> "Recomputing votes and scores...")
   }
 
   def allProposalsByCompany() = SecuredAction(IsMemberOf("cfp")) {

@@ -440,7 +440,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def allVotes(confType: String, track: Option[String]) = SecuredAction(IsMemberOf("cfp")) {
+  def allVotes(confType: String, track: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin allVotes for $confType and $track")
@@ -471,12 +471,12 @@ object CFPAdmin extends SecureCFPController {
       }, "list to display")
 
       val listToDisplay = Benchmark.measure(() => track match {
-        case None => tempListToDisplay
-        case Some(trackId) => tempListToDisplay.filter(_._1.track.id == trackId)
+        case "all" => tempListToDisplay
+        case trackId => tempListToDisplay.filter(_._1.track.id == trackId)
       }, "filter by track")
 
       val totalRemaining = Benchmark.measure(() => ApprovedProposal.remainingSlots(confType), "calculate remaining slots")
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType, track))
   }
 
   def allVotesVersion2(confType: String, page: Int = 0, resultats: Int = 25, sortBy: String = "gt_and_cfp") = SecuredAction(IsMemberOf("admin")) {
