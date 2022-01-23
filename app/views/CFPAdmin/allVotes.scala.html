@@ -5,8 +5,8 @@
         <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
 
-        <div class="row mt-2">
-            <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12 mt-2">
                 @for(proposalType <- ConferenceDescriptor.ConferenceProposalTypes.ALL) {
                     <a href="@routes.CFPAdmin.allVotes(proposalType.id, selectedTrack)" class="btn @if(proposalType.id == confType){ btn-success } else { btn-primary } btn-sm">
                         <i class="@ConferenceDescriptor.ConferenceProposalConfigurations.getHTMLClassFor(proposalType)"></i>
@@ -17,7 +17,8 @@
                     <i class="fas fa-adjust"></i>
                     All
                 </a>
-                <br>
+            </div>
+            <div class="col-md-12 mt-2">
                 <i class="fas fa-filter"></i> Show only:
                 @Track.all.map { track =>
                     <a href="@routes.CFPAdmin.allVotes(confType, track.id)" class="btn @if(selectedTrack == track.id){ btn-success } else { btn-primary } btn-sm">
@@ -27,13 +28,14 @@
                 <a href="@routes.CFPAdmin.allVotes(confType, "all")" class="btn @if("all" == selectedTrack){ btn-success } else { btn-primary } btn-sm">
                     All
                 </a>
-                <br>
+            </div>
+            <div class="col-md-12 mt-2">
                 <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="fas fa-compass"></i>
                     Recompute total and votes</a> -
                 <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany(false)" class="btn btn-danger btn-sm"><i class="fas fa-angle-double-down"></i>
                     All talks by company</a>
-                <br>
-
+            </div>
+            <div class="col-md-12">
                 @if(flash.get("error").isDefined) {
                     <div class="alert alert-danger alert-dismissable">
                         <strong>Error :</strong>
@@ -45,7 +47,8 @@
                     @flash.get("success").get
                     </div>
                 }
-                <br>
+            </div>
+            <div class="col-md-12 mt-2">
                 @defining(allVotes.count(_._1.state == ProposalState.DECLINED)) { declinedTotal =>
                     <span class="badge badge-success">@totalApproved approved</span> <span class="badge badge-declined">
                         - @declinedTotal declined</span> <span class="badge badge-warning">
@@ -56,7 +59,6 @@
                     FR</span> <span class="badge badge-secondary">@allVotes.map(_._1).count(_.lang == "en") EN</span>
 
             </div>
-
         </div>
         <div class="row">
 
