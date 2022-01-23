@@ -38,6 +38,14 @@
                     <input type="checkbox" id="showGTVotes" onchange="showGTVotes(this.checked)" data-com.bitwarden.browser.user-edited="yes" class="form-check-input">
                     <label class="form-check-label" for="showGTVotes">Show GT votes</label>
                 </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="showTrack" onchange="showTrack(this.checked)" data-com.bitwarden.browser.user-edited="yes" class="form-check-input">
+                    <label class="form-check-label" for="showTrack">Show Track</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="showProposalType" onchange="showProposalType(this.checked)" data-com.bitwarden.browser.user-edited="yes" class="form-check-input">
+                    <label class="form-check-label" for="showProposalType">Show Proposal type</label>
+                </div>
             </div>
             <div class="col-md-12 mt-2">
                 <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="fas fa-compass"></i>
@@ -88,8 +96,8 @@
                             <th class="my-votes" style="display: none">Mine</th>
                             <th>Title</th>
                             <th>Speakers</th>
-                            <th>Type</th>
-                            <th>Track</th>
+                            <th class="prop-track-col" style="display: none">Track</th>
+                            <th class="prop-type-col" style="display: none">Type</th>
                             <th>Lang</th>
                             <th><i class="fas fa-thumbs-up"></i> / <i class="fas fa-thumbs-down"></i></th>
                         </tr>
@@ -157,11 +165,11 @@
                                         }
                                     }
                                     </td>
-                                    <td>
-                                        <small>@proposal.talkType.id</small>
-                                    </td>
-                                    <td>
+                                    <td class="prop-track-col" style="display: none">
                                         <small>@Messages(proposal.track.label)</small>
+                                    </td>
+                                    <td class="prop-type-col" style="display: none">
+                                        <small>@proposal.talkType.id</small>
                                     </td>
                                     <td>
                                         [@proposal.lang]
@@ -288,15 +296,14 @@
                         });
                     });
 
-
+                    @if(confType=="all"){ $("#showProposalType").attr('checked', true); $("#showProposalType").change(); }
+                    @if(selectedTrack=="all"){ $("#showTrack").attr('checked', true); $("#showTrack").change(); }
                 });
 
-                function showMyVotes(show) {
-                    $(".my-votes")[show?'show':'hide']()
-                }
-                function showGTVotes(show) {
-                    $(".gt-votes")[show?'show':'hide']()
-                }
+                function showMyVotes(show) { $(".my-votes")[show?'show':'hide']() }
+                function showGTVotes(show) { $(".gt-votes")[show?'show':'hide']() }
+                function showProposalType(show) { $(".prop-type-col")[show?'show':'hide']() }
+                function showTrack(show) { $(".prop-track-col")[show?'show':'hide']() }
         </script>
 
     }
