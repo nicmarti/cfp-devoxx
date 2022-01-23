@@ -30,6 +30,12 @@
                 </a>
             </div>
             <div class="col-md-12 mt-2">
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="showGTVotes" onchange="showGTVotes(this.checked)" data-com.bitwarden.browser.user-edited="yes" class="form-check-input">
+                    <label class="form-check-label" for="showGTVotes">Show GT votes</label>
+                </div>
+            </div>
+            <div class="col-md-12 mt-2">
                 <a href="@routes.LeaderboardController.doComputeVotesTotal()" class="btn btn-success btn-sm"><i class="fas fa-compass"></i>
                     Recompute total and votes</a> -
                 <a href="@routes.CFPAdmin.allApprovedSpeakersByCompany(false)" class="btn btn-danger btn-sm"><i class="fas fa-angle-double-down"></i>
@@ -71,10 +77,10 @@
                         <tr>
                             <th/>
                             <th>Avg</th>
-                            <th>GT</th>
+                            <th class="gt-votes" style="display: none">GT</th>
                             <th>Votes</th>
                             <th>Abst.</th>
-                            <th>GT & Committee</th>
+                            <th class="gt-votes" style="display: none">GT & Committee</th>
                             <th>Title</th>
                             <th>Speakers</th>
                             <th>Type</th>
@@ -94,7 +100,7 @@
                                         @average.n
                                     }
                                     </td>
-                                    <td>
+                                    <td class="gt-votes" style="display: none">
                                         <small>@gtScore by @gtVoteCast <i class="fas fa-user"></i></small>
                                     </td>
                                     <td class="number_table">
@@ -107,7 +113,7 @@
                                         @totalAbstentions.i
                                     }
                                     </td>
-                                    <td class="number_table">
+                                    <td class="number_table gt-votes" style="display: none">
                                     @library.Stats.average(List(gtScore, voteAndTotalVotes._4.n))
                                     </td>
                                     <td>
@@ -261,6 +267,10 @@
 
 
                 });
+
+                function showGTVotes(show) {
+                    $(".gt-votes")[show?'show':'hide']()
+                }
         </script>
 
     }
