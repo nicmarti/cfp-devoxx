@@ -444,7 +444,11 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
       play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin allVotes for $confType and $track")
-      val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Review.allVotes()
+      val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Benchmark.measure(
+        () => Review.allVotes(), "gathering all votes"
+      )
+
+      val allMyVotes = Benchmark.measure(() => Review.allPrecomputedVotesFromUser(request.webuser.uuid), "gathering current user's votes")
 
       val totalApproved = Benchmark.measure(
         () => ApprovedProposal.countApproved(confType), "count approved talks"
@@ -461,7 +465,7 @@ object CFPAdmin extends SecureCFPController {
             case Some(p) =>
               val goldenTicketScore: Double = ReviewByGoldenTicket.averageScore(p.id)
               val gtVoteCast: Long = ReviewByGoldenTicket.totalVoteCastFor(p.id)
-              Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast)
+              Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast, allMyVotes.get(p.id))
           }
       }, "create list of Proposals")
 
