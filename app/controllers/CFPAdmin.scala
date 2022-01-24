@@ -478,7 +478,13 @@ object CFPAdmin extends SecureCFPController {
             case Some(p) =>
               val goldenTicketScore: Double = ReviewByGoldenTicket.averageScore(p.id)
               val gtVoteCast: Long = ReviewByGoldenTicket.totalVoteCastFor(p.id)
-              Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast, allMyVotes.get(p.id))
+              val gtAndComiteeScore = library.Stats.average(
+                List(
+                  if(gtVoteCast>0){goldenTicketScore}else{scoreAndVotes._4.n},
+                  scoreAndVotes._4.n
+                )
+              )
+              Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast, gtAndComiteeScore, allMyVotes.get(p.id))
           }
       }, "create list of Proposals")
 
