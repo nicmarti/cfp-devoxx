@@ -467,21 +467,30 @@ object CFPAdmin extends SecureCFPController {
         () => ApprovedProposal.countApproved(confType), "count approved talks"
       )
 
-      val allMatchingProposals = Benchmark.measure(() => {
-        val allMatchingProposalIds = (confType, track) match {
-          case ("all", "all") => Proposal.allProposalIDsForTypeAndTrack(None, None, ProposalState.allButDeletedArchivedDraft)
-          case (_, "all") => Proposal.allProposalIDsForTypeAndTrack(Some(ProposalType.parse(confType)), None, ProposalState.allButDeletedArchivedDraft)
-          case ("all", _) => Proposal.allProposalIDsForTypeAndTrack(None, Some(Track.parse(track)), ProposalState.allButDeletedArchivedDraft)
-          case (_, _) => Proposal.allProposalIDsForTypeAndTrack(Some(ProposalType.parse(confType)), Some(Track.parse(track)), ProposalState.allButDeletedArchivedDraft)
-        }
-        Proposal.loadAndParseProposals(allMatchingProposalIds)
-      }, "load and parse proposals")
+      val allProposals = Benchmark.measure(() => Proposal.loadAndParseProposals(reviews.keySet), "load and parse proposals")
 
-      val listToDisplay = Benchmark.measure(() => allMatchingProposals.values.map { proposal =>
-        val goldenTicketScore: Double = ReviewByGoldenTicket.averageScore(proposal.id)
-        val gtVoteCast: Long = ReviewByGoldenTicket.totalVoteCastFor(proposal.id)
-        (proposal, reviews.get(proposal.id), goldenTicketScore, gtVoteCast, allMyVotes.get(proposal.id))
+      val listOfProposals = Benchmark.measure(() => reviews.flatMap {
+        case (proposalId, scoreAndVotes) =>
+          val maybeProposal = allProposals.get(proposalId)
+          maybeProposal match {
+            case None => play.Logger.of("CFPAdmin").error(s"Unable to load proposal id $proposalId")
+              None
+            case Some(p) =>
+              val goldenTicketScore: Double = ReviewByGoldenTicket.averageScore(p.id)
+              val gtVoteCast: Long = ReviewByGoldenTicket.totalVoteCastFor(p.id)
+              Option(p, scoreAndVotes, goldenTicketScore, gtVoteCast, allMyVotes.get(p.id))
+          }
       }, "create list of Proposals")
+
+      val tempListToDisplay = Benchmark.measure(() => confType match {
+        case "all" => listOfProposals
+        case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
+      }, "list to display")
+
+      val listToDisplay = Benchmark.measure(() => track match {
+        case "all" => tempListToDisplay
+        case trackId => tempListToDisplay.filter(_._1.track.id == trackId)
+      }, "filter by track")
 
       val totalRemaining = Benchmark.measure(() => ApprovedProposal.remainingSlots(confType), "calculate remaining slots")
       Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType, track))

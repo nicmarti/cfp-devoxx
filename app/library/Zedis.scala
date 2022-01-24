@@ -110,13 +110,6 @@ trait Dress {
       j.sunion(key1, key2).asScala.toSet
     }
 
-    def sunion(keys: String*): Set[String] = {
-      if (play.Logger.of("library.Zedis").isDebugEnabled) {
-        play.Logger.of("library.Zedis").debug(s"sunion ${keys.mkString(", ")}")
-      }
-      j.sunion(keys:_*).asScala.toSet
-    }
-
     def hkeys(key: String): Set[String] = {
       if (play.Logger.of("library.Zedis").isDebugEnabled) {
         play.Logger.of("library.Zedis").debug(s"hkeys $key")
