@@ -52,7 +52,7 @@ Send a message to [@nmartignole](http://www.twitter.com/nmartignole) if you plan
 
 ## How to set-up a local and friendly developer environment ?
 
-- Install SBT
+- Install SBT 0.13.18
 - Install Play 2.2.3 (not the latest version with activator) or just launch sbt from the CFP folder
 - Install Redis 2.8.21 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
 - Read Redis documentation and learn Redis with http://try.redis.io
