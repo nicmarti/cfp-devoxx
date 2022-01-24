@@ -1,25 +1,23 @@
-import java.util.concurrent.TimeUnit
-
-import library.search.{StopIndex, _}
-import library.{DraftReminder, _}
-import models.{Digest, Proposal}
+import filters.CustomGzipFilter
+import library.search._
+import library._
+import models.Digest
 import org.joda.time.format.DateTimeFormatterBuilder
 import org.joda.time.{DateMidnight, DateTime, LocalTime}
 import play.api.Play.current
 import play.api._
 import play.api.libs.concurrent._
-import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
+import play.api.mvc.{RequestHeader, WithFilters}
 import play.core.Router.Routes
 
-import scala.util.control.NonFatal
+import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
 // We must import the compiled cfp error page
-import views.html.cfpErrorPage
 
-object Global extends GlobalSettings {
+object Global extends WithFilters(new CustomGzipFilter()) with GlobalSettings {
   override def onStart(app: Application) {
     Play.current.configuration.getBoolean("actor.cronUpdater.active") match {
       case Some(true) if Play.isProd =>
