@@ -1117,9 +1117,25 @@ object Proposal {
     }
   }
 
+  def allProposalIDsForTypeAndTrack(maybeConfType: Option[ProposalType], maybeTrack: Option[Track], matchingStates: List[ProposalState] = ProposalState.all): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      val allProposalIds = client.sunion(matchingStates.map { pState => s"Proposals:ByState:${pState.code}" }.toArray:_*)
+      (maybeConfType, maybeTrack) match {
+        case (Some(confType), Some(track)) => allProposalIds.intersect(client.sinter(s"Proposals:ByType:${confType.id}", s"Proposals:ByTrack:${track.id}"))
+        case (None, None) => allProposalIds
+        case (Some(confType), None) => allProposalIds.intersect(client.smembers(s"Proposals:ByType:${confType.id}"))
+        case (None, Some(track)) => allProposalIds.intersect(client.smembers(s"Proposals:ByTrack:${track.id}"))
+      }
+  }
+
   def allProposalIDsForProposalType(confType: ProposalType): Set[String] = Redis.pool.withClient {
     implicit client =>
       client.smembers(s"Proposals:ByType:${confType.id}")
+  }
+
+  def allProposalIDsForTrack(track: Track): Set[String] = Redis.pool.withClient {
+    implicit client =>
+      client.smembers(s"Proposals:ByTrack:${track.id}")
   }
 
   def allProposalIDsByProposalType(): Map[String,Set[String]] = Redis.pool.withClient { client =>
