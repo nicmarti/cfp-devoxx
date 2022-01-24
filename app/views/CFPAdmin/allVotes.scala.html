@@ -100,7 +100,7 @@
                             <th class="prop-type-col">Type</th>
                             <th>Lang</th>
                             <th><i class="fas fa-thumbs-up"></i> / <i class="fas fa-thumbs-down"></i></th>
-                            <th class="">Summary</th>
+                            <th class="hidden">Summary</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -197,7 +197,7 @@
                                         @if(approved && (proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP)) {<span class="badge badge-pill badge-success"><i class="fas fa-thumbs-up"></i> pre-approved</span>}
                                         @if(refused && (proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP)) {<span class="badge badge-pill badge-danger"><i class="fas fa-thumbs-down"></i> pre-refused</span>}
                                     </td>
-                                    <td class="">
+                                    <td class="hidden">
                                         @Html(proposal.summaryAsHtml)
                                     </td>
                                 </tr>
@@ -309,7 +309,6 @@
                     @if(selectedTrack=="all"){ $("#showTrack").attr('checked', true); }
 
                     ["#showProposalType", "#showTrack", "#showMyVotes", "#showGTVotes"].forEach(selector => $(selector).change());
-                    [13].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, false))
                 });
 
                 function showMyVotes(show) { [6].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
