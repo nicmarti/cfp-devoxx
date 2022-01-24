@@ -25,15 +25,13 @@ object Scores {
     * - this rating coming at rank 330 out of these 490 conference ratings
     * => Then the "score" of this talk will be 5 - roundFloor( ((330-96) / (490-96))x4 ) = 3
     */
-  def calculateVisualScoreOf(value: Double, availableSlots: Long, availableSortedScores: List[Double]): Long = availableSlots match {
-    case 0 => 0
-    case _ =>
-      availableSortedScores.zipWithIndex.find(_._1 == value).map { case (_, valueIndex) =>
-        (if (valueIndex <= availableSlots) {
-          10 - Math.floor(valueIndex * 5 / availableSlots)
-        } else {
-          5 - Math.floor((valueIndex - availableSlots) * 4 / (availableSortedScores.size - availableSlots))
-        }).toLong
-      }.getOrElse(0)
+  def calculateVisualScoreOf(value: Double, availableSlots: Long, availableSortedScores: List[Double]): Long = {
+    availableSortedScores.zipWithIndex.find(_._1 == value).map { case (_, valueIndex) =>
+      (if (valueIndex < availableSlots) {
+        10 - Math.floor(valueIndex * 5 / availableSlots)
+      } else {
+        5 - Math.floor((valueIndex - availableSlots) * 4 / (availableSortedScores.size - availableSlots))
+      }).toLong
+    }.getOrElse(0)
   }
 }
