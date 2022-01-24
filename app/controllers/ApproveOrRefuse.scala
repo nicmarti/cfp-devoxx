@@ -45,9 +45,9 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal =>
           ApprovedProposal.approve(proposal)
           Event.storeEvent(ApprovedProposalEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, None)).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
+        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
       }
   }
 
@@ -57,9 +57,9 @@ object ApproveOrRefuse extends SecureCFPController {
         proposal =>
           ApprovedProposal.refuse(proposal)
           Event.storeEvent(TalkRefusedEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, None)).flashing("success" -> s"Talk ${proposal.id} has been refused."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been refused."))
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
+        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
       }
   }
 
@@ -70,9 +70,9 @@ object ApproveOrRefuse extends SecureCFPController {
           val confType: String = proposal.talkType.id
           ApprovedProposal.cancelApprove(proposal)
           Event.storeEvent(TalkRemovedFromApprovedListEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, Some(confType))).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, confType)).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
+        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
       }
   }
 
@@ -83,9 +83,9 @@ object ApproveOrRefuse extends SecureCFPController {
           val confType: String = proposal.talkType.id
           ApprovedProposal.cancelRefuse(proposal)
           Event.storeEvent(TalkRemovedFromRefuseListEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, Some(confType))).flashing("success" -> s"Talk ${proposal.id} has been removed from Refused list."))
+          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, confType)).flashing("success" -> s"Talk ${proposal.id} has been removed from Refused list."))
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes("all", None)).flashing("error" -> "Talk not found"))
+        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
       }
   }
 
