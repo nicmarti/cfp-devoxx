@@ -1,7 +1,7 @@
-@(speakers: Set[(Speaker, Map[String, Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(speakers: Set[(Speaker, Map[String, Proposal])],filterDeclinedRejected:Boolean, allApprovedProposalIDs:Set[String] )(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("CFP Speakers") {
-    <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 
 <div class="row">
@@ -27,22 +27,27 @@
         <div class="card-header">
             <h3>All speakers</h3>
             <span class="badge badge-info">@speakers.size users</span><br>
-            <a href="@routes.CFPAdmin.allSpeakersWithApprovedTalks(false)">Show all</a> -
-            <a href="@routes.CFPAdmin.allSpeakersWithApprovedTalks(true)">Filter Rejected/Declined/Cancelled/Deleted</a>
+            @if(filterDeclinedRejected) {
+                <a href="@routes.CFPAdmin.allSpeakersWithApprovedTalks(false)" class="btn btn-primary btn-sm">Show all</a> -
+                <em>Rejected, declined, cancelled or deleted are filtered-out</em>
+            }else{
+                <a href="@routes.CFPAdmin.allSpeakersWithApprovedTalks(true)" class="btn btn-sm btn-primary button"><i class="fas fa-filter"></i>
+                    Hide Rejected/Declined/Cancelled/Deleted</a>
+            }
         </div>
         <div class="card-body">
 
             @if(speakers.nonEmpty){
-            <table id="speakersTable" class="table table-bordered table-strippted">
+            <table id="speakersTable" class="table table-bordered table-stripped" aria-label="Speakers">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Lang</th>
-                        <th>Company</th>
-                        <th>Email</th>
-                        <th>Nb Appr</th>
-                        <th>Nb Acc</th>
-                        <th>Submitted Talks</th>
+                        <th scope="row">Name</th>
+                        <th scope="row">Lang</th>
+                        <th scope="row">Company</th>
+                        <th scope="row">Email</th>
+                        <th scope="row">Total Approved</th>
+                        <th scope="row">Total Accepted</th>
+                        <th scope="row">Submitted Talks</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,15 +65,24 @@
                         <td>
                             <small>@speaker.email</small>
                         </td>
-                        <td>@proposals.values.count(proposal => ApprovedProposal.isApproved(proposal.id, proposal.talkType.id))</td>
-                        <td>@proposals.values.count(proposal => ApprovedProposal.isAccepted(proposal.id, proposal.talkType.id))</td>
+                        <td>
+                            @allApprovedProposalIDs.count(proposalID => proposals.contains(proposalID))
+                        </td>
+                        <td>@proposals.values.count(proposal => ApprovedProposal.isAccepted(proposal.id))</td>
+
                         <td>
                         @proposals.values.map { proposal: Proposal =>
+                            @if(allApprovedProposalIDs.contains(proposal.id)){
+                                <div class="alert alert-warning">
+                            }else{
+                                <div>
+                            }
+
                             <span class="badge badge-@proposal.state.code">@proposal.state.code</span>
                             <strong>@Messages(proposal.talkType.simpleLabel)</strong>
                             &nbsp;
                             <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="@proposal.title" target="_blank">@proposal.title</a>
-                            <br/>
+                            </div>
                         }
                         </td>
                     </tr>

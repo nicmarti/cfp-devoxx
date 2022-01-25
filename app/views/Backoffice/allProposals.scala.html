@@ -36,12 +36,17 @@
                     <a href="@routes.Backoffice.allProposals(None,Some(code))">@code</a> -
                 }
             </div>
+            <div>
+                See also :
+                <a href="@routes.CFPAdmin.allSpeakers()">All speakers</a> -
+                <a href="@routes.CFPAdmin.allSpeakersWithApprovedTalks()">All speakers with approved talk</a>
+            </div>
         </div>
 
         <div class="card-body">
 
             @if(proposals.nonEmpty){
-            <table id="allProposals" class="table table-bordered table-hover table-condensed">
+            <table id="allProposals" class="table table-bordered table-hover table-condensed" aria-label="all Proposals">
                 <thead>
                     <tr>
                         <th>Proposal id</th>

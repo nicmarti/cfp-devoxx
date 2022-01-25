@@ -692,7 +692,7 @@ object CFPAdmin extends SecureCFPController {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       val allSpeakers = ApprovedProposal.allApprovedSpeakers()
 
-      val toReturn = if (filterDeclinedRejected) {
+      val speakersAndProposals: Set[(Speaker, Map[String, Proposal])] = if (filterDeclinedRejected) {
         allSpeakers.map(s => (s, Proposal
           .allNonArchivedProposalsByAuthor(s.uuid)
           .filterNot(t => t._2.state == ProposalState.REJECTED || t._2.state == ProposalState.DECLINED || t._2.state == ProposalState.CANCELLED || t._2.state == ProposalState.DELETED)
@@ -701,7 +701,11 @@ object CFPAdmin extends SecureCFPController {
       } else {
         allSpeakers.map(s => (s, Proposal.allNonArchivedProposalsByAuthor(s.uuid)))
       }
-      Ok(views.html.CFPAdmin.allSpeakers(toReturn))
+      val allProposalIDs: Set[Proposal] = speakersAndProposals.flatMap(_._2.values.toSet)
+
+      val approvedProposalIDs: Set[String] =  ApprovedProposal.filterApproved(allProposalIDs.map(_.id))
+
+      Ok(views.html.CFPAdmin.allSpeakers(speakersAndProposals, filterDeclinedRejected, approvedProposalIDs))
   }
 
   def allApprovedSpeakersByCompany(showQuickiesAndBof: Boolean) = SecuredAction(IsMemberOf("cfp")) {
