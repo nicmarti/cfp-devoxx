@@ -32,7 +32,6 @@ libraryDependencies ++= Seq(
   , "org.ocpsoft.prettytime" % "prettytime" % "3.2.4.Final"
   , "com.github.rjeschke" % "txtmark" % "0.13" // Used for Markdown in Proposal
   , "com.pauldijou" %% "jwt-core" % "0.9.2" // JWT for MyDevoxx
-  , "com.twilio.sdk" % "twilio" % "7.6.0" // SMS Twilio
   , "org.scalaz" %% "scalaz-core" % "7.2.10"
   , "com.google.api-client" % "google-api-client" % "1.30.7"
   , "com.google.apis" % "google-api-services-oauth2" % "v2-rev20190313-1.30.1"

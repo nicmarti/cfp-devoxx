@@ -107,8 +107,7 @@ object CallForPaper extends SecureCFPController {
     "company" -> optional(text),
     "blog" -> optional(text),
     "firstName" -> nonEmptyText(maxLength = 25),
-    "qualifications" -> nonEmptyText(maxLength = 850), // We set a soft limit in the UX at 750 and a hard limit at 850
-    "phoneNumber" -> optional(text)
+    "qualifications" -> nonEmptyText(maxLength = 850) // We set a soft limit in the UX at 750 and a hard limit at 850
   )(Speaker.createSpeaker)(Speaker.unapplyForm))
 
 

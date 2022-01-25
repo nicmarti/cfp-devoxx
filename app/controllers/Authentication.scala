@@ -338,7 +338,7 @@ object Authentication extends Controller {
           webuser =>
             val uuid = Webuser.saveAndValidateWebuser(webuser) // it is generated
             val someLang = request.acceptLanguages.headOption.map(_.code)
-            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience", None))
+            Speaker.save(Speaker.createSpeaker(uuid, email, webuser.lastName, "", someLang, None, Some("http://www.gravatar.com/avatar/" + Webuser.gravatarHash(webuser.email)), None, None, webuser.firstName, "No experience"))
             TransactionalEmails.sendAccessCode(webuser.email, webuser.password)
             Redirect(routes.CallForPaper.editProfile()).flashing("success" -> ("Your account has been validated. Your new access code is " + webuser.password + " (case-sensitive)")).withSession("uuid" -> webuser.uuid)
         }.getOrElse {
@@ -395,7 +395,7 @@ object Authentication extends Controller {
           }
 
           val lang = request.acceptLanguages.headOption.map(_.code)
-          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications, None)
+          val newSpeaker = Speaker.createSpeaker(validWebuser.uuid, email, validWebuser.lastName, StringUtils.abbreviate(bio, 750), lang, twitter, avatarUrl, company, blog, validWebuser.firstName, qualifications)
           Speaker.save(newSpeaker)
           Webuser.addToSpeaker(validWebuser.uuid)
 

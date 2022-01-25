@@ -33,7 +33,6 @@
             @helper.inputText(speakerForm("blog"), 'size -> 50, 'placeholder -> "http://www.yourblog.com/")
             @helper.textarea(speakerForm("qualifications"), 'cols -> 70, 'rows -> 5)
             <i class="fas fa-text-width"></i> : <span id="charsremain2"></span>
-            @helper.inputText(speakerForm("phoneNumber"))
             @tags.selectI18N(field = speakerForm("lang"), options=Seq(("en","English"),("fr","French")),  'class->"form-control")
             <button class="btn btn-success" type="submit">@Messages("editProfile.save")</button>
         }
