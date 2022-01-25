@@ -1,4 +1,4 @@
-@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], maybeMyPreviousVote: Option[Review], currentUser: String, userWatchPref: ProposalUserWatchPreference, maybeVoteDelayedReason: Option[String])(implicit flash: Flash, lang: Lang, req: RequestHeader)
+@(proposal: Proposal, proposalsByAuths: Map[String, Map[String, Proposal]], speakerComments: List[Comment], internalComments: List[Comment], msgToSpeakerForm: Form[String], msgInternalForm: Form[String], voteForm: Form[Int], maybeMyVote: Option[Review], maybeMyPreviousVote: Option[Review], currentUser: String, userWatchPref: ProposalUserWatchPreference, maybeVoteDelayedReason: Option[String], proposalLastVisit: Option[org.joda.time.DateTime])(implicit flash: Flash, lang: Lang, req: RequestHeader)
 
 @main("[CFP] " + proposal.id + "/" + proposal.title) {
     <div class="row">
@@ -258,7 +258,7 @@
                     }
                     </div>
                     <div class="card-body">
-                    @tags.renderComments(speakerComments)
+                    @tags.renderComments(speakerComments, proposalLastVisit)
                     </div>
                 </div>
             </div>
@@ -306,7 +306,7 @@
                     }
                     </div>
                     <div class="card-body">
-                    @tags.renderComments(internalComments)
+                    @tags.renderComments(internalComments, proposalLastVisit)
                     </div>
                 </div>
 

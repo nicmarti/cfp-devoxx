@@ -91,7 +91,8 @@ object CFPAdmin extends SecureCFPController {
     val proposalsByAuths = allProposalByProposal(proposal)
     val userWatchPref = ProposalUserWatchPreference.proposalUserWatchPreference(proposal.id, userId)
     val maybeDelayedReviewReason = Review.proposalDelayedReviewReason(userId, proposal.id)
-    views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, msgToSpeakerForm, msgInternalForm, voteForm, maybeMyVote, maybeMyPreviousVote, userId, userWatchPref, maybeDelayedReviewReason)
+    val proposalLastVisit = Proposal.userProposalLastVisits(userId).get(proposal.id)
+    views.html.CFPAdmin.showProposal(proposal, proposalsByAuths, speakerDiscussion, internalDiscussion, msgToSpeakerForm, msgInternalForm, voteForm, maybeMyVote, maybeMyPreviousVote, userId, userWatchPref, maybeDelayedReviewReason, proposalLastVisit)
   }
 
   def openForReview(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
