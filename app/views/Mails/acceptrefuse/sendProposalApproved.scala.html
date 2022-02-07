@@ -19,17 +19,8 @@
     <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
     <br>
 <br>
-    @if(proposal.talkType.id=="quick"){
-        <p>A titre exceptionnel, et si vous ne disposez pas par ailleurs d'un badge speaker, les organisateurs de Devoxx France 2019
-        offre un pass 2 jours (jeudi et vendredi) aux personnes qui présentent un Quickie. Attention : ce badge ne donne pas
-        accès au diner des speakers. Il vous permettra uniquement de participer le jeudi et le vendredi à Devoxx France. Par ailleurs,
-        ce badge n'est pas cessible ni revendable. Il est lié à votre identifiant de sujet.</p>
-        <p>Vous n'avez pas d'autres opérations à faire, les organisateurs de Devoxx France vont envoyer un email avec un code d'inscription début mars.</p>
-        <p>Ce code d'inscription sera alors à utiliser sur le site https://reg.devoxx.fr/</p>
-        <p>Cette offre n'est valable que pour les Quickies, pour 2 jours et n'est pas cessible à une autre personne.</p>
-    }
 
-    @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType) && proposal.talkType.id!="quick") {
+    @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
     <p><strong>Attention</strong>, ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas de badge speaker</strong>. Vous devez
         acheter une place à la conférence pour participer, si vous ne disposez pas, par ailleurs, d'un ticket.</P>
      <p>La conférence étant complète, vous pouvez encore vous inscrire via le lien suivant unique (et lié à votre soumission de sujet) :
@@ -53,14 +44,7 @@
 <p>You must now validate or decline the general terms and conditions, and confirm that you are still available to do this presentation :</p>
 <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
 
-    @if(proposal.talkType.id=="quick"){
-    <p>For the first time, Devoxx France will also offer a 2-days ticket, valid Thursday and Friday only.
-        This badge is NOT a speaker badge : you can't attend the speaker's dinner. However, it gives you full access
-        to the conference on Thursday and Friday only.</p>
-    <p>We will send you by mail an unique registration code. Please use this code on https://reg.devoxx.fr and configure your badge before the conference.</p>
-    }
-
-    @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType) && proposal.talkType.id!="quick") {
+    @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
     <p>This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
     Registration details <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">register Devoxx FR 2019</a></p>
 } else {

@@ -22,17 +22,14 @@ Merci de valider dès maintenant en suivant ce lien dans votre navigateur :
 
 Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).
 
-if(proposal.talkType.id=="quick"){
-A titre exceptionnel, et si vous ne disposez pas, par ailleurs, d'un badge speaker, les organisateurs de Devoxx France 2019
-offre un pass 2 jours (jeudi et vendredi) aux personnes qui présentent un Quickie. Attention : ce badge ne donne pas
-accès au diner des speakers. Il vous permettra uniquement de participer le jeudi et le vendredi à Devoxx France.
-Par ailleurs, ce badge n'est pas cessible ni revendable. Il est lié à votre identifiant de sujet.
-Vous n'avez pas d'autres opérations à faire, les organisateurs de Devoxx France vont envoyer un email avec un code d'inscription début mars.
-Ce code d'inscription sera alors à utiliser sur le site https://reg.devoxx.fr/
-Cette offre n'est valable que pour les Quickies, pour 2 jours et n'est pas cessible à une autre personne.
-}
+Comment poser une question ?
+----------------------------------------------------------------------------------------------------------------------
 
-@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType) && proposal.talkType.id!="quick") {
+Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.
+
+ @ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)
+
+@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType) ) {
 === Attention ===
 Ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas de badge speaker</strong>. Vous devez
 acheter une place à la conférence pour participer, si vous ne disposez pas, par ailleurs, d'un ticket.
@@ -72,6 +69,11 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
  This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
 
 https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email
+} else {
+
+As a confirmed speaker you'll receive, a couple of weeks before the event takes place, a discount code for a Devoxx Combi pass (full week).
+
+You'll also receive an invite for the exclusive speakers reception.
 }
 
  For any question regarding your talk:
