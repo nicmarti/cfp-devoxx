@@ -282,7 +282,7 @@ object ConferenceDescriptor {
 
     val allRoomsLabFriday = List(NEUILLY_LAB1, NEUILLY_LAB2, PARIS_LAB3, PARIS_LAB4)
 
-    val allRoomsBOF = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsBOF = List(NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
     val allRoomsOthersFriday = List(LOBBY_NEUILLY)
 
