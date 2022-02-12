@@ -96,6 +96,10 @@ object Room {
     "neu_232_232",
     "neu_234_235",
     "neu_212_213",
+    "lab1",
+    "lab2",
+    "lab3",
+    "lab4",
     "x_hall_a"
   )
 
