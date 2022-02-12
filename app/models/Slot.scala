@@ -184,6 +184,13 @@ object Slot {
     ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id)
   }
 
+  // Generates fillers corresponding to provided slots
+  // Let's say we have a lab from 15:30 to 18:30 :
+  // - We will keep the existing slot representing start of the lab from 15:30 to 16:15
+  // - 1 filler will be generated for 16:15 - 16:45
+  // - 1 filler will be generated for 16:45 - 17:30
+  // - 1 filler will be generated for 18:15 - 18:30
+  // (breaks are ignored)
   def fillWithFillers(slots: List[Slot]): List[Slot] = {
     val fillers = new ListBuffer[Slot];
 
@@ -201,13 +208,13 @@ object Slot {
       val atomicTimeSlotIndex = atomicTimeSlots.indexOf(atomicTimeSlot)
       slotsSharingSameStartingTime.foreach(slot => {
         if(!slot.to.equals(atomicTimeSlot._2)) {
-          var fillerIndex = 1
-          var fillerAtomicTimeSlot = atomicTimeSlots(atomicTimeSlotIndex + fillerIndex)
-          while(fillerAtomicTimeSlot._1.isBefore(slot.to)) {
-            fillers += SlotBuilder(slot, fillerIndex, fillerAtomicTimeSlot._1, fillerAtomicTimeSlot._2)
-            fillerIndex += 1
-            fillerAtomicTimeSlot = atomicTimeSlots(atomicTimeSlotIndex + fillerIndex)
-          }
+          atomicTimeSlots
+            .slice(atomicTimeSlotIndex + 1, atomicTimeSlots.length)
+            .takeWhile(fillerAtomicTimeSlot => fillerAtomicTimeSlot._1.isBefore(slot.to))
+            .zipWithIndex
+            .foreach { case(fillerAtomicTimeSlot, index) =>
+              fillers += SlotBuilder(slot, index, fillerAtomicTimeSlot._1, fillerAtomicTimeSlot._2)
+            }
         }
       })
     }
