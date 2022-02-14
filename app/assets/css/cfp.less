@@ -164,16 +164,23 @@ dd.info {
 }
 
 /* for page allVotes */
+table#allProposals.dataTable.order-column tbody tr>.sorting_1,
+table#allProposals.dataTable.order-column tbody tr>.sorting_2,
+table#allProposals.dataTable.order-column tbody tr>.sorting_3,
+table#allProposals.dataTable.display tbody tr>.sorting_1,
+table#allProposals.dataTable.display tbody tr>.sorting_2,
+table#allProposals.dataTable.display tbody tr>.sorting_3 {
+  background-color: rgba(0,0,0,0.1)
+}
+
 .preselected_true {
-  background-color: #ffff00 !important; // Attention dataTable vire le background pour mettre son bleu
+  background-color: #fff8ba !important; // Attention dataTable vire le background pour mettre son bleu
   border-style: solid;
   border-width: 2px;
-  border-color: #ffff00;
+  border-color: #fff8ba;
 }
 
 .average_table {
-  background-color: lightgrey;
-  color: #000;
   text-align: center;
   vertical-align: bottom;
   font-weight: bold;

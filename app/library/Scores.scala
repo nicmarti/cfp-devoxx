@@ -27,8 +27,13 @@ object Scores {
     */
   def calculateVisualScoreOf(value: Double, availableSlots: Long, availableSortedScores: List[Double]): Long = {
     availableSortedScores.zipWithIndex.find(_._1 == value).map { case (_, valueIndex) =>
-      (if (valueIndex < availableSlots) {
+      (if(availableSlots <= 0) {
+        // Once we've filled every available slots, using only a single (linear) scale
+        10 - Math.floor(valueIndex * 9 / availableSortedScores.size)
+      } else if (valueIndex < availableSlots) {
+        // in the [0-availableSlots[ range, retrieving linear score from this range between 6-10
         10 - Math.floor(valueIndex * 5 / availableSlots)
+        // in the [availableSlots, availableSortedScores.size[, retrieving linear score from this range between 1-5
       } else {
         5 - Math.floor((valueIndex - availableSlots) * 4 / (availableSortedScores.size - availableSlots))
       }).toLong

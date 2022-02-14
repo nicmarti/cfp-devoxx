@@ -6,8 +6,9 @@
             allVotes.map(_._2._4.n).sorted.reverse,
             allVotes.map(_._3).sorted.reverse,
             allVotes.map(_._5).sorted.reverse,
-            allVotes.count(_._1.state == ProposalState.DECLINED)
-        )) { case (sortedComiteeAverageScores: List[Double], sortedGTAverageScores: List[Double], sortedGTAndComiteeScores: List[Double], declinedTotal: Int) =>
+            allVotes.count(_._1.state == ProposalState.DECLINED),
+            totalRemaining + allVotes.count(_._1.state == ProposalState.DECLINED)
+        )) { case (sortedComiteeAverageScores: List[Double], sortedGTAverageScores: List[Double], sortedGTAndComiteeScores: List[Double], declinedTotal: Int, remainingIncludingDeclined: Long) =>
 
         <script type="text/javascript" charset="utf-8" language="javascript" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
@@ -76,7 +77,7 @@
             <div class="col-md-12 mt-2">
                 <span class="badge badge-success">@totalApproved approved</span> <span class="badge badge-declined">
                     - @declinedTotal declined</span> <span class="badge badge-warning">
-                    = @(totalRemaining + declinedTotal) remaining</span>
+                    = @remainingIncludingDeclined remaining</span>
                 <br>
                 <span class="badge badge-primary">@allVotes.map(_._1).count(_.lang == "fr")
                     FR</span> <span class="badge badge-secondary">@allVotes.map(_._1).count(_.lang == "en") EN</span>
@@ -116,14 +117,14 @@
                                     <td class="number_table">@{index+1}</td>
                                     <td class="average_table">
                                     @defining(voteAndTotalVotes._4) { average: AverageNote =>
-                                        <span class="score" data-score="@library.Scores.calculateVisualScoreOf(average.n, totalRemaining + declinedTotal, sortedComiteeAverageScores)">
+                                        <span class="score" data-score="@library.Scores.calculateVisualScoreOf(average.n, remainingIncludingDeclined, sortedComiteeAverageScores)">
                                             <span class="btn displayed-score"> @average.n</span>
                                         </span>
                                     }
                                     </td>
                                     <td class="gt-votes">
                                         <small>
-                                            <span class="score" data-score="@library.Scores.calculateVisualScoreOf(gtScore, totalRemaining + declinedTotal, sortedGTAverageScores)">
+                                            <span class="score" data-score="@library.Scores.calculateVisualScoreOf(gtScore, remainingIncludingDeclined, sortedGTAverageScores)">
                                                 <span class="btn-sm displayed-score">@gtScore</span>
                                             </span>
                                             by @gtVoteCast <i class="fas fa-user"></i>
@@ -140,7 +141,7 @@
                                     }
                                     </td>
                                     <td class="number_table gt-votes">
-                                        <span class="score" data-score="@library.Scores.calculateVisualScoreOf(gtAndComiteeScore, totalRemaining + declinedTotal, sortedGTAndComiteeScores)">
+                                        <span class="score" data-score="@library.Scores.calculateVisualScoreOf(gtAndComiteeScore, remainingIncludingDeclined, sortedGTAndComiteeScores)">
                                             <span class="btn displayed-score">@gtAndComiteeScore</span>
                                         </span>
                                     </td>
@@ -310,14 +311,22 @@
 
                     @if(confType=="all"){ $("#showProposalType").attr('checked', true); }
                     @if(selectedTrack=="all"){ $("#showTrack").attr('checked', true); }
+                    $("#showMyVotes").attr('checked', localStorage.getItem("showMyVotes")==="true")
+                    $("#showGTVotes").attr('checked', localStorage.getItem("showGTVotes")==="true")
 
-                    ["#showProposalType", "#showTrack", "#showMyVotes", "#showGTVotes"].forEach(selector => $(selector).change());
+                    $.each(["#showProposalType", "#showTrack", "#showMyVotes", "#showGTVotes"], (_, selector) => $(selector).change());
                 });
 
-                function showMyVotes(show) { [6].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
-                function showGTVotes(show) { [2,5].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
-                function showProposalType(show) { [10].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
-                function showTrack(show) { [9].forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show)); }
+                function changeColumnsVisibility(colIndexes, show, localstorageKey) {
+                    colIndexes.forEach(colIndex => $('#allProposals').dataTable().fnSetColumnVis(colIndex, show));
+                    if(localstorageKey) {
+                        localStorage.setItem(localstorageKey, ""+show);
+                    }
+                }
+                function showMyVotes(show) { changeColumnsVisibility([6], show, "showMyVotes"); }
+                function showGTVotes(show) { changeColumnsVisibility([2,5], show, "showGTVotes"); }
+                function showProposalType(show) { changeColumnsVisibility([10], show); }
+                function showTrack(show) { changeColumnsVisibility([9], show); }
         </script>
         }
     }
