@@ -6,16 +6,17 @@ Bonjour,
 Nous avons le regret de vous informer que votre proposition @proposal.title au format @Messages(proposal.talkType.id) n'a pas été acceptée.
 
 Nous vous remercions cependant pour le temps que vous avez consacré à préparer votre sujet.
-Si vous souhaitez vous inscrire, la conférence étant complète, nous avons mis en place un système d'inscription limité à deux places maximum
-sur le site de la conférence Devoxx France 2019 :
+Si vous souhaitez vous inscrire, la conférence étant complète, nous avons mis en place un système d'inscription limité à une place maximum
+sur le site de la conférence Devoxx France :
 
 https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email
 
 Si par ailleurs vous avez eu la chance d'avoir un autre sujet sélectionné et que ce sujet vous donne un badge speaker :
 ne partagez pas ce lien svp.
 Il est lié à votre présentation et il ne permet pas l'inscription d'autres personnes.
+Si vous avez besoin d'acheter plus d'une place, merci de nous contacter par email: info@@devoxx.fr
 
-La sélection cette année a encore été difficile avec plus de 945 sujets pour 234 slots.
+La sélection cette année a encore été difficile avec près de 800 propositions pour 200 sessions.
 
 Merci pour votre proposition,
 L'équipe de sélection de la conférence @Messages("longYearlyName")
@@ -23,13 +24,13 @@ L'équipe de sélection de la conférence @Messages("longYearlyName")
 ----------------------------------------------------------------------------------------------------------------
 }
 Hi,
-We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused,  keep in mind that
-we received close to 945 proposals and the available slots are very limited.
+We're sorry to inform you that your proposal for @Messages("longYearlyName") was refused, keep in mind that
+we received close to 800 proposals and the available slots are very limited.
 
 Proposition title : @proposal.title, @Messages(proposal.talkType.id).
 
 
-We would like to thank you sincerely for your proposal.
+We would like to thank you sincerely for your proposal and shown interest.
 Hopefully we can still welcome you at @Messages("longYearlyName"), registration details
 You can still register using a dedicated page for you here :
 https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email
