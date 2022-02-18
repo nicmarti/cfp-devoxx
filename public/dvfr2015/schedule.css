@@ -156,8 +156,8 @@
     padding: 4px;
 }
 
-.proposal_type_is_uni { background-color: #deccfe; }
-.proposal_type_is_lab { background-color: #f87ef6; }
+.proposal_type_is_uni { background-color: #d8c2ff; }
+.proposal_type_is_lab { background-color: #fddcfd; }
 .proposal_type_is_conf { background-color: #ccfecc; }
 .proposal_type_is_tia { background-color: #daeff4; }
 .proposal_type_is_quick { background-color: #fffec3; }
