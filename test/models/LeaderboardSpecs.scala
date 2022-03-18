@@ -33,7 +33,7 @@ import org.apache.commons.lang3.RandomStringUtils
 class LeaderboardSpecs extends PlaySpecification {
 
   // Use a different Redis Database than the PROD one
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6464", "redis.activeDatabase" -> 1)
 
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU

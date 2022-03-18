@@ -33,7 +33,7 @@ import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
   */
 class ApprovedProposalSpecs extends PlaySpecification {
   // Use a different Redis Database than the PROD one
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
+  val testRedis = Map("redis.host" -> "127.0.0.1", "redis.port" -> "6464", "redis.activeDatabase" -> 1)
 
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
@@ -51,13 +51,13 @@ class ApprovedProposalSpecs extends PlaySpecification {
       // GIVEN
       val proposal = Proposal.validateNewProposal(
         None,
-        lang="fr",
-        title="test proposal",
+        lang = "fr",
+        title = "test proposal",
         secondarySpeaker = None,
         otherSpeakers = Nil,
         talkType = ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
         audienceLevel = "audience level",
-        summary="summary",
+        summary = "summary",
         privateMessage = "private message",
         sponsorTalk = false,
         track = ConferenceDescriptor.ConferenceTracks.JAVA.id,
@@ -379,6 +379,201 @@ class ApprovedProposalSpecs extends PlaySpecification {
       // THEN
       ApprovedProposal.allApprovedTalksForSpeaker("firstThirdSpeaker").toList must be(Nil)
       ApprovedProposal.allApprovedTalksForSpeaker("newThirdSpeaker").toList mustEqual List(correctProposal.copy(mainSpeaker = "newSpeaker", otherSpeakers = List("newThirdSpeaker")))
+    }
+  }
+
+  "ApprovedProposal allSpeakersWithAcceptedTalksAndNoBadge" should {
+    //    "return the list of Speakers without a speaker badge" in new WithApplication(app = appWithTestRedis()) {
+    //      // WARN : flush the DB, but on Database = 1
+    //      Redis.pool.withClient {
+    //        client =>
+    //          client.flushDB()
+    //      }
+    //
+    //      // GIVEN
+    //      val speaker1 = Speaker.createSpeaker("speaker1",
+    //      "email@speaker1.com",
+    //        "speaker 01", "bio", Some("fr"), Some("twitter"),
+    //        Some("avatarUrl"), Some("company"), Some("blog"), "firstName", "qualif"
+    //      )
+    //      Speaker.save(speaker1)
+    //      val speaker2 = Speaker.createSpeaker("speaker2",
+    //        "email2@speaker.com",
+    //        "speaker 02", "bio", Some("fr"), Some("twitter2"),
+    //        Some("avatarUrl"), Some("company"), Some("blog"), "firstName 2", "qualif"
+    //      )
+    //      Speaker.save(speaker2)
+    //      val speaker3 = Speaker.createSpeaker("speaker3",
+    //        "email3@speaker.com",
+    //        "speaker 03", "bio3", Some("fr"), Some("twitter3"),
+    //        Some("avatarUrl3"), Some("company"), Some("blog"), "firstName 3", "qualif"
+    //      )
+    //      Speaker.save(speaker3)
+    //
+    //      val proposal = Proposal.validateNewProposal(None,
+    //        "fr",
+    //        "test proposal 2",
+    //        Some(speaker2.uuid),
+    //        List(speaker3.uuid),
+    //        ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+    //        "audience level",
+    //        "summary 2",
+    //        "private message 2",
+    //        sponsorTalk = false,
+    //        ConferenceDescriptor.ConferenceTracks.JAVA.id,
+    //        Some("beginner"),
+    //        userGroup = None,
+    //        videoLink = Some("http://www.youtube.fr"),
+    //        tags = None)
+    //
+    //      Proposal.save(speaker1.uuid, proposal, ProposalState.ACCEPTED)
+    //
+    //      // Cause we need to reload the Proposal
+    //      val correctProposal = Proposal.findById(proposal.id).get
+    //
+    //      // WHEN
+    //      ApprovedProposal.approve(correctProposal)
+    //
+    //      // THEN
+    //      ApprovedProposal.allApprovedSpeakers().isEmpty must beFalse
+    //      ApprovedProposal.allApprovedSpeakers().size must beEqualTo(3)
+    //      ApprovedProposal.allSpeakersWithAcceptedTalksAndNoBadge().size must beEqualTo(1)
+    //      ApprovedProposal.allSpeakersWithAcceptedTalksAndNoBadge().head._1 must beEqualTo(speaker3)
+    //    }
+    //
+    //    "return the three Speakers if talk is BOF" in new WithApplication(app = appWithTestRedis()) {
+    //      // WARN : flush the DB, but on Database = 1
+    //      Redis.pool.withClient {
+    //        client =>
+    //          client.flushDB()
+    //      }
+    //
+    //      // GIVEN
+    //      val speaker1 = Speaker.createSpeaker("speaker1",
+    //        "email@speaker1.com",
+    //        "speaker 01", "bio", Some("fr"), Some("twitter"),
+    //        Some("avatarUrl"), Some("company"), Some("blog"), "firstName", "qualif"
+    //      )
+    //      Speaker.save(speaker1)
+    //      val speaker2 = Speaker.createSpeaker("speaker2",
+    //        "email2@speaker.com",
+    //        "speaker 02", "bio", Some("fr"), Some("twitter2"),
+    //        Some("avatarUrl"), Some("company"), Some("blog"), "firstName 2", "qualif"
+    //      )
+    //      Speaker.save(speaker2)
+    //      val speaker3 = Speaker.createSpeaker("speaker3",
+    //        "email3@speaker.com",
+    //        "speaker 03", "bio3", Some("fr"), Some("twitter3"),
+    //        Some("avatarUrl3"), Some("company"), Some("blog"), "firstName 3", "qualif"
+    //      )
+    //      Speaker.save(speaker3)
+    //
+    //      val proposal = Proposal.validateNewProposal(None,
+    //        "fr",
+    //        "test proposal 2",
+    //        Some(speaker2.uuid),
+    //        List(speaker3.uuid),
+    //        ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
+    //        "audience level",
+    //        "summary 2",
+    //        "private message 2",
+    //        sponsorTalk = false,
+    //        ConferenceDescriptor.ConferenceTracks.JAVA.id,
+    //        Some("beginner"),
+    //        userGroup = None,
+    //        videoLink = Some("http://www.youtube.fr"),
+    //        tags = None)
+    //
+    //      Proposal.save(speaker1.uuid, proposal, ProposalState.ACCEPTED)
+    //
+    //      // Cause we need to reload the Proposal
+    //      val correctProposal = Proposal.findById(proposal.id).get
+    //
+    //      // WHEN
+    //      ApprovedProposal.approve(correctProposal)
+    //
+    //      // THEN
+    //      ApprovedProposal.allApprovedSpeakers().isEmpty must beFalse
+    //      ApprovedProposal.allApprovedSpeakers().size must beEqualTo(3)
+    //      ApprovedProposal.allSpeakersWithAcceptedTalksAndNoBadge().size must beEqualTo(3)
+    //
+    //    }
+
+    "return two Speakers if talk is BOF and one is selected in a CONF" in new WithApplication(app = appWithTestRedis()) {
+      // WARN : flush the DB, but on Database = 1
+      Redis.pool.withClient {
+        client =>
+          client.flushDB()
+      }
+
+      // GIVEN
+      val speaker1 = Speaker.createSpeaker("speaker1",
+        "email@speaker1.com",
+        "speaker 01", "bio", Some("fr"), Some("twitter"),
+        Some("avatarUrl"), Some("company"), Some("blog"), "firstName", "qualif"
+      )
+      Speaker.save(speaker1)
+      val speaker2 = Speaker.createSpeaker("speaker2",
+        "email2@speaker.com",
+        "speaker 02", "bio", Some("fr"), Some("twitter2"),
+        Some("avatarUrl"), Some("company"), Some("blog"), "firstName 2", "qualif"
+      )
+      Speaker.save(speaker2)
+      val speaker3 = Speaker.createSpeaker("speaker3",
+        "email3@speaker.com",
+        "speaker 03", "bio3", Some("fr"), Some("twitter3"),
+        Some("avatarUrl3"), Some("company"), Some("blog"), "firstName 3", "qualif"
+      )
+      Speaker.save(speaker3)
+
+      val proposal = Proposal.validateNewProposal(None,
+        "fr",
+        "test proposal 2",
+        Some(speaker2.uuid),
+        List(speaker3.uuid),
+        ConferenceDescriptor.ConferenceProposalTypes.BOF.id,
+        "audience level",
+        "summary 2",
+        "private message 2",
+        sponsorTalk = false,
+        ConferenceDescriptor.ConferenceTracks.JAVA.id,
+        Some("beginner"),
+        userGroup = None,
+        videoLink = None,
+        tags = None)
+
+      Proposal.save(speaker1.uuid, proposal, ProposalState.ACCEPTED)
+
+      val proposalCONF = Proposal.validateNewProposal(None,
+        "fr",
+        "CONF",
+        None,
+        List.empty,
+        ConferenceDescriptor.ConferenceProposalTypes.CONF.id,
+        "audience level",
+        "summary 2",
+        "private message",
+        sponsorTalk = false,
+        ConferenceDescriptor.ConferenceTracks.JAVA.id,
+        Some("beginner"),
+        userGroup = None,
+        videoLink = None,
+        tags = None)
+
+      Proposal.save(speaker3.uuid, proposalCONF, ProposalState.ACCEPTED)
+
+      // Cause we need to reload the Proposal
+      val correctProposal = Proposal.findById(proposal.id).get
+      val correctProposal2 = Proposal.findById(proposalCONF.id).get
+
+      // WHEN
+      ApprovedProposal.approve(correctProposal)
+      ApprovedProposal.approve(correctProposal2)
+
+      // THEN
+      ApprovedProposal.allApprovedSpeakers().isEmpty must beFalse
+      ApprovedProposal.allApprovedSpeakers().size must beEqualTo(3)
+      ApprovedProposal.allSpeakersWithAcceptedTalksAndNoBadge().size must beEqualTo(2)
     }
 
   }

@@ -33,7 +33,7 @@ import org.apache.commons.lang3.RandomStringUtils
  */
 class TrackLeaderSpecs extends PlaySpecification {
 
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364")
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6464")
 
   val sampleTrack = ConferenceDescriptor.ConferenceTracks
 

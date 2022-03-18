@@ -6,8 +6,8 @@ services:
    ports:
      - 9200:9200
      - 9300:9300
-  redis:
-   container_name: cfp-devoxx_redis
-   image : redis:5.0.3
-   ports:
-     - 6379:6379
+  redis_test:
+     container_name: cfp-devoxx_redis_test
+     image: redis:5.0.3
+     ports:
+       - 6464:6379

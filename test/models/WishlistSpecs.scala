@@ -36,8 +36,8 @@ class WishlistSpecs extends PlaySpecification {
   // Just use a new redis instance for testing. Of course, do not use FLUSHDB ;-)
   val redisTestServer = Map(
     "redis.host" -> "localhost"
-    , "redis.port" -> "6364"
-    , "redis.activeDatabase" -> 1
+    , "redis.port" -> "6464"
+    , "redis.activeDatabase" -> 2
   )
 
   val appWithTestRedis = () => FakeApplication(additionalConfiguration = redisTestServer)

@@ -36,7 +36,7 @@ import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
   */
 class ArchivedProposalSpecs extends PlaySpecification {
   // Use a different Redis Database than the PROD one
-  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6364", "redis.activeDatabase" -> 1)
+  val testRedis = Map("redis.host" -> "localhost", "redis.port" -> "6464", "redis.activeDatabase" -> 1)
 
   // To avoid Play Cache Exception during tests, check this
   // https://groups.google.com/forum/#!topic/play-framework/PBIfeiwl5rU
@@ -368,7 +368,18 @@ class ArchivedProposalSpecs extends PlaySpecification {
     val webuser = Webuser.createSpeaker(email, "John", "UnitTest")
     Webuser.saveAndValidateWebuser(webuser)
     val uuid = webuser.uuid
-    val speaker = Speaker.createSpeaker(uuid, email, "j", "bio", None, Some("Twitter"), None, Some("company"), Some("blog"), "john", "newbie", Some("3314722102030"))
+
+    val speaker = Speaker.createSpeaker(uuid
+    ,email
+    ,"name"
+    ,"bio"
+    ,Some("fr")
+    ,Some("twitter")
+    ,Some("http://url")
+    , Option("company")
+    , Option("blog")
+    , "firstname"
+    ,"qualif")
     Speaker.save(speaker)
     uuid
   }

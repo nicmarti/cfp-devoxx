@@ -1,10 +1,10 @@
 package models
 
-import java.util.Locale
-
 import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.Play
+
+import java.util.Locale
 
 /**
   * ConferenceDescriptor.
@@ -22,8 +22,8 @@ case class ConferenceUrls(faq: String, registration: String, confWebsite: String
   def cfpURL(): String = {
     val cleanCfpHostname = cfpHostname match {
       case null => "http://cfp.devoxx.fr"
-      case ""  => "http://cfp.devoxx.fr"
-      case x if x.endsWith("/") => x.substring(0,x.length - 1)
+      case "" => "http://cfp.devoxx.fr"
+      case x if x.endsWith("/") => x.substring(0, x.length - 1)
       case _ => cfpHostname
     }
     if (Play.current.configuration.getBoolean("cfp.activateHTTPS").getOrElse(false)) {
@@ -154,37 +154,45 @@ object ConferenceDescriptor {
     def parse(propConf: String): ProposalConfiguration = {
       ALL.find(p => p.id == propConf).getOrElse(ConferenceDescriptor.ConferenceProposalConfigurations.UNKNOWN)
     }
+
     def totalSlotsCount: Int = ALL.map(_.slotsCount).sum
-    def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
-      ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
-    }
+
     def getProposalsImplyingATrackSelection: List[ProposalConfiguration] = {
       ALL.filter(p => p.impliedSelectedTrack.nonEmpty)
     }
+
+    def isDisplayedFreeEntranceProposals(pt: ProposalType): Boolean = {
+      ALL.filter(p => p.id == pt.id).map(_.freeEntranceDisplayed).headOption.getOrElse(false)
+    }
+
     def getHTMLClassFor(pt: ProposalType): String = {
       ALL.filter(p => p.id == pt.id).map(_.htmlClass).headOption.getOrElse("unknown")
     }
+
     def isChosablePreferredDaysProposals(pt: ProposalType): Boolean = {
-      ALL.filter(p => p.id == pt.id).map(_.chosablePreferredDay).headOption.getOrElse(false)
+      ALL.filter(p => p.id == pt.id).exists(_.chosablePreferredDay)
     }
-    def doesProposalTypeGiveSpeakerFreeEntrance(pt: ProposalType): Boolean = {
-      ALL.filter(p => p.id == pt.id).map(_.givesSpeakerFreeEntrance).headOption.getOrElse(false)
-    }
+
     def doesProposalTypeAllowOtherSpeaker(pt: ProposalType): Boolean = {
-      ALL.filter(p => p.id == pt.id).map(_.allowOtherSpeaker).headOption.getOrElse(true)
+      ALL.filter(p => p.id == pt.id).exists(_.allowOtherSpeaker)
     }
+
     def concernedByCountQuotaRestriction: List[ProposalConfiguration] = {
       ALL.filter(_.concernedByCountQuotaRestriction)
     }
+
     def concernedByCountQuotaRestrictionAndNotHidden: List[ProposalConfiguration] = {
       ALL.filter(p => p.concernedByCountQuotaRestriction && !p.hiddenInCombo)
     }
+
     def isConcernedByCountRestriction(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.concernedByCountQuotaRestriction)
     }
+
     def doesItGivesSpeakerFreeEntrance(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.givesSpeakerFreeEntrance)
     }
+
     def accessibleTypeToGoldenTicketReviews(proposalType: ProposalType): Boolean = {
       ALL.filter(_.id == proposalType.id).exists(_.accessibleTypeToGoldenTicketReviews())
     }
@@ -192,16 +200,16 @@ object ConferenceDescriptor {
 
   // TODO Configure here your Conference's tracks.
   object ConferenceTracks {
-    val JAVA = Track("java", "java.label")
-    val MOBILE = Track("mobile", "mobile.label")
-    val WEB = Track("wm", "web.label")
-    val ARCHISEC = Track("archisec", "archisec.label")
-    val CLOUD = Track("cldops", "cloud.label")
-    val AGILE_DEVOPS = Track("agTest", "agile_devops.label")
-    val BIGDATA = Track("bigd", "bigdata.label")
-    val FUTURE = Track("future", "future.label")
-    val LANG = Track("lang", "lang.label")
-    val UNKNOWN = Track("unknown", "unknown track")
+    val JAVA: Track = Track("java", "java.label")
+    val MOBILE: Track = Track("mobile", "mobile.label")
+    val WEB: Track = Track("wm", "web.label")
+    val ARCHISEC: Track = Track("archisec", "archisec.label")
+    val CLOUD: Track = Track("cldops", "cloud.label")
+    val AGILE_DEVOPS: Track = Track("agTest", "agile_devops.label")
+    val BIGDATA: Track = Track("bigd", "bigdata.label")
+    val FUTURE: Track = Track("future", "future.label")
+    val LANG: Track = Track("lang", "lang.label")
+    val UNKNOWN: Track = Track("unknown", "unknown track")
     val ALL = List(JAVA, MOBILE, WEB, ARCHISEC, AGILE_DEVOPS, CLOUD, BIGDATA, FUTURE, LANG, UNKNOWN)
   }
 
@@ -688,7 +696,7 @@ object ConferenceDescriptor {
     }
 
     val fridaySchedule: List[Slot] = {
-      fridayBreaks ++ keynoteSlotsFriday ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ labsSlotsFriday  ++ othersSlotsFriday
+      fridayBreaks ++ keynoteSlotsFriday ++ conferenceSlotsFriday ++ quickiesSlotsFriday ++ labsSlotsFriday ++ othersSlotsFriday
     }
 
     def all: List[Slot] = {
@@ -779,6 +787,6 @@ object ConferenceDescriptor {
 
   def maxProposals(): Int = Play.current.configuration.getInt("cfp.max.proposals").getOrElse(5)
 
-  def isSendProposalRefusedEmail:Boolean = Play.current.configuration.getBoolean("cfp.sendProposalRefusedEmail").getOrElse(true)
+  def isSendProposalRefusedEmail: Boolean = Play.current.configuration.getBoolean("cfp.sendProposalRefusedEmail").getOrElse(true)
 }
 

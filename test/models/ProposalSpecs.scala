@@ -36,7 +36,7 @@ import play.api.test.{FakeApplication, PlaySpecification, WithApplication}
 class ProposalSpecs extends PlaySpecification {
   val testRedis = Map(
     "redis.host" -> "localhost"
-    , "redis.port" -> "6364"
+    , "redis.port" -> "6464"
     , "redis.activeDatabase" -> 1
   )
   val appWithTestRedis = FakeApplication(additionalConfiguration = testRedis)

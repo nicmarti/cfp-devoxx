@@ -1,44 +1,68 @@
 @(speakersAndProposals: List[(Speaker, Iterable[Proposal])])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@main("CFP Speakers - with a badge") {
-    <div class="row">
-        <div class="col-lg-offset-4 col-md-4">
-            <h2>CFP Admin</h2>
-        </div>
-        <div class="clearfix"></div>
+    @main("CFP Speakers - with a badge") {
+        <div class="row">
+            <div class="col-lg-offset-4 col-md-4">
+                <h2>CFP Admin</h2>
+            </div>
+            <div class="clearfix"></div>
 
-        @if(flash.get("error").isDefined) {
-            <div class="alert alert-danger alert-dismissable col-md-12">
-                <strong>Error :</strong>
-                @flash.get("error").get
-            </div>
-        }
-        @if(flash.get("success").isDefined) {
-            <div class="alert alert-success alert-dismissable col-md-12">
-            @flash.get("success").get
-            </div>
-        }
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3>All speakers without a speaker badge</h3>
-                    <em>3rd, 4th or other speaker with no badge</em>
-                    <em>Filtered-out Proposal such as B.O.F that does not give speaker free entrance</em>
-                    <br>
-Removed also Proposals with state != Accepted. Thus, a speaker with approved proposals but that forget to accept, should not be listed here.
-                    <br>
-                    <br>
-                    <br>
-                    <span class="badge badge-info">@speakersAndProposals.size speakers</span>
+            @if(flash.get("error").isDefined) {
+                <div class="alert alert-danger alert-dismissable col-md-12">
+                    <strong>Error :</strong>
+                    @flash.get("error").get
                 </div>
-                <div class="panel-footer">
-                     <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="fas fa-users"></i> @Messages("admin.btn.speakers")</a>
+            }
+            @if(flash.get("success").isDefined) {
+                <div class="alert alert-success alert-dismissable col-md-12">
+                @flash.get("success").get
                 </div>
+            }
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>All speakers without a speaker badge</h3>
+                        <em>3rd, 4th or other speaker with no badge</em>
+                        <em>Filtered-out Proposal such as B.O.F that does not give speaker free entrance</em>
+                        <br>
+                        Removed also Proposals with state != Accepted. Thus, a speaker with approved proposals but that forget to accept, should not be listed here.
+                        <br>
+                        <p>If the speaker is invited, then he/she is include in the list of "official speakers"</p>
+                        <br>
+                        <br>
+                        <span class="badge badge-info">@speakersAndProposals.size speakers</span>
+                    </div>
+                    <div class="panel-footer">
+                        <a href="@routes.CFPAdmin.allSpeakers()" class="btn btn-sm btn-primary"><i class="fas fa-users"></i> @Messages("admin.btn.speakers")</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <pre>
+                    email @speakersAndProposals.sortBy(_._1.email).map { case (speaker, props) =>
+                    @speaker.cleanName @speaker.email.trim
+                }
+                </pre>
+            </div>
+            <div class="col">
+                <table class="table table-bordered">
+                @speakersAndProposals.sortBy(_._1.email).map { case (speaker, proposals) =>
+                <Tr>
+                    <td>@speaker.cleanName
+                        <br>
+                        @tags.checkInvited(speaker.uuid)
+                    </td>
+                    <td>
+                    @proposals.map { p =>
+                        @p.id
+                        <p><a href="@routes.CFPAdmin.openForReview(p.id)">@p.id @p.title</a> </p>
+                    }
+                </td>
+                </Tr>
+                }
+
+                </table>
             </div>
         </div>
-<pre>
-firstName,lastName,email,lang,reference,company @speakersAndProposals.sortBy(_._1.name.map(_.capitalize)).map{case(speaker,props)=>
-@speaker.firstName.get,@speaker.name.map(_.toUpperCase),@speaker.email.trim,@props.map(p=>p.lang).headOption.getOrElse("en"),@speaker.uuid,@speaker.company.map(_.trim).getOrElse(" ")}
-</pre>
-    </div>
-}
+    }

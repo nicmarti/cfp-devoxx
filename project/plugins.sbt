@@ -15,8 +15,8 @@ dependencyOverrides += "org.scala-sbt" % "sbt" % "0.13.13"
 // Use the Play sbt plugin for Play projects
 // Play 2.3.x the last smart version before the D.I nightmare
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.10")
-addSbtPlugin("com.updateimpact" % "updateimpact-sbt-plugin" % "2.1.1")
-addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-M14")
+//addSbtPlugin("com.updateimpact" % "updateimpact-sbt-plugin" % "2.1.1")
+//addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-M14")
 
 // web plugins
 addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.0.6")

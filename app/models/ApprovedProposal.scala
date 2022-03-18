@@ -25,6 +25,7 @@ package models
 
 import library.Redis
 import models.ConferenceDescriptor.ConferenceProposalConfigurations
+import models.ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance
 
 /**
   * Approve or reject a proposal
@@ -117,7 +118,7 @@ object ApprovedProposal {
       }
   }
 
-  def isApproved(proposalId:String):Boolean= Redis.pool.withClient{
+  def isApproved(proposalId: String): Boolean = Redis.pool.withClient {
     client =>
       client.sismember("ApprovedById:", proposalId)
   }
@@ -316,7 +317,7 @@ object ApprovedProposal {
     implicit client =>
       client.keys("ApprovedSpeakers:*").flatMap {
         key =>
-          val speakerUUID = key.substring("ApprovedSpeakers:".length)
+          val speakerUUID = key.substring("ApprovedSpeakers:".length).trim
           for (speaker <- Speaker.findByUUID(speakerUUID)) yield speaker
       }
   }
@@ -372,5 +373,24 @@ object ApprovedProposal {
       }
       val setOfSpeakers = allSpeakers.filterNot(_._2.isEmpty).map(_._1)
       setOfSpeakers
+  }
+
+  def allSpeakersWithAcceptedTalksAndNoBadge(): List[(Speaker, Iterable[Proposal])] = Redis.pool.withClient {
+    implicit client =>
+      val speakers: List[Speaker] = ApprovedProposal.allApprovedSpeakers().toList
+
+      val proposals: List[(Speaker, Iterable[Proposal])] = speakers.map {
+        speaker =>
+          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values.toSet
+          val (proposalsWithSpeakerBadges, proposalsWithNoSpeakerBadges) = allProposalsForThisSpeaker.partition(proposal => doesItGivesSpeakerFreeEntrance(proposal.talkType))
+          val (proposalsAsOtherSpeaker, asPrimaryOrSecondarySpeaker) = proposalsWithSpeakerBadges.partition(p => p.otherSpeakers.contains(speaker.uuid))
+          asPrimaryOrSecondarySpeaker match {
+            case x if x.isEmpty =>
+              (speaker, proposalsWithNoSpeakerBadges.union(proposalsAsOtherSpeaker))
+            case _ => (speaker, Nil) // if we have at least one proposal with a speaker badge then we return no proposals
+          }
+      }.filter(_._2.nonEmpty)
+      proposals
+
   }
 }

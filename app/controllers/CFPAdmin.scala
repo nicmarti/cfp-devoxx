@@ -756,7 +756,7 @@ object CFPAdmin extends SecureCFPController {
         speaker =>
           val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
           val onIfFirstOrSecondSpeaker = allProposalsForThisSpeaker.filter(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
-            .filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
+            .filter(p => ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(p.talkType))
           (speaker, onIfFirstOrSecondSpeaker)
       }.filter(_._2.nonEmpty).map {
         case (speaker, zeProposals) =>
@@ -777,34 +777,7 @@ object CFPAdmin extends SecureCFPController {
   // All speakers without a speaker's badge
   def allSpeakersWithAcceptedTalksAndNoBadge() = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
-      import ConferenceDescriptor.ConferenceProposalConfigurations._
-      val speakers = ApprovedProposal.allApprovedSpeakers()
-      val proposals: List[(Speaker, Iterable[Proposal])] = speakers.toList.map {
-        speaker =>
-          val allProposalsForThisSpeaker = Proposal.allApprovedAndAcceptedProposalsByAuthor(speaker.uuid).values
-            .filter(p => doesProposalTypeGiveSpeakerFreeEntrance(p.talkType))
-
-          val hasOneSpeakerBadge = allProposalsForThisSpeaker.exists(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
-
-          val onlyIfNotFirstOrSecondSpeaker = hasOneSpeakerBadge match {
-            case true => Iterable.empty[Proposal]
-            case _ => allProposalsForThisSpeaker.filterNot(p => p.mainSpeaker == speaker.uuid || p.secondarySpeaker.contains(speaker.uuid))
-          }
-
-          (speaker, onlyIfNotFirstOrSecondSpeaker)
-      }.filter(_._2.nonEmpty).map {
-        case (speaker, zeProposals) =>
-          val updated = zeProposals.filter {
-            proposal =>
-              Proposal.findProposalState(proposal.id).contains(ProposalState.ACCEPTED)
-          }
-          if (updated.size != zeProposals.size) {
-            play.Logger.debug(s"Removed rejected proposal for speaker ${speaker.cleanName}")
-          }
-
-          (speaker, updated)
-      }.filter(_._2.nonEmpty)
-
+      val proposals = ApprovedProposal.allSpeakersWithAcceptedTalksAndNoBadge()
       Ok(views.html.CFPAdmin.allSpeakersWithAcceptedTalksAndNoBadge(proposals))
   }
 
