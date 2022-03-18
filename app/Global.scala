@@ -48,7 +48,6 @@ object Global extends WithFilters(new CustomGzipFilter()) with GlobalSettings {
 
   override def onStop(app: Application) = {
     ZapActor.actor ! akka.actor.PoisonPill
-    ElasticSearchActor.masterActor ! StopIndex
     super.onStop(app)
   }
 }
