@@ -53,8 +53,6 @@ case object DoIndexAllAccepted
 
 case object DoIndexSchedule
 
-case object StopIndex
-
 case object DoCreateConfigureIndex
 
 class IndexMaster extends Actor {
