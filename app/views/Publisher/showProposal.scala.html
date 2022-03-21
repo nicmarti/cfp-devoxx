@@ -66,18 +66,21 @@
                 </p>
                 </div>
 
-                <div class="px-2 py-4 sm:bg-gray-300 md:bg-white lg:bg-white">
+                <div class="px-2 py-4 sm:bg-gray-300 md:bg-white lg:bg-white space-y-4">
+
                 @proposal.allSpeakers.map { speaker =>
+                    <div class="clear-right">
                     @speaker.avatarUrl.map { url =>
-                        <img src="@url" class="w-21" alt="@speaker.cleanName" title="@speaker.cleanName">
+                        <img src="@url" class="w-32 rounded float-right m-4" alt="@speaker.cleanName" title="@speaker.cleanName">
                     }.getOrElse {
-                        <img src="//www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=128" class="w-21" alt="@speaker.cleanName" title="@speaker.cleanName"/>
+                        <img src="//www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=128" class="w-32 rounded float-right m-4" alt="@speaker.cleanName" title="@speaker.cleanName"/>
                     }
 
-                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="text-bold hover:underline hover:text-yellow-600">
+                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="text-xl text-bold hover:underline hover:text-yellow-600">
                         <span class="text-yellow-600 text-bold">&gt;&nbsp;</span> @speaker.cleanName</a>
 
                     @Html(speaker.bioAsHtml)
+                    </div>
                 }
                 </div>
             </div>

@@ -50,19 +50,26 @@
                     <p class="text-gray-800"><span class="text-bold">Type de présentation :</span> <a class="text-yellow-600" href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></p>
                 </div>
                 <div class="w-3/5">
-                  <h4 class="text-3xl text-gray-800 text-bold">
-                      <a class="hover:text-underline hover:text-yellow-600"
-                      href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">
-                      <span class="text-4xl text-yellow-600 text-bold">&gt;&nbsp;</span>
-                      @proposal.title</a>
-                  </h4>
+                    <h4 class="text-3xl text-gray-800 text-bold">
+                        <a class="hover:text-underline hover:text-yellow-600"
+                        href="@routes.Publisher.showDetailsForProposal(proposal.id, proposal.escapedTitle)">
+                            <span class="text-4xl text-yellow-600 text-bold">&gt;&nbsp;</span>
+                            @proposal.title</a>
+                    </h4>
+                    <div class="clear-right">
 
-                  @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)){
-                    @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
-                         @tags.publisher.renderSpeaker(uuid,renderPhoto = true)
-                    }
-                  }
-                  <div class="w-full text-gray-700 mt-2 mb-3">@Html(proposal.summaryAsHtml)</div>
+                    </div>
+
+                  <div class="w-full text-gray-700 mt-2 mb-3 clear-right">
+                      <div class="float-right">
+                      @if(!proposal.allSpeakerUUIDs.forall(_ == speaker.uuid)){
+                          @proposal.allSpeakerUUIDs.filterNot(_==speaker.uuid).map{uuid=>
+                              @tags.publisher.renderSpeaker(uuid,renderPhoto = true)
+                          }
+                      }
+                      </div>
+                      @Html(proposal.summaryAsHtml)
+                  </div>
                 </div>
             </div>
         }

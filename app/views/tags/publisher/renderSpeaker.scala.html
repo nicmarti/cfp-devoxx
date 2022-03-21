@@ -4,7 +4,7 @@
 <a class="text-black hover:underline hover:text-yellow-600" href="@routes.Publisher.showSpeakerByName(speaker.urlName)" title="@speaker.cleanFirstName @speaker.cleanLastName(false)" alt="@speaker.urlName">
 @if(renderPhoto){
 @speaker.avatarUrl.map{url=>
- <img class="w-32 h-32" src="@url" alt="@speaker.cleanFirstName @speaker.cleanLastName(false)" title="@speaker.cleanFirstName @speaker.cleanLastName(false)"/>
+ <img class="w-48 rounded" src="@url" alt="@speaker.cleanFirstName @speaker.cleanLastName(false)" title="@speaker.cleanFirstName @speaker.cleanLastName(false)"/>
 }
 }
 @speaker.cleanFirstName @speaker.cleanLastName(false)
