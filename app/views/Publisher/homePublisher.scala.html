@@ -11,7 +11,7 @@
         </div>
     </section>
 
-    @if(ProgramSchedule.publishedProgramSchedule().map(_.showSchedule).getOrElse(false)) {
+    @if(ProgramSchedule.publishedProgramSchedule().exists(_.showSchedule)) {
         <section class="bg-white pb-1">
             <div class="container mx-auto">
                 <table class="w-full table-fixed mainSchedule">
@@ -19,17 +19,17 @@
                     <thead>
                         <tr>
                             <th class="w-1/3 scheduleHeader" scope="col">
-                                <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
+                                <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = None)">
                                 <span class="text-xl underline">@Messages("day-wednesday")</span>&nbsp;<i class="far fa-calendar-alt"></i>
                                 </a>
                             </th>
                             <th class="w-1/3 scheduleHeader" scope="col">
-                                <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
+                                <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = None)">
                                 <span class="text-xl underline">@Messages("day-thursday")</span>&nbsp;<i class="far fa-calendar-alt"></i>
                                 </a>
                             </th>
                             <th class="w-1/3 scheduleHeader" scope="col">
-                                <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = Some(ConferenceProposalTypes.BOF.id))">
+                                <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = None)">
                                 <span class="text-xl underline">@Messages("day-friday")</span>&nbsp;<i class="far fa-calendar-alt"></i>
                                 </a>
                             </th>
@@ -37,9 +37,9 @@
                     </thead>
                     <tbody>
                         @ConferenceProposalTypes.slottableTypes.map { proposalType =>
-                            @if(!models.ConferenceDescriptor.ConferenceSlots.all.filter(s => s.name == proposalType.id).isEmpty) {
+                            @if(models.ConferenceDescriptor.ConferenceSlots.all.exists(s => s.name == proposalType.id)) {
                                 <tr>
-                                    <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "wednesday", Messages(proposalType.simpleLabel)) </td>
+                                    <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "wednesday", Messages(proposalType.simpleLabel))</td>
                                     <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "thursday", Messages(proposalType.simpleLabel))</td>
                                     <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "friday", Messages(proposalType.simpleLabel))</td>
                                 </tr>
@@ -69,18 +69,23 @@
 
             <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
                 <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
-                    <a href="#" class="flex flex-wrap no-underline hover:no-underline">
-                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                    <a href="@routes.Publisher.showByTalkType("key")" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6 mt-5 mb-5">
                             Keynotes
                         </div>
-                        <p class="text-gray-800 text-base px-6 mb-5">
-                            Les plénières d’ouverture (Keynote) vous donnent rendez-vous cette année tous les jours à 9h30 précise.
-                            Elles mettront en avant comment l’écosystème IT a contribué à gérer la pandémie due au COVID-19.
+                        <p class="text-gray-800 text-base px-6">
+                            Les plénières d'ouverture (keynote) vous donnent rendez-vous cette année le jeudi et le vendredi à 9h précise.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Le thème de cette année: "Déjà 10 ans! Comment l'informatique a évoluée ces dix dernières années et comment elle pourra évoluer dans les dix prochaines."
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Toutes les sessions sont filmées et mise à disposition sur la chaîne Devoxx France de Youtube.
                         </p>
                     </a>
                 </div>
                 <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-                    <div class="flex items-center justify-start">
+                    <div class="flex items-center justify-end">
                         <a href="@routes.Publisher.showByTalkType("key")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                             Voir le détail
                         </a>
@@ -90,18 +95,23 @@
 
             <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
                 <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
-                    <a href="#" class="flex flex-wrap no-underline hover:no-underline">
-                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                    <a href="@routes.Publisher.showByTalkType("conf")" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6 mt-5 mb-5">
                             Conferences
                         </div>
-                        <p class="text-gray-800 text-base px-6 mb-5">
-                            Les conférences sont des présentations de 45mn, le jeudi et le vendredi. C'est le format le plus représenté, avec plus de 100 conférences
-                            pendant 2 jours. Toutes les sessions sont filmées, ce qui vous permet de revoir plus tard les conférences sur Youtube, sur la chaîne Devoxx France.
+                        <p class="text-gray-800 text-base px-6">
+                            Les conférences sont des présentations de 45mn, le jeudi et le vendredi.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            C'est le format le plus représenté, avec près de 100 conférences pendant 2 jours.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Toutes les sessions sont filmées et mise à disposition rapidement sur la chaîne Devoxx France de Youtube.
                         </p>
                     </a>
                 </div>
                 <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-                    <div class="flex items-center justify-start">
+                    <div class="flex items-center justify-end">
                         <a href="@routes.Publisher.showByTalkType("conf")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                             Voir le détail
                         </a>
@@ -111,15 +121,20 @@
 
             <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
                 <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
-                    <a href="#" class="flex flex-wrap no-underline hover:no-underline">
-                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                    <a href="@routes.Publisher.showByTalkType("uni")" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6 mt-5 mb-5">
                             University
                         </div>
-                        <p class="text-gray-800 text-base px-6 mb-5">Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes.</p>
+                        <p class="text-gray-800 text-base px-6">
+                            Les Universités sont des sessions longues de 3h, le mercredi, de 2 x 75 minutes.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Toutes les sessions sont filmées et mise à disposition rapidement sur la chaîne Devoxx France de Youtube.
+                        </p>
                     </a>
                 </div>
                 <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-                    <div class="flex items-center justify-start">
+                    <div class="flex items-center justify-end">
                         <a href="@routes.Publisher.showByTalkType("uni")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                             Voir le détail
                         </a>
@@ -130,15 +145,22 @@
             <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
                 <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
                     <a href="@routes.Publisher.showByTalkType("tia")" class="flex flex-wrap no-underline hover:no-underline">
-                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6 mt-5 mb-5">
                             TIA (Tools in Action)
                         </div>
-                        <p class="text-gray-800 text-base px-6 mb-5">Les TIA (Tools-in-Action) sont des sessions courtes de 30mn, destinées à présenter un outil, une pratique logiciel ou une solution.</p>
-                        <p class="text-gray-800 text-base px-6 mb-5">Les TIA ont lieu le mercredi et le jeudi en fin de journée.</p>
+                        <p class="text-gray-800 text-base px-6">
+                            Les TIA (Tools-in-Action) sont des sessions courtes de 30mn, destinées à présenter un outil, une pratique logiciel ou une solution.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Les TIA ont lieu le mercredi et le jeudi en fin de journée.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Toutes les sessions sont filmées et mise à disposition sur la chaîne Devoxx France de Youtube.
+                        </p>
                     </a>
                 </div>
                 <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-                    <div class="flex items-center justify-start">
+                    <div class="flex items-center justify-end">
                         <a href="@routes.Publisher.showByTalkType("tia")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                             Voir le détail
                         </a>
@@ -149,15 +171,21 @@
             <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
                 <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
                     <a href="@routes.Publisher.showByTalkType("quick")" class="flex flex-wrap no-underline hover:no-underline">
-                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6 mt-5 mb-5">
                             Quickies
                         </div>
-                        <p class="text-gray-800 text-base px-6 mb-5">Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner jeudi et vendredi. C'est LE format
-                        dédié aux débutants. Le format simple et rapide permet de découvrir un projet ou une idée pendant l'heure du repas.</p>
+                        <p class="text-gray-800 text-base px-6">
+                            Les Quickies sont des sessions courtes de 15 minutes, pendant l'heure du déjeuner jeudi et vendredi.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            C'est le format dédié aux débutants. Le format simple et rapide permet de découvrir un projet ou une idée pendant l'heure du repas.</p>
+                        <p class="text-gray-800 text-base px-6">
+                            Toutes les sessions sont filmées et mise à disposition sur la chaîne Devoxx France de Youtube.
+                        </p>
                     </a>
                 </div>
                 <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-                    <div class="flex items-center justify-start">
+                    <div class="flex items-center justify-end">
                         <a href="@routes.Publisher.showByTalkType("quick")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                             Voir le détail
                         </a>
@@ -168,17 +196,50 @@
             <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
                 <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
                     <a href="@routes.Publisher.showByTalkType("lab")" class="flex flex-wrap no-underline hover:no-underline">
-                        <div class="w-full font-bold text-xl text-gray-800 px-6">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6 mt-5 mb-5">
                             Hands-on Lab
                         </div>
-                        <p class="text-gray-800 text-base px-6 mb-5">Session pratique de 3h, dans des salles d'une trentaine personnes.
+                        <p class="text-gray-800 text-base px-6">
+                            Session pratique de 3h, dans des salles d'une trentaine personnes.
+                        <p class="text-gray-800 text-base px-6">
                             Les Labs sont des sessions pratiques pendant les 3 jours qui permettent de découvrir ou d'approfondir un sujet.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
                             Il faut venir avec son ordinateur, les hands-on labs proposent un accès à Internet via du Wifi.
-                            Attention le nombre de places est très limité.</p>
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Attention le nombre de places est très limité.
+                        </p>
                     </a>
                 </div>
                 <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-                    <div class="flex items-center justify-start">
+                    <div class="flex items-center justify-end">
+                        <a href="@routes.Publisher.showByTalkType("lab")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                            Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 p-6 flex flex-col flex-grow flex-shrink">
+                <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+                    <a href="@routes.Publisher.showByTalkType("bof")" class="flex flex-wrap no-underline hover:no-underline">
+                        <div class="w-full font-bold text-xl text-gray-800 px-6 mt-5 mb-5">
+                            BOF
+                        </div>
+                        <p class="text-gray-800 text-base px-6">
+                            Les BOF (Bird of a feather) sont des sessions mythiques de Devoxx France, à partir de 20h le jeudi soir.
+                        <p class="text-gray-800 text-base px-6">
+                            C'est le point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés.
+                        </p>
+                        <p class="text-gray-800 text-base px-6">
+                            Les BOFs se déroulent le soir de la soirée Meet-and-Greet.
+                            L'accès est possible pour les personnes ne participant pas à Devoxx France. Suivez les informations sur notre site web pour connaitre les modalités d'inscriptions.
+                        </p>
+                    </a>
+                </div>
+                <div class="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
+                    <div class="flex items-center justify-end">
                         <a href="@routes.Publisher.showByTalkType("lab")" class="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                             Voir le détail
                         </a>
@@ -188,36 +249,5 @@
 
         </div>
     </section>
-
-        <!-- Covid -->
-    <!--
-    <section class="bg-gray-100 py-8">
-        <div class="container mx-auto px-2 pt-4 pb-12 text-gray-800">
-            <h1 class="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
-                Evénements non organisés en 2021
-            </h1>
-            <div class="w-full mb-4">
-                <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
-                <p class="text-center text-gray-500 text-base px-6 mt-1">En raison de la crise de la COVID-19, les BOFs ainsi que les LABs sont annulés pour 2021.</p>
-                <p class="text-center text-gray-500 text-base px-6 mb-5">Dernière mise à jour : septembre 2021</p>
-            </div>
-
-            <div class="container mx-auto flex flex-wrap pt-4 pb-12">
-                <div class="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
-                    <div class="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
-                        <a href="#" class="flex flex-wrap no-underline hover:no-underline">
-                            <div class="w-full font-bold text-xl text-gray-800 px-6">
-                                BOFs (Bird of a Feather)
-                            </div>
-                            <p class="text-gray-800 text-base px-6 mb-5">La soirée du jeudi soir n'est pas maintenue, et donc les sessions de B.O.F sont annulées pour 2021.</p>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-    -->
 
 }
