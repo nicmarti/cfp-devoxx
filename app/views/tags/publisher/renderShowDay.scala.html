@@ -1,8 +1,8 @@
 @(typeTalk:ProposalType,day:String,label:String)
-@if(Slot.byType(typeTalk).filter(s => s.day == day).isEmpty) {
+@if(!Slot.byType(typeTalk).exists(s => s.day == day)) {
 
 } else {
-  <a href="@routes.Publisher.showByDay(day.trim.toLowerCase, includeTypes = Some(typeTalk.id))" title="Show @typeTalk talks on @day.capitalize">
+  <a href="@routes.Publisher.showByDay(day.trim.toLowerCase, includeTypes = Some(typeTalk.id))" title="Show @Messages(typeTalk.simpleLabel) talks on @day.capitalize">
   @label
   </a>
 }
