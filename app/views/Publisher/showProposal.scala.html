@@ -1,90 +1,97 @@
-
 @(proposal: Proposal, publishedConfiguration: Option[String], slot: Option[Slot], maybeProgramSchedule: Option[ProgramSchedule])(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
-@views.html.Publisher.devoxxFR(proposal.id + " " + proposal.title,Some(s"${proposal.title} "+Messages("sw.all." + proposal.talkType.id))) {
+    @views.html.Publisher.devoxxFR(proposal.id + " " + proposal.title, Some(s"${proposal.title} " + Messages("sw.all." + proposal.talkType.id))) {
 
-    <section class="bg-white border-b py-8">
-        <div class="container max-w-5xl mx-auto m-8">
-            <h1 class="w-full my-2 text-3xl font-bold leading-tight text-center text-gray-800">
-            @proposal.title
-            </h1>
-            <h3 class="w-full my-2 text-xl font-bold leading-tight text-center text-gray-800">
-                <a class="hover:underline hover:text-yellow-600"
-                href="@routes.Publisher.showByTalkType(proposal.talkType.id)">
-                <span class="text-2xl sm:text-xl text-yellow-600 text-bold">&gt;&nbsp;</span>
-                @Messages(proposal.talkType.id)</a>
-            </h3>
-        </div>
-        <div class="w-full mb-4">
-            <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
-        </div>
-    </section>
+        <section class="bg-white border-b py-8">
+            <div class="w-full mb-4 mt-6">
+                <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+            </div>
+            <div class="container max-w-5xl mx-auto m-8">
+                <h1 class="w-full my-2 text-3xl font-bold leading-tight text-center text-gray-800">
+                @proposal.title
+                </h1>
+                <h3 class="w-full my-2 text-xl font-bold leading-tight text-center text-gray-800">
+                    <a class="hover:underline hover:text-yellow-500"
+                    href="@routes.Publisher.showByTalkType(proposal.talkType.id)">
+                        <span class="text-2xl sm:text-xl text-yellow-500 text-bold">&gt;&nbsp;</span>
+                        @Messages(proposal.talkType.id)</a>
+                </h3>
+            </div>
+            <div class="w-full mb-4">
+                <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+            </div>
+        </section>
 
-    <section>
-        <div class="container mx-auto bg-white">
-            <div class="grid md:grid-cols-2 lg:grid-cols-2 sm:grid-cols-1">
+        <section>
+            <div class="container mx-auto bg-white">
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 sm:grid-cols-1">
 
-                <div class="px-2 py-4">
-
-                @tags.publisher.renderIconForTrack(proposal.track)
-                    <p class="text-left"><span class="text-bold text-xl">Track :</span> @Messages(proposal.track.label)</p>
-
-                    <p class="text-left"><span class="text-bold text-xl">Niveau de la présentation :</span> @Messages(proposal.audienceLevel + ".label")</p>
-
-                @if(slot.isDefined) {
-                    @if(maybeProgramSchedule.exists(_.showSchedule)) {
-                        @if(maybeProgramSchedule.exists(_.showRooms)) {
-                            <p class="text-left"><span class="text-bold text-xl">Salle :</span> @slot.map(_.room.name)
+                    <div class="px-2 py-4">
+                        @if(slot.isDefined) {
+                            @if(maybeProgramSchedule.exists(_.showSchedule)) {
+                                @if(maybeProgramSchedule.exists(_.showRooms)) {
+                                    <p class="text-left"><span class="text-bold text-xl">Salle :</span>
+                                    @slot.map(_.room.name)
+                                }
+                                <p class="text-left"><span class="text-bold text-xl text-black-800">Horaire :</span>
+                                    <span class="text-orange-500 md:text-xl">@slot.get.from.toDateTime(ConferenceDescriptor.current().timezone).toString("EEEE")
+                                    @slot.get.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
+                                    @slot.get.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
+                                    </span>
+                                </p>
+                            }
                         }
-                        <p class="text-left"><span class="text-bold text-xl">Horaire :</span>
-                        @slot.get.from.toDateTime(ConferenceDescriptor.current().timezone).toString("EEEE")
-                        @slot.get.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
-                        @slot.get.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
+
+                        <h4 class="text-xl">Résumé de la présentation :</h4>
+                        <div class="text-gray-700 mb-4 pl-4 prose">
+                        @Html(proposal.summaryAsHtml)
+                        </div>
+
+
+                        @tags.publisher.renderIconForTrack(proposal.track)
+                        <p class="text-left"><span class="text-bold text-xl">Track :</span> @Messages(proposal.track.label)</p>
+                        <p class="text-left"><span class="text-bold text-xl">Niveau de la présentation :</span> @Messages(proposal.audienceLevel + ".label")</p>
+
+                        @if(proposal.tags.isDefined) {
+                            <div class="py-3 border-1 border-t-2 border-solid border-gray-200">
+                                <p class="text-left"><span class="text-bold text-xl">Mots clés:</span>
+                                    @proposal.tags.get.filter(tag => tag.value.nonEmpty).map { tag =>
+                                        <a href="@routes.Publisher.showByTag(tag.id)" class="btn-devoxx">@tag.value</a>
+                                    }
+                            </div>
+                        }
+
+                        <p class="text-left mb-3 mt-3">
+                        @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
+                            @Messages("publisher.room") @slot.map(_.room.name)
+                        } else {
+                            @Messages("publisher.proposal.roomHidden")
+                        }
                         </p>
-                    }
-                }
-
-                <h4 class="text-xl">Résumé de la présentation :</h4>
-                    <div class="text-gray-500 mb-4 pl-4">
-                    @Html(proposal.summaryAsHtml)
                     </div>
-                @if(proposal.tags.isDefined) {
-                    <div class="mb-3">
-                    <p class="text-left"><span class="text-bold text-xl">Mots clés:</span>
-                    @proposal.tags.get.filter(tag => tag.value.nonEmpty).map{tag =>
-                        <a href="@routes.Publisher.showByTag(tag.id)" class="btn-devoxx">@tag.value</a>
+
+                    <div class="px-2 py-4 sm:bg-gray-300 md:bg-white lg:bg-white space-y-4">
+
+                    @proposal.allSpeakers.map { speaker =>
+                        <div class="clear-right">
+                            @speaker.avatarUrl.map { url =>
+                            <img src="@url" class="w-32 rounded float-right m-4" alt="@speaker.cleanName" title="@speaker.cleanName">
+                            }.getOrElse {
+                                <img src="//www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=128" class="w-32 rounded float-right m-4" alt="@speaker.cleanName" title="@speaker.cleanName"/>
+                            }
+
+                        <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="text-xl text-bold hover:underline hover:text-yellow-600">
+                            <span class="text-yellow-600 text-bold">&gt;&nbsp;</span>
+                            @speaker.cleanName</a>
+
+                            <div class="prose text-black-600">
+                            @Html(speaker.bioAsHtml)
+                            </div>
+                        </div>
                     }
                     </div>
-                }
-
-                <p class="text-left mb-3 mt-3">
-                @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
-                    @Messages("publisher.room") @slot.map(_.room.name)
-                } else {
-                    @Messages("publisher.proposal.roomHidden")
-                }
-                </p>
-                </div>
-
-                <div class="px-2 py-4 sm:bg-gray-300 md:bg-white lg:bg-white space-y-4">
-
-                @proposal.allSpeakers.map { speaker =>
-                    <div class="clear-right">
-                    @speaker.avatarUrl.map { url =>
-                        <img src="@url" class="w-32 rounded float-right m-4" alt="@speaker.cleanName" title="@speaker.cleanName">
-                    }.getOrElse {
-                        <img src="//www.gravatar.com/avatar/@Webuser.gravatarHash(speaker.email)?s=128" class="w-32 rounded float-right m-4" alt="@speaker.cleanName" title="@speaker.cleanName"/>
-                    }
-
-                    <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="text-xl text-bold hover:underline hover:text-yellow-600">
-                        <span class="text-yellow-600 text-bold">&gt;&nbsp;</span> @speaker.cleanName</a>
-
-                    @Html(speaker.bioAsHtml)
-                    </div>
-                }
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-}
+    }
