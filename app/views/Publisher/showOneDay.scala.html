@@ -89,11 +89,11 @@
                             // This works only if you are authenticated with a signed cookie and a valid play2 session
                             $.post('/favorites/likeOrUnlink' ,{proposalId:maybePropoposalId},
                                 function( jsonResponse ) {
-                                    if(jsonResponse.status=="unfav"){
+                                    if(jsonResponse.status==="unfav"){
                                         console.log("<-- Unfav ok");
                                         $($star).addClass("far fa-star").removeClass("fas fa-spinner fa-spin")
                                     }
-                                    if(jsonResponse.status=="fav"){
+                                    if(jsonResponse.status==="fav"){
                                         console.log("<-- Fav ok");
                                         $($star).addClass("fa-star").removeClass("far fa-spinner fa-spin")
                                     }
