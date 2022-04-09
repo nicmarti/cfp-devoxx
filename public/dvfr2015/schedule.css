@@ -117,13 +117,22 @@
     display: block;
 } @media print { .agendaTable .track { font-size: 0.8em; } }
 
-.agendaTable .endTime{
+.agendaTable span.timeSlotBox{
     display: block;
     background-color: #f4b787;
     color:white;
     padding: 2px;
     text-align: center;
-} @media print { .agendaTable .endTime { font-size: 0.8em; } }
+} @media print { .agendaTable span.timeSlotBox { font-size: 0.8em; } }
+.agendaTable div.timeSlotBox{
+    position: absolute;
+    bottom: 0;
+    width: 100%
+} @media print { .agendaTable div.timeSlotBox { display: none !important } }
+.agendaTable p.timeSlotBox{
+    margin: 5px 5px 0px 0px;
+    text-align: right !important
+} @media print { .agendaTable p.timeSlotBox { font-size: 0.8em; } }
 
 .agendaTable .proposalType {
     display: block;
