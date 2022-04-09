@@ -181,7 +181,7 @@ object Slot {
       perConfScheduleIdPrograms ++ programSchedulesPerConfScheduleIdForCurrentProposalType
     }
 
-    slotIds.filter(id => programSchedulesPerConfScheduleId.get(id).map(_.isEmpty).getOrElse(true))
+    slotIds.filter(id => programSchedulesPerConfScheduleId.get(id).forall(_.isEmpty))
   }
 
   def byType(proposalType: ProposalType): Seq[Slot] = {

@@ -2,10 +2,10 @@
 @import org.joda.time.DateTimeZone
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated && !zeSlot.isFiller) {
-            <td class="proposal tba" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">&nbsp;</td>
+            <td class="proposal tba" rowspan="@(overallSlots.count(s => s.fillerForSlotId.contains(zeSlot.id)) + 1)">&nbsp;</td>
         }
         @if(zeSlot.break.isDefined && roomIndex == 0) {
-            <td class="break skip-print-defaults" colspan="@(roomSize - subSlots.filter(s => !s.break.isDefined).size)">
+            <td class="break skip-print-defaults" colspan="@(roomSize - subSlots.count(s => s.break.isEmpty))">
             @Messages(s"sw.${zeSlot.break.get.id}")
             </td>
         }
@@ -13,7 +13,7 @@
             @* nothing to do.. we're on a filler *@
         } else {
             @zeSlot.proposal.map { p: Proposal =>
-                <td class="skip-max-width-on-divs proposal proposal_id_is_@p.cssId @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id lang_is_@p.lang" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
+                <td class="skip-max-width-on-divs proposal proposal_id_is_@p.cssId @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id lang_is_@p.lang" rowspan="@(overallSlots.count(s => s.fillerForSlotId.contains(zeSlot.id)) + 1)">
                     <i class="proposal_badge track"></i>
                     <div class="ribbon-wrapper">
                         <div class="ribbon-white">

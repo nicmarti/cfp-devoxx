@@ -27,7 +27,7 @@
 
     <div class="columns large-12 woocommerce">
         <table class="agendaTable for_day_@day skip-mb-on-print">
-             @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
+             @if(maybeProgramSchedule.exists(_.showRooms)) {
                  <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
@@ -44,11 +44,11 @@
                         @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
                     @rooms.sorted.zipWithIndex.map { case (room, index) =>
-                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=false, secretPublishKey, maybeProgramSchedule.map(_.favoritesActivated).getOrElse(false))
+                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=false, secretPublishKey, maybeProgramSchedule.exists(_.favoritesActivated))
                     }
                 </tr>
             }
-            @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
+            @if(maybeProgramSchedule.exists(_.showRooms)) {
                   <tr class="rooms">
                      <th><i class="far fa-calendar-alt-check"></i> @Messages("publisher.room")</th>
                      @rooms.sorted.map { room: Room =>
@@ -70,7 +70,7 @@
         }
     </ul>
 
-    @if(maybeProgramSchedule.map(_.favoritesActivated).getOrElse(false)) {
+    @if(maybeProgramSchedule.exists(_.favoritesActivated)) {
             <!-- *** Javascript for Favorite talk *** //-->
         <script type="text/javascript">
             (function($) {
