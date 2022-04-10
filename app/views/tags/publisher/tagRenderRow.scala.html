@@ -1,5 +1,15 @@
-@(subSlots: List[Slot], room: Room, roomIndex: Int, roomSize: Int, overallSlots: List[Slot], showTimeBox:Boolean, secretPublishKey: Option[String], favoritesActivated: Boolean = false)(implicit req:RequestHeader)
+@(subSlots: List[Slot], room: Room, roomIndex: Int, rooms: List[Room], overallSlots: List[Slot], showTimeBox:Boolean, secretPublishKey: Option[String], favoritesActivated: Boolean = false, debug: Boolean = false)(implicit req:RequestHeader)
 
+@if(debug) {
+    <td>
+    @subSlots.find(_.room.id == room.id).map { zeSlot: Slot =>
+        @if(zeSlot.isFiller){<strong><u>isFiller</u></strong>}else{isFiller}=@zeSlot.isFiller<br>
+        @if(zeSlot.notAllocated){<strong><u>notAllocated</u></strong>}else{notAllocated}=@zeSlot.notAllocated<br>
+        @if(zeSlot.break.isDefined){<strong><u>break</u></strong>}else{break}=<span title="@zeSlot.break.map(_.id).getOrElse("")">@zeSlot.break.isDefined</span><br>
+        @if(zeSlot.proposal.isDefined){<strong><u>proposal</u></strong>}else{proposal}=<span title="@zeSlot.proposal.map(_.title).getOrElse("")">@zeSlot.proposal.isDefined</span>
+    }
+    </td>
+} else {
     @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
         @if(zeSlot.notAllocated && !zeSlot.isFiller) {
             <td class="proposal tba" rowspan="@(overallSlots.count(s => s.fillerForSlotId.contains(zeSlot.id)) + 1)">&nbsp;</td>
@@ -48,3 +58,4 @@
     @if(!subSlots.exists(_.room.id == room.id) && !subSlots.exists(_.break.isDefined)) {
         <td class="room-closed">&nbsp;</td>
     }
+}
