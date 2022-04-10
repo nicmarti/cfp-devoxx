@@ -20,7 +20,7 @@
             <a href="@routes.Publisher.showByDay("fri", secretPublishKey, hideUselessRooms, includeTypes, excludeTypes)">@Messages("sw.agenda.fri")</a>
         </p>
 
-        @if(maybeProgramSchedule.map(_.showRooms).getOrElse(false)) {
+        @if(!maybeProgramSchedule.exists(_.showRooms)) {
             <p class="hide-on-print">@Messages("publisher.room.disclaimer")</p>
         }
     </div>
