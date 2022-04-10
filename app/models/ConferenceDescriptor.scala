@@ -452,7 +452,7 @@ object ConferenceDescriptor {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.OTHER.id, "friday",
             new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone),
-            new DateTime(s"${thirdDay}T14:30:00.000+02:00").toDateTime(confTimezone), r1)
+            new DateTime(s"${thirdDay}T14:15:00.000+02:00").toDateTime(confTimezone), r1)
       }
       cafePhilo
     }
