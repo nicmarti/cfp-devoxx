@@ -95,14 +95,14 @@ object Room {
     "par204",
     "par221M-222M",
     "par224M-225M",
-    "lab1",
-    "lab2",
-    "lab3",
-    "lab4",
     "hall_neuilly",
     "hall_paris",
     "lobby_neuilly",
-    "lobby_paris"
+    "lobby_paris",
+    "lab1",
+    "lab2",
+    "lab3",
+    "lab4"
   )
 
 }
