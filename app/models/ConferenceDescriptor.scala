@@ -143,7 +143,7 @@ object ConferenceDescriptor {
       concernedByCountQuotaRestriction = false, chosablePreferredDay = false, accessibleTypeToGoldenTicketReviews = () => ConferenceDescriptor.isCFPOpen)
     val KEY = ProposalConfiguration(id = "key", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.KEY.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "fas fa-microphone",
       concernedByCountQuotaRestriction = false, chosablePreferredDay = true, accessibleTypeToGoldenTicketReviews = () => false)
-    val OTHER = ProposalConfiguration(id = "other", slotsCount = 1, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false, htmlClass = "fas fa-microphone-alt",
+    val OTHER = ProposalConfiguration(id = "other", slotsCount = ConferenceSlots.all.count(_.name.equals(ConferenceProposalTypes.OTHER.id)), givesSpeakerFreeEntrance = true, freeEntranceDisplayed = false, htmlClass = "fas fa-microphone-alt",
       hiddenInCombo = true, chosablePreferredDay = false, accessibleTypeToGoldenTicketReviews = () => false)
     val UNKNOWN = ProposalConfiguration(id = "unknown", slotsCount = 0, givesSpeakerFreeEntrance = false, freeEntranceDisplayed = false,
       concernedByCountQuotaRestriction = false, htmlClass = "", hiddenInCombo = true, chosablePreferredDay = false, accessibleTypeToGoldenTicketReviews = () => false)
@@ -240,8 +240,10 @@ object ConferenceDescriptor {
 
     // Do not change the ID's once the program is published
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "", "Hall", None)
-    val HALL_A = Room("x_hall_a", "Open Data Camp", 100, "special", "", "Hall Maillot A", None)
-    val LOBBY_NEUILLY = Room("lobby_neuilly", "Lobby Neuilly", 100, "special", "", "Lobby Neuilly", None)
+    val HALL_EXPO_PARIS = Room("hall_paris", "Hall Exposition Paris", 100, "special", "", "Hall Paris", Some("Paris"))
+    val HALL_EXPO_NEUILLY = Room("hall_neuilly", "Hall Exposition Neuilly", 100, "special", "", "Hall Neuilly", Some("Neuilly"))
+    val LOBBY_PARIS = Room("lobby_paris", "Lobby Paris", 100, "special", "", "Lobby Paris", Some("Paris"))
+    val LOBBY_NEUILLY = Room("lobby_neuilly", "Lobby Neuilly", 100, "special", "", "Lobby Neuilly", Some("Neuilly"))
 
     val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera", "Amphi Bleu", None)
     val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre", "camera", "Amphi Maillot", Some("Hall"))
@@ -292,6 +294,8 @@ object ConferenceDescriptor {
 
     val allRoomsBOF = List(NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
+    val allRoomsOthersThursday = List(HALL_EXPO_PARIS)
+
     val allRoomsOthersFriday = List(LOBBY_NEUILLY)
 
     val keynoteRoom = List(AMPHI_BLEU)
@@ -303,9 +307,9 @@ object ConferenceDescriptor {
     val allRoomsQuickiesFriday: List[Room] = allRoomsQuickiesThu
 
     val allRooms = (List(
-      HALL_EXPO, HALL_A, PARIS_242A, PARIS_242B, PARIS_243, NEUILLY_253, PARIS_204, PARIS_201
+      HALL_EXPO, PARIS_242A, PARIS_242B, PARIS_243, NEUILLY_253, PARIS_204, PARIS_201
     ) ++ allRoomsUni ++ allRoomsTIAWed ++ allRoomsTIAThu ++ allRoomsLabsWednesday ++
-      allRoomsLabThursday ++ allRoomsLabFriday ++ allRoomsBOF ++ allRoomsOthersFriday ++
+      allRoomsLabThursday ++ allRoomsLabFriday ++ allRoomsBOF ++ allRoomsOthersThursday ++ allRoomsOthersFriday ++
       keynoteRoom ++ allRoomsConf ++ allRoomsQuickiesThu ++ allRoomsQuickiesFriday).distinct
 
     val allRoomsAsIdsAndLabels: Seq[(String, String)] = allRooms.map(a => (a.id, a.name)).sorted
@@ -432,6 +436,16 @@ object ConferenceDescriptor {
     }
 
     // OTHERS
+
+    val othersSlotsThursday: List[Slot] = {
+      val lesGrowthTech = ConferenceRooms.allRoomsOthersThursday.map {
+        r1 =>
+          SlotBuilder(ConferenceProposalTypes.OTHER.id, "thursday",
+            new DateTime(s"${secondDay}T15:30:00.000+02:00").toDateTime(confTimezone),
+            new DateTime(s"${secondDay}T17:30:00.000+02:00").toDateTime(confTimezone), r1)
+      }
+      lesGrowthTech
+    }
 
     val othersSlotsFriday: List[Slot] = {
       val cafePhilo = ConferenceRooms.allRoomsOthersFriday.map {
@@ -656,6 +670,9 @@ object ConferenceDescriptor {
         new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
+        new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T13:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "thursday",
         new DateTime(s"${secondDay}T16:15:00.000+02:00").toDateTime(confTimezone),
@@ -678,6 +695,9 @@ object ConferenceDescriptor {
       , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
         new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${thirdDay}T13:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
+      , SlotBuilder(ConferenceSlotBreaks.lunch, "friday",
+        new DateTime(s"${thirdDay}T13:15:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${thirdDay}T13:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.coffee, "friday",
         new DateTime(s"${thirdDay}T16:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${thirdDay}T16:45:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
@@ -692,7 +712,7 @@ object ConferenceDescriptor {
     }
 
     val thursdaySchedule: List[Slot] = {
-      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday ++ tiaSlotsThursday
+      thursdayBreaks ++ keynoteSlotsThursday ++ conferenceSlotsThursday ++ quickiesSlotsThursday ++ bofSlotsThursday ++ labsSlotsThursday ++ tiaSlotsThursday ++ othersSlotsThursday
     }
 
     val fridaySchedule: List[Slot] = {
