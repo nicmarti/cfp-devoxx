@@ -44,7 +44,7 @@
                         @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                     </th>
                     @rooms.sorted.zipWithIndex.map { case (room, index) =>
-                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showTimeBox=false, secretPublishKey, maybeProgramSchedule.exists(_.favoritesActivated))
+                        @tags.publisher.tagRenderRow(subSlots, room, index, rooms.sorted, slots, showTimeBox=false, secretPublishKey, maybeProgramSchedule.exists(_.favoritesActivated), debug = false)
                     }
                 </tr>
             }

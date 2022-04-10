@@ -1,4 +1,4 @@
-@(subSlots: List[Slot], room: Room, roomIndex: Int, rooms: List[Room], overallSlots: List[Slot], showTimeBox:Boolean, secretPublishKey: Option[String], favoritesActivated: Boolean = false, debug: Boolean = false)(implicit req:RequestHeader)
+@(subSlots: List[Slot], room: Room, roomIndex: Int, sortedRooms: List[Room], overallSlots: List[Slot], showTimeBox:Boolean, secretPublishKey: Option[String], favoritesActivated: Boolean = false, debug: Boolean = false)(implicit req:RequestHeader)
 
 @if(debug) {
     <td>
@@ -10,14 +10,24 @@
     }
     </td>
 } else {
-    @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
+    @defining((
+        roomIndex != 0 && subSlots.exists(slot => slot.room.id == sortedRooms(roomIndex-1).id && slot.break.isDefined),
+        sortedRooms.slice(roomIndex, sortedRooms.size).takeWhile{ testedRoom => !subSlots.exists(_.roomId == testedRoom.id) || subSlots.exists(slot => slot.roomId == testedRoom.id && slot.break.isDefined) },
+        subSlots.find(_.room.id == room.id)
+    )) { case (previousSlotIsBreak: Boolean, consecutiveBreakRooms: List[Room], maybeSlot: Option[Slot]) =>
+        @maybeSlot.map { zeSlot =>
+
         @if(zeSlot.notAllocated && !zeSlot.isFiller) {
             <td class="proposal tba" rowspan="@(overallSlots.count(s => s.fillerForSlotId.contains(zeSlot.id)) + 1)">&nbsp;</td>
         }
-        @if(zeSlot.break.isDefined && roomIndex == 0) {
-            <td class="break skip-print-defaults" colspan="@(roomSize - subSlots.count(s => s.break.isEmpty))">
-            @Messages(s"sw.${zeSlot.break.get.id}")
-            </td>
+        @if(zeSlot.break.isDefined /* && roomIndex == 0 */ ) {
+            @if(previousSlotIsBreak) {
+                @* nothing to do.. we're on a break filler *@
+            } else {
+                <td class="break skip-print-defaults" colspan="@(consecutiveBreakRooms.size)">
+                    @Messages(s"sw.${zeSlot.break.get.id}")
+                </td>
+            }
         }
         @if(zeSlot.isFiller) {
             @* nothing to do.. we're on a filler *@
@@ -54,7 +64,9 @@
                 </td>
             }
         }
+        }
     }
+
     @if(!subSlots.exists(_.room.id == room.id) && !subSlots.exists(_.break.isDefined)) {
         <td class="room-closed">&nbsp;</td>
     }
