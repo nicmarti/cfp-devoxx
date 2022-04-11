@@ -6,7 +6,9 @@
     @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
     - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
 </th>
-@slots.groupBy(_.room).keys.toList.sorted.zipWithIndex.map { case(room: Room, index) =>
-    @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, false, None)
+@defining(slots.groupBy(_.room).keys.toList.sorted) { (sortedRooms: List[Room]) =>
+    @sortedRooms.zipWithIndex.map { case (room: Room, index) =>
+        @tags.publisher.tagRenderRow(subSlots, room, index, sortedRooms, slots, false, None)
+    }
 }
 </tr>

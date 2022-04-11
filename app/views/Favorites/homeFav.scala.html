@@ -16,7 +16,7 @@
     <h2>@Messages("fav.day."+day)</h2>
     <div class="columns large-12 woocommerce">
         <table class="agendaTable">
-             @if(ProgramSchedule.publishedProgramSchedule().map(_.showRooms).getOrElse(false)) {
+             @if(ProgramSchedule.publishedProgramSchedule().exists(_.showRooms)) {
                  <tr>
                      <th><i class="far fa-calendar-alt-check"></i> Room</th>
                      @rooms.sorted.map { roomName: Room =>
@@ -32,7 +32,7 @@
                     - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
                 </th>
                 @rooms.sorted.zipWithIndex.map { case(room, index) =>
-                    @tags.publisher.tagRenderRow(subSlots, room, index, rooms.size, slots, showEndTime=true, None)
+                    @tags.publisher.tagRenderRow(subSlots, room, index, rooms.sorted, slots, showTimeBox=true, None)
                 }
             </tr>
             }

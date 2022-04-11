@@ -117,13 +117,22 @@
     display: block;
 } @media print { .agendaTable .track { font-size: 0.8em; } }
 
-.agendaTable .endTime{
+.agendaTable span.timeSlotBox{
     display: block;
     background-color: #f4b787;
     color:white;
     padding: 2px;
     text-align: center;
-} @media print { .agendaTable .endTime { font-size: 0.8em; } }
+} @media print { .agendaTable span.timeSlotBox { font-size: 0.8em; } }
+.agendaTable div.timeSlotBox{
+    position: absolute;
+    bottom: 0;
+    width: 100%
+} @media print { .agendaTable div.timeSlotBox { display: none !important } }
+.agendaTable p.timeSlotBox{
+    margin: 5px 5px 0px 0px;
+    text-align: right !important
+} @media print { .agendaTable p.timeSlotBox { font-size: 0.8em; } }
 
 .agendaTable .proposalType {
     display: block;
@@ -163,7 +172,7 @@
 .proposal_type_is_quick { background-color: #fffec3; }
 .proposal_type_is_bof { background-color: #dee3f6; }
 .proposal_type_is_key { background-color: #ffcb9e; }
-.proposal_type_is_other { background-color: #e7ecfc; }
+.proposal_type_is_other { background-color: #d6fff5; }
 .agendaTable .proposal.tba { background-color: #eeeeee; padding: 2px; }
 .agendaTable .room-closed { background-color: #bbbbbb; padding: 2px; }
 

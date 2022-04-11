@@ -963,7 +963,7 @@ cfpadmin.totalVoted={0} voted
 cfpadmin.totalDelayedReviews={0} delayed
 cfpadmin.totalToReview={0} to review
 
-publisher.room.disclaimer=The designated room for a presentation can be changed 48 hours before the beginning of Devoxx.
+publisher.room.disclaimer=Rooms are displayed 48 hours before the beginning of Devoxx France.
 
 cfp.showAgenda.title=Agenda
 cfp.showAgenda.txt=The agenda is now online, see the list of conferences.

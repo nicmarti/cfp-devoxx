@@ -73,34 +73,36 @@ object Room {
   }
 
   val fixedOrderForRoom = IndexedSeq("a_hall",
-    "lobby_neuilly",
     "b_amphi",
     "c_maillot",
-    "d_par241",
     "f_neu251",
     "e_neu252",
+    "neu253",
+    "neu253_t",
+    "d_par241",
     "par242AB",
     "par242A",
     "par242AT",
     "par242B",
     "par242BT",
     "par243",
-    "neu253",
-    "neu253_t",
     "par243_t",
+    "neu_212_213",
+    "neu_232_232",
+    "neu_234_235",
     "par201",
     "par202_203",
     "par204",
     "par221M-222M",
     "par224M-225M",
-    "neu_232_232",
-    "neu_234_235",
-    "neu_212_213",
+    "hall_neuilly",
+    "hall_paris",
+    "lobby_neuilly",
+    "lobby_paris",
     "lab1",
     "lab2",
     "lab3",
-    "lab4",
-    "x_hall_a"
+    "lab4"
   )
 
 }
@@ -181,7 +183,7 @@ object Slot {
       perConfScheduleIdPrograms ++ programSchedulesPerConfScheduleIdForCurrentProposalType
     }
 
-    slotIds.filter(id => programSchedulesPerConfScheduleId.get(id).map(_.isEmpty).getOrElse(true))
+    slotIds.filter(id => programSchedulesPerConfScheduleId.get(id).forall(_.isEmpty))
   }
 
   def byType(proposalType: ProposalType): Seq[Slot] = {

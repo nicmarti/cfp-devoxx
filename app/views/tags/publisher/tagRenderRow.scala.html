@@ -1,19 +1,39 @@
-@(subSlots: List[Slot], room: Room, roomIndex: Int, roomSize: Int, overallSlots: List[Slot], showEndTime:Boolean, secretPublishKey: Option[String], favoritesActivated: Boolean = false)(implicit req:RequestHeader)
-@import org.joda.time.DateTimeZone
-    @subSlots.filter(_.room.id == room.id).map { zeSlot: Slot =>
+@(subSlots: List[Slot], room: Room, roomIndex: Int, sortedRooms: List[Room], overallSlots: List[Slot], showTimeBox:Boolean, secretPublishKey: Option[String], favoritesActivated: Boolean = false, debug: Boolean = false)(implicit req:RequestHeader)
+
+@if(debug) {
+    <td>
+    @subSlots.find(_.room.id == room.id).map { zeSlot: Slot =>
+        @if(zeSlot.isFiller){<strong><u>isFiller</u></strong>}else{isFiller}=@zeSlot.isFiller<br>
+        @if(zeSlot.notAllocated){<strong><u>notAllocated</u></strong>}else{notAllocated}=@zeSlot.notAllocated<br>
+        @if(zeSlot.break.isDefined){<strong><u>break</u></strong>}else{break}=<span title="@zeSlot.break.map(_.id).getOrElse("")">@zeSlot.break.isDefined</span><br>
+        @if(zeSlot.proposal.isDefined){<strong><u>proposal</u></strong>}else{proposal}=<span title="@zeSlot.proposal.map(_.title).getOrElse("")">@zeSlot.proposal.isDefined</span>
+    }
+    </td>
+} else {
+    @defining((
+        roomIndex != 0 && subSlots.exists(slot => slot.room.id == sortedRooms(roomIndex-1).id && slot.break.isDefined),
+        sortedRooms.slice(roomIndex, sortedRooms.size).takeWhile{ testedRoom => !subSlots.exists(_.roomId == testedRoom.id) || subSlots.exists(slot => slot.roomId == testedRoom.id && slot.break.isDefined) },
+        subSlots.find(_.room.id == room.id)
+    )) { case (previousSlotIsBreak: Boolean, consecutiveBreakRooms: List[Room], maybeSlot: Option[Slot]) =>
+        @maybeSlot.map { zeSlot =>
+
         @if(zeSlot.notAllocated && !zeSlot.isFiller) {
-            <td class="proposal tba" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">&nbsp;</td>
+            <td class="proposal tba" rowspan="@(overallSlots.count(s => s.fillerForSlotId.contains(zeSlot.id)) + 1)">&nbsp;</td>
         }
-        @if(zeSlot.break.isDefined && roomIndex == 0) {
-            <td class="break skip-print-defaults" colspan="@(roomSize - subSlots.filter(s => !s.break.isDefined).size)">
-            @Messages(s"sw.${zeSlot.break.get.id}")
-            </td>
+        @if(zeSlot.break.isDefined /* && roomIndex == 0 */ ) {
+            @if(previousSlotIsBreak) {
+                @* nothing to do.. we're on a break filler *@
+            } else {
+                <td class="break skip-print-defaults" colspan="@(consecutiveBreakRooms.size)">
+                    @Messages(s"sw.${zeSlot.break.get.id}")
+                </td>
+            }
         }
         @if(zeSlot.isFiller) {
             @* nothing to do.. we're on a filler *@
         } else {
             @zeSlot.proposal.map { p: Proposal =>
-                <td class="skip-max-width-on-divs proposal proposal_id_is_@p.cssId @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id lang_is_@p.lang" rowspan="@(overallSlots.filter(s => s.fillerForSlotId.map(_ == zeSlot.id).getOrElse(false)).size + 1)">
+                <td class="skip-max-width-on-divs proposal proposal_id_is_@p.cssId @zeSlot.id proposal_type_is_@p.talkType.id proposal_track_is_@p.track.id lang_is_@p.lang" rowspan="@(overallSlots.count(s => s.fillerForSlotId.contains(zeSlot.id)) + 1)">
                     <i class="proposal_badge track"></i>
                     <div class="ribbon-wrapper">
                         <div class="ribbon-white">
@@ -26,17 +46,28 @@
                             @tags.publisher.renderSpeaker(speakerUUID)
                         }</span>
 
-                        @if(showEndTime){
-                            <span class="endTime"> @zeSlot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @zeSlot.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</span>
+                        @if(showTimeBox){
+                            <span class="timeSlotBox"> @zeSlot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm") - @zeSlot.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</span>
                         }
                     </div>
                     <div class="proposal_actions">
                         @tags.publisher.renderFavorite(p.id, favoritesActivated)
                     </div>
+                    @if(!showTimeBox) {
+                        <div class="timeSlotBox hide-on-print ">
+                            <p class="timeSlotBox">
+                                <small>@zeSlot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")
+                                    - @zeSlot.to.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")</small>
+                            </p>
+                        </div>
+                    }
                 </td>
             }
         }
+        }
     }
+
     @if(!subSlots.exists(_.room.id == room.id) && !subSlots.exists(_.break.isDefined)) {
         <td class="room-closed">&nbsp;</td>
     }
+}
