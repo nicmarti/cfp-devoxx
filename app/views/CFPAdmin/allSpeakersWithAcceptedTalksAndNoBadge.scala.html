@@ -27,7 +27,7 @@
                         <br>
                         Removed also Proposals with state != Accepted. Thus, a speaker with approved proposals but that forget to accept, should not be listed here.
                         <br>
-                        <p>If the speaker is invited, then he/she is include in the list of "official speakers"</p>
+                        <p>Invited speakers are not listed below and will be listed as a "speaker with a badge"</p>
                         <br>
                         <br>
                         <span class="badge badge-info">@speakersAndProposals.size speakers</span>
@@ -55,7 +55,7 @@
                     </td>
                     <td>
                     @proposals.map { p =>
-                        @p.id
+                        @play.api.i18n.Messages(p.talkType.simpleLabel)
                         <p><a href="@routes.CFPAdmin.openForReview(p.id)">@p.id @p.title</a> </p>
                     }
                 </td>

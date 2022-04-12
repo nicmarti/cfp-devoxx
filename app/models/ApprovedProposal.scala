@@ -377,7 +377,9 @@ object ApprovedProposal {
 
   def allSpeakersWithAcceptedTalksAndNoBadge(): List[(Speaker, Iterable[Proposal])] = Redis.pool.withClient {
     implicit client =>
-      val speakers: List[Speaker] = ApprovedProposal.allApprovedSpeakers().toList
+      val speakers: List[Speaker] = ApprovedProposal.allApprovedSpeakers().filterNot{ speaker =>
+          models.Invitation.isInvited(speaker.uuid)
+      }.toList
 
       val proposals: List[(Speaker, Iterable[Proposal])] = speakers.map {
         speaker =>
