@@ -1,12 +1,11 @@
 package controllers
 
 import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchResponse}
+import library._
 import library.search.ElasticSearch
-import library.{SendMessageInternal, SendMessageToSpeaker, _}
 import models.Review._
-import models.{Review, _}
+import models._
 import org.apache.commons.io.FileUtils
-import org.joda.time.DateTimeZone
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
@@ -320,7 +319,7 @@ object CFPAdmin extends SecureCFPController {
 
           val watchedProposalMatchingTypeAndTrack = watchedProposals
             .filter(watcher => proposalIDsForType.contains(watcher.proposalId)
-              && selectedTrack.map{ track => proposalIdsByTrackForCurrentProposalType.get(track).map(_.contains(watcher.proposalId)).getOrElse(false) }.getOrElse(true)
+              && selectedTrack.map { track => proposalIdsByTrackForCurrentProposalType.get(track).map(_.contains(watcher.proposalId)).getOrElse(false) }.getOrElse(true)
             ).sortBy(watcher => -proposalLastVisits.get(watcher.proposalId).getOrElse(watcher.startedWatchingAt.toDateTime).getMillis)
           val proposalsById = Proposal.loadAndParseProposals(watchedProposalMatchingTypeAndTrack.map(_.proposalId).toSet, proposalType)
 
@@ -480,7 +479,11 @@ object CFPAdmin extends SecureCFPController {
               val gtVoteCast: Long = ReviewByGoldenTicket.totalVoteCastFor(p.id)
               val gtAndComiteeScore = library.Stats.average(
                 List(
-                  if(gtVoteCast>0){goldenTicketScore}else{scoreAndVotes._4.n},
+                  if (gtVoteCast > 0) {
+                    goldenTicketScore
+                  } else {
+                    scoreAndVotes._4.n
+                  },
                   scoreAndVotes._4.n
                 )
               )
@@ -570,61 +573,46 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  // Returns all speakers
+  // Returns all speakers - using AlfIO format
   def allSpeakersExport() = SecuredAction(IsMemberOf("admin")) {
-
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      val allSpeakers = Speaker.allSpeakers();
+      val allSpeakers = ApprovedProposal.allApprovedSpeakers()
+
+
+      val speakersAndProposals: Set[(Speaker, Map[String, Proposal])] = allSpeakers.map(s => (s, Proposal
+        .allNonArchivedProposalsByAuthor(s.uuid)
+        .filterNot(t => t._2.state == ProposalState.REJECTED || t._2.state == ProposalState.DECLINED || t._2.state == ProposalState.CANCELLED || t._2.state == ProposalState.DELETED)
+      )
+      ).filterNot(s => s._2.isEmpty)
 
       val dir = new File("./public/speakers")
       FileUtils.forceMkdir(dir)
 
       val conferenceNameSpaces = Messages("CONF.title").replaceAll(" ", "")
-      val file = new File(dir, s"speakers${conferenceNameSpaces}.csv")
+      val file = new File(dir, s"speakers_${conferenceNameSpaces}.csv")
 
       val writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), true)
 
-      allSpeakers.sortBy(_.email).foreach {
-        s =>
+      writer.println("firstName,lastName,email,lang,reference,company,jobTitle")
 
-          val proposals: List[Proposal] = Proposal.allAcceptedForSpeaker(s.uuid)
+      speakersAndProposals.foreach {
+        case (s, proposals) =>
+          writer.print(s.cleanFirstName)
+          writer.print(",")
+          writer.print(s.cleanLastName(removeAccents = false))
+          writer.print(",")
+          writer.print(s.email.trim)
+          writer.print(",")
+          writer.print(s.lang.getOrElse("en"))
+          writer.print(",")
+          writer.print(s.uuid)
+          writer.print(",")
+          writer.print(s.company.map(_.replaceAll(",", " ")).getOrElse(""))
+          writer.print(",")
+          writer.print("speaker")
+          writer.println()
 
-          if (proposals.nonEmpty) {
-
-            writer.print(s.email.toLowerCase)
-            writer.print(",")
-            writer.print(s.cleanTwitter.getOrElse("").toLowerCase)
-            writer.print(",")
-            writer.print(s.firstName.getOrElse("?").capitalize)
-            writer.print(",")
-            writer.print(s.name.getOrElse("?").capitalize)
-            writer.print(",")
-
-            proposals.foreach { p =>
-              val proposalUrl = "http://" + ConferenceDescriptor.current().conferenceUrls.cfpHostname +
-                routes.Publisher.showDetailsForProposal(p.id, p.escapedTitle)
-
-              ScheduleConfiguration.findSlotForConfType(p.talkType.id, p.id).map { slot =>
-                writer.print(Messages(p.talkType.id))
-                writer.print(": \"" + p.title.replaceAll(",", " ") + "\"")
-                writer.print("\", ")
-                writer.print("\"" + proposalUrl + "\", ")
-                writer.print(s" scheduled on ${slot.day.capitalize} ${slot.room.name} ")
-                writer.print(s"from ${slot.from.toDateTime(ConferenceDescriptor.current().timezone).toString("HH:mm")} to ${slot.to.toDateTime(DateTimeZone.forID("Europe/Paris")).toString("HH:mm")}")
-              }.getOrElse {
-                writer.print("\"")
-                writer.print(p.title.replaceAll(",", " "))
-                writer.print("\", ")
-                writer.print("\"" + proposalUrl + "\", ")
-                writer.print(s" ${Messages(p.talkType.label)} not yet scheduled")
-              }
-
-              writer.print(",")
-            }
-
-            writer.println()
-          }
       }
       writer.close()
       Ok.sendFile(file, inline = false)
@@ -702,8 +690,7 @@ object CFPAdmin extends SecureCFPController {
         allSpeakers.map(s => (s, Proposal.allNonArchivedProposalsByAuthor(s.uuid)))
       }
       val allProposalIDs: Set[Proposal] = speakersAndProposals.flatMap(_._2.values.toSet)
-
-      val approvedProposalIDs: Set[String] =  ApprovedProposal.filterApproved(allProposalIDs.map(_.id))
+      val approvedProposalIDs: Set[String] = ApprovedProposal.filterApproved(allProposalIDs.map(_.id))
 
       Ok(views.html.CFPAdmin.allSpeakers(speakersAndProposals, filterDeclinedRejected, approvedProposalIDs))
   }
@@ -847,7 +834,7 @@ object CFPAdmin extends SecureCFPController {
       }
   }
 
-  def switchPublicVisibility(uuid:String)= SecuredAction(IsMemberOf("cfp")) {
+  def switchPublicVisibility(uuid: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Webuser.updatePublicVisibility(uuid)
       Redirect(routes.CFPAdmin.allCFPWebusers()).flashing("success" -> s"Updated user $uuid")
