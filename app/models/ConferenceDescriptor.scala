@@ -201,31 +201,27 @@ object ConferenceDescriptor {
   // TODO Configure here your Conference's tracks.
   object ConferenceTracks {
     val JAVA: Track = Track("java", "java.label")
-    val MOBILE: Track = Track("mobile", "mobile.label")
     val WEB: Track = Track("wm", "web.label")
     val ARCHISEC: Track = Track("archisec", "archisec.label")
     val CLOUD: Track = Track("cldops", "cloud.label")
-    val AGILE_DEVOPS: Track = Track("agTest", "agile_devops.label")
     val BIGDATA: Track = Track("bigd", "bigdata.label")
-    val FUTURE: Track = Track("future", "future.label")
+    val GEEK: Track = Track("geek", "geek.label")
     val LANG: Track = Track("lang", "lang.label")
     val UNKNOWN: Track = Track("unknown", "unknown track")
-    val ALL = List(JAVA, MOBILE, WEB, ARCHISEC, AGILE_DEVOPS, CLOUD, BIGDATA, FUTURE, LANG, UNKNOWN)
+    val ALL = List(JAVA, WEB, ARCHISEC, CLOUD, BIGDATA, GEEK, LANG, UNKNOWN)
   }
 
   // TODO configure the description for each Track
   object ConferenceTracksDescription {
     val JAVA = TrackDesc(ConferenceTracks.JAVA.id, "/assets/dvfr2015/images/track-icons/java.png", "track.java.title", "track.java.desc")
-    val MOBILE = TrackDesc(ConferenceTracks.MOBILE.id, "/assets/dvfr2015/images/icon_mobile.png", "track.mobile.title", "track.mobile.desc")
     val WEB = TrackDesc(ConferenceTracks.WEB.id, "/assets/dvfr2015/images/track-icons/front.png", "track.web.title", "track.web.desc")
     val ARCHISEC = TrackDesc(ConferenceTracks.ARCHISEC.id, "/assets/dvfr2015/images/track-icons/arch.png", "track.archisec.title", "track.archisec.desc")
-    val AGILE_DEVOPS = TrackDesc(ConferenceTracks.AGILE_DEVOPS.id, "/assets/dvfr2015/images/track-icons/method.png", "track.agile_devops.title", "track.agile_devops.desc")
     val CLOUD = TrackDesc(ConferenceTracks.CLOUD.id, "/assets/dvfr2015/images/track-icons/cloud.png", "track.cloud.title", "track.cloud.desc")
     val BIGDATA = TrackDesc(ConferenceTracks.BIGDATA.id, "/assets/dvfr2015/images/track-icons/bigd.png", "track.bigdata.title", "track.bigdata.desc")
-    val FUTURE = TrackDesc(ConferenceTracks.FUTURE.id, "/assets/dvfr2015/images/track-icons/mind.png", "track.future.title", "track.future.desc")
+    val GEEK = TrackDesc(ConferenceTracks.GEEK.id, "/assets/dvfr2015/images/track-icons/mind.png", "track.geek.title", "track.geek.desc")
     val LANG = TrackDesc(ConferenceTracks.LANG.id, "/assets/dvfr2015/images/track-icons/langs.png", "track.lang.title", "track.lang.desc")
 
-    val ALL = List(JAVA, MOBILE, WEB, ARCHISEC, AGILE_DEVOPS, CLOUD, BIGDATA, FUTURE, LANG)
+    val ALL = List(JAVA, WEB, ARCHISEC, CLOUD, BIGDATA, GEEK, LANG)
 
     def findTrackDescFor(t: Track): TrackDesc = {
       ALL.find(_.id == t.id).getOrElse(JAVA)
@@ -241,8 +237,6 @@ object ConferenceDescriptor {
     // Do not change the ID's once the program is published
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "", "Hall", None)
     val HALL_EXPO_PARIS = Room("hall_paris", "Hall Exposition Paris", 100, "special", "", "Hall Paris", Some("Paris"))
-    val HALL_EXPO_NEUILLY = Room("hall_neuilly", "Hall Exposition Neuilly", 100, "special", "", "Hall Neuilly", Some("Neuilly"))
-    val LOBBY_PARIS = Room("lobby_paris", "Lobby Paris", 100, "special", "", "Lobby Paris", Some("Paris"))
     val LOBBY_NEUILLY = Room("lobby_neuilly", "Lobby Neuilly", 100, "special", "", "Lobby Neuilly", Some("Neuilly"))
 
     val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera", "Amphi Bleu", None)
@@ -329,9 +323,9 @@ object ConferenceDescriptor {
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
   object ConferenceSlots {
 
-    val firstDay = "2022-04-20"
-    val secondDay = "2022-04-21"
-    val thirdDay = "2022-04-22"
+    val firstDay = "2023-04-12"
+    val secondDay = "2023-04-13"
+    val thirdDay = "2023-04-14"
     lazy val confTimezone: DateTimeZone = ConferenceDescriptor.current().timezone
 
     // UNIVERSITY
@@ -731,9 +725,9 @@ object ConferenceDescriptor {
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
-    eventCode = "DevoxxFR2022",
+    eventCode = "DevoxxFR2023",
     // You will need to update conf/routes files with this code if modified
-    confUrlCode = "devoxxfr2022",
+    confUrlCode = "devoxxfr2023",
     frLangEnabled = true,
     fromEmail = Play.current.configuration.getString("mail.from").getOrElse("program@devoxx.fr"),
     committeeEmail = Play.current.configuration.getString("mail.committee.email").getOrElse("program@devoxx.fr"),
@@ -753,16 +747,16 @@ object ConferenceDescriptor {
       }
     ),
     timing = ConferenceTiming(
-      datesI18nKey = "20 avril au 22 avril 2022",
+      datesI18nKey = "12 avril au 14 avril 2023",
       speakersPassDuration = 3,
       preferredDayEnabled = true,
-      firstDayFr = "20 avril",
-      firstDayEn = "April, 20th",
-      datesFr = "du 20 avril au 22 avril 2022",
-      datesEn = "April, 20th - 22nd 2022",
-      cfpOpenedOn = DateTime.parse("2021-11-25T00:00:00+02:00"),
-      cfpClosedOn = DateTime.parse("2022-01-09T23:59:59+02:00"),
-      scheduleAnnouncedOn = DateTime.parse("2022-02-28T00:00:00+02:00"),
+      firstDayFr = "12 avril",
+      firstDayEn = "April, 12th",
+      datesFr = "du 12 avril au 14 avril 2023",
+      datesEn = "April, 12th - 14th 2023",
+      cfpOpenedOn = DateTime.parse("2022-11-21T00:00:00+02:00"),
+      cfpClosedOn = DateTime.parse("2023-01-08T23:59:59+02:00"),
+      scheduleAnnouncedOn = DateTime.parse("2023-02-20T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
     ),
     hosterName = "Clever-cloud", hosterWebsite = "http://www.clever-cloud.com/#DevoxxFR",
