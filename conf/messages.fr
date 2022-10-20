@@ -992,21 +992,21 @@ events.RemovedProposalSponsoredFlag=Suppression du flag [sponsorTalkFlag] sur la
 # ------------------------------------
 # We prefer to update one property file, so that string interpolation is faster, rather than
 # to try to use the ConferenceDescriptor for some static part of the web site.
-appel.conf.dates=Devoxx France 10ème édition, 20 au 22 avril 2022
-cfp.program.date=fin février 2022
-signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2022 :
-sw.show.title.wed=Journée du Mercredi 20 avril 2022
-sw.show.title.thu=Journée du Jeudi 21 avril 2022
-sw.show.title.fri=Journée du Vendredi 22 avril 2022
-cfp.title=Devoxx France 2022
+appel.conf.dates=Devoxx France 11ème édition, 12 au 14 avril 2023
+cfp.program.date=20 février 2023
+signup.txt1=Inscrivez-vous pour proposer vos sujets de présentation pour la conférence Devoxx France 2023 :
+sw.show.title.wed=Journée du Mercredi 12 avril 2023
+sw.show.title.thu=Journée du Jeudi 13 avril 2023
+sw.show.title.fri=Journée du Vendredi 14 avril 2023
+cfp.title=Devoxx France 2023
 conf.label.simple=Conférence
 CONF.subtitle=FR
-CONF.title=Devoxx France 2022
-conference.dates=20 au 22 avril 2022
-longName=Devoxx FR 2022 CFP
-longSplittedName_whiteEnd=FR 2022
-longYearlyName=Devoxx France 2022
-shortYearlyName=Devoxx FR 2022
+CONF.title=Devoxx France 2023
+conference.dates=20 au 22 avril 2023
+longName=Devoxx FR 2023 CFP
+longSplittedName_whiteEnd=FR 2023
+longYearlyName=Devoxx France 2023
+shortYearlyName=Devoxx FR 2023
 
 your.reviewer.rank=Votre classement
 reviewed=sujets revus

@@ -197,6 +197,7 @@ GET           /ar/allRefused/:talkType                                          
 GET           /ar/notifyApprove/:talkType                                       controllers.ApproveOrRefuse.notifyApprove(talkType:String, proposalId:String)
 GET           /ar/notifyRefuse/:talkType                                        controllers.ApproveOrRefuse.notifyRefused(talkType:String, proposalId:String)
 GET           /ar/showAcceptTerms                                               controllers.ApproveOrRefuse.showAcceptTerms()
+GET           /ar/terms_and_conditions                                          controllers.ApproveOrRefuse.displayOnlyTerms()
 GET           /ar/accept                                                        controllers.ApproveOrRefuse.acceptTermsAndConditions()
 GET           /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.showAcceptOrRefuseTalks()
 POST          /ar/acceptOrRefuseTalks                                           controllers.ApproveOrRefuse.doAcceptOrRefuseTalk()
