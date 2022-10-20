@@ -1,4 +1,4 @@
-@(formAccept: Form[Boolean])(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(formAccept: Form[Boolean], readonly:Boolean = false)(implicit lang: Lang, flash: Flash, req: RequestHeader)
 
 @main("Accept or refuse "+ Messages("shortName")+" terms") {
 
@@ -72,12 +72,20 @@ tout manquement aux principes énoncés ci-dessus entrainera mon exclusion de la
 (4) Je confirme qu'aucune autre permission n'est nécessaire pour que Devoxx France puisse utiliser mes éléments de présentation.
 
 </textarea>
-                            @helper.form(routes.ApproveOrRefuse.acceptTermsAndConditions()) {
-                                @helper.checkbox(formAccept("accept.chk"))
-                                <input type="submit" value="Validate" class="btn btn-lg btn-success">
-                                <a href="@routes.ApproveOrRefuse.declineTermsAndConditions()" class="btn btn-lg btn-danger">Decline</a>
-                            }
-
+@if(readonly){
+<div class="p-3">
+    <input type="submit" value="Validate" class="btn btn-lg btn-success" disabled>
+    <a href="#" class="btn btn-lg btn-danger">Decline</a>
+</div>
+}else{
+<div class="p-3">
+    @helper.form(routes.ApproveOrRefuse.acceptTermsAndConditions()) {
+        @helper.checkbox(formAccept("accept.chk"))
+        <input type="submit" value="Validate" class="btn btn-lg btn-success">
+        <a href="@routes.ApproveOrRefuse.declineTermsAndConditions()" class="btn btn-lg btn-danger">Decline</a>
+    }
+</div>
+}
                         </div>
                     </div>
                 </div>

@@ -30,6 +30,7 @@ import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.mvc.Action
 
 import scala.concurrent.Future
 
@@ -130,6 +131,12 @@ object ApproveOrRefuse extends SecureCFPController {
       } else {
         Redirect(routes.ApproveOrRefuse.showAcceptOrRefuseTalks()).flashing("success" -> Messages("acceptedTerms.msg"))
       }
+  }
+
+  /* Public */
+  def displayOnlyTerms() =  Action {
+    implicit request =>
+      Ok(views.html.ApproveOrRefuse.showAcceptTerms(formApprove, readonly = true))
   }
 
   def acceptTermsAndConditions() = SecuredAction {
