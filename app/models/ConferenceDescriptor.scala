@@ -754,7 +754,7 @@ object ConferenceDescriptor {
       firstDayEn = "April, 12th",
       datesFr = "du 12 avril au 14 avril 2023",
       datesEn = "April, 12th - 14th 2023",
-      cfpOpenedOn = DateTime.parse("2022-11-21T00:00:00+02:00"),
+      cfpOpenedOn = DateTime.parse("2022-11-21T09:00:00+02:00"),
       cfpClosedOn = DateTime.parse("2023-01-08T23:59:59+02:00"),
       scheduleAnnouncedOn = DateTime.parse("2023-02-20T00:00:00+02:00"),
       days = dateRange(fromDay, toDay, new Period().withDays(1))
