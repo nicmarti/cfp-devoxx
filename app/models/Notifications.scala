@@ -191,6 +191,12 @@ object NotificationUserPreference {
         Tuple2(key.substring(s"NotificationUserPreference:${ConferenceDescriptor.current().eventCode}:".length), loadKey(key))
       }
   }
+  def deleteAll(): Unit = Redis.pool.withClient {
+    implicit client =>
+      client.keys(s"NotificationUserPreference:DevoxxFR2022:*").foreach { key =>
+        client.del(key)
+      }
+  }
 }
 
 case class Watcher(webuserId: String, proposalId: String, startedWatchingAt: Instant)

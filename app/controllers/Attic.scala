@@ -143,6 +143,8 @@ object Attic extends SecureCFPController {
   def deleteWatcher() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Watcher.doAttic()
+      Review.flushAllDeletedReviews()
+      NotificationUserPreference.deleteAll()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted watched talks"))
   }
 

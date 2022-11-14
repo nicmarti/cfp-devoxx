@@ -71,7 +71,7 @@ object FavoriteTalk {
       client.scard(redis + ":ByProp:" + proposalId)
   }
 
-  def all() = Redis.pool.withClient {
+  def all(): Set[(Proposal, Long)] = Redis.pool.withClient {
     implicit client =>
       val allFav: Set[String] = client.keys(redis + ":ByProp:*")
 
@@ -91,7 +91,7 @@ object FavoriteTalk {
 
   def attic() = Redis.pool.withClient {
     implicit client =>
-      val allKeys = client.keys(s"FavTalk:*")
+      val allKeys = client.keys("FavTalk:*")
       val tx = client.multi()
       allKeys.foreach { key: String =>
         tx.del(key)

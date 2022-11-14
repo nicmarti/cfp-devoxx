@@ -609,4 +609,9 @@ object Review {
     client =>
       client.hdel(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId)
   }
+
+  def flushAllDeletedReviews() = Redis.pool.withClient{
+    implicit client =>
+      client.del("Proposals:DelayedReviews:ByEventCode:*")
+  }
 }

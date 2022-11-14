@@ -1046,19 +1046,19 @@ object Proposal {
   }
 
   def setPreferredDay(proposalId: String, day: String) = Redis.pool.withClient {
-    implicit client => client.hset("PreferredDay:2022", proposalId, day)
+    implicit client => client.hset("PreferredDay:2023", proposalId, day)
   }
 
   def resetPreferredDay(proposalId: String) = Redis.pool.withClient {
-    implicit client => client.hdel("PreferredDay:2022", proposalId)
+    implicit client => client.hdel("PreferredDay:2023", proposalId)
   }
 
   def hasPreferredDay(proposalId: String): Boolean = Redis.pool.withClient {
-    implicit client => client.hexists("PreferredDay:2022", proposalId)
+    implicit client => client.hexists("PreferredDay:2023", proposalId)
   }
 
   def getPreferredDay(proposalId: String): Option[String] = Redis.pool.withClient {
-    implicit client => client.hget("PreferredDay:2022", proposalId)
+    implicit client => client.hget("PreferredDay:2023", proposalId)
   }
 
   def updateSecondarySpeaker(author: String, proposalId: String, oldSpeakerId: Option[String], newSpeakerId: Option[String]) = Redis.pool.withClient {
@@ -1131,7 +1131,7 @@ object Proposal {
   def allProposalIdsByTrackForType(proposalType: ProposalType): Map[String, Set[String]] = Redis.pool.withClient { client =>
     val proposalIds = Proposal.allProposalIDsForProposalType(proposalType)
     ConferenceDescriptor.ConferenceTracks.ALL.map { track =>
-      track.id -> client.smembers(s"Proposals:ByTrack:${track.id}").filter(proposalIds.contains(_))
+      track.id -> client.smembers(s"Proposals:ByTrack:${track.id}").intersect(proposalIds)
     }.toMap
   }
 
@@ -1156,6 +1156,11 @@ object Proposal {
 
   def userProposalLastVisits(userId: String): Map[String, DateTime] = Redis.pool.withClient { client =>
     client.hgetAll(s"LastVisitsFor:${userId}").mapValues(ISODateTimeFormat.dateTime().withZone(ConferenceDescriptor.current().timezone).parseDateTime(_))
+  }
+
+  def deleteLastVisits() = Redis.pool.withClient{
+    implicit client =>
+      client.del("LastVisitsFor:*")
   }
 }
 

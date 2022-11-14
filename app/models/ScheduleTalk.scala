@@ -7,8 +7,7 @@ import library.Redis
   */
 object ScheduleTalk {
 
-  private val redis = s"ScheduleTalk:${ConferenceDescriptor.current().eventCode}:"
-
+  private val redis = s"ScheduleTalk:${ConferenceDescriptor.current().eventCode}"
 
   def scheduleTalk(proposalId: String, webuserId: String) = Redis.pool.withClient {
     implicit client =>
