@@ -367,4 +367,9 @@ object Speaker {
           Speaker.findByUUID(uuid)
       }
   }
+
+  def deleteAcceptedTermsAndConditions() = Redis.pool.withClient {
+    implicit client =>
+      client.del("TermsAndConditions")
+  }
 }

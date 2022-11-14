@@ -136,7 +136,14 @@ object Attic extends SecureCFPController {
   def deleteFavoriteTalks() = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       FavoriteTalk.attic()
+      Speaker.deleteAcceptedTermsAndConditions()
       Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted favorite talks"))
+  }
+
+  def deleteWatcher() = SecuredAction(IsMemberOf("admin")) {
+    implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
+      Watcher.doAttic()
+      Redirect(routes.Attic.atticHome()).flashing(("success", "Deleted watched talks"))
   }
 
 }

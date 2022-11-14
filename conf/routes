@@ -331,6 +331,7 @@ POST          /cfpadmin/attic/resetEvents                                       
 POST          /cfpadmin/attic/deleteGoldenTickets                               controllers.Attic.deleteGoldenTickets()
 POST          /cfpadmin/attic/deleteWishlisted                                  controllers.Attic.deleteWishlist()
 POST          /cfpadmin/attic/deleteFav                                         controllers.Attic.deleteFavoriteTalks()
+POST          /cfpadmin/attic/deleteWatcher                                     controllers.Attic.deleteWatcher()
 
 # Golden ticket admin
 GET           /admin/goldenTickets                                              controllers.GoldenTicketAdminController.showAll()

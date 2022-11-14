@@ -1,12 +1,12 @@
 package library
 
 /**
- * Zedis is the Jedis wrapper for ZapTravel.
- * Inspired by the great work from @pk11 Sedis wrapper but updated to offer 
- * a better support for Scala 2.10 and Jedis commands.
- * Author: Nicolas Martignole
- * Created: 06/03/2013 12:24
- */
+  * Zedis is the Jedis wrapper for ZapTravel.
+  * Inspired by the great work from @pk11 Sedis wrapper but updated to offer
+  * a better support for Scala 2.10 and Jedis commands.
+  * Author: Nicolas Martignole
+  * Created: 06/03/2013 12:24
+  */
 
 import org.apache.commons.lang3.StringUtils
 import play.api.Play._
@@ -311,6 +311,14 @@ trait Dress {
       }
       j.zrevrangeByScore(key, max, min).asScala.toSet
     }
+
+    def zadd(key: String, score: Double, member: String): Long = {
+      if (play.Logger.of("library.Zedis").isDebugEnabled) {
+        play.Logger.of("library.Zedis").debug(s"zadd key=$key score=$score member=$member")
+      }
+      j.zadd(key, score, member).longValue()
+    }
+
 
   }
 
