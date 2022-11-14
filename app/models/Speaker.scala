@@ -267,22 +267,17 @@ object Speaker {
   def allSpeakersWithAcceptedTerms() = Redis.pool.withClient {
     client =>
 
-      val termKeys = Benchmark.measure(() =>
-        client.hkeys("TermsAndConditions")
-        , "termKeys")
+      val termKeys = client.hkeys("TermsAndConditions")
 
-      val speakerIDs = Benchmark.measure(() =>
-        termKeys.filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
-        , "speakerIDs")
+      val speakerIDs = termKeys.filter(uuid => Proposal.hasOneAcceptedProposal(uuid))
 
-      val allSpeakers = Benchmark.measure(() =>
-        client.hmget("Speaker", speakerIDs).flatMap {
+      val allSpeakers = client.hmget("Speaker", speakerIDs).flatMap {
           json: String =>
             Json.parse(json).validate[Speaker].fold(invalid => {
               play.Logger.error("Speaker error. " + ZapJson.showError(invalid))
               None
             }, validSpeaker => Some(validSpeaker))
-        }, "allSpeakers")
+        }
       allSpeakers
   }
 
@@ -363,8 +358,8 @@ object Speaker {
       }
   }
 
-  def allCFPMembers():Set[Speaker] = Redis.pool.withClient{
-    implicit client=>
+  def allCFPMembers(): Set[Speaker] = Redis.pool.withClient {
+    implicit client =>
       client.smembers("Webuser:cfp").filter(uuid =>
         Webuser.isPublicVisible(uuid)
       ).flatMap {
