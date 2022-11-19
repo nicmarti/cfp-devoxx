@@ -1,33 +1,83 @@
 cfp-devoxxfr
 ============
 
-Tailwind is used to generate the stylesheets for the website.
+Tailwind is used to generate the stylesheets for the website and the home page.
 
 # Pre-requisites
 
-Install `nvm`
-
+- Install `nvm`
+- Install and activate the correct version of nodejs
+- Install `npm` 
+- Install `tailwindcss` and its dependencies
+- Install `postcss` and its dependencies
+- Install `autoprefixer` and its dependencies
+  
 ## Install node v16.4.0 
 
-`nvm install v16.4.0`
+```
+nvm install v16.4.0
+v16.4.0 is already installed.
+Now using node v16.4.0 (npm v6.13.4)
+```
+
+Load the version from the `.nvmrc` file
+
+```
+nvm use
+Found '~/Dev/cfp-devoxx/.nvmrc' with version <16.4.0>
+Now using node v16.4.0 (npm v6.13.4)
+```
 
 After the installation, restart a shell and check that the node version is v16.4.0 : 
 
-```cfp-devoxx git:(dev) ✗ node -v
-v16.4.0
+```
+npm -v 
+6.13.4
+
 ```
 
-## Check your version of node
+## How to install Tailwind
 
-# How to install Tailwind
+Update browserlits :
 
-```npm install```
+```
+npx browserslist@latest --update-db
+```
+
+Then :
+
+```
+npm install --save-dev "browserslist@>= 4.21.0" 
+```
+
+Install Tailwind and additional modules :
+
+```
+npm install -D tailwindcss postcss autoprefixer
+```
+
+This is the version we used : 
++ tailwindcss@3.2.4
++ autoprefixer@10.4.13
++ postcss@8.4.19
 
 # For local developpement
 
+## For the main CFP website
+
+```
+npx tailwindcss -i ./tailwind/src/cfp_devoxx_fr_2023.css -o ./public/devoxx_fr_2023/devoxx_fr_2023.css --watch
+```
+
+## Public web pages for program
+
 If you need to work on the public web pages of the CFP (program, speakers's bio, agenda, etc.), you can use the following command to generate the stylesheets:
 
-```npx tailwindcss -i ./public/css/dvx_tailwind.css -o ./public/css/devoxx_generated_tailwind.css --watch```
+```
+npx tailwindcss -i ./public/css/dvx_tailwind.css -o ./public/css/devoxx_generated_tailwind.css --watch
+```
+
+## CFP pages
 
 
 ## For production before deployment
@@ -35,13 +85,17 @@ If you need to work on the public web pages of the CFP (program, speakers's bio,
 Make sure to update and to save on Git the generated CSS file.
 No extra npm tasks are executed on the production environment at deployment time.
 
-```npx tailwindcss -i ./public/css/dvx_tailwind.css -o ./public/css/devoxx_generated_tailwind.css --minify```
+```
 
-# Trouble shooting
+npx tailwindcss -i ./public/css/dvx_tailwind.css -o ./public/css/devoxx_generated_tailwind.css --minify
+```
+
+# Trouble shooting on MacOS 
 
 If `npx` returns the following error, you need to install the latest version of node
 
-```cfp-devoxx git:(dev) ✗ npx
+```
+cfp-devoxx git:(dev) ✗ npx
 <function>:32
   #unloaded = false
   ^
