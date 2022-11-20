@@ -6,7 +6,8 @@
     delayedReviewsCount: Long,
     proposalNotReviewedCountByType: Map[String,Int],
     proposalNotReviewedCountForCurrentTypeByTrack: Map[String,Int],
-    firstProposalNotReviewed: Option[Proposal]
+    firstProposalNotReviewed: Option[Proposal],
+    reviewerStats: Option[List[NamedReviewerStats]]
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
@@ -21,6 +22,9 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> @Messages("gt.personnal")</h3>
+                    @tags.renderNamedReviewerStats(reviewerStats)
+                    <br/>
+
                     @tags.renderMyReviewsSearchCriteria(
                         refreshPathAction=(confType, selectedTrack) => routes.GoldenTicketController.allMyGoldenTicketVotes(confType, selectedTrack),
                         availableTalkTypes=models.ConferenceDescriptor.ConferenceProposalTypes.ALL.filter(models.ConferenceDescriptor.ConferenceProposalConfigurations.accessibleTypeToGoldenTicketReviews(_)),
