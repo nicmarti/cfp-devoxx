@@ -1,0 +1,23 @@
+@(
+    values: List[(Int,Int)]
+)(implicit lang: Lang)
+
+<div style="display: grid;
+  grid-template-columns: repeat(@values.length, 1fr);
+  grid-template-rows: repeat(101, 1fr);
+  grid-column-gap: 5px;
+  height: 90%;
+  width: 100%;
+  padding: 5px 10px;
+  ">
+@TemplateMagic.defining(values.maxBy(_._2)._2) { maxCount =>
+  @values.map { case(vote, count) =>
+  <div data-score="@vote" class="bar-score" style="
+    border-radius: 5px 5px 0 0;
+    transition: all .6s ease;
+    grid-row-end: 102;
+    grid-row-start: @{101-Math.round(count*100/maxCount)}
+    "></div>
+  }
+}
+</div>

@@ -1,0 +1,39 @@
+@(
+    maybeReviewerStats: Option[List[NamedReviewerStats]]
+)(implicit lang: Lang, req: RequestHeader)
+@maybeReviewerStats.map { reviewerStats =>
+  <table class="table table-bordered table-sm" aria-label="Table describing statistic about your votes, including votes distribution">
+    <thead>
+      <tr>
+        <th scope="col" style="width: 260px">Grouping</th>
+        <th scope="col" style="width: 170px">Reviews count (+ abst)</th>
+        <th scope="col" style="width: 90px">Median</th>
+        <th scope="col" style="width: 150px">Mean (std deviation)</th>
+        <th scope="col" style="width: 160px">Most frequent (count)</th>
+        <th scope="col">Distribution</th>
+      </tr>
+    </thead>
+    <tbody>
+      @reviewerStats.map { reviewerStat =>
+        <tr>
+          <td>@Messages(reviewerStat.labelKey)</td>
+          <td>@reviewerStat.count (+@{reviewerStat.countIncludingAbstentions-reviewerStat.count})</td>
+          <td>@reviewerStat.median.toInt</td>
+          <td>@views.html.tags.toScaled(reviewerStat.mean, 3) (@views.html.tags.toScaled(reviewerStat.stdDeviation, 3))</td>
+          <td>
+            @{if(reviewerStat.mode.toInt==0){ Messages("Abs") } else { reviewerStat.mode.toInt }}
+            (@reviewerStat.perVoteCount.get(reviewerStat.mode.toInt).getOrElse(0))
+          <td>
+            <div style="width: 400px; height: 100px;">
+            @views.html.tags.scoreBarChart(reviewerStat.perVoteCount.map { case (vote, count) =>
+              (vote, count)
+            }.toList.sortBy(_._1))
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}.getOrElse {
+  No reviews made yet !
+}
