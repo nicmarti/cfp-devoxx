@@ -35,6 +35,10 @@ import views._
   * @author Nicolas Martignole
   */
 object Application extends Controller {
+  def index = Action {
+    implicit request =>
+      Ok(html.Application.index())
+  }
 
   def home = Action {
     implicit request =>
@@ -54,11 +58,6 @@ object Application extends Controller {
   def homeVisitor = Action {
     implicit request =>
       Ok(html.Application.homeVisitor(Authentication.loginForm)).withNewSession
-  }
-
-  def index = Action {
-    implicit request =>
-      Ok(html.Application.index())
   }
 
   def bugReport = Action {
