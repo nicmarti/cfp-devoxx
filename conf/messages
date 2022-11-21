@@ -271,9 +271,9 @@ track.lang.desc=Kotlin, Rust, Scala, Go, TypeScript, Javascript, Clojure, Haskel
 lang.label=Languages
 lang.leaderboard=Languages
 
-track.geek.title=People & Culture, Soft Skills, Future of work, Innovation, Geek Life
-track.geek.desc=All about the future of work and how to stay ahead of the curve. Presentation about the latest trends in the industry, the importance of soft skills, and how to foster a culture of innovation in your workplace. This topic also covers Geek, Internet of things, and other topics that are not strictly related to software development.
-geek.label=People & Culture, Soft Skills, Future of work, Innovation, Geek Life
+track.geek.title=People & Culture, Soft Skills, Future of work, Innovation, Side projects
+track.geek.desc=All about the future of work and how to stay ahead of the curve. Presentation about the latest trends in the industry, the importance of soft skills, and how to foster a culture of innovation in your workplace. This topic also covers Side projects, Internet of things, and other topics that are not strictly related to software development.
+geek.label=People & Culture, Soft Skills, Future of work, Innovation, Side projects
 geek.leaderboard=People & Culture
 
 # confirm import
