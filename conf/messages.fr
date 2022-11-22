@@ -204,9 +204,9 @@ track.future.desc=Gourmandise pour développeur: choses que nous voulons savoir 
 future.label=Mind the Geek
 future.leaderboard=Mind the Geek
 
-track.geek.title=People & Culture, Soft Skills, Future of work, Innovation, Geek Life
+track.geek.title=People & Culture, Soft Skills, Future of work, Innovation, Side projects
 track.geek.desc=Tout sur le monde du travail, les compétences, la gestion de projet ou de carrière. Le thème couvre aussi ce qui changera notre quotidien ou qui nous fait rêver et avancer.
-geek.label=People & Culture, Soft Skills, Future of work, Innovation, Geek Life
+geek.label=People & Culture, Soft Skills, Future of work, Innovation, Side projects
 geek.leaderboard=People & Culture
 
 track.lang.title=Langages de programmation (hors Java)
