@@ -107,7 +107,7 @@ talkType=Type de présentation
 audienceLevel=Niveau de la présentation
 privateMessage=Message pour le comité de sélection
 privateMessage.help=Précisez ici toutes les informations importantes sur votre présentation, que seul le comité de sélection verra. Détaillez votre plan de présentation, l''ensemble des éléments qui doivent nous faire choisir votre proposition de sujet. Vous pouvez inclure l''URL vers vos diapositives si vous le souhaitez.
-privateMessage.help.important=Si vous avez des doutes sur votre proposition, n'hésitez pas à nous le dire et nous vous aiderons à l'améliorer.
+privateMessage.help.important=Si vous avez des doutes sur votre proposition, n''hésitez pas à nous le dire et nous vous aiderons à l''améliorer.
 sponsorTalk=Merci de cocher cette case s''il s''agit de la présentation "exposant/sponsor" lié au sponsoring
 sponsorTalk.help=Les sponsors Diamond et Platinum peuvent soumettre une proposition de sujet au format Conférence, qui sera automatiquement acceptée. Ne cochez pas cette case si votre société est sponsor alors que vous souhaitez simplement proposer un sujet.
 sponsorTalk.help.title=Talk sponsor
@@ -147,7 +147,7 @@ msg=Votre message
 
 
 cfp.msg.sendMsg=Envoyer votre message au comité
- 
+
 # Home
 appel.conf=Appel aux conférenciers
 cfp.opening=Ouverture du CFP
@@ -204,9 +204,9 @@ track.future.desc=Gourmandise pour développeur: choses que nous voulons savoir 
 future.label=Mind the Geek
 future.leaderboard=Mind the Geek
 
-track.geek.title=People & Culture, Soft Skills, Future of work, Innovation, Side projects
+track.geek.title=People & Culture, Soft Skills, Future of work, Innovation, Geek Life
 track.geek.desc=Tout sur le monde du travail, les compétences, la gestion de projet ou de carrière. Le thème couvre aussi ce qui changera notre quotidien ou qui nous fait rêver et avancer.
-geek.label=People & Culture, Soft Skills, Future of work, Innovation, Side projects
+geek.label=People & Culture, Soft Skills, Future of work, Innovation, Geek Life
 geek.leaderboard=People & Culture
 
 track.lang.title=Langages de programmation (hors Java)
