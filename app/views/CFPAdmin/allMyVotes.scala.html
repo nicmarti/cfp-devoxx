@@ -7,7 +7,8 @@
     proposalNotReviewedCountByType: Map[String,Int],
     proposalNotReviewedCountForCurrentTypeByTrack: Map[String,Int],
     firstProposalNotReviewed: Option[Proposal],
-    delayedReviewsCount: Long
+    delayedReviewsCount: Long,
+    reviewerStats: Option[List[NamedReviewerStats]]
 )(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("All my votes") {
@@ -28,6 +29,9 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <h3><i class="fas fa-flask"></i> Your personnal leaderboard</h3>
+                    @tags.renderNamedReviewerStats(reviewerStats)
+                    <br/>
+
                     @tags.renderMyReviewsSearchCriteria(
                         refreshPathAction=(confType, selectedTrack) => routes.CFPAdmin.allMyVotes(confType, selectedTrack),
                         availableTalkTypes=models.ConferenceDescriptor.ConferenceProposalTypes.ALL,

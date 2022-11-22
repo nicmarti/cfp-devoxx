@@ -214,6 +214,8 @@ track.lang.desc=Kotlin, Rust, Scala, Go, TypeScript, Javascript, Clojure, Haskel
 lang.label=Langages
 lang.leaderboard=Langages
 
+track.all.title=Toutes
+
 # Confirm import
 confirm.import.title=Créer votre profil de présentateur Devoxx France
 confirm.import.save=Enregistrer et continuer

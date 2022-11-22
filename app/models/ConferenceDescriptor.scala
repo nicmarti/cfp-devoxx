@@ -209,6 +209,7 @@ object ConferenceDescriptor {
     val LANG: Track = Track("lang", "lang.label")
     val UNKNOWN: Track = Track("unknown", "unknown track")
     val ALL = List(JAVA, WEB, ARCHISEC, CLOUD, BIGDATA, GEEK, LANG, UNKNOWN)
+    val ALL_KNOWN = ALL.filter(_ != UNKNOWN)
   }
 
   // TODO configure the description for each Track

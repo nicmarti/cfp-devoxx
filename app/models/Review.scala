@@ -40,10 +40,67 @@ import scala.math.BigDecimal.RoundingMode
   */
 case class Review(reviewer: String, proposalId: String, vote: Int, date: DateTime)
 
-case class ReviewerStats(uuid:String, totalPoints:Int, totalTalksReviewed:Int, totalTalksAbstention:Int, average:BigDecimal)
+case class ReviewerStats(
+    uuid:String,
+    totalPoints:Int,
+    totalTalksReviewed:Int,
+    totalTalksAbstention:Int,
+    average:BigDecimal
+)
 
 object ReviewerStats {
   def noReviewStats(uuid:String):ReviewerStats=ReviewerStats(uuid,0,0,0,BigDecimal(0))
+}
+
+case class NamedReviewerStats(
+     labelKey: String,
+     countIncludingAbstentions: Int,
+     count: Int,
+     mode: Double,
+     _90thPercentil: Double,
+     median: Double,
+     mean: Double,
+     stdDeviation: Double,
+     perVoteCount: Map[Int, Int]
+   ){
+}
+
+object NamedReviewerStats {
+  def from(labelKey: String, votes: Array[Double]): Option[NamedReviewerStats] = {
+    votes.length match {
+      case 0 => None
+      case _ => {
+        val votesExcludingAbstentions = votes.filter(_ != 0)
+        val mean = votesExcludingAbstentions.sum.toDouble / votesExcludingAbstentions.size.toDouble
+        val sortedVotesExcludingAbstentions = votesExcludingAbstentions.sorted
+        val variance = votesExcludingAbstentions.map(vote => Math.pow(vote - mean, 2)).sum / votesExcludingAbstentions.size
+
+        Some(NamedReviewerStats(
+          labelKey,
+          countIncludingAbstentions = votes.size,
+          count = votesExcludingAbstentions.size,
+          mode = votes.groupBy(identity).mapValues(_.size).maxBy(_._2)._1,
+          _90thPercentil = sortedVotesExcludingAbstentions.lift((votesExcludingAbstentions.size.toDouble * 9.0 / 10.0).floor.toInt).get,
+          median = sortedVotesExcludingAbstentions.lift((votesExcludingAbstentions.size.toDouble / 2.0).floor.toInt).get,
+          mean = mean,
+          stdDeviation = math.sqrt(variance),
+          perVoteCount = Map(
+            0 -> votes.filter(_ == 0).size,
+            1 -> votes.filter(_ == 1).size,
+            2 -> votes.filter(_ == 2).size,
+            3 -> votes.filter(_ == 3).size,
+            4 -> votes.filter(_ == 4).size,
+            5 -> votes.filter(_ == 5).size,
+            6 -> votes.filter(_ == 6).size,
+            7 -> votes.filter(_ == 7).size,
+            8 -> votes.filter(_ == 8).size,
+            9 -> votes.filter(_ == 9).size,
+            10 -> votes.filter(_ == 10).size
+          )
+        ))
+      }
+    }
+  }
 }
 
 object Review {

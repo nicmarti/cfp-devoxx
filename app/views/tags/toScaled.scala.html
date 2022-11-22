@@ -1,0 +1,2 @@
+@(value: Double, scale: Int = 2)
+@BigDecimal(value).setScale(scale,scala.math.BigDecimal.RoundingMode.HALF_EVEN).toDouble

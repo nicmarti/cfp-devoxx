@@ -276,6 +276,8 @@ track.geek.desc=All about the future of work and how to stay ahead of the curve.
 geek.label=People & Culture, Soft Skills, Future of work, Innovation, Side projects
 geek.leaderboard=People & Culture
 
+track.all.title=All
+
 # confirm import
 confirm.import.title=Create your Speaker''s profile
 confirm.import.save=Save and send an email

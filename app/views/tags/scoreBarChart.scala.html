@@ -1,0 +1,14 @@
+@(
+    values: List[(Int,Int)]
+)(implicit lang: Lang)
+
+<div class="score-bar-chart" style="grid-template-columns: repeat(@values.length, 1fr); grid-template-rows: repeat(101, 1fr);">
+@TemplateMagic.defining(values.maxBy(_._2)._2) { maxCount =>
+  @values.map { case(vote, count) =>
+    <div data-score="@vote" class="bar-score"
+      style="grid-row-end: 102; grid-row-start: @{101-Math.round(count*100/maxCount)}"
+      title="@{if(vote==0){Messages("Abs")}else{vote}}">
+    </div>
+  }
+}
+</div>

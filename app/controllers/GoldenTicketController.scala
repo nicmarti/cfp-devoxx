@@ -23,6 +23,7 @@
 
 package controllers
 
+import models.ConferenceDescriptor.ConferenceTracks
 import models.{Webuser, _}
 import org.apache.commons.lang3.StringUtils
 import play.api.data.Form
@@ -252,8 +253,10 @@ object GoldenTicketController extends SecureCFPController {
         pType =>
           val uuid = request.webuser.uuid
           val allMyVotesIncludingAbstentions = ReviewByGoldenTicket.allVotesFromUser(uuid)
+          val myVotesIncludingAbstentionsPerProposalId = allMyVotesIncludingAbstentions.toMap
           val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
-          val allProposalsMatchingCriteria = Proposal.loadAndParseProposals(allProposalIDs)
+          val proposalWhereIVoted = Proposal.loadAndParseProposals(allProposalIDs)
+          val allProposalsMatchingCriteria = proposalWhereIVoted
             .filter(p => p._2.talkType == pType && selectedTrack.map(p._2.track.id == _).getOrElse(true))
           val allProposalsIdsMatchingCriteria = allProposalsMatchingCriteria.keySet
 
@@ -269,9 +272,25 @@ object GoldenTicketController extends SecureCFPController {
           val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
           val sortedAllMyVotesExcludingAbstentionsMatchingCriteria = sortedAllMyVotesIncludingAbstentionsMatchingCriteria.filter(_._2 != 0)
 
+          val proposalsPerTrackWhereIVoted = proposalWhereIVoted.values.groupBy(_.track)
+          val reviewerStats = allMyVotesIncludingAbstentions.size match {
+            case 0 => None
+            case _ => Some(
+              List("track.all.title" -> ConferenceTracks.ALL_KNOWN)
+                .++(ConferenceTracks.ALL_KNOWN.map(track => track.label -> List(track)).toMap)
+                .flatMap { case (labelKey: String, tracks: List[Track]) =>
+                  val votesForConcernedTracks = tracks.map(t =>
+                    proposalsPerTrackWhereIVoted.getOrElse(t, List())
+                      .flatMap(p => myVotesIncludingAbstentionsPerProposalId.get(p.id))
+                  ).flatten
+                  NamedReviewerStats.from(labelKey, votesForConcernedTracks.toArray)
+                }
+            )
+          }
+
           val delayedReviewsCount = ReviewByGoldenTicket.countDelayedReviews(uuid)
 
-          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, delayedReviewsCount, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria))
+          Ok(views.html.GoldenTicketController.allMyGoldenTicketVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteria, talkType, selectedTrack, delayedReviewsCount, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria, reviewerStats))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }

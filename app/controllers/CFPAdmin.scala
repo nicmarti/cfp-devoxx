@@ -3,6 +3,7 @@ package controllers
 import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchResponse}
 import library._
 import library.search.ElasticSearch
+import models.ConferenceDescriptor.{ConferenceTracks}
 import models.Review._
 import models._
 import org.apache.commons.io.FileUtils
@@ -351,8 +352,10 @@ object CFPAdmin extends SecureCFPController {
         pType =>
           val uuid = request.webuser.uuid
           val allMyVotesIncludingAbstentions = Review.allVotesFromUser(uuid)
+          val myVotesIncludingAbstentionsPerProposalId = allMyVotesIncludingAbstentions.toMap
           val allProposalIDsWhereIVoted = allMyVotesIncludingAbstentions.map(_._1)
-          val allProposalsMatchingCriteriaWhereIVoted = Proposal.loadAndParseProposals(allProposalIDsWhereIVoted)
+          val proposalWhereIVoted = Proposal.loadAndParseProposals(allProposalIDsWhereIVoted)
+          val allProposalsMatchingCriteriaWhereIVoted = proposalWhereIVoted
             .filter(p => p._2.talkType == pType && selectedTrack.map(p._2.track.id == _).getOrElse(true))
           val allProposalsIdsMatchingCriteriaWhereIVoted = allProposalsMatchingCriteriaWhereIVoted.keySet
 
@@ -366,6 +369,22 @@ object CFPAdmin extends SecureCFPController {
             pid: String => (pid, Review.averageScore(pid))
           }.toMap
 
+          val proposalsPerTrackWhereIVoted = proposalWhereIVoted.values.groupBy(_.track)
+          val reviewerStats = allMyVotesIncludingAbstentions.size match {
+            case 0 => None
+            case _ => Some(
+              List("track.all.title" -> ConferenceTracks.ALL_KNOWN)
+                .++(ConferenceTracks.ALL_KNOWN.map(track => track.label -> List(track)).toMap)
+                .flatMap { case (labelKey: String, tracks: List[Track]) =>
+                  val votesForConcernedTracks = tracks.map(t =>
+                    proposalsPerTrackWhereIVoted.getOrElse(t, List())
+                      .flatMap(p => myVotesIncludingAbstentionsPerProposalId.get(p.id))
+                  ).flatten
+                  NamedReviewerStats.from(labelKey, votesForConcernedTracks.toArray)
+                }
+            )
+          }
+
           val proposalsNotReviewedByType = Review.allProposalsNotReviewed(uuid).groupBy(_.talkType.id)
           val proposalNotReviewedCountByType = proposalsNotReviewedByType.mapValues(_.size)
           val proposalsNotReviewedForCurrentType = proposalsNotReviewedByType.get(pType.id).getOrElse(List())
@@ -375,7 +394,7 @@ object CFPAdmin extends SecureCFPController {
 
           val delayedReviewsCount = Review.countDelayedReviews(uuid)
 
-          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria, delayedReviewsCount))
+          Ok(views.html.CFPAdmin.allMyVotes(sortedAllMyVotesIncludingAbstentionsMatchingCriteria, sortedAllMyVotesExcludingAbstentionsMatchingCriteria, allProposalsMatchingCriteriaWhereIVoted, talkType, selectedTrack, allScoresForProposals, proposalNotReviewedCountByType, proposalNotReviewedCountForCurrentTypeByTrack, firstProposalNotReviewedAndMatchingCriteria, delayedReviewsCount, reviewerStats))
       }.getOrElse {
         BadRequest("Invalid proposal type")
       }
