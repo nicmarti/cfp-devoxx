@@ -73,7 +73,7 @@ object LeaderboardController extends SecureCFPController {
 
     def proposalsBySpeakers: List[(String, Int)] =
       Speaker.allSpeakers()
-        .map(speaker => (speaker.uuid, Proposal.allMyDraftAndSubmittedProposals(speaker.uuid).size))
+        .map(speaker => (speaker.uuid, Proposal.allMySubmittedProposals(speaker.uuid).size))
         .filter(_._2 > 0)
 
     LeaderBoardParams(totalSpeakers,

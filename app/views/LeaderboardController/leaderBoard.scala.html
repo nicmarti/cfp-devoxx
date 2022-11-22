@@ -79,7 +79,8 @@
                     </div>
 
                         <div class="col-md-4">
-                        <h3><i class="fas fa-bell"></i> Eager Speakers</h3>
+                        <h3><i class="fas fa-bell"></i> Eager Speakers </h3>
+                        <p><small>Submitted proposal only</small></p>
                         @params.proposalsBySpeakers.sortBy(_._2).reverse.take(5).map { br =>
                             @tags.renderGravatar(br._1)
                             @tags.renderTotalWithLabel(br._2, "proposal", "proposals")
