@@ -43,7 +43,7 @@ import scala.concurrent.Future
 object GoldenTicketController extends SecureCFPController {
 
   private val securityGroups = List("admin", "gticket")
-  val loginForm = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
+  val loginForm: Form[(String, String)] = Form(tuple("email" -> (email verifying nonEmpty), "password" -> nonEmptyText))
 
   def authenticate() = Action {
     implicit request =>
@@ -130,7 +130,7 @@ object GoldenTicketController extends SecureCFPController {
       val uuid = request.webuser.uuid
       Proposal.findById(proposalId) match {
         case Some(proposal) =>
-          Watcher.addProposalWatcher(proposal.id, uuid, false)
+          Watcher.addProposalWatcher(proposal.id, uuid, automatic = false)
           Ok(renderShowProposal(uuid, proposal, voteForm)).flashing("success" -> "Started watching proposal")
         case None => NotFound("Proposal not found").as("text/html")
       }
@@ -257,16 +257,16 @@ object GoldenTicketController extends SecureCFPController {
           val allProposalIDs = allMyVotesIncludingAbstentions.map(_._1)
           val proposalWhereIVoted = Proposal.loadAndParseProposals(allProposalIDs)
           val allProposalsMatchingCriteria = proposalWhereIVoted
-            .filter(p => p._2.talkType == pType && selectedTrack.map(p._2.track.id == _).getOrElse(true))
+            .filter(p => p._2.talkType == pType && selectedTrack.forall(p._2.track.id == _))
           val allProposalsIdsMatchingCriteria = allProposalsMatchingCriteria.keySet
 
           val allMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentions.filter(proposalIdAndVotes => allProposalsIdsMatchingCriteria.contains(proposalIdAndVotes._1))
 
           val proposalsNotReviewedByType = ReviewByGoldenTicket.allAllowedProposalsNotReviewed(uuid).groupBy(_.talkType.id)
           val proposalNotReviewedCountByType = proposalsNotReviewedByType.mapValues(_.size)
-          val proposalsNotReviewedForCurrentType = proposalsNotReviewedByType.get(pType.id).getOrElse(List())
+          val proposalsNotReviewedForCurrentType = proposalsNotReviewedByType.getOrElse(pType.id, List())
           val proposalNotReviewedCountForCurrentTypeByTrack = proposalsNotReviewedForCurrentType.groupBy(_.track.id).mapValues(_.size)
-          val proposalsMatchingCriteriaNotReviewed = proposalsNotReviewedForCurrentType.filter(p => selectedTrack.map(p.track.id == _).getOrElse(true))
+          val proposalsMatchingCriteriaNotReviewed = proposalsNotReviewedForCurrentType.filter(p => selectedTrack.forall(p.track.id == _))
           val firstProposalNotReviewedAndMatchingCriteria = proposalsMatchingCriteriaNotReviewed.headOption
 
           val sortedAllMyVotesIncludingAbstentionsMatchingCriteria = allMyVotesIncludingAbstentionsMatchingCriteria.toList.sortBy(_._2).reverse
@@ -279,10 +279,9 @@ object GoldenTicketController extends SecureCFPController {
               List("track.all.title" -> ConferenceTracks.ALL_KNOWN)
                 .++(ConferenceTracks.ALL_KNOWN.map(track => track.label -> List(track)).toMap)
                 .flatMap { case (labelKey: String, tracks: List[Track]) =>
-                  val votesForConcernedTracks = tracks.map(t =>
+                  val votesForConcernedTracks = tracks.flatMap(t =>
                     proposalsPerTrackWhereIVoted.getOrElse(t, List())
-                      .flatMap(p => myVotesIncludingAbstentionsPerProposalId.get(p.id))
-                  ).flatten
+                      .flatMap(p => myVotesIncludingAbstentionsPerProposalId.get(p.id)))
                   NamedReviewerStats.from(labelKey, votesForConcernedTracks.toArray)
                 }
             )

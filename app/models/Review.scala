@@ -41,28 +41,28 @@ import scala.math.BigDecimal.RoundingMode
 case class Review(reviewer: String, proposalId: String, vote: Int, date: DateTime)
 
 case class ReviewerStats(
-    uuid:String,
-    totalPoints:Int,
-    totalTalksReviewed:Int,
-    totalTalksAbstention:Int,
-    average:BigDecimal
-)
+                          uuid: String,
+                          totalPoints: Int,
+                          totalTalksReviewed: Int,
+                          totalTalksAbstention: Int,
+                          average: BigDecimal
+                        )
 
 object ReviewerStats {
-  def noReviewStats(uuid:String):ReviewerStats=ReviewerStats(uuid,0,0,0,BigDecimal(0))
+  def noReviewStats(uuid: String): ReviewerStats = ReviewerStats(uuid, 0, 0, 0, BigDecimal(0))
 }
 
 case class NamedReviewerStats(
-     labelKey: String,
-     countIncludingAbstentions: Int,
-     count: Int,
-     mode: Double,
-     _90thPercentil: Double,
-     median: Double,
-     mean: Double,
-     stdDeviation: Double,
-     perVoteCount: Map[Int, Int]
-   ){
+                               labelKey: String,
+                               countIncludingAbstentions: Int,
+                               count: Int,
+                               mode: Double,
+                               _90thPercentil: Double,
+                               median: Double,
+                               mean: Double,
+                               stdDeviation: Double,
+                               perVoteCount: Map[Int, Int]
+                             ) {
 }
 
 object NamedReviewerStats {
@@ -71,31 +71,31 @@ object NamedReviewerStats {
       case 0 => None
       case _ => {
         val votesExcludingAbstentions = votes.filter(_ != 0)
-        val mean = votesExcludingAbstentions.sum.toDouble / votesExcludingAbstentions.size.toDouble
+        val mean = votesExcludingAbstentions.sum.toDouble / votesExcludingAbstentions.length.toDouble
         val sortedVotesExcludingAbstentions = votesExcludingAbstentions.sorted
-        val variance = votesExcludingAbstentions.map(vote => Math.pow(vote - mean, 2)).sum / votesExcludingAbstentions.size
+        val variance = votesExcludingAbstentions.map(vote => Math.pow(vote - mean, 2)).sum / votesExcludingAbstentions.length
 
         Some(NamedReviewerStats(
           labelKey,
-          countIncludingAbstentions = votes.size,
-          count = votesExcludingAbstentions.size,
-          mode = votes.groupBy(identity).mapValues(_.size).maxBy(_._2)._1,
-          _90thPercentil = sortedVotesExcludingAbstentions.lift((votesExcludingAbstentions.size.toDouble * 9.0 / 10.0).floor.toInt).get,
-          median = sortedVotesExcludingAbstentions.lift((votesExcludingAbstentions.size.toDouble / 2.0).floor.toInt).get,
+          countIncludingAbstentions = votes.length,
+          count = votesExcludingAbstentions.length,
+          mode = votes.groupBy(identity).mapValues(_.length).maxBy(_._2)._1,
+          _90thPercentil = sortedVotesExcludingAbstentions.lift((votesExcludingAbstentions.length.toDouble * 9.0 / 10.0).floor.toInt).get,
+          median = sortedVotesExcludingAbstentions.lift((votesExcludingAbstentions.length.toDouble / 2.0).floor.toInt).get,
           mean = mean,
           stdDeviation = math.sqrt(variance),
           perVoteCount = Map(
-            0 -> votes.filter(_ == 0).size,
-            1 -> votes.filter(_ == 1).size,
-            2 -> votes.filter(_ == 2).size,
-            3 -> votes.filter(_ == 3).size,
-            4 -> votes.filter(_ == 4).size,
-            5 -> votes.filter(_ == 5).size,
-            6 -> votes.filter(_ == 6).size,
-            7 -> votes.filter(_ == 7).size,
-            8 -> votes.filter(_ == 8).size,
-            9 -> votes.filter(_ == 9).size,
-            10 -> votes.filter(_ == 10).size
+            0 -> votes.count(_ == 0),
+            1 -> votes.count(_ == 1),
+            2 -> votes.count(_ == 2),
+            3 -> votes.count(_ == 3),
+            4 -> votes.count(_ == 4),
+            5 -> votes.count(_ == 5),
+            6 -> votes.count(_ == 6),
+            7 -> votes.count(_ == 7),
+            8 -> votes.count(_ == 8),
+            9 -> votes.count(_ == 9),
+            10 -> votes.count(_ == 10)
           )
         ))
       }
@@ -121,7 +121,7 @@ object Review {
       tx.hdel(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${reviewerUUID}", proposalId)
       tx.exec()
 
-      if(vote != 0) {
+      if (vote != 0) {
         ProposalUserWatchPreference.applyUserProposalAutowatch(reviewerUUID, proposalId, AutoWatch.AFTER_INTERACTION)
       }
       Event.storeEvent(VoteForProposalEvent(reviewerUUID, proposalId, vote))
@@ -176,7 +176,7 @@ object Review {
   }
 
 
-  def allProposalsNotReviewed(reviewerUUID: String, page: Int, pageSize: Int, track: Option[String], excludedProposalIds: Set[String]): (Int,List[Proposal]) = Redis.pool.withClient {
+  def allProposalsNotReviewed(reviewerUUID: String, page: Int, pageSize: Int, track: Option[String], excludedProposalIds: Set[String]): (Int, List[Proposal]) = Redis.pool.withClient {
     implicit client =>
       // Take all SUBMITTED, remove approved and refused, then removed the ones already reviewed
       val listOfIds = track match {
@@ -201,7 +201,7 @@ object Review {
       }
       //listOfIds.slice(page*pageSize,(page+1)*pageSize))
 
-      val sublistForThisPage = listOfIds.filterNot(excludedProposalIds.contains(_)).slice(page * pageSize, ( page + 1) * pageSize)
+      val sublistForThisPage = listOfIds.filterNot(excludedProposalIds.contains).slice(page * pageSize, (page + 1) * pageSize)
 
       (listOfIds.size, Proposal.loadProposalByIDs(sublistForThisPage.toSet, ProposalState.SUBMITTED))
   }
@@ -364,9 +364,9 @@ object Review {
 
   def previouslyResettedVote(reviewerUUID: String, proposalId: String): Option[Review] = Redis.pool.withClient {
     implicit client =>
-      Event.loadEventsForObjRef(proposalId).collect{
+      Event.loadEventsForObjRef(proposalId).collect {
         case voteEvent: VoteForProposalEvent if voteEvent.isInstanceOf[VoteForProposalEvent] => Some(voteEvent.toReview())
-      }.flatten.filter(_.reviewer==reviewerUUID).sortBy(_.date).lastOption
+      }.flatten.filter(_.reviewer == reviewerUUID).sortBy(_.date).lastOption
   }
 
   def totalInternalCommentsPerProposal(): List[(String, Int)] = {
@@ -667,7 +667,7 @@ object Review {
       client.hdel(s"Proposals:DelayedReviews:ByEventCode:${ConferenceDescriptor.current().eventCode}:AndAuthor:${uuid}", proposalId)
   }
 
-  def flushAllDeletedReviews() = Redis.pool.withClient{
+  def flushAllDeletedReviews() = Redis.pool.withClient {
     implicit client =>
       client.del("Proposals:DelayedReviews:ByEventCode:*")
   }

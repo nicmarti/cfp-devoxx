@@ -10,6 +10,8 @@ import play.api.i18n.Messages
 import play.api.libs.json.{Format, Json}
 import play.api.templates.HtmlFormat
 
+import java.lang
+
 
 /**
   * Proposal is the main and maybe the most important object for a CFP.
@@ -1149,16 +1151,17 @@ object Proposal {
       loadProposalByIDs(allProposalIds, proposalState)
   }
 
-  def markVisited(userId: String, proposalId: String): Unit = Redis.pool.withClient { client =>
-    client.hset(s"LastVisitsFor:${userId}", proposalId, ISODateTimeFormat.dateTime().print(Instant.now()))
+  def markVisited(userId: String, proposalId: String): Long = Redis.pool.withClient { client =>
+    val updated:Long = client.hset(s"LastVisitsFor:${userId}", proposalId, ISODateTimeFormat.dateTime().print(Instant.now()))
     Event.resetWatcherEventsForProposal(userId, proposalId)
+    updated
   }
 
   def userProposalLastVisits(userId: String): Map[String, DateTime] = Redis.pool.withClient { client =>
     client.hgetAll(s"LastVisitsFor:${userId}").mapValues(ISODateTimeFormat.dateTime().withZone(ConferenceDescriptor.current().timezone).parseDateTime(_))
   }
 
-  def deleteLastVisits() = Redis.pool.withClient{
+  def deleteLastVisits(): lang.Long = Redis.pool.withClient{
     implicit client =>
       client.del("LastVisitsFor:*")
   }
