@@ -1,0 +1,10 @@
+image:
+  file: .gitpod.Dockerfile
+jetbrains:
+  intellij:
+    plugins:
+      - org.intellij.scala
+      - com.intellij.play
+      - com.github.tomasmilata.intelliroutes
+    prebuilds:
+      version: stable

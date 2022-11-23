@@ -1,5 +1,7 @@
 # Ignore all dotfiles...
 .*
+!.gitpod.Dockerfile
+!.gitpod.yml
 *~
 
 # except for .gitignore
