@@ -1,5 +1,12 @@
 image:
   file: .gitpod.Dockerfile
+
+tasks:
+  - name: Running docker-compose
+    command: >
+      docker-compose up -d
+      && gp sync-done running-docker-compose
+
 jetbrains:
   intellij:
     plugins:
