@@ -7,6 +7,12 @@ tasks:
       docker-compose up -d
       && gp sync-done running-docker-compose
 
+  - name: Redis client connection
+    init: gp sync-await running-docker-compose
+    command: >
+      sleep 5
+      && docker exec -ti cfp-devoxx_redis redis-cli
+
   - name: run cfp (with play2)
     init: gp sync-await running-docker-compose
     command: |
