@@ -10,6 +10,7 @@
 !.gitpod/*
 # ... and idea run configurations
 !.idea/runConfigurations/*.xml
+!.dockerignore
 
 # Ignore Play! working directory #
 # in Dev branch, we do not want to save the application.conf file cause it contains password
