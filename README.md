@@ -58,16 +58,16 @@ Gitpod is a cloud-based IDE which provides 50h / month on his free tier (they ca
 
 Steps for a proper setup :
 - Create [a Gitpod account](https://gitpod.io/) (if you don't have any) and allow Gitpod to access your Github repository
-- Follow [Gitpod's Intellij IDEA getting started](https://www.gitpod.io/docs/references/ides-and-editors/intellij) steps to open
+- Follow [Gitpod's Intellij IDEA getting started](https://www.gitpod.io/docs/references/ides-and-editors/intellij) steps to
   be able to use Intellij as your Gitpod preferred IDE
 - Install following plugins on your local Intellij (unfortunately, those plugins are not compatible with a cloud-based IDE at the moment) :
   - [Scala plugin](https://plugins.jetbrains.com/plugin/1347-scala)
   - [Play plugin](https://plugins.jetbrains.com/plugin/14583-play-framework)
 - Open gitpod url with the target branch in it, something like :  
- [https://gitpod.io/#https://github.com/fcamblor/cfp-devoxx/tree/gitpod-support](https://gitpod.io/#https://github.com/fcamblor/cfp-devoxx/tree/gitpod-support)  
+ [https://gitpod.io/#https://github.com/nicmarti/cfp-devoxx/tree/gitpod-support](https://gitpod.io/#https://github.com/nicmarti/cfp-devoxx/tree/gitpod-support)  
  You can also install a browser extension ([Firefox](https://addons.mozilla.org/en-US/firefox/addon/gitpod/) | [Chrome-based](https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki))
  which will help generate the proper gitpod url based on your selected github branch.
-- You will need to wait a little bit that Gitpod provision the VM
+- You will need to wait a little bit that Gitpod provisions the VM
 - Once your cloud-based Intellij is opened, a browser window should be opened automatically with the CFP webapp in it
   (the browser window may take some time, maybe 3-4 minutes, on first opening, as every Twirl templates are going to be compiled)
 - Create a speaker user on the CFP and look into the console to see the confirmation email ("please validate your email...")
@@ -87,15 +87,25 @@ For more information about Redis, don't hesitate to look at its documentation [h
 
 If you want to debug Scala code, then there is a dedicated Shared Run Configuration for this that can be run in debug mode 
 
-To make it work properly, you will have to change Project JDK by right clicking on `cfp-devoxxfr` module,
-then clicking on `Open module settings` and selecting `Project` in left menubar.
-On the SDK dropdown, click on `Add JDK` > `Download JDK...` then select :
-- Version: `1.8`
-- Vendor: `Azul Zulu Community`
-then click `Download` button and close popup.
-
 Switch on the Play run terminal tab and stop it by clicking on `Ctrl+C` multiple times.
 Then click on `Debug 'Run CFP'` on the top menu bar, which is going to start the app in debug mode.
+
+#### Uploading Redis dump to Gitpod instance
+
+You can upload big files to Gitpod by running a "cloud commander" on your gitpod instance :
+- From anywhere in your workspace, run :
+```npx -y cloudcmd```
+  This should run a webserver on port 8000 (by default)
+- Once done, open another terminal and execute following command in order to open (temporarily) your cloud commander :
+```gp url 8000```
+- In the cloud commander UI, you will be able to upload any file on your gitpod filesystem, so you will be able
+  to upload your `rdb` file in your workspace (please, don't upload it in `redis-data/` yet)
+- Disable appendonly on your redis instance : `docker exec cfp-devoxx_redis redis-cli CONFIG SET appendonly no`
+- Stop your redis image (`docker stop cfp-devoxx_redis`)
+- Move your uploaded `rdb` file to `redis-data/dump.rdb` file
+- Start again redis : `docker start cfp-devoxx_redis`
+- Re-enable appendonly : `docker exec cfp-devoxx_redis redis-cli CONFIG SET appendonly yes`
+- You should be able to see that your dump is loaded by running : `docker exec cfp-devoxx_redis redis-cli keys '*'`
 
 ### Local development environment
 
