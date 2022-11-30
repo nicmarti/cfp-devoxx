@@ -360,9 +360,7 @@ object Speaker {
 
   def allCFPMembers(): Set[Speaker] = Redis.pool.withClient {
     implicit client =>
-      client.smembers("Webuser:cfp").filter(uuid =>
-        Webuser.isPublicVisible(uuid)
-      ).flatMap {
+      client.smembers("Webuser:cfp").flatMap {
         uuid =>
           Speaker.findByUUID(uuid)
       }

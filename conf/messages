@@ -1070,3 +1070,9 @@ show.on.publisher.committee.page=Displayed on the program committee public web p
 update.publisher.committee.page=Update visibility?
 speaker.bio.notfound=404 Not found : speaker''s bio not available
 speaker.bio.explanation=Either the speaker has not yet accepted the Terms & Conditions or the speaker does not exist.
+
+publisher.home=Home
+publisher.speakers=Speakers
+publisher.committee=Program Committee
+publisher.notPublic=Not public
+publisher.people=members

@@ -1,5 +1,5 @@
 @(slots: List[Slot], rooms: List[Room], day: String, maybeProgramSchedule: Option[ProgramSchedule], secretPublishKey: Option[String], hideUselessRooms: Boolean, includeTypes: Option[String], excludeTypes: Option[String])(implicit lang: Lang, req: RequestHeader, flash:Flash)
-    @views.html.Publisher.devoxxFR2020(Messages(s"sw.show.$day")) {
+    @views.html.Publisher.devoxxFR(Messages(s"sw.show.$day")) {
     <style>
 @*    @@media print {*@
     /** BEGINNING BLOCK OF PROGRAM SCHEDULE'S PRINT CSS SNIPPET SPECIFITIES **/

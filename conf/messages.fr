@@ -1023,3 +1023,9 @@ show.on.publisher.committee.page=Affiché sur la page publique du comité
 update.publisher.committee.page=Mettre à jour la visibilité ?
 speaker.bio.notfound=404 Not Found : orateur inconnu
 speaker.bio.explanation=Le profil de cette personne n''est pas disponible. Il est aussi possible que la personne n''a pas encore accepté les "termes et conditions" de présentation de la conférence. La fiche sera publiée lorsqu''elle aura validé son profil.
+
+publisher.home=Accueil
+publisher.speakers=Orateurs.trices
+publisher.committee=Comité de sélection
+publisher.notPublic=Profil non publié
+publisher.people=personnes
