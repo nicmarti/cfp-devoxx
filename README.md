@@ -29,9 +29,9 @@ Copyright (c) 2013 Association du Paris Java User Group & [Nicolas Martignole](h
 ## Background
 
 The CFP was originally created in 2013 for the [Devoxx France](http://www.devoxx.fr/) 2014 edition. Devoxx France is one of the biggest conference for Developers in France with 2500 attendees in 2015.
-The conference had top sponsors like Google, Oracle, IBM and Microsoft. The conference is organized by Nicolas Martignole, Antonio Goncalvès and Zouheir Cadi.
+The conference had top sponsors like Google, Oracle, IBM and Microsoft. The conference is organized by Nicolas Martignole, Antonio Goncalves and Zouheir Cadi.
  
-The CFP is implemented with Scala and Play Framework v2.2.3. Redis 2.8 is used for persistence. Elastic Search is integrated as a search engine and to calculate stats with Facets.
+The CFP is implemented with Scala and Play Framework v2.2.3. Redis 5.x is used for persistence. Elastic Search is integrated as a search engine and to calculate stats with Facets.
  
 ## Which Conferences are using it?
 
@@ -53,8 +53,8 @@ Send a message to [@nmartignole](http://www.twitter.com/nmartignole) if you plan
 ## How to set-up a local and friendly developer environment ?
 
 - Install SBT 0.13.18
-- Install Play 2.2.3 (not the latest version with activator) or just launch sbt from the CFP folder
-- Install Redis 2.8.21 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
+- Install Play 2.2.3 (not the latest version with activator) or just launch `sbt` from the CFP folder
+- Install Redis 5.0 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
 - Read Redis documentation and learn Redis with http://try.redis.io
 - Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf 
 
@@ -140,17 +140,15 @@ Use WGET and download all pages from your Publisher controller. This will save s
 
 ```wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html```
 
-## Can you help me with Redis 2.8.x ?
+## Can you help me with Redis  ?
 
-Downloading redis...tag.gz from http://download.redis.io/releases/redis-5.0.3.tar.gz
+On Mac, install redis 7.x using brew : 
 
-The CFP has been tested with Redis 5.0.3. Always check that your version is up-to-date in term
-of security [here](https://raw.githubusercontent.com/antirez/redis/2.8/00-RELEASENOTES). 
+```bash
+brew install redis@7
+```
 
-Unpack the archive
-
-    $ make 
-    $ make install
+The CFP has been tested with Redis 7.04 Always check that your version is up-to-date in term of security
 
 Create a custom redis configuration file. Be sure to set a very strong password. Redis is written in C and is mono-core.
 On my super Intel i7 it runs on one Core. Thus it's ok to have multiple Redis on differents ports. 
@@ -161,11 +159,11 @@ How to run the redis server with custom config file ?
 
 Note: ensure all paths in the .conf file exists otherwise, use touch to create those files / paths
 
-How to run the redis client ?
+## How to run the redis client ?
 
 Once the redis-server is up and running, do the following:
 
-$ redis-cli -p 6366
+```$ redis-cli -p 6379````
 
 Some commands to remember:
 	
@@ -202,7 +200,6 @@ password on this remote server is "my_super_password_for_prod".
     redis-prod.mydomain.com:6393> SADD Webuser:admin UUID_123456
     redis-prod.mydomain.com:6393> SADD Webuser:cfp UUID_123456
     ...
-
 
 - Restart the application to clear its caches (or use /admin/clearCaches if you are already an admin and connected)
 
@@ -324,8 +321,7 @@ Call for Paper application for Devoxx
 French
 ------
 
-Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis 2.8.
-
+Le CFP de Devoxx France est codé en Scala, avec le framework Play 2.2.x. Les données sont persistées sur Redis.
 J'ai écris cette application en prenant soin de rester simple, pragmatique et productif.
 
 ## Caractéristiques et idées du nouveau CFP :
@@ -342,18 +338,18 @@ J'ai écris cette application en prenant soin de rester simple, pragmatique et p
 L'installation d'un environnement de dév est simple et s'effectue en quelques étapes :
 
 - installer Play 2.2.3
-- installer Redis 2.8.4
+- installer Redis 
 - configurer son serveur Redis pour être "slave" de la prod
 - récupérer le code source du projet CFP Devoxx France de Bitbucket
 - lancer et commencer à contribuer
 
 ## Installation de Play 2.2
 
-Pré-requis : Java 7 fortement conseillé pour des raisons de performances.
+Pré-requis : Java 11 fortement conseillé pour des raisons de performances.
 
 - Téléchargez Play 2.2.3 http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip
 - Décompressez dans un répertoire, ajouter le répertoire à votre PATH
-- Placez-vous dans un nouveau répertoire et vérifiez que Play2 est bien installé avec la commande "play"
+- Placez-vous dans un nouveau répertoire et vérifiez que Play2 est bien installé avec la commande "sbt"
 
 ## Installation de Redis 5.0.3
 
@@ -363,8 +359,6 @@ Pré-requis : les utilitaires make, gcc correctement installés via XCode ou bre
 - Décompressez, et suivez les inscrutions du fichier README, pour compiler Redis
 - Effectuez un "make install" en tant que root afin d'installer Redis
 
-Je déconseille de tester les installations via Brew, qui ne sont pas correctement configurées. Vous allez perdre du temps.
-
 ## Configurer votre serveur Redis
 
 Lorsque vous développez sur votre machine, nous allons utiliser un serveur Redis local afin de pouvoir y écrire nos données, sans perturber la production.
@@ -372,7 +366,7 @@ Cependant, un des points forts de Redis, c'est qu'il est possible de synchronise
 Pour cela, nous allons déclarer que la prod, le serveur Redis hébergé à distance, est MASTER. Votre installation de Redis
 locale sera donc SLAVE de ce serveur. Redis synchronise rapidement, et vous aurez donc en permanence une copie de la prod sur votre machine locale.
 
-Pour cela, il faut utiliser le fichier conf/redis-devoxxfr.conf que j'ai placé dans le répertoire conf du projet Play2.
+Pour cela, il faut utiliser le fichier `conf/redis-sample-dev.conf` que j'ai placé dans le répertoire `conf` du projet Play2.
 Prenez ce fichier, copiez-le vers le répertoire par défaut de Redis, /usr/local/etc sur MacOS X.
 
 Vous pouvez alors démarrer le serveur redis local avec la commande suivante :
@@ -389,10 +383,8 @@ Celui-ci permet d'effectuer des commandes, je vous invite à suivre le petit tut
 
 # Reporter un bug
 
-Le projet est hébergé sur [Bitbucket](https://bitbucket.org/nicolas_martignole/cfp-devoxx-fr)
+Le projet est hébergé sur [Github](https://github.com/nicmarti/cfp-devoxx)
 
-# Dependency Tree
-[![Dependencies](https://app.updateimpact.com/badge/766661207762538496/cfp-devoxx.svg?config=compile)](https://app.updateimpact.com/latest/766661207762538496/cfp-devoxx)
 
 # Installer sa propre version du CFP
 
@@ -435,4 +427,4 @@ Au moment de la mise à jour de cette documentation, la partie Trello n'est pas 
 
 Le CFP de Devoxx France est hébergé sur la plateforme [http://www.clever-cloud.com](Clever-Cloud)
 
-
+Dernière mise à jour : novembre 2022
