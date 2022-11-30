@@ -53,8 +53,14 @@ Send a message to [@nmartignole](http://www.twitter.com/nmartignole) if you plan
 ## How to set-up a local and friendly developer environment ?
 
 - Install SBT 0.13.18
-- Install Play 2.2.3 (not the latest version with activator) or just launch `sbt` from the CFP folder
-- Install Redis 5.0 (or better, but NOT Redis 3.x), do not use "brew install redis" on Mac, as it would install 2.6, an older version of Redis
+- Make sure that you have installed a JDK such as Open JDK 11
+```bash
+➜  cfp-devoxx git:(dev) java --version
+openjdk 11.0.6 2020-01-14
+OpenJDK Runtime Environment GraalVM CE 19.3.1 (build 11.0.6+9-jvmci-19.3-b07)
+OpenJDK 64-Bit Server VM GraalVM CE 19.3.1 (build 11.0.6+9-jvmci-19.3-b07, mixed mode, sharing)
+```
+- Install Redis 7.x with brew (or use Docker) and start it
 - Read Redis documentation and learn Redis with http://try.redis.io
 - Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf 
 
@@ -346,6 +352,13 @@ L'installation d'un environnement de dév est simple et s'effectue en quelques �
 ## Installation de Play 2.2
 
 Pré-requis : Java 11 fortement conseillé pour des raisons de performances.
+
+```bash
+➜  cfp-devoxx git:(dev) java --version
+openjdk 11.0.6 2020-01-14
+OpenJDK Runtime Environment GraalVM CE 19.3.1 (build 11.0.6+9-jvmci-19.3-b07)
+OpenJDK 64-Bit Server VM GraalVM CE 19.3.1 (build 11.0.6+9-jvmci-19.3-b07, mixed mode, sharing)
+```
 
 - Téléchargez Play 2.2.3 http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip
 - Décompressez dans un répertoire, ajouter le répertoire à votre PATH
