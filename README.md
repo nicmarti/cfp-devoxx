@@ -78,13 +78,16 @@ A docker compose file is provided with Redis and Elastic Search configuration.
 
 To connect to your local Redis Cli, you can use this command line as an example :
 
-```sudo docker exec -it cfp-devoxx_redis redis-cli```
+```bash
+sudo docker exec -it cfp-devoxx_redis redis-cli
+```
 
 Note: The vm.max_map_count kernel setting needs to be set to at least 262144.
  - On linux: `sudo sysctl -w vm.max_map_count=262144`
  - On Mac OS: `sysctl -w vm.max_map_count=262144`
  - On Windows and MacOS with docker toolbox:
- ```
+ 
+ ```bash
  docker-machine ssh
  sudo sysctl -w vm.max_map_count=262144
  ```
@@ -144,7 +147,9 @@ When you want to update your local branch (for instance, dev-poland) you should 
   
 Use WGET and download all pages from your Publisher controller. This will save speakers, talks, schedule, etc.
 
-```wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html```
+```bash
+wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html
+```
 
 ## Can you help me with Redis  ?
 
@@ -161,7 +166,9 @@ On my super Intel i7 it runs on one Core. Thus it's ok to have multiple Redis on
 
 How to run the redis server with custom config file ?
 
-    $ redis-server [xxx.conf-file]
+```bash
+$ redis-server [xxx.conf-file]
+```
 
 Note: ensure all paths in the .conf file exists otherwise, use touch to create those files / paths
 
@@ -169,7 +176,9 @@ Note: ensure all paths in the .conf file exists otherwise, use touch to create t
 
 Once the redis-server is up and running, do the following:
 
-```$ redis-cli -p 6379````
+```bash
+$ redis-cli -p 6379
+```
 
 Some commands to remember:
 	
@@ -397,7 +406,6 @@ Celui-ci permet d'effectuer des commandes, je vous invite à suivre le petit tut
 # Reporter un bug
 
 Le projet est hébergé sur [Github](https://github.com/nicmarti/cfp-devoxx)
-
 
 # Installer sa propre version du CFP
 
