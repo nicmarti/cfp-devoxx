@@ -23,6 +23,9 @@ ports:
     port: 9000
     onOpen: open-browser
     visibility: private
+  - name: Play2 remote debug
+    port: 9999
+    onOpen: ignore
 
 jetbrains:
   intellij:
