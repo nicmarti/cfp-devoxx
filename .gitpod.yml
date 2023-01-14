@@ -12,6 +12,12 @@ tasks:
     command: |
       ./.gitpod/run.sh
 
+ports:
+  - name: Play2 webapp
+    port: 9000
+    onOpen: open-browser
+    visibility: private
+
 jetbrains:
   intellij:
     plugins:
