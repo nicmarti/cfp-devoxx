@@ -1,5 +1,4 @@
-image:
-  file: .gitpod/base.Dockerfile
+image: fcamblor/cfp-devoxx:0.6
 
 tasks:
   - name: Running docker-compose
@@ -16,7 +15,9 @@ tasks:
   - name: run cfp (with play2)
     init: gp sync-await running-docker-compose
     command: |
-      ./.gitpod/run.sh
+      if [[ ! -d "/workspace/cfp-devoxx/target" ]]; then cp -a /home/gitpod/bootstrapping-project/cfp-devoxx/target /workspace/cfp-devoxx/target; fi; \
+      if [[ ! -d "/workspace/cfp-devoxx/project/target" ]]; then cp -a /home/gitpod/bootstrapping-project/cfp-devoxx/project/target /workspace/cfp-devoxx/project/target; fi; \
+      /home/gitpod/run.sh
 
 ports:
   - name: Play2 webapp
