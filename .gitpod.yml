@@ -7,6 +7,11 @@ tasks:
       docker-compose up -d
       && gp sync-done running-docker-compose
 
+  - name: run cfp (with play2)
+    init: gp sync-await running-docker-compose
+    command: |
+      ./.gitpod/run.sh
+
 jetbrains:
   intellij:
     plugins:
