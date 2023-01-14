@@ -5,8 +5,9 @@
 # except for .gitignore ...
 !.gitignore
 # ... gitpod files..
-!.gitpod.Dockerfile
-!.gitpod.yml
+!.gitpod.yaml
+!.gitpod
+!.gitpod/*
 # ... and idea run configurations
 !.idea/runConfigurations/*.xml
 

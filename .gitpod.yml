@@ -1,5 +1,5 @@
 image:
-  file: .gitpod.Dockerfile
+  file: .gitpod/base.Dockerfile
 
 tasks:
   - name: Running docker-compose
