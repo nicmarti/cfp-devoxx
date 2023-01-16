@@ -24,6 +24,7 @@
 package controllers
 
 
+import controllers.Favorites.{JSON, Ok}
 import library._
 import models.Review._
 import models._
@@ -40,53 +41,53 @@ import scala.concurrent.Future
   */
 object ApproveOrRefuse extends SecureCFPController {
 
-  def doApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
+  def doApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
           ApprovedProposal.approve(proposal)
           Event.storeEvent(ApprovedProposalEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been accepted."))
+          Ok("{\"status\":\"ok\"}").as(JSON)
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
+        NotFound("{\"status\":\"not_found\"}").as(JSON)
       }
   }
 
-  def doRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
+  def doRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
           ApprovedProposal.refuse(proposal)
           Event.storeEvent(TalkRefusedEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id)).flashing("success" -> s"Talk ${proposal.id} has been refused."))
+          Ok("{\"status\":\"ok\"}").as(JSON)
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
+        NotFound("{\"status\":\"not_found\"}").as(JSON)
       }
   }
 
-  def cancelApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
+  def cancelApprove(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
           val confType: String = proposal.talkType.id
           ApprovedProposal.cancelApprove(proposal)
           Event.storeEvent(TalkRemovedFromApprovedListEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, confType)).flashing("success" -> s"Talk ${proposal.id} has been removed from Approved list."))
+          Ok("{\"status\":\"ok\"}").as(JSON)
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
+        NotFound("{\"status\":\"not_found\"}").as(JSON)
       }
   }
 
-  def cancelRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")).async {
+  def cancelRefuse(proposalId: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
       Proposal.findById(proposalId).map {
         proposal =>
           val confType: String = proposal.talkType.id
           ApprovedProposal.cancelRefuse(proposal)
           Event.storeEvent(TalkRemovedFromRefuseListEvent(request.webuser.uuid, proposalId, proposal.title, proposal.talkType.id, proposal.track.id))
-          Future.successful(Redirect(routes.CFPAdmin.allVotes(proposal.talkType.id, confType)).flashing("success" -> s"Talk ${proposal.id} has been removed from Refused list."))
+          Ok("{\"status\":\"ok\"}").as(JSON)
       }.getOrElse {
-        Future.successful(Redirect(routes.CFPAdmin.allVotes()).flashing("error" -> "Talk not found"))
+        NotFound("{\"status\":\"not_found\"}").as(JSON)
       }
   }
 
