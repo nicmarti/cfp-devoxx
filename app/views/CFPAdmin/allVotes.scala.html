@@ -249,7 +249,7 @@
                         e.preventDefault();
                         var url = this.href;
                         var link = $(this);
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
@@ -265,7 +265,7 @@
                         e.preventDefault();
                         var url = this.href;
                         var link = $(this);
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
@@ -281,7 +281,7 @@
                         e.preventDefault();
                         var url = this.href;
                         var link = $(this);
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
@@ -298,7 +298,7 @@
                         var url = this.href;
                         var link = $(this);
                         link.addClass("loading");
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         $.get(url, function () {
                             link.removeClass("loading");
                             link.addClass("sent");
