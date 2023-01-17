@@ -79,8 +79,12 @@
                     - @declinedTotal declined</span> <span class="badge badge-warning">
                     = @remainingIncludingDeclined remaining</span>
                 <br>
-                <span class="badge badge-primary">@allVotes.map(_._1).count(_.lang == "fr")
-                    FR</span> <span class="badge badge-secondary">@allVotes.map(_._1).count(_.lang == "en") EN</span>
+                <small><strong>All proposals</strong></small>:
+                    @for((trackLabel: String, proposals: List[Proposal]) <- allVotes.map(_._1).groupBy{ proposal => Messages(proposal.track.label) }.toList.sortBy(-_._2.size)) {
+                        <span class="badge badge-info">@trackLabel: @proposals.size (@{(proposals.size.toFloat*100/allVotes.size).round}%)</span>
+                    }
+                    <span class="badge badge-warning">[fr]: @allVotes.map(_._1).count(_.lang == "fr") (@{(allVotes.map(_._1).count(_.lang == "fr").toFloat*100/allVotes.size).round}%)</span>
+                    <span class="badge badge-warning">[en]: @allVotes.map(_._1).count(_.lang == "en") (@{(allVotes.map(_._1).count(_.lang == "en").toFloat*100/allVotes.size).round}%)</span>
                 <br/>
                 <span class="badge badge-pill badge-@ProposalState.ACCEPTED.code">@ProposalState.ACCEPTED.code</span> <small><strong>proposals (and above)</strong>:</small> <span id="acceptedTalksStats"></span>
             </div>
