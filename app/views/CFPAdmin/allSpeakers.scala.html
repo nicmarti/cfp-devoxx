@@ -42,10 +42,10 @@
                 <thead>
                     <tr>
                         <th scope="row">Name</th>
-                        <th scope="row">Lang</th>
                         <th scope="row">Company</th>
                         <th scope="row">Email</th>
-                        <th scope="row">Total Approved</th>
+                        <th scope="row">Total Approved (BoF excluded)</th>
+                        <th scope="row">Approved Types</th>
                         <th scope="row">Total Accepted</th>
                         <th scope="row">Submitted Talks</th>
                     </tr>
@@ -53,11 +53,8 @@
                 <tbody>
                 @speakers.map { case (speaker: Speaker, proposals) =>
                     <tr>
-                       <td>
-                            @tags.renderGravatar(speaker.uuid, showName=true, showPhoto=false)
-                       </td>
                         <td>
-                            @speaker.cleanLang
+                            @tags.renderGravatar(speaker.uuid, showName=true, showPhoto=false) <small>(@speaker.cleanLang)</small>
                         </td>
                         <td>
                             @speaker.company.getOrElse("")
@@ -66,9 +63,16 @@
                             <small>@speaker.email</small>
                         </td>
                         <td>
-                            @allApprovedProposalIDs.count(proposalID => proposals.contains(proposalID))
+                            @allApprovedProposalIDs.count(proposalID => proposals.contains(proposalID) && proposals.get(proposalID).get.talkType.id != ConferenceDescriptor.ConferenceProposalTypes.BOF.id)
                         </td>
-                        <td>@proposals.values.count(proposal => ApprovedProposal.isAccepted(proposal.id))</td>
+                        <td>
+                            @for((talkType: String, proposalIds: Set[String]) <- allApprovedProposalIDs.filter(proposalID => proposals.contains(proposalID)).groupBy{ proposalID => proposals.get(proposalID).get.talkType.id }) {
+                                <span class="badge badge-info">@talkType : @proposalIds.size</span>
+                            }
+                        </td>
+                        <td>
+                            @proposals.values.count(proposal => ApprovedProposal.isAccepted(proposal.id))
+                        </td>
 
                         <td>
                         @proposals.values.map { proposal: Proposal =>
@@ -82,6 +86,7 @@
                             <strong>@Messages(proposal.talkType.simpleLabel)</strong>
                             &nbsp;
                             <a href="@routes.CFPAdmin.openForReview(proposal.id)" title="@proposal.title" target="_blank">@proposal.title</a>
+                            (@proposal.allSpeakers.size @if(proposal.allSpeakers.size>1){ speakers } else { speaker })
                             </div>
                         }
                         </td>
