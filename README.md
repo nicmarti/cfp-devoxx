@@ -50,49 +50,87 @@ The CFP is implemented with Scala and Play Framework v2.2.3. Redis 5.x is used f
 
 Send a message to [@nmartignole](http://www.twitter.com/nmartignole) if you plan to use the CFP.
 
-## How to set-up a local and friendly developer environment ?
+## How to set-up a developer environment ?
 
-- Install SBT 0.13.18
-- Make sure that you have installed a JDK such as Open JDK 11
+### Gitpod Intellij-based environment
+
+Gitpod is a cloud-based IDE which provides 50h / month on his free tier (they can also provide unlimited usage for OSS projects)
+
+Steps for a proper setup :
+- Create [a Gitpod account](https://gitpod.io/) (if you don't have any) and allow Gitpod to access your Github repository
+- Follow [Gitpod's Intellij IDEA getting started](https://www.gitpod.io/docs/references/ides-and-editors/intellij) steps to
+  be able to use Intellij as your Gitpod preferred IDE
+- Install following plugins on your local Intellij (unfortunately, those plugins are not compatible with a cloud-based IDE at the moment) :
+  - [Scala plugin](https://plugins.jetbrains.com/plugin/1347-scala)
+  - [Play plugin](https://plugins.jetbrains.com/plugin/14583-play-framework)
+- Open gitpod url with the target branch in it, something like :  
+ [https://gitpod.io/#https://github.com/nicmarti/cfp-devoxx/tree/gitpod-support](https://gitpod.io/#https://github.com/nicmarti/cfp-devoxx/tree/gitpod-support)  
+ You can also install a browser extension ([Firefox](https://addons.mozilla.org/en-US/firefox/addon/gitpod/) | [Chrome-based](https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki))
+ which will help generate the proper gitpod url based on your selected github branch.
+- You will need to wait a little bit that Gitpod provisions the VM
+- Once your cloud-based Intellij is opened, a browser window should be opened automatically with the CFP webapp in it
+  (the browser window may take some time, maybe 3-4 minutes, on first opening, as every Twirl templates are going to be compiled)
+- Create a speaker user on the CFP and look into the console to see the confirmation email ("please validate your email...")
+  with a link and click it to confirm user creation. Complete creation form by entering a short bio and validate.
+- Once your profile has been confirmed, edit your profile (`/cfp/profile`) and look for your UUID at the bottom of the webpage.
+- Open magic URL `/admin/bootstrapAdminUser?uuid=<put here the uuid>` in order to promote your user as an admin user,
+  so that you're able to create new users or promote them as admins.  
+  _Important note: this magic URL will work only if no admin already exists on your CFP instance_
+
+If, for whatever reason, you want to look at Redis which is used as our DB, you should have a dedicated
+terminal window connected to current Redis instance.  
+In this console, you can for example execute `key *` query to gather all existing Redis entries.  
+For more information about Redis, don't hesitate to look at its documentation [here](http://try.redis.io)
+
+
+#### Gitpod Debug
+
+If you want to debug Scala code, then there is a dedicated Shared Run Configuration for this that can be run in debug mode 
+
+Switch on the Play run terminal tab and stop it by clicking on `Ctrl+C` multiple times.
+Then click on `Debug 'Run CFP'` on the top menu bar, which is going to start the app in debug mode.
+
+#### Uploading Redis dump to Gitpod instance
+
+You can upload big files to Gitpod by running a "cloud commander" on your gitpod instance :
+- From anywhere in your workspace, run :
+```npx -y cloudcmd```
+  This should run a webserver on port 8000 (by default)
+- Once done, open another terminal and execute following command in order to open (temporarily) your cloud commander :
+```gp url 8000```
+- In the cloud commander UI, you will be able to upload any file on your gitpod filesystem, so you will be able
+  to upload your `rdb` file in your workspace (please, don't upload it in `redis-data/` yet)
+- Disable appendonly on your redis instance : `docker exec cfp-devoxx_redis redis-cli CONFIG SET appendonly no`
+- Stop your redis image (`docker stop cfp-devoxx_redis`)
+- Move your uploaded `rdb` file to `redis-data/dump.rdb` file
+- Start again redis : `docker start cfp-devoxx_redis`
+- Re-enable appendonly : `docker exec cfp-devoxx_redis redis-cli CONFIG SET appendonly yes`
+- You should be able to see that your dump is loaded by running : `docker exec cfp-devoxx_redis redis-cli keys '*'`
+
+### Local development environment
+
+You can look at `.gitpod/base.Dockerfile` to replicate what to install (SBT 0.13.18, Scala 2.11.12 etc.)
+
+Make sure that you have installed a JDK such as Open JDK 11
 ```bash
 ➜  cfp-devoxx git:(dev) java --version
 openjdk 11.0.6 2020-01-14
 OpenJDK Runtime Environment GraalVM CE 19.3.1 (build 11.0.6+9-jvmci-19.3-b07)
 OpenJDK 64-Bit Server VM GraalVM CE 19.3.1 (build 11.0.6+9-jvmci-19.3-b07, mixed mode, sharing)
 ```
-- Install Redis 7.x with brew (or use Docker) and start it
-- Read Redis documentation and learn Redis with http://try.redis.io
-- Read also the self-document redis.conf https://raw.githubusercontent.com/antirez/redis/2.8/redis.conf 
+
+Additionally, to run Redis (and Elasticsearch) you can run `docker-compose up -d` 
+(you can learn Redis [with its documentation](http://try.redis.io))
 
 Optional but recommended for better user experience:
 
-- Install ElasticSearch (1.2.0 or better) This version uses Facets.
 - Create Github App and configure OAuth. See [the Github site](https://github.com/settings/applications) 
 - Create an application using your [Google account](https://cloud.google.com/console#/project). Configure a URL for development, such as http://localhost:9000/ and prod URL as http://cfp.devoxx.fr/
 - Create a LinkedIn App and configure OAuth
 - a [Mailjet](http://www.mailjet.com) account for SMTP sending transactional emails 
 
-## I'm using Docker and Docker-Machine
+## Production configuration
 
-A docker compose file is provided with Redis and Elastic Search configuration.
-
-To connect to your local Redis Cli, you can use this command line as an example :
-
-```sudo docker exec -it cfp-devoxx_redis redis-cli```
-
-Note: The vm.max_map_count kernel setting needs to be set to at least 262144.
- - On linux: `sudo sysctl -w vm.max_map_count=262144`
- - On Mac OS: `sysctl -w vm.max_map_count=262144`
- - On Windows and MacOS with docker toolbox:
- ```
- docker-machine ssh
- sudo sysctl -w vm.max_map_count=262144
- ```
- See [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode) for more details.
-
-## Here's what you need to configure:
-
-- Rename the run.sh.sample file to run.sh
 - Generate a string for the security of the application 
    application.secret = "a_unique_secret_long_enough"
 - As the application uses play.api.libs.Crypto#encryptAES, this secret MUST be at least 16 chars long.

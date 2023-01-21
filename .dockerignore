@@ -1,0 +1,10 @@
+.gitpod/base.Dockerfile
+.gitpod/prepare-gitpod-base-image.sh
+.github
+.idea
+logs/
+data/
+node_modules/
+target/
+project/target/
+*.rdb
