@@ -112,6 +112,7 @@ You can upload big files to Gitpod by running a "cloud commander" on your gitpod
 You can look at `.gitpod/base.Dockerfile` to replicate what to install (SBT 0.13.18, Scala 2.11.12 etc.)
 
 Make sure that you have installed a JDK such as Open JDK 11
+
 ```bash
 ➜  cfp-devoxx git:(dev) java --version
 openjdk 11.0.6 2020-01-14
@@ -182,7 +183,9 @@ When you want to update your local branch (for instance, dev-poland) you should 
   
 Use WGET and download all pages from your Publisher controller. This will save speakers, talks, schedule, etc.
 
-```wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html```
+```bash
+wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html
+```
 
 ## Can you help me with Redis  ?
 
@@ -199,7 +202,9 @@ On my super Intel i7 it runs on one Core. Thus it's ok to have multiple Redis on
 
 How to run the redis server with custom config file ?
 
-    $ redis-server [xxx.conf-file]
+```bash
+$ redis-server [xxx.conf-file]
+```
 
 Note: ensure all paths in the .conf file exists otherwise, use touch to create those files / paths
 
@@ -207,7 +212,9 @@ Note: ensure all paths in the .conf file exists otherwise, use touch to create t
 
 Once the redis-server is up and running, do the following:
 
-```$ redis-cli -p 6379````
+```bash
+$ redis-cli -p 6379
+```
 
 Some commands to remember:
 	
@@ -422,11 +429,15 @@ Prenez ce fichier, copiez-le vers le répertoire par défaut de Redis, /usr/loca
 
 Vous pouvez alors démarrer le serveur redis local avec la commande suivante :
 
-    redis-server /usr/local/etc/redis-devoxxfr.conf
+```bash
+redis-server /usr/local/etc/redis-devoxxfr.conf
+```
 
 Pour arrêter proprement le serveur, il suffit d'envoyer la commande SHUTDOWN au serveur :
 
-    redis-cli -p 6363 SHUTDOWN
+```bash
+redis-cli -p 6363 SHUTDOWN
+```
 
 Vous pouvez vous amuser avec votre serveur Redis en local avec l'utilitaire "redis-cli"
 
@@ -435,7 +446,6 @@ Celui-ci permet d'effectuer des commandes, je vous invite à suivre le petit tut
 # Reporter un bug
 
 Le projet est hébergé sur [Github](https://github.com/nicmarti/cfp-devoxx)
-
 
 # Installer sa propre version du CFP
 
