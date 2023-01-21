@@ -1,0 +1,69 @@
+<application>
+  <component name="BuiltInServerOptions" builtInServerPort="61099" />
+  <component name="DynamicPluginEnabler">
+    <trackers>
+      <map>
+        <entry key="2I81lkRw2xpW0uQMC1GFIjZFBFk">
+          <value>
+            <ProjectPluginTracker />
+          </value>
+        </entry>
+      </map>
+    </trackers>
+  </component>
+  <component name="JdkInstallerHistory">
+    <option name="installedItems">
+      <installed-jdk>
+        <option name="fullText" value="Azul Zulu Community™ 1.8.0_352" />
+        <option name="installDir" value="$USER_HOME$/.jdks/azul-1.8.0_352" />
+        <option name="javaHomeDir" value="$USER_HOME$/.jdks/azul-1.8.0_352" />
+        <option name="sha256" value="a3987f9bd87a3930f2e9cd679990e7b702c8f912a77d08a24163debbfc51bf51" />
+        <option name="url" value="https://cdn.azul.com/zulu/bin/zulu8.66.0.15-ca-jdk8.0.352-linux_x64.tar.gz" />
+        <option name="versionText" value="1.8.0_352" />
+      </installed-jdk>
+    </option>
+  </component>
+  <component name="PropertyService"><![CDATA[{
+  "keyToString": {
+    "CWM_LOGGING_VERSION": "1",
+    "Darcula.SavedEditorTheme": "_@user_Darcula",
+    "RunOnceActivity.se.text.search": "true",
+    "appcds.runOnSecondStart": "IU-222.4345.14-4ec1e5f3df82c6947cd8f0390f7ba15e087218ec13e66552f5cc3d6b9902547f",
+    "build.toolwindow.Sync.selection.state": "com.intellij.build.BuildTreeConsoleView",
+    "bundled.plugins.list.saved.version": "IU-222.4345.14",
+    "com.intellij.openapi.roots.ui.configuration.TabbedModuleEditor.selectedEditor": "Sources",
+    "defaultJdkConfigured": "true",
+    "evlsprt3.222": "26",
+    "file.gist.reindex.count": "4",
+    "fileTypeChangedCounter": "1",
+    "fontSizeToResetConsole": "13.0",
+    "fontSizeToResetEditor": "13.0",
+    "installed.kotlin.plugin.version": "222-1.7.10-release-334-IJ4345.14",
+    "previousColorScheme": "Temporary host editor color scheme",
+    "registry.to.advanced.settings.migration.build": "IU-222.4345.14",
+    "tasks.pass.word.conversion.enforced": "true",
+    "ts.lib.d.ts.version": "4.7.4"
+  },
+  "keyToStringList": {
+    "fileTypeDetectors": [
+      "com.intellij.ide.scratch.ScratchFileServiceImpl$Detector",
+      "com.intellij.profiler.ultimate.hprof.impl.HprofFileTypeDetector",
+      "com.intellij.javascript.debugger.sourcemap.SourceMapFileType$MyFileTypeDetector",
+      "com.intellij.docker.dockerFile.DockerFileTypeDetector",
+      "com.intellij.database.vfs.DbStorageFileType$Detector",
+      "com.jetbrains.nodejs.util.NodeFileTypeDetector$JavaScriptFileTypeDetector",
+      "com.jetbrains.nodejs.util.NodeFileTypeDetector$TypeScriptFileTypeDetector",
+      "com.android.tools.idea.sqlite.fileType.SqliteFileTypeDetector",
+      "com.android.tools.idea.profilers.capture.MemoryCaptureFileType$Detector",
+      "org.jetbrains.plugins.textmate.TextMateFileType$TextMateFileDetector"
+    ]
+  }
+}]]></component>
+  <component name="TerminalCommandHistoryManager">
+    <command-history-files>
+      <command-history-file filename="cfp-devoxx-history" project-path="/workspace/cfp-devoxx" last-access-time="1669548576001" />
+      <command-history-file filename="cfp-devoxx-history2" project-path="/workspace/cfp-devoxx" last-access-time="1669548576061" />
+      <command-history-file filename="cfp-devoxx-history1" project-path="/workspace/cfp-devoxx" last-access-time="1669548576057" />
+    </command-history-files>
+  </component>
+</application>

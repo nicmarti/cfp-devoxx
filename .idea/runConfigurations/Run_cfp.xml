@@ -1,0 +1,74 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run cfp" type="Play2FrameworkRunConfigurations" factoryName="Play 2 App" show_console_on_std_err="false" show_console_on_std_out="false">
+    <module name="cfp-devoxxfr" />
+    <option name="allowRunningInParallel" value="false" />
+    <option name="enableSbtGlobalPlugins" value="false" />
+    <option name="play2EnvVariables">
+      <map>
+        <entry key="ACTIVATE_GOLDEN_TICKET" value="true" />
+        <entry key="ACTIVATE_HTTPS" value="false" />
+        <entry key="ACTIVATE_VOTE" value="true" />
+        <entry key="APP_SECRET" value="1f0bc136-5c99-11e6-bee8-60f81dae2bbc" />
+        <entry key="BITBUCKET_PASSWORD" value="TODO" />
+        <entry key="BITBUCKET_URL" value="https://bitbucket.org/api/1.0/repositories/TODO/TODO/issues" />
+        <entry key="BITBUCKET_USERNAME" value="TODO" />
+        <entry key="BUCKET_ROOTFOLDER" value="TODO" />
+        <entry key="CFP_HOSTNAME" value="localhost:9000" />
+        <entry key="CFP_IS_OPEN" value="true" />
+        <entry key="CFP_LANG" value="fr,fr-FR,en,en-US" />
+        <entry key="CRON_DAYS" value="2" />
+        <entry key="CRON_UPDATER" value="false" />
+        <entry key="DIGEST_DAILY" value="08:00" />
+        <entry key="DIGEST_WEEKLY" value="1" />
+        <entry key="ES_ADDON_HOST" value="TODO" />
+        <entry key="ES_ADDON_PASSWORD" value="" />
+        <entry key="ES_ADDON_PORT" value="1234" />
+        <entry key="ES_ADDON_URI" value="http://localhost:9200" />
+        <entry key="ES_ADDON_USER" value="" />
+        <entry key="GITHUB_ID" value="TODO" />
+        <entry key="GITHUB_SECRET" value="TODO" />
+        <entry key="GOOGLE_ID" value="TODO.apps.googleusercontent.com" />
+        <entry key="GOOGLE_SECRET" value="TODO" />
+        <entry key="LINKEDIN_CLIEND_ID" value="TODO" />
+        <entry key="LINKEDIN_SECRET" value="TODO" />
+        <entry key="MAIL_BCC" value="TODO@devoxx.fr" />
+        <entry key="MAIL_BUG_REPORT" value="TODO@devoxx.fr" />
+        <entry key="MAIL_COMMITTEE" value="TODO@devoxx.fr" />
+        <entry key="MAIL_FROM" value="TODO@devoxx.fr" />
+        <entry key="OPSGENIE_API" value="TODO" />
+        <entry key="OPSGENIE_NAME" value="TODO" />
+        <entry key="REDIS_HOST" value="localhost" />
+        <entry key="REDIS_PASSWORD" value="" />
+        <entry key="REDIS_PORT" value="6379" />
+        <entry key="SBT_SCALA_VERSION" value="2.10.4" />
+        <entry key="SMTP_HOST" value="in-v3.mailjet.com" />
+        <entry key="SMTP_MOCK" value="true" />
+        <entry key="SMTP_PASSWORD" value="TODO" />
+        <entry key="SMTP_PORT" value="587" />
+        <entry key="SMTP_SSL" value="false" />
+        <entry key="SMTP_USER" value="TODO" />
+      </map>
+    </option>
+    <option name="play2IsNonDefaultInstallDirUsed" value="false" />
+    <option name="play2JpdaPort" value="9999" />
+    <option name="play2JvmOptions">
+      <array>
+        <option value="-Xms512M" />
+        <option value="-Xmx1024M" />
+        <option value="-Xss1M" />
+        <option value="-XX:+CMSClassUnloadingEnabled" />
+      </array>
+    </option>
+    <option name="play2NeedOpenInBrowser" value="true" />
+    <option name="play2NonDefaultInstallDir" value="" />
+    <option name="play2OpenUrl" value="http://localhost:9000" />
+    <option name="play2isAutoReloadEnabled" value="false" />
+    <option name="projectPathOnTarget" />
+    <option name="selectedOptions">
+      <list />
+    </option>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

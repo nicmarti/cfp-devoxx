@@ -79,9 +79,14 @@
                     - @declinedTotal declined</span> <span class="badge badge-warning">
                     = @remainingIncludingDeclined remaining</span>
                 <br>
-                <span class="badge badge-primary">@allVotes.map(_._1).count(_.lang == "fr")
-                    FR</span> <span class="badge badge-secondary">@allVotes.map(_._1).count(_.lang == "en") EN</span>
-
+                <small><strong>All proposals</strong></small>:
+                    @for((trackLabel: String, proposals: List[Proposal]) <- allVotes.map(_._1).groupBy{ proposal => Messages(proposal.track.label) }.toList.sortBy(-_._2.size)) {
+                        <span class="badge badge-info">@trackLabel: @proposals.size (@{(proposals.size.toFloat*100/allVotes.size).round}%)</span>
+                    }
+                    <span class="badge badge-warning">[fr]: @allVotes.map(_._1).count(_.lang == "fr") (@{(allVotes.map(_._1).count(_.lang == "fr").toFloat*100/allVotes.size).round}%)</span>
+                    <span class="badge badge-warning">[en]: @allVotes.map(_._1).count(_.lang == "en") (@{(allVotes.map(_._1).count(_.lang == "en").toFloat*100/allVotes.size).round}%)</span>
+                <br/>
+                <span class="badge badge-pill badge-@ProposalState.ACCEPTED.code">@ProposalState.ACCEPTED.code</span> <small><strong>proposals (and above)</strong>:</small> <span id="acceptedTalksStats"></span>
             </div>
         </div>
         <div class="row">
@@ -104,7 +109,7 @@
                             <th>Speakers</th>
                             <th class="prop-track-col">Track</th>
                             <th class="prop-type-col">Type</th>
-                            <th>Lang</th>
+                            <th class="prop-lang-col">Lang</th>
                             <th><i class="fas fa-thumbs-up"></i> / <i class="fas fa-thumbs-down"></i></th>
                             <th class="hidden">Summary</th>
                         </tr>
@@ -180,7 +185,7 @@
                                     <td class="prop-type-col">
                                         <small>@proposal.talkType.id</small>
                                     </td>
-                                    <td>
+                                    <td class="prop-lang-col">
                                         [@proposal.lang]
                                     </td>
                                     <td>
@@ -249,7 +254,7 @@
                         e.preventDefault();
                         var url = this.href;
                         var link = $(this);
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
@@ -265,13 +270,14 @@
                         e.preventDefault();
                         var url = this.href;
                         var link = $(this);
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
                             link.addClass("sent");
                             trTable.removeClass("preselected_false refused_false");
                             trTable.addClass("preselected_true refused_false");
+                            refreshAcceptedTalksPerTrack();
                         }).fail(function () {
                             alert("error");
                         });
@@ -281,13 +287,14 @@
                         e.preventDefault();
                         var url = this.href;
                         var link = $(this);
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
                             link.addClass("sent");
                             trTable.removeClass("preselected_true refused_false");
                             trTable.addClass("preselected_false refused_false");
+                            refreshAcceptedTalksPerTrack();
                         }).fail(function () {
                             alert("error");
                         });
@@ -298,7 +305,7 @@
                         var url = this.href;
                         var link = $(this);
                         link.addClass("loading");
-                        var trTable = $(this).parent().parent();
+                        var trTable = $(this).parents('tr');
                         $.get(url, function () {
                             link.removeClass("loading");
                             link.addClass("sent");
@@ -327,6 +334,34 @@
                 function showGTVotes(show) { changeColumnsVisibility([2,5], show, "showGTVotes"); }
                 function showProposalType(show) { changeColumnsVisibility([10], show); }
                 function showTrack(show) { changeColumnsVisibility([9], show); }
+
+                function refreshAcceptedTalksPerTrack() {
+                    const acceptedProposalsTotal = $(".preselected_true").length
+                    const acceptedProposalsCounts = $(".preselected_true").map((idx,el) => ({
+                            track: $(el).find(".prop-track-col").text().trim(),
+                            lang: $(el).find(".prop-lang-col").text().trim(),
+                        })).toArray()
+                        .reduce((result, props) => {
+                            result.perTrack[props.track] = result.perTrack[props.track] || 0;
+                            result.perTrack[props.track]++;
+
+                            result.perLang[props.lang] = result.perLang[props.lang] || 0;
+                            result.perLang[props.lang]++;
+
+                            return result;
+                        }, { perTrack: {}, perLang: {}})
+
+                    $("#acceptedTalksStats").html(
+                        Object.entries(acceptedProposalsCounts.perTrack).sort(([_, count1], [_2, count2]) => count2-count1)
+                            .map(([track, count]) => `<span class="badge badge-info">${track}: ${count} (${Math.round(count*100/acceptedProposalsTotal)}%)</span>`)
+                            .join(" ")
+                        +" "
+                        +Object.entries(acceptedProposalsCounts.perLang).sort(([_, count1], [_2, count2]) => count2-count1)
+                            .map(([lang, count]) => `<span class="badge badge-warning">${lang}: ${count} (${Math.round(count*100/acceptedProposalsTotal)}%)</span>`)
+                            .join(" ")
+                    );
+                }
+                refreshAcceptedTalksPerTrack();
         </script>
         }
     }

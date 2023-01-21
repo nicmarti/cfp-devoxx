@@ -1,0 +1,38 @@
+image: fcamblor/cfp-devoxx:0.6
+
+tasks:
+  - name: Running docker-compose
+    command: >
+      docker-compose up -d
+      && gp sync-done running-docker-compose
+
+  - name: Redis client connection
+    init: gp sync-await running-docker-compose
+    command: >
+      sleep 5
+      && docker exec -ti cfp-devoxx_redis redis-cli
+
+  - name: run cfp (with play2)
+    init: gp sync-await running-docker-compose
+    command: |
+      if [[ ! -d "/workspace/cfp-devoxx/target" ]]; then cp -a /home/gitpod/bootstrapping-project/cfp-devoxx/target /workspace/cfp-devoxx/target; fi; \
+      if [[ ! -d "/workspace/cfp-devoxx/project/target" ]]; then cp -a /home/gitpod/bootstrapping-project/cfp-devoxx/project/target /workspace/cfp-devoxx/project/target; fi; \
+      /home/gitpod/run.sh
+
+ports:
+  - name: Play2 webapp
+    port: 9000
+    onOpen: open-browser
+    visibility: private
+  - name: Play2 remote debug
+    port: 9999
+    onOpen: ignore
+
+jetbrains:
+  intellij:
+    plugins:
+      - org.intellij.scala
+      - com.intellij.play
+      - com.github.tomasmilata.intelliroutes
+    prebuilds:
+      version: stable

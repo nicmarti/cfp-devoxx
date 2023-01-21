@@ -738,7 +738,7 @@ object CFPAdmin extends SecureCFPController {
             }
           }
           (company, setOfProposals)
-      }
+      }.sortBy(_._2.size).reverse
 
       Ok(views.html.CFPAdmin.allApprovedSpeakersByCompany(speakers, proposals))
   }
