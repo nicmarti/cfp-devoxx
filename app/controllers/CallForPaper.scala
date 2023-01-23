@@ -381,6 +381,7 @@ object CallForPaper extends SecureCFPController {
     implicit request =>
       val uuid = request.webuser.uuid
       val maybeProposal = Proposal.findDraft(uuid, proposalId)
+      // TODO a speaker can be 3 times the main speaker and also 3 times the secondary speaker. 2 speakers can submit 6 talks and we want to limit to 3 talks
       val currentlySubmittedConcernedByQuota: Int = Proposal.countSubmittedAcceptedConcernedByQuota(uuid)
       val additionnalConcernedByQuota: Int = if (maybeProposal.exists(p => ConferenceDescriptor.ConferenceProposalConfigurations.isConcernedByCountRestriction(p.talkType))) 1 else 0
 
