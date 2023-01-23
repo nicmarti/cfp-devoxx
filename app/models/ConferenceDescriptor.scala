@@ -276,6 +276,8 @@ object ConferenceDescriptor {
 
     val allRoomsTIAThu = List(AMPHI_BLEU, MAILLOT, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
+    val allRoomsTIAThuEOD = List(AMPHI_BLEU, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
+
     val allRoomsLabsWednesday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
 
     val allRoomsLabThursday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
@@ -372,7 +374,7 @@ object ConferenceDescriptor {
             new DateTime(s"${secondDay}T17:45:00.000+02:00").toDateTime(confTimezone),
             new DateTime(s"${secondDay}T18:15:00.000+02:00").toDateTime(confTimezone), r1)
       }
-      val toolsThursdayAfternoonSlot2 = ConferenceRooms.allRoomsTIAThu.map {
+      val toolsThursdayAfternoonSlot2 = ConferenceRooms.allRoomsTIAThuEOD.map {
         r1 =>
           SlotBuilder(ConferenceProposalTypes.TIA.id, "thursday",
             new DateTime(s"${secondDay}T18:30:00.000+02:00").toDateTime(confTimezone),
