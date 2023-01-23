@@ -75,10 +75,18 @@
                 }
             </div>
             <div class="col-md-12 mt-2" id="sticky-header">
+                <small><strong>Serverside overall stats</strong></small> :
                 <span class="badge badge-success">@allApprovedProposalIds.size approved</span> <span class="badge badge-declined">
                     - @declinedTotal declined</span> <span class="badge badge-warning">
                     = @remainingIncludingDeclined remaining</span>
                 <br>
+                @if(selectedTrack=="all") {
+                    <small><strong>Clientside overall stats</strong></small> :
+                    <span class="badge badge-success"><span id="totalAcceptedProposals"></span> approved</span> <span class="badge badge-declined">
+                        - <span id="totalDeclinedProposals"></span> declined</span> <span class="badge badge-warning">
+                        = <span id="totalRemainingProposals"></span> remaining</span>
+                    <br/>
+                }
                 <small><strong>All proposals</strong></small>:
                     @for((trackLabel: String, proposals: List[Proposal]) <- allVotes.map(_._1).groupBy{ proposal => Messages(proposal.track.label) }.toList.sortBy(-_._2.size)) {
                         <span class="badge badge-info">@trackLabel: @proposals.size (@{(proposals.size.toFloat*100/allVotes.size).round}%)</span>
@@ -191,7 +199,7 @@
                                         [@proposal.lang]
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
+                                        <div class="btn-group" role="group" data-state="@proposal.state.code">
                                             <button data-action-url="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-danger" title="Cancel Pre-Approve"><i class="fas fa-undo"></i></button>
                                             <button data-action-url="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-danger" title="Cancel Pre-Refuse"><i class="fas fa-undo"></i></button>
                                             <button data-action-url="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-success" title="Pre-Approve"><i class="fas fa-thumbs-up"></i></button>
@@ -348,8 +356,8 @@
                 function showTrack(show) { changeColumnsVisibility([9], show); }
 
                 function refreshAcceptedTalksPerTrack() {
-                    const acceptedProposalsTotal = $(".preselected_true").length
-                    const acceptedProposalsCounts = $(".preselected_true").map((idx,el) => ({
+                    const acceptedProposalsTotal = $("[data-internal-state='accepted']").length
+                    const acceptedProposalsCounts = $("[data-internal-state='accepted']").map((idx,el) => ({
                             track: $(el).find(".prop-track-col").text().trim(),
                             lang: $(el).find(".prop-lang-col").text().trim(),
                         })).toArray()
@@ -360,8 +368,10 @@
                             result.perLang[props.lang] = result.perLang[props.lang] || 0;
                             result.perLang[props.lang]++;
 
+                            result.total++;
+
                             return result;
-                        }, { perTrack: {}, perLang: {}})
+                        }, { perTrack: {}, perLang: {}, total: 0})
 
                     $("#acceptedTalksStats").html(
                         Object.entries(acceptedProposalsCounts.perTrack).sort(([_, count1], [_2, count2]) => count2-count1)
@@ -377,6 +387,12 @@
                     Object.entries(acceptedProposalIdsPerSpeakerId).forEach( ([speakerUUID, acceptedProposalIds]) => {
                         $(`[data-speaker-id='${speakerUUID}'].totalAccepted`).text(acceptedProposalIds.length?`[${acceptedProposalIds.length}]`:'')
                     })
+
+                    const slotsCount = @{ConferenceDescriptor.ConferenceProposalConfigurations.parse(confType).slotsCount};
+                    const declinedTalks = $("[data-state='declined']").length;
+                    $("#totalAcceptedProposals").html(acceptedProposalsCounts.total)
+                    $("#totalDeclinedProposals").html(declinedTalks)
+                    $("#totalRemainingProposals").html(slotsCount - acceptedProposalsCounts.total + declinedTalks)
                 }
                 refreshAcceptedTalksPerTrack();
 
