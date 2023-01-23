@@ -191,14 +191,14 @@
                                     <td>
                                         <div class="btn-group" role="group">
                                             @if(approved) {
-                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-danger" title="Cancel Pre-Approve"><i class="fas fa-undo"></i></a>
+                                                <button data-action-url="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-danger" title="Cancel Pre-Approve"><i class="fas fa-undo"></i></button>
                                             }
                                             @if(refused) {
-                                                <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-danger" title="Cancel Pre-Refuse"><i class="fas fa-undo"></i></a>
+                                                <button data-action-url="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-danger" title="Cancel Pre-Refuse"><i class="fas fa-undo"></i></button>
                                             }
                                             @if(!approved && !refused) {
-                                                <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-success" title="Pre-Approve"><i class="fas fa-thumbs-up"></i></a>
-                                                <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-danger" title="Pre-Refuse"><i class="fas fa-thumbs-down"></i></a>
+                                                <button data-action-url="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-success" title="Pre-Approve"><i class="fas fa-thumbs-up"></i></button>
+                                                <button data-action-url="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-danger" title="Pre-Refuse"><i class="fas fa-thumbs-down"></i></button>
                                             }
                                         </div>
                                         <br>
@@ -250,9 +250,8 @@
                         "stripeClasses": []
                     });
 
-                    $('a.refuseBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.refuseBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
                         link.addClass("loading");
@@ -266,9 +265,8 @@
                         });
                     });
 
-                    $('a.approveBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.approveBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
                         link.addClass("loading");
@@ -283,9 +281,8 @@
                         });
                     });
 
-                    $('a.cancelAcceptBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.cancelAcceptBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
                         link.addClass("loading");
@@ -300,9 +297,8 @@
                         });
                     });
 
-                    $('a.cancelRefuseBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.cancelRefuseBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
                         link.addClass("loading");
                         var trTable = $(this).parents('tr');
