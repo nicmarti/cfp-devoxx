@@ -74,7 +74,7 @@
                     </div>
                 }
             </div>
-            <div class="col-md-12 mt-2">
+            <div class="col-md-12 mt-2" id="sticky-header">
                 <span class="badge badge-success">@allApprovedProposalIds.size approved</span> <span class="badge badge-declined">
                     - @declinedTotal declined</span> <span class="badge badge-warning">
                     = @remainingIncludingDeclined remaining</span>
@@ -380,6 +380,18 @@
                 }
                 refreshAcceptedTalksPerTrack();
 
+                const header = document.querySelector('#sticky-header');
+                const headerOffset = header.offsetTop;
+                function stickyHeader() {
+                    if (window.scrollY >= headerOffset) {
+                        header.classList.add('sticky')
+                        header.classList.remove('mt-2')
+                    } else {
+                        header.classList.remove('sticky');
+                        header.classList.add('mt-2')
+                    }
+                }
+                window.addEventListener('scroll', stickyHeader);
         </script>
         }
     }
