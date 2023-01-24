@@ -1,4 +1,4 @@
-@(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long, Double, Option[Double])], allApprovedProposalIds: Set[String], allRejectedProposalIds: Set[String], totalRemaining: Long, confType: String, selectedTrack: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long, Double, Option[Double])], allApprovedProposalIds: Set[String], allRejectedProposalIds: Set[String], totalRemaining: Long, confType: String, selectedTrack: String, acceptedProposalIdsPerSpeakerId: Map[String, Iterable[String]])(implicit lang: Lang, flash: Flash, req: RequestHeader)
     @import models.Review.{AverageNote, TotalAbst, TotalVoter}
 
     @main("All votes") {
@@ -169,11 +169,15 @@
                                     <td>
                                     @proposal.allSpeakers.map { s: Speaker =>
                                         @if(models.Invitation.isInvited(s.uuid)) {
-                                            <span class="badge badge-warning">♥ @s.cleanName <small>
-                                                [@s.company.map(_.toLowerCase.capitalize)]</small></span>
+                                            <span class="badge badge-warning">
+                                                ♥ <span data-speaker-id="@s.uuid" class="totalAccepted"></span> @s.cleanName
+                                                <small>[@s.company.map(_.toLowerCase.capitalize)]</small>
+                                            </span>
                                         } else {
-                                            <span class="badge badge-secondary">@s.cleanName <small>
-                                                [@s.company.map(_.toLowerCase.capitalize)]</small></span>
+                                            <span class="badge badge-secondary">
+                                                <span data-speaker-id="@s.uuid" class="totalAccepted"></span> @s.cleanName
+                                                <small>[@s.company.map(_.toLowerCase.capitalize)]</small>
+                                            </span>
                                         }
                                     }
                                     </td>
@@ -211,6 +215,9 @@
         </div>
 
         <script type="text/javascript">
+                // { [speakerId]: Array<proposalId> }
+                const acceptedProposalIdsPerSpeakerId = @Html(play.api.libs.json.Json.stringify(play.api.libs.json.Json.toJson(acceptedProposalIdsPerSpeakerId)))
+
                 $(document).ready(function () {
 
                     $.fn.dataTableExt.oStdClasses.sStripeOdd = '';
@@ -259,6 +266,15 @@
                         var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
+
+                        const proposalId = trTable.data('proposalId');
+                        const speakerIds = trTable.find("[data-speaker-id]").map((idx, el) => el.dataset['speakerId']).toArray()
+
+                        speakerIds.forEach(speakerId => {
+                            acceptedProposalIdsPerSpeakerId[speakerId] = acceptedProposalIdsPerSpeakerId[speakerId] || [];
+                            acceptedProposalIdsPerSpeakerId[speakerId].push(proposalId);
+                        })
+
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
@@ -275,6 +291,15 @@
                         var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
+
+                        const proposalId = trTable.data('proposalId');
+                        const speakerIds = trTable.find("[data-speaker-id]").map((idx, el) => el.dataset['speakerId']).toArray()
+
+                        speakerIds.forEach(speakerId => {
+                            if(acceptedProposalIdsPerSpeakerId[speakerId]) {
+                                acceptedProposalIdsPerSpeakerId[speakerId] = acceptedProposalIdsPerSpeakerId[speakerId].filter(pId => proposalId !== pId);
+                            }
+                        })
 
                         link.addClass("loading");
                         $.get(url, function () {
@@ -347,8 +372,14 @@
                             .map(([lang, count]) => `<span class="badge badge-warning">${lang}: ${count} (${Math.round(count*100/acceptedProposalsTotal)}%)</span>`)
                             .join(" ")
                     );
+
+                    $(".totalAccepted").text('')
+                    Object.entries(acceptedProposalIdsPerSpeakerId).forEach( ([speakerUUID, acceptedProposalIds]) => {
+                        $(`[data-speaker-id='${speakerUUID}'].totalAccepted`).text(acceptedProposalIds.length?`[${acceptedProposalIds.length}]`:'')
+                    })
                 }
                 refreshAcceptedTalksPerTrack();
+
         </script>
         }
     }

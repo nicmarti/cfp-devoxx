@@ -526,9 +526,16 @@ object CFPAdmin extends SecureCFPController {
         "retrieve refused proposalIds"
       )
 
+      val acceptedProposalIdsPerSpeakerId = allProposals.filter{
+          case(_, proposal) =>
+            proposal.state.code == ProposalState.ACCEPTED.code && proposal.talkType.id != ConferenceProposalTypes.BOF.id
+        }.map { case (_, acceptedProposal: Proposal) => acceptedProposal.allSpeakers.map { speaker => (acceptedProposal, speaker) } }
+        .flatten
+        .groupBy(_._2.uuid)
+        .mapValues{ proposalsWithSpeakers => proposalsWithSpeakers.map(_._1.id) }
 
       val totalRemaining = Benchmark.measure(() => ApprovedProposal.remainingSlots(confType), "calculate remaining slots")
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, allApprovedProposalIds, allRejectedProposalIds, totalRemaining, confType, track))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, allApprovedProposalIds, allRejectedProposalIds, totalRemaining, confType, track, acceptedProposalIdsPerSpeakerId))
   }
 
   def allVotesVersion2(confType: String, page: Int = 0, resultats: Int = 25, sortBy: String = "gt_and_cfp") = SecuredAction(IsMemberOf("admin")) {
