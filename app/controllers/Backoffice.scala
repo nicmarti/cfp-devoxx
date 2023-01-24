@@ -71,22 +71,25 @@ object Backoffice extends SecureCFPController {
   def allProposals(proposalId: Option[String], filterByStatus: Option[String]) = SecuredAction(IsMemberOf("admin")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      (proposalId, filterByStatus) match {
+      val maybeResult = (proposalId, filterByStatus) match {
         case (Some(id), _) =>
           val proposal = Proposal.findById(id)
           proposal match {
-            case None => NotFound("Proposal not found")
-            case Some(pr) => Ok(views.html.Backoffice.allProposals(List(pr), None))
+            case None => None
+            case Some(pr) => Some(List(pr), None)
           }
-        case (None, None) =>
-          val proposals = Proposal.allProposals().sortBy(_.state.code)
-          Ok(views.html.Backoffice.allProposals(proposals, filterByStatus))
-        case (None, Some(filter)) =>
-          val proposals = Proposal.allFromProposalState(ProposalState.parse(filter)).sortBy(_.state.code)
-          Ok(views.html.Backoffice.allProposals(proposals, filterByStatus))
+        case (None, None) => Some(Proposal.allProposals().sortBy(_.state.code), filterByStatus)
+        case (None, Some(filter)) => Some(Proposal.allFromProposalState(ProposalState.parse(filter)).sortBy(_.state.code), filterByStatus)
       }
 
-
+      maybeResult match {
+        case None => NotFound("Proposal not found")
+        case Some((proposals: List[Proposal], maybeFilterByStatus: Option[String])) =>
+          val proposalIds = proposals.map(_.id)
+          val allApprovedProposalIds = ApprovedProposal.allApprovedProposalIDs().filter { pId => proposalIds.contains(pId) }
+          val allRefusedProposalIds = ApprovedProposal.allRefusedProposalIDs().filter { pId => proposalIds.contains(pId) }
+          Ok(views.html.Backoffice.allProposals(proposals, allApprovedProposalIds, allRefusedProposalIds, maybeFilterByStatus))
+      }
   }
 
   // This endpoint is deliberately *not* secured in order to transform a user into an admin
@@ -346,8 +349,14 @@ object Backoffice extends SecureCFPController {
     implicit request =>
 
       val allDeclined = Proposal.allDeclinedProposals()
+
+      val proposalIdsToDisplay = allDeclined.map(_.id).toSet
+
+      val allApprovedProposalIds = ApprovedProposal.allApprovedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) }
+      val allRejectedProposalIds = ApprovedProposal.allRefusedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) }
+
       //      Proposal.decline(request.webuser.uuid, proposalId)
-      Ok(views.html.Backoffice.showAllDeclined(allDeclined))
+      Ok(views.html.Backoffice.showAllDeclined(allDeclined, allApprovedProposalIds, allRejectedProposalIds))
 
   }
 

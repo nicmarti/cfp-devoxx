@@ -3,7 +3,7 @@ package controllers
 import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchResponse}
 import library._
 import library.search.ElasticSearch
-import models.ConferenceDescriptor.{ConferenceTracks}
+import models.ConferenceDescriptor.{ConferenceProposalTypes, ConferenceTracks}
 import models.Review._
 import models._
 import org.apache.commons.io.FileUtils
@@ -483,10 +483,6 @@ object CFPAdmin extends SecureCFPController {
 
       val allMyVotes = Benchmark.measure(() => Review.allPrecomputedVotesFromUser(request.webuser.uuid), "gathering current user's votes")
 
-      val totalApproved = Benchmark.measure(
-        () => ApprovedProposal.countApproved(confType), "count approved talks"
-      )
-
       val allProposals = Benchmark.measure(() => Proposal.loadAndParseProposals(reviews.keySet), "load and parse proposals")
 
       val listOfProposals = Benchmark.measure(() => reviews.flatMap {
@@ -512,18 +508,27 @@ object CFPAdmin extends SecureCFPController {
           }
       }, "create list of Proposals")
 
-      val tempListToDisplay = Benchmark.measure(() => confType match {
-        case "all" => listOfProposals
-        case filterType => listOfProposals.filter(_._1.talkType.id == filterType)
-      }, "list to display")
+      val listToDisplay = Benchmark.measure(() => {
+        listOfProposals.filter { case (proposal, _, _, _, _, _) =>
+          ((confType == "all" || proposal.talkType.id == confType)
+          && (track == "all" || proposal.track.id == track))
+        }
+      }, "list to display filtered by type and track")
 
-      val listToDisplay = Benchmark.measure(() => track match {
-        case "all" => tempListToDisplay
-        case trackId => tempListToDisplay.filter(_._1.track.id == trackId)
-      }, "filter by track")
+      val proposalIdsToDisplay = listToDisplay.map { case (proposal, _, _, _, _, _) => proposal.id }.toSet
+
+      val allApprovedProposalIds = Benchmark.measure(
+        () => ApprovedProposal.allApprovedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) },
+        "retrieve approved proposalIds"
+      )
+      val allRejectedProposalIds = Benchmark.measure(
+        () => ApprovedProposal.allRefusedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) },
+        "retrieve refused proposalIds"
+      )
+
 
       val totalRemaining = Benchmark.measure(() => ApprovedProposal.remainingSlots(confType), "calculate remaining slots")
-      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, totalApproved, totalRemaining, confType, track))
+      Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, allApprovedProposalIds, allRejectedProposalIds, totalRemaining, confType, track))
   }
 
   def allVotesVersion2(confType: String, page: Int = 0, resultats: Int = 25, sortBy: String = "gt_and_cfp") = SecuredAction(IsMemberOf("admin")) {

@@ -173,7 +173,12 @@ object GoldenTicketAdminController extends SecureCFPController {
           proposal.state == ProposalState.DRAFT || proposal.state == ProposalState.ARCHIVED || proposal.state == ProposalState.DELETED || proposal.state == ProposalState.CANCELLED
       }.sortBy(_._2._4.n).reverse
 
-      Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals))
+      val proposalIdsToDisplay = listOfProposals.map { case (proposal, _) => proposal.id }.toSet
+
+      val allApprovedProposalIds = ApprovedProposal.allApprovedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) }
+      val allRejectedProposalIds = ApprovedProposal.allRefusedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) }
+
+      Ok(views.html.GoldenTicketAdmin.showGoldenTicketVotes(listOfProposals, allApprovedProposalIds, allRejectedProposalIds))
   }
 
   def repairStatsAfterGTArchivingAction() = SecuredAction(IsMemberOf("admin")) {
