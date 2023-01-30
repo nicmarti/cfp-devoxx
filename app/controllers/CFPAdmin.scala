@@ -528,7 +528,7 @@ object CFPAdmin extends SecureCFPController {
 
       val acceptedProposalIdsPerSpeakerId = allProposals.filter{
           case(_, proposal) =>
-            proposal.state.code == ProposalState.ACCEPTED.code && proposal.talkType.id != ConferenceProposalTypes.BOF.id
+            allApprovedProposalIds.contains(proposal.id) && proposal.talkType.id != ConferenceProposalTypes.BOF.id
         }.map { case (_, acceptedProposal: Proposal) => acceptedProposal.allSpeakers.map { speaker => (acceptedProposal, speaker) } }
         .flatten
         .groupBy(_._2.uuid)
