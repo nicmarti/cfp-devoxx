@@ -476,7 +476,7 @@ object CFPAdmin extends SecureCFPController {
   def allVotes(confType: String, track: String) = SecuredAction(IsMemberOf("cfp")) {
     implicit request: SecuredRequest[play.api.mvc.AnyContent] =>
 
-      play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin allVotes for $confType and $track")
+      play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin START allVotes for $confType and $track")
       val reviews: Map[String, (Score, TotalVoter, TotalAbst, AverageNote, StandardDev)] = Benchmark.measure(
         () => Review.allVotes(), "gathering all votes"
       )
@@ -518,11 +518,11 @@ object CFPAdmin extends SecureCFPController {
       val proposalIdsToDisplay = listToDisplay.map { case (proposal, _, _, _, _, _) => proposal.id }.toSet
 
       val allApprovedProposalIds = Benchmark.measure(
-        () => ApprovedProposal.allApprovedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) },
+        () => ApprovedProposal.allApprovedProposalIDs().intersect(proposalIdsToDisplay),
         "retrieve approved proposalIds"
       )
       val allRejectedProposalIds = Benchmark.measure(
-        () => ApprovedProposal.allRefusedProposalIDs().filter { proposalId => proposalIdsToDisplay.contains(proposalId) },
+        () => ApprovedProposal.allRefusedProposalIDs().intersect(proposalIdsToDisplay),
         "retrieve refused proposalIds"
       )
 
@@ -535,6 +535,7 @@ object CFPAdmin extends SecureCFPController {
         .mapValues{ proposalsWithSpeakers => proposalsWithSpeakers.map(_._1.id) }
 
       val totalRemaining = Benchmark.measure(() => ApprovedProposal.remainingSlots(confType), "calculate remaining slots")
+      play.Logger.of("application.Benchmark").debug(s"******* CFPAdmin allVotes END")
       Ok(views.html.CFPAdmin.allVotes(listToDisplay.toList, allApprovedProposalIds, allRejectedProposalIds, totalRemaining, confType, track, acceptedProposalIdsPerSpeakerId))
   }
 
