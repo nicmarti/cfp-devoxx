@@ -1,4 +1,4 @@
-@(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long, Double, Option[Double])], totalApproved: Long, totalRemaining: Long, confType: String, selectedTrack: String)(implicit lang: Lang, flash: Flash, req: RequestHeader)
+@(allVotes: List[(models.Proposal, (models.Review.Score, models.Review.TotalVoter, models.Review.TotalAbst, models.Review.AverageNote, models.Review.StandardDev), Double, Long, Double, Option[Double])], allApprovedProposalIds: Set[String], allRejectedProposalIds: Set[String], totalRemaining: Long, confType: String, selectedTrack: String, acceptedProposalIdsPerSpeakerId: Map[String, Iterable[String]])(implicit lang: Lang, flash: Flash, req: RequestHeader)
     @import models.Review.{AverageNote, TotalAbst, TotalVoter}
 
     @main("All votes") {
@@ -74,11 +74,19 @@
                     </div>
                 }
             </div>
-            <div class="col-md-12 mt-2">
-                <span class="badge badge-success">@totalApproved approved</span> <span class="badge badge-declined">
+            <div class="col-md-12 mt-2" id="sticky-header">
+                <small><strong>Serverside overall stats</strong></small> :
+                <span class="badge badge-success">@allApprovedProposalIds.size approved</span> <span class="badge badge-declined">
                     - @declinedTotal declined</span> <span class="badge badge-warning">
                     = @remainingIncludingDeclined remaining</span>
                 <br>
+                @if(selectedTrack=="all") {
+                    <small><strong>Clientside overall stats</strong></small> :
+                    <span class="badge badge-success"><span id="totalAcceptedProposals"></span> approved</span> <span class="badge badge-declined">
+                        - <span id="totalDeclinedProposals"></span> declined</span> <span class="badge badge-warning">
+                        = <span id="totalRemainingProposals"></span> remaining</span>
+                    <br/>
+                }
                 <small><strong>All proposals</strong></small>:
                     @for((trackLabel: String, proposals: List[Proposal]) <- allVotes.map(_._1).groupBy{ proposal => Messages(proposal.track.label) }.toList.sortBy(-_._2.size)) {
                         <span class="badge badge-info">@trackLabel: @proposals.size (@{(proposals.size.toFloat*100/allVotes.size).round}%)</span>
@@ -116,9 +124,7 @@
                     </thead>
                     <tbody>
                     @allVotes.sortBy(-_._2._4.n).zipWithIndex.map { case ((proposal, voteAndTotalVotes, gtScore, gtVoteCast, gtAndComiteeScore, maybeMyVote), index) =>
-                        @defining(ApprovedProposal.isRefused(proposal.id, proposal.talkType.id)) { refused =>
-                            @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
-                                <tr class="preselected_@approved refused_@refused">
+                                <tr data-proposal-id="@proposal.id" data-external-state="@proposal.state.code" data-internal-state="@if(allApprovedProposalIds.contains(proposal.id)){accepted}else{@if(allRejectedProposalIds.contains(proposal.id)){rejected}else{submitted}}">
                                     <td class="number_table">@{index+1}</td>
                                     <td class="average_table">
                                     @defining(voteAndTotalVotes._4) { average: AverageNote =>
@@ -171,11 +177,15 @@
                                     <td>
                                     @proposal.allSpeakers.map { s: Speaker =>
                                         @if(models.Invitation.isInvited(s.uuid)) {
-                                            <span class="badge badge-warning">♥ @s.cleanName <small>
-                                                [@s.company.map(_.toLowerCase.capitalize)]</small></span>
+                                            <span class="badge badge-warning">
+                                                ♥ <span data-speaker-id="@s.uuid" class="totalAccepted"></span> @s.cleanName
+                                                <small>[@s.company.map(_.toLowerCase.capitalize)]</small>
+                                            </span>
                                         } else {
-                                            <span class="badge badge-secondary">@s.cleanName <small>
-                                                [@s.company.map(_.toLowerCase.capitalize)]</small></span>
+                                            <span class="badge badge-secondary">
+                                                <span data-speaker-id="@s.uuid" class="totalAccepted"></span> @s.cleanName
+                                                <small>[@s.company.map(_.toLowerCase.capitalize)]</small>
+                                            </span>
                                         }
                                     }
                                     </td>
@@ -189,29 +199,21 @@
                                         [@proposal.lang]
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            @if(approved) {
-                                                <a href="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-danger" title="Cancel Pre-Approve"><i class="fas fa-undo"></i></a>
-                                            }
-                                            @if(refused) {
-                                                <a href="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-danger" title="Cancel Pre-Refuse"><i class="fas fa-undo"></i></a>
-                                            }
-                                            @if(!approved && !refused) {
-                                                <a href="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-success" title="Pre-Approve"><i class="fas fa-thumbs-up"></i></a>
-                                                <a href="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-danger" title="Pre-Refuse"><i class="fas fa-thumbs-down"></i></a>
-                                            }
+                                        <div class="btn-group" role="group" data-state="@proposal.state.code">
+                                            <button data-action-url="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-danger" title="Cancel Pre-Approve"><i class="fas fa-undo"></i></button>
+                                            <button data-action-url="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-danger" title="Cancel Pre-Refuse"><i class="fas fa-undo"></i></button>
+                                            <button data-action-url="@routes.ApproveOrRefuse.doApprove(proposal.id)" class="approveBtn btn btn-success" title="Pre-Approve"><i class="fas fa-thumbs-up"></i></button>
+                                            <button data-action-url="@routes.ApproveOrRefuse.doRefuse(proposal.id)" class="refuseBtn btn btn-danger" title="Pre-Refuse"><i class="fas fa-thumbs-down"></i></button>
                                         </div>
                                         <br>
                                         <span class="badge badge-pill badge-@proposal.state.code">@proposal.state.code</span>
-                                        @if(approved && (proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP)) {<span class="badge badge-pill badge-success"><i class="fas fa-thumbs-up"></i> pre-approved</span>}
-                                        @if(refused && (proposal.state == ProposalState.SUBMITTED || proposal.state == ProposalState.BACKUP)) {<span class="badge badge-pill badge-danger"><i class="fas fa-thumbs-down"></i> pre-refused</span>}
+                                        <span class="badge badge-pill badge-success preApprovedTag"><i class="fas fa-thumbs-up"></i> pre-approved</span>
+                                        <span class="badge badge-pill badge-danger preRefusedTag"><i class="fas fa-thumbs-down"></i> pre-refused</span>
                                     </td>
                                     <td class="hidden">
                                         @Html(proposal.summaryAsHtml)
                                     </td>
                                 </tr>
-                            }
-                        }
                     }
                     </tbody>
                 </table>
@@ -221,6 +223,9 @@
         </div>
 
         <script type="text/javascript">
+                // { [speakerId]: Array<proposalId> }
+                const acceptedProposalIdsPerSpeakerId = @Html(play.api.libs.json.Json.stringify(play.api.libs.json.Json.toJson(acceptedProposalIdsPerSpeakerId)))
+
                 $(document).ready(function () {
 
                     $.fn.dataTableExt.oStdClasses.sStripeOdd = '';
@@ -250,67 +255,82 @@
                         "stripeClasses": []
                     });
 
-                    $('a.refuseBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.refuseBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
+
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
-                            link.addClass("sent");
-                            trTable.removeClass("preselected_false refused_false");
-                            trTable.addClass("preselected_false refused_true");
+
+                            trTable.attr('data-internal-state', 'rejected')
                         }).fail(function () {
                             alert("error");
                         });
                     });
 
-                    $('a.approveBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.approveBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
+
+                        const proposalId = trTable.data('proposalId');
+                        const speakerIds = trTable.find("[data-speaker-id]").map((idx, el) => el.dataset['speakerId']).toArray()
+
+                        speakerIds.forEach(speakerId => {
+                            acceptedProposalIdsPerSpeakerId[speakerId] = acceptedProposalIdsPerSpeakerId[speakerId] || [];
+                            acceptedProposalIdsPerSpeakerId[speakerId].push(proposalId);
+                        })
+
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
-                            link.addClass("sent");
-                            trTable.removeClass("preselected_false refused_false");
-                            trTable.addClass("preselected_true refused_false");
+
+                            trTable.attr('data-internal-state', 'accepted')
+
                             refreshAcceptedTalksPerTrack();
                         }).fail(function () {
                             alert("error");
                         });
                     });
 
-                    $('a.cancelAcceptBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.cancelAcceptBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
                         var trTable = $(this).parents('tr');
+
+                        const proposalId = trTable.data('proposalId');
+                        const speakerIds = trTable.find("[data-speaker-id]").map((idx, el) => el.dataset['speakerId']).toArray()
+
+                        speakerIds.forEach(speakerId => {
+                            if(acceptedProposalIdsPerSpeakerId[speakerId]) {
+                                acceptedProposalIdsPerSpeakerId[speakerId] = acceptedProposalIdsPerSpeakerId[speakerId].filter(pId => proposalId !== pId);
+                            }
+                        })
+
                         link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
-                            link.addClass("sent");
-                            trTable.removeClass("preselected_true refused_false");
-                            trTable.addClass("preselected_false refused_false");
+
+                            trTable.attr('data-internal-state', 'submitted')
+
                             refreshAcceptedTalksPerTrack();
                         }).fail(function () {
                             alert("error");
                         });
                     });
 
-                    $('a.cancelRefuseBtn').click(function (e) {
-                        e.preventDefault();
-                        var url = this.href;
+                    $('.cancelRefuseBtn').click(function (e) {
+                        var url = this.dataset['actionUrl'];
                         var link = $(this);
-                        link.addClass("loading");
                         var trTable = $(this).parents('tr');
+
+                        link.addClass("loading");
                         $.get(url, function () {
                             link.removeClass("loading");
-                            link.addClass("sent");
-                            trTable.removeClass("preselected_false refused_true");
-                            trTable.addClass("preselected_false refused_false");
+
+                            trTable.attr('data-internal-state', 'submitted')
                         }).fail(function () {
                             alert("error");
                         });
@@ -336,8 +356,8 @@
                 function showTrack(show) { changeColumnsVisibility([9], show); }
 
                 function refreshAcceptedTalksPerTrack() {
-                    const acceptedProposalsTotal = $(".preselected_true").length
-                    const acceptedProposalsCounts = $(".preselected_true").map((idx,el) => ({
+                    const acceptedProposalsTotal = $("[data-internal-state='accepted']").length
+                    const acceptedProposalsCounts = $("[data-internal-state='accepted']").map((idx,el) => ({
                             track: $(el).find(".prop-track-col").text().trim(),
                             lang: $(el).find(".prop-lang-col").text().trim(),
                         })).toArray()
@@ -348,8 +368,10 @@
                             result.perLang[props.lang] = result.perLang[props.lang] || 0;
                             result.perLang[props.lang]++;
 
+                            result.total++;
+
                             return result;
-                        }, { perTrack: {}, perLang: {}})
+                        }, { perTrack: {}, perLang: {}, total: 0})
 
                     $("#acceptedTalksStats").html(
                         Object.entries(acceptedProposalsCounts.perTrack).sort(([_, count1], [_2, count2]) => count2-count1)
@@ -360,8 +382,32 @@
                             .map(([lang, count]) => `<span class="badge badge-warning">${lang}: ${count} (${Math.round(count*100/acceptedProposalsTotal)}%)</span>`)
                             .join(" ")
                     );
+
+                    $(".totalAccepted").text('')
+                    Object.entries(acceptedProposalIdsPerSpeakerId).forEach( ([speakerUUID, acceptedProposalIds]) => {
+                        $(`[data-speaker-id='${speakerUUID}'].totalAccepted`).text(acceptedProposalIds.length?`[${acceptedProposalIds.length}]`:'')
+                    })
+
+                    const slotsCount = @{ConferenceDescriptor.ConferenceProposalConfigurations.parse(confType).slotsCount};
+                    const declinedTalks = $("[data-state='declined']").length;
+                    $("#totalAcceptedProposals").html(acceptedProposalsCounts.total)
+                    $("#totalDeclinedProposals").html(declinedTalks)
+                    $("#totalRemainingProposals").html(slotsCount - acceptedProposalsCounts.total + declinedTalks)
                 }
                 refreshAcceptedTalksPerTrack();
+
+                const header = document.querySelector('#sticky-header');
+                const headerOffset = header.offsetTop;
+                function stickyHeader() {
+                    if (window.scrollY >= headerOffset) {
+                        header.classList.add('sticky')
+                        header.classList.remove('mt-2')
+                    } else {
+                        header.classList.remove('sticky');
+                        header.classList.add('mt-2')
+                    }
+                }
+                window.addEventListener('scroll', stickyHeader);
         </script>
         }
     }

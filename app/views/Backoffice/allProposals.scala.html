@@ -1,4 +1,4 @@
-@(proposals:List[Proposal], filterByStatus:Option[String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
+@(proposals:List[Proposal], allApprovedProposalIds: Set[String], allRejectedProposalIds: Set[String], filterByStatus:Option[String])(implicit lang: Lang, flash: Flash, req:RequestHeader)
 
 @main("CFP Admin - all talks") {
 
@@ -58,9 +58,7 @@
                 </thead>
                 <tbody>
                 @proposals.map{ proposal =>
-                    @defining(ApprovedProposal.isRefused(proposal.id, proposal.talkType.id)) { refused =>
-                        @defining(ApprovedProposal.isApproved(proposal.id, proposal.talkType.id)) { approved =>
-                            <tr class="preselected_@approved refused_@refused">
+                            <tr data-external-state="@proposal.state.code" data-internal-state="@if(allApprovedProposalIds.contains(proposal.id)){accepted}else{@if(allRejectedProposalIds.contains(proposal.id)){rejected}else{submitted}}">
                                 <td>
                                     <small><a href="@routes.CFPAdmin.openForReview(proposal.id)">@proposal.id</a></small>
                                 </td>
@@ -91,8 +89,6 @@
 
                                 </td>
                             </tr>
-                        }
-                    }
                 }
                 </tbody>
             </table>

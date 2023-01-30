@@ -173,11 +173,23 @@ table#allProposals.dataTable.display tbody tr>.sorting_3 {
   background-color: rgba(0,0,0,0.1)
 }
 
-.preselected_true {
+[data-external-state='accepted'], [data-internal-state='accepted'] {
   background-color: #fff8ba !important; // Attention dataTable vire le background pour mettre son bleu
   border-style: solid;
   border-width: 2px;
   border-color: #fff8ba;
+}
+
+.cancelAcceptBtn, .preApprovedTag { display: none; }
+[data-external-state='submitted'][data-internal-state='accepted'] .cancelAcceptBtn,
+[data-external-state='submitted'][data-internal-state='accepted'] .preApprovedTag {
+  display: block;
+}
+
+.approveBtn, .refuseBtn { display: none; }
+[data-external-state='submitted'][data-internal-state='submitted'] .approveBtn,
+[data-external-state='submitted'][data-internal-state='submitted'] .refuseBtn {
+  display: block;
 }
 
 .average_table {
@@ -348,8 +360,15 @@ a.badge-declined:focus, a.badge-declined.focus {
   font-style: italic;
 }
 
-.refused_true {
+[data-external-state='rejected'],
+[data-internal-state='rejected'] {
   background-color: #ffc1a6 !important;
+}
+
+.cancelRefuseBtn, .preRefusedTag { display: none; }
+[data-external-state='submitted'][data-internal-state='rejected'] .cancelRefuseBtn,
+[data-external-state='submitted'][data-internal-state='rejected'] .preRefusedTag {
+  display: block;
 }
 
 #antispam_field {
@@ -1001,4 +1020,19 @@ hr.borderless {
 }
 .dvx_2023{
   background-color: #e8a262;
+}
+
+.sticky {
+  position: fixed;
+  top: 0px;
+  margin-top: 0px;
+  z-index: 10;
+  background-color: white;
+  width: 100%;
+  left: 0px;
+  padding-right: 30px;
+  padding-left: 30px;
+
+  border-bottom: 3px solid black;
+  padding-bottom: 5px;
 }
