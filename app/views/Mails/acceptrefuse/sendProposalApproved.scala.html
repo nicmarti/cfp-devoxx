@@ -33,16 +33,16 @@
 <hr>
 <h3>Welcome to @Messages("longYearlyName")</h3>
 <p>Hi,</p>
-<p>We're glad to inform you that your proposal <strong>@proposal.title</strong> (<strong>@Messages(proposal.talkType.id)</strong>) has been <strong>accepted</strong> for @Messages("longYearlyName")!</p>
+<p>We are pleased to inform you that your proposal <strong>@proposal.title</strong> (<strong>@Messages(proposal.talkType.id)</strong>) has been <strong>accepted</strong> for @Messages("longYearlyName")!</p>
 <br>
-<h3>How to validate or not your participation?</h3>
-<p>Note that you only have a few days to accept the terms and conditions and confirm your presence at @Messages("longYearlyName"). </p>
+<h3>How do I confirm my participation or not?</h3>
+<p>Remember that you only have a few days to accept the terms and conditions and confirm your presence at @Messages("longYearlyName"). </p>
 <p><strong>Please validate now by following this link in your browser:</strong> <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a></p>
-<p>You will then have to accept or refuse your presentation(s).</p>
+<p>You will then have to accept or decline your presentation(s).</p>
 <br>
 <h3>A doubt? A question?</h3>
 <p>If you can’t confirm quickly, if you have any questions, please come back to us as soon as possible.</p>
-<p><strong>Do not reply to this email</strong>, but use the interface to exchange with the committee:  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a></p>
+<p><strong>Do not reply to this email</strong>, but use the interface to communicate with the committee:  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a></p>
 <br>
 <br>
 
