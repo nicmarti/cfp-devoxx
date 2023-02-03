@@ -20,7 +20,7 @@
     <br>
 
     @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-        <p><strong>Attention</strong>, ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas de badge speaker</strong>. Vous devez acheter une place à la conférence pour participer, si vous ne disposez pas, par ailleurs, d'un ticket.</p>
+        <p><strong>Attention</strong>, ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas droit à un badge Speaker</strong>. Vous devez acheter une place à la conférence pour participer, si vous ne disposez pas, par ailleurs, d'un ticket.</p>
         <p>La conférence étant complète, vous pouvez encore vous inscrire via le lien suivant unique (et lié à votre soumission de sujet): <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email</a></p>
     } else {
         <p>Ce type de présentation donne droit à un badge speaker (dans la limite de 2 badges par proposition), et vous permettra d'accéder à l'ensemble de la conférence, ainsi qu'au diner des speakers.</p>
