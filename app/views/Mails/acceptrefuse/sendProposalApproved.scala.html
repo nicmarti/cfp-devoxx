@@ -2,59 +2,57 @@
 
 @if(ConferenceDescriptor.current().frLangEnabled) {
     <h3>Bienvenue à @Messages("longYearlyName")</h3>
+    <hr>
     <strong>English version below</strong>
     <hr>
     <p>Bonjour,</p>
-    <p>Nous avons le plaisir de vous informer que la présentation <strong>@proposal.title</strong> au format
-    [<strong>@Messages(proposal.talkType.id)</strong>] a été <strong>acceptée</strong> pour @Messages("longYearlyName") !</p>
-    <hr>
-    <h3>Comment valider ou non votre participation ?</h3>
-    <p>Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et valider votre
-    présence à @Messages("longYearlyName") comme présentateur.</p>
-    <p><strong>Merci de valider dès maintenant en suivant ce lien dans votre navigateur :</strong></p>
-    <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
-    <p>Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).</p>
-    <h3>Comment poser une question ?</h3>
-    <p>Merci de ne pas répondre à cet email, mais d'utiliser votre interface pour échanger avec le comité.</p>
-    <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
+    <p>Nous avons le plaisir de vous informer que la présentation <strong>@proposal.title</strong> (<strong>@Messages(proposal.talkType.id)</strong>) a été <strong>acceptée</strong> pour @Messages("longYearlyName") !</p>
     <br>
-<br>
+    <h3>Comment valider ou non votre participation ?</h3>
+    <p>Attention, vous ne disposez que de quelques jours pour accepter les conditions générales et confirmer votre présence à @Messages("longYearlyName"). </p>
+    <p><strong>Merci de valider dès maintenant en suivant ce lien dans votre navigateur :</strong> <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a></p>
+    <p>Vous serez ensuite amené à accepter ou refuser votre(vos) présentation(s).</p>
+    <br>
+    <h3>Un doute ? Une question ?</h3>
+    <p>Si vous ne pouvez pas nous confirmer rapidement, ou si vous avez des questions merci de revenir vers nous au plus vite.</p>
+    <p><strong>Ne répondez pas à cet email</strong>, mais utilisez l'interface pour échanger avec le comité: <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a></p>
+    <br>
+    <br>
 
     @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-    <p><strong>Attention</strong>, ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas de badge speaker</strong>. Vous devez
-        acheter une place à la conférence pour participer, si vous ne disposez pas, par ailleurs, d'un ticket.</P>
-     <p>La conférence étant complète, vous pouvez encore vous inscrire via le lien suivant unique (et lié à votre soumission de sujet) :
-     <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email</a>
-     </p>
+        <p><strong>Attention</strong>, ce format de présentation à @Messages("longYearlyName") ne donne <strong>pas droit à un badge Speaker</strong>. Vous devez acheter une place à la conférence pour participer, si vous ne disposez pas, par ailleurs, d'un ticket.</p>
+        <p>La conférence étant complète, vous pouvez encore vous inscrire via le lien suivant unique (et lié à votre soumission de sujet): <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email</a></p>
+    } else {
+        <p>Ce type de présentation donne droit à un badge Speaker (dans la limite de 2 badges par proposition), et vous permettra d'accéder à l'ensemble de la conférence, ainsi qu'au diner des speakers.</p>
+        <p><strong>Vous n'avez pas à vous inscrire</strong>, votre badge Speaker sera préparé pour vous à l'entrée de la conférence. Ce badge est valable pour les 3 jours de la conférence.</p>
+        <p>Le diner speaker aura lieu le mercredi soir. Nous vous tiendrons informé par email quelques jours avant l'évènement.</p>
     }
-    @if(ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)){
-        <p>Ce type de présentation donne droit à un badge speaker, et vous permettra d'accéder à l'ensemble de la conférence, ainsi qu'au diner des speakers.</p>
-        <p>Vous n'avez pas à vous inscrire, votre badge Speaker sera préparé pour vous à l'entrée de la conférence. Ce badge est valable pour les 3 jours de la conférence.</p>
-        <p>Le diner speaker aura lieu le mercredi soir dans le centre de Paris. Nous vous tiendrons informé par email.</p>
-    }
-    <p>L'équipe de sélection de la conférence @Messages("longYearlyName")</p>
-    <hr>
+    <p>L'équipe @Messages("longYearlyName")</p>
+    <br>
 }
+<hr>
 <h3>Welcome to @Messages("longYearlyName")</h3>
 <p>Hi,</p>
-<p>We're glad to inform you that your proposal for @Messages("longYearlyName") has been <strong>accepted</strong></p>
-<p>Proposal <strong>@proposal.title</strong>, of type [<strong>@Messages(proposal.talkType.id)</strong>].</p>
-<hr>
-<h3>What's next?</h3>
-<p>You must now validate or decline the general terms and conditions, and confirm that you are still available to do this presentation :</p>
-<a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a>
+<p>We are pleased to inform you that your proposal <strong>@proposal.title</strong> (<strong>@Messages(proposal.talkType.id)</strong>) has been <strong>accepted</strong> for @Messages("longYearlyName")!</p>
+<br>
+<h3>How do I confirm my participation or not?</h3>
+<p>Remember that you only have a few days to accept the terms and conditions and confirm your presence at @Messages("longYearlyName"). </p>
+<p><strong>Please validate now by following this link in your browser:</strong> <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.ApproveOrRefuse.showAcceptTerms()</a></p>
+<p>You will then have to accept or decline your presentation(s).</p>
+<br>
+<h3>A doubt? A question?</h3>
+<p>If you can’t confirm quickly, if you have any questions, please come back to us as soon as possible.</p>
+<p><strong>Do not reply to this email</strong>, but use the interface to communicate with the committee:  <a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a></p>
+<br>
+<br>
 
-    @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-    <p>This type of talk does not grant a conference pass, so you will need to register as an attendee in order to access the conference area.
-    Registration details <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">register Devoxx FR 2019</a></p>
+@if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
+    <p><strong>Please note that</strong>, this presentation format for @Messages("longYearlyName") <strong>does not provide a speaker badge</strong>. You will need to purchase a seat at the conference to attend, if you do not have a ticket.</p>
+    <p>Since the conference is full, you can still register using the following unique link (linked to your proposal): <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email</a></p>
 } else {
-    <p>As a confirmed speaker you'll receive, a couple of weeks before the event takes place, a discount code for a Devoxx Combi pass (full week).</p>
-    <p>You'll also receive an invite for the exclusive speakers reception.</p>
+    <p>This type of presentation entitles you to a speaker badge (up to 2 badges per proposal), and will allow you to access the entire conference, as well as the speakers dinner.</p>
+    <p><strong>You do not need to register</strong>, your Speaker badge will be waiting for you at the entrance of the conference. This badge is valid for 3 days of the conference.</p>
+    <p>The Speakers Dinner will be held on Wednesday evening. We will keep you informed by email a few days before the event.</p>
 }
 
-<h3>For any question regarding your talk</h3>
-<p>Please, do not respond to this email. Send any comment through the web interface, and our team will do its bests to respond quickly.</p>
-<a href="@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)">@ConferenceDescriptor.current().conferenceUrls.cfpURL@routes.CallForPaper.showCommentForProposal(proposal.id)</a>
-<br>
 <p>The @Messages("longYearlyName") team</p>
-
