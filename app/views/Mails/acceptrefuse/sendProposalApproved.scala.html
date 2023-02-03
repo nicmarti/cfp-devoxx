@@ -47,8 +47,8 @@
 <br>
 
 @if(!ConferenceDescriptor.ConferenceProposalConfigurations.doesItGivesSpeakerFreeEntrance(proposal.talkType)) {
-    <p><strong>Attention</strong>, this presentation format for @Messages("longYearlyName") <strong>does not give a speaker badge</strong>. You must buy a seat at the conference to participate, if you do not have a ticket.</p>
-    <p>The conference being full, you can still register via the following unique link (and linked to your proposal): <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email</a></p>
+    <p><strong>Please note that</strong>, this presentation format for @Messages("longYearlyName") <strong>does not provide a speaker badge</strong>. You will need to purchase a seat at the conference to attend, if you do not have a ticket.</p>
+    <p>Since the conference is full, you can still register using the following unique link (linked to your proposal): <a href="https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email">https://reg.devoxx.fr/speakers/welcome/@proposal.id/@email</a></p>
 } else {
     <p>This type of presentation entitles you to a speaker badge (up to 2 badges per proposal), and will allow you to access the entire conference, as well as the speakers dinner.</p>
     <p><strong>You do not have to register</strong>, your Speaker badge will be prepared for you at the entrance of the conference. This badge is valid for 3 days of the conference.</p>
