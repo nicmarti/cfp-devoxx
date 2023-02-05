@@ -198,7 +198,7 @@
                                     <td class="prop-lang-col">
                                         [@proposal.lang]
                                     </td>
-                                    <td>
+                                    <td class="prop-actions-col">
                                         <div class="btn-group" role="group" data-state="@proposal.state.code">
                                             <button data-action-url="@routes.ApproveOrRefuse.cancelApprove(proposal.id)" class="cancelAcceptBtn btn btn-danger" title="Cancel Pre-Approve"><i class="fas fa-undo"></i></button>
                                             <button data-action-url="@routes.ApproveOrRefuse.cancelRefuse(proposal.id)" class="cancelRefuseBtn btn btn-danger" title="Cancel Pre-Refuse"><i class="fas fa-undo"></i></button>
@@ -207,8 +207,6 @@
                                         </div>
                                         <br>
                                         <span class="badge badge-pill badge-@proposal.state.code">@proposal.state.code</span>
-                                        <span class="badge badge-pill badge-success preApprovedTag"><i class="fas fa-thumbs-up"></i> pre-approved</span>
-                                        <span class="badge badge-pill badge-danger preRefusedTag"><i class="fas fa-thumbs-down"></i> pre-refused</span>
                                     </td>
                                     <td class="hidden">
                                         @Html(proposal.summaryAsHtml)
@@ -265,6 +263,9 @@
                             link.removeClass("loading");
 
                             trTable.attr('data-internal-state', 'rejected')
+                            trTable.data('internalState', 'rejected')
+
+                            recomputePreApprovedOrRefusedBadgesClientside(trTable)
                         }).fail(function () {
                             alert("error");
                         });
@@ -288,8 +289,10 @@
                             link.removeClass("loading");
 
                             trTable.attr('data-internal-state', 'accepted')
+                            trTable.data('internalState', 'accepted')
 
                             refreshAcceptedTalksPerTrack();
+                            recomputePreApprovedOrRefusedBadgesClientside(trTable)
                         }).fail(function () {
                             alert("error");
                         });
@@ -314,8 +317,10 @@
                             link.removeClass("loading");
 
                             trTable.attr('data-internal-state', 'submitted')
+                            trTable.data('internalState', 'submitted')
 
                             refreshAcceptedTalksPerTrack();
+                            recomputePreApprovedOrRefusedBadgesClientside(trTable)
                         }).fail(function () {
                             alert("error");
                         });
@@ -331,6 +336,9 @@
                             link.removeClass("loading");
 
                             trTable.attr('data-internal-state', 'submitted')
+                            trTable.data('internalState', 'submitted')
+
+                            recomputePreApprovedOrRefusedBadgesClientside(trTable)
                         }).fail(function () {
                             alert("error");
                         });
@@ -395,6 +403,35 @@
                     $("#totalRemainingProposals").html(slotsCount - acceptedProposalsCounts.total + declinedTalks)
                 }
                 refreshAcceptedTalksPerTrack();
+
+                // This function allows to tell if preRefusedTag / preApprovedTag need to be added/removed
+                // in action column
+                // At the beginning, it was done only with css styles to display/hide these elements based on
+                // tr's data-internal-state / data-external-state, but given that datatable's search is based
+                // on DOM content, when we were searching for "accepted" talks only, no lines were filtered
+                // because "pre-accepted" text content was found in the DOM, even if hidden
+                function recomputePreApprovedOrRefusedBadgesClientside($trEls) {
+                    $trEls.each((idx, trEl) => {
+                        const $trEl = $(trEl);
+                        $trEl.find(".preRefusedTag, .preApprovedTag").remove();
+                        const $trActions = $trEl.find(".prop-actions-col");
+                        const internalStatus = $trEl.data('internalState');
+                        const externalStatus = $trEl.data('externalState');
+
+                        // If some of these rules would have to be changed, don't forget to update cfp.less
+                        // .cancelRefuseBtn and .cancelAcceptBtn styles definitions as they should
+                        // be impacted also (preRefused/preApproved badge should follow the same css rules)
+                        // We're not handling cancel button display rules here because their URLs are
+                        // generated serverside (so it would be more complicated to handle clientside)
+                        if(externalStatus === 'submitted' && internalStatus === 'rejected') {
+                            $trActions.append(`<span class="badge badge-pill badge-danger preRefusedTag"><i class="fas fa-thumbs-down"></i> pre-refused</span>`)
+                        }
+                        if(externalStatus === 'submitted' && internalStatus === 'accepted') {
+                            $trActions.append(`<span class="badge badge-pill badge-success preApprovedTag"><i class="fas fa-thumbs-up"></i> pre-approved</span>`)
+                        }
+                    })
+                }
+                recomputePreApprovedOrRefusedBadgesClientside($('#allProposals').find("tbody tr"));
 
                 const header = document.querySelector('#sticky-header');
                 const headerOffset = header.offsetTop;

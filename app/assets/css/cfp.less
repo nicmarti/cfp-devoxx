@@ -180,9 +180,10 @@ table#allProposals.dataTable.display tbody tr>.sorting_3 {
   border-color: #fff8ba;
 }
 
-.cancelAcceptBtn, .preApprovedTag { display: none; }
-[data-external-state='submitted'][data-internal-state='accepted'] .cancelAcceptBtn,
-[data-external-state='submitted'][data-internal-state='accepted'] .preApprovedTag {
+.cancelAcceptBtn { display: none; }
+// If you change anything on this block's content, don't forget to update
+// recomputePreApprovedOrRefusedBadgesClientside() implem about pre-approved badge
+[data-external-state='submitted'][data-internal-state='accepted'] .cancelAcceptBtn {
   display: block;
 }
 
@@ -365,9 +366,10 @@ a.badge-declined:focus, a.badge-declined.focus {
   background-color: #ffc1a6 !important;
 }
 
-.cancelRefuseBtn, .preRefusedTag { display: none; }
-[data-external-state='submitted'][data-internal-state='rejected'] .cancelRefuseBtn,
-[data-external-state='submitted'][data-internal-state='rejected'] .preRefusedTag {
+.cancelRefuseBtn { display: none; }
+// If you change anything on this block's content, don't forget to update
+// recomputePreApprovedOrRefusedBadgesClientside() implem about pre-refused badge
+[data-external-state='submitted'][data-internal-state='rejected'] .cancelRefuseBtn {
   display: block;
 }
 
