@@ -75,18 +75,21 @@
                 }
             </div>
             <div class="col-md-12 mt-2" id="sticky-header">
-                <small><strong>Serverside overall stats</strong></small> :
-                <span class="badge badge-success">@allApprovedProposalIds.size approved</span> <span class="badge badge-declined">
-                    - @declinedTotal declined</span> <span class="badge badge-warning">
-                    = @remainingIncludingDeclined remaining</span>
-                <br>
+                <div class="hidden used-for-debug-purposes-only">
+                    <small><strong>Serverside overall stats</strong></small> :
+                    <span class="badge badge-success">@allApprovedProposalIds.size approved</span> <span class="badge badge-declined">
+                        - @declinedTotal declined</span> <span class="badge badge-warning">
+                        = @remainingIncludingDeclined remaining</span>
+                </div>
+                <small><strong>Overall stats</strong></small> :
                 @if(selectedTrack=="all") {
-                    <small><strong>Clientside overall stats</strong></small> :
                     <span class="badge badge-success"><span id="totalAcceptedProposals"></span> approved</span> <span class="badge badge-declined">
                         - <span id="totalDeclinedProposals"></span> declined</span> <span class="badge badge-warning">
                         = <span id="totalRemainingProposals"></span> remaining</span>
-                    <br/>
+                } else {
+                    <small><em>Stats are not available when filtering on specific track</em></small>
                 }
+                <br>
                 <small><strong>All proposals</strong></small>:
                     @for((trackLabel: String, proposals: List[Proposal]) <- allVotes.map(_._1).groupBy{ proposal => Messages(proposal.track.label) }.toList.sortBy(-_._2.size)) {
                         <span class="badge badge-info">@trackLabel: @proposals.size (@{(proposals.size.toFloat*100/allVotes.size).round}%)</span>
