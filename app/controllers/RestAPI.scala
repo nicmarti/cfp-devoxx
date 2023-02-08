@@ -81,7 +81,7 @@ object RestAPI extends Controller {
                 }
               }
             </title>
-            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2022/talk/{proposal.id}</link>
+            <link>http{if(ConferenceDescriptor.isHTTPSEnabled)"s"}://{ConferenceDescriptor.current().conferenceUrls.cfpHostname }/2023/talk/{proposal.id}</link>
             <description>{ proposal.summary }</description>
           </item>
         }}
