@@ -242,20 +242,20 @@ object ConferenceDescriptor {
 
     val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera", "Amphi Bleu", None)
     val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre", "camera", "Amphi Maillot", Some("Hall"))
+
     val NEUILLY_251 = Room("f_neu251", "Neuilly 251", 220, "theatre", "camera", "251", Some("Neuilly"))
     val NEUILLY_252AB = Room("e_neu252", "Neuilly 252 AB", 380, "theatre", "camera", "252AB", Some("Neuilly"))
-    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom", "rien", "253", Some("Neuilly"))
-    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253", 120, "theatre", "son", "253", Some("Neuilly"))
+    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom", "camera", "253", Some("Neuilly"))
+    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253", 120, "theatre", "camera", "253", Some("Neuilly"))
 
     val PARIS_241 = Room("d_par241", "Paris 241", 220, "theatre", "camera", "241", Some("Paris"))
     val PARIS_242AB_T = Room("par242AB", "Paris 242 AB", 280, "theatre", "camera", "242AB", Some("Paris"))
-    val PARIS_242A = Room("par242A", "Paris 242 A", 60, "classroom", "rien", "242A", Some("Paris"))
-    val PARIS_242B = Room("par242B", "Paris 242 B", 60, "classroom", "rien", "242B", Some("Paris"))
-    val PARIS_242A_T = Room("par242AT", "Paris 242 A", 120, "theatre", "rien", "242A", Some("Paris"))
-    val PARIS_242B_T = Room("par242BT", "Paris 242 B", 120, "theatre", "rien", "242B", Some("Paris"))
-
-    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom", "rien", "243", Some("Paris"))
-    val PARIS_243_T = Room("par243_t", "Paris 243", 120, "theatre", "son", "243", Some("Paris"))
+    val PARIS_242A = Room("par242A", "Paris 242 A", 60, "classroom", "camera", "242A", Some("Paris"))
+    val PARIS_242B = Room("par242B", "Paris 242 B", 60, "classroom", "camera", "242B", Some("Paris"))
+    val PARIS_242A_T = Room("par242AT", "Paris 242 A", 120, "theatre", "camera", "242A", Some("Paris"))
+    val PARIS_242B_T = Room("par242BT", "Paris 242 B", 120, "theatre", "camera", "242B", Some("Paris"))
+    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom", "camera", "243", Some("Paris"))
+    val PARIS_243_T = Room("par243_t", "Paris 243", 120, "theatre", "camera", "243", Some("Paris"))
 
     val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien", "201", Some("Hall - RdC/GF South Paris"))
     val PARIS_201_U = Room("par201_u", "Paris 201", 16, "u-shaped", "rien", "201", Some("Hall - RdC/GF South Paris"))
