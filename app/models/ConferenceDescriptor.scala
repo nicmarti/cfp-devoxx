@@ -261,7 +261,7 @@ object ConferenceDescriptor {
     val PARIS_221M_222M = Room("par221M-222M", "Paris 221M-222M", 32, "classroom", "rien", "221+222M", Some("Mezzanine South Paris"))
     val PARIS_224M_225M = Room("par224M-225M", "Paris 224M-225M", 26, "classroom", "rien", "224+225M", Some("Mezzanine South Paris"))
 
-    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213", 32, "classroom", "rien", "212+213", Some("RdC/GF - Near Cloackroom"))
+    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213", 32, "classroom", "rien", "212+213", Some("Hall - RdC/GF South Neuilly"))
     val NEUILLY_231_232 = Room("neu_232_232", "Neuilly 231M-232M", 32, "classroom", "rien", "231+232M", Some("Mezzanine South Neuilly"))
     val NEUILLY_234_235 = Room("neu_234_235", "Neuilly 234M-235M", 24, "classroom", "rien", "234+235M", Some("Mezzanine South Neuilly"))
     
