@@ -299,7 +299,7 @@ object ConferenceDescriptor {
     val allRoomsQuickiesFriday: List[Room] = allRoomsQuickiesThu
 
     val allRooms = (List(
-      HALL_EXPO, PARIS_242A, PARIS_242B, PARIS_243, NEUILLY_253, PARIS_204, PARIS_201
+      HALL_EXPO
     ) ++ allRoomsUni ++ allRoomsTIAWed ++ allRoomsTIAThu ++ allRoomsLabsWednesday ++
       allRoomsLabThursday ++ allRoomsLabFriday ++ allRoomsBOF ++ allRoomsOthersThursday ++ allRoomsOthersFriday ++
       keynoteRoom ++ allRoomsConf ++ allRoomsQuickiesThu ++ allRoomsQuickiesFriday).distinct
