@@ -286,7 +286,7 @@ object ConferenceDescriptor {
 
     val allRoomsBOF = List(NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
-    val allRoomsOthersThursday = List(HALL_EXPO_PARIS)
+    val allRoomsOthersThursday = List()
 
     val allRoomsOthersFriday = List(LOBBY_NEUILLY)
 
@@ -662,7 +662,7 @@ object ConferenceDescriptor {
         new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks, ConferenceRooms.HALL_EXPO_PARIS))
+        new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T13:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
