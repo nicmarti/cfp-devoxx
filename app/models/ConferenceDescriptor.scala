@@ -242,31 +242,31 @@ object ConferenceDescriptor {
 
     val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera", "Amphi Bleu", None)
     val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre", "camera", "Amphi Maillot", Some("Hall"))
+
     val NEUILLY_251 = Room("f_neu251", "Neuilly 251", 220, "theatre", "camera", "251", Some("Neuilly"))
     val NEUILLY_252AB = Room("e_neu252", "Neuilly 252 AB", 380, "theatre", "camera", "252AB", Some("Neuilly"))
-    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom", "rien", "253", Some("Neuilly"))
-    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253", 120, "theatre", "son", "253", Some("Neuilly"))
+    val NEUILLY_253 = Room("neu253", "Neuilly 253", 60, "classroom", "camera", "253", Some("Neuilly"))
+    val NEUILLY_253_T = Room("neu253_t", "Neuilly 253", 120, "theatre", "camera", "253", Some("Neuilly"))
 
     val PARIS_241 = Room("d_par241", "Paris 241", 220, "theatre", "camera", "241", Some("Paris"))
     val PARIS_242AB_T = Room("par242AB", "Paris 242 AB", 280, "theatre", "camera", "242AB", Some("Paris"))
-    val PARIS_242A = Room("par242A", "Paris 242 A", 60, "classroom", "rien", "242A", Some("Paris"))
-    val PARIS_242B = Room("par242B", "Paris 242 B", 60, "classroom", "rien", "242B", Some("Paris"))
-    val PARIS_242A_T = Room("par242AT", "Paris 242 A", 120, "theatre", "rien", "242A", Some("Paris"))
-    val PARIS_242B_T = Room("par242BT", "Paris 242 B", 120, "theatre", "rien", "242B", Some("Paris"))
+    val PARIS_242A = Room("par242A", "Paris 242 A", 60, "classroom", "camera", "242A", Some("Paris"))
+    val PARIS_242B = Room("par242B", "Paris 242 B", 60, "classroom", "camera", "242B", Some("Paris"))
+    val PARIS_242A_T = Room("par242AT", "Paris 242 A", 120, "theatre", "camera", "242A", Some("Paris"))
+    val PARIS_242B_T = Room("par242BT", "Paris 242 B", 120, "theatre", "camera", "242B", Some("Paris"))
+    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom", "camera", "243", Some("Paris"))
+    val PARIS_243_T = Room("par243_t", "Paris 243", 120, "theatre", "camera", "243", Some("Paris"))
 
-    val PARIS_243 = Room("par243", "Paris 243", 60, "classroom", "rien", "243", Some("Paris"))
-    val PARIS_243_T = Room("par243_t", "Paris 243", 120, "theatre", "son", "243", Some("Paris"))
-
+    val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien", "201", Some("Hall - RdC/GF South Paris"))
+    val PARIS_201_U = Room("par201_u", "Paris 201", 16, "u-shaped", "rien", "201", Some("Hall - RdC/GF South Paris"))
     val PARIS_202_203 = Room("par202_203", "Paris 202-203", 32, "classroom", "rien", "202+203", Some("Hall - RdC/GF South Paris"))
+    val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien", "204", None)
     val PARIS_221M_222M = Room("par221M-222M", "Paris 221M-222M", 32, "classroom", "rien", "221+222M", Some("Mezzanine South Paris"))
     val PARIS_224M_225M = Room("par224M-225M", "Paris 224M-225M", 26, "classroom", "rien", "224+225M", Some("Mezzanine South Paris"))
 
-    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213", 32, "classroom", "rien", "212+213", Some("RdC/GF - Near Cloackroom"))
+    val NEUILLY_212_213 = Room("neu_212_213", "Neuilly 212-213", 32, "classroom", "rien", "212+213", Some("Hall - RdC/GF South Neuilly"))
     val NEUILLY_231_232 = Room("neu_232_232", "Neuilly 231M-232M", 32, "classroom", "rien", "231+232M", Some("Mezzanine South Neuilly"))
     val NEUILLY_234_235 = Room("neu_234_235", "Neuilly 234M-235M", 24, "classroom", "rien", "234+235M", Some("Mezzanine South Neuilly"))
-    
-    val PARIS_204 = Room("par204", "Paris 204", 16, "classroom", "rien", "204", None)
-    val PARIS_201 = Room("par201", "Paris 201", 14, "classroom", "rien", "201", None)
 
     val ROOM_OTHER = Room("other_room", "Autres salles", 100, "classroom", "rien", "Autre salle", None)
 
@@ -278,15 +278,15 @@ object ConferenceDescriptor {
 
     val allRoomsTIAThuEOD = List(AMPHI_BLEU, NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
 
-    val allRoomsLabsWednesday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsLabsWednesday = List(PARIS_201_U, PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_231_232, NEUILLY_234_235)
 
-    val allRoomsLabThursday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsLabThursday = List(PARIS_201_U, PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_231_232, NEUILLY_234_235)
 
-    val allRoomsLabFriday = List(PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_212_213, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsLabFriday = List(PARIS_201_U, PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_231_232, NEUILLY_234_235)
 
-    val allRoomsBOF = List(NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T)
+    val allRoomsBOF = List(NEUILLY_251, PARIS_241, NEUILLY_252AB, PARIS_242AB_T, PARIS_243_T, NEUILLY_253_T, PARIS_202_203)
 
-    val allRoomsOthersThursday = List(HALL_EXPO_PARIS)
+    val allRoomsOthersThursday = List()
 
     val allRoomsOthersFriday = List(LOBBY_NEUILLY)
 
@@ -299,7 +299,7 @@ object ConferenceDescriptor {
     val allRoomsQuickiesFriday: List[Room] = allRoomsQuickiesThu
 
     val allRooms = (List(
-      HALL_EXPO, PARIS_242A, PARIS_242B, PARIS_243, NEUILLY_253, PARIS_204, PARIS_201
+      HALL_EXPO
     ) ++ allRoomsUni ++ allRoomsTIAWed ++ allRoomsTIAThu ++ allRoomsLabsWednesday ++
       allRoomsLabThursday ++ allRoomsLabFriday ++ allRoomsBOF ++ allRoomsOthersThursday ++ allRoomsOthersFriday ++
       keynoteRoom ++ allRoomsConf ++ allRoomsQuickiesThu ++ allRoomsQuickiesFriday).distinct
@@ -662,7 +662,7 @@ object ConferenceDescriptor {
         new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T13:00:00.000+02:00").toDateTime(confTimezone),
-        new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks, ConferenceRooms.HALL_EXPO_PARIS))
+        new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
       , SlotBuilder(ConferenceSlotBreaks.lunch, "thursday",
         new DateTime(s"${secondDay}T13:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T13:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
