@@ -146,7 +146,7 @@ object Rating {
 
   def findForUserIdAndProposalId(userId: String, talkId: String): Option[Rating] = Redis.pool.withClient {
     client =>
-      client.hmget("Rating:2022", client.smembers("Rating:2022:ByTalkId:" + talkId)).map {
+      client.hmget("Rating:2023", client.smembers("Rating:2023:ByTalkId:" + talkId)).map {
         json: String =>
           Json.parse(json).as[Rating]
       }.find(rating => rating.user == userId)
@@ -155,15 +155,15 @@ object Rating {
   def saveNewRating(newRating: Rating) = Redis.pool.withClient {
     client =>
       val tx = client.multi
-      tx.hset("Rating:2022", newRating.id(), Json.toJson(newRating).toString())
-      tx.sadd("Rating:2022:ByTalkId:" + newRating.talkId, newRating.id())
+      tx.hset("Rating:2023", newRating.id(), Json.toJson(newRating).toString())
+      tx.sadd("Rating:2023:ByTalkId:" + newRating.talkId, newRating.id())
       tx.exec()
   }
 
   def allRatingsForSpecificTalkId(talkId: String): List[Rating] = Redis.pool.withClient {
     client =>
-      val ratingIDs = client.smembers("Rating:2022:ByTalkId:" + talkId)
-      client.hmget("Rating:2022", ratingIDs).map {
+      val ratingIDs = client.smembers("Rating:2023:ByTalkId:" + talkId)
+      client.hmget("Rating:2023", ratingIDs).map {
         json =>
           Json.parse(json).as[Rating]
       }
@@ -176,7 +176,7 @@ object Rating {
 
   def allRatings(): List[Rating] = Redis.pool.withClient {
     client =>
-      client.hvals("Rating:2022").map {
+      client.hvals("Rating:2023").map {
         json =>
           Json.parse(json).as[Rating]
       }
