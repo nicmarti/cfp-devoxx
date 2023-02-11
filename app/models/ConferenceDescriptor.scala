@@ -718,8 +718,8 @@ object ConferenceDescriptor {
 
   def dateRange(from: DateTime, to: DateTime, step: Period): Iterator[DateTime] = Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
-  val fromDay = new DateTime().withYear(2022).withMonthOfYear(4).withDayOfMonth(20)
-  val toDay = new DateTime().withYear(2022).withMonthOfYear(4).withDayOfMonth(22)
+  val fromDay = new DateTime().withYear(2023).withMonthOfYear(4).withDayOfMonth(12)
+  val toDay = new DateTime().withYear(2023).withMonthOfYear(4).withDayOfMonth(14)
 
   // TODO You might want to start here and configure first, your various Conference Elements
   def current() = ConferenceDescriptor(
