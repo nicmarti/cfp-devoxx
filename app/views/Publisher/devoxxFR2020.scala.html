@@ -9,13 +9,13 @@
 <meta name="description" content="@description" />
 
 <title>@title - Devoxx France 2023</title>
-<link href="@routes.Assets.at(path="/public",file="fontawesome-5.12.0/css/all.min.css")" rel="stylesheet">
+    <link href="@routes.Assets.at(path="/public",file="fontawesome-5.12.0/css/all.min.css")" rel="stylesheet">
 <!-- Custom style for CFP by Nicolas -->
-<link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/dvfr2015.css")' type='text/css' media='all' />
-<link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/schedule.css")' type='text/css' media='all' />
-
+    <link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/dvfr2015.css")' type='text/css' media='all' />
+    <link rel='stylesheet'  href='@routes.Assets.at(path="/public",file="dvfr2015/schedule.css")' type='text/css' media='all' />
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
 <script
-    src="https://code.jquery.com/jquery-1.11.0.min.js"
+    src="//code.jquery.com/jquery-1.11.0.min.js"
     integrity="sha256-spTpc4lvj4dOkKjrGokIrHkJgNA0xMS98Pw9N7ir9oI="
     crossorigin="anonymous"></script>
 
@@ -35,9 +35,9 @@
         @if(UserCFPController.findAuthenticator.isDefined){
          <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; Mon Agenda</a></li>
         }
-        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="https://www.devoxx.fr/sponsors-2020-2/">Sponsors</a></li>
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="https://www.devoxx.fr/workflow-sponsor/exhibitors-2023/">Sponsors 2023</a></li>
         <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="https://www.devoxx.fr/faq">FAQ</a></li>
-        <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="https://reg.devoxx.fr">Inscription</a></li>
+        <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="https://reg.devoxx.fr">Billetterie</a></li>
     </ul>
 </div>
 
@@ -55,12 +55,12 @@
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1038"><a href="http://www.devoxx.fr/">www.devoxx.fr</a></li>
         <li id="menu-item-1038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Publisher.homePublisher()">Accueil Programme</a></li>
 
-@if(ProgramSchedule.publishedProgramSchedule().map(_.favoritesActivated).getOrElse(false)) {
+@if(ProgramSchedule.publishedProgramSchedule().exists(_.favoritesActivated)) {
     @if(UserCFPController.findAuthenticator.isDefined) {
         <li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1042"><a href="@routes.Favorites.home()" title="See the list of talks you faved">&#9733; Mon Agenda</a></li>
     }
 }
-        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="https://www.devoxx.fr/sponsors-2020-2/">Sponsors</a></li>
+        <li id="menu-item-1725" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1725"><a href="https://www.devoxx.fr/workflow-sponsor/exhibitors-2023/">Exposants 2023</a></li>
         <li id="menu-item-1702" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1702"><a href="http://www.devoxx.fr/faq">FAQ</a></li>
         <li id="menu-item-1310" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1310"><a href="http://reg.devoxx.fr">Inscription</a></li>
                     </ul>
