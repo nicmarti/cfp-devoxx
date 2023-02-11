@@ -1,46 +1,36 @@
 @(title: String, description:Option[String]=None)(content: Html)(implicit lang: Lang, req: RequestHeader, flash:Flash)
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-<meta name="Robots" content="index,follow" />
-<meta name="description" content="@description" />
+<html lang="en" class="text-dvx-white bg-dvx-mainback font-sans-serif">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CFP @Messages("CONF.title")</title>
+        <meta name="generator" content="Play! 2.3 Scala"/>
+        <link rel="shortcut icon" href="@routes.Assets.at(path = "/public", file = "images/favicon.ico")">
 
-<title>@title - Devoxx France 2023</title>
-    <!-- See README_FRONT.md to see how to regenerate this CSS -->
-    <link rel="stylesheet" href="/assets/css/devoxx_generated_tailwind.css" />
-        <!--Replace with your tailwind.css once created-->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
-        <!-- Define your gradient here - use online tools to find a gradient matching your branding-->
-    <style>
-            .gradient {
-                background: linear-gradient(0deg, #8c4906 0%, #ffa035 100%);
-            }
-    </style>
-    <link href="@routes.Assets.at(path="/public",file="fontawesome-5.12.0/css/all.min.css")" rel="stylesheet">
-</head>
-<body class="leading-normal tracking-normal gradient" style="font-family: 'Source Sans Pro', sans-serif;">
-    <!--Nav-->
-    <nav id="header" class="fixed w-full z-30 top-0 text-white bg-dvx-back">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Aldrich&Big+Shoulders+Inline+Display">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.at(path = "/public", file = "devoxx_fr_2023/devoxx_fr_2023.css")">
+        <script src="//code.jquery.com/jquery-3.6.0.min.js" type="text/javascript" charset="utf8" ></script>
+        <script src="//kit.fontawesome.com/6cd398e38d.js" crossorigin="anonymous"></script>
+    </head>
+<body>
+    <section class="bg-dvx-back">
         <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
             <div class="pl-4 flex items-center">
-                <a class="text-white-800 no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
-                    Devoxx France -
+                <a href="https://www.devoxx.fr"><h1>DEVOX<span class="text-dvx-accent">X</span> <span class="text-white text-uppercase">France</span></h1>
                     <span class="text-orange-400 text-xl lg:text-2xl">Programme 2023</span>
                 </a>
             </div>
             <div class="block lg:hidden pr-4">
-                <button id="nav-toggle" class="flex items-center p-1 text-oraange-400 hover:text-gray-900 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                <button id="nav-toggle" class="flex items-center p-1 text-orange-400 hover:text-gray-900 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                     <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <title>Menu</title>
                         <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
                     </svg>
                 </button>
             </div>
-            <div class="bg-white w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 lg:bg-transparent text-white p-4 lg:p-0 z-20" id="nav-content">
+            <div class="bg-black w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 lg:bg-transparent text-white p-4 lg:p-0 z-20" id="nav-content">
                 <ul class="list-reset lg:flex justify-end flex-1 items-center">
                     <li class="mr-3">
                         <a class="inline-block no-underline hover:text-orange-400 hover:text-underline py-2 px-4" href="@routes.Publisher.homePublisher()">@Messages("publisher.home")</a>
@@ -64,39 +54,19 @@
                 </ul>
             </div>
         </div>
-        <hr class="border-b border-orange-100 opacity-25 my-0 py-0" />
-    </nav>
+    </section>
 
 <!-- ************** Begin generated content by Play ************************ //-->
     @content
 <!--  ************* End generated content by Play ************************** //-->
-
-    <section  class="flex-1 w-full mx-auto max-w-sm content-center py-8 px-4">
-    </section>
-
-    <footer class="bg-gray-100">
-        <div class="container mx-auto px-8">
-            <div class="w-full flex flex-col md:flex-row py-6">
-                <div class="flex-1 mb-6 text-black">
-                    <a class="text-yellow-600 no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
-                        Devoxx FR
-                    </a>
-                        <p class="text-left text-gray-800">Du 12 au 14 avril 2023</p>
-                    <p class="text-left text-gray-700">Palais des Congrès, Paris</p>
-                </div>
-                <div class="flex-1">
-                    <p class="uppercase text-gray-500 md:mb-6">Legal</p>
-                    <ul class="list-reset mb-6">
-                        <li class="mt-2 inline-block mr-2 md:block md:mr-0">
-                            <span class="text-gray-600 text-sm">Devoxx France est un événement organisé par la société Quantixx. Devoxx est une marque déposée. Tous droits réservés.</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <footer class="bg-dvx-back mt-8 py-8">
+        <div class="container mx-auto">
+            <h1>DEVOX<span class="text-dvx-accent">X</span> <span class="text-white text-uppercase">France</span></h1>
+            <p class="text-gray-600 text-sm">Devoxx France est un événement organisé par la société Quantixx. Devoxx est une marque déposée. Tous droits réservés.</p>
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
             var scrollpos = window.scrollY;
             var header = document.getElementById("header");

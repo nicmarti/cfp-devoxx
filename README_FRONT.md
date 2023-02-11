@@ -106,7 +106,14 @@ cfp-devoxx git:(dev) ✗ npx
 If the issue is not fixed, it could be related to an issue betwen jEnv and a local install of GraalVM
 See https://github.com/jenv/jenv/issues/294
 
-I had to delete this from .zshrc:
+If you get this error 
+```
+➜  cfp-devoxx git:(dev) ✗ npx tailwindcss -i ./tailwind/src/cfp_devoxx_fr_2023.css -o ./public/devoxx_fr_2023/devoxx_fr_2023.css --watch
+<function>:67414
+          const { default: imported } = await import(pathToFileURL(configFile));
+                                           
+```
+Then do the following : 
 
 ```# Temporary solution for https://github.com/jenv/jenv/issues/294
 rm "$HOME/.jenv/shims/npm" "$HOME/.jenv/shims/node"
