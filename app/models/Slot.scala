@@ -91,6 +91,7 @@ object Room {
     "neu_232_232",
     "neu_234_235",
     "par201",
+    "par201_u",
     "par202_203",
     "par204",
     "par221M-222M",
