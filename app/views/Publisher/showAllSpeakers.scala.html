@@ -28,7 +28,7 @@
             @speakers.sortBy(_.cleanName).map { speaker: Speaker =>
                     <div class="w-full mb-5 md:w-1/4 lg:w-1/5 sm:w-1/2 p-6 flex flex-col flex-grow flex-shrink text-body text-black">
                         <div class="bg-gray-100 p-3 rounded-md">
-                            <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)"
+                            <a href="@routes.Publisher.showSpeaker(speaker.uuid, speaker.urlName)"
                             class="flex flex-wrap no-underline hover:no-underline">
                                 @speaker.avatarUrl.map { url =>
                                     <img src="@url" class="w-full p-4 bg-gray-200 h-full" alt="@speaker.cleanName" title="@speaker.cleanName">

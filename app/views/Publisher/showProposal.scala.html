@@ -50,7 +50,7 @@
                         @Html(speaker.bioAsHtml)
                         </div>
 
-                        <a href="@routes.Publisher.showSpeakerByName(speaker.urlName)" class="btn-primary">@Messages("showProposal.bio")</a>
+                        <a href="@routes.Publisher.showSpeaker(speaker.uuid, speaker.urlName)" class="btn-primary">@Messages("showProposal.bio")</a>
                         </div>
                     }
                     </div>

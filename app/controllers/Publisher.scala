@@ -64,37 +64,13 @@ object Publisher extends Controller {
           Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
       }
   }
-
-  def showSpeakerByName(name: String) = Action {
-    implicit request =>
-
-      val speakers = Speaker.withOneProposal(Speaker.allSpeakersWithAcceptedTerms())
-      val speakerNameAndUUID = speakers.map {
-        speaker => (speaker.urlName, speaker.uuid)
-      }.toMap
-      val maybeSpeaker = speakerNameAndUUID.get(name).flatMap(id => speakers.find(_.uuid == id))
-      maybeSpeaker match {
-        case Some(speaker) =>
-          val acceptedProposals = ApprovedProposal.allAcceptedTalksForSpeaker(speaker.uuid)
-          // Log which speaker is hot or not
-          ZapActor.actor ! LogURL("showSpeaker", speaker.uuid, speaker.cleanName)
-          Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
-
-        case None => NotFound(views.html.Publisher.speakerNotFound())
-      }
-  }
-
   def showSpeaker(uuid: String, name: String) = Action {
     implicit request =>
       val maybeSpeaker = Speaker.findByUUID(uuid)
       maybeSpeaker match {
-        case Some(speaker) if Webuser.isPublicVisible(uuid) =>
-          Ok(views.html.Publisher.showSpeaker(speaker, List.empty))
         case Some(speaker) =>
           val acceptedProposals = ApprovedProposal.allApprovedTalksForSpeaker(speaker.uuid)
-          ZapActor.actor ! LogURL("showSpeaker", uuid, name)
           Ok(views.html.Publisher.showSpeaker(speaker, acceptedProposals))
-
         case None => NotFound("Speaker not found")
       }
   }

@@ -213,8 +213,7 @@ GET           /ar/doMassRefuseAndRedirect                                       
 # Each year I do a backup with WGET :
 # wget --no-clobber --convert-links -r -p -E -e robots=off http://cfp.devoxx.fr/2021/index.html
 GET           /2023/speakers.html                                               controllers.Publisher.showAllSpeakers()
-GET           /2023/speaker/:cleanName                                          controllers.Publisher.showSpeakerByName(cleanName:String)
-GET           /2023/speaker/:cleanName/:uuid                                    controllers.Publisher.showSpeaker(uuid:String, cleanName:String)
+GET           /2023/speaker/:uuid/:cleanName                                    controllers.Publisher.showSpeaker(uuid:String, cleanName:String)
 GET           /2023/talks/:talkType                                             controllers.Publisher.showByTalkType(talkType:String)
 GET           /2023/tag/:tagId                                                  controllers.Publisher.showByTag(tagId:String)
 GET           /2023/talk/:proposalId                                            controllers.Publisher.showDetailsForProposal(proposalId:String, proposalTitle:String="", secretPublishKey:Option[String] ?=None)
