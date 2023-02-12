@@ -1101,3 +1101,5 @@ showProposal.talkType=Presentation type
 showProposal.keywords=Keywords
 showProposal.allTalks=See all talks
 showProposal.bio=Speaker''s bio
+homePublisher.search=Find a presentation or a speaker:
+published.talks=published talks

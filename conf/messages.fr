@@ -1051,3 +1051,5 @@ showProposal.talkType=Type/format de présentation
 showProposal.keywords=Mots-clés
 showProposal.bio=Voir le profil
 showProposal.allTalks=Voir toutes les présentations
+homePublisher.search=Trouver un sujet ou un présentateur :
+published.talks=présentations publiées
