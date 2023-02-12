@@ -162,8 +162,8 @@
 }
 
 .agendaTable td.proposal .content {
-    padding: 4px;
-}
+    padding: 4px 4px 16px 4px;
+} @media print { .agendaTable td.proposal .content { padding-bottom: 4px; } }
 
 .proposal_type_is_uni { background-color: #d8c2ff; }
 .proposal_type_is_lab { background-color: #fddcfd; }
@@ -230,6 +230,7 @@ i.en_badge {
 .proposal_track_is_agTest i.proposal_badge.track { background-image: url('images/track-icons/method.png'); }
 .proposal_track_is_bigd i.proposal_badge.track { background-image: url('images/track-icons/bigd.png'); }
 .proposal_track_is_future i.proposal_badge.track { background-image: url('images/track-icons/mind.png'); }
+.proposal_track_is_geek i.proposal_badge.track { background-image: url('images/track-icons/mind.png'); }
 .proposal_track_is_lang i.proposal_badge.track { background-image: url('images/track-icons/langs.png'); }
 .proposal_track_is_unknown i.proposal_badge.track { background-image: url('images/track-icons/server.png'); }
 
