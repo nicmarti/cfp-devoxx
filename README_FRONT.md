@@ -87,7 +87,7 @@ No extra npm tasks are executed on the production environment at deployment time
 
 ```
 
-npx tailwindcss -i ./public/css/dvx_tailwind.css -o ./public/css/devoxx_generated_tailwind.css --minify
+npx tailwindcss -i ./tailwind/src/dvx_tailwind.css -o ./public/css/devoxx_generated_tailwind.css --minify
 
 npx tailwindcss -i ./tailwind/src/cfp_devoxx_fr_2023.css -o ./public/devoxx_fr_2023/devoxx_fr_2023.css --minify
 ```

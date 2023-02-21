@@ -1091,6 +1091,7 @@ homePublisher.tia.desc=TIAs (Tools-in-Action) are short 30-minute sessions desig
 homePublisher.quick.desc=Quickies are short 15-minute sessions, during lunch time. The Devoxx France selection committee highlights people who have not yet had the opportunity to present. These sessions are a great way to discover a topic.
 homePubliser.lab.desc=The labs are 3-hour workshops in small groups, in dedicated rooms. Participants are invited to bring their own laptop. Access to the rooms is limited according to the capacity of the rooms. These sessions are not filmed.
 homePublisher.bof.desc=Bird of a feather are community sessions starting on Thursday night. It''s the meeting point of user-groups, communities, meetups, in short of all community groups of enthusiasts. The BOFs take place on the evening of the Meet-and-Greet party
+homePublisher.agenda=Agenda by day and format
 
 # showProposal
 showProposal.summary=Abstract

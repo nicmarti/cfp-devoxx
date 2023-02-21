@@ -16,53 +16,53 @@
         </div>
     </section>
 
+
     @if(ProgramSchedule.publishedProgramSchedule().exists(_.showSchedule)) {
-        <section class="bg-white pb-1">
-            <div class="container mx-auto">
-                <table class="w-full table-fixed mainSchedule">
-                    <caption class="hidden">Programme par jour et format de présentation</caption>
-                    <thead>
-                        <tr>
-                            <th class="w-1/3 scheduleHeader" scope="col">
-                                <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = None)">
-                                    <span class="text-xl underline">@Messages("day-wednesday")</span>&nbsp;<i class="fas fa-calendar"></i>
-                                </a>
-                            </th>
-                            <th class="w-1/3 scheduleHeader" scope="col">
-                                <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = None)">
-                                    <span class="text-xl underline">@Messages("day-thursday")</span>&nbsp;<i class="fas fa-calendar"></i>
-                                </a>
-                            </th>
-                            <th class="w-1/3 scheduleHeader" scope="col">
-                                <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = None)">
-                                    <span class="text-xl underline">@Messages("day-friday")</span>&nbsp;<i class="fas fa-calendar"></i>
-                                </a>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @ConferenceProposalTypes.slottableTypes.map { proposalType =>
-                        @if(models.ConferenceDescriptor.ConferenceSlots.all.exists(s => s.name == proposalType.id)) {
+        <section>
+            <h1 class="text-2xl text-center">@Messages("homePublisher.agenda")</h1>
+            <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                <div class="overflow-hidden">
+                    <table class="table table-auto bg-white -mx-auto w-full px-2 py-5">
+                        <caption class="hidden">Programme par jour et format de présentation</caption>
+                        <thead class="border-2 border-dvx-orange bg-dvx-back font-medium">
                             <tr>
-                                <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "wednesday", Messages(proposalType.simpleLabel))</td>
-                                <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "thursday", Messages(proposalType.simpleLabel))</td>
-                                <td class="text-center underline scheduleRow">@tags.publisher.renderShowDay(proposalType, "friday", Messages(proposalType.simpleLabel))</td>
+                                <th class="px-6 py-4" scope="col">
+                                    <a href="@routes.Publisher.showByDay("wed", None, includeTypes = None, excludeTypes = None)">
+                                        <span class="text-xl underline text-dvx-orange">@Messages("day-wednesday")</span>&nbsp;<i class="fa-solid fa-calendar-days"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4" scope="col">
+                                    <a href="@routes.Publisher.showByDay("thu", None, includeTypes = None, excludeTypes = None)">
+                                        <span class="text-xl underline text-dvx-orange">@Messages("day-thursday")</span>&nbsp;<i class="fa-solid fa-calendar-days"></i>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-4" scope="col">
+                                    <a href="@routes.Publisher.showByDay("fri", None, includeTypes = None, excludeTypes = None)" >
+                                        <span class="text-xl underline text-dvx-orange">@Messages("day-friday")</span>&nbsp;<i class="fa-solid fa-calendar-days"></i>
+                                    </a>
+                                </th>
                             </tr>
+                        </thead>
+                        <tbody class="border-2 border-dvx-orange text-center font-light">
+                        @ConferenceProposalTypes.slottableTypes.map { proposalType =>
+                            @if(models.ConferenceDescriptor.ConferenceSlots.all.exists(s => s.name == proposalType.id)) {
+                                <tr class="border-b border-neutral-200">
+                                    <td class="whitespace-nowrap px-3 py-2">@tags.publisher.renderShowDay(proposalType, "wednesday", Messages(proposalType.simpleLabel))</td>
+                                    <td class="whitespace-nowrap px-3 py-2">@tags.publisher.renderShowDay(proposalType, "thursday", Messages(proposalType.simpleLabel))</td>
+                                    <td class="whitespace-nowrap px-3 py-2">@tags.publisher.renderShowDay(proposalType, "friday", Messages(proposalType.simpleLabel))</td>
+                                </tr>
+                            }
                         }
-                    }
-                    </tbody>
-                </table>
-                    <!-- ******************************************************************* //-->
-            </div>
-            <div class="w-full my-8">
-                <div class="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     }
         <!-- ********************** Search box ************************* -->
     <div class="w-full mx-auto max-w-lg content-center py-4 px-4">
         <form name="search" action="@routes.Publisher.search(None, None)" method="GET">
-            <label for="search" class=" text-white text-2xl">@Messages("homePublisher.search")</label>
+            <label for="search" class="text-2xl text-dvx-orange">@Messages("homePublisher.search")</label>
             <input id="search" type="search" name="q" placeholder="title, keyword or speaker"
             class="w-full bg-gray-100 text-sm text-gray-800 transition border focus:outline-none focus:border-purple-500 rounded py-1 px-2 appearance-none leading-normal">
         </form>

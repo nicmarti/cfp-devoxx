@@ -1041,6 +1041,7 @@ homePublisher.tia.desc=Les TIA (Tools-in-Action) sont des sessions courtes de 30
 homePublisher.quick.desc=Les Quickies sont des sessions courtes de 15 minutes, pendant l''heure du déjeuner. Le comité de sélection de Devoxx France met en avant des personnes n''ayant pas encore eu l''occasion de présenter. Ces sessions sont un excellent moyen pour découvrir un sujet.
 homePubliser.lab.desc=Les labs sont des ateliers de 3h en petit groupe, dans des salles dédiées. Les participants sont invités à venir avec leur propre ordinateur portable. L''accès aux salles est limité selon la capacité des salles. Ces sessions ne sont pas filmées.
 homePublisher.bof.desc=Les BOF (Bird of a feather) sont des sessions mythiques de Devoxx France, à partir de 20h le jeudi soir. C''est le point de rendez-vous des user-groups, des communautés, des meetups, bref de tous les groupes communautaires de passionnés. Les BOFs se déroulent le soir de la soirée Meet-and-Greet.
+homePublisher.agenda=Programme par jour et par format
 
 # showProposal
 showProposal.summary=Résumé de la présentation
