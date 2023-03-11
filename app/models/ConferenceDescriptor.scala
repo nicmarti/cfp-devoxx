@@ -239,6 +239,7 @@ object ConferenceDescriptor {
     val HALL_EXPO = Room("a_hall", "Exhibition floor", 2300, "special", "", "Hall", None)
     val HALL_EXPO_PARIS = Room("hall_paris", "Hall Exposition Paris", 100, "special", "", "Hall Paris", Some("Paris"))
     val LOBBY_NEUILLY = Room("lobby_neuilly", "Lobby Neuilly", 100, "special", "", "Lobby Neuilly", Some("Neuilly"))
+    val LOBBY_PARIS = Room("lobby_paris", "Lobby Paris", 100, "special", "", "Lobby Paris", Some("Paris"))
 
     val AMPHI_BLEU = Room("b_amphi", "Amphi Bleu", 826, "theatre", "camera", "Amphi Bleu", None)
     val MAILLOT = Room("c_maillot", "Maillot", 380, "theatre", "camera", "Amphi Maillot", Some("Hall"))
@@ -284,9 +285,9 @@ object ConferenceDescriptor {
 
     val allRoomsLabFriday = List(PARIS_201_U, PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_231_232, NEUILLY_234_235)
 
-    val allRoomsBOF = List(PARIS_243_T, PARIS_201_U, PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_231_232, NEUILLY_234_235)
+    val allRoomsBOF = List(PARIS_201_U, PARIS_202_203, PARIS_221M_222M, PARIS_224M_225M, NEUILLY_231_232, NEUILLY_234_235)
 
-    val allRoomsOthersThursday = List()
+    val allRoomsOthersThursday = List(MAILLOT, LOBBY_NEUILLY, LOBBY_PARIS)
 
     val allRoomsOthersFriday = List(LOBBY_NEUILLY)
 
@@ -316,6 +317,7 @@ object ConferenceDescriptor {
     val shortBreak = SlotBreak("chgt", "Break", "Pause courte")
     val exhibition = SlotBreak("exhib", "Exhibition", "Exhibition")
     val meetAndGreet = SlotBreak("meet", "Meet & Greet", "Exhibition")
+    val empty = SlotBreak("empty", "", "")
   }
 
   // TODO The idea here is to describe in term of Agenda, for each rooms, the slots. This is required only for the Scheduler
@@ -430,23 +432,23 @@ object ConferenceDescriptor {
     // OTHERS
 
     val othersSlotsThursday: List[Slot] = {
-      val lesGrowthTech = ConferenceRooms.allRoomsOthersThursday.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.OTHER.id, "thursday",
-            new DateTime(s"${secondDay}T15:30:00.000+02:00").toDateTime(confTimezone),
-            new DateTime(s"${secondDay}T17:30:00.000+02:00").toDateTime(confTimezone), r1)
-      }
-      lesGrowthTech
+      val theVoxx = SlotBuilder(ConferenceProposalTypes.OTHER.id, "thursday",
+        new DateTime(s"${secondDay}T19:30:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T23:00:00.000+02:00").toDateTime(confTimezone), ConferenceRooms.MAILLOT)
+      val improvisationalTheatre  = SlotBuilder(ConferenceProposalTypes.OTHER.id, "thursday",
+        new DateTime(s"${secondDay}T20:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T21:30:00.000+02:00").toDateTime(confTimezone), ConferenceRooms.LOBBY_NEUILLY)
+      val massage = SlotBuilder(ConferenceProposalTypes.OTHER.id, "thursday",
+        new DateTime(s"${secondDay}T19:30:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T23:00:00.000+02:00").toDateTime(confTimezone), ConferenceRooms.LOBBY_PARIS)
+      List(theVoxx,improvisationalTheatre,massage)
     }
 
     val othersSlotsFriday: List[Slot] = {
-      val cafePhilo = ConferenceRooms.allRoomsOthersFriday.map {
-        r1 =>
-          SlotBuilder(ConferenceProposalTypes.OTHER.id, "friday",
-            new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone),
-            new DateTime(s"${thirdDay}T14:15:00.000+02:00").toDateTime(confTimezone), r1)
-      }
-      cafePhilo
+      val cafePhilo = SlotBuilder(ConferenceProposalTypes.OTHER.id, "friday",
+        new DateTime(s"${thirdDay}T13:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${thirdDay}T14:15:00.000+02:00").toDateTime(confTimezone), ConferenceRooms.LOBBY_NEUILLY)
+      List(cafePhilo)
     }
 
     // BOFS
@@ -672,6 +674,24 @@ object ConferenceDescriptor {
       , SlotBuilder(ConferenceSlotBreaks.shortBreak, "thursday",
         new DateTime(s"${secondDay}T18:15:00.000+02:00").toDateTime(confTimezone),
         new DateTime(s"${secondDay}T18:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
+      , SlotBuilder(ConferenceSlotBreaks.meetAndGreet, "thursday",
+        new DateTime(s"${secondDay}T19:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T19:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks))
+      , SlotBuilder(ConferenceSlotBreaks.empty, "thursday",
+        new DateTime(s"${secondDay}T19:30:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T20:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks,ConferenceRooms.NEUILLY_251))
+      , SlotBuilder(ConferenceSlotBreaks.empty, "thursday",
+        new DateTime(s"${secondDay}T20:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T20:50:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks,ConferenceRooms.NEUILLY_251))
+      , SlotBuilder(ConferenceSlotBreaks.empty, "thursday",
+        new DateTime(s"${secondDay}T21:00:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T21:30:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks,ConferenceRooms.NEUILLY_251))
+      , SlotBuilder(ConferenceSlotBreaks.empty, "thursday",
+        new DateTime(s"${secondDay}T21:30:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T21:50:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks,ConferenceRooms.NEUILLY_251,ConferenceRooms.LOBBY_NEUILLY))
+      , SlotBuilder(ConferenceSlotBreaks.empty, "thursday",
+        new DateTime(s"${secondDay}T21:50:00.000+02:00").toDateTime(confTimezone),
+        new DateTime(s"${secondDay}T23:00:00.000+02:00").toDateTime(confTimezone), List(firstRoomForBreaks,ConferenceRooms.NEUILLY_251))
     ).flatten
 
     val fridayBreaks = List(
