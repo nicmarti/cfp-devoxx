@@ -26,7 +26,10 @@
             <table class="table table-striped table-bordered table-sm">
                 <thead>
                     <tr>
-                        <th>@Messages("firstName") @Messages("lastName")</th>
+                        <th>@Messages("firstName")</th>
+                        <th>@Messages("lastName")</th>
+                        <th>@Messages("company")</th>
+                        <th>@Messages("email")</th>
                         <th>@Messages("show.on.publisher.committee.page")</th>
                         <th>@Messages("update.publisher.committee.page")</th>
 
@@ -36,7 +39,10 @@
                 <tbody>
                     @allCFPWebusers.sortBy(_.cleanName).map{ webuser=>
                         <tr>
-                            <td>@webuser.cleanName</td>
+                            <td>@webuser.firstName.trim</td>
+                            <td>@webuser.lastName.trim.toUpperCase()</td>
+                            <td>@Speaker.findByUUID(webuser.uuid).map(_.company).getOrElse("")</td>
+                            <td>@webuser.email</td>
                             <td>@if(Webuser.isPublicVisible(webuser.uuid)){
                                     true
                                 } else {
@@ -44,7 +50,7 @@
                                 }
                             </td>
                             <td>
-                                <a href="@routes.CFPAdmin.switchPublicVisibility(webuser.uuid)">Switch</a>
+                                <a href="@routes.CFPAdmin.switchPublicVisibility(webuser.uuid)" class="btn-success">Switch</a>
                             </td>
                         </tr>
 
