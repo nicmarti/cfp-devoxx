@@ -87,10 +87,6 @@ object Room {
     "par242BT",
     "par243",
     "par243_t",
-    "hall_neuilly",
-    "hall_paris",
-    "lobby_neuilly",
-    "lobby_paris",
     "neu_212_213",
     "neu_232_232",
     "neu_234_235",
@@ -103,7 +99,11 @@ object Room {
     "lab1",
     "lab2",
     "lab3",
-    "lab4"
+    "lab4",
+    "hall_neuilly",
+    "hall_paris",
+    "lobby_neuilly",
+    "lobby_paris"
   )
 
 }
