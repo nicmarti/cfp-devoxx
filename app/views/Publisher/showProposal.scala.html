@@ -60,7 +60,7 @@
                             <tbody class="divide-y divide-gray-200">
                             <tr>
                                 <th  scope="row" class="px-3 py-2 text-right">@Messages("showProposal.talkType")</th>
-                                <td class="text-gray-800">@Messages(proposal.talkType.label)</td>
+                                <td class="text-gray-800"><a href="@routes.Publisher.showByTalkType(proposal.talkType.id)">@Messages(proposal.talkType.id)</a></td>
                             </tr>
                             <tr>
                                 <th  scope="row" class="px-3 py-2 text-right">Track</th>
