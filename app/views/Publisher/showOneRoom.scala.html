@@ -1,0 +1,65 @@
+@(slots: List[Slot], rooms: Seq[(String, String)], room: Room)(implicit lang: Lang, req: RequestHeader, flash: Flash)
+@import org.apache.commons.lang3.StringUtils
+@views.html.Publisher.devoxxFR2020(Messages(s"Details for $room")) {
+
+    <div class="large-12 columns">
+        <h1 class="entry-title">Room @room.name</h1>
+
+        <p class="breadcrumb hide-on-print"><a href="@routes.Publisher.homePublisher()">@Messages("sw.home")</a> &gt;
+            @rooms.map { currentRoom =>
+                <a href="@routes.Publisher.showOneRoom(currentRoom._1)">@currentRoom._2</a> -
+            }
+
+        </p>
+    </div>
+
+    <div class="columns large-12 woocommerce">
+        <table class="agendaTable skip-mb-on-print">
+        @slots.groupBy(s => s.from.getMillis).toList.sortWith(_._1 < _._1).map { case (_, subSlots) =>
+        <tr>
+            <th class="timeSlot">
+                @subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("EEE HH:mm")
+                - @subSlots.head.to.toDateTime(ConferenceDescriptor.current().timezone).toString("EEE HH:mm")
+            </th>
+
+            @subSlots.map { zeSlot =>
+                @if(zeSlot.notAllocated && !zeSlot.isFiller) {
+                    <td class="proposal tba">&nbsp;</td>
+                }
+                @if(zeSlot.break.isDefined || zeSlot.isFiller) {
+                    @* nothing to do.. we're on a filler *@
+                } else {
+                    @zeSlot.proposal.map { p: Proposal =>
+                        <td class="skip-max-width-on-divs proposal">
+                            <div class="content">
+
+                                <h4>@StringUtils.abbreviate(p.title, 99)</h4>
+                                <h5>@Messages(p.talkType.id)</h5>
+
+                                <div class="text-sm text-left">
+                                    @if(p.title.length>99) { Titre complet : @p.title } <br>
+                                    @p.allSpeakers.map {  speaker =>
+                                        <strong>@speaker.cleanFirstName @speaker.cleanLastName</strong>
+                                    @if(speaker.company.isDefined) { @speaker.company.get}
+                                    }
+                                    <br>
+                                    @p.summary
+
+                                </div>
+                                <div class="mt-5">
+                                    <br>
+                                    <br>
+                                    Début du code Viparis pour retrouver le bon fichier vidéo : <br>
+                                    DEVOXX-2023-@room.name.replaceAll(" ", "_")_2023@subSlots.head.from.toDateTime(ConferenceDescriptor.current().timezone).toString("MMdd-HHmm")
+                                </div>
+                            </div>
+                        </td>
+                    }
+                }
+            }
+        </tr>
+        }
+        </table>
+    </div>
+
+}

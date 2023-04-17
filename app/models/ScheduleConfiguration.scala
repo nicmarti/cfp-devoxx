@@ -164,6 +164,19 @@ object ScheduleConfiguration {
     listOfSlots.sortBy(_.from.getMillis)
   }
 
+  def getPublishedScheduleByRoom(roomId: String, secretPublishKey: Option[String] = None): List[Slot] = {
+
+    def extractSlot(allSlots: List[Slot]) = {
+      val configured = loadSlots(secretPublishKey).filter(_.roomId == roomId)
+      val filtered = allSlots.filterNot(s => s.isAllocatableSlot)
+      configured ++ filtered
+    }
+
+    val listOfSlots = extractSlot(ConferenceDescriptor.ConferenceSlots.all)
+
+    listOfSlots.sortBy(_.from.getMillis)
+  }
+
   def loadSlots(secretPublishKey: Option[String]): List[Slot] = {
     ConferenceDescriptor.ConferenceProposalTypes.ALL.flatMap {
       t: ProposalType => loadSlotsForConfType(t.id, secretPublishKey)

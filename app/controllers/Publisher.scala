@@ -37,7 +37,7 @@ object Publisher extends Controller {
   def homePublisher = Action {
     implicit request =>
       val result = views.html.Publisher.homePublisher()
-      val eTag:String = Crypt.md5(result.toString() + "dvx")
+      val eTag: String = Crypt.md5(result.toString() + "dvx")
       val maybeETag = request.headers.get(IF_NONE_MATCH)
 
       maybeETag match {
@@ -64,6 +64,7 @@ object Publisher extends Controller {
           Ok(views.html.Publisher.showAllSpeakers(speakers)).withHeaders(ETAG -> eTag)
       }
   }
+
   def showSpeaker(uuid: String, name: String) = Action {
     implicit request =>
       val maybeSpeaker = Speaker.findByUUID(uuid)
@@ -132,6 +133,17 @@ object Publisher extends Controller {
       }
   }
 
+  def showOneRoom(room: String) = Action {
+    implicit request =>
+      Room.parse(room) match {
+        case Room.OTHER => NotFound("Room not found")
+        case roomValid => {
+          val allSlots = Slot.fillWithFillers(ScheduleConfiguration.getPublishedScheduleByRoom(roomValid.id, None))
+          Ok(views.html.Publisher.showOneRoom(allSlots, Room.allAsId, roomValid))
+        }
+      }
+  }
+
   def showDetailsForProposal(proposalId: String, proposalTitle: String, secretPublishKey: Option[String] = None) =
     Action {
       implicit request =>
@@ -157,17 +169,17 @@ object Publisher extends Controller {
 
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-      ElasticSearchPublisher.doPublisherSearch(q, p).map{
+      ElasticSearchPublisher.doPublisherSearch(q, p).map {
         case Left(failure) => InternalServerError("Unable to search on ElasticSearch " + failure.error)
         case Right(results) =>
           import library.search.ProposalSearchResult.ProposalHitReader
 
-          val total=results.totalHits
+          val total = results.totalHits
           Ok(views.html.Publisher.searchResult(total, results.to[ProposalSearchResult], q, p)).as("text/html")
       }
   }
 
-  def committee()= Action {
+  def committee() = Action {
     implicit request =>
       val allMembers = Speaker.allCFPMembers()
       Ok(views.html.Publisher.committee(allMembers))

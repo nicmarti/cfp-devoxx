@@ -221,6 +221,7 @@ GET           /2023/talk/:proposalId/:proposalTitle                             
 GET           /2023/talks                                                       controllers.Publisher.homePublisher()
 GET           /2023/index.html                                                  controllers.Publisher.homePublisher()
 GET           /2023/byday/:day                                                  controllers.Publisher.showByDay(day:String, secretPublishKey:Option[String] ?=None, hideUselessRooms:Boolean ?=true, includeTypes:Option[String] ?=None, excludeTypes:Option[String] ?=Some("bof"))
+GET           /2023/byroom                                                      controllers.Publisher.showOneRoom(room:String ?="b_amphi")
 GET           /2023/search                                                      controllers.Publisher.search(q:Option[String] ?=None,p:Option[Int] ?=None)
 GET           /2023/committee.html                                              controllers.Publisher.committee()
 
