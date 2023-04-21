@@ -37,15 +37,13 @@
                                 <h5>@Messages(p.talkType.id)</h5>
 
                                 <div class="text-sm text-left">
-                                    <p>Pour rester informé sur l'actualité de Devoxx France, suivez nous sur linkedIn : https://www.linkedin.com/in/devoxxfrance/,
-                                       twitter : https://twitter.com/DevoxxFR ou consultez notre site web https://www.devoxx.fr/</p>
                                     @if(p.title.length>99) { Titre complet : @p.title } <br>
-                                    @p.allSpeakers.map {  speaker =>
-                                        <strong>@speaker.cleanFirstName @speaker.cleanLastName</strong>
-                                    @if(speaker.company.isDefined) { @speaker.company.get}
-                                    }
+                                    @p.allSpeakers.map(speaker =>  s"${speaker.cleanFirstName} ${speaker.cleanLastName}").mkString(", ") <br>
+
                                     <br>
-                                    @p.summary<br>
+                                    @Html(p.summaryAsHtml)
+                                    <p>Pour rester informé sur l'actualité de Devoxx France, suivez nous sur linkedIn : https://www.linkedin.com/in/devoxxfrance/,
+                                        twitter : https://twitter.com/DevoxxFR ou consultez notre site web https://www.devoxx.fr/</p>
                                 </div>
                                 <div class="mt-5">
                                     <br>
