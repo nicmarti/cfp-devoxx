@@ -1,35 +1,42 @@
-@(comments: List[models.Comment])
-  @comments.map { c =>
-        @models.Speaker.findByUUID(c.uuidAuthor).map { speaker =>
-            @models.Webuser.findByUUID(c.uuidAuthor).map { webuser =>
-<div class="chat_list">
-  <div class="chat_people">
-    <div class="chat_img">
-                @if(speaker.avatarUrl.isEmpty) {
-      <img class="media-object" width="35" src="//www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
-                } else {
-      <img class="media-object" width="35" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName"/>
-                }
-    </div>
-    <div class="chat_ib">
-      <h5>
-        <a  href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">@webuser.cleanName</a>
-        <span class="chat_date"> @Messages("tags.renderComment.postedBy",
-            library.FormatDate.jodaDateFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang),
-            library.FormatDate.jodaTimeFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang))</span>
-      </h5>
-                @defining(c.msg.replaceAll("script", ".script").replaceAll("\n", "<br>")) { message: String =>
-      <p>@Html(message)</p>
-                    @models.Proposal.ProposalIDRegExp.findAllIn(message).map { proposalIdRef =>
-      <p>@tags.linkToProposal(proposalIdRef)</p>
-                    }
-                    @models.Proposal.HttpUrl.findAllIn(message).map { test =>
-      <p><a href="@test" target="_blank"><i class="fas fa-external-link"></i> @test</a></p>
-                    }
-                }
-    </div>
-  </div>
-</div>
-            }
+@(comments: List[models.Comment], maybeProposalLastVisit: Option[org.joda.time.DateTime])
+  @defining(comments.reverse.find{ comment => maybeProposalLastVisit.map { proposalLastVisit => proposalLastVisit.isBefore(comment.eventDate.get) }.getOrElse(true) }){ maybeFirstUnwatchedComment: Option[Comment] =>
+    @comments.zipWithIndex.map{ case (c, index) =>
+      @models.Speaker.findByUUID(c.uuidAuthor).map { speaker =>
+        @models.Webuser.findByUUID(c.uuidAuthor).map { webuser =>
+        <div class="chat_list">
+          <div class="chat_people">
+            <div class="chat_img">
+              @if(speaker.avatarUrl.isEmpty) {
+                <img class="media-object" width="35" src="//www.gravatar.com/avatar/@Webuser.gravatarHash(webuser.email)?s=35" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+              } else {
+                <img class="media-object" width="35" src="@speaker.avatarUrl.get" alt="@webuser.cleanName" title="@webuser.cleanName"/>
+              }
+            </div>
+            <div class="chat_ib">
+              <h5>
+                <a  href="@routes.CFPAdmin.showSpeakerAndTalks(c.uuidAuthor)">@webuser.cleanName</a>
+                <span class="chat_date"> @Messages("tags.renderComment.postedBy",
+                  library.FormatDate.jodaDateFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang),
+                  library.FormatDate.jodaTimeFormat(c.eventDate.get, play.api.i18n.Lang.defaultLang))</span>
+              </h5>
+              @defining(c.msg.replaceAll("script", ".script").replaceAll("\n", "<br>")) { message: String =>
+                <p>@Html(message)</p>
+              @models.Proposal.ProposalIDRegExp.findAllIn(message).map { proposalIdRef =>
+                <p>@tags.linkToProposal(proposalIdRef)</p>
+              }
+              @models.Proposal.HttpUrl.findAllIn(message).map { test =>
+                <p><a href="@test" target="_blank"><i class="fas fa-external-link"></i> @test</a></p>
+              }
+              }
+            </div>
+          </div>
+        </div>
+          @if(maybeFirstUnwatchedComment.map(c == _).getOrElse(false)) {
+            <div class="chat_new_comments_indicator">
+              <i class="fas fa-arrow-alt-circle-up"></i> @Messages("tags.renderComment.newMessages") <i class="fas fa-arrow-alt-circle-up"></i>
+            </div>
+          }
         }
+      }
+    }
   }
